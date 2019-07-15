@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using LMP.Models.From_LMP_Models;
-using LMP.Models.From_LMP_Models.DP;
+using LMP.Models;
+using LMP.Models.DP;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMP.Data.Infrastructure
 {
     public interface IDpContext
     {
-        int SaveChanges();
+        #region DbSets
 
         DbSet<Role> Roles { get; set; }
 
@@ -45,10 +45,14 @@ namespace LMP.Data.Infrastructure
 
         Expression<Func<Student, bool>> StudentIsGraduate { get; }
 
+        DbSet<DiplomProjectNews> DiplomProjectNews { get; set; }
+
+            #endregion
+
         IQueryable<Student> GetGraduateStudents();
 
         IQueryable<Group> GetGraduateGroups();
 
-        DbSet<DiplomProjectNews> DiplomProjectNews { get; set; }
+        int SaveChanges();
     }
 }

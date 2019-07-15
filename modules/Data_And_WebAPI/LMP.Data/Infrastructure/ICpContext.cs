@@ -1,12 +1,14 @@
 ﻿using System.Linq;
-using LMP.Models.From_LMP_Models;
-using LMP.Models.From_LMP_Models.CP;
+using LMP.Models;
+using LMP.Models.CP;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMP.Data.Infrastructure
 {
     public interface ICpContext
     {
+        #region DbSets
+
         DbSet<CourseProjectNews> CourseProjectNews { get; set; }
 
         DbSet<CourseProject> CourseProjects { get; set; }
@@ -34,6 +36,8 @@ namespace LMP.Data.Infrastructure
         DbSet<CourseProjectTaskSheetTemplate> CourseProjectTaskSheetTemplates { get; set; }
 
         DbSet<Group> Groups { get; set; }
+        
+        #endregion
 
         IQueryable<Student> GetGraduateStudents();
 
