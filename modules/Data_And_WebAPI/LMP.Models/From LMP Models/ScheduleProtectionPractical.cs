@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using LMP.Models.From_App_Core_Data;
+
+namespace LMP.Models.From_LMP_Models
+{
+    public class ScheduleProtectionPractical : ModelBase
+    {
+        public DateTime Date { get; set; }
+
+        public int GroupId { get; set; }
+
+        public Group Group { get; set; }
+
+        public int SubjectId { get; set; }
+
+        public Subject Subject { get; set; }
+
+        public ICollection<ScheduleProtectionPracticalMark> ScheduleProtectionPracticalMarks { get; set; }
+    }
+}
