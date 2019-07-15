@@ -14,7 +14,7 @@ namespace ConsoleContextTest
 
                 foreach (var propertyInfo in props)
                 {
-                    ((IEnumerable<object>)propertyInfo.GetValue(ctx)).ToArray();
+                    ((IEnumerable<dynamic>)propertyInfo.GetValue(ctx)).ToArray();
                 }
             }
         }
