@@ -7,7 +7,7 @@ namespace LMP.Models
 {
     public class Subject : ModelBase
     {
-        public virtual ICollection<Concept> Concept { get; set; }
+        public ICollection<Concept> Concept { get; set; }
 
         public string Name { get; set; }
 
@@ -37,7 +37,7 @@ namespace LMP.Models
 
         public ICollection<CourseProjectConsultationDate> CourseProjectsConsultationDates { get; set; }
 
-        public virtual ICollection<CoursePercentagesGraph> CoursePersentagesGraphs { get; set; }
+        public ICollection<CoursePercentagesGraph> CoursePersentagesGraphs { get; set; }
 
         public ICollection<Practical> Practicals { get; set; }
 

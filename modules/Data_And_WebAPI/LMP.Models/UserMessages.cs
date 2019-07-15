@@ -19,14 +19,11 @@ namespace LMP.Models
             IsRead = false;
         }
 
-        //PROBLEM
-        [Required] public int RecipientId { get; set; }
+        public int RecipientId { get; set; }
 
-        //PROBLEM
-        [Required] public int AuthorId { get; set; }
+        public int AuthorId { get; set; }
 
-        //PROBLEM
-        [Required] public int MessageId { get; set; }
+        public int MessageId { get; set; }
 
         public DateTime Date { get; set; }
 

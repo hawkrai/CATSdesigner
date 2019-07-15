@@ -18,7 +18,7 @@ namespace LMP.Models.CP
 
         public int? SubjectId { get; set; }
 
-        public virtual Subject Subject { get; set; }
+        public Subject Subject { get; set; }
 
         public DateTime Day
         {
@@ -30,6 +30,6 @@ namespace LMP.Models.CP
             set => _day = value;
         }
 
-        public virtual ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
+        public ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
     }
 }

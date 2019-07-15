@@ -4,7 +4,6 @@
     {
         public virtual bool IsNew => Id == 0;
 
-//        [Key]
         public int Id { get; set; }
     }
 }

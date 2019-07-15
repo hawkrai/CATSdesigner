@@ -25,7 +25,7 @@ namespace LMP.Models.KnowledgeTesting
 
         public ICollection<Answer> Answers { get; set; }
 
-        public virtual ICollection<ConceptQuestions> ConceptQuestions { get; set; }
+        public ICollection<ConceptQuestions> ConceptQuestions { get; set; }
 
         public object Clone()
         {
@@ -36,7 +36,7 @@ namespace LMP.Models.KnowledgeTesting
                 ConceptId = ConceptId,
                 ComlexityLevel = ComlexityLevel,
                 QuestionType = QuestionType,
-                Answers = Answers == null ? null : Answers.Select(answer => (Answer) answer.Clone()).ToList()
+                Answers = Answers?.Select(answer => (Answer) answer.Clone()).ToList()
             };
         }
     }

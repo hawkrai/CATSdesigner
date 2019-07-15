@@ -26,12 +26,11 @@ namespace LMP.Models
 
         public ICollection<ScheduleProtectionPractical> ScheduleProtectionPracticals { get; set; }
 
-        public virtual ICollection<DiplomProjectGroup> DiplomProjectGroups { get; set; }
+        public ICollection<DiplomProjectGroup> DiplomProjectGroups { get; set; }
 
-        public virtual ICollection<CourseProjectGroup> CourseProjectGroups { get; set; }
+        public ICollection<CourseProjectGroup> CourseProjectGroups { get; set; }
 
-        //PROBLEM
-        [Column("Secretary_Id")] public int? SecretaryId { get; set; }
+        public int? SecretaryId { get; set; }
 
         public Lecturer Secretary { get; set; }
     }

@@ -10,8 +10,7 @@ namespace LMP.Models
         public const int Tester = 2;
         public const int Leader = 3;
 
-        //PROBLEM
-        [DisplayName("Роль")] public string Name { get; set; }
+        public string Name { get; set; }
 
         public ICollection<ProjectUser> ProjectUser { get; set; }
     }

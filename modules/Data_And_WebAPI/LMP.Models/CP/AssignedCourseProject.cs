@@ -14,8 +14,8 @@ namespace LMP.Models.CP
 
         public int? Mark { get; set; }
 
-        public virtual CourseProject CourseProject { get; set; }
+        public CourseProject CourseProject { get; set; }
 
-        public virtual Student Student { get; set; }
+        public Student Student { get; set; }
     }
 }

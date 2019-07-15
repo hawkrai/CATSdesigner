@@ -26,6 +26,6 @@ namespace LMP.Models.DP
             set => _day = value;
         }
 
-        public virtual ICollection<DiplomProjectConsultationMark> DiplomProjectConsultationMarks { get; set; }
+        public ICollection<DiplomProjectConsultationMark> DiplomProjectConsultationMarks { get; set; }
     }
 }

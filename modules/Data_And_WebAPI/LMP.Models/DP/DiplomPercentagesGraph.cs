@@ -5,8 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMP.Models.DP
 {
-    //PROBLEM
-    [Table("DiplomPercentagesGraph")]
     public class DiplomPercentagesGraph
     {
         private DateTime _date;
@@ -20,8 +18,7 @@ namespace LMP.Models.DP
 
         public int LecturerId { get; set; }
 
-        //PROBLEM
-        [Required] [StringLength(100)] public string Name { get; set; }
+        public string Name { get; set; }
 
         public double Percentage { get; set; }
 
@@ -35,10 +32,10 @@ namespace LMP.Models.DP
             set => _date = value;
         }
 
-        public virtual ICollection<DiplomPercentagesResult> DiplomPercentagesResults { get; set; }
+        public ICollection<DiplomPercentagesResult> DiplomPercentagesResults { get; set; }
 
-        public virtual ICollection<DiplomPercentagesGraphToGroup> DiplomPercentagesGraphToGroups { get; set; }
+        public ICollection<DiplomPercentagesGraphToGroup> DiplomPercentagesGraphToGroups { get; set; }
 
-        public virtual Lecturer Lecturer { get; set; }
+        public Lecturer Lecturer { get; set; }
     }
 }

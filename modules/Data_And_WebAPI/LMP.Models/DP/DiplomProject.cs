@@ -14,8 +14,7 @@ namespace LMP.Models.DP
 
         public int DiplomProjectId { get; set; }
 
-        //PROBLEM
-        [Required] [StringLength(2048)] public string Theme { get; set; }
+        public string Theme { get; set; }
 
         public int? LecturerId { get; set; }
 
@@ -39,10 +38,10 @@ namespace LMP.Models.DP
 
         public DateTime? DateStart { get; set; }
 
-        public virtual ICollection<AssignedDiplomProject> AssignedDiplomProjects { get; set; }
+        public ICollection<AssignedDiplomProject> AssignedDiplomProjects { get; set; }
 
-        public virtual ICollection<DiplomProjectGroup> DiplomProjectGroups { get; set; }
+        public ICollection<DiplomProjectGroup> DiplomProjectGroups { get; set; }
 
-        public virtual Lecturer Lecturer { get; set; }
+        public Lecturer Lecturer { get; set; }
     }
 }

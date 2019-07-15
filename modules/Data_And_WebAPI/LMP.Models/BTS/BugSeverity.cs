@@ -6,8 +6,7 @@ namespace LMP.Models.BTS
 {
     public class BugSeverity : ModelBase
     {
-        //PROBLEM
-        [DisplayName("Важность")] public string Name { get; set; }
+        public string Name { get; set; }
 
         public ICollection<Bug> Bug { get; set; }
     }

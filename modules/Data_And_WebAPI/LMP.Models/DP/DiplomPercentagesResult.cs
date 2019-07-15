@@ -12,11 +12,10 @@ namespace LMP.Models.DP
 
         public int? Mark { get; set; }
 
-        //PROBLEM
-        [StringLength(50)] public string Comments { get; set; }
+        public string Comments { get; set; }
 
-        public virtual DiplomPercentagesGraph DiplomPercentagesGraph { get; set; }
+        public DiplomPercentagesGraph DiplomPercentagesGraph { get; set; }
 
-        public virtual Student Student { get; set; }
+        public Student Student { get; set; }
     }
 }

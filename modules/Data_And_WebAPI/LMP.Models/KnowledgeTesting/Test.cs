@@ -34,7 +34,7 @@ namespace LMP.Models.KnowledgeTesting
 
         public bool Unlocked => ForSelfStudy || TestUnlocks != null && TestUnlocks.Any();
 
-        public virtual Subject Subject { get; set; }
+        public Subject Subject { get; set; }
 
         public ICollection<Question> Questions { get; set; }
 

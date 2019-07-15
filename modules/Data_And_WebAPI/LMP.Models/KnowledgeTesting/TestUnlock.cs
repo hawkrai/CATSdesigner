@@ -8,7 +8,7 @@ namespace LMP.Models.KnowledgeTesting
 
         public int StudentId { get; set; }
 
-        public virtual Student Student { get; set; }
+        public Student Student { get; set; }
 
         public Test Test { get; set; }
     }

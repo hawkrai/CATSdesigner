@@ -9,7 +9,7 @@ namespace LMP.Models
 {
     public class User : ModelBase
     {
-        public virtual ICollection<Concept> Concept { get; set; }
+        public ICollection<Concept> Concept { get; set; }
 
         public string UserName { get; set; }
 
@@ -37,13 +37,13 @@ namespace LMP.Models
 
         public ICollection<UserMessages> Messages { get; set; }
 
-        public virtual DateTime? LastLogin { get; set; }
+        public DateTime? LastLogin { get; set; }
 
-        public virtual string Attendance { get; set; }
+        public string Attendance { get; set; }
 
         public string Avatar { get; set; }
 
-        //PROBLEM
+        // TODO: maybe move to DbContext model config
         [NotMapped]
         public List<DateTime> AttendanceList
         {
@@ -58,7 +58,7 @@ namespace LMP.Models
             set => Attendance = JsonConvert.SerializeObject(value);
         }
 
-        //PROBLEM
+        // TODO: maybe move to DbContext model config
         [NotMapped]
         public string FullName
         {
