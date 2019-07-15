@@ -130,47 +130,47 @@ namespace LMP.Data.Infrastructure
 
         //public DbSet<ProjectMatrixRequirement> ProjectMatrixRequirements { get; set; }
 
-        public virtual DbSet<DiplomProjectNews> DiplomProjectNews { get; set; }
+        public DbSet<DiplomProjectNews> DiplomProjectNews { get; set; }
 
-        public virtual DbSet<AssignedDiplomProject> AssignedDiplomProjects { get; set; }
+        public DbSet<AssignedDiplomProject> AssignedDiplomProjects { get; set; }
 
-        public virtual DbSet<DiplomPercentagesGraph> DiplomPercentagesGraphs { get; set; }
+        public DbSet<DiplomPercentagesGraph> DiplomPercentagesGraphs { get; set; }
 
-        public virtual DbSet<DiplomPercentagesGraphToGroup> DiplomPercentagesGraphToGroups { get; set; }
+        public DbSet<DiplomPercentagesGraphToGroup> DiplomPercentagesGraphToGroups { get; set; }
 
-        public virtual DbSet<DiplomPercentagesResult> DiplomPercentagesResults { get; set; }
+        public DbSet<DiplomPercentagesResult> DiplomPercentagesResults { get; set; }
 
-        public virtual DbSet<DiplomProjectConsultationDate> DiplomProjectConsultationDates { get; set; }
+        public DbSet<DiplomProjectConsultationDate> DiplomProjectConsultationDates { get; set; }
 
-        public virtual DbSet<DiplomProjectConsultationMark> DiplomProjectConsultationMarks { get; set; }
+        public DbSet<DiplomProjectConsultationMark> DiplomProjectConsultationMarks { get; set; }
 
-        public virtual DbSet<DiplomProjectGroup> DiplomProjectGroups { get; set; }
+        public DbSet<DiplomProjectGroup> DiplomProjectGroups { get; set; }
 
-        public virtual DbSet<DiplomProject> DiplomProjects { get; set; }
+        public DbSet<DiplomProject> DiplomProjects { get; set; }
 
-        public virtual DbSet<DiplomProjectTaskSheetTemplate> DiplomProjectTaskSheetTemplates { get; set; }
+        public DbSet<DiplomProjectTaskSheetTemplate> DiplomProjectTaskSheetTemplates { get; set; }
 
-        public virtual DbSet<CourseProjectNews> CourseProjectNews { get; set; }
+        public DbSet<CourseProjectNews> CourseProjectNews { get; set; }
 
-        public virtual DbSet<CourseProject> CourseProjects { get; set; }
+        public DbSet<CourseProject> CourseProjects { get; set; }
 
-        public virtual DbSet<AssignedCourseProject> AssignedCourseProjects { get; set; }
+        public DbSet<AssignedCourseProject> AssignedCourseProjects { get; set; }
 
-        public virtual DbSet<ConceptQuestions> ConceptQuestions { get; set; }
+        public DbSet<ConceptQuestions> ConceptQuestions { get; set; }
 
-        public virtual DbSet<CourseProjectGroup> CourseProjectGroups { get; set; }
+        public DbSet<CourseProjectGroup> CourseProjectGroups { get; set; }
 
-        public virtual DbSet<CoursePercentagesGraph> CoursePercentagesGraphs { get; set; }
+        public DbSet<CoursePercentagesGraph> CoursePercentagesGraphs { get; set; }
 
-        public virtual DbSet<CoursePercentagesGraphToGroup> CoursePercentagesGraphToGroups { get; set; }
+        public DbSet<CoursePercentagesGraphToGroup> CoursePercentagesGraphToGroups { get; set; }
 
-        public virtual DbSet<CoursePercentagesResult> CoursePercentagesResults { get; set; }
+        public DbSet<CoursePercentagesResult> CoursePercentagesResults { get; set; }
 
-        public virtual DbSet<CourseProjectConsultationDate> CourseProjectConsultationDates { get; set; }
+        public DbSet<CourseProjectConsultationDate> CourseProjectConsultationDates { get; set; }
 
-        public virtual DbSet<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
+        public DbSet<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
 
-        public virtual DbSet<CourseProjectTaskSheetTemplate> CourseProjectTaskSheetTemplates { get; set; }
+        public DbSet<CourseProjectTaskSheetTemplate> CourseProjectTaskSheetTemplates { get; set; }
 
         #endregion
 
