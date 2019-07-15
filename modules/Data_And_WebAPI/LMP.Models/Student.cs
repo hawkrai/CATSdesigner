@@ -25,24 +25,25 @@ namespace LMP.Models
 
         public Group Group { get; set; }
 
-        //PROBLEM
-        [NotMapped] public string FullName => string.Format("{0} {1} {2}", LastName, FirstName, MiddleName);
+        // TODO: maybe move to DbContext model config
+        [NotMapped]
+        public string FullName => $"{LastName} {FirstName} {MiddleName}";
 
         public ICollection<SubjectStudent> SubjectStudents { get; set; }
 
         public ICollection<TestUnlock> TestUnlocks { get; set; }
 
-        public virtual ICollection<AssignedDiplomProject> AssignedDiplomProjects { get; set; }
+        public ICollection<AssignedDiplomProject> AssignedDiplomProjects { get; set; }
 
-        public virtual ICollection<AssignedCourseProject> AssignedCourseProjects { get; set; }
+        public ICollection<AssignedCourseProject> AssignedCourseProjects { get; set; }
 
-        public virtual ICollection<DiplomPercentagesResult> PercentagesResults { get; set; }
+        public ICollection<DiplomPercentagesResult> PercentagesResults { get; set; }
 
-        public virtual ICollection<CoursePercentagesResult> CoursePercentagesResults { get; set; }
+        public ICollection<CoursePercentagesResult> CoursePercentagesResults { get; set; }
 
-        public virtual ICollection<DiplomProjectConsultationMark> DiplomProjectConsultationMarks { get; set; }
+        public ICollection<DiplomProjectConsultationMark> DiplomProjectConsultationMarks { get; set; }
 
-        public virtual ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
+        public ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
 
         public ICollection<LecturesVisitMark> LecturesVisitMarks { get; set; }
 

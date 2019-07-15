@@ -7,8 +7,7 @@ namespace LMP.Models
 {
     public class Project : ModelBase
     {
-        //PROBLEM
-        [Required] public string Title { get; set; }
+        public string Title { get; set; }
 
         public string Details { get; set; }
 

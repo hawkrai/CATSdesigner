@@ -6,8 +6,7 @@ namespace LMP.Models.BTS
 {
     public class BugSymptom : ModelBase
     {
-        //PROBLEM
-        [DisplayName("Симптом")] public string Name { get; set; }
+        public string Name { get; set; }
 
         public ICollection<Bug> Bug { get; set; }
     }

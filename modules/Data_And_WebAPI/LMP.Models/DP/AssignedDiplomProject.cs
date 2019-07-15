@@ -14,8 +14,8 @@ namespace LMP.Models.DP
 
         public int? Mark { get; set; }
 
-        public virtual DiplomProject DiplomProject { get; set; }
+        public DiplomProject DiplomProject { get; set; }
 
-        public virtual Student Student { get; set; }
+        public Student Student { get; set; }
     }
 }

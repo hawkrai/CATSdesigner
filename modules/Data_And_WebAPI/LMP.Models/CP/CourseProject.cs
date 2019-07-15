@@ -14,8 +14,7 @@ namespace LMP.Models.CP
 
         public int CourseProjectId { get; set; }
 
-        //PROBLEM
-        [Required] [StringLength(2048)] public string Theme { get; set; }
+        public string Theme { get; set; }
 
         public int? LecturerId { get; set; }
 
@@ -41,12 +40,12 @@ namespace LMP.Models.CP
 
         public int? SubjectId { get; set; }
 
-        public virtual Subject Subject { get; set; }
+        public Subject Subject { get; set; }
 
-        public virtual Lecturer Lecturer { get; set; }
+        public Lecturer Lecturer { get; set; }
 
-        public virtual ICollection<AssignedCourseProject> AssignedCourseProjects { get; set; }
+        public ICollection<AssignedCourseProject> AssignedCourseProjects { get; set; }
 
-        public virtual ICollection<CourseProjectGroup> CourseProjectGroups { get; set; }
+        public ICollection<CourseProjectGroup> CourseProjectGroups { get; set; }
     }
 }

@@ -11,11 +11,9 @@ namespace LMP.Models
             Members = new List<UsersInRoles>();
         }
 
-        //PROBLEM
-        [StringLength(256)] public string RoleName { get; set; }
+        public string RoleName { get; set; }
 
-        //PROBLEM
-        [StringLength(256)] public string RoleDisplayName { get; set; }
+        public string RoleDisplayName { get; set; }
 
         public ICollection<UsersInRoles> Members { get; set; }
     }

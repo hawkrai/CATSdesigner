@@ -8,8 +8,8 @@
 
         public int GroupId { get; set; }
 
-        public virtual CourseProject CourseProject { get; set; }
+        public CourseProject CourseProject { get; set; }
 
-        public virtual Group Group { get; set; }
+        public Group Group { get; set; }
     }
 }

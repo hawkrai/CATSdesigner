@@ -15,6 +15,6 @@ namespace LMP.Models
 
         public bool IsVisible { get; set; }
 
-        public virtual ICollection<Folders> Folders { get; set; }
+        public ICollection<Folders> Folders { get; set; }
     }
 }

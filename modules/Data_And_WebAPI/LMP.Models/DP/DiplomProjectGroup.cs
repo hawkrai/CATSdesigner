@@ -8,8 +8,8 @@ namespace LMP.Models.DP
 
         public int GroupId { get; set; }
 
-        public virtual DiplomProject DiplomProject { get; set; }
+        public DiplomProject DiplomProject { get; set; }
 
-        public virtual Group Group { get; set; }
+        public Group Group { get; set; }
     }
 }

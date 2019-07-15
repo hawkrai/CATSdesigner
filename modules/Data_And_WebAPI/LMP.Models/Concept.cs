@@ -10,9 +10,9 @@ namespace LMP.Models
         public int ConceptId { get; set; }
         public int QuestionId { get; set; }
 
-        public virtual Concept Concept { get; set; }
+        public Concept Concept { get; set; }
 
-        public virtual Question Question { get; set; }
+        public Question Question { get; set; }
     }
 
     public class Concept : ModelBase
@@ -32,27 +32,29 @@ namespace LMP.Models
             SubjectId = subject.Id;
         }
 
-        public virtual ICollection<ConceptQuestions> ConceptQuestions { get; set; }
+        public ICollection<ConceptQuestions> ConceptQuestions { get; set; }
 
         public string Name { get; set; }
 
         public string Container { get; set; }
 
-        public virtual Concept Parent { get; set; }
-        public virtual int? ParentId { get; set; }
-        public virtual ICollection<Concept> Children { get; set; }
+        public Concept Parent { get; set; }
+
+        public int? ParentId { get; set; }
+
+        public ICollection<Concept> Children { get; set; }
 
         public bool IsGroup { get; set; }
 
         public bool ReadOnly { get; set; }
 
-        public virtual int? NextConcept { get; set; }
+        public int? NextConcept { get; set; }
 
-        public virtual int? PrevConcept { get; set; }
+        public int? PrevConcept { get; set; }
 
-        public virtual User Author { get; set; }
+        public User Author { get; set; }
 
-        public virtual Subject Subject { get; set; }
+        public Subject Subject { get; set; }
 
         public bool Published { get; set; }
 
@@ -60,11 +62,11 @@ namespace LMP.Models
 
         public int UserId { get; set; }
 
-        public virtual int? LectureId { get; set; }
+        public int? LectureId { get; set; }
 
-        public virtual int? PracticalId { get; set; }
+        public int? PracticalId { get; set; }
 
-        public virtual int? LabId { get; set; }
+        public int? LabId { get; set; }
 
         public List<Concept> GetAllChildren()
         {

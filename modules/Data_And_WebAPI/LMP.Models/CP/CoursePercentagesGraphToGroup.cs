@@ -8,8 +8,8 @@
 
         public int GroupId { get; set; }
 
-        public virtual Group Group { get; set; }
+        public Group Group { get; set; }
 
-        public virtual CoursePercentagesGraph CoursePercentagesGraph { get; set; }
+        public CoursePercentagesGraph CoursePercentagesGraph { get; set; }
     }
 }

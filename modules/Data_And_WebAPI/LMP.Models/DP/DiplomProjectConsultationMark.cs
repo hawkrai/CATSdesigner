@@ -10,14 +10,12 @@ namespace LMP.Models.DP
 
         public int StudentId { get; set; }
 
-        //PROBLEM
         //todo: make it as byte
-        [StringLength(2)] public string Mark { get; set; }
+        public string Mark { get; set; }
 
-        //PROBLEM
-        [StringLength(50)] public string Comments { get; set; }
+        public string Comments { get; set; }
 
-        public virtual DiplomProjectConsultationDate DiplomProjectConsultationDate { get; set; }
+        public DiplomProjectConsultationDate DiplomProjectConsultationDate { get; set; }
 
         public Student Student { get; set; }
     }

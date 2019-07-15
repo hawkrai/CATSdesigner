@@ -16,8 +16,7 @@ namespace LMP.Models
 
         public DateTime? CreateDate { get; set; }
 
-        //PROBLEM
-        [StringLength(128)] public string ConfirmationToken { get; set; }
+        public string ConfirmationToken { get; set; }
 
         public bool? IsConfirmed { get; set; }
 
@@ -25,16 +24,13 @@ namespace LMP.Models
 
         public int PasswordFailuresSinceLastSuccess { get; set; }
 
-        //PROBLEM
-        [Required] [StringLength(128)] public string Password { get; set; }
+        public string Password { get; set; }
 
         public DateTime? PasswordChangedDate { get; set; }
 
-        //PROBLEM
-        [Required] [StringLength(128)] public string PasswordSalt { get; set; }
+        public string PasswordSalt { get; set; }
 
-        //PROBLEM
-        [StringLength(128)] public string PasswordVerificationToken { get; set; }
+        public string PasswordVerificationToken { get; set; }
 
         public DateTime? PasswordVerificationTokenExpirationDate { get; set; }
 
@@ -42,7 +38,6 @@ namespace LMP.Models
 
         public User User { get; set; }
 
-        //PROBLEM
-        [ForeignKey("UserId")] public ICollection<OAuthMembership> OAuthMemberships { get; set; }
+        public ICollection<OAuthMembership> OAuthMemberships { get; set; }
     }
 }

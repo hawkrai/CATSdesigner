@@ -10,43 +10,25 @@ namespace LMP.Models
     {
         public int ProjectId { get; set; }
 
-        //PROBLEM
-        [Display(Name = "Кем добавлена")] public User Reporter { get; set; }
+        public User Reporter { get; set; }
 
-        //PROBLEM
-        [Display(Name = "Название")] public string Summary { get; set; }
+        public string Summary { get; set; }
 
-        //PROBLEM
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "Описание")]
         public string Description { get; set; }
 
-        //PROBLEM
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "Шаги выполнения")]
         public string Steps { get; set; }
 
-        //PROBLEM
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "Ожидаемый результат")]
         public string ExpectedResult { get; set; }
 
-        //PROBLEM
-        [Display(Name = "Дата документирования")]
         public DateTime ReportingDate { get; set; }
 
-        //PROBLEM
-        [Display(Name = "Дата последнего изменения")]
         public DateTime ModifyingDate { get; set; }
 
-        //PROBLEM
-        [Display(Name = "Симптом")] public int SymptomId { get; set; }
+        public int SymptomId { get; set; }
 
-        //PROBLEM
-        [Display(Name = "Важность")] public int SeverityId { get; set; }
+        public int SeverityId { get; set; }
 
-        //PROBLEM
-        [Display(Name = "Статус")] public int StatusId { get; set; }
+        public int StatusId { get; set; }
 
         public int ReporterId { get; set; }
 

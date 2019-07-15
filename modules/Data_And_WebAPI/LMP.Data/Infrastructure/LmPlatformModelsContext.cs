@@ -178,25 +178,95 @@ namespace LMP.Data.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CoursePercentagesGraph>(ent =>
+            {
+                ent.ToTable("CoursePercentagesGraph");
+
+                ent.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<CoursePercentagesResult>()
+                .Property(e => e.Comments)
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<CourseProject>()
+                .Property(e => e.Theme)
+                .IsRequired()
+                .HasMaxLength(2048);
+
+            modelBuilder.Entity<DiplomProject>()
+                .Property(d => d.Theme)
+                .HasMaxLength(2048)
+                .IsRequired();
+
+            modelBuilder.Entity<DiplomPercentagesResult>()
+                .Property(d => d.Comments)
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<DiplomPercentagesGraph>()
+                .ToTable("DiplomPercentagesGraph")
+                .Property(d => d.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
             modelBuilder.Entity<WatchingTime>()
                 .ToTable("WatchingTime");
 
             modelBuilder.Entity<TestQuestionPassResults>()
                 .ToTable("TestQuestionPassResults");
 
-            modelBuilder.Entity<Membership>()
-                .ToTable("webpages_Membership")
-                .Property(m => m.Id)
-                .HasColumnName("UserId")
-                .ValueGeneratedNever();
+            modelBuilder.Entity<Membership>(ent =>
+            {
+                ent.ToTable("webpages_Membership")
+                    .Property(m => m.Id)
+                    .HasColumnName("UserId")
+                    .ValueGeneratedNever();
 
-            modelBuilder.Entity<OAuthMembership>()
-                .ToTable("webpages_OAuthMembership")
-                .HasKey(k => new {k.Provider, k.ProviderUserId});
+                ent.Property(e => e.ConfirmationToken)
+                    .HasMaxLength(128);
 
-            modelBuilder.Entity<Role>().ToTable("webpages_Roles")
-                .Property(m => m.Id)
-                .HasColumnName("RoleId");
+                ent.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                ent.Property(e => e.PasswordSalt)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                ent.Property(e => e.PasswordVerificationToken)
+                    .HasMaxLength(128);
+            });
+            
+            modelBuilder.Entity<OAuthMembership>(ent =>
+            {
+                ent.ToTable("webpages_OAuthMembership")
+                    .HasKey(k => new {k.Provider, k.ProviderUserId});
+
+                ent.Property(e => e.Provider)
+                    .HasMaxLength(30);
+
+                ent.Property(e => e.ProviderUserId)
+                    .HasMaxLength(100);
+
+                ent.HasOne(o => o.User)
+                    .WithMany(u => u.OAuthMemberships)
+                    .HasForeignKey(o => o.UserId);
+            });
+            
+            modelBuilder.Entity<Role>(ent =>
+            {
+                ent.ToTable("webpages_Roles")
+                    .Property(m => m.Id)
+                    .HasColumnName("RoleId");
+
+                ent.Property(e => e.RoleName)
+                    .HasMaxLength(256);
+
+                ent.Property(e => e.RoleDisplayName)
+                    .HasMaxLength(256);
+            });
 
             modelBuilder.Entity<User>(ent =>
             {
@@ -233,10 +303,16 @@ namespace LMP.Data.Infrastructure
                     .OnDelete(DeleteBehavior.SetNull);
             });
 
-            modelBuilder.Entity<DiplomProjectConsultationMark>()
-                .Property(e => e.Mark)
-                .IsFixedLength()
-                .IsUnicode(false);
+            modelBuilder.Entity<DiplomProjectConsultationMark>(ent =>
+            {
+                ent.Property(e => e.Mark)
+                    .HasMaxLength(2)
+                    .IsFixedLength()
+                    .IsUnicode(false);
+
+                ent.Property(e => e.Comments)
+                    .HasMaxLength(50);
+            });
 
             modelBuilder.Entity<Attachment>()
                 .ToTable("Attachments")
@@ -262,6 +338,9 @@ namespace LMP.Data.Infrastructure
                     .WithOne(e => e.Group)
                     .HasForeignKey(e => e.GroupId)
                     .OnDelete(DeleteBehavior.SetNull);
+
+                ent.Property(g => g.SecretaryId)
+                    .HasColumnName("Secretary_Id");
             });
 
             modelBuilder.Entity<UsersInRoles>(ent =>
@@ -282,10 +361,16 @@ namespace LMP.Data.Infrastructure
 
             modelBuilder.Entity<TinCanObjects>().ToTable("TinCanObjects");
 
-            modelBuilder.Entity<Materials>()
-                .HasOne(f => f.Folders)
-                .WithMany(f => f.Materials)
-                .HasForeignKey(m => m.Folders_Id);
+            modelBuilder.Entity<Materials>(ent =>
+            {
+                ent.HasOne(f => f.Folders)
+                    .WithMany(f => f.Materials)
+                    .HasForeignKey(m => m.Folders_Id);
+
+                ent.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(128);
+            });
 
             modelBuilder.Entity<Student>(ent =>
             {
@@ -543,6 +628,9 @@ namespace LMP.Data.Infrastructure
                     .WithOne(e => e.Project)
                     .HasForeignKey(e => e.ProjectId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                ent.Property(e => e.Title)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<SubGroup>(ent =>
@@ -626,12 +714,22 @@ namespace LMP.Data.Infrastructure
                 .WithMany(user => user.UserAnswersOnTestQuestions)
                 .HasForeignKey(answer => answer.UserId);
 
+            modelBuilder.Entity<CourseProjectConsultationMark>(ent =>
+            {
+                ent.Property(e => e.Mark)
+                    .HasMaxLength(2);
+
+                ent.Property(e => e.Comments)
+                    .HasMaxLength(50);
+            });
+
+
             //modelBuilder.Entity<Concept>()
             //    .WithMany<WatchingTime>(e => e.WatchingTime)
             //    .WithOne(e => e.Concept);
-            
+
             // modelBuilder.Entity<ProjectMatrixRequirement>().ToTable("ProjectMatrixRequirements");
-            
+
             //modelBuilder.Entity<ProjectMatrixRequirement>()
             //    .HasOne(e => e.Project)
             //    .WithMany(e => e.MatrixRequirements)

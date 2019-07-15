@@ -11,8 +11,8 @@ namespace LMP.Models
 
         public int SubjectModuleId { get; set; }
 
-        public virtual SubjectModule SubjectModule { get; set; }
+        public SubjectModule SubjectModule { get; set; }
 
-        public virtual ICollection<Materials> Materials { get; set; }
+        public ICollection<Materials> Materials { get; set; }
     }
 }
