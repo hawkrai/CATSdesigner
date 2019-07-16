@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.4" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.9.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
     <PackageReference Include="Spire.Doc" Version="7.6.16" />
     <PackageReference Include="Unity" Version="5.11.1" />
-    <PackageReference Include="Unity.ServiceLocation" Version="5.11.1" />
   </ItemGroup>
 
   <ItemGroup>

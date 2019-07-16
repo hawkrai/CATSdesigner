@@ -2,13 +2,10 @@
 
 namespace Application.Core
 {
-	public interface IUnityContainerWrapper
-	{
-		IUnityContainerWrapper Register<T, TC>() where TC : T;
+    public interface IUnityContainerWrapper
+    {
+        IUnityContainer Container { get; }
 
-		IUnityContainer Container
-		{
-			get;
-		}
-	}
+        IUnityContainerWrapper Register<T, TC>() where TC : T;
+    }
 }

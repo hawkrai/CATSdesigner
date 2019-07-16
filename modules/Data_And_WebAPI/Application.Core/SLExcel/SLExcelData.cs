@@ -3,33 +3,30 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Application.Core.SLExcel
 {
-	public class SLExcelStatus
-	{
-		public string Message { get; set; }
+    public class SLExcelStatus
+    {
+        public string Message { get; set; }
 
-		public bool Success
-		{
-			get { return string.IsNullOrWhiteSpace(Message); }
-		}
-	}
+        public bool Success => string.IsNullOrWhiteSpace(Message);
+    }
 
-	public class SLExcelData
-	{
-		public SLExcelStatus Status { get; set; }
+    public class SLExcelData
+    {
+        public SLExcelData()
+        {
+            Status = new SLExcelStatus();
+            Headers = new List<string>();
+            DataRows = new List<List<string>>();
+        }
 
-		public Columns ColumnConfigurations { get; set; }
+        public SLExcelStatus Status { get; set; }
 
-		public List<string> Headers { get; set; }
+        public Columns ColumnConfigurations { get; set; }
 
-		public List<List<string>> DataRows { get; set; }
+        public List<string> Headers { get; set; }
 
-		public string SheetName { get; set; }
+        public List<List<string>> DataRows { get; set; }
 
-		public SLExcelData()
-		{
-			Status = new SLExcelStatus();
-			Headers = new List<string>();
-			DataRows = new List<List<string>>();
-		}
-	}
+        public string SheetName { get; set; }
+    }
 }
