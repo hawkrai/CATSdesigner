@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Application.Core.Data;
 using LMP.Models.CP;
-using LMP.Models.Interface;
 using LMP.Models.KnowledgeTesting;
 
 namespace LMP.Models

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LMP.Models.Interface;
+using Application.Core.Data;
 
 namespace LMP.Models
 {

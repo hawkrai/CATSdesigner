@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LMP.Models.Interface;
+using Application.Core.Data;
 using LMP.Models.KnowledgeTesting;
 
 namespace LMP.Models

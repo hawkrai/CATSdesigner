@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using Application.Core.Data;
 using LMP.Models.BTS;
-using LMP.Models.Interface;
 
 namespace LMP.Models
 {

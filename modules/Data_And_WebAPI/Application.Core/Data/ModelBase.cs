@@ -1,4 +1,6 @@
-﻿namespace LMP.Models.Interface
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Application.Core.Data
 {
     public abstract class ModelBase : IHasIdentifyKey
     {

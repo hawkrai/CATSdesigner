@@ -1,4 +1,4 @@
-﻿namespace LMP.Models.Interface
+﻿namespace Application.Core.Data
 {
     public interface IHasIdentifyKey
     {

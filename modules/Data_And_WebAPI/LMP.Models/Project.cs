@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using LMP.Models.Interface;
+using Application.Core.Data;
 
 namespace LMP.Models
 {
@@ -25,6 +24,7 @@ namespace LMP.Models
 
         public ICollection<Bug> Bugs { get; set; }
 
+        // TODO!!!!!!
         //public ICollection<ProjectMatrixRequirement> MatrixRequirements { get; set; }
     }
 }
