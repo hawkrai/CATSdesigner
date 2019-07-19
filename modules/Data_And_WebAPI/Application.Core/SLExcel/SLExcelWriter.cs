@@ -24,7 +24,7 @@ namespace Application.Core.SLExcel
 				thirdLetter).Trim();
 		}
 
-		private Cell CreateTextCell(string header, UInt32 index, string text)
+		private Cell CreateTextCell(string header, uint index, string text)
 		{
 			var cell = new Cell
 			{
@@ -64,8 +64,8 @@ namespace Application.Core.SLExcel
 			};
 			sheets.AppendChild(sheet);
 
-			// Add header
-			UInt32 rowIdex = 0;
+            // Add header
+            uint rowIdex = 0;
 			var row = new Row { RowIndex = ++rowIdex };
 			sheetData.AppendChild(row);
 			var cellIdex = 0;

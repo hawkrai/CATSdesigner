@@ -15,7 +15,7 @@ namespace Application.Core.PdfConvertor
     {
         private readonly string _storageRootTemp = "";// TODO ConfigurationManager.AppSettings["FileUploadPathTemp"];
 
-        public String Convert(String sourceFile)
+        public string Convert(string sourceFile)
         {
             Document document = new Document();
             document.LoadFromFile(sourceFile);
