@@ -7,20 +7,20 @@ namespace LMP.Data.Repositories.RepositoryContracts
 {
     public interface IConceptRepository : IRepositoryBase<Concept>
     {
-        Concept GetById(Int32 id);
+        Concept GetById(int id);
 
-        Concept GetTreeConceptByElementId(Int32 elementId);
+        Concept GetTreeConceptByElementId(int elementId);
 
-        IEnumerable<Concept> GetRootElementsByAuthorId(Int32 authorId);
+        IEnumerable<Concept> GetRootElementsByAuthorId(int authorId);
 
-        IEnumerable<Concept> GetRootElementsBySubjectId(Int32 subjectId);
+        IEnumerable<Concept> GetRootElementsBySubjectId(int subjectId);
 
-        IEnumerable<Concept> GetByParentId(Int32 id);
+        IEnumerable<Concept> GetByParentId(int id);
 
-        IEnumerable<Concept> GetBySubjectId(Int32 subjectId);
+        IEnumerable<Concept> GetBySubjectId(int subjectId);
 
-        IEnumerable<Concept> GetByAuthorId(Int32 authorId);
+        IEnumerable<Concept> GetByAuthorId(int authorId);
 
-        void Remove(Int32 id, Boolean removeChildren);
+        void Remove(int id, bool removeChildren);
     }
 }

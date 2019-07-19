@@ -16,7 +16,7 @@ namespace LMP.Data.Repositories
         {
         }
 
-        public Concept GetTreeConceptByElementId(Int32 id)
+        public Concept GetTreeConceptByElementId(int id)
         {
             using (var context = new LmPlatformModelsContext())
             {
@@ -48,7 +48,7 @@ namespace LMP.Data.Repositories
             }
         }
 
-        public IEnumerable<Concept> GetRootElementsByAuthorId(Int32 authorId)
+        public IEnumerable<Concept> GetRootElementsByAuthorId(int authorId)
         {
             using (var context = new LmPlatformModelsContext())
             {
@@ -90,7 +90,7 @@ namespace LMP.Data.Repositories
             }
         }
 
-        public void Remove(Int32 id, Boolean removeChildren)
+        public void Remove(int id, bool removeChildren)
         {
             using (var context = new LmPlatformModelsContext())
             {
