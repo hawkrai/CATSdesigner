@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using LMP.Models.Interface;
+using Application.Core.Data;
 using LMP.Models.KnowledgeTesting;
 
 namespace LMP.Models
 {
     public class ConceptQuestions : ModelBase
     {
-        public int Id { get; set; }
         public int ConceptId { get; set; }
+
         public int QuestionId { get; set; }
 
         public Concept Concept { get; set; }

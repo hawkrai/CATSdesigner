@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace LMP.Models
+﻿namespace LMP.Models
 {
     public class OAuthMembership
     {

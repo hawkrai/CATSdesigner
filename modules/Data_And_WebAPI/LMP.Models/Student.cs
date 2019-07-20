@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Application.Core.Data;
 using LMP.Models.CP;
 using LMP.Models.DP;
-using LMP.Models.Interface;
 using LMP.Models.KnowledgeTesting;
 
 namespace LMP.Models

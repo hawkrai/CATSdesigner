@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using LMP.Models.Interface;
+using Application.Core.Data;
 
 namespace LMP.Models.BTS
 {

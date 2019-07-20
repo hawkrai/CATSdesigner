@@ -1,5 +1,5 @@
 ﻿using System;
-using LMP.Models.Interface;
+using Application.Core.Data;
 
 namespace LMP.Models.KnowledgeTesting
 {

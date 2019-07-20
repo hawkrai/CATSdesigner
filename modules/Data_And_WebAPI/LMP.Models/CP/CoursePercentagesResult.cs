@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace LMP.Models.CP
 {
     public class CoursePercentagesResult
