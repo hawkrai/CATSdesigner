@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleContextTest", "Conso
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Core", "Application.Core\Application.Core.csproj", "{7A82560A-9C91-464E-B29F-53D4E7D161F7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Infrastructure", "Application.Infrastructure\Application.Infrastructure.csproj", "{880A89F9-A12B-4B33-A293-80B0F010FE0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7A82560A-9C91-464E-B29F-53D4E7D161F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A82560A-9C91-464E-B29F-53D4E7D161F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A82560A-9C91-464E-B29F-53D4E7D161F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{880A89F9-A12B-4B33-A293-80B0F010FE0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{880A89F9-A12B-4B33-A293-80B0F010FE0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{880A89F9-A12B-4B33-A293-80B0F010FE0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{880A89F9-A12B-4B33-A293-80B0F010FE0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
