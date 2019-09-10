@@ -1,0 +1,40 @@
+.test-description-title-text {
+  font-size: 26px;
+}
+
+.test-description-text {
+  font-size: 15px;
+  line-height: 1.4;
+  padding-bottom: 15px;
+}
+
+.test-description-title {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.test-description-block {
+
+}
+
+.test-description-container {
+  padding-left: 10px;
+  padding-top: 30px;
+  padding-right: 10px;
+}
+
+.test-description-wrapper {
+
+
+}
+
+.test-description-wrapper-description {
+  padding-top: 30px;
+}
+
+.test-description-button {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+

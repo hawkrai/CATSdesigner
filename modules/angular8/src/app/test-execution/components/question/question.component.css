@@ -1,0 +1,107 @@
+.question-container {
+
+}
+
+.question-title {
+display: flex;
+}
+
+.question-title-big {
+  font-size: 26px;
+}
+
+.question-title-small {
+  display: flex;
+  align-items: flex-end;
+  padding-left: 10px;
+  font-weight: normal;
+  line-height: 1;
+  color: #999999;
+}
+
+.question-question {
+  padding-top: 20px;
+}
+
+.question-question-text {
+  font-size: 32px;
+}
+
+.question-block {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.question-answer-block{
+  border: 1px solid #008cba;
+  width: 79%;
+  border-radius: 4px;
+}
+
+.question-answer-block-container {
+  font-size: 16px;
+  background: #008cba;
+}
+
+.question-answer-block-container-text {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 17px;
+  color: white;
+  padding: 10px 15px;
+}
+
+.question-answers-block {
+  display: flex;
+}
+
+.question-answers-block-container {
+  margin-left: 10px;
+}
+
+.question-answers-block-container-values {
+  padding: 15px;
+}
+
+.question-button {
+  width: 20%;
+}
+
+.question-button-container {
+  height: 50%;
+}
+
+.question-button-container-item {
+  height: 100%;
+}
+button{
+  min-width: 100%;
+  min-height: 100%;
+}
+.mat-fab.mat-primary, .mat-flat-button.mat-primary, .mat-mini-fab.mat-primary, .mat-raised-button.mat-primary{
+  background-color: #008cba;
+}
+@media only screen and (max-width: 768px) {
+  .question-button{
+    width: 100%;
+  }
+  .question-answer-block{
+    border: 1px solid #008cba;
+    width: 100%;
+    border-radius: 4px;
+  }
+  .question-block {
+    display: block;
+  }
+}
+
+.example-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+.example-radio-button {
+  margin: 5px;
+}
