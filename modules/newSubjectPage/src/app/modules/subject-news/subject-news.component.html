@@ -1,0 +1,7 @@
+<div class="subject-news-component">
+  <div class="subject-news-component__news" *ngFor="let oneNews of news">
+    <p class="subject-news-component__news-title">{{ oneNews.title }}</p>
+    <div class="subject-news-component__news-content" [innerHtml]="oneNews.body"></div>
+    <p class="subject-news-component__news-date">{{oneNews.dateCreate}}</p>
+  </div>
+</div>

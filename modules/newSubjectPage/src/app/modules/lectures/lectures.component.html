@@ -1,0 +1,33 @@
+<div class="lectures-component" *ngIf="lectures && calendar">
+  <div class="mdc-tab-bar" role="tablist">
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
+            [class.mdc-tab--active]="tab === 1"
+            (click)="tab = 1"
+    >
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">Лекции</span>
+      </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
+            [class.mdc-tab--active]="tab === 2"
+            (click)="tab = 2"
+    >
+          <span class="mdc-tab__content">
+            <span class="mdc-tab__text-label">Посещение лекций</span>
+          </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
+            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+          </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+  </div>
+
+  <div class="lectures-component__body">
+    <app-lectures-list *ngIf="tab === 1" [lectures]="lectures"></app-lectures-list>
+    <app-visit-lectures *ngIf="tab === 2" [calendar]="calendar"> </app-visit-lectures>
+  </div>
+</div>

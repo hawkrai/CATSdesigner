@@ -1,0 +1,11 @@
+<div class="lectures-list-component">
+  <div class="lectures-list-component__lecture" *ngFor="let lecture of lectures">
+    <p style="text-align: center">{{ lecture.order }}</p>
+    <p>{{ lecture.theme }}</p>
+    <p>{{ lecture.duration }}</p>
+    <button class="mdc-button" *ngIf="lecture.attachments.length > 0">
+      <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
+      <span class="mdc-button__label">Файлы</span>
+    </button>
+  </div>
+</div>
