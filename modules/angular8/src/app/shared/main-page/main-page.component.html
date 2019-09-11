@@ -1,0 +1,21 @@
+<div class="main-page-container">
+  <div class="main-page-container-buttons-wrapper">
+    <div class="main-page-container-buttons" *ngIf="allowChanges">
+      <div class="main-page-container-buttons-item">
+        <button mat-raised-button color="primary" (click)="onOpenAddingPopup()">Добавть тест</button>
+      </div>
+      <div class="main-page-container-buttons-item" *ngIf="allowChanges">
+        <button mat-raised-button class="main-page-container-buttons-item-resource" color="accent">Ресурсы</button>
+      </div>
+    </div>
+  </div>
+  <div class="main-page-container-search-wrapper">
+    <div class="main-page-search-text"> Поиск</div>
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Название теста</mat-label>
+        <input matInput placeholder="Введите название теста" (change)="onValueChange($event)">
+      </mat-form-field>
+    </div>
+  </div>
+</div>

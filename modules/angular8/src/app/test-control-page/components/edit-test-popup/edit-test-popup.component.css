@@ -1,0 +1,42 @@
+.popup-container {
+  border-bottom: 1px solid rgba(0, 0, 0, .42);
+  text-align: center;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.edit-test-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.mat-form-field {
+  display: block;
+  width: 100%;
+}
+
+.edit-test-time {
+  height: 150px;
+}
+
+.mat-radio-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-dialog-actions {
+  justify-content: flex-end;
+}
+.edit-test-popup-loader{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

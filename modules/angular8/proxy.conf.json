@@ -1,0 +1,20 @@
+{
+  "/TestPassing/*": {
+    "target": {
+      "host": "localhost",
+      "protocol": "http:",
+      "port": 8765
+    },
+    "secure": false,
+    "logLevel": "info"
+  },
+  "/Tests/*": {
+    "target": {
+      "host": "localhost",
+      "protocol": "http:",
+      "port": 8765
+    },
+    "secure": false,
+    "logLevel": "info"
+  }
+}
