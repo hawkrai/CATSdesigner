@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Добавление группы</h1>
+<mat-dialog-content>
+    <div>
+        <mat-form-field>
+            <input matInput [(ngModel)]="data.numb" placeholder="Номер группы">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Год поступления</mat-label>
+            <mat-select>
+                <mat-option value="Год поступления">
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Год окончания</mat-label>
+            <mat-select>
+                <mat-option value="Год окончания">
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Отмена</button>
+    <button class="btn" mat-button [mat-dialog-close]="data" cdkFocusInitial>Сохранить</button>
+</mat-dialog-actions>

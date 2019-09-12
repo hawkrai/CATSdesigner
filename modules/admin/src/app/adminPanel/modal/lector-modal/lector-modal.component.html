@@ -1,0 +1,43 @@
+<h1 mat-dialog-title>Добавления преподавателя</h1>
+<mat-dialog-content>
+  <div>
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="data.login" placeholder="Логин">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="data.password" placeholder="Пароль">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="data.confirmPassword" placeholder="Повторите пароль">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="data.lastname" placeholder="Фамилия">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="data.firstname" placeholder="Имя">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field class="example-full-width">
+      <input matInput [(ngModel)]="data.middlename" placeholder="Отчество">
+    </mat-form-field>
+  </div>
+  <div class="checkbox">
+    <mat-checkbox [(ngModel)]="data.secretary">Секретарь</mat-checkbox>
+  </div>
+  <div class="checkbox">
+    <mat-checkbox [(ngModel)]="data.head">Руководитель дипломного проекта</mat-checkbox>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Отмена</button>
+  <button class = "btn" mat-button [mat-dialog-close]="data" cdkFocusInitial>Сохранить</button>
+</mat-dialog-actions>

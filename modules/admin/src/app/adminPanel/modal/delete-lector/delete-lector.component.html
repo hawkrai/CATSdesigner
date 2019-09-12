@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Подтверждение удаления</h1>
+<mat-dialog-content>
+    <p>Вы действительно хотите удалить?</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+        <button mat-button (click)="onNoClick()" [mat-dialog-close]="false">Отмена</button>
+        <button class = "btn" mat-button [mat-dialog-close]="true" cdkFocusInitial>Удалить</button>
+</mat-dialog-actions>

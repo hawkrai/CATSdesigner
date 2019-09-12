@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Редактирование преподавателя</h1>
+<mat-dialog-content>
+    <h2>{{dataLector.lastName}} {{dataLector.firstName}} {{dataLector.middleName}}</h2>
+    <div>
+        <mat-form-field class="example-full-width">
+            <input matInput value="{{dataLector.lastName}}" placeholder="Фамилия">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field class="example-full-width">
+            <input matInput value="{{dataLector.firstName}}" placeholder="Имя">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field class="example-full-width">
+            <input matInput value="{{dataLector.middleName}}" placeholder="Отчество">
+        </mat-form-field>
+    </div>
+    <div class="checkbox">
+        <mat-checkbox value="{{dataLector.secretary}}">Секретарь</mat-checkbox>
+    </div>
+    <div class="checkbox">
+        <mat-checkbox value="{{dataLector.head}}">Руководитель дипломного проекта</mat-checkbox>
+    </div>
+    <div class="password">
+        <a routerLink="/resetPassword" (click)="onNoClick()">Сбросить пароль</a>
+    </div>
+</mat-dialog-content>
+<div class="line"></div>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Отмена</button>
+    <button class="btn" mat-button [mat-dialog-close]="dataLector" cdkFocusInitial>Изменить</button>
+</mat-dialog-actions>

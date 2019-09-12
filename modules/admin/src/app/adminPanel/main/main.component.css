@@ -1,0 +1,43 @@
+h1 {
+    font-weight: lighter;
+    font-size: 28px;
+}
+
+.inline {
+   width: 95%;
+   display: flex;
+   border-top:1px solid lavender;
+}
+
+p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: 18px;
+    width: 100%;
+    word-wrap: break-word;
+    padding-right: 70px;
+}
+
+.active {
+    margin-top: 20px;
+    margin-bottom: 18px;
+    font-size: 22px;
+}
+
+.main {
+    margin-top: 50px;
+    font-weight: lighter;
+    margin-left: 50px;
+}
+
+.div1 {
+    width: 90%;
+    padding-left: 90px;
+}
+
+.div2 {
+    width: 100%;
+    margin-top: 20px;
+    padding-left: 50px;
+    border-left:1px solid lavender;
+}
