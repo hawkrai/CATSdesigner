@@ -1,6 +1,7 @@
 <div class="question-container">
   <div class="question-title">
     <div class="question-title-big">Вопрос №{{questionNumber}}</div>
+    <!--todo hardcode-->
     <div class="question-title-small">Тест для самопроверки</div>
   </div>
   <div class="question-question">
@@ -16,9 +17,9 @@
           <!--<div class="question-answers-block-container-values">фрагменты фрагменты</div>-->
           <mat-radio-group
             aria-labelledby="example-radio-group-label"
-            class="example-radio-group"
+            class="question-example-radio-group"
             [(ngModel)]="chosenAnswer">
-            <mat-radio-button class="example-radio-button" *ngFor="let answer of question.Question.Answers"
+            <mat-radio-button class="question-example-radio-button" *ngFor="let answer of question.Question.Answers"
                               [value]="answer">
               {{answer.Content}}
             </mat-radio-button>

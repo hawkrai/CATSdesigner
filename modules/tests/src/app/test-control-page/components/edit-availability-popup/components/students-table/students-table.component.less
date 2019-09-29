@@ -1,0 +1,47 @@
+.students-table {
+  &-title {
+    margin-bottom: 10px;
+    &-value {
+      font-size: 18px;
+    }
+  }
+  &-buttons {
+    display: flex;
+    @media only screen and (max-width: 768px) {
+      display: block;
+    }
+    &-item {
+      &-add {
+        color: white;
+        background-color: #009b15;
+        margin-right: 10px;
+        @media only screen and (max-width: 768px) {
+          margin-bottom: 5px;
+        }
+      }
+      &-resources {
+        color: white;
+        background-color: #f41004;
+      }
+    }
+  }
+  &-list {
+
+  }
+}
+.mat-header-cell-description{
+  flex: 0 0 80%;
+  @media only screen and (max-width: 768px) {
+    flex: 0 0 60%;
+  }
+}
+
+.mat-header-cell-action{
+  flex: 0 0 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media only screen and (max-width: 768px) {
+    flex: 0 0 30%;
+  }
+}

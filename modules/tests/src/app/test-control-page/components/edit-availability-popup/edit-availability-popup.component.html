@@ -1,0 +1,53 @@
+<ng-container *ngIf="groups;else loading">
+  <h1 mat-dialog-title class="availability-popup-container">{{'Доступность теста'}}</h1>
+
+  <div mat-dialog-content class="availability-popup-content">
+    <div class="availability-popup-content-blocks">
+
+      <mat-form-field>
+        <mat-label>{{"Группа"}}</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let group of groups" [value]="group.Id" (onSelectionChange)="onValueChange($event)">
+            {{group.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{"Поиск"}}</mat-label>
+        <input matInput placeholder="Поиск" (change)="onSearchValueChange($event)">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div mat-dialog-content class="availability-popup-content" *ngIf="subGroups;else loadingSubGroups">
+    <!--TOdo bad naming of subgroup-->
+    <app-students-table *ngFor="let subGroup of subGroups, let i = index"
+                        [subGroup]="subGroup"
+                        [title]="'Подгруппа '+ (i+1)"
+                        (onChangeAvailability)="changeTestAvailability($event)"
+                        (onChangeAvailabilityForAll)="changeTestAvailabilityForAll($event)"></app-students-table>
+  </div>
+  <ng-template #loadingSubGroups>
+    <div class="availability-popup-loader">
+      <mat-progress-spinner
+        class="availability-popup-loader-margin"
+        [color]="'primary'"
+        [mode]="'indeterminate'">
+      </mat-progress-spinner>
+    </div>
+  </ng-template>
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Закрыть</button>
+  </div>
+</ng-container>
+<ng-template #loading>
+  <div class="availability-popup-loader">
+    <mat-progress-spinner
+      class="availability-popup-loader-margin"
+      [color]="'primary'"
+      [mode]="'indeterminate'">
+    </mat-progress-spinner>
+  </div>
+</ng-template>

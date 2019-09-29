@@ -4,6 +4,7 @@ import {TestAvailable} from '../models/test-available.model';
 import {MatDialog} from '@angular/material';
 import {EditTestPopupComponent} from './components/edit-test-popup/edit-test-popup.component';
 import {DeleteConfirmationPopupComponent} from './components/delete-confirmation-popup/delete-confirmation-popup.component';
+import {EditAvailabilityPopupComponent} from "./components/edit-availability-popup/edit-availability-popup.component";
 
 
 @Component({
@@ -48,7 +49,18 @@ export class TestControlPageComponent implements OnInit {
     });
   }
 
-  openConfirmationDialog(event: any): void {
+  public openAvailabilityDialog(event?: any): void {
+    const dialogRef = this.dialog.open(EditAvailabilityPopupComponent, {
+      width: '700px',
+      data: {event}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+    });
+  }
+
+  public openConfirmationDialog(event: any): void {
     const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
       width: '500px',
       data: {event}

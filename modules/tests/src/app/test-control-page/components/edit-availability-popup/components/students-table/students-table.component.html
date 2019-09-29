@@ -1,0 +1,44 @@
+<div class="students-table" *ngIf="subGroup.Students && subGroup.Students.length !== 0">
+  <div class="students-table-title">
+    <div class="students-table-title-value">
+      {{title}}
+    </div>
+  </div>
+  <div class="students-table-buttons">
+    <div class="students-table-buttons-item">
+      <button mat-raised-button class="students-table-buttons-item-add" (click)="changeAvailabilityForAll(true)">
+        {{'Открыть для всех'}}
+      </button>
+    </div>
+    <div class="students-table-buttons-item">
+      <button mat-raised-button class="students-table-buttons-item-resources" (click)="changeAvailabilityForAll(false)">
+        {{'Закрыть для всех'}}
+      </button>
+    </div>
+  </div>
+  <div class="students-table-list">
+    <mat-table [dataSource]="subGroup.Students" class="mat-elevation-z8 table-test-bg">
+      <!-- Name Column -->
+      <ng-container matColumnDef="Name">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> Имя</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Name}}</mat-cell>
+      </ng-container>
+      <!-- Weight Column -->
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="mat-header-cell-action">
+          <mat-icon (click)="changeAvailability(element.Id, !element.Unlocked)" *ngIf="!element.Unlocked"
+                    matTooltip="Доступность теста"
+                    matTooltipClass="example-tooltip-green">lock
+          </mat-icon>
+          <mat-icon (click)="changeAvailability(element.Id, !element.Unlocked)" *ngIf="element.Unlocked"
+                    matTooltip="Доступность теста"
+                    matTooltipClass="example-tooltip-green">lock_open
+          </mat-icon>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+</div>

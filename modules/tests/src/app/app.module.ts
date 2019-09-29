@@ -21,6 +21,9 @@ import {TestControlPageComponent} from './test-control-page/test-control-page.co
 import {TestService} from './service/test.service';
 import {EditTestPopupComponent} from './test-control-page/components/edit-test-popup/edit-test-popup.component';
 import {DeleteConfirmationPopupComponent} from './test-control-page/components/delete-confirmation-popup/delete-confirmation-popup.component';
+import { EditAvailabilityPopupComponent } from './test-control-page/components/edit-availability-popup/edit-availability-popup.component';
+import { StudentsTableComponent } from './test-control-page/components/edit-availability-popup/components/students-table/students-table.component';
+import { QuestionsPageComponent } from './questions-page/questions-page.component';
 
 
 @NgModule({
@@ -36,7 +39,10 @@ import {DeleteConfirmationPopupComponent} from './test-control-page/components/d
     QuestionComponent,
     TestControlPageComponent,
     EditTestPopupComponent,
-    DeleteConfirmationPopupComponent
+    DeleteConfirmationPopupComponent,
+    EditAvailabilityPopupComponent,
+    StudentsTableComponent,
+    QuestionsPageComponent
   ],
   imports: [
     FormsModule,
@@ -48,7 +54,7 @@ import {DeleteConfirmationPopupComponent} from './test-control-page/components/d
   ],
   providers: [TestPassingService,
     TestService],
-  entryComponents: [ DeleteConfirmationPopupComponent, ],
+  entryComponents: [ DeleteConfirmationPopupComponent, EditAvailabilityPopupComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

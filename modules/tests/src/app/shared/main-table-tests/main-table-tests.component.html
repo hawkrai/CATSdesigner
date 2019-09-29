@@ -32,11 +32,11 @@
           <mat-icon (click)="navigateToTest(element.Id)" *ngIf="allowChanges" matTooltip="Перейти к вопросам"
                     matTooltipClass="example-tooltip-green">info
           </mat-icon>
-          <mat-icon (click)="navigateToTest(element.Id)" *ngIf="!element.Unlocked && allowChanges"
+          <mat-icon (click)="openAvailabilityPopup(element.Id)" *ngIf="!element.Unlocked && allowChanges"
                     matTooltip="Доступность теста"
                     matTooltipClass="example-tooltip-green">lock
           </mat-icon>
-          <mat-icon (click)="navigateToTest(element.Id)" *ngIf="element.Unlocked && allowChanges"
+          <mat-icon (click)="openAvailabilityPopup(element.Id)" *ngIf="element.Unlocked && allowChanges"
                     matTooltip="Доступность теста"
                     matTooltipClass="example-tooltip-green">lock_open
           </mat-icon>

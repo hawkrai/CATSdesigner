@@ -7,7 +7,7 @@ import {TestPassingService} from '../../../service/test-passing.service';
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css']
+  styleUrls: ['./question.component.less']
 })
 export class QuestionComponent implements OnInit {
 
@@ -29,6 +29,7 @@ export class QuestionComponent implements OnInit {
   }
 
   public answerQuestion(): void {
+    //todo hardcode
     const request = {
       answers: [{Id: '2523', IsCorrect: 0}
         , {Id: '2524', IsCorrect: 0}

@@ -24,6 +24,9 @@ export class MainTableTestsComponent implements OnInit {
   public onOpenEditPopup: EventEmitter<any> = new EventEmitter();
 
   @Output()
+  public onOpenAvailabilityPopup: EventEmitter<any> = new EventEmitter();
+
+  @Output()
   public onDeleteTest: EventEmitter<string> = new EventEmitter();
 
   public test: any;
@@ -50,5 +53,9 @@ export class MainTableTestsComponent implements OnInit {
 
   public deleteTest(testId): void {
     this.onDeleteTest.emit(testId);
+  }
+
+  public openAvailabilityPopup(testId): void {
+    this.onOpenAvailabilityPopup.emit(testId);
   }
 }

@@ -1,21 +1,33 @@
-.table-test-bg{
+.table-test-bg {
   background-color: #ffffff;
 }
 
-.main-table-title{
+.main-table-title {
   font-size: 20px;
   margin-bottom: 10px;
   padding-left: 24px;
 }
 
-.mat-header-cell-id{
+.mat-header-cell-id {
   flex: 0 0 10%;
 }
 
-.mat-header-cell-description{
+.mat-header-cell-description {
   flex: 0 0 65%;
 }
 
-.mat-header-cell-action{
+@media only screen and (max-width: 768px) {
+  .mat-header-cell-description {
+    flex: 0 0 45%;
+  }
+}
+
+.mat-header-cell-action {
   flex: 0 0 25%;
+}
+
+@media only screen and (max-width: 768px) {
+  .mat-header-cell-action {
+    flex: 0 0 30%;
+  }
 }

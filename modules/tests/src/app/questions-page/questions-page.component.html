@@ -1,0 +1,3 @@
+<app-header [text]="'Тестирование и отладка ПО'"
+            [smallText]="'Управление тестами'"></app-header>
+<app-main-page [allowChanges]="true" (onValueChangeSearch)="filterTests($event)" (onOpenAddingPopupEvent)="openDialog()"></app-main-page>
