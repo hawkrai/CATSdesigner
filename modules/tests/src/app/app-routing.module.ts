@@ -13,7 +13,7 @@ const routes: Routes = [
   {path: 'test/:id', component: TestComponent},
   {path: 'test-passing/:id', component: TestExecutionComponent},
   {path: 'test-control', component: TestControlPageComponent},
-  {path: 'questions', component: QuestionsPageComponent},
+  {path: 'questions/:id', component: QuestionsPageComponent},
   {path: 'popup', component: EditTestPopupComponent},
 ];
 

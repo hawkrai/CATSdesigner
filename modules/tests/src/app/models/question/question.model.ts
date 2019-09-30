@@ -1,6 +1,5 @@
 import {Answer} from './answer.model';
 
-
 export class Question {
   QuestionNumber: any;
   Test: any;
@@ -14,5 +13,7 @@ export class Question {
   ConceptQuestions: any;
   Id: number;
   IsNew: boolean;
-
+  Action: any;
+  Number: number;
+  Selected: boolean;
 }

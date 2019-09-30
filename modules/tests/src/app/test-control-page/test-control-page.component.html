@@ -1,13 +1,18 @@
 <div *ngIf="!loading">
   <app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>
-  <app-main-page [allowChanges]="true" (onValueChangeSearch)="filterTests($event)" (onOpenAddingPopupEvent)="openDialog()"></app-main-page>
+  <app-main-page [allowChanges]="true"
+                 (onValueChangeSearch)="filterTests($event)"
+                 (onOpenAddingPopupEvent)="openDialog()"
+                 [adminTests]="true"
+                 [adminQuestions]="false"></app-main-page>
   <div class="container-table-tests">
     <app-main-table-tests [title]="'Тесты для контроля знаний'"
                           [allowChanges]="true"
                           [tests]="knowledgeControlTests"
                           (onOpenEditPopup)="openDialog($event)"
                           (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+                          (onNavigateQuestions)="navigateToQuestions($event)"
                           (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
   </div>
   <div class="container-table-tests">

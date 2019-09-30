@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {TestService} from "../service/test.service";
+import {Question} from "../models/question/question.model";
+import {ActivatedRoute} from "@angular/router";
+
 
 @Component({
   selector: 'app-questions-page',
@@ -7,9 +11,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class QuestionsPageComponent implements OnInit {
 
-  constructor() { }
+  public questions: Question[];
+
+  constructor(private testService: TestService,
+              private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
+    const testId = this.route.snapshot.paramMap.get('id');
+    this.testService.getQuestionsByTest(testId).subscribe((questions) => {
+      this.questions = questions;
+    });
   }
 
 }

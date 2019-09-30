@@ -24,6 +24,7 @@ import {DeleteConfirmationPopupComponent} from './test-control-page/components/d
 import { EditAvailabilityPopupComponent } from './test-control-page/components/edit-availability-popup/edit-availability-popup.component';
 import { StudentsTableComponent } from './test-control-page/components/edit-availability-popup/components/students-table/students-table.component';
 import { QuestionsPageComponent } from './questions-page/questions-page.component';
+import { TableQuestionsComponent } from './shared/table-questions/table-questions.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { QuestionsPageComponent } from './questions-page/questions-page.componen
     DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,
     StudentsTableComponent,
-    QuestionsPageComponent
+    QuestionsPageComponent,
+    TableQuestionsComponent
   ],
   imports: [
     FormsModule,

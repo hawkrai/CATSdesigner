@@ -1,0 +1,52 @@
+.main-page {
+  &-container {
+    display: flex;
+    padding-top: 20px;
+    justify-content: space-between;
+    @media only screen and (max-width: 768px) {
+      display: block;
+    }
+    &-search {
+      &-wrapper {
+        display: flex;
+      }
+    }
+    &-buttons {
+      display: flex;
+      @media only screen and (max-width: 768px) {
+        display: block;
+      }
+      &-item {
+        color: white;
+        margin-right: 10px;
+        &.resources {
+          background-color: #e4000d;
+        }
+        &.other-test {
+          background-color: #0073e4;
+        }
+        &.neural {
+          background-color: #00a10c;
+        }
+      }
+      &-wrapper {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        @media only screen and (max-width: 768px) {
+          justify-content: start;
+        }
+      }
+    }
+  }
+  &-search {
+    &-text {
+      height: calc(100% - 20px);
+      width: 60px;
+      display: flex;
+      font-size: 20px;
+      align-items: center;
+    }
+  }
+}
+

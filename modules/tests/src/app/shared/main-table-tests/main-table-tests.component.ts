@@ -29,6 +29,9 @@ export class MainTableTestsComponent implements OnInit {
   @Output()
   public onDeleteTest: EventEmitter<string> = new EventEmitter();
 
+  @Output()
+  public onNavigateQuestions: EventEmitter<any> = new EventEmitter();
+
   public test: any;
 
   displayedColumns: string[] = ['Id', 'Title', 'action'];
@@ -38,9 +41,6 @@ export class MainTableTestsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('title' + ' ' + this.title);
-    console.log('allowChanges' + ' ' + this.allowChanges);
-    console.log('tests' + ' ' + this.tests);
   }
 
   public navigateToTest(Id: number): void {
@@ -57,5 +57,9 @@ export class MainTableTestsComponent implements OnInit {
 
   public openAvailabilityPopup(testId): void {
     this.onOpenAvailabilityPopup.emit(testId);
+  }
+
+  public navigateToQuestions(testId): void {
+    this.onNavigateQuestions.emit(testId);
   }
 }

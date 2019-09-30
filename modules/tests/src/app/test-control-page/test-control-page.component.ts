@@ -5,6 +5,7 @@ import {MatDialog} from '@angular/material';
 import {EditTestPopupComponent} from './components/edit-test-popup/edit-test-popup.component';
 import {DeleteConfirmationPopupComponent} from './components/delete-confirmation-popup/delete-confirmation-popup.component';
 import {EditAvailabilityPopupComponent} from "./components/edit-availability-popup/edit-availability-popup.component";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -24,6 +25,7 @@ export class TestControlPageComponent implements OnInit {
 
 
   constructor(private testService: TestService,
+              private router: Router,
               public dialog: MatDialog) {
   }
 
@@ -107,5 +109,9 @@ export class TestControlPageComponent implements OnInit {
       }
     });
     this.loading = false;
+  }
+
+  public navigateToQuestions(event): void {
+    this.router.navigate(['/questions/' + event]);
   }
 }

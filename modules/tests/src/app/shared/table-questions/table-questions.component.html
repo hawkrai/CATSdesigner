@@ -1,9 +1,6 @@
-<div class="main-table-title" *ngIf="title">
-  {{title}}
-</div>
-<ng-container *ngIf="tests; else loading">
+<ng-container *ngIf="questions; else loading">
   <div>
-    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
+    <mat-table [dataSource]="questions" class="mat-elevation-z8 table-test-bg">
       <!-- Position Column -->
       <ng-container matColumnDef="Id">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
@@ -12,7 +9,7 @@
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> Название теста</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> Вопрос</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
       </ng-container>
 
@@ -20,25 +17,11 @@
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
-          <mat-icon (click)="navigateToTest(element.Id)" matTooltip="Пройти тест"
-                    matTooltipClass="example-tooltip-green">play_circle_outline
-          </mat-icon>
-          <mat-icon (click)="openEditPopup(element)" *ngIf="allowChanges" matTooltip="Редактировать тест"
+          <mat-icon (click)="openEditPopup(element)" matTooltip="Редактировать тест"
                     matTooltipClass="example-tooltip-green">edit
           </mat-icon>
-          <mat-icon (click)="deleteTest(element.Id)" *ngIf="allowChanges" matTooltip="Удалить тест"
+          <mat-icon (click)="deleteTest(element.Id)" matTooltip="Удалить тест"
                     matTooltipClass="example-tooltip-green">delete
-          </mat-icon>
-          <mat-icon (click)="navigateToQuestions(element.Id)" *ngIf="allowChanges" matTooltip="Перейти к вопросам"
-                    matTooltipClass="example-tooltip-green">info
-          </mat-icon>
-          <mat-icon (click)="openAvailabilityPopup(element.Id)" *ngIf="!element.Unlocked && allowChanges"
-                    matTooltip="Доступность теста"
-                    matTooltipClass="example-tooltip-green">lock
-          </mat-icon>
-          <mat-icon (click)="openAvailabilityPopup(element.Id)" *ngIf="element.Unlocked && allowChanges"
-                    matTooltip="Доступность теста"
-                    matTooltipClass="example-tooltip-green">lock_open
           </mat-icon>
         </mat-cell>
       </ng-container>

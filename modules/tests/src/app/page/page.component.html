@@ -1,7 +1,10 @@
 <div>
   <app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Доступные тесты'"></app-header>
-  <app-main-page [allowChanges]="false" (onValueChangeSearch)="filterTests($event)"></app-main-page>
+  <app-main-page [allowChanges]="false"
+                 [adminQuestions]="false"
+                 [adminTests]="false"
+                 (onValueChangeSearch)="filterTests($event)"></app-main-page>
   <div class="container-table-tests">
     <app-main-table-tests [title]="'Тесты для контроля знаний'" [allowChanges]="false"
                           [tests]="knowledgeControlTests"></app-main-table-tests>

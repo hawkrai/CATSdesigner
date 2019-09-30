@@ -5,6 +5,7 @@ import {TestAvailable} from '../models/test-available.model';
 import {Group} from "../models/group.model";
 import {SubGroup} from "../models/sub-group.model";
 import {TestAvailabilityRequest} from "../models/testAvailabilityRequest.model";
+import {Question} from "../models/question/question.model";
 
 
 @Injectable({
@@ -17,6 +18,10 @@ export class TestService {
 
   getTestAllTestBySubjectId(subjectId: string): Observable<TestAvailable[]> {
     return this.http.get<TestAvailable[]>('/Tests/GetTests?subjectId=3');
+  }
+
+  getQuestionsByTest(testId: string): Observable<Question[]> {
+    return this.http.get<Question[]>('/Tests/GetQuestions?testId=' + testId);
   }
 
   getTestTestById(id: string): Observable<TestAvailable> {

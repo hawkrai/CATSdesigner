@@ -1,28 +1,27 @@
 <div class="main-page-container">
   <div class="main-page-container-buttons-wrapper">
     <div class="main-page-container-buttons" *ngIf="allowChanges">
-      <div class="main-page-container-buttons-item">
+      <div class="main-page-container-buttons-item" *ngIf="adminTests">
         <button mat-raised-button color="primary" (click)="onOpenAddingPopup()">Добавть тест</button>
       </div>
-      <div class="main-page-container-buttons-item">
-        <button mat-raised-button class="main-page-container-buttons-item-resource" color="accent">Ресурсы</button>
+      <div class="main-page-container-buttons-item" *ngIf="adminTests">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'">Ресурсы</button>
       </div>
-      <div class="main-page-container-buttons-item">
+      <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
         <button mat-raised-button color="primary">Добавить вопрос</button>
       </div>
-      <div class="main-page-container-buttons-item">
-        <button mat-raised-button color="primary">Добавить вопрос из другого теста</button>
+      <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'other-test'">Добавить вопрос из другого теста</button>
       </div>
-      <div class="main-page-container-buttons-item">
-        <button mat-raised-button color="primary">Создание нейронной сети</button>
+      <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной сети</button>
       </div>
     </div>
   </div>
   <div class="main-page-container-search-wrapper">
-    <div class="main-page-search-text"> Поиск</div>
     <div>
       <mat-form-field appearance="outline">
-        <mat-label>Название теста</mat-label>
+        <mat-label>Поиск</mat-label>
         <input matInput placeholder="Введите название теста" (change)="onValueChange($event)">
       </mat-form-field>
     </div>
