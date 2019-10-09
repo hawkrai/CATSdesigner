@@ -17,10 +17,10 @@
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
-          <mat-icon (click)="openEditPopup(element)" matTooltip="Редактировать тест"
+          <mat-icon (click)="openEditPopup(element.Id)" matTooltip="Редактировать вопрос"
                     matTooltipClass="example-tooltip-green">edit
           </mat-icon>
-          <mat-icon (click)="deleteTest(element.Id)" matTooltip="Удалить тест"
+          <mat-icon (click)="deleteQuestion(element.Id)" matTooltip="Удалить вопрос"
                     matTooltipClass="example-tooltip-green">delete
           </mat-icon>
         </mat-cell>

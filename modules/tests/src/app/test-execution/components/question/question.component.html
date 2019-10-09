@@ -1,8 +1,7 @@
 <div class="question-container">
   <div class="question-title">
     <div class="question-title-big">Вопрос №{{questionNumber}}</div>
-    <!--todo hardcode-->
-    <div class="question-title-small">Тест для самопроверки</div>
+    <div class="question-title-small" *ngIf="test">{{test.Title}}</div>
   </div>
   <div class="question-question">
     <div class="question-question-text">{{question.Question.Title}}</div>

@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 @Component({
   selector: 'app-test-description',
   templateUrl: './test-description.component.html',
-  styleUrls: ['./test-description.component.css']
+  styleUrls: ['./test-description.component.less']
 })
 export class TestDescriptionComponent implements OnInit {
 

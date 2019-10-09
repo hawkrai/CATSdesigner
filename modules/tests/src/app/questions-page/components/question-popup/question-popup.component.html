@@ -1,0 +1,44 @@
+<ng-container *ngIf="question;else loading">
+  <h1 mat-dialog-title class="question-popup-container">{{'Вопрос для теста  - ' + data.title}}</h1>
+  <div mat-dialog-content>
+    <mat-form-field class="question-popup-full">
+      <input matInput [placeholder]="'Название теста'" [value]="question.Title ? question.Title : ''">
+    </mat-form-field>
+  </div>
+  <div mat-dialog-content>
+    <mat-form-field class="question-popup-full">
+      <textarea matInput [placeholder]="'Описание'"
+                [value]="question.Description ? question.Description : ''"></textarea>
+    </mat-form-field>
+  </div>
+
+
+  <div mat-dialog-content>
+    <h1 mat-dialog-title class="question-popup-container">{{'Ответы'}}</h1>
+</div>
+  <!--<div class="edit-test-type">
+    <div class="edit-test-type-block">
+      <mat-radio-group
+        aria-labelledby="example-radio-group-label"
+        class="example-radio-group"
+        [(ngModel)]="chosenType">
+        <mat-radio-button class="example-radio-button" *ngFor="let category of CATEGORIES" [value]="category">
+          {{category}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>-->
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="'435534'" cdkFocusInitial>Ok</button>
+  </div>
+</ng-container>
+<ng-template #loading>
+  <div class="question-popup-loader">
+    <mat-progress-spinner
+      class="example-margin"
+      [color]="'primary'"
+      [mode]="'indeterminate'">
+    </mat-progress-spinner>
+  </div>
+</ng-template>

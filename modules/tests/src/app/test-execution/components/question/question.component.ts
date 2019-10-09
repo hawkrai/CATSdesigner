@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {TestQuestion} from '../../../models/question/test-question.model';
 import {Answer} from '../../../models/question/answer.model';
 import {TestPassingService} from '../../../service/test-passing.service';
+import {TestAvailable} from "../../../models/test-available.model";
 
 
 @Component({
@@ -16,6 +17,9 @@ export class QuestionComponent implements OnInit {
 
   @Input()
   public questionNumber: string;
+
+  @Input()
+  public test: TestAvailable;
 
   public chosenAnswer: Answer;
 

@@ -21,10 +21,13 @@ import {TestControlPageComponent} from './test-control-page/test-control-page.co
 import {TestService} from './service/test.service';
 import {EditTestPopupComponent} from './test-control-page/components/edit-test-popup/edit-test-popup.component';
 import {DeleteConfirmationPopupComponent} from './test-control-page/components/delete-confirmation-popup/delete-confirmation-popup.component';
-import { EditAvailabilityPopupComponent } from './test-control-page/components/edit-availability-popup/edit-availability-popup.component';
-import { StudentsTableComponent } from './test-control-page/components/edit-availability-popup/components/students-table/students-table.component';
-import { QuestionsPageComponent } from './questions-page/questions-page.component';
-import { TableQuestionsComponent } from './shared/table-questions/table-questions.component';
+import {EditAvailabilityPopupComponent} from './test-control-page/components/edit-availability-popup/edit-availability-popup.component';
+import {StudentsTableComponent} from './test-control-page/components/edit-availability-popup/components/students-table/students-table.component';
+import {QuestionsPageComponent} from './questions-page/questions-page.component';
+import {TableQuestionsComponent} from './shared/table-questions/table-questions.component';
+import {QuestionPopupComponent} from './questions-page/components/question-popup/question-popup.component';
+import { ResultPupilComponent } from './result-pupil/result-pupil.component';
+import { ResultTestTableComponent } from './shared/result-test-table/result-test-table.component';
 
 
 @NgModule({
@@ -44,7 +47,10 @@ import { TableQuestionsComponent } from './shared/table-questions/table-question
     EditAvailabilityPopupComponent,
     StudentsTableComponent,
     QuestionsPageComponent,
-    TableQuestionsComponent
+    TableQuestionsComponent,
+    QuestionPopupComponent,
+    ResultPupilComponent,
+    ResultTestTableComponent
   ],
   imports: [
     FormsModule,
@@ -56,7 +62,9 @@ import { TableQuestionsComponent } from './shared/table-questions/table-question
   ],
   providers: [TestPassingService,
     TestService],
-  entryComponents: [ DeleteConfirmationPopupComponent, EditAvailabilityPopupComponent ],
+  entryComponents: [DeleteConfirmationPopupComponent,
+    EditAvailabilityPopupComponent,
+    QuestionPopupComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

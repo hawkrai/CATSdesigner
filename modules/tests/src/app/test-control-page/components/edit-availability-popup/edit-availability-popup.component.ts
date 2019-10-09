@@ -82,12 +82,5 @@ export class EditAvailabilityPopupComponent implements OnInit {
         return student.Name.includes(event.currentTarget.value);
       }));
     });
-
-
-    /*this.subGroups = this.subGroupsDefault.filter((subGroup) => {
-      subGroup.Students.filter((student) => {
-        return student.Name.includes(event.currentTarget.value);
-      });
-    });*/
   }
 }

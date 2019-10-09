@@ -1,10 +1,23 @@
 <app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Управление тестами'"></app-header>
+<div class="question-page-container">
+  <div class="question-page-description-title">
+    <div class="question-page-description-title-text">
+      Вопросы
+    </div>
+    <div class="question-page-description-title-text" [ngClass]="'small'" *ngIf="test">
+      {{test.Title}}
+    </div>
+  </div>
+</div>
 <app-main-page [allowChanges]="true"
                [adminTests]="false"
-               [adminQuestions]="true"></app-main-page>
+               [adminQuestions]="true"
+               (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
 <div class="container-table-tests">
   <app-table-questions
-    [questions]="questions">
+    [questions]="questions"
+    (onDeleteQuestion)="deleteQuestion($event)"
+    (onOpenEditPopup)="openPopup($event)">
   </app-table-questions>
 </div>

@@ -1,13 +1,13 @@
-<div class="test-description-container">
+<div class="test-description-container" *ngIf="test">
   <div class="test-description-wrapper">
     <div class="test-description-title">
-      <div class="test-description-title-text">
-        Тест для самопроверки
+      <div class="test-description-title-text" >
+        {{test.Title}}
       </div>
     </div>
     <div class="test-description-wrapper-description">
       <div class="test-description-block">
-        <div class="test-description-text">Проверьте свои знания перед итоговым тестом</div>
+        <div class="test-description-text">{{test.Description}}</div>
         <div class="test-description-button">
           <button (click)="startTest()" mat-raised-button color="primary" matTooltip="Начать тест" matTooltipClass="example-tooltip-green">Далее</button>
         </div>

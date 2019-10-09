@@ -24,6 +24,10 @@ export class TestService {
     return this.http.get<Question[]>('/Tests/GetQuestions?testId=' + testId);
   }
 
+  getQuestion(testId: string): Observable<Question> {
+    return this.http.get<Question>('/Tests/GetQuestion?id=' + testId);
+  }
+
   getTestTestById(id: string): Observable<TestAvailable> {
     return this.http.get<TestAvailable>('/Tests/GetTest?id=' + id);
   }
@@ -46,5 +50,9 @@ export class TestService {
 
   changeAvailabilityForAllStudents(data: TestAvailabilityRequest): Observable<void> {
     return this.http.post<void>('/Tests/UnlockTests', data);
+  }
+
+  deleteQuestion(id: any): Observable<void> {
+    return this.http.delete<void>('/Tests/DeleteQuestion?id=' + id);
   }
 }

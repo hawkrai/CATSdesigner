@@ -8,7 +8,7 @@
   </div>
   <div class="test-execution-block-question">
     <app-question *ngIf="question" [question]="question" [questionNumber]="questionNumber"
-                  (goToNextQuestion)="nextQuestion()"></app-question>
+                  (goToNextQuestion)="nextQuestion()" [test]="test"></app-question>
   </div>
   <div class="test-execution-block-progress">
     <div class="test-execution-block-progress-block">

@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {TestPassingService} from "../../service/test-passing.service";
-import {Router} from "@angular/router";
 import {Question} from "../../models/question/question.model";
+
 
 @Component({
   selector: 'app-table-questions',
@@ -17,7 +16,7 @@ export class TableQuestionsComponent implements OnInit {
   public onOpenEditPopup: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  public onDeleteTest: EventEmitter<string> = new EventEmitter();
+  public onDeleteQuestion: EventEmitter<string> = new EventEmitter();
 
   public test: any;
 
@@ -27,5 +26,13 @@ export class TableQuestionsComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  public deleteQuestion(event): void {
+    this.onDeleteQuestion.emit(event);
+  }
+
+  public openEditPopup(event): void{
+    this.onOpenEditPopup.emit(event);
   }
 }
