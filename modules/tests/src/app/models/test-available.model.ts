@@ -3,6 +3,8 @@ export class TestAvailable {
   Id: number;
   TimeForCompleting: number;
   CountOfQuestions: number;
+  Percent: number;
+  Points: number;
   SetTimeForAllTest: boolean;
   Title: string;
   Action: any;

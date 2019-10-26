@@ -23,7 +23,11 @@ export class TestPassingService {
   }
 
   getNextQuestion(testId: string, questionNumber: string): Observable<TestQuestion> {
-    return this.http.get<any>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&userId=10031');
+    return this.http.get<TestQuestion>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&userId=10031');
+  }
+
+  getStudentResults(subjectId: string): Observable<TestAvailable[]> {
+    return this.http.get<TestAvailable[]>('/TestPassing/GetStudentResults?subjectId=' + subjectId);
   }
 
   answerQuestionAndGetNext(answer: any): Observable<any> {

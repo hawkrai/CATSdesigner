@@ -88,7 +88,7 @@ export class TestControlPageComponent implements OnInit {
     this.sortTests(filteredTests);
   }
 
-  public sortTests(tests) {
+  private sortTests(tests): void {
     this.loading = true;
     this.knowledgeControlTests = [];
     this.selfControlTests = [];

@@ -15,10 +15,15 @@
       display: flex;
       @media only screen and (max-width: 768px) {
         display: block;
+        width: 100%;
       }
       &-item {
         color: white;
         margin-right: 10px;
+        @media only screen and (max-width: 768px) {
+          margin-bottom: 5px;
+          width: 100%;
+        }
         &.resources {
           background-color: #e4000d;
         }
@@ -27,6 +32,9 @@
         }
         &.neural {
           background-color: #00a10c;
+        }
+        &.primary {
+          background-color: #030fa1;
         }
       }
       &-wrapper {

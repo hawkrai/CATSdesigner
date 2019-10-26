@@ -16,7 +16,7 @@ import {TestDescriptionComponent} from './test-description/test-description.comp
 import {DemoMaterialModule} from './material-module';
 import {TestExecutionComponent} from './test-execution/test-execution.component';
 import {QuestionComponent} from './test-execution/components/question/question.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TestControlPageComponent} from './test-control-page/test-control-page.component';
 import {TestService} from './service/test.service';
 import {EditTestPopupComponent} from './test-control-page/components/edit-test-popup/edit-test-popup.component';
@@ -28,6 +28,11 @@ import {TableQuestionsComponent} from './shared/table-questions/table-questions.
 import {QuestionPopupComponent} from './questions-page/components/question-popup/question-popup.component';
 import { ResultPupilComponent } from './result-pupil/result-pupil.component';
 import { ResultTestTableComponent } from './shared/result-test-table/result-test-table.component';
+import { AngularEditorComponent } from './questions-page/components/question-popup/components/angular-editor/angular-editor.component';
+import {AngularEditorService} from "./questions-page/components/question-popup/components/angular-editor/angular-editor.service";
+import { AngularEditorToolbarComponent } from './questions-page/components/question-popup/components/angular-editor-toolbar/angular-editor-toolbar.component';
+import { AeSelectComponent } from './questions-page/components/question-popup/components/ae-select/ae-select.component';
+import { ResultTeacherComponent } from './result-teacher/result-teacher.component';
 
 
 @NgModule({
@@ -50,10 +55,15 @@ import { ResultTestTableComponent } from './shared/result-test-table/result-test
     TableQuestionsComponent,
     QuestionPopupComponent,
     ResultPupilComponent,
-    ResultTestTableComponent
+    ResultTestTableComponent,
+    AngularEditorComponent,
+    AngularEditorToolbarComponent,
+    AeSelectComponent,
+    ResultTeacherComponent
   ],
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -61,7 +71,8 @@ import { ResultTestTableComponent } from './shared/result-test-table/result-test
     DemoMaterialModule
   ],
   providers: [TestPassingService,
-    TestService],
+    TestService,
+    AngularEditorService],
   entryComponents: [DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,
     QuestionPopupComponent],

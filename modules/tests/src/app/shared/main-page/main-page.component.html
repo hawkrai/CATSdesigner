@@ -2,19 +2,26 @@
   <div class="main-page-container-buttons-wrapper">
     <div class="main-page-container-buttons" *ngIf="allowChanges">
       <div class="main-page-container-buttons-item" *ngIf="adminTests">
-        <button mat-raised-button color="primary" (click)="onOpenAddingPopup()">Добавть тест</button>
+        <button mat-raised-button color="main-page-container-buttons-item" [ngClass]="'primary'"
+                (click)="onOpenAddingPopup()">Добавть тест
+        </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminTests">
-        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'">Ресурсы</button>
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'" (click)="onOpenAddingPopup()">Ресурсы</button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
-        <button mat-raised-button color="primary">Добавить вопрос</button>
+        <button mat-raised-button color="main-page-container-buttons-item" [ngClass]="'primary'">Добавить вопрос
+        </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
-        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'other-test'">Добавить вопрос из другого теста</button>
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'other-test'">Добавить вопрос из
+          другого теста
+        </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
-        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной сети</button>
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной
+          сети
+        </button>
       </div>
     </div>
   </div>

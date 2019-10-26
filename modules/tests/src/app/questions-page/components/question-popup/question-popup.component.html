@@ -1,36 +1,40 @@
 <ng-container *ngIf="question;else loading">
-  <h1 mat-dialog-title class="question-popup-container">{{'Вопрос для теста  - ' + data.title}}</h1>
+  <h1 mat-dialog-title class="question-popup-container">{{'Вопрос для теста - ' + data.title}}</h1>
   <div mat-dialog-content>
     <mat-form-field class="question-popup-full">
-      <input matInput [placeholder]="'Название теста'" [value]="question.Title ? question.Title : ''">
-    </mat-form-field>
-  </div>
-  <div mat-dialog-content>
-    <mat-form-field class="question-popup-full">
-      <textarea matInput [placeholder]="'Описание'"
-                [value]="question.Description ? question.Description : ''"></textarea>
+      <textarea matInput [placeholder]="'Название вопроса'" [value]="question.Title ? question.Title : ''"></textarea>
     </mat-form-field>
   </div>
 
+  <div mat-dialog-content [formGroup]="form">
+    <p>Описание</p>
+    <angular-editor formControlName="signature" (ngModelChange)="onChange2($event)"></angular-editor>
+  </div>
 
   <div mat-dialog-content>
     <h1 mat-dialog-title class="question-popup-container">{{'Ответы'}}</h1>
-</div>
-  <!--<div class="edit-test-type">
-    <div class="edit-test-type-block">
-      <mat-radio-group
-        aria-labelledby="example-radio-group-label"
-        class="example-radio-group"
-        [(ngModel)]="chosenType">
-        <mat-radio-button class="example-radio-button" *ngFor="let category of CATEGORIES" [value]="category">
-          {{category}}
-        </mat-radio-button>
-      </mat-radio-group>
+  </div>
+  <div mat-dialog-content>
+    <div class="question-popup-types-container">
+      <div class="question-popup-types-container-button">
+        <button mat-raised-button color="primary" (click)="addAnswer()">Добавить ответ</button>
+      </div>
+      <div class="question-popup-types-container-dropdown">
+        <mat-form-field>
+          <mat-label>{{"Тип вопроса"}}</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id" (onSelectionChange)="onValueChange($event)">
+              {{type.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
-  </div>-->
+  </div>
+
   <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">No Thanks</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="'435534'" cdkFocusInitial>Ok</button>
+    <button mat-button (click)="onNoClick()">Закрыть</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="'435534'" cdkFocusInitial>Сохранить</button>
   </div>
 </ng-container>
 <ng-template #loading>
