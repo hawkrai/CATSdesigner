@@ -4,6 +4,8 @@ import {Observable} from 'rxjs';
 import {TestAvailable} from '../models/test-available.model';
 import {TestDescription} from '../models/test-description.model';
 import {TestQuestion} from '../models/question/test-question.model';
+import {Result} from "../models/result.model";
+import {UserAnswers} from "../models/user-answers.model";
 
 
 @Injectable({
@@ -32,5 +34,13 @@ export class TestPassingService {
 
   answerQuestionAndGetNext(answer: any): Observable<any> {
     return this.http.post<any>('TestPassing/AnswerQuestionAndGetNext', answer);
+  }
+
+  getResultsByGroupAndSubject(groupId: string, subjectId: string = "3"): Observable<Result[]> {
+    return this.http.get<Result[]>('TestPassing/GetResults?groupId=' + groupId + '&subjectId=3');
+  }
+
+  getAnswersByStudentAndTest(studentId: string, testId: string = "3"): Observable<UserAnswers[]> {
+    return this.http.get<UserAnswers[]>('/TestPassing/GetUserAnswers?studentId=10041&testId=' + testId);
   }
 }

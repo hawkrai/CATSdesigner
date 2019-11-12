@@ -33,6 +33,7 @@ import {AngularEditorService} from "./questions-page/components/question-popup/c
 import { AngularEditorToolbarComponent } from './questions-page/components/question-popup/components/angular-editor-toolbar/angular-editor-toolbar.component';
 import { AeSelectComponent } from './questions-page/components/question-popup/components/ae-select/ae-select.component';
 import { ResultTeacherComponent } from './result-teacher/result-teacher.component';
+import { StudentMarksTableComponent } from './shared/student-marks-table/student-marks-table.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { ResultTeacherComponent } from './result-teacher/result-teacher.componen
     AngularEditorComponent,
     AngularEditorToolbarComponent,
     AeSelectComponent,
-    ResultTeacherComponent
+    ResultTeacherComponent,
+    StudentMarksTableComponent
   ],
   imports: [
     FormsModule,

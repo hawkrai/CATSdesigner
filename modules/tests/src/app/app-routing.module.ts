@@ -7,6 +7,7 @@ import {TestControlPageComponent} from './test-control-page/test-control-page.co
 import {EditTestPopupComponent} from "./test-control-page/components/edit-test-popup/edit-test-popup.component";
 import {QuestionsPageComponent} from "./questions-page/questions-page.component";
 import {ResultPupilComponent} from "./result-pupil/result-pupil.component";
+import {ResultTeacherComponent} from "./result-teacher/result-teacher.component";
 
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
   {path: 'questions/:id', component: QuestionsPageComponent},
   {path: 'popup', component: EditTestPopupComponent},
   {path: 'result-pupil/:id', component: ResultPupilComponent},
+  {path: 'result-teacher', component: ResultTeacherComponent},
 ];
 
 

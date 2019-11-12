@@ -1,1 +1,26 @@
-<p>result-teacher works!</p>
+<app-header [text]="'Тестирование и отладка ПО'"
+            [smallText]="'Результаты тестов'"></app-header>
+<app-main-page [allowChanges]="true"
+               (onValueChangeSearch)="filterStudents($event)"
+               (groupValueChange)="groupValueChange($event)"
+               [adminTests]="false"
+               [groupDropdown]="true"
+               [groups]="groups"
+               [adminQuestions]="false"></app-main-page>
+<mat-tab-group>
+  <mat-tab label="Тесты для контроля знаний" *ngIf="knowledgeControlTests && knowledgeControlTests[0] && knowledgeControlTests[0].size!=0">
+    <app-result-test-table [tests]="knowledgeControlTests"></app-result-test-table>
+  </mat-tab>
+  <mat-tab label="Тесты для самоконтроля" *ngIf="selfControlTests && selfControlTests[0] && selfControlTests[0].size!=0">
+    <app-result-test-table [tests]="selfControlTests"></app-result-test-table>
+  </mat-tab>
+  <mat-tab label="Предтест для обучения в ЭУМК" *ngIf="beforeEUMKTests && beforeEUMKTests[0] && beforeEUMKTests[0].size!=0">
+    <app-result-test-table [tests]="beforeEUMKTests"></app-result-test-table>
+  </mat-tab>
+  <mat-tab label="Тесты для обучения в ЭУМК" *ngIf="forEUMKTests && forEUMKTests[0] && forEUMKTests[0].size!=0">
+    <app-result-test-table [tests]="forEUMKTests"></app-result-test-table>
+  </mat-tab>
+  <mat-tab label="Тесты для обучения с искусственной нейронной сетью" *ngIf="nNTests && nNTests[0] && nNTests[0].size!=0">
+    <app-result-test-table [tests]="nNTests"></app-result-test-table>
+  </mat-tab>
+</mat-tab-group>

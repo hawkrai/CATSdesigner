@@ -7,7 +7,9 @@
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminTests">
-        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'" (click)="onOpenAddingPopup()">Ресурсы</button>
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'"
+                (click)="onOpenAddingPopup()">Ресурсы
+        </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
         <button mat-raised-button color="main-page-container-buttons-item" [ngClass]="'primary'">Добавить вопрос
@@ -22,6 +24,17 @@
         <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной
           сети
         </button>
+      </div>
+      <div *ngIf="groupDropdown">
+        <mat-form-field>
+          <mat-label>Выберите группу</mat-label>
+          <mat-select>
+            <!--//todo doesn't work-->
+            <mat-option *ngFor="let group of groups" [value]="group.Id" (onSelectionChange)="onGroupValueChange(group.Id)">
+              {{group.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
   </div>

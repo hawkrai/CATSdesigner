@@ -1,30 +1,41 @@
-<ng-container *ngIf="tests; else loading">
-  <div>
-    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
-      <!-- Position Column -->
-      <ng-container matColumnDef="Id">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-id"> {{element.IdentifierOrNumber}}</mat-cell>
-      </ng-container>
+<ng-container *ngIf="scareThing">
+  <ng-container *ngFor="let studentResults of scareThing, let iq = index">
+    <ng-container class="result-test-table-table"
+      *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
+      {{"Подгруппа " + (iq+1)}}
+      <div>
+        <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
+          <!-- Position Column -->
+          <ng-container matColumnDef="Id">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-id"> {{"1"}}</mat-cell>
+          </ng-container>
 
-      <!-- Name Column -->
-      <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Тест</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
-      </ng-container>
+          <!-- Name Column -->
+          <ng-container matColumnDef="Name">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Тест</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element[1].name}}
+            </mat-cell>
+          </ng-container>
 
-      <!-- Weight Column -->
-      <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">Оценка</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-action">
-          {{(element.Points ? element.Points : 0) + "(" + (element.Percent ? element.Percent : 0) + "%)"}}
-        </mat-cell>
-      </ng-container>
+          <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{"Тест " + (i+1)}}</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-action" [matTooltip]="element[1].test[i].testName">
+              {{element[1].test[i].points}}
+            </mat-cell>
+          </ng-container>
 
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    </mat-table>
-  </div>
+          <ng-container matColumnDef="average">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средняя</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-average"> {{""}}</mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+    </ng-container>
+  </ng-container>
 </ng-container>
 <ng-template #loading>
   <mat-card>
