@@ -124,7 +124,7 @@ export class ResultTeacherComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  public getUserAnswers(): void{
+  /*public getUserAnswers(): void{
     this.testPassingService.getAnswersByStudentAndTest()
-  }
+  }*/
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 
 @Component({
@@ -6,7 +6,7 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
   templateUrl: './result-test-table.component.html',
   styleUrls: ['./result-test-table.component.less']
 })
-export class ResultTestTableComponent implements OnInit, OnChanges {
+export class ResultTestTableComponent implements OnInit {
 
   @Input()
   public tests: any;
@@ -32,11 +32,8 @@ export class ResultTestTableComponent implements OnInit, OnChanges {
       this.displayedColumns.push("test" + i);
     }
     this.displayedColumns.push("average");
-  }//todo average marks from backend
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log("ngOnChanges");
-  }
+  }//todo average marks from backend
 
 
 }

@@ -34,6 +34,7 @@ import { AngularEditorToolbarComponent } from './questions-page/components/quest
 import { AeSelectComponent } from './questions-page/components/question-popup/components/ae-select/ae-select.component';
 import { ResultTeacherComponent } from './result-teacher/result-teacher.component';
 import { StudentMarksTableComponent } from './shared/student-marks-table/student-marks-table.component';
+import { ResultTestTableTeacherComponent } from './shared/result-test-table-teacher/result-test-table-teacher.component';
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import { StudentMarksTableComponent } from './shared/student-marks-table/student
     AngularEditorToolbarComponent,
     AeSelectComponent,
     ResultTeacherComponent,
-    StudentMarksTableComponent
+    StudentMarksTableComponent,
+    ResultTestTableTeacherComponent
   ],
   imports: [
     FormsModule,
