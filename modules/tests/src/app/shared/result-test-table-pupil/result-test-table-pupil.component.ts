@@ -2,11 +2,11 @@ import {Component, Input, OnInit} from '@angular/core';
 import {TestAvailable} from "../../models/test-available.model";
 
 @Component({
-  selector: 'app-result-test-table-teacher',
-  templateUrl: './result-test-table-teacher.component.html',
-  styleUrls: ['./result-test-table-teacher.component.less']
+  selector: 'app-result-test-table-pupil',
+  templateUrl: './result-test-table-pupil.component.html',
+  styleUrls: ['./result-test-table-pupil.component.less']
 })
-export class ResultTestTableTeacherComponent implements OnInit {
+export class ResultTestTablePupilComponent implements OnInit {
 
   @Input()
   public tests: TestAvailable[];
