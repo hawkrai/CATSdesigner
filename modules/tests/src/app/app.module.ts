@@ -35,6 +35,8 @@ import { AeSelectComponent } from './questions-page/components/question-popup/co
 import { ResultTeacherComponent } from './result-teacher/result-teacher.component';
 import { StudentMarksTableComponent } from './shared/student-marks-table/student-marks-table.component';
 import { ResultTestTablePupilComponent } from './shared/result-test-table-pupil/result-test-table-pupil.component';
+import { AnswersPopupComponent } from './shared/result-test-table/components/answers-popup/answers-popup.component';
+import { ControlCompleatingComponent } from './control-compleating/control-compleating.component';
 
 
 @NgModule({
@@ -63,7 +65,9 @@ import { ResultTestTablePupilComponent } from './shared/result-test-table-pupil/
     AeSelectComponent,
     ResultTeacherComponent,
     StudentMarksTableComponent,
-    ResultTestTablePupilComponent
+    ResultTestTablePupilComponent,
+    AnswersPopupComponent,
+    ControlCompleatingComponent
   ],
   imports: [
     FormsModule,
@@ -79,7 +83,8 @@ import { ResultTestTablePupilComponent } from './shared/result-test-table-pupil/
     AngularEditorService],
   entryComponents: [DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,
-    QuestionPopupComponent],
+    QuestionPopupComponent,
+    AnswersPopupComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

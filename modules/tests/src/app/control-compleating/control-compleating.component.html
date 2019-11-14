@@ -1,0 +1,9 @@
+<app-header [text]="'Тестирование и отладка ПО'"
+            [smallText]="'Результаты тестов'"></app-header>
+<app-main-page [allowChanges]="true"
+               (onValueChangeSearch)="filterStudents($event)"
+               (groupValueChange)="groupValueChange($event)"
+               [adminTests]="false"
+               [groupDropdown]="true"
+               [groups]="groups"
+               [adminQuestions]="false"></app-main-page>

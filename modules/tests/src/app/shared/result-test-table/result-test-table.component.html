@@ -20,14 +20,14 @@
 
           <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{"Тест " + (i+1)}}</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-action" [matTooltip]="element[1].test[i].testName">
-              {{element[1].test[i].points}}
+            <mat-cell *matCellDef="let element" class="mat-header-cell-action" (click)="openAnswersDialog(element[1].test[i].testId)" [matTooltip]="element[1].test[i].testName">
+              {{element[1].test[i].points ? element[1].test[i].points: "тест не пройден"}}
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="average">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средняя</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-average"> {{""}}</mat-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-average"> {{element[2]}}</mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

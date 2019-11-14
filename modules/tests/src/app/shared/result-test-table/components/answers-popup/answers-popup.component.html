@@ -1,0 +1,16 @@
+<div *ngIf="answers;else loading">
+  <div class="answers-popup-content" *ngFor="let answer of answers, let i = index">
+    <div>{{"Вопрос " + (i+1) + ": " + answer.QuestionTitle}}</div>
+    <div>{{"Ответ: " + answer.AnswerString}}</div>
+    <div>{{answer.Points === 0 ? "Неверно" : "Верно"}}</div>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="answers-popup-loader">
+    <mat-progress-spinner
+      class="availability-popup-loader-margin"
+      [color]="'primary'"
+      [mode]="'indeterminate'">
+    </mat-progress-spinner>
+  </div>
+</ng-template>

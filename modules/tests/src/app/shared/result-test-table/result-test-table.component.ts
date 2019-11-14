@@ -1,4 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {MatDialog} from "@angular/material";
+import {AnswersPopupComponent} from "./components/answers-popup/answers-popup.component";
 
 
 @Component({
@@ -16,7 +18,7 @@ export class ResultTestTableComponent implements OnInit {
 
   displayedColumns: string[] = ['Id', 'Name'];
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -32,8 +34,32 @@ export class ResultTestTableComponent implements OnInit {
       this.displayedColumns.push("test" + i);
     }
     this.displayedColumns.push("average");
-
+    this.getAverageMark();
   }//todo average marks from backend
 
+  private getAverageMark(): void {
+    for (let subGroup of this.scareThing) {
+      if (subGroup.length != 0) {
+        for (let pupil of subGroup) {
+          let sumOfMarks: number = 0;
+          for (let test of pupil[1].test) {
+            sumOfMarks += test.points;
+          }
+          pupil.push(sumOfMarks / this.testSize);
+        }
+      }
+    }
+  }
 
+
+  public openAnswersDialog(event?: any): void {
+    const dialogRef = this.dialog.open(AnswersPopupComponent, {
+      width: '800px',
+      data: {event}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+    });
+  }
 }
