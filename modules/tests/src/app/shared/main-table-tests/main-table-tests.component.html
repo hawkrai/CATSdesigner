@@ -3,11 +3,14 @@
 </div>
 <ng-container *ngIf="tests; else loading">
   <div>
-    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
+    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg" cdkDropList #table
+               [cdkDropListData]="tests"
+               (cdkDropListDropped)="dropTable($event)" >
+
       <!-- Position Column -->
       <ng-container matColumnDef="Id">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-id"> {{element.Id}}</mat-cell>
+        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> <div >{{index+1}}</div></mat-cell>
       </ng-container>
 
       <!-- Name Column -->
@@ -44,7 +47,7 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
     </mat-table>
   </div>
 </ng-container>

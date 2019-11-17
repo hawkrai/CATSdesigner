@@ -55,4 +55,8 @@ export class TestService {
   deleteQuestion(id: any): Observable<void> {
     return this.http.delete<void>('/Tests/DeleteQuestion?id=' + id);
   }
+
+  changeTestOrder(newOrder: any): Observable<void> {
+    return this.http.patch<void>('/Tests/OrderTests/', newOrder);
+  }
 }

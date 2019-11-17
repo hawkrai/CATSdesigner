@@ -4,7 +4,7 @@
       <!-- Position Column -->
       <ng-container matColumnDef="Id">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-id"> {{element.Id}}</mat-cell>
+        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index+1}}</mat-cell>
       </ng-container>
 
       <!-- Name Column -->

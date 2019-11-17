@@ -16,7 +16,9 @@
         {{student.StudentName}}
       </div>
       <div class="control-completing-container-test-description-item-progress">
-
+        <div class="control-completing-container-test-description-item-progress-item" *ngFor="let res of student.PassResults; let i = index" [class.correct]="res === 1" [class.incorrect]="res === 2">
+          {{i+1}}
+        </div>
       </div>
     </div>
   </div>
