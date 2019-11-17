@@ -36,7 +36,7 @@ import { ResultTeacherComponent } from './result-teacher/result-teacher.componen
 import { StudentMarksTableComponent } from './shared/student-marks-table/student-marks-table.component';
 import { ResultTestTablePupilComponent } from './shared/result-test-table-pupil/result-test-table-pupil.component';
 import { AnswersPopupComponent } from './shared/result-test-table/components/answers-popup/answers-popup.component';
-import { ControlCompleatingComponent } from './control-compleating/control-compleating.component';
+import { ControlCompletingComponent } from './control-completing/control-completing.component';
 
 
 @NgModule({
@@ -67,7 +67,7 @@ import { ControlCompleatingComponent } from './control-compleating/control-compl
     StudentMarksTableComponent,
     ResultTestTablePupilComponent,
     AnswersPopupComponent,
-    ControlCompleatingComponent
+    ControlCompletingComponent
   ],
   imports: [
     FormsModule,

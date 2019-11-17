@@ -6,6 +6,7 @@ import {TestDescription} from '../models/test-description.model';
 import {TestQuestion} from '../models/question/test-question.model';
 import {Result} from "../models/result.model";
 import {UserAnswers} from "../models/user-answers.model";
+import {ControlItems} from "../models/control-items.model";
 
 
 @Injectable({
@@ -42,5 +43,9 @@ export class TestPassingService {
 
   getAnswersByStudentAndTest(studentId: string, testId: string = "3"): Observable<UserAnswers[]> {
     return this.http.get<UserAnswers[]>('/TestPassing/GetUserAnswers?studentId=10041&testId=' + testId);
+  }
+
+  getControlItems(subjectId: string): Observable<ControlItems[]> {
+    return this.http.get<ControlItems[]>('/TestPassing/GetControlItems?subjectId=3');
   }
 }

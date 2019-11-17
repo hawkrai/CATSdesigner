@@ -22,6 +22,9 @@ export class MainPageComponent implements OnInit {
   public groupDropdown: boolean;
 
   @Input()
+  public text: string;
+
+  @Input()
   public groups: Group[];
 
   @Output()

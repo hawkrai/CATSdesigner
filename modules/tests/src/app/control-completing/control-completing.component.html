@@ -1,0 +1,23 @@
+<app-header [text]="'Тестирование и отладка ПО'"
+            [smallText]="'Результаты тестов'"></app-header>
+<app-main-page [allowChanges]="true"
+               [text]="'В данный момент тесты проходят:'"
+               (onValueChangeSearch)="filterStudents($event)"
+               [adminTests]="false"
+               [groupDropdown]="false"
+               [adminQuestions]="false"></app-main-page>
+<div class="control-completing-container">
+  <div class="control-completing-container-test" *ngFor="let test of controlItems">
+    <div class="control-completing-container-test-name">
+      {{test.Test}}
+    </div>
+    <div class="control-completing-container-test-description" *ngFor="let student of test.Students">
+      <div class="control-completing-container-test-description-item-name">
+        {{student.StudentName}}
+      </div>
+      <div class="control-completing-container-test-description-item-progress">
+
+      </div>
+    </div>
+  </div>
+</div>
