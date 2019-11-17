@@ -1,7 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatCheckboxChange, MatDialogRef} from '@angular/material';
 import {TestService} from '../../../service/test.service';
 import {TestAvailable} from '../../../models/test-available.model';
+import {Test} from "../../../models/test.model";
 
 
 @Component({
@@ -19,6 +20,7 @@ export class EditTestPopupComponent implements OnInit {
 
   public chosenType: any;
   public editingTest: any;
+  public test: Test = new Test();
 
   constructor(private testService: TestService,
               public dialogRef: MatDialogRef<EditTestPopupComponent>,
@@ -40,4 +42,37 @@ export class EditTestPopupComponent implements OnInit {
     }
   }
 
+  onYesClick() {
+    switch (this.chosenType) {
+      case 'Тест для самоконтроля': {
+        this.test['ForSelfStudy'] = true;
+        break;
+      }
+      case 'Предтест для обучения в ЭУМК': {
+        this.test['BeforeEUMK'] = true;
+        break;
+      }
+      case 'Тест для обучения в ЭУМК': {
+        this.test['ForEUMK'] = true;
+        break;
+      }
+      case 'Тест для обучения с искусственной нейронной сетью': {
+        this.test['ForNN'] = true;
+        break;
+      }
+    }
+    this.test['SubjectId'] = 3;
+    this.testService.saveTest(this.test).subscribe();
+    this.dialogRef.close("fdfd");
+
+
+  }
+
+  public writeTitle(event, field): void {
+    this.test[field] = event.currentTarget.value;
+  }
+
+  checkBoxTrue(event: MatCheckboxChange) {
+    this.test['SetTimeForAllTest'] = event.checked;
+  }
 }

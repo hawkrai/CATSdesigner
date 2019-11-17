@@ -6,6 +6,7 @@ import {Group} from "../models/group.model";
 import {SubGroup} from "../models/sub-group.model";
 import {TestAvailabilityRequest} from "../models/testAvailabilityRequest.model";
 import {Question} from "../models/question/question.model";
+import {Test} from "../models/test.model";
 
 
 @Injectable({
@@ -58,5 +59,9 @@ export class TestService {
 
   changeTestOrder(newOrder: any): Observable<void> {
     return this.http.patch<void>('/Tests/OrderTests/', newOrder);
+  }
+
+  saveTest(test: Test): Observable<void> {
+    return this.http.post<void>('/Tests/SaveTest', test);
   }
 }
