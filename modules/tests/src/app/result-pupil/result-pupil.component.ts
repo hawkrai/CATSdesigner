@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {TestAvailable} from "../models/test-available.model";
 import {TestPassingService} from "../service/test-passing.service";
+import {Test} from "../models/test.model";
 
 
 @Component({
@@ -10,13 +10,13 @@ import {TestPassingService} from "../service/test-passing.service";
 })
 export class ResultPupilComponent implements OnInit {
 
-  public results: TestAvailable[];
+  public results: Test[];
   public loading: boolean;
-  public knowledgeControlTests: TestAvailable[];
-  public selfControlTests: TestAvailable[];
-  public nNTests: TestAvailable[];
-  public beforeEUMKTests: TestAvailable[];
-  public forEUMKTests: TestAvailable[];
+  public knowledgeControlTests: Test[];
+  public selfControlTests: Test[];
+  public nNTests: Test[];
+  public beforeEUMKTests: Test[];
+  public forEUMKTests: Test[];
 
   constructor(private testPassingService: TestPassingService) {
   }
@@ -28,7 +28,7 @@ export class ResultPupilComponent implements OnInit {
     })
   }
 
-  private groupTests(results: TestAvailable[]): void {
+  private groupTests(results: Test[]): void {
     this.loading = true;
     this.knowledgeControlTests = [];
     this.selfControlTests = [];

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TestPassingService} from '../service/test-passing.service';
-import {TestAvailable} from '../models/test-available.model';
+import {Test} from "../models/test.model";
 
 
 @Component({
@@ -10,11 +10,11 @@ import {TestAvailable} from '../models/test-available.model';
 })
 export class PageComponent implements OnInit {
 
-  public knowledgeControlTests: TestAvailable[] = [];
-  public selfControlTests: TestAvailable[] = [];
-  public nNTests: TestAvailable[] = [];
+  public knowledgeControlTests: Test[] = [];
+  public selfControlTests: Test[] = [];
+  public nNTests: Test[] = [];
   public loading: boolean;
-  public allTests: TestAvailable[];
+  public allTests: Test[];
 
   constructor(private testPassingService: TestPassingService) {
   }

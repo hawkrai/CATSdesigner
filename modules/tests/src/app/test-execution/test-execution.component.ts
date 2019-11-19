@@ -3,7 +3,7 @@ import {TestPassingService} from '../service/test-passing.service';
 import {TestQuestion} from '../models/question/test-question.model';
 import {ActivatedRoute} from "@angular/router";
 import {TestService} from "../service/test.service";
-import {TestAvailable} from "../models/test-available.model";
+import {Test} from "../models/test.model";
 
 
 @Component({
@@ -15,7 +15,7 @@ export class TestExecutionComponent implements OnInit {
   public question: TestQuestion;
   public questionNumber: string;
   public testId: string;
-  public test: TestAvailable;
+  public test: Test;
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,

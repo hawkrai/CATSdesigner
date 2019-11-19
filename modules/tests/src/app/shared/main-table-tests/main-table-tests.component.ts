@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {TestPassingService} from '../../service/test-passing.service';
-import {TestAvailable} from '../../models/test-available.model';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {MatTable} from "@angular/material";
 import {TestService} from "../../service/test.service";
 import {NewOrderModel} from "../../models/newOrder.model";
+import {Test} from "../../models/test.model";
 
 
 @Component({
@@ -22,7 +22,7 @@ export class MainTableTestsComponent implements OnInit {
   public allowChanges: boolean;
 
   @Input()
-  public tests: TestAvailable[];
+  public tests: Test[];
 
   @Output()
   public onOpenEditPopup: EventEmitter<any> = new EventEmitter();

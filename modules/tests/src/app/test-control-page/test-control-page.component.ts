@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {TestService} from '../service/test.service';
-import {TestAvailable} from '../models/test-available.model';
 import {MatDialog} from '@angular/material';
 import {EditTestPopupComponent} from './components/edit-test-popup/edit-test-popup.component';
 import {DeleteConfirmationPopupComponent} from './components/delete-confirmation-popup/delete-confirmation-popup.component';
 import {EditAvailabilityPopupComponent} from "./components/edit-availability-popup/edit-availability-popup.component";
 import {Router} from "@angular/router";
+import {Test} from "../models/test.model";
 
 
 @Component({
@@ -15,13 +15,13 @@ import {Router} from "@angular/router";
 })
 export class TestControlPageComponent implements OnInit {
 
-  public knowledgeControlTests: TestAvailable[] = [];
-  public selfControlTests: TestAvailable[] = [];
-  public nNTests: TestAvailable[] = [];
-  public beforeEUMKTests: TestAvailable[] = [];
-  public forEUMKTests: TestAvailable[] = [];
+  public knowledgeControlTests: Test[] = [];
+  public selfControlTests: Test[] = [];
+  public nNTests: Test[] = [];
+  public beforeEUMKTests: Test[] = [];
+  public forEUMKTests: Test[] = [];
   public loading: boolean;
-  public allTests: TestAvailable[];
+  public allTests: Test[];
 
 
   constructor(private testService: TestService,

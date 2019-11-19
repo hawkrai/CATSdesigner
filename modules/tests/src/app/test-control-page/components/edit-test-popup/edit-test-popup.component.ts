@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatCheckboxChange, MatDialogRef} from '@angular/material';
 import {TestService} from '../../../service/test.service';
-import {TestAvailable} from '../../../models/test-available.model';
 import {Test} from "../../../models/test.model";
 
 
@@ -19,7 +18,7 @@ export class EditTestPopupComponent implements OnInit {
     'Тест для обучения с искусственной нейронной сетью'];
 
   public chosenType: any;
-  public editingTest: any;
+  public editingTest: Test;
   public test: Test = new Test();
 
   constructor(private testService: TestService,
@@ -38,7 +37,7 @@ export class EditTestPopupComponent implements OnInit {
       });
       console.log(this.data);
     } else {
-      this.editingTest = new TestAvailable();
+      this.editingTest = new Test();
     }
   }
 

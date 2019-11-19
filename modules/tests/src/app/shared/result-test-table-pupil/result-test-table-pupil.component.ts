@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {TestAvailable} from "../../models/test-available.model";
+import {Test} from "../../models/test.model";
 
 @Component({
   selector: 'app-result-test-table-pupil',
@@ -9,7 +9,7 @@ import {TestAvailable} from "../../models/test-available.model";
 export class ResultTestTablePupilComponent implements OnInit {
 
   @Input()
-  public tests: TestAvailable[];
+  public tests: Test[];
 
   displayedColumns: string[] = ['Id', 'Title', 'action'];
 

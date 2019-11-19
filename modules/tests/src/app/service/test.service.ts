@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {TestAvailable} from '../models/test-available.model';
 import {Group} from "../models/group.model";
 import {SubGroup} from "../models/sub-group.model";
 import {TestAvailabilityRequest} from "../models/testAvailabilityRequest.model";
@@ -17,8 +16,8 @@ export class TestService {
   constructor(private http: HttpClient) {
   }
 
-  getTestAllTestBySubjectId(subjectId: string): Observable<TestAvailable[]> {
-    return this.http.get<TestAvailable[]>('/Tests/GetTests?subjectId=3');
+  getTestAllTestBySubjectId(subjectId: string): Observable<Test[]> {
+    return this.http.get<Test[]>('/Tests/GetTests?subjectId=3');
   }
 
   getQuestionsByTest(testId: string): Observable<Question[]> {
@@ -29,8 +28,8 @@ export class TestService {
     return this.http.get<Question>('/Tests/GetQuestion?id=' + testId);
   }
 
-  getTestTestById(id: string): Observable<TestAvailable> {
-    return this.http.get<TestAvailable>('/Tests/GetTest?id=' + id);
+  getTestTestById(id: string): Observable<Test> {
+    return this.http.get<Test>('/Tests/GetTest?id=' + id);
   }
 
   getGroupsBySubjectId(id: string): Observable<Group[]> {

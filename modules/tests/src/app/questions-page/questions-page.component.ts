@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {TestService} from "../service/test.service";
 import {Question} from "../models/question/question.model";
 import {ActivatedRoute} from "@angular/router";
-import {TestAvailable} from "../models/test-available.model";
 import {MatDialog} from "@angular/material";
 import {QuestionPopupComponent} from "./components/question-popup/question-popup.component";
+import {Test} from "../models/test.model";
 
 
 @Component({
@@ -16,7 +16,7 @@ export class QuestionsPageComponent implements OnInit {
 
   public questions: Question[];
   public questionsDefault: Question[];
-  public test: TestAvailable;
+  public test: Test;
 
   constructor(private testService: TestService,
               private route: ActivatedRoute,
