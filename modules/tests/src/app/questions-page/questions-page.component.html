@@ -13,6 +13,7 @@
 <app-main-page [allowChanges]="true"
                [adminTests]="false"
                [adminQuestions]="true"
+               (addNewQuestion)="addNewQuestion()"
                (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
 <div class="container-table-tests">
   <app-table-questions

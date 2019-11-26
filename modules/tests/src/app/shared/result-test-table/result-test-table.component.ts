@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatDialog} from "@angular/material";
 import {AnswersPopupComponent} from "./components/answers-popup/answers-popup.component";
 
@@ -13,10 +13,16 @@ export class ResultTestTableComponent implements OnInit {
   @Input()
   public tests: any;
 
+  @Input()
+  public name: string;
+
   public scareThing: any = [];
   public testSize: number;
 
   displayedColumns: string[] = ['Id', 'Name'];
+
+  @Output()
+  public sendAverageMarks: EventEmitter<any> = new EventEmitter();
 
   constructor(public dialog: MatDialog) {
   }
@@ -38,17 +44,23 @@ export class ResultTestTableComponent implements OnInit {
   }//todo average marks from backend
 
   private getAverageMark(): void {
+    let mass = [];
     for (let subGroup of this.scareThing) {
       if (subGroup.length != 0) {
         for (let pupil of subGroup) {
+          let markEntire = {};
           let sumOfMarks: number = 0;
           for (let test of pupil[1].test) {
             sumOfMarks += test.points;
           }
+          markEntire['label'] = pupil[1].StudentShortName;
+          markEntire['y'] = sumOfMarks / this.testSize;
+          mass.push(markEntire);
           pupil.push(sumOfMarks / this.testSize);
         }
       }
     }
+    this.sendAverageMarks.emit({name: this.name, mass: mass});
   }
 
 

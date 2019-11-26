@@ -1,7 +1,7 @@
 <ng-container *ngIf="scareThing">
   <ng-container *ngFor="let studentResults of scareThing, let iq = index">
     <ng-container class="result-test-table-table"
-      *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
+                  *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
       {{"Подгруппа " + (iq+1)}}
       <div>
         <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
@@ -20,7 +20,8 @@
 
           <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{"Тест " + (i+1)}}</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-action" (click)="openAnswersDialog(element[1].test[i].testId)" [matTooltip]="element[1].test[i].testName">
+            <mat-cell *matCellDef="let element" class="mat-header-cell-action"
+                      (click)="openAnswersDialog(element[1].test[i].testId)" [matTooltip]="element[1].test[i].testName">
               {{element[1].test[i].points ? element[1].test[i].points: "тест не пройден"}}
             </mat-cell>
           </ng-container>

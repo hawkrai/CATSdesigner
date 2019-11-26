@@ -15,12 +15,12 @@ const routes: Routes = [
   {path: 'page', component: PageComponent},
   {path: 'test/:id', component: TestComponent},
   {path: 'test-passing/:id', component: TestExecutionComponent},
-  {path: 'test-control', component: TestControlPageComponent},
   {path: 'questions/:id', component: QuestionsPageComponent},
   {path: 'popup', component: EditTestPopupComponent},
   {path: 'result-pupil/:id', component: ResultPupilComponent},
-  {path: 'result-teacher', component: ResultTeacherComponent},
   {path: 'control-completing', component: ControlCompletingComponent},
+  {path: 'test-control', component: TestControlPageComponent},
+  {path: 'result-teacher', component: ResultTeacherComponent},
 ];
 
 

@@ -36,6 +36,9 @@ export class MainPageComponent implements OnInit {
   @Output()
   public groupValueChange: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  public addNewQuestion: EventEmitter<any> = new EventEmitter();
+
   constructor() {
   }
 
@@ -52,5 +55,9 @@ export class MainPageComponent implements OnInit {
 
   public onOpenAddingPopup(): void {
     this.onOpenAddingPopupEvent.emit();
+  }
+
+  public onAddNewQuestion(): void {
+    this.addNewQuestion.emit();
   }
 }

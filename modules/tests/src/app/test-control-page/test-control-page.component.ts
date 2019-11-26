@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TestService} from '../service/test.service';
 import {MatDialog} from '@angular/material';
 import {EditTestPopupComponent} from './components/edit-test-popup/edit-test-popup.component';
@@ -26,6 +26,7 @@ export class TestControlPageComponent implements OnInit {
 
   constructor(private testService: TestService,
               private router: Router,
+              private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
   }
 
@@ -47,6 +48,8 @@ export class TestControlPageComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.getTests('1');
+      this.cdr.detectChanges();
       console.log(result);
     });
   }
@@ -58,6 +61,8 @@ export class TestControlPageComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.getTests('1');
+      this.cdr.detectChanges();
       console.log(result);
     });
   }

@@ -1,8 +1,8 @@
-<ng-container *ngIf="question;else loading">
+<ng-container *ngIf="!data.event || question;else loading">
   <h1 mat-dialog-title class="question-popup-container">{{'Вопрос для теста - ' + data.title}}</h1>
   <div mat-dialog-content>
     <mat-form-field class="question-popup-full">
-      <textarea matInput [placeholder]="'Название вопроса'" [value]="question.Title ? question.Title : ''"></textarea>
+      <textarea matInput [placeholder]="'Название вопроса'" [value]="question && question.Title ? question.Title : ''"></textarea>
     </mat-form-field>
   </div>
 
@@ -30,6 +30,20 @@
         </mat-form-field>
       </div>
     </div>
+  </div>
+
+  <div mat-dialog-content>
+    <ng-container *ngIf="chosenQuestionType === 0 && formOneAnswer">
+      <form formGroupName="formOneAnswer">
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group">
+          <mat-radio-button formControlName="key0" class="example-radio-button" [value]="0">
+            {{""}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </form>
+    </ng-container>
   </div>
 
   <div mat-dialog-actions>

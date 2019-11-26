@@ -12,7 +12,8 @@
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
-        <button mat-raised-button color="main-page-container-buttons-item" [ngClass]="'primary'">Добавить вопрос
+        <button mat-raised-button color="main-page-container-buttons-item" [ngClass]="'primary'"
+        (click)="onAddNewQuestion()">Добавить вопрос
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">

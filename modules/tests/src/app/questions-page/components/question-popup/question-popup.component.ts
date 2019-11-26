@@ -13,8 +13,13 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 export class QuestionPopupComponent implements OnInit {
 
   public question: Question;
+  public chosenQuestionType: any;
 
   form: FormGroup;
+  formOneAnswer: FormGroup;
+  formMultiAnswer: FormGroup;
+  formWord: FormGroup;
+  formSequence: FormGroup;
 
   public readonly ANSWER_TYPES: any = [{id: 0, label: "С одним вариантом"},
     {id: 1, label: "С несколькими вариантами"},
@@ -31,10 +36,12 @@ export class QuestionPopupComponent implements OnInit {
     this.form = this.formBuilder.group({
       signature: ['', Validators.required]
     });
-    this.testService.getQuestion(this.data.event).subscribe((question) => {
-      this.question = question;
-      //this.form.controls['signature'].value = question.Description;
-    });
+    if (this.data.event) {
+      this.testService.getQuestion(this.data.event).subscribe((question) => {
+        this.question = question;
+        //this.form.controls['signature'].value = question.Description;
+      });
+    }
   }
 
   onNoClick(): void {
@@ -58,6 +65,36 @@ export class QuestionPopupComponent implements OnInit {
   }
 
   public onValueChange(event): void {
+    this.chosenQuestionType = event.source.value;
+    this.initForm();
+  }
 
+  private initForm() {
+    switch (this.chosenQuestionType) {
+      case 0: {
+        this.formOneAnswer = this.formBuilder.group({
+          key0: ['jj', Validators.required]
+        });
+        break;
+      }
+      case 1: {
+        this.formMultiAnswer = this.formBuilder.group({
+          key0: ['', Validators.required]
+        });
+        break;
+      }
+      case 2: {
+        this.formWord = this.formBuilder.group({
+          key0: ['', Validators.required]
+        });
+        break;
+      }
+      case 3: {
+        this.formSequence = this.formBuilder.group({
+          key0: ['', Validators.required]
+        });
+        break;
+      }
+    }
   }
 }

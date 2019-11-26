@@ -7,7 +7,7 @@ import {Test} from "../../../models/test.model";
 @Component({
   selector: 'app-edit-test-popup',
   templateUrl: './edit-test-popup.component.html',
-  styleUrls: ['./edit-test-popup.component.css']
+  styleUrls: ['./edit-test-popup.component.less']
 })
 export class EditTestPopupComponent implements OnInit {
 
@@ -19,7 +19,6 @@ export class EditTestPopupComponent implements OnInit {
 
   public chosenType: any;
   public editingTest: Test;
-  public test: Test = new Test();
 
   constructor(private testService: TestService,
               public dialogRef: MatDialogRef<EditTestPopupComponent>,
@@ -27,51 +26,54 @@ export class EditTestPopupComponent implements OnInit {
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 
   ngOnInit() {
     if (this.data.event) {
-      this.testService.getTestTestById(this.data.event.Id).subscribe((test) => {
-        this.editingTest = test;
-      });
+      this.loadTests();
       console.log(this.data);
     } else {
       this.editingTest = new Test();
     }
   }
+  public loadTests():void{
+    this.testService.getTestTestById(this.data.event.Id).subscribe((test) => {
+      this.editingTest = test;
+    });
+  }
 
   onYesClick() {
     switch (this.chosenType) {
       case 'Тест для самоконтроля': {
-        this.test['ForSelfStudy'] = true;
+        this.editingTest['ForSelfStudy'] = true;
         break;
       }
       case 'Предтест для обучения в ЭУМК': {
-        this.test['BeforeEUMK'] = true;
+        this.editingTest['BeforeEUMK'] = true;
         break;
       }
       case 'Тест для обучения в ЭУМК': {
-        this.test['ForEUMK'] = true;
+        this.editingTest['ForEUMK'] = true;
         break;
       }
       case 'Тест для обучения с искусственной нейронной сетью': {
-        this.test['ForNN'] = true;
+        this.editingTest['ForNN'] = true;
         break;
       }
     }
-    this.test['SubjectId'] = 3;
-    this.testService.saveTest(this.test).subscribe();
-    this.dialogRef.close("fdfd");
+    this.editingTest['SubjectId'] = 3;
+    this.testService.saveTest(this.editingTest).subscribe();
+    this.dialogRef.close(true);
 
 
   }
 
   public writeTitle(event, field): void {
-    this.test[field] = event.currentTarget.value;
+    this.editingTest[field] = event.currentTarget.value;
   }
 
   checkBoxTrue(event: MatCheckboxChange) {
-    this.test['SetTimeForAllTest'] = event.checked;
+    this.editingTest['SetTimeForAllTest'] = event.checked;
   }
 }

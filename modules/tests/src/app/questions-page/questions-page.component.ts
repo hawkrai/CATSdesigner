@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TestService} from "../service/test.service";
 import {Question} from "../models/question/question.model";
 import {ActivatedRoute} from "@angular/router";
@@ -17,18 +17,24 @@ export class QuestionsPageComponent implements OnInit {
   public questions: Question[];
   public questionsDefault: Question[];
   public test: Test;
+  public testId: string;
 
   constructor(private testService: TestService,
               private route: ActivatedRoute,
+              private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
   }
 
   ngOnInit() {
-    const testId = this.route.snapshot.paramMap.get('id');
-    this.testService.getTestTestById(testId).subscribe((test) => {
+    this.testId = this.route.snapshot.paramMap.get('id');
+    this.testService.getTestTestById(this.testId).subscribe((test) => {
       this.test = test;
     });
-    this.testService.getQuestionsByTest(testId).subscribe((questions) => {
+    this.loadQuestions();
+  }
+
+  public loadQuestions(): void {
+    this.testService.getQuestionsByTest(this.testId).subscribe((questions) => {
       this.questions = questions;
       this.questionsDefault = questions;
     });
@@ -36,6 +42,8 @@ export class QuestionsPageComponent implements OnInit {
 
   public deleteQuestion(event): void {
     this.testService.deleteQuestion(event).subscribe();
+    this.loadQuestions();
+    this.cdr.detectChanges();
   }
 
   public openPopup(event): void {
@@ -53,5 +61,9 @@ export class QuestionsPageComponent implements OnInit {
   public filterQuestions(event): void {
     this.questions = (JSON.parse(JSON.stringify(this.questionsDefault)));
     this.questions = this.questions.filter(question => question.Title.includes(event));
+  }
+
+  public addNewQuestion(): void {
+    this.openPopup(null);
   }
 }
