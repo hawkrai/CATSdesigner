@@ -63,4 +63,8 @@ export class TestService {
   saveTest(test: Test): Observable<void> {
     return this.http.post<void>('/Tests/SaveTest', test);
   }
+
+  saveQuestion(question: Question): Observable<void> {
+    return this.http.post<void>('/Tests/SaveQuestion', question);
+  }
 }

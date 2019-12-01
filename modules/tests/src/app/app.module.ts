@@ -37,7 +37,8 @@ import { StudentMarksTableComponent } from './shared/student-marks-table/student
 import { ResultTestTablePupilComponent } from './shared/result-test-table-pupil/result-test-table-pupil.component';
 import { AnswersPopupComponent } from './shared/result-test-table/components/answers-popup/answers-popup.component';
 import { ControlCompletingComponent } from './control-completing/control-completing.component';
-
+import { ChartsModule } from 'ng2-charts';
+import {CKEditorModule} from "ng2-ckeditor";
 
 @NgModule({
   declarations: [
@@ -76,7 +77,9 @@ import { ControlCompletingComponent } from './control-completing/control-complet
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    DemoMaterialModule
+    DemoMaterialModule,
+    ChartsModule,
+    CKEditorModule
   ],
   providers: [TestPassingService,
     TestService,

@@ -1,55 +1,105 @@
 <ng-container *ngIf="!data.event || question;else loading">
-  <h1 mat-dialog-title class="question-popup-container">{{'Вопрос для теста - ' + data.title}}</h1>
-  <div mat-dialog-content>
-    <mat-form-field class="question-popup-full">
-      <textarea matInput [placeholder]="'Название вопроса'" [value]="question && question.Title ? question.Title : ''"></textarea>
-    </mat-form-field>
-  </div>
+  <ng-container>
+    <h1 mat-dialog-title class="question-popup-container">{{'Вопрос для теста - ' + data.title}}</h1>
+    <div mat-dialog-content>
+      <mat-form-field class="question-popup-full">
+      <textarea matInput [placeholder]="'Название вопроса'"
+                [value]="question && question.Title ? question.Title : ''" (change)="writeTitle($event, 'Title')"></textarea>
+      </mat-form-field>
+    </div>
 
-  <div mat-dialog-content [formGroup]="form">
-    <p>Описание</p>
-    <angular-editor formControlName="signature" (ngModelChange)="onChange2($event)"></angular-editor>
-  </div>
+    <div mat-dialog-content>
+      <p>Описание</p>
+      <ckeditor [(ngModel)]="question.Description"
+                #myckeditor="ngModel"
+                name="myckeditor"
+                required
+                [config]="ckeConfig"
+                debounce="500"
+                (paste)="onPaste($event)"
+                (change)="onChange1($event)">
+      </ckeditor>
+    </div>
 
-  <div mat-dialog-content>
-    <h1 mat-dialog-title class="question-popup-container">{{'Ответы'}}</h1>
-  </div>
-  <div mat-dialog-content>
-    <div class="question-popup-types-container">
-      <div class="question-popup-types-container-button">
-        <button mat-raised-button color="primary" (click)="addAnswer()">Добавить ответ</button>
-      </div>
-      <div class="question-popup-types-container-dropdown">
-        <mat-form-field>
-          <mat-label>{{"Тип вопроса"}}</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id" (onSelectionChange)="onValueChange($event)">
-              {{type.label}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+    <div mat-dialog-content>
+      <h1 mat-dialog-title class="question-popup-container">{{'Ответы'}}</h1>
+    </div>
+    <div mat-dialog-content>
+      <div class="question-popup-types-container">
+        <div class="question-popup-types-container-button">
+          <button mat-raised-button color="primary" (click)="addAnswer()">Добавить ответ</button>
+        </div>
+        <div class="question-popup-types-container-dropdown">
+          <mat-form-field>
+            <mat-label>{{"Тип вопроса"}}</mat-label>
+            <mat-select (selectionChange)="onValueChange($event)">
+              <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id">
+                {{type.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div mat-dialog-content>
-    <ng-container *ngIf="chosenQuestionType === 0 && formOneAnswer">
-      <form formGroupName="formOneAnswer">
-        <mat-radio-group
-          aria-labelledby="example-radio-group-label"
-          class="example-radio-group">
-          <mat-radio-button formControlName="key0" class="example-radio-button" [value]="0">
-            {{""}}
+    <div mat-dialog-content class="question-popup-answers">
+      <ng-container *ngIf="chosenQuestionType === 0">
+        <mat-radio-group [(ngModel)]="chosenType" (change)="kkkk($event)"
+                         aria-labelledby="example-radio-group-label"
+                         class="example-radio-group question-popup-answers-input">
+          <mat-radio-button class="example-radio-button question-popup-answers-item"
+                            *ngFor="let control of charsde, let i = index" [value]="control">
+            <input class="question-popup-answers-item-input" matInput [(ngModel)]="chars[control]">
+            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                      matTooltipClass="example-tooltip-green">delete
+            </mat-icon>
           </mat-radio-button>
         </mat-radio-group>
-      </form>
-    </ng-container>
-  </div>
+      </ng-container>
+      <ng-container *ngIf="chosenQuestionType === 1">
+        <section class="example-section">
+          <mat-checkbox class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[control][1]"
+                        *ngFor="let control of charsde, let i = index">
+            <input class="question-popup-answers-item-input" matInput [(ngModel)]="charsNeskolko[control][0]">
+            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                      matTooltipClass="example-tooltip-green">delete
+            </mat-icon>
+          </mat-checkbox>
+        </section>
+      </ng-container>
+      <ng-container *ngIf="chosenQuestionType === 2">
+        <div *ngFor="let control of charsde, let i = index">
+          {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
+                                 [(ngModel)]="charsWords[control]">
+          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                    matTooltipClass="example-tooltip-green">delete
+          </mat-icon>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="chosenQuestionType === 3">
+        <div *ngFor="let control of charsde, let i = index">
+          {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
+                                 [(ngModel)]="charsSequence[control]">
+          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                    matTooltipClass="example-tooltip-green">delete
+          </mat-icon>
+        </div>
+      </ng-container>
+    </div>
 
-  <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Закрыть</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="'435534'" cdkFocusInitial>Сохранить</button>
-  </div>
+    <div mat-dialog-content>
+      <mat-form-field class="question-popup-complexity">
+        <input matInput type="number" [placeholder]="'Уровень сложности'"
+               [value]="question && question.ComlexityLevel ? question.ComlexityLevel : 0"
+               (change)="writeTitle($event, 'ComlexityLevel')">
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">Закрыть</button>
+      <button mat-raised-button color="primary" [mat-dialog-close]="'435534'" (click)="onYesClick()" cdkFocusInitial>Сохранить</button>
+    </div>
+  </ng-container>
 </ng-container>
 <ng-template #loading>
   <div class="question-popup-loader">

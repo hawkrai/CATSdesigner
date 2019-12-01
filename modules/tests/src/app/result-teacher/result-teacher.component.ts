@@ -115,7 +115,7 @@ export class ResultTeacherComponent implements OnInit {
   }
 
   public filterStudents(event: string): void {
-    let results = this.resultsOriginal.filter(result => result.StudentName.includes(event));
+    let results = this.resultsOriginal.filter(result => result.StudentName.toLowerCase().includes(event.toLowerCase()));
     this.decomposeResult(results);
     this.cdr.detectChanges();
   }

@@ -1,7 +1,44 @@
 .question-popup {
+  overflow:auto;
+  position: fixed;
+  &-complexity{
+    width: 100%;
+  }
   &-container {
     border-bottom: 1px solid rgba(0, 0, 0, .42);
     text-align: center;
+  }
+  &-answers {
+    &-input {
+      width: 100%;
+      .mat-checkbox-layout{
+        width: 100%;
+      }
+      .mat-checkbox-label{
+        width: 100%;
+      }
+    }
+    &-item {
+      width: 100%;
+      display: flex;
+      margin-bottom: 20px;
+      .mat-radio-label-content {
+        width: 100%;
+      }
+
+      &-input {
+        border-bottom: 1px solid;
+        &-only{
+          padding-bottom: 10px;
+          border-bottom: 1px solid;
+          width: 90%;
+        }
+      }
+    }
+
+    .mat-checkbox-layout {
+      width: 100%;
+    }
   }
   &-loader {
     display: flex;
@@ -33,3 +70,26 @@
     }
   }
 }
+
+.mat-radio-label-content {
+  width: 100%;
+}
+
+.example-section {
+  display: inline-grid;
+  width: 100%;
+}
+
+.example-margin {
+  margin-top: 20px;
+  .mat-checkbox-layout {
+    width: 100%;
+  }
+  .mat-checkbox-inner-container {
+    width: 100%;
+  }
+  .mat-checkbox-label {
+    width: 100%;
+  }
+}
+

@@ -26,12 +26,12 @@
           сети
         </button>
       </div>
-      <div *ngIf="groupDropdown">
+      <div *ngIf="groupDropdown && groups">
         <mat-form-field>
           <mat-label>Выберите группу</mat-label>
-          <mat-select>
+          <mat-select [(value)]="groups[0].Id" (selectionChange)="onGroupValueChange($event)">
             <!--//todo doesn't work-->
-            <mat-option *ngFor="let group of groups" [value]="group.Id" (onSelectionChange)="onGroupValueChange(group.Id)">
+            <mat-option *ngFor="let group of groups" [value]="group.Id"  >
               {{group.Name}}
             </mat-option>
           </mat-select>

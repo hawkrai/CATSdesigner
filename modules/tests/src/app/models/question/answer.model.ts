@@ -3,6 +3,7 @@ export class Answer {
   Question: any;
   Content: string;
   CorrectnessIndicator: number;
+  IsCorrect: number;
   Id: number;
   IsNew: boolean;
 }

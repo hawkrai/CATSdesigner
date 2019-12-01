@@ -38,6 +38,23 @@
     </ng-container>
   </ng-container>
 </ng-container>
+
+<div>
+  <div>
+    <div style="display: block">
+      <canvas baseChart
+              [datasets]="barChartData"
+              [labels]="barChartLabels"
+              [options]="barChartOptions"
+              [plugins]="barChartPlugins"
+              [legend]="barChartLegend"
+              [chartType]="barChartType">
+      </canvas>
+    </div>
+  </div>
+</div>
+
+
 <ng-template #loading>
   <mat-card>
     <mat-card-content>

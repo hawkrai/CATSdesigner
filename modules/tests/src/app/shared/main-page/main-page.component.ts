@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Group} from "../../models/group.model";
 
 
@@ -7,7 +7,7 @@ import {Group} from "../../models/group.model";
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.less']
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent implements OnInit, OnChanges {
 
   @Input()
   public allowChanges: boolean;
@@ -50,7 +50,7 @@ export class MainPageComponent implements OnInit {
   }
 
   public onGroupValueChange(event): void {
-    this.groupValueChange.emit(event);
+    this.groupValueChange.emit(event.source.value);
   }
 
   public onOpenAddingPopup(): void {
@@ -59,5 +59,10 @@ export class MainPageComponent implements OnInit {
 
   public onAddNewQuestion(): void {
     this.addNewQuestion.emit();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("ngOnChanges");
+
   }
 }
