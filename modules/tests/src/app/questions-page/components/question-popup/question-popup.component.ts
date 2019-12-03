@@ -36,7 +36,6 @@ export class QuestionPopupComponent implements OnInit {
     {id: 1, label: "С несколькими вариантами"},
     {id: 2, label: "Ввод с клавиатуры"},
     {id: 3, label: "Последовательность элементов"}];
-  private testId: string;
 
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
@@ -47,7 +46,6 @@ export class QuestionPopupComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.testId = this.route.snapshot.paramMap.get('id');
     this.ckeConfig = {
       allowedContent: false,
       extraPlugins: 'divarea',
@@ -171,9 +169,10 @@ export class QuestionPopupComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  public writeTitle(event, control): void {
+  public writeTitle(event, control, number?: boolean): void {
     console.log(event.target.value);
-    this.question[control] = event.target.value;
+
+    this.question[control] = number ? Number(event.target.value) : event.target.value;
   }
 
   onChange1($event: any): void {
@@ -225,10 +224,12 @@ export class QuestionPopupComponent implements OnInit {
       Object.values(this.chars).forEach((value) => {
           let question = new Answer();
           question['Content'] = value;
+          question['IsCorrect'] = 0;
           this.question.Answers.push(question);
       });
       let num = Number(this.chosenType.split("key")[1]);
       this.question.Answers[num].IsCorrect = 1;
+      this.question.Answers[0].QuestionId = 0;
     } else if (this.chosenQuestionType === 1) {
 
       this.charsde = Object.keys(this.charsNeskolko);
@@ -237,7 +238,12 @@ export class QuestionPopupComponent implements OnInit {
     } else if (this.chosenQuestionType === 3) {
       this.charsde = Object.keys(this.charsSequence);
     }
-    this.question['TestId'] = Number(this.testId);
-    this.testService.saveQuestion(this.question).subscribe();
+    this.question['TestId'] = this.data.test;
+    /*this.question['QuestionType'] = 0;
+    this.question['Id'] = 0;
+    this.question['ConceptId'] = null;*/
+    this.testService.saveQuestion(this.question).subscribe(()=>{
+      this.dialogRef.close(true);
+    });
   }
 }

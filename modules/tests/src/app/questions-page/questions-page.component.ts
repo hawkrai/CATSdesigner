@@ -50,13 +50,15 @@ export class QuestionsPageComponent implements OnInit {
     const title = this.test.Title;
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       width: '700px',
-      data: {event, title},
+      data: {event, title, test: this.testId},
       autoFocus: false,
       maxHeight: '90vh'
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+      if(result){
+        this.loadQuestions();
+      }
     });
   }
 

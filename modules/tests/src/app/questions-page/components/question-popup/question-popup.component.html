@@ -91,13 +91,13 @@
       <mat-form-field class="question-popup-complexity">
         <input matInput type="number" [placeholder]="'Уровень сложности'"
                [value]="question && question.ComlexityLevel ? question.ComlexityLevel : 0"
-               (change)="writeTitle($event, 'ComlexityLevel')">
+               (change)="writeTitle($event, 'ComplexityLevel', true)">
       </mat-form-field>
     </div>
 
     <div mat-dialog-actions>
       <button mat-button (click)="onNoClick()">Закрыть</button>
-      <button mat-raised-button color="primary" [mat-dialog-close]="'435534'" (click)="onYesClick()" cdkFocusInitial>Сохранить</button>
+      <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>Сохранить</button>
     </div>
   </ng-container>
 </ng-container>
