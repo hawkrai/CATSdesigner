@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Group} from "../../models/group.model";
 
 
@@ -7,7 +7,7 @@ import {Group} from "../../models/group.model";
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.less']
 })
-export class MainPageComponent implements OnInit, OnChanges {
+export class MainPageComponent implements OnInit {
 
   @Input()
   public allowChanges: boolean;
@@ -39,6 +39,9 @@ export class MainPageComponent implements OnInit, OnChanges {
   @Output()
   public addNewQuestion: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  public addQuestionFromOtherTestEvent: EventEmitter<any> = new EventEmitter();
+
   constructor() {
   }
 
@@ -61,8 +64,7 @@ export class MainPageComponent implements OnInit, OnChanges {
     this.addNewQuestion.emit();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log("ngOnChanges");
-
+  public addQuestionFromOtherTest(): void {
+    this.addQuestionFromOtherTestEvent.emit();
   }
 }

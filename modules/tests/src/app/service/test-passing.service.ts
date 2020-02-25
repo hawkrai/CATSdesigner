@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {TestDescription} from '../models/test-description.model';
-import {TestQuestion} from '../models/question/test-question.model';
 import {Result} from "../models/result.model";
 import {UserAnswers} from "../models/user-answers.model";
 import {ControlItems} from "../models/control-items.model";
@@ -25,8 +24,8 @@ export class TestPassingService {
     return this.http.get<Test[]>('/TestPassing/getAvailableTests?subjectId=3');
   }
 
-  getNextQuestion(testId: string, questionNumber: string): Observable<TestQuestion> {
-    return this.http.get<TestQuestion>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&userId=10031');
+  getNextQuestion(testId: string, questionNumber: string): Observable<any> {
+    return this.http.get<any>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&userId=10031');
   }
 
   getStudentResults(subjectId: string): Observable<Test[]> {
@@ -34,7 +33,7 @@ export class TestPassingService {
   }
 
   answerQuestionAndGetNext(answer: any): Observable<any> {
-    return this.http.post<any>('TestPassing/AnswerQuestionAndGetNext', answer);
+    return this.http.post<any>('TestPassing/AnswerQuestionAndGetNextMobile', answer);
   }
 
   getResultsByGroupAndSubject(groupId: string, subjectId: string = "3"): Observable<Result[]> {
@@ -47,5 +46,9 @@ export class TestPassingService {
 
   getControlItems(subjectId: string): Observable<ControlItems[]> {
     return this.http.get<ControlItems[]>('/TestPassing/GetControlItems?subjectId=3');
+  }
+
+  getAnswersForEndedTest(testID: number, userId: number): Observable<ControlItems[]> {
+    return this.http.get<ControlItems[]>('/TestPassing/GetAnswersForEndedTest?testId=' + testID + '&userId=' + userId);
   }
 }

@@ -67,6 +67,8 @@ export class ResultTeacherComponent implements OnInit {
         resultForTable.name = result.StudentName;
         resultForTable.subGroup = result.SubGroup;
         resultForTable.StudentShortName = result.StudentShortName;
+        resultForTable.id = result && result.TestPassResults && result.TestPassResults[0].StudentId;
+
         this.initTestArray(this.selfControlTests, resultForTable, result.Login);
         this.initTestArray(this.nNTests, resultForTable, result.Login);
         this.initTestArray(this.beforeEUMKTests, resultForTable, result.Login);

@@ -91,10 +91,10 @@ export class ResultTestTableComponent implements OnInit {
   }
 
 
-  public openAnswersDialog(event?: any): void {
+  public openAnswersDialog(event?: any, id?: any): void {
     const dialogRef = this.dialog.open(AnswersPopupComponent, {
       width: '800px',
-      data: {event}
+      data: {event, id}
     });
 
     dialogRef.afterClosed().subscribe(result => {

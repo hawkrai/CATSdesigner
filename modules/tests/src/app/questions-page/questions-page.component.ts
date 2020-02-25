@@ -5,6 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material";
 import {QuestionPopupComponent} from "./components/question-popup/question-popup.component";
 import {Test} from "../models/test.model";
+import {QuestionOtherTestComponent} from "./components/question-other-test/question-other-test.component";
 
 
 @Component({
@@ -51,6 +52,21 @@ export class QuestionsPageComponent implements OnInit {
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       width: '700px',
       data: {event, title, test: this.testId},
+      autoFocus: false,
+      maxHeight: '90vh'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.loadQuestions();
+      }
+    });
+  }
+
+  public addQuestionFromOtherTest(event): void {
+    const dialogRef = this.dialog.open(QuestionOtherTestComponent, {
+      width: '700px',
+      data: {event, test: this.testId},
       autoFocus: false,
       maxHeight: '90vh'
     });

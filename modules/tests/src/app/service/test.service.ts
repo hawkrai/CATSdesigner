@@ -67,4 +67,8 @@ export class TestService {
   saveQuestion(question: Question): Observable<void> {
     return this.http.post<void>('/Tests/SaveQuestion', question);
   }
+
+  getTestForLector(): Observable<Test[]> {
+    return this.http.get<Test[]>('/Tests/GetTestForLector');
+  }
 }

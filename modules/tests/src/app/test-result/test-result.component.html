@@ -1,0 +1,21 @@
+<app-header [text]="'Тестирование и отладка ПО'"
+            [smallText]="'Доступные тесты'"></app-header>
+<div class="test-result__container">
+  <div class="test-result__title" *ngIf="test">
+    {{"Тест - " + test.Title + " - завершен"}}
+  </div>
+  <div class="test-result__mark">
+    {{"Ваша оценка - " + mark}}
+  </div>
+  <div class="test-result__results">
+    <div class="test-result__results-line" *ngFor="let question of result">
+      <div class="test-result__results-line-mark">{{"Вопрос №" + question.Number}}</div>
+      <div class="test-result__results-line-color" [class.right]="question.Points !== 0"
+           [class.fail]="question.Points === 0"></div>
+    </div>
+  </div>
+  <div class="test-result__backlink">
+    <mat-icon>keyboard_backspace</mat-icon>
+    {{"Вернуться к ЭУМК"}}
+  </div>
+</div>

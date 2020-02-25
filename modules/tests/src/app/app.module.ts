@@ -39,6 +39,8 @@ import { AnswersPopupComponent } from './shared/result-test-table/components/ans
 import { ControlCompletingComponent } from './control-completing/control-completing.component';
 import { ChartsModule } from 'ng2-charts';
 import {CKEditorModule} from "ng2-ckeditor";
+import { QuestionOtherTestComponent } from './questions-page/components/question-other-test/question-other-test.component';
+import { TestResultComponent } from './test-result/test-result.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,9 @@ import {CKEditorModule} from "ng2-ckeditor";
     StudentMarksTableComponent,
     ResultTestTablePupilComponent,
     AnswersPopupComponent,
-    ControlCompletingComponent
+    ControlCompletingComponent,
+    QuestionOtherTestComponent,
+    TestResultComponent
   ],
   imports: [
     FormsModule,
@@ -87,6 +91,7 @@ import {CKEditorModule} from "ng2-ckeditor";
   entryComponents: [DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,
     QuestionPopupComponent,
+    QuestionOtherTestComponent,
     AnswersPopupComponent],
   bootstrap: [AppComponent]
 })

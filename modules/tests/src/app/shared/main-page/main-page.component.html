@@ -17,7 +17,8 @@
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
-        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'other-test'">Добавить вопрос из
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'other-test'"
+        (click)="addQuestionFromOtherTest()">Добавить вопрос из
           другого теста
         </button>
       </div>

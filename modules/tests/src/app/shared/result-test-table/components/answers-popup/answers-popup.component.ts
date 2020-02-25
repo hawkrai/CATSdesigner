@@ -19,7 +19,7 @@ export class AnswersPopupComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.testPassingService.getAnswersByStudentAndTest("3", this.data.event).subscribe((answers) => {
+    this.testPassingService.getAnswersByStudentAndTest(this.data.id, this.data.event).subscribe((answers) => {
       this.answers = answers;
     })
   }

@@ -3,6 +3,9 @@ import {TestQuestion} from '../../../models/question/test-question.model';
 import {Answer} from '../../../models/question/answer.model';
 import {TestPassingService} from '../../../service/test-passing.service';
 import {Test} from "../../../models/test.model";
+import {catchError, tap} from "rxjs/operators";
+import {of} from "rxjs";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -24,9 +27,10 @@ export class QuestionComponent implements OnInit {
   public chosenAnswer: Answer;
 
   @Output()
-  public goToNextQuestion: EventEmitter<any> = new EventEmitter();
+  public goToNextQuestion: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private testPassingService: TestPassingService) {
+  constructor(private testPassingService: TestPassingService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -34,21 +38,34 @@ export class QuestionComponent implements OnInit {
 
   public answerQuestion(): void {
     //todo hardcode
-    const request = {
-      answers: [{Id: '2523', IsCorrect: 0}
-        , {Id: '2524', IsCorrect: 0}
-        , {Id: '2522', IsCorrect: 0}
-        , {Id: '2525', IsCorrect: 1}],
-      questionNumber: 4,
-      testId: 31
-    };
-    this.testPassingService.answerQuestionAndGetNext(request).subscribe((response) => {
-      this.getOnNextQuestion();
-    });
     console.log(this.chosenAnswer);
+    const request = {
+      answers: [],
+      questionNumber: this.questionNumber,
+      testId: this.test.Id,
+      userId: 10031
+    };
+    this.question.Question.Answers.forEach((answer, index) => {
+      if (this.question.Question.Answers.length === index + 1) {
+        request.answers.push({Id: answer.Id.toString(), IsCorrect: 1});
+      }
+      else {
+        request.answers.push({Id: answer.Id.toString(), IsCorrect: 0});
+      }
+    });
+
+    this.testPassingService.answerQuestionAndGetNext(request)
+      .pipe(
+        tap(() => this.getOnNextQuestion(true)),
+        catchError(() => {
+          this.router.navigate(['/test-result'], {queryParams: {testId: this.test.Id}});
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
-  public getOnNextQuestion(): void {
-    this.goToNextQuestion.emit();
+  public getOnNextQuestion(answered: boolean): void {
+    this.goToNextQuestion.emit(answered);
   }
 }

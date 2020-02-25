@@ -4,7 +4,7 @@
     <div class="question-title-small" *ngIf="test">{{test.Title}}</div>
   </div>
   <div class="question-question">
-    <div class="question-question-text">{{question.Question.Title}}</div>
+    <div class="question-question-text">{{question?.Question?.Title}}</div>
   </div>
   <div class="question-block">
     <div class="question-answer-block">
@@ -18,7 +18,7 @@
             aria-labelledby="example-radio-group-label"
             class="question-example-radio-group"
             [(ngModel)]="chosenAnswer">
-            <mat-radio-button class="question-example-radio-button" *ngFor="let answer of question.Question.Answers"
+            <mat-radio-button class="question-example-radio-button" *ngFor="let answer of question?.Question?.Answers"
                               [value]="answer">
               {{answer.Content}}
             </mat-radio-button>
@@ -37,7 +37,7 @@
       </div>
       <div class="question-button-container">
         <div class="question-button-container-item">
-          <button mat-raised-button color="primary" (click)="getOnNextQuestion()">
+          <button mat-raised-button color="primary" (click)="getOnNextQuestion(false)">
             <mat-icon>arrow_forward_ios</mat-icon>
             Пропустить
           </button>

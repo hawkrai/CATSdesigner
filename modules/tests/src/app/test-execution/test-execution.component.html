@@ -8,12 +8,12 @@
   </div>
   <div class="test-execution-block-question">
     <app-question *ngIf="question" [question]="question" [questionNumber]="questionNumber"
-                  (goToNextQuestion)="nextQuestion()" [test]="test"></app-question>
+                  (goToNextQuestion)="nextQuestion($event)" [test]="test"></app-question>
   </div>
-  <div class="test-execution-block-progress">
+  <div class="test-execution-block-progress" *ngIf="test">
     <div class="test-execution-block-progress-block">
-      <div class="test-execution-block-progress-block-item" (click)="nextQuestion(i+1)" [class.answered]="false"
-           [class.failed]="true" *ngFor="let dummy of ' '.repeat(20).split(''), let i = index">
+      <div class="test-execution-block-progress-block-item" (click)="nextQuestion(false, i+1)" [class.answered]="false"
+           [class.failed]="false" *ngFor="let dummy of ' '.repeat(test.CountOfQuestions).split(''), let i = index">
         {{i+1}}
       </div>
     </div>

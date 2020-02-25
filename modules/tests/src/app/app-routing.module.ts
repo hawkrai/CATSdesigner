@@ -9,6 +9,7 @@ import {QuestionsPageComponent} from "./questions-page/questions-page.component"
 import {ResultPupilComponent} from "./result-pupil/result-pupil.component";
 import {ResultTeacherComponent} from "./result-teacher/result-teacher.component";
 import {ControlCompletingComponent} from "./control-completing/control-completing.component";
+import {TestResultComponent} from "./test-result/test-result.component";
 
 
 const routes: Routes = [
@@ -20,6 +21,7 @@ const routes: Routes = [
   {path: 'result-pupil/:id', component: ResultPupilComponent},
   {path: 'control-completing', component: ControlCompletingComponent},
   {path: 'test-control', component: TestControlPageComponent},
+  {path: 'test-result', component: TestResultComponent},
   {path: 'result-teacher', component: ResultTeacherComponent},
 ];
 

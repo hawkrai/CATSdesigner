@@ -1,0 +1,47 @@
+.test-result {
+  &__container {
+    padding-top: 50px;
+    padding-left: 5px;
+  }
+
+  &__title {
+    font-size: 26px;
+    padding-bottom: 5px;
+  }
+
+  &__mark {
+    font-size: 19px;
+    padding-bottom: 10px;
+  }
+
+  &__results {
+    &-line {
+      display: flex;
+      padding-bottom: 2px;
+      &-mark {
+        display: flex;
+        flex: 0 0 20%;
+      }
+      &-color {
+        display: flex;
+        flex: 0 0 80%;
+
+
+      }
+    }
+  }
+
+  &__backlink {
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+}
+.right{
+  background-color: rgb(143, 207, 118);
+}
+
+.fail{
+  background-color: rgb(250, 112, 112);
+}
