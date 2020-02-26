@@ -25,6 +25,7 @@ export class QuestionComponent implements OnInit {
   public test: Test;
 
   public chosenAnswer: Answer;
+  public charsNeskolko: { [key: string]: any } = {};
 
   @Output()
   public goToNextQuestion: EventEmitter<boolean> = new EventEmitter();
@@ -34,6 +35,10 @@ export class QuestionComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.question);
+    if (this.question.Question.QuestionType === 0) {
+
+    }
   }
 
   public answerQuestion(): void {
@@ -41,18 +46,34 @@ export class QuestionComponent implements OnInit {
     console.log(this.chosenAnswer);
     const request = {
       answers: [],
-      questionNumber: this.questionNumber,
+      questionNumber: this.question.Number,
       testId: this.test.Id,
       userId: 10031
     };
-    this.question.Question.Answers.forEach((answer, index) => {
-      if (this.question.Question.Answers.length === index + 1) {
-        request.answers.push({Id: answer.Id.toString(), IsCorrect: 1});
-      }
-      else {
-        request.answers.push({Id: answer.Id.toString(), IsCorrect: 0});
-      }
-    });
+    if (this.question.Question.QuestionType === 0) {
+      this.question.Question.Answers.forEach((answer) => {
+        if (answer.Id === this.chosenAnswer.Id) {
+          request.answers.push({Id: answer.Id.toString(), IsCorrect: 1});
+        }
+        else {
+          request.answers.push({Id: answer.Id.toString(), IsCorrect: 0});
+        }
+      });
+    } else if (this.question.Question.QuestionType === 1) {
+      this.question.Question.Answers.forEach((answer, index) => {
+        if (this.question.Question.Answers.length === index + 1) {
+          request.answers.push({Id: answer.Id.toString(), IsCorrect: 1});
+        }
+        else {
+          request.answers.push({Id: answer.Id.toString(), IsCorrect: 0});
+        }
+      });
+
+    } else if (this.question.Question.QuestionType === 2) {
+
+    } else if (this.question.Question.QuestionType === 3) {
+
+    }
 
     this.testPassingService.answerQuestionAndGetNext(request)
       .pipe(
@@ -67,5 +88,9 @@ export class QuestionComponent implements OnInit {
 
   public getOnNextQuestion(answered: boolean): void {
     this.goToNextQuestion.emit(answered);
+  }
+
+  public onValueChange(event): void {
+    console.log(event);
   }
 }

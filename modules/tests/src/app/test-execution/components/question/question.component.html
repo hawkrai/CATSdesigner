@@ -1,6 +1,6 @@
 <div class="question-container">
   <div class="question-title">
-    <div class="question-title-big">Вопрос №{{questionNumber}}</div>
+    <div class="question-title-big">Вопрос №{{question.Number}}</div>
     <div class="question-title-small" *ngIf="test">{{test.Title}}</div>
   </div>
   <div class="question-question">
@@ -14,15 +14,24 @@
       <div class="question-answers-block">
         <div class="question-answers-block-container">
           <!--<div class="question-answers-block-container-values">фрагменты фрагменты</div>-->
-          <mat-radio-group
-            aria-labelledby="example-radio-group-label"
-            class="question-example-radio-group"
-            [(ngModel)]="chosenAnswer">
+          <mat-radio-group *ngIf="this.question.Question.QuestionType === 0"
+                           aria-labelledby="example-radio-group-label"
+                           class="question-example-radio-group"
+                           [(ngModel)]="chosenAnswer">
             <mat-radio-button class="question-example-radio-button" *ngFor="let answer of question?.Question?.Answers"
                               [value]="answer">
               {{answer.Content}}
             </mat-radio-button>
           </mat-radio-group>
+          <div class="question-answers-block-container-checkboxes" *ngIf="this.question.Question.QuestionType === 1">
+            <mat-checkbox class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[i]"
+                          *ngFor="let answer of question?.Question?.Answers, let i = index">
+              {{answer.Content}}
+            </mat-checkbox>
+          </div>
+          <ng-container *ngIf="this.question.Question.QuestionType === 2">
+            <input matInput placeholder="Введите название теста" (change)="onValueChange($event)">
+          </ng-container>
         </div>
       </div>
     </div>

@@ -222,27 +222,54 @@ export class QuestionPopupComponent implements OnInit {
     this.question.Answers = [];
     if (this.chosenQuestionType === 0) {
       Object.values(this.chars).forEach((value) => {
-          let question = new Answer();
-          question['Content'] = value;
-          question['IsCorrect'] = 0;
-          this.question.Answers.push(question);
+        let question = new Answer();
+        question['Content'] = value;
+        question['IsCorrect'] = 0;
+        this.question.Answers.push(question);
       });
       let num = Number(this.chosenType.split("key")[1]);
       this.question.Answers[num].IsCorrect = 1;
       this.question.Answers[0].QuestionId = 0;
     } else if (this.chosenQuestionType === 1) {
+      Object.values(this.charsNeskolko).forEach((value) => {
+        let question = new Answer();
+        question['Content'] = value[0];
+        question['IsCorrect'] = value[1] ? 1 : 0;
+        this.question.Answers.push(question);
+      });
+      this.question.Answers[0].QuestionId = 0;
+
 
       this.charsde = Object.keys(this.charsNeskolko);
     } else if (this.chosenQuestionType === 2) {
-      this.charsde = Object.keys(this.charsWords);
-    } else if (this.chosenQuestionType === 3) {
-      this.charsde = Object.keys(this.charsSequence);
+      Object.values(this.charsWords).forEach((value) => {
+        let question = new Answer();
+        question['Content'] = value;
+        question['IsCorrect'] = 0;
+        this.question.Answers.push(question);
+      });
+      this.question.Answers[0].QuestionId = 0;
+
     }
+
+
+    else if (this.chosenQuestionType === 3) {
+
+      Object.values(this.charsSequence).forEach((value) => {
+        let question = new Answer();
+        question['Content'] = value;
+        question['IsCorrect'] = 0;
+        this.question.Answers.push(question);
+      });
+      this.question.Answers[0].QuestionId = 0;
+    }
+
+
     this.question['TestId'] = this.data.test;
     /*this.question['QuestionType'] = 0;
     this.question['Id'] = 0;
     this.question['ConceptId'] = null;*/
-    this.testService.saveQuestion(this.question).subscribe(()=>{
+    this.testService.saveQuestion(this.question).subscribe(() => {
       this.dialogRef.close(true);
     });
   }

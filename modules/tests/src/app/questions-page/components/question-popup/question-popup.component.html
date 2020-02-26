@@ -58,7 +58,7 @@
       </ng-container>
       <ng-container *ngIf="chosenQuestionType === 1">
         <section class="example-section">
-          <mat-checkbox class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[control][1]"
+          <mat-checkbox  class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[control][1]"
                         *ngFor="let control of charsde, let i = index">
             <input class="question-popup-answers-item-input" matInput [(ngModel)]="charsNeskolko[control][0]">
             <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"

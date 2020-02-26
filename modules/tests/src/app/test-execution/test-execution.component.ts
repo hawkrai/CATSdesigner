@@ -63,7 +63,7 @@ export class TestExecutionComponent implements OnInit {
           }
         }
         this.testPassingService.getNextQuestion(this.testId, this.questionNumber).subscribe((question: TestQuestion) => {
-          if (question && this.question.Question) {
+          if (question && question.Question) {
             this.question = question;
           } else {
             this.router.navigate(['/test-result'], {queryParams: {testId: this.test.Id}});
