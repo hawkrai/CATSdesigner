@@ -1,0 +1,19 @@
+<div class="visit-stats-component" *ngIf="visitStatsList">
+  <div style="width: 100%; overflow: auto">
+    <mat-form-field class="visit-stats-component__group-select" *ngIf="groups">
+      <mat-select [(value)]="groupId" (selectionChange)="onGroupChange($event.value)">
+        <mat-option *ngFor="let group of groups" [value]="group.Id">
+          {{group.Name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="visit-stats-component__search" appearance="outline">
+      <mat-label>Поиск по теме, фамилии</mat-label>
+      <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+  <div class="visit-stats-component__body">
+    <app-visit-stats-list [visitStatsList]="visitStatsList"></app-visit-stats-list>
+  </div>
+</div>

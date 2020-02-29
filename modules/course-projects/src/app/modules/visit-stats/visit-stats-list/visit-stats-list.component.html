@@ -1,0 +1,12 @@
+<div class="visit-stats-list-component">
+  <div class="visit-stats-list-component__stats table_header">
+    <p style="text-align: center">№</p>
+    <p>Студент</p>
+    <p>Тема курсового проекта (работы)</p>
+  </div>
+  <div class="visit-stats-list-component__stats" *ngFor="let stats of visitStatsList; index as i">
+    <p style="text-align: center">{{ i + 1 }}</p>
+    <p>{{ stats.Name }}</p>
+    <p>{{ stats.Group }}</p>
+  </div>
+</div>

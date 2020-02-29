@@ -1,0 +1,14 @@
+<div class="percentages-list-component">
+  <div class="percentages-list-component__percentage table_header">
+    <p style="text-align: center">№</p>
+    <p>Название этапа</p>
+    <p>Процент выполнения</p>
+    <p>Дата</p>
+  </div>
+  <div class="percentages-list-component__percentage" *ngFor="let percentage of percentages; index as i">
+    <p style="text-align: center">{{ i + 1 }}</p>
+    <p>{{ percentage.Name }}</p>
+    <p>{{ percentage.Percentage }}</p>
+    <p>{{ percentage.Date | date:'dd/MM/yyyy'}}</p>
+  </div>
+</div>
