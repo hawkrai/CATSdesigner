@@ -1,1 +1,32 @@
-<p>visit-lectures works!</p>
+<div class="visit-lectures-component">
+  <div class="visit-lectures-component__select-group">
+    <mat-form-field>
+        <mat-select [value]="groups ? groups[0].groupId : ''">
+        <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.groupId">
+          {{group.groupName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="visit-lectures-component__table-lecture-visiting" *ngIf="groupsVisiting">
+    <table mat-table [dataSource]="groupsVisiting.lecturesMarksVisiting" class="mat-elevation-z14">
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>№</th>
+        <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Студент</th>
+        <td mat-cell *matCellDef="let element"> {{element.studentName}}</td>
+      </ng-container>
+
+      <ng-container *ngFor="let day of calendar; let i = index" matColumnDef="{{day.date}}">
+        <th mat-header-cell *matHeaderCellDef ><div class="header-date">{{day.date}}</div></th>
+        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.marks[i].mark}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

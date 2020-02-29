@@ -21,7 +21,7 @@ export class SideMenuComponent implements OnInit {
     this.menuElements = [
       { name: 'Новости', tab: '/news'},
       { name: 'Лекции', tab: '/lectures'},
-      { name: 'Лабораторные работы', tab: '/'},
+      { name: 'Лабораторные работы', tab: '/labs'},
       { name: 'Тестирование знаний', tab: '/'},
     ];
 

@@ -1,19 +1,17 @@
-@import "~@material/button/dist/mdc.button.min.css";
-@import "~material-design-icons/iconfont/material-icons.css";
+@margin-for-table: 20px;
 
 .lectures-list-component {
-  &__lecture {
-    margin-top: 10px;
-    display: grid;
-    grid-template-columns: 0.1fr 2fr 0.5fr 0.5fr;
-    border-bottom: 1px solid darkorchid;
+  .mdc-data-table {
+    width: calc(100% - 2*@margin-for-table);
+
+    &__header-cell {
+      font-weight: 600;
+    }
   }
 
-  p {
-    font-size: 16px;
-  }
-
-  span {
-    font-size: 16px;
+  .mdc-dialog {
+    &__actions{
+      border-color: rgba(0,0,0,.12);
+    }
   }
 }
