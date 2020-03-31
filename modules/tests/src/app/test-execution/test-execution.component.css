@@ -45,5 +45,9 @@
   background-color: #00a65a;
 }
 .failed{
-  background-color: #f56954;
+  background-color: #989898;
+}
+
+.now{
+  background-color: rgba(0, 11, 120, 0.62);
 }

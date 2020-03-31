@@ -56,11 +56,28 @@
   }
 
   &-answers {
+    &-sequence {
+      color: white;
+      width: 100%;
+      &-item {
+        background-color: #07b307;
+        border-radius: 4px;
+        margin-bottom: 5px;
+        &:first-child {
+          margin-top: 10px;
+        }
+      }
+
+    }
     &-block {
       display: flex;
       &-container {
         margin-left: 10px;
-        &-checkboxes{
+        font-size: 20px;
+
+        display: flex;
+        width: 50%;
+        &-checkboxes {
           display: grid;
         }
         &-values {

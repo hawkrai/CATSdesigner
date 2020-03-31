@@ -14,7 +14,7 @@
            [class.fail]="question.Points === 0"></div>
     </div>
   </div>
-  <div class="test-result__backlink">
+  <div class="test-result__backlink" (click)="navigate()">
     <mat-icon>keyboard_backspace</mat-icon>
     {{"Вернуться к ЭУМК"}}
   </div>

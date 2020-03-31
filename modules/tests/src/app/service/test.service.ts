@@ -68,7 +68,16 @@ export class TestService {
     return this.http.post<void>('/Tests/SaveQuestion', question);
   }
 
+  AddQuestionsFromAnotherTest(question: Question): Observable<void> {
+    return this.http.post<void>('/Tests/AddQuestionsFromAnotherTest', question);
+  }
+
+  getQuestionsFromOtherTest(testId: string): Observable<Question[]> {
+    return this.http.get<Question[]>('/Tests/GetQuestionsFromAnotherTests?testId=' + testId);
+  }
+
   getTestForLector(): Observable<Test[]> {
     return this.http.get<Test[]>('/Tests/GetTestForLector');
   }
+
 }

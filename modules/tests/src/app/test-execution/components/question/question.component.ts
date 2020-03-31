@@ -6,6 +6,7 @@ import {Test} from "../../../models/test.model";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {Router} from "@angular/router";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 
 @Component({
@@ -26,9 +27,12 @@ export class QuestionComponent implements OnInit {
 
   public chosenAnswer: Answer;
   public charsNeskolko: { [key: string]: any } = {};
+  public charsNew: { [key: string]: any } = {};
+  public charsSequence: { [key: string]: any } = {};
 
   @Output()
   public goToNextQuestion: EventEmitter<boolean> = new EventEmitter();
+  private value: string;
 
   constructor(private testPassingService: TestPassingService,
               private router: Router) {
@@ -61,18 +65,16 @@ export class QuestionComponent implements OnInit {
       });
     } else if (this.question.Question.QuestionType === 1) {
       this.question.Question.Answers.forEach((answer, index) => {
-        if (this.question.Question.Answers.length === index + 1) {
-          request.answers.push({Id: answer.Id.toString(), IsCorrect: 1});
-        }
-        else {
-          request.answers.push({Id: answer.Id.toString(), IsCorrect: 0});
-        }
+          request.answers.push({Id: answer.Id.toString(), IsCorrect: this.charsNeskolko[index] ? 1 : 0});
       });
 
     } else if (this.question.Question.QuestionType === 2) {
+      request.answers.push({Content: this.value, IsCorrect: 0});
 
     } else if (this.question.Question.QuestionType === 3) {
-
+      this.question.Question.Answers.forEach((answer, index) => {
+          request.answers.push({Id: answer.Id.toString(), IsCorrect: index});
+      });
     }
 
     this.testPassingService.answerQuestionAndGetNext(request)
@@ -91,6 +93,11 @@ export class QuestionComponent implements OnInit {
   }
 
   public onValueChange(event): void {
+    this.value = event.currentTarget.value;
     console.log(event);
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.question.Question.Answers, event.previousIndex, event.currentIndex);
   }
 }

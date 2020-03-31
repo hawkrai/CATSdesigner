@@ -12,8 +12,8 @@
   </div>
   <div class="test-execution-block-progress" *ngIf="test">
     <div class="test-execution-block-progress-block">
-      <div class="test-execution-block-progress-block-item" (click)="nextQuestion(false, i+1)" [class.answered]="false"
-           [class.failed]="false" *ngFor="let dummy of ' '.repeat(test.CountOfQuestions).split(''), let i = index">
+      <div class="test-execution-block-progress-block-item" (click)="nextQuestion(false, i+1)" [class.failed]="questionArray.includes(i+1)"
+           [class.answered]="!questionArray.includes(i+1)" [class.now]="questionNumber == i+1" *ngFor="let dummy of ' '.repeat(test.CountOfQuestions).split(''), let i = index">
         {{i+1}}
       </div>
     </div>
