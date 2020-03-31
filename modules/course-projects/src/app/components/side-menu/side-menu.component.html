@@ -1,0 +1,25 @@
+<div class="side-menu-component">
+  <aside class="mdc-drawer">
+    <div class="mdc-drawer__content">
+      <nav class="mdc-list">
+        <a class="mdc-list-item" aria-current="page"
+           *ngFor="let menuElement of menuElements"
+           [routerLink]="subjectId + menuElement.tab"
+           (click)="selectedTab(menuElement)"
+           [class.mdc-list-item--activated]="menuElement.tab === pageName"
+        >
+          <span class="mdc-list-item__text">{{ menuElement.name }}</span>
+        </a>
+        <hr>
+        <a class="mdc-list-item" aria-current="page" >
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sync</i>
+          <span class="mdc-list-item__text">Сменить предмет</span>
+        </a>
+        <a class="mdc-list-item" aria-current="page">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">reply</i>
+          <span class="mdc-list-item__text">В главное меню</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+</div>

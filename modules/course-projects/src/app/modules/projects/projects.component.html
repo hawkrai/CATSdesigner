@@ -1,0 +1,12 @@
+<div class="projects-component" *ngIf="projects">
+  <div style="width: 100%; overflow: auto">
+    <mat-form-field class="projects-component__search" appearance="outline">
+      <mat-label>Поиск темы, студента, группы</mat-label>
+      <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+  <div class="projects-component__body">
+    <app-projects-list [projects]="projects" [courseUser]="courseUser"></app-projects-list>
+  </div>
+</div>

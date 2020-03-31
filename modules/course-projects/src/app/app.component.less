@@ -1,0 +1,17 @@
+@side-menu-width: 20%;
+
+.body {
+  display: flex;
+
+  &__side-menu {
+    width: @side-menu-width;
+    position: fixed;
+    top: 8px;
+    height: 100%;
+  }
+
+  &__content {
+    margin-left: @side-menu-width;
+    width: calc(100% - @side-menu-width);
+  }
+}
