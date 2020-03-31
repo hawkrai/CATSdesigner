@@ -26,21 +26,23 @@ import {StudentsTableComponent} from './test-control-page/components/edit-availa
 import {QuestionsPageComponent} from './questions-page/questions-page.component';
 import {TableQuestionsComponent} from './shared/table-questions/table-questions.component';
 import {QuestionPopupComponent} from './questions-page/components/question-popup/question-popup.component';
-import { ResultPupilComponent } from './result-pupil/result-pupil.component';
-import { ResultTestTableComponent } from './shared/result-test-table/result-test-table.component';
-import { AngularEditorComponent } from './questions-page/components/question-popup/components/angular-editor/angular-editor.component';
+import {ResultPupilComponent} from './result-pupil/result-pupil.component';
+import {ResultTestTableComponent} from './shared/result-test-table/result-test-table.component';
+import {AngularEditorComponent} from './questions-page/components/question-popup/components/angular-editor/angular-editor.component';
 import {AngularEditorService} from "./questions-page/components/question-popup/components/angular-editor/angular-editor.service";
-import { AngularEditorToolbarComponent } from './questions-page/components/question-popup/components/angular-editor-toolbar/angular-editor-toolbar.component';
-import { AeSelectComponent } from './questions-page/components/question-popup/components/ae-select/ae-select.component';
-import { ResultTeacherComponent } from './result-teacher/result-teacher.component';
-import { StudentMarksTableComponent } from './shared/student-marks-table/student-marks-table.component';
-import { ResultTestTablePupilComponent } from './shared/result-test-table-pupil/result-test-table-pupil.component';
-import { AnswersPopupComponent } from './shared/result-test-table/components/answers-popup/answers-popup.component';
-import { ControlCompletingComponent } from './control-completing/control-completing.component';
-import { ChartsModule } from 'ng2-charts';
-import {CKEditorModule} from "ng2-ckeditor";
-import { QuestionOtherTestComponent } from './questions-page/components/question-other-test/question-other-test.component';
-import { TestResultComponent } from './test-result/test-result.component';
+import {AngularEditorToolbarComponent} from './questions-page/components/question-popup/components/angular-editor-toolbar/angular-editor-toolbar.component';
+import {AeSelectComponent} from './questions-page/components/question-popup/components/ae-select/ae-select.component';
+import {ResultTeacherComponent} from './result-teacher/result-teacher.component';
+import {StudentMarksTableComponent} from './shared/student-marks-table/student-marks-table.component';
+import {ResultTestTablePupilComponent} from './shared/result-test-table-pupil/result-test-table-pupil.component';
+import {AnswersPopupComponent} from './shared/result-test-table/components/answers-popup/answers-popup.component';
+import {ControlCompletingComponent} from './control-completing/control-completing.component';
+import {ChartsModule} from 'ng2-charts';
+import {CKEditorModule} from 'ckeditor4-angular';
+import {QuestionOtherTestComponent} from './questions-page/components/question-other-test/question-other-test.component';
+import {TestResultComponent} from './test-result/test-result.component';
+import {DateFormatPipe} from "./pipe/date-format.pipe";
+
 
 @NgModule({
   declarations: [
@@ -72,7 +74,8 @@ import { TestResultComponent } from './test-result/test-result.component';
     AnswersPopupComponent,
     ControlCompletingComponent,
     QuestionOtherTestComponent,
-    TestResultComponent
+    TestResultComponent,
+    DateFormatPipe
   ],
   imports: [
     FormsModule,
@@ -85,9 +88,12 @@ import { TestResultComponent } from './test-result/test-result.component';
     ChartsModule,
     CKEditorModule
   ],
-  providers: [TestPassingService,
+  providers: [
+    TestPassingService,
     TestService,
-    AngularEditorService],
+    AngularEditorService,
+    DateFormatPipe
+  ],
   entryComponents: [DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,
     QuestionPopupComponent,

@@ -32,7 +32,7 @@
         <div class="question-popup-types-container-dropdown">
           <mat-form-field>
             <mat-label>{{"Тип вопроса"}}</mat-label>
-            <mat-select (selectionChange)="onValueChange($event)">
+            <mat-select (selectionChange)="onValueChange($event)" [value]="question.QuestionType || 0">
               <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id">
                 {{type.label}}
               </mat-option>

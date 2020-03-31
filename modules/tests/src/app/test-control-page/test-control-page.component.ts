@@ -11,7 +11,7 @@ import {Test} from "../models/test.model";
 @Component({
   selector: 'app-test-control-page',
   templateUrl: './test-control-page.component.html',
-  styleUrls: ['./test-control-page.component.css']
+  styleUrls: ['./test-control-page.component.less']
 })
 export class TestControlPageComponent implements OnInit {
 

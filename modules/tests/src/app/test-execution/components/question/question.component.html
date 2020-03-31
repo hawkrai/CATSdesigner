@@ -24,13 +24,13 @@
             </mat-radio-button>
           </mat-radio-group>
           <div class="question-answers-block-container-checkboxes" *ngIf="question.Question.QuestionType === 1">
-            <mat-checkbox class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[i]"
+            <mat-checkbox class="question-answers-block-container-checkboxes-item" [(ngModel)]="charsNeskolko[i]"
                           *ngFor="let answer of question?.Question?.Answers, let i = index">
               {{answer.Content}}
             </mat-checkbox>
           </div>
           <ng-container *ngIf="question.Question.QuestionType === 2">
-            <input matInput placeholder="Введите название теста" (change)="onValueChange($event)">
+            <input class="question-answers-block-container-word" matInput placeholder="Введите ответ" (change)="onValueChange($event)">
           </ng-container>
           <ng-container *ngIf="question.Question.QuestionType === 3">
             <div cdkDropList class="example-list question-answers-sequence" (cdkDropListDropped)="drop($event)">

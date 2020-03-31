@@ -4,6 +4,8 @@ import {TestQuestion} from '../models/question/test-question.model';
 import {ActivatedRoute, Router} from "@angular/router";
 import {TestService} from "../service/test.service";
 import {Test} from "../models/test.model";
+import {map, take} from "rxjs/operators";
+import {Observable, timer} from "rxjs";
 
 
 @Component({
@@ -18,6 +20,8 @@ export class TestExecutionComponent implements OnInit {
   public test: Test;
   public questionArray: number[];
   public result: any;
+  public counter$: Observable<number>;
+  public count = 60;
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,
@@ -35,6 +39,10 @@ export class TestExecutionComponent implements OnInit {
     });
     this.testPassingService.getNextQuestion(this.testId, this.questionNumber).subscribe((question: TestQuestion) => {
       this.question = question;
+      this.counter$ = timer(0,1000).pipe(
+        take(this.count),
+        map(() => --this.count)
+      );
     });
   }
 

@@ -3,7 +3,7 @@
 <div class="test-execution-container">
   <div class="test-execution-block-time">
     <div class="test-execution-block-time-value">
-      00:08:54
+      {{(counter$ | async) | dateFormat : 'hh:mm:ss'}}
     </div>
   </div>
   <div class="test-execution-block-question">

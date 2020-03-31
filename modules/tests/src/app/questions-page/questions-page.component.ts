@@ -53,7 +53,7 @@ export class QuestionsPageComponent implements OnInit {
       width: '700px',
       data: {event, title, test: this.testId},
       autoFocus: false,
-      maxHeight: '90vh'
+      maxHeight: '100vh'
     });
 
     dialogRef.afterClosed().subscribe(result => {

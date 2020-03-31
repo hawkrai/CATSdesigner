@@ -1,6 +1,7 @@
 .question {
   &-container {
-
+    margin-right: 20px;
+    margin-left: 20px;
   }
   &-title {
     display: flex;
@@ -63,6 +64,10 @@
         background-color: #07b307;
         border-radius: 4px;
         margin-bottom: 5px;
+        margin-top: 10px;
+        padding-left: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
         &:first-child {
           margin-top: 10px;
         }
@@ -79,6 +84,19 @@
         width: 50%;
         &-checkboxes {
           display: grid;
+
+          &-item {
+            margin-top: 10px;
+            &:last-child{
+              margin-bottom: 10px;
+            }
+          }
+        }
+
+        &-word {
+          margin-top: 5px;
+          font-size: 25px;
+          margin-bottom: 5px;
         }
         &-values {
           padding: 15px;
