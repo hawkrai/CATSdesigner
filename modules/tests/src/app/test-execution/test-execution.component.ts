@@ -20,7 +20,7 @@ export class TestExecutionComponent implements OnInit {
   public test: Test;
   public questionArray: number[];
   public result: any;
-  public counter$: Observable<number>;
+  public counter$: Observable<string>;
   public count = 60;
 
   constructor(private testPassingService: TestPassingService,
@@ -39,9 +39,22 @@ export class TestExecutionComponent implements OnInit {
     });
     this.testPassingService.getNextQuestion(this.testId, this.questionNumber).subscribe((question: TestQuestion) => {
       this.question = question;
-      this.counter$ = timer(0,1000).pipe(
-        take(this.count),
-        map(() => --this.count)
+      this.counter$ = timer(0, 1000).pipe(
+        take(this.question.Seconds),
+        map(() => {
+          if (this.question.Seconds) {
+            --this.question.Seconds;
+            const hour: number = Math.floor(this.count / 3600);
+            let restTime: number = this.question.Seconds - 3600 * hour;
+            const minute: number = Math.floor(restTime / 60);
+            restTime = restTime - 60 * minute;
+
+            return (hour >= 10 ? hour.toString() : "0" + hour.toString()) + ":" + (minute >= 10 ? minute.toString() : "0" + minute.toString()) + ":" + (restTime >= 10 ? restTime.toString() : "0" + restTime.toString());
+          }
+          else {
+            this.router.navigate(['page']);
+          }
+        })
       );
     });
   }
