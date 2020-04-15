@@ -3,7 +3,7 @@
     <div class="main-page-container-buttons" *ngIf="allowChanges">
       <div class="main-page-container-buttons-item" *ngIf="adminTests">
         <button mat-raised-button color="main-page-container-buttons-item" [ngClass]="'primary'"
-                (click)="onOpenAddingPopup()">Добавть тест
+                (click)="onOpenAddingPopup()">Добавить тест
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminTests">
@@ -46,11 +46,9 @@
     </div>
   </div>
   <div class="main-page-container-search-wrapper">
-    <div>
-      <mat-form-field appearance="outline">
+      <mat-form-field class="main-page-container-search-wrapper-field" appearance="outline">
         <mat-label>Поиск</mat-label>
         <input matInput placeholder="Введите название теста" (change)="onValueChange($event)">
       </mat-form-field>
-    </div>
   </div>
 </div>

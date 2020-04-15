@@ -4,16 +4,18 @@ import {TestQuestion} from '../models/question/test-question.model';
 import {ActivatedRoute, Router} from "@angular/router";
 import {TestService} from "../service/test.service";
 import {Test} from "../models/test.model";
-import {map, take} from "rxjs/operators";
-import {Observable, timer} from "rxjs";
+import {map, take, takeUntil} from "rxjs/operators";
+import {Observable, Subject, timer} from "rxjs";
+import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-test-execution',
   templateUrl: './test-execution.component.html',
   styleUrls: ['./test-execution.component.css']
 })
-export class TestExecutionComponent implements OnInit {
+export class TestExecutionComponent extends AutoUnsubscribeBase implements OnInit {
   public question: TestQuestion;
   public questionNumber: string;
   public testId: string;
@@ -22,22 +24,28 @@ export class TestExecutionComponent implements OnInit {
   public result: any;
   public counter$: Observable<string>;
   public count = 60;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,
               private route: ActivatedRoute,
               private router: Router) {
+    super();
   }
 
   ngOnInit() {
     this.testId = this.route.snapshot.paramMap.get('id');
     this.questionNumber = '1';
-    this.testService.getTestTestById(this.testId).subscribe((test) => {
+    this.testService.getTestTestById(this.testId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((test) => {
       this.test = test;
       this.fillQuestionArray();
       console.log("this.test", this.test);
     });
-    this.testPassingService.getNextQuestion(this.testId, this.questionNumber).subscribe((question: TestQuestion) => {
+    this.testPassingService.getNextQuestion(this.testId, this.questionNumber)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((question: TestQuestion) => {
       this.question = question;
       this.counter$ = timer(0, 1000).pipe(
         take(this.question.Seconds),
@@ -83,7 +91,9 @@ export class TestExecutionComponent implements OnInit {
             this.questionNumber = this.questionArray[0].toString();
           }
         }
-        this.testPassingService.getNextQuestion(this.testId, this.questionNumber).subscribe((question: TestQuestion) => {
+        this.testPassingService.getNextQuestion(this.testId, this.questionNumber)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe((question: TestQuestion) => {
           if (question && question.Question) {
             this.question = question;
           } else {

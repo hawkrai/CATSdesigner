@@ -1,14 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {TestPassingService} from "../service/test-passing.service";
 import {Test} from "../models/test.model";
+import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-result-pupil',
   templateUrl: './result-pupil.component.html',
   styleUrls: ['./result-pupil.component.less']
 })
-export class ResultPupilComponent implements OnInit {
+export class ResultPupilComponent extends AutoUnsubscribeBase implements OnInit {
 
   public results: Test[];
   public loading: boolean;
@@ -17,12 +21,16 @@ export class ResultPupilComponent implements OnInit {
   public nNTests: Test[];
   public beforeEUMKTests: Test[];
   public forEUMKTests: Test[];
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testPassingService: TestPassingService) {
+    super();
   }
 
   ngOnInit() {
-    this.testPassingService.getStudentResults("3").subscribe((results) => {
+    this.testPassingService.getStudentResults("3")
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((results) => {
       this.results = results;
       this.groupTests(results);
     })

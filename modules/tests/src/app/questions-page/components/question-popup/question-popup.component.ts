@@ -5,14 +5,18 @@ import {Question} from "../../../models/question/question.model";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Answer} from "../../../models/question/answer.model";
 import {ActivatedRoute} from "@angular/router";
+import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-question-popup',
   templateUrl: './question-popup.component.html',
   styleUrls: ['./question-popup.component.less']
 })
-export class QuestionPopupComponent implements OnInit {
+export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnInit {
 
   public question: Question = new Question();
   public chosenQuestionType: any = 0;
@@ -31,6 +35,7 @@ export class QuestionPopupComponent implements OnInit {
   public charsWords: { [key: string]: string } = {};
   public charsSequence: { [key: string]: string } = {};
   public charsde: any;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   public readonly ANSWER_TYPES: any = [{id: 0, label: "С одним вариантом"},
     {id: 1, label: "С несколькими вариантами"},
@@ -43,6 +48,7 @@ export class QuestionPopupComponent implements OnInit {
               private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private cdr: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit() {
@@ -53,7 +59,9 @@ export class QuestionPopupComponent implements OnInit {
     };
     this.initForm();
     if (this.data.event) {
-      this.testService.getQuestion(this.data.event).subscribe((question) => {
+      this.testService.getQuestion(this.data.event)
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe((question) => {
         this.question = question;
         this.chosenQuestionType = question.QuestionType;
         this.initExisting(this.question.Answers);
@@ -269,7 +277,9 @@ export class QuestionPopupComponent implements OnInit {
     /*this.question['QuestionType'] = 0;
     this.question['Id'] = 0;
     this.question['ConceptId'] = null;*/
-    this.testService.saveQuestion(this.question).subscribe(() => {
+    this.testService.saveQuestion(this.question)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(() => {
       this.dialogRef.close(true);
     });
   }

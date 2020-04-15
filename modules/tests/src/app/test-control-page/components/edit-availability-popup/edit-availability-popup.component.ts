@@ -4,28 +4,36 @@ import {TestService} from "../../../service/test.service";
 import {Group} from "../../../models/group.model";
 import {SubGroup} from "../../../models/sub-group.model";
 import {TestAvailabilityRequest} from "../../../models/testAvailabilityRequest.model";
+import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-edit-availability-popup',
   templateUrl: './edit-availability-popup.component.html',
   styleUrls: ['./edit-availability-popup.component.less']
 })
-export class EditAvailabilityPopupComponent implements OnInit {
+export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<EditAvailabilityPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private testService: TestService,
               private cdr: ChangeDetectorRef) {
+    super();
   }
 
   public groups: Group[];
   public subGroups: SubGroup[];
   public subGroupsDefault: SubGroup[];
   public groupId: number;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   ngOnInit() {
-    this.testService.getGroupsBySubjectId("3").subscribe((groups) => {
+    this.testService.getGroupsBySubjectId("3")
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((groups) => {
       this.groups = groups;
       this.groupId = groups[0].Id;
       this.getSubGroups();
@@ -37,7 +45,9 @@ export class EditAvailabilityPopupComponent implements OnInit {
   }
 
   public getSubGroups(): void {
-    this.testService.getSubGroupsBySubjectIdGroupIdTestId("3", this.data.event, this.groupId).subscribe((subGroups) => {
+    this.testService.getSubGroupsBySubjectIdGroupIdTestId("3", this.data.event, this.groupId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((subGroups) => {
       this.subGroups = subGroups;
       this.subGroupsDefault = subGroups;
     })
@@ -56,7 +66,9 @@ export class EditAvailabilityPopupComponent implements OnInit {
     testAvailabilityRequest.testId = this.data.event;
     //todo why different unlock and unlocked
     testAvailabilityRequest.unlocked = event.availability;
-    this.testService.changeAvailabilityForStudent(testAvailabilityRequest).subscribe(() => {
+    this.testService.changeAvailabilityForStudent(testAvailabilityRequest)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(() => {
       this.getSubGroups();
       this.cdr.detectChanges();
     })
@@ -69,7 +81,9 @@ export class EditAvailabilityPopupComponent implements OnInit {
     testAvailabilityRequest.testId = this.data.event;
     //todo why different unlock and unlocked
     testAvailabilityRequest.unlock = event.availability;
-    this.testService.changeAvailabilityForAllStudents(testAvailabilityRequest).subscribe(() => {
+    this.testService.changeAvailabilityForAllStudents(testAvailabilityRequest)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(() => {
       this.getSubGroups();
       this.cdr.detectChanges();
     })

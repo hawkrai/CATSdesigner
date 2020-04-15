@@ -2,20 +2,26 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {MatDialog} from "@angular/material";
 import {AnswersPopupComponent} from "./components/answers-popup/answers-popup.component";
 import * as pluginDataLabels from "chartjs-plugin-datalabels";
-import { Label } from 'ng2-charts';
+import {Label} from 'ng2-charts';
 import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
+import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
+
+@AutoUnsubscribe
 @Component({
   selector: "app-result-test-table",
   templateUrl: "./result-test-table.component.html",
   styleUrls: ["./result-test-table.component.less"]
 })
-export class ResultTestTableComponent implements OnInit {
+export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnInit {
 
   public barChartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
-    scales: { xAxes: [{}], yAxes: [{}] },
+    scales: {xAxes: [{}], yAxes: [{}]},
     plugins: {
       datalabels: {
         anchor: 'end',
@@ -27,9 +33,10 @@ export class ResultTestTableComponent implements OnInit {
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
   public barChartPlugins = [pluginDataLabels];
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   public barChartData: ChartDataSets[] = [
-    { data: [], label: 'Оценка' }
+    {data: [], label: 'Оценка'}
   ];
 
   @Input()
@@ -47,6 +54,7 @@ export class ResultTestTableComponent implements OnInit {
   public sendAverageMarks: EventEmitter<any> = new EventEmitter();
 
   constructor(public dialog: MatDialog) {
+    super();
   }
 
   ngOnInit() {
@@ -81,10 +89,11 @@ export class ResultTestTableComponent implements OnInit {
           pupil.push(sumOfMarks / this.testSize);
         }
       }
-    }let sortedDescPoints = mass.sort((a, b) => {
+    }
+    let sortedDescPoints = mass.sort((a, b) => {
       return b[1] - a[1];
     });
-    for(let entire of sortedDescPoints){
+    for (let entire of sortedDescPoints) {
       this.barChartLabels.push(entire[0]);
       this.barChartData[0].data.push(entire[1]);
     }
@@ -97,9 +106,11 @@ export class ResultTestTableComponent implements OnInit {
       data: {event, id}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-    });
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
+        console.log(result);
+      });
   }
 
 }

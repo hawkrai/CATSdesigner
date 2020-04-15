@@ -4,14 +4,18 @@ import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
 import {Result} from "../models/result.model";
 import {ResultForTable} from "../models/result-for-table.model";
+import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-result-teacher',
   templateUrl: './result-teacher.component.html',
   styleUrls: ['./result-teacher.component.less']
 })
-export class ResultTeacherComponent implements OnInit {
+export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit {
 
   public groups: Group[];
   public results: Result[];
@@ -21,14 +25,18 @@ export class ResultTeacherComponent implements OnInit {
   public beforeEUMKTests: ResultForTable[][] = [];
   public forEUMKTests: ResultForTable[][] = [];
   public knowledgeControlTests: ResultForTable[][] = [];
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
               private testPassingService: TestPassingService) {
+    super();
   }
 
   ngOnInit() {
-    this.testService.getGroupsBySubjectId("3").subscribe((groups) => {
+    this.testService.getGroupsBySubjectId("3")
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((groups) => {
       this.groups = groups;
       this.getResults(groups[0].Id);
     });
@@ -51,7 +59,9 @@ export class ResultTeacherComponent implements OnInit {
   }
 
   public getResults(groupId): void {
-    this.testPassingService.getResultsByGroupAndSubject(groupId, "3").subscribe((results) => {
+    this.testPassingService.getResultsByGroupAndSubject(groupId, "3")
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((results) => {
       this.results = results;
       this.resultsOriginal = results;
       this.decomposeResult(results);

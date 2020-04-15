@@ -6,43 +6,55 @@ import {MatDialog} from "@angular/material";
 import {QuestionPopupComponent} from "./components/question-popup/question-popup.component";
 import {Test} from "../models/test.model";
 import {QuestionOtherTestComponent} from "./components/question-other-test/question-other-test.component";
+import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
+import {takeUntil} from "rxjs/operators";
+import {Subject} from "rxjs";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-questions-page',
   templateUrl: './questions-page.component.html',
   styleUrls: ['./questions-page.component.less']
 })
-export class QuestionsPageComponent implements OnInit {
+export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnInit {
 
   public questions: Question[];
   public questionsDefault: Question[];
   public test: Test;
   public testId: string;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
               private route: ActivatedRoute,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
+    super();
   }
 
   ngOnInit() {
     this.testId = this.route.snapshot.paramMap.get('id');
-    this.testService.getTestTestById(this.testId).subscribe((test) => {
+    this.testService.getTestTestById(this.testId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((test) => {
       this.test = test;
     });
     this.loadQuestions();
   }
 
   public loadQuestions(): void {
-    this.testService.getQuestionsByTest(this.testId).subscribe((questions) => {
+    this.testService.getQuestionsByTest(this.testId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((questions) => {
       this.questions = questions;
       this.questionsDefault = questions;
     });
   }
 
   public deleteQuestion(event): void {
-    this.testService.deleteQuestion(event).subscribe();
+    this.testService.deleteQuestion(event)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
     this.loadQuestions();
     this.cdr.detectChanges();
   }
@@ -56,7 +68,9 @@ export class QuestionsPageComponent implements OnInit {
       maxHeight: '100vh'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
       if(result){
         this.loadQuestions();
       }
@@ -71,7 +85,9 @@ export class QuestionsPageComponent implements OnInit {
       maxHeight: '90vh'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
       if(result){
         this.loadQuestions();
       }

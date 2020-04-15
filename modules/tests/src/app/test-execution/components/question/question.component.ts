@@ -3,18 +3,21 @@ import {TestQuestion} from '../../../models/question/test-question.model';
 import {Answer} from '../../../models/question/answer.model';
 import {TestPassingService} from '../../../service/test-passing.service';
 import {Test} from "../../../models/test.model";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
+import {catchError, takeUntil, tap} from "rxjs/operators";
+import {of, Subject} from "rxjs";
 import {Router} from "@angular/router";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.less']
 })
-export class QuestionComponent implements OnInit {
+export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
 
   @Input()
   public question: TestQuestion;
@@ -29,6 +32,7 @@ export class QuestionComponent implements OnInit {
   public charsNeskolko: { [key: string]: any } = {};
   public charsNew: { [key: string]: any } = {};
   public charsSequence: { [key: string]: any } = {};
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   @Output()
   public goToNextQuestion: EventEmitter<boolean> = new EventEmitter();
@@ -36,6 +40,7 @@ export class QuestionComponent implements OnInit {
 
   constructor(private testPassingService: TestPassingService,
               private router: Router) {
+    super();
   }
 
   ngOnInit() {
@@ -65,7 +70,7 @@ export class QuestionComponent implements OnInit {
       });
     } else if (this.question.Question.QuestionType === 1) {
       this.question.Question.Answers.forEach((answer, index) => {
-          request.answers.push({Id: answer.Id.toString(), IsCorrect: this.charsNeskolko[index] ? 1 : 0});
+        request.answers.push({Id: answer.Id.toString(), IsCorrect: this.charsNeskolko[index] ? 1 : 0});
       });
 
     } else if (this.question.Question.QuestionType === 2) {
@@ -73,13 +78,14 @@ export class QuestionComponent implements OnInit {
 
     } else if (this.question.Question.QuestionType === 3) {
       this.question.Question.Answers.forEach((answer, index) => {
-          request.answers.push({Id: answer.Id.toString(), IsCorrect: index});
+        request.answers.push({Id: answer.Id.toString(), IsCorrect: index});
       });
     }
 
     this.testPassingService.answerQuestionAndGetNext(request)
       .pipe(
         tap(() => this.getOnNextQuestion(true)),
+        takeUntil(this.unsubscribeStream$),
         catchError(() => {
           this.router.navigate(['/test-result'], {queryParams: {testId: this.test.Id}});
           return of(null);

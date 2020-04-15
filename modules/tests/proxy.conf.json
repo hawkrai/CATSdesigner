@@ -3,7 +3,7 @@
     "target": {
       "host": "localhost",
       "protocol": "http:",
-      "port": 8765
+      "port": 20612
     },
     "secure": false,
     "logLevel": "info"
@@ -12,7 +12,7 @@
     "target": {
       "host": "localhost",
       "protocol": "http:",
-      "port": 8765
+      "port": 20612
     },
     "secure": false,
     "logLevel": "info"

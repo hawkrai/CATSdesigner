@@ -25,7 +25,7 @@ export class TestPassingService {
   }
 
   getNextQuestion(testId: string, questionNumber: string): Observable<any> {
-    return this.http.get<any>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&userId=10031');
+    return this.http.get<any>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&excludeCorrectnessIndicator=true' + '&userId=10031');
   }
 
   getStudentResults(subjectId: string): Observable<Test[]> {

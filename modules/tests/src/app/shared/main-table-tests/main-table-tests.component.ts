@@ -6,14 +6,19 @@ import {MatTable} from "@angular/material";
 import {TestService} from "../../service/test.service";
 import {NewOrderModel} from "../../models/newOrder.model";
 import {Test} from "../../models/test.model";
+import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
 
+@AutoUnsubscribe
 @Component({
   selector: 'app-main-table-tests',
   templateUrl: './main-table-tests.component.html',
   styleUrls: ['./main-table-tests.component.css']
 })
-export class MainTableTestsComponent implements OnInit {
+export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnInit {
 
   @Input()
   public title: string;
@@ -40,12 +45,15 @@ export class MainTableTestsComponent implements OnInit {
 
   displayedColumns: string[] = ['Id', 'Title', 'action'];
 
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
+
   @ViewChild('table', {static: false})
   table: MatTable<any>;
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,
               private router: Router) {
+    super();
   }
 
   ngOnInit() {
@@ -90,7 +98,9 @@ export class MainTableTestsComponent implements OnInit {
     for (let i = 0; i < this.tests.length; i++) {
       newOrder.newOrder[this.tests[i].Id] = i + 1;
     }
-    this.testService.changeTestOrder(newOrder).subscribe();
+    this.testService.changeTestOrder(newOrder)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
     this.table.renderRows();
   }
 }

@@ -6,14 +6,18 @@ import {DeleteConfirmationPopupComponent} from './components/delete-confirmation
 import {EditAvailabilityPopupComponent} from "./components/edit-availability-popup/edit-availability-popup.component";
 import {Router} from "@angular/router";
 import {Test} from "../models/test.model";
+import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-test-control-page',
   templateUrl: './test-control-page.component.html',
   styleUrls: ['./test-control-page.component.less']
 })
-export class TestControlPageComponent implements OnInit {
+export class TestControlPageComponent extends AutoUnsubscribeBase implements OnInit {
 
   public knowledgeControlTests: Test[] = [];
   public selfControlTests: Test[] = [];
@@ -22,12 +26,14 @@ export class TestControlPageComponent implements OnInit {
   public forEUMKTests: Test[] = [];
   public loading: boolean;
   public allTests: Test[];
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
 
   constructor(private testService: TestService,
               private router: Router,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
+    super();
   }
 
   ngOnInit() {
@@ -35,7 +41,9 @@ export class TestControlPageComponent implements OnInit {
   }
 
   private getTests(subjectId): void {
-    this.testService.getTestAllTestBySubjectId(subjectId).subscribe((tests) => {
+    this.testService.getTestAllTestBySubjectId(subjectId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((tests) => {
       this.allTests = tests;
       this.sortTests(tests);
     });
@@ -47,7 +55,9 @@ export class TestControlPageComponent implements OnInit {
       data: {event}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
       this.getTests('1');
       this.cdr.detectChanges();
       console.log(result);
@@ -60,7 +70,9 @@ export class TestControlPageComponent implements OnInit {
       data: {event}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
       this.getTests('1');
       this.cdr.detectChanges();
       console.log(result);
@@ -73,7 +85,9 @@ export class TestControlPageComponent implements OnInit {
       data: {event}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
       if (result) {
         this.deleteTest(event);
       }
@@ -81,7 +95,9 @@ export class TestControlPageComponent implements OnInit {
   }
 
   public deleteTest(testId): void {
-    this.testService.deleteTest(testId).subscribe(() => {
+    this.testService.deleteTest(testId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(() => {
       this.getTests('1');
     });
   }

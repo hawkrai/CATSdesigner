@@ -2,14 +2,18 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatCheckboxChange, MatDialogRef} from '@angular/material';
 import {TestService} from '../../../service/test.service';
 import {Test} from "../../../models/test.model";
+import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
+import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
-
+@AutoUnsubscribe
 @Component({
   selector: 'app-edit-test-popup',
   templateUrl: './edit-test-popup.component.html',
   styleUrls: ['./edit-test-popup.component.less']
 })
-export class EditTestPopupComponent implements OnInit {
+export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnInit {
 
   public CATEGORIES = ['Тест для контроля знаний',
     'Тест для самоконтроля',
@@ -19,10 +23,12 @@ export class EditTestPopupComponent implements OnInit {
 
   public chosenType: any;
   public editingTest: Test;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
               public dialogRef: MatDialogRef<EditTestPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
+    super();
   }
 
   onNoClick(): void {
@@ -38,7 +44,9 @@ export class EditTestPopupComponent implements OnInit {
     }
   }
   public loadTests():void{
-    this.testService.getTestTestById(this.data.event.Id).subscribe((test) => {
+    this.testService.getTestTestById(this.data.event.Id)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((test) => {
       this.editingTest = test;
     });
   }
@@ -63,7 +71,9 @@ export class EditTestPopupComponent implements OnInit {
       }
     }
     this.editingTest['SubjectId'] = 3;
-    this.testService.saveTest(this.editingTest).subscribe();
+    this.testService.saveTest(this.editingTest)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
     this.dialogRef.close(true);
 
 
