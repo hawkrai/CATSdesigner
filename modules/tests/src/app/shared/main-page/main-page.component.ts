@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {Group} from "../../models/group.model";
 
 
@@ -7,7 +7,7 @@ import {Group} from "../../models/group.model";
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.less']
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent implements OnChanges {
 
   @Input()
   public allowChanges: boolean;
@@ -19,10 +19,16 @@ export class MainPageComponent implements OnInit {
   public adminQuestions: boolean;
 
   @Input()
+  public hideSearch: boolean;
+
+  @Input()
   public groupDropdown: boolean;
 
   @Input()
   public text: string;
+
+  @Input()
+  public inputValue: string;
 
   @Input()
   public groups: Group[];
@@ -45,9 +51,6 @@ export class MainPageComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {
-  }
-
   public onValueChange(event): void {
     this.onValueChangeSearch.emit(event.currentTarget.value);
   }
@@ -66,5 +69,9 @@ export class MainPageComponent implements OnInit {
 
   public addQuestionFromOtherTest(): void {
     this.addQuestionFromOtherTestEvent.emit();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("ngOnChanges - MainPageComponent " + this.inputValue);
   }
 }

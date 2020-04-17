@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {TestService} from "../service/test.service";
 import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
@@ -9,13 +9,14 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
+
 @AutoUnsubscribe
 @Component({
   selector: 'app-result-teacher',
   templateUrl: './result-teacher.component.html',
   styleUrls: ['./result-teacher.component.less']
 })
-export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit {
+export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
 
   public groups: Group[];
   public results: Result[];
@@ -26,6 +27,8 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   public forEUMKTests: ResultForTable[][] = [];
   public knowledgeControlTests: ResultForTable[][] = [];
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  @Input()
+  public filterStudentsString: string;
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
@@ -37,9 +40,34 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     this.testService.getGroupsBySubjectId("3")
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((groups) => {
-      this.groups = groups;
-      this.getResults(groups[0].Id);
-    });
+        this.groups = groups;
+        this.getResults(groups[0].Id);
+      });
+  }
+
+  public getResults(groupId): void {
+    this.testPassingService.getResultsByGroupAndSubject(groupId, "3")
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((results) => {
+        this.results = results;
+        this.resultsOriginal = results;
+        this.decomposeResult(results);
+      });
+  }
+
+  public filterStudents(event: string): void {
+    let results = this.resultsOriginal && this.resultsOriginal.filter(result => result.StudentName.toLowerCase().includes(event.toLowerCase()));
+    this.decomposeResult(results);
+    this.cdr.detectChanges();
+  }
+
+  public groupValueChange(event: any): void {
+    this.getResults(event);
+    this.cdr.detectChanges();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.filterStudents(this.filterStudentsString);
   }
 
   private initArrays(): void {
@@ -58,52 +86,44 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     }
   }
 
-  public getResults(groupId): void {
-    this.testPassingService.getResultsByGroupAndSubject(groupId, "3")
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((results) => {
-      this.results = results;
-      this.resultsOriginal = results;
-      this.decomposeResult(results);
-    });
-  }
-
   private decomposeResult(results: Result[]): void {
     this.initArrays();
-    results.forEach((result) => {
+    if (results) {
+      results.forEach((result) => {
 
-        let resultForTable: ResultForTable = new ResultForTable();
-        resultForTable.test = [];
-        resultForTable.name = result.StudentName;
-        resultForTable.subGroup = result.SubGroup;
-        resultForTable.StudentShortName = result.StudentShortName;
-        resultForTable.id = result && result.TestPassResults && result.TestPassResults[0].StudentId;
+          let resultForTable: ResultForTable = new ResultForTable();
+          resultForTable.test = [];
+          resultForTable.name = result.StudentName;
+          resultForTable.subGroup = result.SubGroup;
+          resultForTable.StudentShortName = result.StudentShortName;
+          resultForTable.id = result && result.TestPassResults && result.TestPassResults[0].StudentId;
 
-        this.initTestArray(this.selfControlTests, resultForTable, result.Login);
-        this.initTestArray(this.nNTests, resultForTable, result.Login);
-        this.initTestArray(this.beforeEUMKTests, resultForTable, result.Login);
-        this.initTestArray(this.forEUMKTests, resultForTable, result.Login);
-        this.initTestArray(this.knowledgeControlTests, resultForTable, result.Login);
-        result.TestPassResults.forEach((testPassResult) => {
-          let testRes: any = {};
-          testRes.testName = testPassResult.TestName;
-          testRes.testId = testPassResult.TestId;
-          testRes.studentId = testPassResult.StudentId;
-          testRes.points = testPassResult.Points;
-          if (testPassResult.ForSelfStudy) {
-            this.sortBySubGroup(result, this.selfControlTests, testRes);
-          } else if (testPassResult.ForNN) {
-            this.sortBySubGroup(result, this.nNTests, testRes);
-          } else if (testPassResult.BeforeEUMK) {
-            this.sortBySubGroup(result, this.beforeEUMKTests, testRes);
-          } else if (testPassResult.ForEUMK) {
-            this.sortBySubGroup(result, this.forEUMKTests, testRes);
-          } else {
-            this.sortBySubGroup(result, this.knowledgeControlTests, testRes);
-          }
-        });
-      }
-    );
+          this.initTestArray(this.selfControlTests, resultForTable, result.Login);
+          this.initTestArray(this.nNTests, resultForTable, result.Login);
+          this.initTestArray(this.beforeEUMKTests, resultForTable, result.Login);
+          this.initTestArray(this.forEUMKTests, resultForTable, result.Login);
+          this.initTestArray(this.knowledgeControlTests, resultForTable, result.Login);
+          result.TestPassResults.forEach((testPassResult) => {
+            let testRes: any = {};
+            testRes.testName = testPassResult.TestName;
+            testRes.testId = testPassResult.TestId;
+            testRes.studentId = testPassResult.StudentId;
+            testRes.points = testPassResult.Points;
+            if (testPassResult.ForSelfStudy) {
+              this.sortBySubGroup(result, this.selfControlTests, testRes);
+            } else if (testPassResult.ForNN) {
+              this.sortBySubGroup(result, this.nNTests, testRes);
+            } else if (testPassResult.BeforeEUMK) {
+              this.sortBySubGroup(result, this.beforeEUMKTests, testRes);
+            } else if (testPassResult.ForEUMK) {
+              this.sortBySubGroup(result, this.forEUMKTests, testRes);
+            } else {
+              this.sortBySubGroup(result, this.knowledgeControlTests, testRes);
+            }
+          });
+        }
+      );
+    }
   }
 
   private initTestArray(test, resultForTable, login): void {
@@ -124,17 +144,6 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     } else {
       test[2].get(result.Login).test.push(testRes);
     }
-  }
-
-  public filterStudents(event: string): void {
-    let results = this.resultsOriginal.filter(result => result.StudentName.toLowerCase().includes(event.toLowerCase()));
-    this.decomposeResult(results);
-    this.cdr.detectChanges();
-  }
-
-  public groupValueChange(event: any): void {
-    this.getResults(event);
-    this.cdr.detectChanges();
   }
 
   /*public getUserAnswers(): void{

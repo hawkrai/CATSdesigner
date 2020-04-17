@@ -1,54 +1,65 @@
 <div *ngIf="!loading">
   <app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>
-  <app-main-page [allowChanges]="true"
+  <app-main-page [allowChanges]="allowChanges"
+                 [inputValue]="inputValue"
                  (onValueChangeSearch)="filterTests($event)"
                  (onOpenAddingPopupEvent)="openDialog()"
                  [adminTests]="true"
                  [adminQuestions]="false"></app-main-page>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Тесты для контроля знаний'"
-                          [allowChanges]="true"
-                          [tests]="knowledgeControlTests"
-                          (onOpenEditPopup)="openDialog($event)"
-                          (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
-                          (onNavigateQuestions)="navigateToQuestions($event)"
-                          (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
-  </div>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Тесты для самоконтроля и ЭУМК'"
-                          [allowChanges]="true"
-                          [tests]="selfControlTests"
-                          (onOpenEditPopup)="openDialog($event)"
-                          (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
-                          (onNavigateQuestions)="navigateToQuestions($event)"
-                          (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
-  </div>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Предтесты для обучения в ЭУМК'"
-                          [allowChanges]="true"
-                          [tests]="beforeEUMKTests"
-                          (onOpenEditPopup)="openDialog($event)"
-                          (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
-                          (onNavigateQuestions)="navigateToQuestions($event)"
-                          (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
-  </div>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Тесты для обучения в ЭУМК'"
-                          [allowChanges]="true"
-                          [tests]="forEUMKTests"
-                          (onOpenEditPopup)="openDialog($event)"
-                          (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
-                          (onNavigateQuestions)="navigateToQuestions($event)"
-                          (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
-  </div>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Тесты для обучения с искусственной нейронной сетью'"
-                          [allowChanges]="true"
-                          [tests]="nNTests"
-                          (onOpenEditPopup)="openDialog($event)"
-                          (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
-                          (onNavigateQuestions)="navigateToQuestions($event)"
-                          (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
-  </div>
+  <mat-tab-group class="container-table-tests" (selectedTabChange)="onChange($event)">
+    <mat-tab label="Тестирование знаний">
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Тесты для контроля знаний'"
+                              [allowChanges]="true"
+                              [tests]="knowledgeControlTests"
+                              (onOpenEditPopup)="openDialog($event)"
+                              (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+                              (onNavigateQuestions)="navigateToQuestions($event)"
+                              (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
+      </div>
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Тесты для самоконтроля и ЭУМК'"
+                              [allowChanges]="true"
+                              [tests]="selfControlTests"
+                              (onOpenEditPopup)="openDialog($event)"
+                              (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+                              (onNavigateQuestions)="navigateToQuestions($event)"
+                              (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
+      </div>
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Предтесты для обучения в ЭУМК'"
+                              [allowChanges]="true"
+                              [tests]="beforeEUMKTests"
+                              (onOpenEditPopup)="openDialog($event)"
+                              (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+                              (onNavigateQuestions)="navigateToQuestions($event)"
+                              (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
+      </div>
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Тесты для обучения в ЭУМК'"
+                              [allowChanges]="true"
+                              [tests]="forEUMKTests"
+                              (onOpenEditPopup)="openDialog($event)"
+                              (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+                              (onNavigateQuestions)="navigateToQuestions($event)"
+                              (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
+      </div>
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Тесты для обучения с искусственной нейронной сетью'"
+                              [allowChanges]="true"
+                              [tests]="nNTests"
+                              (onOpenEditPopup)="openDialog($event)"
+                              (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+                              (onNavigateQuestions)="navigateToQuestions($event)"
+                              (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
+      </div>
+    </mat-tab>
+    <mat-tab label="Результаты тестирования">
+      <app-result-teacher [filterStudentsString]="filterStudentsString"></app-result-teacher>
+    </mat-tab>
+    <mat-tab label="Контроль прохождения тестов">
+      <app-control-completing *ngIf="currentTabIndex === 2" [filterCompletingString]="filterCompletingString"></app-control-completing>
+    </mat-tab>
+  </mat-tab-group>
 </div>

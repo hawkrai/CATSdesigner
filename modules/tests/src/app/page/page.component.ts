@@ -11,7 +11,7 @@ import {Subject} from "rxjs";
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
-  styleUrls: ['./page.component.css']
+  styleUrls: ['./page.component.less']
 })
 export class PageComponent extends AutoUnsubscribeBase implements OnInit {
 
@@ -20,6 +20,8 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
   public nNTests: Test[] = [];
   public loading: boolean;
   public allTests: Test[];
+  public currentTabIndex: number = 0;
+  public filterResult: string = "";
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testPassingService: TestPassingService) {
@@ -28,15 +30,6 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
 
   ngOnInit() {
     this.getTests('1');
-  }
-
-  private getTests(subjectId): void {
-    this.testPassingService.getAvailableTests()
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((tests) => {
-        this.allTests = tests;
-        this.sortTests(tests);
-      });
   }
 
   public sortTests(tests) {
@@ -61,5 +54,21 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
       return test.Title.includes(searchValue);
     });
     this.sortTests(filteredTests);
+    this.filterResult = searchValue;
+
+  }
+
+  public onChange(event: any): void {
+    this.currentTabIndex = event.index;
+    console.log(event);
+  }
+
+  private getTests(subjectId): void {
+    this.testPassingService.getAvailableTests()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((tests) => {
+        this.allTests = tests;
+        this.sortTests(tests);
+      });
   }
 }

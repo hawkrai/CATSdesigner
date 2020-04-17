@@ -58,14 +58,10 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   }
 
   ngOnInit() {
-    console.log("ngOnInit");
-    console.log(this.tests);
     for (let i = 0; i < 3; i++) {
-      console.log(Array.from(this.tests[i].entries()));
       this.scareThing.push(Array.from(this.tests[i].entries()));
     }
     this.testSize = this.scareThing && this.scareThing[0] && this.scareThing[0][0] && this.scareThing[0][0][1] && this.scareThing[0][0][1].test && this.scareThing[0][0][1].test.length;
-    console.log(this.testSize);
     for (let i = 0; i < this.testSize; i++) {
       this.displayedColumns.push("test" + i);
     }
@@ -108,9 +104,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
 
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe(result => {
-        console.log(result);
-      });
+      .subscribe();
   }
 
 }

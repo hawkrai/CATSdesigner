@@ -20,6 +20,6 @@ node convertToJson.js
 
 
 ## How to change localization file (Translations.xlsx):
-1) Make relevant changes in json files (translations_en.json - for english locale, translations_ja.json - for japanese locale)
+1) Make relevant changes in json files (translations_en.json - for english locale, translations_ru.json - for russian locale)
 2) run script
 3) commit all changes (json files + excel file)

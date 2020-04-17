@@ -11,6 +11,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
+
 @AutoUnsubscribe
 @Component({
   selector: 'app-test-control-page',
@@ -25,9 +26,14 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public beforeEUMKTests: Test[] = [];
   public forEUMKTests: Test[] = [];
   public loading: boolean;
+  public allowChanges: boolean = true;
   public allTests: Test[];
+  public filterStudentsString: string = "";
+  public inputValue: string = "";
+  public filterCompletingString: string = "";
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-
+  private currentTabIndex: number = 0;
+  private filterTestsString: string = "";
 
   constructor(private testService: TestService,
               private router: Router,
@@ -40,15 +46,6 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     this.getTests('1');
   }
 
-  private getTests(subjectId): void {
-    this.testService.getTestAllTestBySubjectId(subjectId)
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((tests) => {
-      this.allTests = tests;
-      this.sortTests(tests);
-    });
-  }
-
   openDialog(event?: any): void {
     const dialogRef = this.dialog.open(EditTestPopupComponent, {
       width: '700px',
@@ -58,10 +55,10 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-      this.getTests('1');
-      this.cdr.detectChanges();
-      console.log(result);
-    });
+        this.getTests('1');
+        this.cdr.detectChanges();
+        console.log(result);
+      });
   }
 
   public openAvailabilityDialog(event?: any): void {
@@ -73,10 +70,10 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-      this.getTests('1');
-      this.cdr.detectChanges();
-      console.log(result);
-    });
+        this.getTests('1');
+        this.cdr.detectChanges();
+        console.log(result);
+      });
   }
 
   public openConfirmationDialog(event: any): void {
@@ -88,25 +85,69 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-      if (result) {
-        this.deleteTest(event);
-      }
-    });
+        if (result) {
+          this.deleteTest(event);
+        }
+      });
   }
 
   public deleteTest(testId): void {
     this.testService.deleteTest(testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(() => {
-      this.getTests('1');
-    });
+        this.getTests('1');
+      });
   }
 
   public filterTests(searchValue: string): void {
-    const filteredTests = this.allTests.filter((test) => {
-      return test.Title.includes(searchValue);
-    });
-    this.sortTests(filteredTests);
+    if (this.currentTabIndex === 0) {
+      this.filterTestsString = searchValue;
+      const filteredTests = this.allTests.filter((test) => {
+        return test.Title.includes(searchValue);
+      });
+      this.sortTests(filteredTests);
+    }
+    else if (this.currentTabIndex === 1) {
+      this.filterStudentsString = searchValue;
+    }
+    else if (this.currentTabIndex === 2) {
+      this.filterCompletingString = searchValue;
+    }
+  }
+
+  public onChange(event: any): void {
+    this.currentTabIndex = event.index;
+    switch (this.currentTabIndex) {
+      case 0:{
+        this.allowChanges = true;
+        this.inputValue = this.filterTestsString;
+        break;
+      }
+      case 1:{
+        this.allowChanges = false;
+        this.inputValue = this.filterStudentsString;
+        break;
+      }
+      case 2:{
+        this.allowChanges = false;
+        this.inputValue = this.filterCompletingString;
+        break;
+      }
+    }
+
+  }
+
+  public navigateToQuestions(event): void {
+    this.router.navigate(['/questions/' + event]);
+  }
+
+  private getTests(subjectId): void {
+    this.testService.getTestAllTestBySubjectId(subjectId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((tests) => {
+        this.allTests = tests;
+        this.sortTests(tests);
+      });
   }
 
   private sortTests(tests): void {
@@ -130,9 +171,5 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       }
     });
     this.loading = false;
-  }
-
-  public navigateToQuestions(event): void {
-    this.router.navigate(['/questions/' + event]);
   }
 }

@@ -5,16 +5,23 @@
                  [adminQuestions]="false"
                  [adminTests]="false"
                  (onValueChangeSearch)="filterTests($event)"></app-main-page>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Тесты для контроля знаний'" [allowChanges]="false"
-                          [tests]="knowledgeControlTests"></app-main-table-tests>
-  </div>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Тесты для самоконтроля и ЭУМК'" [allowChanges]="false"
-                          [tests]="selfControlTests"></app-main-table-tests>
-  </div>
-  <div class="container-table-tests">
-    <app-main-table-tests [title]="'Тесты для обучения с искусственной нейронной сетью'" [allowChanges]="false"
-                          [tests]="nNTests"></app-main-table-tests>
-  </div>
+  <mat-tab-group class="container-table-tab" (selectedTabChange)="onChange($event)">
+    <mat-tab  label="Тестирование знаний">
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Тесты для контроля знаний'" [allowChanges]="false"
+                              [tests]="knowledgeControlTests"></app-main-table-tests>
+      </div>
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Тесты для самоконтроля и ЭУМК'" [allowChanges]="false"
+                              [tests]="selfControlTests"></app-main-table-tests>
+      </div>
+      <div class="container-table-tests">
+        <app-main-table-tests [title]="'Тесты для обучения с искусственной нейронной сетью'" [allowChanges]="false"
+                              [tests]="nNTests"></app-main-table-tests>
+      </div>
+    </mat-tab>
+    <mat-tab label="Результаты тестировния" >
+      <app-result-pupil [filterValue]="filterResult"></app-result-pupil>
+    </mat-tab>
+  </mat-tab-group>
 </div>

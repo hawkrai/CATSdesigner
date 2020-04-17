@@ -1,4 +1,4 @@
-<app-header [text]="'Тестирование и отладка ПО'"
+<!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Результаты тестов'"></app-header>
 <div class="result-pupil-container">
   <div class="result-pupil-container-search">
@@ -7,7 +7,7 @@
       <input matInput placeholder="Введите название теста" (change)="onValueChange($event)">
     </mat-form-field>
   </div>
-</div>
+</div>-->
 <mat-tab-group class="result-pupil-table">
   <mat-tab label="Тесты для контроля знаний">
     <app-result-test-table-pupil [tests]="knowledgeControlTests"></app-result-test-table-pupil>

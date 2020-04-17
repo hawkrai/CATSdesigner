@@ -23,23 +23,23 @@
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
-          <mat-icon (click)="navigateToTest(element.Id)" matTooltip="Пройти тест"
+          <mat-icon class="main-table-tests-icon" (click)="navigateToTest(element.Id)" matTooltip="Пройти тест"
                     matTooltipClass="example-tooltip-green">play_circle_outline
           </mat-icon>
-          <mat-icon (click)="openEditPopup(element)" *ngIf="allowChanges" matTooltip="Редактировать тест"
+          <mat-icon class="main-table-tests-icon" (click)="openEditPopup(element)" *ngIf="allowChanges" matTooltip="Редактировать тест"
                     matTooltipClass="example-tooltip-green">edit
           </mat-icon>
-          <mat-icon (click)="deleteTest(element.Id)" *ngIf="allowChanges" matTooltip="Удалить тест"
+          <mat-icon class="main-table-tests-icon" (click)="deleteTest(element.Id)" *ngIf="allowChanges" matTooltip="Удалить тест"
                     matTooltipClass="example-tooltip-green">delete
           </mat-icon>
-          <mat-icon (click)="navigateToQuestions(element.Id)" *ngIf="allowChanges" matTooltip="Перейти к вопросам"
+          <mat-icon class="main-table-tests-icon" (click)="navigateToQuestions(element.Id)" *ngIf="allowChanges" matTooltip="Перейти к вопросам"
                     matTooltipClass="example-tooltip-green">info
           </mat-icon>
-          <mat-icon (click)="openAvailabilityPopup(element.Id)" *ngIf="!element.Unlocked && allowChanges"
+          <mat-icon class="main-table-tests-icon" (click)="openAvailabilityPopup(element.Id)" *ngIf="!element.Unlocked && allowChanges"
                     matTooltip="Доступность теста"
                     matTooltipClass="example-tooltip-green">lock
           </mat-icon>
-          <mat-icon (click)="openAvailabilityPopup(element.Id)" *ngIf="element.Unlocked && allowChanges"
+          <mat-icon class="main-table-tests-icon" (click)="openAvailabilityPopup(element.Id)" *ngIf="element.Unlocked && allowChanges"
                     matTooltip="Доступность теста"
                     matTooltipClass="example-tooltip-green">lock_open
           </mat-icon>

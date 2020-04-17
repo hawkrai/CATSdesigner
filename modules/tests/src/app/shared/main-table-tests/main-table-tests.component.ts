@@ -16,7 +16,7 @@ import {takeUntil} from "rxjs/operators";
 @Component({
   selector: 'app-main-table-tests',
   templateUrl: './main-table-tests.component.html',
-  styleUrls: ['./main-table-tests.component.css']
+  styleUrls: ['./main-table-tests.component.less']
 })
 export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnInit {
 
