@@ -1,3 +1,44 @@
 <mat-toolbar color="primary">
-    Cats    
-</mat-toolbar>
+    <button mat-icon-button>
+        <mat-icon>menu</mat-icon>
+      </button>
+    <a href="/" class="nav-link home">
+        <img src="/assets/images/nav-logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted">
+    </a>
+    <span class="example-spacer"></span>
+    <div>
+      <a mat-button [routerLink]="'/subjects'">Предметы</a>
+      <a mat-button [routerLink]="'/subjects-control'">Управление предметами</a>
+      <a mat-button [routerLink]="'/modules'">Модули</a>
+      <a mat-button [routerLink]="'/settings'">Настройки</a>
+    </div> 
+    
+    <div class="flex-spacer"></div>
+    <mat-form-field class="search-form" appearance="legacy">
+        <input matInput type="text" placeholder="Поиск">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <a mat-button [routerLink]="'/emails'">Сообщения</a>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+        <mat-icon>supervised_user_circle</mat-icon>
+        <span>Профиль</span>
+    </button>
+    <button mat-menu-item>
+        <mat-icon>info</mat-icon>
+        <span>О системе</span>
+    </button>
+    <button mat-menu-item>
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Выйти</span>
+    </button>
+    </mat-menu>
+
+    
+    
+  </mat-toolbar>

@@ -13,6 +13,10 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () => import("./modules/viewer/viewer.module").then(m => m.ViewerModule)
+      },
+      {
+        path: 'subject',
+        loadChildren: () => import("./modules/viewer/viewer.module").then(m => m.ViewerModule)
       }
     ] 
 
