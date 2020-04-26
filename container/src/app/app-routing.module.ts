@@ -6,20 +6,24 @@ import { NoAuthGuard } from './core/no-auth.guard';
 
 const routes: Routes = [
   {
-    path: 'viewer',
+    path: '',
+    redirectTo: 'web',
+    pathMatch: 'full'
+  },
+  {
+    path: 'web',
     component: ContentLayoutComponent,
     canActivate: [NoAuthGuard],
-    children: [
+    children: [  
       {
         path: '',
-        loadChildren: () => import("./modules/viewer/viewer.module").then(m => m.ViewerModule)
-      },
+        loadChildren: () => import("./modules/main/main.module").then(m => m.MainModule)
+      },    
       {
-        path: 'subject',
+        path: 'viewer',
         loadChildren: () => import("./modules/viewer/viewer.module").then(m => m.ViewerModule)
       }
-    ] 
-
+    ]
   }
 ];
 

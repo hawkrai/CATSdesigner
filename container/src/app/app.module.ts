@@ -11,6 +11,8 @@ import { FooterComponent } from './layout/footer/footer.component';
 import { MatetialModule } from './shared/matetial/matetial.module';
 
 import { CoreModule } from './core/core.module';
+import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
+import { LayoutService } from './layout/layout.service';
 
 
 @NgModule({
@@ -18,7 +20,8 @@ import { CoreModule } from './core/core.module';
     AppComponent,
     ContentLayoutComponent,
     NavComponent,
-    FooterComponent
+    FooterComponent,
+    SubjectsNavComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,9 @@ import { CoreModule } from './core/core.module';
     MatetialModule,
     CoreModule
   ],
-  providers: [],
+  providers: [
+    LayoutService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,13 +1,13 @@
 <mat-toolbar color="primary">
     <button mat-icon-button>
-        <mat-icon>menu</mat-icon>
+        <mat-icon (click)="sidenavAction()">menu</mat-icon>
       </button>
     <a href="/" class="nav-link home">
         <img src="/assets/images/nav-logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted">
     </a>
     <span class="example-spacer"></span>
     <div>
-      <a mat-button [routerLink]="'/subjects'">Предметы</a>
+      <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
       <a mat-button [routerLink]="'/subjects-control'">Управление предметами</a>
       <a mat-button [routerLink]="'/modules'">Модули</a>
       <a mat-button [routerLink]="'/settings'">Настройки</a>

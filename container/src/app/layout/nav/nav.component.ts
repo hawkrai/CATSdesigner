@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-nav',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavComponent implements OnInit {
 
-  constructor() { }
+  constructor(private layoutService: LayoutService) { }
 
   ngOnInit(): void {
+  }
+
+  sidenavAction() {
+    this.layoutService.toggle();
   }
 
 }
