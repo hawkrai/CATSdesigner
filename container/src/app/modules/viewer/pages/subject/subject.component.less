@@ -1,12 +1,11 @@
 .app-sidenav-subject {
-    height: calc(100% - 64px);
+    height: 100%;
     flex: 1;
 
     .app-sidenav-menu-subject {
-        padding-left: 7px;
         background-color: #3f51b5;
         color: white;
-        box-shadow: 6px 0 6px rgba(0,0,0,.1);
+        //box-shadow: 6px 0 6px rgba(0,0,0,.1);
         max-width: 300px;
         .white-icon {
             color: white;
@@ -15,10 +14,32 @@
         .white-icon svg {
             fill: white;
         }
+        a {
+            text-align: center;
+            color: white;
+        }
+
+        .mat-list-item-content{
+            cursor: pointer;
+        }
+
+        .spacer {
+            height: 50px;
+        }
     }
 
     .app-sidenav-content-subject {
         min-height: 100vh;
-        padding: 40px 3rem 2rem;
+        height: 100%;
+        width: 100%;
+        
+        .subject-frame {
+            height: 100%;
+            iframe {
+                height: 99%;
+                width: 100%;
+                border: none;
+            }
+        }
     }
 }

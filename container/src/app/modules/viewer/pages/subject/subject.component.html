@@ -1,14 +1,61 @@
 <mat-sidenav-container class="app-sidenav-subject">
     <mat-sidenav #subjectsidenav opened mode="side" opened="true" class="app-sidenav-menu-subject">
+        <div class="spacer">
+            
+        </div>
         <mat-nav-list>
-            <a mat-list-item matTooltip="Предмет" matTooltipPosition="after" > <mat-icon class="white-icon">subject</mat-icon> </a>
-            <a mat-list-item matTooltip="Тесты" matTooltipPosition="after"> <mat-icon class="white-icon">assessment</mat-icon> </a>
-            <a mat-list-item matTooltip="ЭУМК" matTooltipPosition="after"> <mat-icon class="white-icon">library_books</mat-icon> </a>
-            <a mat-list-item matTooltip="Курсовой проект" matTooltipPosition="after"> <mat-icon class="white-icon">school</mat-icon> </a>
+            <a mat-list-item (click)="openModule('http://localhost:4201/3/news')">
+                <div mat-line>
+                    <mat-icon class="white-icon">subject</mat-icon>
+                </div>                
+                <div mat-line>Новости</div> 
+            </a>
+            <a mat-list-item (click)="openModule('http://localhost:4201/3/lectures')">
+                <div mat-line>
+                    <mat-icon class="white-icon">subject</mat-icon>
+                </div>                
+                <div mat-line>Лекции</div> 
+            </a>
+            <a mat-list-item (click)="openModule('http://localhost:4201/3/labs')">
+                <div mat-line>
+                    <mat-icon class="white-icon">subject</mat-icon>
+                </div>                
+                <div mat-line>Лабораторные</div>
+                <div mat-line>работы</div> 
+            </a>
+            <a mat-list-item> 
+                <div mat-line>
+                    <mat-icon class="white-icon">assessment</mat-icon>
+                </div>                
+                <div mat-line>Тесты</div>
+            </a>
+            <a mat-list-item> 
+                <div mat-line>
+                    <mat-icon class="white-icon">library_books</mat-icon>
+                </div>                
+                <div mat-line>ЭУМК</div>
+            </a>
+            <a mat-list-item> 
+                <div mat-line>
+                    <mat-icon class="white-icon">school</mat-icon>
+                </div>                
+                <div mat-line>КП</div>
+            </a>
       
           </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="app-sidenav-content-subject">
-        123123123
-    </mat-sidenav-content>
+    <div class="app-sidenav-content-subject">
+        <!-- <mat-toolbar color="primary" class="secondary-toolbar">
+            
+        </mat-toolbar> -->
+        <!-- <mat-tab-group mat-align-tabs="start" color="primary">
+            <mat-tab label="Новости">Content 1</mat-tab>
+            <mat-tab label="Лекции">Content 2</mat-tab>
+            <mat-tab label="Лабораторные работы">Content 3</mat-tab>
+            <mat-tab label="Практические занятия">Content 3</mat-tab>
+        </mat-tab-group> -->
+        <div class="subject-frame">
+            <iframe [src]="moduleSelecteUrl()"></iframe>
+        </div>
+    </div>
 </mat-sidenav-container>

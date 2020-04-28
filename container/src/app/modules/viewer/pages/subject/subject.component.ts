@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-subject',
@@ -6,10 +7,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./subject.component.less']
 })
 export class SubjectComponent implements OnInit {
-
-  constructor() { }
+  public selectedModuleUrl: string;
+  constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
+    this.selectedModuleUrl = "http://localhost:4201/3/news";
+  }
+
+  moduleSelecteUrl(){
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this.selectedModuleUrl);  
+  }
+
+  openModule(url: string) {
+    this.selectedModuleUrl = url;
+    
   }
 
 }
