@@ -1,15 +1,14 @@
 <div class="lectures-list-component">
+  <div class="lectures-list-component__actions" *ngIf="teacher">
+    <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить лекцию</button>
+  </div>
   <div class="mdc-data-table">
     <table class="mdc-data-table__table">
       <thead>
       <tr class="mdc-data-table__header-row">
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngFor="let header of tableHeaders">
+          {{header.name}}
         </th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Тема лекции</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-          Количество часов
-        </th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Скачать</th>
       </tr>
       </thead>
       <tbody class="mdc-data-table__content">
@@ -17,10 +16,18 @@
         <td class="mdc-data-table__cell">{{ lecture.order }}</td>
         <td class="mdc-data-table__cell">{{ lecture.theme }}</td>
         <td class="mdc-data-table__cell">{{ lecture.duration }}</td>
-        <td class="mdc-data-table__cell">
+        <td class="mdc-data-table__cell" *ngIf="!teacher">
           <button class="mdc-button" *ngIf="lecture.attachments.length > 0" (click)="_openPopup(lecture.attachments)">
             <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
             <span class="mdc-button__label">Файлы</span>
+          </button>
+        </td>
+        <td class="mdc-data-table__cell" *ngIf="teacher">
+          <button mat-icon-button color="primary" matTooltip="Редактировать лекцию" (click)="constructorLecture(lecture)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Удалить лекцию" (click)="deleteLectures(lecture)">
+            <mat-icon>delete_forever</mat-icon>
           </button>
         </td>
       </tr>
@@ -55,7 +62,7 @@
           </div>
         </div>
         <footer class="mdc-dialog__actions">
-          <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+          <button type="button" class="mdc-button mdc-dialog__button mat-primary" data-mdc-dialog-action="close">
             <span class="mdc-button__label">Отмена</span>
           </button>
           <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept"

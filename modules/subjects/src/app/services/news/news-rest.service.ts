@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ConverterService } from "./converter.service";
+import { ConverterService } from "../converter.service";
 import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
-export class NewsService {
+export class NewsRestService {
 
   constructor(private http: HttpClient,
               private converterService: ConverterService) { }

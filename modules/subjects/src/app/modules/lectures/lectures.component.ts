@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {LecturesService} from '../../services/lectures.service';
-import {Lecture} from '../../models/lecture.model';
+import {select, Store} from '@ngrx/store';
+import {getSubjectId} from '../../store/selectors/subject.selector';
+import {IAppState} from '../../store/state/app.state';
 
 @Component({
   selector: 'app-lectures',
@@ -11,19 +11,16 @@ import {Lecture} from '../../models/lecture.model';
 export class LecturesComponent implements OnInit {
 
   public tab = 1;
-  public lectures: Lecture[];
+  public teacher = true;
 
   private subjectId: string;
 
-  constructor(private lecturesService: LecturesService,
-              private route: ActivatedRoute) {
+  constructor(private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.subjectId = this.route.snapshot.params.subjectId;
-
-    this.lecturesService.getAllLectures(this.subjectId).subscribe(res => {
-      this.lectures = res;
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.subjectId = subjectId;
     });
   }
 

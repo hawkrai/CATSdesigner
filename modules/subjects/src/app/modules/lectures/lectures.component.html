@@ -1,4 +1,4 @@
-<div class="lectures-component" *ngIf="lectures">
+<div class="lectures-component">
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 1"
@@ -27,7 +27,7 @@
   </div>
 
   <div class="lectures-component__body">
-    <app-lectures-list *ngIf="tab === 1" [lectures]="lectures"></app-lectures-list>
-    <app-visit-lectures *ngIf="tab === 2"> </app-visit-lectures>
+    <app-lectures-list *ngIf="tab === 1" [subjectId]="subjectId"  [teacher]="teacher"></app-lectures-list>
+    <app-visit-lectures *ngIf="tab === 2" [subjectId]="subjectId" [teacher]="teacher"> </app-visit-lectures>
   </div>
 </div>

@@ -22,6 +22,14 @@ export class LecturesService {
     );
   }
 
+  public createLecture(lecture: Lecture) {
+    return this.http.post('Services/Lectures/LecturesService.svc/Save', lecture);
+  }
+
+  public deleteLecture(lecture: {id: string, subjectId: string}) {
+    return this.http.post('Services/Lectures/LecturesService.svc/Delete', lecture);
+  }
+
   public getCalendar(subjectId: string): Observable<Calendar[]> {
     return this.http.get('Services/Lectures/LecturesService.svc/GetCalendar/' + subjectId).pipe(
       map(res => this.converterService.calendarModelsConverter(res['Calendar']))
@@ -35,5 +43,13 @@ export class LecturesService {
     return this.http.get('Services/CoreService.svc/GetLecturesMarkVisitingV2', {params}).pipe(
       map(res => this.converterService.groupsVisitingConverter(res['GroupsVisiting']))
     )
+  }
+
+  public createDateVisit(body: {subjectId: string, date: string}): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/SaveDateLectures', body);
+  }
+
+  public deleteDateVisit(body: {id: string}): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDate', body);
   }
 }

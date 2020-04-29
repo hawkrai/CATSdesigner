@@ -3,6 +3,9 @@ import {Group} from "../../../../models/group.model";
 import {LabService} from "../../../../services/lab.service";
 import {ActivatedRoute} from "@angular/router";
 import {ScheduleProtectionLab} from "../../../../models/lab.model";
+import {select, Store} from '@ngrx/store';
+import {IAppState} from '../../../../store/state/app.state';
+import {getSubjectId} from '../../../../store/selectors/subject.selector';
 
 @Component({
   selector: 'app-visit-statistics',
@@ -12,7 +15,9 @@ import {ScheduleProtectionLab} from "../../../../models/lab.model";
 export class VisitStatisticsComponent implements OnInit, OnChanges {
 
   @Input() selectedGroup: Group;
-  public scheduleProtectionLabs : ScheduleProtectionLab[];
+  @Input() teacher: boolean;
+
+  public scheduleProtectionLabs: ScheduleProtectionLab[];
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
 
@@ -20,19 +25,23 @@ export class VisitStatisticsComponent implements OnInit, OnChanges {
   private student: any[];
 
   constructor(private labService: LabService,
-              private route: ActivatedRoute) { }
+              private store: Store<IAppState>,
+              private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
-    this.subjectId = this.route.snapshot.params.subjectId;
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.subjectId = subjectId;
 
-    this.labService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-      this.scheduleProtectionLabs = res.scheduleProtectionLabs;
-      // console.log(res)
+      this.labService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+        this.scheduleProtectionLabs = res.scheduleProtectionLabs;
+        // console.log(res)
+      });
+      this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+        this.student = res;
+        console.log(res)
+      })
     });
-    this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-      this.student = res;
-      console.log(res)
-    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {

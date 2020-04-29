@@ -1,4 +1,18 @@
 .visit-lectures-component {
+
+  &__header {
+    display: flex;
+
+    &-select-group, button {
+      margin-right: 20px;
+    }
+
+    &-actions {
+      padding: 10px 0;
+    }
+  }
+
+
   &__table-lecture-visiting {
     table.mat-table {
       width: 100%;
@@ -29,11 +43,11 @@
     }
 
     td {
-      border-top: 1px solid rgba(0,0,0,.12);
+      border-top: 1px solid rgba(0, 0, 0, .12);
     }
 
     td, th {
-      border-right: 1px solid rgba(0,0,0,.12);
+      border-right: 1px solid rgba(0, 0, 0, .12);
       border-bottom: 0;
     }
   }

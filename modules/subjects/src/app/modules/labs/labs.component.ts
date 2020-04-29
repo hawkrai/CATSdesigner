@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {Lecture} from "../../models/lecture.model";
 import {Group} from "../../models/group.model";
-import {GroupsService} from "../../services/groups.service";
+import {GroupsRestService} from "../../services/groups/groups-rest.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatOptionSelectionChange} from "@angular/material/core";
+import {select, Store} from '@ngrx/store';
+import {getSubjectId} from '../../store/selectors/subject.selector';
+import {IAppState} from '../../store/state/app.state';
 
 @Component({
   selector: 'app-labs',
@@ -17,16 +20,19 @@ export class LabsComponent implements OnInit {
   public selectedGroup: Group;
 
   private subjectId: string;
+  public teacher = true;
 
-  constructor(private groupsService: GroupsService,
+  constructor(private groupsService: GroupsRestService,
+              private store: Store<IAppState>,
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.subjectId = this.route.snapshot.params.subjectId;
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.subjectId = subjectId;
 
-    this.groupsService.getAllGroups(this.subjectId).subscribe(res => {
-      this.groups = res;
-      console.log(res);
+      this.groupsService.getAllGroups(this.subjectId).subscribe(res => {
+        this.groups = res;
+      });
     });
   }
 

@@ -2,6 +2,9 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
 import {Group} from "../../../../models/group.model";
 import {LabService} from "../../../../services/lab.service";
 import {ActivatedRoute} from "@angular/router";
+import {select, Store} from '@ngrx/store';
+import {getSubjectId} from '../../../../store/selectors/subject.selector';
+import {IAppState} from '../../../../store/state/app.state';
 
 @Component({
   selector: 'app-results',
@@ -11,6 +14,7 @@ import {ActivatedRoute} from "@angular/router";
 export class ResultsComponent implements OnInit, OnChanges {
 
   @Input() selectedGroup: Group;
+  @Input() teacher: boolean;
 
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
@@ -20,15 +24,18 @@ export class ResultsComponent implements OnInit, OnChanges {
   header: any[];
 
   constructor(private labService: LabService,
+              private store: Store<IAppState>,
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.subjectId = this.route.snapshot.params.subjectId;
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.subjectId = subjectId;
 
-    this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-      this.student = res;
-      this._getHeader(res[0].Marks.length);
-    })
+      this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+        this.student = res;
+        this._getHeader(res[0].Marks.length);
+      })
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

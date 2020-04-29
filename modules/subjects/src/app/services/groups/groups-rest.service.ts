@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Group } from "../models/group.model";
+import { Group } from "../../models/group.model";
 import { map } from "rxjs/operators";
-import { ConverterService } from "./converter.service";
+import { ConverterService } from "../converter.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class GroupsService {
+export class GroupsRestService {
 
   private allGroups: Observable<Group[]>;
 

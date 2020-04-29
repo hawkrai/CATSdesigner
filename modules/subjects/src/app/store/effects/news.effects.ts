@@ -1,14 +1,12 @@
 import {Injectable} from "@angular/core";
 import {Actions, Effect, ofType} from "@ngrx/effects";
-import {ENewsActions, GetNews, SaveNews, SetNews} from "../actions/news.actions";
-import {exhaust, map, mergeMap, mergeMapTo, switchAll, switchMap, withLatestFrom} from "rxjs/operators";
+import {ENewsActions, LoadNews, SetNews} from "../actions/news.actions";
+import {map, switchMap, withLatestFrom} from "rxjs/operators";
 import {select, Store} from "@ngrx/store";
 import {IAppState} from "../state/app.state";
 import {getSubjectId} from "../selectors/subject.selector";
-import {NewsService} from "../../services/news.service";
+import {NewsRestService} from "../../services/news/news-rest.service";
 import {News} from "../../models/news.model";
-import {getNews} from "../selectors/news.selectors";
-import {of} from "rxjs";
 
 
 @Injectable()
@@ -16,32 +14,17 @@ export class NewsEffects {
 
   constructor(private actions$: Actions,
               private store: Store<IAppState>,
-              private newsService: NewsService
+              private rest: NewsRestService
   ) {
   }
 
   @Effect()
   getNews$ = this.actions$.pipe(
-    ofType<GetNews>(ENewsActions.GetNews),
-    mergeMap(() => this.store.pipe(select(getSubjectId))),
-    switchMap((subjectId: string) => this.newsService.getAllNews(subjectId)),
-    switchMap((news: News[]) => {
-      this.store.dispatch(new SetNews(news));
-      return of(new GetNews());
+    ofType<LoadNews>(ENewsActions.LOAD_NEWS),
+    withLatestFrom(this.store.pipe(select(getSubjectId))),
+    switchMap(([_, subjectId]) => this.rest.getAllNews(subjectId)),
+    map((news: News[]) => {
+      return new SetNews(news)
     })
   );
-
-  // @Effect()
-  // saveNews$ = this.actions$.pipe(
-  //   ofType<SaveNews>(ENewsActions.SaveNews),
-  //   map(action => action.payload),
-  //   switchMap((news: News) => this.newsService.saveNews(news)),
-  //   map(() => this.store.pipe(select(getSubjectId))),
-  //   exhaust(),
-  //   switchMap((subjectId: string) => this.newsService.getAllNews(subjectId)),
-  //   switchMap((news: News[]) => {
-  //     this.store.dispatch(new SetNews(news));
-  //     return this.store.pipe(select(getNews));
-  //   })
-  // );
 }

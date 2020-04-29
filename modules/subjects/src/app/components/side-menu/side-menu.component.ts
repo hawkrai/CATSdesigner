@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatSidenav} from '@angular/material/sidenav';
 
 
 @Component({
@@ -10,8 +11,10 @@ export class SideMenuComponent implements OnInit {
 
   subjectId: string;
   menuElements;
-  pageName;
+  pageName: string;
 
+  @ViewChild('drawer', { static: false })
+  drawer: MatSidenav;
   constructor() { }
 
   ngOnInit() {
@@ -19,10 +22,10 @@ export class SideMenuComponent implements OnInit {
     this.subjectId = urlArray[1];
 
     this.menuElements = [
-      { name: 'Новости', tab: '/news'},
-      { name: 'Лекции', tab: '/lectures'},
-      { name: 'Лабораторные работы', tab: '/labs'},
-      { name: 'Тестирование знаний', tab: '/'},
+      { name: 'Новости', tab: '/news', icon: 'library_books'},
+      { name: 'Лекции', tab: '/lectures', icon: 'account_balance'},
+      { name: 'Лабораторные работы', tab: '/labs', icon: 'work_outline'},
+      { name: 'Файлы', tab: '/files', icon: 'attachment'},
     ];
 
     this.pageName = '/' + urlArray[2];

@@ -9,7 +9,7 @@ import { LecturesModule } from './modules/lectures/lectures.module';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LabsModule } from './modules/labs/labs.module';
-import {PopoverComponent} from "./shared/popover/popover.component";
+import {DeletePopoverComponent} from "./shared/delete-popover/delete-popover.component";
 import {MatModule} from "./mat.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {appReducers} from "./store/reducers/app.reducers";
@@ -17,12 +17,16 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import {NewsEffects} from "./store/effects/news.effects";
+import {GroupsEffects} from './store/effects/groups.effects';
+import {VisitDatePopoverComponent} from './shared/visit-date-popover/visit-date-popover.component';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
     AppComponent,
     SideMenuComponent,
-    PopoverComponent
+    DeletePopoverComponent,
+    VisitDatePopoverComponent
   ],
   imports: [
     BrowserModule,
@@ -36,13 +40,14 @@ import {NewsEffects} from "./store/effects/news.effects";
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [
-    PopoverComponent
+    DeletePopoverComponent,
+    VisitDatePopoverComponent
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

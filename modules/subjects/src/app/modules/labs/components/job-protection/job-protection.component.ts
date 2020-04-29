@@ -8,6 +8,8 @@ import {Group} from "../../../../models/group.model";
 })
 export class JobProtectionComponent implements OnInit {
 
+  @Input() teacher: boolean;
+
   constructor() { }
 
   ngOnInit() {

@@ -6,8 +6,7 @@ import { ProtectionScheduleComponent } from './components/protection-schedule/pr
 import { VisitStatisticsComponent } from './components/visit-statistics/visit-statistics.component';
 import { ResultsComponent } from './components/results/results.component';
 import { JobProtectionComponent } from './components/job-protection/job-protection.component';
-import {MatTableModule} from "@angular/material/table";
-import {MatSelectModule} from "@angular/material/select";
+import {MatModule} from '../../mat.module';
 
 
 
@@ -15,8 +14,7 @@ import {MatSelectModule} from "@angular/material/select";
   declarations: [LabsComponent, LabsWorkComponent, ProtectionScheduleComponent, VisitStatisticsComponent, ResultsComponent, JobProtectionComponent],
   imports: [
     CommonModule,
-    MatTableModule,
-    MatSelectModule
+    MatModule
   ]
 })
 export class LabsModule { }

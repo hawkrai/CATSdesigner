@@ -1,22 +1,16 @@
 import {Component, ElementRef, Inject, ViewContainerRef} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-
-export interface DialogData {
-  title: string;
-  body?: any;
-  buttonText: string;
-  model?: any;
-}
+import {DialogData} from '../../models/dialog-data.model';
 
 @Component({
-  selector: 'app-popover',
-  templateUrl: 'popover.component.html',
-  styleUrls: ['./popover.component.less']
+  selector: 'app-delete-popover',
+  templateUrl: 'delete-popover.component.html',
+  styleUrls: ['./delete-popover.component.less']
 })
-export class PopoverComponent {
+export class DeletePopoverComponent {
 
   constructor(
-    public dialogRef: MatDialogRef<PopoverComponent>,
+    public dialogRef: MatDialogRef<DeletePopoverComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
   }
 

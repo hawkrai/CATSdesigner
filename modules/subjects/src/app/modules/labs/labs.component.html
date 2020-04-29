@@ -72,10 +72,10 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <app-labs-work *ngIf="tab === 1"></app-labs-work>
-    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [selectedGroup]="selectedGroup"></app-protection-schedule>
-    <app-visit-statistics *ngIf="tab === 3 && selectedGroup" [selectedGroup]="selectedGroup"></app-visit-statistics>
-    <app-results *ngIf="tab === 4 && selectedGroup" [selectedGroup]="selectedGroup"></app-results>
-    <app-job-protection *ngIf="tab === 5"></app-job-protection>
+    <app-labs-work *ngIf="tab === 1" [teacher]="teacher"></app-labs-work>
+    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [selectedGroup]="selectedGroup" [teacher]="teacher"></app-protection-schedule>
+    <app-visit-statistics *ngIf="tab === 3 && selectedGroup" [selectedGroup]="selectedGroup" [teacher]="teacher"></app-visit-statistics>
+    <app-results *ngIf="tab === 4 && selectedGroup" [selectedGroup]="selectedGroup" [teacher]="teacher"></app-results>
+    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>
   </div>
 </div>

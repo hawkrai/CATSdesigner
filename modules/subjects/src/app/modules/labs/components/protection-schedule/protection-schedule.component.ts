@@ -3,6 +3,9 @@ import {ActivatedRoute} from "@angular/router";
 import {Group} from "../../../../models/group.model";
 import {LabService} from "../../../../services/lab.service";
 import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
+import {select, Store} from '@ngrx/store';
+import {getSubjectId} from '../../../../store/selectors/subject.selector';
+import {IAppState} from '../../../../store/state/app.state';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -12,6 +15,7 @@ import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
 export class ProtectionScheduleComponent implements OnInit, OnChanges {
 
   @Input() selectedGroup: Group;
+  @Input() teacher: boolean;
 
   public labs: Lab[];
   public scheduleProtectionLabs : ScheduleProtectionLab[];
@@ -21,16 +25,19 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges {
   private subjectId: string;
 
   constructor(private labService: LabService,
+              private store: Store<IAppState>,
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.subjectId = this.route.snapshot.params.subjectId;
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.subjectId = subjectId;
 
-    this.labService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-      this.labs = res.labs;
-      this.scheduleProtectionLabs = res.scheduleProtectionLabs;
-      console.log(res)
-    })
+      this.labService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+        this.labs = res.labs;
+        this.scheduleProtectionLabs = res.scheduleProtectionLabs;
+        console.log(res)
+      })
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
