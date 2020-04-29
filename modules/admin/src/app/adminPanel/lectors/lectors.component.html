@@ -1,6 +1,68 @@
-<app-navbar></app-navbar>
 <div class="main">
     <h1>Преподаватели</h1>
-    <button mat-raised-button (click)="openLectorDialog()">Добавить преподаватели</button>
+    <button mat-raised-button (click)="saveProfessor()">Добавить преподавателя</button>
+    <div>
+        <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
+        </mat-form-field>
+
+        <table mat-table [dataSource]="dataSource" matSort matSortStart="asc" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="position">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>
+                <td mat-cell *matCellDef="let i=index"> {{ (i+1) + (myPaginator.pageIndex * myPaginator.pageSize) }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Полное имя</th>
+                <td mat-cell *matCellDef="let element"> {{ element.FullName }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="login">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Логин</th>
+                <td mat-cell *matCellDef="let element"> {{ element.Login }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lastLogin">
+                <th mat-header-cell *matHeaderCellDef> Последний вход </th>
+                <td mat-cell *matCellDef="let element"> {{ element.LastLogin }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Статус </th>
+                <td mat-cell *matCellDef="let element"> {{ element.IsActive }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subjects">
+                <th mat-header-cell *matHeaderCellDef> Предметы </th>
+                <td mat-cell *matCellDef="let element"> {{element.Subjects}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action" class="actions">
+                <th mat-header-cell *matHeaderCellDef> Действиe </th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-button matTooltip="Статистика авторизации в системе" aria-label="Diagram" (click)="openDiagram(element.Id)">
+                        <mat-icon>equalizer icon</mat-icon>
+                    </button>
+                    <button mat-button matTooltip="Список предметов" aria-label="listOfSubsject" (click)="openListOfGroup(element.Id)">
+                        <mat-icon>list</mat-icon>
+                    </button>
+                    <button mat-button matTooltip="Профиль" aria-label="Profile" (click)="this.navigateToProfile(element.Login)">
+                        <mat-icon>account_circle</mat-icon>
+                    </button>
+                    <button mat-button matTooltip="Редактировать " aria-label="Edit " (click)="openDialogEdit(element) ">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-button matTooltip="Удалить " aria-label="Delete " (click)="deleteProfessor(element.Id) ">
+                    <mat-icon>delete_forever</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns "></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+        </table>
+
+        <mat-paginator #myPaginator [length]="25 " [pageSize]="5 " [pageSizeOptions]="[5, 10, 20] " showFirstLastButtons="true "></mat-paginator>
+    </div>
 </div>
-<app-table-for-students-and-lectors></app-table-for-students-and-lectors>

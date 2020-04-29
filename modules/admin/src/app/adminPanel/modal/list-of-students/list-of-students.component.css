@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+table {
+    border: 1px solid lavender;
+    width: 100%;
+}
+
+th {
+    width: 100px;
+}

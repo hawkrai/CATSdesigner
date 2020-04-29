@@ -1,23 +1,21 @@
-<mat-toolbar>
-    
+<mat-toolbar *ngIf="isLoad">
     <div class="main-button">
         <mat-icon class="material-icons main-icon" aria-hidden="false">home</mat-icon>
-        <button routerLink='/main' mat-icon-button>(LMS).Platform</button>
+        <button *ngIf="this.groupId" [routerLink]="['/control/main', this.groupId]" mat-icon-button>(LMS).Platform</button>
     </div>
 
-    <div  class="nav-flex">
+    <div class="nav-flex">
         <div>
-            <button mat-button [matMenuTriggerFor]="subject" class="my-menu">
+            <button *ngIf="this.groupId && this.isSubject()" mat-button [matMenuTriggerFor]="subject" class="my-menu">
                 <mat-icon class="main-icon">record_voice_over</mat-icon>
                 Предметы
             </button>
             <mat-menu #subject="matMenu" yPosition="below">
-                <button mat-menu-item>
-                    Основы тестрования
+                <button *ngFor="let element of this.subjectResponse.Subjects" routerLink="/control/item/{{this.groupId}}/{{element.Id}}" mat-menu-item>
+                    {{ element.Name }}
                 </button>
             </mat-menu>
-
-            <button mat-button aria-label="Students">
+            <button *ngIf="this.groupId" mat-button aria-label="Stats" [routerLink]="['/control/statistic', groupId]">
                 <mat-icon class="main-icon">mood</mat-icon>
                 Статистика
             </button>

@@ -1,0 +1,29 @@
+{
+    "/Administration/*": {
+        "target": {
+            "host": "localhost",
+            "protocol": "http:",
+            "port": 6478
+        },
+        "secure": false,
+        "logLevel": "info"
+    },
+    "/Profile/*": {
+        "target": {
+            "host": "localhost",
+            "protocol": "http:",
+            "port": 6478
+        },
+        "secure": false,
+        "logLevel": "info"
+    },
+    "/Services/*": {
+        "target": {
+            "host": "localhost",
+            "protocol": "http:",
+            "port": 6478
+        },
+        "secure": false,
+        "logLevel": "info"
+    }
+}

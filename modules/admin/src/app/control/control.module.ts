@@ -5,18 +5,31 @@ import { AppRoutingModule } from '../app-routing.module';
 import { MainContolComponent } from './main/main.component';
 import { SearchGroupComponent } from './modal/search-group/search-group.component';
 import { FormsModule } from '@angular/forms';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatDialogModule, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule, MatButtonModule, MatToolbarModule, MatInputModule, MatTableModule, MatPaginatorModule } from '@angular/material';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatMenuModule} from '@angular/material/menu';
+import { ItemComponent } from './item/item.component';
+import { GeneralComponent } from './general/general.component';
+import { ItemTableComponent } from './item/item-table/item-table.component';
+import { StatsComponent } from './stats/stats.component';
+import { TableForAllSubjectComponent } from './stats/table-for-all-subject/table-for-all-subject.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { GroupNotFoundComponent } from './group-not-found/group-not-found.component';
 
 @NgModule({
   declarations: [
     NavbarStatisticComponent,
     MainContolComponent,
-    SearchGroupComponent
+    SearchGroupComponent,
+    ItemComponent,
+    GeneralComponent,
+    ItemTableComponent,
+    StatsComponent,
+    TableForAllSubjectComponent,
+    GroupNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -32,9 +45,10 @@ import {MatMenuModule} from '@angular/material/menu';
     MatSelectModule,
     MatFormFieldModule,
     BrowserAnimationsModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressSpinnerModule
   ],
-  providers: [],
+  providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
   bootstrap: [],
   exports: [ NavbarStatisticComponent,
     MainContolComponent, SearchGroupComponent ],

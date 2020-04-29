@@ -1,0 +1,12 @@
+<div class="main" *ngIf="isLoad">
+    <h1>Статистика</h1>
+    <mat-form-field>
+        <mat-label>Выберите предмет</mat-label>
+        <select matNativeControl [(ngModel)]="selectedItem" name="item">
+            <option selected>Все предметы</option>
+            <option *ngFor="let item of this.subjects" [value]="item.Id">{{item.Name}}</option>
+            <option selected>Суммарная статистика по всем предметам</option>
+        </select>
+    </mat-form-field>
+</div>
+<!-- <app-table-for-all-subject></app-table-for-all-subject> -->

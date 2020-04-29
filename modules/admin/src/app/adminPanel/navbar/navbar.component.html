@@ -1,45 +1,45 @@
 <mat-toolbar>
-    <div class = "main-button">
+    <div class="main-button">
         <mat-icon class="material-icons main-icon" aria-hidden="false">home</mat-icon>
-        <button routerLink='/main' mat-icon-button>(LMS).Platform</button>
+        <button routerLink='/admin/main' mat-icon-button>(LMS).Platform</button>
     </div>
     <div class="nav-flex">
         <div>
-            <button routerLink='/lectors' routerLinkActive="router-link-active"  mat-button style="margin-left: 170px;" aria-label="Teachers">
+            <button routerLink='/admin/lectors' routerLinkActive="router-link-active" mat-button style="margin-left: 170px;" aria-label="Teachers">
                 <mat-icon class="main-icon">record_voice_over</mat-icon>
                 Преподаватели
             </button>
-            <button routerLink='/students' mat-button aria-label="Students">
+            <button routerLink='/admin/students' mat-button aria-label="Students">
                 <mat-icon class="main-icon">mood</mat-icon>
                 Студенты
             </button>
-            <button routerLink='/groups' mat-button aria-label="Groups">
+            <button routerLink='/admin/groups' mat-button aria-label="Groups">
                 <mat-icon class="main-icon">people</mat-icon>
                 Группы
             </button>
-            <button mat-button aria-label="Files">
+            <button routerLink='/admin/files' mat-button aria-label="Files">
                 <mat-icon class="main-icon">insert_drive_file</mat-icon>
                 Файлы
             </button>
         </div>
         <div>
-            <button mat-button [matMenuTriggerFor]="chatMenu" class="my-menu">
+            <!-- <button mat-button [matMenuTriggerFor]="chatMenu" class="my-menu">
                 <mat-icon class="main-icon">forum</mat-icon>
                 Чат
-            </button>
-            <mat-menu #chatMenu="matMenu" yPosition="below">
+            </button> -->
+            <!-- <mat-menu #chatMenu="matMenu" yPosition="below">
                 <button mat-menu-item >
                     <mat-icon class="main-icon">forum</mat-icon>
                     Чат
                 </button>
                 <mat-slider></mat-slider>
             </mat-menu>
-            
-            <button  mat-button color="primary" aria-label="Message">
+             -->
+            <button mat-button routerLink='/admin/messages' color="primary" aria-label="Message">
                 <mat-icon class="main-icon"> email</mat-icon>
                 Сообщения
             </button>
-            <button mat-button [matMenuTriggerFor]="adminMenu" >
+            <button mat-button [matMenuTriggerFor]="adminMenu">
                 <mat-icon class="main-icon">perm_identity</mat-icon>
                 Admin
             </button>

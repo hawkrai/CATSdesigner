@@ -30,3 +30,9 @@ mat-dialog-actions {
 mat-dialog-actions {
     float: right;
 }
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: lighter;
+}

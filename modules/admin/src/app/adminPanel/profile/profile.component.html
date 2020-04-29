@@ -1,0 +1,38 @@
+<div *ngIf="this.isLoad" class="profile">
+    <mat-card class="profile-card">
+        <mat-card></mat-card>
+        <mat-card-content>
+            <p>{{ this.profileInfo.Name}}</p>
+            <p *ngIf="this.profileInfo.Group">Группа: {{ this.profileInfo.Group}}</p>
+            <a *ngIf="!this.profileInfo.Group" [routerLink]="['/resetPassword/lector', this.profileInfo.Id]">Сбросить пароль</a>
+            <a *ngIf="this.profileInfo.Group" [routerLink]="['/resetPassword/student', this.profileInfo.Id]">Сбросить пароль</a>
+        </mat-card-content>
+    </mat-card>
+    <mat-card class="project-container">
+        <table mat-table [dataSource]="this.profileInfoSubjects">
+            <ng-container matColumnDef="item">
+                <th mat-header-cell *matHeaderCellDef> Текущие предметы пользователя </th>
+                <td mat-cell *matCellDef="let element"> {{element.Name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="complete">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element"> {{element.Completing}} %</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsSecond"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsSecond;"></tr>
+        </table>
+    </mat-card>
+    <mat-card class="project-container">
+        <table mat-table [dataSource]="this.profileProjects">
+            <ng-container matColumnDef="item">
+                <th mat-header-cell *matHeaderCellDef> Текущие проекты пользователя </th>
+                <td mat-cell *matCellDef="let element"> {{element.Name}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </mat-card>
+</div>

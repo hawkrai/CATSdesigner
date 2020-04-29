@@ -1,0 +1,95 @@
+<div *ngIf="this.isLoad" class="main">
+    <h1>Сообщения</h1>
+    <button mat-raised-button (click)="this.sendMessage()">Написать сообщение</button>
+    <mat-tab-group animationDuration="2000ms">
+        <mat-tab label="Входящие">
+            <table class="message-table" mat-table [dataSource]="this.message.InboxMessages">
+
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-icon" mat-cell *matCellDef>
+                        <mat-icon>email</mat-icon>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="author">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-name" mat-cell *matCellDef="let element" (click)="this.openMessageDetails(element.Id)">{{ element.AthorName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="subject">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-subject" mat-cell *matCellDef="let element" (click)="this.openMessageDetails(element.Id)">{{ element.Subject }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="text">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-text" mat-cell *matCellDef="let element" (click)="this.openMessageDetails(element.Id)">{{ element.PreviewText }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-date" mat-cell *matCellDef="let element">{{ element.Date }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-action" mat-cell *matCellDef="let element">
+                        <button mat-button matTooltip="Удалить " aria-label="Delete" (click)="this.deleteMessage(element.Id)">
+                            <mat-icon>delete_forever</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="inboxColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: inboxColumns;"></tr>
+            </table>
+        </mat-tab>
+        <mat-tab label="Отправленные">
+            <table class="message-table" mat-table [dataSource]="this.message.OutboxMessages">
+
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-icon" mat-cell *matCellDef>
+                        <mat-icon>email</mat-icon>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fullName">
+                    <th mat-header-cell *matHeadverCellDef></th>
+                    <td class="message-name" mat-cell *matCellDef="let element" (click)="this.openMessageDetails(element.Id)">
+                        <p *ngIf="element.Recipients.length===1">{{ element.Recipients[0] }}</p>
+                        <p *ngIf="element.Recipients.length!==1">{{ element.Recipients[0] }}<a>+еще</a></p>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="subject">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-subject" mat-cell *matCellDef="let element" (click)="this.openMessageDetails(element.Id)">{{ element.Subject }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="text">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-text" mat-cell *matCellDef="let element" (click)="this.openMessageDetails(element.Id)">{{ element.PreviewText }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-date" mat-cell *matCellDef="let element">{{ element.Date }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td class="message-action" mat-cell *matCellDef="let element">
+                        <button mat-button matTooltip="Удалить" aria-label="Delete" (click)="this.deleteMessage(element.Id)">
+                            <mat-icon>delete_forever</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="outboxColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: outboxColumns;"></tr>
+            </table>
+        </mat-tab>
+    </mat-tab-group>
+</div>

@@ -1,0 +1,75 @@
+h1 {
+    font-weight: lighter;
+    font-size: 28px;
+    width: 95%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid lavender;
+}
+
+.main {
+    margin-top: 50px;
+    font-weight: lighter;
+    margin-left: 90px;
+}
+
+.mat-tab-group {
+    margin-top: 48px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+tr.mat-header-row {
+    display: none;
+}
+
+.message-table {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message-icon {
+    width: 5%;
+    margin-right: 5px;
+}
+
+.message-name {
+    width: 20%;
+    max-width: 150px;
+}
+
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message-subject {
+    width: 15%;
+}
+
+.message-text {
+    width: 50%;
+    max-width: 500px;
+}
+
+.message-date {
+    width: 5%;
+}
+
+.message-action {
+    width: 5%;
+}
+
+a {
+    color: blue;
+}
