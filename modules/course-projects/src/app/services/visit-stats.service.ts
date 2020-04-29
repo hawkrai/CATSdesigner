@@ -15,4 +15,17 @@ export class VisitStatsService {
     return this.http.get('api/CourseProjectConsultation', {params: new HttpParams({fromObject: params})});
   }
 
+  public setMark(studentId: string, consultationDateId: string, mark: string): Observable<any> {
+    return this.http.post('api/CourseProjectConsultation', {StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark});
+  }
+
+  public editMark(id: string, studentId: string, consultationDateId: string, mark: string): Observable<any> {
+    return this.http.post('api/CourseProjectConsultation',
+      {Id: id, StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark});
+  }
+
+  public addDate(date: string, subjectId: string): Observable<any> {
+    return this.http.post('api/CourseProjectConsultationDate', {Day: date, SubjectId: subjectId});
+  }
+
 }

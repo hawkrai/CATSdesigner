@@ -1,8 +1,7 @@
 export class PercentageResult {
-  Id: number;
-  Name: string;
-  Group: string;
+  Id: string;
+  PercentageGraphId: string;
+  StudentId: string;
   Mark: string;
-  AssignedCourseProjectId: number;
-  Lecturer: string;
+  Comment: string;
 }

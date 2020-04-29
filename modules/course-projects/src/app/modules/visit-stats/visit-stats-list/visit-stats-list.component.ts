@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {VisitStats} from '../../../models/visit-stats.model';
+import {Consultation} from '../../../models/consultation.model';
+import {VisitStatsComponent} from '../visit-stats.component';
 
 @Component({
   selector: 'app-visit-stats-list',
@@ -9,8 +11,9 @@ import {VisitStats} from '../../../models/visit-stats.model';
 export class VisitStatsListComponent implements OnInit {
 
   @Input() visitStatsList: VisitStats[];
+  @Input() consultations: Consultation[];
 
-  constructor() {
+  constructor(private visitStatsComponent: VisitStatsComponent) {
   }
 
   ngOnInit() {

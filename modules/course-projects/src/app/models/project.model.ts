@@ -1,7 +1,7 @@
 import { Attachment } from './attachment.model';
 
 export class Project {
-  Id: number;
+  Id: string;
   Order: number;
   Theme: string;
   Student: string;

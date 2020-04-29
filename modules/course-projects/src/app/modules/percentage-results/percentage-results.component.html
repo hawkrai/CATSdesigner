@@ -1,5 +1,5 @@
 <div class="percentage-results-component" *ngIf="percentageResults">
-  <div style="width: 100%; overflow: auto">
+  <div class="percentage-results-component__header">
     <mat-form-field class="percentage-results-component__group-select" *ngIf="groups">
       <mat-select [(value)]="groupId" (selectionChange)="onGroupChange($event.value)">
         <mat-option *ngFor="let group of groups" [value]="group.Id">
@@ -14,6 +14,7 @@
     </mat-form-field>
   </div>
   <div class="percentage-results-component__body">
-    <app-percentage-results-list [percentageResults]="percentageResults"></app-percentage-results-list>
+    <app-percentage-results-list [percentageResults]="percentageResults" [percentageGraphs]="percentageGraphs">
+    </app-percentage-results-list>
   </div>
 </div>

@@ -5,11 +5,22 @@
 .percentage-results-list-component {
   display: block;
 
-  &__result {
+  &__row {
     margin-top: 10px;
     display: grid;
-    grid-template-columns: 0.2fr 1fr 1.5fr 0.3fr ;
+    grid-template-columns: 0.2fr 0.9fr 1.4fr 1.7fr 0.3fr;
     border-bottom: 1px solid darkorchid;
+  }
+
+  &__results {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  &__result {
+    flex: 1;
+    text-align: center;
   }
 
   p {
@@ -19,4 +30,10 @@
   span {
     font-size: 16px;
   }
+}
+
+.clickable {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
 }

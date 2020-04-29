@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {PercentageResult} from '../../../models/percentage-result.model';
+import {StudentPercentageResults} from '../../../models/student-percentage-results.model';
+import {PercentageGraph} from '../../../models/percentage-graph.model';
+import {PercentageResultsComponent} from '../percentage-results.component';
 
 @Component({
   selector: 'app-percentage-results-list',
@@ -8,9 +10,10 @@ import {PercentageResult} from '../../../models/percentage-result.model';
 })
 export class PercentageResultsListComponent implements OnInit {
 
-  @Input() percentageResults: PercentageResult[];
+  @Input() percentageResults: StudentPercentageResults[];
+  @Input() percentageGraphs: PercentageGraph[];
 
-  constructor() { }
+  constructor(private percentageResultsComponent: PercentageResultsComponent) { }
 
   ngOnInit() {
   }

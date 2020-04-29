@@ -1,7 +1,7 @@
 export class Percentage {
-  Id: number;
+  Id: string;
   Name: string;
   Percentage: number;
   Date: string;
-  SubjectId: number;
+  SubjectId: string;
 }
