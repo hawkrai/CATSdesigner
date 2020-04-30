@@ -1,25 +1,33 @@
-<div class="side-menu-component">
-  <aside class="mdc-drawer">
-    <div class="mdc-drawer__content">
-      <nav class="mdc-list">
-        <a class="mdc-list-item" aria-current="page"
-           *ngFor="let menuElement of menuElements"
-           [routerLink]="subjectId + menuElement.tab"
-           (click)="selectedTab(menuElement)"
-           [class.mdc-list-item--activated]="menuElement.tab === pageName"
-        >
-          <span class="mdc-list-item__text">{{ menuElement.name }}</span>
-        </a>
-        <hr>
-        <a class="mdc-list-item" aria-current="page" >
-          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">sync</i>
-          <span class="mdc-list-item__text">Сменить предмет</span>
-        </a>
-        <a class="mdc-list-item" aria-current="page">
-          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">reply</i>
-          <span class="mdc-list-item__text">В главное меню</span>
-        </a>
-      </nav>
-    </div>
-  </aside>
-</div>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+               [attr.role]="'navigation'"
+               mode="'over'"
+               [opened]="drawer.opened"
+  >
+    <mat-toolbar>
+      <a class="home-button" routerLink="/">
+<!--        <img class="app-logo" src="path_to_logo_image" />-->
+      </a>
+    </mat-toolbar>
+    <mat-nav-list class="navigation-list">
+      <a class="navigation-item" mat-list-item
+         *ngFor="let menuElement of menuElements"
+         [routerLink]="menuElement.tab" routerLinkActive="active">
+        <mat-icon class="material-icons">{{menuElement.icon}}</mat-icon>
+        <span class="navigation-item-label">{{menuElement.name}}</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="sidenav-content">
+    <mat-toolbar class="sidenav-content-toolbar" color="primary">
+      <button mat-icon-button class="menu-button" type="button" aria-label="Toggle sidenav" (click)="drawer.toggle()">
+        <i class="material-icons">menu</i>
+      </button>
+      <span class="filler">
+            <!-- You can place a search bar here or anything you like -->
+        </span>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+<!--    <app-footer></app-footer>-->
+  </mat-sidenav-content>
+</mat-sidenav-container>
