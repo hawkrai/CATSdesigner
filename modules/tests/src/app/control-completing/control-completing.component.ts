@@ -1,7 +1,7 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {TestPassingService} from "../service/test-passing.service";
 import {ControlItems} from "../models/control-items.model";
-import {takeUntil, tap} from "rxjs/operators";
+import {takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
@@ -17,12 +17,13 @@ import {Student} from "../models/student.model";
 export class ControlCompletingComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
 
   public controlItems: ControlItems[];
-  public filteredControlItems: ControlItems[];
+  public filteredControlItems: ControlItems[] = [];
   @Input()
   public filterCompletingString: string;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
-  constructor(private testPassingService: TestPassingService) {
+  constructor(private testPassingService: TestPassingService,
+              private cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -42,13 +43,15 @@ export class ControlCompletingComponent extends AutoUnsubscribeBase implements O
     this.filterStudents(this.controlItems);
   }
 
-  private filterStudents(controlItems: ControlItems[]): void {
-    /*controlItems && controlItems.forEach((controlItem: ControlItems) =>{
-      this.filteredControlItems.push(controlItem);
-      this.filteredControlItems = controlItem && controlItem.Students.filter((student: Student) =>
-        student.StudentName.includes(this.filterCompletingString)
-      )};
-    );*/
-    console.log(controlItems);
+  public filterStudents(controlItems: ControlItems[]): void {
+    this.filteredControlItems = [];
+    controlItems && controlItems.forEach((controlItem: ControlItems, index: number) => {
+        this.filteredControlItems.push(controlItem);
+        this.filteredControlItems[index].Students = controlItem && controlItem.Students.filter((student: Student) =>
+          student.StudentName.toLowerCase().includes(this.filterCompletingString)
+        )
+      }
+    );
+    this.cdr.detectChanges();
   }
 }
