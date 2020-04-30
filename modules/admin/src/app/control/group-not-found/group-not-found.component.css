@@ -1,0 +1,11 @@
+.not-found-text {
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+}
+
+.not-found-icon {
+    font-size: 37px;
+    margin-right: 12px;
+}

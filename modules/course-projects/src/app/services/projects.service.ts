@@ -14,4 +14,32 @@ export class ProjectsService {
         return this.http.get('api/courseProject', { params: new HttpParams({ fromString: params }) });
     }
 
+    public getProject(id: string): Observable<any> {
+      return this.http.get('api/courseProject/' + id);
+    }
+
+    public chooseProject(projectId: string): Observable<any> {
+      return this.http.post('api/courseProjectAssignment', {projectId});
+    }
+
+    public editProject(id: string, subjectId: string, theme: string, selectedGroupsIds: string[]): Observable<any> {
+      return this.http.post('api/courseProject', {Id: id, SubjectId: subjectId, Theme: theme, SelectedGroupsIds: selectedGroupsIds});
+    }
+
+    public deleteProject(id: string): Observable<any> {
+      return this.http.delete('api/courseProject/' + id);
+    }
+
+    public getStudents(params: string): Observable<any> {
+      return this.http.get('api/courseStudent', { params: new HttpParams({ fromString: params }) });
+    }
+
+    public assignProject(projectId: string, studentId: string): Observable<any> {
+      return this.http.post('api/courseProjectAssignment', {projectId, studentId});
+    }
+
+    public removeAssignment(id: string): Observable<any> {
+      return this.http.delete('api/courseProjectAssignment/' + id);
+    }
+
 }

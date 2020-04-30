@@ -1,13 +1,19 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SubjectNewsComponent } from './subject-news.component';
-
-
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SubjectNewsComponent} from './subject-news.component';
+import {MatModule} from "../../mat.module";
+import {NewsPopoverComponent} from './news-popover/news-popover.component';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
-  declarations: [SubjectNewsComponent],
+  declarations: [SubjectNewsComponent, NewsPopoverComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    MatModule,
+    FormsModule,
+  ],
+  entryComponents: [
+    NewsPopoverComponent
   ],
   exports: [SubjectNewsComponent]
 })

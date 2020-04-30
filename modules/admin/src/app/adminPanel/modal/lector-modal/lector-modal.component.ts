@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { LectorData } from '../../table-for-students-and-lectors/table-for-students-and-lectors.component';
-
+import { Professor } from 'src/app/model/professor';
+import { ProfessorService } from 'src/app/service/professor.service';
 
 @Component({
   selector: 'app-lector-modal',
@@ -10,12 +10,15 @@ import { LectorData } from '../../table-for-students-and-lectors/table-for-stude
 })
 export class LectorModalComponent implements OnInit {
 
-  ngOnInit(): void {
-  }
-
   constructor(
     public dialogRef: MatDialogRef<LectorModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: LectorData) { }
+    @Inject(MAT_DIALOG_DATA) public data: Professor) { }
+
+  ngOnInit(): void {
+    this.data.IsLecturerHasGraduateStudents = false;
+    this.data.IsSecretary = false;
+    this.data.IsActive = true;
+  }
 
   onNoClick(): void {
     this.dialogRef.close();

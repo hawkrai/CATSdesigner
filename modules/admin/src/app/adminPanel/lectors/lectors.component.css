@@ -3,9 +3,8 @@ h1 {
     font-size: 28px;
     width: 95%;
     padding-bottom: 20px;
-    border-bottom:1px solid lavender;
+    border-bottom: 1px solid lavender;
 }
-
 
 .main {
     margin-top: 50px;
@@ -18,4 +17,34 @@ h1 {
     border-radius: 0;
     color: white;
     background-color: steelblue;
+}
+
+mat-form-field {
+    margin-right: 100px;
+    float: right;
+    position: relative;
+}
+
+table {
+    border: 1px solid lavender;
+    width: 95%;
+}
+
+th {
+    width: 100px;
+}
+
+tr {
+    height: 60px;
+}
+
+mat-paginator {
+    margin-top: 20px;
+    margin-right: 80px;
+}
+
+button .mat-icon {
+    padding: 0 0 0 0;
+    height: 20px;
+    widows: 20px;
 }

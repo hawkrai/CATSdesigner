@@ -1,0 +1,18 @@
+table {
+    width: 100%;
+}
+  
+
+.main {
+    font-weight: lighter;
+}
+
+th.mat-header-cell, td.mat-cell {
+    text-align: center;
+    border: 1px solid #CCC;
+    padding: 0 !important;
+}
+
+.first {
+    height: 100px;
+}

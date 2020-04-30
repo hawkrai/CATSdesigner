@@ -1,14 +1,25 @@
 <div class="percentages-list-component">
-  <div class="percentages-list-component__percentage table_header">
+  <div class="percentages-list-component__percentage table_header"
+       [ngStyle]="{'grid-template-columns': (percentagesComponent.getCourseUser().IsLecturer) ? '0.2fr 1.2fr 0.7fr 0.7fr 0.5fr' : '0.2fr 1.2fr 0.7fr 0.7fr'}">
     <p style="text-align: center">№</p>
     <p>Название этапа</p>
     <p>Процент выполнения</p>
     <p>Дата</p>
+    <p *ngIf="percentagesComponent.getCourseUser().IsLecturer">Действие</p>
   </div>
-  <div class="percentages-list-component__percentage" *ngFor="let percentage of percentages; index as i">
+  <div class="percentages-list-component__percentage" *ngFor="let percentage of percentages; index as i"
+       [ngStyle]="{'grid-template-columns': (percentagesComponent.getCourseUser().IsLecturer) ? '0.2fr 1.2fr 0.7fr 0.7fr 0.5fr' : '0.2fr 1.2fr 0.7fr 0.7fr'}">
     <p style="text-align: center">{{ i + 1 }}</p>
     <p>{{ percentage.Name }}</p>
     <p>{{ percentage.Percentage }}</p>
     <p>{{ percentage.Date | date:'dd/MM/yyyy'}}</p>
+    <div *ngIf="percentagesComponent.getCourseUser().IsLecturer">
+      <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before" (click)="percentagesComponent.editStage(percentage)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before" (click)="percentagesComponent.deleteStage(percentage.Id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
   </div>
 </div>

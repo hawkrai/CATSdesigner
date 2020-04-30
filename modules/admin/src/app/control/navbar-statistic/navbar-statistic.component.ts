@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { SearchGroupComponent } from '../modal/search-group/search-group.component';
+import { SubjectService } from 'src/app/service/subject.service';
+import { SubjectResponse } from 'src/app/model/subject.response';
+import {  ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-navbar-statistic',
@@ -9,18 +12,33 @@ import { SearchGroupComponent } from '../modal/search-group/search-group.compone
 })
 export class NavbarStatisticComponent implements OnInit {
 
-  groupName: string;
-  constructor(private dialog: MatDialog) { }
+  subjectResponse: SubjectResponse;
+  isLoad = false;
+  groupId: string;
 
-  ngOnInit() {
+  constructor(private dialog: MatDialog, private subjectService: SubjectService, private activateRoute: ActivatedRoute) {
   }
 
-  openControlGroupDialog() {
-    const dialogRef = this.dialog.open(SearchGroupComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
-      this.groupName = result;
+  ngOnInit() {
+    this.groupId = this.activateRoute.snapshot.firstChild.params.groupId;
+    this.getSubjectName(this.groupId);
+  }
+
+  getSubjectName(groupId) {
+    this.subjectService.getSubjects(groupId).subscribe(subjectResponse => {
+      this.subjectResponse = subjectResponse;
+      this.isLoad = true;
     });
   }
 
+  isSubject() {
+    return this.subjectResponse.Subjects.length !== 0;
+  }
+
+  openControlGroupDialog() {
+    const ref = this.dialog.open(SearchGroupComponent);
+    ref.afterClosed().subscribe(() => {
+        this.ngOnInit();
+    });
+  }
 }

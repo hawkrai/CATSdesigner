@@ -1,8 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChildren} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import { NewsService } from '../../services/news.service';
 import {News} from '../../models/news.model';
-import {ConverterService} from '../../services/converter.service';
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
+import {IAppState} from "../../store/state/app.state";
+import {select, Store} from '@ngrx/store';
+import {getSubjectId} from "../../store/selectors/subject.selector";
+import {getNews} from "../../store/selectors/news.selectors";
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {ComponentType} from '@angular/cdk/typings/portal';
+import {NewsPopoverComponent} from './news-popover/news-popover.component';
+import {NewsService} from '../../services/news/news.service';
+import {DialogData} from '../../models/dialog-data.model';
 
 @Component({
   selector: 'app-subject-news',
@@ -11,34 +21,98 @@ import {ConverterService} from '../../services/converter.service';
 })
 export class SubjectNewsComponent implements OnInit {
 
+  private teacher: boolean = false;
+
   private subjectId: string;
 
   public news: News[];
+  public selectNews: News = null;
+  private unsubscription$: Subject<any> = new Subject();
+
+  @ViewChildren("popoverContent")
+  private popoverContent: ElementRef<any>;
 
   constructor(private newsService: NewsService,
-              private route: ActivatedRoute,
-              private converter: ConverterService) { }
-
-  ngOnInit() {
-    this.subjectId = this.route.snapshot.params.subjectId;
-
-    this.newsService.getAllNews(this.subjectId).subscribe(res => {
-        this.news = this.converter.newsModelsConverter(res.News);
-        console.log(this.news);
-        this.news = this.news.filter((news: News) => this.checkSemester(news.dateCreate));
-        console.log(this.news);
-      });
+              public dialog: MatDialog,
+              private store: Store<IAppState>,
+              private route: ActivatedRoute) {
   }
 
-  checkSemester(dateCreate: string) {
-    const monthCreate = Number(dateCreate.slice(3, 5));
-    const yearCreate = Number(dateCreate.slice(-4));
-    const nowDate = new Date();
-    if (nowDate.getMonth() > 1 && nowDate.getMonth() < 9) {
-      return (monthCreate > 1 && monthCreate < 9 && yearCreate === nowDate.getFullYear());
-    } else {
-      return ((monthCreate > 8 || monthCreate === 1) && yearCreate === nowDate.getFullYear());
-    }
+  ngOnInit() {
+    this.teacher = true;
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => this.subjectId = subjectId);
+
+    // TODO: Load in all date
+    this.newsService.loadDate();
+
+    this.refreshDate();
+  }
+
+  refreshDate() {
+    this.newsService.getAllNews()
+      .pipe(
+        takeUntil(this.unsubscription$)
+      )
+      .subscribe(
+        (news: News[]) => {
+          console.log(news)
+          this.news = news;
+        }
+      )
+  }
+
+  disableNews() {
+    this.newsService.disableAllNews(this.subjectId);
+  }
+
+  enableNews() {
+    this.newsService.enableAllNews(this.subjectId);
+  }
+
+  constructorNews(news?: News) {
+    const nowDate =  new Date().toISOString().split('T')[0].split('-').reverse().join('.');
+    const newNews = {
+      id: news ? news.id : '0',
+      subjectId: this.subjectId,
+      title: news ? news.title : '',
+      body: news ? news.body : '',
+      disabled: news ? news.disabled : false,
+      isOldDate: false,
+      dateCreate: news ? news.dateCreate: nowDate
+    };
+    const dialogData: DialogData = {
+      title: news? 'Редактирование новости' : 'Добавление новости',
+      buttonText: 'Сохранить',
+      model: newNews
+    };
+    const dialogRef = this.openDialog(dialogData, NewsPopoverComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        news? this.newsService.updateNews(result): this.newsService.createNews(result);
+      }
+    });
+  }
+
+  deleteNews(news: News) {
+    const dialogData: DialogData = {
+      title: 'Удаление новости',
+      body: news.title ,
+      buttonText: 'Удалить',
+      model: news.id
+    };
+    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      if (result) {
+        this.newsService.deleteNews(news.id, this.subjectId)
+      }
+    });
+  }
+
+  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
+    return this.dialog.open(popover, {data});
   }
 
 }

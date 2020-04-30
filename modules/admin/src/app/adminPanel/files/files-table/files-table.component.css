@@ -1,0 +1,33 @@
+table {
+    border: 1px solid lavender;
+    width: 95%;
+}
+
+th {
+    width: 100px;
+}
+
+tr {
+    height: 60px;
+}
+
+mat-paginator {
+    margin-top: 20px;
+    margin-right: 80px;
+}
+
+button .mat-icon {
+    padding: 0 0 0 0;
+    height: 20px;
+    widows: 20px;
+}
+
+.mat-button {
+    padding: 0;
+}
+
+.mat-button:focus {
+    color: blue;
+    background-color: white;
+    cursor: pointer;
+}

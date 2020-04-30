@@ -1,0 +1,58 @@
+<mat-card>
+    <mat-card-title>
+        <mat-icon>assignment_ind</mat-icon>
+    </mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="this.form" (ngSubmit)="submit()">
+            <mat-form-field>
+                <input type="text" matInput placeholder="Логин" formControlName="username" maxlength="30">
+                <mat-hint *ngIf="this.isControlInvalid('username')">Логин должен содержать не меньше 6 и не больше 30 символов и только латинские буквы и цифры </mat-hint>
+                <mat-error *ngIf="hasError('username', 'minlength')">Вы ввели меньше 6 символов</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input type="password" matInput placeholder="Пароль" formControlName="password" maxlength="30">
+                <mat-hint *ngIf="this.isControlInvalid('password')" align="end">Пароль должен содержать не меньше 6 и не больше 30 символов, хотя бы 1 маленькую и большую букву </mat-hint>
+                <mat-error *ngIf="hasError('password', 'minlength')">Вы ввели меньше 6 символов</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="password" placeholder="Подтверждение пароля" formControlName="confirmPassword" maxlength="30">
+                <mat-error *ngIf="this.isControlInvalid('confirmPassword')">Пароли не совпадают</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Фамилия" formControlName="surname" maxlength="30">
+                <mat-hint *ngIf="this.isControlInvalid('surname')">Фамилия должна содержать не меньше 6 и не больше 30 символов </mat-hint>
+                <mat-error *ngIf="hasError('surname', 'minlength')">Вы ввели меньше 6 символов</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Имя" formControlName="name" maxlength="30">
+                <mat-hint *ngIf="this.isControlInvalid('name')">Имя должно быть не меньше 6 и не больше 30 символов </mat-hint>
+                <mat-error *ngIf="hasError('name', 'maxlength')">Вы ввели больше 30 символов</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Отчество" formControlName="patronymic" maxlength="30">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Группа</mat-label>
+                <mat-select formControlName="groupNumber" maxlength="30">
+                    <mat-option *ngFor="let item of groups" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Секретный вопрос</mat-label>
+                <mat-select>
+                    <mat-option *ngFor="let item of quests" [value]="item.value">
+                        {{item.viewValue}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Ответ на секретный вопрос" formControlName="secret" maxlength="30">
+            </mat-form-field>
+            <div>
+                <button mat-button class='button' [disabled]='this.form.invalid' routerLink='/login'>Зарегистрироваться</button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

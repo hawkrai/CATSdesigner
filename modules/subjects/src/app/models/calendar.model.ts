@@ -1,5 +1,5 @@
 export class Calendar {
   id: string;
-  date: string;
+  date: Date;
   subjectId: string;
 }

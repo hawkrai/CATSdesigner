@@ -1,0 +1,32 @@
+<div class="container">
+    <h4>Отправка сообщения</h4>
+    <button mat-button class="close-button" [mat-dialog-close]="true">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+<form class="example-form">
+
+    <mat-form-field class="example-full-width">
+        <mat-label>Кому</mat-label>
+        <input matInput>
+    </mat-form-field>
+
+
+    <mat-form-field class="example-full-width">
+        <mat-label>Тема</mat-label>
+        <input matInput>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+        <mat-label>Текст сообщения</mat-label>
+        <textarea matInput></textarea>
+    </mat-form-field>
+
+    <label>
+        <input type="file" (change)="selectFile($event)">
+    </label>
+</form>
+<div mat-dialog-actions style="float: right;">
+    <button mat-button [mat-dialog-close]="true">Отмена</button>
+    <button mat-button>Отправить</button>
+</div>

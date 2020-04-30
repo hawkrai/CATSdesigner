@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {LecturesService} from '../../services/lectures.service';
-import {Lecture} from '../../models/lecture.model';
-import {ConverterService} from "../../services/converter.service";
-import {Calendar} from "../../models/calendar.model";
+import {select, Store} from '@ngrx/store';
+import {getSubjectId} from '../../store/selectors/subject.selector';
+import {IAppState} from '../../store/state/app.state';
 
 @Component({
   selector: 'app-lectures',
@@ -13,25 +11,16 @@ import {Calendar} from "../../models/calendar.model";
 export class LecturesComponent implements OnInit {
 
   public tab = 1;
-  public lectures: Lecture[];
-  public calendar: Calendar[];
+  public teacher = true;
 
   private subjectId: string;
 
-  constructor(private lecturesService: LecturesService,
-              private converterService: ConverterService,
-              private route: ActivatedRoute) {
+  constructor(private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.subjectId = this.route.snapshot.params.subjectId;
-
-    this.lecturesService.getAllLectures(this.subjectId).subscribe(res => {
-      this.lectures = this.converterService.lecturesModelConverter(res.Lectures);
-    });
-
-    this.lecturesService.getCalendar(this.subjectId).subscribe(res => {
-      this.calendar = this.converterService.calendarModelsConverter(res.Calendar);
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.subjectId = subjectId;
     });
   }
 

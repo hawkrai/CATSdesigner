@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+table {
+    border: 1px solid lavender;
+    width: 100%;
+}
+
+th {
+    width: 100px;
+}
+
+.lector-info {
+    text-align: center;
+    padding: 10px;
+}
+
+.list-of-groups {
+    height: 400px;
+}

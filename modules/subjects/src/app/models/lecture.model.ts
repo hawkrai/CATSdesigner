@@ -2,10 +2,10 @@ import { Attachment } from './attachment.model';
 
 export class Lecture {
   id: string;
-  order: number;
+  order: string;
   theme: string;
-  duration: number;
+  duration: string;
   pathFile: string;
   subjectId: string;
-  attachments: Attachment[];
+  attachments: Attachment[] | any;
 }

@@ -21,15 +21,13 @@
     width: 100%;
 }
 
-
 .mat-icon.icon {
     color: white;
     vertical-align: bottom;
     margin-right: 0px;
-    padding-bottom: 15px;
+    padding-bottom: 12px;
 }
 
-  
 button.mat-menu-item {
     font-size: 14px;
     font-weight: lighter;
@@ -57,13 +55,13 @@ a {
     text-decoration: none;
     color: white;
 }
- 
-a:hover, a:active{
+
+a:hover,
+a:active {
     color: lightgray;
 }
 
-
-.navigation-items{
+.navigation-items {
     list-style-type: none;
     padding: 0;
     margin: 100px;
@@ -73,7 +71,7 @@ a:hover, a:active{
     background-color: steelblue;
 }
 
-mat-toolbar{
+mat-toolbar {
     margin-top: -8px;
     border-radius: 0px;
     background-color: steelblue;
@@ -82,4 +80,3 @@ mat-toolbar{
     margin-left: -24px;
     overflow: hidden;
 }
- 

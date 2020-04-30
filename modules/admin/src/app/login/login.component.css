@@ -1,38 +1,48 @@
 :host {
-        display: flex;
-        justify-content: center;
-        margin: 100px 0px;
-      }
+    display: flex;
+    justify-content: center;
+    margin: 100px 0px;
+}
 
-      .mat-form-field {
-        width: 100%;
-        min-width: 300px;
-      }
+.mat-form-field {
+    width: 100%;
+    min-width: 300px;
+}
 
-      mat-card-title,
-      mat-card-content {
-        display: flex;
-        justify-content: center;
-      }
+mat-card-title,
+mat-card-content {
+    display: flex;
+    justify-content: center;
+}
 
-      .error {
-        padding: 16px;
-        width: 300px;
-        color: white;
-        background-color: red;
-      }
+.error {
+    padding: 16px;
+    width: 300px;
+    color: white;
+    background-color: red;
+}
 
-    .mat-button {
-        margin-top: 10px;
-        background-color: cornflowerblue;
-        color: white;
-        display: flex;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: lighter;
-    }
+.mat-button {
+    background-color: cornflowerblue;
+    color: white;
+    font-size: 14px;
+    font-weight: lighter;
+    display: block;
+    position: relative;
+    border: 1px solid white;
+    margin: 10px auto;
+}
 
-    .style-a {
-      color: cornflowerblue;
-      background: white;
-    }
+.mat-icon {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    color: cornflowerblue;
+    margin: 10px auto 50px auto;
+    font-size: 70px;
+}
+
+.style-a {
+    color: cornflowerblue;
+    background: white;
+}

@@ -4,9 +4,9 @@ h1 {
 }
 
 .inline {
-   width: 95%;
-   display: flex;
-   border-top:1px solid lavender;
+    width: 95%;
+    display: flex;
+    border-top: 1px solid lavender;
 }
 
 p {
@@ -39,5 +39,15 @@ p {
     width: 100%;
     margin-top: 20px;
     padding-left: 50px;
-    border-left:1px solid lavender;
+    border-left: 1px solid lavender;
+}
+
+.mat-progress-spinner {
+    display: inline;
+}
+
+.charts {
+    display: flex;
+    margin: 0 auto;
+    width: 70%;
 }

@@ -1,0 +1,46 @@
+mat-form-field {
+    margin-right: 100px;
+    float: right;
+    position: relative;
+}
+
+table {
+    border: 1px solid lavender;
+    width: 95%;
+}
+
+th {
+    width: 100px;
+}
+
+tr {
+    height: 60px;
+}
+
+.main {
+    font-weight: lighter;
+    margin-left: 90px;
+}
+
+mat-paginator {
+    margin-top: 20px;
+    margin-right: 80px;
+}
+
+button .mat-icon {
+    padding: 0 0 0 0;
+    height: 20px;
+    widows: 20px;
+}
+
+h1 {
+    font-weight: lighter;
+    font-size: 28px;
+    width: 95%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid lavender;
+}
+
+/deep/ .mat-paginator-page-size-label {
+    display: none;
+}

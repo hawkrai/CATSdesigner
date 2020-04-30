@@ -1,0 +1,23 @@
+<div *ngIf="this.isLoad" class="message-main">
+    <div class="message-detail-title">
+        <p class="message-detail-subject">
+            <mat-icon class="message-icon">email</mat-icon>{{ this.message.Subject}}</p>
+        <button mat-button class="close-icon" [mat-dialog-close]="true">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="message-body">
+        <a class="message-detail-author">{{ this.message.AthorName}}</a>
+        <div class="message-send">
+            <label class="message-label">Отправлено:</label>{{this.message.Date }}
+        </div>
+        <div class="message-send">
+            <label class="message-label">Кому:</label>
+            <div class="message-name" *ngFor='let res of this.message.Recipients'>{{ res }}</div>
+        </div>
+    </div>
+    <p class="message-text">
+        {{ this.message.PreviewText }}
+    </p>
+    <button mat-button class="message-button">Ответить</button>
+</div>
