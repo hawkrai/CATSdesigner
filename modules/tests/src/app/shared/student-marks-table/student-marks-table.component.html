@@ -1,19 +1,20 @@
-<ng-container *ngIf="tests; else loading">
+<ng-container>
   <div>
+<!--
     <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
-      <!-- Position Column -->
+      &lt;!&ndash; Position Column &ndash;&gt;
       <ng-container matColumnDef="Id">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
         <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index+1}}</mat-cell>
       </ng-container>
 
-      <!-- Name Column -->
+      &lt;!&ndash; Name Column &ndash;&gt;
       <ng-container matColumnDef="StudentName">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-name">Студент</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-name"> {{element.StudentName}}</mat-cell>
       </ng-container>
 
-      <!-- Weight Column -->
+      &lt;!&ndash; Weight Column &ndash;&gt;
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">Оценка</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
@@ -24,6 +25,7 @@
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
+-->
   </div>
 </ng-container>
 <ng-template #loading>

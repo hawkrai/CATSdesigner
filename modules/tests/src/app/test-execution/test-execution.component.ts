@@ -36,7 +36,7 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
   ngOnInit() {
     this.testId = this.route.snapshot.paramMap.get('id');
     this.questionNumber = '1';
-    this.testService.getTestTestById(this.testId)
+    this.testService.getTestById(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
       this.test = test;

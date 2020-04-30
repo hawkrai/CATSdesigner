@@ -16,7 +16,7 @@ export class TestService {
   constructor(private http: HttpClient) {
   }
 
-  getTestAllTestBySubjectId(subjectId: string): Observable<Test[]> {
+  getAllTestBySubjectId(subjectId: string): Observable<Test[]> {
     return this.http.get<Test[]>('/Tests/GetTests?subjectId=3');
   }
 
@@ -28,7 +28,7 @@ export class TestService {
     return this.http.get<Question>('/Tests/GetQuestion?id=' + testId);
   }
 
-  getTestTestById(id: string): Observable<Test> {
+  getTestById(id: string): Observable<Test> {
     return this.http.get<Test>('/Tests/GetTest?id=' + id);
   }
 

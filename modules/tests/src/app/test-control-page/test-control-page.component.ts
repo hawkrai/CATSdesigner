@@ -142,7 +142,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   private getTests(subjectId): void {
-    this.testService.getTestAllTestBySubjectId(subjectId)
+    this.testService.getAllTestBySubjectId(subjectId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((tests) => {
         this.allTests = tests;

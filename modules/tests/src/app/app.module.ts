@@ -42,6 +42,7 @@ import {CKEditorModule} from 'ckeditor4-angular';
 import {QuestionOtherTestComponent} from './questions-page/components/question-other-test/question-other-test.component';
 import {TestResultComponent} from './test-result/test-result.component';
 import {DateFormatPipe} from "./pipe/date-format.pipe";
+import {TranslatePipe} from "./pipe/translate.pipe";
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import {DateFormatPipe} from "./pipe/date-format.pipe";
     ControlCompletingComponent,
     QuestionOtherTestComponent,
     TestResultComponent,
-    DateFormatPipe
+    DateFormatPipe,
+    TranslatePipe
   ],
   imports: [
     FormsModule,
@@ -92,7 +94,8 @@ import {DateFormatPipe} from "./pipe/date-format.pipe";
     TestPassingService,
     TestService,
     AngularEditorService,
-    DateFormatPipe
+    DateFormatPipe,
+    TranslatePipe
   ],
   entryComponents: [DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,

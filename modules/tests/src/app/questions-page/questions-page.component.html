@@ -10,6 +10,10 @@
     </div>
   </div>
 </div>
+<div class="question-page__backlink-first" (click)="navigate()">
+  <mat-icon>keyboard_backspace</mat-icon>
+  {{"Вернуться к тестам"}}
+</div>
 <app-main-page [allowChanges]="true"
                [adminTests]="false"
                [adminQuestions]="true"
@@ -22,4 +26,8 @@
     (onDeleteQuestion)="deleteQuestion($event)"
     (onOpenEditPopup)="openPopup($event)">
   </app-table-questions>
+  <div class="question-page__backlink" (click)="navigate()">
+    <mat-icon>keyboard_backspace</mat-icon>
+    {{"Вернуться к тестам"}}
+  </div>
 </div>

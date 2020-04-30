@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TestService} from "../service/test.service";
 import {Question} from "../models/question/question.model";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material";
 import {QuestionPopupComponent} from "./components/question-popup/question-popup.component";
 import {Test} from "../models/test.model";
@@ -27,6 +27,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
 
   constructor(private testService: TestService,
               private route: ActivatedRoute,
+              private router: Router,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
     super();
@@ -34,7 +35,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
 
   ngOnInit() {
     this.testId = this.route.snapshot.paramMap.get('id');
-    this.testService.getTestTestById(this.testId)
+    this.testService.getTestById(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
       this.test = test;
@@ -101,5 +102,9 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
 
   public addNewQuestion(): void {
     this.openPopup(null);
+  }
+
+  public navigate(): void {
+    this.router.navigate(['test-control']);
   }
 }

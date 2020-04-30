@@ -32,7 +32,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
 
   ngOnInit() {
     this.testId = this.route.snapshot.queryParamMap.get('testId');
-    this.testService.getTestTestById(this.testId)
+    this.testService.getTestById(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
       this.test = test;

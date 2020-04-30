@@ -44,7 +44,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     }
   }
   public loadTests():void{
-    this.testService.getTestTestById(this.data.event.Id)
+    this.testService.getTestById(this.data.event.Id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
       this.editingTest = test;
