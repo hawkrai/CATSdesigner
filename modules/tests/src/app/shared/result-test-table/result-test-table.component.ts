@@ -33,25 +33,19 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
   public barChartPlugins = [pluginDataLabels];
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
-
   public barChartData: ChartDataSets[] = [
     {data: [], label: 'Оценка'}
   ];
-
   @Input()
   public tests: any;
-
   @Input()
   public name: string;
-
   public scareThing: any = [];
   public testSize: number;
-
   displayedColumns: string[] = ['Id', 'Name'];
-
   @Output()
   public sendAverageMarks: EventEmitter<any> = new EventEmitter();
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialog: MatDialog) {
     super();
@@ -69,6 +63,17 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     this.getAverageMark();
   }//todo average marks from backend
 
+  public openAnswersDialog(event?: any, id?: any): void {
+    const dialogRef = this.dialog.open(AnswersPopupComponent, {
+      width: '800px',
+      data: {event, id}
+    });
+
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
+  }
+
   private getAverageMark(): void {
     let mass = [];
     for (let subGroup of this.scareThing) {
@@ -79,7 +84,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
             sumOfMarks += test.points;
           }
           let entire = [];
-          entire.push(pupil[1].StudentShortName);
+          entire.push(this.getShortName(pupil));
           entire.push(sumOfMarks / this.testSize);
           mass.push(entire);
           pupil.push(sumOfMarks / this.testSize);
@@ -95,16 +100,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     }
   }
 
-
-  public openAnswersDialog(event?: any, id?: any): void {
-    const dialogRef = this.dialog.open(AnswersPopupComponent, {
-      width: '800px',
-      data: {event, id}
-    });
-
-    dialogRef.afterClosed()
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe();
+  private getShortName(pupil): string {
+    const pupilName: string[] = pupil[1].name.split(" ");
+    return pupilName[0] + " " + pupilName[1][0] + "." + pupilName[2][0] + ".";
   }
 
 }

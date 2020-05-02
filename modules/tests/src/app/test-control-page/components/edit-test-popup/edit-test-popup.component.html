@@ -19,7 +19,7 @@
              (change)="writeTitle($event, 'TimeForCompleting')">
     </mat-form-field>
     <mat-checkbox class="example-margin"
-                  [value]="editingTest.SetTimeForAllTest ? editingTest.SetTimeForAllTest : false"
+                  [checked]="editingTest?.SetTimeForAllTest"
     (change)="checkBoxTrue($event)">{{'Задать время на весь тест'}}
     </mat-checkbox>
   </div>

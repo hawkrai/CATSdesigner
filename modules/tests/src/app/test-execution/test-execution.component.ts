@@ -47,6 +47,8 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((question: TestQuestion) => {
       this.question = question;
+      this.questionNumber = question && question.Number.toString();
+      this.questionArray = question && question.IncompleteQuestionsNumbers;
       this.counter$ = timer(0, 1000).pipe(
         take(this.question.Seconds),
         map(() => {
@@ -60,7 +62,7 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
             return (hour >= 10 ? hour.toString() : "0" + hour.toString()) + ":" + (minute >= 10 ? minute.toString() : "0" + minute.toString()) + ":" + (restTime >= 10 ? restTime.toString() : "0" + restTime.toString());
           }
           else {
-            this.router.navigate(['page']);
+            this.router.navigate(['/test-result']);
           }
         })
       );

@@ -6,6 +6,7 @@ import {Result} from "../models/result.model";
 import {UserAnswers} from "../models/user-answers.model";
 import {ControlItems} from "../models/control-items.model";
 import {Test} from "../models/test.model";
+import {TestQuestion} from "../models/question/test-question.model";
 
 
 @Injectable({
@@ -24,8 +25,8 @@ export class TestPassingService {
     return this.http.get<Test[]>('/TestPassing/getAvailableTests?subjectId=3');
   }
 
-  getNextQuestion(testId: string, questionNumber: string): Observable<any> {
-    return this.http.get<any>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&excludeCorrectnessIndicator=true' + '&userId=10031');
+  getNextQuestion(testId: string, questionNumber: string): Observable<TestQuestion> {
+    return this.http.get<TestQuestion>('/TestPassing/GetNextQuestionJson?testId=' + testId + '&questionNumber=' + questionNumber + '&excludeCorrectnessIndicator=true' + '&userId=10031');
   }
 
   getStudentResults(subjectId: string): Observable<Test[]> {

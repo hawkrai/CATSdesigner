@@ -5,7 +5,8 @@ import {Test} from "../../../models/test.model";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
+import {takeUntil, tap} from "rxjs/operators";
+
 
 @AutoUnsubscribe
 @Component({
@@ -43,40 +44,50 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       this.editingTest = new Test();
     }
   }
-  public loadTests():void{
+
+  public loadTests(): void {
     this.testService.getTestById(this.data.event.Id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
-      this.editingTest = test;
-    });
+        if (test.ForNN) {
+          this.chosenType = 'Тест для обучения с искусственной нейронной сетью';
+        } else if (test.ForEUMK) {
+          this.chosenType = 'Тест для обучения в ЭУМК';
+        } else if (test.BeforeEUMK) {
+          this.chosenType = 'Предтест для обучения в ЭУМК';
+        } else if (test.ForSelfStudy) {
+          this.chosenType = 'Тест для самоконтроля';
+        }
+        this.editingTest = test;
+      });
   }
 
   onYesClick() {
     switch (this.chosenType) {
       case 'Тест для самоконтроля': {
-        this.editingTest['ForSelfStudy'] = true;
+        this.editingTest.ForSelfStudy = true;
         break;
       }
       case 'Предтест для обучения в ЭУМК': {
-        this.editingTest['BeforeEUMK'] = true;
+        this.editingTest.BeforeEUMK = true;
         break;
       }
       case 'Тест для обучения в ЭУМК': {
-        this.editingTest['ForEUMK'] = true;
+        this.editingTest.ForEUMK = true;
         break;
       }
       case 'Тест для обучения с искусственной нейронной сетью': {
-        this.editingTest['ForNN'] = true;
+        this.editingTest.ForNN = true;
         break;
       }
     }
-    this.editingTest['SubjectId'] = 3;
+    this.editingTest.SubjectId = 3;
     this.testService.saveTest(this.editingTest)
-      .pipe(takeUntil(this.unsubscribeStream$))
+      .pipe(
+        tap(() => this.dialogRef.close(true)),
+        takeUntil(this.unsubscribeStream$)
+      )
       .subscribe();
-    this.dialogRef.close(true);
-
-
   }
 
   public writeTitle(event, field): void {
@@ -84,6 +95,6 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   checkBoxTrue(event: MatCheckboxChange) {
-    this.editingTest['SetTimeForAllTest'] = event.checked;
+    this.editingTest.SetTimeForAllTest = event.checked;
   }
 }

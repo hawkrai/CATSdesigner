@@ -7,4 +7,5 @@ export class TestQuestion {
   Seconds: number;
   SetTimeForAllTest: boolean;
   ForSelfStudy: boolean;
+  IncompleteQuestionsNumbers: number[];
 }

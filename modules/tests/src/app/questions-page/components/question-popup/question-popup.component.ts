@@ -10,6 +10,7 @@ import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
+
 @AutoUnsubscribe
 @Component({
   selector: 'app-question-popup',
@@ -35,12 +36,11 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public charsWords: { [key: string]: string } = {};
   public charsSequence: { [key: string]: string } = {};
   public charsde: any;
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
-
   public readonly ANSWER_TYPES: any = [{id: 0, label: "С одним вариантом"},
     {id: 1, label: "С несколькими вариантами"},
     {id: 2, label: "Ввод с клавиатуры"},
     {id: 3, label: "Последовательность элементов"}];
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
@@ -62,10 +62,10 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       this.testService.getQuestion(this.data.event)
         .pipe(takeUntil(this.unsubscribeStream$))
         .subscribe((question) => {
-        this.question = question;
-        this.chosenQuestionType = question.QuestionType;
-        this.initExisting(this.question.Answers);
-      });
+          this.question = question;
+          this.chosenQuestionType = question.QuestionType;
+          this.initExisting(this.question.Answers);
+        });
     }
   }
 
@@ -129,35 +129,9 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.cdr.detectChanges();
   }
 
-  private initForm() {
-    this.chars = {};
-    this.chars["key0"] = "";
-    this.charsde = Object.keys(this.chars);
-  }
-
-  private initNeskolko() {
-    this.charsNeskolko = {};
-    this.charsNeskolko["key0"] = [];
-    this.charsNeskolko["key0"][0] = "fghjk";
-    this.charsNeskolko["key0"][1] = false;
-    this.charsde = Object.keys(this.charsNeskolko);
-  }
-
   kkkk($event: MatRadioChange) {
     console.log(this.chosenType);
 
-  }
-
-  private initWords() {
-    this.charsWords = {};
-    this.charsWords["key0"] = "";
-    this.charsde = Object.keys(this.charsWords);
-  }
-
-  private initSequence() {
-    this.charsSequence = {};
-    this.charsSequence["key0"] = "";
-    this.charsde = Object.keys(this.charsSequence);
   }
 
   public deleteAnswer(control: string) {
@@ -191,39 +165,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   onPaste($event: any): void {
     console.log("onPaste");
     //this.log += new Date() + "<br />";
-  }
-
-  private initExisting(answers: Answer[]) {
-    if (this.chosenQuestionType === 0) {
-      answers.forEach((answer, index) => {
-          this.chars['key' + index] = answer.Content;
-          if (answer.IsCorrect === 1) {
-            this.chosenType = 'key' + index;
-          }
-        }
-      );
-      this.charsde = Object.keys(this.chars);
-    } else if (this.chosenQuestionType === 1) {
-      answers.forEach((answer, index) => {
-          this.charsNeskolko['key' + index] = [];
-          this.charsNeskolko['key' + index][0] = answer.Content;
-          this.charsNeskolko['key' + index][1] = answer.IsCorrect;
-        }
-      );
-      this.charsde = Object.keys(this.charsNeskolko);
-    } else if (this.chosenQuestionType === 2) {
-      answers.forEach((answer, index) => {
-          this.charsWords['key' + index] = answer.Content;
-        }
-      );
-      this.charsde = Object.keys(this.charsWords);
-    } else if (this.chosenQuestionType === 3) {
-      answers.forEach((answer, index) => {
-          this.charsSequence['key' + index] = answer.Content;
-        }
-      );
-      this.charsde = Object.keys(this.charsSequence);
-    }
   }
 
   public onYesClick() {
@@ -279,8 +220,65 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.question['ConceptId'] = null;*/
     this.testService.saveQuestion(this.question)
       .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe(() => {
-      this.dialogRef.close(true);
-    });
+      .subscribe(() => this.dialogRef.close(true));
+  }
+
+  private initForm() {
+    this.chars = {};
+    this.chars["key0"] = "";
+    this.charsde = Object.keys(this.chars);
+  }
+
+  private initNeskolko() {
+    this.charsNeskolko = {};
+    this.charsNeskolko["key0"] = [];
+    this.charsNeskolko["key0"][0] = "fghjk";
+    this.charsNeskolko["key0"][1] = false;
+    this.charsde = Object.keys(this.charsNeskolko);
+  }
+
+  private initWords() {
+    this.charsWords = {};
+    this.charsWords["key0"] = "";
+    this.charsde = Object.keys(this.charsWords);
+  }
+
+  private initSequence() {
+    this.charsSequence = {};
+    this.charsSequence["key0"] = "";
+    this.charsde = Object.keys(this.charsSequence);
+  }
+
+  private initExisting(answers: Answer[]) {
+    if (this.chosenQuestionType === 0) {
+      answers.forEach((answer, index) => {
+          this.chars['key' + index] = answer.Content;
+          if (answer.IsCorrect === 1) {
+            this.chosenType = 'key' + index;
+          }
+        }
+      );
+      this.charsde = Object.keys(this.chars);
+    } else if (this.chosenQuestionType === 1) {
+      answers.forEach((answer, index) => {
+          this.charsNeskolko['key' + index] = [];
+          this.charsNeskolko['key' + index][0] = answer.Content;
+          this.charsNeskolko['key' + index][1] = answer.IsCorrect;
+        }
+      );
+      this.charsde = Object.keys(this.charsNeskolko);
+    } else if (this.chosenQuestionType === 2) {
+      answers.forEach((answer, index) => {
+          this.charsWords['key' + index] = answer.Content;
+        }
+      );
+      this.charsde = Object.keys(this.charsWords);
+    } else if (this.chosenQuestionType === 3) {
+      answers.forEach((answer, index) => {
+          this.charsSequence['key' + index] = answer.Content;
+        }
+      );
+      this.charsde = Object.keys(this.charsSequence);
+    }
   }
 }
