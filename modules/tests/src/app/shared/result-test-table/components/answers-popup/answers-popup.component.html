@@ -4,6 +4,9 @@
     <div>{{"Ответ: " + answer.AnswerString}}</div>
     <div>{{answer.Points === 0 ? "Неверно" : "Верно"}}</div>
   </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Закрыть</button>
+  </div>
 </div>
 <ng-template #loading>
   <div class="answers-popup-loader">

@@ -1,4 +1,5 @@
 .students-table {
+  margin-top: 30px;
   &-title {
     margin-bottom: 10px;
     &-value {
@@ -7,13 +8,15 @@
   }
   &-buttons {
     display: flex;
+    margin: 10px 0;
     @media only screen and (max-width: 768px) {
       display: block;
     }
     &-item {
+      margin-right: 10px;
       &-add {
         color: white;
-        background-color: #009b15;
+        background-color: #006d0f;
         margin-right: 10px;
         @media only screen and (max-width: 768px) {
           margin-bottom: 5px;
@@ -21,7 +24,7 @@
       }
       &-resources {
         color: white;
-        background-color: #f41004;
+        background-color: #c10a00;
       }
     }
   }
@@ -29,14 +32,15 @@
 
   }
 }
-.mat-header-cell-description{
+
+.mat-header-cell-description {
   flex: 0 0 80%;
   @media only screen and (max-width: 768px) {
     flex: 0 0 60%;
   }
 }
 
-.mat-header-cell-action{
+.mat-header-cell-action {
   flex: 0 0 15%;
   display: flex;
   align-items: center;

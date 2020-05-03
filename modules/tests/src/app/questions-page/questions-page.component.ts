@@ -11,6 +11,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
 
+
 @AutoUnsubscribe
 @Component({
   selector: 'app-questions-page',
@@ -37,9 +38,10 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     this.testId = this.route.snapshot.paramMap.get('id');
     this.testService.getTestById(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((test) => {
-      this.test = test;
-    });
+      .subscribe((test:Test) => {
+        console.log("this.test " + this.test);
+        this.test = test;
+      });
     this.loadQuestions();
   }
 
@@ -47,9 +49,9 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     this.testService.getQuestionsByTest(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((questions) => {
-      this.questions = questions;
-      this.questionsDefault = questions;
-    });
+        this.questions = questions;
+        this.questionsDefault = questions;
+      });
   }
 
   public deleteQuestion(event): void {
@@ -72,10 +74,10 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-      if(result){
-        this.loadQuestions();
-      }
-    });
+        if (result) {
+          this.loadQuestions();
+        }
+      });
   }
 
   public addQuestionFromOtherTest(event): void {
@@ -89,10 +91,10 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-      if(result){
-        this.loadQuestions();
-      }
-    });
+        if (result) {
+          this.loadQuestions();
+        }
+      });
   }
 
   public filterQuestions(event): void {

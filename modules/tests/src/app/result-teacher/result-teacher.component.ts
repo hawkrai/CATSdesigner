@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {TestService} from "../service/test.service";
 import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
@@ -7,7 +7,7 @@ import {ResultForTable} from "../models/result-for-table.model";
 import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
+import {finalize, takeUntil} from "rxjs/operators";
 
 
 @AutoUnsubscribe
@@ -16,9 +16,7 @@ import {takeUntil} from "rxjs/operators";
   templateUrl: './result-teacher.component.html',
   styleUrls: ['./result-teacher.component.less']
 })
-export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
-
-  public groups: Group[];
+export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnChanges {
   public results: Result[];
   public resultsOriginal: Result[];
   public selfControlTests: ResultForTable[][] = [];
@@ -26,9 +24,14 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   public beforeEUMKTests: ResultForTable[][] = [];
   public forEUMKTests: ResultForTable[][] = [];
   public knowledgeControlTests: ResultForTable[][] = [];
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public loading: boolean;
+  @Input()
+  public groups: Group[];
   @Input()
   public filterStudentsString: string;
+  @Input()
+  public groupId: number;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
@@ -36,18 +39,13 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     super();
   }
 
-  ngOnInit() {
-    this.testService.getGroupsBySubjectId("3")
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((groups) => {
-        this.groups = groups;
-        this.getResults(groups[0].Id);
-      });
-  }
-
   public getResults(groupId): void {
+    this.loading = true;
     this.testPassingService.getResultsByGroupAndSubject(groupId, "3")
-      .pipe(takeUntil(this.unsubscribeStream$))
+      .pipe(
+        takeUntil(this.unsubscribeStream$),
+        finalize(() => this.loading = false)
+      )
       .subscribe((results) => {
         this.results = results;
         this.resultsOriginal = results;
@@ -62,12 +60,16 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   public groupValueChange(event: any): void {
-    this.getResults(event);
-    this.cdr.detectChanges();
+
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.groupId) {
+      this.getResults(this.groupId);
+    }
     this.filterStudents(this.filterStudentsString);
+    this.cdr.detectChanges();
   }
 
   private initArrays(): void {
@@ -96,7 +98,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
           resultForTable.name = result.StudentName;
           resultForTable.subGroup = result.SubGroup;
           resultForTable.StudentShortName = result.StudentShortName;
-          resultForTable.id = result && result.TestPassResults && result.TestPassResults[0].StudentId;
+          resultForTable.id = result && result.TestPassResults[0] && result.TestPassResults[0].StudentId;
 
           this.initTestArray(this.selfControlTests, resultForTable, result.Login);
           this.initTestArray(this.nNTests, resultForTable, result.Login);
@@ -109,6 +111,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
             testRes.testId = testPassResult.TestId;
             testRes.studentId = testPassResult.StudentId;
             testRes.points = testPassResult.Points;
+            testRes.percent = testPassResult.Percent;
             if (testPassResult.ForSelfStudy) {
               this.sortBySubGroup(result, this.selfControlTests, testRes);
             } else if (testPassResult.ForNN) {

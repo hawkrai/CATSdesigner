@@ -10,6 +10,7 @@ import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {Group} from "../models/group.model";
 
 
 @AutoUnsubscribe
@@ -31,6 +32,10 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public filterStudentsString: string = "";
   public inputValue: string = "";
   public filterCompletingString: string = "";
+  public allowDropdown: boolean;
+  public adminTests: boolean = true;
+  public groups: Group[];
+  public groupId: number;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   private currentTabIndex: number = 0;
   private filterTestsString: string = "";
@@ -44,6 +49,12 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
 
   ngOnInit() {
     this.getTests('1');
+    this.testService.getGroupsBySubjectId("3")
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((groups) => {
+        this.groups = groups;
+        this.groupId = groups[0].Id;
+      });
   }
 
   openDialog(event?: any): void {
@@ -118,23 +129,33 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public onChange(event: any): void {
     this.currentTabIndex = event.index;
     switch (this.currentTabIndex) {
-      case 0:{
+      case 0: {
         this.allowChanges = true;
+        this.allowDropdown = false;
+        this.adminTests = true;
         this.inputValue = this.filterTestsString;
         break;
       }
-      case 1:{
-        this.allowChanges = false;
+      case 1: {
+        this.allowChanges = true;
+        this.allowDropdown = true;
+        this.adminTests = false;
         this.inputValue = this.filterStudentsString;
         break;
       }
-      case 2:{
+      case 2: {
         this.allowChanges = false;
+        this.allowDropdown = false;
+        this.adminTests = false;
         this.inputValue = this.filterCompletingString;
         break;
       }
     }
 
+  }
+
+  public groupValueChange(event): void {
+    this.groupId = event;
   }
 
   public navigateToQuestions(event): void {

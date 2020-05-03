@@ -17,6 +17,7 @@
 <app-main-page [allowChanges]="true"
                [adminTests]="false"
                [adminQuestions]="true"
+               [forNN]="test?.ForNN"
                (addNewQuestion)="addNewQuestion()"
                (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest()"
                (onValueChangeSearch)="filterQuestions($event)"></app-main-page>

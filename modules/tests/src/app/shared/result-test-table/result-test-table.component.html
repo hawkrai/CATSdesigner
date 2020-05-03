@@ -1,9 +1,9 @@
-<ng-container *ngIf="scareThing">
+<ng-container *ngIf="scareThing?.length && !loading">
   <ng-container *ngFor="let studentResults of scareThing, let iq = index">
-    <div class="result-test-table-table"
+    <div class="result-test-table-container"
          *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
       {{"Подгруппа " + (iq+1)}}
-      <div>
+      <div class="result-test-table-table">
         <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
           <!-- Position Column -->
           <ng-container matColumnDef="Id">
@@ -13,7 +13,7 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="Name">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Тест</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Название теста</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element[1].name}}
             </mat-cell>
           </ng-container>
@@ -21,14 +21,15 @@
           <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{"Тест " + (i+1)}}</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-action"
-                      (click)="openAnswersDialog(element[1].test[i].testId, element[1].id)"
+                      (click)="openAnswersDialog(element[1].test[i].points, element[1].test[i].testId,  element[1].id)"
                       [matTooltip]="element[1].test[i].testName">
-              {{element[1].test[i].points ? element[1].test[i].points: "тест не пройден"}}
+              {{element[1].test[i].points ? element[1].test[i].points + "(" + element[1].test[i].percent + "%)" :
+              "тест не пройден"}}
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="average">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средняя</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средний балл</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-average"> {{element[2]}}</mat-cell>
           </ng-container>
 
@@ -38,21 +39,20 @@
       </div>
     </div>
   </ng-container>
+  <div class="result-test-table-chart">
+    <canvas baseChart
+            [datasets]="barChartData"
+            [labels]="barChartLabels"
+            [options]="barChartOptions"
+            [plugins]="barChartPlugins"
+            [legend]="barChartLegend"
+            [chartType]="barChartType">
+    </canvas>
+  </div>
 </ng-container>
 
-<div class="result-test-table-chart">
-  <canvas baseChart
-          [datasets]="barChartData"
-          [labels]="barChartLabels"
-          [options]="barChartOptions"
-          [plugins]="barChartPlugins"
-          [legend]="barChartLegend"
-          [chartType]="barChartType">
-  </canvas>
-</div>
 
-
-<ng-template #loading>
+<ng-container *ngIf="loading">
   <mat-card>
     <mat-card-content>
       <section class="example-section">
@@ -64,4 +64,4 @@
       </section>
     </mat-card-content>
   </mat-card>
-</ng-template>
+</ng-container>

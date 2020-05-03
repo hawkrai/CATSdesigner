@@ -13,6 +13,9 @@ export class MainPageComponent implements OnChanges {
   public allowChanges: boolean;
 
   @Input()
+  public forNN: boolean;
+
+  @Input()
   public adminTests: boolean;
 
   @Input()
@@ -56,6 +59,7 @@ export class MainPageComponent implements OnChanges {
   }
 
   public onGroupValueChange(event): void {
+    console.log("event.source.value " + event.source.value);
     this.groupValueChange.emit(event.source.value);
   }
 

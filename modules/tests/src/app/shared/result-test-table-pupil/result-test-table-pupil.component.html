@@ -1,4 +1,4 @@
-<ng-container *ngIf="tests; else loading">
+<ng-container *ngIf="tests?.length && !loading">
   <div>
     <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
       <!-- Position Column -->
@@ -9,7 +9,7 @@
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Тест</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Название теста</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
       </ng-container>
 
@@ -25,8 +25,20 @@
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
   </div>
+  <div class="result-test-table-chart">
+    <canvas baseChart
+            [datasets]="barChartData"
+            [labels]="barChartLabels"
+            [options]="barChartOptions"
+            [plugins]="barChartPlugins"
+            [legend]="barChartLegend"
+            [chartType]="barChartType">
+    </canvas>
+  </div>
 </ng-container>
-<ng-template #loading>
+
+
+<ng-template *ngIf="loading">
   <mat-card>
     <mat-card-content>
       <section class="example-section">

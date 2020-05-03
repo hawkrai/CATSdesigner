@@ -11,21 +11,24 @@
 <mat-tab-group>
   <mat-tab label="Тесты для контроля знаний"
            *ngIf="knowledgeControlTests && knowledgeControlTests[0] && knowledgeControlTests[0].size!=0">
-    <app-result-test-table [tests]="knowledgeControlTests" [name]="'knowledgeControlTests'"></app-result-test-table>
+    <app-result-test-table [loading]="loading" [tests]="knowledgeControlTests"
+                           [name]="'knowledgeControlTests'"></app-result-test-table>
   </mat-tab>
   <mat-tab label="Тесты для самоконтроля"
            *ngIf="selfControlTests && selfControlTests[0] && selfControlTests[0].size!=0">
-    <app-result-test-table [tests]="selfControlTests" [name]="'selfControlTests'"></app-result-test-table>
+    <app-result-test-table [loading]="loading" [tests]="selfControlTests"
+                           [name]="'selfControlTests'"></app-result-test-table>
   </mat-tab>
   <mat-tab label="Предтест для обучения в ЭУМК"
            *ngIf="beforeEUMKTests && beforeEUMKTests[0] && beforeEUMKTests[0].size!=0">
-    <app-result-test-table [tests]="beforeEUMKTests" [name]="'beforeEUMKTests'"></app-result-test-table>
+    <app-result-test-table [loading]="loading" [tests]="beforeEUMKTests"
+                           [name]="'beforeEUMKTests'"></app-result-test-table>
   </mat-tab>
   <mat-tab label="Тесты для обучения в ЭУМК" *ngIf="forEUMKTests && forEUMKTests[0] && forEUMKTests[0].size!=0">
-    <app-result-test-table [tests]="forEUMKTests" [name]="'forEUMKTests'"></app-result-test-table>
+    <app-result-test-table [loading]="loading" [tests]="forEUMKTests" [name]="'forEUMKTests'"></app-result-test-table>
   </mat-tab>
   <mat-tab label="Тесты для обучения с искусственной нейронной сетью"
            *ngIf="nNTests && nNTests[0] && nNTests[0].size!=0">
-    <app-result-test-table [tests]="nNTests" [name]="'nNTests'"></app-result-test-table>
+    <app-result-test-table [loading]="loading" [tests]="nNTests" [name]="'nNTests'"></app-result-test-table>
   </mat-tab>
 </mat-tab-group>

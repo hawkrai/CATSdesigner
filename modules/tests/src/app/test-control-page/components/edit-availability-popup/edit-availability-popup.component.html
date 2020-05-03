@@ -6,8 +6,8 @@
 
       <mat-form-field>
         <mat-label>{{"Группа"}}</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let group of groups" [value]="group.Id" (onSelectionChange)="onValueChange($event)">
+        <mat-select [value]="groups[0]?.Id" (selectionChange)="onValueChange($event)">
+          <mat-option *ngFor="let group of groups" [value]="group.Id">
             {{group.Name}}
           </mat-option>
         </mat-select>

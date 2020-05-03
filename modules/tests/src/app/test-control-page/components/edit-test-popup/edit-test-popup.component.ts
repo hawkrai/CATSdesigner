@@ -42,6 +42,8 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       console.log(this.data);
     } else {
       this.editingTest = new Test();
+      this.editingTest.SetTimeForAllTest = true;
+      this.chosenType = 'Тест для самоконтроля';
     }
   }
 

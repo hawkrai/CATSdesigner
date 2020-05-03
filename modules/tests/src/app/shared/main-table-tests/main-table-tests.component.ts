@@ -10,6 +10,9 @@ import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
+import {Label} from "ng2-charts";
+import * as pluginDataLabels from "chartjs-plugin-datalabels";
 
 
 @AutoUnsubscribe

@@ -22,7 +22,7 @@
           другого теста
         </button>
       </div>
-      <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
+      <div class="main-page-container-buttons-item" *ngIf="forNN">
         <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной
           сети
         </button>
@@ -30,9 +30,9 @@
       <div *ngIf="groupDropdown && groups">
         <mat-form-field>
           <mat-label>Выберите группу</mat-label>
-          <mat-select [(value)]="groups[0].Id" (selectionChange)="onGroupValueChange($event)">
+          <mat-select [value]="groups[0].Id" (selectionChange)="onGroupValueChange($event)">
             <!--//todo doesn't work-->
-            <mat-option *ngFor="let group of groups" [value]="group.Id"  >
+            <mat-option *ngFor="let group of groups" [value]="group.Id" >
               {{group.Name}}
             </mat-option>
           </mat-select>
