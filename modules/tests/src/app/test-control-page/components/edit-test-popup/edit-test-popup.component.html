@@ -48,8 +48,8 @@
     </div>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Закрыть</button>
-    <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>Ок</button>
+    <button mat-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+    <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>{{'button.save' | translate : 'Сохранить'}}</button>
   </div>
 </ng-container>
 <ng-template #loading>

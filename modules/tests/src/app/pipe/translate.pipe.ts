@@ -1,4 +1,6 @@
 import {Pipe, PipeTransform} from "@angular/core";
+import * as dataRU from 'src/app/core/translations/translations_ru.json';
+import * as dataEN from 'src/app/core/translations/translations_en.json';
 
 @Pipe({name: "translate"})
 export class TranslatePipe implements PipeTransform {
@@ -12,6 +14,7 @@ export class TranslatePipe implements PipeTransform {
     const hash: string = wnd.location.hash;
     const params: { [key: string]: string } = hash ? this.getSearchParams(hash.substr(hash.indexOf("?") + 1)) : this.getSearchParams(wnd.location.search.substr(1));
     this.isShowTranslateCodes = (params["translate"] === "true");
+    this._localizationMap = dataRU;
   }
 
   private getSearchParams(search: string): { [key: string]: string } {
@@ -34,7 +37,7 @@ export class TranslatePipe implements PipeTransform {
     if (this.isShowTranslateCodes) {
       return value;
     } else {
-      let localizedValue: string = this.localizationMap[value];
+      let localizedValue: string = this.localizationMap.default[value];
       if (localizedValue != null) {
         if (params) {
           Object.keys(params).forEach((param: string) => {

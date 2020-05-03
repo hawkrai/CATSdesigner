@@ -47,7 +47,7 @@ export class ResultTestTablePupilComponent implements OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     this.barChartLabels = [];
     this.barChartData[0].data = [];
-    this.tests.forEach((test: Test) => {
+    this.tests && this.tests.forEach((test: Test) => {
       this.barChartLabels.push(test.Title);
       this.barChartData[0].data.push(test.Percent);
     });

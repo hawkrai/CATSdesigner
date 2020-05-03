@@ -41,7 +41,6 @@ import {ChartsModule} from 'ng2-charts';
 import {CKEditorModule} from 'ckeditor4-angular';
 import {QuestionOtherTestComponent} from './questions-page/components/question-other-test/question-other-test.component';
 import {TestResultComponent} from './test-result/test-result.component';
-import {DateFormatPipe} from "./pipe/date-format.pipe";
 import {TranslatePipe} from "./pipe/translate.pipe";
 
 
@@ -76,7 +75,6 @@ import {TranslatePipe} from "./pipe/translate.pipe";
     ControlCompletingComponent,
     QuestionOtherTestComponent,
     TestResultComponent,
-    DateFormatPipe,
     TranslatePipe
   ],
   imports: [
@@ -94,7 +92,6 @@ import {TranslatePipe} from "./pipe/translate.pipe";
     TestPassingService,
     TestService,
     AngularEditorService,
-    DateFormatPipe,
     TranslatePipe
   ],
   entryComponents: [DeleteConfirmationPopupComponent,

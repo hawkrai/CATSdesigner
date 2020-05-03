@@ -7,7 +7,7 @@ import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
 import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
-import {takeUntil, tap} from "rxjs/operators";
+import {takeUntil} from "rxjs/operators";
 
 
 @AutoUnsubscribe
@@ -65,11 +65,11 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     this.getAverageMark();
   }//todo average marks from backend
 
-  public openAnswersDialog(openDialog: boolean, event?: any, id?: any): void {
+  public openAnswersDialog(openDialog: boolean, name: string, testName: string, event?: any, id?: any): void {
     if (openDialog) {
       const dialogRef = this.dialog.open(AnswersPopupComponent, {
         width: '800px',
-        data: {event, id}
+        data: {event, id, name, testName}
       });
 
       dialogRef.afterClosed()

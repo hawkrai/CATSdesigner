@@ -21,7 +21,7 @@
           <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{"Тест " + (i+1)}}</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-action"
-                      (click)="openAnswersDialog(element[1].test[i].points, element[1].test[i].testId,  element[1].id)"
+                      (click)="openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
                       [matTooltip]="element[1].test[i].testName">
               {{element[1].test[i].points ? element[1].test[i].points + "(" + element[1].test[i].percent + "%)" :
               "тест не пройден"}}

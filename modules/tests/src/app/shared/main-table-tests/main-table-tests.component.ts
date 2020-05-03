@@ -10,9 +10,6 @@ import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
-import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
-import {Label} from "ng2-charts";
-import * as pluginDataLabels from "chartjs-plugin-datalabels";
 
 
 @AutoUnsubscribe
@@ -47,11 +44,9 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
   public test: any;
 
   displayedColumns: string[] = ['Id', 'Title', 'action'];
-
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
-
   @ViewChild('table', {static: false})
   table: MatTable<any>;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,
