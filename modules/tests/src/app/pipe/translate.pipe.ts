@@ -2,10 +2,9 @@ import {Pipe, PipeTransform} from "@angular/core";
 import * as dataRU from 'src/app/core/translations/translations_ru.json';
 import * as dataEN from 'src/app/core/translations/translations_en.json';
 
+
 @Pipe({name: "translate"})
 export class TranslatePipe implements PipeTransform {
-
-  private _localizationMap: { [key: string]: string } = {};
 
   private isShowTranslateCodes: boolean = false;
 
@@ -14,16 +13,15 @@ export class TranslatePipe implements PipeTransform {
     const hash: string = wnd.location.hash;
     const params: { [key: string]: string } = hash ? this.getSearchParams(hash.substr(hash.indexOf("?") + 1)) : this.getSearchParams(wnd.location.search.substr(1));
     this.isShowTranslateCodes = (params["translate"] === "true");
-    this._localizationMap = dataRU;
+    if (window.sessionStorage.getItem("language") === "en") {
+      this._localizationMap = dataEN;
+    } else {
+      this._localizationMap = dataRU;
+    }
+
   }
 
-  private getSearchParams(search: string): { [key: string]: string } {
-    return search.split("&").reduce((result, item) => {
-      const parts = item.split("=");
-      result[parts[0]] = parts[1];
-      return result;
-    }, {});
-  }
+  private _localizationMap: { [key: string]: string } = {};
 
   get localizationMap(): { [key: string]: string } {
     return this._localizationMap;
@@ -48,5 +46,13 @@ export class TranslatePipe implements PipeTransform {
       }
       return defaultValue;
     }
+  }
+
+  private getSearchParams(search: string): { [key: string]: string } {
+    return search.split("&").reduce((result, item) => {
+      const parts = item.split("=");
+      result[parts[0]] = parts[1];
+      return result;
+    }, {});
   }
 }
