@@ -11,7 +11,7 @@ export class SubjectComponent implements OnInit {
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-    this.selectedModuleUrl = "http://localhost:4201/3/news";
+    this.selectedModuleUrl = "http://localhost:3000/news";
   }
 
   moduleSelecteUrl(){
