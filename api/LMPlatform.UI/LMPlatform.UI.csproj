@@ -333,7 +333,6 @@
     <Compile Include="Attributes\GreaterThanAttribute.cs" />
     <Compile Include="Attributes\JwtAuthAttribute.cs" />
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\ApiController.cs" />
@@ -342,7 +341,6 @@
     <Compile Include="Controllers\ComplexMaterialController.cs" />
     <Compile Include="Controllers\CpController.cs" />
     <Compile Include="Controllers\DpController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Controllers\MaterialsController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
