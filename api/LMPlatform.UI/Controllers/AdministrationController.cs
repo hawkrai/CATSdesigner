@@ -1088,7 +1088,16 @@ namespace LMPlatform.UI.Controllers
 				}
 			}
 			return StatusCode(HttpStatusCode.BadRequest);
-		}
+        }
+
+        [HttpGet]
+        [OverrideAuthorization]
+        [JwtAuth]
+        public ActionResult UserExists(string userName)
+        {
+            var result = this.UsersManagementService.IsExistsUser(userName);
+            return JsonResponse(result);
+        }
 
 		#endregion
 
