@@ -1,61 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
+using Application.Core;
+using Application.Infrastructure.SubjectManagement;
+using Application.Infrastructure.UserManagement;
+using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
-	using Application.Core;
-	using Application.Infrastructure.SubjectManagement;
-	using Application.Infrastructure.UserManagement;
-
-	using WebMatrix.WebData;
-
-	public class RemoteApiController : Controller
+    public class RemoteApiController : Controller
     {
+        private readonly LazyDependency<ISubjectManagementService> subjectManagementService =
+            new LazyDependency<ISubjectManagementService>();
 
-		private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
+        public ISubjectManagementService SubjectManagementService => this.subjectManagementService.Value;
 
-		public ISubjectManagementService SubjectManagementService
-		{
-			get
-			{
-				return subjectManagementService.Value;
-			}
-		}
+        [HttpPost]
+        public ActionResult Login(string userName, string password)
+        {
+            if (WebSecurity.Login(userName, password))
+            {
+                var _context = new UsersManagementService();
+                var user = _context.GetUser(userName);
 
-	    [HttpPost]
-	    public ActionResult Login(string userName, string password)
-	    {
-		    if (WebSecurity.Login(userName, password))
-		    {
-				var _context = new UsersManagementService();
-			    var user = _context.GetUser(userName);
+                return this.Json(new
+                {
+                    UserName = userName,
+                    UserId = user.Id
+                });
+            }
 
-			    return Json(new
-				{
-					UserName = userName,
-					UserId = user.Id
-				});
-		    }
-				
-			Response.StatusCode = 401;
+            this.Response.StatusCode = 401;
 
-			return Json(new
-		    {
-			    Error = "Введите корректные данные"
-		    });
-	    }
+            return this.Json(new
+            {
+                Error = "Введите корректные данные"
+            });
+        }
 
-		[HttpGet]
-		public ActionResult GetSubjectByUserId(string userId)
-		{
-			var data = this.SubjectManagementService.GetUserSubjects(int.Parse(userId));
+        [HttpGet]
+        public ActionResult GetSubjectByUserId(string userId)
+        {
+            var data = this.SubjectManagementService.GetUserSubjects(int.Parse(userId));
 
-			var result = data.Where(x => !x.IsArchive).Select(e => new { Id = e.Id, ShortName = e.ShortName, Name = e.Name });
+            var result = data.Where(x => !x.IsArchive).Select(e => new {e.Id, e.ShortName, e.Name});
 
-			return Json(result, JsonRequestBehavior.AllowGet);
-		}
+            return this.Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

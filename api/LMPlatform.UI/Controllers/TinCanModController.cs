@@ -1,87 +1,77 @@
-﻿using Application.Core;
-using Application.Infrastructure.TinCanManagement;
-using Ionic.Zip;
-using System;
+﻿using System;
 using System.Configuration;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
+using Application.Core;
+using Application.Infrastructure.TinCanManagement;
+using Ionic.Zip;
 
 namespace LMPlatform.UI.Controllers
 {
-	public class TinCanModController : Controller
+    public class TinCanModController : Controller
     {
-        private readonly LazyDependency<ITinCanManagementService> tinCanManagementService = new LazyDependency<ITinCanManagementService>();
+        private readonly LazyDependency<ITinCanManagementService> _tinCanManagementService =
+            new LazyDependency<ITinCanManagementService>();
 
-        public ITinCanManagementService TinCanManagementService
+        public ITinCanManagementService TinCanManagementService => this._tinCanManagementService.Value;
+
+        public string TinCanFilePath => ConfigurationManager.AppSettings["TinCanFilePath"];
+
+        public ActionResult GetObjects()
         {
-            get
+            return this.Json(this.TinCanManagementService.GetAllTinCanObjects(), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult LoadObject(string name, HttpPostedFileBase file)
+        {
+            var guid = Guid.NewGuid().ToString();
+            file.SaveAs(this.TinCanFilePath + "\\" + guid + ".zip");
+
+            using (var zip = ZipFile.Read(this.TinCanFilePath + "\\" + guid + ".zip"))
             {
-                return tinCanManagementService.Value;
+                Directory.CreateDirectory(this.TinCanFilePath + "\\" + guid);
+                zip.ExtractAll(this.TinCanFilePath + "\\" + guid, ExtractExistingFileAction.OverwriteSilently);
             }
+
+            if (!System.IO.File.Exists(this.TinCanFilePath + "\\" + guid + "\\tincan.xml"))
+            {
+                return this.Json(new
+                {
+                    error = "Загруженный файл не является объектом TinCan"
+                });
+            }
+
+            System.IO.File.Delete(this.TinCanFilePath + "\\" + guid + ".zip");
+
+            this.TinCanManagementService.SaveTinCanObject(name, guid);
+
+            return this.Json(name, JsonRequestBehavior.AllowGet);
+
         }
 
-        public ActionResult Index()
+        public ActionResult DeleteTinCan(int id)
         {
-            return View();
+            this.TinCanManagementService.DeleteTinCanObject(id);
+            return this.Json(id, JsonRequestBehavior.AllowGet);
         }
 
-		public string TinCanFilePath
-		{
-			get { return ConfigurationManager.AppSettings["TinCanFilePath"]; }
-		}
-		public ActionResult GetObjects()
-		{
-            return Json(TinCanManagementService.GetAllTinCanObjects(), JsonRequestBehavior.AllowGet);
-		}
+        public ActionResult ViewTinCan(int id)
+        {
+            return this.Json(this.TinCanManagementService.ViewTinCanObject(this.TinCanFilePath, id),
+                JsonRequestBehavior.AllowGet);
+        }
 
-		public ActionResult LoadObject(string name, HttpPostedFileBase file)
-		{
-			var guid = Guid.NewGuid().ToString();
-			file.SaveAs(TinCanFilePath + "\\" + guid + ".zip");
+        public ActionResult EditObject(string name, string path)
+        {
+            this.TinCanManagementService.EditTinCanObject(name, path);
+            return this.Json(name, JsonRequestBehavior.AllowGet);
+        }
 
-			using (ZipFile zip = ZipFile.Read(TinCanFilePath + "\\" + guid + ".zip"))
-			{
-				Directory.CreateDirectory(TinCanFilePath + "\\" + guid);
-				zip.ExtractAll(TinCanFilePath + "\\" + guid, ExtractExistingFileAction.OverwriteSilently);
-			}
-
-			if (!System.IO.File.Exists(TinCanFilePath + "\\" + guid + "\\tincan.xml"))
-			{
-				return Json(new
-				{
-					error = "Загруженный файл не является объектом TinCan"
-				});
-			}
-			System.IO.File.Delete(TinCanFilePath + "\\" + guid + ".zip");
-
-            TinCanManagementService.SaveTinCanObject(name, guid);
-
-			return Json(name, JsonRequestBehavior.AllowGet);
-			
-		}
-
-		public ActionResult DeleteTinCan(int id)
-		{
-            TinCanManagementService.DeleteTinCanObject(id);
-			return Json(id, JsonRequestBehavior.AllowGet);
-		}
-
-		public ActionResult ViewTinCan(int id)
-		{
-            return Json(TinCanManagementService.ViewTinCanObject(TinCanFilePath, id), JsonRequestBehavior.AllowGet);
-		}
-
-		public ActionResult EditObject(string name, string path)
-		{
-            TinCanManagementService.EditTinCanObject(name, path);
-			return Json(name, JsonRequestBehavior.AllowGet);
-		}
-
-		public ActionResult UpdateObjects(bool enable, int id)
-		{
-            TinCanManagementService.UpdateTinCanObject(enable, id);
-			return Json(enable, JsonRequestBehavior.AllowGet);
-		}
+        public ActionResult UpdateObjects(bool enable, int id)
+        {
+            this.TinCanManagementService.UpdateTinCanObject(enable, id);
+            return this.Json(enable, JsonRequestBehavior.AllowGet);
+        }
     }
 }
