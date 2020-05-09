@@ -1,51 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using Application.Core.Data;
 using Application.Core.UI.Controllers;
+using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
-using LMPlatform.Models.KnowledgeTesting;
+using LMPlatform.UI.Attributes;
+using LMPlatform.UI.Services.Modules.Concept;
 using LMPlatform.UI.ViewModels.KnowledgeTestingViewModels;
+using LMPlatform.UI.ViewModels.SubjectViewModels;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
-    using System.Configuration;
-    using System.IO;
-    using System.Web;
-    using System.Web.Http;
-    using Application.Infrastructure.ConceptManagement;
-    using LMPlatform.UI.Attributes;
-    using LMPlatform.UI.Services.Modules.Concept;
-    using LMPlatform.UI.ViewModels.SubjectViewModels;
-
     [JwtAuth]
     public class TestsController : BasicController
     {
-        public string TestContentPath
-        {
-            get { return ConfigurationManager.AppSettings["TestContentPath"]; }
-        }
+        public string TestContentPath => ConfigurationManager.AppSettings["TestContentPath"];
 
-        [JwtAuth(Roles = "lector"), HttpGet]
-        public ActionResult KnowledgeTesting(int subjectId)
-        {
-            if (!User.IsInRole("lector"))
-            {
-                return PartialView("Error");
-            }
+        protected int CurrentUserId => int.Parse(WebSecurity.CurrentUserId.ToString(CultureInfo.InvariantCulture));
 
-            var subject = SubjectsManagementService.GetSubject(subjectId);
-            return View("KnowledgeTesting", subject);
-        }
+        //[OverrideAuthorization]
+        //[JwtAuth(Roles = "lector")]
+        //[System.Web.Http.HttpGet]
+        //public ActionResult KnowledgeTesting(int subjectId)
+        //{
+        //    if (!this.User.IsInRole("lector")) return StatusCode(HttpStatusCode.BadRequest);
 
-        [HttpPost]
+        //    var subject = this.SubjectsManagementService.GetSubject(subjectId);
+        //    return this.View("KnowledgeTesting", subject);
+        //}
+
+        [System.Web.Http.HttpPost]
         public JsonResult UploadFile(HttpPostedFileBase file)
         {
             try
@@ -57,7 +53,8 @@ namespace LMPlatform.UI.Controllers
                     file.InputStream.CopyTo(memoryStream);
                     fileContent = memoryStream.ToArray();
                 }
-                var fileName = TestContentPath + Guid.NewGuid().ToString("N") + System.IO.Path.GetExtension(file.FileName);
+
+                var fileName = this.TestContentPath + Guid.NewGuid().ToString("N") + Path.GetExtension(file.FileName);
 
                 System.IO.File.WriteAllBytes(fileName, fileContent);
 
@@ -65,132 +62,132 @@ namespace LMPlatform.UI.Controllers
             }
             catch (Exception e)
             {
-                return Json(new { ErrorMessage = e.Message });
+                return this.Json(new {ErrorMessage = e.Message});
             }
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResult GetFiles()
         {
             try
             {
-                var url = Request.Url.Authority;
+                var url = this.Request.Url.Authority;
 
-                var dirs = Directory.GetFiles(TestContentPath);
+                var dirs = Directory.GetFiles(this.TestContentPath);
 
-                return Json(dirs.Select(e => new
-                                                 {
-                                                     Url = "http://" + url + "/UploadedTestFiles/" + System.IO.Path.GetFileName(e)
-                                                 }).ToList(), JsonRequestBehavior.AllowGet);
-
+                return this.Json(dirs.Select(e => new
+                {
+                    Url = "http://" + url + "/UploadedTestFiles/" + Path.GetFileName(e)
+                }).ToList(), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
-                return Json(new { ErrorMessage = e.Message });
+                return this.Json(new {ErrorMessage = e.Message});
             }
         }
 
         public JsonResult GetTests(int? subjectId)
         {
-            var tests = TestsManagementService.GetTestsForSubject(subjectId);
+            var tests = this.TestsManagementService.GetTestsForSubject(subjectId);
             var testViewModels = tests.Select(TestItemListViewModel.FromTest).OrderBy(x => x.TestNumber);
 
-            return Json(testViewModels, JsonRequestBehavior.AllowGet);
+            return this.Json(testViewModels, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetRecomendations(int subjectId)
         {
             var result = new List<object>();
-            var predTest = TestsManagementService.GetTestsForSubject(subjectId).FirstOrDefault(x => x.BeforeEUMK);
+            var predTest = this.TestsManagementService.GetTestsForSubject(subjectId).FirstOrDefault(x => x.BeforeEUMK);
             if (predTest != null)
             {
-                var predTestResult = TestPassingService.GetStidentResults(subjectId, CurrentUserId).FirstOrDefault(x => x.TestId == predTest.Id);
-                if (predTestResult == null || predTestResult.Points == null)
-                {
-                    return Json(new object[]
+                var predTestResult = this.TestPassingService.GetStidentResults(subjectId, this.CurrentUserId)
+                    .FirstOrDefault(x => x.TestId == predTest.Id);
+                if (predTestResult?.Points == null)
+                    return this.Json(new object[]
                     {
-                        new { IsTest = true, Id = predTest.Id, Text = "Пройдите предтест" }
+                        new {IsTest = true, predTest.Id, Text = "Пройдите предтест"}
                     }, JsonRequestBehavior.AllowGet);
-                }
             }
-            foreach(var recommendedConcept in GetMaterialsRecomendations(predTest.Id, 0))
+
+            foreach (var recommendedConcept in this.GetMaterialsRecomendations(predTest.Id, 0))
             {
                 if (recommendedConcept != null && recommendedConcept.Concept != null)
                 {
-                    var testIds = GetTestForEUMKConcept(recommendedConcept.Concept.Id, subjectId, 0);
-					if (testIds != null && testIds.Any())
-					{
-						result.Add(new { IsTest = false, Id = recommendedConcept.Concept.Id, Text = "Рекомендуемый для прочтения материал" });
-						if (testIds != null && testIds.Count() > 0)
-						{
-							foreach (var testId in testIds)
-							{
-								result.Add(new { IsTest = true, Id = testId, Text = "Пройдите тест!" });
-							}
-							return Json(result, JsonRequestBehavior.AllowGet);
-						}
-					}					
+                    var testIds = this.GetTestForEUMKConcept(recommendedConcept.Concept.Id, subjectId, 0);
+                    if (testIds != null && testIds.Any())
+                    {
+                        result.Add(new
+                        {
+                            IsTest = false, recommendedConcept.Concept.Id, Text = "Рекомендуемый для прочтения материал"
+                        });
+                        if (testIds != null && testIds.Any())
+                        {
+                            foreach (var testId in testIds)
+                                result.Add(new {IsTest = true, Id = testId, Text = "Пройдите тест!"});
+                            return this.Json(result, JsonRequestBehavior.AllowGet);
+                        }
+                    }
                 }
             }
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return this.Json(result, JsonRequestBehavior.AllowGet);
         }
 
-		[AllowAnonymous]
-		public JsonResult GetRecomendationsMobile(int subjectId, int userId)
-		{
-			var result = new List<object>();
-			var predTest = TestsManagementService.GetTestsForSubject(subjectId).FirstOrDefault(x => x.BeforeEUMK);
-			if (predTest != null)
-			{
-				var predTestResult = TestPassingService.GetStidentResults(subjectId, userId).FirstOrDefault(x => x.TestId == predTest.Id);
-				if (predTestResult == null || predTestResult.Points == null)
-				{
-					return Json(new object[]
-					{
-						new { IsTest = true, Id = predTest.Id, Text = "Пройдите предтест" }
-					}, JsonRequestBehavior.AllowGet);
-				}
-			}
-			foreach (var recommendedConcept in GetMaterialsRecomendations(predTest.Id, userId))
-			{
-				if (recommendedConcept != null && recommendedConcept.Concept != null)
-				{
-					var testIds = GetTestForEUMKConcept(recommendedConcept.Concept.Id, subjectId, userId);
-					if (testIds != null && testIds.Count() > 0)
-					{
-						result.Add(new { IsTest = false, Id = recommendedConcept.Concept.Id, Text = "Рекомендуемый для прочтения материал" });
-						foreach (var testId in testIds)
-						{
-							result.Add(new { IsTest = true, Id = testId, Text = "Пройдите тест!" });
-						}
-						return Json(result, JsonRequestBehavior.AllowGet);
-					}
-				}
-			}
-
-			return Json(result, JsonRequestBehavior.AllowGet);
-		}
-
-		private IEnumerable<int> GetTestForEUMKConcept(int conceptId, int subjectId, int userId)
+        [System.Web.Http.AllowAnonymous]
+        public JsonResult GetRecomendationsMobile(int subjectId, int userId)
         {
-            var testIds = QuestionsManagementService.GetQuestionsByConceptId(conceptId).Select(x => x.TestId).Distinct();
-
-            foreach(var testId in testIds)
+            var result = new List<object>();
+            var predTest = this.TestsManagementService.GetTestsForSubject(subjectId).FirstOrDefault(x => x.BeforeEUMK);
+            if (predTest != null)
             {
-                var test = TestsManagementService.GetTest(testId);
-                if(test.ForEUMK)
+                var predTestResult = this.TestPassingService.GetStidentResults(subjectId, userId)
+                    .FirstOrDefault(x => x.TestId == predTest.Id);
+                if (predTestResult?.Points == null)
+                    return this.Json(new object[]
+                    {
+                        new {IsTest = true, predTest.Id, Text = "Пройдите предтест"}
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            foreach (var recommendedConcept in this.GetMaterialsRecomendations(predTest.Id, userId))
+            {
+                if (recommendedConcept != null && recommendedConcept.Concept != null)
                 {
-                    var testResult = TestPassingService.GetStidentResults(subjectId, userId == 0 ? CurrentUserId : userId).FirstOrDefault(x => x.TestId == test.Id);
+                    var testIds = this.GetTestForEUMKConcept(recommendedConcept.Concept.Id, subjectId, userId);
+                    if (testIds != null && testIds.Any())
+                    {
+                        result.Add(new
+                        {
+                            IsTest = false, recommendedConcept.Concept.Id, Text = "Рекомендуемый для прочтения материал"
+                        });
+                        foreach (var testId in testIds)
+                            result.Add(new {IsTest = true, Id = testId, Text = "Пройдите тест!"});
+                        return this.Json(result, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+
+            return this.Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        private IEnumerable<int> GetTestForEUMKConcept(int conceptId, int subjectId, int userId)
+        {
+            var testIds = this.QuestionsManagementService.GetQuestionsByConceptId(conceptId).Select(x => x.TestId)
+                .Distinct();
+
+            foreach (var testId in testIds)
+            {
+                var test = this.TestsManagementService.GetTest(testId);
+                if (test.ForEUMK)
+                {
+                    var testResult = this.TestPassingService
+                        .GetStidentResults(subjectId, userId == 0 ? this.CurrentUserId : userId)
+                        .FirstOrDefault(x => x.TestId == test.Id);
 
                     if (testResult == null)
-                    {
                         yield return test.Id;
-                    }
-                    else if (testResult != null && (testResult.Points == null || testResult.Points < 10))
-                    {
+                    else if (testResult.Points == null || testResult.Points < 10)
                         yield return test.Id;
-                    }
                 }
             }
         }
@@ -200,76 +197,76 @@ namespace LMPlatform.UI.Controllers
             IList<ConceptResult> result = new List<ConceptResult>();
             try
             {
-                var test = TestsManagementService.GetTest(predTestId, true);
+                var test = this.TestsManagementService.GetTest(predTestId, true);
                 if (test.Questions != null)
-                {
-                    foreach(var question in test.Questions)
-                    {
+                    foreach (var question in test.Questions)
                         if (question.ConceptId.HasValue)
                         {
-                            var points = TestPassingService.GetPointsForQuestion(userId == 0 ? CurrentUserId : userId, question.Id);
+                            var points =
+                                this.TestPassingService.GetPointsForQuestion(userId == 0 ? this.CurrentUserId : userId,
+                                    question.Id);
                             if (points == 0 || points == null)
                             {
-                                var concept = ConceptManagementService.GetById(question.ConceptId.Value);
+                                var concept = this.ConceptManagementService.GetById(question.ConceptId.Value);
                                 result.Add(new ConceptResult
                                 {
                                     Concept = new ConceptViewData(concept)
                                 });
                             }
                         }
-                    }
-                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+
             return result;
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResult GetTest(int id)
         {
             var test = id == 0
                 ? new TestViewModel()
-                : TestViewModel.FromTest(TestsManagementService.GetTest(id));
+                : TestViewModel.FromTest(this.TestsManagementService.GetTest(id));
 
-            return Json(test, JsonRequestBehavior.AllowGet);
+            return this.Json(test, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public JsonResult SaveTest(TestViewModel testViewModel)
         {
             try
             {
-                var savedTest = TestsManagementService.SaveTest(testViewModel.ToTest());
-                return Json(savedTest);
+                var savedTest = this.TestsManagementService.SaveTest(testViewModel.ToTest());
+                return this.Json(savedTest);
             }
             catch (Exception e)
             {
-                return Json(new { ErrorMessage = e.Message });
+                return this.Json(new {ErrorMessage = e.Message});
             }
         }
 
-        [HttpPatch]
+        [System.Web.Http.HttpPatch]
         public JsonResult OrderQuestions([FromBody] Dictionary<string, int> newOrder)
         {
             try
             {
-                foreach(var item in newOrder)
+                foreach (var item in newOrder)
                 {
                     var questionId = int.Parse(item.Key);
-                    QuestionsManagementService.ChangeQuestionNumber(questionId, item.Value);
+                    this.QuestionsManagementService.ChangeQuestionNumber(questionId, item.Value);
                 }
-                return Json("Ok");
+
+                return this.Json("Ok");
             }
             catch (Exception e)
             {
-                return Json(new { ErrorMessage = e.Message });
+                return this.Json(new {ErrorMessage = e.Message});
             }
         }
 
-        [HttpPatch]
+        [System.Web.Http.HttpPatch]
         public JsonResult OrderTests([FromBody] Dictionary<string, int> newOrder)
         {
             try
@@ -277,88 +274,82 @@ namespace LMPlatform.UI.Controllers
                 foreach (var item in newOrder)
                 {
                     var testId = int.Parse(item.Key);
-                    QuestionsManagementService.ChangeTestNumber(testId, item.Value);
+                    this.QuestionsManagementService.ChangeTestNumber(testId, item.Value);
                 }
-                return Json("Ok");
+
+                return this.Json("Ok");
             }
             catch (Exception e)
             {
-                return Json(new { ErrorMessage = e.Message });
+                return this.Json(new {ErrorMessage = e.Message});
             }
         }
 
-
-        [HttpDelete]
+        [System.Web.Http.HttpDelete]
         public JsonResult DeleteTest(int id)
         {
-            TestsManagementService.DeleteTest(id);
-            return Json(id);
+            this.TestsManagementService.DeleteTest(id);
+            return this.Json(id);
         }
 
         public ActionResult UnlockTests(int[] studentIds, int testId, bool unlock)
         {
-            TestsManagementService.UnlockTest(studentIds, testId, unlock);
-            return Json("Ok");
+            this.TestsManagementService.UnlockTest(studentIds, testId, unlock);
+            return this.Json("Ok");
         }
 
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public ActionResult ChangeLockForUserForStudent(int testId, int studentId, bool unlocked)
         {
-            TestsManagementService.UnlockTestForStudent(testId, studentId, unlocked);
-            if (unlocked)
+            this.TestsManagementService.UnlockTestForStudent(testId, studentId, unlocked);
+            if (!unlocked) return this.Json("Ok");
+            var passedByUser = this.TestPassingService.GetTestPassingTime(testId, studentId);
+            if (passedByUser == null) return this.Json("Ok");
+            var student = this.StudentManagementService.GetStudent(studentId);
+            return this.Json(new
             {
-                TestPassResult passedByUser = TestPassingService.GetTestPassingTime(testId, studentId);
-                if (passedByUser != null)
-                {
-                    Student student = StudentManagementService.GetStudent(studentId);
-                    return Json(new
-                    {
-                        PassedTime = passedByUser.StartTime.ToShortDateString(),
-                        Test = TestsManagementService.GetTest(testId).Title,
-                        Student = string.Format("{0} {1}", student.FirstName, student.LastName),
-                        Points = passedByUser.Points
-                    });
-                }
-            }
-
-            return Json("Ok");
+                PassedTime = passedByUser.StartTime.ToShortDateString(),
+                Test = this.TestsManagementService.GetTest(testId).Title,
+                Student = $"{student.FirstName} {student.LastName}",
+                passedByUser.Points
+            });
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResult GetTestForLector()
         {
-            IEnumerable<Test> tests = TestsManagementService.GetTestForLector(CurrentUserId);
+            var tests = this.TestsManagementService.GetTestForLector(this.CurrentUserId);
             var testViewModels = tests.Select(TestViewModel.FromTest).OrderBy(t => t.Title).ToList();
-            testViewModels.Add(new TestViewModel()
+            testViewModels.Add(new TestViewModel
             {
                 Id = 0,
                 Title = "Все тесты"
             });
 
-            return Json(testViewModels, JsonRequestBehavior.AllowGet);
+            return this.Json(testViewModels, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResult GetQuestionsFromAnotherTests(int testId)
         {
-            IEnumerable<Question> questions = TestsManagementService.GetQuestionsFromAnotherTests(testId, CurrentUserId);
+            var questions = this.TestsManagementService.GetQuestionsFromAnotherTests(testId, this.CurrentUserId);
             var questionViewModels = questions.Select(QuestionViewModel.FromQuestion).ToList();
 
-            return Json(questionViewModels, JsonRequestBehavior.AllowGet);
+            return this.Json(questionViewModels, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetGroups(int subjectId)
         {
-            Subject subject = SubjectsManagementService.GetSubject(subjectId);
-            int[] groupIds = subject.SubjectGroups.Where(x => x.IsActiveOnCurrentGroup).Select(subjectGroup => subjectGroup.GroupId).ToArray();
-            var groups = GroupManagementService.GetGroups(new Query<Group>(group => groupIds.Contains(group.Id)))
+            var subject = this.SubjectsManagementService.GetSubject(subjectId);
+            var groupIds = subject.SubjectGroups.Where(x => x.IsActiveOnCurrentGroup)
+                .Select(subjectGroup => subjectGroup.GroupId).ToArray();
+            var groups = this.GroupManagementService.GetGroups(new Query<Group>(group => groupIds.Contains(group.Id)))
                 .Select(group => new
                 {
-                    Id = group.Id,
-                    Name = group.Name
+                    group.Id, group.Name
                 }).ToArray();
 
-            return Json(groups, JsonRequestBehavior.AllowGet);
+            return this.Json(groups, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetSubGroups(int groupId, int subjectId, int testId)
@@ -387,173 +378,122 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult Subjects(int subjectId)
         {
-            List<SubjectViewModel> CourseProjectSubjects;
-            var s = SubjectsManagementService.GetUserSubjects(WebSecurity.CurrentUserId).Where(e => !e.IsArchive);
-            CourseProjectSubjects = s.Where(cs => ModulesManagementService.GetModules(cs.Id).Any(m => m.ModuleType == ModuleType.SmartTest))
-    .Select(e => new SubjectViewModel(e)).ToList();
-            return View(CourseProjectSubjects);
+            var s = this.SubjectsManagementService.GetUserSubjects(WebSecurity.CurrentUserId).Where(e => !e.IsArchive);
+            var CourseProjectSubjects = s.Where(cs =>
+                    this.ModulesManagementService.GetModules(cs.Id).Any(m => m.ModuleType == ModuleType.SmartTest))
+                .Select(e => new SubjectViewModel(e)).ToList();
+            return JsonResponse(CourseProjectSubjects);
         }
 
         #region Questions
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResult GetQuestions(int testId)
         {
-            var questions = QuestionsManagementService.GetQuestionsForTest(testId).Select(QuestionItemListViewModel.FromQuestion).OrderBy(x => x.QuestionNumber).ToArray();
-            return Json(questions, JsonRequestBehavior.AllowGet);
+            var questions = this.QuestionsManagementService.GetQuestionsForTest(testId)
+                .Select(QuestionItemListViewModel.FromQuestion).OrderBy(x => x.QuestionNumber).ToArray();
+            return this.Json(questions, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResult GetQuestion(int id)
         {
             var test = id == 0
-                ? new QuestionViewModel { Answers = new[] { new AnswerViewModel { IsCorrect = 0 } }, ComplexityLevel = 1 }
-                : QuestionViewModel.FromQuestion(QuestionsManagementService.GetQuestion(id));
-            return Json(test, JsonRequestBehavior.AllowGet);
+                ? new QuestionViewModel {Answers = new[] {new AnswerViewModel {IsCorrect = 0}}, ComplexityLevel = 1}
+                : QuestionViewModel.FromQuestion(this.QuestionsManagementService.GetQuestion(id));
+            return this.Json(test, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public JsonResult GetConcepts(int subjectId)
         {
-            var concepts = ConceptManagementService.GetRootTreeElementsBySubject(subjectId);
-            var result = concepts.Select(c => new ConceptViewData(c, true, (Concept concept) =>
-            {
-                return concept.IsGroup && !ConceptManagementService.IsTestModule(concept.Name);
-            }));
-            return Json(result, JsonRequestBehavior.AllowGet);
+            var concepts = this.ConceptManagementService.GetRootTreeElementsBySubject(subjectId);
+            var result = concepts.Select(c => new ConceptViewData(c, true,
+                concept => concept.IsGroup && !this.ConceptManagementService.IsTestModule(concept.Name)));
+            return this.Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpDelete]
+        [System.Web.Http.HttpDelete]
         public JsonResult DeleteQuestion(int id)
         {
-            QuestionsManagementService.DeleteQuestion(id);
-            return Json(id);
+            this.QuestionsManagementService.DeleteQuestion(id);
+            return this.Json(id);
         }
 
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public JsonResult SaveQuestion(QuestionViewModel questionViewModel)
         {
             try
             {
-                var test = TestsManagementService.GetTest(questionViewModel.TestId, true);
+                var test = this.TestsManagementService.GetTest(questionViewModel.TestId, true);
                 if (test.ForEUMK)
                 {
                     if (questionViewModel.ConceptId == null)
                     {
-                        var questions = QuestionsManagementService.GetQuestionsForTest(questionViewModel.TestId).ToArray();
-                        if (questions.Length > 0)
-                        {
-                            questionViewModel.ConceptId = questions.First().ConceptId;
-                        }
+                        var questions = this.QuestionsManagementService.GetQuestionsForTest(questionViewModel.TestId)
+                            .ToArray();
+                        if (questions.Length > 0) questionViewModel.ConceptId = questions.First().ConceptId;
                     }
                     else
                     {
                         foreach (var questionId in test.Questions.Select(x => x.Id))
                         {
-                            var question = QuestionsManagementService.GetQuestion(questionId);
+                            var question = this.QuestionsManagementService.GetQuestion(questionId);
                             question.ConceptId = questionViewModel.ConceptId;
-                            QuestionsManagementService.SaveQuestion(question);
+                            this.QuestionsManagementService.SaveQuestion(question);
                         }
                     }
                 }
 
-                var savedQuestion = QuestionsManagementService.SaveQuestion(questionViewModel.ToQuestion());
+                var savedQuestion = this.QuestionsManagementService.SaveQuestion(questionViewModel.ToQuestion());
 
-                return Json(QuestionViewModel.FromQuestion(savedQuestion));
+                return this.Json(QuestionViewModel.FromQuestion(savedQuestion));
             }
             catch (Exception e)
             {
-                return Json(new { ErrorMessage = e.Message });
+                return this.Json(new {ErrorMessage = e.Message});
             }
         }
 
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public JsonResult AddQuestionsFromAnotherTest(int[] questionItems, int testId)
         {
             try
             {
-                QuestionsManagementService.CopyQuestionsToTest(testId, questionItems);
+                this.QuestionsManagementService.CopyQuestionsToTest(testId, questionItems);
 
-                return Json("Ok");
+                return this.Json("Ok");
             }
             catch (Exception e)
             {
-                return Json(new { ErrorMessage = e.Message });
+                return this.Json(new {ErrorMessage = e.Message});
             }
         }
 
         #endregion
 
-        protected int CurrentUserId
-        {
-            get
-            {
-                return int.Parse(WebSecurity.CurrentUserId.ToString(CultureInfo.InvariantCulture));
-            }
-        }
-
         #region Dependencies
 
-        public IModulesManagementService ModulesManagementService
-        {
-            get
-            {
-                return ApplicationService<IModulesManagementService>();
-            }
-        }
+        public IModulesManagementService ModulesManagementService =>
+            this.ApplicationService<IModulesManagementService>();
 
-        public ITestsManagementService TestsManagementService
-        {
-            get
-            {
-                return ApplicationService<ITestsManagementService>();
-            }
-        }
+        public ITestsManagementService TestsManagementService => this.ApplicationService<ITestsManagementService>();
 
-        public IQuestionsManagementService QuestionsManagementService
-        {
-            get
-            {
-                return ApplicationService<IQuestionsManagementService>();
-            }
-        }
+        public IQuestionsManagementService QuestionsManagementService =>
+            this.ApplicationService<IQuestionsManagementService>();
 
-        public ITestPassingService TestPassingService
-        {
-            get
-            {
-                return ApplicationService<ITestPassingService>();
-            }
-        }
+        public ITestPassingService TestPassingService => this.ApplicationService<ITestPassingService>();
 
-        public ISubjectManagementService SubjectsManagementService
-        {
-            get
-            {
-                return ApplicationService<ISubjectManagementService>();
-            }
-        }
+        public ISubjectManagementService SubjectsManagementService =>
+            this.ApplicationService<ISubjectManagementService>();
 
-        public IGroupManagementService GroupManagementService
-        {
-            get
-            {
-                return ApplicationService<IGroupManagementService>();
-            }
-        }
+        public IGroupManagementService GroupManagementService => this.ApplicationService<IGroupManagementService>();
 
-        public IStudentManagementService StudentManagementService
-        {
-            get
-            {
-                return ApplicationService<StudentManagementService>();
-            }
-        }
+        public IStudentManagementService StudentManagementService =>
+            this.ApplicationService<StudentManagementService>();
 
-        public IConceptManagementService ConceptManagementService
-        {
-            get { return ApplicationService<ConceptManagementService>(); }
-        }
+        public IConceptManagementService ConceptManagementService =>
+            this.ApplicationService<ConceptManagementService>();
 
         #endregion
     }

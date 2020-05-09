@@ -1,61 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Dynamic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.FoldersManagement;
 using Application.Infrastructure.SubjectManagement;
-using LMPlatform.Models;
 
 namespace LMPlatform.UI.Controllers
 {
     public class MaterialsController : BasicController
     {
+        public IFoldersManagementService FoldersManagementService =>
+            this.ApplicationService<IFoldersManagementService>();
+
+        public ISubjectManagementService SubjectManagementService =>
+            this.ApplicationService<ISubjectManagementService>();
+
         public ActionResult Index(int subjectId)
         {
-            List<Folders> folders = FoldersManagementService.GetAllFolders();
-            ViewBag.folders = folders;
-            Subject subject = SubjectManagementService.GetSubject(subjectId);
+            dynamic dynamicObject = new ExpandoObject();
 
-            int SubjectModulesId = subject.SubjectModules.First(e => e.ModuleId == 9).Id;
+            var folders = this.FoldersManagementService.GetAllFolders();
+            var subject = this.SubjectManagementService.GetSubject(subjectId);
+            var subjectModulesId = subject.SubjectModules.First(e => e.ModuleId == 9).Id;
+            var rootFolder = this.FoldersManagementService.FolderRootBySubjectModuleId(subjectModulesId);
 
-            Folders rootFolder = FoldersManagementService.FolderRootBySubjectModuleId(SubjectModulesId);
+            dynamicObject.Folders = folders;
+            dynamicObject.Folder = rootFolder;
+            dynamicObject.NgApp = "materialsApp";
+            dynamicObject.NgController = "homeCtrl";
 
-            ViewBag.Folder = rootFolder;
-            ViewBag.NgApp = "materialsApp";
-            ViewBag.NgController = "homeCtrl";
-
-            return View();
-        }
-
-        public ActionResult Catalog()
-        {
-            ViewBag.Pid = 0;
-            return PartialView();
-        }
-
-        public ActionResult New()
-        {
-            //ViewBag.NgApp = "materialsApp";
-            //ViewBag.NgController = "newCtrl";
-            return PartialView();
-        }
-
-        public IFoldersManagementService FoldersManagementService
-        {
-            get
-            {
-                return ApplicationService<IFoldersManagementService>();
-            }
-        }
-
-        public ISubjectManagementService SubjectManagementService
-        {
-            get
-            {
-                return ApplicationService<ISubjectManagementService>();
-            }
+            return JsonResponse(dynamicObject);
         }
     }
 }
