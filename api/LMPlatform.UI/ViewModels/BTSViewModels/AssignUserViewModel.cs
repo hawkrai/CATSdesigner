@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Application.Core;
 using Application.Infrastructure.GroupManagement;
@@ -22,42 +20,43 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 {
     public class AssignUserViewModel : Controller
     {
-        private readonly LazyDependency<IGroupManagementService> _groupManagementService = new LazyDependency<IGroupManagementService>();
-        private readonly LazyDependency<IProjectManagementService> _projectManagementService = new LazyDependency<IProjectManagementService>();
-        private readonly LazyDependency<IStudentsRepository> _studentsRepository = new LazyDependency<IStudentsRepository>();
-        private readonly LazyDependency<IStudentManagementService> _studentManagementService = new LazyDependency<IStudentManagementService>();
+        private readonly LazyDependency<IGroupManagementService> _groupManagementService =
+            new LazyDependency<IGroupManagementService>();
 
-        public IGroupManagementService GroupManagementService
+        private readonly LazyDependency<IProjectManagementService> _projectManagementService =
+            new LazyDependency<IProjectManagementService>();
+
+        private readonly LazyDependency<IStudentManagementService> _studentManagementService =
+            new LazyDependency<IStudentManagementService>();
+
+        private readonly LazyDependency<IStudentsRepository> _studentsRepository =
+            new LazyDependency<IStudentsRepository>();
+
+        public AssignUserViewModel()
         {
-            get
+        }
+
+        public AssignUserViewModel(int id, int projectId)
+        {
+            this.ProjectId = projectId;
+
+            if (id != 0)
             {
-                return _groupManagementService.Value;
+                var projectUser = this.ProjectManagementService.GetProjectUser(id);
+                this.ProjectId = projectUser.ProjectId;
+                this.RoleId = projectUser.ProjectRoleId;
+                this.UserId = projectUser.UserId;
+                this.Id = projectUser.Id;
             }
         }
 
-        public IProjectManagementService ProjectManagementService
-        {
-            get
-            {
-                return _projectManagementService.Value;
-            }
-        }
+        public IGroupManagementService GroupManagementService => this._groupManagementService.Value;
 
-        public IStudentsRepository StudentsRepository
-        {
-            get
-            {
-                return _studentsRepository.Value;
-            }
-        }
+        public IProjectManagementService ProjectManagementService => this._projectManagementService.Value;
 
-        public IStudentManagementService StudentManagementService
-        {
-            get
-            {
-                return _studentManagementService.Value;
-            }
-        }
+        public IStudentsRepository StudentsRepository => this._studentsRepository.Value;
+
+        public IStudentManagementService StudentManagementService => this._studentManagementService.Value;
 
         [Required(ErrorMessage = "Поле Группа обязательно для заполнения")]
         [DisplayName("Группа")]
@@ -83,24 +82,6 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public int Id { get; set; }
 
-        public AssignUserViewModel()
-        {
-        }
-
-        public AssignUserViewModel(int id, int projectId)
-        {
-            ProjectId = projectId;
-
-            if (id != 0)
-            {
-                var projectUser = ProjectManagementService.GetProjectUser(id);
-                ProjectId = projectUser.ProjectId;
-                RoleId = projectUser.ProjectRoleId;
-                UserId = projectUser.UserId;
-                Id = projectUser.Id;
-            }
-        }
-
         public List<Group> GetAssignedGroups(int userId)
         {
             var groups = new LmPlatformRepositoriesContainer().ProjectsRepository.GetGroups(userId);
@@ -110,17 +91,13 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public IList<SelectListItem> GetGroups()
         {
-            var groups = new List<Group>(); 
+            var groups = new List<Group>();
 
             var user = new UsersManagementService().GetUser(WebSecurity.CurrentUserId);
             if (user != null)
-            {
-                groups = GetAssignedGroups(WebSecurity.CurrentUserId);
-            }
+                groups = this.GetAssignedGroups(WebSecurity.CurrentUserId);
             else
-            {
                 groups = new GroupManagementService().GetGroups();
-            }
 
             return groups.Select(v => new SelectListItem
             {
@@ -131,7 +108,7 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public List<SelectListItem> GetStudents(int groupId)
         {
-            var students = StudentManagementService.GetGroupStudents(groupId).OrderBy(e => e.FirstName);
+            var students = this.StudentManagementService.GetGroupStudents(groupId).OrderBy(e => e.FirstName);
 
             return students.Select(v => new SelectListItem
             {
@@ -147,12 +124,8 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
             var lecturerList = new List<Lecturer>();
 
             foreach (var lecturer in lecturers)
-            {
-                if (ProjectManagementService.IsUserAssignedOnProject(lecturer.Id, ProjectId) == false)
-                {
+                if (this.ProjectManagementService.IsUserAssignedOnProject(lecturer.Id, this.ProjectId) == false)
                     lecturerList.Add(lecturer);
-                }
-            }
 
             return lecturerList.Select(v => new SelectListItem
             {
@@ -175,12 +148,12 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
         {
             var projectUser = new ProjectUser
             {
-                UserId = UserId,
-                ProjectId = Id,
-                ProjectRoleId = RoleId,
+                UserId = this.UserId,
+                ProjectId = this.Id,
+                ProjectRoleId = this.RoleId
             };
 
-            ProjectManagementService.AssingRole(projectUser);
+            this.ProjectManagementService.AssingRole(projectUser);
         }
     }
 }

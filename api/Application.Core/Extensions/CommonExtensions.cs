@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 
 namespace Application.Core.Extensions
 {
@@ -21,5 +22,17 @@ namespace Application.Core.Extensions
 				? attributes[0].Description
 				: value.ToString();
 		}
+
+        public static dynamic AsExpandoObject<T>(this T obj) where T : class
+        {
+            var expando = new ExpandoObject();
+            var dictionary = (IDictionary<string, object>)expando;
+            foreach (var property in obj.GetType().GetProperties())
+            {
+                dictionary.Add(property.Name, property.GetValue(obj));
+            }
+
+            return expando;
+        }
 	}
 }

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
+using Application.Core.Extensions;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.BugManagement;
 using Application.Infrastructure.LecturerManagement;
@@ -22,54 +24,38 @@ namespace LMPlatform.UI.Controllers
         private static int _currentProjectId;
         private static int _currentBugId;
         private static int _prevBugStatus;
-        
-        [HttpGet]
-        public ActionResult Index()
-        {
-            return View();
-        }
+
+        public IProjectManagementService ProjectManagementService =>
+            this.ApplicationService<IProjectManagementService>();
+
+        public IBugManagementService BugManagementService => this.ApplicationService<IBugManagementService>();
 
         [HttpGet]
-        public ActionResult Bugs()
-        {
-            return PartialView("_Bugs");
-        }
-
-        [HttpGet]
-        public ActionResult Projects()
-        {
-            return PartialView("_Projects");
-        }
-
-        [HttpGet]
-        public ActionResult ProjectParticipation()
-        {
-            return PartialView("_ProjectParticipation");
-        }
-
-        [HttpGet]
-        public ActionResult Project()
-        {
-            return PartialView("_Project");
-        }
-
         public ActionResult AssignStudentOnProject(int id)
         {
             var projectUserViewModel = new AssignUserViewModel(0, id);
-            return PartialView("_AssignStudentOnProjectForm", projectUserViewModel);
+            var response = projectUserViewModel.AsExpandoObject();
+            response.Groups = projectUserViewModel.GetGroups();
+            response.Students = projectUserViewModel.GetStudents(projectUserViewModel.GroupId);
+            response.Roles = projectUserViewModel.GetRoles();
+            return JsonResponse(response);
         }
 
+        [HttpGet]
         public ActionResult AssignLecturerOnProject(int id)
         {
             var projectUserViewModel = new AssignUserViewModel(0, id);
-            return PartialView("_AssignLecturerOnProjectForm", projectUserViewModel);
+            var response = projectUserViewModel.AsExpandoObject();
+            response.Lecturers = projectUserViewModel.GetLecturers();
+            response.Roles = projectUserViewModel.GetRoles();
+            return JsonResponse(response);
         }
 
         [HttpDelete]
         public JsonResult DeleteProjectUser(int id)
         {
-            ProjectManagementService.DeleteProjectUser(id);
-            return Json(id);
+            this.ProjectManagementService.DeleteProjectUser(id);
+            return this.Json(id);
         }
 
         [HttpPost]
@@ -77,39 +63,34 @@ namespace LMPlatform.UI.Controllers
         {
             model.SaveAssignment();
 
-            return null;
-        }
-
-        public ActionResult AddProject()
-        {
-            var projectViewModel = new AddOrEditProjectViewModel(0);
-            return PartialView("_AddOrEditProjectForm", projectViewModel);
+            return StatusCode(HttpStatusCode.OK);
         }
 
         public ActionResult EditProject(int id)
         {
             var projectViewModel = new AddOrEditProjectViewModel(id);
-            return PartialView("_AddOrEditProjectForm", projectViewModel);
+            return JsonResponse(projectViewModel);
         }
 
         [HttpDelete]
         public JsonResult DeleteProject(int id)
         {
-            ProjectManagementService.DeleteProject(id);
-            return Json(id);
+            this.ProjectManagementService.DeleteProject(id);
+            return this.Json(id);
         }
 
+        [HttpGet]
         public ActionResult ClearProject(int id)
         {
-            ProjectManagementService.ClearProject(id);
-            return null;
+            this.ProjectManagementService.ClearProject(id);
+            return StatusCode(HttpStatusCode.OK);
         }
 
         [HttpPost]
         public ActionResult SaveProject(AddOrEditProjectViewModel model)
         {
-            model.Save(WebSecurity.CurrentUserId); 
-            return null;
+            model.Save(WebSecurity.CurrentUserId);
+            return StatusCode(HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -117,8 +98,15 @@ namespace LMPlatform.UI.Controllers
         {
             var model = new ProjectsViewModel(id);
             model.SaveComment(comment);
+            var comments = model.GetProjectComments()
+                .Select(c => new
+                {
+                    c.User.FullName,
+                    c.CommentText,
+                    c.CommentingDate
+                }).ToArray();
 
-            return PartialView("_ChatForm", model);
+            return JsonResponse(comments);
         }
 
         [HttpGet]
@@ -126,49 +114,14 @@ namespace LMPlatform.UI.Controllers
         {
             _currentProjectId = id;
             var model = new BugListViewModel(id);
-            return View(model);
-        }
-
-        [HttpPost]
-        public ActionResult BugManagement(BugListViewModel model)
-        {
-            return View();
-        }
-
-        public ActionResult AddBug()
-        {
-            var addBugViewModel = new AddOrEditBugViewModel(0);
-            if (_currentProjectId == 0)
-            {
-                return PartialView("_AddBugForm", addBugViewModel);
-            }
-                
-            return PartialView("_AddBugOrCurrentProjectForm", addBugViewModel);
-        }
-
-        public ActionResult EditBug(int id)
-        {
-            var bug = BugManagementService.GetBug(id);
-            _currentProjectId = bug.ProjectId;
-
-            var bugViewModel = new AddOrEditBugViewModel(id);
-            _prevBugStatus = bugViewModel.StatusId;
-            var projectUser =
-                new ProjectManagementService().GetProjectUsers(bug.ProjectId).Single(e => e.UserId == WebSecurity.CurrentUserId);
-            if ((projectUser.ProjectRoleId == 1 && bug.StatusId == 2) ||
-                (projectUser.ProjectRoleId == 3 && bug.StatusId == 1))
-            {
-                return PartialView("_EditBugFormWithAssignment", bugViewModel);
-            }
-
-            return PartialView("_EditBugFormWithAssignment", bugViewModel);
+            return JsonResponse(model);
         }
 
         [HttpDelete]
         public JsonResult DeleteBug(int id)
         {
-            BugManagementService.DeleteBug(id);
-            return Json(id);
+            this.BugManagementService.DeleteBug(id);
+            return this.Json(id);
         }
 
         [HttpPost]
@@ -179,31 +132,25 @@ namespace LMPlatform.UI.Controllers
             {
                 BugId = model.BugId,
                 UserId = WebSecurity.CurrentUserId,
-                UserName = ProjectManagementService.GetCreatorName(WebSecurity.CurrentUserId),
+                UserName = this.ProjectManagementService.GetCreatorName(WebSecurity.CurrentUserId),
                 PrevStatusId = _prevBugStatus,
                 CurrStatusId = model.StatusId,
                 LogDate = DateTime.Now
             };
-            if (model.BugId != 0)
-            {
-                model.SaveBugLog(bugLog);
-            }
+            if (model.BugId != 0) model.SaveBugLog(bugLog);
 
-            return null;
+            return StatusCode(HttpStatusCode.OK);
         }
 
-        [HttpPost]
+        [HttpGet]
         public JsonResult GetStudents(int groupId)
         {
             var groupOfStudents = new StudentManagementService().GetGroupStudents(groupId);
-            var studentList = new List<Student>();
-			foreach (var student in groupOfStudents.Where(e => e.Confirmed == null || e.Confirmed.Value))
-            {
-                if (ProjectManagementService.IsUserAssignedOnProject(student.Id, _currentProjectId) == false)
-                {
-                    studentList.Add(student);
-                }
-            }
+            var studentList = groupOfStudents
+                .Where(e => e.Confirmed == null || e.Confirmed.Value)
+                .Where(student =>
+                    this.ProjectManagementService.IsUserAssignedOnProject(student.Id, _currentProjectId) == false)
+                .ToList();
 
             var students = studentList.Select(v => new SelectListItem
             {
@@ -211,10 +158,10 @@ namespace LMPlatform.UI.Controllers
                 Value = v.Id.ToString(CultureInfo.InvariantCulture)
             }).ToList();
 
-            return Json(new SelectList(students, "Value", "Text"));
+            return this.Json(new SelectList(students, "Value", "Text"));
         }
 
-        [HttpPost]
+        [HttpGet]
         public JsonResult GetDeveloperNames()
         {
             var _context = new UsersManagementService();
@@ -223,19 +170,12 @@ namespace LMPlatform.UI.Controllers
 
             var users = new List<User>();
 
-             var currProjectUser =
+            var currProjectUser =
                 context.GetProjectUsers(_currentProjectId).Single(e => e.UserId == WebSecurity.CurrentUserId);
             if (currProjectUser.ProjectRoleId == 1)
-            {
                 users.Add(_context.GetUser(currProjectUser.UserId));
-            }
             else
-            {
-                foreach (var user in projectUsers)
-                {
-                    users.Add(_context.GetUser(user.UserId));
-                }
-            }
+                users.AddRange(projectUsers.Select(user => _context.GetUser(user.UserId)));
 
             var userList = users.Select(e => new SelectListItem
             {
@@ -243,45 +183,28 @@ namespace LMPlatform.UI.Controllers
                 Value = e.Id.ToString(CultureInfo.InvariantCulture)
             }).ToList();
 
-            return Json(new SelectList(userList, "Value", "Text"));
+            return this.Json(new SelectList(userList, "Value", "Text"));
         }
 
-        [HttpPost]
+        [HttpGet]
         public bool IsUserAnAssignedDeveloper()
         {
             var bug = new BugManagementService().GetBug(_currentBugId);
             var context = new ProjectManagementService();
-            var projectRoleId = context.GetProjectUsers(bug.ProjectId).Single(e => e.UserId == WebSecurity.CurrentUserId).ProjectRoleId;
-            if (bug.AssignedDeveloperId == 0 && projectRoleId == 1)
-            {
-                return true;
-            }
-            else
-            {
-                if (bug.AssignedDeveloperId != WebSecurity.CurrentUserId && projectRoleId == 1)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
+            var projectRoleId = context.GetProjectUsers(bug.ProjectId)
+                .Single(e => e.UserId == WebSecurity.CurrentUserId).ProjectRoleId;
+            return bug.AssignedDeveloperId == 0 && projectRoleId == 1 ||
+                   bug.AssignedDeveloperId == WebSecurity.CurrentUserId || projectRoleId != 1;
         }
 
-        [HttpPost]
+        [HttpGet]
         public JsonResult GetLecturers()
         {
             var _lecturers = new LecturerManagementService().GetLecturers();
 
-            var lecturerList = new List<Lecturer>();
-            foreach (var lecturer in _lecturers)
-            {
-                if (ProjectManagementService.IsUserAssignedOnProject(lecturer.Id, _currentProjectId) == false)
-                {
-                    lecturerList.Add(lecturer);
-                }
-            }
+            var lecturerList = _lecturers.Where(lecturer =>
+                    this.ProjectManagementService.IsUserAssignedOnProject(lecturer.Id, _currentProjectId) == false)
+                .ToList();
 
             var lecturers = lecturerList.Select(v => new SelectListItem
             {
@@ -289,20 +212,14 @@ namespace LMPlatform.UI.Controllers
                 Value = v.Id.ToString(CultureInfo.InvariantCulture)
             }).ToList();
 
-            return Json(new SelectList(lecturers, "Value", "Text"));
+            return this.Json(new SelectList(lecturers, "Value", "Text"));
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult GetUserInformation(int id)
         {
             var model = new UserInfoViewModel(id);
-            return PartialView("_UserInfo", model);
-        }
-
-        [HttpPost]
-        public ActionResult GetBugStatusHelper()
-        {
-            return PartialView("_BugStatusHelper");
+            return JsonResponse(model);
         }
 
         [HttpGet]
@@ -310,23 +227,7 @@ namespace LMPlatform.UI.Controllers
         {
             var model = new BugsViewModel(id);
             _currentBugId = id;
-            return View(model);
-        }
-
-        public IProjectManagementService ProjectManagementService
-        {
-            get
-            {
-                return ApplicationService<IProjectManagementService>();
-            }
-        }
-
-        public IBugManagementService BugManagementService
-        {
-            get
-            {
-                return ApplicationService<IBugManagementService>();
-            }
+            return JsonResponse(model);
         }
     }
 }

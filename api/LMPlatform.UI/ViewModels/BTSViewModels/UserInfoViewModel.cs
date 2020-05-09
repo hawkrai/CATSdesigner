@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
@@ -12,21 +8,6 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 {
     public class UserInfoViewModel
     {
-        [DisplayName("ФИО")]
-        public string UserName { get; set; }
-
-        [DisplayName("Роль")]
-        public string Role { get; set; }
-
-        [DisplayName("Номер группы")]
-        public string GroupNumber { get; set; }
-
-        [DisplayName("Привязанные предметы:")]
-        public List<Subject> SubjectList { get; set; }
-
-        [DisplayName("Количество проектов, на которых занят:")]
-        public int ProjectQuentity { get; set; }
-
         public UserInfoViewModel(int _id)
         {
             var context = new LmPlatformModelsContext();
@@ -44,25 +25,32 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
                     }
                 }
 
-                UserName = creator.LastName + " " + creator.FirstName + " " + creator.MiddleName;
-                GroupNumber = context.Groups.Find(creator.GroupId).Name;
-                ProjectQuentity = context.ProjectUsers.Select(e => e.User).Count(e => e.Id == creator.Id);
-                Role = "Студент";
+                this.UserName = creator.LastName + " " + creator.FirstName + " " + creator.MiddleName;
+                this.GroupNumber = context.Groups.Find(creator.GroupId).Name;
+                this.ProjectQuentity = context.ProjectUsers.Select(e => e.User).Count(e => e.Id == creator.Id);
+                this.Role = "Студент";
             }
             else
             {
                 var creator = context.Lecturers.Find(id);
-                UserName = creator.LastName + " " + creator.FirstName + " " + creator.MiddleName;
-                ProjectQuentity = context.ProjectUsers.Select(e => e.User).Count(e => e.Id == creator.Id);
-                Role = "Преподаватель";
+                this.UserName = creator.LastName + " " + creator.FirstName + " " + creator.MiddleName;
+                this.ProjectQuentity = context.ProjectUsers.Select(e => e.User).Count(e => e.Id == creator.Id);
+                this.Role = "Преподаватель";
 
                 var _context = new SubjectManagementService();
-                SubjectList = new List<Subject>();
-                foreach (var subject in _context.GetUserSubjects(creator.Id))
-                {
-                    SubjectList.Add(subject);
-                }
+                this.SubjectList = new List<Subject>();
+                foreach (var subject in _context.GetUserSubjects(creator.Id)) this.SubjectList.Add(subject);
             }
         }
+
+        public string UserName { get; set; }
+
+        public string Role { get; set; }
+
+        public string GroupNumber { get; set; }
+
+        public List<Subject> SubjectList { get; set; }
+
+        public int ProjectQuentity { get; set; }
     }
 }

@@ -1,67 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.WebPages.Html;
-using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.BugManagement;
 using Application.Infrastructure.ProjectManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Data.Repositories;
-using LMPlatform.Data.Repositories.RepositoryContracts;
 using LMPlatform.Models;
-using LMPlatform.Models.BTS;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ViewModels.BTSViewModels
 {
     public class BugsViewModel
     {
-        private static LmPlatformModelsContext context = new LmPlatformModelsContext();
-        
+        private static readonly LmPlatformModelsContext context = new LmPlatformModelsContext();
+
+        public BugsViewModel(int id)
+        {
+            var model = new BugManagementService().GetBug(id);
+            this.BugId = id;
+            this.SetParams(model);
+        }
+
         public int ProjectId { get; set; }
 
-        [DisplayName("Кем добавлена")]
         public string ReporterName { get; set; }
 
-        [DisplayName("Название")]
         public string Summary { get; set; }
 
-        [DisplayName("Описание")]
         public string Description { get; set; }
 
-        [DisplayName("Шаги выполнения")]
         public string Steps { get; set; }
 
-        [DisplayName("Ожидаемый результат")]
         public string ExpectedResult { get; set; }
 
-        [DisplayName("Важность")]
         public string Severity { get; set; }
 
-        [DisplayName("Статус")]
         public string Status { get; set; }
 
-        [DisplayName("Симптом")]
         public string Symptom { get; set; }
 
-        [DisplayName("Проект")]
         public string Project { get; set; }
 
-        [DisplayName("Дата документирования")]
         public string ReportingDate { get; set; }
 
-        [DisplayName("Дата последнего изменения")]
         public string ModifyingDate { get; set; }
 
-        [DisplayName("Кем изменена")]
         public string EditorName { get; set; }
 
-        [DisplayName("Назначенный разработчик")]
         public string AssignedDeveloperName { get; set; }
 
         public int SymptomId { get; set; }
@@ -78,32 +62,26 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public int BugId { get; set; }
 
-        public BugsViewModel(int id)
-        {
-            var model = new BugManagementService().GetBug(id);
-            BugId = id;
-            SetParams(model);
-        }
-
         public void SetParams(Bug model)
         {
             var context = new ProjectManagementService();
 
-            Steps = model.Steps;
-            ExpectedResult = model.ExpectedResult;
-            Symptom = GetSymptomName(model.SymptomId);
-            EditorName = context.GetCreatorName(model.EditorId);
-            ReporterName = context.GetCreatorName(model.ReporterId);
-            Summary = model.Summary;
-            Description = model.Description;
-            Severity = GetSeverityName(model.SeverityId);
-            Status = GetStatusName(model.StatusId);
-            Project = GetProjectTitle(model.ProjectId);
-            ProjectId = model.ProjectId;
-            ModifyingDate = model.ModifyingDate.ToShortDateString();
-            ReportingDate = model.ReportingDate.ToShortDateString();
-            AssignedDeveloperId = model.AssignedDeveloperId;
-            AssignedDeveloperName = (AssignedDeveloperId == 0) ? "-" : context.GetCreatorName(AssignedDeveloperId);
+            this.Steps = model.Steps;
+            this.ExpectedResult = model.ExpectedResult;
+            this.Symptom = GetSymptomName(model.SymptomId);
+            this.EditorName = context.GetCreatorName(model.EditorId);
+            this.ReporterName = context.GetCreatorName(model.ReporterId);
+            this.Summary = model.Summary;
+            this.Description = model.Description;
+            this.Severity = GetSeverityName(model.SeverityId);
+            this.Status = this.GetStatusName(model.StatusId);
+            this.Project = GetProjectTitle(model.ProjectId);
+            this.ProjectId = model.ProjectId;
+            this.ModifyingDate = model.ModifyingDate.ToShortDateString();
+            this.ReportingDate = model.ReportingDate.ToShortDateString();
+            this.AssignedDeveloperId = model.AssignedDeveloperId;
+            this.AssignedDeveloperName =
+                this.AssignedDeveloperId == 0 ? "-" : context.GetCreatorName(this.AssignedDeveloperId);
         }
 
         public static string GetProjectTitle(int id)
@@ -140,7 +118,7 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public List<BugLog> GetBugLogs()
         {
-            var bugLogList = new BugManagementService().GetBugLogs(BugId).ToList();
+            var bugLogList = new BugManagementService().GetBugLogs(this.BugId).ToList();
             bugLogList.Reverse(0, bugLogList.Count);
 
             return bugLogList;
