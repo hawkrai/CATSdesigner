@@ -1,97 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Web.Mvc;
-using Application.Core.Data;
-using Application.Core.UI.HtmlHelpers;
+using Application.Core.UI.Controllers;
+using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.ViewModels.ParentalViewModels;
-using Mvc.JQuery.Datatables;
 
 namespace LMPlatform.UI.Controllers
 {
-    using Application.Core.UI.Controllers;
-    using Application.Infrastructure.GroupManagement;
-    using Application.Infrastructure.UserManagement;
-
-    [AllowAnonymous]
     public class ParentalController : BasicController
     {
-        [AllowAnonymous]
+        public IGroupManagementService GroupManagementService => this.ApplicationService<IGroupManagementService>();
+
+        public ISubjectManagementService SubjectManagementService =>
+            this.ApplicationService<ISubjectManagementService>();
+
         public ActionResult Index(string id)
         {
-            var group = GroupManagementService.GetGroupByName(id);
-            
-            if (group != null)
+            var group = this.GroupManagementService.GetGroupByName(id);
+
+            if (group == null) return StatusCode(HttpStatusCode.BadRequest);
+            var model = new ParentalViewModel
             {
-                var model = new ParentalViewModel()
-                {
-                    Group = group
-                };
-                return View(model);
-            }
+                Group = group
+            };
 
-            return RedirectToAction("GroupNotFound");
-        }
-
-        public ActionResult Front()
-        {
-            return this.PartialView("Parental/_Front");
-        }
-
-        public ActionResult Statistics()
-        {
-            return this.PartialView("Parental/_Statistics");
-        }
-
-        public ActionResult Plan()
-        {
-            return this.PartialView("Parental/_Plan");
+            return JsonResponse(model);
         }
 
         public ActionResult GetSideNav(int groupId)
         {
-            var group = GroupManagementService.GetGroup(groupId);
-            var subjects = SubjectManagementService.GetGroupSubjects(groupId);
+            var group = this.GroupManagementService.GetGroup(groupId);
+            var subjects = this.SubjectManagementService.GetGroupSubjects(groupId);
 
             var model = new ParentalViewModel(group)
-                {
-                    Subjects = subjects
-                };
-            return PartialView("_ParentalSideNavPartial", model);
+            {
+                Subjects = subjects
+            };
+            return JsonResponse(model);
         }
 
         public List<Subject> GetSubjects(int groupId)
         {
-            return SubjectManagementService.GetGroupSubjects(groupId);
-        }
-
-        public ActionResult GroupNotFound()
-        {
-            return View();
+            return this.SubjectManagementService.GetGroupSubjects(groupId);
         }
 
         public bool IsValidGroup(string groupName)
         {
-            return GroupManagementService.GetGroupByName(groupName) != null;
-        }
-
-        public IGroupManagementService GroupManagementService
-        {
-            get
-            {
-                return ApplicationService<IGroupManagementService>();
-            }
-        }
-
-        public ISubjectManagementService SubjectManagementService
-        {
-            get
-            {
-                return ApplicationService<ISubjectManagementService>();
-            }
+            return this.GroupManagementService.GetGroupByName(groupName) != null;
         }
     }
 }
