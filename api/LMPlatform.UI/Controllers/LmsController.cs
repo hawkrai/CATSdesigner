@@ -1,62 +1,47 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Dynamic;
-using System.Web.Helpers;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Application.Core;
-using Application.Core.Data;
 using Application.Core.Extensions;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.DPManagement;
-using Application.Infrastructure.UserManagement;
-using LMPlatform.Data.Infrastructure;
-using LMPlatform.Models;
+using Application.Infrastructure.StudentManagement;
+using LMPlatform.UI.Attributes;
+using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using LMPlatform.UI.ViewModels.LmsViewModels;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
-	using Application.Infrastructure.StudentManagement;
-    using LMPlatform.UI.Attributes;
-    using ViewModels.AdministrationViewModels;
-
     [JwtAuth(Roles = "student, lector")]
     public class LmsController : BasicController
     {
-		public ActionResult Index(string userLogin = "")
+        private readonly LazyDependency<IDpManagementService> _diplomProjectManagementService =
+            new LazyDependency<IDpManagementService>();
+
+        private readonly LazyDependency<IStudentManagementService> _studentManagementService =
+            new LazyDependency<IStudentManagementService>();
+
+        private IDpManagementService DpManagementService => this._diplomProjectManagementService.Value;
+
+        private IStudentManagementService StudentManagementService => this._studentManagementService.Value;
+
+        [HttpGet]
+        public ActionResult Index(string userLogin = "")
         {
-            if (User.IsInRole("lector") || User.IsInRole("student"))
+            var model = new LmsViewModel(WebSecurity.CurrentUserId, this.User.IsInRole("lector"))
             {
-                var model = new LmsViewModel(WebSecurity.CurrentUserId, User.IsInRole("lector"));
-                model.UserActivity = new UserActivityViewModel();
+                UserActivity = new UserActivityViewModel()
+            };
+            var dynamicModel = model.AsExpandoObject();
+            dynamicModel.ShowDpSectionForUser =
+                this.DpManagementService.ShowDpSectionForUser(WebSecurity.CurrentUserId);
+            dynamicModel.IsMyProfile = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin;
+            dynamicModel.UserLogin = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin
+                ? WebSecurity.CurrentUserName
+                : userLogin;
+            dynamicModel.UnconfirmedStudents =
+                this.StudentManagementService.CountUnconfirmedStudents(WebSecurity.CurrentUserId) > 0;
 
-                ViewBag.ShowDpSectionForUser = DpManagementService.ShowDpSectionForUser(WebSecurity.CurrentUserId);
-
-				bool isMyProfile = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin;
-
-	            ViewData["isMyProfile"] = isMyProfile;
-				ViewData["userLogin"] = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin ? WebSecurity.CurrentUserName : userLogin;
-
-				ViewData["UnconfirmedStudents"] = this.StudentManagementService.CountUnconfirmedStudents(WebSecurity.CurrentUserId) > 0;
-
-                return View(model);    
-            }
-
-            return RedirectToAction("Login", "Account");
+            return JsonResponse(model);
         }
-
-        private IDpManagementService DpManagementService
-        {
-            get { return _diplomProjectManagementService.Value; }
-        }
-
-        private readonly LazyDependency<IDpManagementService> _diplomProjectManagementService = new LazyDependency<IDpManagementService>();
-
-		private IStudentManagementService StudentManagementService
-		{
-			get { return _studentManagementService.Value; }
-		}
-
-		private readonly LazyDependency<IStudentManagementService> _studentManagementService = new LazyDependency<IStudentManagementService>();
     }
 }

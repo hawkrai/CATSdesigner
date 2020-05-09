@@ -1,32 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Web.Script.Serialization;
+using Application.Core;
+using Application.Core.Constants;
+using Application.Infrastructure.UserManagement;
+using LMPlatform.Models;
 
 namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 {
-    using System.Web.Script.Serialization;
-
-    using Application.Core;
-    using Application.Core.Constants;
-    using Application.Infrastructure.UserManagement;
-
-    using LMPlatform.Models;
-
     public class UserActivityViewModel
     {
         private readonly LazyDependency<IUsersManagementService> _userManagementService =
-           new LazyDependency<IUsersManagementService>();
+            new LazyDependency<IUsersManagementService>();
 
-        public IUsersManagementService UserManagementService
-        {
-            get { return _userManagementService.Value; }
-        }
+        private IEnumerable<User> users;
 
         public UserActivityViewModel()
         {
-            InitializeActivity();
+            this.InitializeActivity();
         }
+
+        public IUsersManagementService UserManagementService => this._userManagementService.Value;
 
         public string UserActivityJson { get; set; }
 
@@ -38,47 +33,46 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         public int ServiceAccountsCount { get; set; }
 
-        private IEnumerable<User> users;
-
-        private IEnumerable<User> Users
-        {
-            get
-            {
-                return this.users ?? (this.users = this.UserManagementService.GetUsers(true));
-            }
-        }
+        private IEnumerable<User> Users => this.users ??= this.UserManagementService.GetUsers(true);
 
         private void InitializeActivity()
         {
-            TotalUsersCount = Users.Count();
+            this.TotalUsersCount = this.Users.Count();
 
-            TotalStudentsCount =
-                Users.Count(u => u.Membership != null && u.Membership.Roles.Select(r => r.RoleName).Contains(Constants.Roles.Student));
+            this.TotalStudentsCount = this.Users.Count(u =>
+                u.Membership != null && u.Membership.Roles.Select(r => r.RoleName).Contains(Constants.Roles.Student));
 
-            TotalLecturersCount =
-                Users.Count(u => u.Membership != null && u.Membership.Roles.Select(r => r.RoleName).Contains(Constants.Roles.Lector));
+            this.TotalLecturersCount = this.Users.Count(u =>
+                u.Membership != null && u.Membership.Roles.Select(r => r.RoleName).Contains(Constants.Roles.Lector));
 
-            ServiceAccountsCount =
-                Users.Count(u => u.Membership != null && u.Membership.Roles.Select(r => r.RoleName).Contains(Constants.Roles.Admin));
+            this.ServiceAccountsCount = this.Users.Count(u =>
+                u.Membership != null && u.Membership.Roles.Select(r => r.RoleName).Contains(Constants.Roles.Admin));
 
             var today = DateTime.Now;
 
-            var dayActivity = Users.Count(u => u.LastLogin != null && DateTime.Compare(u.LastLogin.Value, today.AddDays(-1)) >= 0);
-            var weekActivity = Users.Count(u => u.LastLogin != null && DateTime.Compare(u.LastLogin.Value, today.AddDays(-7)) >= 0) - dayActivity;
-            var monthActivity = Users.Count(u => u.LastLogin != null && DateTime.Compare(u.LastLogin.Value, today.AddMonths(-1)) >= 0) - weekActivity - dayActivity;
-            var inactive = TotalUsersCount - dayActivity - weekActivity - monthActivity;
+            var dayActivity = this.Users.Count(u =>
+                u.LastLogin != null && DateTime.Compare(u.LastLogin.Value, today.AddDays(-1)) >= 0);
+            var weekActivity =
+                this.Users.Count(
+                    u => u.LastLogin != null && DateTime.Compare(u.LastLogin.Value, today.AddDays(-7)) >= 0) -
+                dayActivity;
+            var monthActivity =
+                this.Users.Count(u =>
+                    u.LastLogin != null && DateTime.Compare(u.LastLogin.Value, today.AddMonths(-1)) >= 0) -
+                weekActivity - dayActivity;
+            var inactive = this.TotalUsersCount - dayActivity - weekActivity - monthActivity;
 
-            var dictionary = new Dictionary<string, int>()
-                                 {
-                                     { "Сутки", dayActivity },
-                                     { "Неделя", weekActivity },
-                                     { "Месяц", monthActivity },
-                                     { "Ранее", inactive }
-                                 };
+            var dictionary = new Dictionary<string, int>
+            {
+                {"Сутки", dayActivity},
+                {"Неделя", weekActivity},
+                {"Месяц", monthActivity},
+                {"Ранее", inactive}
+            };
 
             var jsonSerialiser = new JavaScriptSerializer();
 
-            UserActivityJson = jsonSerialiser.Serialize(dictionary);
+            this.UserActivityJson = jsonSerialiser.Serialize(dictionary);
         }
     }
 }
