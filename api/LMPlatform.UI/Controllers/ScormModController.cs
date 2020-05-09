@@ -1,119 +1,114 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Application.Core.Data;
-using Application.Core.UI.Controllers;
 using Ionic.Zip;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
+using SCORMHost;
 
 namespace LMPlatform.UI.Controllers
 {
-    using SCORMHost;
-
     public class ScormModController : Controller
     {
-        public ActionResult Index()
-        {
-            return View();
-        }
+        public string ScoFilePath => ConfigurationManager.AppSettings["ScoFilePath"];
 
-        public string ScoFilePath
+        public ActionResult GetObjects()
         {
-            get { return ConfigurationManager.AppSettings["ScoFilePath"]; }
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return this.Json(
+                repositoriesContainer.RepositoryFor<ScoObjects>().GetAll(new Query<ScoObjects>(e => !e.IsDeleted))
+                    .ToList(), JsonRequestBehavior.AllowGet);
         }
-
-	    public ActionResult GetObjects()
-	    {
-            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-            {
-                return Json(repositoriesContainer.RepositoryFor<ScoObjects>().GetAll(new Query<ScoObjects>(e => !e.IsDeleted)).ToList(), JsonRequestBehavior.AllowGet);
-	        }
-	    }
 
         public ActionResult LoadObject(string name, HttpPostedFileBase file)
-	    {
-	        var guid = Guid.NewGuid().ToString();
-            file.SaveAs(ScoFilePath + "\\" + guid + ".zip");
+        {
+            var guid = Guid.NewGuid().ToString();
+            file.SaveAs(this.ScoFilePath + "\\" + guid + ".zip");
 
-            using (ZipFile zip = ZipFile.Read(ScoFilePath + "\\" + guid + ".zip"))
+            using (var zip = ZipFile.Read(this.ScoFilePath + "\\" + guid + ".zip"))
             {
-                Directory.CreateDirectory(ScoFilePath + "\\" + guid);
-                zip.ExtractAll(ScoFilePath + "\\" + guid, ExtractExistingFileAction.OverwriteSilently);
+                Directory.CreateDirectory(this.ScoFilePath + "\\" + guid);
+                zip.ExtractAll(this.ScoFilePath + "\\" + guid, ExtractExistingFileAction.OverwriteSilently);
             }
 
-			if (!System.IO.File.Exists(ScoFilePath + "\\" + guid + "\\imsmanifest.xml"))
-	        {
-				return Json(new
-				{
-					error = "Загруженный файл не является объектом SCORM"
-				});
-	        }
+            if (!System.IO.File.Exists(this.ScoFilePath + "\\" + guid + "\\imsmanifest.xml"))
+            {
+                return this.Json(new
+                {
+                    error = "Загруженный файл не является объектом SCORM"
+                });
+            }
 
-            System.IO.File.Delete(ScoFilePath + "\\" + guid + ".zip");
+            System.IO.File.Delete(this.ScoFilePath + "\\" + guid + ".zip");
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                repositoriesContainer.RepositoryFor<ScoObjects>().Save(new ScoObjects()
+                repositoriesContainer.RepositoryFor<ScoObjects>().Save(new ScoObjects
                 {
                     Name = name,
                     Path = guid,
-					Enabled = false,
-					IsDeleted = false
+                    Enabled = false,
+                    IsDeleted = false
                 });
                 repositoriesContainer.ApplyChanges();
             }
 
-			return Json(name, JsonRequestBehavior.AllowGet);
-	    }
+            return this.Json(name, JsonRequestBehavior.AllowGet);
+        }
 
-	    public ActionResult DeleteSco(string path)
-	    {
-			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-			{
-				var data = repositoriesContainer.RepositoryFor<ScoObjects>().GetBy(new Query<ScoObjects>(e => e.Path == path));
-				data.IsDeleted = true;
-				repositoriesContainer.RepositoryFor<ScoObjects>().Save(data);
-				repositoriesContainer.ApplyChanges();
-			}
-			return Json(path, JsonRequestBehavior.AllowGet);
-	    }
+        public ActionResult DeleteSco(string path)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var data = repositoriesContainer.RepositoryFor<ScoObjects>()
+                    .GetBy(new Query<ScoObjects>(e => e.Path == path));
+                data.IsDeleted = true;
+                repositoriesContainer.RepositoryFor<ScoObjects>().Save(data);
+                repositoriesContainer.ApplyChanges();
+            }
 
-	    public ActionResult ViewSco(string path)
-	    {
-	        var fileImsmanifestPath = ScoFilePath + "\\" + path + "\\" + "imsmanifest.xml";
-	        var scorm = new Scorm();
-	        var fileXml = new FileInfo(fileImsmanifestPath);
+            return this.Json(path, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ViewSco(string path)
+        {
+            var fileImsmanifestPath = this.ScoFilePath + "\\" + path + "\\" + "imsmanifest.xml";
+            var scorm = new Scorm();
+            var fileXml = new FileInfo(fileImsmanifestPath);
             scorm.OpenImsManifest(fileXml);
-            return Json(scorm.TreeActivity, JsonRequestBehavior.AllowGet);
-	    }
+            return this.Json(scorm.TreeActivity, JsonRequestBehavior.AllowGet);
+        }
 
-		public ActionResult EditObject(string name, string path)
-		{
-			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-			{
-				var data = repositoriesContainer.RepositoryFor<ScoObjects>().GetBy(new Query<ScoObjects>(e => e.Path == path));
-				data.Name = name;
-				repositoriesContainer.RepositoryFor<ScoObjects>().Save(data);
-				repositoriesContainer.ApplyChanges();
-			}
-			return Json(name, JsonRequestBehavior.AllowGet);
-		}
+        public ActionResult EditObject(string name, string path)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var data = repositoriesContainer.RepositoryFor<ScoObjects>()
+                    .GetBy(new Query<ScoObjects>(e => e.Path == path));
+                data.Name = name;
+                repositoriesContainer.RepositoryFor<ScoObjects>().Save(data);
+                repositoriesContainer.ApplyChanges();
+            }
 
-		public ActionResult UpdateObjects(bool enable, string path)
-		{
-			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-			{
-				var data = repositoriesContainer.RepositoryFor<ScoObjects>().GetBy(new Query<ScoObjects>(e => e.Path == path));
-				data.Enabled = enable;
-				repositoriesContainer.RepositoryFor<ScoObjects>().Save(data);
-				repositoriesContainer.ApplyChanges();
-			}
-			return Json(enable, JsonRequestBehavior.AllowGet);
-		}
+            return this.Json(name, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult UpdateObjects(bool enable, string path)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var data = repositoriesContainer.RepositoryFor<ScoObjects>()
+                    .GetBy(new Query<ScoObjects>(e => e.Path == path));
+                data.Enabled = enable;
+                repositoriesContainer.RepositoryFor<ScoObjects>().Save(data);
+                repositoriesContainer.ApplyChanges();
+            }
+
+            return this.Json(enable, JsonRequestBehavior.AllowGet);
+        }
     }
 }
