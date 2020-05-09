@@ -352,7 +352,6 @@
     <Compile Include="Controllers\ScormModController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\StatisticController.cs" />
-    <Compile Include="Controllers\StudentManagementController.cs" />
     <Compile Include="Controllers\TestPassingController.cs" />
     <Compile Include="Controllers\LmsController.cs" />
     <Compile Include="Controllers\SubjectController.cs" />
