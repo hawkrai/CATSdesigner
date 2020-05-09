@@ -19,24 +19,18 @@ namespace LMPlatform.UI.ViewModels.MessageViewModels
         private readonly LazyDependency<IUsersManagementService> _userManagementService =
             new LazyDependency<IUsersManagementService>();
 
-        public IMessageManagementService MessageManagementService
-        {
-            get { return _messageManagementService.Value; }
-        }
-
-        public IUsersManagementService UserManagementService
-        {
-            get { return _userManagementService.Value; }
-        }
-
         public MessageViewModel()
         {
         }
 
         public MessageViewModel(bool toadmin = false)
         {
-            ToAdmin = toadmin;
+            this.ToAdmin = toadmin;
         }
+
+        public IMessageManagementService MessageManagementService => this._messageManagementService.Value;
+
+        public IUsersManagementService UserManagementService => this._userManagementService.Value;
 
         [HiddenInput(DisplayValue = false)]
         public int FromId { get; set; }
@@ -52,7 +46,8 @@ namespace LMPlatform.UI.ViewModels.MessageViewModels
 
         [Display(Name = "Тема")]
         [Required(ErrorMessage = "Введите тему сообщения")]
-        [DataType(DataType.Text), MaxLength(50, ErrorMessage = "Длина поля Тема не должна превышать 50 символов")]
+        [DataType(DataType.Text)]
+        [MaxLength(50, ErrorMessage = "Длина поля Тема не должна превышать 50 символов")]
         public string Subject { get; set; }
 
         public List<UserMessages> UserMessages { get; set; }
@@ -64,40 +59,40 @@ namespace LMPlatform.UI.ViewModels.MessageViewModels
 
         public IList<SelectListItem> GetRecipientsSelectList()
         {
-            var recip = MessageManagementService.GetRecipients(FromId);
+            var recip = this.MessageManagementService.GetRecipients(this.FromId);
 
             return recip.Select(r => new SelectListItem
-                {
-                    Text = r.FullName,
-                    Value = r.Id.ToString(CultureInfo.InvariantCulture)
-                }).ToList();
+            {
+                Text = r.FullName,
+                Value = r.Id.ToString(CultureInfo.InvariantCulture)
+            }).ToList();
         }
 
         public void SaveMessage()
         {
-            var msg = new Message(MessageText, Subject);
+            var msg = new Message(this.MessageText, this.Subject);
 
-            if (Attachment != null && Attachment.Any())
+            if (this.Attachment != null && this.Attachment.Any())
             {
                 msg.AttachmentsPath = Guid.NewGuid();
-                Attachment.ForEach(a => a.PathName = msg.AttachmentsPath.ToString());
-                msg.Attachments = Attachment;
+                this.Attachment.ForEach(a => a.PathName = msg.AttachmentsPath.ToString());
+                msg.Attachments = this.Attachment;
             }
 
-            MessageManagementService.SaveMessage(msg);
+            this.MessageManagementService.SaveMessage(msg);
 
-            if (ToAdmin)
+            if (this.ToAdmin)
             {
-                var admin = UserManagementService.GetAdmin();
-                var userMsg = new UserMessages(admin.Id, FromId, msg.Id);
-                MessageManagementService.SaveUserMessages(userMsg);
+                var admin = this.UserManagementService.GetAdmin();
+                var userMsg = new UserMessages(admin.Id, this.FromId, msg.Id);
+                this.MessageManagementService.SaveUserMessages(userMsg);
             }
             else
             {
-                foreach (var recipient in Recipients)
+                foreach (var recipient in this.Recipients)
                 {
-                    var userMsg = new UserMessages(recipient, FromId, msg.Id);
-                    MessageManagementService.SaveUserMessages(userMsg);
+                    var userMsg = new UserMessages(recipient, this.FromId, msg.Id);
+                    this.MessageManagementService.SaveUserMessages(userMsg);
                 }
             }
         }
