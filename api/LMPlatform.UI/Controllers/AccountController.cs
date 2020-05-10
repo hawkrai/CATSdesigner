@@ -29,6 +29,9 @@ namespace LMPlatform.UI.Controllers
         public ILecturerManagementService LecturerManagementService =>
             this.ApplicationService<ILecturerManagementService>();
 
+        [HttpGet]
+        public ActionResult Unauthorized() => StatusCode(HttpStatusCode.Unauthorized);
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -91,10 +94,8 @@ namespace LMPlatform.UI.Controllers
 
                 this.Response.Cookies.Add(new HttpCookie("Authorization", token)
                     {Expires = DateTime.UtcNow.AddMonths(1)});
-            }
-            else
-            {
-                return StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
+
+                return StatusCode(HttpStatusCode.OK);
             }
 
             return StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
