@@ -21,7 +21,14 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public barChartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
-    scales: {xAxes: [{}], yAxes: [{}]},
+    scales: {
+      xAxes: [{}], yAxes: [{
+        ticks: {
+          min: 0,
+          max: 10,
+        }
+      }]
+    },
     plugins: {
       datalabels: {
         anchor: 'end',
@@ -36,6 +43,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public barChartData: ChartDataSets[] = [
     {data: [], label: 'Оценка'}
   ];
+  public hideChart: boolean = true;
   @Input()
   public tests: any;
   @Input()
@@ -104,6 +112,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
       this.barChartLabels.push(entire[0]);
       this.barChartData[0].data.push(entire[1]);
     }
+    this.hideChart = this.barChartData[0].data.every(value => value === 0)
   }
 
   private getShortName(pupil): string {

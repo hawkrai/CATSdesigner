@@ -65,8 +65,8 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnCha
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.groupId) {
-      this.getResults(this.groupId);
+    if (changes.groupId) {
+      this.getResults(changes.groupId.currentValue);
     }
     this.filterStudents(this.filterStudentsString);
     this.cdr.detectChanges();
