@@ -1,0 +1,22 @@
+{
+    "web": {
+        "path": "d:/.temp/apps/container",
+        "entryPoint": "index.html"
+    },
+    "news": {
+        "path": "d:/.temp/apps/subject",
+        "entryPoint": "index.html"
+    },
+    "lectures": {
+        "path": "d:/.temp/apps/subject",
+        "entryPoint": "index.html"
+    },
+    "labs": {
+        "path": "d:/.temp/apps/subject",
+        "entryPoint": "index.html"
+    },
+    "tests": {
+        "path": "d:/.temp/apps/tests",
+        "entryPoint": "index.html"
+    }
+}

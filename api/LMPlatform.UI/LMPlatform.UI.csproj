@@ -1,0 +1,745 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4A14D03A-FEF8-4D42-8F7C-C8B71B2965A6}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LMPlatform.UI</RootNamespace>
+    <AssemblyName>LMPlatform.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+    <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
+    <TargetFrameworkProfile />
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ADL">
+      <HintPath>..\lib\ADL.dll</HintPath>
+    </Reference>
+    <Reference Include="ADL.SCORM">
+      <HintPath>..\lib\ADL.SCORM.dll</HintPath>
+    </Reference>
+    <Reference Include="ADL.SCORM.RTE">
+      <HintPath>..\lib\ADL.SCORM.RTE.dll</HintPath>
+    </Reference>
+    <Reference Include="ADL.SCORM.RTE.UI">
+      <HintPath>..\lib\ADL.SCORM.RTE.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="ADL.Xml">
+      <HintPath>..\lib\ADL.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime, Version=3.3.1.7705, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Bootstrapper">
+      <HintPath>..\packages\Bootstrapper.2.0.3.9\lib\Net40\Bootstrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Bootstrapper.UnityExtension">
+      <HintPath>..\packages\Bootstrapper.Unity.2.0.3.9\lib\Net40\Bootstrapper.UnityExtension.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.3.0.0\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Core">
+      <HintPath>..\packages\Common.Logging.Core.3.0.0\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.AspNet, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.AspNet.4.3.4.13329\lib\net45-full\DotNetOpenAuth.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.3.4.13329\lib\net45-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JWT, Version=6.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
+      <HintPath>..\packages\JWT.6.1.4\lib\net46\JWT.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
+      <HintPath>..\packages\CodeContracts.Unofficial.1.0.0.0\lib\Net35\Microsoft.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.2.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Unity.3.0.1304.1\lib\Net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\packages\Unity.3.0.1304.1\lib\Net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebHelpers.3.2.7\lib\net45\Microsoft.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebPages.OAuth, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.OAuth.2.0.30506.0\lib\net40\Microsoft.Web.WebPages.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Mvc.JQuery.Datatables, Version=1.0.5011.27913, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Mvc.JQuery.Datatables.1.2.61\lib\net40\Mvc.JQuery.Datatables.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.3.3\lib\net40\Quartz.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.0\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel.Activation">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers.Crypto, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Web.Helpers.Crypto.3.2.3\lib\net40\System.Web.Helpers.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Abstractions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Services">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.EnterpriseServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Unity.Mvc4">
+      <HintPath>..\packages\Unity.Mvc4.1.2.0.0\lib\net40\Unity.Mvc4.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx">
+      <HintPath>..\packages\WebActivatorEx.2.0.2\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.3.2.7\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.3.2.7\lib\net45\WebMatrix.WebData.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApiControllers\CP\CourseProjectAssignmentController.cs" />
+    <Compile Include="ApiControllers\CP\CourseProjectConsultationController.cs" />
+    <Compile Include="ApiControllers\CP\CourseProjectConsultationDateController.cs" />
+    <Compile Include="ApiControllers\CP\CourseProjectController.cs" />
+    <Compile Include="ApiControllers\CP\CourseProjectGroupController.cs" />
+    <Compile Include="ApiControllers\CP\CourseProjectNewsController.cs" />
+    <Compile Include="ApiControllers\CP\CourseProjectSubjectController.cs" />
+    <Compile Include="ApiControllers\CP\CourseStudentController.cs" />
+    <Compile Include="ApiControllers\CP\CourseStudentMarkController.cs" />
+    <Compile Include="ApiControllers\CP\CourseUserController.cs" />
+    <Compile Include="ApiControllers\CP\CpCorrelationController.cs" />
+    <Compile Include="ApiControllers\CP\CpPercentageController.cs" />
+    <Compile Include="ApiControllers\CP\CpPercentageResultController.cs" />
+    <Compile Include="ApiControllers\CP\CpTaskSheetController.cs" />
+    <Compile Include="ApiControllers\CP\CpTaskSheetTemplateController.cs" />
+    <Compile Include="ApiControllers\DP\CorrelationController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomProjectNewsController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomProjectAssignmentController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomProjectConsultationDateController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomProjectController.cs" />
+    <Compile Include="ApiControllers\DP\DipomProjectConsultationController.cs" />
+    <Compile Include="ApiControllers\DP\PercentageController.cs" />
+    <Compile Include="ApiControllers\DP\PercentageResultController.cs" />
+    <Compile Include="ApiControllers\DP\StudentController.cs" />
+    <Compile Include="ApiControllers\DP\StudentMarkController.cs">
+      <SubType>
+      </SubType>
+    </Compile>
+    <Compile Include="ApiControllers\DP\TaskSheetTemplateController.cs" />
+    <Compile Include="ApiControllers\DP\UserController.cs" />
+    <Compile Include="ApiControllers\LabsController.cs" />
+    <Compile Include="ApiControllers\NewsController.cs" />
+    <Compile Include="ApiControllers\UploadController.cs" />
+    <Compile Include="ApiControllers\WatchingTimeController.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\GetPagedListParamsModelBinder.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\GreaterThanAttribute.cs" />
+    <Compile Include="Attributes\JwtAuthAttribute.cs" />
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdministrationController.cs" />
+    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\BTSController.cs" />
+    <Compile Include="Controllers\ChatController.cs" />
+    <Compile Include="Controllers\ComplexMaterialController.cs" />
+    <Compile Include="Controllers\CpController.cs" />
+    <Compile Include="Controllers\DpController.cs" />
+    <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="Controllers\MaterialsController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
+    <Compile Include="Controllers\ParentalController.cs" />
+    <Compile Include="ApiControllers\DP\TaskSheetController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\TinCanModController.cs" />
+    <Compile Include="Controllers\ScormModController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Controllers\StatisticController.cs" />
+    <Compile Include="Controllers\TestPassingController.cs" />
+    <Compile Include="Controllers\LmsController.cs" />
+    <Compile Include="Controllers\SubjectController.cs" />
+    <Compile Include="Controllers\TestsController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\TaskScheduler\TaskScheduler.cs" />
+    <Compile Include="Helpers\TaskScheduler\Tasks\SearchTask.cs" />
+    <Compile Include="Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Images\appstore-badge.png" />
+    <Content Include="Images\book.png" />
+    <Content Include="Images\Excel.png" />
+    <Content Include="Images\ExcelDownload.png" />
+    <Content Include="Images\google-play-badge.png" />
+    <Content Include="Images\LMS_Banner.jpg" />
+    <Content Include="Images\login_bk.jpg" />
+    <Content Include="Images\students-icon.svg" />
+    <Content Include="Images\w5.jpg" />
+    <Content Include="Images\Лого2.png" />
+    <Compile Include="Service References\PlagiateReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Services\BTS\IBugsService.cs" />
+    <Compile Include="Services\BTS\IProjectsService.cs" />
+    <Compile Include="Services\BTS\BugsService.svc.cs">
+      <DependentUpon>BugsService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\BTS\ProjectsService.svc.cs">
+      <DependentUpon>ProjectsService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Concept\ConceptService.svc.cs">
+      <DependentUpon>ConceptService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Concept\IConceptService.cs" />
+    <Compile Include="Services\Files\FilesService.svc.cs">
+      <DependentUpon>FilesService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Files\IFilesService.cs" />
+    <Compile Include="Services\Materials\IMaterialsService.cs" />
+    <Compile Include="Services\Materials\MaterialsService.svc.cs">
+      <DependentUpon>MaterialsService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Messages\IMessagesService.cs" />
+    <Compile Include="Services\Messages\MessagesService.svc.cs">
+      <DependentUpon>MessagesService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\CoreService.svc.cs">
+      <DependentUpon>CoreService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\ICoreService.cs" />
+    <Compile Include="Services\Labs\ILabsService.cs" />
+    <Compile Include="Services\Labs\LabsService.svc.cs">
+      <DependentUpon>LabsService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Lectures\ILecturesService.cs" />
+    <Compile Include="Services\Lectures\LecturesService.svc.cs">
+      <DependentUpon>LecturesService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Modules\BTS\ProjectFilesResult.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectMatrixRequirementViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectMatrixViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectFileViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectFileResult.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectCommentsResult.cs" />
+    <Compile Include="Services\Modules\BTS\BugsResult.cs" />
+    <Compile Include="Services\Modules\BTS\BugViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectBugViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectCommentViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectMemberViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectMatrixResult.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectResult.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectsStudentsResult.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectsStudentViewData.cs" />
+    <Compile Include="Services\Modules\BTS\UserProjectParticipationsResult.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectsResult.cs" />
+    <Compile Include="Services\Modules\BTS\UserProjectParticipationViewData.cs" />
+    <Compile Include="Services\Modules\BTS\ProjectViewData.cs" />
+    <Compile Include="Services\Modules\Concept\ConceptPageTitleData.cs" />
+    <Compile Include="Services\Modules\Concept\ConceptResult.cs" />
+    <Compile Include="Services\Modules\Concept\ConceptViewData.cs" />
+    <Compile Include="Services\Modules\CoreModels\GroupsResult.cs" />
+    <Compile Include="Services\Modules\CoreModels\GroupsViewData.cs" />
+    <Compile Include="Services\Modules\CoreModels\StudentLabMarkViewData.cs" />
+    <Compile Include="Services\Modules\CoreModels\StudentMark.cs" />
+    <Compile Include="Services\Modules\CoreModels\StudentPracticalMarkViewData.cs" />
+    <Compile Include="Services\Modules\CoreModels\StudentsMarksResult.cs" />
+    <Compile Include="Services\Modules\CoreModels\StudentsResult.cs" />
+    <Compile Include="Services\Modules\CoreModels\StudentsViewData.cs" />
+    <Compile Include="Services\Modules\CoreModels\SubGroupsViewData.cs" />
+    <Compile Include="Services\Modules\Files\AttachmentResult.cs" />
+    <Compile Include="Services\Modules\Labs\LabsResult.cs" />
+    <Compile Include="Services\Modules\Labs\LabsViewData.cs" />
+    <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
+    <Compile Include="Services\Modules\Labs\ScheduleProtectionLab.cs" />
+    <Compile Include="Services\Modules\Labs\ScheduleProtectionLabResult.cs" />
+    <Compile Include="Services\Modules\Labs\ScheduleProtectionLabsViewData.cs" />
+    <Compile Include="Services\Modules\Labs\UserLabFilesResult.cs" />
+    <Compile Include="Services\Modules\Labs\UserlabFilesViewData.cs" />
+    <Compile Include="Services\Modules\LectorResult.cs" />
+    <Compile Include="Services\Modules\LectorViewData.cs" />
+    <Compile Include="Services\Modules\Lectures\CalendarResult.cs" />
+    <Compile Include="Services\Modules\Lectures\CalendarViewData.cs" />
+    <Compile Include="Services\Modules\Lectures\LecturesGroupsVisitingViewData.cs" />
+    <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingResult.cs" />
+    <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingViewData.cs" />
+    <Compile Include="Services\Modules\Lectures\LecturesResult.cs" />
+    <Compile Include="Services\Modules\Lectures\LecturesViewData.cs" />
+    <Compile Include="Services\Modules\AttachmentViewData.cs" />
+    <Compile Include="Services\Modules\Lectures\StudentMarkForDate.cs" />
+    <Compile Include="Services\Modules\Lectures\StudentMarkForDateResult.cs" />
+    <Compile Include="Services\Modules\MarkViewData.cs" />
+    <Compile Include="Services\Modules\Materials\DocumentsResult.cs" />
+    <Compile Include="Services\Modules\Materials\DocumentsViewData.cs" />
+    <Compile Include="Services\Modules\Materials\FoldersResult.cs" />
+    <Compile Include="Services\Modules\Materials\FoldersViewData.cs" />
+    <Compile Include="Services\Modules\Messages\DisplayMessagesResult.cs" />
+    <Compile Include="Services\Modules\Messages\DisplayMessageViewData.cs" />
+    <Compile Include="Services\Modules\Messages\MessagesResult.cs" />
+    <Compile Include="Services\Modules\Messages\MessagesViewData.cs" />
+    <Compile Include="Services\Modules\Messages\RecipientsResult.cs" />
+    <Compile Include="Services\Modules\Messages\RecipientViewData.cs" />
+    <Compile Include="Services\Modules\News\NewsResult.cs" />
+    <Compile Include="Services\Modules\News\NewsViewData.cs" />
+    <Compile Include="Services\Modules\Parental\SubjectListResult.cs" />
+    <Compile Include="Services\Modules\Parental\SubjectViewData.cs" />
+    <Compile Include="Services\Modules\Practicals\PracticalsResult.cs" />
+    <Compile Include="Services\Modules\Practicals\PracticalsViewData.cs" />
+    <Compile Include="Services\Modules\Practicals\PracticalVisitingMarkViewData.cs" />
+    <Compile Include="Services\Modules\Practicals\ScheduleProtectionPracticalViewData.cs" />
+    <Compile Include="Services\Modules\ResultViewData.cs" />
+    <Compile Include="Services\Modules\SubjectResult.cs" />
+    <Compile Include="Services\Modules\SubjectsResult.cs" />
+    <Compile Include="Services\News\INewsService.cs" />
+    <Compile Include="Services\News\NewsService.svc.cs">
+      <DependentUpon>NewsService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Parental\IParentalService.cs" />
+    <Compile Include="Services\Parental\ParentalService.svc.cs">
+      <DependentUpon>ParentalService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Practicals\IPracticalService.cs" />
+    <Compile Include="Services\Practicals\PracticalService.svc.cs">
+      <DependentUpon>PracticalService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Search\ISearchService.cs" />
+    <Compile Include="Services\Search\SearchService.svc.cs">
+      <DependentUpon>SearchService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Subjects\SubjectsService.svc.cs">
+      <DependentUpon>SubjectsService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Subjects\ISubjectsService.cs" />
+    <Compile Include="ViewModels\AccountViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\AccountViewModels\PersonalDataViewModel.cs" />
+    <Compile Include="ViewModels\AccountViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\GroupViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\LecturerViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\ListSubjectViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\ModifyLecturerViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\ResetPasswordViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\UserActivityViewModel.cs" />
+    <Compile Include="ViewModels\BTSViewModels\AddOrEditBugViewModel.cs" />
+    <Compile Include="ViewModels\BTSViewModels\AddOrEditProjectViewModel.cs" />
+    <Compile Include="ViewModels\BTSViewModels\AssignUserViewModel.cs" />
+    <Compile Include="ViewModels\BTSViewModels\BugsViewModel.cs" />
+    <Compile Include="ViewModels\BTSViewModels\UserInfoViewModel.cs" />
+    <Compile Include="ViewModels\ChatViewModel\ChatHub.cs" />
+    <Compile Include="ViewModels\ChatViewModel\MessageDetail.cs" />
+    <Compile Include="ViewModels\ChatViewModel\UserDetail.cs" />
+    <Compile Include="ViewModels\ComplexMaterialsViewModel\AddOrEditRootConceptViewModel.cs" />
+    <Compile Include="ViewModels\ComplexMaterialsViewModel\WatchingTimeViewModel.cs" />
+    <Compile Include="ViewModels\DPViewModels\DiplomProjectViewModel.cs" />
+    <Compile Include="ViewModels\KnowledgeTestingViewModels\AnswerViewModel.cs" />
+    <Compile Include="ViewModels\KnowledgeTestingViewModels\QuestionItemListViewModel.cs" />
+    <Compile Include="ViewModels\KnowledgeTestingViewModels\QuestionViewModel.cs" />
+    <Compile Include="ViewModels\BTSViewModels\BugListViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\ModifyStudentViewModel.cs" />
+    <Compile Include="ViewModels\BTSViewModels\ProjectsViewModel.cs" />
+    <Compile Include="ViewModels\KnowledgeTestingViewModels\TestItemListViewModel.cs" />
+    <Compile Include="ViewModels\KnowledgeTestingViewModels\TestResultItemListViewModel.cs" />
+    <Compile Include="ViewModels\KnowledgeTestingViewModels\TestViewModel.cs" />
+    <Compile Include="ViewModels\KnowledgeTestingViewModels\UserAnswerViewModel.cs" />
+    <Compile Include="ViewModels\LmsViewModels\LmsViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\StudentViewModel.cs" />
+    <Compile Include="ViewModels\LmsViewModels\ProfileCalendarViewModel.cs" />
+    <Compile Include="ViewModels\LmsViewModels\ProfileVewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModels\DataTableMessage.cs" />
+    <Compile Include="ViewModels\MessageViewModels\DisplayMessageViewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\ParentalViewModels\DataTableStat.cs" />
+    <Compile Include="ViewModels\ParentalViewModels\DisplayStatViewModel.cs" />
+    <Compile Include="ViewModels\ParentalViewModels\ParentalViewModel.cs" />
+    <Compile Include="ViewModels\ParentalViewModels\PlanViewModel.cs" />
+    <Compile Include="ViewModels\ParentalViewModels\StatDataTableViewModel.cs" />
+    <Compile Include="ViewModels\ParentalViewModels\StatisticsViewModel.cs" />
+    <Compile Include="ViewModels\SearchViewModel\SearchViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesBaseViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesLabsViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesLecturesViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesNewsViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesPracticalViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesScheduleProtectionLabsViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\LabsDataViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\LecturesDataViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\NewsDataViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\PracticalsDataViewModel.cs" />
+    <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\ScheduleProtectionLabsDataViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\ModulesDataWorkingViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\ModulesViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\SubGroupEditingViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\SubjectEditViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\SubjectListViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\SubjectManagementViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\SubjectModuleListIetmViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\SubjectViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\SubjectWorkingViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\1391087088_settings.png" />
+    <Content Include="Images\ajax-loader-mini.gif" />
+    <Content Include="Images\ajax-loader.gif" />
+    <Content Include="Images\browser-icons.png" />
+    <Content Include="Images\bugStatusHelper.png" />
+    <Content Include="Images\collection.png" />
+    <Content Include="Images\data_privacy.png" />
+    <Content Include="Images\glyphicons-halflings.png" />
+    <Content Include="Images\no_image.png" />
+    <Content Include="Images\schoolclass.png" />
+    <None Include="job_scheduling_data_2_0.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\PublishProfiles\LMS.pubxml" />
+    <None Include="Properties\PublishProfiles\LMSHOSTER.pubxml" />
+    <None Include="Properties\PublishProfiles\lmsPlatform - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\lmsPlatform - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\lmsPlatform.pubxml" />
+    <None Include="Properties\PublishProfiles\LMS_git.pubxml" />
+    <None Include="Service References\PlagiateReference\configuration91.svcinfo" />
+    <None Include="Service References\PlagiateReference\configuration.svcinfo" />
+    <Content Include="Service References\PlagiateReference\LMPlatform.UI.PlagiateReference.checkByDirectoryResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\PlagiateReference\LMPlatform.UI.PlagiateReference.checkBySingleDocResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\PlagiateReference\LMPlatform.UI.PlagiateReference.checkResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <None Include="Service References\PlagiateReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Services\BTS\BugsService.svc" />
+    <Content Include="Services\BTS\ProjectsService.svc" />
+    <Content Include="Services\Concept\ConceptService.svc" />
+    <Content Include="Services\CoreService.svc" />
+    <Content Include="Services\Files\FilesService.svc" />
+    <Content Include="Services\Materials\MaterialsService.svc" />
+    <Content Include="Services\Messages\MessagesService.svc" />
+    <Content Include="Services\Labs\LabsService.svc" />
+    <Content Include="Services\Lectures\LecturesService.svc" />
+    <Content Include="Services\News\NewsService.svc" />
+    <Content Include="Services\Parental\ParentalService.svc" />
+    <Content Include="Services\Practicals\PracticalService.svc" />
+    <Content Include="Services\Search\SearchService.svc" />
+    <Content Include="Services\Subjects\SubjectsService.svc" />
+    <Content Include="Unity.Mvc4.README.txt" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <None Include="Service References\PlagiateReference\SoapWS.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="SCORM\" />
+    <Folder Include="TinCanFilePath\" />
+    <Folder Include="UploadedFilesTemp\" />
+    <Folder Include="UploadedFiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Core.UI\Application.Core.UI.csproj">
+      <Project>{ddaf9547-8964-4ea6-bd88-becf18035303}</Project>
+      <Name>Application.Core.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Application.Core\Application.Core.csproj">
+      <Project>{94B7F3F9-AAD5-417F-9DAD-A0210489D875}</Project>
+      <Name>Application.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Application.Infrastructure\Application.Infrastructure.csproj">
+      <Project>{A9E94869-28E1-4B55-ABE1-984E6AE62EAF}</Project>
+      <Name>Application.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Application.SearchEngine\Application.SearchEngine.csproj">
+      <Project>{8371cb8f-cc57-426f-a9d5-0b2ab3bc64e7}</Project>
+      <Name>Application.SearchEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LMPlatform.Data\LMPlatform.Data.csproj">
+      <Project>{79EE9ED9-A7E4-43DB-B01F-FF693309ADC9}</Project>
+      <Name>LMPlatform.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LMPlatform.Models\LMPlatform.Models.csproj">
+      <Project>{498FCA3E-909B-4830-9B55-0A8847E38B7A}</Project>
+      <Name>LMPlatform.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LMPlatform.PlagiarismNet\LMPlatform.PlagiarismNet.csproj">
+      <Project>{944dab30-537b-4a0c-8eb5-de2ce5a94208}</Project>
+      <Name>LMPlatform.PlagiarismNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SCORMHost\SCORMHost.csproj">
+      <Project>{AF044690-7C7E-41B2-ADF0-C0536711ABA0}</Project>
+      <Name>SCORMHost</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\PlagiateReference\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>6478</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:20612/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

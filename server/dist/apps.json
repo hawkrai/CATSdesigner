@@ -1,0 +1,14 @@
+{
+    "web": {
+        "path": "d:/.temp/apps/container",
+        "entryPoint": "index.html"
+    },
+    "subject": {
+        "path": "d:/.temp/apps/subject",
+        "entryPoint": "index.html"
+    },
+    "tests": {
+        "path": "d:/.temp/apps/tests",
+        "entryPoint": "index.html"
+    }
+}
