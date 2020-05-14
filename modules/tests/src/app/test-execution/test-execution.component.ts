@@ -54,7 +54,7 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
         map(() => {
           if (this.question.Seconds) {
             --this.question.Seconds;
-            const hour: number = Math.floor(this.count / 3600);
+            const hour: number = Math.floor(this.question.Seconds / 3600);
             let restTime: number = this.question.Seconds - 3600 * hour;
             const minute: number = Math.floor(restTime / 60);
             restTime = restTime - 60 * minute;

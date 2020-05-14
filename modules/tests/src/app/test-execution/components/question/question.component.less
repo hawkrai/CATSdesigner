@@ -85,12 +85,18 @@
         display: flex;
         width: 99%;
         &-checkboxes {
-          display: grid;
+          display: block;
+          margin-bottom: 20px;
 
           &-item {
-            margin-top: 10px;
-            &:last-child{
-              margin-bottom: 10px;
+            margin-top: 15px;
+          }
+          &-container {
+            display: flex;
+            align-items: center;
+            &-text{
+              margin-left: 10px;
+              display: flex;
             }
           }
         }

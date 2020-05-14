@@ -16,3 +16,10 @@
 .cdk-global-scrollblock {
    overflow-y: hidden;
 }
+.mat-checkbox-layout{
+  width: 95%;
+
+}
+.mat-checkbox-label{
+  width: 100%;
+}
