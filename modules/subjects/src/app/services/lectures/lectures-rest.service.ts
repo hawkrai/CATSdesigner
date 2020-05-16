@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from "rxjs/operators";
-import { ConverterService} from "./converter.service";
-import {Calendar} from "../models/calendar.model";
-import {Lecture} from "../models/lecture.model";
-import {GroupsVisiting} from "../models/groupsVisiting.model";
+import { ConverterService} from "../converter.service";
+import {Calendar} from "../../models/calendar.model";
+import {Lecture} from "../../models/lecture.model";
+import {GroupsVisiting, LecturesMarksVisiting} from "../../models/groupsVisiting.model";
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class LecturesService {
+export class LecturesRestService {
 
   constructor(private http: HttpClient,
               private converterService: ConverterService) {}
@@ -51,5 +51,13 @@ export class LecturesService {
 
   public deleteDateVisit(body: {id: string}): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDate', body);
+  }
+
+  public deleteAllDate(body: {dateIds: string[]}): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDates', body);
+  }
+
+  public setLecturesVisitingDate(body: {lecturesMarks: LecturesMarksVisiting[]}): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/SaveMarksCalendarData', body);
   }
 }

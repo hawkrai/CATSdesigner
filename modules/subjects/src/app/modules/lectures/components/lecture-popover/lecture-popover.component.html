@@ -3,15 +3,15 @@
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>Тема лекции</mat-label>
-      <textarea class="subject-news-component__news-text" name="body" matInput [(ngModel)]="data.model.theme"></textarea>
+      <textarea class="lectures-component__news-text" name="body" matInput [(ngModel)]="data.model.theme"></textarea>
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Количество часов(1-99)</mat-label>
-      <input name="duration" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
+      <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Порядок</mat-label>
-      <input name="order" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
+      <input name="order" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
     </mat-form-field>
     <h4 mat-dialog-title>Прикрепленный материал</h4>
     <button mat-raised-button (click)="addFile()" class="lectures-component__popover-file-button">Добавить файл</button>

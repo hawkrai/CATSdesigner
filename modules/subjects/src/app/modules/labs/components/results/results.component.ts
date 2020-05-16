@@ -1,52 +1,54 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Group} from "../../../../models/group.model";
-import {LabService} from "../../../../services/lab.service";
-import {ActivatedRoute} from "@angular/router";
+import {LabsService} from "../../../../services/labs/labs.service";
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../../../store/selectors/subject.selector';
 import {IAppState} from '../../../../store/state/app.state';
+import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
+import {DialogData} from '../../../../models/dialog-data.model';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {ComponentType} from '@angular/cdk/typings/portal';
+import {LabsMarkPopoverComponent} from './labs-mark-popover/labs-mark-popover.component';
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.less']
 })
-export class ResultsComponent implements OnInit, OnChanges {
+export class ResultsComponent implements OnInit {
 
-  @Input() selectedGroup: Group;
   @Input() teacher: boolean;
 
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
 
+  public selectedGroup: Group;
   private subjectId: string;
   private student: any[];
   header: any[];
 
-  constructor(private labService: LabService,
+  constructor(private labService: LabsService,
               private store: Store<IAppState>,
-              private route: ActivatedRoute) { }
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
-      this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-        this.student = res;
-        this._getHeader(res[0].Marks.length);
-      })
+      this.store.pipe(select(getCurrentGroup)).subscribe(group => {
+        this.selectedGroup = group;
+
+        this.refreshStudents();
+      });
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedGroup && !changes.selectedGroup.firstChange) {
-      this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-        this.student = res;
-        this._getHeader(res[0].Marks.length);
-      })
-    }
+  refreshStudents() {
+    this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+      this.student = res;
+      this._getHeader(res[0].Marks.length);
+    })
   }
-
   _getStudentGroup(i: number) {
     return this.student.filter(res => res.SubGroup === i);
   }
@@ -74,5 +76,37 @@ export class ResultsComponent implements OnInit, OnChanges {
 
   _getMark(student, i): number {
     return [...student.Marks.map(res => res.Mark), student.LabsMarkTotal, student.TestMark,  ((Number(student.LabsMarkTotal) + Number(student.TestMark))/2)][i];
+  }
+
+  setMark(student, i) {
+    console.log(student)
+    if (i < student.Marks.length) {
+      const labsMark = {
+        id: student.Marks[i].StudentLabMarkId ? student.Marks[i].StudentLabMarkId : '0',
+        comment: student.Marks[i].Comment,
+        mark: student.Marks[i].Mark,
+        date: student.Marks[i].Date,
+        labId: student.Marks[i].LabId.toString(),
+        studentId: student.StudentId.toString(),
+        students: this.student
+      };
+      const dialogData: DialogData = {
+        title: 'Выставление отметки',
+        buttonText: 'Сохранить',
+        body: labsMark
+      };
+      const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.labService.setLabsMark(labsMark)
+            .subscribe(res => res.Code === '200' && this.refreshStudents());
+        }
+      });
+    }
+  }
+
+  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
+    return this.dialog.open(popover, {data});
   }
 }

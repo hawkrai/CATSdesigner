@@ -20,13 +20,17 @@ import {NewsEffects} from "./store/effects/news.effects";
 import {GroupsEffects} from './store/effects/groups.effects';
 import {VisitDatePopoverComponent} from './shared/visit-date-popover/visit-date-popover.component';
 import {DatePipe} from '@angular/common';
+import {LecturesEffects} from './store/effects/lectures.effects';
+import {LabsEffects} from './store/effects/labs.effects';
+import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SideMenuComponent,
     DeletePopoverComponent,
-    VisitDatePopoverComponent
+    VisitDatePopoverComponent,
+    VisitingPopoverComponent
   ],
   imports: [
     BrowserModule,
@@ -40,12 +44,13 @@ import {DatePipe} from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [
     DeletePopoverComponent,
-    VisitDatePopoverComponent
+    VisitDatePopoverComponent,
+    VisitingPopoverComponent
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

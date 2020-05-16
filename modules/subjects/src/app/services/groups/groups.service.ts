@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {Observable} from 'rxjs';
-import {LoadGroups} from '../../store/actions/groups.actions';
+import {LoadGroups, SetCurrentGroup} from '../../store/actions/groups.actions';
 import {getGroups} from '../../store/selectors/groups.selectors';
 import {Group} from '../../models/group.model';
 
@@ -19,5 +19,9 @@ export class GroupsService {
 
   getAllGroups(): Observable<Group[]> {
     return this.store$.pipe(select(getGroups));
+  }
+
+  setCurrentGroup(group: Group) {
+    this.store$.dispatch(new SetCurrentGroup(group));
   }
 }

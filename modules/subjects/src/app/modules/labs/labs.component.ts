@@ -7,6 +7,7 @@ import {MatOptionSelectionChange} from "@angular/material/core";
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
+import {GroupsService} from '../../services/groups/groups.service';
 
 @Component({
   selector: 'app-labs',
@@ -22,7 +23,7 @@ export class LabsComponent implements OnInit {
   private subjectId: string;
   public teacher = true;
 
-  constructor(private groupsService: GroupsRestService,
+  constructor(private groupsService: GroupsService,
               private store: Store<IAppState>,
               private route: ActivatedRoute) { }
 
@@ -30,8 +31,9 @@ export class LabsComponent implements OnInit {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
-      this.groupsService.getAllGroups(this.subjectId).subscribe(res => {
+      this.groupsService.getAllGroups().subscribe(res => {
         this.groups = res;
+        // this.groupsService.setCurrentGroup(res[0]);
       });
     });
   }
@@ -39,6 +41,7 @@ export class LabsComponent implements OnInit {
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.selectedGroup = this.groups.find(res => res.groupId === event.source.value);
+      this.groupsService.setCurrentGroup(this.selectedGroup);
     }
   }
 

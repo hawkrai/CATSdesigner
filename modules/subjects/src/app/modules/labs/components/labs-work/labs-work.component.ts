@@ -1,10 +1,16 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {LabService} from "../../../../services/lab.service";
+import {LabsService} from "../../../../services/labs/labs.service";
 import {Lab} from "../../../../models/lab.model";
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {getSubjectId} from '../../../../store/selectors/subject.selector';
+import {DialogData} from '../../../../models/dialog-data.model';
+import {ComponentType} from '@angular/cdk/typings/portal';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {LabWorkPopoverComponent} from './lab-work-popover/lab-work-popover.component';
+import {Lecture} from '../../../../models/lecture.model';
+import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 
 @Component({
   selector: 'app-labs-work',
@@ -20,9 +26,9 @@ export class LabsWorkComponent implements OnInit {
 
   private subjectId: string;
 
-  constructor(private labService: LabService,
+  constructor(private labService: LabsService,
               private store: Store<IAppState>,
-              private route: ActivatedRoute) { }
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     const column = this.teacher ? 'actions' : 'download';
@@ -31,11 +37,65 @@ export class LabsWorkComponent implements OnInit {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
-      this.labService.getLabWork(this.subjectId).subscribe(res => {
-        this.labsWork = res;
-        console.log(res);
-      })
+      this.refreshDate();
     })
+  }
+
+  refreshDate() {
+    this.labService.getLabWork(this.subjectId).subscribe(res => {
+      this.labsWork = res;
+    })
+  }
+
+  constructorLecture(lab?: Lab) {
+    const newLab = this.getLab(lab);
+    newLab.attachments = JSON.stringify(newLab.attachments);
+
+    const dialogData: DialogData = {
+      title: lab ? 'Редактирование лекции' : 'Добавление лекции',
+      buttonText: 'Сохранить',
+      model: newLab
+    };
+    const dialogRef = this.openDialog(dialogData, LabWorkPopoverComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.labService.createLab(result).subscribe(res => res['Code'] === "200" && this.refreshDate());
+      }
+    });
+  }
+
+  deleteLab(lab: Lab) {
+    const dialogData: DialogData = {
+      title: 'Удаление лекции',
+      body: 'лабораторную работу "' + lab.theme + '"',
+      buttonText: 'Удалить'
+    };
+    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.labService.deleteLab({id: lab.labId, subjectId: this.subjectId})
+          .subscribe(res => res['Code'] === "200" && this.refreshDate());
+      }
+    });
+  }
+
+  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
+    return this.dialog.open(popover, {data});
+  }
+
+  private getLab(lab?: Lab) {
+    return {
+      id: lab ? lab.labId : 0,
+      subjectId: this.subjectId,
+      theme: lab ? lab.theme : '',
+      duration: lab ? lab.duration : '',
+      order: lab ? lab.order : 0,
+      pathFile: lab ? lab.pathFile : '',
+      attachments: lab ? lab.attachments : [],
+      shortName: lab ? lab.shortName : ''
+    };
   }
 
 }
