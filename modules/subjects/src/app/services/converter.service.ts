@@ -61,7 +61,7 @@ export class ConverterService {
     const newCalendar = new Calendar();
     newCalendar.id = calendar.Id;
     newCalendar.date = calendar.Date;
-    newCalendar.subjectId = calendar.SabjectId;
+    newCalendar.subjectId = calendar.SubjectId;
     return newCalendar;
   }
 
@@ -111,18 +111,19 @@ export class ConverterService {
   }
 
   private lecturesMarksVisitingConverter(lecturesMarksVisiting: any) {
-    const newLecturesMarksVisiting = new LecturesMarksVisiting();
-    newLecturesMarksVisiting.login = lecturesMarksVisiting.Login;
-    newLecturesMarksVisiting.studentId = lecturesMarksVisiting.StudentId;
-    newLecturesMarksVisiting.studentName = lecturesMarksVisiting.StudentName;
-    newLecturesMarksVisiting.marks = this.marksModelConverter(lecturesMarksVisiting.Marks);
+    let newLecturesMarksVisiting = new LecturesMarksVisiting();
+    newLecturesMarksVisiting = lecturesMarksVisiting;
+    // newLecturesMarksVisiting.login = lecturesMarksVisiting.Login;
+    // newLecturesMarksVisiting.studentId = lecturesMarksVisiting.StudentId;
+    // newLecturesMarksVisiting.studentName = lecturesMarksVisiting.StudentName;
+    // newLecturesMarksVisiting.marks = this.marksModelConverter(lecturesMarksVisiting.Marks);
     return newLecturesMarksVisiting;
   }
 
   public markModelConverter(mark: any) {
     const newMark = new Mark();
     newMark.date = mark.Date;
-    newMark.lecturesVisitId = mark.LecturesVisitId;
+    newMark.lecturesVisitId = mark.LecuresVisitId;
     newMark.mark = mark.Mark;
     newMark.markId = mark.MarkId;
     return newMark;
@@ -161,7 +162,7 @@ export class ConverterService {
 
   private scheduleProtectionLabConverter(schedule: any) {
     const newSchedule = new ScheduleProtectionLab();
-    newSchedule.scheduleProtectionLabId = schedule.ScheduleProtectionLabId;
+    newSchedule.id = schedule.ScheduleProtectionLabId;
     newSchedule.date = schedule.Date;
     newSchedule.subGroup = schedule.SubGroup;
     newSchedule.subGroupId = schedule.SubGroupId;

@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from "rxjs/operators";
-import { ConverterService} from "./converter.service";
-import {Lab} from "../models/lab.model";
+import {Observable} from 'rxjs';
+import {map} from "rxjs/operators";
+import {ConverterService} from "../converter.service";
+import {Lab} from "../../models/lab.model";
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class LabService {
+export class LabsRestService {
 
   constructor(private http: HttpClient,
               private converterService: ConverterService) {}
@@ -37,6 +37,30 @@ export class LabService {
       .set('groupId', groupId);
     return this.http.get('Services/Labs/LabsService.svc/GetMarksV2', {params}).pipe(
       map(res => res['Students']))
+  }
+
+  public createLab(lab: Lab) {
+    return this.http.post('Services/Labs/LabsService.svc/Save', lab);
+  }
+
+  public deleteLab(lab: {id: string, subjectId: string}) {
+    return this.http.post('Services/Labs/LabsService.svc/Delete', lab);
+  }
+
+  public createDateVisit(body: {subGroupId: any, date: string}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/SaveScheduleProtectionDate', body);
+  }
+
+  public deleteDateVisit(body: {id: string}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/DeleteVisitingDate', body);
+  }
+
+  public setLabsVisitingDate(body): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/SaveLabsVisitingData', body);
+  }
+
+  public setLabsMark(body): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/SaveStudentLabsMark', body);
   }
 
 }

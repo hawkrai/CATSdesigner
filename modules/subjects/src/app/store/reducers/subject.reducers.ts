@@ -6,7 +6,7 @@ export const subjectReducers = (
     action: SubjectActions
 ): ISubjectState => {
   switch (action.type) {
-    case ESubjectActions.SetSubjectId: {
+    case ESubjectActions.SET_SUBJECT_ID: {
       return {
         ...state,
         subjectId: action.payload

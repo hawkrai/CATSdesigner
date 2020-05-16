@@ -2,14 +2,14 @@ import {Attachment} from "./attachment.model";
 
 export class Lab {
   labId: string;
-  attachments: Attachment[];
+  attachments: Attachment[] | any;
   duration: number;
   order: number;
   pathFile: number;
   scheduleProtectionLabsRecomend: ScheduleProtectionLabsRecomend[];
   shortName: string;
   subGroup: number;
-  subjectId: string;
+  subjectId: number;
   theme: string;
 }
 
@@ -19,7 +19,7 @@ export class ScheduleProtectionLabsRecomend {
 }
 
 export class ScheduleProtectionLab {
-  scheduleProtectionLabId: string;
+  id: string;
   date: Date;
   subGroup: number;
   subGroupId: string;

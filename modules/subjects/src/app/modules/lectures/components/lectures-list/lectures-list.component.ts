@@ -5,15 +5,9 @@ import {Attachment} from "../../../../models/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {NewsPopoverComponent} from '../../../subject-news/news-popover/news-popover.component';
 import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.component';
-import {LecturesModule} from '../../lectures.module';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
-import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../../../store/selectors/subject.selector';
-import {LecturesService} from '../../../../services/lectures.service';
-import {IAppState} from '../../../../store/state/app.state';
-import {ActivatedRoute} from '@angular/router';
+import {LecturesService} from '../../../../services/lectures/lectures.service';
 
 @Component({
   selector: 'app-lectures-list',
@@ -35,8 +29,7 @@ export class LecturesListComponent implements OnInit {
   public lectures: Lecture[];
 
   constructor(public dialog: MatDialog,
-              private lecturesService: LecturesService,
-              private store: Store<IAppState>) {
+              private lecturesService: LecturesService) {
   }
 
   ngOnInit() {
@@ -82,7 +75,7 @@ export class LecturesListComponent implements OnInit {
   deleteLectures(lecture: Lecture) {
     const dialogData: DialogData = {
       title: 'Удаление лекции',
-      body: lecture.theme,
+      body: 'лекцию "' + lecture.theme + '"',
       buttonText: 'Удалить',
       model: lecture.id
     };

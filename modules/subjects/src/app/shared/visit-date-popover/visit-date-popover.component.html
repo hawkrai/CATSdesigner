@@ -4,23 +4,27 @@
     <mat-label>Дата</mat-label>
     <input matInput
            [matDatepicker]="picker"
+           [value]="date.value"
            (dateChange)="setDate($event.value)"
     >
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker [formControl]=""></mat-datepicker>
+    <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
   <div mat-dialog-actions>
-    <button mat-raised-button class="visit-date__action" color="primary"
-            (click)="addDate.emit(newDate)">{{data.buttonText}}</button>
+    <button mat-raised-button
+            class="visit-date__action"
+            color="primary"
+            [disabled]="!newDate"
+            (click)="createDate()">{{data.buttonText}}</button>
   </div>
   <p mat-dialog-title class="visit-date__table-title">График</p>
   <div class="mdc-data-table example-container mat-elevation-z8">
     <table class="mdc-data-table__table">
       <tbody class="mdc-data-table__content">
-      <tr class="mdc-data-table__row" *ngFor="let calendar of data.model">
+      <tr class="mdc-data-table__row" *ngFor="let calendar of calendar">
         <td class="mdc-data-table__cell">{{ calendar.date }}</td>
         <td class="mdc-data-table__cell">
-          <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="data.body.deleteDate(calendar)">
+          <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(calendar)">
             <mat-icon>delete_forever</mat-icon>
           </button>
         </td>

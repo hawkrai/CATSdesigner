@@ -97,7 +97,7 @@ export class SubjectNewsComponent implements OnInit {
   deleteNews(news: News) {
     const dialogData: DialogData = {
       title: 'Удаление новости',
-      body: news.title ,
+      body: 'новость "' + news.title + '"' ,
       buttonText: 'Удалить',
       model: news.id
     };

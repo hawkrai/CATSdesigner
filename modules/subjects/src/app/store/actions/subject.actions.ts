@@ -1,18 +1,13 @@
 import {Action} from "@ngrx/store";
 
 export enum ESubjectActions {
-  GetSubjectId = '[Subject] Get Subject Id',
-  SetSubjectId = '[Subject] Set Subject Id',
-}
-
-export class GetSubjectId implements Action {
-  public readonly type = ESubjectActions.GetSubjectId;
+  SET_SUBJECT_ID = '[Subject] Set Subject Id',
 }
 
 export class SetSubjectId implements Action{
-  public readonly type = ESubjectActions.SetSubjectId;
+  public readonly type = ESubjectActions.SET_SUBJECT_ID;
 
   constructor(public payload: string) {}
 }
 
-export type SubjectActions = GetSubjectId | SetSubjectId;
+export type SubjectActions =  SetSubjectId;

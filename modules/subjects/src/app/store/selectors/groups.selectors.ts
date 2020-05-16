@@ -7,3 +7,8 @@ export const getGroups = createSelector(
   (state: IAppState) => state.groups,
   (state: GroupsState) => state.groups
 );
+
+export const getCurrentGroup = createSelector(
+  (state: IAppState) => state.groups,
+  (state: GroupsState) => state.currentGroup
+);

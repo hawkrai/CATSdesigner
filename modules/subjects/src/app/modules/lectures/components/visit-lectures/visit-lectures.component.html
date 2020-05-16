@@ -11,8 +11,7 @@
     </div>
     <div class="visit-lectures-component__header-actions" *ngIf="teacher">
       <button mat-raised-button color="primary" (click)="settingVisitDate()">Управление расписанием</button>
-      <button mat-raised-button color="primary">Отметить посещаемость</button>
-      <button mat-raised-button color="warn">Удалить все даты</button>
+      <button mat-raised-button color="warn" (click)="deletePopover()">Удалить все даты</button>
     </div>
   </div>
   <div class="visit-lectures-component__table-lecture-visiting" *ngIf="groupsVisiting">
@@ -24,14 +23,19 @@
 
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Студент</th>
-        <td mat-cell *matCellDef="let element"> {{element.studentName}}</td>
+        <td mat-cell *matCellDef="let element"> {{element.StudentName}}</td>
       </ng-container>
 
       <ng-container *ngFor="let day of calendar; let i = index" matColumnDef="{{day.date + day.id}}">
         <th mat-header-cell *matHeaderCellDef>
           <div class="header-date">{{day.date}}</div>
         </th>
-        <td mat-cell *matCellDef="let element" style="text-align: center;">{{element.marks[i].mark}}</td>
+        <td mat-cell *matCellDef="let element"
+            style="text-align: center;"
+            (dblclick)="setVisitMarks(day, i)"
+        >
+          {{element.Marks[i] && element.Marks[i].Mark}}
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -6,8 +6,8 @@ export class GroupsVisiting {
 }
 
 export class LecturesMarksVisiting {
-  login: string;
-  studentId: string;
-  studentName: string;
-  marks: Mark[];
+  Login: string;
+  StudentId: string;
+  StudentName: string;
+  Marks: any[];
 }
