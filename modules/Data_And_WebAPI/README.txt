@@ -1,1 +1,0 @@
-DB credentials: lmsuser lmsuser
