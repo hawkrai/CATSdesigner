@@ -11,5 +11,9 @@ namespace LMPlatform.UI.Services.Subjects
         [OperationContract]
         [WebInvoke(Method = "PATCH", UriTemplate = "/Subjects", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         SubjectResult Update(SubjectViewData subject);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/List", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        SubjectsResult GetSubjectsBySession();
     }
 }

@@ -7,6 +7,8 @@ using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Lectures;
 using WebMatrix.WebData;
 using System.Globalization;
+using System.Security.Permissions;
+using System.Web.Mvc;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Extensions;
@@ -19,10 +21,12 @@ using LMPlatform.UI.Services.Modules.CoreModels;
 using LMPlatform.UI.Services.Modules.Labs;
 using LMPlatform.UI.Services.Modules.Parental;
 using LMPlatform.UI.Services.Modules.Practicals;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services
 {
-	public class CoreService : ICoreService
+    [Authorize]
+    public class CoreService : ICoreService
 	{
 		private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
 

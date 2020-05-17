@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-subject',
@@ -7,20 +7,15 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./subject.component.less']
 })
 export class SubjectComponent implements OnInit {
-  public selectedModuleUrl: string;
+  public selectedModuleUrl: SafeResourceUrl;
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-    this.selectedModuleUrl = "http://localhost:3000/news";
-  }
-
-  moduleSelecteUrl(){
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.selectedModuleUrl);  
+    this.selectedModuleUrl = this.sanitizer.bypassSecurityTrustResourceUrl("http://localhost:3000/news");
   }
 
   openModule(url: string) {
-    this.selectedModuleUrl = url;
-    
+    this.selectedModuleUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);    
   }
 
 }

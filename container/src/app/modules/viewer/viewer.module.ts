@@ -6,8 +6,6 @@ import { ViewerRoutingModule } from './viewer.routing';
 import { MatetialModule } from '../../shared/matetial/matetial.module';
 
 
-
-
 @NgModule({
   declarations: [
     ViewerComponent, 

@@ -32,14 +32,23 @@ function getModule(url) {
     var module = url.split('/')[1];
     return modules[module];
 }
-const proxyOptions = {
-    target: 'http://localhost:83',
+const proxyServiceOptions = {
+    target: 'http://localhost:84',
     changeOrigin: true,
     pathRewrite: {
         '^/subject/Services': 'Services',
+        '^/Services': 'Services',
     },
 };
-app.use('*/Services/*', http_proxy_middleware_1.createProxyMiddleware(proxyOptions));
+const proxyAccountOptions = {
+    target: 'http://localhost:84',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/Account': 'Account',
+    },
+};
+app.use('*/Services/*', http_proxy_middleware_1.createProxyMiddleware(proxyServiceOptions));
+app.use('*/Account/*', http_proxy_middleware_1.createProxyMiddleware(proxyAccountOptions));
 app.get('*', (req, res) => {
     let url = req.url;
     let module = getModule(url);

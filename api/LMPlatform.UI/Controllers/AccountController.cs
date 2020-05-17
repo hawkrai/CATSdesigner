@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Application.Core.UI.Controllers;
+using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.UserManagement;
 using JWT.Algorithms;
@@ -20,7 +21,7 @@ using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
-{
+{   
     [JwtAuth]
     public class AccountController : BasicController
     {
@@ -28,28 +29,29 @@ namespace LMPlatform.UI.Controllers
 
         public ILecturerManagementService LecturerManagementService =>
             this.ApplicationService<ILecturerManagementService>();
+        public IAccountManagementService AccountAuthenticationService =>
+            this.ApplicationService<IAccountManagementService>();
 
         [HttpGet]
         public ActionResult Unauthorized() => StatusCode(HttpStatusCode.Unauthorized);
 
-        [HttpPost]
+        [HttpGet]
         [AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        public ActionResult Login(LoginViewModel model, string returnUrl)
+        public ActionResult Login(string userName, string password, string returnUrl)
         {
             ActionResult result;
 
-            if (this.ModelState.IsValid && model.Login())
+            if (AccountAuthenticationService.Login(userName, password, true))
             {
-                if (!this.IsLecturerActive(model.UserName))
+                if (!this.IsLecturerActive(userName))
                 {
-                    model.LogOut();
+                    AccountAuthenticationService.Logout();
                     result = StatusCode(HttpStatusCode.BadRequest,
                         "Данныe имя пользователя и пароль больше не действительны");
                 }
                 else
                 {
-                    this.UsersManagementService.UpdateLastLoginDate(model.UserName);
+                    this.UsersManagementService.UpdateLastLoginDate(userName);
                     result = StatusCode(HttpStatusCode.OK);
                 }
             }
@@ -58,8 +60,27 @@ namespace LMPlatform.UI.Controllers
                 result = StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
             }
 
-            return result;
+            return this.Json(new
+            {
+                id = WebSecurity.CurrentUserId,
+                userName = WebSecurity.CurrentUserName,
+                role = Roles.GetRolesForUser().FirstOrDefault()
+            }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public JsonResult UserSessionCheck()
+        {
+            WebSecurity.RequireAuthenticatedUser();
+
+            return this.Json(new
+            {
+                id = WebSecurity.CurrentUserId,
+                userName = WebSecurity.CurrentUserName,
+                role = Roles.GetRolesForUser().FirstOrDefault()
+            }, JsonRequestBehavior.AllowGet); 
+        } 
 
         [HttpPost]
         [AllowAnonymous]
@@ -107,7 +128,7 @@ namespace LMPlatform.UI.Controllers
         {
             var loginViewModel = new LoginViewModel();
             loginViewModel.LogOut();
-            var authCookie = this.Response.Cookies["Authorization"];
+            var authCookie = this.Response.Cookies["LMPlatform"];
             if (authCookie is {}) authCookie.Expires = DateTime.Now.AddDays(-5);
 
             return StatusCode(HttpStatusCode.OK);

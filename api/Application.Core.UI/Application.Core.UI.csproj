@@ -99,7 +99,6 @@
   <ItemGroup>
     <Compile Include="Controllers\BasicController.cs" />
     <Compile Include="HtmlHelpers\BaseNumberedGridItem.cs" />
-    <Compile Include="HtmlHelpers\CommonExtensions.cs" />
     <Compile Include="HtmlHelpers\DataTableExtensions.cs" />
     <Compile Include="HtmlHelpers\DataTableOptions.cs" />
     <Compile Include="HtmlHelpers\DataTableViewModel.cs" />
