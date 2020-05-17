@@ -70,7 +70,7 @@ namespace LMPlatform.UI.Services.Parental
             {
                 return new ParentalResult
                 {
-                    Message = "Произошла ошибка при получении данных",
+                    Message = ex.Message + ex.StackTrace,
                     Code = "500"
                 };
             }
