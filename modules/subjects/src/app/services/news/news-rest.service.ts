@@ -33,4 +33,8 @@ export class NewsRestService {
   public deleteNews(id: string, subjectId: string): Observable<any> {
     return this.http.post('Services/News/NewsService.svc/Delete', {id, subjectId});
   }
+
+  public lol(subjectId: string): Observable<any> {
+    return this.http.get('Subject/EditSubject/' + subjectId, {responseType:'text'});
+  }
 }

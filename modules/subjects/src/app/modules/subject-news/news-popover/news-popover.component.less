@@ -1,9 +1,17 @@
 .subject-news-component {
+  overflow: hidden;
+  height: 550px;
   &__news-text {
     height: 100px;
   }
 }
 
+:host ::ng-deep .ck-editor__editable_inline {
+  height: 250px;
+}
+:host ::ng-deep .ck.ck-editor {
+  margin-top: 7px;
+}
 .example-form {
   min-width: 150px;
   max-width: 500px;
@@ -14,6 +22,7 @@
 }
 
 .example-section {
+  margin-top: 15px;
   display: flex;
   flex-flow: column;
   .example-margin {

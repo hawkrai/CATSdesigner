@@ -9,3 +9,21 @@
 @import "~@material/checkbox/dist/mdc.checkbox.min.css";
 @import "~@material/form-field/dist/mdc.form-field.min.css";
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import "~@material/drawer/dist/mdc.drawer.min.css";
+@import "~@material/list/dist/mdc.list.min.css";
+@import "~@material/theme/dist/mdc.theme.css";
+
+:root {
+  --mdc-theme-primary: #3f51b5;
+}
+.mdc-drawer .mdc-list-item--activated {
+  color: var(--mdc-theme-primary, #6200ee);
+}
+
+.spinner {
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
