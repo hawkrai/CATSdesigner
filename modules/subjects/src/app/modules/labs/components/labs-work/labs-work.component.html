@@ -1,4 +1,4 @@
-<div class="labs-work-component" *ngIf="!!labsWork">
+<div class="labs-work-component" *ngIf="!!labsWork; else: load">
   <div class="labs-work-component__actions" *ngIf="teacher">
     <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить лабораторную работу</button>
   </div>
@@ -55,3 +55,8 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

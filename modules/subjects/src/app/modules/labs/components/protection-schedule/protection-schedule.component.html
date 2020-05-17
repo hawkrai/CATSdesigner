@@ -1,4 +1,4 @@
-<div class="protection-schedule-component" *ngIf="labs && scheduleProtectionLabs">
+<div class="protection-schedule-component" *ngIf="labs && scheduleProtectionLabs; else: load">
   <div class="protection-schedule-component__subGroup" *ngFor="let i of numberSubGroups">
     <span  class="protection-schedule-component__subGroup-title">Подгруппа {{i}}</span>
     <div class="protection-schedule-component__actions" *ngIf="teacher">
@@ -32,3 +32,8 @@
   </div>
 
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

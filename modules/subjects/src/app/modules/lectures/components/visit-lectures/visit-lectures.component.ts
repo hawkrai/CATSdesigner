@@ -40,7 +40,6 @@ export class VisitLecturesComponent implements OnInit {
   ngOnInit() {
     this.groupsService.getAllGroups().subscribe(res => {
       this.groups = res;
-      console.log(res);
       this.selectGroupId = res[0].groupId;
     });
 
@@ -54,14 +53,12 @@ export class VisitLecturesComponent implements OnInit {
       this.calendar = res;
       this.displayedColumns = ['position', 'name', ...this.calendar.map(res => res.date.toString() + res.id)];
       this.refreshDataGroupVisitMark();
-      console.log(res)
     });
   }
 
   private refreshDataGroupVisitMark() {
     this.lecturesService.getLecturesMarkVisiting(this.subjectId, this.selectGroupId).subscribe(res => {
       this.groupsVisiting = res ? res[0] : null;
-      console.log(res[0])
     })
   }
 

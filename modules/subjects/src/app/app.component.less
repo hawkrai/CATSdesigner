@@ -1,16 +1,15 @@
-@side-menu-width: 100%;
+@side-menu-width: 20%;
 
 .body {
   display: flex;
 
   &__side-menu {
     width: @side-menu-width;
-    position: fixed;
     top: 8px;
     height: 100%;
   }
-}
 
-._hide {
-  display: none;
+  &__content {
+    width: calc(100% - @side-menu-width);
+  }
 }

@@ -1,4 +1,4 @@
-<div class="visit-lectures-component">
+<div class="visit-lectures-component" *ngIf="groupsVisiting; else: load">
   <div class="visit-lectures-component__header">
     <div class="visit-lectures-component__header-select-group">
       <mat-form-field>
@@ -43,3 +43,8 @@
     </table>
   </div>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
