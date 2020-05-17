@@ -10,5 +10,9 @@ namespace LMPlatform.UI.Services.Parental
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetGroupSubjects/{groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		SubjectListResult GetGroupSubjects(string groupId);
-	}
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/LoadGroup?groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+        ParentalResult LoadGroup(string groupId);
+    }
 }

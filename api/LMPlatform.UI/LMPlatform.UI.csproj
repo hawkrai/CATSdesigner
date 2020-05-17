@@ -482,6 +482,8 @@
     <Compile Include="Services\Modules\Messages\RecipientViewData.cs" />
     <Compile Include="Services\Modules\News\NewsResult.cs" />
     <Compile Include="Services\Modules\News\NewsViewData.cs" />
+    <Compile Include="Services\Modules\Parental\ParentalResult.cs" />
+    <Compile Include="Services\Modules\Parental\ParentalUser.cs" />
     <Compile Include="Services\Modules\Parental\SubjectListResult.cs" />
     <Compile Include="Services\Modules\Parental\SubjectViewData.cs" />
     <Compile Include="Services\Modules\Practicals\PracticalsResult.cs" />
