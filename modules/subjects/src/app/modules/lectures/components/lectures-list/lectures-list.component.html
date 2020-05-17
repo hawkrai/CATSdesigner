@@ -1,4 +1,4 @@
-<div class="lectures-list-component">
+<div class="lectures-list-component" *ngIf="lectures; else: load">
   <div class="lectures-list-component__actions" *ngIf="teacher">
     <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить лекцию</button>
   </div>
@@ -75,3 +75,8 @@
     <div class="mdc-dialog__scrim"></div>
   </div>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

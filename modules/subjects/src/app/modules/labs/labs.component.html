@@ -63,7 +63,7 @@
   </div>
 
   <div class="labs-component__body">
-    <div class="protection-schedule-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4">
+    <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4">
       <mat-form-field>
         <mat-select [value]="groups ? groups[0].groupId : ''">
           <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.groupId">
@@ -71,6 +71,9 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="labs-component__excel-file" *ngIf="(tab === 3 || tab === 4) && teacher" (click)="getExcelFile()">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
     </div>
     <app-labs-work *ngIf="tab === 1" [teacher]="teacher"></app-labs-work>
     <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>

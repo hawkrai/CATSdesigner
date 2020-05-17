@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../store/selectors/subject.selector';
+import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 
 @Component({
@@ -11,7 +11,7 @@ import {IAppState} from '../../store/state/app.state';
 export class LecturesComponent implements OnInit {
 
   public tab = 1;
-  public teacher = true;
+  public teacher = false;
 
   private subjectId: string;
 
@@ -19,6 +19,11 @@ export class LecturesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.store.pipe(select(getUser)).subscribe(user => {
+      if (user && user.role.toLowerCase() === 'lector') {
+        this.teacher = true;
+      }
+    });
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
     });
