@@ -1,0 +1,6 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<p>Вы действительно хотите удалить {{data.body}}?</p>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+</div>

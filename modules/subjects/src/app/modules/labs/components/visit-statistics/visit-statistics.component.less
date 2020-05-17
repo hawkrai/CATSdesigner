@@ -1,0 +1,51 @@
+.protection-schedule-component {
+
+  &__subGroup-title {
+    font-family: Roboto, sans-serif;
+    font-weight: 600;
+    color: black;
+    font-size: 16px;
+  }
+
+  &__subGroup-table {
+    margin-bottom: 30px;
+    margin-top: 10px;
+
+    table.mat-table {
+      width: 100%;
+    }
+
+    .mat-header-cell {
+      font-family: Roboto, sans-serif;
+      font-weight: 600;
+      color: black;
+      font-size: 14px;
+    }
+
+    .header-date {
+      transform: rotate(270deg);
+      font-size: 12px;
+    }
+
+    th.mat-header-cell:last-of-type {
+      padding-right: 0;
+    }
+
+    .mat-column-name {
+      padding-left: 10px;
+    }
+
+    tr.mat-header-row {
+      height: 86px;
+    }
+
+    td {
+      border-top: 1px solid rgba(0,0,0,.12);
+    }
+
+    td, th {
+      border-right: 1px solid rgba(0,0,0,.12);
+      border-bottom: 0;
+    }
+  }
+}

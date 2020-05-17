@@ -1,0 +1,82 @@
+<div class="lectures-list-component" *ngIf="lectures; else: load">
+  <div class="lectures-list-component__actions" *ngIf="teacher">
+    <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить лекцию</button>
+  </div>
+  <div class="mdc-data-table">
+    <table class="mdc-data-table__table">
+      <thead>
+      <tr class="mdc-data-table__header-row">
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngFor="let header of tableHeaders">
+          {{header.name}}
+        </th>
+      </tr>
+      </thead>
+      <tbody class="mdc-data-table__content">
+      <tr class="mdc-data-table__row" *ngFor="let lecture of lectures">
+        <td class="mdc-data-table__cell">{{ lecture.order }}</td>
+        <td class="mdc-data-table__cell">{{ lecture.theme }}</td>
+        <td class="mdc-data-table__cell">{{ lecture.duration }}</td>
+        <td class="mdc-data-table__cell" *ngIf="!teacher">
+          <button class="mdc-button" *ngIf="lecture.attachments.length > 0" (click)="_openPopup(lecture.attachments)">
+            <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
+            <span class="mdc-button__label">Файлы</span>
+          </button>
+        </td>
+        <td class="mdc-data-table__cell" *ngIf="teacher">
+          <button mat-icon-button color="primary" matTooltip="Редактировать лекцию" (click)="constructorLecture(lecture)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Удалить лекцию" (click)="deleteLectures(lecture)">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mdc-dialog"
+       role="alertdialog"
+       aria-modal="true"
+       aria-labelledby="my-dialog-title"
+       aria-describedby="my-dialog-content"
+  >
+    <div class="mdc-dialog__container">
+      <div class="mdc-dialog__surface">
+        <h2 class="mdc-dialog__title" id="my-dialog-title">Файлы</h2>
+        <div class="mdc-dialog__content" id="my-dialog-content">
+          <div class="demo-dialog-list-container" *ngFor="let attachment of selectedAttachments">
+            <div class="mdc-form-field">
+            <span class="mdc-list-item__graphic">
+              <div class="mdc-checkbox">
+                <input class="mdc-checkbox__native-control" type="checkbox" id="{{attachment.id}}">
+                <div class="mdc-checkbox__background">
+                  <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                  </svg>
+                  <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+              </div>
+            </span>
+              <label for="{{attachment.id}}" class="mdc-list-item__text">{{attachment.name}}</label>
+            </div>
+          </div>
+        </div>
+        <footer class="mdc-dialog__actions">
+          <button type="button" class="mdc-button mdc-dialog__button mat-primary" data-mdc-dialog-action="close">
+            <span class="mdc-button__label">Отмена</span>
+          </button>
+          <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept"
+                  (click)="_filesDownload()">
+            <span class="mdc-button__label">Скачать</span>
+          </button>
+        </footer>
+      </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+  </div>
+</div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
