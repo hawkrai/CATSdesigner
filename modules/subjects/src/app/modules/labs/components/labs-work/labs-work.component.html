@@ -26,7 +26,7 @@
     <ng-container matColumnDef="download" *ngIf="!teacher">
       <th mat-header-cell *matHeaderCellDef>Скачать</th>
       <td mat-cell *matCellDef="let element">
-        <button class="mdc-button" *ngIf="element.attachments.length > 0">
+        <button class="mdc-button" *ngIf="element.attachments.length > 0" (click)="openFilePopup(element.attachments)">
           <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
           <span class="mdc-button__label">Файлы</span>
         </button>
