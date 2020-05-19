@@ -1,20 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
-import {ActivatedRoute} from "@angular/router";
-import { Calendar } from '../../../../models/calendar.model';
-import { GroupsRestService } from "../../../../services/groups/groups-rest.service";
-import { LecturesService } from "../../../../services/lectures/lectures.service";
+import {Calendar} from '../../../../models/calendar.model';
+import {LecturesService} from "../../../../services/lectures/lectures.service";
 import {Group} from "../../../../models/group.model";
 import {GroupsVisiting, LecturesMarksVisiting} from "../../../../models/groupsVisiting.model";
 import {GroupsService} from '../../../../services/groups/groups.service';
 import {DialogData} from '../../../../models/dialog-data.model';
-import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.component';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {VisitDatePopoverComponent} from '../../../../shared/visit-date-popover/visit-date-popover.component';
 import {ComponentType} from '@angular/cdk/typings/portal';
-import {of} from 'rxjs';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
-import {ScheduleProtectionLab} from '../../../../models/lab.model';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
 
 @Component({
@@ -137,6 +132,10 @@ export class VisitLecturesComponent implements OnInit {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
+  }
+
+  getExcelFile() {
+    location.href = 'http://localhost:8080/Statistic/GetVisitLecture?subjectId=' +  this.subjectId + '&groupId=' + this.selectGroupId;
   }
 
 }

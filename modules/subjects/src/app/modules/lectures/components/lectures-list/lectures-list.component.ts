@@ -18,7 +18,7 @@ import {FileDownloadPopoverComponent} from '../../../../shared/file-download-pop
 export class LecturesListComponent implements OnInit {
 
   @Input() teacher: boolean;
-  @Input()  subjectId: string;
+  @Input() subjectId: string;
 
   public tableHeaders = [
     {name: '№'},
@@ -59,8 +59,15 @@ export class LecturesListComponent implements OnInit {
     });
   }
 
-  _filesDownload(attachments) {
-    console.log()
+  _filesDownload(attachments: any[]) {
+    attachments.forEach(attachment => {
+      if (attachment.isDownload) {
+        setTimeout(() => {
+          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+        }, 1000)
+
+      }
+    });
   }
 
   constructorLecture(lecture?: Lecture) {

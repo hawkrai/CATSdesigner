@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
               private store: Store<IAppState>) { }
 
   ngOnInit(): void {
-    localStorage.setItem('currentSubject', JSON.stringify({id: "2026", Name:"Тестирование ПО"}));
+    // localStorage.setItem('currentSubject', JSON.stringify({id: "2026", Name:"Тестирование ПО"}));
     // localStorage.setItem('currentUser', JSON.stringify({id: 2, role: 'lector', userName: 'popova'}));
     this.group = JSON.parse(localStorage.getItem('currentSubject'));
     this.user = JSON.parse(localStorage.getItem('currentUser'));

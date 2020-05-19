@@ -94,7 +94,18 @@ export class LabsWorkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result)
+        this._filesDownload(result)
+      }
+    });
+  }
+
+  _filesDownload(attachments: any[]) {
+    attachments.forEach(attachment => {
+      if (attachment.isDownload) {
+        setTimeout(() => {
+          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+        }, 1000)
+
       }
     });
   }
