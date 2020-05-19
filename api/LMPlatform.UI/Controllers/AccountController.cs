@@ -35,37 +35,29 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public ActionResult Unauthorized() => StatusCode(HttpStatusCode.Unauthorized);
 
-        [HttpGet]
+        [HttpPost]
         [AllowAnonymous]
         public ActionResult Login(string userName, string password, string returnUrl)
         {
-            ActionResult result;
-
             if (AccountAuthenticationService.Login(userName, password, true))
             {
                 if (!this.IsLecturerActive(userName))
                 {
                     AccountAuthenticationService.Logout();
-                    result = StatusCode(HttpStatusCode.BadRequest,
+                    return StatusCode(HttpStatusCode.BadRequest,
                         "Данныe имя пользователя и пароль больше не действительны");
                 }
-                else
+
+                this.UsersManagementService.UpdateLastLoginDate(userName);
+                return this.Json(new
                 {
-                    this.UsersManagementService.UpdateLastLoginDate(userName);
-                    result = StatusCode(HttpStatusCode.OK);
-                }
-            }
-            else
-            {
-                result = StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
+                    id = WebSecurity.CurrentUserId,
+                    userName = WebSecurity.CurrentUserName,
+                    role = Roles.GetRolesForUser().FirstOrDefault()
+                }, JsonRequestBehavior.AllowGet);
             }
 
-            return this.Json(new
-            {
-                id = WebSecurity.CurrentUserId,
-                userName = WebSecurity.CurrentUserName,
-                role = Roles.GetRolesForUser().FirstOrDefault()
-            }, JsonRequestBehavior.AllowGet);
+            return StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
         }
 
         [HttpGet]
