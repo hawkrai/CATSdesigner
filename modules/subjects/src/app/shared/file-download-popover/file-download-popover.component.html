@@ -1,5 +1,12 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<p class="mat-typography">Вы действительно хотите удалить {{data.body}}?</p>
+<section class="example-section">
+  <mat-checkbox *ngFor="let attachment of data.body"
+                class="example-margin"
+                [(ngModel)]="attachment.isDownload"
+  >
+    {{attachment.name}}
+  </mat-checkbox>
+</section>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
   <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>

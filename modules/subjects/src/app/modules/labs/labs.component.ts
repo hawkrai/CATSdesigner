@@ -58,29 +58,15 @@ export class LabsComponent implements OnInit {
         filter(group => !!group)
       )
       .subscribe(group => {
-
+        const url = 'http://localhost:8080/Statistic/';
         if (this.tab === 3) {
-          this.downloadsServer.getVisitLabsExcel(this.subjectId, group.groupId, group.subGroupsOne.subGroupId,
-            group.subGroupsTwo.subGroupId).subscribe(res => this.downLoadFile(res, "application/vnd.ms-excel"));
+          location.href = url + 'GetVisitLabs?subjectId=' +  this.subjectId + '&groupId=' + group.groupId +
+            '&subGroupOneId=' + group.subGroupsOne.subGroupId + '&subGroupTwoId=' + group.subGroupsTwo.subGroupId;
         } else if (this.tab === 4) {
-
+          location.href = url + 'GetLabsMarks?subjectId=' +  this.subjectId + '&groupId=' + group.groupId;
         }
       });
   }
 
-  downLoadFile(data: any, type: string) {
-    // var FileSaver = require('file-saver');
-    const blob = new Blob([data._body], { type: type});
-    const file = new File([blob], 'LabVisiting.xlsx',
-      { type: type});
-
-    FileSaver.saveAs(file);
-    // let blob = new Blob([data], { type: type});
-    // let url = window.URL.createObjectURL(blob);
-    // let pwa = window.open(url);
-    // if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-    //   alert( 'Please disable your Pop-up blocker and try again.');
-    // }
-  }
 
 }

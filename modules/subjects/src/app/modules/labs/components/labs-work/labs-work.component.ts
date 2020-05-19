@@ -11,6 +11,8 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {LabWorkPopoverComponent} from './lab-work-popover/lab-work-popover.component';
 import {Lecture} from '../../../../models/lecture.model';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
+import {Attachment} from '../../../../models/attachment.model';
+import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 
 @Component({
   selector: 'app-labs-work',
@@ -77,6 +79,33 @@ export class LabsWorkComponent implements OnInit {
       if (result) {
         this.labService.deleteLab({id: lab.labId, subjectId: this.subjectId})
           .subscribe(res => res['Code'] === "200" && this.refreshDate());
+      }
+    });
+  }
+
+  openFilePopup(attachments: Attachment[]) {
+    console.log(attachments);
+    const dialogData: DialogData = {
+      title: 'Файлы',
+      buttonText: 'Скачать',
+      body: JSON.parse(JSON.stringify(attachments))
+    };
+    const dialogRef = this.openDialog(dialogData, FileDownloadPopoverComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this._filesDownload(result)
+      }
+    });
+  }
+
+  _filesDownload(attachments: any[]) {
+    attachments.forEach(attachment => {
+      if (attachment.isDownload) {
+        setTimeout(() => {
+          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+        }, 1000)
+
       }
     });
   }

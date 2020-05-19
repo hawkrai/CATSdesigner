@@ -23,6 +23,7 @@ import {DatePipe} from '@angular/common';
 import {LecturesEffects} from './store/effects/lectures.effects';
 import {LabsEffects} from './store/effects/labs.effects';
 import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
+import {FileDownloadPopoverComponent} from './shared/file-download-popover/file-download-popover.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popov
     SideMenuComponent,
     DeletePopoverComponent,
     VisitDatePopoverComponent,
-    VisitingPopoverComponent
+    VisitingPopoverComponent,
+    FileDownloadPopoverComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +52,8 @@ import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popov
   entryComponents: [
     DeletePopoverComponent,
     VisitDatePopoverComponent,
-    VisitingPopoverComponent
+    VisitingPopoverComponent,
+    FileDownloadPopoverComponent
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

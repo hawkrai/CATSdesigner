@@ -8,6 +8,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.component';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {LecturesService} from '../../../../services/lectures/lectures.service';
+import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 
 @Component({
   selector: 'app-lectures-list',
@@ -17,14 +18,13 @@ import {LecturesService} from '../../../../services/lectures/lectures.service';
 export class LecturesListComponent implements OnInit {
 
   @Input() teacher: boolean;
-  @Input()  subjectId: string;
+  @Input() subjectId: string;
 
   public tableHeaders = [
     {name: '№'},
     {name: 'Тема лекции'},
     {name: 'Количество часов'},
   ];
-  public selectedAttachments: Attachment[];
 
   public lectures: Lecture[];
 
@@ -44,14 +44,30 @@ export class LecturesListComponent implements OnInit {
     });
   }
 
-  _openPopup(attachments: Attachment[]) {
-    this.selectedAttachments = attachments;
-    const dialog = new MDCDialog(document.querySelector('.mdc-dialog'));
-    dialog.open();
+  openFilePopup(attachments: Attachment[]) {
+    const dialogData: DialogData = {
+      title: 'Файлы',
+      buttonText: 'Скачать',
+      body: JSON.parse(JSON.stringify(attachments))
+    };
+    const dialogRef = this.openDialog(dialogData, FileDownloadPopoverComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this._filesDownload(result)
+      }
+    });
   }
 
-  _filesDownload() {
-    console.log()
+  _filesDownload(attachments: any[]) {
+    attachments.forEach(attachment => {
+      if (attachment.isDownload) {
+        setTimeout(() => {
+          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+        }, 1000)
+
+      }
+    });
   }
 
   constructorLecture(lecture?: Lecture) {

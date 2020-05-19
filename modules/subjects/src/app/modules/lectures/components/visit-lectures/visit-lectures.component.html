@@ -12,6 +12,9 @@
     <div class="visit-lectures-component__header-actions" *ngIf="teacher">
       <button mat-raised-button color="primary" (click)="settingVisitDate()">Управление расписанием</button>
       <button mat-raised-button color="warn" (click)="deletePopover()">Удалить все даты</button>
+      <div class="_excel-file" (click)="getExcelFile()">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
     </div>
   </div>
   <div class="visit-lectures-component__table-lecture-visiting" *ngIf="groupsVisiting">
