@@ -15,12 +15,14 @@ export class PercentageResultsService {
     return this.http.get('api/CpPercentageResult', {params: new HttpParams({fromObject: params})});
   }
 
-  public setPercentage(studentId: string, percentageGraphId: string, mark: string): Observable<any> {
-    return this.http.post('api/CpPercentageResult', {StudentId: studentId, PercentageGraphId: percentageGraphId, Mark: mark});
+  public setPercentage(studentId: string, percentageGraphId: string, mark: string, comment: string): Observable<any> {
+    return this.http.post('api/CpPercentageResult', {StudentId: studentId, PercentageGraphId: percentageGraphId, Mark: mark,
+      Comment: comment});
   }
 
-  public editPercentage(id: string, studentId: string, percentageGraphId: string, mark: string): Observable<any> {
-    return this.http.post('api/CpPercentageResult', {Id: id, StudentId: studentId, PercentageGraphId: percentageGraphId, Mark: mark});
+  public editPercentage(id: string, studentId: string, percentageGraphId: string, mark: string, comment: string): Observable<any> {
+    return this.http.post('api/CpPercentageResult', {Id: id, StudentId: studentId, PercentageGraphId: percentageGraphId,
+      Mark: mark, Comment: comment});
   }
 
   public setMark(courseProjectId: string, mark: string): Observable<any> {

@@ -1,0 +1,92 @@
+<div class="defense-component" *ngIf="courseUser">
+  <div class="defense-component__header">
+    <ng-container *ngIf="courseUser.IsLecturer">
+      <mat-form-field class="defense-component__group-select">
+        <mat-select [value]="groups ? groups[0].Id : ''">
+          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.Id">
+            {{group.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before">
+        <mat-icon>cloud_download</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="ngOnInit()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </ng-container>
+  </div>
+  <div class="defense-component__body">
+    <ng-container *ngIf="courseUser.IsStudent">
+      <div class="mdc-data-table">
+        <table class="mdc-data-table__table">
+          <thead>
+          <tr class="mdc-data-table__header-row">
+            <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Файл</th>
+            <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Комментарий</th>
+            <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Действие</th>
+          </tr>
+          </thead>
+          <tbody *ngIf="studentFile">
+          <tr class="mdc-data-table__row">
+            <td class="mdc-data-table__cell">{{ studentFile.Attachments[0].FileName }}</td>
+            <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
+            <td class="mdc-data-table__cell">
+              <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <button mat-raised-button color="primary" *ngIf="!studentFile">Добавить работу</button>
+    </ng-container>
+    <ng-container *ngIf="courseUser.IsLecturer">
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let student of studentFiles">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ student.FullName }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="mdc-data-table">
+            <table class="mdc-data-table__table">
+              <thead>
+              <tr class="mdc-data-table__header-row">
+                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Файл</th>
+                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Комментарий</th>
+                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Дата</th>
+                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Действие</th>
+              </tr>
+              </thead>
+              <tbody *ngIf="student.FileLabs">
+              <tr class="mdc-data-table__row" *ngFor="let fileLab of student.FileLabs">
+                <td class="mdc-data-table__cell">{{ fileLab.Attachments[0].FileName }}</td>
+                <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
+                <td class="mdc-data-table__cell">
+                  <button mat-icon-button color="primary" matTooltip="Принять работу" matTooltipPosition="before">
+                    <mat-icon>thumb_up</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" matTooltip="Вернуть работу" matTooltipPosition="before">
+                    <mat-icon>call_missed_outgoing</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" matTooltip="Проверить на плагиат" matTooltipPosition="before">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+  </div>
+</div>

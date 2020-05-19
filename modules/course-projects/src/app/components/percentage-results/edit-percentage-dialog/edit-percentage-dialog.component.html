@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>{{data.label}}</h1>
+<div mat-dialog-content>
+  <mat-form-field class="form-field">
+    <input matInput [formControl]="percentageControl" [(ngModel)]="data.mark">
+    <span matSuffix>{{data.symbol}}</span>
+    <mat-error *ngIf="percentageControl.invalid">{{data.errorMsg}}</mat-error>
+  </mat-form-field>
+  <mat-form-field class="form-field" *ngIf="!data.total">
+    <mat-label>Комментарий</mat-label>
+    <textarea matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
+    <mat-error *ngIf="commentControl.invalid">До 255 символов</mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button class="dialog-button" (click)="onCancelClick()">
+    <mat-icon>clear</mat-icon>
+  </button>
+  <button mat-flat-button class="dialog-button" color="accent" [disabled]="percentageControl.invalid || commentControl.invalid"
+          [mat-dialog-close]="data">
+    <mat-icon>done</mat-icon>
+  </button>
+</div>

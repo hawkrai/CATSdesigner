@@ -1,0 +1,20 @@
+<div *ngIf="courseUser" class="task-sheet__header">
+  <mat-form-field class="task-sheet__header__theme">
+    <mat-label>Выберите тему курсового проекта</mat-label>
+    <mat-select [(value)]="courseProjectId" (selectionChange)="onThemeChange($event.value)">
+      <mat-option *ngFor="let theme of themes" [value]="theme.Id">
+        {{theme.Name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="task-sheet__header__actions">
+    <button mat-icon-button color="primary" matTooltip="Скачать лист задания" matTooltipPosition="before" *ngIf="courseProjectId != null">
+      <mat-icon>cloud_download</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before"
+            (click)="editTaskSheet()" *ngIf="courseUser.IsLecturer && courseProjectId != null">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+</div>
+<div id="task-sheet" class="task-sheet__body"></div>

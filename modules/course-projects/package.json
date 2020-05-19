@@ -25,11 +25,17 @@
     "@material/drawer": "^5.0.0",
     "@material/menu": "^5.0.0",
     "@material/tab-bar": "^5.0.0",
+    "@material/data-table": "^3.2.0",
+    "@material/dialog": "^3.2.0",
+    "@material/checkbox": "^3.2.0",
+    "@material/form-field": "^3.2.0",
     "bootstrap": "^4.4.1",
     "material-design-icons": "^3.0.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "@ngrx/store": "latest",
+    "@ngrx/store-devtools": "latest"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.23",

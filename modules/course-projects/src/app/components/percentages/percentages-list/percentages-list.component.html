@@ -1,0 +1,32 @@
+<div class="percentages-list-component">
+  <div class="mdc-data-table">
+    <table class="mdc-data-table__table">
+      <thead>
+      <tr class="mdc-data-table__header-row">
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Название этапа</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Процент выполнения</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Дата</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
+            *ngIf="percentagesComponent.getCourseUser().IsLecturer">Действие</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="mdc-data-table__row" *ngFor="let percentage of percentages; index as i">
+        <td class="mdc-data-table__cell">{{ i + 1 }}</td>
+        <td class="mdc-data-table__cell">{{ percentage.Name }}</td>
+        <td class="mdc-data-table__cell">{{ percentage.Percentage }}</td>
+        <td class="mdc-data-table__cell">{{ percentage.Date | date:'dd/MM/yyyy' }}</td>
+        <td class="mdc-data-table__cell" *ngIf="percentagesComponent.getCourseUser().IsLecturer">
+          <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before" (click)="percentagesComponent.editStage(percentage)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before" (click)="percentagesComponent.deleteStage(percentage.Id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

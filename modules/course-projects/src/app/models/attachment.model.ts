@@ -1,7 +1,7 @@
 export class Attachment {
-  id: string;
-  name: string;
-  fileName: string;
-  pathName: string;
-  attachmentType: number;
+  Id: string;
+  Name: string;
+  FileName: string;
+  PathName: string;
+  AttachmentType: number;
 }
