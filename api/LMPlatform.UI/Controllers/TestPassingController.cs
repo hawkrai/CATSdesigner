@@ -230,6 +230,31 @@ namespace LMPlatform.UI.Controllers
             return JsonResponse(results) as JsonResult;
         }
 
+        [JwtAuth]
+        [HttpPost]
+        public JsonResult GetResults(int[] groupsIds, int subjectId)
+        {
+            var tests = this.TestsManagementService.GetTestsForSubject(subjectId);
+
+            var groupsWithSubGroups = groupsIds.AsParallel().Select(groupId1 => new
+            {
+                GroupId = groupId1,
+                SubGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, groupId1)
+            }).ToArray();
+
+            var results = groupsWithSubGroups
+                .AsParallel()
+                .Select(obj => new
+                {
+                    obj.GroupId,
+                    Results = this.TestPassingService.GetPassTestResults(obj.GroupId, subjectId)
+                        .Select(x => TestResultItemListViewModel.FromStudent(x, tests, obj.SubGroups))
+                        .OrderBy(res => res.StudentName).ToArray()
+                }).ToArray();
+
+            return JsonResponse(results) as JsonResult;
+        }
+
         [HttpGet]
         public JsonResult GetUserAnswers(int studentId, int testId)
         {
