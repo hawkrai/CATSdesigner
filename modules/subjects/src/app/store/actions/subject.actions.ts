@@ -1,18 +1,21 @@
 import {Action} from "@ngrx/store";
+import {User} from '../../models/user.model';
 
 export enum ESubjectActions {
-  GetSubjectId = '[Subject] Get Subject Id',
-  SetSubjectId = '[Subject] Set Subject Id',
+  SET_SUBJECT = '[Subject] Set Subject',
+  SET_USER = '[Subject] Set User',
 }
 
-export class GetSubjectId implements Action {
-  public readonly type = ESubjectActions.GetSubjectId;
+export class SetSubject implements Action{
+  public readonly type = ESubjectActions.SET_SUBJECT;
+
+  constructor(public payload: {id: '', Name: ''}) {}
 }
 
-export class SetSubjectId implements Action{
-  public readonly type = ESubjectActions.SetSubjectId;
+export class SetUser implements Action{
+  public readonly type = ESubjectActions.SET_USER;
 
-  constructor(public payload: string) {}
+  constructor(public payload: User) {}
 }
 
-export type SubjectActions = GetSubjectId | SetSubjectId;
+export type SubjectActions =  SetSubject | SetUser;

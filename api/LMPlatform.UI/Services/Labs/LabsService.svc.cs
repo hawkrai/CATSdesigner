@@ -19,14 +19,16 @@ using Newtonsoft.Json;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using System.Globalization;
-using WebMatrix.WebData;
 using System.Configuration;
 using Application.Core.Data;
 using Application.Infrastructure.StudentManagement;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
+using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Services.Labs
 {
+    [JwtAuth]
     public class LabsService : ILabsService
     {
 		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();

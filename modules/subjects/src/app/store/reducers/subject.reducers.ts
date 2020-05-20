@@ -6,10 +6,16 @@ export const subjectReducers = (
     action: SubjectActions
 ): ISubjectState => {
   switch (action.type) {
-    case ESubjectActions.SetSubjectId: {
+    case ESubjectActions.SET_SUBJECT: {
       return {
         ...state,
-        subjectId: action.payload
+        subject: action.payload
+      };
+    }
+    case ESubjectActions.SET_USER: {
+      return {
+        ...state,
+        user: action.payload
       };
     }
     default:

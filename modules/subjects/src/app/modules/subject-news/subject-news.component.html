@@ -1,5 +1,5 @@
-<div class="subject-news-component">
-  <div class="subject-news-component__actions" *ngIf="teacher">
+<div class="subject-news-component" *ngIf="news; else: load">
+  <div class="subject-news-component__actions">
     <div class="subject-news-component__actions" *ngIf="teacher">
       <button mat-raised-button color="primary" (click)="constructorNews()">Добавить новость</button>
       <button mat-raised-button class="hide-action" (click)="disableNews()">Скрыть все новости</button>
@@ -28,20 +28,6 @@
     </div>
   </div>
 </div>
-<!--<ng-template class="subject-news-component__popover" #popoverContent let-news="data">-->
-<!--  <form class="example-form">-->
-<!--    <mat-form-field class="example-full-width">-->
-<!--      <mat-label>Название Новости</mat-label>-->
-<!--      <input matInput placeholder="Название" value="news.title">-->
-<!--    </mat-form-field>-->
-
-<!--    <mat-form-field class="example-full-width">-->
-<!--      <mat-label>Текст Новости</mat-label>-->
-<!--      <textarea matInput value="news.body"></textarea>-->
-<!--    </mat-form-field>-->
-<!--  </form>-->
-<!--</ng-template>-->
-
-<!--<ng-container class="subject-news-component__popover-delete" #popoverDeleteNew>-->
-<!--  <p>Вы действительно хотите удалить новость?</p>-->
-<!--</ng-container>-->
+<ng-template #load>
+  <mat-spinner></mat-spinner>
+</ng-template>

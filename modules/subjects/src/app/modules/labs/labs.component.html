@@ -63,7 +63,7 @@
   </div>
 
   <div class="labs-component__body">
-    <div class="protection-schedule-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4">
+    <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4">
       <mat-form-field>
         <mat-select [value]="groups ? groups[0].groupId : ''">
           <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.groupId">
@@ -71,11 +71,14 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="_excel-file" *ngIf="(tab === 3 || tab === 4) && teacher" (click)="getExcelFile()">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
     </div>
     <app-labs-work *ngIf="tab === 1" [teacher]="teacher"></app-labs-work>
-    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [selectedGroup]="selectedGroup" [teacher]="teacher"></app-protection-schedule>
-    <app-visit-statistics *ngIf="tab === 3 && selectedGroup" [selectedGroup]="selectedGroup" [teacher]="teacher"></app-visit-statistics>
-    <app-results *ngIf="tab === 4 && selectedGroup" [selectedGroup]="selectedGroup" [teacher]="teacher"></app-results>
+    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>
+    <app-visit-statistics *ngIf="tab === 3 && selectedGroup" [teacher]="teacher"></app-visit-statistics>
+    <app-results *ngIf="tab === 4 && selectedGroup" [teacher]="teacher"></app-results>
     <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>
   </div>
 </div>

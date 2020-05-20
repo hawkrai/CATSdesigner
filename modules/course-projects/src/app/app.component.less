@@ -1,17 +1,14 @@
-@side-menu-width: 20%;
+.app-component {
 
-.body {
-  display: flex;
-
-  &__side-menu {
-    width: @side-menu-width;
-    position: fixed;
-    top: 8px;
-    height: 100%;
+  &__body {
+    margin: 20px;
   }
 
-  &__content {
-    margin-left: @side-menu-width;
-    width: calc(100% - @side-menu-width);
+  .mdc-tab-bar {
+    display: flex;
   }
+}
+
+.group-select {
+  z-index: 999;
 }

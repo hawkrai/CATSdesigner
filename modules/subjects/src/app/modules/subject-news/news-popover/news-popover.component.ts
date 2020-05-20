@@ -1,7 +1,7 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../../models/dialog-data.model';
-
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-news-popover',
@@ -9,6 +9,10 @@ import {DialogData} from '../../../models/dialog-data.model';
   styleUrls: ['./news-popover.component.less']
 })
 export class NewsPopoverComponent {
+  public Editor = ClassicEditor;
+
+  public model;
+
 
   constructor(
     public dialogRef: MatDialogRef<NewsPopoverComponent>,
@@ -18,5 +22,4 @@ export class NewsPopoverComponent {
   onClick(): void {
     this.dialogRef.close();
   }
-
 }

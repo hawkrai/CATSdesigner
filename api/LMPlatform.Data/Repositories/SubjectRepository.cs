@@ -46,7 +46,25 @@ namespace LMPlatform.Data.Repositories
 			return subjectLecturer.Select(e => e.Subject).ToList();
 		}
 
-		public List<Subject> GetSubjectsLite(int? groupId = null)
+        public List<Subject> GetSubjectsV2(int groupId = 0, int lecturerId = 0)
+        {
+            using var context = new LmPlatformModelsContext();
+            if (groupId != 0)
+            {
+                var subjectGroup = context.Set<SubjectGroup>()
+                    .Include(e => e.Subject)
+                    .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup && !e.Subject.IsArchive).ToList();
+                return subjectGroup.Select(e => e.Subject).ToList();
+            }
+
+            var subjectLecturer =
+                context.Set<SubjectLecturer>()
+                    .Include(e => e.Subject)
+                    .Where(e => e.LecturerId == lecturerId && !e.Subject.IsArchive).ToList();
+            return subjectLecturer.Select(e => e.Subject).ToList();
+        }
+
+        public List<Subject> GetSubjectsLite(int? groupId = null)
 		{
 			using var context = new LmPlatformModelsContext();
 			var subjectGroup = context.Set<SubjectGroup>().Where(sg => !groupId.HasValue || sg.GroupId == groupId.Value);

@@ -9,6 +9,12 @@ export const groupsReducers = (state = initialGroupsState, action: GroupsActions
         groups: action.payload
       };
 
+    case EGroupsActions.SET_CURRENT_GROUP:
+      return {
+        ...state,
+        currentGroup: action.payload
+      };
+
     default:
       return state;
   }

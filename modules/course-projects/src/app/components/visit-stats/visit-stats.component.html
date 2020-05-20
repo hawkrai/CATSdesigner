@@ -1,0 +1,13 @@
+<div class="visit-stats-component" *ngIf="visitStatsList">
+  <div class="visit-stats-component__header">
+    <button mat-raised-button color="primary" *ngIf="courseUser.IsLecturer" (click)="addDate()">Добавить дату консультации</button>
+    <mat-form-field class="visit-stats-component__search" appearance="outline">
+      <mat-label>Поиск по теме, фамилии</mat-label>
+      <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+  <div class="visit-stats-component__body">
+    <app-visit-stats-list [visitStatsList]="visitStatsList" [consultations]="consultations"></app-visit-stats-list>
+  </div>
+</div>

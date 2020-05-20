@@ -1,4 +1,4 @@
-<mat-sidenav-container class="app-sidenav-subjects">
+<!-- <mat-sidenav-container class="app-sidenav-subjects">
     <mat-sidenav #sidenav opened mode="side" [(opened)]="opened" class="app-sidenav-menu-subjects ">
         <mat-nav-list>
             <a mat-list-item [routerLink]="'/web/viewer/subject/3'"> Тестирование и отладка ПО </a>
@@ -13,4 +13,24 @@
     <mat-sidenav-content class="app-sidenav-content-subjects">
         <router-outlet></router-outlet>
     </mat-sidenav-content>
-</mat-sidenav-container>
+</mat-sidenav-container> -->
+
+<mat-toolbar class="subjects-toolbar mat-elevation-z6 main-toolbar" color="primary">
+    <button aria-haspopup="true" mat-button="" [matMenuTriggerFor]="menu" class="mat-button">
+        <span class="mat-button-wrapper">
+            <h2 class="mat-h2">{{selectedSubject != null ? selectedSubject.Name : "Выберите предмет"}}</h2>        
+        </span>
+        <div class="mat-button-ripple mat-ripple" matripple=""></div>
+        <div class="mat-button-focus-overlay"></div>
+    </button>
+    <mat-menu #menu="matMenu">
+        <a mat-menu-item *ngFor="let subject of subjects; let i = inde x" [routerLink]="'/web/viewer/subject/' + subject.Id"> {{subject.Name}}</a>
+            <!-- <a mat-menu-item [routerLink]="'/web/viewer/subject/3'"> Тестирование и отладка ПО </a>
+            <a mat-menu-item [routerLink]="'/web/viewer/subject/2025'"> Модульное тестирование </a>
+            <a mat-menu-item [routerLink]="'/web/viewer/subject/2026'"> Надежность ПО </a>
+            <a mat-menu-item [routerLink]="'/web/viewer/subject/3048'"> Модульное тестирование (заочники) </a>
+            <a mat-menu-item [routerLink]="'/web/viewer/subject/4063'"> Надежность ПО (заочники) </a>
+            <a mat-menu-item [routerLink]="'/web/viewer/subject/4066'"> Тестирование веб-ориентированных приложений </a> -->
+    </mat-menu>    
+</mat-toolbar>
+<router-outlet></router-outlet>

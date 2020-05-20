@@ -5,15 +5,10 @@ import {Attachment} from "../../../../models/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {NewsPopoverComponent} from '../../../subject-news/news-popover/news-popover.component';
 import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.component';
-import {LecturesModule} from '../../lectures.module';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
-import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../../../store/selectors/subject.selector';
-import {LecturesService} from '../../../../services/lectures.service';
-import {IAppState} from '../../../../store/state/app.state';
-import {ActivatedRoute} from '@angular/router';
+import {LecturesService} from '../../../../services/lectures/lectures.service';
+import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 
 @Component({
   selector: 'app-lectures-list',
@@ -23,20 +18,18 @@ import {ActivatedRoute} from '@angular/router';
 export class LecturesListComponent implements OnInit {
 
   @Input() teacher: boolean;
-  @Input()  subjectId: string;
+  @Input() subjectId: string;
 
   public tableHeaders = [
     {name: '№'},
     {name: 'Тема лекции'},
     {name: 'Количество часов'},
   ];
-  public selectedAttachments: Attachment[];
 
   public lectures: Lecture[];
 
   constructor(public dialog: MatDialog,
-              private lecturesService: LecturesService,
-              private store: Store<IAppState>) {
+              private lecturesService: LecturesService) {
   }
 
   ngOnInit() {
@@ -51,14 +44,30 @@ export class LecturesListComponent implements OnInit {
     });
   }
 
-  _openPopup(attachments: Attachment[]) {
-    this.selectedAttachments = attachments;
-    const dialog = new MDCDialog(document.querySelector('.mdc-dialog'));
-    dialog.open();
+  openFilePopup(attachments: Attachment[]) {
+    const dialogData: DialogData = {
+      title: 'Файлы',
+      buttonText: 'Скачать',
+      body: JSON.parse(JSON.stringify(attachments))
+    };
+    const dialogRef = this.openDialog(dialogData, FileDownloadPopoverComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this._filesDownload(result)
+      }
+    });
   }
 
-  _filesDownload() {
-    console.log()
+  _filesDownload(attachments: any[]) {
+    attachments.forEach(attachment => {
+      if (attachment.isDownload) {
+        setTimeout(() => {
+          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+        }, 1000)
+
+      }
+    });
   }
 
   constructorLecture(lecture?: Lecture) {
@@ -82,7 +91,7 @@ export class LecturesListComponent implements OnInit {
   deleteLectures(lecture: Lecture) {
     const dialogData: DialogData = {
       title: 'Удаление лекции',
-      body: lecture.theme,
+      body: 'лекцию "' + lecture.theme + '"',
       buttonText: 'Удалить',
       model: lecture.id
     };

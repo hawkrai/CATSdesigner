@@ -27,15 +27,25 @@ function getModule(url: string){
   return modules[module];
 }
 
-const proxyOptions = { 
-  target: 'http://localhost:83', 
+const proxyServiceOptions = { 
+  target: 'http://localhost:84', 
   changeOrigin: true,
   pathRewrite: {
     '^/subject/Services': 'Services', // rewrite path
+    '^/Services': 'Services', // rewrite path
   },
 }
 
-app.use('*/Services/*', createProxyMiddleware(proxyOptions));
+const proxyAccountOptions = { 
+  target: 'http://localhost:84', 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/Account': 'Account', // rewrite path
+  },
+}
+
+app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
+app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
 
 app.get('*', (req,res) => {
   let url = req.url;
@@ -52,9 +62,6 @@ app.get('*', (req,res) => {
      res.sendFile(path.resolve(`${modulePath}/${entryPoint}`));
    }    
  });
-
-
-
 
 app.listen(port, err => {
   if (err) {

@@ -52,4 +52,8 @@ export class NewsService {
       (res) => res.Code === '200' && this.loadDate()
     );
   }
+
+  public lol(subjectId: string): Observable<any> {
+    return this.rest.lol(subjectId);
+  }
 }

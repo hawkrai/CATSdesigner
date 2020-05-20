@@ -5,7 +5,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
 import {IAppState} from "../../store/state/app.state";
 import {select, Store} from '@ngrx/store';
-import {getSubjectId} from "../../store/selectors/subject.selector";
+import {getSubjectId, getUser} from "../../store/selectors/subject.selector";
 import {getNews} from "../../store/selectors/news.selectors";
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
@@ -34,17 +34,19 @@ export class SubjectNewsComponent implements OnInit {
 
   constructor(private newsService: NewsService,
               public dialog: MatDialog,
-              private store: Store<IAppState>,
-              private route: ActivatedRoute) {
+              private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.teacher = true;
+    this.store.pipe(select(getUser)).subscribe(user => {
+      if (user && user.role.toLowerCase() === 'lector') {
+        this.teacher = true;
+      }
+    });
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => this.subjectId = subjectId);
 
     // TODO: Load in all date
     this.newsService.loadDate();
-
     this.refreshDate();
   }
 
@@ -97,7 +99,7 @@ export class SubjectNewsComponent implements OnInit {
   deleteNews(news: News) {
     const dialogData: DialogData = {
       title: 'Удаление новости',
-      body: news.title ,
+      body: 'новость "' + news.title + '"' ,
       buttonText: 'Удалить',
       model: news.id
     };
@@ -113,6 +115,13 @@ export class SubjectNewsComponent implements OnInit {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
+  }
+
+  lol() {
+    this.newsService.lol(this.subjectId).subscribe(res => {
+      const div = document.getElementById('subject-update');
+      div.innerHTML = res
+    })
   }
 
 }

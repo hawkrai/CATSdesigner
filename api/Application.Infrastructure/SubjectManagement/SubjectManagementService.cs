@@ -46,7 +46,26 @@ namespace Application.Infrastructure.SubjectManagement
 			}
 		}
 
-		public List<Subject> GetGroupSubjects(int groupId)
+        public List<Subject> GetUserSubjectsV2(int userId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.Id == userId)
+                    .Include(e => e.Lecturer)
+                    .Include(e => e.Student));
+                if (user.Student != null)
+                {
+                    return repositoriesContainer.SubjectRepository.GetSubjectsV2(groupId: user.Student.GroupId);
+                }
+                else
+                {
+                    return repositoriesContainer.SubjectRepository.GetSubjectsV2(lecturerId: user.Lecturer.Id);
+                }
+            }
+        }
+
+
+        public List<Subject> GetGroupSubjects(int groupId)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.SubjectRepository.GetSubjects(groupId: groupId).Where(e => !e.IsArchive).ToList();
