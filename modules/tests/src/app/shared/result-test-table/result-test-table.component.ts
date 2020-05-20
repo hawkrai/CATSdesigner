@@ -65,7 +65,10 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     for (let i = 0; i < 3; i++) {
       this.scareThing.push(Array.from(this.tests[i].entries()));
     }
-    this.testSize = this.scareThing && this.scareThing[0] && this.scareThing[0][0] && this.scareThing[0][0][1] && this.scareThing[0][0][1].test && this.scareThing[0][0][1].test.length;
+    this.testSize = this.scareThing &&
+      ((this.scareThing[0] && this.scareThing[0][0] && this.scareThing[0][0][1] && this.scareThing[0][0][1].test && this.scareThing[0][0][1].test.length) ||
+        (this.scareThing[1] && this.scareThing[1][0] && this.scareThing[1][0][1] && this.scareThing[1][0][1].test && this.scareThing[1][0][1].test.length) ||
+        (this.scareThing[2] && this.scareThing[2][0] && this.scareThing[2][0][1] && this.scareThing[2][0][1].test && this.scareThing[2][0][1].test.length));
     for (let i = 0; i < this.testSize; i++) {
       this.displayedColumns.push("test" + i);
     }

@@ -19,7 +19,7 @@
                [adminQuestions]="true"
                [forNN]="test?.ForNN"
                (addNewQuestion)="addNewQuestion()"
-               (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest()"
+               (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest($event)"
                (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
 <div class="question-page-container-table-tests">
   <app-table-questions

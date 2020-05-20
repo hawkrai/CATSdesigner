@@ -5,8 +5,6 @@
                  [inputValue]="inputValue"
                  (onValueChangeSearch)="filterTests($event)"
                  (groupValueChange)="groupValueChange($event)"
-                 [groupDropdown]="allowDropdown"
-                 [groups]="groups"
                  (onOpenAddingPopupEvent)="openDialog()"
                  [adminTests]="adminTests"
                  [adminQuestions]="false"></app-main-page>
@@ -59,12 +57,7 @@
       </div>
     </mat-tab>
     <mat-tab label="Результаты тестирования">
-      <app-result-teacher *ngIf="groups?.length && groupId"
-                          [groups]="groups"
-                          [groupId]="groupId"
-                          [filterStudentsString]="filterStudentsString">
-
-      </app-result-teacher>
+      <app-result-teacher></app-result-teacher>
     </mat-tab>
     <mat-tab label="Контроль прохождения тестов">
       <app-control-completing *ngIf="currentTabIndex === 2"

@@ -8,4 +8,5 @@ export class Result {
   public StudentShortName: string;
   public SubGroup: string;
   public TestPassResults: TestPassResult[];
+  public groupName: string;
 }

@@ -21,7 +21,7 @@
       </div>
     </mat-tab>
     <mat-tab label="Результаты тестировния" >
-      <app-result-pupil [filterValue]="filterResult"></app-result-pupil>
+      <app-result-pupil *ngIf="currentTabIndex === 1" [filterValue]="filterResult"></app-result-pupil>
     </mat-tab>
   </mat-tab-group>
 </div>

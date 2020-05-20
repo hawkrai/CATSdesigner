@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {TestService} from '../service/test.service';
-import {MatDialog} from '@angular/material';
-import {EditTestPopupComponent} from './components/edit-test-popup/edit-test-popup.component';
-import {DeleteConfirmationPopupComponent} from './components/delete-confirmation-popup/delete-confirmation-popup.component';
+import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
+import {TestService} from "../service/test.service";
+import {MatDialog} from "@angular/material";
+import {EditTestPopupComponent} from "./components/edit-test-popup/edit-test-popup.component";
+import {DeleteConfirmationPopupComponent} from "./components/delete-confirmation-popup/delete-confirmation-popup.component";
 import {EditAvailabilityPopupComponent} from "./components/edit-availability-popup/edit-availability-popup.component";
 import {Router} from "@angular/router";
 import {Test} from "../models/test.model";
@@ -11,13 +11,13 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {Group} from "../models/group.model";
-
+import {AutocompleteModel} from "../models/autocomplete.model";
 
 @AutoUnsubscribe
 @Component({
-  selector: 'app-test-control-page',
-  templateUrl: './test-control-page.component.html',
-  styleUrls: ['./test-control-page.component.less']
+  selector: "app-test-control-page",
+  templateUrl: "./test-control-page.component.html",
+  styleUrls: ["./test-control-page.component.less"]
 })
 export class TestControlPageComponent extends AutoUnsubscribeBase implements OnInit {
 
@@ -37,7 +37,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public groups: Group[];
   public groupId: number;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-  private currentTabIndex: number = 0;
+  public currentTabIndex: number = 0;
   private filterTestsString: string = "";
 
   constructor(private testService: TestService,
@@ -48,25 +48,19 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   ngOnInit() {
-    this.getTests('1');
-    this.testService.getGroupsBySubjectId("3")
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((groups) => {
-        this.groups = groups;
-        this.groupId = groups[0].Id;
-      });
+    this.getTests("1");
   }
 
   openDialog(event?: any): void {
     const dialogRef = this.dialog.open(EditTestPopupComponent, {
-      width: '700px',
+      width: "700px",
       data: {event}
     });
 
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-        this.getTests('1');
+        this.getTests("1");
         this.cdr.detectChanges();
         console.log(result);
       });
@@ -74,14 +68,14 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
 
   public openAvailabilityDialog(event?: any): void {
     const dialogRef = this.dialog.open(EditAvailabilityPopupComponent, {
-      width: '700px',
+      width: "700px",
       data: {event}
     });
 
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-        this.getTests('1');
+        this.getTests("1");
         this.cdr.detectChanges();
         console.log(result);
       });
@@ -89,7 +83,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
 
   public openConfirmationDialog(event: any): void {
     const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
-      width: '500px',
+      width: "500px",
       data: {event}
     });
 
@@ -106,7 +100,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     this.testService.deleteTest(testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(() => {
-        this.getTests('1');
+        this.getTests("1");
       });
   }
 
@@ -159,7 +153,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   public navigateToQuestions(event): void {
-    this.router.navigate(['/questions/' + event]);
+    this.router.navigate(["/questions/" + event]);
   }
 
   private getTests(subjectId): void {

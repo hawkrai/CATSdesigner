@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {TestService} from "../service/test.service";
 import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
@@ -8,35 +8,61 @@ import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {finalize, takeUntil} from "rxjs/operators";
+import {AutocompleteModel} from "../models/autocomplete.model";
 
 
 @AutoUnsubscribe
 @Component({
-  selector: 'app-result-teacher',
-  templateUrl: './result-teacher.component.html',
-  styleUrls: ['./result-teacher.component.less']
+  selector: "app-result-teacher",
+  templateUrl: "./result-teacher.component.html",
+  styleUrls: ["./result-teacher.component.less"]
 })
-export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnChanges {
+export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
   public results: Result[];
   public resultsOriginal: Result[];
   public selfControlTests: ResultForTable[][] = [];
+  public selfControlTestsMass: any = [];
+  public nNTestsMass: any = [];
   public nNTests: ResultForTable[][] = [];
+  public beforeEUMKTestsMass: any = [];
   public beforeEUMKTests: ResultForTable[][] = [];
+  public forEUMKTestsMass: any = [];
   public forEUMKTests: ResultForTable[][] = [];
   public knowledgeControlTests: ResultForTable[][] = [];
+  public knowledgeControlTestsMass: any = [];
   public loading: boolean;
-  @Input()
   public groups: Group[];
-  @Input()
+  public groupsList: AutocompleteModel[] = [];
+  public studentList: AutocompleteModel[] = [];
+  public testsList: AutocompleteModel[] = [{display: "Тесты для контроля знаний", value: "0"},
+    {display: "Тесты для самоконтроля", value: "1"},
+    {display: "Предтест для обучения в ЭУМК", value: "2"},
+    {display: "Тесты для обучения в ЭУМК", value: "3"},
+    {display: "Тесты для обучения с искусственной нейронной сетью", value: "4"}];
   public filterStudentsString: string;
-  @Input()
   public groupId: number;
+  public groupChangeCheckBoxes: string[] = [];
+  public testChangeCheckBoxes: string[] = ["0"];
+  public studentChangeCheckBoxes: string[] = [];
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
               private testPassingService: TestPassingService) {
     super();
+  }
+
+  public ngOnInit(): void {
+    this.testService.getGroupsBySubjectId("3")
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((groups: Group[]) => {
+        this.groups = groups;
+        groups.forEach((group: Group) => {
+          // @ts-ignore
+          this.groupsList.push({display: group.Name, value: <string>group.Id});
+        });
+        this.getResults(groups[0].Id);
+      });
   }
 
   public getResults(groupId): void {
@@ -46,9 +72,16 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnCha
         takeUntil(this.unsubscribeStream$),
         finalize(() => this.loading = false)
       )
-      .subscribe((results) => {
+      .subscribe((results: Result[]) => {
+        const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => group.value === groupId);
         this.results = results;
+        this.results.forEach((result: Result) => {
+          result.groupName = groupName.value;
+        });
         this.resultsOriginal = results;
+        this.resultsOriginal.forEach((result: Result) => {
+          result.groupName = groupName.value;
+        });
         this.decomposeResult(results);
       });
   }
@@ -59,9 +92,15 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnCha
     this.cdr.detectChanges();
   }
 
-  public groupValueChange(event: any): void {
-
-
+  public filterStudentsLogin(event: string[]): void {
+    let results;
+    if (event && event.length) {
+      results = this.resultsOriginal && this.resultsOriginal.filter(result => event.includes(result.Login));
+    } else {
+      results = this.resultsOriginal;
+    }
+    this.decomposeResult(results);
+    this.cdr.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -70,6 +109,25 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnCha
     }
     this.filterStudents(this.filterStudentsString);
     this.cdr.detectChanges();
+  }
+
+  public groupChange(eventChange) {
+    if (this.groupChangeCheckBoxes !== eventChange) {
+      this.groupChangeCheckBoxes = eventChange;
+    }
+  }
+
+  public testsChange(eventChange) {
+    if (this.testChangeCheckBoxes !== eventChange) {
+      this.testChangeCheckBoxes = eventChange;
+    }
+  }
+
+  public studentChange(eventChange) {
+    if (this.studentChangeCheckBoxes !== eventChange) {
+      this.studentChangeCheckBoxes = eventChange;
+      this.filterStudentsLogin(eventChange);
+    }
   }
 
   private initArrays(): void {
@@ -92,7 +150,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnCha
     this.initArrays();
     if (results) {
       results.forEach((result) => {
-
+          this.studentList.push({value: result.Login, display: result.StudentName});
           let resultForTable: ResultForTable = new ResultForTable();
           resultForTable.test = [];
           resultForTable.name = result.StudentName;
@@ -126,6 +184,16 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnCha
           });
         }
       );
+      this.knowledgeControlTestsMass = [];
+      this.selfControlTestsMass = [];
+      this.nNTestsMass = [];
+      this.beforeEUMKTestsMass = [];
+      this.forEUMKTestsMass = [];
+      this.knowledgeControlTestsMass.push({res: this.knowledgeControlTests, group: this.results && this.results.length && this.results[0].groupName});
+      this.selfControlTestsMass.push({res: this.selfControlTests, group: this.results && this.results.length && this.results[0].groupName});
+      this.nNTestsMass.push({res: this.nNTests, group: this.results && this.results.length && this.results[0].groupName});
+      this.beforeEUMKTestsMass.push({res: this.beforeEUMKTests, group: this.results && this.results.length && this.results[0].groupName});
+      this.forEUMKTestsMass.push({res: this.forEUMKTests, group: this.results && this.results.length && this.results[0].groupName});
     }
   }
 
@@ -148,8 +216,4 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnCha
       test[2].get(result.Login).test.push(testRes);
     }
   }
-
-  /*public getUserAnswers(): void{
-    this.testPassingService.getAnswersByStudentAndTest()
-  }*/
 }
