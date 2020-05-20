@@ -37,7 +37,7 @@ namespace LMPlatform.UI.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(string userName, string password, string returnUrl)
+        public ActionResult Login(string userName, string password)
         {
             if (AccountAuthenticationService.Login(userName, password, true))
             {
@@ -136,7 +136,7 @@ namespace LMPlatform.UI.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult Register(RegisterViewModel model)
         {
             if (!this.ModelState.IsValid) return StatusCode(HttpStatusCode.BadRequest);
