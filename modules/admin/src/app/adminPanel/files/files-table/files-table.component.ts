@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { FileService } from 'src/app/service/file.service';
-import { File } from 'src/app/model/file';
+import { SuccessMessageComponent } from 'src/app/success-message/success-message.component';
+import { downloadFile } from 'file-saver';
+
 
 @Component({
   selector: 'app-files-table',
@@ -11,12 +13,13 @@ import { File } from 'src/app/model/file';
 export class FilesTableComponent implements OnInit {
 
   isLoad: boolean;
+  file: any;
   displayedColumns = ['id', 'Name', 'nameOnDisk', 'packageOnDisk', 'type'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  constructor(private fileService: FileService) { }
+  constructor(private dialog: MatDialog, private fileService: FileService) { }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
@@ -33,6 +36,10 @@ export class FilesTableComponent implements OnInit {
       this.dataSource.data = items.Files;
       this.isLoad = true;
     });
+  }
+
+  uploadFile(path, filename) {
+    this.fileService.uploadFile(path, filename);
   }
 
 }

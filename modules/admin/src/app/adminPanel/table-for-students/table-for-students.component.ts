@@ -7,6 +7,7 @@ import { Student } from 'src/app/model/student';
 import { EditStudentComponent } from '../modal/edit-student/edit-student.component';
 import { StatisticComponent } from '../modal/statistic/statistic.component';
 import { Router } from '@angular/router';
+import { SuccessMessageComponent } from 'src/app/success-message/success-message.component';
 
 @Component({
   selector: 'app-table-for-students',
@@ -17,7 +18,7 @@ export class TableForStudentsComponent implements OnInit {
 
   isLoad: boolean;
   student = new Student();
-  displayedColumns: string[] = ['position', 'group', 'name', 'userName', 'lastLogin', 'action'];
+  displayedColumns: string[] = ['position', 'Group', 'FullName', 'UserName', 'lastLogin', 'action'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -45,7 +46,22 @@ export class TableForStudentsComponent implements OnInit {
   editStudent(student): void {
     this.studentService.editStudents(student).subscribe(() => {
       student = new Student();
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Студент успешно изменен.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
       this.loadStudent();
+    }, err => {
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Произошла ошибка при изменении студента.Попробуйте заново.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
     });
   }
 
@@ -71,7 +87,6 @@ export class TableForStudentsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result.data);
         this.editStudent(result.data);
       }
     });

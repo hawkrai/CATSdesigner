@@ -27,7 +27,7 @@ export class MainComponent implements OnInit {
 
   loadActivity() {
     this.userService.getUserActivity().subscribe(result => {
-      this.users = this.convertJsonToArray(['Сервисные аккаунты', 'Аккаунты преподавателей', 'Аккаунты студентов', 'Всего аккаунтов'], 
+      this.users = this.convertJsonToArray(['Сервисные аккаунты', 'Аккаунты преподавателей', 'Аккаунты студентов', 'Всего аккаунтов'],
       Object.values(result));
       this.userActivity = result;
       const obj = JSON.parse(result.UserActivityJson);

@@ -41,3 +41,9 @@ tr.mat-footer-row {
 .profile {
     display: flex;
 }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

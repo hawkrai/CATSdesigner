@@ -1,7 +1,7 @@
-<mat-toolbar>
+<mat-toolbar class="main">
     <div class="main-button">
-        <mat-icon class="material-icons main-icon" aria-hidden="false">home</mat-icon>
-        <button routerLink='/admin/main' mat-icon-button>(LMS).Platform</button>
+        <button routerLink='/admin/main' mat-icon-button>
+            <mat-icon class="material-icons main-icon" aria-hidden="false">home</mat-icon>(LMS).Platform</button>
     </div>
     <div class="nav-flex">
         <div>
@@ -23,18 +23,6 @@
             </button>
         </div>
         <div>
-            <!-- <button mat-button [matMenuTriggerFor]="chatMenu" class="my-menu">
-                <mat-icon class="main-icon">forum</mat-icon>
-                Чат
-            </button> -->
-            <!-- <mat-menu #chatMenu="matMenu" yPosition="below">
-                <button mat-menu-item >
-                    <mat-icon class="main-icon">forum</mat-icon>
-                    Чат
-                </button>
-                <mat-slider></mat-slider>
-            </mat-menu>
-             -->
             <button mat-button routerLink='/admin/messages' color="primary" aria-label="Message">
                 <mat-icon class="main-icon"> email</mat-icon>
                 Сообщения

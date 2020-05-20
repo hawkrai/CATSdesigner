@@ -10,20 +10,16 @@ h1 {
     font-weight: lighter;
     margin-left: 90px;
 }
- 
+
 p {
     font-weight: lighter;
     font-size: 28px;
     text-align: center;
-    margin-top:  200px;
+    margin-top: 200px;
 }
 
-
-.spinner-container {
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    background-color: #fafafa; 
-    height: 100%;
-    box-shadow:0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12)
-  }
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

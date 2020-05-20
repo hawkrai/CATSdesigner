@@ -1,11 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
 import { MustMatch } from './MustMatch';
-
-export interface Group {
-  value: string;
-  viewValue: string;
-}
+import { questions } from '../questions';
 
 @Component({
   selector: 'app-signup',
@@ -16,17 +12,7 @@ export class SignupComponent implements OnInit {
 
   @Output() submitEM = new EventEmitter();
 
-  groups: Group[] = [
-    {value: '0', viewValue: '10702116'},
-    {value: '1', viewValue: '109898'},
-    {value: '2', viewValue: '1223234'}
-  ];
-
-  quests: Group[] = [
-    {value: '0', viewValue: 'Имя мамы?'},
-    {value: '1', viewValue: 'Кличка собаки?'},
-    {value: '2', viewValue: 'Номер зачетки?'}
-  ];
+  quest = questions;
   form: FormGroup;
 
   constructor(private formBuilder: FormBuilder) { }
@@ -50,6 +36,16 @@ export class SignupComponent implements OnInit {
     if (this.form.valid) {
       this.submitEM.emit(this.form.value);
     }
+  }
+
+  yearOfReceipt() {
+    const yearArr = new Array();
+    let currentYear = new Date().getFullYear();
+    for (let i = 0; i < 10; i++) {
+      yearArr.push(currentYear);
+      currentYear--;
+    }
+    return yearArr;
   }
 
   private passwordValidator(control: FormControl): ValidationErrors {

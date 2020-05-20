@@ -7,6 +7,8 @@ import { MustMatch } from 'src/app/signup/MustMatch';
 import { ProfessorService } from 'src/app/service/professor.service';
 import { UserService } from 'src/app/service/userService';
 import { ResetPassword } from 'src/app/model/resetPassword';
+import { SuccessMessageComponent } from 'src/app/success-message/success-message.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-reset-the-password',
@@ -21,7 +23,7 @@ export class ResetThePasswordComponent implements OnInit {
   @Output() submitEM = new EventEmitter();
 
   constructor(private userService: UserService, private lectorService: ProfessorService , private studentService: StudentService,
-              private router: ActivatedRoute, private rout: Router, private formBuilder: FormBuilder) { }
+              private router: ActivatedRoute, private formBuilder: FormBuilder, private dialog: MatDialog) { }
 
   ngOnInit() {
     const studentId = this.router.snapshot.params.studentId;
@@ -69,12 +71,24 @@ export class ResetThePasswordComponent implements OnInit {
 
   resetPassword(resetPasswordModel) {
     this.userService.resetPassword(resetPasswordModel).subscribe( () => {
-      alert('Пароль успешно изменен.');
-      this.rout.navigateByUrl('/admin/main');
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Пароль успешно изменен.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
+      window.history.back();
     },
     err => {
-      alert('Не удалось поменять пароль. Поробуйте еще раз');
-      this.rout.navigateByUrl('/admin/main');
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Произошла ошибка при изменении пароля.Попробуйте заново.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
+      window.history.back();
     });
   }
 

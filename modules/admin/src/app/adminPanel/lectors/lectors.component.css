@@ -48,3 +48,9 @@ button .mat-icon {
     height: 20px;
     widows: 20px;
 }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

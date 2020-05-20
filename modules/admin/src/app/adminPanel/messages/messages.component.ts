@@ -26,7 +26,11 @@ export class MessagesComponent implements OnInit {
 
   sendMessage() {
     const dialogRef = this.dialog.open(SendMessageComponent);
-    dialogRef.afterClosed();
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+       this.loadMessage();
+      }
+    });
   }
 
   openMessageDetails(elementId) {
@@ -38,7 +42,6 @@ export class MessagesComponent implements OnInit {
 
   loadMessage() {
     this.messageService.getMessages().subscribe( result => {
-      console.log(result);
       this.message = result;
       this.isLoad = true;
     });

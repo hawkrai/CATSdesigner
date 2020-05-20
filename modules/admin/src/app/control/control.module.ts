@@ -18,6 +18,7 @@ import { StatsComponent } from './stats/stats.component';
 import { TableForAllSubjectComponent } from './stats/table-for-all-subject/table-for-all-subject.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { GroupNotFoundComponent } from './group-not-found/group-not-found.component';
+import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/table-for-stats-subject.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { GroupNotFoundComponent } from './group-not-found/group-not-found.compon
     ItemTableComponent,
     StatsComponent,
     TableForAllSubjectComponent,
-    GroupNotFoundComponent
+    GroupNotFoundComponent,
+    TableForStatsSubjectComponent
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@ import { GroupService } from 'src/app/service/group.service';
 import { DeleteItemComponent } from '../modal/delete-person/delete-person.component';
 import { Group } from 'src/app/model/group';
 import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-students.component';
+import { SuccessMessageComponent } from 'src/app/success-message/success-message.component';
 
 @Component({
   selector: 'app-group',
@@ -14,7 +15,7 @@ import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-stude
 export class GroupComponent implements OnInit {
 
   group = new Group();
-  displayedColumns: string[] = ['number',  'name', 'startYear', 'graduationYear', 'studentsCount', 's'];
+  displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount', 's'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -40,21 +41,49 @@ export class GroupComponent implements OnInit {
   saveGroup(group: Group) {
     this.groupService.addGroup(group).subscribe(() => {
       this.group = new Group();
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Группа успешно сохранена.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
       this.loadGroup();
+    }, err => {
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Произошла ошибка при сохранении.Попробуйте заново.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
     });
   }
 
   editGroupJson(group: Group) {
     this.groupService.editGroup(group).subscribe(() => {
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Группа успешно изменена.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
       this.loadGroup();
+    }, () => {
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Произошла ошибка при изменении.Попробуйте заново.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
     });
   }
 
   addGroup(group) {
     const dialogRef = this.dialog.open( AddGroupComponent, {
-      data: {
        data: group
-      }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

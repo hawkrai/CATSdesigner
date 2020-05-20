@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { MessageResponse, DisplayMessage, Recipients } from '../model/message';
 
 @Injectable({
@@ -21,8 +21,13 @@ export class MessageService {
         return this.http.get<DisplayMessage>(this.api + 'GetMessage/' + messageId);
     }
 
-    saveMessage(id): Observable<void> {
-        return this.http.post<void>(this.api + 'Delete', {  messageId: id });
+    saveMessage(subject, body, recipients, attachments): Observable<string> {
+        let params = new HttpParams();
+        params = params.set('subject', subject);
+        params = params.set ('body', body);
+        params = params.set ('recipients', recipients.toString());
+        params = params.set ('attachments', attachments.toString());
+        return this.http.post<string>(this.api + 'Save', params);
     }
 
     deleteMessage(id): Observable<void> {

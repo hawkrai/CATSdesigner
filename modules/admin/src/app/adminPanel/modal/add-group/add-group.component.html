@@ -1,11 +1,13 @@
-<h1 mat-dialog-title *ngIf="this.data.data.Name">Редактирование группы</h1>
-<h1 mat-dialog-title *ngIf="!this.data.data.Name">Добавление группы</h1>
+<h1 mat-dialog-title *ngIf="this.data.Name">Редактирование группы</h1>
+<h1 mat-dialog-title *ngIf="!this.data.Name">Добавление группы</h1>
 <form [formGroup]="this.form" (ngSubmit)="submit()">
     <mat-dialog-content>
-        <h2 *ngIf="this.data.data.Name"> Группа {{ this.data.data.Name }}</h2>
+        <h2 *ngIf="this.data.Name"> Группа {{ this.data.Name }}</h2>
         <div>
             <mat-form-field>
-                <input matInput formControlName="Name" placeholder="Номер группы">
+                <input matInput formControlName="Name" placeholder="Номер группы" maxlength="30">
+                <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
+                <mat-error *ngIf="hasError('Name', 'pattern')">Номер группы должен состоять из цифр</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Год поступления</mat-label>
@@ -31,6 +33,6 @@
     </mat-dialog-content>
     <mat-dialog-actions>
         <button mat-button (click)="onNoClick()">Отмена</button>
-        <button class="btn" mat-button (click)="onYesClick()">Сохранить</button>
+        <button class="btn" [disabled]='this.form.invalid' mat-button (click)="onYesClick()">Сохранить</button>
     </mat-dialog-actions>
 </form>

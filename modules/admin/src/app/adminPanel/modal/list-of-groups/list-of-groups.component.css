@@ -20,3 +20,9 @@ th {
 .list-of-groups {
     height: 400px;
 }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

@@ -7,15 +7,25 @@ import { LoginModule } from './login/login.module';
 import { ControlModule } from './control/control.module';
 import { HttpClientModule } from '@angular/common/http';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SignupModule } from './signup/signup.module';
 import {MatCardModule} from '@angular/material/card';
+import { SuccessMessageComponent } from './success-message/success-message.component';
+import { MatButtonModule, MatIconModule, MatDialogModule, MatFormFieldModule, MatCheckboxModule, MatInputModule, MatSelectModule } from '@angular/material';
+import { ChangePasswordComponent } from './change-password/change-password.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ResetPasswordModalComponent } from './reset-password-modal/reset-password-modal.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SuccessMessageComponent,
+    ChangePasswordComponent,
+    ResetPasswordModalComponent
   ],
   imports: [
+    ReactiveFormsModule,
+    FormsModule,
     BrowserModule,
     AppRoutingModule,
     AdminModule,
@@ -24,10 +34,17 @@ import {MatCardModule} from '@angular/material/card';
     HttpClientModule,
     MatProgressSpinnerModule,
     BrowserAnimationsModule,
-    NoopAnimationsModule,
     SignupModule,
-    MatCardModule
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatSelectModule
   ],
+  entryComponents: [SuccessMessageComponent, ChangePasswordComponent, ResetPasswordModalComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

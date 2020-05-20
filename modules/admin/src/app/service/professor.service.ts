@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import { Observable } from 'rxjs';
-import { Professor } from '../model/professor';
+import { Professor, EditProfessor } from '../model/professor';
 
 @Injectable({
     providedIn: 'root'
@@ -25,8 +25,8 @@ export class ProfessorService {
         return this.http.post<Professor>(this.api + 'SaveProfessorJson/', professor);
     }
 
-    editProfessor(professor): Observable<Professor> {
-        return this.http.post<Professor>(this.api + 'EditProfessor', professor);
+    editProfessor(professor): Observable<EditProfessor> {
+        return this.http.post<EditProfessor>(this.api + 'EditProfessor', professor);
     }
 
     deleteProfessor(professorId): Observable<void> {

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-group',
@@ -18,9 +18,9 @@ export class AddGroupComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    const group = this.data.data;
+    const group = this.data;
     this.form = this.formBuilder.group({
-      Name: new FormControl(group.Name),
+      Name: new FormControl(group.Name, [Validators.required, Validators.pattern('^[0-9]*$'), Validators.maxLength(30)]),
       StartYear: new FormControl(group.StartYear),
       GraduationYear: new FormControl(group.GraduationYear)
     });
@@ -60,8 +60,12 @@ export class AddGroupComponent implements OnInit {
     }
   }
 
+  hasError = (controlName: string, errorName: string) => {
+    return this.form.controls[controlName].hasError(errorName);
+  }
+
   sendData() {
-    const group = this.data.data;
+    const group = this.data;
     group.Name = this.form.controls.Name.value;
     group.GraduationYear = this.form.controls.GraduationYear.value;
     group.StartYear = this.form.controls.StartYear.value;

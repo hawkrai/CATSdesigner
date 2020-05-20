@@ -7,7 +7,6 @@ import { MatIconModule, MatButtonModule, MatToolbarModule, MatInputModule, MatTa
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatDialogModule} from '@angular/material/dialog';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
@@ -24,7 +23,6 @@ import {MatCardModule} from '@angular/material/card';
     FormsModule,
     BrowserModule,
     BrowserAnimationsModule,
-    NoopAnimationsModule,
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,

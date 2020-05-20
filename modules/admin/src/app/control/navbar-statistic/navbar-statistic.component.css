@@ -80,3 +80,9 @@ mat-toolbar {
     margin-left: -24px;
     overflow: hidden;
 }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

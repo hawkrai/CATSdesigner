@@ -31,3 +31,9 @@ button .mat-icon {
     background-color: white;
     cursor: pointer;
 }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
