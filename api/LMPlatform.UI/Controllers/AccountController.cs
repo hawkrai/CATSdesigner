@@ -160,7 +160,7 @@ namespace LMPlatform.UI.Controllers
             return this.Json(false);
         }
 
-        [HttpGet]
+        [HttpPost]
         public JsonResult ResetPassword(string userName, string password)
         {
             var token = WebSecurity.GeneratePasswordResetToken(userName, 1);
