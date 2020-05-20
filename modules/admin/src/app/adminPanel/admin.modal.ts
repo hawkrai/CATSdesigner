@@ -15,7 +15,8 @@ import { EditLectorComponent } from './modal/edit-lector/edit-lector.component';
 import {MatCardModule} from '@angular/material/card';
 import { GoogleChartsModule } from 'angular-google-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatIconModule, MatButtonModule, MatToolbarModule, MatInputModule, MatTableModule, MatPaginatorModule } from '@angular/material';
+import { MatIconModule, MatButtonModule, MatToolbarModule, MatInputModule, MatTableModule,
+   MatPaginatorModule, MatAutocompleteModule, MatChipsModule } from '@angular/material';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatMenuModule} from '@angular/material/menu';
@@ -23,9 +24,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSortModule} from '@angular/material/sort';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCheckboxModule, MAT_CHECKBOX_CLICK_ACTION} from '@angular/material/checkbox';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatProgressSpinnerModule} from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from '../app-routing.module';
 import { TableForStudentsComponent } from './table-for-students/table-for-students.component';
@@ -38,11 +38,11 @@ import { ListOfStudentsComponent } from './modal/list-of-students/list-of-studen
 import { EditStudentComponent } from './modal/edit-student/edit-student.component';
 import { MessagesComponent } from './messages/messages.component';
 import { SendMessageComponent } from './modal/send-message/send-message.component';
-import {MatTabsModule, MAT_TABS_CONFIG} from '@angular/material/tabs';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatTabsModule, MAT_TABS_CONFIG } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { StatisticComponent } from './modal/statistic/statistic.component';
 import { ProfileComponent } from './profile/profile.component';
-import {MatListModule} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { MessageDetailComponent } from './modal/message-detail/message-detail.component';
 
 @NgModule({
@@ -76,7 +76,6 @@ import { MessageDetailComponent } from './modal/message-detail/message-detail.co
     FormsModule,
     BrowserModule,
     BrowserAnimationsModule,
-    NoopAnimationsModule,
     MatButtonModule,
     MatSortModule,
     MatIconModule,
@@ -98,7 +97,9 @@ import { MessageDetailComponent } from './modal/message-detail/message-detail.co
     MatTabsModule,
     MatExpansionModule,
     GoogleChartsModule,
-    MatCardModule
+    MatCardModule,
+    MatAutocompleteModule,
+    MatChipsModule
   ],
   entryComponents: [LectorModalComponent, TableForStudentsComponent, AddGroupComponent,
     DeleteItemComponent, EditLectorComponent, FilesTableComponent, SubjectListComponent, ListOfGroupsComponent,

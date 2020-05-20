@@ -4,13 +4,18 @@
         <h2>{{ this.data.FullName }}</h2>
         <div>
             <mat-form-field>
-                <input matInput formControlName="Surname" placeholder="Фамилия">
+                <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="100">
+                <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
+                <mat-error *ngIf="hasError('Surname', 'maxLength')">Фамилия не должна превышать 100 символов</mat-error>
             </mat-form-field>
             <mat-form-field>
-                <input matInput formControlName="Name" placeholder="Имя">
+                <input matInput formControlName="Name" placeholder="Имя" maxlength="100">
+                <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
+                <mat-error *ngIf="hasError('Name', 'maxLength')">Имя не должно превышать 100 символов</mat-error>
             </mat-form-field>
             <mat-form-field>
-                <input matInput formControlName="Patronymic" placeholder="Отчество">
+                <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="100">
+                <mat-error *ngIf="hasError('Patronymic', 'maxLength')">Отчество не должно превышать 100 символов</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Группа</mat-label>
@@ -28,6 +33,6 @@
     <div class="line"></div>
     <mat-dialog-actions>
         <button mat-button (click)="onNoClick()">Отмена</button>
-        <button class="btn" mat-button (click)="onYesClick()">Изменить</button>
+        <button class="btn" [disabled]='this.form.invalid' mat-button (click)="onYesClick()">Изменить</button>
     </mat-dialog-actions>
 </form>

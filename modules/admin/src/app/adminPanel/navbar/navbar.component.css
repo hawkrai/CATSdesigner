@@ -2,6 +2,10 @@
     margin-left: 10px;
 }
 
+.main {
+    white-space: normal;
+}
+
 .mat-button {
     text-decoration: none;
     color: white;

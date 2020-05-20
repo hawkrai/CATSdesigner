@@ -6,7 +6,7 @@
 
 .mat-form-field {
     width: 100%;
-    min-width: 300px;
+    min-width: 150px;
 }
 
 mat-card-title,
@@ -31,6 +31,7 @@ mat-card-content {
     position: relative;
     border: 1px solid white;
     margin: 10px auto;
+    min-width: 150px;
 }
 
 .mat-icon {

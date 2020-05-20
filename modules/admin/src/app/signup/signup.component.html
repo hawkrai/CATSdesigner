@@ -34,16 +34,16 @@
             <mat-form-field>
                 <mat-label>Группа</mat-label>
                 <mat-select formControlName="groupNumber" maxlength="30">
-                    <mat-option *ngFor="let item of groups" [value]="item.value">
-                        {{item.viewValue}}
+                    <mat-option *ngFor="let item of this.yearOfReceipt()" [value]="item">
+                        {{item}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Секретный вопрос</mat-label>
                 <mat-select>
-                    <mat-option *ngFor="let item of quests" [value]="item.value">
-                        {{item.viewValue}}
+                    <mat-option *ngFor="let item of quest" [value]="item.value">
+                        {{item.text}}
                     </mat-option>
                 </mat-select>
             </mat-form-field>

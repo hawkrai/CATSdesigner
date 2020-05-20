@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FileService } from 'src/app/service/file.service';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { MessageService } from 'src/app/service/message.service';
+import { Recipients } from 'src/app/model/message';
+import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-send-message',
@@ -10,43 +12,106 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 })
 export class SendMessageComponent implements OnInit {
 
-  selectedFiles: FileList;
-  currentFileUpload: File;
-  progress: { percentage: number } = {percentage: 0};
+  @Output() submitEM = new EventEmitter();
 
-  constructor(private uploadService: FileService, public dialogRef: MatDialogRef<SendMessageComponent>) { }
+  constructor(private uploadService: FileService, private messageService: MessageService,
+              public dialogRef: MatDialogRef<SendMessageComponent>,
+              private formBuilder: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any) {}
+
+  files: File[] = [];
+  userList;
+  userControl = new FormControl();
+  selectedUsers: Recipients[] = [];
+  form: FormGroup;
+  visible = true;
+  selectable = true;
+  removable = true;
 
   ngOnInit() {
+    this.form = this.formBuilder.group({
+      users: new FormControl(this.data.user),
+      theme: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]),
+      text: new FormControl('', [Validators.required, Validators.minLength(1)])
+    });
   }
 
-  selectFile(event) {
-    this.selectedFiles = event.target.files;
-}
+  file() {
+    this.sendData();
+    this.dialogRef.close({data: true});
+  }
 
-upload() {
-    this.progress.percentage = 0;
-
-    this.currentFileUpload = this.selectedFiles.item(0);
-    this.uploadService.pushFileToStorage(this.currentFileUpload).subscribe(event => {
-        if (event.type === HttpEventType.UploadProgress) {
-            this.progress.percentage = Math.round(100 * event.loaded / event.total);
-        } else if (event instanceof HttpResponse) {
-            console.log('file is completely uploaded!');
-        }
-    }, error => {
-        if (error.status === 409) {
-            error.message = 'This document already exist';
-        }
-        if ( error.status === 400) {
-            error.message = 'This format doesn\'t support';
-        }
-        if (error.status === 404) {
-            error.message = 'Documents contains wrong tags';
-        }
-        throw error;
+  searchRecipients(searchValue) {
+    this.messageService.searchRecipients(searchValue).subscribe( result => {
+      this.userList = result;
     });
+  }
 
-    this.selectedFiles = undefined;
-}
+  displayFn(value) {
+    let displayValue: string;
+    if (Array.isArray(value)) {
+      value.forEach((user, index) => {
+        if (index === 0) {
+          displayValue = user.text;
+        } else {
+          displayValue += ', ' + user.text;
+        }
+      });
+    } else {
+      displayValue = value;
+    }
+    return displayValue;
+  }
+
+  optionClicked(event: Event, user) {
+    event.stopPropagation();
+    this.toggleSelection(user);
+  }
+
+  toggleSelection(user) {
+    user.selected = !user.selected;
+    if (user.selected) {
+      this.selectedUsers.push(user);
+    } else {
+      const i = this.selectedUsers.findIndex(value => value.text === user.text);
+      this.selectedUsers.splice(i, 1);
+    }
+    this.form.controls.users.setValue(this.selectedUsers);
+  }
+
+  deleteUser(user) {
+    const index = this.selectedUsers.indexOf(user);
+    if (index >= 0) {
+      this.selectedUsers.splice(index, 1);
+    }
+  }
+
+  deleteAttachment(index) {
+    this.files.splice(index, 1);
+  }
+
+  onFileChange(event) {
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < event.target.files.length; i++) {
+        this.files.push(event.target.files[i]);
+    }
+  }
+
+  submit() {
+    if (this.form.valid) {
+      this.submitEM.emit(this.form.value);
+    }
+  }
+
+  sendData() {
+    const controls = this.form.controls;
+    const users = this.selectedUsers.map((item) => item.value);
+    this.messageService.saveMessage(controls.theme.value, controls.text.value, users, this.file).subscribe(
+      result => {
+        console.log(result);
+      },
+      error => {
+        console.log(error);
+      });
+  }
 
 }

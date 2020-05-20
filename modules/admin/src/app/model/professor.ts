@@ -11,6 +11,9 @@ export class Professor {
     IsSecretary: boolean;
     IsLecturerHasGraduateStudents: boolean;
     Skill: string;
+    Phone: string;
+    About: string;
+    SkypeContact: string;
     Password: string;
     ConfirmPassword: string;
     IsPasswordReset: boolean;
@@ -22,4 +25,24 @@ export class Professor {
     FirstName: string;
     LastName: string;
     MiddleName: string;
+    Email: string;
+    SeletectedGroupIds: string[];
+}
+
+export class EditProfessor {
+    LecturerId: number;
+    Avatar: string;
+    SkypeContact: string;
+    Phone: string;
+    Skill: string;
+    About: string;
+    Name: string;
+    Surname: string;
+    Patronymic: string;
+    Username: string;
+    Email: string;
+    IsActive: boolean;
+    IsSecretary: boolean;
+    IsLecturerHasGraduateStudents: boolean;
+    SeletectedGroupIds: string[];
 }

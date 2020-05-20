@@ -17,6 +17,20 @@ export class Student {
     LastLogin: string;
 }
 
+export class EditStudent {
+    Avatar: any;
+    Name: string;
+    Surname: string;
+    Patronymic: string;
+    UserName: string;
+    Group: string;
+    Email: string;
+    Id: number;
+    SkypeContact: string;
+    Phone: string;
+    About: string;
+}
+
 export class StudentByGroup {
     Students: Students[];
 }

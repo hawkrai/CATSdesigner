@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Student } from '../model/student';
+import { Student, EditStudent } from '../model/student';
 import { Observable } from 'rxjs';
 import { UserActivity } from '../model/userActivity';
 
@@ -22,7 +22,7 @@ export class StudentService {
         return this.http.get<Student>(this.api + 'GetStudentJson/' + studentId);
     }
 
-    editStudents(student): Observable<Student> {
+    editStudents(student): Observable<EditStudent> {
         return this.http.post<Student>(this.api + 'EditStudent', student);
     }
 

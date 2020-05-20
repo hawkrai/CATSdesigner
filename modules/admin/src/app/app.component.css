@@ -44,3 +44,9 @@ h1 {
 /deep/ .mat-paginator-page-size-label {
     display: none;
 }
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

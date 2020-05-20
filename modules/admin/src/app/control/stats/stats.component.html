@@ -1,12 +1,22 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div class="main" *ngIf="isLoad">
     <h1>Статистика</h1>
     <mat-form-field>
         <mat-label>Выберите предмет</mat-label>
-        <select matNativeControl [(ngModel)]="selectedItem" name="item">
-            <option selected>Все предметы</option>
-            <option *ngFor="let item of this.subjects" [value]="item.Id">{{item.Name}}</option>
-            <option selected>Суммарная статистика по всем предметам</option>
-        </select>
+        <mat-select [(ngModel)]="selectedItem" name="item">
+            <mat-option [value]="0">Все предметы</mat-option>
+            <mat-option *ngFor="let item of this.subjects; let i=index" [value]="i+1">{{item.Name}}</mat-option>
+            <mat-option [value]="this.subjects.length+1">Суммарная статистика по всем предметам</mat-option>
+        </mat-select>
     </mat-form-field>
 </div>
-<!-- <app-table-for-all-subject></app-table-for-all-subject> -->
+<div class="export-button">
+    <button class="btn" (click)="this.captureScreen()">Печать</button>
+    <button class="btn" (click)="this.exportexcel()"><i class="fa fa-download"></i>Excel</button>
+</div>
+<div *ngIf="!this.selectedItem">
+    <app-table-for-all-subject></app-table-for-all-subject>
+</div>
+<div *ngIf="this.selectedItem">
+    <app-table-for-stats-subject></app-table-for-stats-subject>
+</div>

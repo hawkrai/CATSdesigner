@@ -8,6 +8,7 @@ import { EditLectorComponent } from '../modal/edit-lector/edit-lector.component'
 import { ListOfGroupsComponent } from '../modal/list-of-groups/list-of-groups.component';
 import { StatisticComponent } from '../modal/statistic/statistic.component';
 import { Router } from '@angular/router';
+import { SuccessMessageComponent } from 'src/app/success-message/success-message.component';
 
 @Component({
   selector: 'app-lectors',
@@ -19,7 +20,7 @@ export class LectorsComponent implements OnInit {
 
   isLoad: boolean;
   dataLector = new Professor();
-  displayedColumns: string[] = ['position', 'name', 'login', 'lastLogin', 'status', 'subjects', 'action'];
+  displayedColumns: string[] = ['position', 'FullName', 'Login', 'lastLogin', 'status', 'subjects', 'action'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -83,6 +84,7 @@ export class LectorsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        console.log(result);
         this.addLector(result);
       }
     });
@@ -95,17 +97,47 @@ export class LectorsComponent implements OnInit {
     });
   }
 
-  addLector(professor: Professor): void {
+  addLector(professor): void {
     this.professorService.addProfessor(professor).subscribe(() => {
       this.dataLector = new Professor();
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Преподаватель добавлен.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
       this.loadLector();
+    }, () => {
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Произошла ошибка при добавлении преподавателя.Попробуйте заново.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
     });
   }
 
-  editLector(professor: Professor): void {
+  editLector(professor): void {
     this.professorService.editProfessor(professor).subscribe(() => {
       this.dataLector = new Professor();
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Преподаватель изменен.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
       this.loadLector();
+    }, () => {
+      this.dialog.open(SuccessMessageComponent, {
+        data: 'Произошла ошибка при изменении преподавателя.Попробуйте заново.',
+        position: {
+          bottom: '0px',
+          right: '0px'
+        }
+      });
     });
   }
 

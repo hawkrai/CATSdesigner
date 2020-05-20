@@ -1,3 +1,4 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoadData" class="spinner" color="primary"></mat-spinner>
 <div class="main" *ngIf="this.isLoadData">
     <div [hidden]="!this.isDataSourceForLecture()">
         <h1>Лекции</h1>

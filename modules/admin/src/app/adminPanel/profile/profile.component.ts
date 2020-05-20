@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProfileService } from 'src/app/service/profile.service';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileModel, ProfileInfo, ProfileInfoSubject, ProfileProject } from 'src/app/model/profile';
+import { AccountService } from 'src/app/service/account.service';
 
 @Component({
   selector: 'app-profile',
@@ -13,11 +14,12 @@ export class ProfileComponent implements OnInit {
   displayedColumns = ['item'];
   displayedColumnsSecond = ['item', 'complete'];
   isLoad = false;
+  defaultAvatar: string;
   profileInfo: ProfileInfo;
   profileInfoSubjects: ProfileInfoSubject[];
   profileProjects: ProfileProject[];
 
-  constructor(private profileService: ProfileService, private route: ActivatedRoute) { }
+  constructor(private profileService: ProfileService, private accountService: AccountService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     const login = this.route.snapshot.params.login;
@@ -26,6 +28,7 @@ export class ProfileComponent implements OnInit {
     this.getProfileInfo(profileModel);
     this.getProfileInfoSubjects(profileModel);
     this.getProfileProjects(profileModel);
+    this.getAvatar();
   }
 
   getProfileInfo(login) {
@@ -34,9 +37,14 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  getAvatar() {
+    this.accountService.getDefaultAvatar().subscribe( res => {
+      this.defaultAvatar = res;
+    });
+  }
+
   getProfileInfoSubjects(login) {
     this.profileService.getProfileInfoSubjects(login).subscribe( result => {
-      console.log(result);
       this.profileInfoSubjects = result;
       this.isLoad = true;
     });
@@ -44,7 +52,6 @@ export class ProfileComponent implements OnInit {
 
   getProfileProjects(login) {
     this.profileService.getProfileProjects(login).subscribe( result => {
-      console.log(result);
       this.profileProjects = result;
     });
   }

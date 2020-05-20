@@ -4,9 +4,9 @@ h1 {
 }
 
 .inline {
-   width: 95%;
-   border-top:1px solid lavender;
-   padding-top: 20px;
+    width: 95%;
+    border-top: 1px solid lavender;
+    padding-top: 20px;
 }
 
 p {
@@ -30,6 +30,6 @@ p {
     margin-left: 50px;
 }
 
-.mat-progress-spinner{
+.mat-progress-spinner {
     display: inline;
 }
