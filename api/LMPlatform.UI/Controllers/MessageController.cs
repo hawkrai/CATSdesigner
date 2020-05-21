@@ -21,23 +21,23 @@ namespace LMPlatform.UI.Controllers
         public IMessageManagementService MessageManagementService =>
             this.ApplicationService<IMessageManagementService>();
 
+        //[HttpPost]
+        //public ActionResult WriteMessage(MessageViewModel msg, string itemAttachments)
+        //{
+        //    var jsonSerializer = new JavaScriptSerializer();
+        //    var attachments = jsonSerializer.Deserialize<List<Attachment>>(itemAttachments);
+
+        //    msg.Attachment = attachments;
+
+        //    if (this.ModelState.IsValid && msg.FromId == WebSecurity.CurrentUserId) msg.SaveMessage();
+
+        //    return StatusCode(HttpStatusCode.OK);
+        //}
+
         [HttpPost]
         public ActionResult WriteMessage(MessageViewModel msg, string itemAttachments)
         {
-            var jsonSerializer = new JavaScriptSerializer();
-            var attachments = jsonSerializer.Deserialize<List<Attachment>>(itemAttachments);
-
-            msg.Attachment = attachments;
-
-            if (this.ModelState.IsValid && msg.FromId == WebSecurity.CurrentUserId) msg.SaveMessage();
-
-            return StatusCode(HttpStatusCode.OK);
-        }
-
-        [HttpPost]
-        public ActionResult WriteMessageAjax(MessageViewModel msg, string itemAttachments)
-        {
-            if (this.ModelState.IsValid && msg.FromId == WebSecurity.CurrentUserId)
+            if (this.ModelState.IsValid && msg.FromId == WebSecurity.CurrentUserId)  
             {
                 try
                 {
