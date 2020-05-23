@@ -152,6 +152,14 @@ namespace LMPlatform.UI.Controllers
             }
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult UserExists(string userName)
+        {
+            var result = this.UsersManagementService.IsExistsUser(userName);
+            return JsonResponse(result);
+        }
+
         [HttpPost]
         public JsonResult SavePassword(string old, string newPassword)
         {

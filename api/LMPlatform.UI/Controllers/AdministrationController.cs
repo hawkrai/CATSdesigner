@@ -488,14 +488,6 @@ namespace LMPlatform.UI.Controllers
             }
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public ActionResult UserExists(string userName)
-        {
-            var result = this.UsersManagementService.IsExistsUser(userName);
-            return JsonResponse(result);
-        }
-
         #endregion
 
         #region Dependencies
