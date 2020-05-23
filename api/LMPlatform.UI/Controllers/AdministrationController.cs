@@ -261,6 +261,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult GetGroupsJson()
         {
             var groups = this.GroupManagementService.GetGroups();
