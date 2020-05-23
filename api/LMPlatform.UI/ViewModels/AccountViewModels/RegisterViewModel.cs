@@ -47,47 +47,50 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
 
 		private IUsersManagementService UsersManagementService => _usersManagementService.Value;
 
-		[StringLength(50, ErrorMessage = "Имя не может иметь размер больше 50 символов")]
-		[DataType(DataType.Text)]
-		[Display(Name = "Имя")]
-		[Required(ErrorMessage = "Поле Имя обязательно для заполнения")]
-		public string Name { get; set; }
+        #region Properties
 
-		[StringLength(50, ErrorMessage = "Фамилия не может иметь размер больше 50 символов")]
-		[DataType(DataType.Text)]
-		[Display(Name = "Фамилия")]
-		[Required(ErrorMessage = "Поле Фамилия обязательно для заполнения")]
-		public string Surname { get; set; }
+        [StringLength(50, ErrorMessage = "Имя не может иметь размер больше 50 символов")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Имя")]
+        [Required(ErrorMessage = "Поле Имя обязательно для заполнения")]
+        public string Name { get; set; }
 
-		[StringLength(50, ErrorMessage = "Отчество не может иметь размер больше 50 символов")]
-		[DataType(DataType.Text)]
-		[Display(Name = "Отчество")]
-		public string Patronymic { get; set; }
+        [StringLength(50, ErrorMessage = "Фамилия не может иметь размер больше 50 символов")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Фамилия")]
+        [Required(ErrorMessage = "Поле Фамилия обязательно для заполнения")]
+        public string Surname { get; set; }
 
-		[Display(Name = "Секретарь")] public bool IsSecretary { get; set; }
+        [StringLength(50, ErrorMessage = "Отчество не может иметь размер больше 50 символов")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Отчество")]
+        public string Patronymic { get; set; }
 
-		[Display(Name = "Руководитель дипломных проектов")]
-		public bool IsLecturerHasGraduateStudents { get; set; }
+        [Display(Name = "Секретарь")]
+        public bool IsSecretary { get; set; }
 
-		[Required(ErrorMessage = "Поле Логин обязательно для заполнения")]
-		[Display(Name = "Логин")]
-		public string UserName { get; set; }
+        [Display(Name = "Руководитель дипломных проектов")]
+        public bool IsLecturerHasGraduateStudents { get; set; }
 
-		[Required(ErrorMessage = "Поле Пароль обязательно для заполнения")]
-		[StringLength(100, ErrorMessage = "{0} должно быть не менее {2} символов.", MinimumLength = 6)]
-		[DataType(DataType.Password)]
-		[Display(Name = "Пароль")]
-		public string Password { get; set; }
+        [Required(ErrorMessage = "Поле Логин обязательно для заполнения")]
+        [Display(Name = "Логин")]
+        public string UserName { get; set; }
 
-		[DataType(DataType.Password)]
-		[Display(Name = "Подтверждение пароля")]
-		[Required(ErrorMessage = "Поле Подтверждение пароля обязательно для заполнения")]
-		[System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage =
-			"Пароль и подтвержденный пароль не совпадают.")]
-		public string ConfirmPassword { get; set; }
+        [Required(ErrorMessage = "Поле Пароль обязательно для заполнения")]
+        [StringLength(100, ErrorMessage = "{0} должно быть не менее {2} символов.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Пароль")]
+        public string Password { get; set; }
 
-		[Display(Name = "Группа")]
-		public string Group { get; set; }
+        [DataType(DataType.Password)]
+        [Display(Name = "Подтверждение пароля")]
+        [Required(ErrorMessage = "Поле Подтверждение пароля обязательно для заполнения")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage =
+            "Пароль и подтвержденный пароль не совпадают.")]
+        public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Группа")]
+        public string Group { get; set; }
 
         [Display(Name = "Ответ")]
         public string Answer
@@ -103,8 +106,10 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             set;
         }
 
-		[Display(Name = "Код доступа")]
-		public string Code { get; set; }
+        [Display(Name = "Код доступа")]
+        public string Code { get; set; }
+
+        #endregion
 
 		public IList<SelectListItem> GetGroups()
 		{
