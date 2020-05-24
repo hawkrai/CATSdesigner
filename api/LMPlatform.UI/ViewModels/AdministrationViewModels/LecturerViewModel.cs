@@ -11,7 +11,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
     public class LecturerViewModel : BaseNumberedGridItem
     {
         [DisplayName("Полное имя")]
-        public string FullName => string.Format("{0} {1} {2}", LastName, FirstName, MiddleName);
+        public string FullName => $"{this.LastName} {this.FirstName} {this.MiddleName}";
 
         [DisplayName("Логин")]
         public string Login { get; set; }
@@ -21,6 +21,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         [DisplayName("Предметы")]
         public string Subjects { get; set; }
+
         [DisplayName("Статус")]
         public string IsActive { get; set; }
 
@@ -39,6 +40,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         public int Id { get; set; }
 
+        public int[] SecretaryGroupsIds { get; set; }
+
         public static LecturerViewModel FormLecturers(Lecturer lecturer, string htmlLinks)
         {
             return new LecturerViewModel
@@ -55,8 +58,9 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 					? lecturer.SubjectLecturers.Count(e => !e.Subject.IsArchive).ToString()
 					: "-",
 				IsSecretary = lecturer.IsSecretary,
-				IsLectureHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents
-			};
+				IsLectureHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
+                SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray()
+            };
         }
     }
 }
