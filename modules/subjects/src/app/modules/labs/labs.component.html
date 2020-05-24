@@ -63,7 +63,7 @@
   </div>
 
   <div class="labs-component__body">
-    <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4">
+    <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4 || (tab === 5 && teacher)">
       <mat-form-field>
         <mat-select [value]="groups ? groups[0].groupId : ''">
           <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.groupId">

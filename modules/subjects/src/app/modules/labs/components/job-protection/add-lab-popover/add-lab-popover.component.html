@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div class="job-protection__popover" #popoverContent>
+  <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>{{data.model}}</mat-label>
+      <textarea class="lab-work-component__news-text" name="body" matInput [(ngModel)]="data.body.comments"></textarea>
+    </mat-form-field>
+    <p class="mat-typography">Прикрепленный материал (Можно добавить только один файл)</p>
+    <button mat-raised-button (click)="addFile()" class="job-protection__popover-file-button">Добавить файл</button>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+</div>

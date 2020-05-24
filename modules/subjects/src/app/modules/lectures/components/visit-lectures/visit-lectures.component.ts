@@ -19,7 +19,7 @@ import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visi
 })
 export class VisitLecturesComponent implements OnInit {
 
-  @Input()  subjectId: string;
+  @Input() subjectId: string;
   @Input() teacher: boolean;
 
   public calendar: Calendar[];
@@ -30,7 +30,8 @@ export class VisitLecturesComponent implements OnInit {
 
   constructor(private groupsService: GroupsService,
               private lecturesService: LecturesService,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog) {
+  }
 
   ngOnInit() {
     this.groupsService.getAllGroups().subscribe(res => {
@@ -76,7 +77,7 @@ export class VisitLecturesComponent implements OnInit {
     const dialogData: DialogData = {
       title: 'График посещения',
       buttonText: 'Добавить',
-      body: {service: this.lecturesService, restBody: { subjectId: this.subjectId}},
+      body: {service: this.lecturesService, restBody: {subjectId: this.subjectId}},
     };
 
     this.openDialog(dialogData, VisitDatePopoverComponent);
@@ -98,29 +99,31 @@ export class VisitLecturesComponent implements OnInit {
   }
 
   setVisitMarks(date, index) {
-    const visits = {date: date.date, students: []};
-    this.groupsVisiting.lecturesMarksVisiting.forEach(res => {
-      const visit = {
-        name: res.StudentName,
-        mark: res.Marks[index].Mark,
-        comment: ''
+    if (this.teacher) {
+      const visits = {date: date.date, students: []};
+      this.groupsVisiting.lecturesMarksVisiting.forEach(res => {
+        const visit = {
+          name: res.StudentName,
+          mark: res.Marks[index].Mark,
+          comment: ''
+        };
+        visits.students.push(visit);
+      });
+
+      const dialogData: DialogData = {
+        title: 'Посещаемость студентов',
+        buttonText: 'Сохранить',
+        body: visits
       };
-      visits.students.push(visit);
-    });
+      const dialogRef = this.openDialog(dialogData, VisitingPopoverComponent);
 
-    const dialogData: DialogData = {
-      title: 'Посещаемость студентов',
-      buttonText: 'Сохранить',
-      body: visits
-    };
-    const dialogRef = this.openDialog(dialogData, VisitingPopoverComponent);
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.lecturesService.setLecturesVisitingDate(
-          {lecturesMarks: this.getModelVisitLabs(JSON.parse(JSON.stringify(this.groupsVisiting.lecturesMarksVisiting)), index, result.students)})
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.lecturesService.setLecturesVisitingDate(
+            {lecturesMarks: this.getModelVisitLabs(JSON.parse(JSON.stringify(this.groupsVisiting.lecturesMarksVisiting)), index, result.students)})
+        }
+      });
+    }
   }
 
   getModelVisitLabs(lecturesMarksVisiting: LecturesMarksVisiting[], index, visits) {
@@ -135,7 +138,7 @@ export class VisitLecturesComponent implements OnInit {
   }
 
   getExcelFile() {
-    location.href = 'http://localhost:8080/Statistic/GetVisitLecture?subjectId=' +  this.subjectId + '&groupId=' + this.selectGroupId;
+    location.href = 'http://localhost:8080/Statistic/GetVisitLecture?subjectId=' + this.subjectId + '&groupId=' + this.selectGroupId;
   }
 
 }
