@@ -57,7 +57,6 @@ export class JobProtectionComponent implements OnInit {
         .subscribe(user => {
         this.user = user;
         this.labService.getFilesLab({subjectId: this.subjectId, userId: this.user.id}).subscribe(files => {
-          console.log(files);
           this.files = files;
         })
       })

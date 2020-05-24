@@ -41,11 +41,9 @@ export class ProtectionScheduleComponent implements OnInit {
         this.labService.loadDate();
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;
-          console.log(res)
         });
         this.labService.getLabsProtectionSchedule().subscribe(res => {
           this.labs = res;
-          console.log(res)
         })
       });
     });

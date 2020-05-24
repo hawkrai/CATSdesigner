@@ -43,7 +43,6 @@ export class VisitStatisticsComponent implements OnInit {
 
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;
-          console.log(res)
         });
 
         this.refreshMarks();
@@ -54,7 +53,6 @@ export class VisitStatisticsComponent implements OnInit {
   refreshMarks() {
     this.labService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
       this.student = res;
-      console.log(res)
     })
   }
 

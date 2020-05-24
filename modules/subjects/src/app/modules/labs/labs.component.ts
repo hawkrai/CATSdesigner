@@ -23,6 +23,7 @@ export class LabsComponent implements OnInit {
 
   private subjectId: string;
   public teacher = false;
+  public detachedGroup = false;
 
   constructor(private groupsService: GroupsService,
               private downloadsServer: DownloadsServer,
@@ -38,11 +39,29 @@ export class LabsComponent implements OnInit {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
+      this.loadGroup();
+    });
+  }
+
+  loadGroup() {
+    if (this.detachedGroup) {
+      this.groupsService.getAllOldGroups(this.subjectId).subscribe(res => {
+        this.groups = res;
+        this.groupsService.setCurrentGroup(res[0]);
+        console.log('old', res)
+      });
+    } else {
       this.groupsService.getAllGroups().subscribe(res => {
         this.groups = res;
+        this.groupsService.setCurrentGroup(res[0]);
         console.log(res)
       });
-    });
+    }
+  }
+
+  groupStatusChange(event) {
+    this.detachedGroup = event.checked;
+    this.loadGroup()
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
