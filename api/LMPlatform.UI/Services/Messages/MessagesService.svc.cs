@@ -106,17 +106,15 @@ namespace LMPlatform.UI.Services.Messages
 			};
 		}
 
-        public ResultViewData Save(string subject, string body, string recipients, string attachments)
+        public ResultViewData Save(string subject, string body, int[] recipients, Attachment[] attachments)
         {
 	        return this.SaveFromUserId(subject, body, recipients, attachments, WebSecurity.CurrentUserId);
         }
 
-        public ResultViewData SaveFromUserId(string subject, string body, string recipients, string attachments, int fromId)
+        public ResultViewData SaveFromUserId(string subject, string body, int[] recipients, Attachment[] attachments, int fromId)
         {
             try
             {
-                var attachmentsList = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
-                var recipientsList = JsonConvert.DeserializeObject<List<int>>(recipients).ToList();
 
                 if (!string.IsNullOrEmpty(subject) && subject.Length > 50)
                 {
@@ -125,11 +123,11 @@ namespace LMPlatform.UI.Services.Messages
 
                 var msg = new Message(body, subject);
 
-                if (attachmentsList.Any())
+                if (attachments.Any())
                 {
                     msg.AttachmentsPath = Guid.NewGuid();
-                    attachmentsList.ForEach(a => a.PathName = msg.AttachmentsPath.ToString());
-                    msg.Attachments = attachmentsList;
+                    Array.ForEach(attachments, a => a.PathName = msg.AttachmentsPath.ToString());
+                    msg.Attachments = attachments;
                 }
 
                 MessageManagementService.SaveMessage(msg);
@@ -142,7 +140,7 @@ namespace LMPlatform.UI.Services.Messages
                 ////}
                 ////else
                 ////{
-                var userMessages = recipientsList.Select(recipientId => new UserMessages(recipientId, fromId, msg.Id));
+                var userMessages = recipients.Select(recipientId => new UserMessages(recipientId, fromId, msg.Id));
                 foreach (var userMsg in userMessages)
                 {
 	                MessageManagementService.SaveUserMessages(userMsg);

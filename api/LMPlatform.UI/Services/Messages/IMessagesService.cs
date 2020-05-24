@@ -1,5 +1,6 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Web;
+using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules.Messages;
 
 namespace LMPlatform.UI.Services.Messages
@@ -31,11 +32,11 @@ namespace LMPlatform.UI.Services.Messages
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/Save")]
-        ResultViewData Save(string subject, string body, string recipients, string attachments);
+        ResultViewData Save(string subject, string body, int[] recipients, Attachment[] attachments);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveFrom")]
-        ResultViewData SaveFromUserId(string subject, string body, string recipients, string attachments, int fromId);
+        ResultViewData SaveFromUserId(string subject, string body, int[] recipients, Attachment[] attachments, int fromId);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/Delete")]
