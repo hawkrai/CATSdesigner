@@ -1,24 +1,22 @@
-<h2>Login</h2>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-            <div *ngIf="f.username.errors.required">Имя пользователя обязательно для заполнения!</div>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-            <div *ngIf="f.password.errors.required">Пароль обязателен для заполнения</div>
-        </div>
-    </div>
-    <div class="form-group">
-        <button [disabled]="loading" class="btn btn-primary">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Войти
-        </button>
-        <a routerLink="/register" class="btn btn-link">Register</a>
-    </div>
-</form>
+<div class="page-wrap">
+	<div class="container">
+		<img src="./../../assets/images/logo_nav_widescreen.png" class="logo" />
+		<form [formGroup]="loginForm">
+			<mat-form-field class="default" color="primary">
+				<input matInput color="primary" formControlName="userName" placeholder="Имя пользователя" type="text" required>
+			</mat-form-field>
+			<mat-form-field>
+				<input matInput color="primary" type="password" placeholder="Пароль" formControlName="password" required>
+			</mat-form-field>
+			<div>
+                <button  mat-flat-button color="primary" [class.spinner]="submitted" [disabled]="submitted" class="login" (click)="onSubmit()">Войти в систему</button>                
+            </div>
+      
+            <br/>
+            <div class="flex-center">
+                <a mat-flat-button color="primary" routerLink="/registration" href="">Регистрация</a>
+                <a mat-flat-button color="primary" routerLink="/forgot" href="">Забыли пароль?</a>
+            </div>	
+        </form>
+	</div>
+</div>

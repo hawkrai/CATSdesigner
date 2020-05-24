@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CoreService } from 'src/app/core/services/core.service';
 
 @Component({
   selector: 'app-viewer',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ViewerComponent implements OnInit {
 
-  constructor() { }
+  constructor(private coreService: CoreService, private cdRef:ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.coreService.removeCurrentSubject();    
+    });
   }
 
 }

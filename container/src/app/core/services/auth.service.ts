@@ -19,11 +19,19 @@ export class AuthenticationService {
         return this.currentUserSubject.value;
     }
 
+    setCurrentUserValue(user: any): void{
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.currentUserSubject.next(user);
+    } 
+
     login(username, password) {
-        return this.http.get<any>(`/Account/Login?userName=${username}&password=${password}`)
+        return this.http.post<any>(`/Account/Login`, 
+            {
+                userName: username,
+                password: password
+            })
             .pipe(map(user => {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                this.currentUserSubject.next(user);
+                this.setCurrentUserValue(user);
                 return user;
             }));
     }

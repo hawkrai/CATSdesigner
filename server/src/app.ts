@@ -57,7 +57,7 @@ app.get('*', (req,res) => {
 
   if (allowedExt.filter(ext => url.indexOf(ext) > 0).length > 0) {
      res.sendFile(path.resolve(`${modulePath}/${req.url}`));
-     res.setHeader('Cache-Control', 'max-age=31536000');
+     res.setHeader('Cache-Control', 'max-age=3153600');
   } else {
      res.sendFile(path.resolve(`${modulePath}/${entryPoint}`));
    }    

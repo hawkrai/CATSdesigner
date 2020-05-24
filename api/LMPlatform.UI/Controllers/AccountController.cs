@@ -49,11 +49,12 @@ namespace LMPlatform.UI.Controllers
                 }
 
                 this.UsersManagementService.UpdateLastLoginDate(userName);
+                
                 return this.Json(new
                 {
                     id = WebSecurity.CurrentUserId,
-                    userName = WebSecurity.CurrentUserName,
-                    role = Roles.GetRolesForUser().FirstOrDefault()
+                    userName = userName,
+                    role = Roles.GetRolesForUser(userName).FirstOrDefault()
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -169,6 +170,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public JsonResult ResetPassword(string userName, string password)
         {
             var token = WebSecurity.GeneratePasswordResetToken(userName, 1);
@@ -177,7 +179,8 @@ namespace LMPlatform.UI.Controllers
             return this.Json(isReset ? "OK" : "Неполучилось изменить пароль.", JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [AllowAnonymous]
         public JsonResult VerifySecretQuestion(string userName, string questionId, string answer)
         {
             var user = this.UsersManagementService.GetUser(userName);

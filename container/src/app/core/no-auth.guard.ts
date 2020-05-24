@@ -17,11 +17,8 @@ export class NoAuthGuard implements CanActivate {
     return this.authenticationService.check()
     .pipe(
       map(response => {
-        let isAut = currentUser !== undefined && currentUser !== null;
-        if(!isAut){
-          this.redirect(state);  
-        }
-        return isAut;
+        this.authenticationService.setCurrentUserValue(response);
+        return true;
       }),
       catchError(error => {
         this.redirect(state); 
