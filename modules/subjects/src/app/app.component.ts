@@ -4,7 +4,7 @@ import {IAppState} from './store/state/app.state';
 import {Store} from '@ngrx/store';
 import {SetSubject, SetUser} from './store/actions/subject.actions';
 import {User} from './models/user.model';
-
+import {CatsMessageService} from './services/cats.message';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,9 +17,11 @@ export class AppComponent implements OnInit{
   group: {id: '', Name: ''};
 
   constructor(private groupsService: GroupsService,
+              private catsMessageService: CatsMessageService,
               private store: Store<IAppState>) { }
 
   ngOnInit(): void {
+    this.catsMessageService.setupMessageCommunication();
     // localStorage.setItem('currentSubject', JSON.stringify({id: "2026", Name:"Тестирование ПО"}));
     // localStorage.setItem('currentUser', JSON.stringify({id: 2, role: 'lector', userName: 'popova'}));
     this.group = JSON.parse(localStorage.getItem('currentSubject'));

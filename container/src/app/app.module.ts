@@ -15,7 +15,6 @@ import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.compone
 import { LayoutService } from './layout/layout.service';
 import { LoginComponent } from './login/login.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,6 +31,7 @@ import { LoginComponent } from './login/login.component';
     ReactiveFormsModule,
     MatetialModule,
     CoreModule
+    
   ],
   providers: [
     LayoutService

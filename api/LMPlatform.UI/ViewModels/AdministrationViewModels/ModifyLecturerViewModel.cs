@@ -28,22 +28,65 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         private ICorrelationService CorrelationService => _correlationService.Value;
 
+        #region Properties
+
         public int LecturerId { get; set; }
+
+        public string Avatar { get; set; }
+
+        public string SkypeContact { get; set; }
+
+        public string Phone { get; set; }
+
+        public string Skill { get; set; }
+
+        public string About { get; set; }
+
+        [StringLength(50, ErrorMessage = "Имя не может иметь размер больше 50 символов")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Имя")]
+        [Required(ErrorMessage = "Поле Имя обязательно для заполнения")]
+        public string Name { get; set; }
+
+        [StringLength(50, ErrorMessage = "Фамилия не может иметь размер больше 50 символов")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Фамилия")]
+        [Required(ErrorMessage = "Поле Фамилия обязательно для заполнения")]
+        public string Surname { get; set; }
+
+        [StringLength(50, ErrorMessage = "Отчество не может иметь размер больше 50 символов")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Отчество")]
+        public string Patronymic { get; set; }
+
+        [Editable(false)]
+        [Display(Name = "Логин")]
+        public string UserName { get; set; }
+
+        [Display(Name = "Эл. почта")]
+        public string Email { get; set; }
+
+        [Display(Name = "Секретарь")]
+        public bool IsSecretary { get; set; }
+
+        [Display(Name = "Для выбора группы секретаря нажмите левой кнопкой мыши по соответствующему элементу в левом списке:")]
+        public List<int> SelectedGroupIds { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public MultiSelectList Groups { get; set; }
+
+        [Display(Name = "Руководитель дипломных проектов")]
+        public bool IsLecturerHasGraduateStudents { get; set; }
+
+        #endregion
+
+        public string FullName => $"{this.Surname} {this.Name} {this.Patronymic}";
 
         public ModifyLecturerViewModel()
         {
             Groups = new MultiSelectList(new List<Correlation>(CorrelationService.GetCorrelation("Group", null)), "Id", "Name");
         }
-
-		public string Avatar { get; set; }
-
-		public string SkypeContact { get; set; }
-
-		public string Phone { get; set; }
-
-		public string Skill { get; set; }
-
-		public string About { get; set; }
 
         public ModifyLecturerViewModel(Lecturer lecturer)
         {
@@ -73,45 +116,6 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 	            }
             }
         }
-        
-        [StringLength(50, ErrorMessage = "Имя не может иметь размер больше 50 символов")]
-        [DataType(DataType.Text)]
-        [Display(Name = "Имя")]
-        [Required(ErrorMessage = "Поле Имя обязательно для заполнения")]
-        public string Name { get; set; }
-
-        [StringLength(50, ErrorMessage = "Фамилия не может иметь размер больше 50 символов")]
-        [DataType(DataType.Text)]
-        [Display(Name = "Фамилия")]
-        [Required(ErrorMessage = "Поле Фамилия обязательно для заполнения")]
-        public string Surname { get; set; }
-
-        [StringLength(50, ErrorMessage = "Отчество не может иметь размер больше 50 символов")]
-        [DataType(DataType.Text)]
-        [Display(Name = "Отчество")]
-        public string Patronymic { get; set; }
-
-        [Editable(false)]
-        [Display(Name = "Логин")]
-        public string UserName { get; set; }
-
-        [Display(Name = "Эл. почта")]
-        public string Email { get; set; }
-
-        public string FullName => $"{this.Surname} {this.Name} {this.Patronymic}";
-
-        [Display(Name = "Секретарь")]
-        public bool IsSecretary { get; set; }
-
-        [Display(Name = "Для выбора группы секретаря нажмите левой кнопкой мыши по соответствующему элементу в левом списке:")]
-        public List<int> SelectedGroupIds { get; set; }
-
-	    public bool IsActive { get; set; }
-
-	    public MultiSelectList Groups { get; set; }
-
-        [Display(Name = "Руководитель дипломных проектов")]
-        public bool IsLecturerHasGraduateStudents { get; set; }
 
         public IList<SelectListItem> GetSubjects()
         {

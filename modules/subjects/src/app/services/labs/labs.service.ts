@@ -64,4 +64,32 @@ export class LabsService {
   public setLabsMark(body): Observable<any> {
     return this.rest.setLabsMark(body);
   }
+
+  public getFilesLab(body: {subjectId: string, userId: number}): Observable<any> {
+    return this.rest.getFilesLab(body);
+  }
+
+  public deleteUserFile(body: {id: string}): Observable<any> {
+    return this.rest.deleteUserFile(body);
+  }
+
+  public sendUserFile(body): Observable<any> {
+    return this.rest.sendUserFile(body);
+  }
+
+  public getAllStudentFilesLab(subjectId: string, groupId: string): Observable<any> {
+    return this.rest.getAllStudentFilesLab(subjectId, groupId);
+  }
+
+  public receivedLabFile(body: {userFileId: number}): Observable<any> {
+    return this.rest.receivedLabFile(body);
+  }
+
+  public cancelReceivedLabFile(body: {userFileId: number}): Observable<any> {
+    return this.rest.cancelReceivedLabFile(body);
+  }
+
+  public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
+    return this.rest.checkPlagiarism(body);
+  }
 }

@@ -57,7 +57,7 @@ app.get('*', (req, res) => {
     let entryPoint = setModule.entryPoint;
     if (allowedExt.filter(ext => url.indexOf(ext) > 0).length > 0) {
         res.sendFile(path_1.default.resolve(`${modulePath}/${req.url}`));
-        res.setHeader('Cache-Control', 'max-age=31536000');
+        res.setHeader('Cache-Control', 'max-age=3153600');
     }
     else {
         res.sendFile(path_1.default.resolve(`${modulePath}/${entryPoint}`));

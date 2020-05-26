@@ -47,7 +47,7 @@ import {FileDownloadPopoverComponent} from './shared/file-download-popover/file-
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects]),
-    StoreDevtoolsModule.instrument()
+    StoreDevtoolsModule.instrument()    
   ],
   entryComponents: [
     DeletePopoverComponent,

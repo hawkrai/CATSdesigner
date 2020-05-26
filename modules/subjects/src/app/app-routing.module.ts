@@ -7,7 +7,11 @@ import { LabsComponent } from './modules/labs/labs.component';
 
 
 const routes: Routes = [
-  // { path: ':subjectId', redirectTo: '/:subjectId/news'},
+  {
+    path: '',
+    redirectTo: 'news',
+    pathMatch: 'full'
+  },
   { path: 'news', component: SubjectNewsComponent},
   { path: 'lectures', component: LecturesComponent},
   { path: 'labs', component: LabsComponent},

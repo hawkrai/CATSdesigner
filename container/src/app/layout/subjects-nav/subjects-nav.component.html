@@ -18,13 +18,13 @@
 <mat-toolbar class="subjects-toolbar mat-elevation-z6 main-toolbar" color="primary">
     <button aria-haspopup="true" mat-button="" [matMenuTriggerFor]="menu" class="mat-button">
         <span class="mat-button-wrapper">
-            <h2 class="mat-h2">{{selectedSubject != null ? selectedSubject.Name : "Выберите предмет"}}</h2>        
+            <h2 class="mat-h2">{{coreService.selectedSubject != null ? coreService.selectedSubject.Name : "Выберите предмет"}}</h2>        
         </span>
         <div class="mat-button-ripple mat-ripple" matripple=""></div>
         <div class="mat-button-focus-overlay"></div>
     </button>
     <mat-menu #menu="matMenu">
-        <a mat-menu-item *ngFor="let subject of subjects; let i = inde x" [routerLink]="'/web/viewer/subject/' + subject.Id"> {{subject.Name}}</a>
+        <a mat-menu-item *ngFor="let subject of subjects; let i = index" (click)="changeSubject(subject.Id)"> {{subject.Name}}</a>
             <!-- <a mat-menu-item [routerLink]="'/web/viewer/subject/3'"> Тестирование и отладка ПО </a>
             <a mat-menu-item [routerLink]="'/web/viewer/subject/2025'"> Модульное тестирование </a>
             <a mat-menu-item [routerLink]="'/web/viewer/subject/2026'"> Надежность ПО </a>

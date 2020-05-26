@@ -37,7 +37,7 @@ namespace LMPlatform.UI.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(string userName, string password, string returnUrl)
+        public ActionResult Login(string userName, string password)
         {
             if (AccountAuthenticationService.Login(userName, password, true))
             {
@@ -49,11 +49,12 @@ namespace LMPlatform.UI.Controllers
                 }
 
                 this.UsersManagementService.UpdateLastLoginDate(userName);
+                
                 return this.Json(new
                 {
                     id = WebSecurity.CurrentUserId,
-                    userName = WebSecurity.CurrentUserName,
-                    role = Roles.GetRolesForUser().FirstOrDefault()
+                    userName = userName,
+                    role = Roles.GetRolesForUser(userName).FirstOrDefault()
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -136,7 +137,7 @@ namespace LMPlatform.UI.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult Register(RegisterViewModel model)
         {
             if (!this.ModelState.IsValid) return StatusCode(HttpStatusCode.BadRequest);
@@ -152,6 +153,14 @@ namespace LMPlatform.UI.Controllers
             }
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult UserExists(string userName)
+        {
+            var result = this.UsersManagementService.IsExistsUser(userName);
+            return JsonResponse(result);
+        }
+
         [HttpPost]
         public JsonResult SavePassword(string old, string newPassword)
         {
@@ -160,7 +169,8 @@ namespace LMPlatform.UI.Controllers
             return this.Json(false);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [AllowAnonymous]
         public JsonResult ResetPassword(string userName, string password)
         {
             var token = WebSecurity.GeneratePasswordResetToken(userName, 1);
@@ -169,7 +179,8 @@ namespace LMPlatform.UI.Controllers
             return this.Json(isReset ? "OK" : "Неполучилось изменить пароль.", JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [AllowAnonymous]
         public JsonResult VerifySecretQuestion(string userName, string questionId, string answer)
         {
             var user = this.UsersManagementService.GetUser(userName);

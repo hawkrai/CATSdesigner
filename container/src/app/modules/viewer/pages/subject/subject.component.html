@@ -1,19 +1,19 @@
 <mat-sidenav-container class="app-sidenav-subject">
     <mat-sidenav #subjectsidenav opened mode="side" opened="true" class="app-sidenav-menu-subject">
         <mat-nav-list>
-            <a mat-list-item (click)="openModule('http://localhost:3000/news')">
+            <a mat-list-item (click)="openModule('news', 'subject')">
                 <div mat-line>
                     <mat-icon class="white-icon">subject</mat-icon>
                 </div>                
                 <div mat-line>Новости</div> 
             </a>
-            <a mat-list-item (click)="openModule('http://localhost:3000/lectures')">
+            <a mat-list-item (click)="openModule('lectures', 'subject')">
                 <div mat-line>
                     <mat-icon class="white-icon">subject</mat-icon>
                 </div>                
                 <div mat-line>Лекции</div> 
             </a>
-            <a mat-list-item (click)="openModule('http://localhost:3000/labs')">
+            <a mat-list-item (click)="openModule('labs', 'subject')">
                 <div mat-line>
                     <mat-icon class="white-icon">subject</mat-icon>
                 </div>                
@@ -43,7 +43,7 @@
     </mat-sidenav>
     <div class="app-sidenav-content-subject">
         <div class="subject-frame">
-            <iframe [src]="selectedModuleUrl"></iframe>
+            <iframe [src]="selectedModule"></iframe>
         </div>
     </div>
 </mat-sidenav-container>

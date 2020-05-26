@@ -5,12 +5,14 @@ import {Observable} from 'rxjs';
 import {LoadGroups, SetCurrentGroup} from '../../store/actions/groups.actions';
 import {getGroups} from '../../store/selectors/groups.selectors';
 import {Group} from '../../models/group.model';
+import {GroupsRestService} from './groups-rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupsService {
-  constructor(private store$: Store<IAppState>) {
+  constructor(private store$: Store<IAppState>,
+              private rest: GroupsRestService) {
   }
 
   loadDate() {
@@ -23,5 +25,9 @@ export class GroupsService {
 
   setCurrentGroup(group: Group) {
     this.store$.dispatch(new SetCurrentGroup(group));
+  }
+
+  getAllOldGroups(subjectId: string): Observable<Group[]> {
+    return this.rest.getAllOldGroups(subjectId);
   }
 }

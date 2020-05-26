@@ -1,4 +1,4 @@
 export class Group {
-  public Id: number;
-  public Name: string;
+  Id: number;
+  Name: string;
 }

@@ -1,0 +1,94 @@
+form {
+    max-width: 350px;
+    margin: auto;
+    
+    > div > button{
+        width: 350px;
+    } 
+    ::ng-deep .mat-input-element::placeholder {
+        color: white;
+      }
+      
+      ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-label {
+        color: white;
+    }
+    
+    .spinner-container {
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+    }
+
+  }
+
+  @keyframes spinner {
+    to {transform: rotate(360deg);}
+  }
+   
+  .spinner:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    border-top-color: #000000;
+    animation: spinner .8s linear infinite;
+  }
+
+  mat-form-field  {
+    display: block;
+  }
+  .text-center{
+    text-align: center;
+  }
+  .flex-center{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+ }
+  .remember-me{
+    flex-direction: row-reverse;
+  }
+  .logo{
+    max-width: 400px;
+    margin: auto;
+    width: 100%;
+    display: block;
+    margin-top: -80px;
+    color: #367fa8;
+  } 
+  .page-wrap{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background-color: #367fa8;
+  }
+  .container{
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    background: #367fa8;
+  }
+  .badge-logo{
+    width: 60px;
+    margin: 0 auto 10px;
+    display: block;
+  }
+  @media (max-width:600px){
+    .flex-center{
+      display: right;
+      text-align: center;
+    }
+    .login{
+          /* width: 100%; */
+          margin-bottom: 15px;
+    }
+  }

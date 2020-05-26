@@ -43,7 +43,6 @@ export class VisitStatisticsComponent implements OnInit {
 
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;
-          console.log(res)
         });
 
         this.refreshMarks();
@@ -54,7 +53,6 @@ export class VisitStatisticsComponent implements OnInit {
   refreshMarks() {
     this.labService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
       this.student = res;
-      console.log(res)
     })
   }
 
@@ -72,31 +70,33 @@ export class VisitStatisticsComponent implements OnInit {
   }
 
   setVisitMarks(date: ScheduleProtectionLab, index) {
-    const students = this._getStudentGroup(date.subGroup);
-    const visits = {date: date.date, students: []};
-    students.forEach(student => {
-      const visit = {
-        name: student.FullName,
-        mark: student.LabVisitingMark[index].Mark,
-        comment: student.LabVisitingMark[index].Comment
+    if (this.teacher) {
+      const students = this._getStudentGroup(date.subGroup);
+      const visits = {date: date.date, students: []};
+      students.forEach(student => {
+        const visit = {
+          name: student.FullName,
+          mark: student.LabVisitingMark[index].Mark,
+          comment: student.LabVisitingMark[index].Comment
+        };
+        visits.students.push(visit);
+      });
+
+      const dialogData: DialogData = {
+        title: 'Посещаемость студентов',
+        buttonText: 'Сохранить',
+        body: visits
       };
-      visits.students.push(visit);
-    });
+      const dialogRef = this.openDialog(dialogData, VisitingPopoverComponent);
 
-    const dialogData: DialogData = {
-      title: 'Посещаемость студентов',
-      buttonText: 'Сохранить',
-      body: visits
-    };
-    const dialogRef = this.openDialog(dialogData, VisitingPopoverComponent);
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const visitsModel = {Id: [], comments: [], dateId: date.id, marks: [], students, studentsId: []};
-        this.labService.setLabsVisitingDate(this.getModelVisitLabs(students, index, visitsModel, result.students))
-          .subscribe(res => res.Code === '200' && this.refreshMarks());
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const visitsModel = {Id: [], comments: [], dateId: date.id, marks: [], students, studentsId: []};
+          this.labService.setLabsVisitingDate(this.getModelVisitLabs(students, index, visitsModel, result.students))
+            .subscribe(res => res.Code === '200' && this.refreshMarks());
+        }
+      });
+    }
   }
 
   getModelVisitLabs(students, index, visitsModel, visits) {

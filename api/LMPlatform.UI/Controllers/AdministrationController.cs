@@ -199,9 +199,9 @@ namespace LMPlatform.UI.Controllers
 
                 return StatusCode(HttpStatusCode.OK);
             }
-            catch
+            catch(Exception ex)
             {
-                return StatusCode(HttpStatusCode.InternalServerError);
+                return StatusCode(HttpStatusCode.InternalServerError, ex.StackTrace);
             }
         }
 
@@ -261,6 +261,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult GetGroupsJson()
         {
             var groups = this.GroupManagementService.GetGroups();
@@ -486,15 +487,6 @@ namespace LMPlatform.UI.Controllers
             {
                 return StatusCode(HttpStatusCode.InternalServerError, ex.Message);
             }
-        }
-
-        [HttpGet]
-        [OverrideAuthorization]
-        [JwtAuth]
-        public ActionResult UserExists(string userName)
-        {
-            var result = this.UsersManagementService.IsExistsUser(userName);
-            return JsonResponse(result);
         }
 
         #endregion
