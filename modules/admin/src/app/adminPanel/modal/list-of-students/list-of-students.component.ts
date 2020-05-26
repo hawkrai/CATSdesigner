@@ -19,11 +19,11 @@ export class ListOfStudentsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    this.loadStudentById(this.data.data);
+    this.loadStudentById(this.data);
   }
 
   isStudents() {
-    return this.data.data.length !== 0;
+    return this.data.length !== 0;
   }
 
   async loadStudentById(groupId) {
@@ -31,7 +31,6 @@ export class ListOfStudentsComponent implements OnInit {
       result => {
       this.dataSource.data = result.Students;
       this.isLoad = true;
-      console.log('q' , this.dataSource.data);
     });
   }
 

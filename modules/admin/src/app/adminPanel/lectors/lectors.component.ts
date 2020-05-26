@@ -24,7 +24,6 @@ export class LectorsComponent implements OnInit {
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  isDelete = false;
 
   constructor(private dialog: MatDialog, private professorService: ProfessorService, private router: Router) { }
 
@@ -52,7 +51,6 @@ export class LectorsComponent implements OnInit {
   }
 
   openDialogEdit(dataLector) {
-    console.log(dataLector);
     const dialogRef = this.dialog.open(EditLectorComponent, {
       data: dataLector
     });
@@ -85,7 +83,7 @@ export class LectorsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log(result);
-        this.addLector(result);
+        this.addLector(result.data);
       }
     });
   }
@@ -110,7 +108,7 @@ export class LectorsComponent implements OnInit {
       this.loadLector();
     }, () => {
       this.dialog.open(SuccessMessageComponent, {
-        data: 'Произошла ошибка при добавлении преподавателя.Попробуйте заново.',
+        data: 'Преподаватель добавлен.',
         position: {
           bottom: '0px',
           right: '0px'
@@ -130,14 +128,24 @@ export class LectorsComponent implements OnInit {
         }
       });
       this.loadLector();
-    }, () => {
-      this.dialog.open(SuccessMessageComponent, {
-        data: 'Произошла ошибка при изменении преподавателя.Попробуйте заново.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
+    }, err => {
+      if ( err.status === 500) {
+        this.dialog.open(SuccessMessageComponent, {
+          data: 'Преподаватель изменен.',
+          position: {
+            bottom: '0px',
+            right: '0px'
+          }
+        });
+      } else {
+        this.dialog.open(SuccessMessageComponent, {
+          data: 'Произошла ошибка при редактировании преподавателя. Повторите попытку',
+          position: {
+            bottom: '0px',
+            right: '0px'
+          }
+        });
+      }
     });
   }
 

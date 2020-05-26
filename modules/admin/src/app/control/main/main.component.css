@@ -1,12 +1,14 @@
 h1 {
     font-weight: lighter;
     font-size: 28px;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
 .inline {
     width: 95%;
     border-top: 1px solid lavender;
     padding-top: 20px;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
 p {

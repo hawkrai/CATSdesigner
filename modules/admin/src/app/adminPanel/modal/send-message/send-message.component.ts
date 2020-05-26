@@ -20,14 +20,13 @@ export class SendMessageComponent implements OnInit {
 
   files: File[] = [];
   userList;
-  userControl = new FormControl();
   selectedUsers: Recipients[] = [];
   form: FormGroup;
-  visible = true;
   selectable = true;
   removable = true;
 
   ngOnInit() {
+    console.log(this.data);
     this.form = this.formBuilder.group({
       users: new FormControl(this.data.user),
       theme: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]),

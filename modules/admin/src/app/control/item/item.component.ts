@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { LectureService } from 'src/app/service/lecture.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatTableDataSource } from '@angular/material';
@@ -34,6 +34,7 @@ export class ItemComponent implements OnInit {
   }
 
   getParamIdFromUrl() {
+    this.isLoadData = false;
     this.route.params.pipe(
      flatMap(({subjectId}) => forkJoin([
        this.lectureService.getLectures(subjectId),
@@ -46,5 +47,4 @@ export class ItemComponent implements OnInit {
       this.isLoadData = true;
     });
   }
-
 }

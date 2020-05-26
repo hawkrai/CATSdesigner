@@ -52,7 +52,7 @@ export class ChangePasswordComponent implements OnInit {
     this.accountService.verifySecretQuestion(this.form.controls.Username.value,
       this.form.controls.SecretQuestion.value, this.form.controls.SecretAnswer.value).subscribe(
         res => {
-          if (res) {
+          if (res === 'OK') {
             this.dialogRef.close();
             this.dialog.open( ResetPasswordModalComponent, {
               data: this.form.controls.Username.value

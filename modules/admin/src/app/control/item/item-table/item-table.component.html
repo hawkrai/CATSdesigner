@@ -15,12 +15,10 @@
         <td mat-cell [hidden] = "!isLab" *matCellDef="let element"> {{ element.Theme }} </td>
     </ng-container>
 
-
     <ng-container matColumnDef="shortName">
         <th mat-header-cell [hidden] = "!isLab" *matHeaderCellDef> Краткое название </th>
         <td mat-cell [hidden] = "!isLab" *matCellDef="let element"> {{element.ShortName}} </td>
     </ng-container>
-
 
     <ng-container matColumnDef="countOfHour">
         <th mat-header-cell *matHeaderCellDef> Количество часов </th>

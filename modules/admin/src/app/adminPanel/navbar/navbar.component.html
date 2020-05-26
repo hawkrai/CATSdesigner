@@ -32,7 +32,7 @@
                 Admin
             </button>
             <mat-menu #adminMenu="matMenu" yPosition="below">
-                <button mat-menu-item routerLink='/login'>
+                <button mat-menu-item (click)="this.logOff()" routerLink='/login'>
                     <mat-icon class="icon main-icon">exit_to_app</mat-icon>
                     Выйти
                 </button>

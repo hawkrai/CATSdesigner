@@ -7,17 +7,17 @@
         </button>
     </div>
     <div class="message-body">
-        <a class="message-detail-author">{{ this.message.AthorName}}</a>
+        <a class="message-detail-author">{{ this.message.AthorName }}</a>
         <div class="message-send">
             <label class="message-label">Отправлено:</label>{{this.message.Date }}
         </div>
         <div class="message-send">
             <label class="message-label">Кому:</label>
-            <div class="message-name" *ngFor='let res of this.message.Recipients'>{{ res }}</div>
+            <div class="message-name" *ngFor='let recipients of this.message.Recipients'>{{ recipients }}</div>
         </div>
     </div>
     <p class="message-text">
         {{ this.message.PreviewText }}
     </p>
-    <button mat-button class="message-button">Ответить</button>
+    <button *ngIf="this.data.mode" mat-button class="message-button" (click)="this.sendMessage()">Ответить</button>
 </div>

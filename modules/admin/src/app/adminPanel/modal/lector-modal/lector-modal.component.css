@@ -29,3 +29,9 @@ mat-dialog-actions {
 mat-dialog-actions {
     float: right;
 }
+
+.spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}

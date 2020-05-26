@@ -8,7 +8,7 @@ import { MessageResponse, DisplayMessage, Recipients } from '../model/message';
 })
 export class MessageService {
 
-    api = 'Services/Messages/MessagesService.svc/';
+    api = '/api/Services/Messages/MessagesService.svc/';
 
     constructor(private http: HttpClient) {
     }
@@ -35,6 +35,6 @@ export class MessageService {
     }
 
     searchRecipients(searchValue): Observable<Recipients[]> {
-        return this.http.get<Recipients[]>('/Message/GetSelectListOptions?term=' + searchValue);
+        return this.http.get<Recipients[]>('/api/Message/GetSelectListOptions?term=' + searchValue);
     }
 }

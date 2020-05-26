@@ -1,9 +1,9 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div *ngIf="this.isLoad">
     <div class="container">
-        <h2>Изучаемые предметы</h2>
+        <p class="title">Изучаемые предметы</p>
         <button mat-button class="close-icon" [mat-dialog-close]="true">
-            <mat-icon>close</mat-icon>
+          <mat-icon>close</mat-icon>
         </button>
     </div>
     <p class="student-name">{{ this.subjectInfo.Student }}</p>

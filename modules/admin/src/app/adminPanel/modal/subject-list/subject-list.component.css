@@ -8,6 +8,19 @@ table {
     width: 100%;
 }
 
+.title {
+  font-size: 20px;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+.close-icon {
+  float: right;
+}
+
+.title {
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
 th {
     width: 100px;
 }
