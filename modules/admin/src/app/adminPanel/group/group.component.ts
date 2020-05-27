@@ -19,9 +19,7 @@ export class GroupComponent implements OnInit {
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  isDelete = false;
   isLoad = false;
-  isLoadStudent = false;
 
   constructor(private groupService: GroupService, private dialog: MatDialog) { }
 
@@ -32,6 +30,7 @@ export class GroupComponent implements OnInit {
   }
 
   loadGroup() {
+    this.isLoad = false;
     this.groupService.getGroups().subscribe(items => {
       this.dataSource.data = items;
       this.isLoad = true;
@@ -50,34 +49,23 @@ export class GroupComponent implements OnInit {
       });
       this.loadGroup();
     }, err => {
-      this.dialog.open(SuccessMessageComponent, {
-        data: 'Произошла ошибка при сохранении.Попробуйте заново.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
-    });
-  }
-
-  editGroupJson(group: Group) {
-    this.groupService.editGroup(group).subscribe(() => {
-      this.dialog.open(SuccessMessageComponent, {
-        data: 'Группа успешно изменена.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
-      this.loadGroup();
-    }, () => {
-      this.dialog.open(SuccessMessageComponent, {
-        data: 'Произошла ошибка при изменении.Попробуйте заново.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
+      if (err.status === 500) {
+        this.dialog.open(SuccessMessageComponent, {
+          data: 'Группа успешно сохранена.',
+          position: {
+            bottom: '0px',
+            right: '0px'
+          }
+        });
+      } else {
+        this.dialog.open(SuccessMessageComponent, {
+          data: 'Произошла ошибка при сохранении.Попробуйте заново.',
+          position: {
+            bottom: '0px',
+            right: '0px'
+          }
+        });
+      }
     });
   }
 
@@ -87,7 +75,7 @@ export class GroupComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.saveGroup(result);
+        this.saveGroup(result.data);
       }
     });
   }
@@ -95,7 +83,6 @@ export class GroupComponent implements OnInit {
   deleteGroup(id) {
     const dialogRef = this.dialog.open(DeleteItemComponent);
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result) {
         this.groupService.deleteGroup(id).subscribe(() => {
           this.loadGroup();
@@ -106,22 +93,18 @@ export class GroupComponent implements OnInit {
 
   editGroup(group: Group) {
     const dialogRef = this.dialog.open(AddGroupComponent, {
-      data: {
         data: group
-      }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.editGroupJson(result.data);
+        this.saveGroup(result.data);
       }
     });
   }
 
   async openListOfStudents(groupId) {
     const dialogRef = this.dialog.open(ListOfStudentsComponent, {
-      data: {
         data: groupId
-      }
     });
     dialogRef.afterClosed();
   }

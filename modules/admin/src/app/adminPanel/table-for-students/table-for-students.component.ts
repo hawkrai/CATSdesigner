@@ -18,7 +18,7 @@ export class TableForStudentsComponent implements OnInit {
 
   isLoad: boolean;
   student = new Student();
-  displayedColumns: string[] = ['position', 'Group', 'FullName', 'UserName', 'lastLogin', 'action'];
+  displayedColumns: string[] = ['position', 'GroupName', 'FullName', 'UserName', 'action'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -55,13 +55,23 @@ export class TableForStudentsComponent implements OnInit {
       });
       this.loadStudent();
     }, err => {
-      this.dialog.open(SuccessMessageComponent, {
-        data: 'Произошла ошибка при изменении студента.Попробуйте заново.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
+      if ( err.status === 500) {
+        this.dialog.open(SuccessMessageComponent, {
+          data: 'Студент успешно изменен.',
+          position: {
+            bottom: '0px',
+            right: '0px'
+          }
+        });
+      } else {
+        this.dialog.open(SuccessMessageComponent, {
+          data: 'Произошла ошибка при изменении студента.Попробуйте заново.',
+          position: {
+            bottom: '0px',
+            right: '0px'
+          }
+        });
+      }
     });
   }
 
@@ -87,6 +97,7 @@ export class TableForStudentsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        console.log(result.data);
         this.editStudent(result.data);
       }
     });

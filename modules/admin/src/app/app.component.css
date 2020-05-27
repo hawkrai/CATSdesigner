@@ -50,3 +50,11 @@ h1 {
     left: 50%;
     top: 50%;
 }
+
+/deep/ .mat-header-cell {
+  font-size: 14px;
+}
+
+/deep/ .mat-cell {
+  font-size: 14px;
+}

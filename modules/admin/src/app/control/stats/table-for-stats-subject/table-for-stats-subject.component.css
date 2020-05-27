@@ -9,6 +9,7 @@ table {
 .main-header {
     text-align: left;
     display: flex;
+    font-size: 16px;
 }
 
 .main-header p {
@@ -21,4 +22,8 @@ td.mat-cell {
     text-align: center;
     border: 1px solid #CCC;
     padding: 0 !important;
+}
+
+.column {
+    width: 10%;
 }

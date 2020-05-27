@@ -1,14 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import { Observable } from 'rxjs';
-import { Professor, EditProfessor } from '../model/professor';
+import {Professor, EditProfessor, AddProfessor} from '../model/professor';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProfessorService {
 
-    api = '/Administration/';
+    api = '/api/Administration/';
 
     constructor(private http: HttpClient) {
     }
@@ -21,12 +21,12 @@ export class ProfessorService {
         return this.http.get<Professor[]>(this.api + 'GetProfessorsJson');
     }
 
-    addProfessor(professor: Professor): Observable<Professor> {
-        return this.http.post<Professor>(this.api + 'SaveProfessorJson/', professor);
+    addProfessor(professor: AddProfessor) {
+        return this.http.post(this.api + 'AddProfessorJson', professor);
     }
 
     editProfessor(professor): Observable<EditProfessor> {
-        return this.http.post<EditProfessor>(this.api + 'EditProfessor', professor);
+        return this.http.post<EditProfessor>(this.api + 'SaveProfessorJson', professor);
     }
 
     deleteProfessor(professorId): Observable<void> {

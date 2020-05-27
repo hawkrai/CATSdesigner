@@ -15,7 +15,6 @@ import { ItemComponent } from './item/item.component';
 import { GeneralComponent } from './general/general.component';
 import { ItemTableComponent } from './item/item-table/item-table.component';
 import { StatsComponent } from './stats/stats.component';
-import { TableForAllSubjectComponent } from './stats/table-for-all-subject/table-for-all-subject.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { GroupNotFoundComponent } from './group-not-found/group-not-found.component';
 import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/table-for-stats-subject.component';
@@ -29,7 +28,6 @@ import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/t
     GeneralComponent,
     ItemTableComponent,
     StatsComponent,
-    TableForAllSubjectComponent,
     GroupNotFoundComponent,
     TableForStatsSubjectComponent
   ],

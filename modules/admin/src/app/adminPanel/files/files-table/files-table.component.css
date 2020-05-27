@@ -37,3 +37,11 @@ button .mat-icon {
     left: 50%;
     top: 50%;
 }
+
+a {
+  font-weight: lighter;
+}
+
+a:hover {
+  font-weight: lighter;
+}

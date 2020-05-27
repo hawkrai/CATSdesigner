@@ -4,3 +4,8 @@ export class ResetPassword {
     Password: string;
     ConfirmPassword: string;
 }
+
+export class ResetPasswordJson {
+  userName: string;
+  password: string;
+}

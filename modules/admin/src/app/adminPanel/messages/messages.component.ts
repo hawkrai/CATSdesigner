@@ -33,9 +33,11 @@ export class MessagesComponent implements OnInit {
     });
   }
 
-  openMessageDetails(elementId) {
+  openMessageDetails(elementId, mode) {
     const dialogRef = this.dialog.open(MessageDetailComponent, {
-      data: elementId
+      data: {
+        elementId, mode
+      }
     });
     dialogRef.afterClosed();
   }

@@ -1,14 +1,13 @@
 <div>
-    <div mat-dialog-title>
-        <h1>Контроль успеваемости</h1>
-        <button mat-button class="close-icon" [mat-dialog-close]="true">
-            <mat-icon>close</mat-icon>
-        </button>
+    <div class="title">Контроль успеваемости
+      <button mat-button class="close-icon" [mat-dialog-close]="true">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
     <mat-dialog-content>
         <div>
             <mat-form-field>
-                <input #input matInput placeholder="Введите номер группы">
+                <input #input matInput placeholder="Введите номер группы" maxLength="20px">
             </mat-form-field>
         </div>
     </mat-dialog-content>
