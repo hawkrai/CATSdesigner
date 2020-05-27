@@ -28,14 +28,15 @@ export class ControlCompletingComponent extends AutoUnsubscribeBase implements O
   }
 
   async ngOnInit() {
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
     for (let i = 0; i < 100; i++) {
-      this.testPassingService.getControlItems("3")
+      this.testPassingService.getControlItems(subject.id)
         .pipe(takeUntil(this.unsubscribeStream$))
         .subscribe((controlItems: ControlItems[]) => {
           this.controlItems = controlItems;
           this.filterStudents(controlItems);
         });
-      await this.testPassingService.getControlItems("3");
+      await this.testPassingService.getControlItems(subject.id);
     }
   }
 

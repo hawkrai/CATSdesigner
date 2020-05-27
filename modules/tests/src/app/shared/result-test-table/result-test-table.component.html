@@ -40,7 +40,8 @@
     </div>
   </ng-container>
   <div class="result-test-table-chart" *ngIf="!hideChart">
-    <canvas baseChart
+    <canvas class="result-test-table-chart-graph"
+      baseChart
             [datasets]="barChartData"
             [labels]="barChartLabels"
             [options]="barChartOptions"

@@ -51,13 +51,13 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   public answerQuestion(): void {
-    //todo hardcode
+    const user = JSON.parse(localStorage.getItem("currentUser"));
     console.log(this.chosenAnswer);
     const request = {
       answers: [],
       questionNumber: this.question.Number,
       testId: this.test.Id,
-      userId: 10031
+      userId: user.id
     };
     if (this.question.Question.QuestionType === 0) {
       this.question.Question.Answers.forEach((answer) => {

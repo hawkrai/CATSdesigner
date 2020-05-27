@@ -32,6 +32,9 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public filterStudentsString: string = "";
   public inputValue: string = "";
   public filterCompletingString: string = "";
+  //todo any delete
+  public user: any;
+  public subject: any;
   public allowDropdown: boolean;
   public adminTests: boolean = true;
   public groups: Group[];
@@ -48,7 +51,12 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   ngOnInit() {
-    this.getTests("1");
+    localStorage.setItem("currentUser",JSON.stringify({id:10031,role:"lector", userName:"popova"}));
+    localStorage.setItem("currentSubject",JSON.stringify({id: "3", Name:"Тестирование ПО"}));
+    localStorage.setItem("locale","rus");
+    this.user = JSON.parse(localStorage.getItem("currentUser"));
+    this.subject = JSON.parse(localStorage.getItem("currentSubject"));
+    this.getTests(this.subject.id);
   }
 
   openDialog(event?: any): void {
@@ -60,7 +68,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-        this.getTests("1");
+        this.getTests(this.subject.id);
         this.cdr.detectChanges();
         console.log(result);
       });
@@ -75,7 +83,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
-        this.getTests("1");
+        this.getTests(this.subject.id);
         this.cdr.detectChanges();
         console.log(result);
       });
@@ -100,7 +108,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     this.testService.deleteTest(testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(() => {
-        this.getTests("1");
+        this.getTests(this.subject.id);
       });
   }
 

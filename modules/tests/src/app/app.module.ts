@@ -100,6 +100,7 @@ import {SelectAutocompleteModule} from 'mat-select-autocomplete';
   ],
   entryComponents: [DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,
+    EditTestPopupComponent,
     QuestionPopupComponent,
     QuestionOtherTestComponent,
     AnswersPopupComponent],

@@ -31,7 +31,8 @@ export class ResultPupilComponent extends AutoUnsubscribeBase implements OnInit,
   }
 
   ngOnInit() {
-    this.testPassingService.getStudentResults("3")
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+    this.testPassingService.getStudentResults(subject.id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((results) => {
         this.results = results;

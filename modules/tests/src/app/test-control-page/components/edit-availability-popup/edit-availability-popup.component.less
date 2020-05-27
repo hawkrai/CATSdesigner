@@ -1,26 +1,33 @@
-.availability-popup{
-  &-container{
+.availability-popup {
+  &-container {
     border-bottom: 1px solid rgba(0, 0, 0, .42);
     text-align: center;
   }
 
-  &-content{
-    &-blocks{
+  &-content {
+    width: 100%;
+    &-blocks {
       display: flex;
+      width: 100%;
       justify-content: space-between;
+      &-item {
+        width: 45%;
+      }
     }
+
   }
 
-  &-loader{
+  &-loader {
     display: flex;
     align-items: center;
     justify-content: center;
-    &-margin{
+    &-margin {
 
     }
   }
 
 }
-.mat-dialog-actions{
+
+.mat-dialog-actions {
   justify-content: flex-end;
 }

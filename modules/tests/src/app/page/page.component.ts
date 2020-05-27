@@ -29,7 +29,8 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   ngOnInit() {
-    this.getTests('1');
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+    this.getTests(subject.id);
   }
 
   public sortTests(tests) {
@@ -64,7 +65,7 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   private getTests(subjectId): void {
-    this.testPassingService.getAvailableTests()
+    this.testPassingService.getAvailableTests(subjectId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((tests) => {
         this.allTests = tests;

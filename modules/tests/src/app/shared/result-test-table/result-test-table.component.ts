@@ -29,6 +29,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
         }
       }]
     },
+    aspectRatio: 6,
     plugins: {
       datalabels: {
         anchor: 'end',

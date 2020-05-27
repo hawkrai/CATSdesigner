@@ -21,7 +21,9 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     'Предтест для обучения в ЭУМК',
     'Тест для обучения в ЭУМК',
     'Тест для обучения с искусственной нейронной сетью'];
-
+//todo any delete
+  public user: any;
+  public subject: any;
   public chosenType: any;
   public editingTest: Test;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
@@ -37,6 +39,9 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   ngOnInit() {
+    this.user = JSON.parse(localStorage.getItem("currentUser"));
+    this.subject = JSON.parse(localStorage.getItem("currentSubject"));
+
     if (this.data.event) {
       this.loadTests();
       console.log(this.data);
@@ -83,7 +88,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
         break;
       }
     }
-    this.editingTest.SubjectId = 3;
+    this.editingTest.SubjectId = this.subject.id;
     this.testService.saveTest(this.editingTest)
       .pipe(
         tap(() => this.dialogRef.close(true)),

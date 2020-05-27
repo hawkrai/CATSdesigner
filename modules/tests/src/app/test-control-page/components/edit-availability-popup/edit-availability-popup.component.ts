@@ -45,7 +45,9 @@ export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implemen
   }
 
   public getSubGroups(): void {
-    this.testService.getSubGroupsBySubjectIdGroupIdTestId("3", this.data.event, this.groupId)
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+
+    this.testService.getSubGroupsBySubjectIdGroupIdTestId(subject.id, this.data.event, this.groupId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((subGroups) => {
       this.subGroups = subGroups;

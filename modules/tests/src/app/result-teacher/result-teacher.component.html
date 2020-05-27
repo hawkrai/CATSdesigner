@@ -29,11 +29,11 @@
 </div>
 <div>
   <div *ngIf="testChangeCheckBoxes.includes('0')">
-    <div>
+    <div class="result-teacher-group">
       {{"Тесты для контроля знаний"}}
     </div>
     <div *ngFor="let test of knowledgeControlTestsMass">
-      <div>{{test.groupName}}</div>
+      <div class="result-teacher-group">{{test.group}}</div>
       <div
         *ngIf="test.res &&
             (test.res[0] || test.res[1] || test.res[2]) &&
