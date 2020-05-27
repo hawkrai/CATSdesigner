@@ -1,4 +1,4 @@
-<div class="projects-component" *ngIf="projects">
+<div class="projects-component" *ngIf="projects; else: load">
   <div class="projects-component__header">
     <button mat-raised-button style="margin-top: 12.5px" color="primary" *ngIf="courseUser.IsLecturer" (click)="addProject()">Добавить тему</button>
     <mat-form-field class="projects-component__search" appearance="outline">
@@ -11,3 +11,8 @@
     <app-projects-list [projects]="projects" [courseUser]="courseUser"></app-projects-list>
   </div>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
