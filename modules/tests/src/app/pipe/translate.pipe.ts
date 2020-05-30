@@ -13,7 +13,7 @@ export class TranslatePipe implements PipeTransform {
     const hash: string = wnd.location.hash;
     const params: { [key: string]: string } = hash ? this.getSearchParams(hash.substr(hash.indexOf("?") + 1)) : this.getSearchParams(wnd.location.search.substr(1));
     this.isShowTranslateCodes = (params["translate"] === "true");
-    if (window.sessionStorage.getItem("language") === "en") {
+    if (localStorage.getItem("locale") === "en") {
       this._localizationMap = dataEN;
     } else {
       this._localizationMap = dataRU;

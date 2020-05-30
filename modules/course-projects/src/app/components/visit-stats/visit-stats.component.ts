@@ -3,17 +3,16 @@ import {VisitStats} from '../../models/visit-stats.model';
 import {Group} from '../../models/group.model';
 import {VisitStatsService} from '../../services/visit-stats.service';
 import {Subscription} from 'rxjs';
-import {DownloadVisitCpService} from '../../services/download-visit-cp.service';
 import {Consultation} from '../../models/consultation.model';
 import {ConsultationMark} from '../../models/consultation-mark.model';
 import {CourseUser} from '../../models/course-user.model';
-import {CourseUserService} from '../../services/course-user.service';
 import {AddDateDialogComponent} from './add-date-dialog/add-date-dialog.component';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-popover.component';
+import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-visit-stats',
@@ -23,28 +22,26 @@ import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-p
 export class VisitStatsComponent implements OnInit, OnChanges {
 
   @Input() selectedGroup: Group;
+  @Input() courseUser: CourseUser;
 
   private COUNT = 1000;
   private PAGE = 1;
 
   private visitStatsSubscription: Subscription;
 
-  private courseUser: CourseUser;
   private visitStatsList: VisitStats[];
   private consultations: Consultation[];
 
   private subjectId: string;
   private searchString = '';
 
-  constructor(private courseUserService: CourseUserService,
-              private visitStatsService: VisitStatsService,
-              private downloadVisitCpService: DownloadVisitCpService,
+  constructor(private visitStatsService: VisitStatsService,
               public dialog: MatDialog,
+              private snackBar: MatSnackBar,
               private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.courseUserService.getUser().subscribe(res => this.courseUser = res);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
       this.retrieveVisitStats();
@@ -62,6 +59,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   }
 
   retrieveVisitStats() {
+    this.visitStatsList = null;
     this.visitStatsSubscription = this.visitStatsService.getVisitStats({
       count: this.COUNT, page: this.PAGE,
       filter: '{"groupId":' + this.selectedGroup.Id + ',"subjectId":' + this.subjectId + ',"searchString":"' + this.searchString + '"}'
@@ -82,14 +80,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       this.visitStatsSubscription.unsubscribe();
     }
     this.retrieveVisitStats();
-  }
-
-  downloadExcel() {
-    this.downloadVisitCpService.download({subjectId: this.subjectId, groupId: this.selectedGroup.Id}).subscribe(
-      res => {
-
-      }
-    );
   }
 
   assignResults(visitStats: VisitStats[], consultations: Consultation[]): VisitStats[] {
@@ -170,6 +160,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       }
     } else if (hasChanges) {
       this.ngOnInit();
+      this.addFlashMessage('Посещаемость успешно обновлена');
     }
   }
 
@@ -182,8 +173,38 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       if (result != null) {
         const date = new Date(result);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        this.visitStatsService.addDate(date.toISOString(), this.subjectId).subscribe(res => this.ngOnInit());
+        this.visitStatsService.addDate(date.toISOString(), this.subjectId).subscribe(() => {
+          this.ngOnInit();
+          this.addFlashMessage('Дата консультации успешно добавлена');
+        });
       }
+    });
+  }
+
+  deleteVisitDate(consultation: Consultation) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      data: {
+        label: 'Удаление даты консультации',
+        message: 'Вы действительно хотите удалить дату консультации?',
+        actionName: 'Удалить',
+        color: 'warn'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null && result) {
+        this.visitStatsService.deleteDate({id: consultation.Id}).subscribe(() => {
+          this.ngOnInit();
+          this.addFlashMessage('Дата успешно удалена');
+        });
+      }
+    });
+  }
+
+  addFlashMessage(msg: string) {
+    this.snackBar.open(msg, null, {
+      duration: 2000
     });
   }
 

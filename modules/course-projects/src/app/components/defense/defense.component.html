@@ -1,22 +1,29 @@
-<div class="defense-component" *ngIf="courseUser">
+<div class="defense-component" *ngIf="courseUser && groups; else: load">
   <div class="defense-component__header">
     <ng-container *ngIf="courseUser.IsLecturer">
-      <mat-form-field class="defense-component__group-select">
-        <mat-select [value]="groups ? groups[0].Id : ''">
-          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.Id">
-            {{group.Name}}
+      <mat-form-field class="defense-component__group-select" *ngIf="selectedGroup">
+        <mat-select [value]="selectedGroup.GroupId">
+          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.GroupId">
+            {{group.GroupName}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before">
+      <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before" (click)="downloadArchive()">
         <mat-icon>cloud_download</mat-icon>
       </button>
-      <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before">
+      <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before" *ngIf="!detachedGroup">
         <mat-icon>visibility</mat-icon>
       </button>
-      <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="ngOnInit()">
+      <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="retrieveFiles()">
         <mat-icon>refresh</mat-icon>
       </button>
+      <mat-slide-toggle class="detached-toggle"
+                        [color]="'primary'"
+                        [checked]="detachedGroup"
+                        (change)="groupStatusChange($event)"
+      >
+        Открепленные группы
+      </mat-slide-toggle>
     </ng-container>
   </div>
   <div class="defense-component__body">
@@ -30,7 +37,7 @@
             <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Действие</th>
           </tr>
           </thead>
-          <tbody *ngIf="studentFile">
+          <tbody *ngIf="studentFile; else: load">
           <tr class="mdc-data-table__row">
             <td class="mdc-data-table__cell">{{ studentFile.Attachments[0].FileName }}</td>
             <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
@@ -46,10 +53,10 @@
           </tbody>
         </table>
       </div>
-      <button mat-raised-button color="primary" *ngIf="!studentFile">Добавить работу</button>
+      <button mat-raised-button color="primary" *ngIf="!studentFile" [disabled]="!courseUser.HasAssignedDiplomProject">Добавить работу</button>
     </ng-container>
     <ng-container *ngIf="courseUser.IsLecturer">
-      <mat-accordion>
+      <mat-accordion *ngIf="studentFiles">
         <mat-expansion-panel *ngFor="let student of studentFiles">
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -87,6 +94,15 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
+      <ng-container *ngIf="!studentFiles && groups.length">
+        <ng-container *ngTemplateOutlet="load">
+        </ng-container>
+      </ng-container>
     </ng-container>
   </div>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

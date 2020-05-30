@@ -1,11 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-.bg{
+
+.bg {
   background-color: #ffffff;
 }
-.example-tooltip-green{
+
+.example-tooltip-green {
   background-color: green;
 }
+
 .cdk-global-overlay-wrapper {
   display: flex;
   position: absolute;
@@ -13,16 +16,44 @@
   overflow: auto;
   pointer-events: auto;
 }
+
 .cdk-global-scrollblock {
-   overflow-y: hidden;
+  overflow-y: hidden;
 }
-.mat-checkbox-layout{
+
+.mat-checkbox-layout {
   width: 95%;
 
 }
-.mat-checkbox-label{
+
+.mat-checkbox-label {
   width: 100%;
 }
+
 .mat-form-field {
   width: 100%;
+}
+
+.mat-table {
+  border: 1px solid rgba(0, 0, 0, .12);
+  box-shadow: none;
+}
+
+.mat-header-cell {
+  font-family: Roboto, sans-serif;
+  font-weight: 600;
+  color: black;
+  font-size: 14px;
+}
+
+.mat-tab-labels {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.mat-tab-label {
+  display: flex;
+  font-size: 16px;
+  width: inherit;
 }

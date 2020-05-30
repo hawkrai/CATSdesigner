@@ -1,4 +1,4 @@
-<div class="visit-stats-component" *ngIf="visitStatsList">
+<div class="visit-stats-component" *ngIf="selectedGroup; else: load">
   <div class="visit-stats-component__header">
     <button mat-raised-button color="primary" *ngIf="courseUser.IsLecturer" (click)="addDate()">Добавить дату консультации</button>
     <mat-form-field class="visit-stats-component__search" appearance="outline">
@@ -11,3 +11,8 @@
     <app-visit-stats-list [visitStatsList]="visitStatsList" [consultations]="consultations"></app-visit-stats-list>
   </div>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

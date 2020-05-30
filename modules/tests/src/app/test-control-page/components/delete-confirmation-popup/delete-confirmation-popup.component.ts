@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 @Component({
   selector: 'app-delete-confirmation-popup',
   templateUrl: './delete-confirmation-popup.component.html',
-  styleUrls: ['./delete-confirmation-popup.component.css']
+  styleUrls: ['./delete-confirmation-popup.component.less']
 })
 export class DeleteConfirmationPopupComponent implements OnInit {
 

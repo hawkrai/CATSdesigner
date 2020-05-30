@@ -41,12 +41,16 @@
                   *ngIf="project.StudentId != null">
             <mat-icon>remove_circle_outline</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Скачать лист задания" matTooltipPosition="before"
+          <button mat-icon-button color="primary" matTooltip="Скачать лист задания" matTooltipPosition="before" (click)="projectsComponent.downloadTaskSheet(project)"
                   *ngIf="project.StudentId != null">
             <mat-icon>cloud_download</mat-icon>
           </button>
           <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before" (click)="projectsComponent.deleteProject(project)">
             <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Подтвердить выбранную тему" matTooltipPosition="before" (click)="projectsComponent.approveChoice(project)"
+                  *ngIf="project.StudentId && !project.ApproveDate">
+            <mat-icon>done</mat-icon>
           </button>
         </td>
       </tr>
