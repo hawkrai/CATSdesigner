@@ -7,29 +7,29 @@
         <form [formGroup]="this.form" (ngSubmit)="submit()">
             <mat-form-field>
                 <input type="text" matInput placeholder="Логин" formControlName="Username" maxlength="30">
-                <mat-error *ngIf="hasError('username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
-                <mat-error *ngIf="hasError('username', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-              <mat-error *ngIf="hasError('username', 'pattern')">Пожалуйста, используйте только латинские буквы, цифры, точку или знак подчеркивания.</mat-error>
-                <mat-error *ngIf="hasError('username', 'userExist')">Такой пользователь уже существует в системе.</mat-error>
+                <mat-error *ngIf="hasError('Username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
+                <mat-error *ngIf="hasError('Username', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
+                <mat-error *ngIf="hasError('Username', 'pattern')">Пожалуйста, используйте только латинские буквы, цифры, точку или знак подчеркивания.</mat-error>
+                <mat-error *ngIf="hasError('Username', 'userExist')">Такой пользователь уже существует в системе.</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <input type="password" matInput placeholder="Пароль" formControlName="Password" maxlength="30">
-                <mat-hint *ngIf="this.isControlInvalid('password')" align="end">Пароль должен содержать не меньше 6 и не больше 30 символов, хотя бы 1 маленькую и большую букву </mat-hint>
-                <mat-error *ngIf="hasError('password', 'minlength')">Вы ввели меньше 6 символов</mat-error>
+                <mat-hint *ngIf="this.isControlInvalid('Password')" align="end">Пароль должен содержать не меньше 6 и не больше 30 символов, хотя бы 1 маленькую и большую букву </mat-hint>
+                <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <input matInput type="password" placeholder="Подтверждение пароля" formControlName="ConfirmPassword" maxlength="30">
-                <mat-error *ngIf="this.isControlInvalid('confirmPassword')">Пароли не совпадают</mat-error>
+                <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')">Пароли не совпадают</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Фамилия" formControlName="Surname" maxlength="30">
-                <mat-hint *ngIf="this.isControlInvalid('surname')">Фамилия должна содержать не меньше 6 и не больше 30 символов </mat-hint>
-                <mat-error *ngIf="hasError('surname', 'minlength')">Вы ввели меньше 6 символов</mat-error>
+                <mat-hint *ngIf="this.isControlInvalid('Surname')">Фамилия должна содержать не меньше 6 и не больше 30 символов </mat-hint>
+                <mat-error *ngIf="hasError('Surname', 'minlength')">Вы ввели меньше 6 символов</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Имя" formControlName="Name" maxlength="30">
-                <mat-hint *ngIf="this.isControlInvalid('name')">Имя должно быть не меньше 6 и не больше 30 символов </mat-hint>
-                <mat-error *ngIf="hasError('name', 'maxlength')">Вы ввели больше 30 символов</mat-error>
+                <mat-hint *ngIf="this.isControlInvalid('Name')">Имя должно быть не меньше 6 и не больше 30 символов </mat-hint>
+                <mat-error *ngIf="hasError('Name', 'maxlength')">Вы ввели больше 30 символов</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Отчество" formControlName="Patronymic" maxlength="30">
@@ -54,8 +54,8 @@
                 <input matInput placeholder="Ответ на секретный вопрос" formControlName="SecretAnswer" maxlength="30">
             </mat-form-field>
             <div>
-              <button mat-button class='button' [disabled]='this.form.invalid' (click)="this.register()">Зарегистрироваться</button>
-              <button mat-button class='button' routerLink="/login">Вернуться назад</button>
+                <button mat-button class='button' [disabled]='this.form.invalid' (click)="this.register()">Зарегистрироваться</button>
+                <button mat-button class='button' routerLink="/login">Вернуться назад</button>
             </div>
         </form>
     </mat-card-content>

@@ -8,7 +8,7 @@ import {GroupService} from '../service/group.service';
 import {MatDialog} from '@angular/material/dialog';
 import {SuccessMessageComponent} from '../success-message/success-message.component';
 import {ValidateEmailNotTaken} from './ValidateEmailNotTaken';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -24,13 +24,14 @@ export class SignupComponent implements OnInit {
   groups: any;
   isLoad = false;
 
-  constructor(private formBuilder: FormBuilder, private accountService: AccountService, private groupService: GroupService, private dialog: MatDialog,
+  constructor(private formBuilder: FormBuilder, private accountService: AccountService,
+              private groupService: GroupService, private dialog: MatDialog,
               private route: Router) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
         Username: new FormControl('', [Validators.required, Validators.minLength(6),
-          Validators.pattern('^[a-z0-9_.-]{3,30}$')], ValidateEmailNotTaken.createValidator(this.accountService)),
+          Validators.pattern('^[A-Za-z0-9_.-]{3,30}$')], ValidateEmailNotTaken.createValidator(this.accountService)),
         Password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30), this.passwordValidator]),
         ConfirmPassword: new FormControl(''),
         Surname: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]),
@@ -40,7 +41,7 @@ export class SignupComponent implements OnInit {
         SecretId: new FormControl(1),
         SecretAnswer: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(100)])
       }, {
-        validator: MustMatch('password', 'confirmPassword')
+        validator: MustMatch('Password', 'ConfirmPassword')
       });
     this.getGroups();
   }

@@ -13,7 +13,7 @@ export class ValidateEmailNotTaken {
           debounceTime(300),
           distinctUntilChanged(),
           take(1),
-          switchMapTo(accountService.usersExist(control.value)),
+          switchMapTo(accountService.usersExist(control.value.toLowerCase())),
           tap(() => control.markAsTouched()),
           map((data) => (data ? { userExist: true } : null))
         );
