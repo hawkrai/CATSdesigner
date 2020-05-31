@@ -9,6 +9,8 @@ import {LabFilesService} from '../../services/lab-files-service';
 import {StudentFilesModel} from '../../models/student-files.model';
 import {GroupService} from '../../services/group.service';
 import {CoreGroup} from '../../models/core-group.model';
+import {MatDialog} from '@angular/material';
+import {AddJobDialogComponent} from './add-project-dialog/add-job-dialog.component';
 
 @Component({
   selector: 'app-defense',
@@ -29,6 +31,7 @@ export class DefenseComponent implements OnInit {
 
   constructor(private groupService: GroupService,
               private labFilesService: LabFilesService,
+              public dialog: MatDialog,
               private store: Store<IAppState>) {
   }
 
@@ -36,8 +39,7 @@ export class DefenseComponent implements OnInit {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
       if (this.courseUser.IsStudent) {
-        this.labFilesService.getCourseProjectFilesForUser(
-          {isCoursPrj: true, subjectId: this.subjectId, userId: this.courseUser.UserId})
+        this.labFilesService.getCourseProjectFilesForUser(this.subjectId, this.courseUser.UserId)
           .subscribe(res => {
             if (res.UserLabFiles) {
               this.studentFile = res.UserLabFiles[0];
@@ -92,5 +94,24 @@ export class DefenseComponent implements OnInit {
   downloadArchive() {
     const url = 'http://localhost:8080/Subject/';
     location.href = url + 'GetZipLabs?id=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
+  }
+
+  addJob() {
+    const body = {comments: '', attachments: []};
+    const dialogRef = this.dialog.open(AddJobDialogComponent, {
+      width: '500px',
+      data: {
+        title: 'На защиту курсового проекта',
+        buttonText: 'Отправить работу',
+        body,
+        model: 'Комментарий'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+
+      }
+    });
   }
 }

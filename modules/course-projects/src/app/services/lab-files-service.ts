@@ -9,8 +9,8 @@ export class LabFilesService {
 
   constructor(private http: HttpClient) { }
 
-  public getCourseProjectFilesForUser(params: any): Observable<any> {
-    return this.http.get('Services/Labs/LabsService.svc/GetFilesLab', {params: new HttpParams({fromObject: params})});
+  public getCourseProjectFilesForUser(subjectId: string, userId: string): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/GetFilesLab', {isCoursPrj: true, subjectId, userId});
   }
 
   public getCourseProjectFiles(params: any): Observable<any> {

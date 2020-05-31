@@ -49,6 +49,7 @@ import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popov
 import {StoreModule} from '@ngrx/store';
 import {appReducers} from './store/reducers/app.reducers';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {AddJobDialogComponent} from './components/defense/add-project-dialog/add-job-dialog.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
     AssignProjectDialogComponent,
     EditTaskSheetComponent,
     DefenseComponent,
-    VisitingPopoverComponent
+    VisitingPopoverComponent,
+    AddJobDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -107,7 +109,7 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
     {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'}
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
-    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent],
+    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent, AddJobDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

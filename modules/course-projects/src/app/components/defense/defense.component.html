@@ -1,4 +1,4 @@
-<div class="defense-component" *ngIf="courseUser && groups; else: load">
+<div class="defense-component" *ngIf="courseUser; else: load">
   <div class="defense-component__header">
     <ng-container *ngIf="courseUser.IsLecturer">
       <mat-form-field class="defense-component__group-select" *ngIf="selectedGroup">
@@ -37,8 +37,8 @@
             <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Действие</th>
           </tr>
           </thead>
-          <tbody *ngIf="studentFile; else: load">
-          <tr class="mdc-data-table__row">
+          <tbody>
+          <tr class="mdc-data-table__row" *ngIf="studentFile">
             <td class="mdc-data-table__cell">{{ studentFile.Attachments[0].FileName }}</td>
             <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
             <td class="mdc-data-table__cell">
@@ -53,7 +53,8 @@
           </tbody>
         </table>
       </div>
-      <button mat-raised-button color="primary" *ngIf="!studentFile" [disabled]="!courseUser.HasAssignedDiplomProject">Добавить работу</button>
+      <button mat-raised-button color="primary" *ngIf="!studentFile" [disabled]="!courseUser.HasAssignedDiplomProject"
+              (click)="addJob()">Добавить работу</button>
     </ng-container>
     <ng-container *ngIf="courseUser.IsLecturer">
       <mat-accordion *ngIf="studentFiles">
@@ -94,7 +95,7 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
-      <ng-container *ngIf="!studentFiles && groups.length">
+      <ng-container *ngIf="courseUser.IsLecturer && !studentFiles && groups.length">
         <ng-container *ngTemplateOutlet="load">
         </ng-container>
       </ng-container>
