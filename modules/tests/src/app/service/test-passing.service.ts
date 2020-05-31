@@ -36,15 +36,15 @@ export class TestPassingService {
   }
 
   answerQuestionAndGetNext(answer: any): Observable<any> {
-    return this.http.post<any>("TestPassing/AnswerQuestionAndGetNextMobile", answer);
+    return this.http.post<any>("/TestPassing/AnswerQuestionAndGetNextMobile", answer);
   }
 
   getResultsByGroupAndSubject(groupId: string, subjectId: string = "3"): Observable<Result[]> {
-    return this.http.get<Result[]>("TestPassing/GetResults?groupId=" + groupId + "&subjectId=" + subjectId);
+    return this.http.get<Result[]>("/TestPassing/GetResults?groupId=" + groupId + "&subjectId=" + subjectId);
   }
 
   getResultsByGroupsAndSubject(groupsIds: string[], subjectId: string): Observable<Results[]> {
-    return this.http.post<Results[]>("TestPassing/GetResults", {groupsIds, subjectId});
+    return this.http.post<Results[]>("/TestPassing/GetResults", {groupsIds, subjectId});
   }
 
   getAnswersByStudentAndTest(studentId: string, testId: string = "3"): Observable<UserAnswers[]> {
