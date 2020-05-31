@@ -9,18 +9,19 @@ import {ResultPupilComponent} from "./result-pupil/result-pupil.component";
 import {ResultTeacherComponent} from "./result-teacher/result-teacher.component";
 import {ControlCompletingComponent} from "./control-completing/control-completing.component";
 import {TestResultComponent} from "./test-result/test-result.component";
-import {RedirectGuard} from "./core/guard/redirect.guard";
+import {RedirectPupilGuard} from "./core/guard/redirect-pupil.guard";
+import {RedirectTeacherGuard} from "./core/guard/redirect-teacher.guard";
 
 
 const routes: Routes = [
   {path: '', redirectTo: '/page', pathMatch: 'full'},
-  {path: "page", component: PageComponent, canActivate: [RedirectGuard]},
+  {path: "page", component: PageComponent, canActivate: [RedirectPupilGuard]},
   {path: "test/:id", component: TestComponent},
   {path: "test-passing/:id", component: TestExecutionComponent},
   {path: "questions/:id", component: QuestionsPageComponent},
   {path: "result-pupil/:id", component: ResultPupilComponent},
   {path: "control-completing", component: ControlCompletingComponent},
-  {path: "test-control", component: TestControlPageComponent},
+  {path: "test-control", component: TestControlPageComponent, canActivate: [RedirectTeacherGuard]},
   {path: "test-result", component: TestResultComponent},
   {path: "result-teacher", component: ResultTeacherComponent},
 ];
