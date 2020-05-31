@@ -4,6 +4,7 @@
   <app-main-page [allowChanges]="false"
                  [adminQuestions]="false"
                  [adminTests]="false"
+                 [hideSearch]="true"
                  (onValueChangeSearch)="filterTests($event)"></app-main-page>
   <mat-tab-group class="container-table-tab" (selectedTabChange)="onChange($event)">
     <mat-tab  label="Тестирование знаний">
