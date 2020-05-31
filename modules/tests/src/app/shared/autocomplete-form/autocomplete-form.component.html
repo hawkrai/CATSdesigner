@@ -1,6 +1,6 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <mat-select-autocomplete class="autocomplete-form"
-    [placeholder]="'Select Options'"
+    [placeholder]="placeholder"
     [options]="options"
     [multiple]='true'
     name="optionsSelector"

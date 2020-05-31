@@ -12,6 +12,8 @@ export class AutocompleteFormComponent implements OnInit {
   @Input()
   public options: AutocompleteModel[];
   @Input()
+  public placeholder: string;
+  @Input()
   public preselected: boolean;
   profileForm = new FormGroup({
     selected: new FormControl()

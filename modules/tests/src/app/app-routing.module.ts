@@ -9,10 +9,12 @@ import {ResultPupilComponent} from "./result-pupil/result-pupil.component";
 import {ResultTeacherComponent} from "./result-teacher/result-teacher.component";
 import {ControlCompletingComponent} from "./control-completing/control-completing.component";
 import {TestResultComponent} from "./test-result/test-result.component";
+import {RedirectGuard} from "./core/guard/redirect.guard";
 
 
 const routes: Routes = [
-  {path: "page", component: PageComponent},
+  {path: '', redirectTo: '/page', pathMatch: 'full'},
+  {path: "page", component: PageComponent, canActivate: [RedirectGuard]},
   {path: "test/:id", component: TestComponent},
   {path: "test-passing/:id", component: TestExecutionComponent},
   {path: "questions/:id", component: QuestionsPageComponent},

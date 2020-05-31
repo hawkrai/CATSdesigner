@@ -13,17 +13,20 @@
                          *ngIf="groupsList && groupsList.length"
                          [options]="groupsList"
                          [preselected]="true"
+                         [placeholder]="'Выберите группу'"
                          (onSelectionChange)="groupChange($event)"
   ></app-autocomplete-form>
   <app-autocomplete-form class="result-teacher-autocomplete-item-test"
                          *ngIf="testsList && testsList.length"
                          [options]="testsList"
                          [preselected]="true"
+                         [placeholder]="'Выберите тест'"
                          (onSelectionChange)="testsChange($event)"
   ></app-autocomplete-form>
   <app-autocomplete-form class="result-teacher-autocomplete-item"
                          *ngIf="studentList && studentList.length"
                          [options]="studentList"
+                         [placeholder]="'Выберите студентов'"
                          (onSelectionChange)="studentChange($event)"
   ></app-autocomplete-form>
 </div>
