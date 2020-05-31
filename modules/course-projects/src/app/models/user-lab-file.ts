@@ -6,4 +6,6 @@ export class UserLabFile {
   Comments: string;
   Attachments: Attachment[];
   PathFile: string;
+  IsReceived: boolean;
+  IsReturned: boolean;
 }

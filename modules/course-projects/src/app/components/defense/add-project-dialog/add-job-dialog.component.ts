@@ -30,10 +30,12 @@ export class AddJobDialogComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const attachment = this.data.body.attachments[0];
-    this.labFilesService.getAttachment({values: '["' + attachment.Name + '/' + attachment.Id + '/' + attachment.PathName + '/' +
-      attachment.FileName + '"]',
-      deleteValues: 'DELETE'})
-      .subscribe(res => this.data.body.uploadedFile = res[0]);
+    if (attachment) {
+      this.labFilesService.getAttachment({values: '["' + attachment.Name + '/' + attachment.Id + '/' + attachment.PathName + '/' +
+          attachment.FileName + '"]',
+        deleteValues: 'DELETE'})
+        .subscribe(res => this.data.body.uploadedFile = res[0]);
+    }
   }
 
   onClick(): void {

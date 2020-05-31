@@ -38,4 +38,12 @@ export class LabFilesService {
   public getAttachment(params: any): Observable<any> {
     return this.http.get('api/Upload', {params: new HttpParams({fromObject: params})});
   }
+
+  public approveJob(userFileId: string): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/ReceivedLabFile', {userFileId});
+  }
+
+  public restoreFromArchive(userFileId: string): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/CancelReceivedLabFile', {userFileId});
+  }
 }

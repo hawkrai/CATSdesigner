@@ -24,9 +24,10 @@ export class DefenseComponent implements OnInit {
 
   public groups: CoreGroup[];
   public selectedGroup: CoreGroup;
-  public studentFile: UserLabFile;
+  public userLabFiles: UserLabFile[];
   public studentFiles: StudentFilesModel[];
   public detachedGroup = false;
+  private canAddJob = false;
 
   private subjectId: string;
 
@@ -44,7 +45,12 @@ export class DefenseComponent implements OnInit {
         this.labFilesService.getCourseProjectFilesForUser(this.subjectId, this.courseUser.UserId)
           .subscribe(res => {
             if (res.UserLabFiles) {
-              this.studentFile = res.UserLabFiles[0];
+              this.userLabFiles = res.UserLabFiles;
+              if (!this.userLabFiles.find(file => !file.IsReturned)) {
+                this.canAddJob = true;
+              }
+            } else {
+              this.canAddJob = true;
             }
           });
       } else if (this.courseUser.IsLecturer) {
@@ -86,10 +92,12 @@ export class DefenseComponent implements OnInit {
 
   processGroupsResponse(res: any) {
     this.groups = res.Groups;
-    if (this.groups.length > 0) {
-      this.selectedGroup = this.groups[0];
-    } else {
-      this.selectedGroup = null;
+    if (this.selectedGroup == null) {
+      if (this.groups.length > 0) {
+        this.selectedGroup = this.groups[0];
+      } else {
+        this.selectedGroup = null;
+      }
     }
   }
 
@@ -98,9 +106,9 @@ export class DefenseComponent implements OnInit {
     location.href = url + 'GetZipLabs?id=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
   }
 
-  addJob() {
-    const body = this.studentFile ? {comments: this.studentFile.Comments, attachments: this.studentFile.Attachments}
-    : {comments: '', attachments: []};
+  addJob(userLabFile?: UserLabFile, studentId?: string) {
+    const body = userLabFile && this.courseUser.IsStudent ? {comments: userLabFile.Comments, attachments: userLabFile.Attachments}
+      : {comments: '', attachments: []};
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
       width: '650px',
       data: {
@@ -113,27 +121,48 @@ export class DefenseComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const attachmentId = result.uploadedFile.IdFile && result.uploadedFile.IdFile !== -1 ? result.uploadedFile.IdFile : '0';
-        this.labFilesService.sendJob({
-          attachments: '[{"Id":' + attachmentId + ',"Title":"","Name":"' + result.uploadedFile.Name + '","AttachmentType":"' +
-            result.uploadedFile.Type + '","FileName":"' + result.uploadedFile.GuidFileName + '"}]',
-          comments: result.comments,
-          id: this.studentFile ? this.studentFile.Id : '0',
-          isCp: true,
-          isRet: false,
-          pathFile: this.studentFile ? this.studentFile.PathFile : '',
-          subjectId: this.subjectId,
-          userId: this.courseUser.UserId
-        })
-          .subscribe(() => {
-            this.ngOnInit();
-            this.addFlashMessage('Работа успешно добавлена');
-          });
+        if (this.courseUser.IsLecturer) {
+          this.labFilesService.deleteJob(userLabFile.Id).subscribe(() => this.uploadJob(result, studentId, userLabFile));
+        } else {
+          this.uploadJob(result, this.courseUser.UserId, userLabFile);
+        }
       }
     });
   }
 
-  deleteJob() {
+  uploadJob(dialogResult: any, studentId: string, userLabFile?: UserLabFile) {
+    const isRet = this.courseUser.IsLecturer;
+    const attachmentId = dialogResult.uploadedFile.IdFile && dialogResult.uploadedFile.IdFile !== -1
+      ? dialogResult.uploadedFile.IdFile : '0';
+    this.labFilesService.sendJob({
+      attachments: '[{"Id":' + attachmentId + ',"Title":"","Name":"' + dialogResult.uploadedFile.Name + '","AttachmentType":"' +
+        dialogResult.uploadedFile.Type + '","FileName":"' + dialogResult.uploadedFile.GuidFileName + '"}]',
+      comments: dialogResult.comments,
+      id: !userLabFile || isRet ? '0' : userLabFile.Id,
+      isCp: true,
+      isRet,
+      pathFile: userLabFile ? userLabFile.PathFile : '',
+      subjectId: this.subjectId,
+      userId: studentId
+    })
+      .subscribe(() => {
+        if (isRet) {
+          this.updateStudentJobs(studentId);
+        } else {
+          this.ngOnInit();
+        }
+        this.canAddJob = false;
+        this.addFlashMessage(isRet ? 'Работа отправлена для исправления' : 'Работа успешно добавлена');
+      });
+  }
+
+  updateStudentJobs(studentId: string) {
+    const jobs = this.studentFiles.find(files => files.StudentId === studentId);
+    this.labFilesService.getCourseProjectFilesForUser(this.subjectId, studentId)
+      .subscribe(res => jobs.FileLabs = res.UserLabFiles);
+  }
+
+  deleteJob(userLabFile: UserLabFile) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
@@ -146,13 +175,29 @@ export class DefenseComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result) {
-        this.labFilesService.deleteJob(this.studentFile.Id)
+        this.labFilesService.deleteJob(userLabFile.Id)
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Работа удалена');
           });
       }
     });
+  }
+
+  approveJob(fileLab: UserLabFile, studentId: string) {
+    this.labFilesService.approveJob(fileLab.Id)
+      .subscribe(() => {
+        this.updateStudentJobs(studentId);
+        this.addFlashMessage('Файл перемещен в архив');
+      });
+  }
+
+  restoreFromArchive(fileLab: UserLabFile, studentId: string) {
+    this.labFilesService.restoreFromArchive(fileLab.Id)
+      .subscribe(() => {
+        this.updateStudentJobs(studentId);
+        this.addFlashMessage('Файл перемещен из архива');
+      });
   }
 
   addFlashMessage(msg: string) {
