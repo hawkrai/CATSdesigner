@@ -9,8 +9,9 @@ import {LabFilesService} from '../../services/lab-files-service';
 import {StudentFilesModel} from '../../models/student-files.model';
 import {GroupService} from '../../services/group.service';
 import {CoreGroup} from '../../models/core-group.model';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {AddJobDialogComponent} from './add-project-dialog/add-job-dialog.component';
+import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-defense',
@@ -32,6 +33,7 @@ export class DefenseComponent implements OnInit {
   constructor(private groupService: GroupService,
               private labFilesService: LabFilesService,
               public dialog: MatDialog,
+              private snackBar: MatSnackBar,
               private store: Store<IAppState>) {
   }
 
@@ -97,9 +99,10 @@ export class DefenseComponent implements OnInit {
   }
 
   addJob() {
-    const body = {comments: '', attachments: []};
+    const body = this.studentFile ? {comments: this.studentFile.Comments, attachments: this.studentFile.Attachments}
+    : {comments: '', attachments: []};
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
-      width: '500px',
+      width: '650px',
       data: {
         title: 'На защиту курсового проекта',
         buttonText: 'Отправить работу',
@@ -110,8 +113,51 @@ export class DefenseComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-
+        const attachmentId = result.uploadedFile.IdFile && result.uploadedFile.IdFile !== -1 ? result.uploadedFile.IdFile : '0';
+        this.labFilesService.sendJob({
+          attachments: '[{"Id":' + attachmentId + ',"Title":"","Name":"' + result.uploadedFile.Name + '","AttachmentType":"' +
+            result.uploadedFile.Type + '","FileName":"' + result.uploadedFile.GuidFileName + '"}]',
+          comments: result.comments,
+          id: this.studentFile ? this.studentFile.Id : '0',
+          isCp: true,
+          isRet: false,
+          pathFile: this.studentFile ? this.studentFile.PathFile : '',
+          subjectId: this.subjectId,
+          userId: this.courseUser.UserId
+        })
+          .subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage('Работа успешно добавлена');
+          });
       }
+    });
+  }
+
+  deleteJob() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      data: {
+        label: 'Удаление работы',
+        message: 'Вы действительно хотите удалить работу?',
+        actionName: 'Удалить',
+        color: 'warn'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null && result) {
+        this.labFilesService.deleteJob(this.studentFile.Id)
+          .subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage('Работа удалена');
+          });
+      }
+    });
+  }
+
+  addFlashMessage(msg: string) {
+    this.snackBar.open(msg, null, {
+      duration: 2000
     });
   }
 }

@@ -39,13 +39,13 @@
           </thead>
           <tbody>
           <tr class="mdc-data-table__row" *ngIf="studentFile">
-            <td class="mdc-data-table__cell">{{ studentFile.Attachments[0].FileName }}</td>
+            <td class="mdc-data-table__cell">{{ studentFile.Attachments[0].Name }}</td>
             <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
             <td class="mdc-data-table__cell">
-              <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before">
+              <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before" (click)="addJob()">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before">
+              <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before" (click)="deleteJob()">
                 <mat-icon>delete</mat-icon>
               </button>
             </td>

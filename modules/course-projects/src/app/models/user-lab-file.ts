@@ -5,4 +5,5 @@ export class UserLabFile {
   Date: string;
   Comments: string;
   Attachments: Attachment[];
+  PathFile: string;
 }
