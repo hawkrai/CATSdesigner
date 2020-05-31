@@ -12,6 +12,7 @@ import {CoreGroup} from '../../models/core-group.model';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {AddJobDialogComponent} from './add-project-dialog/add-job-dialog.component';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
+import {PlagiarismCheckDialogComponent} from './plagiarism-check-dialog/plagiarism-check-dialog.component';
 
 @Component({
   selector: 'app-defense',
@@ -198,6 +199,15 @@ export class DefenseComponent implements OnInit {
         this.updateStudentJobs(studentId);
         this.addFlashMessage('Файл перемещен из архива');
       });
+  }
+
+  checkPlagiarism() {
+    this.dialog.open(PlagiarismCheckDialogComponent, {
+      width: '600px',
+      data: {
+        subjectId: this.subjectId
+      }
+    });
   }
 
   addFlashMessage(msg: string) {

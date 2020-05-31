@@ -13,7 +13,7 @@
         <mat-icon>cloud_download</mat-icon>
       </button>
       <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before"
-              *ngIf="!detachedGroup">
+              *ngIf="!detachedGroup" (click)="checkPlagiarism()">
         <mat-icon>visibility</mat-icon>
       </button>
       <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="retrieveFiles()">
@@ -107,7 +107,8 @@
                             (click)="addJob(fileLab, student.StudentId)">
                       <mat-icon>call_missed_outgoing</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="Проверить на плагиат" matTooltipPosition="before">
+                    <button mat-icon-button color="primary" matTooltip="Проверить на плагиат" matTooltipPosition="before"
+                            *ngIf="false">
                       <mat-icon>visibility</mat-icon>
                     </button>
                   </ng-container>
