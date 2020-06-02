@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MDCDialog} from '@material/dialog';
 import {Lecture} from '../../../../models/lecture.model';
 import {Attachment} from "../../../../models/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
@@ -72,7 +71,6 @@ export class LecturesListComponent implements OnInit {
 
   constructorLecture(lecture?: Lecture) {
     const newLecture = lecture ? {...lecture} : this.getEmptyLecture();
-    newLecture.attachments = JSON.stringify(newLecture.attachments);
 
     const dialogData: DialogData = {
       title: lecture ? 'Редактирование лекции' : 'Добавление лекции',
@@ -83,6 +81,7 @@ export class LecturesListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        result.attachments = JSON.stringify(result.attachments);
         this.lecturesService.createLecture(result).subscribe(res => res['Code'] === "200" && this.refreshDate());
       }
     });

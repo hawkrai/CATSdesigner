@@ -4,7 +4,7 @@
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>Название Новости</mat-label>
-      <input name="title" matInput placeholder="Название" [(ngModel)]="data.model.title">
+      <input name="title" required matInput placeholder="Название" [(ngModel)]="data.model.title">
     </mat-form-field>
 
     <mat-label>Текст Новости</mat-label>
@@ -26,6 +26,12 @@
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+  <button mat-raised-button
+          [mat-dialog-close]="data.model || data.body"
+          color="primary"
+          [disabled]="!data.model.title"
+  >
+    {{data.buttonText}}
+  </button>
 </div>
 </div>

@@ -39,7 +39,7 @@ export class VisitStatisticsComponent implements OnInit {
 
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
         this.group = group;
-        this.labService.loadDate();
+        this.labService.loadData();
 
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;

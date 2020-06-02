@@ -46,7 +46,7 @@ export class SubjectNewsComponent implements OnInit {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => this.subjectId = subjectId);
 
     // TODO: Load in all date
-    this.newsService.loadDate();
+    this.newsService.loadData();
     this.refreshDate();
   }
 
@@ -115,13 +115,6 @@ export class SubjectNewsComponent implements OnInit {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
-  }
-
-  lol() {
-    this.newsService.lol(this.subjectId).subscribe(res => {
-      const div = document.getElementById('subject-update');
-      div.innerHTML = res
-    })
   }
 
 }

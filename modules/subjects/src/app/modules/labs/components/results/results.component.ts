@@ -68,7 +68,7 @@ export class ResultsComponent implements OnInit {
   }
 
   _getRandom() {
-      return Math.floor(Math.random() * Math.floor(1000)).toString();
+      return Math.floor(Math.random() * Math.floor(10000)).toString();
   }
 
   _getMark(student, i): number {
