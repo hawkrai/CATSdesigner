@@ -7,8 +7,6 @@ import {IAppState} from '../../store/state/app.state';
 import {GroupsService} from '../../services/groups/groups.service';
 import {getCurrentGroup} from '../../store/selectors/groups.selectors';
 import {filter} from 'rxjs/operators';
-import {DownloadsServer} from '../../services/downloads.server';
-import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-labs',
@@ -26,7 +24,6 @@ export class LabsComponent implements OnInit {
   public detachedGroup = false;
 
   constructor(private groupsService: GroupsService,
-              private downloadsServer: DownloadsServer,
               private store: Store<IAppState>) {
   }
 

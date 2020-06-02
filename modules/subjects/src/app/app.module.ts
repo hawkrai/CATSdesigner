@@ -24,6 +24,8 @@ import {LecturesEffects} from './store/effects/lectures.effects';
 import {LabsEffects} from './store/effects/labs.effects';
 import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
 import {FileDownloadPopoverComponent} from './shared/file-download-popover/file-download-popover.component';
+import {SubjectManagementComponent} from './components/subject-managment/subject-management.component';
+import {ColorPickerModule} from 'ngx-color-picker';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import {FileDownloadPopoverComponent} from './shared/file-download-popover/file-
     DeletePopoverComponent,
     VisitDatePopoverComponent,
     VisitingPopoverComponent,
-    FileDownloadPopoverComponent
+    FileDownloadPopoverComponent,
+    SubjectManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -44,16 +47,18 @@ import {FileDownloadPopoverComponent} from './shared/file-download-popover/file-
     LabsModule,
     MatModule,
     FormsModule,
+    ColorPickerModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects]),
-    StoreDevtoolsModule.instrument()    
+    StoreDevtoolsModule.instrument()
   ],
   entryComponents: [
     DeletePopoverComponent,
     VisitDatePopoverComponent,
     VisitingPopoverComponent,
-    FileDownloadPopoverComponent
+    FileDownloadPopoverComponent,
+    SubjectManagementComponent
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

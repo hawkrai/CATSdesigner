@@ -1,18 +1,39 @@
-import {Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewContainerRef} from "@angular/core";
+import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DialogData} from '../../models/dialog-data.model';
 import {DatePipe} from '@angular/common';
-import {Lecture} from '../../models/lecture.model';
 import {DeletePopoverComponent} from '../delete-popover/delete-popover.component';
 import {ComponentType} from '@angular/cdk/typings/portal';
-import {Calendar} from '../../models/calendar.model';
-import {Observable} from 'rxjs';
 import {FormControl} from '@angular/forms';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
 
 @Component({
   selector: 'app-visit-date-popover',
   templateUrl: 'visit-date-popover.component.html',
-  styleUrls: ['./visit-date-popover.component.less']
+  styleUrls: ['./visit-date-popover.component.less'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  ],
 })
 export class VisitDatePopoverComponent implements OnInit{
 

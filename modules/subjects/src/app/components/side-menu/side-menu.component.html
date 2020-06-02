@@ -12,8 +12,7 @@
         </a>
         <hr>
         <a class="mdc-list-item" aria-current="page"
-           [ngClass]="{'mdc-list-item--activated': pageName === '/setting'}"
-           (click)="selectedTab({tab: '/setting'})"
+           (click)="subjectManagement()"
         >
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">settings</i>
           <span class="mdc-list-item__text">Управление предметом</span>

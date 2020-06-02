@@ -49,9 +49,8 @@ export class LabsWorkComponent implements OnInit {
     })
   }
 
-  constructorLecture(lab?: Lab) {
+  constructorLab(lab?: Lab) {
     const newLab = this.getLab(lab);
-    newLab.attachments = JSON.stringify(newLab.attachments);
 
     const dialogData: DialogData = {
       title: lab ? 'Редактирование лекции' : 'Добавление лекции',
@@ -62,6 +61,7 @@ export class LabsWorkComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        result.attachments = JSON.stringify(result.attachments);
         this.labService.createLab(result).subscribe(res => res['Code'] === "200" && this.refreshDate());
       }
     });

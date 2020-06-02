@@ -17,7 +17,7 @@ export class LabsService {
               private rest: LabsRestService) {
   }
 
-  loadDate() {
+  loadData() {
     this.store$.dispatch(new LoadLabs());
   }
 
@@ -47,13 +47,13 @@ export class LabsService {
 
   public createDateVisit(body: {subGroupId: string, date: string}) {
     this.rest.createDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.loadDate()
+      res.Code === '200' && this.loadData()
     })
   }
 
   public deleteDateVisit(body: {id: string}) {
     this.rest.deleteDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.loadDate()
+      res.Code === '200' && this.loadData()
     })
   }
 
