@@ -13,27 +13,30 @@
                          *ngIf="groupsList && groupsList.length"
                          [options]="groupsList"
                          [preselected]="true"
+                         [placeholder]="'Выберите группу'"
                          (onSelectionChange)="groupChange($event)"
   ></app-autocomplete-form>
   <app-autocomplete-form class="result-teacher-autocomplete-item-test"
                          *ngIf="testsList && testsList.length"
                          [options]="testsList"
                          [preselected]="true"
+                         [placeholder]="'Выберите тест'"
                          (onSelectionChange)="testsChange($event)"
   ></app-autocomplete-form>
   <app-autocomplete-form class="result-teacher-autocomplete-item"
                          *ngIf="studentList && studentList.length"
                          [options]="studentList"
+                         [placeholder]="'Выберите студентов'"
                          (onSelectionChange)="studentChange($event)"
   ></app-autocomplete-form>
 </div>
 <div>
   <div *ngIf="testChangeCheckBoxes.includes('0')">
-    <div>
+    <div class="result-teacher-group">
       {{"Тесты для контроля знаний"}}
     </div>
     <div *ngFor="let test of knowledgeControlTestsMass">
-      <div>{{test.groupName}}</div>
+      <div class="result-teacher-group">{{test.group}}</div>
       <div
         *ngIf="test.res &&
             (test.res[0] || test.res[1] || test.res[2]) &&

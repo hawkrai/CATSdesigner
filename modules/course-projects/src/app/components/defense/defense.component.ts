@@ -1,15 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {Group} from '../../models/group.model';
+import {Component, Input, OnInit} from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
-import {ProjectGroupService} from '../../services/project-group.service';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {CourseUser} from '../../models/course-user.model';
-import {CourseUserService} from '../../services/course-user.service';
 import {UserLabFile} from '../../models/user-lab-file';
 import {LabFilesService} from '../../services/lab-files-service';
 import {StudentFilesModel} from '../../models/student-files.model';
+import {GroupService} from '../../services/group.service';
+import {CoreGroup} from '../../models/core-group.model';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {AddJobDialogComponent} from './add-project-dialog/add-job-dialog.component';
+import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
+import {PlagiarismCheckDialogComponent} from './plagiarism-check-dialog/plagiarism-check-dialog.component';
 
 @Component({
   selector: 'app-defense',
@@ -18,54 +21,198 @@ import {StudentFilesModel} from '../../models/student-files.model';
 })
 export class DefenseComponent implements OnInit {
 
-  public courseUser: CourseUser;
-  public groups: Group[];
-  public selectedGroup: Group;
-  public studentFile: UserLabFile;
+  @Input() courseUser: CourseUser;
+
+  public groups: CoreGroup[];
+  public selectedGroup: CoreGroup;
+  public userLabFiles: UserLabFile[];
   public studentFiles: StudentFilesModel[];
+  public detachedGroup = false;
+  private canAddJob = false;
 
   private subjectId: string;
 
-  constructor(private courseUserService: CourseUserService,
-              private projectGroupService: ProjectGroupService,
+  constructor(private groupService: GroupService,
               private labFilesService: LabFilesService,
+              public dialog: MatDialog,
+              private snackBar: MatSnackBar,
               private store: Store<IAppState>) {
   }
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-      this.courseUserService.getUser().subscribe(user => {
-        this.courseUser = user;
-        if (this.courseUser.IsStudent) {
-          this.labFilesService.getCourseProjectFilesForUser(
-            {isCoursPrj: true, subjectId: this.subjectId, userId: this.courseUser.UserId})
-            .subscribe(res => {
-              if (res.UserLabFiles) {
-                this.studentFile = res.UserLabFiles[0];
+      if (this.courseUser.IsStudent) {
+        this.labFilesService.getCourseProjectFilesForUser(this.subjectId, this.courseUser.UserId)
+          .subscribe(res => {
+            if (res.UserLabFiles) {
+              this.userLabFiles = res.UserLabFiles;
+              if (!this.userLabFiles.find(file => !file.IsReturned)) {
+                this.canAddJob = true;
               }
-            });
-        } else if (this.courseUser.IsLecturer) {
-          this.projectGroupService.getGroups(this.subjectId).subscribe(groups => {
-            this.groups = groups;
-            this.selectedGroup = groups[0];
-            this.retrieveFiles();
+            } else {
+              this.canAddJob = true;
+            }
           });
-        }
-      });
+      } else if (this.courseUser.IsLecturer) {
+        this.retrieveGroupsAndFiles();
+      }
     });
   }
 
   retrieveFiles() {
-    this.labFilesService.getCourseProjectFiles({isCp: true, subjectId: this.subjectId, groupId: this.selectedGroup.Id})
+    this.studentFiles = null;
+    this.labFilesService.getCourseProjectFiles({isCp: true, subjectId: this.subjectId, groupId: this.selectedGroup.GroupId})
       .subscribe(res => this.studentFiles = res.Students);
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
-      this.selectedGroup = this.groups.find(res => res.Id === event.source.value);
+      this.selectedGroup = this.groups.find(res => res.GroupId === event.source.value);
       this.retrieveFiles();
     }
   }
 
+  groupStatusChange(event) {
+    this.detachedGroup = event.checked;
+    this.retrieveGroupsAndFiles();
+  }
+
+  retrieveGroupsAndFiles() {
+    this.studentFiles = null;
+    if (this.detachedGroup) {
+      this.groupService.getDetachedGroups(this.subjectId).subscribe(res => {
+        this.processGroupsResponse(res);
+      });
+    } else {
+      this.groupService.getGroups(this.subjectId).subscribe(res => {
+        this.processGroupsResponse(res);
+      });
+    }
+  }
+
+  processGroupsResponse(res: any) {
+    this.groups = res.Groups;
+    if (this.selectedGroup == null) {
+      if (this.groups.length > 0) {
+        this.selectedGroup = this.groups[0];
+      } else {
+        this.selectedGroup = null;
+      }
+    }
+  }
+
+  downloadArchive() {
+    const url = 'http://localhost:8080/Subject/';
+    location.href = url + 'GetZipLabs?id=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
+  }
+
+  addJob(userLabFile?: UserLabFile, studentId?: string) {
+    const body = userLabFile && this.courseUser.IsStudent ? {comments: userLabFile.Comments, attachments: userLabFile.Attachments}
+      : {comments: '', attachments: []};
+    const dialogRef = this.dialog.open(AddJobDialogComponent, {
+      width: '650px',
+      data: {
+        title: 'На защиту курсового проекта',
+        buttonText: 'Отправить работу',
+        body,
+        model: 'Комментарий'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (this.courseUser.IsLecturer) {
+          this.labFilesService.deleteJob(userLabFile.Id).subscribe(() => this.uploadJob(result, studentId, userLabFile));
+        } else {
+          this.uploadJob(result, this.courseUser.UserId, userLabFile);
+        }
+      }
+    });
+  }
+
+  uploadJob(dialogResult: any, studentId: string, userLabFile?: UserLabFile) {
+    const isRet = this.courseUser.IsLecturer;
+    const attachmentId = dialogResult.uploadedFile.IdFile && dialogResult.uploadedFile.IdFile !== -1
+      ? dialogResult.uploadedFile.IdFile : '0';
+    this.labFilesService.sendJob({
+      attachments: '[{"Id":' + attachmentId + ',"Title":"","Name":"' + dialogResult.uploadedFile.Name + '","AttachmentType":"' +
+        dialogResult.uploadedFile.Type + '","FileName":"' + dialogResult.uploadedFile.GuidFileName + '"}]',
+      comments: dialogResult.comments,
+      id: !userLabFile || isRet ? '0' : userLabFile.Id,
+      isCp: true,
+      isRet,
+      pathFile: userLabFile ? userLabFile.PathFile : '',
+      subjectId: this.subjectId,
+      userId: studentId
+    })
+      .subscribe(() => {
+        if (isRet) {
+          this.updateStudentJobs(studentId);
+        } else {
+          this.ngOnInit();
+        }
+        this.canAddJob = false;
+        this.addFlashMessage(isRet ? 'Работа отправлена для исправления' : 'Работа успешно добавлена');
+      });
+  }
+
+  updateStudentJobs(studentId: string) {
+    const jobs = this.studentFiles.find(files => files.StudentId === studentId);
+    this.labFilesService.getCourseProjectFilesForUser(this.subjectId, studentId)
+      .subscribe(res => jobs.FileLabs = res.UserLabFiles);
+  }
+
+  deleteJob(userLabFile: UserLabFile) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      data: {
+        label: 'Удаление работы',
+        message: 'Вы действительно хотите удалить работу?',
+        actionName: 'Удалить',
+        color: 'warn'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null && result) {
+        this.labFilesService.deleteJob(userLabFile.Id)
+          .subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage('Работа удалена');
+          });
+      }
+    });
+  }
+
+  approveJob(fileLab: UserLabFile, studentId: string) {
+    this.labFilesService.approveJob(fileLab.Id)
+      .subscribe(() => {
+        this.updateStudentJobs(studentId);
+        this.addFlashMessage('Файл перемещен в архив');
+      });
+  }
+
+  restoreFromArchive(fileLab: UserLabFile, studentId: string) {
+    this.labFilesService.restoreFromArchive(fileLab.Id)
+      .subscribe(() => {
+        this.updateStudentJobs(studentId);
+        this.addFlashMessage('Файл перемещен из архива');
+      });
+  }
+
+  checkPlagiarism() {
+    this.dialog.open(PlagiarismCheckDialogComponent, {
+      width: '600px',
+      data: {
+        subjectId: this.subjectId
+      }
+    });
+  }
+
+  addFlashMessage(msg: string) {
+    this.snackBar.open(msg, null, {
+      duration: 2000
+    });
+  }
 }

@@ -1,12 +1,13 @@
 <div *ngIf="!loading">
-  <app-header [text]="'Тестирование и отладка ПО'"
-              [smallText]="'Управление тестами'"></app-header>
+  <!--<app-header [text]="'Тестирование и отладка ПО'"
+              [smallText]="'Управление тестами'"></app-header>-->
   <app-main-page [allowChanges]="allowChanges"
                  [inputValue]="inputValue"
                  (onValueChangeSearch)="filterTests($event)"
                  (groupValueChange)="groupValueChange($event)"
                  (onOpenAddingPopupEvent)="openDialog()"
                  [adminTests]="adminTests"
+                 [hideSearch]="currentTabIndex === 0"
                  [adminQuestions]="false"></app-main-page>
   <mat-tab-group class="container-table-tests" (selectedTabChange)="onChange($event)">
     <mat-tab label="Тестирование знаний">

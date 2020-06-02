@@ -6,8 +6,7 @@ import {StudentPercentageResults} from '../../models/student-percentage-results.
 import {PercentageGraph} from '../../models/percentage-graph.model';
 import {PercentageResult} from '../../models/percentage-result.model';
 import {CourseUser} from '../../models/course-user.model';
-import {CourseUserService} from '../../services/course-user.service';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-percentage-dialog.component';
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
@@ -21,11 +20,11 @@ import {IAppState} from '../../store/state/app.state';
 export class PercentageResultsComponent implements OnInit, OnChanges {
 
   @Input() selectedGroup: Group;
+  @Input() courseUser: CourseUser;
 
   private COUNT = 1000;
   private PAGE = 1;
 
-  private courseUser: CourseUser;
   private percentageResults: StudentPercentageResults[];
   private percentageGraphs: PercentageGraph[];
 
@@ -34,14 +33,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private subjectId: string;
   private searchString = '';
 
-  constructor(private courseUserService: CourseUserService,
-              private percentageResultsService: PercentageResultsService,
+  constructor(private percentageResultsService: PercentageResultsService,
               public dialog: MatDialog,
+              private snackBar: MatSnackBar,
               private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.courseUserService.getUser().subscribe(res => this.courseUser = res);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
       this.retrievePercentageResults();
@@ -55,6 +53,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   retrievePercentageResults() {
+    this.percentageResults = null;
     this.percentageResultsSubscription = this.percentageResultsService.getPercentageResults({
       count: this.COUNT,
       page: this.PAGE,
@@ -120,18 +119,25 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         errorMsg: 'Введите число от 0 до 100',
         label: 'Результат',
         symbol: '%',
-        comment: pr.Comment
+        comment: pr.Comment,
+        expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result.mark != null && !(result.mark === '' && pr.Id == null)) {
+      if (result != null && result.mark != null && !(result.mark === '' && pr.Id == null)) {
         if (pr.Id == null) {
           this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment)
-            .subscribe(() => this.ngOnInit());
+            .subscribe(() => {
+              this.ngOnInit();
+              this.addFlashMessage('Процент успешно сохранен');
+            });
         } else {
           this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment)
-            .subscribe(() => this.ngOnInit());
+            .subscribe(() => {
+              this.ngOnInit();
+              this.addFlashMessage('Процент успешно сохранен');
+            });
         }
       }
     });
@@ -153,10 +159,19 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result.mark != null && result.mark !== '') {
+      if (result != null && result.mark != null && result.mark !== '') {
         this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark)
-          .subscribe(() => this.ngOnInit());
+          .subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage('Оценка успешно сохранена');
+          });
       }
+    });
+  }
+
+  addFlashMessage(msg: string) {
+    this.snackBar.open(msg, null, {
+      duration: 2000
     });
   }
 

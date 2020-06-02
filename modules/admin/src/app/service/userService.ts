@@ -10,7 +10,7 @@ import { SubjectDepend } from '../model/subject.response';
 })
 export class UserService {
 
-    api = '/Administration/';
+    api = '/api/Administration/';
 
     constructor(private http: HttpClient) {
     }
@@ -20,11 +20,10 @@ export class UserService {
     }
 
     resetPassword(passwordModel): Observable<ResetPassword> {
-        return this.http.post<ResetPassword>(this.api + 'ResetPassword', passwordModel);
+        return this.http.post<ResetPassword>(this.api + 'ResetPasswordJson', passwordModel);
     }
 
     getListOfSubjectsByStudentId(studentId): Observable<SubjectDepend> {
         return this.http.get<SubjectDepend>(this.api + 'ListOfSubjectsByStudentJson/' + studentId);
     }
-
 }

@@ -1,4 +1,4 @@
-<div class="app-component" >
+<div class="app-component" *ngIf="courseUser">
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 1"
@@ -75,7 +75,7 @@
   </div>
 
   <div class="app-component__body">
-    <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'block' : 'none'}" class="group-select">
+    <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
       <mat-form-field>
         <mat-select [value]="groups ? groups[0].Id : ''">
           <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.Id">
@@ -83,12 +83,16 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="_excel-file" matTooltip="Загрузить документ Excel" matTooltipPosition="above"
+           *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
     </div>
-    <app-projects *ngIf="tab === 1"></app-projects>
-    <app-task-sheet *ngIf="tab === 2"></app-task-sheet>
-    <app-percentages *ngIf="tab === 3"></app-percentages>
-    <app-percentage-results *ngIf="tab === 4 && selectedGroup" [selectedGroup]="selectedGroup"></app-percentage-results>
-    <app-visit-stats *ngIf="tab === 5 && selectedGroup" [selectedGroup]="selectedGroup"></app-visit-stats>
-    <app-defense *ngIf="tab === 6"></app-defense>
+    <app-projects *ngIf="tab === 1" [courseUser]="courseUser"></app-projects>
+    <app-task-sheet *ngIf="tab === 2" [courseUser]="courseUser"></app-task-sheet>
+    <app-percentages *ngIf="tab === 3" [courseUser]="courseUser"></app-percentages>
+    <app-percentage-results *ngIf="tab === 4 && selectedGroup" [courseUser]="courseUser" [selectedGroup]="selectedGroup"></app-percentage-results>
+    <app-visit-stats *ngIf="tab === 5 && selectedGroup" [courseUser]="courseUser" [selectedGroup]="selectedGroup"></app-visit-stats>
+    <app-defense *ngIf="tab === 6" [courseUser]="courseUser"></app-defense>
   </div>
 </div>

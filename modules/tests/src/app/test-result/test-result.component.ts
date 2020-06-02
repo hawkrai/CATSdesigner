@@ -32,6 +32,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
 
   ngOnInit() {
     this.testId = this.route.snapshot.queryParamMap.get('testId');
+    const user = JSON.parse(localStorage.getItem("currentUser"));
     this.testService.getTestById(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
@@ -39,7 +40,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
     });
     this.testPassingService.getNextQuestion(this.testId, "1")
       .pipe(
-        switchMap(() => this.testPassingService.getAnswersByStudentAndTest("10031", this.testId)),
+        switchMap(() => this.testPassingService.getAnswersByStudentAndTest(user.id, this.testId)),
         takeUntil(this.unsubscribeStream$)
       )
       .subscribe(result => {

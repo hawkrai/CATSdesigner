@@ -8,12 +8,12 @@ import { StatisticResponse } from '../model/stats';
 })
 export class StatisticService {
 
-    api = '/Administration/';
+    api = '/api/Administration/';
 
     constructor(private http: HttpClient) {
     }
 
     getStatistics(userId): Observable<StatisticResponse> {
-        return this.http.get<StatisticResponse>(this.api + 'Attendance/' + userId);
+        return this.http.get<StatisticResponse>(this.api + 'AttendanceJson/' + userId);
     }
 }

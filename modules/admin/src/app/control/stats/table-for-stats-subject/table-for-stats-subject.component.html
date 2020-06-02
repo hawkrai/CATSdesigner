@@ -1,52 +1,52 @@
 <div class="stats-table">
-    <table mat-table id="excel-table" [dataSource]="dataSource">
+    <table mat-table id="excel-table" [dataSource]="this.data">
         <ng-container matColumnDef="position">
             <th id="position" mat-header-cell *matHeaderCellDef [hidden]="true"> No. </th>
-            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            <td mat-cell *matCellDef="let i=index"> {{ (i+1) }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="surname">
+        <ng-container matColumnDef="FIO">
             <th id="surname" mat-header-cell *matHeaderCellDef [hidden]="true"> Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.surname}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.FIO}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="omissions-lecture">
-            <th mat-header-cell *matHeaderCellDef> Лекции </th>
-            <td mat-cell *matCellDef="let element"> {{element.omissionsLecture}} </td>
+        <ng-container matColumnDef="UserLecturePass">
+            <th mat-header-cell class="column" *matHeaderCellDef> Лекции </th>
+            <td mat-cell *matCellDef="let element"> {{element.UserLecturePass}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="omissions-lab">
-            <th mat-header-cell *matHeaderCellDef> Лабораторные </th>
-            <td mat-cell *matCellDef="let element"> {{element.omissionsLab}} </td>
+        <ng-container matColumnDef="UserLabPass">
+            <th mat-header-cell class="column" *matHeaderCellDef> Лабораторные </th>
+            <td mat-cell *matCellDef="let element"> {{element.UserLabPass}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="omissions-all">
-            <th mat-header-cell *matHeaderCellDef> Всего </th>
-            <td mat-cell *matCellDef="let element"> {{element.omissionsAll}} </td>
+        <ng-container matColumnDef="AllPass">
+            <th mat-header-cell class="column" *matHeaderCellDef> Всего </th>
+            <td mat-cell *matCellDef="let element"> {{element.AllPass}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="average-mark-lab">
-            <th mat-header-cell *matHeaderCellDef> Лабораторные </th>
-            <td mat-cell *matCellDef="let element"> {{element.averageMarkLab}} </td>
+        <ng-container matColumnDef="UserAvgLabMarks">
+            <th mat-header-cell class="column" *matHeaderCellDef> Лабораторные </th>
+            <td mat-cell class="user-lab-mark" *matCellDef="let element"> {{ element.UserAvgLabMarks }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="average-mark-test">
-            <th mat-header-cell *matHeaderCellDef> Тесты </th>
-            <td mat-cell *matCellDef="let element"> {{element.averageMarkTest}} </td>
+        <ng-container matColumnDef="UserAvgTestMarks">
+            <th mat-header-cell class="column" *matHeaderCellDef> Тесты </th>
+            <td mat-cell *matCellDef="let element"> {{element.UserAvgTestMarks}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="rating">
-            <th mat-header-cell *matHeaderCellDef> Рейтинг </th>
-            <td mat-cell *matCellDef="let element"> {{element.rating}} </td>
+        <ng-container matColumnDef="Rating">
+            <th mat-header-cell class="column" *matHeaderCellDef> Рейтинг </th>
+            <td mat-cell *matCellDef="let element"> {{element.Rating}} </td>
         </ng-container>
 
         <!-- Headers -->
         <ng-container matColumnDef="main-header">
             <th mat-header-cell *matHeaderCellDef [attr.colspan]="8">
-                <div class="main-header">
-                    <p>Группа: 10702115 </p>
-                    <p>Предмет: Все предметы</p>
-                </div>
+              <div class="main-header">
+              <p>Группа: {{ this.dataSource[0].GroupName }} </p>
+              <p>Предмет: {{ this.dataSource[0].Subject }}</p>
+            </div>
             </th>
         </ng-container>
 

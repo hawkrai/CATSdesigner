@@ -1,12 +1,20 @@
 h1 {
     font-weight: lighter;
     font-size: 28px;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+/deep/ text {
+  font-size: 14px;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+
 }
 
 .inline {
     width: 95%;
     display: flex;
     border-top: 1px solid lavender;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
 p {

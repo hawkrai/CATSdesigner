@@ -46,3 +46,9 @@ mat-dialog-actions {
     margin-top: 20px;
     border-top: 2px solid lavender;
 }
+
+.spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}

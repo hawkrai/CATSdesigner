@@ -1,10 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Theme} from '../../models/theme.model';
 import {ProjectThemeService} from '../../services/project-theme.service';
 import {TaskSheetService} from '../../services/task-sheet.service';
 import {Subscription} from 'rxjs';
 import {CourseUser} from '../../models/course-user.model';
-import {CourseUserService} from '../../services/course-user.service';
 import {EditTaskSheetComponent} from './edit-task-sheet/edit-task-sheet.component';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {select, Store} from '@ngrx/store';
@@ -18,16 +17,16 @@ import {getSubjectId} from '../../store/selectors/subject.selector';
 })
 export class TaskSheetComponent implements OnInit {
 
+  @Input() courseUser: CourseUser;
+
   private themes: Theme[];
   private taskSheetHtml: any;
   private taskSheetSubscription: Subscription;
 
-  private courseUser: CourseUser;
   private subjectId: string;
   private courseProjectId: number;
 
-  constructor(private courseUserService: CourseUserService,
-              private projectThemeService: ProjectThemeService,
+  constructor(private projectThemeService: ProjectThemeService,
               private taskSheetService: TaskSheetService,
               private dialog: MatDialog,
               private snackBar: MatSnackBar,
@@ -35,7 +34,6 @@ export class TaskSheetComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.courseUserService.getUser().subscribe(res => this.courseUser = res);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
       this.projectThemeService.getThemes({entity: 'CourseProject', subjectId: this.subjectId})
@@ -58,6 +56,7 @@ export class TaskSheetComponent implements OnInit {
   }
 
   retrieveTaskSheetHtml() {
+    this.taskSheetHtml = null;
     this.taskSheetSubscription = this.taskSheetService.getTaskSheetHtml({courseProjectId: this.courseProjectId})
       .subscribe(res => {
         this.taskSheetHtml = res;
@@ -89,4 +88,8 @@ export class TaskSheetComponent implements OnInit {
     });
   }
 
+  downloadTaskSheet() {
+    const url = 'http://localhost:8080/Cp/';
+    location.href = url + 'GetTasksSheetDocument?courseProjectId=' + this.courseProjectId;
+  }
 }

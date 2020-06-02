@@ -16,6 +16,7 @@ const http_proxy_middleware_1 = require("http-proxy-middleware");
 const modules = __importStar(require("./modules.json"));
 const app = express_1.default();
 const port = 3000;
+const targetDomain = "http://localhost:84";
 app.use(express_1.default.static(path_1.default.resolve('d:/.temp/apps')));
 const allowedExt = [
     '.js',
@@ -33,7 +34,7 @@ function getModule(url) {
     return modules[module];
 }
 const proxyServiceOptions = {
-    target: 'http://localhost:84',
+    target: targetDomain,
     changeOrigin: true,
     pathRewrite: {
         '^/subject/Services': 'Services',
@@ -41,14 +42,38 @@ const proxyServiceOptions = {
     },
 };
 const proxyAccountOptions = {
-    target: 'http://localhost:84',
+    target: targetDomain,
     changeOrigin: true,
     pathRewrite: {
         '^/Account': 'Account',
     },
 };
+const proxyTestPassingOptions = {
+    target: targetDomain,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/TestPassing': 'TestPassing',
+    }
+};
+const proxyTestOptions = {
+    target: targetDomain,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/Tests': 'Tests',
+    }
+};
+const proxyApigOptions = {
+    target: targetDomain,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/course/api': 'api',
+    }
+};
 app.use('*/Services/*', http_proxy_middleware_1.createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', http_proxy_middleware_1.createProxyMiddleware(proxyAccountOptions));
+app.use('*/TestPassing/*', http_proxy_middleware_1.createProxyMiddleware(proxyTestPassingOptions));
+app.use('*/Tests/*', http_proxy_middleware_1.createProxyMiddleware(proxyTestOptions));
+app.use('*/api/*', http_proxy_middleware_1.createProxyMiddleware(proxyApigOptions));
 app.get('*', (req, res) => {
     let url = req.url;
     let module = getModule(url);

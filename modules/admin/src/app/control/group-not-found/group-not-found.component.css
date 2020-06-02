@@ -3,6 +3,7 @@
     display: flex;
     justify-content: center;
     margin-top: 80px;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
 .not-found-icon {

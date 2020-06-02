@@ -38,6 +38,10 @@ export class ProjectsService {
       return this.http.post('api/courseProjectAssignment', {projectId, studentId});
     }
 
+    public approveChoice(projectId: string): Observable<any> {
+      return this.http.post('api/courseProjectAssignment', {projectId});
+    }
+
     public removeAssignment(id: string): Observable<any> {
       return this.http.delete('api/courseProjectAssignment/' + id);
     }

@@ -19,6 +19,7 @@ export class AddGroupComponent implements OnInit {
 
   ngOnInit() {
     const group = this.data;
+    console.log(group);
     this.form = this.formBuilder.group({
       Name: new FormControl(group.Name, [Validators.required, Validators.pattern('^[0-9]*$'), Validators.maxLength(30)]),
       StartYear: new FormControl(group.StartYear),

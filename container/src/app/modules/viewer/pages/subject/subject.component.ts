@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute  } from '@angular/router';
 import { CoreService } from './../../../../core/services/core.service';
 import { Message } from './../../../../core/models/message';
 
@@ -11,20 +12,39 @@ import { Message } from './../../../../core/models/message';
 })
 export class SubjectComponent implements OnInit {
   public selectedModule: SafeResourceUrl;
+  private availableFragments:string[] =  ["news", "lectures", "labs", "testsModule", "course"];
+  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "page", ""];
+  public clickedItem: string;
   private originalModule: string; 
-  constructor(private sanitizer: DomSanitizer, private coseService: CoreService, private router: Router) { }
+  constructor(private sanitizer: DomSanitizer, private coseService: CoreService, private router: Router, private location: Location, private activeRouter: ActivatedRoute ) { }
 
   ngOnInit(): void {
-    this.initState();
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;    
+    this.activeRouter.fragment.subscribe((fragment: string) => {
+      let index = this.availableFragments.indexOf(fragment);
+      if(index >= 0){
+        this.clickedItem = fragment
+      } else {
+        index = 0;
+        this.clickedItem = this.availableFragments[0];
+      }
+      this.navigate(this.clickedItem);
+      this.initState(this.availablePagesFromFragment[index]);
+      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    });        
   }
 
-  private initState(): void {
+  private navigate(fragment: string) {
+    let url = this.router.createUrlTree([], { fragment: fragment }).toString();
+    this.location.go(url);
+  }
+
+  private initState(fragment:string): void {
     this.originalModule = "subject";
-    this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${this.originalModule}`);
+    this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${this.originalModule}/${fragment}`);
   }
 
-  openModule(fragment: string, module: string) {
+  openModule(fragment: string, module: string, item:string) {
+    this.clickedItem = item;
     if (this.originalModule == module) {
       let message: Message = new Message();
       message.Value = fragment;
@@ -33,8 +53,9 @@ export class SubjectComponent implements OnInit {
     }
     else {
       this.originalModule = module;
-      this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${module}`);      
-    }    
+      this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${module}/${fragment}`);      
+    }
+    this.navigate(this.clickedItem);   
   }
 
 }

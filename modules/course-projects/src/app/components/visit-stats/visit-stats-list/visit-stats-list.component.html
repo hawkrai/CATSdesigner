@@ -7,11 +7,13 @@
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Тема курсового проекта</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngFor="let consultation of consultations">
-          {{consultation.Day | date:'dd/MM'}}
+          <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)">
+            {{consultation.Day | date:'dd/MM'}}
+          </a>
         </th>
       </tr>
       </thead>
-      <tbody>
+      <tbody *ngIf="visitStatsList; else: load">
       <tr class="mdc-data-table__row" *ngFor="let stats of visitStatsList; index as i">
         <td class="mdc-data-table__cell">{{ i + 1 }}</td>
         <td class="mdc-data-table__cell">{{ stats.Name }}</td>
@@ -32,3 +34,8 @@
     </table>
   </div>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

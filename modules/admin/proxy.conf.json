@@ -1,56 +1,11 @@
 {
-    "/Administration/*": {
-        "target": {
-            "host": "localhost",
-            "protocol": "http:",
-            "port": 6478
-        },
-        "secure": false,
-        "logLevel": "info"
-    },
-    "/Profile/*": {
-        "target": {
-            "host": "localhost",
-            "protocol": "http:",
-            "port": 6478
-        },
-        "secure": false,
-        "logLevel": "info"
-    },
-    "/Message/*": {
-        "target": {
-            "host": "localhost",
-            "protocol": "http:",
-            "port": 6478
-        },
-        "secure": false,
-        "logLevel": "info"
-    },
-    "/Services/*": {
-        "target": {
-            "host": "localhost",
-            "protocol": "http:",
-            "port": 6478
-        },
-        "secure": false,
-        "logLevel": "info"
-    },
-    "/Account/*": {
-        "target": {
-            "host": "localhost",
-            "protocol": "http:",
-            "port": 6478
-        },
-        "secure": false,
-        "logLevel": "info"
-    },
     "/api/*": {
-        "target": {
-            "host": "localhost",
-            "protocol": "http:",
-            "port": 6478
-        },
+        "target": "http://educats.by",
         "secure": false,
-        "logLevel": "info"
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/api/*": ""
+        }
     }
 }

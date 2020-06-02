@@ -65,7 +65,7 @@ export class EditStudentComponent implements OnInit {
     object.Surname = this.form.controls.Surname.value;
     object.Patronymic = this.form.controls.Patronymic.value;
     object.UserName = this.data.UserName;
-    object.Group = this.data.Group;
+    object.Group = this.form.controls.Group.value;
     object.Email = this.data.Email || '';
     object.Id = this.data.Id;
     object.SkypeContact = this.data.SkypeContact || '';

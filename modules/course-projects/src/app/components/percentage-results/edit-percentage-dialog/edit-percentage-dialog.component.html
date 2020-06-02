@@ -3,6 +3,7 @@
   <mat-form-field class="form-field">
     <input matInput [formControl]="percentageControl" [(ngModel)]="data.mark">
     <span matSuffix>{{data.symbol}}</span>
+    <mat-hint>Ожидаемый результат: {{data.expected}}%</mat-hint>
     <mat-error *ngIf="percentageControl.invalid">{{data.errorMsg}}</mat-error>
   </mat-form-field>
   <mat-form-field class="form-field" *ngIf="!data.total">

@@ -63,4 +63,37 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/SaveStudentLabsMark', body);
   }
 
+  public getFilesLab(body: {subjectId: string, userId: number}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/GetFilesLab', body).pipe(
+      map(res => res['UserLabFiles']));
+  }
+
+  public deleteUserFile(body: {id: string}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/DeleteUserFile', body);
+  }
+
+  public sendUserFile(body): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/SendFile', body);
+  }
+
+  public getAllStudentFilesLab(subjectId: string, groupId: string): Observable<any> {
+    const params = new HttpParams()
+      .set('subjectId', subjectId)
+      .set('groupId', groupId);
+    return this.http.get('Services/Labs/LabsService.svc/GetFilesV2', {params}).pipe(
+      map(res => res['Students']));
+  }
+
+  public receivedLabFile(body: {userFileId: number}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/ReceivedLabFile', body);
+  }
+
+  public cancelReceivedLabFile(body: {userFileId: number}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/CancelReceivedLabFile', body);
+  }
+
+  public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', body);
+  }
+
 }

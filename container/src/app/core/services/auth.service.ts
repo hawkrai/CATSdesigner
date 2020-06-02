@@ -41,11 +41,10 @@ export class AuthenticationService {
     }
 
     logout() {
-        return this.http.post<any>('/Account/LogOff', {})
+        return this.http.get<any>('/Account/LogOff')
             .pipe(map(user => {
                 localStorage.removeItem('currentUser');
-                this.currentUserSubject.next(null);
-        }));
-        
+                this.currentUserSubject.next(null);                
+        }));        
     }
 }

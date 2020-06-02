@@ -9,8 +9,8 @@ import { StudentByGroup } from '../model/student';
 })
 export class GroupService {
 
-    api = '/Administration/';
-    apiStudent = '/Services/CoreService.svc/';
+    api = '/api/Administration/';
+    apiStudent = '/api/Services/CoreService.svc/';
 
     constructor(private http: HttpClient) {
     }
@@ -32,11 +32,7 @@ export class GroupService {
     }
 
     deleteGroup(groupId): Observable<void> {
-        return this.http.delete<void>(this.api + 'DeleteGroup/' + groupId);
-    }
-
-    editGroup(group): Observable<Group> {
-        return this.http.post<Group>(this.api + 'EditGroup', group);
+        return this.http.delete<void>(this.api + 'DeleteGroupJson/' + groupId);
     }
 
     getListOfGroupsByLecturerId(lectureId): Observable<LecturerGroup> {

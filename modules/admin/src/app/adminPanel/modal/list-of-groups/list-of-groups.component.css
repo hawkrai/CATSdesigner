@@ -1,6 +1,15 @@
 .container {
     display: flex;
     justify-content: space-between;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+.close-icon {
+  float: right;
+}
+
+.title {
+  font-size: 24px;
 }
 
 table {
@@ -15,10 +24,11 @@ th {
 .lector-info {
     text-align: center;
     padding: 10px;
+    font-family: Roboto,"Helvetica Neue",sans-serif;
 }
 
 .list-of-groups {
-    height: 400px;
+  max-height: 400px;
 }
 
 .spinner {

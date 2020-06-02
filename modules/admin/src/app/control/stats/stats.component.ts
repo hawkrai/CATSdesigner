@@ -5,6 +5,7 @@ import { Subject } from 'src/app/model/subject.response';
 import * as xlsx from 'xlsx';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import {GroupStatsStudent} from '../../model/group.stats';
 
 @Component({
   selector: 'app-stats',
@@ -19,7 +20,9 @@ export class StatsComponent implements OnInit {
   isLoad = false;
   groupId: any;
   selectedItem: any;
-  window: any;
+  tableStats: any;
+  groupName: string;
+  studentStatistic: GroupStatsStudent[];
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
@@ -27,6 +30,68 @@ export class StatsComponent implements OnInit {
   ngOnInit() {
     this.groupId = this.route.snapshot.params.groupId;
     this.getSubjectName(this.groupId);
+    this.getStatistic(this.groupId);
+  }
+
+  getStatistic(groupId) {
+    this.isLoad = false;
+    this.subjectService.loadGroup(groupId).subscribe(
+      res => {
+        this.studentStatistic = res.Students;
+        this.groupName = res.GroupName;
+        this.isLoad = true;
+      }
+    );
+  }
+
+  statisticSubject() {
+    const id = this.selectedItem;
+    if (id && id !== -1) {
+      const subject = this.subjects.find(({Id}) => Id === id);
+      console.log(subject.Name);
+      this.tableStats = this.studentStatistic.map((item) => {
+        const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
+        const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
+        const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
+        const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
+        return {
+          GroupName: this.groupName,
+          FIO: item.FIO,
+          Subject: subject.Name,
+          Rating: ((userAvgLabMarks + userAvgTestMarks) / 2).toFixed(2),
+          AllPass: userLabPass + userLecturePass,
+          UserAvgLabMarks: userAvgLabMarks.toFixed(2),
+          UserAvgTestMarks: userAvgTestMarks.toFixed(2),
+          UserTestCount: item.UserTestCount.find(({Key}) => Key === id).Value,
+          UserLabCount: item.UserLabCount.find(({Key}) => Key === id).Value,
+          UserLabPass: userLabPass,
+          UserLecturePass: userLecturePass };
+      });
+    } else if (id === -1) {
+      this.tableStats = this.studentStatistic.map( item => {
+        let labPassTotal = 0;
+        let lecturePassTotal = 0;
+        let avgLabMarksTotal = 0;
+        let avgTestMarksTotal = 0;
+        item.UserLabPass.map( ( statsItem, index) => {
+          labPassTotal += statsItem.Value;
+          lecturePassTotal += item.UserLecturePass[index].Value;
+          avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
+          avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
+        });
+        return {
+          GroupName: this.groupName,
+          FIO: item.FIO,
+          Subject: 'Все предметы',
+          Rating: ((avgTestMarksTotal + avgLabMarksTotal) / 2).toFixed(2),
+          AllPass: labPassTotal + lecturePassTotal,
+          UserAvgLabMarks: avgLabMarksTotal.toFixed(2),
+          UserAvgTestMarks: avgTestMarksTotal.toFixed(2),
+          UserLabPass: labPassTotal,
+          UserLecturePass: lecturePassTotal
+        };
+      });
+    }
   }
 
   getSubjectName(groupId) {
@@ -36,7 +101,7 @@ export class StatsComponent implements OnInit {
     });
   }
 
-  exportexcel(): void {
+  exportExcel(): void {
     const element = document.getElementById('excel-table');
     if (document.getElementById('position')) {
       document.getElementById('position').remove();
@@ -74,5 +139,6 @@ export class StatsComponent implements OnInit {
     document.body.appendChild(objFra);
     objFra.contentWindow.focus();
     objFra.contentWindow.print();
+    objFra.remove();
   }
 }

@@ -49,9 +49,6 @@ export class ResultsComponent implements OnInit {
       this._getHeader(res[0].Marks.length);
     })
   }
-  _getStudentGroup(i: number) {
-    return this.student.filter(res => res.SubGroup === i);
-  }
 
   _getHeader(length: number) {
     this.header = [];
@@ -79,30 +76,31 @@ export class ResultsComponent implements OnInit {
   }
 
   setMark(student, i) {
-    console.log(student)
-    if (i < student.Marks.length) {
-      const labsMark = {
-        id: student.Marks[i].StudentLabMarkId ? student.Marks[i].StudentLabMarkId : '0',
-        comment: student.Marks[i].Comment,
-        mark: student.Marks[i].Mark,
-        date: student.Marks[i].Date,
-        labId: student.Marks[i].LabId.toString(),
-        studentId: student.StudentId.toString(),
-        students: this.student
-      };
-      const dialogData: DialogData = {
-        title: 'Выставление отметки',
-        buttonText: 'Сохранить',
-        body: labsMark
-      };
-      const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
+    if (this.teacher) {
+      if (i < student.Marks.length) {
+        const labsMark = {
+          id: student.Marks[i].StudentLabMarkId ? student.Marks[i].StudentLabMarkId : '0',
+          comment: student.Marks[i].Comment,
+          mark: student.Marks[i].Mark,
+          date: student.Marks[i].Date,
+          labId: student.Marks[i].LabId.toString(),
+          studentId: student.StudentId.toString(),
+          students: this.student
+        };
+        const dialogData: DialogData = {
+          title: 'Выставление отметки',
+          buttonText: 'Сохранить',
+          body: labsMark
+        };
+        const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.labService.setLabsMark(labsMark)
-            .subscribe(res => res.Code === '200' && this.refreshStudents());
-        }
-      });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.labService.setLabsMark(labsMark)
+              .subscribe(res => res.Code === '200' && this.refreshStudents());
+          }
+        });
+      }
     }
   }
 

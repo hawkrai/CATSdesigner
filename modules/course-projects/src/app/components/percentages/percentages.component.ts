@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Percentage} from '../../models/percentage.model';
 import {PercentagesService} from '../../services/percentages.service';
 import {CourseUser} from '../../models/course-user.model';
-import {CourseUserService} from '../../services/course-user.service';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import {AddStageDialogComponent} from './add-stage-dialog/add-stage-dialog.component';
 import {select, Store} from '@ngrx/store';
@@ -17,22 +16,22 @@ import {getSubjectId} from '../../store/selectors/subject.selector';
 })
 export class PercentagesComponent implements OnInit {
 
+  @Input() courseUser: CourseUser;
+
   private COUNT = 1000;
   private PAGE = 1;
 
   private percentages: Percentage[];
 
-  private courseUser: CourseUser;
   private subjectId: string;
 
-  constructor(private courseUserService: CourseUserService,
-              private percentagesService: PercentagesService,
+  constructor(private percentagesService: PercentagesService,
               public dialog: MatDialog,
+              private snackBar: MatSnackBar,
               private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.courseUserService.getUser().subscribe(res => this.courseUser = res);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
       this.retrievePercentages();
@@ -63,7 +62,10 @@ export class PercentagesComponent implements OnInit {
         const date = new Date(result.date);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
-          .subscribe(res => this.ngOnInit());
+          .subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage('График успешно сохранен');
+          });
       }
     });
   }
@@ -83,7 +85,10 @@ export class PercentagesComponent implements OnInit {
         const date = new Date(result.date);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)
-          .subscribe(res => this.ngOnInit());
+          .subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage('График успешно сохранен');
+          });
       }
     });
   }
@@ -94,14 +99,24 @@ export class PercentagesComponent implements OnInit {
       data: {
         label: 'Удаление этапа процентовки',
         message: 'Вы действительно хотите удалить этап?',
-        actionName: 'Удалить'
+        actionName: 'Удалить',
+        color: 'warn'
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result) {
-        this.percentagesService.deleteStage({id}).subscribe(res => this.ngOnInit());
+        this.percentagesService.deleteStage({id}).subscribe(() => {
+          this.ngOnInit();
+          this.addFlashMessage('Этап успешно удален');
+        });
       }
+    });
+  }
+
+  addFlashMessage(msg: string) {
+    this.snackBar.open(msg, null, {
+      duration: 2000
     });
   }
 

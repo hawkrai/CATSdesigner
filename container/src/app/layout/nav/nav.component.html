@@ -5,9 +5,9 @@
     <span class="example-spacer"></span>
     <div>
       <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
-      <a mat-button [routerLink]="'/subjects-control'">Управление предметами</a>
-      <a mat-button [routerLink]="'/modules'">Модули</a>
-      <a mat-button [routerLink]="'/settings'">Настройки</a>
+      <a *ngIf="isLector" mat-button [routerLink]="'/subjects-control'">Управление предметами</a>
+      <a *ngIf="isLector" mat-button [routerLink]="'/modules'">Модули</a>
+      <a *ngIf="isLector" mat-button [routerLink]="'/settings'">Настройки</a>
     </div> 
     
     <div class="flex-spacer"></div>
@@ -30,7 +30,7 @@
         <mat-icon>info</mat-icon>
         <span>О системе</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="logOut()">
         <mat-icon>exit_to_app</mat-icon>
         <span>Выйти</span>
     </button>

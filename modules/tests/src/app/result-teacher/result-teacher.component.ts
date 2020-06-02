@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {Component, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {TestService} from "../service/test.service";
 import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
@@ -9,6 +9,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {finalize, takeUntil} from "rxjs/operators";
 import {AutocompleteModel} from "../models/autocomplete.model";
+import {Results} from "../models/results.model";
 
 
 @AutoUnsubscribe
@@ -19,7 +20,7 @@ import {AutocompleteModel} from "../models/autocomplete.model";
 })
 export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
   public results: Result[];
-  public resultsOriginal: Result[];
+  public resultsOriginal: Result[][] = [];
   public selfControlTests: ResultForTable[][] = [];
   public selfControlTestsMass: any = [];
   public nNTestsMass: any = [];
@@ -44,16 +45,21 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   public groupChangeCheckBoxes: string[] = [];
   public testChangeCheckBoxes: string[] = ["0"];
   public studentChangeCheckBoxes: string[] = [];
+  //todo any delete
+  public user: any;
+  public subject: any;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
-              private cdr: ChangeDetectorRef,
               private testPassingService: TestPassingService) {
     super();
   }
 
   public ngOnInit(): void {
-    this.testService.getGroupsBySubjectId("3")
+
+    this.user = JSON.parse(localStorage.getItem("currentUser"));
+    this.subject = JSON.parse(localStorage.getItem("currentSubject"));
+    this.testService.getGroupsBySubjectId(this.subject.id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((groups: Group[]) => {
         this.groups = groups;
@@ -67,32 +73,34 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
 
   public getResults(groupId): void {
     this.loading = true;
-    this.testPassingService.getResultsByGroupAndSubject(groupId, "3")
+    this.testPassingService.getResultsByGroupsAndSubject([groupId], this.subject.id)
       .pipe(
         takeUntil(this.unsubscribeStream$),
         finalize(() => this.loading = false)
       )
-      .subscribe((results: Result[]) => {
-        const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => group.value === groupId);
-        this.results = results;
+      .subscribe((results: Results[]) => {
+        const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => group.value.toString() === results[0].GroupId.toString());
+        this.results = results[0].Results;
         this.results.forEach((result: Result) => {
-          result.groupName = groupName.value;
+          result.groupName = groupName.display;
         });
-        this.resultsOriginal = results;
-        this.resultsOriginal.forEach((result: Result) => {
-          result.groupName = groupName.value;
+        this.resultsOriginal.push(results[0].Results);
+        this.resultsOriginal.forEach((results: Result[]) => {
+          results.forEach((result: Result) => {
+            result.groupName = groupName.display;
+          });
         });
-        this.decomposeResult(results);
+        this.decomposeResult(results[0].Results);
       });
   }
 
-  public filterStudents(event: string): void {
+  /*public filterStudents(event: string): void {
     let results = this.resultsOriginal && this.resultsOriginal.filter(result => result.StudentName.toLowerCase().includes(event.toLowerCase()));
     this.decomposeResult(results);
     this.cdr.detectChanges();
-  }
+  }*/
 
-  public filterStudentsLogin(event: string[]): void {
+  /*public filterStudentsLogin(event: string[]): void {
     let results;
     if (event && event.length) {
       results = this.resultsOriginal && this.resultsOriginal.filter(result => event.includes(result.Login));
@@ -101,19 +109,60 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     }
     this.decomposeResult(results);
     this.cdr.detectChanges();
+  }*/
+  public filterStudentsLogin(event: string[]): void {
+    this.initArraysMass();
+
+    let results: Result[][] = [];
+    if (event && event.length) {
+      this.resultsOriginal && this.resultsOriginal.forEach((resultsOriginal: Result[]) => {
+        results.push(resultsOriginal.filter(result => event.includes(result.Login)));
+      });
+    } else {
+      results = this.resultsOriginal;
+    }
+    results.forEach((result: Result[]) => {
+      this.decomposeResult(result, true);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.groupId) {
+    /*if (changes.groupId) {
       this.getResults(changes.groupId.currentValue);
     }
     this.filterStudents(this.filterStudentsString);
-    this.cdr.detectChanges();
+    this.cdr.detectChanges();*/
   }
 
   public groupChange(eventChange) {
-    if (this.groupChangeCheckBoxes !== eventChange) {
+    if (eventChange.length && this.groupChangeCheckBoxes !== eventChange) {
+      console.log(eventChange);
       this.groupChangeCheckBoxes = eventChange;
+      this.testPassingService.getResultsByGroupsAndSubject(eventChange, this.subject.id).subscribe((results: Results[]) => {
+        this.initArraysMass();
+        this.resultsOriginal = [];
+        this.studentList = [];
+        results.forEach((results: Results) => {
+          this.resultsOriginal.push(results.Results);
+          this.resultsOriginal.forEach((resultsOriginal: Result[]) => {
+            resultsOriginal.forEach((result: Result) => {
+              const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => group.value.toString() === results.GroupId.toString());
+              result.groupName = groupName.display;
+              console.log("result.groupName = groupName.display");
+            });
+          });
+        });
+        /*this.resultsOriginal.forEach((resultsOriginal: Result[])=>{
+          const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => group.value.toString() === resultsOriginal.GroupId.toString());
+
+        });*/
+
+        this.resultsOriginal.forEach((res) => {
+          this.decomposeResult(res);
+        });
+        console.log("rer");
+        console.log(results);
+      });
     }
   }
 
@@ -124,7 +173,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   public studentChange(eventChange) {
-    if (this.studentChangeCheckBoxes !== eventChange) {
+    if ((this.studentChangeCheckBoxes.length || eventChange.length) && this.studentChangeCheckBoxes !== eventChange) {
       this.studentChangeCheckBoxes = eventChange;
       this.filterStudentsLogin(eventChange);
     }
@@ -136,7 +185,15 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     this.initArray(this.beforeEUMKTests);
     this.initArray(this.forEUMKTests);
     this.initArray(this.knowledgeControlTests);
-    this.cdr.detectChanges();
+
+  }
+
+  private initArraysMass(): void {
+    this.knowledgeControlTestsMass = [];
+    this.selfControlTestsMass = [];
+    this.nNTestsMass = [];
+    this.beforeEUMKTestsMass = [];
+    this.forEUMKTestsMass = [];
   }
 
   private initArray(test): void {
@@ -146,11 +203,13 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     }
   }
 
-  private decomposeResult(results: Result[]): void {
+  private decomposeResult(results: Result[], notTouchStList?: boolean): void {
     this.initArrays();
     if (results) {
       results.forEach((result) => {
-          this.studentList.push({value: result.Login, display: result.StudentName});
+          if (!notTouchStList) {
+            this.studentList.push({value: result.Login, display: result.StudentName});
+          }
           let resultForTable: ResultForTable = new ResultForTable();
           resultForTable.test = [];
           resultForTable.name = result.StudentName;
@@ -184,16 +243,12 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
           });
         }
       );
-      this.knowledgeControlTestsMass = [];
-      this.selfControlTestsMass = [];
-      this.nNTestsMass = [];
-      this.beforeEUMKTestsMass = [];
-      this.forEUMKTestsMass = [];
-      this.knowledgeControlTestsMass.push({res: this.knowledgeControlTests, group: this.results && this.results.length && this.results[0].groupName});
-      this.selfControlTestsMass.push({res: this.selfControlTests, group: this.results && this.results.length && this.results[0].groupName});
-      this.nNTestsMass.push({res: this.nNTests, group: this.results && this.results.length && this.results[0].groupName});
-      this.beforeEUMKTestsMass.push({res: this.beforeEUMKTests, group: this.results && this.results.length && this.results[0].groupName});
-      this.forEUMKTestsMass.push({res: this.forEUMKTests, group: this.results && this.results.length && this.results[0].groupName});
+      const groupName = this.results && this.results.length && this.results[0].groupName;
+      this.knowledgeControlTestsMass.push({res: Object.assign({}, this.knowledgeControlTests), group: groupName});
+      this.selfControlTestsMass.push({res: Object.assign({}, this.selfControlTests), group: groupName});
+      this.nNTestsMass.push({res: Object.assign({}, this.nNTests), group: groupName});
+      this.beforeEUMKTestsMass.push({res: Object.assign({}, this.beforeEUMKTests), group: groupName});
+      this.forEUMKTestsMass.push({res: Object.assign({}, this.forEUMKTests), group: groupName});
     }
   }
 

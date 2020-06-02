@@ -1,22 +1,31 @@
-<div class="defense-component" *ngIf="courseUser">
+<div class="defense-component" *ngIf="courseUser; else: load">
   <div class="defense-component__header">
     <ng-container *ngIf="courseUser.IsLecturer">
-      <mat-form-field class="defense-component__group-select">
-        <mat-select [value]="groups ? groups[0].Id : ''">
-          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.Id">
-            {{group.Name}}
+      <mat-form-field class="defense-component__group-select" *ngIf="selectedGroup">
+        <mat-select [value]="selectedGroup.GroupId">
+          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.GroupId">
+            {{group.GroupName}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before">
+      <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before"
+              (click)="downloadArchive()">
         <mat-icon>cloud_download</mat-icon>
       </button>
-      <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before">
+      <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before"
+              *ngIf="!detachedGroup" (click)="checkPlagiarism()">
         <mat-icon>visibility</mat-icon>
       </button>
-      <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="ngOnInit()">
+      <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="retrieveFiles()">
         <mat-icon>refresh</mat-icon>
       </button>
+      <mat-slide-toggle class="detached-toggle"
+                        [color]="'primary'"
+                        [checked]="detachedGroup"
+                        (change)="groupStatusChange($event)"
+      >
+        Открепленные группы
+      </mat-slide-toggle>
     </ng-container>
   </div>
   <div class="defense-component__body">
@@ -30,26 +39,38 @@
             <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Действие</th>
           </tr>
           </thead>
-          <tbody *ngIf="studentFile">
-          <tr class="mdc-data-table__row">
-            <td class="mdc-data-table__cell">{{ studentFile.Attachments[0].FileName }}</td>
+          <tbody>
+          <tr class="mdc-data-table__row" *ngFor="let studentFile of userLabFiles"
+              [ngStyle]="studentFile.IsReturned ? {'background': '#ffff99'} : {}">
+            <td class="mdc-data-table__cell">
+              <a href="api/Upload?filename={{studentFile.Attachments[0].PathName}}//{{studentFile.Attachments[0].FileName}}">
+                {{ studentFile.Attachments[0].Name }}
+              </a>
+            </td>
             <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
             <td class="mdc-data-table__cell">
-              <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before">
-                <mat-icon>delete</mat-icon>
-              </button>
+              <ng-container *ngIf="!studentFile.IsReturned">
+                <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before"
+                        (click)="addJob(studentFile)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before"
+                        (click)="deleteJob(studentFile)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </ng-container>
+              <p *ngIf="studentFile.IsReturned">Исправить</p>
             </td>
           </tr>
           </tbody>
         </table>
       </div>
-      <button mat-raised-button color="primary" *ngIf="!studentFile">Добавить работу</button>
+      <button mat-raised-button color="primary" *ngIf="canAddJob" [disabled]="!courseUser.HasAssignedDiplomProject"
+              (click)="addJob()">Добавить работу
+      </button>
     </ng-container>
     <ng-container *ngIf="courseUser.IsLecturer">
-      <mat-accordion>
+      <mat-accordion *ngIf="studentFiles">
         <mat-expansion-panel *ngFor="let student of studentFiles">
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -67,18 +88,33 @@
               </tr>
               </thead>
               <tbody *ngIf="student.FileLabs">
-              <tr class="mdc-data-table__row" *ngFor="let fileLab of student.FileLabs">
-                <td class="mdc-data-table__cell">{{ fileLab.Attachments[0].FileName }}</td>
-                <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
+              <tr class="mdc-data-table__row" *ngFor="let fileLab of student.FileLabs"
+                  [ngStyle]="fileLab.IsReturned ? {'background': '#ffff99'} : {}">
                 <td class="mdc-data-table__cell">
-                  <button mat-icon-button color="primary" matTooltip="Принять работу" matTooltipPosition="before">
-                    <mat-icon>thumb_up</mat-icon>
-                  </button>
-                  <button mat-icon-button color="primary" matTooltip="Вернуть работу" matTooltipPosition="before">
-                    <mat-icon>call_missed_outgoing</mat-icon>
-                  </button>
-                  <button mat-icon-button color="primary" matTooltip="Проверить на плагиат" matTooltipPosition="before">
-                    <mat-icon>visibility</mat-icon>
+                  <a href="api/Upload?filename={{fileLab.Attachments[0].PathName}}//{{fileLab.Attachments[0].FileName}}">
+                    {{ fileLab.Attachments[0].Name }}
+                  </a>
+                </td>
+                <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
+                <td class="mdc-data-table__cell">{{ fileLab.Date }}</td>
+                <td class="mdc-data-table__cell">
+                  <ng-container *ngIf="!fileLab.IsReturned && !fileLab.IsReceived">
+                    <button mat-icon-button color="primary" matTooltip="Принять работу" matTooltipPosition="before"
+                            (click)="approveJob(fileLab, student.StudentId)">
+                      <mat-icon>thumb_up</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" matTooltip="Вернуть работу" matTooltipPosition="before"
+                            (click)="addJob(fileLab, student.StudentId)">
+                      <mat-icon>call_missed_outgoing</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" matTooltip="Проверить на плагиат" matTooltipPosition="before"
+                            *ngIf="false">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                  </ng-container>
+                  <button mat-icon-button color="primary" matTooltip="Отклонить работу" matTooltipPosition="before"
+                          *ngIf="fileLab.IsReceived" (click)="restoreFromArchive(fileLab, student.StudentId)">
+                    <mat-icon>thumb_down</mat-icon>
                   </button>
                 </td>
               </tr>
@@ -87,6 +123,15 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
+      <ng-container *ngIf="courseUser.IsLecturer && !studentFiles && groups.length">
+        <ng-container *ngTemplateOutlet="load">
+        </ng-container>
+      </ng-container>
     </ng-container>
   </div>
 </div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

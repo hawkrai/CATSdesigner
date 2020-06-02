@@ -10,6 +10,10 @@ import {MatModule} from '../../mat.module';
 import {LabWorkPopoverComponent} from './components/labs-work/lab-work-popover/lab-work-popover.component';
 import {FormsModule} from '@angular/forms';
 import {LabsMarkPopoverComponent} from './components/results/labs-mark-popover/labs-mark-popover.component';
+import {AddLabPopoverComponent} from './components/job-protection/add-lab-popover/add-lab-popover.component';
+import {FilterPipe} from '../../shared/filter.pipe/filter.pipe';
+import {AppModule} from '../../app.module';
+import {SharedModule} from '../../shared/shared.module';
 
 
 @NgModule({
@@ -22,15 +26,18 @@ import {LabsMarkPopoverComponent} from './components/results/labs-mark-popover/l
     JobProtectionComponent,
     LabWorkPopoverComponent,
     LabsMarkPopoverComponent,
+    AddLabPopoverComponent
   ],
   entryComponents: [
     LabWorkPopoverComponent,
-    LabsMarkPopoverComponent
+    LabsMarkPopoverComponent,
+    AddLabPopoverComponent
   ],
   imports: [
     CommonModule,
     MatModule,
     FormsModule,
-  ]
+    SharedModule
+  ],
 })
 export class LabsModule { }

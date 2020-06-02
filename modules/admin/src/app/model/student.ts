@@ -50,3 +50,15 @@ export class Students {
     SubgroupId: string;
     TestMark: string;
 }
+
+export class RegisterModel {
+  Name: string;
+  Surname: string;
+  Patronymic: string;
+  UserName: string;
+  Password: string;
+  ConfirmPassword: string;
+  Group: string;
+  Answer: string;
+  QuestionId: string;
+}

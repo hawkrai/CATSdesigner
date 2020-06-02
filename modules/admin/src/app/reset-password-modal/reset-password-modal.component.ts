@@ -4,7 +4,8 @@ import { MustMatch } from '../signup/MustMatch';
 import { UserService } from '../service/userService';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SuccessMessageComponent } from '../success-message/success-message.component';
-import { ResetPassword } from '../model/resetPassword';
+import {ResetPasswordJson} from '../model/resetPassword';
+import {AccountService} from '../service/account.service';
 
 @Component({
   selector: 'app-reset-password-modal',
@@ -15,7 +16,7 @@ export class ResetPasswordModalComponent implements OnInit {
 
   form: FormGroup;
   @Output() submitEM = new EventEmitter();
-  constructor(private formBuilder: FormBuilder, private userService: UserService,
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private accountService: AccountService,
               private dialog: MatDialog, public dialogRef: MatDialogRef<ResetPasswordModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: string) {}
 
@@ -58,7 +59,7 @@ export class ResetPasswordModalComponent implements OnInit {
   }
 
   resetPassword(resetPasswordModel) {
-    this.userService.resetPassword(resetPasswordModel).subscribe( () => {
+    this.accountService.resetPassword(resetPasswordModel).subscribe( () => {
       this.dialog.open(SuccessMessageComponent, {
         data: 'Пароль успешно изменен.',
         position: {
@@ -66,14 +67,14 @@ export class ResetPasswordModalComponent implements OnInit {
           right: '0px'
         }
       });
+      this.dialogRef.close();
     });
   }
 
   setNewPassword() {
-    const passwordModel = new ResetPassword();
-    passwordModel.Login = this.data;
-    passwordModel.Password = this.form.controls.password.value;
-    passwordModel.ConfirmPassword = this.form.controls.confirmPassword.value;
+    const passwordModel = new ResetPasswordJson();
+    passwordModel.userName = this.data;
+    passwordModel.password = this.form.controls.password.value;
     console.log(passwordModel);
     this.resetPassword(passwordModel);
   }

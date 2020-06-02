@@ -20,4 +20,10 @@ export class GroupsRestService {
       map(res => this.converterService.groupsModelConverter(res['Groups']))
     );
   }
+
+  public getAllOldGroups(subjectId: string): Observable<any> {
+    return this.http.get('Services/CoreService.svc/GetGroupsV3/' + subjectId).pipe(
+      map(res => this.converterService.groupsModelConverter(res['Groups']))
+    );
+  }
 }

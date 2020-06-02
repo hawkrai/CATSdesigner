@@ -1,8 +1,12 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Professor, EditProfessor } from 'src/app/model/professor';
+import {Professor, EditProfessor, AddProfessor} from 'src/app/model/professor';
 import { FormGroup, FormBuilder, FormControl, Validators, ValidationErrors } from '@angular/forms';
 import { MustMatch } from 'src/app/signup/MustMatch';
+import {ValidateEmailNotTaken} from '../../../signup/ValidateEmailNotTaken';
+import {AccountService} from '../../../service/account.service';
+import {questions} from '../../../questions';
+import {GroupService} from '../../../service/group.service';
 
 @Component({
   selector: 'app-lector-modal',
@@ -13,11 +17,15 @@ export class LectorModalComponent implements OnInit {
 
   form: FormGroup;
   @Output() submitEM = new EventEmitter();
+  quest = questions;
+  groups;
+  isLoad;
 
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<LectorModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Professor) { }
+    @Inject(MAT_DIALOG_DATA) public data: Professor,
+    private accountService: AccountService, private groupService: GroupService) { }
 
   ngOnInit(): void {
     const professor = this.data;
@@ -26,23 +34,23 @@ export class LectorModalComponent implements OnInit {
 
     this.form = this.formBuilder.group({
       Username: new FormControl( professor.Username,
-        [Validators.required, Validators.minLength(6), Validators.pattern('^[a-z0-9_-]{3,30}$')]),
+        [Validators.required, Validators.minLength(6),
+          Validators.pattern('^[a-z0-9_.-]{3,30}$')], ValidateEmailNotTaken.createValidator(this.accountService)),
       Password: new FormControl( professor.Password,
         [Validators.required, Validators.minLength(6), Validators.maxLength(30), this.passwordValidator]),
       ConfirmPassword: new FormControl(professor.ConfirmPassword),
       Surname: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       Name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       Patronymic: new FormControl('', [Validators.maxLength(50)]),
-      SkypeContact: new FormControl(professor.SkypeContact || '', [Validators.maxLength(50)]),
-      Phone: new FormControl(professor.Phone || '', [Validators.maxLength(50)]),
-      Skill: new FormControl(professor.Skill || '', [Validators.maxLength(255)]),
-      About: new FormControl(professor.About || '', [Validators.maxLength(255)]),
       IsSecretary: new FormControl(false),
-      IsLectureHasGraduateStudents: new FormControl(false),
-      Groups: new FormControl(professor.Groups),
+      IsLecturerHasGraduateStudents: new FormControl(false),
+      GroupId: new FormControl(professor.Groups),
+      QuestionId: new FormControl(1),
+      Answer: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(100)])
     }, {
       validator: MustMatch('Password', 'ConfirmPassword')
     });
+    this.getGroups();
   }
 
   private passwordValidator(control: FormControl): ValidationErrors {
@@ -63,6 +71,13 @@ export class LectorModalComponent implements OnInit {
     }
   }
 
+  getGroups() {
+    this.groupService.getGroups().subscribe(items => {
+      this.groups = items;
+      this.isLoad = true;
+    });
+  }
+
   isControlInvalid(controlName: string): boolean {
     const control = this.form.controls[controlName];
     return control.invalid && control.touched;
@@ -81,21 +96,18 @@ export class LectorModalComponent implements OnInit {
   }
 
   sendData() {
-    const object = new Professor();
-    object.Username = this.form.controls.Username.value || '';
-    object.Password = this.form.controls.Password.value || '';
-    object.ConfirmPassword = this.form.controls.ConfirmPassword.value || '';
-    object.Surname = this.form.controls.Surname.value || '';
-    object.Email = this.form.controls.Surname.value || '';
+    const object = new AddProfessor();
+    object.UserName = this.form.controls.Username.value;
+    object.Password = this.form.controls.Password.value;
+    object.ConfirmPassword = this.form.controls.ConfirmPassword.value;
+    object.Surname = this.form.controls.Surname.value;
     object.Name = this.form.controls.Name.value || '';
     object.Patronymic = this.form.controls.Patronymic.value || '';
-    object.SkypeContact = this.form.controls.SkypeContact.value || '';
-    object.Phone = this.form.controls.Phone.value || '';
-    object.Skill = this.form.controls.Skill.value || '';
-    object.About = this.form.controls.About.value || '';
-    object.IsActive = true;
+    object.QuestionId = this.form.controls.QuestionId.value;
+    object.Group = this.form.controls.GroupId.value;
+    object.Answer = this.form.controls.Answer.value;
     object.IsSecretary = this.form.controls.IsSecretary.value;
-    object.IsLecturerHasGraduateStudents = this.form.controls.IsLectureHasGraduateStudents.value;
+    object.IsLecturerHasGraduateStudents = this.form.controls.IsLecturerHasGraduateStudents.value;
     return object;
   }
 }

@@ -1,4 +1,4 @@
-<div class="labs-component" >
+<div class="labs-component">
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 1"
@@ -63,10 +63,13 @@
   </div>
 
   <div class="labs-component__body">
-    <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4">
+    <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4 || (tab === 5 && teacher)">
       <mat-form-field>
         <mat-select [value]="groups ? groups[0].groupId : ''">
-          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.groupId">
+          <mat-option *ngFor="let group of groups"
+                      (onSelectionChange)="_selectedGroup($event)"
+                      [value]="group.groupId"
+          >
             {{group.groupName}}
           </mat-option>
         </mat-select>
@@ -74,6 +77,14 @@
       <div class="_excel-file" *ngIf="(tab === 3 || tab === 4) && teacher" (click)="getExcelFile()">
         <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
       </div>
+      <mat-slide-toggle *ngIf="tab !== 2"
+                        class="example-margin"
+                        [color]="'primary'"
+                        [checked]="detachedGroup"
+                        (change)="groupStatusChange($event)"
+      >
+        Открепленные группы
+      </mat-slide-toggle>
     </div>
     <app-labs-work *ngIf="tab === 1" [teacher]="teacher"></app-labs-work>
     <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>

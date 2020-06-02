@@ -2,6 +2,7 @@
 <section class="example-section">
   <mat-checkbox *ngFor="let attachment of data.body"
                 class="example-margin"
+                [color]="'primary'"
                 [(ngModel)]="attachment.isDownload"
   >
     {{attachment.name}}

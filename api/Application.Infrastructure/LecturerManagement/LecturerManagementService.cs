@@ -37,7 +37,7 @@ namespace Application.Infrastructure.LecturerManagement
 					var row = new List<string> {student.FullName};
 
 
-					row.AddRange(student.LecturesVisitMarks.OrderBy(e => e.LecturesScheduleVisiting.Date).Select(lecturesVisitMark => lecturesVisitMark.Mark));
+					row.AddRange(student.LecturesVisitMarks.OrderBy(e => e.LecturesScheduleVisiting.Date).Select(lecturesVisitMark => lecturesVisitMark.Mark).ToList());
 
 					data.Add(row);
 				}
@@ -54,7 +54,7 @@ namespace Application.Infrastructure.LecturerManagement
 					repositoriesContainer.SubjectRepository.GetBy(
 						new Query<Subject>(e => e.Id == subjectId).Include(e => e.LecturesScheduleVisitings));
 
-				data.AddRange(subject.LecturesScheduleVisitings.OrderBy(e => e.Date).Select(lecturesScheduleVisiting => lecturesScheduleVisiting.Date.ToString("dd/MM/yyyy")));
+				data.AddRange(subject.LecturesScheduleVisitings.OrderBy(e => e.Date).Select(lecturesScheduleVisiting => lecturesScheduleVisiting.Date.ToString("dd/MM/yyyy")).ToList());
 			}
 		    return data;
 	    }

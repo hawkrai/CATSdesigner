@@ -5,6 +5,7 @@ interface DialogData {
   label: string;
   message: string;
   actionName: string;
+  color: string;
 }
 
 @Component({
