@@ -53,7 +53,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             get { return context.Value; }
         }
 
-        public IGroupManagementService GroupManagementService
+        private IGroupManagementService GroupManagementService
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 			}
 		}
 
-        public ISubjectManagementService SubjectManagementService
+        private ISubjectManagementService SubjectManagementService
         {
             get
             {
@@ -69,7 +69,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             }
         }
 
-        public IModulesManagementService ModulesManagementService
+        private IModulesManagementService ModulesManagementService
         {
             get
             {
@@ -77,7 +77,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             }
         }
 
-        public IFoldersManagementService FoldersManagementService
+        private IFoldersManagementService FoldersManagementService
         {
             get
             {
@@ -85,7 +85,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             }
         }
 
-        public IMaterialsManagementService MaterialsManagementService
+        private IMaterialsManagementService MaterialsManagementService
         {
             get
             {
