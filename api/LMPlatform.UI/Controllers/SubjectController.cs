@@ -127,7 +127,7 @@ namespace LMPlatform.UI.Controllers
         [HttpPost]
         public ActionResult SaveSubject(SubjectEditViewModel model)
         {
-            var color = this.HttpContext.Request.Form["html5colorpicker"];
+            var color = model.Color;
 
             if (color == "#ffffff")
             {
