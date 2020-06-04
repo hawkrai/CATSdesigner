@@ -13,7 +13,7 @@
       <mat-label>Порядок</mat-label>
       <input name="order" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
     </mat-form-field>
-    <h4 mat-dialog-title>Прикрепленный материал</h4>
+    <h4 class="attachment-text mat-typography">Прикрепленный материал</h4>
     <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
     <button mat-flat-button class="lectures-component__popover-file-button" (click)="csvInput.click()">Добавить файл</button>
     <div class="mdc-data-table file-table" *ngIf="files.length">

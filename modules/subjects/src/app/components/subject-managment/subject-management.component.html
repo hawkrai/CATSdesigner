@@ -12,7 +12,7 @@
       </mat-form-field>
     </form>
 
-    <h2 class="example-h2">Модули</h2>
+    <h1 mat-dialog-title class="mat-typography title">Модули</h1>
 
     <div class="section">
       <section  class="example-section">
@@ -26,10 +26,10 @@
       </section>
     </div>
 
-    <h2 class="example-h2">Цвет предмета</h2>
+    <h1 mat-dialog-title class="mat-typography title">Цвет предмета</h1>
     <input class="color-picker" [(colorPicker)]="subject.Color" [style.background]="subject.Color"/>
 
-    <h2 class="example-h2">Группы</h2>
+    <h1 mat-dialog-title class="mat-typography title">Группы</h1>
     <mat-form-field class="example-full-width">
       <mat-label>Groups</mat-label>
       <mat-select [(value)]="selectedGroup.id" multiple>

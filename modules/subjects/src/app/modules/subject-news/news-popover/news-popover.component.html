@@ -16,10 +16,17 @@
     </ckeditor>
 
     <section class="example-section">
-      <mat-checkbox name="isOldDate" class="example-margin" [(ngModel)]="data.model.isOldDate">Оставить старую дату
-        новости
+      <mat-checkbox name="isOldDate"
+                    class="example-margin text"
+                    [(ngModel)]="data.model.isOldDate"
+                    [color]="'primary'">
+        Оставить старую дату новости
       </mat-checkbox>
-      <mat-checkbox name="disabled" class="example-margin" [(ngModel)]="data.model.disabled">Скрыть новость
+      <mat-checkbox name="disabled"
+                    class="example-margin text"
+                    [(ngModel)]="data.model.disabled"
+                    [color]="'primary'">
+        Скрыть новость
       </mat-checkbox>
     </section>
   </form>
