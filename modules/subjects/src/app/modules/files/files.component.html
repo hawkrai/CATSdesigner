@@ -1,31 +1,36 @@
-<!--<div class="mdc-data-table file-table" *ngIf="files.length">-->
-<!--  <table class="mdc-data-table__table">-->
-<!--    <tbody>-->
-<!--    <tr class="mdc-data-table__row" *ngFor="let file of files">-->
-<!--      <td class="mdc-data-table__cell example-content icon-cell">-->
-<!--        <i class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i>-->
-<!--      </td>-->
-<!--      <td class="mdc-data-table__cell example-content">-->
-<!--        <a matTooltip="{{file.Name}}" matTooltipPosition="below"-->
-<!--           href="{{file.IdFile === -1 ? '#' : file.Url}}">-->
-<!--          {{file.Name}}-->
-<!--        </a>-->
-<!--      </td>-->
-<!--      <td class="mdc-data-table__cell example-content">{{file.Type}}</td>-->
-<!--      <td class="mdc-data-table__cell example-content">{{(file.Size / 1024).toFixed(2)}} КБ</td>-->
-<!--      <td class="mdc-data-table__cell" style="color: red" *ngIf="file.IdFile === -1; else attached">-->
-<!--        Загруженный файл-->
-<!--      </td>-->
-<!--      <ng-template #attached>-->
-<!--        <td class="mdc-data-table__cell" style="color: blue" *ngIf="file.IdFile !== -1">Прикрепленный файл-->
-<!--        </td>-->
-<!--      </ng-template>-->
-<!--      <td class="mdc-data-table__cell" style="padding-left: 0">-->
-<!--        <button mat-icon-button color="primary" matTooltip="Удалить файл" matTooltipPosition="before" (click)="deleteFile(file)">-->
-<!--          <mat-icon>clear</mat-icon>-->
-<!--        </button>-->
-<!--      </td>-->
-<!--    </tr>-->
-<!--    </tbody>-->
-<!--  </table>-->
-<!--</div>-->
+<div class="files-component">
+  <h1 class="files-component__title" mat-dialog-title>Предметные файлы</h1>
+  <div class="mdc-data-table file-table" *ngIf="files.length">
+    <table class="mdc-data-table__table">
+      <tbody>
+      <tr class="mdc-data-table__row" *ngFor="let file of files">
+        <td class="mdc-data-table__cell example-content icon-cell">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i>
+        </td>
+        <td class="mdc-data-table__cell example-content">
+          <a matTooltip="{{file.Name}}" matTooltipPosition="below"
+             class="text"
+             href="{{file.IdFile === -1 ? '#' : file.Url}}">
+            {{file.Name}}
+          </a>
+        </td>
+        <td class="mdc-data-table__cell text example-content">{{file.Type}}</td>
+        <td class="mdc-data-table__cell text example-content">{{(file.Size / 1024).toFixed(2)}} КБ</td>
+        <td class="mdc-data-table__cell text " style="color: red" *ngIf="file.IdFile === -1; else attached">
+          Загруженный файл
+        </td>
+        <ng-template #attached>
+          <td class="mdc-data-table__cell text" style="color: blue" *ngIf="file.IdFile !== -1">Прикрепленный файл
+          </td>
+        </ng-template>
+        <td class="mdc-data-table__cell" style="padding-left: 0">
+          <button mat-icon-button color="primary" matTooltip="Удалить файл" matTooltipPosition="before"
+                  (click)="deleteFile(file)">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
