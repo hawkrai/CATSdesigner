@@ -25,11 +25,18 @@
 .mat-header-cell-description {
   font-size: 17px;
   flex: 0 0 25%;
+  cursor: pointer;
 }
 
 .mat-header-cell-average {
   font-size: 17px;
   flex: 0 0 5%;
+  &.all{
+    color: #111b91;
+  }
+  &.notAll{
+    color: #619cff;
+  }
 }
 
 .mat-header-cell-action {

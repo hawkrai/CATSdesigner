@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {TestService} from "../service/test.service";
 import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
@@ -19,6 +19,8 @@ import {Results} from "../models/results.model";
   styleUrls: ["./result-teacher.component.less"]
 })
 export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
+  @Input()
+  public size: number;
   public results: Result[];
   public resultsOriginal: Result[][] = [];
   public selfControlTests: ResultForTable[][] = [];
