@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
 import {LabsService} from "../../../../services/labs/labs.service";
 import {Lab} from "../../../../models/lab.model";
 import {select, Store} from '@ngrx/store';
@@ -9,10 +8,10 @@ import {DialogData} from '../../../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {LabWorkPopoverComponent} from './lab-work-popover/lab-work-popover.component';
-import {Lecture} from '../../../../models/lecture.model';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {Attachment} from '../../../../models/attachment.model';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-labs-work',
@@ -84,7 +83,6 @@ export class LabsWorkComponent implements OnInit {
   }
 
   openFilePopup(attachments: Attachment[]) {
-    console.log(attachments);
     const dialogData: DialogData = {
       title: 'Файлы',
       buttonText: 'Скачать',
@@ -112,6 +110,15 @@ export class LabsWorkComponent implements OnInit {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
+  }
+
+  drop(event: CdkDragDrop<Lab[]>) {
+    console.log(event);
+    console.log(this.labsWork);
+    // const temp = this.labsWork[event.previousIndex].order;
+    // this.labsWork[event.previousIndex].order = this.labsWork[event.currentIndex].order;
+    // this.labsWork[event.currentIndex].order = temp;
+    moveItemInArray(this.labsWork, event.previousIndex, event.currentIndex);
   }
 
   private getLab(lab?: Lab) {

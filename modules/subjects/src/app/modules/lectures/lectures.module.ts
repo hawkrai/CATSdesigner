@@ -6,6 +6,7 @@ import {VisitLecturesComponent} from './components/visit-lectures/visit-lectures
 import {MatModule} from '../../mat.module';
 import {LecturePopoverComponent} from './components/lecture-popover/lecture-popover.component';
 import {FormsModule} from '@angular/forms';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [LecturesComponent, LecturesListComponent, VisitLecturesComponent, LecturePopoverComponent],
@@ -13,6 +14,7 @@ import {FormsModule} from '@angular/forms';
     CommonModule,
     MatModule,
     FormsModule,
+    DragDropModule
   ],
   entryComponents: [
     LecturePopoverComponent

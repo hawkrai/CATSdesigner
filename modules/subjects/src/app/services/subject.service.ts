@@ -14,6 +14,10 @@ export class SubjectService {
     return this.http.get('Subject/EditSubject/' + subjectId);
   }
 
+  public saveSubject(body): Observable<any> {
+    return this.http.post('api/Subject/SaveSubject', body);
+  }
+
   public editGroups(subjectId: string): Observable<any> {
     return this.http.get('Subject/SubGroups?subjectId=' + subjectId);
   }
