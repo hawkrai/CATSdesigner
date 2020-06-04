@@ -271,11 +271,11 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-        public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id, List<StudentsViewData> students)
+        public ResultViewData SaveStudentLabsMark(int studentId, int labId, int lecturerId, string mark, string comment, string date, int id, List<StudentsViewData> students)
         {
             try
             {
-				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, mark, comment, date, id));
+				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, lecturerId, mark, comment, date, id));
 
                 return new ResultViewData
                 {

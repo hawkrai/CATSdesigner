@@ -54,9 +54,9 @@ namespace LMPlatform.UI.Controllers
             {
                 Data = new
                 {
-                    Lectures = this.PartialViewToString("Subjects/Modules/_FilesUploaderNoAdd", lectures),
-                    Labs = this.PartialViewToString("Subjects/Modules/_FilesUploaderNoAdd", labs),
-                    Practicals = this.PartialViewToString("Subjects/Modules/_FilesUploaderNoAdd", practicals)
+                    Lectures = lectures,
+                    Labs = labs,
+                    Practicals = practicals
                 },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };

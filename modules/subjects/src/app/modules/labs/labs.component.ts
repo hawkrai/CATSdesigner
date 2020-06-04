@@ -45,13 +45,11 @@ export class LabsComponent implements OnInit {
       this.groupsService.getAllOldGroups(this.subjectId).subscribe(res => {
         this.groups = res;
         this.groupsService.setCurrentGroup(res[0]);
-        console.log('old', res)
       });
     } else {
       this.groupsService.getAllGroups().subscribe(res => {
         this.groups = res;
         this.groupsService.setCurrentGroup(res[0]);
-        console.log(res)
       });
     }
   }

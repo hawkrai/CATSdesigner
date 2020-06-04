@@ -25,13 +25,13 @@ export class NewsService {
 
   createNews(newNews: News) {
     this.rest.saveNews(newNews).subscribe(
-      (res) => res.Code === '200' && this.store$.dispatch(new CreateNews(newNews))
+      (res) => res.Code === '200' && this.loadData()
     );
   }
 
   updateNews(newNews: News) {
     this.rest.saveNews(newNews).subscribe(
-      (res) => res.Code === '200' && this.store$.dispatch(new UpdateNews(newNews))
+      (res) => res.Code === '200' && this.loadData()
     );
   }
 

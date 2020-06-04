@@ -3,13 +3,13 @@
     <h1 mat-dialog-title class="question-popup-container">{{'Вопрос для теста - ' + data.title}}</h1>
     <div mat-dialog-content>
       <mat-form-field class="question-popup-full">
-      <textarea matInput [placeholder]="'Название вопроса'"
+      <textarea matInput [placeholder]="'Текст вопроса'"
                 [value]="question && question.Title ? question.Title : ''" (change)="writeTitle($event, 'Title')"></textarea>
       </mat-form-field>
     </div>
 
     <div mat-dialog-content>
-      <p>Описание</p>
+      <p>Задание к вопросу</p>
       <ckeditor [(ngModel)]="question.Description"
                 #myckeditor="ngModel"
                 name="myckeditor"

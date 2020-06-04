@@ -3,8 +3,11 @@
     <div class="question-title-big">Вопрос №{{question.Number}}</div>
     <div class="question-title-small" *ngIf="test">{{test.Title}}</div>
   </div>
-  <div class="question-question">
+  <div class="question-question" *ngIf="question?.Question?.Title">
     <div class="question-question-text">{{question?.Question?.Title}}</div>
+  </div>
+  <div class="question-description" *ngIf="question?.Question?.Description">
+    <div class="question-description-text">{{question?.Question?.Description}}</div>
   </div>
   <div class="question-block">
     <div class="question-answer-block">

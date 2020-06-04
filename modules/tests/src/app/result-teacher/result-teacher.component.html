@@ -41,13 +41,13 @@
         *ngIf="test.res &&
             (test.res[0] || test.res[1] || test.res[2]) &&
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
-        <app-result-test-table [loading]="loading" [tests]="test.res"
+        <app-result-test-table [size]="size" [loading]="loading" [tests]="test.res"
                                [name]="'knowledgeControlTests'"></app-result-test-table>
       </div>
     </div>
   </div>
   <div *ngIf="testChangeCheckBoxes.includes('1')">
-    <div>
+    <div class="result-teacher-group">
       {{"Тесты для самоконтроля"}}
     </div>
     <div *ngFor="let test of selfControlTestsMass">
@@ -61,7 +61,7 @@
     </div>
   </div>
   <div *ngIf="testChangeCheckBoxes.includes('2')">
-    <div>
+    <div class="result-teacher-group">
       {{"Предтест для обучения в ЭУМК"}}
     </div>
     <div *ngFor="let test of beforeEUMKTestsMass">
@@ -75,7 +75,7 @@
     </div>
   </div>
   <div *ngIf="testChangeCheckBoxes.includes('3')">
-    <div>
+    <div class="result-teacher-group">
       {{"Тесты для обучения в ЭУМК"}}
     </div>
     <div *ngFor="let test of forEUMKTestsMass">
@@ -89,7 +89,7 @@
     </div>
   </div>
   <div *ngIf="testChangeCheckBoxes.includes('4')">
-    <div>
+    <div class="result-teacher-group">
       {{"Тесты для обучения с искусственной нейронной сетью"}}
     </div>
     <div *ngFor="let test of forEUMKTestsMass">

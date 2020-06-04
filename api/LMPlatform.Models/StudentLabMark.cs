@@ -18,15 +18,20 @@ namespace LMPlatform.Models
 
         public Student Student { get; set; }
 
+        public int LecturerId { get; set; }
+
+        public Lecturer Lecturer { get; set; }
+
         public StudentLabMark()
         {
 
         }
 
-        public StudentLabMark(int labId, int studentId, string mark, string comment, string date, int id)
+        public StudentLabMark(int labId, int studentId, int lecturerId, string mark, string comment, string date, int id)
         {
             LabId = labId;
             StudentId = studentId;
+            LecturerId = lecturerId;
             Mark = mark;
             Comment = comment;
             Date = date;
