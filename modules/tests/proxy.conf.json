@@ -1,20 +1,23 @@
 {
   "/TestPassing/*": {
-    "target": {
-      "host": "localhost",
-      "protocol": "http:",
-      "port": 6478
-    },
+    "target": "http://educats.by",
     "secure": false,
-    "logLevel": "info"
+    "logLevel": "debug",
+    "changeOrigin": true
   },
   "/Tests/*": {
-    "target": {
-      "host": "localhost",
-      "protocol": "http:",
-      "port": 6478
-    },
+    "target": "http://educats.by",
     "secure": false,
-    "logLevel": "info"
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/*": ""
+    }
   }
 }

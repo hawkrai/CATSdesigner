@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {AnswersPopupComponent} from "./components/answers-popup/answers-popup.component";
 import * as pluginDataLabels from "chartjs-plugin-datalabels";
-import {Label} from 'ng2-charts';
+import {Label} from "ng2-charts";
 import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
 import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
@@ -32,28 +32,30 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     aspectRatio: 6,
     plugins: {
       datalabels: {
-        anchor: 'end',
-        align: 'end',
+        anchor: "end",
+        align: "end",
       }
     }
   };
   public barChartLabels: Label[] = [];
-  public barChartType: ChartType = 'bar';
+  public barChartType: ChartType = "bar";
   public barChartLegend = true;
   public barChartPlugins = [pluginDataLabels];
   public barChartData: ChartDataSets[] = [
-    {data: [], label: 'Оценка'}
+    {data: [], label: "Оценка"}
   ];
   public hideChart: boolean = true;
   @Input()
   public tests: any;
+  @Input()
+  public size: number;
   @Input()
   public name: string;
   public scareThing: any = [];
   @Input()
   public loading: boolean;
   public testSize: number;
-  displayedColumns: string[] = ['Id', 'Name'];
+  displayedColumns: string[] = ["Id", "Name"];
   @Output()
   public sendAverageMarks: EventEmitter<any> = new EventEmitter();
   private unsubscribeStream$: Subject<void> = new Subject<void>();
@@ -80,7 +82,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public openAnswersDialog(openDialog: boolean, name: string, testName: string, event?: any, id?: any): void {
     if (openDialog) {
       const dialogRef = this.dialog.open(AnswersPopupComponent, {
-        width: '800px',
+        width: "800px",
         data: {event, id, name, testName}
       });
 
@@ -106,6 +108,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
           entire.push(sumOfMarks / this.testSize);
           mass.push(entire);
           pupil.push(sumOfMarks / this.testSize);
+          if (this.size) {
+            pupil.push(pupil[1].test.length === this.size && pupil[1].test.every((test)=>test.percent));
+          }
         }
       }
     }
@@ -116,7 +121,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
       this.barChartLabels.push(entire[0]);
       this.barChartData[0].data.push(entire[1]);
     }
-    this.hideChart = this.barChartData[0].data.every(value => value === 0)
+    this.hideChart = this.barChartData[0].data.every(value => value === 0);
   }
 
   private getShortName(pupil): string {

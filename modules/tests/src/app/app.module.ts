@@ -44,6 +44,7 @@ import {TestResultComponent} from './test-result/test-result.component';
 import {TranslatePipe} from "./pipe/translate.pipe";
 import {AutocompleteFormComponent} from './shared/autocomplete-form/autocomplete-form.component';
 import {SelectAutocompleteModule} from 'mat-select-autocomplete';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import {SelectAutocompleteModule} from 'mat-select-autocomplete';
     QuestionOtherTestComponent,
     TestResultComponent,
     TranslatePipe,
-    AutocompleteFormComponent
+    AutocompleteFormComponent,
+    LoginComponent
   ],
   imports: [
     FormsModule,

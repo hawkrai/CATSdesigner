@@ -11,6 +11,7 @@ import {ControlCompletingComponent} from "./control-completing/control-completin
 import {TestResultComponent} from "./test-result/test-result.component";
 import {RedirectPupilGuard} from "./core/guard/redirect-pupil.guard";
 import {RedirectTeacherGuard} from "./core/guard/redirect-teacher.guard";
+import {LoginComponent} from "./login/login.component";
 
 
 const routes: Routes = [
@@ -24,6 +25,7 @@ const routes: Routes = [
   {path: "test-control", component: TestControlPageComponent, canActivate: [RedirectTeacherGuard]},
   {path: "test-result", component: TestResultComponent},
   {path: "result-teacher", component: ResultTeacherComponent},
+  {path: "login", component: LoginComponent},
 ];
 
 
