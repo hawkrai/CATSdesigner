@@ -19,6 +19,9 @@ export class FileService {
     return this.http.get('api/Upload', {params: new HttpParams({fromObject: params})});
   }
 
+  public getSubjectFile(params: any): Observable<any> {
+    return this.http.get('Subject/GetFileSubject', {params: new HttpParams({fromObject: params})});
+  }
   public deleteFile(deleteUrl: string): Observable<any> {
     return this.http.delete(deleteUrl);
   }

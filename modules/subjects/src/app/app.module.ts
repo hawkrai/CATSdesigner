@@ -26,6 +26,8 @@ import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popov
 import {FileDownloadPopoverComponent} from './shared/file-download-popover/file-download-popover.component';
 import {SubjectManagementComponent} from './components/subject-managment/subject-management.component';
 import {ColorPickerModule} from 'ngx-color-picker';
+import {FilesModule} from './modules/files/files.module';
+import {PracticalModule} from './modules/practical/practical.module';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,8 @@ import {ColorPickerModule} from 'ngx-color-picker';
     LabsModule,
     MatModule,
     FormsModule,
+    FilesModule,
+    PracticalModule,
     ColorPickerModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
@@ -63,4 +67,5 @@ import {ColorPickerModule} from 'ngx-color-picker';
   providers: [DatePipe],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

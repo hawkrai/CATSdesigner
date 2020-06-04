@@ -1,17 +1,25 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<div mat-dialog-content class="job-protection__popover" #popoverContent>
+<div mat-dialog-content class="practical-lesson-component__popover" #popoverContent>
   <form class="example-form">
     <mat-form-field class="example-full-width">
-      <mat-label>{{data.model}}</mat-label>
-      <textarea class="lab-work-component__news-text" name="body" matInput [(ngModel)]="data.body.comments"></textarea>
+      <mat-label>Название практического занятия</mat-label>
+      <textarea class="practical-lesson-component__news-text" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
     </mat-form-field>
-    <p class="mat-typography">Прикрепленный материал (Можно добавить только один файл)</p>
+    <mat-form-field class="example-full-width">
+      <mat-label>Короткое название</mat-label>
+      <input name="shortName" matInput placeholder="Сокращенное название" [(ngModel)]="data.model.shortName">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Порядок</mat-label>
+        <input name="order" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Количество часов(1-99)</mat-label>
+      <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
+    </mat-form-field>
+    <h4 mat-dialog-title>Прикрепленный материал</h4>
     <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
-    <button mat-flat-button
-            class="job-protection__popover-file-button"
-            (click)="csvInput.click()"
-            [disabled]="files.length > 0">
-      Добавить файл</button>
+    <button mat-flat-button class="practical-lesson-component__popover-file-button" (click)="csvInput.click()">Добавить файл</button>
     <div class="mdc-data-table file-table" *ngIf="files.length">
       <table class="mdc-data-table__table">
         <tbody>
@@ -20,7 +28,7 @@
             <i class="material-icons mdc-list-item__graphic"
                aria-hidden="true"
                *ngIf="file.Type.toLowerCase() !== 'image'; else image">description</i>
-             <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
+            <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
           </td>
           <td class="mdc-data-table__cell example-content">
             <a matTooltip="{{file.Name}}" matTooltipPosition="below"
@@ -50,5 +58,10 @@
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button (click)="onSave(data.body)" color="primary">{{data.buttonText}}</button>
+  <button mat-raised-button
+          (click)="onSave(data.model || data.body)"
+          color="primary"
+          [disabled]="!(data.model.theme && data.model.duration)"
+  >
+    {{data.buttonText}}</button>
 </div>
