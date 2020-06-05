@@ -143,6 +143,6 @@ namespace Application.Infrastructure.SubjectManagement
 
 		List<ProfileCalendarModel> GetLecturesEvents(int groupId, int userId);
 
-        List<ScheduleProtectionPractical> GetScheduleProtectionPractical(string subjectId, string groupId);
+        List<ScheduleProtectionPractical> GetScheduleProtectionPractical(int subjectId, int groupId);
     }
 }

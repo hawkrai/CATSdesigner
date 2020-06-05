@@ -137,10 +137,22 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(string subjectId, string groupId)
+        public List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(int subjectId, int groupId)
         {
-            var students = SubjectManagementService.GetScheduleProtectionPractical(subjectId, groupId);
-            return new List<PracticalVisitingMarkViewData>();
+            var scheduleProtectionPracticals = SubjectManagementService.GetScheduleProtectionPractical(subjectId, groupId);
+            var practicalVisitingMarkViewDatas = scheduleProtectionPracticals
+                .SelectMany(s => s.ScheduleProtectionPracticalMarks)
+                .Select(s => new PracticalVisitingMarkViewData
+                {
+                    StudentId = s.StudentId,
+                    Comment = s.Comment,
+                    Mark = s.Mark,
+                    PracticalVisitingMarkId = s.Id,
+                    ScheduleProtectionPracticalId = s.ScheduleProtectionPracticalId,
+                    StudentName = s.Student.FullName,
+                    Date = s.ScheduleProtectionPractical.Date.ToShortDateString()
+                }).ToList();
+            return practicalVisitingMarkViewDatas;
         }
 
         public ResultViewData SavePracticalsVisitingData(List<StudentsViewData> students)

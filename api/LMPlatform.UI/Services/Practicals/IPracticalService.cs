@@ -33,7 +33,7 @@ namespace LMPlatform.UI.Services.Practicals
         // OK
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetPracticalsVisitingData")]
-        List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(string subjectId, string groupId);
+        List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(int subjectId, int groupId);
 
         // OK
         [OperationContract]

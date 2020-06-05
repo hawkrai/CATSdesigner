@@ -50,5 +50,8 @@ namespace LMPlatform.UI.Services.Modules.Practicals
 
         [DataMember]
         public int PracticalVisitingMarkId { get; set; } 
+
+        [DataMember]
+        public string Date { get; set; } 
     }
 }
