@@ -992,7 +992,20 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public List<Subject> GetSubjectsByLector(int userId)
+        public List<ScheduleProtectionPractical> GetScheduleProtectionPractical(int subjectId, int groupId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var data = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>()
+                .GetAll(new Query<ScheduleProtectionPractical>(e =>
+                        e.GroupId == groupId && e.SubjectId == subjectId)
+                    .Include(x => x.ScheduleProtectionPracticalMarks)
+                    .Include(x => x.ScheduleProtectionPracticalMarks
+                        .Select(s => s.Student))).ToList();
+
+            return data;
+        }
+
+        public List<Subject> GetSubjectsByLector(int userId)
 		{
 			List<Subject> model;
 
