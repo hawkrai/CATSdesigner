@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
+using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
@@ -18,6 +19,11 @@ namespace LMPlatform.UI.Services.Practicals
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
 
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
+
+
+        private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
+
+        public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
         private const int PracticalModuleId = 13;
 
@@ -131,9 +137,10 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(string dateId, string subGroupId)
+        public List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(string subjectId, string groupId)
         {
-            throw new NotImplementedException();
+            var students = SubjectManagementService.GetScheduleProtectionPractical(subjectId, groupId);
+            return new List<PracticalVisitingMarkViewData>();
         }
 
         public ResultViewData SavePracticalsVisitingData(List<StudentsViewData> students)
@@ -167,21 +174,21 @@ namespace LMPlatform.UI.Services.Practicals
                 };
             }
         }
-
-        public ResultViewData SaveStudentPracticalsMark(List<StudentsViewData> students)
+        
+        public ResultViewData SaveStudentPracticalsMark(int studentId, int practicalId, string mark, string comment, string date, int id)
         {
             try
             {
-                foreach (var studentsViewData in students)
+                SubjectManagementService.SavePracticalMarks(new List<StudentPracticalMark>
                 {
-                    SubjectManagementService.SavePracticalMarks(studentsViewData.StudentPracticalMarks.Select(e => new StudentPracticalMark
+                    new StudentPracticalMark
                     {
-                        Mark = e.Mark,
-                        PracticalId = e.PracticalId,
-                        Id = e.StudentPracticalMarkId,
-                        StudentId = e.StudentId
-                    }).ToList());
-                }
+                        Mark = mark,
+                        PracticalId = practicalId,
+                        Id = id,
+                        StudentId = studentId
+                    }
+                });
 
                 return new ResultViewData
                 {

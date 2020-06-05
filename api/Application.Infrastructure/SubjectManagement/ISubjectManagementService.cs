@@ -142,5 +142,7 @@ namespace Application.Infrastructure.SubjectManagement
 		UserLabFiles GetUserLabFile(string path);
 
 		List<ProfileCalendarModel> GetLecturesEvents(int groupId, int userId);
-	}
+
+        List<ScheduleProtectionPractical> GetScheduleProtectionPractical(string subjectId, string groupId);
+    }
 }
