@@ -15,7 +15,7 @@ export class SubjectService {
   }
 
   public saveSubject(body): Observable<any> {
-    return this.http.post('api/Subject/SaveSubject', body);
+    return this.http.post('Subject/SaveSubject', body);
   }
 
   public editGroups(subjectId: string): Observable<any> {
