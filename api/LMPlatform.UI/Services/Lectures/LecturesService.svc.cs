@@ -220,7 +220,8 @@ namespace LMPlatform.UI.Services.Lectures
 							Id = e.MarkId,
 							Mark = e.Mark,
 							LecturesScheduleVisitingId = e.LecuresVisitId,
-							StudentId = student.StudentId
+							StudentId = student.StudentId,
+                            Comment = e.Comment
 						}).ToList());
                 }
                 return new ResultViewData
@@ -239,7 +240,7 @@ namespace LMPlatform.UI.Services.Lectures
             }
         }
 
-		public ResultViewData SaveMarksCalendarDataSingle(int markId, string mark, int lecuresVisitId, int studentId)
+		public ResultViewData SaveMarksCalendarDataSingle(int markId, string mark, int lecturesVisitId, int studentId, string comment)
 		{
 			try
 			{
@@ -249,8 +250,9 @@ namespace LMPlatform.UI.Services.Lectures
 					{
 						Id = markId,
 						Mark = mark,
-						LecturesScheduleVisitingId = lecuresVisitId,
-						StudentId = studentId
+						LecturesScheduleVisitingId = lecturesVisitId,
+						StudentId = studentId,
+                        Comment = comment
 					}
 				});
 

@@ -13,5 +13,7 @@ namespace LMPlatform.Models
         public Student Student { get; set; }
 
         public LecturesScheduleVisiting LecturesScheduleVisiting { get; set; }
+
+        public string Comment { get; set; }
     }
 }
