@@ -24,6 +24,8 @@ export class SideMenuComponent implements OnInit {
       { name: 'Новости', tab: '/news'},
       { name: 'Лекции', tab: '/lectures'},
       { name: 'Лабораторные работы', tab: '/labs'},
+      { name: 'Практические занятия', tab: '/practical'},
+      { name: 'Файлы', tab: '/files'},
     ];
 
   }

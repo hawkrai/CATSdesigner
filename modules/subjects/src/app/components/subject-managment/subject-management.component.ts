@@ -49,6 +49,7 @@ export class SubjectManagementComponent implements OnInit {
   save() {
     this.subject.SelectedGroups = [...this.selectedGroup.id];
     this.subjectService.saveSubject(this.subject).subscribe(res => console.log(res))
+    this.dialogRef.close();
   }
 
   private setGroupList() {

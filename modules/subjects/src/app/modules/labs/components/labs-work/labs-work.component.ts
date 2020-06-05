@@ -52,7 +52,7 @@ export class LabsWorkComponent implements OnInit {
     const newLab = this.getLab(lab);
 
     const dialogData: DialogData = {
-      title: lab ? 'Редактирование лекции' : 'Добавление лекции',
+      title: lab ? 'Редактирование лабораторную работу' : 'Добавление лабораторную работу',
       buttonText: 'Сохранить',
       model: newLab
     };
@@ -68,7 +68,7 @@ export class LabsWorkComponent implements OnInit {
 
   deleteLab(lab: Lab) {
     const dialogData: DialogData = {
-      title: 'Удаление лекции',
+      title: 'Удаление лабораторной работы',
       body: 'лабораторную работу "' + lab.theme + '"',
       buttonText: 'Удалить'
     };
