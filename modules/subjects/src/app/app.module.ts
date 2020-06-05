@@ -28,6 +28,7 @@ import {SubjectManagementComponent} from './components/subject-managment/subject
 import {ColorPickerModule} from 'ngx-color-picker';
 import {FilesModule} from './modules/files/files.module';
 import {PracticalModule} from './modules/practical/practical.module';
+import {SubgroupingComponent} from './components/subgrouping/subgrouping.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {PracticalModule} from './modules/practical/practical.module';
     VisitDatePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
-    SubjectManagementComponent
+    SubjectManagementComponent,
+    SubgroupingComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +64,8 @@ import {PracticalModule} from './modules/practical/practical.module';
     VisitDatePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
-    SubjectManagementComponent
+    SubjectManagementComponent,
+    SubgroupingComponent
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]
