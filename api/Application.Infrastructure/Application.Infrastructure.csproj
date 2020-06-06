@@ -135,6 +135,7 @@
     <Compile Include="ConceptManagement\ConceptManagementService.cs" />
     <Compile Include="ConceptManagement\IConceptManagementService.cs" />
     <Compile Include="CPManagement\AuthorizationHelper.cs" />
+    <Compile Include="CPManagement\CourseStudentMarkModel.cs" />
     <Compile Include="CPManagement\CpCorrelationService.cs" />
     <Compile Include="CPManagement\CPManagementService.cs" />
     <Compile Include="CPManagement\CpPercentageGraphService.cs" />

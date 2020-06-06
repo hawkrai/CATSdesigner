@@ -340,10 +340,13 @@ namespace Application.Infrastructure.CPManagement
                         {
                             Id = s.Id,
                             Name = s.LastName + " " + s.FirstName + " " + s.MiddleName, //todo
-                            Mark = s.AssignedCourseProjects.FirstOrDefault().Mark,
-                            AssignedCourseProjectId = s.AssignedCourseProjects.FirstOrDefault().Id,
+                            Mark = cp.Mark,
+                            AssignedCourseProjectId = cp.Id,
                             Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
-                            Group = s.AssignedCourseProjects.FirstOrDefault().CourseProject.Theme,
+                            Group = cp.CourseProject.Theme,
+                            Comment = cp.Comment,
+                            LecturerName = cp.LecturerName,
+                            MarkDate = cp.MarkDate,
                             PercentageResults = s.CoursePercentagesResults.Select(pr => new PercentageResultData
                             {
                                 Id = pr.Id,
@@ -394,10 +397,14 @@ namespace Application.Infrastructure.CPManagement
             }
         }
 
-        public void SetStudentDiplomMark(int lecturerId, int assignedProjectId, int mark)
+        public void SetStudentDiplomMark(int lecturerId, CourseStudentMarkModel courseStudentMarkModel)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, lecturerId);
-            Context.AssignedCourseProjects.Single(x => x.Id == assignedProjectId).Mark = mark;
+            var assignedCourseProject = Context.AssignedCourseProjects.Single(x => x.Id == courseStudentMarkModel.AssignedProjectId);
+            assignedCourseProject.Mark = courseStudentMarkModel.Mark;
+            assignedCourseProject.MarkDate = courseStudentMarkModel.Date;
+            assignedCourseProject.Comment = courseStudentMarkModel.Comment;
+            assignedCourseProject.LecturerName = courseStudentMarkModel.LecturerName;
             Context.SaveChanges();
         }
 

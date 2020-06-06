@@ -21,5 +21,11 @@ namespace LMPlatform.Models.CP
         public virtual CourseProject CourseProject { get; set; }
 
         public virtual Student Student { get; set; }
+
+        public string Comment { get; set; }
+
+        public string LecturerName { get; set; }
+
+        public DateTime? MarkDate { get; set; }
     }
 }
