@@ -118,7 +118,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       };
       visits.students.push(visit);
     });
-    console.log(visits);
 
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
       width: '700px',

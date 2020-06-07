@@ -7,11 +7,26 @@
     <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
   </mat-form-field>
   <mat-label style="font-size: 12px">Группы:</mat-label>
-  <mat-selection-list [(ngModel)]="data.selectedGroups">
-    <mat-list-option *ngFor="let group of data.groups" [value]="group">
-      {{group.Name}}
-    </mat-list-option>
-  </mat-selection-list>
+  <div class="group-picker">
+    <div class="group-container">
+      <button mat-raised-button (click)="includeAll()">>></button>
+      <mat-list>
+        <mat-list-item matRipple class="mat-list-option" *ngFor="let group of groups; index as i; trackBy: trackByFn"
+                       (click)="move(i, groups, data.selectedGroups)">
+          {{group.Name}}
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <div class="group-container">
+      <button mat-raised-button (click)="includeNone()"><<</button>
+      <mat-list>
+        <mat-list-item matRipple class="mat-list-option" *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
+                       (click)="move(i, data.selectedGroups, groups)">
+          {{group.Name}}
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
   <button mat-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
