@@ -62,7 +62,7 @@ export class ResultPupilComponent extends AutoUnsubscribeBase implements OnInit 
     results.forEach((result) => {
       if (result.ForSelfStudy) {
         if (this.selfControlTests.length === 0) {
-          this.options.push({display: "Тесты для самоконтроля и ЭУМК", value: "0"});
+          this.options.push({display: "Тесты для самоконтроля", value: "0"});
         }
         this.selfControlTests.push(result);
       } else if (result.ForNN) {

@@ -2,7 +2,7 @@
   <!--<app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>-->
   <mat-tab-group class="container-table-tests" (selectedTabChange)="onChange($event)">
-    <mat-tab label="Тестирование знаний">
+    <mat-tab label="Темы тестов">
       <app-main-page [allowChanges]="allowChanges"
                      [inputValue]="inputValue"
                      (onValueChangeSearch)="filterTests($event)"
@@ -21,7 +21,7 @@
                               (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
       </div>
       <div class="container-table-tests">
-        <app-main-table-tests [title]="'Тесты для самоконтроля и ЭУМК'"
+        <app-main-table-tests [title]="'Тесты для самоконтроля'"
                               [allowChanges]="true"
                               [tests]="selfControlTests"
                               (onOpenEditPopup)="openDialog($event)"

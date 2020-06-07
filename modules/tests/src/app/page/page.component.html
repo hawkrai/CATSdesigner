@@ -7,13 +7,13 @@
                  [hideSearch]="true"
                  (onValueChangeSearch)="filterTests($event)"></app-main-page>
   <mat-tab-group class="container-table-tab" (selectedTabChange)="onChange($event)">
-    <mat-tab label="Тестирование знаний">
+    <mat-tab label="Темы тестов">
       <div class="container-table-tests" *ngIf="knowledgeControlTests?.length">
         <app-main-table-tests [title]="'Тесты для контроля знаний'" [allowChanges]="false"
                               [tests]="knowledgeControlTests"></app-main-table-tests>
       </div>
       <div class="container-table-tests" *ngIf="selfControlTests?.length">
-        <app-main-table-tests [title]="'Тесты для самоконтроля и ЭУМК'" [allowChanges]="false"
+        <app-main-table-tests [title]="'Тесты для самоконтроля'" [allowChanges]="false"
                               [tests]="selfControlTests"></app-main-table-tests>
       </div>
       <div class="container-table-tests" *ngIf="beforeEUMKTests?.length">
