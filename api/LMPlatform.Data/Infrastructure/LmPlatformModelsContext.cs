@@ -434,6 +434,12 @@ namespace LMPlatform.Data.Infrastructure
                 .HasForeignKey(e => e.StudentId)
                 .WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<StudentLabMark>()
+                .HasRequired(m => m.Lecturer)
+                .WithMany(l => l.StudentLabMarks)
+                .HasForeignKey(m => m.LecturerId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Labs>()
                 .HasMany<StudentLabMark>(e => e.StudentLabMarks)
                 .WithRequired(e => e.Lab)

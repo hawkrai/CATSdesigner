@@ -16,5 +16,8 @@ namespace LMPlatform.UI.Services.Modules
 
         [DataMember]
         public int LecuresVisitId { get; set; }
+
+        [DataMember]
+        public string Comment { get; set; }
     }
 }

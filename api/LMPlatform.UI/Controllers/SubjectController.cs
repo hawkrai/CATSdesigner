@@ -54,9 +54,9 @@ namespace LMPlatform.UI.Controllers
             {
                 Data = new
                 {
-                    Lectures = this.PartialViewToString("Subjects/Modules/_FilesUploaderNoAdd", lectures),
-                    Labs = this.PartialViewToString("Subjects/Modules/_FilesUploaderNoAdd", labs),
-                    Practicals = this.PartialViewToString("Subjects/Modules/_FilesUploaderNoAdd", practicals)
+                    Lectures = lectures,
+                    Labs = labs,
+                    Practicals = practicals
                 },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
@@ -127,7 +127,7 @@ namespace LMPlatform.UI.Controllers
         [HttpPost]
         public ActionResult SaveSubject(SubjectEditViewModel model)
         {
-            var color = this.HttpContext.Request.Form["html5colorpicker"];
+            var color = model.Color;
 
             if (color == "#ffffff")
             {

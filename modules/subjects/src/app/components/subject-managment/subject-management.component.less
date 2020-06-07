@@ -7,21 +7,24 @@
     display: flex;
   }
 
-  .example-section {
-    display: flex;
-    flex-flow: column;
-    align-content: center;
+  .title {
+    font-weight: 400;
+    margin-bottom: 10.5px;
   }
 
-  .example-margin {
-    margin: 0 10px;
+  .example-section {
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    grid-column-gap: 15px;
+    grid-row-gap: 5px;
+    margin-bottom: 21px;
   }
 
   .example-form {
     min-width: 150px;
     max-width: 500px;
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: 1px;
 
     .example-full-width {
       width: 100%;
@@ -31,6 +34,9 @@
   .color-picker {
     border: none;
     border-radius: 3px;
+    width: 230px;
+    position: inherit !important;
+    margin-bottom: 21px;
   }
   .example-additional-selection {
     opacity: 0.75;

@@ -3,6 +3,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {SubjectManagementComponent} from '../subject-managment/subject-management.component';
+import {SubgroupingComponent} from '../subgrouping/subgrouping.component';
 
 
 @Component({
@@ -24,6 +25,8 @@ export class SideMenuComponent implements OnInit {
       { name: 'Новости', tab: '/news'},
       { name: 'Лекции', tab: '/lectures'},
       { name: 'Лабораторные работы', tab: '/labs'},
+      { name: 'Практические занятия', tab: '/practical'},
+      { name: 'Файлы', tab: '/files'},
     ];
 
   }
@@ -34,6 +37,15 @@ export class SideMenuComponent implements OnInit {
 
   subjectManagement() {
     const dialogRef = this.openDialog(null, SubjectManagementComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+
+      }
+    });
+  }
+
+  supgrouping() {
+    const dialogRef = this.openDialog(null, SubgroupingComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
 

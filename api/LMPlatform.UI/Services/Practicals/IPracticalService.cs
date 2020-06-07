@@ -33,7 +33,7 @@ namespace LMPlatform.UI.Services.Practicals
         // OK
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetPracticalsVisitingData")]
-        List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(string dateId, string subGroupId);
+        List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(int subjectId, int groupId);
 
         // OK
         [OperationContract]
@@ -43,7 +43,8 @@ namespace LMPlatform.UI.Services.Practicals
         // OK
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveStudentPracticalsMark")]
-        ResultViewData SaveStudentPracticalsMark(List<StudentsViewData> students);
+        ResultViewData SaveStudentPracticalsMark(int studentId, int practicalId, string mark, string comment,
+            string date, int id);
 
         // OK
         [OperationContract]

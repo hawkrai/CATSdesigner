@@ -8,6 +8,7 @@ import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.compon
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {LecturesService} from '../../../../services/lectures/lectures.service';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-lectures-list',
@@ -118,6 +119,14 @@ export class LecturesListComponent implements OnInit {
       pathFile: '',
       attachments: [],
     };
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    console.log(event);
+    const temp = this.lectures[event.previousIndex].order;
+    this.lectures[event.previousIndex].order = this.lectures[event.currentIndex].order;
+    this.lectures[event.currentIndex].order = temp;
+    moveItemInArray(this.lectures, event.previousIndex, event.currentIndex);
   }
 
 }

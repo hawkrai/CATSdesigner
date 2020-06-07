@@ -471,17 +471,18 @@ namespace LMPlatform.UI.Services
 					var data = new List<MarkViewData>();
 
 					foreach (var lecturesScheduleVisiting in lecturesVisitingData.OrderBy(e => e.Date))
-					{
-						if (
-							student.LecturesVisitMarks.Any(
-								e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id))
+                    {
+                        var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
+
+                        if (lecturesVisitMark != null)
 						{
 							data.Add(new MarkViewData
 							{
 								Date = lecturesScheduleVisiting.Date.ToShortDateString(),
 								LecuresVisitId = lecturesScheduleVisiting.Id,
-								Mark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id).Mark,
-								MarkId = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id).Id
+								Mark = lecturesVisitMark.Mark,
+								MarkId = lecturesVisitMark.Id,
+								Comment = lecturesVisitMark.Comment
 							});
 						}
 						else
@@ -505,17 +506,14 @@ namespace LMPlatform.UI.Services
 					});
 				}
 
-				var dataResulet = new List<LecturesGroupsVisitingViewData>()
-					                  {
-						                  new LecturesGroupsVisitingViewData()
-							                  {
-								                  GroupId =
-									                  groupId,
-								                  LecturesMarksVisiting
-									                  =
-									                  lecturesVisiting
-							                  }
-					                  };
+				var dataResulet = new List<LecturesGroupsVisitingViewData>
+                {
+                    new LecturesGroupsVisitingViewData
+                    {
+                        GroupId = groupId,
+                        LecturesMarksVisiting = lecturesVisiting
+                    }
+                };
 
 				return new LecturesMarkVisitingResult
 				{

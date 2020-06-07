@@ -35,6 +35,8 @@ namespace LMPlatform.Models
 
 		public virtual ICollection<Group> SecretaryGroups { get; set; }
 
+		public ICollection<StudentLabMark> StudentLabMarks { get; set; }
+
 		public string Skill { get; set; }
 
 		public bool IsSecretary { get; set; }

@@ -1,0 +1,45 @@
+<div class="practical-lessons-component" *ngIf="practicalLessons; else: load">
+  <div class="practical-lessons-component__actions" *ngIf="teacher">
+    <button mat-raised-button color="primary" (click)="constructorLesson()">Добавить практическое занятие</button>
+  </div>
+  <div class="mdc-data-table">
+    <table class="mdc-data-table__table">
+      <thead>
+      <tr class="mdc-data-table__header-row">
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngFor="let header of tableHeaders">
+          {{header.name}}
+        </th>
+      </tr>
+      </thead>
+      <tbody cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
+      <tr class="mdc-data-table__row" *ngFor="let lesson of practicalLessons" cdkDrag>
+        <td class="mdc-data-table__cell">{{ lesson.Order }}</td>
+        <td class="mdc-data-table__cell">{{ lesson.Theme }}</td>
+        <td class="mdc-data-table__cell">{{ lesson.ShortName }}</td>
+        <td class="mdc-data-table__cell">{{ lesson.Duration }}</td>
+        <td class="mdc-data-table__cell" *ngIf="!teacher">
+          <button class="mdc-button" *ngIf="lesson.Attachments.length > 0"
+                  (click)="openFilePopup(lesson.attachments)">
+            <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
+            <span class="mdc-button__label">Файлы</span>
+          </button>
+        </td>
+        <td class="mdc-data-table__cell" *ngIf="teacher">
+          <button mat-icon-button color="primary" matTooltip="Редактировать практическое занятие"
+                  (click)="constructorLesson(lesson)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Удалить практическое занятие" (click)="deleteLesson(lesson)">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

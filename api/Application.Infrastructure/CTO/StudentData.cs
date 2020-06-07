@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Application.Infrastructure.CTO
 {
@@ -18,6 +19,12 @@ namespace Application.Infrastructure.CTO
 
         public IEnumerable<PercentageResultData> PercentageResults { get; set; }
 
-        public IEnumerable<CourseProjectConsultationMarkData> CourseProjectConsultationMarks { get; set; } 
+        public IEnumerable<CourseProjectConsultationMarkData> CourseProjectConsultationMarks { get; set; }
+
+        public string Comment { get; set; }
+
+        public string LecturerName { get; set; }
+
+        public DateTime? MarkDate { get; set; }
     }
 }
