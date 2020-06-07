@@ -3,6 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { SubjectNewsComponent } from './modules/subject-news/subject-news.component';
 import { LecturesComponent } from './modules/lectures/lectures.component';
 import { LabsComponent } from './modules/labs/labs.component';
+import {FilesComponent} from './modules/files/files.component';
+import {PracticalComponent} from './modules/practical/practical.component';
+import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
 
 
 
@@ -15,6 +18,9 @@ const routes: Routes = [
   { path: 'news', component: SubjectNewsComponent},
   { path: 'lectures', component: LecturesComponent},
   { path: 'labs', component: LabsComponent},
+  { path: 'practical', component: PracticalComponent},
+  { path: 'files', component: FilesComponent},
+  { path: 'settings', component: SubSettingsComponent},
   // { path: '**', component: NotFoundComponent }
 ];
 

@@ -7,8 +7,16 @@
         "path": "d:/.temp/apps/subject",
         "entryPoint": "index.html"
     },
-    "tests": {
-        "path": "d:/.temp/apps/tests",
+    "testsModule": {
+        "path": "d:/.temp/apps/testsModule",
+        "entryPoint": "index.html"
+    },
+    "course": {
+        "path": "d:/.temp/apps/course",
+        "entryPoint": "index.html"
+    },
+    "admin": {
+        "path": "d:/.temp/apps/admin",
         "entryPoint": "index.html"
     }
 }

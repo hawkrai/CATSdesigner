@@ -9,7 +9,7 @@ import { UserActivity } from '../model/userActivity';
 })
 export class StudentService {
 
-    api = '/api/Administration/';
+    api = '/Administration/';
 
     constructor(private http: HttpClient) {
     }

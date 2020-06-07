@@ -1,6 +1,6 @@
 <div class="protection-schedule-component" *ngIf="student; else: load">
   <div class="protection-schedule-component__subGroup" *ngFor="let i of numberSubGroups">
-    <span  class="protection-schedule-component__subGroup-title">Подгруппа {{i}}</span>
+    <span mat-dialog-title class="protection-schedule-component__subGroup-title">Подгруппа {{i}}</span>
     <div class="protection-schedule-component__subGroup-table">
       <table mat-table [dataSource]="student | filterSubGroup:'SubGroup': i" class="mat-elevation-z14">
         <ng-container matColumnDef="position">

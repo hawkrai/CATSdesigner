@@ -15,7 +15,7 @@ export class NewsService {
               private rest: NewsRestService) {
   }
 
-  loadDate() {
+  loadData() {
     this.store$.dispatch(new LoadNews())
   }
 
@@ -25,13 +25,13 @@ export class NewsService {
 
   createNews(newNews: News) {
     this.rest.saveNews(newNews).subscribe(
-      (res) => res.Code === '200' && this.store$.dispatch(new CreateNews(newNews))
+      (res) => res.Code === '200' && this.loadData()
     );
   }
 
   updateNews(newNews: News) {
     this.rest.saveNews(newNews).subscribe(
-      (res) => res.Code === '200' && this.store$.dispatch(new UpdateNews(newNews))
+      (res) => res.Code === '200' && this.loadData()
     );
   }
 
@@ -43,17 +43,13 @@ export class NewsService {
 
   disableAllNews(subjectId: string) {
     this.rest.disableNews(subjectId).subscribe(
-      (res) => res.Code === '200' && this.loadDate()
+      (res) => res.Code === '200' && this.loadData()
     );
   }
 
   enableAllNews(subjectId: string) {
     this.rest.enableNews(subjectId).subscribe(
-      (res) => res.Code === '200' && this.loadDate()
+      (res) => res.Code === '200' && this.loadData()
     );
-  }
-
-  public lol(subjectId: string): Observable<any> {
-    return this.rest.lol(subjectId);
   }
 }

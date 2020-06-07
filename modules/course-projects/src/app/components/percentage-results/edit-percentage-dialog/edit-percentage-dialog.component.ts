@@ -13,6 +13,7 @@ interface DialogData {
   notEmpty: boolean;
   comment: string;
   total: boolean;
+  expected: number;
 }
 
 @Component({

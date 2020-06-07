@@ -4,7 +4,7 @@
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>Название Новости</mat-label>
-      <input name="title" matInput placeholder="Название" [(ngModel)]="data.model.title">
+      <input name="title" required matInput placeholder="Название" [(ngModel)]="data.model.title">
     </mat-form-field>
 
     <mat-label>Текст Новости</mat-label>
@@ -16,16 +16,29 @@
     </ckeditor>
 
     <section class="example-section">
-      <mat-checkbox name="isOldDate" class="example-margin" [(ngModel)]="data.model.isOldDate">Оставить старую дату
-        новости
+      <mat-checkbox name="isOldDate"
+                    class="example-margin text"
+                    [(ngModel)]="data.model.isOldDate"
+                    [color]="'primary'">
+        Оставить старую дату новости
       </mat-checkbox>
-      <mat-checkbox name="disabled" class="example-margin" [(ngModel)]="data.model.disabled">Скрыть новость
+      <mat-checkbox name="disabled"
+                    class="example-margin text"
+                    [(ngModel)]="data.model.disabled"
+                    [color]="'primary'">
+        Скрыть новость
       </mat-checkbox>
     </section>
   </form>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+  <button mat-raised-button
+          [mat-dialog-close]="data.model || data.body"
+          color="primary"
+          [disabled]="!data.model.title"
+  >
+    {{data.buttonText}}
+  </button>
 </div>
 </div>

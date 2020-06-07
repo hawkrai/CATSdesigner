@@ -16,15 +16,15 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 		private readonly LazyDependency<IGroupManagementService> _groupManagementService = new LazyDependency<IGroupManagementService>();
 		private readonly LazyDependency<ISubjectManagementService> _subjectManagementService = new LazyDependency<ISubjectManagementService>();
 
-		public ISubjectManagementService SubjectManagementService
+		private ISubjectManagementService SubjectManagementService
 		{
 			get
 			{
 				return _subjectManagementService.Value;
 			}
-		} 
+		}
 
-		public IGroupManagementService GroupManagementService
+        private IGroupManagementService GroupManagementService
 		{
 			get
 			{

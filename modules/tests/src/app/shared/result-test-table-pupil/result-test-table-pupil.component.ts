@@ -29,6 +29,7 @@ export class ResultTestTablePupilComponent implements OnChanges {
         }
       }]
     },
+    aspectRatio: 6,
     plugins: {
       datalabels: {
         anchor: 'end',

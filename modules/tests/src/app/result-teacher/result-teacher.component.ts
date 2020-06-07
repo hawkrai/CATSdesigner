@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {TestService} from "../service/test.service";
 import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
@@ -19,6 +19,8 @@ import {Results} from "../models/results.model";
   styleUrls: ["./result-teacher.component.less"]
 })
 export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
+  @Input()
+  public size: number;
   public results: Result[];
   public resultsOriginal: Result[][] = [];
   public selfControlTests: ResultForTable[][] = [];
@@ -51,7 +53,6 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
-              private cdr: ChangeDetectorRef,
               private testPassingService: TestPassingService) {
     super();
   }
@@ -113,17 +114,17 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   }*/
   public filterStudentsLogin(event: string[]): void {
     this.initArraysMass();
-    this.studentList = [];
+
     let results: Result[][] = [];
     if (event && event.length) {
-      this.resultsOriginal && this.resultsOriginal.forEach((resultsOriginal:Result[]) => {
+      this.resultsOriginal && this.resultsOriginal.forEach((resultsOriginal: Result[]) => {
         results.push(resultsOriginal.filter(result => event.includes(result.Login)));
       });
     } else {
       results = this.resultsOriginal;
     }
-    results.forEach((result:Result[])=>{
-      this.decomposeResult(result);
+    results.forEach((result: Result[]) => {
+      this.decomposeResult(result, true);
     });
   }
 
@@ -158,7 +159,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
 
         });*/
 
-        this.resultsOriginal.forEach((res)=>{
+        this.resultsOriginal.forEach((res) => {
           this.decomposeResult(res);
         });
         console.log("rer");
@@ -186,8 +187,9 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     this.initArray(this.beforeEUMKTests);
     this.initArray(this.forEUMKTests);
     this.initArray(this.knowledgeControlTests);
-    this.cdr.detectChanges();
+
   }
+
   private initArraysMass(): void {
     this.knowledgeControlTestsMass = [];
     this.selfControlTestsMass = [];
@@ -203,11 +205,13 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     }
   }
 
-  private decomposeResult(results: Result[]): void {
+  private decomposeResult(results: Result[], notTouchStList?: boolean): void {
     this.initArrays();
     if (results) {
       results.forEach((result) => {
-          this.studentList.push({value: result.Login, display: result.StudentName});
+          if (!notTouchStList) {
+            this.studentList.push({value: result.Login, display: result.StudentName});
+          }
           let resultForTable: ResultForTable = new ResultForTable();
           resultForTable.test = [];
           resultForTable.name = result.StudentName;

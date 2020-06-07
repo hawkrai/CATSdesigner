@@ -3,5 +3,5 @@ export interface ISubjectState {
 }
 
 export const initialSubjectState: ISubjectState = {
-  subjectId: '4112'
+  subjectId: JSON.parse(localStorage.getItem("currentSubject")).id
 };

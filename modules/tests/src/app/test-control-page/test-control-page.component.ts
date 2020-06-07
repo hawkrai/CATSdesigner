@@ -11,7 +11,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {Group} from "../models/group.model";
-import {AutocompleteModel} from "../models/autocomplete.model";
+
 
 @AutoUnsubscribe
 @Component({
@@ -39,8 +39,9 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public adminTests: boolean = true;
   public groups: Group[];
   public groupId: number;
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
   public currentTabIndex: number = 0;
+  public knowledgeControlTestsSize: number;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
   private filterTestsString: string = "";
 
   constructor(private testService: TestService,
@@ -51,9 +52,9 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   ngOnInit() {
-    localStorage.setItem("currentUser",JSON.stringify({id:10031,role:"lector", userName:"popova"}));
+    /*localStorage.setItem("currentUser",JSON.stringify({id:10031,role:"ds", userName:"popova"}));
     localStorage.setItem("currentSubject",JSON.stringify({id: "3", Name:"Тестирование ПО"}));
-    localStorage.setItem("locale","rus");
+    localStorage.setItem("locale","rus");*/
     this.user = JSON.parse(localStorage.getItem("currentUser"));
     this.subject = JSON.parse(localStorage.getItem("currentSubject"));
     this.getTests(this.subject.id);
@@ -170,6 +171,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .subscribe((tests) => {
         this.allTests = tests;
         this.sortTests(tests);
+        this.knowledgeControlTestsSize = this.knowledgeControlTests.length;
       });
   }
 

@@ -1,16 +1,16 @@
 <div *ngIf="!loading">
   <!--<app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>-->
-  <app-main-page [allowChanges]="allowChanges"
-                 [inputValue]="inputValue"
-                 (onValueChangeSearch)="filterTests($event)"
-                 (groupValueChange)="groupValueChange($event)"
-                 (onOpenAddingPopupEvent)="openDialog()"
-                 [adminTests]="adminTests"
-                 [hideSearch]="currentTabIndex === 0"
-                 [adminQuestions]="false"></app-main-page>
   <mat-tab-group class="container-table-tests" (selectedTabChange)="onChange($event)">
-    <mat-tab label="Тестирование знаний">
+    <mat-tab label="Темы тестов">
+      <app-main-page [allowChanges]="allowChanges"
+                     [inputValue]="inputValue"
+                     (onValueChangeSearch)="filterTests($event)"
+                     (groupValueChange)="groupValueChange($event)"
+                     (onOpenAddingPopupEvent)="openDialog()"
+                     [adminTests]="adminTests"
+                     [hideSearch]="currentTabIndex === 0"
+                     [adminQuestions]="false"></app-main-page>
       <div class="container-table-tests">
         <app-main-table-tests [title]="'Тесты для контроля знаний'"
                               [allowChanges]="true"
@@ -21,7 +21,7 @@
                               (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
       </div>
       <div class="container-table-tests">
-        <app-main-table-tests [title]="'Тесты для самоконтроля и ЭУМК'"
+        <app-main-table-tests [title]="'Тесты для самоконтроля'"
                               [allowChanges]="true"
                               [tests]="selfControlTests"
                               (onOpenEditPopup)="openDialog($event)"
@@ -58,7 +58,7 @@
       </div>
     </mat-tab>
     <mat-tab label="Результаты тестирования">
-      <app-result-teacher></app-result-teacher>
+      <app-result-teacher [size]="knowledgeControlTestsSize"></app-result-teacher>
     </mat-tab>
     <mat-tab label="Контроль прохождения тестов">
       <app-control-completing *ngIf="currentTabIndex === 2"

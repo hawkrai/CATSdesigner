@@ -20,7 +20,7 @@
         <td class="mdc-data-table__cell">{{ project.ApproveDate | date:'dd/MM/yyyy'}}</td>
         <td class="mdc-data-table__cell" *ngIf="courseUser.IsStudent">
           <button mat-icon-button color="primary" matTooltip="Скачать лист задания" matTooltipPosition="before"
-                  *ngIf="project.StudentId == courseUser.UserId && project.ApproveDate != null">
+                  *ngIf="project.StudentId == courseUser.UserId && project.ApproveDate != null" (click)="projectsComponent.downloadTaskSheet(project)">
             <mat-icon>cloud_download</mat-icon>
           </button>
           <button mat-icon-button color="primary" matTooltip="Выбрать тему" matTooltipPosition="before"

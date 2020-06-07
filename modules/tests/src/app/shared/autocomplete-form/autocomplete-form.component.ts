@@ -12,6 +12,8 @@ export class AutocompleteFormComponent implements OnInit {
   @Input()
   public options: AutocompleteModel[];
   @Input()
+  public placeholder: string;
+  @Input()
   public preselected: boolean;
   profileForm = new FormGroup({
     selected: new FormControl()
@@ -26,6 +28,7 @@ export class AutocompleteFormComponent implements OnInit {
   public ngOnInit(): void {
     if (this.preselected) {
       this.profileForm.controls.selected.setValue([this.options && this.options[0] && this.options[0].value]);
+      this.onSelectionChange.emit(this.profileForm.controls.selected.value);
     }
     console.log(this.profileForm);
   }

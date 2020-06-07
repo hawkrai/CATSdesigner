@@ -45,9 +45,6 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
 
   ngOnInit() {
     console.log(this.question);
-    if (this.question.Question.QuestionType === 0) {
-
-    }
   }
 
   public answerQuestion(): void {
@@ -95,6 +92,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   public getOnNextQuestion(answered: boolean): void {
+    this.charsNeskolko = {};
     this.goToNextQuestion.emit(answered);
   }
 

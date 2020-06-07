@@ -64,7 +64,7 @@ namespace LMPlatform.UI.Services.Labs
 		// OK
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveStudentLabsMark")]
-        ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id, List<StudentsViewData> students);
+        ResultViewData SaveStudentLabsMark(int studentId, int labId, int lecturerId, string mark, string comment, string date, int id, List<StudentsViewData> students);
 
         // OK
         [OperationContract]

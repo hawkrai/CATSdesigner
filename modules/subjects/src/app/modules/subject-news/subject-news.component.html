@@ -1,4 +1,4 @@
-<div class="subject-news-component" *ngIf="news; else: load">
+<div class="subject-news-component content" *ngIf="news; else: load">
   <div class="subject-news-component__actions">
     <div class="subject-news-component__actions" *ngIf="teacher">
       <button mat-raised-button color="primary" (click)="constructorNews()">Добавить новость</button>

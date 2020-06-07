@@ -30,7 +30,7 @@
 
           <ng-container matColumnDef="average">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средний балл</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-average"> {{element[2]}}</mat-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-average" [class.all]="size && element[3]" [class.notAll]="size && !element[3]"> {{element[2]}}</mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

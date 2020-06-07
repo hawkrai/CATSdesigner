@@ -1,0 +1,49 @@
+.subgrouping {
+  width: 450px;
+
+  &-students {
+
+    &__header {
+      display: grid;
+      grid-template-columns: 0.1fr 1fr 0.1fr;
+      align-items: center;
+
+      p {
+        margin: 0 10px 0 0;
+      }
+    }
+
+    &__body {
+      overflow: auto;
+      height: 430px;
+
+      &-text {
+        display: flex;
+      }
+
+      &-sub-group {
+        width: 45px;
+      }
+    }
+
+    &__footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+
+      &-checkbox {
+        margin-right: 33px;
+      }
+    }
+  }
+}
+.mat-dialog-content {
+  overflow: auto;
+  max-height: 81vh;
+}
+
+.mat-dialog {
+  &-actions {
+    justify-content: flex-end;
+  }
+}

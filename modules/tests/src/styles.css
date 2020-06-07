@@ -33,6 +33,9 @@
 .mat-form-field {
   width: 100%;
 }
+.mat-radio-label-content {
+  width: 90%;
+}
 
 .mat-table {
   border: 1px solid rgba(0, 0, 0, .12);

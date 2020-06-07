@@ -1,4 +1,0 @@
-GO
-ALTER TABLE dbo.Tests ADD
-	Data nvarchar(MAX) NULL
-GO

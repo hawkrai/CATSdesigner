@@ -25,6 +25,7 @@ export class AddStageDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<AddStageDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.data.date = this.dateControl.value;
   }
 
   onDateChange(date: any) {

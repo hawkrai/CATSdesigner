@@ -22,6 +22,7 @@ import {
   MatListModule,
   MatNativeDateModule,
   MatProgressSpinnerModule,
+  MatRadioModule,
   MatSelectModule,
   MatSidenavModule,
   MatSlideToggleModule,
@@ -49,6 +50,8 @@ import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popov
 import {StoreModule} from '@ngrx/store';
 import {appReducers} from './store/reducers/app.reducers';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {AddJobDialogComponent} from './components/defense/add-project-dialog/add-job-dialog.component';
+import { PlagiarismCheckDialogComponent } from './components/defense/plagiarism-check-dialog/plagiarism-check-dialog.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +73,9 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
     AssignProjectDialogComponent,
     EditTaskSheetComponent,
     DefenseComponent,
-    VisitingPopoverComponent
+    VisitingPopoverComponent,
+    AddJobDialogComponent,
+    PlagiarismCheckDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -101,13 +106,15 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
     StoreModule.forRoot(appReducers),
     StoreDevtoolsModule.instrument(),
     MatSlideToggleModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatRadioModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'}
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
-    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent],
+    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent, AddJobDialogComponent,
+    PlagiarismCheckDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

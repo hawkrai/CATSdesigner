@@ -16,6 +16,8 @@ import {Subject} from "rxjs";
 export class PageComponent extends AutoUnsubscribeBase implements OnInit {
 
   public knowledgeControlTests: Test[] = [];
+  public beforeEUMKTests: Test[] = [];
+  public forEUMKTests: Test[] = [];
   public selfControlTests: Test[] = [];
   public nNTests: Test[] = [];
   public loading: boolean;
@@ -43,6 +45,10 @@ export class PageComponent extends AutoUnsubscribeBase implements OnInit {
         this.selfControlTests.push(test);
       } else if (test.ForNN) {
         this.nNTests.push(test);
+      } else if (test.BeforeEUMK) {
+        this.beforeEUMKTests.push(test);
+      } else if (test.ForEUMK) {
+        this.forEUMKTests.push(test);
       } else {
         this.knowledgeControlTests.push(test);
       }

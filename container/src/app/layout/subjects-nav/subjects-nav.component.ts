@@ -23,11 +23,11 @@ export class SubjectsNavComponent implements OnInit {
       if(that.subjects.length > 0) {
         let urls = this.router.url.split('/');
         let subjectId = 0;
-        subjectId = + urls[urls.length - 1];           
+        subjectId = + urls[urls.length - 1].split("#")[0];           
         that.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
         if(that.coreService.selectedSubject !== undefined && that.coreService.selectedSubject !== null) {
           console.log(subjectId);
-          that.redirectToSelected();
+          //that.redirectToSelected();
           that.setupLocalInfo(that.coreService.selectedSubject); 
         }
                

@@ -44,7 +44,7 @@ namespace Application.Infrastructure.CPManagement
 
         void SaveProject(CourseProjectData projectData);
 
-        void SetStudentDiplomMark(int lecturerId, int assignedProjectId, int mark);
+        void SetStudentDiplomMark(int lecturerId, CourseStudentMarkModel courseStudentMarkModel);
 
         CourseProjectTaskSheetTemplate GetTaskSheetTemplate(int id);
 

@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MDCDialog} from '@material/dialog';
 import {Lecture} from '../../../../models/lecture.model';
 import {Attachment} from "../../../../models/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
@@ -9,6 +8,7 @@ import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.compon
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {LecturesService} from '../../../../services/lectures/lectures.service';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-lectures-list',
@@ -72,7 +72,6 @@ export class LecturesListComponent implements OnInit {
 
   constructorLecture(lecture?: Lecture) {
     const newLecture = lecture ? {...lecture} : this.getEmptyLecture();
-    newLecture.attachments = JSON.stringify(newLecture.attachments);
 
     const dialogData: DialogData = {
       title: lecture ? 'Редактирование лекции' : 'Добавление лекции',
@@ -83,6 +82,7 @@ export class LecturesListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        result.attachments = JSON.stringify(result.attachments);
         this.lecturesService.createLecture(result).subscribe(res => res['Code'] === "200" && this.refreshDate());
       }
     });
@@ -119,6 +119,14 @@ export class LecturesListComponent implements OnInit {
       pathFile: '',
       attachments: [],
     };
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    console.log(event);
+    const temp = this.lectures[event.previousIndex].order;
+    this.lectures[event.previousIndex].order = this.lectures[event.currentIndex].order;
+    this.lectures[event.currentIndex].order = temp;
+    moveItemInArray(this.lectures, event.previousIndex, event.currentIndex);
   }
 
 }
