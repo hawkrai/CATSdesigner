@@ -6,6 +6,7 @@ import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil, tap} from "rxjs/operators";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 
 
 @AutoUnsubscribe
@@ -26,9 +27,11 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   public subject: any;
   public chosenType: any;
   public editingTest: Test;
+  public formGroup: FormGroup;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
+              private formBuilder: FormBuilder,
               public dialogRef: MatDialogRef<EditTestPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     super();
@@ -41,6 +44,25 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   ngOnInit() {
     this.user = JSON.parse(localStorage.getItem("currentUser"));
     this.subject = JSON.parse(localStorage.getItem("currentSubject"));
+
+    this.formGroup = this.formBuilder.group({
+      title: new FormControl("title", Validators.compose([
+        Validators.maxLength(255), Validators.required
+      ])),
+      description: new FormControl("description", Validators.compose([
+        Validators.maxLength(1000)
+      ])),
+      countOfQuestions: new FormControl("countOfQuestions", Validators.compose([
+        Validators.max(200),
+        Validators.min(1),
+        Validators.required
+      ])),
+      timeForCompleting: new FormControl("timeForCompleting", Validators.compose([
+        Validators.max(150),
+        Validators.min(0),
+        Validators.required
+      ]))
+    });
 
     if (this.data.event) {
       this.loadTests();
@@ -92,12 +114,14 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       }
     }
     this.editingTest.SubjectId = this.subject.id;
-    this.testService.saveTest(this.editingTest)
-      .pipe(
-        tap(() => this.dialogRef.close(true)),
-        takeUntil(this.unsubscribeStream$)
-      )
-      .subscribe();
+    if (this.formGroup.valid) {
+      this.testService.saveTest(this.editingTest)
+        .pipe(
+          tap(() => this.dialogRef.close(true)),
+          takeUntil(this.unsubscribeStream$)
+        )
+        .subscribe();
+    }
   }
 
   public writeTitle(event, field): void {
