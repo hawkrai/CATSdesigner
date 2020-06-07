@@ -8,7 +8,7 @@ import {FileResponse} from '../model/file';
 })
 export class FileService {
 
-    api = '/api/Services/Files/FilesService.svc/';
+    api = '/Services/Files/FilesService.svc/';
 
     constructor(private http: HttpClient) {
     }

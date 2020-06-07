@@ -12,8 +12,8 @@ import { Message } from './../../../../core/models/message';
 })
 export class SubjectComponent implements OnInit {
   public selectedModule: SafeResourceUrl;
-  private availableFragments:string[] =  ["news", "lectures", "labs", "testsModule", "course"];
-  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "page", ""];
+  private availableFragments:string[] =  ["news", "lectures", "labs", "testsModule", "course", "admin"];
+  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "page", "", "admin"];
   public clickedItem: string;
   private originalModule: string; 
   constructor(private sanitizer: DomSanitizer, private coseService: CoreService, private router: Router, private location: Location, private activeRouter: ActivatedRoute ) { }

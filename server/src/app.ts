@@ -68,11 +68,20 @@ const proxyApigOptions = {
   }
 }
 
+const proxyAdmingOptions = { 
+  target: targetDomain, 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/Administration': 'Administration', // rewrite path
+  }
+}
+
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
 app.use('*/TestPassing/*', createProxyMiddleware(proxyTestPassingOptions));
 app.use('*/Tests/*', createProxyMiddleware(proxyTestOptions));
 app.use('*/api/*', createProxyMiddleware(proxyApigOptions));
+app.use('*/Administration/*', createProxyMiddleware(proxyAdmingOptions));
 
 app.get('*', (req,res) => {
   let url = req.url;

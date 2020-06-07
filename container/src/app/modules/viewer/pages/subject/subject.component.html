@@ -32,6 +32,12 @@
                 </div>                
                 <div mat-line>КП</div>
             </a>
+            <a mat-list-item [ngClass]="{active: clickedItem === 'admin'}" (click)="openModule('admin', 'admin', 'admin')"> 
+                <div mat-line>
+                    <mat-icon class="white-icon">school</mat-icon>
+                </div>                
+                <div mat-line>КП</div>
+            </a>
       
           </mat-nav-list>
     </mat-sidenav>
