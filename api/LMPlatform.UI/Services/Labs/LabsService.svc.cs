@@ -464,7 +464,7 @@ namespace LMPlatform.UI.Services.Labs
 					Code = "200"
 				};
 			}
-			catch
+			catch(Exception ex)
 			{
 				return new StudentsMarksResult
 				{

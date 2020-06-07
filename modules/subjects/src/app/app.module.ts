@@ -29,6 +29,7 @@ import {ColorPickerModule} from 'ngx-color-picker';
 import {FilesModule} from './modules/files/files.module';
 import {PracticalModule} from './modules/practical/practical.module';
 import {SubgroupingComponent} from './components/subgrouping/subgrouping.component';
+import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {SubgroupingComponent} from './components/subgrouping/subgrouping.compone
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     SubjectManagementComponent,
-    SubgroupingComponent
+    SubgroupingComponent,
+    SubSettingsComponent
   ],
   imports: [
     BrowserModule,

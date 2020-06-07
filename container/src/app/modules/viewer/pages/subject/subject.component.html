@@ -12,6 +12,13 @@
                     <mat-icon class="white-icon">subject</mat-icon>
                 </div>                
                 <div mat-line>Лекции</div> 
+            </a> 
+            <a mat-list-item [ngClass]="{active: clickedItem === 'practical'}" (click)="openModule('practical', 'subject', 'practical')">
+                <div mat-line>
+                    <mat-icon class="white-icon">subject</mat-icon>
+                </div>                
+                <div mat-line>Практические</div>
+                <div mat-line>работы</div> 
             </a>
             <a mat-list-item [ngClass]="{active: clickedItem === 'labs'}" (click)="openModule('labs', 'subject', 'labs')">
                 <div mat-line>
@@ -32,13 +39,13 @@
                 </div>                
                 <div mat-line>КП</div>
             </a>
-            <a mat-list-item [ngClass]="{active: clickedItem === 'admin'}" (click)="openModule('admin', 'admin', 'admin')"> 
+            <mat-divider></mat-divider>
+            <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 
                 <div mat-line>
-                    <mat-icon class="white-icon">school</mat-icon>
+                    <mat-icon class="white-icon">settings</mat-icon>
                 </div>                
-                <div mat-line>КП</div>
-            </a>
-      
+                <div mat-line>Управление</div>
+            </a>      
           </mat-nav-list>
     </mat-sidenav>
     <div class="app-sidenav-content-subject">
