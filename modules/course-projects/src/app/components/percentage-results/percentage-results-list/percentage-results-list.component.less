@@ -7,11 +7,32 @@
     &__header-cell {
       font-weight: 600;
     }
+
+    &__header-row {
+      height: 86px;
+    }
+
+    .header-date {
+      transform: rotate(270deg);
+      font-size: 12px;
+    }
+
+    .data-cell {
+      text-align: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    td, th {
+      border-right: 1px solid rgba(0,0,0,.12);
+    }
+
+    td:last-of-type, th:last-of-type {
+      border-right: 0;
+    }
   }
 }
 
 .clickable {
   cursor: pointer;
-  color: blue;
-  text-decoration: underline;
 }

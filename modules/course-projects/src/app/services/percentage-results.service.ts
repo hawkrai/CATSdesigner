@@ -25,9 +25,8 @@ export class PercentageResultsService {
       Mark: mark, Comment: comment});
   }
 
-  public setMark(courseProjectId: string, mark: string): Observable<any> {
-    console.log(courseProjectId + ': ' + mark);
-    return this.http.post('api/CourseStudentMark', [courseProjectId, mark]);
+  public setMark(assignedProjectId: string, mark: string, lecturerName: string, comment: string, date: string): Observable<any> {
+    return this.http.post('api/CourseStudentMark', {assignedProjectId, mark, lecturerName, comment, date});
   }
 
 }

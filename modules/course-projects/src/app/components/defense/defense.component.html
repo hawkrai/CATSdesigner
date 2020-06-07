@@ -8,6 +8,13 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-slide-toggle class="detached-toggle"
+                        [color]="'primary'"
+                        [checked]="detachedGroup"
+                        (change)="groupStatusChange($event)"
+      >
+        Открепленные группы
+      </mat-slide-toggle>
       <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before"
               (click)="downloadArchive()">
         <mat-icon>cloud_download</mat-icon>
@@ -19,13 +26,6 @@
       <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="retrieveFiles()">
         <mat-icon>refresh</mat-icon>
       </button>
-      <mat-slide-toggle class="detached-toggle"
-                        [color]="'primary'"
-                        [checked]="detachedGroup"
-                        (change)="groupStatusChange($event)"
-      >
-        Открепленные группы
-      </mat-slide-toggle>
     </ng-container>
   </div>
   <div class="defense-component__body">
