@@ -1,7 +1,8 @@
 <button mat-button class="close-icon" [mat-dialog-close]="true">
     <mat-icon>close</mat-icon>
 </button>
-<div *ngIf="isLoad">
-    <google-chart [title]="title" [type]="type" [data]="data" [columnNames]="columnNames" [options]="options" [width]="550" [height]="400">
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<div *ngIf="this.isLoad">
+    <google-chart [title]="title" [type]="type" [data]="data" [columnNames]="columnNames" [options]="options" [width]="1050" [height]="700">
     </google-chart>
 </div>

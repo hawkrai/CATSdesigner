@@ -59,3 +59,7 @@ button .mat-icon {
     left: 50%;
     top: 50%;
 }
+
+/deep/ .tooltip {
+    font-size: 14px;
+}

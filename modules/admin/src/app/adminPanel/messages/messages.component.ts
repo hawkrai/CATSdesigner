@@ -13,7 +13,7 @@ import { DeleteItemComponent } from '../modal/delete-person/delete-person.compon
 export class MessagesComponent implements OnInit {
 
   isLoad = false;
-  message;
+  messages;
   id;
   outboxColumns = ['icon', 'fullName', 'subject', 'text', 'date', 'action'];
   inboxColumns = ['icon', 'author', 'subject', 'text', 'date', 'action'];
@@ -21,14 +21,21 @@ export class MessagesComponent implements OnInit {
   constructor(private dialog: MatDialog, private messageService: MessageService) { }
 
   ngOnInit() {
-    this.loadMessage();
+    this.loadMessages();
+  }
+
+  loadMessages() {
+    this.messageService.getMessages().subscribe( result => {
+      this.messages = result;
+      this.isLoad = true;
+    });
   }
 
   sendMessage() {
     const dialogRef = this.dialog.open(SendMessageComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-       this.loadMessage();
+       this.loadMessages();
       }
     });
   }
@@ -42,19 +49,13 @@ export class MessagesComponent implements OnInit {
     dialogRef.afterClosed();
   }
 
-  loadMessage() {
-    this.messageService.getMessages().subscribe( result => {
-      this.message = result;
-      this.isLoad = true;
-    });
-  }
 
   deleteMessage(messageId) {
     const dialogRef = this.dialog.open(DeleteItemComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.messageService.deleteMessage(messageId).subscribe( () => {
-          this.loadMessage();
+          this.loadMessages();
         });
       }
     });

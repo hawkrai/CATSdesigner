@@ -1,7 +1,7 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div *ngIf="this.isLoad" class="profile">
     <mat-card class="profile-card">
-        <mat-card>
+        <mat-card class="avatar">
             <img *ngIf="this.profileInfo.Avatar" src="{{this.profileInfo.Avatar}}" width="300px ">
             <img *ngIf="!this.profileInfo.Avatar" src="{{this.defaultAvatar}}" width="300px ">
         </mat-card>

@@ -19,10 +19,13 @@ export class StatisticComponent implements OnInit {
         title: ''
      },
      vAxis: {
-        title: ''
-     },
+        title: '',
+        viewWindow: {
+          max: 30
+        }
+     }
   };
-  isLoad = true;
+  isLoad = false;
 
   constructor(private statisticService: StatisticService, public dialogRef: MatDialogRef<object>,
               @Inject(MAT_DIALOG_DATA) public value: any) { }
@@ -31,9 +34,8 @@ export class StatisticComponent implements OnInit {
     this.loadStatistic(this.value);
   }
 
-  loadStatistic(userId) {
-    this.statisticService.getStatistics(userId).subscribe( result => {
-      console.log(result);
+  async loadStatistic(userId) {
+    await this.statisticService.getStatistics(userId).subscribe( result => {
       if (!result.attendance) {
         this.data.push(['', 0]);
       } else {
@@ -49,7 +51,8 @@ export class StatisticComponent implements OnInit {
     for (const item of array) {
       arr.push([ item.day, item.count]);
     }
-    return arr;
+    const arrLength = arr.length;
+    return arrLength > 30 ? arr.slice( arrLength - 30, arrLength) : arr.slice(0, arrLength);
   }
 
 }

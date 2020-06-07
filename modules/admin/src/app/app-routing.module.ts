@@ -30,18 +30,18 @@ const routes: Routes = [
       { path: 'lectors', component: LectorsComponent },
       { path: 'students', component: StudentsComponent },
       { path: 'groups', component: GroupComponent },
-      { path: 'files', component: FilesComponent},
-      { path: 'messages', component: MessagesComponent},
+      { path: 'files', component: FilesComponent },
+      { path: 'messages', component: MessagesComponent },
       { path: 'profile/:login', component: ProfileComponent },
     ]
   },
   {
     path: 'control', component: GeneralComponent, children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
-      {path: 'main/:groupId', component: MainContolComponent},
-      {path: 'item/:groupId/:subjectId', component: ItemComponent},
-      {path: 'statistic/:groupId', component: StatsComponent},
-      {path: 'groupNotFound', component: GroupNotFoundComponent}
+      { path: 'main/:groupId', component: MainContolComponent },
+      { path: 'item/:groupId/:subjectId', component: ItemComponent },
+      { path: 'statistic/:groupId', component: StatsComponent },
+      { path: 'groupNotFound', component: GroupNotFoundComponent }
     ]
   },
 ];

@@ -32,8 +32,8 @@ export class ProfileComponent implements OnInit {
   }
 
   getProfileInfo(login) {
-    this.profileService.getProfileInfo(login).subscribe( result => {
-      this.profileInfo = result;
+    this.profileService.getProfileInfo(login).subscribe( res => {
+      this.profileInfo = res;
     });
   }
 
@@ -44,15 +44,15 @@ export class ProfileComponent implements OnInit {
   }
 
   getProfileInfoSubjects(login) {
-    this.profileService.getProfileInfoSubjects(login).subscribe( result => {
-      this.profileInfoSubjects = result;
+    this.profileService.getProfileInfoSubjects(login).subscribe( res => {
+      this.profileInfoSubjects = res;
       this.isLoad = true;
     });
   }
 
   getProfileProjects(login) {
-    this.profileService.getProfileProjects(login).subscribe( result => {
-      this.profileProjects = result;
+    this.profileService.getProfileProjects(login).subscribe( res => {
+      this.profileProjects = res;
     });
   }
 

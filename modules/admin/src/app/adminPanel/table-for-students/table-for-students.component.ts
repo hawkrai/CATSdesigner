@@ -56,6 +56,8 @@ export class TableForStudentsComponent implements OnInit {
       this.loadStudent();
     }, err => {
       if ( err.status === 500) {
+        // we do it because db have some issue. After fixing, delete this function, please
+        this.loadStudent();
         this.dialog.open(SuccessMessageComponent, {
           data: 'Студент успешно изменен.',
           position: {
@@ -97,7 +99,6 @@ export class TableForStudentsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result.data);
         this.editStudent(result.data);
       }
     });

@@ -31,6 +31,7 @@ export class StatsComponent implements OnInit {
     this.groupId = this.route.snapshot.params.groupId;
     this.getSubjectName(this.groupId);
     this.getStatistic(this.groupId);
+    console.log(this.studentStatistic);
   }
 
   getStatistic(groupId) {
@@ -48,7 +49,6 @@ export class StatsComponent implements OnInit {
     const id = this.selectedItem;
     if (id && id !== -1) {
       const subject = this.subjects.find(({Id}) => Id === id);
-      console.log(subject.Name);
       this.tableStats = this.studentStatistic.map((item) => {
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;

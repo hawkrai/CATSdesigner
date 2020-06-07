@@ -12,9 +12,9 @@
                 <input type="password" matInput placeholder="Пароль" formControlName="password" maxlength="50">
             </mat-form-field>
             <button (click)="this.login()" type="submit" mat-button>Войти</button>
-            <button routerLink='/register' type="submit" mat-button>Регистрация</button>
-            <button mat-button class="style-a" (click)="this.openControlGroupDialog()">Контроль успеваемости</button>
             <button mat-button class="style-a" (click)="this.changePassword()">Забыли пароль?</button>
+            <button mat-button class="style-a" (click)="this.openControlGroupDialog()">Контроль успеваемости</button>
+            <button class="style-a" routerLink='/register' type="submit" mat-button>Регистрация</button>
         </form>
     </mat-card-content>
 </mat-card>

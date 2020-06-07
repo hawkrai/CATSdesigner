@@ -44,6 +44,7 @@ import { StatisticComponent } from './modal/statistic/statistic.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MatListModule } from '@angular/material/list';
 import { MessageDetailComponent } from './modal/message-detail/message-detail.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -99,7 +100,8 @@ import { MessageDetailComponent } from './modal/message-detail/message-detail.co
     GoogleChartsModule,
     MatCardModule,
     MatAutocompleteModule,
-    MatChipsModule
+    MatChipsModule,
+    MatTooltipModule
   ],
   entryComponents: [LectorModalComponent, TableForStudentsComponent, AddGroupComponent,
     DeleteItemComponent, EditLectorComponent, FilesTableComponent, SubjectListComponent, ListOfGroupsComponent,

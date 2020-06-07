@@ -4,7 +4,7 @@
     <button mat-raised-button (click)="this.sendMessage()">Написать сообщение</button>
     <mat-tab-group>
         <mat-tab label="Входящие">
-            <table class="message-table" mat-table [dataSource]="this.message.InboxMessages">
+            <table class="message-table" mat-table [dataSource]="this.messages.InboxMessages">
 
                 <ng-container matColumnDef="icon">
                     <th mat-header-cell *matHeaderCellDef></th>
@@ -48,7 +48,7 @@
         </mat-tab>
 
         <mat-tab label="Отправленные">
-            <table class="message-table" mat-table [dataSource]="this.message.OutboxMessages">
+            <table class="message-table" mat-table [dataSource]="this.messages.OutboxMessages">
 
                 <ng-container matColumnDef="icon">
                     <th mat-header-cell *matHeaderCellDef></th>

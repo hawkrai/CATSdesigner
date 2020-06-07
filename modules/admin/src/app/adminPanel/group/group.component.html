@@ -37,13 +37,13 @@
             <ng-container matColumnDef="s" class="actions">
                 <th mat-header-cell *matHeaderCellDef>Действиe</th>
                 <td mat-cell *matCellDef="let element">
-                    <button mat-button matTooltip="Список студентов" aria-label="listOfSubsject" (click)="openListOfStudents(element.Id)">
-                        <mat-icon>list</mat-icon>
+                    <button mat-button matTooltip="Список студентов, состоящих в данной группе" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfStudents(element.Id)">
+                        <mat-icon>supervised_user_circle</mat-icon>
                     </button>
-                    <button mat-button matTooltip="Редактировать" aria-label="Edit" (click)="this.editGroup(element)">
+                    <button mat-button matTooltip="Редактировать группу" [matTooltipPosition]="'above'" aria-label="Edit" matTooltipClass="tooltip" (click)="this.editGroup(element)">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-button matTooltip="Удалить" aria-label="Delete" (click)="deleteGroup(element.Id)">
+                    <button mat-button matTooltip="Удалить группу" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete" (click)="deleteGroup(element.Id)">
                         <mat-icon>delete_forever</mat-icon>
                     </button>
                 </td>
