@@ -43,6 +43,12 @@ export class VisitStatisticsComponent implements OnInit {
 
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;
+          this.scheduleProtectionLabs.forEach(lab => {
+            if (!this.numberSubGroups.includes(lab.subGroup)) {
+              this.numberSubGroups.push(lab.subGroup);
+              this.numberSubGroups.sort((a, b) => a-b)
+            }
+          });
         });
 
         this.refreshMarks();

@@ -4,7 +4,9 @@
       <span class="job-protection__subGroup-title">Подгруппа {{i}}</span>
       <div class="job-protection__accordion">
         <mat-accordion>
-          <mat-expansion-panel *ngFor="let student of (students | filterSubGroup:'SubGroup': i)">
+          <mat-expansion-panel *ngFor="let student of (students | filterSubGroup:'SubGroup': i)"
+                               (opened)="openedPanelId = student.StudentId"
+                               [expanded]="openedPanelId === student.StudentId">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 {{student.FullName}}
