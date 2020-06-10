@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
 import {TestPassingService} from '../../service/test-passing.service';
 import {Router} from '@angular/router';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -18,7 +18,7 @@ import {takeUntil} from "rxjs/operators";
   templateUrl: './main-table-tests.component.html',
   styleUrls: ['./main-table-tests.component.less']
 })
-export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnInit {
+export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnInit, AfterViewChecked {
 
   @Input()
   public title: string;
@@ -50,6 +50,7 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,
+              private cdr: ChangeDetectorRef,
               private router: Router) {
     super();
   }
@@ -100,5 +101,10 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe();
     this.table.renderRows();
+  }
+
+  public ngAfterViewChecked() {
+    //todo always called. fix drag and drop
+    this.cdr.detectChanges();
   }
 }

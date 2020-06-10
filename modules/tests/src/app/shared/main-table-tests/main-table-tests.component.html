@@ -23,7 +23,7 @@
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
-          <mat-icon class="main-table-tests-icon" (click)="navigateToTest(element.Id)" matTooltip="Пройти тест"
+          <mat-icon *ngIf="element.HasQuestions" class="main-table-tests-icon" (click)="navigateToTest(element.Id)" matTooltip="Пройти тест"
                     matTooltipClass="example-tooltip-green">play_circle_outline
           </mat-icon>
           <mat-icon class="main-table-tests-icon" (click)="openEditPopup(element)" *ngIf="allowChanges" matTooltip="Редактировать тест"

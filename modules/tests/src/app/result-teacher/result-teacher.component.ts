@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {TestService} from "../service/test.service";
 import {TestPassingService} from "../service/test-passing.service";
 import {Group} from "../models/group.model";
@@ -53,6 +53,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testService: TestService,
+              private cdr: ChangeDetectorRef,
               private testPassingService: TestPassingService) {
     super();
   }
@@ -245,7 +246,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
           });
         }
       );
-      const groupName = this.results && this.results.length && this.results[0].groupName;
+      const groupName = results && results.length && results[0].groupName;
       this.knowledgeControlTestsMass.push({res: Object.assign({}, this.knowledgeControlTests), group: groupName});
       this.selfControlTestsMass.push({res: Object.assign({}, this.selfControlTests), group: groupName});
       this.nNTestsMass.push({res: Object.assign({}, this.nNTests), group: groupName});

@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatCheckboxChange, MatDialogRef} from "@angular/material";
+import {MAT_DIALOG_DATA, MatCheckboxChange, MatDialogRef, MatSnackBar} from "@angular/material";
 import {TestService} from "../../../service/test.service";
 import {Test} from "../../../models/test.model";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
@@ -24,6 +24,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     "Тест для обучения с искусственной нейронной сетью"];
 //todo any delete
   public user: any;
+  public newTest: boolean = true;
   public subject: any;
   public chosenType: any;
   public editingTest: Test;
@@ -32,6 +33,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
 
   constructor(private testService: TestService,
               private formBuilder: FormBuilder,
+              private snackBar: MatSnackBar,
               public dialogRef: MatDialogRef<EditTestPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     super();
@@ -69,8 +71,8 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       console.log(this.data);
     } else {
       this.editingTest = new Test();
+      this.editingTest.CountOfQuestions = 5;
       this.editingTest.SetTimeForAllTest = true;
-      this.chosenType = "Тест для самоконтроля";
     }
   }
 
@@ -89,7 +91,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
         } else {
           this.chosenType = "Тест для контроля знаний";
         }
-        //this.chosenType = test.;
+        this.newTest = false;
         this.editingTest = test;
       });
   }
@@ -114,14 +116,31 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       }
     }
     this.editingTest.SubjectId = this.subject.id;
-    if (this.formGroup.valid) {
+    if (!this.chosenType) {
+      this.openSnackBar("Выберите тип");
+    } else if (this.formGroup.valid && this.editingTest.Title) {
       this.testService.saveTest(this.editingTest)
         .pipe(
-          tap(() => this.dialogRef.close(true)),
+          tap((message) => {
+            if (message && message.ErrorMessage) {
+              this.openSnackBar(message.ErrorMessage);
+            } else {
+              this.dialogRef.close(true);
+            }
+          }),
           takeUntil(this.unsubscribeStream$)
         )
         .subscribe();
     }
+    else {
+      this.openSnackBar("Проверьте правильность заполенения данных");
+    }
+  }
+
+  public openSnackBar(message: string, action?: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   public writeTitle(event, field): void {

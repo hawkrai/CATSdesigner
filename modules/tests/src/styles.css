@@ -60,3 +60,7 @@
   font-size: 16px;
   width: inherit;
 }
+
+.mat-snack-bar-container{
+  background: #3d497b;
+}

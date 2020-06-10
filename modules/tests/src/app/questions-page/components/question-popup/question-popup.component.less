@@ -1,6 +1,10 @@
 .question-popup {
   overflow: auto;
   position: fixed;
+
+  &-header {
+    display: flex;
+  }
   &-complexity {
     width: 100%;
     margin-top: 10px;
@@ -9,11 +13,21 @@
     &.mat-dialog-title {
       font-weight: 400;
     }
-    &.mat-dialog-container{
+    &.mat-dialog-container {
       color: black;
     }
-
+    display: flex;
+    width: 27%;
+    font: 400 20px/32px Roboto,"Helvetica Neue",sans-serif;
     text-align: left;
+    &-small {
+      font-size: 16px;
+      color: #6c6c6c;
+      width: 73%;
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 4px;
+    }
   }
   &-answers {
     &-input {
