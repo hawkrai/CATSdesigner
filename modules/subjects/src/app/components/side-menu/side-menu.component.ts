@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
-import {SubjectManagementComponent} from '../subject-managment/subject-management.component';
+import {SubjectManagementComponent} from '../../modules/subject/subject-managment/subject-management.component';
 import {SubgroupingComponent} from '../subgrouping/subgrouping.component';
 
 
@@ -27,6 +27,7 @@ export class SideMenuComponent implements OnInit {
       { name: 'Лабораторные работы', tab: '/labs'},
       { name: 'Практические занятия', tab: '/practical'},
       { name: 'Файлы', tab: '/files'},
+      { name: 'Настройки', tab: '/settings'},
     ];
 
   }
