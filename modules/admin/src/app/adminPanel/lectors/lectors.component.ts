@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { LectorModalComponent } from '../modal/lector-modal/lector-modal.component';
-import { Professor } from 'src/app/model/professor';
+import { Professor, EditProfessor } from 'src/app/model/professor';
 import { ProfessorService } from 'src/app/service/professor.service';
 import { DeleteItemComponent } from '../modal/delete-person/delete-person.component';
 import { EditLectorComponent } from '../modal/edit-lector/edit-lector.component';
@@ -37,6 +37,50 @@ export class LectorsComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  isNotActive(professor) {
+    return professor.IsActive;
+  }
+
+  restoreProfessor(professor) {
+
+// FirstName: "Юлия"
+// FullName: "Попова Юлия Борисовна"
+// HtmlLinks: {}
+// Id: 2
+// IsActive: "Удален"
+// IsLectureHasGraduateStudents: true
+// IsSecretary: false
+// LastLogin: "21.05.2020 13:59:10"
+// LastName: "Попова"
+// Login: "popova"
+// MiddleName: "Борисовна"
+// Number: 0
+// SecretaryGroupsIds: []
+// Subjects: "-"
+// isActive: true
+// __proto__: Object
+    const newProfessorObject = new EditProfessor();
+    newProfessorObject.Surname = professor.LastName;
+    newProfessorObject.Name = professor.FirstName;
+    newProfessorObject.Patronymic = professor.MiddleName || '';
+    newProfessorObject.About = professor.About || '';
+    newProfessorObject.Avatar = professor.Avatar || '';
+    newProfessorObject.Email = professor.Email || '';
+    newProfessorObject.Groups = professor.Groups || [];
+    newProfessorObject.IsActive = true;
+    newProfessorObject.IsLecturerHasGraduateStudents =
+    professor.IsLecturerHasGraduateStudents || false;
+    newProfessorObject.IsSecretary = professor.IsSecretary || false;
+    newProfessorObject.LecturerId = professor.Id;
+    newProfessorObject.Phone = professor.Phone || '';
+    newProfessorObject.Skill = professor.Skill || '';
+    newProfessorObject.SkypeContact = professor.SkypeContact || '';
+    newProfessorObject.SeletectedGroupIds = professor.SeletectedGroupIds || [];
+    newProfessorObject.UserName = professor.Login || '';
+    professor.isActive = true;
+    this.editLector(newProfessorObject);
+  }
+
   navigateToProfile(login) {
     this.router.navigate(['admin/profile', login]);
   }
@@ -56,7 +100,7 @@ export class LectorsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result.data);
+        console.log(result);
         this.editLector(result.data);
       }
     });
@@ -82,7 +126,6 @@ export class LectorsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log(result);
         this.addLector(result.data);
       }
     });
@@ -97,6 +140,7 @@ export class LectorsComponent implements OnInit {
 
   addLector(professor): void {
     this.professorService.addProfessor(professor).subscribe(() => {
+      this.loadLector();
       this.dataLector = new Professor();
       this.dialog.open(SuccessMessageComponent, {
         data: 'Преподаватель добавлен.',
@@ -105,8 +149,8 @@ export class LectorsComponent implements OnInit {
           right: '0px'
         }
       });
-      this.loadLector();
     }, () => {
+      this.loadLector();
       this.dialog.open(SuccessMessageComponent, {
         data: 'Преподаватель добавлен.',
         position: {
@@ -119,6 +163,7 @@ export class LectorsComponent implements OnInit {
 
   editLector(professor): void {
     this.professorService.editProfessor(professor).subscribe(() => {
+      this.loadLector();
       this.dataLector = new Professor();
       this.dialog.open(SuccessMessageComponent, {
         data: 'Преподаватель изменен.',
@@ -127,9 +172,9 @@ export class LectorsComponent implements OnInit {
           right: '0px'
         }
       });
-      this.loadLector();
     }, err => {
       if ( err.status === 500) {
+        this.loadLector();
         this.dialog.open(SuccessMessageComponent, {
           data: 'Преподаватель изменен.',
           position: {

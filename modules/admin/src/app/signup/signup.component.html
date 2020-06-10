@@ -23,13 +23,13 @@
             </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Фамилия" formControlName="Surname" maxlength="30">
-                <mat-hint *ngIf="this.isControlInvalid('Surname')">Фамилия должна содержать не меньше 6 и не больше 30 символов </mat-hint>
-                <mat-error *ngIf="hasError('Surname', 'minlength')">Вы ввели меньше 6 символов</mat-error>
+                <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
+                <mat-error *ngIf="hasError('Surname', 'minlength')">Вы ввели меньше 1 символа</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Имя" formControlName="Name" maxlength="30">
-                <mat-hint *ngIf="this.isControlInvalid('Name')">Имя должно быть не меньше 6 и не больше 30 символов </mat-hint>
-                <mat-error *ngIf="hasError('Name', 'maxlength')">Вы ввели больше 30 символов</mat-error>
+                <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
+                <mat-error *ngIf="hasError('Name', 'minlength')">Вы ввели меньше 1 символа</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Отчество" formControlName="Patronymic" maxlength="30">
@@ -52,10 +52,11 @@
             </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Ответ на секретный вопрос" formControlName="SecretAnswer" maxlength="30">
+                <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
             </mat-form-field>
             <div>
                 <button mat-button class='button' [disabled]='this.form.invalid' (click)="this.register()">Зарегистрироваться</button>
-                <button mat-button class='button' routerLink="/login">Вернуться назад</button>
+                <a mat-button class='style-a' routerLink="/login">Вернуться назад</a>
             </div>
         </form>
     </mat-card-content>

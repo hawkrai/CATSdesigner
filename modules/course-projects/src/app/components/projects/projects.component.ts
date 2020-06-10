@@ -111,7 +111,7 @@ export class ProjectsComponent implements OnInit {
       width: '700px',
       data: {
         groups: this.groups,
-        selectedGroups: this.groups
+        selectedGroups: this.groups.slice()
       }
     });
 

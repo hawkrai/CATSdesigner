@@ -41,6 +41,12 @@ export class ProtectionScheduleComponent implements OnInit {
         this.labService.loadData();
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;
+          this.scheduleProtectionLabs.forEach(lab => {
+            if (!this.numberSubGroups.includes(lab.subGroup)) {
+              this.numberSubGroups.push(lab.subGroup);
+              this.numberSubGroups.sort((a, b) => a-b)
+            }
+          });
         });
         this.labService.getLabsProtectionSchedule().subscribe(res => {
           this.labs = res;

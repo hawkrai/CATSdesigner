@@ -8,7 +8,7 @@ import { MessageResponse, DisplayMessage, Recipients } from '../model/message';
 })
 export class MessageService {
 
-    api = '/api/Services/Messages/MessagesService.svc/';
+    api = '/Services/Messages/MessagesService.svc/';
 
     constructor(private http: HttpClient) {
     }
@@ -22,11 +22,16 @@ export class MessageService {
     }
 
     saveMessage(subject, body, recipients, attachments): Observable<string> {
-        let params = new HttpParams();
-        params = params.set('subject', subject);
-        params = params.set ('body', body);
-        params = params.set ('recipients', recipients.toString());
-        params = params.set ('attachments', attachments.toString());
+        // attachments = [];
+        const params = new HttpParams()
+        .append('subject', subject)
+        .append('body', body)
+        .append('recipients', recipients)
+        .append('attachments', attachments);
+        // params = params.set('subject', subject);
+        // params = params.set('body', body);
+        // params = params.set('recipients', recipients);
+        // params = params.set('attachments', []);
         return this.http.post<string>(this.api + 'Save', params);
     }
 

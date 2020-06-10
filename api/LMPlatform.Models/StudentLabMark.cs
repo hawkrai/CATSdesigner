@@ -18,7 +18,7 @@ namespace LMPlatform.Models
 
         public Student Student { get; set; }
 
-        public int LecturerId { get; set; }
+        public int? LecturerId { get; set; }
 
         public Lecturer Lecturer { get; set; }
 

@@ -23,7 +23,7 @@ export class SubjectService {
   }
 
   public subGroupsChangeGroup(subjectId: string, groupId: string): Observable<any> {
-    return this.http.post('subject/subgroupschangegroup', {subjectId, groupId});
+    return this.http.post('Subject/SubGroupsChangeGroup', {subjectId, groupId});
   }
 
   public saveSubGroup(body: any): Observable<any> {

@@ -12,6 +12,8 @@ interface DialogData {
   symbol: string;
   notEmpty: boolean;
   comment: string;
+  lecturer: string;
+  date: string;
   total: boolean;
   expected: number;
 }
@@ -25,6 +27,9 @@ export class EditPercentageDialogComponent {
 
   private percentageControl: FormControl = new FormControl(this.data.mark);
   private commentControl: FormControl = new FormControl(this.data.comment, [Validators.maxLength(255)]);
+  private lecturerControl: FormControl = new FormControl(this.data.lecturer,
+    [Validators.required, Validators.minLength(3), Validators.maxLength(255)]);
+  private date = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
 
   constructor(public dialogRef: MatDialogRef<EditPercentageDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
@@ -34,10 +39,20 @@ export class EditPercentageDialogComponent {
     if (this.data.regex != null) { validators.push(Validators.pattern(this.data.regex)); }
     if (this.data.notEmpty) { validators.push(Validators.required); }
     this.percentageControl.setValidators(validators);
+    this.data.date = this.date.value;
+  }
+
+  onDateChange() {
+    this.data.date = this.date.value;
   }
 
   onCancelClick(): void {
     this.dialogRef.close();
+  }
+
+  isFormInvalid(): boolean {
+    return this.percentageControl.invalid || this.commentControl.invalid ||
+      (this.data.total && (this.lecturerControl.invalid || this.date.invalid));
   }
 
 }

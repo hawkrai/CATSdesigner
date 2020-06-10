@@ -16,7 +16,7 @@
                     {{ element.Name }}
                 </button>
             </mat-menu>
-            <button *ngIf="this.groupId" mat-button aria-label="Stats" [routerLink]="['/control/statistic', groupId]">
+            <button *ngIf="this.groupId && this.isSubject()" mat-button aria-label="Stats" [routerLink]="['/control/statistic', groupId]">
                 <mat-icon class="main-icon">mood</mat-icon>
                 Статистика
             </button>

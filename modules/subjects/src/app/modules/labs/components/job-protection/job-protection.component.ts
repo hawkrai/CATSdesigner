@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChildren} from '@angular/core';
 import {LabsService} from '../../../../services/labs/labs.service';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
@@ -23,8 +23,9 @@ export class JobProtectionComponent implements OnInit {
 
   public files;
   public students;
+  public openedPanelId = 0;
 
-  public numberSubGroups: number[] = [1, 2];
+  public numberSubGroups: number[] = [];
   public subjectId: string;
   public user: User;
   public displayedColumns = ['files', 'comments', 'date', 'action'];
@@ -46,20 +47,25 @@ export class JobProtectionComponent implements OnInit {
       this.store.pipe(select(getCurrentGroup))
         .pipe(filter(group => !!group))
         .subscribe(group => {
-        this.labService.getAllStudentFilesLab(this.subjectId, group.groupId).subscribe(students => {
-          console.log(students);
-          this.students = students;
+          this.labService.getAllStudentFilesLab(this.subjectId, group.groupId).subscribe(students => {
+            this.students = students;
+            students.forEach(student => {
+              if (!this.numberSubGroups.includes(student.SubGroup)) {
+                this.numberSubGroups.push(student.SubGroup);
+                this.numberSubGroups.sort((a, b) => a-b)
+              }
+            })
+          })
         })
-      })
     } else {
       this.store.pipe(select(getUser))
         .pipe(filter(user => !!user))
         .subscribe(user => {
-        this.user = user;
-        this.labService.getFilesLab({subjectId: this.subjectId, userId: this.user.id}).subscribe(files => {
-          this.files = files;
+          this.user = user;
+          this.labService.getFilesLab({subjectId: this.subjectId, userId: this.user.id}).subscribe(files => {
+            this.files = files;
+          })
         })
-      })
     }
   }
 

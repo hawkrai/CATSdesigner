@@ -24,7 +24,7 @@ export class SearchGroupComponent implements OnInit {
     this.loadGroup();
   }
 
-  onNoClick(numb: string): void {
+  onClick(numb: string): void {
     if (numb) {
       this.groupIdByGroupName(numb);
     }

@@ -14,7 +14,7 @@ export class FilesTableComponent implements OnInit {
 
   isLoad: boolean;
   file: any;
-  displayedColumns = ['id', 'Name', 'nameOnDisk', 'packageOnDisk', 'type'];
+  displayedColumns = ['id', 'Name', 'nameOnDisk', 'packageOnDisk'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;

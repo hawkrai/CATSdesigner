@@ -35,7 +35,7 @@ export class ResetThePasswordComponent implements OnInit {
       this.getLector(lectorId);
     }
     this.form = this.formBuilder.group({
-        password: new FormControl('', [Validators.required, Validators.minLength(6),
+        password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z0-9]{6,30}$'),
           Validators.maxLength(30), this.passwordValidator]),
         confirmPassword: new FormControl(''),
     }, {

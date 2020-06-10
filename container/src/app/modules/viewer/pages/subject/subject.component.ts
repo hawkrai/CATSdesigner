@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router, ActivatedRoute  } from '@angular/router';
 import { CoreService } from './../../../../core/services/core.service';
+import { AuthenticationService } from './../../../../core/services/auth.service';
 import { Message } from './../../../../core/models/message';
 
 @Component({
@@ -12,13 +13,15 @@ import { Message } from './../../../../core/models/message';
 })
 export class SubjectComponent implements OnInit {
   public selectedModule: SafeResourceUrl;
-  private availableFragments:string[] =  ["news", "lectures", "labs", "testsModule", "course"];
-  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "page", ""];
+  private availableFragments:string[] =  ["news", "lectures", "labs", "practical", "testsModule", "course", "settings"];
+  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "practical", "page", "", "settings"];
   public clickedItem: string;
+  public isLector:boolean = false;
   private originalModule: string; 
-  constructor(private sanitizer: DomSanitizer, private coseService: CoreService, private router: Router, private location: Location, private activeRouter: ActivatedRoute ) { }
+  constructor(private sanitizer: DomSanitizer, private coseService: CoreService, private router: Router, private location: Location, private activeRouter: ActivatedRoute, private autService: AuthenticationService ) { }
 
   ngOnInit(): void {
+    this.isLector = this.autService.currentUserValue.role == "lector";
     this.activeRouter.fragment.subscribe((fragment: string) => {
       let index = this.availableFragments.indexOf(fragment);
       if(index >= 0){
@@ -39,8 +42,36 @@ export class SubjectComponent implements OnInit {
   }
 
   private initState(fragment:string): void {
-    this.originalModule = "subject";
+    this.originalModule = this.getModuleFromFragment();
     this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${this.originalModule}/${fragment}`);
+  }
+
+  private getModuleFromFragment(): string {
+    switch (this.clickedItem) {
+      case "news":
+        return "subject";
+        break;
+      case "lectures":
+        return "subject";
+        break;
+      case "labs":
+        return "subject";
+        break;
+      case "practical":
+        return "subject";
+        break;    
+      case "testsModule":
+        return "testsModule";
+        break; 
+      case "course":
+        return "course";
+        break; 
+      case "settings":
+        return "subject";
+        break; 
+      default:
+        break;
+    }
   }
 
   openModule(fragment: string, module: string, item:string) {

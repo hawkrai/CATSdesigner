@@ -11,12 +11,12 @@
         <table mat-table [dataSource]="this.subjectInfo.Subjects">
 
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Название предмета</th>
+                <th mat-header-cell *matHeaderCellDef>Название предмета</th>
                 <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} </td>
             </ng-container>
 
             <ng-container matColumnDef="lectures">
-                <th mat-header-cell *matHeaderCellDef> Преподаватели </th>
+                <th mat-header-cell *matHeaderCellDef>Преподаватели </th>
                 <td class="table-container" mat-cell *matCellDef="let element">
                     <p *ngFor="let lecture of element.Lecturers">{{ lecture }}</p>
                 </td>

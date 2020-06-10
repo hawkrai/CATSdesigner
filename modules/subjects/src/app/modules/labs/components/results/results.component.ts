@@ -46,7 +46,13 @@ export class ResultsComponent implements OnInit {
   refreshStudents() {
     this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
       this.student = res;
-      this._getHeader(res[0].Marks.length);
+      this.student.forEach(lab => {
+        if (!this.numberSubGroups.includes(lab.subGroup)) {
+          this.numberSubGroups.push(lab.subGroup);
+          this.numberSubGroups.sort((a, b) => a-b)
+        }
+      });
+      res && this._getHeader(res[0].Marks.length);
     })
   }
 

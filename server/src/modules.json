@@ -14,5 +14,9 @@
     "course": {
         "path": "d:/.temp/apps/course",
         "entryPoint": "index.html"
+    },
+    "admin": {
+        "path": "d:/.temp/apps/admin",
+        "entryPoint": "index.html"
     }
 }

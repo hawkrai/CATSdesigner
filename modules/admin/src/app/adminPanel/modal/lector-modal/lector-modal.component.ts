@@ -30,14 +30,13 @@ export class LectorModalComponent implements OnInit {
   ngOnInit(): void {
     const professor = this.data;
 
-    console.log(this.data);
-
     this.form = this.formBuilder.group({
       Username: new FormControl( professor.Username,
-        [Validators.required, Validators.minLength(6),
-          Validators.pattern('^[a-z0-9_.-]{3,30}$')], ValidateEmailNotTaken.createValidator(this.accountService)),
+        [Validators.required, Validators.minLength(3),
+          Validators.pattern('^[A-Za-z0-9_.-]{3,30}$')], ValidateEmailNotTaken.createValidator(this.accountService)),
       Password: new FormControl( professor.Password,
-        [Validators.required, Validators.minLength(6), Validators.maxLength(30), this.passwordValidator]),
+        [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z0-9]{6,30}$'),
+        Validators.maxLength(30), this.passwordValidator]),
       ConfirmPassword: new FormControl(professor.ConfirmPassword),
       Surname: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       Name: new FormControl('', [Validators.required, Validators.maxLength(50)]),

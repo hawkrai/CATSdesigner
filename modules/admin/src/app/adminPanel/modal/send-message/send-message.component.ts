@@ -26,7 +26,6 @@ export class SendMessageComponent implements OnInit {
   removable = true;
 
   ngOnInit() {
-    console.log(this.data);
     this.form = this.formBuilder.group({
       users: new FormControl(this.data.user),
       theme: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30)]),
@@ -104,7 +103,8 @@ export class SendMessageComponent implements OnInit {
   sendData() {
     const controls = this.form.controls;
     const users = this.selectedUsers.map((item) => item.value);
-    this.messageService.saveMessage(controls.theme.value, controls.text.value, users, this.file).subscribe(
+    console.log(users, this.files);
+    this.messageService.saveMessage(controls.theme.value, controls.text.value, users, this.files).subscribe(
       result => {
         console.log(result);
       },

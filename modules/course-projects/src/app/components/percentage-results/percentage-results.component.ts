@@ -115,7 +115,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         mark: pr.Mark !== '-' ? pr.Mark : null,
         min: 0,
         max: 100,
-        regex: '^\\d*$',
+        regex: '^[0-9]*$',
         errorMsg: 'Введите число от 0 до 100',
         label: 'Результат',
         symbol: '%',
@@ -145,22 +145,29 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   setMark(student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
-      width: '200px',
+      width: '500px',
       data: {
         mark: student.Mark !== '-' ? student.Mark : null,
         min: 1,
         max: 10,
-        regex: '^\\d*$',
+        regex: '^[0-9]*$',
         errorMsg: 'Введите число от 1 до 10',
         label: 'Оценка',
         notEmpty: true,
-        total: true
+        total: true,
+        lecturer: student.LecturerName ? student.LecturerName : student.Lecturer,
+        date: student.MarkDate,
+        comment: student.Comment
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.mark != null && result.mark !== '') {
-        this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark)
+        const date = new Date(result.date);
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+        const dateString = (date.getDay() < 10 ? '0' : '') + date.getDay() + '.' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() +
+          '.' + date.getFullYear();
+        this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark, result.lecturer, result.comment, dateString)
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Оценка успешно сохранена');

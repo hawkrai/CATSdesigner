@@ -27,7 +27,6 @@ export class EditLectorComponent implements OnInit {
     const professor = this.data;
     this.loadGroup();
 
-    console.log(professor);
     this.form = this.formBuilder.group({
       Name: new FormControl(professor.FirstName, [Validators.required, Validators.maxLength(50)]),
       Surname: new FormControl(professor.LastName, [Validators.required, Validators.maxLength(50)]),
@@ -76,7 +75,7 @@ export class EditLectorComponent implements OnInit {
     object.Surname = this.form.controls.Surname.value;
     object.Patronymic = this.form.controls.Patronymic.value || '';
     object.UserName = professor.Login;
-    object.IsActive = professor.IsActive ? true : false;
+    object.IsActive = professor.IsActive !== 'Удален';
     object.Email = this.form.controls.Email.value;
     object.SeletectedGroupIds = this.form.controls.Groups.value || [];
     object.Groups = this.form.controls.Groups.value || [];

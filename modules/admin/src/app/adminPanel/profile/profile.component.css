@@ -4,6 +4,12 @@
     display: table;
 }
 
+.avatar {
+    justify-content: center;
+    margin: auto 0;
+    display: flex;
+}
+
 mat-card-content {
     margin-top: 20px;
     text-align: center;
@@ -11,7 +17,7 @@ mat-card-content {
 
 .project-container {
     width: 44%;
-    height: 270px;
+    height: 370px;
     overflow: auto;
     padding: 30px;
     margin: 20px;

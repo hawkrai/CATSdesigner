@@ -32,6 +32,7 @@ const proxyServiceOptions = {
   changeOrigin: true,
   pathRewrite: {
     '^/subject/Services': 'Services', // rewrite path
+    '^/course/Services': 'Services', // rewrite path
     '^/Services': 'Services', // rewrite path
   },
 }
@@ -65,14 +66,35 @@ const proxyApigOptions = {
   changeOrigin: true,
   pathRewrite: {
     '^/course/api': 'api', // rewrite path
+    '^/subject/api': 'api', // rewrite path
   }
 }
+
+const proxyAdmingOptions = { 
+  target: targetDomain, 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/Administration': 'Administration', // rewrite path
+  }
+}
+
+const proxySubjectOptions = { 
+  target: targetDomain, 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/subject/Subject': 'Subject', // rewrite path
+  }
+}
+
+
 
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
 app.use('*/TestPassing/*', createProxyMiddleware(proxyTestPassingOptions));
 app.use('*/Tests/*', createProxyMiddleware(proxyTestOptions));
 app.use('*/api/*', createProxyMiddleware(proxyApigOptions));
+app.use('*/Administration/*', createProxyMiddleware(proxyAdmingOptions));
+app.use('*/subject/Subject/*', createProxyMiddleware(proxySubjectOptions));
 
 app.get('*', (req,res) => {
   let url = req.url;
