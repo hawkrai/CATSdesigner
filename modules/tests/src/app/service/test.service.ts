@@ -60,8 +60,8 @@ export class TestService {
     return this.http.patch<void>("/Tests/OrderTests/", newOrder);
   }
 
-  saveTest(test: Test): Observable<void> {
-    return this.http.post<void>("/Tests/SaveTest", test);
+  saveTest(test: Test): Observable<any> {
+    return this.http.post<any>("/Tests/SaveTest", test);
   }
 
   saveQuestion(question: Question): Observable<void> {

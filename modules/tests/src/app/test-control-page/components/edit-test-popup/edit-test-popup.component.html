@@ -1,11 +1,11 @@
 <ng-container *ngIf="editingTest;else loading">
-  <h1 mat-dialog-title class="popup-container">{{editingTest.Title ? editingTest.Title : 'Создание теста'}}</h1>
+  <h1 mat-dialog-title class="popup-container">{{!this.newTest ? 'Редактирование теста' : 'Создание теста'}}</h1>
   <form [formGroup]="formGroup">
   <div mat-dialog-content>
     <mat-form-field>
       <input matInput formControlName="title" [placeholder]="'Название теста'" [value]="editingTest.Title ? editingTest.Title : ''"
              (change)="writeTitle($event, 'Title')">
-      <mat-error *ngIf="formGroup.controls.title.hasError('maxLength')">
+      <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
         {{"Длина превышает 255 символов"}}
       </mat-error>
       <mat-error *ngIf="formGroup.controls.title.hasError('required')">
@@ -20,7 +20,7 @@
                 rows="10"
                 formControlName="description"
                 (change)="writeTitle($event, 'Description')"></textarea>
-      <mat-error *ngIf="formGroup.controls.description.hasError('maxLength')">
+      <mat-error *ngIf="formGroup.controls.description.hasError('maxlength')">
         {{"Длина превышает 1000 символов"}}
       </mat-error>
     </mat-form-field>
@@ -40,7 +40,7 @@
       <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('required')">
         {{"Введите количество вопросов"}}
       </mat-error>
-      <mat-hint>Количество вопросов в каждом тестовом наборе. Для каждого студента, выбирается случайным образом в разной последовательности</mat-hint>
+      <mat-hint>Количество вопросов в каждом тестовом наборе. Для каждого студента выбирается случайным образом в разной последовательности</mat-hint>
     </mat-form-field>
   </div>
   <div mat-dialog-content class="edit-test-time">
