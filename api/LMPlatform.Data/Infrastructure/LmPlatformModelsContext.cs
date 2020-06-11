@@ -251,6 +251,16 @@ namespace LMPlatform.Data.Infrastructure
                 .WithMany()
                 .WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<SubjectNews>()
+                .HasMany(s => s.Attachments)
+                .WithOptional(s => s.SubjectNews)
+                .HasForeignKey(a => a.SubjectNewsId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Attachment>()
+                .Property(a => a.SubjectNewsId)
+                .HasColumnName("SubjectNews_Id");
+
             modelBuilder.Entity<Membership>()
               .HasMany<Role>(r => r.Roles)
               .WithMany(u => u.Members)
