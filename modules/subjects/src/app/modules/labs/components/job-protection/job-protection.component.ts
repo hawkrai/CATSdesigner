@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChildren} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, ViewChildren} from '@angular/core';
 import {LabsService} from '../../../../services/labs/labs.service';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
@@ -20,6 +20,7 @@ import {filter} from 'rxjs/operators';
 export class JobProtectionComponent implements OnInit {
 
   @Input() teacher: boolean;
+  @Input() refresh: EventEmitter<any>;
 
   public files;
   public students;
@@ -39,16 +40,25 @@ export class JobProtectionComponent implements OnInit {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
       this.refreshDate();
+    });
+
+    let date = new Date();
+    this.refresh.subscribe(res => {
+      if (this.subjectId) {
+        this.students = null;
+        this.refreshDate(date);
+      }
+      date = res;
     })
   }
 
-  refreshDate() {
+  refreshDate(date?) {
     if (this.teacher) {
       this.store.pipe(select(getCurrentGroup))
         .pipe(filter(group => !!group))
         .subscribe(group => {
           this.labService.getAllStudentFilesLab(this.subjectId, group.groupId).subscribe(students => {
-            this.students = students;
+            this.students = date ? this.setPriority(date, students) : students;
             students.forEach(student => {
               if (!this.numberSubGroups.includes(student.SubGroup)) {
                 this.numberSubGroups.push(student.SubGroup);
@@ -70,10 +80,22 @@ export class JobProtectionComponent implements OnInit {
   }
 
   downloadFile(attachment) {
-    console.log(attachment);
     window.open('http://localhost:8080/api/Upload?fileName=' + attachment.PathName + '//' + attachment.FileName)
   }
 
+  setPriority(date, student) {
+    student.map(student => {
+      let isNew = false;
+      student.FileLabs.map(file => {
+        if (new Date(file.Date) > date) {
+          file.isNew = true;
+          isNew = true;
+        }
+      });
+      student.isNew = isNew;
+    });
+    return student;
+  }
 
   addLab(file?) {
     let body = {comments: '', attachments: []};

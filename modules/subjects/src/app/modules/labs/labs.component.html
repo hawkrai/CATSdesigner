@@ -65,7 +65,7 @@
   <div class="labs-component__body">
     <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4 || (tab === 5 && teacher)">
       <mat-form-field>
-        <mat-select [value]="groups ? groups[0].groupId : ''">
+        <mat-select [value]="groups.length ? groups[0].groupId : ''">
           <mat-option *ngFor="let group of groups"
                       (onSelectionChange)="_selectedGroup($event)"
                       [value]="group.groupId"
@@ -74,9 +74,25 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <button *ngIf="tab === 5"
+              mat-icon-button
+              color="primary"
+              matTooltip="Скачать архивом"
+              (click)="downloadAll()"
+      >
+        <mat-icon>get_app</mat-icon>
+      </button>
       <div class="_excel-file" *ngIf="(tab === 3 || tab === 4) && teacher" (click)="getExcelFile()">
         <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
       </div>
+      <button *ngIf="tab === 5"
+              mat-icon-button
+              color="primary"
+              matTooltip="Обновить данные"
+              (click)="_refreshJobProtection()"
+      >
+        <mat-icon>cached</mat-icon>
+      </button>
       <mat-slide-toggle *ngIf="tab !== 2"
                         class="example-margin"
                         [color]="'primary'"
@@ -90,6 +106,6 @@
     <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>
     <app-visit-statistics *ngIf="tab === 3 && selectedGroup" [teacher]="teacher"></app-visit-statistics>
     <app-results *ngIf="tab === 4 && selectedGroup" [teacher]="teacher"></app-results>
-    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>
+    <app-job-protection *ngIf="tab === 5" [teacher]="teacher" [refresh]="refreshJobProtection"></app-job-protection>
   </div>
 </div>

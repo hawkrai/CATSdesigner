@@ -1,4 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Linq;
+using System.Runtime.Serialization;
+using LMPlatform.UI.Services.Modules.Files;
+using LMPlatform.UI.Services.Modules.Lectures;
 
 namespace LMPlatform.UI.Services.Modules.News
 {
@@ -19,6 +22,13 @@ namespace LMPlatform.UI.Services.Modules.News
             SubjectId = news.SubjectId;
             DateCreate = news.EditDate.ToShortDateString();
 	        Disabled = news.Disabled;
+            Attachments = news.Attachments.Select(a => new AttachmentViewData
+            {
+                AttachmentType = a.AttachmentType,
+                FileName = a.FileName,
+                Name = a.Name,
+                PathName = a.PathName
+            }).ToArray();
         }
 
         [DataMember]
@@ -37,6 +47,9 @@ namespace LMPlatform.UI.Services.Modules.News
         public string DateCreate { get; set; }
 
 		[DataMember]
-		public bool Disabled { get; set; }
+        public bool Disabled { get; set; }
+
+        [DataMember]
+        public AttachmentViewData[] Attachments { get; set; }
     }
 }

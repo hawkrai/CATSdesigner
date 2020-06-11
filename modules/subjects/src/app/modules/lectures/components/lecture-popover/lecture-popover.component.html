@@ -6,12 +6,12 @@
       <textarea required class="lectures-component__news-text" name="body" matInput [(ngModel)]="data.model.theme"></textarea>
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <mat-label>Количество часов(1-99)</mat-label>
-      <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
+      <mat-label>Порядковый номер лекций</mat-label>
+      <input name="order" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <mat-label>Порядок</mat-label>
-      <input name="order" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
+      <mat-label>Количество часов(1-99)</mat-label>
+      <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
     </mat-form-field>
     <h4 class="attachment-text mat-typography">Прикрепленный материал</h4>
     <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
