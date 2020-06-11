@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {Group} from "../../models/group.model";
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {select, Store} from '@ngrx/store';
@@ -22,6 +22,8 @@ export class LabsComponent implements OnInit {
   private subjectId: string;
   public teacher = false;
   public detachedGroup = false;
+
+  public refreshJobProtection = new EventEmitter();
 
   constructor(private groupsService: GroupsService,
               private store: Store<IAppState>) {
@@ -66,6 +68,10 @@ export class LabsComponent implements OnInit {
     }
   }
 
+  downloadAll() {
+    location.href = 'http://localhost:8080/Subject/GetZipLabs?id=' +  this.selectedGroup.groupId + '&subjectId=' + this.subjectId;
+  }
+
   getExcelFile() {
     this.store.pipe(select(getCurrentGroup))
       .pipe(
@@ -82,5 +88,7 @@ export class LabsComponent implements OnInit {
       });
   }
 
-
+  _refreshJobProtection() {
+    this.refreshJobProtection.emit(new Date());
+  }
 }
