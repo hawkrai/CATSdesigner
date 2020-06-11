@@ -1,0 +1,39 @@
+<div class="subject-lector" *ngIf="joinedLectors && allLectors">
+  <h1 mat-dialog-title>{{data.title}}</h1>
+  <mat-form-field class="subject-lector__body">
+    <mat-select [value]="selectedLector ? selectedLector.LectorId : ''">
+      <mat-option *ngFor="let lector of allLectors"
+                  (onSelectionChange)="_selectedLector($event)"
+                  [value]="lector.LectorId"
+      >
+        {{lector.FullName}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div mat-dialog-actions>
+    <button mat-raised-button
+            class="subject-lector__action"
+            color="primary"
+            [disabled]="!selectedLector"
+            (click)="joinedLector()">Присоединить</button>
+  </div>
+  <p mat-dialog-title class="subject-lector__table-title" *ngIf="joinedLectors.length">Преподаватели</p>
+  <div class="mdc-data-table example-container mat-elevation-z8">
+    <table class="mdc-data-table__table">
+      <tbody class="mdc-data-table__content">
+      <tr class="mdc-data-table__row" *ngFor="let joinedLector of joinedLectors">
+        <td class="mdc-data-table__cell">{{ joinedLector.FullName }}</td>
+        <td class="mdc-data-table__cell subject-lector__table-action">
+          <button mat-icon-button color="primary" matTooltip="Открепить преподавателя" (click)="deletePopover(joinedLector)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="onClick()">Закрыть</button>
+  </div>
+</div>

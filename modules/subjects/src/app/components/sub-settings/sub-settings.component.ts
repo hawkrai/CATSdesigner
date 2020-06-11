@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SubgroupingComponent} from '../subgrouping/subgrouping.component';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
-import {SubjectManagementComponent} from '../subject-managment/subject-management.component';
+import {SubjectLectorComponent} from '../../modules/subject/subject-lector/subject-lector.component';
 
 @Component({
   selector: 'sub-group-page',
@@ -14,7 +14,7 @@ export class SubSettingsComponent implements OnInit {
 
   constructor(public dialog: MatDialog) { }
 
-  ngOnInit(): void {      
+  ngOnInit(): void {
   }
 
   supgrouping() {
@@ -22,18 +22,16 @@ export class SubSettingsComponent implements OnInit {
     let that = this;
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        
+
       }
     });
   }
 
-  subjectEdit() {
-    const dialogRef = this.openDialog(null, SubjectManagementComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-
-      }
-    });
+  addProfes() {
+    const dialogData: DialogData = {
+      title: 'Присоединение преподавателя к предмету'
+    };
+    this.openDialog(dialogData, SubjectLectorComponent);
   }
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {

@@ -24,12 +24,11 @@ import {LecturesEffects} from './store/effects/lectures.effects';
 import {LabsEffects} from './store/effects/labs.effects';
 import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
 import {FileDownloadPopoverComponent} from './shared/file-download-popover/file-download-popover.component';
-import {SubjectManagementComponent} from './components/subject-managment/subject-management.component';
-import {ColorPickerModule} from 'ngx-color-picker';
 import {FilesModule} from './modules/files/files.module';
 import {PracticalModule} from './modules/practical/practical.module';
 import {SubgroupingComponent} from './components/subgrouping/subgrouping.component';
 import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
+import {SubjectModule} from './modules/subject/subject.module';
 
 @NgModule({
   declarations: [
@@ -39,7 +38,6 @@ import {SubSettingsComponent} from './components/sub-settings/sub-settings.compo
     VisitDatePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
-    SubjectManagementComponent,
     SubgroupingComponent,
     SubSettingsComponent
   ],
@@ -54,8 +52,8 @@ import {SubSettingsComponent} from './components/sub-settings/sub-settings.compo
     MatModule,
     FormsModule,
     FilesModule,
+    SubjectModule,
     PracticalModule,
-    ColorPickerModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects]),
@@ -66,7 +64,6 @@ import {SubSettingsComponent} from './components/sub-settings/sub-settings.compo
     VisitDatePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
-    SubjectManagementComponent,
     SubgroupingComponent
   ],
   providers: [DatePipe],

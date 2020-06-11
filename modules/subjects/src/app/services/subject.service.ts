@@ -26,6 +26,34 @@ export class SubjectService {
     return this.http.post('Subject/SubGroupsChangeGroup', {subjectId, groupId});
   }
 
+  public getSubjects(): Observable<any> {
+    return this.http.get('Subject/Subjects');
+  }
+
+  public deleteSubjects(subjectId: string): Observable<any> {
+    return this.http.get('Subject/DeleteSubject/' + subjectId);
+  }
+
+  public getCreateModel(): Observable<any> {
+    return this.http.get('Subject/Create');
+  }
+
+  public getJoinedLector(subjectId: string): Observable<any> {
+    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId);
+  }
+
+  public joinedLector(subjectId: string, lectorId: string): Observable<any> {
+    return this.http.post('Services/CoreService.svc/JoinLector', {subjectId, lectorId});
+  }
+
+  public disjoinLector(subjectId: string, lectorId: string): Observable<any> {
+    return this.http.post('Services/CoreService.svc/DisjoinLector', {subjectId, lectorId});
+  }
+
+  public getNoAdjointLectors(subjectId: string): Observable<any> {
+    return this.http.get('Services/CoreService.svc/GetNoAdjointLectors/' + subjectId);
+  }
+
   public saveSubGroup(body: any): Observable<any> {
     const  form = new FormData();
     form.append('subjectId', body.subjectId);

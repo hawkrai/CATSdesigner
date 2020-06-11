@@ -31,12 +31,12 @@
 
     <h1 mat-dialog-title class="mat-typography title">Группы</h1>
     <mat-form-field class="example-full-width">
-      <mat-label>Groups</mat-label>
+      <mat-label>Группы</mat-label>
       <mat-select [(value)]="selectedGroup.id" multiple>
         <mat-select-trigger>
-          {{selectedGroup.id ? this.getSelectedValue(selectedGroup.id[0]) : ''}}
+          {{selectedGroup.id.length ? this.getSelectedValue(selectedGroup.id[0]) : ''}}
           <span *ngIf="selectedGroup.id?.length > 1" class="example-additional-selection">
-        (+{{selectedGroup.id.length - 1}} {{selectedGroup.id?.length === 2 ? 'other' : 'others'}})
+        (+{{selectedGroup.id.length - 1}} {{selectedGroup.id?.length === 2 ? 'другой' : 'другие'}})
       </span>
         </mat-select-trigger>
         <mat-option *ngFor="let group of groupList"
