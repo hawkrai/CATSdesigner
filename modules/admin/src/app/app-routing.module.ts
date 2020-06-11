@@ -26,13 +26,7 @@ const routes: Routes = [
   {
     path: 'admin', component: AdminGenerateComponent, children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
-      { path: 'main', component: MainComponent},
-      { path: 'lectors', component: LectorsComponent },
-      { path: 'students', component: StudentsComponent },
-      { path: 'groups', component: GroupComponent },
-      { path: 'files', component: FilesComponent },
-      { path: 'messages', component: MessagesComponent },
-      { path: 'profile/:login', component: ProfileComponent },
+      { path: 'main', component: MainComponent}
     ]
   },
   {

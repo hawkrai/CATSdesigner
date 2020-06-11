@@ -8,7 +8,7 @@ import { LabResponse } from '../model/lecture';
 })
 export class LabService {
 
-    api = '/Services/Labs/LabsService.svc';
+    api = '/api/Services/Labs/LabsService.svc';
 
     constructor(private http: HttpClient) {
     }

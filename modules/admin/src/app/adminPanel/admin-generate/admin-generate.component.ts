@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-admin-generate',
-  templateUrl: './admin-generate.component.html',
-  styleUrls: ['./admin-generate.component.css']
+  templateUrl: './admin-generate.component.html'
 })
 export class AdminGenerateComponent implements OnInit {
 

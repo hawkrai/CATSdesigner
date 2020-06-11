@@ -10,7 +10,7 @@ import {RegisterModel} from '../model/student';
 })
 export class AccountService {
 
-    api = '/Account/';
+    api = '/api/Account/';
 
     constructor(private http: HttpClient) {
     }

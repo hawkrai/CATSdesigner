@@ -8,7 +8,7 @@ import {Professor, EditProfessor, AddProfessor} from '../model/professor';
 })
 export class ProfessorService {
 
-    api = '/Administration/';
+    api = '/api/Administration/';
 
     constructor(private http: HttpClient) {
     }

@@ -8,7 +8,7 @@ import { ProfileProject, ProfileInfoSubject, ProfileInfo } from '../model/profil
 })
 export class ProfileService {
 
-    api = '/Profile/';
+    api = '/api/Profile/';
 
     constructor(private http: HttpClient) {
     }

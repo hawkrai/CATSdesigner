@@ -1,2 +1,17 @@
-<app-navbar></app-navbar>
-<router-outlet></router-outlet>
+<mat-tab-group animationDuration="1000ms">
+  <mat-tab label="Активность пользователей">
+    <app-main></app-main>
+  </mat-tab>
+  <mat-tab label="Преподаватели">
+    <app-lectors></app-lectors>
+  </mat-tab>
+  <mat-tab label="Студенты">
+    <app-students></app-students>
+  </mat-tab>
+  <mat-tab label="Группы">
+    <app-group></app-group>
+  </mat-tab>
+  <mat-tab label="Файлы">
+    <app-files></app-files>
+  </mat-tab>
+</mat-tab-group>
