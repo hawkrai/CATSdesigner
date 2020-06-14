@@ -6,9 +6,9 @@ import {AccountService} from '../service/account.service';
 import {RegisterModel} from '../model/student';
 import {GroupService} from '../service/group.service';
 import {MatDialog} from '@angular/material/dialog';
-import {SuccessMessageComponent} from '../success-message/success-message.component';
 import {ValidateEmailNotTaken} from './ValidateEmailNotTaken';
 import {Router} from '@angular/router';
+import {MessageComponent} from "../component/message/message.component";
 
 @Component({
   selector: 'app-signup',
@@ -95,7 +95,7 @@ export class SignupComponent implements OnInit {
     resultObject.QuestionId = controls.SecretId.value;
     this.accountService.register(resultObject).subscribe(
       () => {
-        this.dialog.open(SuccessMessageComponent, {
+        this.dialog.open(MessageComponent, {
           data: 'Пользователь успешно зарегистрирован.',
           position: {
             bottom: '0px',
@@ -104,7 +104,7 @@ export class SignupComponent implements OnInit {
         });
         this.route.navigate(['/login']);
       }, () => {
-        this.dialog.open(SuccessMessageComponent, {
+        this.dialog.open(MessageComponent, {
           data: 'Пользователь успешно зарегистрирован.',
           position: {
             bottom: '0px',

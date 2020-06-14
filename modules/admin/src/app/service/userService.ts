@@ -10,7 +10,7 @@ import { SubjectDepend } from '../model/subject.response';
 })
 export class UserService {
 
-    api = '/Administration/';
+    api = '/api/Administration/';
 
     constructor(private http: HttpClient) {
     }

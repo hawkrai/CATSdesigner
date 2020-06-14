@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using Application.Core.Data;
 
@@ -45,5 +46,7 @@ namespace LMPlatform.Models
             get;
             set;
         }
+
+        public ICollection<Attachment> Attachments { get; set; }
     }
 }

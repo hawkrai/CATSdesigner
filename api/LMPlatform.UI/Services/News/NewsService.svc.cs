@@ -22,7 +22,8 @@ namespace LMPlatform.UI.Services.News
             {
 	            var id = int.Parse(subjectId);
 	            var query = new Query<Subject>(e => e.Id == id)
-		            .Include(e => e.SubjectNewses);
+		            .Include(e => e.SubjectNewses)
+                    .Include(e => e.SubjectNewses.Select(sn => sn.Attachments));
                 var model = SubjectManagementService.GetSubject(query).SubjectNewses
 	                .OrderByDescending(e => e.EditDate)
 	                .Select(e => new NewsViewData(e))
@@ -89,7 +90,7 @@ namespace LMPlatform.UI.Services.News
 			}
 	    }
 
-	    public ResultViewData Save(int subjectId, int id, string title, string body, bool disabled, bool isOldDate)
+	    public ResultViewData Save(int subjectId, int id, string title, string body, bool disabled, bool isOldDate, Attachment[] attachments)
         {
             try
             {
@@ -115,7 +116,8 @@ namespace LMPlatform.UI.Services.News
                     Body = body,
                     EditDate = date,
                     Title = title,
-					Disabled = disabled
+					Disabled = disabled,
+                    Attachments = attachments
                 };
                 SubjectManagementService.SaveNews(model);
                 return new ResultViewData
