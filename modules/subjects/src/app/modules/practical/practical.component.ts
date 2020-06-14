@@ -25,6 +25,7 @@ export class PracticalComponent implements OnInit {
               private store: Store<IAppState>) { }
 
   ngOnInit() {
+    this.groupsService.loadDate();
     this.store.pipe(select(getUser)).subscribe(user => {
       if (user && user.role.toLowerCase() === 'lector') {
         this.teacher = true;

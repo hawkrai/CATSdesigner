@@ -30,6 +30,8 @@ export class LabsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.groupsService.loadDate();
+
     this.store.pipe(select(getUser)).subscribe(user => {
       if (user && user.role.toLowerCase() === 'lector') {
         this.teacher = true;
