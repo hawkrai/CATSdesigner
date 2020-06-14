@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ContentLayoutComponent } from './layout/content-layout/content-layout.component';
 import { NoAuthGuard } from './core/no-auth.guard';
 import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 const routes: Routes = [
@@ -27,6 +28,10 @@ const routes: Routes = [
     ]
   },
   { path: 'login', component: LoginComponent },
+  { 
+    path: 'adminPanel', 
+    component: AdminComponent,
+  },
 ];
 
 @NgModule({

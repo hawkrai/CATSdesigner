@@ -4,6 +4,7 @@ import { SubjectComponent } from './pages/subject/subject.component';
 import { ViewerComponent } from './pages/viewer/viewer.component';
 import { SubjectsNavComponent } from '../../layout/subjects-nav/subjects-nav.component';
 import { NoAuthGuard } from '../../core/no-auth.guard';
+import { SubjectsComponent } from './pages/subjects/subjects.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,10 @@ export const routes: Routes = [
       {
         path: 'subject/:id',
         component: SubjectComponent
+      },
+      {
+        path: 'subjects',
+        component: SubjectsComponent
       }
     ]
   },
