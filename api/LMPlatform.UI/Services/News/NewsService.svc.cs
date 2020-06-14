@@ -36,7 +36,7 @@ namespace LMPlatform.UI.Services.News
 					Code = "200"
 				};
             }
-            catch
+            catch(Exception ex)
             {
                 return new NewsResult
 				{

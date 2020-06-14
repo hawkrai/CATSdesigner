@@ -3,15 +3,14 @@
         <img src="/assets/images/nav-logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted">
     </a>
     <span class="example-spacer"></span>
-    <div>
+    <div *ngIf="!isAdmin">
       <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
-      <a *ngIf="isLector" mat-button [routerLink]="'/subjects-control'">Управление предметами</a>
-      <a *ngIf="isLector" mat-button [routerLink]="'/modules'">Модули</a>
-      <a *ngIf="isLector" mat-button [routerLink]="'/settings'">Настройки</a>
     </div> 
-    
+    <a *ngIf="isLector" mat-button [routerLink]="'/emails'">Дипломное проектирование</a>
+
+
     <div class="flex-spacer"></div>
-    <mat-form-field class="search-form" appearance="legacy">
+    <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy">
         <input matInput type="text" placeholder="Поиск">
         <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
@@ -22,7 +21,7 @@
         <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-        <button mat-menu-item>
+        <button *ngIf="!isAdmin" mat-menu-item>
         <mat-icon>supervised_user_circle</mat-icon>
         <span>Профиль</span>
     </button>

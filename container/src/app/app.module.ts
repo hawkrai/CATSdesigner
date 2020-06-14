@@ -14,6 +14,7 @@ import { CoreModule } from './core/core.module';
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 import { LayoutService } from './layout/layout.service';
 import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { LoginComponent } from './login/login.component';
     NavComponent,
     FooterComponent,
     SubjectsNavComponent,
-    LoginComponent
+    LoginComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

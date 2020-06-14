@@ -31,6 +31,9 @@
             <a mat-menu-item [routerLink]="'/web/viewer/subject/3048'"> Модульное тестирование (заочники) </a>
             <a mat-menu-item [routerLink]="'/web/viewer/subject/4063'"> Надежность ПО (заочники) </a>
             <a mat-menu-item [routerLink]="'/web/viewer/subject/4066'"> Тестирование веб-ориентированных приложений </a> -->
-    </mat-menu>    
+    </mat-menu>
+
+    <div class="flex-spacer"></div>
+    <button *ngIf="isLector" (click)="onSubjects()" mat-raised-button color="warn">Управление предметами</button>   
 </mat-toolbar>
 <router-outlet></router-outlet>
