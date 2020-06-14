@@ -32,7 +32,7 @@ export class SubjectLectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.data.model.subjectId) {
+    if (this.data.model && this.data.model.subjectId) {
       this.subjectId = this.data.model.subjectId;
       this.setLectors();
     } else {
