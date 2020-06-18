@@ -5,4 +5,5 @@ export class News {
   dateCreate: string;
   disabled: boolean;
   subjectId: string;
+  attachments?: any[];
 }

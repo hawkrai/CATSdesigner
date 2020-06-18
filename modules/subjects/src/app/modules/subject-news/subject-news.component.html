@@ -24,6 +24,10 @@
         </div>
       </div>
       <div class="subject-news-component__news-content" [innerHtml]="oneNews.body"></div>
+      <div *ngIf="oneNews.attachments.length">
+        <h4 class="attachment-text mat-typography">Файлы</h4>
+        <a class="attachment" *ngFor="let file of oneNews.attachments" (click)="_filesDownload(file)">{{file.Name}}</a>
+      </div>
       <p class="subject-news-component__news-date">{{oneNews.dateCreate}}</p>
     </div>
   </div>
