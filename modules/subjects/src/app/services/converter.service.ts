@@ -24,6 +24,7 @@ export class ConverterService {
     newNews.dateCreate = news.DateCreate;
     newNews.disabled = news.Disabled;
     newNews.subjectId = news.SubjectId;
+    newNews.attachments = news.Attachments;
     return newNews;
   }
 
