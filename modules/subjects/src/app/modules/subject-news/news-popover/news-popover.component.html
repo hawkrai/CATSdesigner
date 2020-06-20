@@ -1,10 +1,10 @@
 <div class="subject-news-component">
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div class="subject-news-component__popover" #popoverContent>
-  <form class="example-form">
+  <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
       <mat-label>Название Новости</mat-label>
-      <input name="title" required matInput placeholder="Название" [(ngModel)]="data.model.title">
+      <input name="title" maxlength="1000" required matInput placeholder="Название" [(ngModel)]="data.model.title">
     </mat-form-field>
 
     <mat-label>Текст Новости</mat-label>
@@ -73,7 +73,7 @@
   <button mat-raised-button
           (click)="onSave(data.model || data.body)"
           color="primary"
-          [disabled]="!data.model.title"
+          [disabled]="!formElement.checkValidity()"
   >
     {{data.buttonText}}
   </button>

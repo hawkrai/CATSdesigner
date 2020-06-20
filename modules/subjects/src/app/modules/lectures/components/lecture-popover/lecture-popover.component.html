@@ -1,17 +1,17 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content class="lectures-component__popover" #popoverContent>
-  <form class="example-form">
+  <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
       <mat-label>Тема лекции</mat-label>
-      <textarea required class="lectures-component__news-text" name="body" matInput [(ngModel)]="data.model.theme"></textarea>
+      <textarea required class="lectures-component__news-text" maxlength="256" name="body" matInput [(ngModel)]="data.model.theme"></textarea>
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Порядковый номер лекций</mat-label>
-      <input name="order" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
+      <input name="order" min="1" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Количество часов(1-99)</mat-label>
-      <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
+      <input name="duration" min="1" max="99" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
     </mat-form-field>
     <h4 class="attachment-text mat-typography">Прикрепленный материал</h4>
     <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
@@ -57,6 +57,6 @@
   <button mat-raised-button
           (click)="onSave(data.model || data.body)"
           color="primary"
-          [disabled]="!(data.model.theme && data.model.duration)"
+          [disabled]="!formElement.checkValidity()"
   >{{data.buttonText}}</button>
 </div>

@@ -1,14 +1,14 @@
 <div class="subject-management" *ngIf="subject">
   <h1 mat-dialog-title>{{subject.Title}}</h1>
   <div>
-    <form class="example-form">
+    <form class="example-form" #formElement>
       <mat-form-field class="example-full-width">
         <mat-label>Название предмета</mat-label>
-        <input required name="name" matInput [(ngModel)]="subject.DisplayName">
+        <input required name="name" maxlength="256" matInput [(ngModel)]="subject.DisplayName">
       </mat-form-field>
       <mat-form-field class="example-full-width">
         <mat-label>Аббревиатура</mat-label>
-        <input required name="abbreviation" matInput [(ngModel)]="subject.ShortName">
+        <input required maxlength="10" name="abbreviation" matInput [(ngModel)]="subject.ShortName">
       </mat-form-field>
     </form>
 
@@ -50,6 +50,6 @@
   </div>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onClick()">Отмена</button>
-    <button mat-raised-button color="primary" (click)="save()">Сохранить</button>
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="!formElement.checkValidity()">Сохранить</button>
   </div>
 </div>

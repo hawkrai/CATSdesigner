@@ -32,7 +32,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class LabsMarkPopoverComponent implements OnInit{
+export class LabsMarkPopoverComponent implements OnInit {
 
   date = new FormControl(new Date());
 
