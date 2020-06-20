@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Inject, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../../models/dialog-data.model';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -20,6 +20,7 @@ export class NewsPopoverComponent implements AfterViewInit{
     public dialogRef: MatDialogRef<NewsPopoverComponent>,
     private fileService: FileService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dialogRef.disableClose = true;
   }
 
   onClick(): void {

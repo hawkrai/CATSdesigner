@@ -19,6 +19,7 @@ export class SubjectManagementComponent implements OnInit {
     public dialogRef: MatDialogRef<SubjectManagementComponent>,
     public subjectService: SubjectService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dialogRef.disableClose = true;
   }
 
   onClick(): void {

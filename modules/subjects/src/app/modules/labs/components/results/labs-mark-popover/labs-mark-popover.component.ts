@@ -40,6 +40,7 @@ export class LabsMarkPopoverComponent implements OnInit{
     public dialogRef: MatDialogRef<LabsMarkPopoverComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private datePipe: DatePipe) {
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

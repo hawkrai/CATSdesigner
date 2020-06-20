@@ -55,7 +55,6 @@ export class SubjectNewsComponent implements OnInit {
       )
       .subscribe(
         (news: News[]) => {
-          console.log(news)
           this.news = news;
         }
       )
