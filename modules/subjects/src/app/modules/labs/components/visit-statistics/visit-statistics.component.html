@@ -25,12 +25,24 @@
               (dblclick)="setVisitMarks(scheduleProtectionLab, i)">
             {{element.LabVisitingMark[i] && element.LabVisitingMark[i].Mark}}
             <div *ngIf="element.LabVisitingMark[i] && element.LabVisitingMark[i].Comment" class="comment">
-              <mat-icon class="comment-icon">chat_bubble</mat-icon>
+              <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
             </div>
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="_getSubGroupDisplayColumns(i)"></tr>
+
+        <ng-container *ngFor='let labName of header'
+                      matColumnDef="{{labName.head}}"
+        >
+          <th class="lab-name" mat-header-cell *matHeaderCellDef
+              [attr.colspan]="labName.length">
+            {{labName.text}}
+          </th>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumnsLab"></tr>
+
+        <tr mat-header-row class="date-header" *matHeaderRowDef="_getSubGroupDisplayColumns(i)"></tr>
         <tr mat-row *matRowDef="let row; columns: _getSubGroupDisplayColumns(i);"></tr>
       </table>
     </div>

@@ -9,7 +9,7 @@ export class MarkPropertyPipe implements PipeTransform {
     const markProperty = {mark: null, recommendedMark: null};
     const mark = value.Marks.find(res => res.LabId.toString() === args[0]);
     if (mark && mark.Mark) {
-      markProperty.mark = mark.Mark;
+      markProperty.mark = mark;
     } else {
       for (let i = 0; i < args[1].scheduleProtectionLabs.length; i++) {
         const calendar = args[1].scheduleProtectionLabs[i];

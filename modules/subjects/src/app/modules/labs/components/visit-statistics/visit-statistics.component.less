@@ -35,23 +35,46 @@
       padding-left: 10px;
     }
 
+    .mat-header-cell.mat-column-name {
+      text-align: center;
+    }
+
     .mat-column-position {
       padding-left: 10px;
       padding-right: 5px;
     }
 
-    tr.mat-header-row {
+    .mat-header-cell.mat-column-name, .mat-header-cell.mat-column-position {
+      border-top: none;
+      vertical-align: initial;
+      padding-top: 1.45%;
+    }
+
+    tr {
+      height: 36px;
+    }
+
+    .date-header {
       height: 86px;
     }
 
     td {
-      border-top: 1px solid rgba(0,0,0,.12);
+      border-top: 1px solid rgba(0, 0, 0, .12);
     }
 
     td, th {
-      border-right: 1px solid rgba(0,0,0,.12);
+      border-right: 1px solid rgba(0, 0, 0, .12);
       border-bottom: 0;
+      border-top: 1px solid rgba(0, 0, 0, .12);
     }
+
+    table {
+      border-top: none;
+    }
+  }
+
+  .lab-name {
+    text-align: center;
   }
 
   .comment {
