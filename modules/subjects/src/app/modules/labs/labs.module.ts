@@ -13,6 +13,9 @@ import {LabsMarkPopoverComponent} from './components/results/labs-mark-popover/l
 import {AddLabPopoverComponent} from './components/job-protection/add-lab-popover/add-lab-popover.component';
 import {SharedModule} from '../../shared/shared.module';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {ResultPipe} from './components/results/result.pipe/result.pipe';
+import {MarkPropertyPipe} from './components/results/mark-property.pipe/mark-property.pipe';
+import {VisitPipe} from './components/results/visit.pipe/visit.pipe';
 
 
 @NgModule({
@@ -25,7 +28,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     JobProtectionComponent,
     LabWorkPopoverComponent,
     LabsMarkPopoverComponent,
-    AddLabPopoverComponent
+    AddLabPopoverComponent,
+    ResultPipe,
+    MarkPropertyPipe,
+    VisitPipe
   ],
   entryComponents: [
     LabWorkPopoverComponent,

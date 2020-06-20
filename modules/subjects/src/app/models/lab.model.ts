@@ -20,7 +20,7 @@ export class ScheduleProtectionLabsRecomend {
 
 export class ScheduleProtectionLab {
   id: string;
-  date: Date;
+  date: string;
   subGroup: number;
   subGroupId: string;
 }

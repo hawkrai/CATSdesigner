@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<div class="results__popover" #popoverContent>
+<div class="results__popover" #popoverContent *ngIf="data">
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>Преподаватель</mat-label>
@@ -8,7 +8,7 @@
     <mat-form-field class="example-full-width">
       <mat-label>Выставьте отметку (от 0 до 10)</mat-label>
       <input name="title" matInput placeholder="Оценка" [(ngModel)]="data.body.mark">
-      <mat-hint>Рекомендуемая оценка 9</mat-hint>
+      <mat-hint *ngIf="data.model">Рекомендуемая оценка {{data.model}}</mat-hint>
     </mat-form-field>
     <mat-form-field class="date">
       <mat-label>Дата выставления</mat-label>

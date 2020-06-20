@@ -24,6 +24,9 @@
               style="text-align: center;"
               (dblclick)="setVisitMarks(scheduleProtectionLab, i)">
             {{element.LabVisitingMark[i] && element.LabVisitingMark[i].Mark}}
+            <div *ngIf="element.LabVisitingMark[i] && element.LabVisitingMark[i].Comment" class="comment">
+              <mat-icon class="comment-icon">chat_bubble</mat-icon>
+            </div>
           </td>
         </ng-container>
 
