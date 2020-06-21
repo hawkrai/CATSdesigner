@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SubjectService} from '../../services/subject.service';
 import {SubjectManagementComponent} from './subject-managment/subject-management.component';
 import {DialogData} from '../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {LabWorkPopoverComponent} from '../labs/components/labs-work/lab-work-popover/lab-work-popover.component';
 import {DeletePopoverComponent} from '../../shared/delete-popover/delete-popover.component';
 import {SubjectLectorComponent} from './subject-lector/subject-lector.component';
+import {SetSubject} from '../../store/actions/subject.actions';
+import {Store} from '@ngrx/store';
+import {IAppState} from '../../store/state/app.state';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-subject',
@@ -19,6 +22,8 @@ export class SubjectComponent implements OnInit {
   public displayedColumns = ['name', 'shortName', 'actions'];
 
   constructor(private subjectService: SubjectService,
+              private store: Store<IAppState>,
+              private router: Router,
               public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -70,6 +75,15 @@ export class SubjectComponent implements OnInit {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
+  }
+
+  setSubject(subject) {
+    const currentSubject = {id: subject.SubjectId, Name: subject.DisplayName};
+    if (currentSubject.id) {
+      this.store.dispatch(new SetSubject(currentSubject));
+      localStorage.setItem('currentSubject', JSON.stringify(currentSubject));
+      this.router.navigate(['/news']);
+    }
   }
 
 }
