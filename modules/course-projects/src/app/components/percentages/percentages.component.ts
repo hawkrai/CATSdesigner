@@ -100,7 +100,7 @@ export class PercentagesComponent implements OnInit {
         label: 'Удаление этапа процентовки',
         message: 'Вы действительно хотите удалить этап?',
         actionName: 'Удалить',
-        color: 'warn'
+        color: 'primary'
       }
     });
 

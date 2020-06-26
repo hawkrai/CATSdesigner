@@ -55,7 +55,7 @@ export class DefenseComponent implements OnInit {
             }
           });
       } else if (this.courseUser.IsLecturer) {
-        this.retrieveGroupsAndFiles();
+        this.retrieveGroupsAndFiles(false);
       }
     });
   }
@@ -75,25 +75,25 @@ export class DefenseComponent implements OnInit {
 
   groupStatusChange(event) {
     this.detachedGroup = event.checked;
-    this.retrieveGroupsAndFiles();
+    this.retrieveGroupsAndFiles(true);
   }
 
-  retrieveGroupsAndFiles() {
+  retrieveGroupsAndFiles(groupStatusChanged: boolean) {
     this.studentFiles = null;
     if (this.detachedGroup) {
       this.groupService.getDetachedGroups(this.subjectId).subscribe(res => {
-        this.processGroupsResponse(res);
+        this.processGroupsResponse(res, groupStatusChanged);
       });
     } else {
       this.groupService.getGroups(this.subjectId).subscribe(res => {
-        this.processGroupsResponse(res);
+        this.processGroupsResponse(res, groupStatusChanged);
       });
     }
   }
 
-  processGroupsResponse(res: any) {
+  processGroupsResponse(res: any, groupStatusChanged: boolean) {
     this.groups = res.Groups;
-    if (this.selectedGroup == null) {
+    if (this.selectedGroup == null || groupStatusChanged) {
       if (this.groups.length > 0) {
         this.selectedGroup = this.groups[0];
       } else {
@@ -170,7 +170,7 @@ export class DefenseComponent implements OnInit {
         label: 'Удаление работы',
         message: 'Вы действительно хотите удалить работу?',
         actionName: 'Удалить',
-        color: 'warn'
+        color: 'primary'
       }
     });
 
