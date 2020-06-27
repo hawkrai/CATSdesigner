@@ -1,18 +1,17 @@
 import {Component, ElementRef, OnInit, ViewChildren} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {News} from '../../models/news.model';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
 import {IAppState} from "../../store/state/app.state";
 import {select, Store} from '@ngrx/store';
 import {getSubjectId, getUser} from "../../store/selectors/subject.selector";
-import {getNews} from "../../store/selectors/news.selectors";
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {NewsPopoverComponent} from './news-popover/news-popover.component';
 import {NewsService} from '../../services/news/news.service';
 import {DialogData} from '../../models/dialog-data.model';
+import {Attachment} from '../../models/attachment.model';
 
 @Component({
   selector: 'app-subject-news',
@@ -45,7 +44,6 @@ export class SubjectNewsComponent implements OnInit {
     });
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => this.subjectId = subjectId);
 
-    // TODO: Load in all date
     this.newsService.loadData();
     this.refreshDate();
   }
@@ -57,7 +55,6 @@ export class SubjectNewsComponent implements OnInit {
       )
       .subscribe(
         (news: News[]) => {
-          console.log(news)
           this.news = news;
         }
       )
@@ -72,7 +69,7 @@ export class SubjectNewsComponent implements OnInit {
   }
 
   constructorNews(news?: News) {
-    const nowDate =  new Date().toISOString().split('T')[0].split('-').reverse().join('.');
+    const nowDate = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
     const newNews = {
       id: news ? news.id : '0',
       subjectId: this.subjectId,
@@ -80,10 +77,11 @@ export class SubjectNewsComponent implements OnInit {
       body: news ? news.body : '',
       disabled: news ? news.disabled : false,
       isOldDate: false,
-      dateCreate: news ? news.dateCreate: nowDate
+      dateCreate: news ? news.dateCreate : nowDate,
+      attachments: news ? news.attachments : []
     };
     const dialogData: DialogData = {
-      title: news? 'Редактирование новости' : 'Добавление новости',
+      title: news ? 'Редактирование новости' : 'Добавление новости',
       buttonText: 'Сохранить',
       model: newNews
     };
@@ -91,7 +89,8 @@ export class SubjectNewsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        news? this.newsService.updateNews(result): this.newsService.createNews(result);
+        result.attachments = this.attachmentToModel([...result.attachments]);
+        news ? this.newsService.updateNews(result) : this.newsService.createNews(result);
       }
     });
   }
@@ -99,14 +98,13 @@ export class SubjectNewsComponent implements OnInit {
   deleteNews(news: News) {
     const dialogData: DialogData = {
       title: 'Удаление новости',
-      body: 'новость "' + news.title + '"' ,
+      body: 'новость "' + news.title + '"',
       buttonText: 'Удалить',
       model: news.id
     };
     const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
       if (result) {
         this.newsService.deleteNews(news.id, this.subjectId)
       }
@@ -117,4 +115,20 @@ export class SubjectNewsComponent implements OnInit {
     return this.dialog.open(popover, {data});
   }
 
+  _filesDownload(attachment: any) {
+    window.open('http://localhost:8080/api/Upload?fileName=' + attachment.PathName + '//' + attachment.FileName)
+  }
+
+  public attachmentToModel(attachments: Attachment[]) {
+    const newAttachments = [];
+    attachments.forEach(attachment => {
+      newAttachments.push({
+        FileName: attachment.fileName,
+        PathName: attachment.pathName,
+
+        Name: attachment.name
+      })
+    });
+    return newAttachments;
+  }
 }

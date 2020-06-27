@@ -13,7 +13,8 @@
         <tr class="mdc-data-table__row">
           <td class="mdc-data-table__cell example-content">
             <a href="{{data.body.uploadedFile.IdFile === -1 ? '#' : data.body.uploadedFile.Url}}">
-              <img src="{{data.body.uploadedFile.ThumbnailUrl}}">
+              <img *ngIf="data.body.uploadedFile.Type === 'Image'" src="{{data.body.uploadedFile.ThumbnailUrl}}">
+			  <i *ngIf="data.body.uploadedFile.Type !== 'Image'" class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i>
             </a>
           </td>
           <td class="mdc-data-table__cell example-content">

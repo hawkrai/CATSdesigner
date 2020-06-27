@@ -18,6 +18,7 @@ export class LabWorkPopoverComponent implements AfterViewInit {
     public dialogRef: MatDialogRef<LabWorkPopoverComponent>,
     private fileService: FileService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dialogRef.disableClose = true;
   }
 
   ngAfterViewInit(): void {

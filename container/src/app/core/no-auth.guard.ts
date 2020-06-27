@@ -18,6 +18,9 @@ export class NoAuthGuard implements CanActivate {
     .pipe(
       map(response => {
         this.authenticationService.setCurrentUserValue(response);
+        if(response.role == 'admin'){
+          this.redirectAdmin();
+        }
         return true;
       }),
       catchError(error => {
@@ -29,5 +32,9 @@ export class NoAuthGuard implements CanActivate {
 
   redirect(state: RouterStateSnapshot) {
     this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});  
+  }
+
+  redirectAdmin() {
+    this.router.navigate(['/adminPanel']);  
   }
 }

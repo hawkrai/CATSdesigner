@@ -1,5 +1,6 @@
 ﻿using System.ServiceModel;
 using System.ServiceModel.Web;
+using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules.News;
 
 namespace LMPlatform.UI.Services.News
@@ -23,7 +24,7 @@ namespace LMPlatform.UI.Services.News
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/Save")]
-        ResultViewData Save(int subjectId, int id, string title, string body, bool disabled, bool isOldDate);
+        ResultViewData Save(int subjectId, int id, string title, string body, bool disabled, bool isOldDate, Attachment[] attachments);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/Delete")]

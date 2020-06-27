@@ -1,6 +1,6 @@
 export interface DialogData {
-  title: string;
+  title?: string;
   body?: any;
-  buttonText: string;
+  buttonText?: string;
   model?: any;
 }

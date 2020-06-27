@@ -23,7 +23,7 @@
       <tbody class="mdc-data-table__content">
       <tr class="mdc-data-table__row" *ngFor="let calendar of calendar">
         <td class="mdc-data-table__cell">{{ calendar.date }}</td>
-        <td class="mdc-data-table__cell">
+        <td class="mdc-data-table__cell visit-date__table-action">
           <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(calendar)">
             <mat-icon>delete_forever</mat-icon>
           </button>

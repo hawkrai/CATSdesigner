@@ -9,7 +9,7 @@ import {GroupStatsStatistic} from '../model/group.stats';
 })
 export class SubjectService {
 
-    api = '/Services/Parental/ParentalService.svc/';
+    api = '/api/Services/Parental/ParentalService.svc/';
 
     constructor(private http: HttpClient) {
     }

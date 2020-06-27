@@ -3,9 +3,9 @@ import { FormGroup, FormBuilder, FormControl, Validators, ValidationErrors } fro
 import { MustMatch } from '../signup/MustMatch';
 import { UserService } from '../service/userService';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { SuccessMessageComponent } from '../success-message/success-message.component';
 import {ResetPasswordJson} from '../model/resetPassword';
 import {AccountService} from '../service/account.service';
+import {MessageComponent} from "../component/message/message.component";
 
 @Component({
   selector: 'app-reset-password-modal',
@@ -60,7 +60,7 @@ export class ResetPasswordModalComponent implements OnInit {
 
   resetPassword(resetPasswordModel) {
     this.accountService.resetPassword(resetPasswordModel).subscribe( () => {
-      this.dialog.open(SuccessMessageComponent, {
+      this.dialog.open(MessageComponent, {
         data: 'Пароль успешно изменен.',
         position: {
           bottom: '0px',

@@ -5,6 +5,7 @@ import { LayoutService } from "../layout.service";
 import { CoreService } from "../../core/services/core.service";
 import { Subject } from "../../core/models/subject";
 import { map } from 'rxjs/operators';
+import { AuthenticationService } from './../../core/services/auth.service';
 @Component({
   selector: 'app-subjects-nav',
   templateUrl: './subjects-nav.component.html',
@@ -13,10 +14,12 @@ import { map } from 'rxjs/operators';
 export class SubjectsNavComponent implements OnInit {
   opened:boolean;
   subjects: Subject[];
+  public isLector:boolean = false;
 
-  constructor(private layouService: LayoutService, public coreService: CoreService, private router: Router) {}
+  constructor(private layouService: LayoutService, public coreService: CoreService, private router: Router, private autService: AuthenticationService) {}
 
   ngOnInit(): void {
+    this.isLector = this.autService.currentUserValue.role == "lector";
     var that = this;
     this.coreService.getSubjects().subscribe((subjects) => {
       that.subjects = subjects;
@@ -49,6 +52,10 @@ export class SubjectsNavComponent implements OnInit {
     if(this.coreService.selectedSubject !== undefined && this.coreService.selectedSubject !== null){
       this.router.navigateByUrl(`/web/viewer/subject/${this.coreService.selectedSubject.Id}`);
     }      
+  }
+
+  onSubjects() {
+    this.router.navigateByUrl(`web/viewer/subjects`);   
   }
 
 }

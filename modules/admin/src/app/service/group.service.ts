@@ -9,8 +9,8 @@ import { StudentByGroup } from '../model/student';
 })
 export class GroupService {
 
-    api = '/Administration/';
-    apiStudent = '/Services/CoreService.svc/';
+    api = '/api/Administration/';
+    apiStudent = '/api/Services/CoreService.svc/';
 
     constructor(private http: HttpClient) {
     }

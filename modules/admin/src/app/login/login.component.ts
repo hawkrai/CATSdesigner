@@ -6,7 +6,7 @@ import { StudentService } from '../service/student.service';
 import { ChangePasswordComponent } from '../change-password/change-password.component';
 import {AccountService} from '../service/account.service';
 import {Router} from '@angular/router';
-import {SuccessMessageComponent} from '../success-message/success-message.component';
+import {MessageComponent} from "../component/message/message.component";
 
 enum Role {
   ADMIN = 'admin',
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
         if ( Role.ADMIN === res.role ) {
           this.router.navigate(['/admin/main']);
         } else {
-          this.dialog.open(SuccessMessageComponent, {
+          this.dialog.open(MessageComponent, {
             data: 'Вам не хватает прав.',
             position: {
               bottom: '0px',
@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
         }
       },
       () => {
-        this.dialog.open(SuccessMessageComponent, {
+        this.dialog.open(MessageComponent, {
           data: 'Произошла ошибка при входе. Попробуйте заново. ',
           position: {
             bottom: '0px',

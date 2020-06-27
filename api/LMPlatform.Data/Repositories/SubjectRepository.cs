@@ -74,13 +74,26 @@ namespace LMPlatform.Data.Repositories
 		public SubjectNews SaveNews(SubjectNews news)
 		{
 			using var context = new LmPlatformModelsContext();
-			if (news.Id != 0)
+            if (news.Id != 0)
 			{
 				context.Update(news);
 			}
 			else
 			{
 				context.Add(news);
+			}
+
+            foreach (var attachment in news.Attachments)
+            {
+                attachment.SubjectNewsId = news.Id;
+				if (attachment.Id != 0)
+                {
+                    context.Update(attachment);
+                }
+                else
+                {
+                    context.Add(attachment);
+                }
 			}
 
 			context.SaveChanges();

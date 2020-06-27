@@ -15,6 +15,8 @@ export interface DialogData {
 })
 export class VisitingPopoverComponent {
 
+  private invalid = false;
+
   public displayedColumns = ['position', 'name', 'mark', 'comment'];
 
   constructor(
@@ -24,5 +26,9 @@ export class VisitingPopoverComponent {
 
   onClick(): void {
     this.dialogRef.close();
+  }
+
+  onMarkChange(mark: number) {
+    this.invalid = mark != null && mark < 0;
   }
 }
