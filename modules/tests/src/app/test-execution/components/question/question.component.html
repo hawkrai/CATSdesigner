@@ -7,7 +7,7 @@
     <div class="question-question-text">{{question?.Question?.Title}}</div>
   </div>
   <div class="question-description" *ngIf="question?.Question?.Description">
-    <div class="question-description-text">{{question?.Question?.Description}}</div>
+    <div class="question-description-text" [innerHTML]="question?.Question?.Description"></div>
   </div>
   <div class="question-block">
     <div class="question-answer-block">

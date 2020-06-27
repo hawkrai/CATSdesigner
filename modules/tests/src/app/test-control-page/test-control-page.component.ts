@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
 import {TestService} from "../service/test.service";
-import {MatDialog} from "@angular/material";
+import {MatDialog, MatSnackBar} from "@angular/material";
 import {EditTestPopupComponent} from "./components/edit-test-popup/edit-test-popup.component";
 import {DeleteConfirmationPopupComponent} from "./components/delete-confirmation-popup/delete-confirmation-popup.component";
 import {EditAvailabilityPopupComponent} from "./components/edit-availability-popup/edit-availability-popup.component";
@@ -46,12 +46,16 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
 
   constructor(private testService: TestService,
               private router: Router,
+              private snackBar: MatSnackBar,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
     super();
   }
 
   ngOnInit() {
+    this.testService.getFiles().subscribe((fda)=>{
+      console.log(fda);
+    })
     /*localStorage.setItem("currentUser",JSON.stringify({id:10031,role:"ds", userName:"popova"}));
     localStorage.setItem("currentSubject",JSON.stringify({id: "3", Name:"Тестирование ПО"}));
     localStorage.setItem("locale","rus");*/
@@ -110,7 +114,15 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(() => {
         this.getTests(this.subject.id);
+      },error1 => {
+        this.openSnackBar("Не удалось удалить тест");
       });
+  }
+
+  public openSnackBar(message: string, action?: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   public filterTests(searchValue: string): void {

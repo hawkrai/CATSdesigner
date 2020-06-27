@@ -13,6 +13,6 @@ export class ApiService {
   }
 
   login(): Observable<Login> {
-    return this.http.post<Login>('/api/Account/Login?userName=testLecturer2&password=testLecturer2',  {});
+    return this.http.post<Login>('/api/Account/Login?userName=ypal0898&password=ypal0898',  {});
   }
 }

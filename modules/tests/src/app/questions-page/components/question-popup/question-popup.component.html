@@ -4,11 +4,17 @@
       <div class="question-popup-container">{{'Вопрос для теста '}}</div>
       <div class="question-popup-container-small">{{data.title}}</div>
     </div>
-    <div mat-dialog-content>
+    <div mat-dialog-content [formGroup]="formGroup">
       <mat-form-field class="question-popup-full">
-      <textarea matInput [placeholder]="'Текст вопроса'"
-                [value]="question && question.Title ? question.Title : ''"
-                (change)="writeTitle($event, 'Title')"></textarea>
+        <input formControlName="title" matInput [placeholder]="'Текст вопроса'"
+               [value]="question && question.Title ? question.Title : ''"
+               (change)="writeTitle($event, 'Title')">
+        <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
+          {{"Длина превышает 255 символов"}}
+        </mat-error>
+        <mat-error *ngIf="formGroup.controls.title.hasError('required')">
+          {{"Введите название вопроса"}}
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -55,7 +61,7 @@
                             *ngFor="let control of charsde, let i = index" [value]="control">
             <input class="question-popup-answers-item-input" matInput [(ngModel)]="chars[control]">
             <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
-                      matTooltipClass="example-tooltip-green">delete
+                      matTooltipClass="example-tooltip-blue">delete
             </mat-icon>
           </mat-radio-button>
         </mat-radio-group>
@@ -66,7 +72,7 @@
                         *ngFor="let control of charsde, let i = index">
             <input class="question-popup-answers-item-input" matInput [(ngModel)]="charsNeskolko[control][0]">
             <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
-                      matTooltipClass="example-tooltip-green">delete
+                      matTooltipClass="example-tooltip-blue">delete
             </mat-icon>
           </mat-checkbox>
         </section>
@@ -76,7 +82,7 @@
           {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
                                  [(ngModel)]="charsWords[control]">
           <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
-                    matTooltipClass="example-tooltip-green">delete
+                    matTooltipClass="example-tooltip-blue">delete
           </mat-icon>
         </div>
       </ng-container>
@@ -85,17 +91,26 @@
           {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
                                  [(ngModel)]="charsSequence[control]">
           <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
-                    matTooltipClass="example-tooltip-green">delete
+                    matTooltipClass="example-tooltip-blue">delete
           </mat-icon>
         </div>
       </ng-container>
     </div>
 
-    <div mat-dialog-content>
+    <div mat-dialog-content [formGroup]="formGroup">
       <mat-form-field class="question-popup-complexity">
-        <input matInput type="number" [placeholder]="'Уровень сложности'"
+        <input matInput formControlName="ComplexityLevel" type="number" [placeholder]="'Уровень сложности'"
                [value]="question && question.ComplexityLevel ? question.ComplexityLevel : 0"
                (change)="writeTitle($event, 'ComplexityLevel', true)">
+        <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('max')">
+          {{"Сложность максимум может быть 10"}}
+        </mat-error>
+        <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('min')">
+          {{"Сложность должно быть больше нуля"}}
+        </mat-error>
+        <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('required')">
+          {{"Введите сложность"}}
+        </mat-error>
       </mat-form-field>
     </div>
 
