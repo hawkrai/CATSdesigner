@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="h1-container">
+        <span class="h1">Контроль успеваемости</span>
+    </div>
+    
+    <div class="inline"></div>
+    <form [formGroup]="controlForm">
+        <mat-form-field class="default" color="primary">
+            <input matInput color="primary" formControlName="groupName" placeholder="Номер группы" type="text">
+        </mat-form-field>        
+        <a mat-flat-button color="primary" (click)="enterGroup()">Найти</a>
+        <a mat-flat-button color="primary" href="/login">Выйти</a>
+        
+    </form>
+    <div class="inline"></div>
+
+</div>
+<iframe *ngIf="isLoad" [src]="selectedGroup"></iframe>
+
+
+
+

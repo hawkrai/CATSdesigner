@@ -8,8 +8,8 @@ namespace LMPlatform.UI.Services.Parental
 	public interface IParentalService
 	{
 		[OperationContract]
-		[WebInvoke(UriTemplate = "/GetGroupSubjects/{groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-		SubjectListResult GetGroupSubjects(string groupId);
+		[WebInvoke(UriTemplate = "/GetGroupSubjectsByGroupName/{groupName}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+		SubjectListResult GetGroupSubjectsByGroupName(string groupName);
 
         [OperationContract]
         [WebInvoke(UriTemplate = "/LoadGroup?groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]

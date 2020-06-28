@@ -8,7 +8,7 @@ import { StatisticResponse } from '../model/stats';
 })
 export class StatisticService {
 
-    api = '/api/Administration/';
+    api = '/Administration/';
 
     constructor(private http: HttpClient) {
     }

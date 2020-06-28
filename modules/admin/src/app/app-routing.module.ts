@@ -12,7 +12,7 @@ import { GroupNotFoundComponent } from './control/group-not-found/group-not-foun
 import {ProfileComponent} from './modules/adminPanel/profile/profile.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'admin', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'resetPassword/student/:studentId', component: ResetThePasswordComponent },
   { path: 'resetPassword/lector/:lectorId', component: ResetThePasswordComponent },
@@ -27,9 +27,9 @@ const routes: Routes = [
   {
     path: 'control', component: GeneralComponent, children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
-      { path: 'main/:groupId', component: MainContolComponent },
-      { path: 'item/:groupId/:subjectId', component: ItemComponent },
-      { path: 'statistic/:groupId', component: StatsComponent },
+      { path: 'main/:groupName', component: MainContolComponent },
+      { path: 'item/:groupName/:subjectId', component: ItemComponent },
+      { path: 'statistic/:groupName', component: StatsComponent },
       { path: 'groupNotFound', component: GroupNotFoundComponent }
     ]
   },

@@ -8,7 +8,7 @@ import { MessageResponse, DisplayMessage, Recipients } from '../model/message';
 })
 export class MessageService {
 
-    api = '/api/Services/Messages/MessagesService.svc/';
+    api = '/Services/Messages/MessagesService.svc/';
 
     constructor(private http: HttpClient) {
     }

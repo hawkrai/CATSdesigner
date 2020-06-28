@@ -1,6 +1,7 @@
 export class SubjectResponse {
     Code: string;
     Message: string;
+    GroupId: number;
     Subjects: Subject[];
 }
 

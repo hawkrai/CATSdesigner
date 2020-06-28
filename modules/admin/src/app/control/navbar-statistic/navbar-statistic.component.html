@@ -1,37 +1,15 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
-<mat-toolbar *ngIf="isLoad">
-    <div class="main-button">
-        <mat-icon class="material-icons main-icon" aria-hidden="false">home</mat-icon>
-        <button *ngIf="this.groupId" [routerLink]="['/control/main', this.groupId]" mat-icon-button>(LMS).Platform</button>
-    </div>
+<div class="tabs-container" *ngIf="isLoad">    
+    <button *ngIf="this.groupName && this.isSubject()" mat-button [matMenuTriggerFor]="subject" color="primary">
+        Предметы
+    </button>
+    <mat-menu #subject="matMenu" yPosition="below">
+        <button *ngFor="let element of this.subjectResponse.Subjects" routerLink="/control/item/{{this.groupName}}/{{element.Id}}" mat-menu-item>
+            {{ element.Name }}
+        </button>
+    </mat-menu>
+    <button *ngIf="this.groupName && this.isSubject()" mat-button aria-label="Stats" [routerLink]="['/control/statistic', groupName]" color="primary">
+        Статистика
+    </button>
 
-    <div class="nav-flex">
-        <div>
-            <button *ngIf="this.groupId && this.isSubject()" mat-button [matMenuTriggerFor]="subject" class="my-menu">
-                <mat-icon class="main-icon">record_voice_over</mat-icon>
-                Предметы
-            </button>
-            <mat-menu #subject="matMenu" yPosition="below">
-                <button *ngFor="let element of this.subjectResponse.Subjects" routerLink="/control/item/{{this.groupId}}/{{element.Id}}" mat-menu-item>
-                    {{ element.Name }}
-                </button>
-            </mat-menu>
-            <button *ngIf="this.groupId && this.isSubject()" mat-button aria-label="Stats" [routerLink]="['/control/statistic', groupId]">
-                <mat-icon class="main-icon">mood</mat-icon>
-                Статистика
-            </button>
-        </div>
-
-        <div>
-            <button mat-button (click)="openControlGroupDialog()">
-                <mat-icon class="main-icon">people</mat-icon>
-                Группа
-            </button>
-
-            <button routerLink='/login' mat-button aria-label="Groups">
-                <mat-icon class="icon main-icon">exit_to_app</mat-icon>
-                Выйти
-            </button>
-        </div>
-    </div>
-</mat-toolbar>
+</div>

@@ -12,13 +12,6 @@ h1 {
     margin-left: 90px;
 }
 
-.mat-raised-button {
-    border: black;
-    border-radius: 0;
-    color: white;
-    background-color: steelblue;
-}
-
 mat-form-field {
     margin-right: 100px;
     float: right;

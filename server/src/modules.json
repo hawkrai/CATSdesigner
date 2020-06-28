@@ -18,5 +18,9 @@
     "admin": {
         "path": "d:/.temp/apps/admin",
         "entryPoint": "index.html"
+    },    
+    "control": {
+        "path": "d:/.temp/apps/admin",
+        "entryPoint": "index.html"
     }
 }

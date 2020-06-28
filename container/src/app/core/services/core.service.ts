@@ -5,6 +5,7 @@ import { map, catchError, } from 'rxjs/operators';
 
 import { Subject } from './../models/subject';
 import { Message } from './../models/message';
+import { Group } from './../models/group';
 
 @Injectable({ providedIn: 'root' })
 export class CoreService {
@@ -27,6 +28,10 @@ export class CoreService {
                     return this.listOfSubjects;                 
                 })
             );
+    }
+
+    getGroups(): Observable<any>  {
+        return this.http.get<any>('/Services/CoreService.svc/GetAllGroupsLite/');
     }
     
     setCurrentSubject(subject: any): void {

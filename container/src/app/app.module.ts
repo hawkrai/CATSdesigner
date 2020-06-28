@@ -15,6 +15,7 @@ import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.compone
 import { LayoutService } from './layout/layout.service';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
+import { ProgressControlComponent } from './progress-control/progress-control.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { AdminComponent } from './admin/admin.component';
     FooterComponent,
     SubjectsNavComponent,
     LoginComponent,
-    AdminComponent
+    AdminComponent,
+    ProgressControlComponent
   ],
   imports: [
     BrowserModule,
