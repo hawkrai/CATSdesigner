@@ -3,7 +3,7 @@
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>{{data.model}}</mat-label>
-      <textarea name="body" matInput [(ngModel)]="data.body.comments"></textarea>
+      <textarea name="body" matInput [(ngModel)]="data.body.comments" (paste)="onPaste($event.clipboardData)"></textarea>
     </mat-form-field>
     <p class="mat-typography">Прикрепленный материал (Можно добавить только один файл)</p>
     <button mat-raised-button class="popup-file-button" (click)="addFile()" *ngIf="!data.body.uploadedFile">Добавить файл</button>
