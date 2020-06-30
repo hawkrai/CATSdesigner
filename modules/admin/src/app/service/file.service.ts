@@ -8,7 +8,7 @@ import {FileResponse} from '../model/file';
 })
 export class FileService {
 
-    api = '/api/Services/Files/FilesService.svc/';
+    api = '/Services/Files/FilesService.svc/';
 
     constructor(private http: HttpClient) {
     }
@@ -17,8 +17,8 @@ export class FileService {
         return this.http.get<FileResponse>(this.api + 'GetFiles/');
     }
 
-    uploadFile(filepath: string, filename: string) {
-        location.href = '/api/api/Upload?fileName=' + filepath + '//' + filename;
+    downloadFile(filepath: string, filename: string) {
+        location.href = '/api/Upload?fileName=' + filepath + '//' + filename;
         // return this.http.get('/api/Upload?fileName=' + filepath + '//' + filename, {
         //     responseType: 'blob'
         // });

@@ -4,7 +4,7 @@
         <h2 *ngIf="this.data.Name"> Группа {{ this.data.Name }}</h2>
         <div>
             <mat-form-field>
-                <input matInput formControlName="Name" placeholder="Номер группы" maxlength="30">
+                <input matInput formControlName="Name" placeholder="Номер группы" maxlength="10">
                 <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
                 <mat-error *ngIf="hasError('Name', 'pattern')">Номер группы должен состоять из цифр</mat-error>
             </mat-form-field>
@@ -31,7 +31,7 @@
         </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-        <button mat-button (click)="onNoClick()">Отмена</button>
-        <button class="btn" [disabled]='this.form.invalid' mat-button (click)="onYesClick()">{{ this.data.Name ? 'Изменить' : 'Сохранить' }}</button>
+        <button mat-raised-button class="cancel" (click)="onNoClick()">Отмена</button>
+        <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">{{ this.data.Name ? 'Изменить' : 'Сохранить' }}</button>
     </mat-dialog-actions>
 </form>

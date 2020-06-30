@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ResetThePasswordComponent } from './modules/adminPanel/reset-the-password/reset-the-password.component';
-import { LoginComponent } from './login/login.component';
-import { MainContolComponent } from './control/main/main.component';
-import { SignupComponent } from './signup/signup.component';
-import { ItemComponent } from './control/item/item.component';
-import { GeneralComponent } from './control/general/general.component';
-import { StatsComponent } from './control/stats/stats.component';
+import { LoginComponent } from './modules/login/login.component';
+import { SignupComponent } from './modules/signup/signup.component';
+import { ItemComponent } from './modules/control/item/item.component';
+import { GeneralComponent } from './modules/control/general/general.component';
+import { StatsComponent } from './modules/control/stats/stats.component';
 import { AdminGenerateComponent } from './modules/adminPanel/admin-generate/admin-generate.component';
-import { GroupNotFoundComponent } from './control/group-not-found/group-not-found.component';
+import { GroupNotFoundComponent } from './modules/control/group-not-found/group-not-found.component';
 import {ProfileComponent} from './modules/adminPanel/profile/profile.component';
 
 const routes: Routes = [
@@ -27,7 +26,6 @@ const routes: Routes = [
   {
     path: 'control', component: GeneralComponent, children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
-      { path: 'main/:groupId', component: MainContolComponent },
       { path: 'item/:groupId/:subjectId', component: ItemComponent },
       { path: 'statistic/:groupId', component: StatsComponent },
       { path: 'groupNotFound', component: GroupNotFoundComponent }

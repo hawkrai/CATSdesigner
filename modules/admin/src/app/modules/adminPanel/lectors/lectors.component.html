@@ -1,7 +1,7 @@
 <div class="main">
     <button mat-raised-button (click)="saveProfessor()">Добавить преподавателя</button>
-    <div>
-        <mat-form-field>
+    <div class="table">
+        <mat-form-field class="search">
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
         </mat-form-field>
 
@@ -66,6 +66,6 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
         </table>
 
-        <mat-paginator #myPaginator [length]="25 " [pageSize]="5 " [pageSizeOptions]="[5, 10, 20] " showFirstLastButtons="true "></mat-paginator>
+        <mat-paginator #myPaginator [length]="20 " [pageSize]="20" [pageSizeOptions]="[10, 20, 40] " showFirstLastButtons="true "></mat-paginator>
     </div>
 </div>

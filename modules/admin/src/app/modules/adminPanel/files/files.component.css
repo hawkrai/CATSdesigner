@@ -1,53 +1,26 @@
-.main {
-    margin-top: 50px;
-    font-weight: lighter;
-    margin-left: 90px;
-}
-
-table {
-  border: 1px solid lavender;
-  width: 95%;
-}
-
-th {
-  width: 100px;
-}
-
-tr {
-  height: 60px;
-}
-
-mat-paginator {
-  margin-top: 20px;
-  margin-right: 80px;
-}
-
-button .mat-icon {
-  padding: 0 0 0 0;
-  height: 20px;
-  widows: 20px;
-}
-
-.mat-button {
-  padding: 0;
-}
-
 .mat-button:focus {
-  color: blue;
-  background-color: white;
   cursor: pointer;
 }
 
-.spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-}
-
 a {
-  font-weight: lighter;
+  color: black;
+  padding: 0px;
+  font-weight: 400;
 }
 
 a:hover {
-  font-weight: lighter;
+  font-weight: 500;
+}
+
+mat-form-field {
+  float: left;
+}
+
+.mat-paginator {
+  display: flex;
+  float: right;
+}
+
+.table {
+  margin-top: -25px;
 }

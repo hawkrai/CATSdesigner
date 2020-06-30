@@ -14,6 +14,10 @@ export class StatisticComponent implements OnInit {
   data = [];
   columnNames = ['Data', 'Count'];
   options = {
+      chartArea: {
+        width: '80%',
+        height: '70%'
+      },
      legend: {position: 'none'},
      hAxis: {
         title: ''

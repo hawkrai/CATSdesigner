@@ -38,8 +38,8 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  uploadFile(path, filename) {
-    this.fileService.uploadFile(path, filename);
+  downloadFile(path, filename) {
+    this.fileService.downloadFile(path, filename);
   }
 
 }

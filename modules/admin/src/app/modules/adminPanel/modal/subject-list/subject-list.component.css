@@ -1,11 +1,6 @@
 .container {
-    display: flex;
-    justify-content: space-between;
-}
-
-table {
-    border: 1px solid lavender;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .title {
@@ -22,16 +17,15 @@ table {
 }
 
 th {
-    width: 100px;
+  width: 100px;
 }
 
 .student-name {
-    text-align: center;
-    padding: 10px;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
 }
 
-.spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+.mat-progress-spinner {
+  position: initial;
 }

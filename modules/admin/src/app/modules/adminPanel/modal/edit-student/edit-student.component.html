@@ -32,7 +32,7 @@
     </mat-dialog-content>
     <div class="line"></div>
     <mat-dialog-actions>
-        <button mat-button (click)="onNoClick()">Отмена</button>
-        <button class="btn" [disabled]='this.form.invalid' mat-button (click)="onYesClick()">Изменить</button>
+        <button mat-raised-button class="cancel" (click)="onNoClick()">Отмена</button>
+        <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">Изменить</button>
     </mat-dialog-actions>
 </form>

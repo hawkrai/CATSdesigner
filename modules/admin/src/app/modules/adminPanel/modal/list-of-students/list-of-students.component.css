@@ -3,17 +3,11 @@
     justify-content: space-between;
 }
 
-table {
-    border: 1px solid lavender;
-    width: 100%;
+.mat-dialog-title {
+  margin: 0px;
+  font: 400 20px/12px Roboto,"Helvetica Neue",sans-serif;
 }
 
-th {
-    width: 100px;
-}
-
-.spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+.mat-progress-spinner {
+  position: initial;
 }

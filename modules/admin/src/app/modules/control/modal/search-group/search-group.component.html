@@ -1,0 +1,14 @@
+<div class="main-search-group">
+    <div class="title">Контроль успеваемости</div>
+    <button mat-button class="close-icon" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
+</div>
+<mat-dialog-content>
+  <mat-form-field>
+    <input #input matInput placeholder="Введите номер группы" (keyup.enter)="this.onClick(input.value)" maxLength="20px">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button (click)="onClick(input.value)">Выбрать группу</button>
+</mat-dialog-actions>

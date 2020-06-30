@@ -1,6 +1,6 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div [hidden]="!this.isLoad" class="main">
-  <mat-form-field>
+  <mat-form-field class="search">
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
   </mat-form-field>
 

@@ -1,21 +1,17 @@
 h1 {
-    font-weight: lighter;
     font-size: 18px;
     width: 100%;
-    padding-bottom: 10px;
-    border-bottom: 2px solid lavender;
 }
 
-mat-dialog-content {
-    width: 300px; 
+.buttons {
+  display: flex;
+  margin: auto;
+  justify-content: space-between;
+  min-height: 0px;
+  padding: 0px;
+  margin-top: 10px;
 }
 
-.btn {
-    background-color: cornflowerblue;
-    color: white;
-    border: white;
-}
-
-mat-dialog-actions {
-    float: right;
+mat-button {
+  padding: 0px;
 }

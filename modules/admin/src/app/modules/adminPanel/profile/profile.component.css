@@ -1,55 +1,53 @@
 .profile-card {
-    width: 30%;
-    margin: 30px;
-    display: table;
+  width: 30%;
+  margin: 30px;
+  display: table;
 }
 
 .avatar {
-    justify-content: center;
-    margin: auto 0;
-    display: flex;
+  justify-content: center;
+  margin: auto 0;
+  display: flex;
 }
 
 mat-card-content {
-    margin-top: 20px;
-    text-align: center;
+  margin-top: 20px;
+  text-align: center;
 }
 
 .project-container {
-    width: 44%;
-    height: 370px;
-    overflow: auto;
-    padding: 30px;
-    margin: 20px;
-    margin-top: 30px;
+  height: 900px;
+  overflow: auto;
+  padding: 30px;
+  margin: 20px;
+  margin-top: 30px;
+  width: 100%;
 }
 
 th.mat-header-cell:first-of-type {
-    font-size: large;
-    font-family: fantasy;
-    padding: 0px;
+  font-size: large;
+  padding: 0px;
+  width: 86%;
 }
 
 td.mat-cell:first-of-type,
 td.mat-footer-cell:first-of-type,
 th.mat-header-cell:first-of-type {
-    padding: 0px;
+  padding: 0px;
 }
 
 table {
-    width: 100%;
+  width: 100%;
 }
 
 tr.mat-footer-row {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .profile {
-    display: flex;
+  display: flex;
 }
 
-.spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+table {
+  border: 0px;
 }

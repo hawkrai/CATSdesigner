@@ -5,7 +5,7 @@ import { GroupService } from 'src/app/service/group.service';
 import { DeleteItemComponent } from '../modal/delete-person/delete-person.component';
 import { Group } from 'src/app/model/group';
 import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-students.component';
-import {MessageComponent} from "../../../component/message/message.component";
+import {MessageComponent} from '../../../component/message/message.component';
 
 @Component({
   selector: 'app-group',

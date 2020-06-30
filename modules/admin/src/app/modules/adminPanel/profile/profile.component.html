@@ -5,11 +5,16 @@
             <img *ngIf="this.profileInfo.Avatar" src="{{this.profileInfo.Avatar}}" width="300px ">
             <img *ngIf="!this.profileInfo.Avatar" src="{{this.defaultAvatar}}" width="300px ">
         </mat-card>
-        <mat-card-content>
+        <mat-card-content *ngIf="this.profileInfo.Group">
             <p>{{ this.profileInfo.Name}}</p>
-            <p *ngIf="this.profileInfo.Group">Группа: {{ this.profileInfo.Group}}</p>
-            <a *ngIf="!this.profileInfo.Group" [routerLink]="[ '/resetPassword/lector', this.profileInfo.Id]">Сбросить пароль</a>
-            <a *ngIf="this.profileInfo.Group" [routerLink]="[ '/resetPassword/student', this.profileInfo.Id]">Сбросить пароль</a>
+            <p *ngIf="this.profileInfo.LastLogitData">Последний визит: {{ this.profileInfo.LastLogitData}}</p>
+            <p>Группа: {{ this.profileInfo.Group}}</p>
+        </mat-card-content>
+        <mat-card-content *ngIf="!this.profileInfo.Group">
+          <p *ngIf="this.profileInfo.LastLogitData">Последний визит: {{ this.profileInfo.LastLogitData}}</p>
+          <p *ngIf="this.profileInfo.SkypeContact">Skype: {{ this.profileInfo.SkypeContact}}</p>
+          <p *ngIf="this.profileInfo.Email">Email: {{ this.profileInfo.Email}}</p>
+          <p *ngIf="this.profileInfo.Phone">Телефон: {{ this.profileInfo.Phone}}</p>
         </mat-card-content>
     </mat-card>
     <mat-card class="project-container">

@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit {
   getProfileInfo(login) {
     this.profileService.getProfileInfo(login).subscribe( res => {
       this.profileInfo = res;
+      console.log(res);
     });
   }
 

@@ -2,10 +2,10 @@ import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {Professor, EditProfessor, AddProfessor} from 'src/app/model/professor';
 import { FormGroup, FormBuilder, FormControl, Validators, ValidationErrors } from '@angular/forms';
-import { MustMatch } from 'src/app/signup/MustMatch';
-import {ValidateEmailNotTaken} from '../../../../signup/ValidateEmailNotTaken';
+import { MustMatch } from 'src/app/shared/MustMatch';
+import {ValidateEmailNotTaken} from '../../../../shared/ValidateEmailNotTaken';
 import {AccountService} from '../../../../service/account.service';
-import {questions} from '../../../../questions';
+import {questions} from '../../../../shared/questions';
 import {GroupService} from '../../../../service/group.service';
 
 @Component({

@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { EditProfessor } from 'src/app/model/professor';
 import { GroupService } from 'src/app/service/group.service';
-import { Group } from 'src/app/model/group';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -86,7 +85,7 @@ export class EditLectorComponent implements OnInit {
 
     object.Avatar = professor.Avatar || '';
     object.SkypeContact = this.form.controls.SkypeContact.value || '';
-    object.Phone = this.form.controls.Phone.value || '';
+    object.Phone = '+ 375' + this.form.controls.Phone.value || '';
     object.Skill = this.form.controls.Skill.value || '';
     return object;
   }

@@ -42,7 +42,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { MatListModule } from '@angular/material/list';
 import { MessageDetailComponent } from './modal/message-detail/message-detail.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {ActiveStatsComponent} from './active-stats/active-stats';
+import {ActiveStatsComponent} from './active-stats/active-stats.component';
 
 @NgModule({
   declarations: [

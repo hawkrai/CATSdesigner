@@ -1,37 +1,23 @@
-h1 {
-    width: 100%;
-    padding-bottom: 10px;
-    border-bottom: 2px solid lavender;
-}
-
 mat-dialog-content {
-    width: 600px;
+  width: 450px;
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 .checkbox {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 mat-dialog-actions {
-    margin-top: 20px;
-}
-
-.btn {
-    background-color: cornflowerblue;
-    color: white;
-    border: white;
+  margin-top: 20px;
 }
 
 mat-dialog-actions {
-    float: right;
+  float: right;
 }
 
-.spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+.mat-progress-spinner {
+  position: initial;
 }

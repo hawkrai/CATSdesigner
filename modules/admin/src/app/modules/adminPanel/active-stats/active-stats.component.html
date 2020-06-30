@@ -1,5 +1,5 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
-<div *ngIf='this.isLoad'>
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoadActive" class="spinner" color="primary"></mat-spinner>
+<div *ngIf='this.isLoadActive'>
     <div class="main">
         <div class="inline">
             <div class="div1">
@@ -15,9 +15,9 @@
         </div>
     </div>
     <div class="charts">
-        <google-chart [type]="type" [data]="this.users" [options]="options" [width]="550" [height]="400">
+        <google-chart [type]="type" [data]="this.users" [options]="options" [width]="750" [height]="600">
         </google-chart>
-        <google-chart [type]="type" [data]="this.times" [options]="options" [width]="550" [height]="400">
+        <google-chart [type]="type" [data]="this.times" [options]="options" [width]="750" [height]="600">
         </google-chart>
     </div>
 </div>

@@ -1,7 +1,7 @@
 <div class="main">
     <button mat-raised-button (click)="addGroup(this.group)">Добавить группу</button>
-    <div [hidden]="!isLoad">
-        <mat-form-field>
+    <div [hidden]="!isLoad" class="table">
+        <mat-form-field class="search">
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
         </mat-form-field>
 
