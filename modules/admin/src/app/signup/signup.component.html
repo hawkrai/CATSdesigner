@@ -55,8 +55,8 @@
                 <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
             </mat-form-field>
             <div>
-                <button mat-button class='button' [disabled]='this.form.invalid' (click)="this.register()">Зарегистрироваться</button>
-                <a mat-button class='style-a' routerLink="/login">Вернуться назад</a>
+                <button mat-raised-button color="primary" [disabled]='this.form.invalid' (click)="this.register()">Зарегистрироваться</button>
+                <button mat-raised-button color="default" (click)="this.back()">Вернуться назад</button>                
             </div>
         </form>
     </mat-card-content>

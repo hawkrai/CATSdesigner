@@ -16,6 +16,7 @@ import { LayoutService } from './layout/layout.service';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ProgressControlComponent } from './progress-control/progress-control.co
     SubjectsNavComponent,
     LoginComponent,
     AdminComponent,
-    ProgressControlComponent
+    ProgressControlComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
