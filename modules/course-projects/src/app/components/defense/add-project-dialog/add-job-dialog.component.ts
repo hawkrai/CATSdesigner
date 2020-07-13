@@ -60,4 +60,11 @@ export class AddJobDialogComponent implements AfterViewInit {
       .subscribe(() => this.data.body.uploadedFile = null);
   }
 
+  onPaste(clipboardData: DataTransfer): void {
+    if (clipboardData.files.length > 0) {
+      this.labFilesService.uploadFile(clipboardData.files[0])
+        .subscribe(res => this.data.body.uploadedFile = res[0]);
+    }
+  }
+
 }

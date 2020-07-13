@@ -187,7 +187,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         label: 'Удаление даты консультации',
         message: 'Вы действительно хотите удалить дату консультации?',
         actionName: 'Удалить',
-        color: 'warn'
+        color: 'primary'
       }
     });
 

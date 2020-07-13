@@ -468,7 +468,7 @@ namespace LMPlatform.UI.Services.Labs
 			{
 				return new StudentsMarksResult
 				{
-					Message = "Произошла ошибка при получении результатов студентов",
+					Message = $"Произошла ошибка при получении результатов студентов - {ex.Message} - {ex.InnerException}",
 					Code = "500"
 				};
 			}

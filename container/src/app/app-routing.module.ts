@@ -2,8 +2,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ContentLayoutComponent } from './layout/content-layout/content-layout.component';
 import { NoAuthGuard } from './core/no-auth.guard';
+import { NoAuthGuardAdmin } from './core/no-auth-admin.guard';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
+import { RegisterComponent } from './register/register.component';
+import { ProgressControlComponent } from './progress-control/progress-control.component';
 
 
 const routes: Routes = [
@@ -28,9 +31,12 @@ const routes: Routes = [
     ]
   },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'progControl', component: ProgressControlComponent },
   { 
     path: 'adminPanel', 
     component: AdminComponent,
+    canActivate: [NoAuthGuardAdmin],
   },
 ];
 

@@ -1,6 +1,6 @@
 <ng-container *ngIf="editingTest;else loading">
   <h1 mat-dialog-title class="popup-container">{{!this.newTest ? 'Редактирование теста' : 'Создание теста'}}</h1>
-  <form [formGroup]="formGroup">
+  <ng-container [formGroup]="formGroup">
   <div mat-dialog-content>
     <mat-form-field>
       <input matInput formControlName="title" [placeholder]="'Название теста'" [value]="editingTest.Title ? editingTest.Title : ''"
@@ -40,7 +40,7 @@
       <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('required')">
         {{"Введите количество вопросов"}}
       </mat-error>
-      <mat-hint>Количество вопросов в каждом тестовом наборе. Для каждого студента выбирается случайным образом в разной последовательности</mat-hint>
+      <mat-hint>Количество вопросов в тестовом наборе для каждого обучающегося</mat-hint>
     </mat-form-field>
   </div>
   <div mat-dialog-content class="edit-test-time">
@@ -65,15 +65,16 @@
                   (change)="checkBoxTrue($event)">{{'Задать время на 1 вопрос (сек)'}}
     </mat-checkbox>
   </div>
-  </form>
+  </ng-container>
   <div class="edit-test-type">
     <div class="edit-test-type-block">
       <mat-radio-group
         aria-labelledby="example-radio-group-label"
         class="example-radio-group"
         [(ngModel)]="chosenType">
-        <mat-radio-button class="example-radio-button" *ngFor="let category of CATEGORIES" [value]="category">
-          {{category}}
+        <mat-radio-button class="example-radio-button" *ngFor="let category of CATEGORIES" [matTooltip]="category.tooltip"
+                          matTooltipClass="example-tooltip-blue" [value]="category.name">
+          {{category.name}}
         </mat-radio-button>
       </mat-radio-group>
     </div>

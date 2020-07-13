@@ -8,7 +8,7 @@ import { LectureResponse } from '../model/lecture';
 })
 export class LectureService {
 
-    api = '/api/Services/Lectures/LecturesService.svc/';
+    api = '/Services/Lectures/LecturesService.svc/';
 
     constructor(private http: HttpClient) {
     }

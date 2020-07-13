@@ -28,10 +28,8 @@ export class StatsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupId = this.route.snapshot.params.groupId;
-    this.getSubjectName(this.groupId);
-    this.getStatistic(this.groupId);
-    console.log(this.studentStatistic);
+    this.groupName = this.route.snapshot.params.groupName;
+    this.initData(this.groupName);    
   }
 
   getStatistic(groupId) {
@@ -39,7 +37,6 @@ export class StatsComponent implements OnInit {
     this.subjectService.loadGroup(groupId).subscribe(
       res => {
         this.studentStatistic = res.Students;
-        this.groupName = res.GroupName;
         this.isLoad = true;
       }
     );
@@ -47,15 +44,17 @@ export class StatsComponent implements OnInit {
 
   statisticSubject() {
     const id = this.selectedItem;
+    const groupName = this.groupName;
     if (id && id !== -1) {
       const subject = this.subjects.find(({Id}) => Id === id);
+      
       this.tableStats = this.studentStatistic.map((item) => {
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
         const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
         return {
-          GroupName: this.groupName,
+          GroupName: groupName,
           FIO: item.FIO,
           Subject: subject.Name,
           Rating: ((userAvgLabMarks + userAvgTestMarks) / 2).toFixed(2),
@@ -80,7 +79,7 @@ export class StatsComponent implements OnInit {
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
         });
         return {
-          GroupName: this.groupName,
+          GroupName: groupName,
           FIO: item.FIO,
           Subject: 'Все предметы',
           Rating: ((avgTestMarksTotal + avgLabMarksTotal) / 2).toFixed(2),
@@ -94,9 +93,12 @@ export class StatsComponent implements OnInit {
     }
   }
 
-  getSubjectName(groupId) {
-    this.subjectService.getSubjects(groupId).subscribe(subjectResponse => {
+  initData(groupName) {
+    this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjects = subjectResponse.Subjects;
+      this.groupId = subjectResponse.GroupId;
+      this.getStatistic(this.groupId);
+      console.log(this.studentStatistic);
       this.isLoad = true;
     });
   }

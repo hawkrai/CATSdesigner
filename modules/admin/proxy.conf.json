@@ -1,11 +1,19 @@
-{
-    "/api/*": {
-        "target": "http://educats.by",
-        "secure": false,
-        "logLevel": "debug",
-        "changeOrigin": true,
-        "pathRewrite": {
-            "^/api/*": ""
-        }
+{    
+    "/Services/*": {
+        "target": " http://educats.by",
+        "secure": false
+    },
+    "/Account/*": {
+        "target": " http://educats.by",
+        "secure": false
+    },
+    "/Administration/*": {
+        "target": " http://educats.by",
+        "secure": false
+    },
+    "/Profile/*": {
+        "target": " http://educats.by",
+        "secure": false
     }
+      
 }

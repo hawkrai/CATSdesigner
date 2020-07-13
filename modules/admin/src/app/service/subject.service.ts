@@ -9,13 +9,13 @@ import {GroupStatsStatistic} from '../model/group.stats';
 })
 export class SubjectService {
 
-    api = '/api/Services/Parental/ParentalService.svc/';
+    api = '/Services/Parental/ParentalService.svc/';
 
     constructor(private http: HttpClient) {
     }
 
-    getSubjects(groupId: any): Observable<SubjectResponse> {
-        return this.http.get<SubjectResponse>(this.api + 'GetGroupSubjects/' + groupId);
+    getSubjects(groupName: any): Observable<SubjectResponse> {
+        return this.http.get<SubjectResponse>(this.api + 'GetGroupSubjectsByGroupName/' + groupName);
     }
 
     loadGroup(groupId): Observable<GroupStatsStatistic> {

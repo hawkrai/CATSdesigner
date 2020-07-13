@@ -10,5 +10,8 @@
     {
         [DataMember]
         public List<SubjectViewData> Subjects { get; set; }
+
+        [DataMember]
+        public int GroupId { get; set; }
     }
 }

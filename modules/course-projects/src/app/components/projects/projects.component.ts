@@ -157,7 +157,7 @@ export class ProjectsComponent implements OnInit {
         label: 'Удаление темы курсового проекта',
         message: 'Вы действительно хотите удалить тему курсового проекта?',
         actionName: 'Удалить',
-        color: 'warn'
+        color: 'primary'
       }
     });
 
@@ -222,7 +222,7 @@ export class ProjectsComponent implements OnInit {
         label: 'Отменить назначение курсового проекта',
         message: 'Вы действительно хотите отменить назначение курсового проекта?',
         actionName: 'Убрать назначение',
-        color: 'warn'
+        color: 'primary'
       }
     });
 

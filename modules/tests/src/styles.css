@@ -5,8 +5,9 @@
   background-color: #ffffff;
 }
 
-.example-tooltip-green {
-  background-color: green;
+.example-tooltip-blue {
+  background-color: #3f51b5;
+  font-size: 16px;
 }
 
 .cdk-global-overlay-wrapper {
@@ -34,12 +35,16 @@
   width: 100%;
 }
 .mat-radio-label-content {
-  width: 90%;
+  width: 93%;
 }
 
 .mat-table {
   border: 1px solid rgba(0, 0, 0, .12);
   box-shadow: none;
+}
+
+.mat-cell{
+  justify-content: left;
 }
 
 .mat-header-cell {

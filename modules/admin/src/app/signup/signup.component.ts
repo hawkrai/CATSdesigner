@@ -76,6 +76,10 @@ export class SignupComponent implements OnInit {
     return this.form.controls[controlName].hasError(errorName);
   }
 
+  back(){
+    window.parent.location.href = "/login";
+  }
+
   isControlInvalid(controlName: string): boolean {
     const control = this.form.controls[controlName];
     return control.invalid && control.touched;
@@ -111,7 +115,7 @@ export class SignupComponent implements OnInit {
             right: '0px'
           }
         });
-        this.route.navigate(['/login']);
+        window.parent.location.href = "/login";
       });
   }
 }

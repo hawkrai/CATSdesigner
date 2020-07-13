@@ -13,6 +13,7 @@
       <div class="test-result__results-line-color"
            [class.right]="question.Points !== 0"
            [class.fail]="question.Points === 0"
+           matTooltipClass="example-tooltip-blue"
            [matTooltip]="question.QuestionTitle"
       ></div>
     </div>

@@ -155,7 +155,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         label: 'Оценка',
         notEmpty: true,
         total: true,
-        lecturer: student.LecturerName ? student.LecturerName : student.Lecturer,
+        lecturer: student.LecturerName,
         date: student.MarkDate,
         comment: student.Comment
       }
@@ -167,7 +167,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         const dateString = (date.getDay() < 10 ? '0' : '') + date.getDay() + '.' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() +
           '.' + date.getFullYear();
-        this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark, result.lecturer, result.comment, dateString)
+        this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark, student.Lecturer, result.comment, dateString)
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Оценка успешно сохранена');

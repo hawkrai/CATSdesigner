@@ -20,7 +20,9 @@
       <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <mat-form-field class="example-full-width" >
-          <input name="mark" required type="number" matInput [(ngModel)]="element.mark">
+          <input name="mark" type="number" min="0" pattern="\d*" matInput [(ngModel)]="element.mark" #mark="ngModel"
+                 (change)="onMarkChange($event.target.value)">
+          <mat-error *ngIf="mark.invalid">Больше 0</mat-error>
         </mat-form-field>
       </mat-cell>
     </ng-container>
@@ -40,5 +42,7 @@
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary" [disabled]="invalid">
+    {{data.buttonText}}
+  </button>
 </div>

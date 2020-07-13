@@ -14,19 +14,24 @@ export class NavbarStatisticComponent implements OnInit {
 
   subjectResponse: SubjectResponse;
   isLoad = false;
-  groupId: string;
+  groupName: string;
+  groupId: number;
 
   constructor(private dialog: MatDialog, private subjectService: SubjectService, private activateRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.groupId = this.activateRoute.snapshot.firstChild.params.groupId;
-    this.getSubjectName(this.groupId);
+    this.groupName = this.activateRoute.snapshot.firstChild.params.groupName;
+    if(this.groupName !== '0') {
+      this.getSubjectName(this.groupName);
+    }
+    
   }
 
-  getSubjectName(groupId) {
-    this.subjectService.getSubjects(groupId).subscribe(subjectResponse => {
+  getSubjectName(groupName) {
+    this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjectResponse = subjectResponse;
+      this.groupId = this.subjectResponse.GroupId;
       this.isLoad = true;
     });
   }

@@ -7,8 +7,11 @@
     top: 0;
     left: 0;
     min-width: 100%;
-    position: absolute;
-    background-image: linear-gradient(to bottom, rgb(52, 66, 219), rgb(63, 94, 212), rgb(74, 122, 205), rgb(84, 151, 197), rgb(95, 179, 190), rgb(106, 207, 183), rgba(131, 215, 195, 0.99), rgba(156, 223, 207, 0.98), rgba(181, 231, 219, 0.98), rgba(205, 239, 231, 0.97), rgba(230, 247, 243, 0.96), rgba(255, 255, 255, 0.95));
+    position: absolute;    
+}
+
+button{
+    margin-right: 10px;
 }
 
 .mat-card {
@@ -55,30 +58,9 @@ mat-card-content {
     font-size: 70px;
 }
 
-.button {
-    max-width: 250px;
-    background-color: cornflowerblue;
-    color: white;
-    font-size: 20px;
-    font-weight: lighter;
-    display: block;
-    position: relative;
-    border: 1px solid white;
-    border-radius: 5px 5px 5px 5px;
-    margin: 10px auto;
-    padding: 5px 40px;
-}
-
 .spinner {
     position: absolute;
     left: 50%;
     top: 50%;
 }
 
-.style-a {
-    color: cornflowerblue;
-    background: white;
-    font-size: 18px;
-    justify-content: center;
-    display: flex;
-}
