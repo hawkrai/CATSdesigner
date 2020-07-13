@@ -20,7 +20,7 @@ export class VisitStatisticComponent implements OnInit {
   private subjectId: string;
   private group: Group;
   private student: any[];
-  public scheduleProtection: ScheduleProtectionLab[];
+  public displayColumn = [];
 
 
   constructor(public dialog: MatDialog,
@@ -38,7 +38,7 @@ export class VisitStatisticComponent implements OnInit {
         // this.practicalService.getCalendar().subscribe(res => {
         //   this.scheduleProtection = res;
         // });
-
+        this.displayColumn = [];
         this.refreshMarks();
       });
     });
@@ -47,6 +47,14 @@ export class VisitStatisticComponent implements OnInit {
   refreshMarks() {
     this.practicalService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
       this.student = res;
+      res && this.setDisplayColumn(res);
+    })
+  }
+
+  setDisplayColumn(students) {
+    this.displayColumn = ['position', 'name'];
+    students.forEach(student => {
+      this.displayColumn.push(student.PracticalVisitingMarkId + student.Date);
     })
   }
 

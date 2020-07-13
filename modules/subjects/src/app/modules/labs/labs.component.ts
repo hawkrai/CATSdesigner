@@ -7,6 +7,10 @@ import {IAppState} from '../../store/state/app.state';
 import {GroupsService} from '../../services/groups/groups.service';
 import {getCurrentGroup} from '../../store/selectors/groups.selectors';
 import {filter} from 'rxjs/operators';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {DialogData} from '../../models/dialog-data.model';
+import {ComponentType} from '@angular/cdk/typings/portal';
+import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
 
 @Component({
   selector: 'app-labs',
@@ -26,6 +30,7 @@ export class LabsComponent implements OnInit {
   public refreshJobProtection = new EventEmitter();
 
   constructor(private groupsService: GroupsService,
+              public dialog: MatDialog,
               private store: Store<IAppState>) {
   }
 
@@ -93,4 +98,16 @@ export class LabsComponent implements OnInit {
   _refreshJobProtection() {
     this.refreshJobProtection.emit(new Date());
   }
+
+  checkPlagiarism() {
+    const dialogData: DialogData = {
+      body: this.subjectId
+    };
+    this.openDialog(dialogData, CheckPlagiarismPopoverComponent);
+  }
+
+  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
+    return this.dialog.open(popover, {data});
+  }
+
 }

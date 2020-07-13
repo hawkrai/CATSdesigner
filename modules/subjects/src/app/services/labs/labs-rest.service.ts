@@ -93,7 +93,14 @@ export class LabsRestService {
   }
 
   public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', body);
+    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', body).pipe(
+      map(res => res['DataD'])
+    );
   }
 
+  public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
+    return this.http.post('api/Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
+      map(res => res['DataD'])
+    );
+  }
 }

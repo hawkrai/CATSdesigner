@@ -16,6 +16,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ResultPipe} from './components/results/result.pipe/result.pipe';
 import {MarkPropertyPipe} from './components/results/mark-property.pipe/mark-property.pipe';
 import {VisitPipe} from './components/results/visit.pipe/visit.pipe';
+import {CheckPlagiarismStudentComponent} from './components/job-protection/check-plagiarism-student/check-plagiarism-student.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import {VisitPipe} from './components/results/visit.pipe/visit.pipe';
     LabWorkPopoverComponent,
     LabsMarkPopoverComponent,
     AddLabPopoverComponent,
+    CheckPlagiarismStudentComponent,
     ResultPipe,
     MarkPropertyPipe,
     VisitPipe
@@ -36,7 +38,8 @@ import {VisitPipe} from './components/results/visit.pipe/visit.pipe';
   entryComponents: [
     LabWorkPopoverComponent,
     LabsMarkPopoverComponent,
-    AddLabPopoverComponent
+    AddLabPopoverComponent,
+    CheckPlagiarismStudentComponent
   ],
   imports: [
     CommonModule,

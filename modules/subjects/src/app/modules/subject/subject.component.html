@@ -9,9 +9,8 @@
 
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Название предмета</th>
-      <td mat-cell *matCellDef="let element"
-          (click)="setSubject(element)">
-        <p class="subjects-component__name">{{element.DisplayName}}</p>
+      <td mat-cell *matCellDef="let element">
+        {{element.DisplayName}}
       </td>
     </ng-container>
 
