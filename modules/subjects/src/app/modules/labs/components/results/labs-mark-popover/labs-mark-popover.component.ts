@@ -32,7 +32,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class LabsMarkPopoverComponent implements OnInit{
+export class LabsMarkPopoverComponent implements OnInit {
 
   date = new FormControl(new Date());
 
@@ -40,6 +40,7 @@ export class LabsMarkPopoverComponent implements OnInit{
     public dialogRef: MatDialogRef<LabsMarkPopoverComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private datePipe: DatePipe) {
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

@@ -6,7 +6,7 @@ import {DeletePopoverComponent} from '../delete-popover/delete-popover.component
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {FormControl} from '@angular/forms';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
 
 
 export const MY_FORMATS = {
@@ -47,6 +47,7 @@ export class VisitDatePopoverComponent implements OnInit{
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private datePipe: DatePipe) {
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

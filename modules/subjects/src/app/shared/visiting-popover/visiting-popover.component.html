@@ -20,7 +20,7 @@
       <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <mat-form-field class="example-full-width" >
-          <input name="mark" required type="number" matInput [(ngModel)]="element.mark">
+          <input name="mark" min="1" max="4" required type="number" matInput [(ngModel)]="element.mark">
         </mat-form-field>
       </mat-cell>
     </ng-container>

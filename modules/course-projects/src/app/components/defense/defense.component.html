@@ -27,6 +27,9 @@
         <mat-icon>refresh</mat-icon>
       </button>
     </ng-container>
+    <button mat-raised-button color="primary" *ngIf="canAddJob" [disabled]="!courseUser.HasAssignedDiplomProject"
+            (click)="addJob()">Добавить работу
+    </button>
   </div>
   <div class="defense-component__body">
     <ng-container *ngIf="courseUser.IsStudent">
@@ -41,7 +44,7 @@
           </thead>
           <tbody>
           <tr class="mdc-data-table__row" *ngFor="let studentFile of userLabFiles"
-              [ngStyle]="studentFile.IsReturned ? {'background': '#ffff99'} : {}">
+              [ngClass]="{'sticky': studentFile.IsReceived, 'fix': studentFile.IsReturned}">
             <td class="mdc-data-table__cell">
               <a href="api/Upload?filename={{studentFile.Attachments[0].PathName}}//{{studentFile.Attachments[0].FileName}}">
                 {{ studentFile.Attachments[0].Name }}
@@ -65,9 +68,6 @@
           </tbody>
         </table>
       </div>
-      <button mat-raised-button color="primary" *ngIf="canAddJob" [disabled]="!courseUser.HasAssignedDiplomProject"
-              (click)="addJob()">Добавить работу
-      </button>
     </ng-container>
     <ng-container *ngIf="courseUser.IsLecturer">
       <mat-accordion *ngIf="studentFiles">
@@ -89,7 +89,7 @@
               </thead>
               <tbody *ngIf="student.FileLabs">
               <tr class="mdc-data-table__row" *ngFor="let fileLab of student.FileLabs"
-                  [ngStyle]="fileLab.IsReturned ? {'background': '#ffff99'} : {}">
+                  [ngClass]="{'sticky': fileLab.IsReceived, 'fix': fileLab.IsReturned}">
                 <td class="mdc-data-table__cell">
                   <a href="api/Upload?filename={{fileLab.Attachments[0].PathName}}//{{fileLab.Attachments[0].FileName}}">
                     {{ fileLab.Attachments[0].Name }}
@@ -123,7 +123,7 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
-      <ng-container *ngIf="courseUser.IsLecturer && !studentFiles && groups.length">
+      <ng-container *ngIf="courseUser.IsLecturer && !studentFiles">
         <ng-container *ngTemplateOutlet="load">
         </ng-container>
       </ng-container>

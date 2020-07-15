@@ -10,10 +10,12 @@ import { first } from 'rxjs/operators';
 })
 export class NavComponent implements OnInit {
   public isLector: boolean;
+  public isAdmin: boolean;
   constructor(private layoutService: LayoutService, private autService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
+    this.isAdmin = this.autService.currentUserValue.role == "admin";
   }
 
   sidenavAction() {

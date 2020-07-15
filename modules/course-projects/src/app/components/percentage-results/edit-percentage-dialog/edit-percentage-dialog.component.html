@@ -1,10 +1,5 @@
 <h1 mat-dialog-title>{{data.label}}</h1>
 <div mat-dialog-content class="dialog-content">
-  <mat-form-field class="form-field" *ngIf="data.total">
-    <mat-label>Преподаватель</mat-label>
-    <input matInput [formControl]="lecturerControl" [(ngModel)]="data.lecturer">
-    <mat-error *ngIf="lecturerControl.invalid">До 255 символов</mat-error>
-  </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label *ngIf="data.total">Оценка (от 1 до 10)</mat-label>
     <input matInput [formControl]="percentageControl" [(ngModel)]="data.mark"
@@ -25,12 +20,13 @@
     <textarea matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
     <mat-error *ngIf="commentControl.invalid">До 255 символов</mat-error>
   </mat-form-field>
+  <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
 </div>
 <div mat-dialog-actions>
   <button mat-button class="dialog-button" (click)="onCancelClick()">
     Отмена
   </button>
-  <button mat-flat-button class="dialog-button" color="accent" [disabled]="isFormInvalid()"
+  <button mat-flat-button class="dialog-button" color="primary" [disabled]="isFormInvalid()"
           [mat-dialog-close]="data">
     Сохранить
   </button>

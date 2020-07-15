@@ -19,6 +19,7 @@ export class SubjectManagementComponent implements OnInit {
     public dialogRef: MatDialogRef<SubjectManagementComponent>,
     public subjectService: SubjectService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dialogRef.disableClose = true;
   }
 
   onClick(): void {
@@ -26,7 +27,7 @@ export class SubjectManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.data.model.subjectId) {
+    if (this.data.model && this.data.model.subjectId) {
       this.subjectService.editSubject(this.data.model.subjectId).subscribe(res => {
           this.subject = res;
           this.setGroupList();
@@ -42,9 +43,8 @@ export class SubjectManagementComponent implements OnInit {
 
   save() {
     this.subject.SelectedGroups = [...this.selectedGroup.id];
-    this.subjectService.saveSubject(this.subject).subscribe(res =>
-      this.dialogRef.close(true)
-    );
+    this.subjectService.saveSubject(this.subject).subscribe(() => {});
+    this.dialogRef.close(true)
   }
 
   private setGroupList() {

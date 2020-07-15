@@ -2,13 +2,15 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Group} from "../../../../models/group.model";
 import {LabsService} from "../../../../services/labs/labs.service";
 import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../../../store/selectors/subject.selector';
+import {getSubjectId, getUser} from '../../../../store/selectors/subject.selector';
 import {IAppState} from '../../../../store/state/app.state';
 import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {LabsMarkPopoverComponent} from './labs-mark-popover/labs-mark-popover.component';
+import {LabsRestService} from '../../../../services/labs/labs-rest.service';
+import {Lab, ScheduleProtectionLab} from '../../../../models/lab.model';
 
 @Component({
   selector: 'app-results',
@@ -27,76 +29,88 @@ export class ResultsComponent implements OnInit {
   private student: any[];
   header: any[];
 
+  private user;
+
+  public labProperty: {labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]};
+
   constructor(private labService: LabsService,
               private store: Store<IAppState>,
-              public dialog: MatDialog) { }
+              private labsRestService: LabsRestService,
+              public dialog: MatDialog) {
+  }
 
   ngOnInit() {
+    this.store.pipe(select(getUser)).subscribe(user => this.user = user);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
         this.selectedGroup = group;
-
+        this.student = null;
         this.refreshStudents();
       });
     });
   }
 
   refreshStudents() {
-    this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-      this.student = res;
-      this.student.forEach(lab => {
-        if (!this.numberSubGroups.includes(lab.subGroup)) {
-          this.numberSubGroups.push(lab.subGroup);
-          this.numberSubGroups.sort((a, b) => a-b)
-        }
+    this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
+      this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+        this.student = this.filterStudentMarks(res, lab.labs);
+        this.student.forEach(lab => {
+          if (!this.numberSubGroups.includes(lab.subGroup) && lab.subGroup) {
+            this.numberSubGroups.push(lab.subGroup);
+            this.numberSubGroups.sort((a, b) => a - b)
+          }
+        });
+        res && this.setHeader(res[0].SubGroup, lab.labs);
+        this.setSubGroupDisplayColumns();
       });
-      res && this._getHeader(res[0].Marks.length);
-    })
+      this.labProperty = lab;
+    });
   }
 
-  _getHeader(length: number) {
+  setHeader(subGroup, labs: Lab[]) {
     this.header = [];
-    let i = 1;
-    while (length >= i) {
-      this.header.push({head: this._getRandom(), text: 'ЛР' + i});
-      i++
-    }
-    this.header.push({head: this._getRandom(), text: 'Средний балл'});
-    this.header.push({head: this._getRandom(), text: 'Средний балл за тест'});
-    this.header.push({head: this._getRandom(), text: 'Рейтинговая оценка'});
-    return this.header;
+    labs = labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
+    labs.forEach(lab => {
+      this.header.push({head: lab.labId.toString(), text: lab.shortName})
+    });
   }
 
-  _getSubGroupDisplayColumns(i: number) {
-    return [...this.displayedColumns, ...this.header.map(res => res.head)];
+  setSubGroupDisplayColumns() {
+    this.displayedColumns = ['position', 'name', ...this.header.map(res => res.head), 'total-lab', 'total-test', 'total'];
   }
 
   _getRandom() {
-      return Math.floor(Math.random() * Math.floor(10000)).toString();
+    return Math.floor(Math.random() * Math.floor(10000)).toString();
   }
 
   _getMark(student, i): number {
-    return [...student.Marks.map(res => res.Mark), student.LabsMarkTotal, student.TestMark,  ((Number(student.LabsMarkTotal) + Number(student.TestMark))/2)][i];
+    return [...student.Marks.map(res => res.Mark)][i];
   }
 
-  setMark(student, i) {
+  _getTotal(student) {
+    return ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2)
+  }
+
+  setMark(student, labId: string, recommendedMark?) {
     if (this.teacher) {
-      if (i < student.Marks.length) {
+      const mark = student.Marks.find(mark => mark.LabId.toString() === labId);
+      if (mark) {
         const labsMark = {
-          id: student.Marks[i].StudentLabMarkId ? student.Marks[i].StudentLabMarkId : '0',
-          comment: student.Marks[i].Comment,
-          mark: student.Marks[i].Mark,
-          date: student.Marks[i].Date,
-          labId: student.Marks[i].LabId.toString(),
+          id: mark.StudentLabMarkId ? mark.StudentLabMarkId : '0',
+          comment: mark.Comment,
+          mark: mark.Mark,
+          date: mark.Date,
+          labId: mark.LabId.toString(),
           studentId: student.StudentId.toString(),
           students: this.student
         };
         const dialogData: DialogData = {
           title: 'Выставление отметки',
           buttonText: 'Сохранить',
-          body: labsMark
+          body: labsMark,
+          model: recommendedMark
         };
         const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
 
@@ -112,5 +126,23 @@ export class ResultsComponent implements OnInit {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
+  }
+
+  private filterStudentMarks(students, labs) {
+    students.map(student => {
+      const marks = [];
+      student.Marks.forEach(mark => {
+        let contains = false;
+        labs.forEach(lab => {
+          if (lab.labId === mark.LabId) {
+            contains = true;
+          }
+        });
+        marks.push(mark);
+      });
+      student.Marks = marks;
+      return student;
+    });
+    return students
   }
 }

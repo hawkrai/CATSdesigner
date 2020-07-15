@@ -19,7 +19,6 @@ export class StatsComponent implements OnInit {
   subjects: Subject[];
   isLoad = false;
   isLoadSubject = false;
-  groupId: any;
   selectedItem: any;
   tableStats: any;
   groupName: string;
@@ -29,25 +28,15 @@ export class StatsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupId = this.route.snapshot.params.groupId;
-    this.getSubjectName(this.groupId);
-    this.getStatistic(this.groupId);
-  }
-
-  getStatistic(groupId) {
-    this.isLoad = false;
-    this.subjectService.loadGroup(groupId).subscribe(
-      res => {
-        this.studentStatistic = res.Students;
-        this.groupName = res.GroupName;
-        this.isLoad = true;
-      }
-    );
+    this.groupName = this.route.snapshot.params.groupName;
+    this.initData(this.groupName);
   }
 
   statisticSubject() {
+    console.log(this.selectedItem);
     const id = this.selectedItem;
-    if (id && id !== -1) {
+    const groupName = this.groupName;
+    if (id !== -1) {
       const subject = this.subjects.find(({Id}) => Id === id);
       this.tableStats = this.studentStatistic.map((item) => {
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
@@ -55,7 +44,7 @@ export class StatsComponent implements OnInit {
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
         const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
         return {
-          GroupName: this.groupName,
+          GroupName: groupName,
           FIO: item.FIO,
           Subject: subject.Name,
           Rating: ((userAvgLabMarks + userAvgTestMarks) / 2).toFixed(2),
@@ -73,14 +62,14 @@ export class StatsComponent implements OnInit {
         let lecturePassTotal = 0;
         let avgLabMarksTotal = 0;
         let avgTestMarksTotal = 0;
-        item.UserLabPass.map( ( statsItem, index) => {
+        item.UserLabPass.map(( statsItem, index) => {
           labPassTotal += statsItem.Value;
           lecturePassTotal += item.UserLecturePass[index].Value;
           avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
         });
         return {
-          GroupName: this.groupName,
+          GroupName: groupName,
           FIO: item.FIO,
           Subject: 'Все предметы',
           Rating: ((avgTestMarksTotal + avgLabMarksTotal) / 2).toFixed(2),
@@ -94,8 +83,8 @@ export class StatsComponent implements OnInit {
     }
   }
 
-  getSubjectName(groupId) {
-    this.subjectService.getSubjects(groupId).subscribe(subjectResponse => {
+  initData(groupName) {
+    this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjects = subjectResponse.Subjects;
       this.isLoadSubject = true;
     });
@@ -125,9 +114,7 @@ export class StatsComponent implements OnInit {
     }
     html2canvas(data).then(canvas => {
       const imgWidth = 208;
-      const pageHeight = 295;
       const imgHeight = canvas.height * imgWidth / canvas.width;
-      const heightLeft = imgHeight;
       const contentDataURL = canvas.toDataURL('image/png');
       const pdf = new jspdf('p', 'mm', 'a4');
       const position = 0;

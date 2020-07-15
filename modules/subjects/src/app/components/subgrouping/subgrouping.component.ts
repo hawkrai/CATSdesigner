@@ -1,7 +1,6 @@
-import {Component, Inject, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../models/dialog-data.model';
-import {FormControl} from '@angular/forms';
 import {SubjectService} from '../../services/subject.service';
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
@@ -31,6 +30,7 @@ export class SubgroupingComponent implements OnInit {
     public subjectService: SubjectService,
     private store: Store<IAppState>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dialogRef.disableClose = true;
   }
 
   onClick(): void {

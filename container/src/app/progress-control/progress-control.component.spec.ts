@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SendMessageComponent } from './send-message.component';
+import { ProgressControlComponent } from './progress-control.component';
 
-describe('SendMessageComponent', () => {
-  let component: SendMessageComponent;
-  let fixture: ComponentFixture<SendMessageComponent>;
+describe('ProgressControlComponent', () => {
+  let component: ProgressControlComponent;
+  let fixture: ComponentFixture<ProgressControlComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SendMessageComponent ]
+      declarations: [ ProgressControlComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SendMessageComponent);
+    fixture = TestBed.createComponent(ProgressControlComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

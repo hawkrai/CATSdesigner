@@ -1,9 +1,19 @@
 .subject-news-component {
-  overflow: hidden;
-  height: 550px;
+  overflow-x: hidden;
+  height: 670px;
+
   &__news-text {
     height: 100px;
   }
+
+  &__popover-file-button {
+    background: #388E3C;
+    color: white;
+  }
+}
+
+.attachment-text {
+  margin-top: 20px;
 }
 
 :host ::ng-deep .ck-editor__editable_inline {
@@ -30,8 +40,14 @@
   }
 }
 
+.file-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
 .mat-dialog {
   &-actions {
     justify-content: flex-end;
+    align-items: flex-end;
   }
 }

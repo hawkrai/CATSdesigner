@@ -78,6 +78,14 @@ const proxyAdmingOptions = {
   }
 }
 
+const proxyProfileOptions = { 
+  target: targetDomain, 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/Profile': 'Profile', // rewrite path
+  }
+}
+
 const proxySubjectOptions = { 
   target: targetDomain, 
   changeOrigin: true,
@@ -90,6 +98,7 @@ const proxySubjectOptions = {
 
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
+app.use('*/Profile/*', createProxyMiddleware(proxyProfileOptions));
 app.use('*/TestPassing/*', createProxyMiddleware(proxyTestPassingOptions));
 app.use('*/Tests/*', createProxyMiddleware(proxyTestOptions));
 app.use('*/api/*', createProxyMiddleware(proxyApigOptions));

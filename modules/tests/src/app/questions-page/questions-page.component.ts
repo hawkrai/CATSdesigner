@@ -1,22 +1,23 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
 import {TestService} from "../service/test.service";
 import {Question} from "../models/question/question.model";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material";
+import {MatDialog, MatSnackBar} from "@angular/material";
 import {QuestionPopupComponent} from "./components/question-popup/question-popup.component";
 import {Test} from "../models/test.model";
 import {QuestionOtherTestComponent} from "./components/question-other-test/question-other-test.component";
 import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
-import {takeUntil} from "rxjs/operators";
-import {Subject} from "rxjs";
+import {catchError, takeUntil} from "rxjs/operators";
+import {Subject, throwError} from "rxjs";
+import {DeleteQuestionConfirmationPopupComponent} from "./components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 
 
 @AutoUnsubscribe
 @Component({
-  selector: 'app-questions-page',
-  templateUrl: './questions-page.component.html',
-  styleUrls: ['./questions-page.component.less']
+  selector: "app-questions-page",
+  templateUrl: "./questions-page.component.html",
+  styleUrls: ["./questions-page.component.less"]
 })
 export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnInit {
 
@@ -29,16 +30,17 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
   constructor(private testService: TestService,
               private route: ActivatedRoute,
               private router: Router,
+              private snackBar: MatSnackBar,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
     super();
   }
 
   ngOnInit() {
-    this.testId = this.route.snapshot.paramMap.get('id');
+    this.testId = this.route.snapshot.paramMap.get("id");
     this.testService.getTestById(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((test:Test) => {
+      .subscribe((test: Test) => {
         console.log("this.test " + this.test);
         this.test = test;
       });
@@ -56,19 +58,44 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
 
   public deleteQuestion(event): void {
     this.testService.deleteQuestion(event)
-      .pipe(takeUntil(this.unsubscribeStream$))
+      .pipe(takeUntil(this.unsubscribeStream$),
+        catchError(() => {
+          this.openSnackBar("Не удалось удалить вопрос");
+          return throwError(null);
+        }))
       .subscribe();
     this.loadQuestions();
     this.cdr.detectChanges();
   }
 
+  public openSnackBar(message: string, action?: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
+
+  public openConfirmationDialog(event: any): void {
+    const dialogRef = this.dialog.open(DeleteQuestionConfirmationPopupComponent, {
+      width: "500px",
+      data: {event}
+    });
+
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
+        if (result) {
+          this.deleteQuestion(event);
+        }
+      });
+  }
+
   public openPopup(event): void {
     const title = this.test.Title;
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
-      width: '700px',
+      width: "700px",
       data: {event, title, test: this.testId},
       autoFocus: false,
-      maxHeight: '100vh'
+      maxHeight: "100vh"
     });
 
     dialogRef.afterClosed()
@@ -82,10 +109,10 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
 
   public addQuestionFromOtherTest(event): void {
     const dialogRef = this.dialog.open(QuestionOtherTestComponent, {
-      width: '700px',
+      width: "700px",
       data: {event, test: this.testId},
       autoFocus: false,
-      maxHeight: '90vh'
+      maxHeight: "90vh"
     });
 
     dialogRef.afterClosed()
@@ -107,6 +134,6 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   public navigate(): void {
-    this.router.navigate(['test-control']);
+    this.router.navigate(["test-control"]);
   }
 }

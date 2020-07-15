@@ -52,6 +52,10 @@ export class TestService {
     return this.http.post<void>("/Tests/UnlockTests", data);
   }
 
+  getFiles(): Observable<any> {
+    return this.http.get<any>("/Tests/GetFiles");
+  }
+
   deleteQuestion(id: any): Observable<void> {
     return this.http.delete<void>("/Tests/DeleteQuestion?id=" + id);
   }
@@ -64,8 +68,8 @@ export class TestService {
     return this.http.post<any>("/Tests/SaveTest", test);
   }
 
-  saveQuestion(question: Question): Observable<void> {
-    return this.http.post<void>("/Tests/SaveQuestion", question);
+  saveQuestion(question: Question): Observable<any> {
+    return this.http.post<any>("/Tests/SaveQuestion", question);
   }
 
   AddQuestionsFromAnotherTest(question: Question): Observable<void> {

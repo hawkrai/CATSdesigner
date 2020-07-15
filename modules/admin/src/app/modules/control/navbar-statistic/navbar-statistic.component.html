@@ -2,21 +2,21 @@
 <mat-toolbar *ngIf="isLoad">
     <div class="main-button">
         <mat-icon class="material-icons main-icon" aria-hidden="false">home</mat-icon>
-        <button *ngIf="this.groupId" mat-icon-button>Cats</button>
+        <button *ngIf="this.groupName" mat-icon-button>Cats</button>
     </div>
 
     <div class="nav-flex">
         <div>
-            <button *ngIf="this.groupId && this.isSubject()" mat-button [matMenuTriggerFor]="subject" class="my-menu">
+            <button *ngIf="this.groupName && this.isSubject()" mat-button [matMenuTriggerFor]="subject" class="my-menu">
                 <mat-icon class="main-icon">record_voice_over</mat-icon>
                 Предметы
             </button>
             <mat-menu #subject="matMenu" yPosition="below">
-                <button *ngFor="let element of this.subjectResponse.Subjects" routerLink="/control/item/{{this.groupId}}/{{element.Id}}" mat-menu-item>
+                <button *ngFor="let element of this.subjectResponse.Subjects" routerLink="/control/item/{{this.groupName}}/{{element.Id}}" mat-menu-item>
                     {{ element.Name }}
                 </button>
             </mat-menu>
-            <button *ngIf="this.groupId && this.isSubject()" mat-button aria-label="Stats" [routerLink]="['/control/statistic', groupId]">
+            <button *ngIf="this.groupName && this.isSubject()" mat-button aria-label="Stats" [routerLink]="['/control/statistic', groupName]">
                 <mat-icon class="main-icon">mood</mat-icon>
                 Статистика
             </button>

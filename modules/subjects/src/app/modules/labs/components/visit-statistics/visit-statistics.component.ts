@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {LabsService} from "../../../../services/labs/labs.service";
-import {ScheduleProtectionLab} from "../../../../models/lab.model";
+import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {getSubjectId} from '../../../../store/selectors/subject.selector';
@@ -28,6 +28,10 @@ export class VisitStatisticsComponent implements OnInit {
   private group: Group;
   private student: any[];
 
+  public labs: Lab[];
+  public  header = [{head: 'empty', text: '', length: 2}];
+  public displayColumnsLab = [];
+
   constructor(private labService: LabsService,
               private store: Store<IAppState>,
               public dialog: MatDialog) {
@@ -40,6 +44,10 @@ export class VisitStatisticsComponent implements OnInit {
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
         this.group = group;
         this.labService.loadData();
+
+        this.labService.getLabsProtectionSchedule().subscribe(res => {
+          this.labs = res;
+        });
 
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;
@@ -59,6 +67,7 @@ export class VisitStatisticsComponent implements OnInit {
   refreshMarks() {
     this.labService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
       this.student = res;
+      this.setSubGroupDisplayColumnsLab(res[0].SubGroup);
     })
   }
 
@@ -119,6 +128,16 @@ export class VisitStatisticsComponent implements OnInit {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
+  }
+
+  setSubGroupDisplayColumnsLab(subGroup) {
+    this.header = [{head: 'emptyPosition', text: '', length: 1}, {head: 'emptyName', text: '', length: 1}];
+    const labs = this.labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
+    console.log(labs)
+    labs.forEach(lab => {
+      this.header.push({head: lab.labId.toString(), text: lab.shortName, length: Math.floor(lab.duration/2)})
+    });
+    this.displayColumnsLab = this.header.map(res => res.head);
   }
 
 }

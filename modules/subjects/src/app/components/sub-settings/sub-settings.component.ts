@@ -4,6 +4,10 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../models/dialog-data.model';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {SubjectLectorComponent} from '../../modules/subject/subject-lector/subject-lector.component';
+import {SubjectManagementComponent} from '../../modules/subject/subject-managment/subject-management.component';
+import {select, Store} from '@ngrx/store';
+import {IAppState} from '../../store/state/app.state';
+import {getSubjectId} from '../../store/selectors/subject.selector';
 
 @Component({
   selector: 'sub-group-page',
@@ -12,7 +16,9 @@ import {SubjectLectorComponent} from '../../modules/subject/subject-lector/subje
 })
 export class SubSettingsComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,
+              private store: Store<IAppState>) {
+  }
 
   ngOnInit(): void {
   }
@@ -24,6 +30,15 @@ export class SubSettingsComponent implements OnInit {
       if (result) {
 
       }
+    });
+  }
+
+  subjectEdit() {
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      const dialogData: DialogData = {
+        model: {subjectId: subjectId}
+      };
+      this.openDialog(dialogData, SubjectManagementComponent);
     });
   }
 

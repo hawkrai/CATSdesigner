@@ -5,7 +5,6 @@ import {DialogData} from '../../../../models/dialog-data.model';
 import {Attachment} from '../../../../models/attachment.model';
 
 
-
 @Component({
   selector: 'app-lab-work-popover',
   templateUrl: './practical-lesson-popover.component.html',
@@ -19,6 +18,7 @@ export class PracticalLessonPopoverComponent implements AfterViewInit {
     public dialogRef: MatDialogRef<PracticalLessonPopoverComponent>,
     private fileService: FileService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dialogRef.disableClose = true;
   }
 
   ngAfterViewInit(): void {

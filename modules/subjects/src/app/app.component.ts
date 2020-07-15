@@ -28,7 +28,6 @@ export class AppComponent implements OnInit{
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.group && this.store.dispatch(new SetSubject(this.group));
     this.store.dispatch(new SetUser(this.user));
-    this.groupsService.loadDate();
 
   }
 }

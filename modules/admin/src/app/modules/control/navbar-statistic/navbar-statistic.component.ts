@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { SearchGroupComponent } from '../modal/search-group/search-group.component';
 import { SubjectService } from 'src/app/service/subject.service';
@@ -14,18 +14,20 @@ export class NavbarStatisticComponent implements OnInit {
 
   subjectResponse: SubjectResponse;
   isLoad = false;
-  groupId: string;
+  groupName: string;
 
   constructor(private dialog: MatDialog, private subjectService: SubjectService, private activateRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.groupId = this.activateRoute.snapshot.firstChild.params.groupId;
-    this.getSubjectName(this.groupId);
+    this.groupName = this.activateRoute.snapshot.firstChild.params.groupName;
+    if (this.groupName !== '0') {
+      this.getSubjectName(this.groupName);
+    }
   }
 
-  getSubjectName(groupId) {
-    this.subjectService.getSubjects(groupId).subscribe(subjectResponse => {
+  getSubjectName(groupName) {
+    this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjectResponse = subjectResponse;
       this.isLoad = true;
     });

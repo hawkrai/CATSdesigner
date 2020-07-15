@@ -6,7 +6,7 @@
         </mat-form-field>
 
         <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
-        <table mat-table [dataSource]="dataSource" matSort matSortStart="asc" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort matSortStart="asc">
 
             <ng-container matColumnDef="number">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>

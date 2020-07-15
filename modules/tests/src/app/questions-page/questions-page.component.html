@@ -24,7 +24,7 @@
 <div class="question-page-container-table-tests">
   <app-table-questions
     [questions]="questions"
-    (onDeleteQuestion)="deleteQuestion($event)"
+    (onDeleteQuestion)="openConfirmationDialog($event)"
     (onOpenEditPopup)="openPopup($event)">
   </app-table-questions>
   <div class="question-page__backlink" (click)="navigate()">

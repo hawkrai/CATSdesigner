@@ -8,7 +8,7 @@
     <mat-form-field>
       <mat-label>Выберите предмет</mat-label>
       <mat-select [(ngModel)]="selectedItem" name="item" (ngModelChange)="this.statisticSubject()">
-        <mat-option *ngFor="let item of this.subjects" [value]="item.Id">{{item.Name}}</mat-option>
+        <mat-option *ngFor="let item of this.subjects" [value]="item.Id">{{ item.Name }}</mat-option>
         <mat-option [value]="-1">Суммарная статистика по всем предметам</mat-option>
       </mat-select>
     </mat-form-field>

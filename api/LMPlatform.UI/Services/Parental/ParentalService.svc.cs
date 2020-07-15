@@ -2,10 +2,12 @@
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
+using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules.Parental;
+using Microsoft.AspNet.SignalR;
 
 namespace LMPlatform.UI.Services.Parental
 {
@@ -14,16 +16,20 @@ namespace LMPlatform.UI.Services.Parental
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
-        public SubjectListResult GetGroupSubjects(string groupId)
+        private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
+        public IGroupManagementService GroupManagementService => groupManagementService.Value;
+
+        public SubjectListResult GetGroupSubjectsByGroupName(string groupName)
         {
             try
             {
-                var group = int.Parse(groupId);
-                var model = SubjectManagementService.GetGroupSubjectsLite(group); // lite
+                var group = GroupManagementService.GetGroupByName(groupName);
+                var model = SubjectManagementService.GetGroupSubjectsLite(group.Id); // lite
 
                 var result = new SubjectListResult
                 {
                     Subjects = model.Select(e => new SubjectViewData(e)).ToList(),
+                    GroupId = group.Id,
                     Message = "Данные успешно загружены",
                     Code = "200"
                 };

@@ -27,6 +27,7 @@
 
     .mat-header-cell, .mat-cell {
       width: 5%;
+      padding-right: 10px;
     }
 
     .mat-cell {
@@ -42,6 +43,35 @@
       padding-right: 5px;
     }
 
+    .mat-cell {
+      &.mat-column-total-lab {
+        color: #D32F2F;
+        font-weight: 500;
+        padding: 0;
+        text-align: center;
+      }
+
+      &.mat-column-total-test {
+        color: #1976D2;
+        font-weight: 500;
+        padding: 0;
+        text-align: center;
+      }
+
+      &.mat-column-total {
+        color: #388E3C;
+        font-weight: 500;
+        padding: 0;
+        text-align: center;
+      }
+
+      &.not-all {
+        p {
+          opacity: 0.5;
+        }
+      }
+    }
+
     tr.mat-header-row {
       height: 86px;
     }
@@ -53,6 +83,32 @@
     td, th {
       border-right: 1px solid rgba(0,0,0,.12);
       border-bottom: 0;
+    }
+  }
+
+  .mark {
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+
+    .not-visit {
+      background: #BF360C;
+      width: 4.5px;
+      height: 4.5px;
+      border-radius: 2.25px;
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+    }
+  }
+  .comment {
+    position: relative;
+
+    &-icon {
+      position: absolute;
+      font-size: 10px;
+      bottom: -1px;
+      right: -3px;
     }
   }
 }

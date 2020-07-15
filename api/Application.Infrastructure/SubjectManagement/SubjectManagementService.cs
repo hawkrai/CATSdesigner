@@ -77,7 +77,13 @@ namespace Application.Infrastructure.SubjectManagement
 			return repositoriesContainer.SubjectRepository.GetSubjectsLite(groupId).Where(e => !e.IsArchive).ToList();
 		}
 
-		public Subject GetSubject(int id)
+        public Subject GetGroupSubjectsLiteByName(string groupName)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.SubjectRepository.GetAll(new Query<Subject>(e => !e.IsArchive && e.Name == groupName)).FirstOrDefault();
+        }
+
+        public Subject GetSubject(int id)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.SubjectRepository

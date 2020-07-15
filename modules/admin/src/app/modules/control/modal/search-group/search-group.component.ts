@@ -26,7 +26,7 @@ export class SearchGroupComponent implements OnInit {
 
   onClick(numb: string): void {
     if (numb) {
-      this.groupIdByGroupName(numb);
+      this.routeToControl(numb);
     }
     this.dialogRef.close();
   }
@@ -38,20 +38,9 @@ export class SearchGroupComponent implements OnInit {
     });
   }
 
-  groupIdByGroupName(numb: string) {
-    let groupId;
-    let i;
-    for (i = 0; i < this.groups.length; i++) {
-      if (numb === this.groups[i].Name) {
-        groupId = this.groups[i].Id;
-      }
-    }
-    this.routeToControl(groupId);
-  }
-
-  routeToControl(groupId) {
-    if (groupId) {
-      this.router.navigate(['/control/statistic', groupId]);
+  routeToControl(groupName) {
+    if (groupName) {
+      this.router.navigate(['/control/statistic', groupName]);
     } else {
       this.router.navigate(['/control/groupNotFound']);
     }
