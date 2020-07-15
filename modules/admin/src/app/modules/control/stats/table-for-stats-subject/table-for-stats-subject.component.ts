@@ -1,5 +1,4 @@
 import {Component, Input, OnInit, SimpleChanges, OnChanges} from '@angular/core';
-import {GroupStatsStatistic} from '../../../../model/group.stats';
 
 @Component({
   selector: 'app-table-for-stats-subject',
