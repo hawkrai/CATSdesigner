@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, ViewChildren} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {LabsService} from '../../../../services/labs/labs.service';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
@@ -11,6 +11,7 @@ import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-p
 import {User} from '../../../../models/user.model';
 import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
 import {filter} from 'rxjs/operators';
+import {CheckPlagiarismStudentComponent} from './check-plagiarism-student/check-plagiarism-student.component';
 
 @Component({
   selector: 'app-job-protection',
@@ -132,9 +133,10 @@ export class JobProtectionComponent implements OnInit {
   }
 
   checkPlagiarism(file) {
-    this.labService.checkPlagiarism({subjectId: this.subjectId, userFileId: file.Id}).subscribe(
-      res => console.log(res)
-    )
+    const dialogData: DialogData = {
+      body: {subjectId: this.subjectId, userFileId: file.Id}
+    };
+    this.openDialog(dialogData, CheckPlagiarismStudentComponent);
   }
 
   deleteLabWork(file) {

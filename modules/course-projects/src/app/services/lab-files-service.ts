@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -45,5 +46,17 @@ export class LabFilesService {
 
   public restoreFromArchive(userFileId: string): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/CancelReceivedLabFile', {userFileId});
+  }
+
+  public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', body).pipe(
+      map(res => res['DataD'])
+    );
+  }
+
+  public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
+    return this.http.post('api/Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
+      map(res => res['DataD'])
+    );
   }
 }

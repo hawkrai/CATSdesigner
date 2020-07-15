@@ -66,6 +66,13 @@ export class AddLabPopoverComponent implements AfterViewInit {
     )
   }
 
+  onPaste(clipboardData: DataTransfer): void {
+    if (clipboardData.files.length > 0) {
+      this.fileService.uploadFile(clipboardData.files[0])
+        .subscribe(files => this.files.push(files[0]));
+    }
+  }
+
   deleteFile(file) {
     this.fileService.deleteFile(file.DeleteUrl)
       .subscribe(res => console.log(res));

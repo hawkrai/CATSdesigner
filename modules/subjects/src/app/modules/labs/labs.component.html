@@ -74,6 +74,14 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-slide-toggle *ngIf="tab !== 2"
+                        class="example-margin"
+                        [color]="'primary'"
+                        [checked]="detachedGroup"
+                        (change)="groupStatusChange($event)"
+      >
+        Открепленные группы
+      </mat-slide-toggle>
       <button *ngIf="tab === 5"
               mat-icon-button
               color="primary"
@@ -88,19 +96,19 @@
       <button *ngIf="tab === 5"
               mat-icon-button
               color="primary"
+              matTooltip="Проверить на плагиат всех работ"
+              (click)="checkPlagiarism()"
+      >
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button *ngIf="tab === 5"
+              mat-icon-button
+              color="primary"
               matTooltip="Обновить данные"
               (click)="_refreshJobProtection()"
       >
         <mat-icon>cached</mat-icon>
       </button>
-      <mat-slide-toggle *ngIf="tab !== 2"
-                        class="example-margin"
-                        [color]="'primary'"
-                        [checked]="detachedGroup"
-                        (change)="groupStatusChange($event)"
-      >
-        Открепленные группы
-      </mat-slide-toggle>
     </div>
     <app-labs-work *ngIf="tab === 1" [teacher]="teacher"></app-labs-work>
     <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>

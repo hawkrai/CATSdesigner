@@ -4,7 +4,9 @@
   <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
       <mat-label>Название Новости</mat-label>
-      <input name="title" maxlength="1000" required matInput placeholder="Название" [(ngModel)]="data.model.title">
+      <input name="title" maxlength="1000" required matInput placeholder="Название"
+             [(ngModel)]="data.model.title"
+             (paste)="onPaste($event.clipboardData)">
     </mat-form-field>
 
     <mat-label>Текст Новости</mat-label>

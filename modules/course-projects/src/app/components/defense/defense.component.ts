@@ -12,7 +12,8 @@ import {CoreGroup} from '../../models/core-group.model';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {AddJobDialogComponent} from './add-project-dialog/add-job-dialog.component';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
-import {PlagiarismCheckDialogComponent} from './plagiarism-check-dialog/plagiarism-check-dialog.component';
+import {CheckPlagiarismStudentComponent} from './check-plagiarism-student/check-plagiarism-student.component';
+import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
 
 @Component({
   selector: 'app-defense',
@@ -202,10 +203,17 @@ export class DefenseComponent implements OnInit {
   }
 
   checkPlagiarism() {
-    this.dialog.open(PlagiarismCheckDialogComponent, {
-      width: '600px',
+    this.dialog.open(CheckPlagiarismPopoverComponent, {
       data: {
-        subjectId: this.subjectId
+        body: this.subjectId
+      }
+    });
+  }
+
+  checkPlagiarismFile(file) {
+    this.dialog.open(CheckPlagiarismStudentComponent, {
+      data: {
+        body: {subjectId: this.subjectId, userFileId: file.Id}
       }
     });
   }

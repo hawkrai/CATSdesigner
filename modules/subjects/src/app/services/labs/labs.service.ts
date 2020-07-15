@@ -92,4 +92,8 @@ export class LabsService {
   public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
     return this.rest.checkPlagiarism(body);
   }
+
+  public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
+    return this.rest.checkPlagiarismSubjects(body);
+  }
 }

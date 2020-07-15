@@ -34,6 +34,7 @@ export class VisitLecturesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.groupsService.loadDate();
     this.groupsService.getAllGroups().subscribe(res => {
       this.groups = res;
       this.selectGroupId = res[0].groupId;

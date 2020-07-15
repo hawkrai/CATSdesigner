@@ -52,7 +52,8 @@ import {StoreModule} from '@ngrx/store';
 import {appReducers} from './store/reducers/app.reducers';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {AddJobDialogComponent} from './components/defense/add-project-dialog/add-job-dialog.component';
-import { PlagiarismCheckDialogComponent } from './components/defense/plagiarism-check-dialog/plagiarism-check-dialog.component';
+import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
+import {CheckPlagiarismStudentComponent} from './components/defense/check-plagiarism-student/check-plagiarism-student.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { PlagiarismCheckDialogComponent } from './components/defense/plagiarism-
     DefenseComponent,
     VisitingPopoverComponent,
     AddJobDialogComponent,
-    PlagiarismCheckDialogComponent
+    CheckPlagiarismPopoverComponent,
+    CheckPlagiarismStudentComponent
   ],
     imports: [
         BrowserModule,
@@ -116,7 +118,7 @@ import { PlagiarismCheckDialogComponent } from './components/defense/plagiarism-
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
     AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent, AddJobDialogComponent,
-    PlagiarismCheckDialogComponent],
+    CheckPlagiarismPopoverComponent, CheckPlagiarismStudentComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -3,7 +3,12 @@
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>{{data.model}}</mat-label>
-      <textarea class="lab-work-component__news-text" name="body" matInput [(ngModel)]="data.body.comments"></textarea>
+      <textarea class="lab-work-component__news-text"
+                name="body"
+                matInput
+                [(ngModel)]="data.body.comments"
+                (paste)="onPaste($event.clipboardData)">
+      </textarea>
     </mat-form-field>
     <p class="mat-typography">Прикрепленный материал (Можно добавить только один файл)</p>
     <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
