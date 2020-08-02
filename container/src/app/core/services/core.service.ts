@@ -1,49 +1,49 @@
-import { Injectable, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, catchError, } from 'rxjs/operators';
+import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {map,} from "rxjs/operators";
 
-import { Subject } from './../models/subject';
-import { Message } from './../models/message';
-import { Group } from './../models/group';
+import {Subject} from "../models/subject";
+import {Message} from "../models/message";
 
-@Injectable({ providedIn: 'root' })
+
+@Injectable({providedIn: "root"})
 export class CoreService {
-    public selectedSubject: Subject;
-    private listOfSubjects: Subject[];
-    
-    constructor(private http: HttpClient) { 
-        this.selectedSubject = null;       
-    }
+  public selectedSubject: Subject;
+  private listOfSubjects: Subject[];
 
-    public sendMessage(message: Message): void {
-        window.frames[0].postMessage([{channel: message.Type, value: message.Value}], '*');
-    }
+  constructor(private http: HttpClient) {
+    this.selectedSubject = null;
+  }
 
-    getSubjects(): Observable<Subject[]>  {
-        return this.http.get<any>(`/Services/Subjects/SubjectsService.svc/List`)
-            .pipe(
-                map(subjects => {
-                    this.listOfSubjects = subjects.Subjects;                                       
-                    return this.listOfSubjects;                 
-                })
-            );
-    }
+  public sendMessage(message: Message): void {
+    window.frames[0].postMessage([{channel: message.Type, value: message.Value}], "*");
+  }
 
-    getGroups(): Observable<any>  {
-        return this.http.get<any>('/Services/CoreService.svc/GetAllGroupsLite/');
-    }
-    
-    setCurrentSubject(subject: any): void {
-        localStorage.setItem('currentSubject', JSON.stringify(subject));
-    }
+  public getSubjects(): Observable<Subject[]> {
+    return this.http.get<any>(`/Services/Subjects/SubjectsService.svc/List`)
+      .pipe(
+        map(subjects => {
+          this.listOfSubjects = subjects.Subjects;
+          return this.listOfSubjects;
+        })
+      );
+  }
 
-    removeCurrentSubject(): void {
-        this.selectedSubject = null;
-        localStorage.removeItem('currentSubject');    
-    }
+  public getGroups(): Observable<any> {
+    return this.http.get<any>("/Services/CoreService.svc/GetOnlyGroups/3");
+  }
 
-    getCurrentSubject(): any {
-        return JSON.parse(localStorage.getItem('currentSubject'));
-    }
+  public setCurrentSubject(subject: any): void {
+    localStorage.setItem("currentSubject", JSON.stringify(subject));
+  }
+
+  public removeCurrentSubject(): void {
+    this.selectedSubject = null;
+    localStorage.removeItem("currentSubject");
+  }
+
+  public getCurrentSubject(): any {
+    return JSON.parse(localStorage.getItem("currentSubject"));
+  }
 }
