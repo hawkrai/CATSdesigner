@@ -20,10 +20,10 @@ export class ConfirmationService {
   }
 
   public confirmationStudent(studentId): Observable<any> {
-    return this.http.put<any>("/Services/CoreService.svc/ConfirmationStudent/" + studentId, {});
+    return this.http.post<any>("/Services/CoreService.svc/ConfirmationStudent/" + studentId, {});
   }
 
   public unconfirmationStudent(studentId): Observable<any> {
-    return this.http.put<any>("/Services/CoreService.svc/UnConfirmationStudent/" + studentId, {});
+    return this.http.post<any>("/Services/CoreService.svc/UnConfirmationStudent/" + studentId, {});
   }
 }
