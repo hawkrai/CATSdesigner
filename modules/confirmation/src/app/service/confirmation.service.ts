@@ -12,9 +12,7 @@ export class ConfirmationService {
   }
 
   public getGroups(): Observable<any> {
-    //todo hardcode
-    const subject = JSON.parse(localStorage.getItem("currentSubject"));
-    return this.http.get<any>("/Services/CoreService.svc/GetOnlyGroups/" + subject.id || "3");
+        return this.http.get<any>("/Services/CoreService.svc/GetAllGroupsLite/");
   }
 
   public getStudents(groupId): Observable<any> {
@@ -22,7 +20,7 @@ export class ConfirmationService {
   }
 
   public confirmationStudent(studentId): Observable<any> {
-    return this.http.put<any>("/Services/CoreService.svc/СonfirmationStudent/" + studentId, {});
+    return this.http.put<any>("/Services/CoreService.svc/ConfirmationStudent/" + studentId, {});
   }
 
   public unconfirmationStudent(studentId): Observable<any> {

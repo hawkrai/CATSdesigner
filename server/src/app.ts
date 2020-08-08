@@ -5,7 +5,7 @@ import * as modules from './modules.json';
 
 const app = express();
 const port = 3000;
-const targetDomain = "http://localhost:84";
+const targetDomain = "http://host27072020.of.by";
 
 app.use(express.static(path.resolve('d:/.temp/apps')));
 

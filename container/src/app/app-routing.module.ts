@@ -5,6 +5,7 @@ import { NoAuthGuard } from './core/no-auth.guard';
 import { NoAuthGuardAdmin } from './core/no-auth-admin.guard';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
+import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { RegisterComponent } from './register/register.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 
@@ -27,7 +28,11 @@ const routes: Routes = [
       {
         path: 'viewer',
         loadChildren: () => import("./modules/viewer/viewer.module").then(m => m.ViewerModule)
-      }
+      },
+      { 
+        path: 'confirmation', 
+        component: ConfirmationComponent
+      },
     ]
   },
   { path: 'login', component: LoginComponent },
@@ -37,7 +42,7 @@ const routes: Routes = [
     path: 'adminPanel', 
     component: AdminComponent,
     canActivate: [NoAuthGuardAdmin],
-  },
+  }  
 ];
 
 @NgModule({

@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import { SignupComponent } from './signup.component';
 import {MatProgressSpinnerModule} from '@angular/material';
-import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
   declarations: [

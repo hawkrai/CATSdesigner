@@ -31,7 +31,7 @@ export class CoreService {
   }
 
   public getGroups(): Observable<any> {
-    return this.http.get<any>("/Services/CoreService.svc/GetOnlyGroups/3");
+    return this.http.get<any>("/Services/CoreService.svc/GetAllGroupsLite/");
   }
 
   public setCurrentSubject(subject: any): void {
