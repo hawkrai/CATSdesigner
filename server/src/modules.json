@@ -22,5 +22,9 @@
     "control": {
         "path": "d:/.temp/apps/admin",
         "entryPoint": "index.html"
+    },
+    "confirmation": {
+        "path": "d:/.temp/apps/confirmation",
+        "entryPoint": "index.html"
     }
 }

@@ -46,11 +46,11 @@ namespace LMPlatform.UI.Services
         StudentsResult GetStudentsByStudentGroupId(string groupId, string subjectId);
 
         [OperationContract]
-	    [WebInvoke(UriTemplate = "/СonfirmationStudent/{studentId}", RequestFormat = WebMessageFormat.Json, Method = "PUT")]
+	    [WebInvoke(UriTemplate = "/ConfirmationStudent/{studentId}", RequestFormat = WebMessageFormat.Json, Method = "POST")]
 	    StudentsResult СonfirmationStudent(string studentId);
 
 		[OperationContract]
-		[WebInvoke(UriTemplate = "/UnConfirmationStudent/{studentId}", RequestFormat = WebMessageFormat.Json, Method = "PUT")]
+		[WebInvoke(UriTemplate = "/UnConfirmationStudent/{studentId}", RequestFormat = WebMessageFormat.Json, Method = "POST")]
 		StudentsResult UnConfirmationStudent(string studentId);
 
 		[OperationContract]

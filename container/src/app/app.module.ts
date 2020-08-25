@@ -17,6 +17,7 @@ import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 import { RegisterComponent } from './register/register.component';
+import { ConfirmationComponent } from './confirmation/confirmation.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { RegisterComponent } from './register/register.component';
     LoginComponent,
     AdminComponent,
     ProgressControlComponent,
-    RegisterComponent
+    RegisterComponent,
+    ConfirmationComponent
   ],
   imports: [
     BrowserModule,
