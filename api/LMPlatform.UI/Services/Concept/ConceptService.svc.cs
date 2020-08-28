@@ -99,10 +99,11 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-				var authorId = WebSecurity.CurrentUserId;
-                var concepts = CurrentUserIsLector()  ?
-                    ConceptManagementService.GetRootElements(authorId) :
-                    ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
+				//var authorId = WebSecurity.CurrentUserId;
+                //var concepts = CurrentUserIsLector()  ?
+                //    ConceptManagementService.GetRootElements(authorId) :
+                //    ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
+                var concepts = ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
                 concepts = concepts.Where(c => c.SubjectId == subjectId);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
 
@@ -312,7 +313,19 @@ namespace LMPlatform.UI.Services.Concept
                 Subject = new Modules.Parental.SubjectViewData(subject)
             };
         }
-	    
+
+        public ConceptResult GetConceptCascade(int parenttId)
+        {
+            var concepts = ConceptManagementService.GetElementsByParentId(parenttId);
+
+            return new ConceptResult
+            {
+                ConceptCascade = new ConceptCascade(concepts),
+                Message = SuccessMessage,
+                Code = SuccessCode
+            };
+        }
+
         private AttachViewData GetNeighborConceptData(int neighborId)
         {
             var neighbor = ConceptManagementService.GetLiteById(neighborId);

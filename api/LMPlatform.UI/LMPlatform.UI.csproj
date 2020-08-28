@@ -436,6 +436,7 @@
     <Compile Include="Services\Modules\BTS\ProjectsResult.cs" />
     <Compile Include="Services\Modules\BTS\UserProjectParticipationViewData.cs" />
     <Compile Include="Services\Modules\BTS\ProjectViewData.cs" />
+    <Compile Include="Services\Modules\Concept\ConceptCascade.cs" />
     <Compile Include="Services\Modules\Concept\ConceptPageTitleData.cs" />
     <Compile Include="Services\Modules\Concept\ConceptResult.cs" />
     <Compile Include="Services\Modules\Concept\ConceptViewData.cs" />
