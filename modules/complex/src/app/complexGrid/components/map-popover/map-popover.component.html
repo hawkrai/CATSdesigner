@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Карта ЭУМК</h1>
+<div mat-dialog-content  #popoverContent>
+  <s2w-angular-d3-tree-lib [(treeData)]="chartData"
+                           (onNodeChanged)="nodeUpdated($event)"
+                           (onNodeSelected)="nodeSelected($event)"></s2w-angular-d3-tree-lib>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onNoClick()">Отмена</button>
+</div>

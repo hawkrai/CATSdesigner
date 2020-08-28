@@ -1,0 +1,17 @@
+<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+  <mat-icon>more_horiz</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openEditPopup()">
+    <mat-icon>build</mat-icon>
+    <span>Редактировать</span>
+  </button>
+  <button mat-menu-item disabled>
+    <mat-icon>delete</mat-icon>
+    <span>Удалить</span>
+  </button>
+  <button mat-menu-item (click)="openMap()">
+    <mat-icon>map</mat-icon>
+    <span>Карта ЭУМК</span>
+  </button>
+</mat-menu>

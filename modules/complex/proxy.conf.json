@@ -1,0 +1,17 @@
+{
+  "/api/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/*": ""
+    }
+  },
+  "/Services/*": {
+    "target": " http://localhost:6478",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}
