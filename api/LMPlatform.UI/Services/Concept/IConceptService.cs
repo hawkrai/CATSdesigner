@@ -21,7 +21,7 @@ namespace LMPlatform.UI.Services.Concept
         ConceptViewData GetConcept(int elementId);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetRootConcepts")]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetRootConcepts?subjectId={subjectId}")]
         ConceptResult GetRootConcepts(int subjectId);
 
         [OperationContract]
@@ -59,5 +59,9 @@ namespace LMPlatform.UI.Services.Concept
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConceptViews?conceptId={conceptId}&groupId={groupId}")]
         ConceptService.MonitoringData GetConceptViews(int conceptId, int groupId);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConceptCascade?parenttId={parenttId}")]
+        ConceptResult GetConceptCascade(int parenttId);
     }
 }

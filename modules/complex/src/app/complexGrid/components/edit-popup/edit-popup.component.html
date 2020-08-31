@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
+  <form class="example-form" #formElement>
+    <mat-form-field class="example-full-width">
+      <mat-label>Название</mat-label>
+      <textarea class="lab-work-component__news-text" maxlength="256" required name="body" placeholder="Название" matInput></textarea>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Предмет</mat-label>
+      <input name="shortName" maxlength="100" matInput placeholder="Сокращенное название" matInput [(ngModel)]="data.name">
+    </mat-form-field>
+   <mat-form-field class="example-full-width">
+      <mat-label>Материал опубликован</mat-label>
+      <input name="duration" min="1" max="99" required type="checkbox" matInput>
+    </mat-form-field>    
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button
+          (click)="onSave(data.model || data.body)"
+          color="primary"
+          [disabled]="!formElement.checkValidity()">
+    Сохранить
+  </button>
+</div>
