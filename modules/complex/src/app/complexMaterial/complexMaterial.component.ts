@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 
 @Component({
@@ -8,7 +9,15 @@ import { Component, EventEmitter, OnInit } from '@angular/core';
 })
 export class ComplexMaterialComponent implements OnInit {
   public tab = 1;
+  public complexID;
+
+  constructor(private router: Router)
+  {
+    this.complexID = this.router.getCurrentNavigation().extras.state;
+    console.log(this.complexID)
+  }
 
   ngOnInit() {
+      
   }
 }

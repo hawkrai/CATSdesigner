@@ -11,6 +11,13 @@ namespace LMPlatform.UI.Services.Modules.Concept
 		{
 			InitCascade(concepts);
 		}
+
+		public ConceptCascade(Models.Concept concept)
+		{
+			ConceptId = concept.Id;
+			ConceptName = concept.Name;
+			Children = FillCascadeTree(concept.Children);
+		}
 		public ConceptCascade()
 		{
 		}
@@ -32,24 +39,22 @@ namespace LMPlatform.UI.Services.Modules.Concept
 			{
 				ConceptId = rootElement.Id;
 				ConceptName = rootElement.Name;
-				Children = FillCascadeTree(concepts, rootElement.Id);
+				Children = FillCascadeTree(concepts);
 			}
 		}
 
-		private List<ConceptCascade> FillCascadeTree(IEnumerable<Models.Concept> concepts, int parentId)
+		private List<ConceptCascade> FillCascadeTree(IEnumerable<Models.Concept> concepts)
 		{
-			var children = concepts.Where(x => x.ParentId == parentId).ToList();
-
-			if (!children.Any())
+			if (concepts == null)
 			{
 				return new List<ConceptCascade>();
 			}
 
-			return children.Select(x => new ConceptCascade()
+			return concepts.Select(x => new ConceptCascade()
 			{
 				ConceptId = x.Id,
 				ConceptName = x.Name,
-				Children = FillCascadeTree(concepts, x.Id)
+				Children = FillCascadeTree(x.Children)
 			}).ToList();
 		}
 	}

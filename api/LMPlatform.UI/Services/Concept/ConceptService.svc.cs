@@ -103,6 +103,7 @@ namespace LMPlatform.UI.Services.Concept
                 //var concepts = CurrentUserIsLector()  ?
                 //    ConceptManagementService.GetRootElements(authorId) :
                 //    ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
+                
                 var concepts = ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
                 concepts = concepts.Where(c => c.SubjectId == subjectId);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
@@ -316,14 +317,15 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult GetConceptCascade(int parenttId)
         {
-            var concepts = ConceptManagementService.GetElementsByParentId(parenttId);
+            var concepts = ConceptManagementService.GetTreeConceptByElementId(parenttId);
 
-            return new ConceptResult
+            var res = new ConceptResult
             {
                 ConceptCascade = new ConceptCascade(concepts),
                 Message = SuccessMessage,
                 Code = SuccessCode
             };
+            return res;
         }
 
         private AttachViewData GetNeighborConceptData(int neighborId)
