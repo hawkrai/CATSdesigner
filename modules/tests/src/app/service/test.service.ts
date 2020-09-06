@@ -20,6 +20,10 @@ export class TestService {
     return this.http.get<Test[]>("/Tests/GetTests?subjectId=" + subjectId);
   }
 
+  getConcepts(subjectId: string): Observable<any> {
+    return this.http.get<any>("/Tests/GetConcepts?subjectId=" + subjectId);
+  }
+
   getQuestionsByTest(testId: string): Observable<Question[]> {
     return this.http.get<Question[]>("/Tests/GetQuestions?testId=" + testId);
   }

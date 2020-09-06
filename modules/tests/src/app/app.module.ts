@@ -46,6 +46,7 @@ import {AutocompleteFormComponent} from "./shared/autocomplete-form/autocomplete
 import {SelectAutocompleteModule} from "mat-select-autocomplete";
 import {LoginComponent} from "./login/login.component";
 import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
+import {MenuItemComponent} from "./questions-page/components/question-popup/components/menu-item/menu-item.component";
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/compone
     QuestionsPageComponent,
     TableQuestionsComponent,
     QuestionPopupComponent,
+    MenuItemComponent,
     ResultPupilComponent,
     ResultTestTableComponent,
     AngularEditorComponent,

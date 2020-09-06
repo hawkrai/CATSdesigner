@@ -2,7 +2,7 @@ export class Answer {
   QuestionId: number;
   Question: any;
   Content: string;
-  CorrectnessIndicator: number;
+  СorrectnessIndicator: number;
   IsCorrect: number;
   Id: number;
   IsNew: boolean;
