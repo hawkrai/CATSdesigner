@@ -33,7 +33,7 @@ namespace LMPlatform.UI.Services.Concept
         ConceptPageTitleData GetConceptTitleInfo(int subjectId);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConcepts")]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConcepts?parentId={parentId}")]
         ConceptResult GetConcepts(int parentId);
 
         [OperationContract]

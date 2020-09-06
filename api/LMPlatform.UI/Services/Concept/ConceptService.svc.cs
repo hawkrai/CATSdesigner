@@ -164,10 +164,8 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-                var authorId = WebSecurity.CurrentUserId;
-                var concepts = CurrentUserIsLector() ?
-                    ConceptManagementService.GetElementsByParentId(parentId, authorId) :
-                    ConceptManagementService.GetElementsByParentId(parentId);
+                //var authorId = WebSecurity.CurrentUserId;
+                var concepts = ConceptManagementService.GetElementsByParentId(parentId);
                 var concept = ConceptManagementService.GetById(parentId);
 
                 return new ConceptResult

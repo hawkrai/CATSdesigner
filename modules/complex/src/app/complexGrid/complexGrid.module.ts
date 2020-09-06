@@ -9,7 +9,6 @@ import { ComplexGridEditPopupComponent } from './components/edit-popup/edit-popu
 import { ComplexRulesPopoverComponent } from './components/complex-rules-popover/complex-rules-popover.component';
 import { AngularD3TreeLibModule } from 'angular-d3-tree';
 import { MapPopoverComponent } from './components/map-popover/map-popover.component';
-import { MapComponent } from './components/map/map.component';
 import { AppRoutingModule } from '../app-routing.module';
 
 @NgModule({
@@ -18,8 +17,7 @@ import { AppRoutingModule } from '../app-routing.module';
     GridMenuComponent,
     ComplexGridEditPopupComponent,
     ComplexRulesPopoverComponent,
-    MapPopoverComponent,
-    MapComponent
+    MapPopoverComponent
   ],
   imports: [
     CommonModule,

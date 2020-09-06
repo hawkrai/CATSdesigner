@@ -15,7 +15,7 @@ import { DialogData } from '../../../models/DialogData'
 })
 export class GridMenuComponent {
   @Input()
-  customTitle: string;
+  subjId: string;
 
   constructor(public dialog: MatDialog) { }  
 
@@ -24,8 +24,7 @@ export class GridMenuComponent {
     const dialogData: DialogData = {
       buttonText: 'Сохранить',
       width: '400px',
-      title: 'Редактирование',
-      name: this.customTitle
+      title: 'Редактирование'
     };
 
     const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);
@@ -37,12 +36,17 @@ export class GridMenuComponent {
   }
 
   openMap(): void {
+    const dialogData: DialogData = {
+      id: this.subjId
+    };
+
     const dialogRef = this.dialog.open(MapPopoverComponent, {
       width: '800px',
+      data: dialogData
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      console.log('The dialog was closed');      
     });
   }
 
