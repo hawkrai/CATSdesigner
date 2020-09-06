@@ -10,6 +10,9 @@ namespace LMPlatform.UI.Services.Modules.Concept
         public ConceptViewData Concept { get; set; }
 
         [DataMember]
+        public ConceptCascade ConceptCascade { get; set; }
+
+        [DataMember]
         public List<ConceptViewData> Concepts { get; set; }
 
         [DataMember]
