@@ -1,0 +1,46 @@
+@import '~@angular/material/theming';
+
+.tree-invisible {
+  display: none;
+}
+
+.tree ul,
+.tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.mat-tree-node {
+
+  background-color: white;
+  user-select: none;
+  cursor: move;
+  &.cdk-drag-preview { // while dragging
+    @include mat-elevation(12);
+  }
+  &.cdk-drag-placeholder { // potential drop area
+    opacity: 0;
+  }
+
+  label {
+    padding: 11px;
+    border-radius: 20px;
+  }
+
+  label:hover {
+    background: rgba(0,0,0,.04);
+  }
+
+  .highlight {
+    background: rgba(0,0,0,.2);
+  }
+}
+
+.cdk-drop-list-dragging .mat-tree-node:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+/* item being dropped */
+.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
