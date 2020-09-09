@@ -7,12 +7,9 @@
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Предмет</mat-label>
-      <input name="shortName" maxlength="100" matInput placeholder="Сокращенное название" matInput [(ngModel)]="data.name">
+      <input name="shortName" maxlength="100" placeholder="Сокращенное название" matInput [(ngModel)]="data.name">
     </mat-form-field>
-   <mat-form-field class="example-full-width">
-      <mat-label>Материал опубликован</mat-label>
-      <input name="duration" min="1" max="99" required type="checkbox" matInput>
-    </mat-form-field>    
+   <mat-checkbox matInput>Материал опубликован</mat-checkbox>   
   </form>
 </div>
 <div mat-dialog-actions>

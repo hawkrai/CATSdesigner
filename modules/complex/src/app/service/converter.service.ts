@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ComplexGrid } from '../models/ComplexGrid';
 import { ComplexTree, TreeNode } from '../models/ComplexTree';
+import { ComplexCascade } from '../models/ComplexCascade';
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +25,8 @@ export class ConverterService {
 
   public mapConverter(concept: any) {
     var tree = new ComplexTree([]);
-    tree.result.push(new TreeNode(concept.ConceptId, concept.ConceptName, null));
-    this.childMapConverter(concept.Children, tree, concept.ConceptId);
+    tree.result.push(new TreeNode(concept.Id, concept.Name, null));
+    this.childMapConverter(concept.children, tree, concept.Id);
 
     return tree;
   }
@@ -35,8 +36,8 @@ export class ConverterService {
       return;
     }
     for (let concept of childConcepts) {
-      tree.result.push(new TreeNode(concept.ConceptId, concept.ConceptName, parentId));
-      this.childMapConverter(concept.Children, tree, concept.ConceptId);
+      tree.result.push(new TreeNode(concept.Id, concept.Name, parentId));
+      this.childMapConverter(concept.children, tree, concept.Id);
     }
   }
 }

@@ -315,11 +315,11 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult GetConceptCascade(int parenttId)
         {
-            var concepts = ConceptManagementService.GetTreeConceptByElementId(parenttId);
+            var concept = ConceptManagementService.GetTreeConceptByElementId(parenttId);
 
             var res = new ConceptResult
             {
-                ConceptCascade = new ConceptCascade(concepts),
+                Concept = new ConceptViewData(concept, true),
                 Message = SuccessMessage,
                 Code = SuccessCode
             };

@@ -23,13 +23,13 @@ export class ComplexService {
 
   public getConceptCascade(parentId: string): Observable<ComplexCascade>{
     return this.http.get('/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' + parentId).pipe(
-      map(res => res['ConceptCascade'])
+      map(res => res['Concept'])
     );
   }
 
   public getConceptTree(parentId: string): Observable<ComplexTree> {
     return this.http.get('/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' + parentId).pipe(
-      map(res => this.converterService.mapConverter(res['ConceptCascade']))
+      map(res => this.converterService.mapConverter(res['Concept']))
     );
   }
 }

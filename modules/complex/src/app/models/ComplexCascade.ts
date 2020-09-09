@@ -1,5 +1,5 @@
 export class ComplexCascade{
-  ConceptId: string;
-  ConceptName: string;
-  Children?: ComplexCascade[];
+  Id: string;
+  Name: string;
+  children?: ComplexCascade[];
 }

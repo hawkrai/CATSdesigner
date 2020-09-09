@@ -5,7 +5,7 @@
       <!-- use a disabled button to provide padding for tree leaf -->
       <button mat-icon-button disabled></button>
       <a (click)="openPDF()">
-        {{node.ConceptName}}
+        {{node.Name}}
       </a><menu-icon></menu-icon>
     </li>
   </mat-tree-node>
@@ -20,7 +20,7 @@
           </mat-icon>
         </button>
         <a (click)="openPDF()">
-          {{node.ConceptName}}
+          {{node.Name}}
         </a>
       </div>
       <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)" class="contents">
