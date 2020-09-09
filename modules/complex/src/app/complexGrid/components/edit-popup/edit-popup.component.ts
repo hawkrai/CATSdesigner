@@ -22,6 +22,7 @@ export class ComplexGridEditPopupComponent {
   }
 
   onSave(data): void {
+    console.log(data);
     this.dialogRef.close(data)
   }  
 }

@@ -33,7 +33,8 @@ export class ComplexGridComponent implements OnInit {
       buttonText: 'Сохранить',
       width: '400px',
       title: 'Создание',
-      name: ''
+      name: '',
+      isNew: true
     };
 
     const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);

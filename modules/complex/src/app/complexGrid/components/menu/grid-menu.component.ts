@@ -3,7 +3,8 @@ import { ComplexGridEditPopupComponent } from '../edit-popup/edit-popup.componen
 import { MapPopoverComponent } from '../map-popover/map-popover.component';
 import { ComponentType } from '@angular/cdk/typings/portal';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogData } from '../../../models/DialogData'
+import { DialogData } from '../../../models/DialogData';
+import { ComplexService } from '../../../service/complex.service';
 
 /**
  * @title Menu with icons
@@ -15,29 +16,34 @@ import { DialogData } from '../../../models/DialogData'
 })
 export class GridMenuComponent {
   @Input()
-  subjId: string;
+  complexId: string;
 
-  constructor(public dialog: MatDialog) { }  
+  constructor(public dialog: MatDialog, private complexService: ComplexService) { }  
 
   openEditPopup(): void {
 
-    const dialogData: DialogData = {
-      buttonText: 'Сохранить',
-      width: '400px',
-      title: 'Редактирование'
-    };
+    this.complexService.getConceptCascade(this.complexId).subscribe(res => {
+      const dialogData: DialogData = {
+        buttonText: 'Сохранить',
+        width: '400px',
+        title: 'Редактирование',
+        isNew: false,
+        name: res.Name,
+        subjectName: res.SubjectName,
+        isPublished: res.IsPublished
+      };
 
-    const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);
+      const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+      }); 
     });
-
   }
 
   openMap(): void {
     const dialogData: DialogData = {
-      id: this.subjId
+      id: this.complexId
     };
 
     const dialogRef = this.dialog.open(MapPopoverComponent, {
