@@ -26,6 +26,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
   public test: Test;
   public testId: string;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  private isEUMKTest: boolean;
 
   constructor(private testService: TestService,
               private route: ActivatedRoute,
@@ -43,6 +44,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       .subscribe((test: Test) => {
         console.log("this.test " + this.test);
         this.test = test;
+        this.isEUMKTest = test.BeforeEUMK || test.ForEUMK;
       });
     this.loadQuestions();
   }
@@ -93,7 +95,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     const title = this.test.Title;
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       width: "700px",
-      data: {event, title, test: this.testId},
+      data: {event, title, test: this.testId, isEUMKTest: this.isEUMKTest},
       autoFocus: false,
       maxHeight: "100vh"
     });
