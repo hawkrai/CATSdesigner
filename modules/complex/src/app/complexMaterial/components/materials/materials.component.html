@@ -4,7 +4,8 @@
     <li class="mat-tree-node">
       <!-- use a disabled button to provide padding for tree leaf -->
       <button mat-icon-button disabled></button>
-      <a (click)="openPDF()">
+      <mat-icon> insert_drive_file</mat-icon>
+      <a class ="btn" (click)="openPDF()">
         {{node.Name}}
       </a><menu-icon></menu-icon>
     </li>
@@ -15,13 +16,12 @@
       <div class="mat-tree-node">
         <button mat-icon-button matTreeNodeToggle
                 [attr.aria-label]="'toggle ' + node.name">
-          <mat-icon class="mat-icon-rtl-mirror">
+          <mat-icon class="mat-icon-rtl-mirror expandable">
             {{treeControl.isExpanded(node) ? '-' : '+'}}
+            folder
           </mat-icon>
         </button>
-        <a (click)="openPDF()">
-          {{node.Name}}
-        </a>
+        {{node.Name}}
       </div>
       <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)" class="contents">
         <ng-container matTreeNodeOutlet></ng-container>
