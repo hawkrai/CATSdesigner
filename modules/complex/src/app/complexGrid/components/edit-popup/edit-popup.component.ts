@@ -1,6 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DialogData } from '../../../models/DialogData'
+import { DialogData } from '../../../models/DialogData';
+import { ComplexService } from '../../../service/complex.service';
+import { Complex } from '../../../models/Complex';
 
 @Component({
   selector: 'grid-edit-popup',
@@ -13,7 +15,8 @@ export class ComplexGridEditPopupComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ComplexGridEditPopupComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private complexService: ComplexService) {
     this.dialogRef.disableClose = true;
   }  
    
@@ -22,7 +25,16 @@ export class ComplexGridEditPopupComponent {
   }
 
   onSave(data): void {
-    console.log(data);
+    debugger;
+
+    if (!data.isNew) {
+      const complex: Complex = {
+        elementId: +data.id,
+        name: data.name,
+        isPublished: data.isPublished
+      }
+      this.complexService.editRootConcept(complex);
+    }
     this.dialogRef.close(data)
   }  
 }

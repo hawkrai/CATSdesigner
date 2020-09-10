@@ -313,6 +313,29 @@ namespace LMPlatform.UI.Services.Concept
             };
         }
 
+        public ConceptResult EditRootConcept(int elementId, string name, bool isPublished)
+        {
+            try
+            {
+                ConceptManagementService.UpdateRootConcept(elementId, name, isPublished);
+
+                return new ConceptResult
+                {                    
+                    Message = SuccessMessage,
+                    Code = SuccessCode                    
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ConceptResult
+                {
+                    Message = ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
+        }
+
         public ConceptResult GetConceptCascade(int parenttId)
         {
             var concept = ConceptManagementService.GetTreeConceptByElementId(parenttId);

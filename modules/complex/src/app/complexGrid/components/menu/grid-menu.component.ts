@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { ComplexGridEditPopupComponent } from '../edit-popup/edit-popup.component';
 import { MapPopoverComponent } from '../map-popover/map-popover.component';
 import { ComponentType } from '@angular/cdk/typings/portal';
@@ -18,7 +19,7 @@ export class GridMenuComponent {
   @Input()
   complexId: string;
 
-  constructor(public dialog: MatDialog, private complexService: ComplexService) { }  
+  constructor(public dialog: MatDialog, private complexService: ComplexService, private router: Router) { }  
 
   openEditPopup(): void {
 
@@ -36,7 +37,7 @@ export class GridMenuComponent {
       const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);
 
       dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
+        this.router.navigate(['/main']);
       }); 
     });
   }

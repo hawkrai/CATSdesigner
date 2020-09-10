@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 import { ComplexGrid } from '../models/ComplexGrid';
 import { ComplexCascade } from '../models/ComplexCascade';
 import { ComplexTree } from '../models/ComplexTree';
+import { Complex } from '../models/Complex';
 import { ConverterService } from "./converter.service";
 
 @Injectable({
@@ -31,5 +32,9 @@ export class ComplexService {
     return this.http.get('/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' + parentId).pipe(
       map(res => this.converterService.mapConverter(res['Concept']))
     );
+  }
+
+  public editRootConcept(complex: Complex) {
+    this.http.post('Services/Concept/ConceptService.svc/EditRootConcept', complex);
   }
 }

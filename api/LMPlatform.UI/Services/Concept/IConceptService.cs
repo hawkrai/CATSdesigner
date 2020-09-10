@@ -13,6 +13,10 @@ namespace LMPlatform.UI.Services.Concept
         ConceptResult SaveRootConcept(string name, string container, int subject);
 
         [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/EditRootConcept")]
+        ConceptResult EditRootConcept(int elementId, string name, bool isPublished);
+
+        [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/AttachSiblings")]
         ConceptResult AttachSiblings(int source, int left, int right);
 
