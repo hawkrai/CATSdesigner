@@ -14,8 +14,21 @@
       <input matInput [formControl]="templateNameControl">
       <mat-error *ngIf="templateNameControl.invalid">До 30 символов</mat-error>
     </mat-form-field>
-    <button mat-flat-button color="primary" [disabled]="templateNameControl.invalid || isFormInvalid()"
+    <button mat-flat-button class="saveTemplateButton" color="primary" [disabled]="templateNameControl.invalid || isFormInvalid()"
             (click)="saveTemplate()">Сохранить шаблон</button>
+  </div>
+
+  <div class="apply-template">
+    <mat-form-field>
+      <mat-label>Группы</mat-label>
+      <mat-select multiple [(value)]="selectedGroups">
+        <mat-option *ngFor="let group of data.groups" [value]="group.Name">
+          {{group.Name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-flat-button class="applyButton" color="primary" [disabled]="isSelectedGroupsInvalid() || templateNameControl.invalid || isFormInvalid()"
+            (click)="applyTemplate()">Применить шаблон</button>
   </div>
 
   <mat-tab-group dynamicHeight class="dialog-tab-content">

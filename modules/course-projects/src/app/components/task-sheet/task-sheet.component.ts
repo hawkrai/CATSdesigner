@@ -9,6 +9,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {getSubjectId} from '../../store/selectors/subject.selector';
+import {Group} from '../../models/group.model';
 
 @Component({
   selector: 'app-task-sheet',
@@ -18,6 +19,7 @@ import {getSubjectId} from '../../store/selectors/subject.selector';
 export class TaskSheetComponent implements OnInit {
 
   @Input() courseUser: CourseUser;
+  @Input() groups: Group[];
 
   private themes: Theme[];
   private taskSheetHtml: any;
@@ -71,7 +73,8 @@ export class TaskSheetComponent implements OnInit {
         width: '700px',
         data: {
           subjectId: this.subjectId,
-          taskSheet: response
+          taskSheet: response,
+          groups: this.groups,
         }
       });
 

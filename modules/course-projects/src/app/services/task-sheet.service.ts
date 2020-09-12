@@ -22,6 +22,10 @@ export class TaskSheetService {
     return this.http.get('api/CpTaskSheet', {params: new HttpParams({fromObject: params})});
   }
 
+  public getTaskSheets(params: string): Observable<any> {
+    return this.http.get('api/CpTaskSheet', { params: new HttpParams({ fromString: params }) });
+  }
+
   public getTemplateList(params: any): Observable<any> {
     return this.http.get('api/cpcorrelation', {params: new HttpParams({fromObject: params})});
   }

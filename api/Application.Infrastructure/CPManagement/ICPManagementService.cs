@@ -56,6 +56,8 @@ namespace Application.Infrastructure.CPManagement
 
         TaskSheetData GetTaskSheet(int courseProjectId);
 
+        List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms);
+
         void SaveTaskSheet(int userId, TaskSheetData taskSheet);
 
         void SetSelectedGroupsToCourseProjects(int subjectId, List<int> groupIds);

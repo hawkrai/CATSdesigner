@@ -439,6 +439,71 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
+        public List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms)
+        {
+            var subjectId = int.Parse(parms.Filters["subjectId"]);
+            var searchString = parms.Filters["searchString"];
+
+            var query = Context.CourseProjects.AsNoTracking()
+                .Include(x => x.Lecturer)
+                .Include(x => x.AssignedCourseProjects.Select(asp => asp.Student.Group))
+                .Include(x => x.Subject);
+
+            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+
+            if (user != null && user.Lecturer != null)
+            {
+                query = query.Where(x => x.LecturerId == userId).Where(x => x.SubjectId == subjectId);
+            }
+
+            if (user != null && user.Student != null)
+            {
+                query = query.Where(x => x.CourseProjectGroups.Any(dpg => dpg.GroupId == user.Student.GroupId)).Where(x => x.SubjectId == subjectId);
+            }
+
+            if (searchString.Length > 0)
+            {
+                var taskSheets = from cp in query
+                                 let acp = cp.AssignedCourseProjects.FirstOrDefault()
+                                 where acp.Student.LastName.Contains(searchString) ||
+                                        cp.Theme.Contains(searchString) ||
+                                        acp.Student.Group.Name.Contains(searchString)
+                                 select new TaskSheetData
+                                 {
+                                     CourseProjectId = cp.CourseProjectId,
+                                     InputData = cp.InputData,
+                                     Consultants = cp.Consultants,
+                                     DrawMaterials = cp.DrawMaterials,
+                                     RpzContent = cp.RpzContent,
+                                     Faculty = cp.Faculty,
+                                     HeadCathedra = cp.HeadCathedra,
+                                     Univer = cp.Univer,
+                                     DateEnd = cp.DateEnd,
+                                     DateStart = cp.DateStart
+                                 };
+                return taskSheets.ToList();
+            }
+            else
+            {
+                var taskSheets = from cp in query
+                                     let acp = cp.AssignedCourseProjects.FirstOrDefault()
+                                     select new TaskSheetData
+                                     {
+                                         CourseProjectId = cp.CourseProjectId,
+                                         InputData = cp.InputData,
+                                         Consultants = cp.Consultants,
+                                         DrawMaterials = cp.DrawMaterials,
+                                         RpzContent = cp.RpzContent,
+                                         Faculty = cp.Faculty,
+                                         HeadCathedra = cp.HeadCathedra,
+                                         Univer = cp.Univer,
+                                         DateEnd = cp.DateEnd,
+                                         DateStart = cp.DateStart
+                                     };
+                return taskSheets.ToList();
+            }
+        }
+
         public TaskSheetData GetTaskSheet(int courseProjectId)
         {
             var dp = Context.CourseProjects.Single(x => x.CourseProjectId == courseProjectId);
