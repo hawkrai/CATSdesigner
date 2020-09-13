@@ -26,5 +26,9 @@
     "confirmation": {
         "path": "d:/.temp/apps/confirmation",
         "entryPoint": "index.html"
+    },
+    "libBook": {
+        "path": "d:/.temp/apps/libBook",
+        "entryPoint": "index.html"
     }
 }

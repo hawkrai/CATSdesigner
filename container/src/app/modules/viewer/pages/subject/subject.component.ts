@@ -13,8 +13,8 @@ import { Message } from './../../../../core/models/message';
 })
 export class SubjectComponent implements OnInit {
   public selectedModule: SafeResourceUrl;
-  private availableFragments:string[] =  ["news", "lectures", "labs", "practical", "testsModule", "course", "settings"];
-  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "practical", "page", "", "settings"];
+  private availableFragments:string[] =  ["news", "lectures", "labs", "practical", "testsModule", "course", "settings", "libBook"];
+  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "practical", "page", "", "settings", "libBook"];
   public clickedItem: string;
   public isLector:boolean = false;
   private originalModule: string; 
@@ -65,6 +65,8 @@ export class SubjectComponent implements OnInit {
         break; 
       case "course":
         return "course";
+      case "libBook":
+        return "libBook";
         break; 
       case "settings":
         return "subject";
