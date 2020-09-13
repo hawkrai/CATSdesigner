@@ -30,5 +30,9 @@
     "libBook": {
         "path": "d:/.temp/apps/libBook",
         "entryPoint": "index.html"
+    },
+    "complex": {
+        "path": "d:/.temp/apps/complex",
+        "entryPoint": "index.html"
     }
 }
