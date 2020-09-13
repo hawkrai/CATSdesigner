@@ -10,8 +10,8 @@
   font-size: 16px;
 }
 
-.cdk-global-overlay-wrapper {
-  display: flex;
+.cdk-global-overlay-wrapper {  
+  display: -webkit-box;
   position: absolute;
   z-index: 1000;
   overflow: auto;
@@ -20,6 +20,10 @@
 
 .cdk-global-scrollblock {
   overflow-y: hidden;
+}
+
+.mat-dialog-container{
+	border-radius: unset !important;
 }
 
 .mat-checkbox-layout {
