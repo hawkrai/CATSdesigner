@@ -1,0 +1,26 @@
+<mat-grid-list cols="3" rowHeight="1:1" class="sub-settings">
+    <mat-grid-tile>
+        <div (click)="supgrouping()" class="ripple-container mat-elevation-z6" matRipple>
+            <div>
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">view_week</i>
+            </div>
+            <h3>Разделение на подгруппы</h3>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div (click)="subjectEdit()" class="ripple-container mat-elevation-z6" matRipple>
+            <div>
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">edit</i>
+            </div>
+            <h3>Редактирование предмета</h3>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <div (click)="addProfes()" class="ripple-container mat-elevation-z6" matRipple>
+            <div>
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">add</i>
+            </div>
+            <h3>Добавление преподавателя к предмету</h3>
+        </div>
+    </mat-grid-tile>
+  </mat-grid-list>

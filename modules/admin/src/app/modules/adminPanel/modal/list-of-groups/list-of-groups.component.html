@@ -1,0 +1,36 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<div *ngIf="isLoad">
+    <div class="container">
+        <p class="title">Список предметов</p>
+        <button mat-button class="close-icon" [mat-dialog-close]="true">
+          <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <p class="lector-info">{{ this.groupInfo.Lecturer }}</p>
+    <div mat-dialog-content class="list-of-groups">
+        <table mat-table [dataSource]="this.groupInfo.Subjects">
+
+            <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef> Предмет </th>
+                <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="groups">
+                <th mat-header-cell *matHeaderCellDef> Группа </th>
+                <td class="table-container" mat-cell *matCellDef="let element">
+                    <p *ngFor="let group of element.Groups">{{ group.GroupName }}</p>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="countOfStudents">
+                <th mat-header-cell *matHeaderCellDef> Количество студентов </th>
+                <td class="table-container" mat-cell *matCellDef="let element">
+                    <p *ngFor="let count of element.Groups">{{ count.StudentsCount }}</p>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@material/button/dist/mdc.button.min.css";
+@import "~material-design-icons/iconfont/material-icons.css";
+@import "~@material/data-table/dist/mdc.data-table.min.css";
+@import "~@material/tab-bar/dist/mdc.tab-bar.min.css";
+@import "~@material/tab-indicator/dist/mdc.tab-indicator.min.css";
+@import "~@material/tab/dist/mdc.tab.min.css";
+@import "~@material/dialog/dist/mdc.dialog.min.css";
+@import "~@material/checkbox/dist/mdc.checkbox.min.css";
+@import "~@material/form-field/dist/mdc.form-field.min.css";
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import "~@material/drawer/dist/mdc.drawer.min.css";
+@import "~@material/list/dist/mdc.list.min.css";
+@import "~@material/theme/dist/mdc.theme.css";
+
+:root {
+  --mdc-theme-primary: #3f51b5;
+}
+.mdc-drawer .mdc-list-item--activated {
+  color: var(--mdc-theme-primary, #3f51b5);
+}
+
+.spinner {
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+._excel-file {
+  font-size: 36px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.content {
+  padding: 20px 15px;
+  overflow: auto;
+}
+
+.attachment-text {
+  padding-bottom: 9.5px;
+  margin: 10px 0 20px;
+  border-bottom: 1px solid #dddddd;
+  font-size: 22px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+table.mat-table {
+  border: 1px solid rgba(0,0,0,.12);
+  border-right: none;
+  box-shadow: none;
+}
+
+.mat-column-name {
+  padding-right: 10px !important;
+}

@@ -1,0 +1,104 @@
+<!--<app-header [text]="'Тестирование и отладка ПО'"
+            [smallText]="'Результаты тестов'"></app-header>
+<app-main-page *ngIf="groups"
+               [allowChanges]="true"
+               (onValueChangeSearch)="filterStudents($event)"
+               (groupValueChange)="groupValueChange($event)"
+               [adminTests]="false"
+               [groupDropdown]="true"
+               [groups]="groups"
+               [adminQuestions]="false"></app-main-page>-->
+<div class="result-teacher-autocomplete">
+  <app-autocomplete-form class="result-teacher-autocomplete-item"
+                         *ngIf="groupsList && groupsList.length"
+                         [options]="groupsList"
+                         [preselected]="true"
+                         [placeholder]="'Выберите группу'"
+                         (onSelectionChange)="groupChange($event)"
+  ></app-autocomplete-form>
+  <app-autocomplete-form class="result-teacher-autocomplete-item-test"
+                         *ngIf="testsList && testsList.length"
+                         [options]="testsList"
+                         [preselected]="true"
+                         [placeholder]="'Выберите тест'"
+                         (onSelectionChange)="testsChange($event)"
+  ></app-autocomplete-form>
+  <app-autocomplete-form class="result-teacher-autocomplete-item"
+                         *ngIf="studentList && studentList.length"
+                         [options]="studentList"
+                         [placeholder]="'Выберите студентов'"
+                         (onSelectionChange)="studentChange($event)"
+  ></app-autocomplete-form>
+</div>
+<div>
+  <div *ngIf="testChangeCheckBoxes.includes('0')">
+    <div class="result-teacher-group">
+      {{"Тесты для контроля знаний"}}
+    </div>
+    <div *ngFor="let test of knowledgeControlTestsMass">
+      <div class="result-teacher-group">{{test.group}}</div>
+      <div
+        *ngIf="test.res &&
+            (test.res[0] || test.res[1] || test.res[2]) &&
+            (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
+        <app-result-test-table [size]="size" [loading]="loading" [tests]="test.res"
+                               [name]="'knowledgeControlTests'"></app-result-test-table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="testChangeCheckBoxes.includes('1')">
+    <div class="result-teacher-group">
+      {{"Тесты для самоконтроля"}}
+    </div>
+    <div *ngFor="let test of selfControlTestsMass">
+      <div
+        *ngIf="test.res &&
+            (test.res[0] || test.res[1] || test.res[2]) &&
+            (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
+        <app-result-test-table [loading]="loading" [tests]="test.res"
+                               [name]="'selfControlTests'"></app-result-test-table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="testChangeCheckBoxes.includes('2')">
+    <div class="result-teacher-group">
+      {{"Предтест для обучения в ЭУМК"}}
+    </div>
+    <div *ngFor="let test of beforeEUMKTestsMass">
+      <div
+        *ngIf="test.res &&
+            (test.res[0] || test.res[1] || test.res[2]) &&
+            (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
+        <app-result-test-table [loading]="loading" [tests]="test.res"
+                               [name]="'beforeEUMKTests'"></app-result-test-table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="testChangeCheckBoxes.includes('3')">
+    <div class="result-teacher-group">
+      {{"Тесты для обучения в ЭУМК"}}
+    </div>
+    <div *ngFor="let test of forEUMKTestsMass">
+      <div
+        *ngIf="test.res &&
+            (test.res[0] || test.res[1] || test.res[2]) &&
+            (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
+        <app-result-test-table [loading]="loading" [tests]="test.res"
+                               [name]="'forEUMKTests'"></app-result-test-table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="testChangeCheckBoxes.includes('4')">
+    <div class="result-teacher-group">
+      {{"Тесты для обучения с искусственной нейронной сетью"}}
+    </div>
+    <div *ngFor="let test of forEUMKTestsMass">
+      <div
+        *ngIf="test.res &&
+            (test.res[0] || test.res[1] || test.res[2]) &&
+            (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
+        <app-result-test-table [loading]="loading" [tests]="test.res" [name]="'nNTests'"></app-result-test-table>
+      </div>
+    </div>
+  </div>
+</div>

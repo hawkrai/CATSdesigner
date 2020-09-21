@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content class="results__popover" #popoverContent>
+  <form class="example-form" #formElement>
+    <mat-form-field class="example-full-width">
+      <mat-label>Преподаватель</mat-label>
+      <input name="teacher" matInput placeholder="Преподаватель" [(ngModel)]="data.body.teacher">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Выставьте отметку (от 0 до 10)</mat-label>
+      <input name="title" min="0" max="10" required type="number" matInput placeholder="Оценка" [(ngModel)]="data.body.mark">
+      <mat-hint *ngIf="data.model">Рекомендуемая оценка {{data.model}}</mat-hint>
+    </mat-form-field>
+    <mat-form-field class="date">
+      <mat-label>Дата выставления</mat-label>
+      <input matInput
+             [matDatepicker]="picker"
+             [value]="date.value"
+             (dateChange)="setDate($event.value)"
+      >
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Комментарий</mat-label>
+      <textarea class="results__comment" name="comment" matInput [(ngModel)]="data.body.comment" ></textarea>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button
+          [mat-dialog-close]="data.model || data.body"
+          color="primary"
+          [disabled]="!formElement.checkValidity()"
+  >
+    {{data.buttonText}}</button>
+</div>

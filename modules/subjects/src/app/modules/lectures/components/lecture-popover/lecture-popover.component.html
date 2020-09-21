@@ -1,0 +1,62 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content class="lectures-component__popover" #popoverContent>
+  <form class="example-form" #formElement>
+    <mat-form-field class="example-full-width">
+      <mat-label>Тема лекции</mat-label>
+      <textarea required class="lectures-component__news-text" maxlength="256" name="body" matInput [(ngModel)]="data.model.theme"></textarea>
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Порядковый номер лекций</mat-label>
+      <input name="order" min="1" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Количество часов(1-99)</mat-label>
+      <input name="duration" min="1" max="99" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
+    </mat-form-field>
+    <h4 class="attachment-text mat-typography">Прикрепленный материал</h4>
+    <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
+    <button mat-flat-button class="lectures-component__popover-file-button" (click)="csvInput.click()">Добавить файл</button>
+    <div class="mdc-data-table file-table" *ngIf="files.length">
+      <table class="mdc-data-table__table">
+        <tbody>
+        <tr class="mdc-data-table__row" *ngFor="let file of files">
+          <td class="mdc-data-table__cell example-content icon-cell">
+            <i class="material-icons mdc-list-item__graphic"
+               aria-hidden="true"
+               *ngIf="file.Type.toLowerCase() !== 'image'; else image">description</i>
+            <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
+          </td>
+          <td class="mdc-data-table__cell example-content">
+            <a matTooltip="{{file.Name}}" matTooltipPosition="below"
+               href="{{file.IdFile === -1 ? '#' : file.Url}}">
+              {{file.Name}}
+            </a>
+          </td>
+          <td class="mdc-data-table__cell example-content">{{file.Type}}</td>
+          <td class="mdc-data-table__cell example-content">{{(file.Size / 1024).toFixed(2)}} КБ</td>
+          <td class="mdc-data-table__cell" style="color: red" *ngIf="file.IdFile === -1; else attached">
+            Загруженный файл
+          </td>
+          <ng-template #attached>
+            <td class="mdc-data-table__cell" style="color: blue" *ngIf="file.IdFile !== -1">Прикрепленный файл
+            </td>
+          </ng-template>
+          <td class="mdc-data-table__cell" style="padding-left: 0">
+            <button mat-icon-button color="primary" matTooltip="Удалить файл" matTooltipPosition="before" (click)="deleteFile(file)">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button
+          (click)="onSave(data.model || data.body)"
+          color="primary"
+          [disabled]="!formElement.checkValidity()"
+  >{{data.buttonText}}</button>
+</div>

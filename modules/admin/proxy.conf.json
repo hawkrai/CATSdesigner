@@ -1,0 +1,32 @@
+{
+  "/api/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/Services/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/Account/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/Administration/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/Profile/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

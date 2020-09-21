@@ -1,0 +1,43 @@
+<ng-container>
+  <div>
+<!--
+    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
+      &lt;!&ndash; Position Column &ndash;&gt;
+      <ng-container matColumnDef="Id">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
+        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index+1}}</mat-cell>
+      </ng-container>
+
+      &lt;!&ndash; Name Column &ndash;&gt;
+      <ng-container matColumnDef="StudentName">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-name">Студент</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="mat-header-cell-name"> {{element.StudentName}}</mat-cell>
+      </ng-container>
+
+      &lt;!&ndash; Weight Column &ndash;&gt;
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">Оценка</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="mat-header-cell-action">
+          {{(element.Points ? element.Points : 0) + "(" + (element.Percent ? element.Percent : 0) + "%)"}}
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+-->
+  </div>
+</ng-container>
+<ng-template #loading>
+  <mat-card>
+    <mat-card-content>
+      <section class="example-section">
+        <mat-progress-bar
+          class="example-margin"
+          [color]="'primary'"
+          [mode]="'indeterminate'">
+        </mat-progress-bar>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

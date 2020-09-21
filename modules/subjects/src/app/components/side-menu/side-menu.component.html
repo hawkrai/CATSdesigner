@@ -1,0 +1,29 @@
+<div class="side-menu-component">
+  <aside class="mdc-drawer">
+    <div class="mdc-drawer__content">
+      <nav class="mdc-list">
+        <a class="mdc-list-item" aria-current="page"
+           *ngFor="let menuElement of menuElements"
+           [ngClass]="{'mdc-list-item--activated': menuElement.tab === pageName}"
+           [routerLink]="menuElement.tab"
+           (click)="selectedTab(menuElement)"
+        >
+          <span class="mdc-list-item__text">{{ menuElement.name }}</span>
+        </a>
+        <hr>
+        <a class="mdc-list-item" aria-current="page"
+           (click)="subjectManagement()"
+        >
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">settings</i>
+          <span class="mdc-list-item__text">Управление предметом</span>
+        </a>
+        <a class="mdc-list-item" aria-current="page"
+           (click)="supgrouping()"
+        >
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">settings</i>
+          <span class="mdc-list-item__text">Разделение на подгруппы</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+</div>

@@ -1,0 +1,34 @@
+<!--<app-header [text]="'Тестирование и отладка ПО'"
+            [smallText]="'Управление тестами'"></app-header>-->
+<div class="question-page-container">
+  <div class="question-page-description-title">
+    <div class="question-page-description-title-text">
+      Вопросы
+    </div>
+    <div class="question-page-description-title-text" [ngClass]="'small'" *ngIf="test">
+      {{test.Title}}
+    </div>
+  </div>
+</div>
+<div class="question-page__backlink-first" (click)="navigate()">
+  <mat-icon>keyboard_backspace</mat-icon>
+  {{"Вернуться к тестам"}}
+</div>
+<app-main-page [allowChanges]="true"
+               [adminTests]="false"
+               [adminQuestions]="true"
+               [forNN]="test?.ForNN"
+               (addNewQuestion)="addNewQuestion()"
+               (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest($event)"
+               (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
+<div class="question-page-container-table-tests">
+  <app-table-questions
+    [questions]="questions"
+    (onDeleteQuestion)="openConfirmationDialog($event)"
+    (onOpenEditPopup)="openPopup($event)">
+  </app-table-questions>
+  <div class="question-page__backlink" (click)="navigate()">
+    <mat-icon>keyboard_backspace</mat-icon>
+    {{"Вернуться к тестам"}}
+  </div>
+</div>

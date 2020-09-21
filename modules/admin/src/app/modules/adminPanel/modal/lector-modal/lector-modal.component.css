@@ -1,0 +1,23 @@
+mat-dialog-content {
+  width: 450px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.checkbox {
+  margin-top: 20px;
+}
+
+mat-dialog-actions {
+  margin-top: 20px;
+}
+
+mat-dialog-actions {
+  float: right;
+}
+
+.mat-progress-spinner {
+  position: initial;
+}

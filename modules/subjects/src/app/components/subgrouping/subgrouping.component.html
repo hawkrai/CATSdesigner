@@ -1,0 +1,69 @@
+<div class="subgrouping">
+  <h1 mat-dialog-title>Управление подгруппами</h1>
+  <div mat-dialog-content class="subgrouping__popover" #popoverContent *ngIf="groups">
+    <form class="example-form">
+      <mat-form-field>
+        <mat-select [value]="selectedGroup ? selectedGroup : ''">
+          <mat-option *ngFor="let group of groups"
+                      (onSelectionChange)="_selectedGroup($event)"
+                      [value]="group.Value"
+          >
+            {{group.Text}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="subgrouping-students">
+        <div class="subgrouping-students__header">
+          <p class="mat-typography text-center">Под<br>группа</p>
+          <p class="mat-typography">Студент</p>
+          <p class="mat-typography">Действие</p>
+        </div>
+        <div class="subgrouping-students__body">
+          <mat-selection-list #students
+                              name="selectList"
+                              [(ngModel)]="selectedOptions"
+                              [color]="'primary'">
+            <mat-list-option *ngFor="let student of studentList" [value]="student.Value">
+              <div class="subgrouping-students__body-text">
+                <div class="subgrouping-students__body-sub-group">
+                  {{student.subGroup}}
+                </div>
+                <div>
+                  {{student.Text}}
+                </div>
+              </div>
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+        <div class="subgrouping-students__footer">
+          <p class="mat-typography text">
+            Выбранных студентов: {{students.selectedOptions.selected.length}}
+          </p>
+          <div class="subgrouping-students__footer-checkbox">
+            <mat-checkbox [color]="'primary'"
+                          name="allStudents"
+                          [(ngModel)]="allCheckbox"
+                          (change)="selectedAll($event, students)"></mat-checkbox>
+          </div>
+        </div>
+      </div>
+      <div class="subgrouping-students__actions">
+        <mat-form-field>
+          <mat-label>Подгруппа</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let subgroup of subgroups"
+                        (onSelectionChange)="splitUp($event, students)"
+                        [value]="subgroup"
+            >
+              {{subgroup}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="onClick()">Отмена</button>
+    <button mat-raised-button color="primary" (click)="save()">Сохранить</button>
+  </div>
+</div>

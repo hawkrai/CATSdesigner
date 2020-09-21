@@ -1,0 +1,69 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<div *ngIf="this.isLoad">
+  <h1 mat-dialog-title>Редактирование преподавателя</h1>
+  <form [formGroup]="this.form" (ngSubmit)="submit()">
+      <mat-dialog-content>
+          <h2>{{ this.data.FullName + '(' + this.data.Login + ')' }}</h2>
+          <mat-form-field>
+              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="50">
+              <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="Name" placeholder="Имя" maxlength="50">
+              <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="50">
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="Email" placeholder="Email" maxlength="30">
+              <mat-error *ngIf="hasError('Email', 'required')">Поле не может быть пустым</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="SkypeContact" placeholder="Skype" maxlength="50">
+          </mat-form-field>
+
+          <mat-form-field>
+              <span matPrefix>+375 &nbsp;</span>
+              <input matInput formControlName="Phone" placeholder="Номер" maxlength="50">
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="Skill" placeholder="Способности" maxlength="255">
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="About" placeholder="О преподаватели" maxlength="255">
+          </mat-form-field>
+
+          <mat-form-field>
+              <mat-label>Группы</mat-label>
+              <mat-select formControlName="Groups" multiple>
+                  <mat-option *ngFor="let group of groups" [value]="group.Id">{{ group.Name }}</mat-option>
+              </mat-select>
+          </mat-form-field>
+
+          <div class="checkbox">
+              <mat-checkbox formControlName="IsSecretary">Секретарь ГЭК</mat-checkbox>
+          </div>
+
+          <div class="checkbox">
+              <mat-checkbox formControlName="IsLecturerHasGraduateStudents">Руководитель дипломного проекта</mat-checkbox>
+          </div>
+
+          <div class="password">
+              <a [routerLink]="['resetPassword/lector', this.data.Id]" (click)="onNoClick()">Сбросить пароль</a>
+          </div>
+
+      </mat-dialog-content>
+      <div class="line"></div>
+      <mat-dialog-actions>
+          <button mat-raised-button class="cancel" (click)="onNoClick()">Отмена</button>
+          <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">Изменить</button>
+      </mat-dialog-actions>
+  </form>
+</div>

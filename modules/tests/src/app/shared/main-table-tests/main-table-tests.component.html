@@ -1,0 +1,66 @@
+<div class="main-table-title" *ngIf="title">
+  {{title}}
+</div>
+<ng-container *ngIf="tests; else loading">
+  <div>
+    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg" cdkDropList #table
+               [cdkDropListData]="tests"
+               (cdkDropListDropped)="dropTable($event)" >
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="Id">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
+        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> <div >{{index+1}}</div></mat-cell>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="Title">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> Название теста</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="mat-header-cell-action">
+          <mat-icon *ngIf="element.HasQuestions || !allowChanges" class="main-table-tests-icon" (click)="navigateToTest(element.Id)" matTooltip="Пройти тест"
+                    matTooltipClass="example-tooltip-blue">play_circle_outline
+          </mat-icon>
+          <mat-icon class="main-table-tests-icon" (click)="openEditPopup(element)" *ngIf="allowChanges" matTooltip="Редактировать тест"
+                    matTooltipClass="example-tooltip-blue">edit
+          </mat-icon>
+          <mat-icon class="main-table-tests-icon" (click)="deleteTest(element.Id)" *ngIf="allowChanges" matTooltip="Удалить тест"
+                    matTooltipClass="example-tooltip-blue">delete
+          </mat-icon>
+          <mat-icon class="main-table-tests-icon" (click)="navigateToQuestions(element.Id)" *ngIf="allowChanges" matTooltip="Перейти к вопросам"
+                    matTooltipClass="example-tooltip-blue">info
+          </mat-icon>
+          <mat-icon class="main-table-tests-icon" (click)="openAvailabilityPopup(element.Id)" *ngIf="!element.Unlocked && allowChanges"
+                    matTooltip="Доступность теста"
+                    matTooltipClass="example-tooltip-blue">lock
+          </mat-icon>
+          <mat-icon class="main-table-tests-icon" (click)="openAvailabilityPopup(element.Id)" *ngIf="element.Unlocked && allowChanges"
+                    matTooltip="Доступность теста"
+                    matTooltipClass="example-tooltip-blue">lock_open
+          </mat-icon>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+    </mat-table>
+  </div>
+</ng-container>
+<ng-template #loading>
+  <mat-card>
+    <mat-card-content>
+      <section class="example-section">
+        <mat-progress-bar
+          class="example-margin"
+          [color]="'primary'"
+          [mode]="'indeterminate'">
+        </mat-progress-bar>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</ng-template>

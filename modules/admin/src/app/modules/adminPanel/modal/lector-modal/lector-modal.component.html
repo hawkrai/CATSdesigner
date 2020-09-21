@@ -1,0 +1,72 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<div *ngIf="this.isLoad">
+  <h1 mat-dialog-title>Добавление преподавателя</h1>
+  <form [formGroup]="this.form" (ngSubmit)="submit()">
+      <mat-dialog-content>
+          <mat-form-field class="example-full-width">
+              <input matInput formControlName="Username" placeholder="Логин">
+              <mat-hint *ngIf="this.isControlInvalid('Username')">Логин должен содержать не меньше 3 символов, только латинские буквы и цифры.</mat-hint>
+              <mat-error *ngIf="hasError('Username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
+              <mat-error *ngIf="hasError('Username', 'userExist')">Такой пользователь уже существует в системе.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+              <input type="password" matInput formControlName="Password" placeholder="Пароль">
+              <mat-hint *ngIf="this.isControlInvalid('Password')" align="end">Пароль должен содержать не меньше 6 и не больше 30 символов, хотя бы 1 маленькую и большую букву.</mat-hint>
+              <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+              <input type="password" matInput formControlName="ConfirmPassword" placeholder="Повторите пароль">
+              <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')">Пароли не совпадают.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="50">
+              <mat-error *ngIf="hasError('Surname', 'minlength')">Поле не может быть пустым.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="Name" placeholder="Имя" maxlength="50">
+              <mat-error *ngIf="hasError('Name', 'minlength')">Поле не может быть пустым.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="50">
+          </mat-form-field>
+
+          <mat-form-field>
+              <mat-label>Группа</mat-label>
+              <mat-select formControlName="GroupId" maxlength="30">
+                  <mat-option *ngFor="let item of groups" [value]="item.Id">
+                      {{item.Name}}
+                  </mat-option>
+              </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+              <mat-label>Секретный вопрос</mat-label>
+              <mat-select formControlName="QuestionId">
+                  <mat-option *ngFor="let item of quest" [value]="item.value">
+                      {{item.text}}
+                  </mat-option>
+              </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+              <input matInput placeholder="Ответ на секретный вопрос" formControlName="Answer" maxlength="30">
+          </mat-form-field>
+
+
+          <div class="checkbox">
+              <mat-checkbox formControlName="IsSecretary">Секретарь ГЭК</mat-checkbox>
+          </div>
+          <div class="checkbox">
+              <mat-checkbox formControlName="IsLecturerHasGraduateStudents">Руководитель дипломного проекта</mat-checkbox>
+          </div>
+
+      </mat-dialog-content>
+      <mat-dialog-actions>
+          <button mat-raised-button class="cancel" (click)="onNoClick()">Отмена</button>
+          <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">Сохранить</button>
+      </mat-dialog-actions>
+  </form>
+</div>

@@ -1,0 +1,59 @@
+<div class="page-wrap">
+	<div class="container">
+		<table>
+			<td class="col-first">
+					<img src="./../../assets/images/cat.gif" class="cat"/>
+					<br>
+					<img src="./../../assets/images/logo.png" class="logo" />
+					<p>Care about the students </p> 
+					<h1>Адаптивная обучающая система</h1>
+					<a mat-fab color="primary" href="#">
+						<mat-icon class="icon_p">play_arrow</mat-icon>
+					</a>
+			</td>
+		</table>
+		<table>
+			<td class="col-second">
+				<form [formGroup]="loginForm">
+					<h1 class="title">Добро пожаловать!</h1>
+					<div class="fields">
+						<mat-form-field class="default" color="primary">
+							<input matInput color="primary" formControlName="userName" placeholder="Имя пользователя" type="text" required>
+						</mat-form-field>
+						<mat-form-field>
+							<input matInput color="primary" type="password" placeholder="Пароль" formControlName="password" required>
+						</mat-form-field>
+					</div>
+
+					<div class="remember">
+						<a routerLink="/forgot" href="">Забыли пароль?</a>
+					</div>
+					
+					<div class="loginbtn">
+						<button  mat-raised-button color="primary" [class.spinner]="submitted" [disabled]="submitted" (click)="onSubmit()">Войти в систему</button>                
+					</div>
+
+					<div class="btn_w">
+						<button mat-stroked-button color="primary" routerLink="/register" href="">Контроль успеваемости</button>
+					</div>
+
+					<div class="sign-up">
+						<p>Новый пользователь?</p>
+						<a routerLink="/register" href="">Регистрация</a>
+					</div>
+
+					<div class="flex-center">
+						<a href="https://play.google.com/store/apps/details?id=by.bntu.educats">
+							<img src="./../../assets/images/play-market-icon.png" />
+							<p>Доступно в <br> Google Play</p>
+						</a>
+						<a href="https://apps.apple.com/by/app/educats/id1505738731">
+							<img src="./../../assets/images/app-store-icone.png" />
+							<p>Загрузите в <br> Apple Store</p>
+						</a>
+					</div>
+				</form>
+			</td>
+		</table>
+	</div>
+</div>

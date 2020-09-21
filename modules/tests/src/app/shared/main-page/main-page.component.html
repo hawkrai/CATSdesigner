@@ -1,0 +1,53 @@
+<div class="main-page-container">
+  <div class="main-page-container-buttons-wrapper">
+    <div class="main-page-container-buttons" *ngIf="allowChanges">
+      <div class="main-page-container-buttons-item" *ngIf="adminTests">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'add'"
+                (click)="onOpenAddingPopup()">Добавить тест
+        </button>
+      </div>
+      <div class="main-page-container-buttons-item" *ngIf="adminTests">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'"
+                (click)="onOpenAddingPopup()">Ресурсы
+        </button>
+      </div>
+      <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'add'"
+        (click)="onAddNewQuestion()">Добавить вопрос
+        </button>
+      </div>
+      <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'other-test'"
+        (click)="addQuestionFromOtherTest()">Добавить вопрос из
+          другого теста
+        </button>
+      </div>
+      <div class="main-page-container-buttons-item" *ngIf="forNN">
+        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной
+          сети
+        </button>
+      </div>
+      <div *ngIf="groupDropdown && groups">
+        <mat-form-field>
+          <mat-label>Выберите группу</mat-label>
+          <mat-select [value]="groups[0].Id" (selectionChange)="onGroupValueChange($event)">
+            <mat-option *ngFor="let group of groups" [value]="group.Id" >
+              {{group.Name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div *ngIf="text" class="main-page-container-text">
+        <div class="main-page-container-text-content">
+          {{text}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-page-container-search-wrapper" *ngIf="!hideSearch">
+      <mat-form-field class="main-page-container-search-wrapper-field" appearance="outline">
+        <mat-label>Поиск</mat-label>
+        <input matInput placeholder="Введите название теста" [(ngModel)]="inputValue" (change)="onValueChange($event)">
+      </mat-form-field>
+  </div>
+</div>

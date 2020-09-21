@@ -1,0 +1,56 @@
+<div class="protection-schedule-component" *ngIf="scheduleProtectionLabs && student; else: load">
+  <div class="protection-schedule-component__subGroup" *ngFor="let i of numberSubGroups">
+    <span class="protection-schedule-component__subGroup-title">Подгруппа {{i}}</span>
+    <div class="protection-schedule-component__subGroup-table">
+      <table mat-table [dataSource]="student | filterSubGroup:'SubGroup': i" class="mat-elevation-z14">
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>№</th>
+          <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Студенты</th>
+          <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
+        </ng-container>
+
+        <ng-container *ngFor="let scheduleProtectionLab of _getSubGroupDay(i); let i = index"
+                      matColumnDef="{{scheduleProtectionLab.date + scheduleProtectionLab.id}}"
+        >
+          <th mat-header-cell *matHeaderCellDef>
+            <div class="header-date">{{scheduleProtectionLab.date}}</div>
+          </th>
+          <td mat-cell
+              *matCellDef="let element"
+              style="text-align: center;"
+              (dblclick)="setVisitMarks(scheduleProtectionLab, i)">
+            {{element.LabVisitingMark[i] && element.LabVisitingMark[i].Mark}}
+            <div *ngIf="element.LabVisitingMark[i] && element.LabVisitingMark[i].Comment" class="comment">
+              <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+
+        <ng-container *ngFor='let labName of header'
+                      matColumnDef="{{labName.head}}"
+        >
+          <th class="lab-name" mat-header-cell *matHeaderCellDef
+              [attr.colspan]="labName.length">
+            {{labName.text}}
+          </th>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumnsLab"></tr>
+
+        <tr mat-header-row class="date-header" *matHeaderRowDef="_getSubGroupDisplayColumns(i)"></tr>
+        <tr mat-row *matRowDef="let row; columns: _getSubGroupDisplayColumns(i);"></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

@@ -1,0 +1,26 @@
+@margin-for-table: 20px;
+
+.lectures-list-component {
+
+  &__actions {
+    padding: 15px 0;
+  }
+
+  .mdc-data-table {
+    width: calc(100% - 2*@margin-for-table);
+
+    &__header-cell {
+      font-weight: 600;
+    }
+  }
+
+  .mdc-dialog {
+    &__actions{
+      border-color: rgba(0,0,0,.12);
+    }
+  }
+
+  .mat-icon-button {
+    width: 30px;
+  }
+}

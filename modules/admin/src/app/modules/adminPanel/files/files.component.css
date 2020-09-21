@@ -1,0 +1,26 @@
+.mat-button:focus {
+  cursor: pointer;
+}
+
+a {
+  color: black;
+  padding: 0px;
+  font-weight: 400;
+}
+
+a:hover {
+  font-weight: 500;
+}
+
+mat-form-field {
+  float: left;
+}
+
+.mat-paginator {
+  display: flex;
+  float: right;
+}
+
+.table {
+  margin-top: -25px;
+}

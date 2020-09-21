@@ -1,0 +1,68 @@
+<ng-container *ngIf="scareThing?.length && !loading">
+  <ng-container *ngFor="let studentResults of scareThing, let iq = index">
+    <div class="result-test-table-container"
+         *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
+      {{"Подгруппа " + (iq+1)}}
+      <div class="result-test-table-table">
+        <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
+          <!-- Position Column -->
+          <ng-container matColumnDef="Id">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
+            <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index+1}}</mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="Name">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Название теста</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element[1].name}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{"Тест " + (i+1)}}</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-action"
+                      (click)="openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
+                      [matTooltip]="element[1].test[i].testName">
+              {{element[1].test[i].points ? element[1].test[i].points + "(" + element[1].test[i].percent + "%)" :
+              "тест не пройден"}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="average">
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средний балл</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-average" [class.all]="size && element[3]" [class.notAll]="size && !element[3]"> {{element[2]}}</mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+      </div>
+    </div>
+  </ng-container>
+  <div class="result-test-table-chart" *ngIf="!hideChart">
+    <canvas class="result-test-table-chart-graph"
+      baseChart
+            [datasets]="barChartData"
+            [labels]="barChartLabels"
+            [options]="barChartOptions"
+            [plugins]="barChartPlugins"
+            [legend]="barChartLegend"
+            [chartType]="barChartType">
+    </canvas>
+  </div>
+</ng-container>
+
+
+<ng-container *ngIf="loading">
+  <mat-card>
+    <mat-card-content>
+      <section class="example-section">
+        <mat-progress-bar
+          class="example-margin"
+          [color]="'primary'"
+          [mode]="'indeterminate'">
+        </mat-progress-bar>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

@@ -1,0 +1,47 @@
+<div class="percentage-results-list-component">
+  <div class="mdc-data-table">
+    <table class="mdc-data-table__table">
+      <thead>
+      <tr class="mdc-data-table__header-row">
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Тема курсового проекта</th>
+        <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let graph of percentageGraphs">
+          <div class="header-date">
+            {{ graph.Date | date:'dd.MM.yyyy' }}
+          </div>
+        </th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Оценка</th>
+      </tr>
+      </thead>
+      <tbody *ngIf="percentageResults; else load">
+      <tr class="mdc-data-table__row" *ngFor="let student of percentageResults; index as i">
+        <td class="mdc-data-table__cell">{{ i + 1 }}</td>
+        <td class="mdc-data-table__cell">{{ student.Name }}</td>
+        <td class="mdc-data-table__cell">{{ student.Group }}</td>
+        <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
+          <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">{{result.Mark}}</td>
+        </ng-container>
+        <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsLecturer">
+          <td class="mdc-data-table__cell data-cell clickable" (click)="percentageResultsComponent.setResult(result)"
+              *ngFor="let result of student.PercentageResults">
+            {{ result.Mark }}
+          </td>
+        </ng-container>
+        <td class="mdc-data-table__cell data-cell" *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
+          {{ student.Mark }}
+        </td>
+        <td class="mdc-data-table__cell data-cell clickable" *ngIf="percentageResultsComponent.getCourseUser().IsLecturer"
+            (click)="percentageResultsComponent.setMark(student)">
+          {{ student.Mark }}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

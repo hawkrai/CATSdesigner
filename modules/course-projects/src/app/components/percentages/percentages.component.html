@@ -1,0 +1,13 @@
+<div class="percentages-component" *ngIf="percentages; else load">
+  <div class="header">
+    <button mat-raised-button class="actions" color="primary" *ngIf="courseUser.IsLecturer" (click)="addStage()">Добавить этап</button>
+  </div>
+  <div class="percentages-component__body">
+    <app-percentages-list [percentages]="percentages"></app-percentages-list>
+  </div>
+</div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

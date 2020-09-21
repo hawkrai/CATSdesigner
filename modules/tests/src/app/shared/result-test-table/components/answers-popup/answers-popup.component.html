@@ -1,0 +1,23 @@
+<div *ngIf="answers;else loading">
+  <div class="answers-popup-general">
+    <div class="answers-popup-general-test">{{data.testName}}</div>
+    <div class="answers-popup-general-name">{{data.name}}</div>
+  </div>
+  <div class="answers-popup-content" *ngFor="let answer of answers, let i = index">
+    <div>{{"Вопрос " + (i+1) + ": " + answer.QuestionTitle}}</div>
+    <div>{{"Ответ: " + answer.AnswerString}}</div>
+    <div>{{answer.Points === 0 ? "Неверно" : "Верно"}}</div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="answers-popup-loader">
+    <mat-progress-spinner
+      class="availability-popup-loader-margin"
+      [color]="'primary'"
+      [mode]="'indeterminate'">
+    </mat-progress-spinner>
+  </div>
+</ng-template>

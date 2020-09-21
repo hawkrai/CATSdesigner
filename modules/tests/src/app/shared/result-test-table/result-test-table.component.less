@@ -1,0 +1,67 @@
+.result-test-table {
+  &-container {
+    margin-top: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 16px;
+    &:first-child {
+      margin-top: 10px;
+    }
+  }
+  &-table{
+    margin-top: 20px;
+  }
+
+  &-chart {
+    display: block;
+    margin-top: 50px;
+  }
+}
+
+.mat-header-cell-id {
+  flex: 0 0 4%;
+}
+
+.mat-header-cell-description {
+  font-size: 17px;
+  flex: 0 0 25%;
+  cursor: pointer;
+}
+
+.mat-header-cell-average {
+  font-size: 17px;
+  flex: 0 0 5%;
+  &.all{
+    color: #111b91;
+  }
+  &.notAll{
+    color: #619cff;
+  }
+}
+
+.mat-header-cell-action {
+  font-size: 17px;
+  display: flex;
+  width: inherit;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 768px) {
+  .mat-header-cell-description {
+    flex: 0 0 25%;
+  }
+
+  .mat-header-cell-average {
+    flex: 0 0 3%;
+  }
+
+  .mat-header-cell-action {
+    display: flex;
+    width: inherit;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+}

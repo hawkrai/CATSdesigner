@@ -1,0 +1,40 @@
+.control-completing {
+  &-container {
+    &-test {
+      margin-top: 15px;
+      &-name {
+        font-size: 20px;
+      }
+      &-description {
+        margin-top: 10px;
+        display: flex;
+        &-item {
+          &-name {
+            flex: 0 0 20%;
+          }
+          &-progress {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            &-item {
+              border: 1px solid #a0a0a0;;
+              display: flex;
+              width: inherit;
+              color: white;
+              background-color: #979a93;
+              justify-content: center;
+              align-items: center;
+
+              &.correct{
+                background-color: #286111;
+              }
+              &.incorrect{
+                background-color: #61191c;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

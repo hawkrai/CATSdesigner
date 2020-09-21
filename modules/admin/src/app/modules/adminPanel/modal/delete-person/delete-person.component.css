@@ -1,0 +1,17 @@
+h1 {
+    font-size: 18px;
+    width: 100%;
+}
+
+.buttons {
+  display: flex;
+  margin: auto;
+  justify-content: space-between;
+  min-height: 0px;
+  padding: 0px;
+  margin-top: 10px;
+}
+
+mat-button {
+  padding: 0px;
+}

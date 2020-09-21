@@ -1,0 +1,32 @@
+.main {
+  margin-top: 80px;
+  margin-left: 15px;
+ }
+
+h1 {
+  font-weight: 300;
+  font-size: 28px;
+  padding: 25px;
+}
+
+mat-form-field {
+  width: 86%;
+  margin-right: 24px;
+}
+
+.btn {
+  margin-right: 40px;
+  margin-top: 9px;
+}
+
+.choose-item {
+  display: inline-flex;
+  padding-left: 25px;
+  width: 100%;
+}
+
+.mat-raised-button {
+  min-width: 0px;
+  margin: 0px;
+  height: 35px;
+}

@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A9E94869-28E1-4B55-ABE1-984E6AE62EAF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Application.Infrastructure</RootNamespace>
+    <AssemblyName>Application.Infrastructure</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\lib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Word.15.0.4797.1003\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.0\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Helpers.Crypto, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Web.Helpers.Crypto.3.2.3\lib\net40\System.Web.Helpers.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20710.0\lib\net40\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.2.0.20710.0\lib\net40\WebMatrix.WebData.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountManagement\AccountManagementService.cs" />
+    <Compile Include="AccountManagement\IAccountManagementService.cs" />
+    <Compile Include="AccountManagement\SimpleMembershipInitializer.cs" />
+    <Compile Include="ApplicationServiceModule.cs" />
+    <Compile Include="BTS\IMatrixManagmentService.cs" />
+    <Compile Include="BTS\MatrixManagmentService.cs" />
+    <Compile Include="BugManagement\BugManagementService.cs" />
+    <Compile Include="BugManagement\IBugManagementService.cs" />
+    <Compile Include="ConceptManagement\ConceptManagementService.cs" />
+    <Compile Include="ConceptManagement\IConceptManagementService.cs" />
+    <Compile Include="CPManagement\AuthorizationHelper.cs" />
+    <Compile Include="CPManagement\CourseStudentMarkModel.cs" />
+    <Compile Include="CPManagement\CpCorrelationService.cs" />
+    <Compile Include="CPManagement\CPManagementService.cs" />
+    <Compile Include="CPManagement\CpPercentageGraphService.cs" />
+    <Compile Include="CPManagement\CPUserService.cs" />
+    <Compile Include="CPManagement\ICpCorrelationService.cs" />
+    <Compile Include="CPManagement\ICPManagementService.cs" />
+    <Compile Include="CPManagement\ICpPercentageGraphService.cs" />
+    <Compile Include="CPManagement\ICPUserService.cs" />
+    <Compile Include="CTO\Correlation.cs" />
+    <Compile Include="CTO\CourseProjectConsultationDateData.cs" />
+    <Compile Include="CTO\CourseProjectConsultationMarkData.cs" />
+    <Compile Include="CTO\CourseProjectData.cs" />
+    <Compile Include="CTO\NewsData.cs" />
+    <Compile Include="CTO\PercentageGraphData.cs" />
+    <Compile Include="CTO\PercentageResultData.cs" />
+    <Compile Include="CTO\StudentData.cs" />
+    <Compile Include="CTO\SubjectData.cs" />
+    <Compile Include="CTO\TaskSheetData.cs" />
+    <Compile Include="CTO\UserData.cs" />
+    <Compile Include="DPManagement\AuthorizationHelper.cs" />
+    <Compile Include="DPManagement\CorrelationService.cs" />
+    <Compile Include="DPManagement\DpManagementService.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="DPManagement\ICorrelationService.cs" />
+    <Compile Include="DPManagement\IDpManagementService.cs" />
+    <Compile Include="DPManagement\IPercentageGraphService.cs" />
+    <Compile Include="DPManagement\IUserService.cs" />
+    <Compile Include="DPManagement\PercentageGraphService.cs" />
+    <Compile Include="DPManagement\UserService.cs" />
+    <Compile Include="DTO\Correlation.cs" />
+    <Compile Include="DTO\DiplomProjectConsultationDateData.cs" />
+    <Compile Include="DTO\DiplomProjectData.cs" />
+    <Compile Include="DTO\DipomProjectConsultationMarkData.cs" />
+    <Compile Include="DTO\NewsData.cs" />
+    <Compile Include="DTO\PercentageGraphData.cs" />
+    <Compile Include="DTO\PercentageResultData.cs" />
+    <Compile Include="DTO\StudentData.cs" />
+    <Compile Include="DTO\TaskSheetData.cs" />
+    <Compile Include="DTO\UserData.cs" />
+    <Compile Include="Export\Word.cs" />
+    <Compile Include="Export\WordCourseProject.cs" />
+    <Compile Include="FilesManagement\AttachedFile.cs" />
+    <Compile Include="FilesManagement\FilesManagementService.cs" />
+    <Compile Include="FilesManagement\IFilesManagementService.cs" />
+    <Compile Include="FoldersManagement\FoldersManagementService.cs" />
+    <Compile Include="FoldersManagement\IFoldersManagementService.cs" />
+    <Compile Include="GroupManagement\GroupManagementService.cs" />
+    <Compile Include="GroupManagement\IGroupManagementService.cs" />
+    <Compile Include="KnowledgeTestsManagement\IQuestionsManagementService.cs" />
+    <Compile Include="KnowledgeTestsManagement\ITestPassingService.cs" />
+    <Compile Include="KnowledgeTestsManagement\ITestsManagementService.cs" />
+    <Compile Include="KnowledgeTestsManagement\QuestionsManagementService.cs" />
+    <Compile Include="KnowledgeTestsManagement\TestPassingService.cs" />
+    <Compile Include="KnowledgeTestsManagement\TestsManagementService.cs" />
+    <Compile Include="LecturerManagement\ILecturerManagementService.cs" />
+    <Compile Include="LecturerManagement\LecturerManagementService.cs" />
+    <Compile Include="MaterialsManagement\IMaterialsManagementService.cs" />
+    <Compile Include="MaterialsManagement\MaterialsManagementService.cs" />
+    <Compile Include="MessageManagement\IMessageManagementService.cs" />
+    <Compile Include="MessageManagement\MessageManagementService.cs" />
+    <Compile Include="Models\ProfileCalendarModel.cs" />
+    <Compile Include="ProjectManagement\IProjectManagementService.cs" />
+    <Compile Include="ProjectManagement\ProjectManagementService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubjectManagement\IModulesManagementService.cs" />
+    <Compile Include="StudentManagement\IStudentManagementService.cs" />
+    <Compile Include="StudentManagement\StudentManagementService.cs" />
+    <Compile Include="SubjectManagement\ISubjectManagementService.cs" />
+    <Compile Include="SubjectManagement\ModulesManagementService.cs" />
+    <Compile Include="SubjectManagement\SubjectManagementService.cs" />
+    <Compile Include="TestQuestionPassingManagement\ITestQuestionPassingService.cs" />
+    <Compile Include="TestQuestionPassingManagement\TestQuestionPassingService.cs" />
+    <Compile Include="TinCanManagement\ITinCanManagementService.cs" />
+    <Compile Include="TinCanManagement\TinCanManagementService.cs" />
+    <Compile Include="UserManagement\IUsersManagementService.cs" />
+    <Compile Include="UserManagement\UsersManagementService.cs" />
+    <Compile Include="UtilZip.cs" />
+    <Compile Include="WatchingTimeManagement\IWatchingTimeService.cs" />
+    <Compile Include="WatchingTimeManagement\WatchingTimeService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EmbeddedResource Include="Export\tasklist.doc" />
+    <EmbeddedResource Include="Export\cptasklist.doc" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Core\Application.Core.csproj">
+      <Project>{94B7F3F9-AAD5-417F-9DAD-A0210489D875}</Project>
+      <Name>Application.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Application.SearchEngine\Application.SearchEngine.csproj">
+      <Project>{8371cb8f-cc57-426f-a9d5-0b2ab3bc64e7}</Project>
+      <Name>Application.SearchEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LMPlatform.Data\LMPlatform.Data.csproj">
+      <Project>{79EE9ED9-A7E4-43DB-B01F-FF693309ADC9}</Project>
+      <Name>LMPlatform.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LMPlatform.Models\LMPlatform.Models.csproj">
+      <Project>{498FCA3E-909B-4830-9B55-0A8847E38B7A}</Project>
+      <Name>LMPlatform.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Export\tasklist.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Export\cptasklist.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

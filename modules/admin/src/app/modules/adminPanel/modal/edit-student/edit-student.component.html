@@ -1,0 +1,38 @@
+<h1 mat-dialog-title>Редактирование студента</h1>
+<form [formGroup]="this.form" (ngSubmit)="submit()">
+    <mat-dialog-content>
+        <h2>{{ this.data.FullName }}</h2>
+        <div>
+            <mat-form-field>
+                <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="100">
+                <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
+                <mat-error *ngIf="hasError('Surname', 'maxLength')">Фамилия не должна превышать 100 символов</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput formControlName="Name" placeholder="Имя" maxlength="100">
+                <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
+                <mat-error *ngIf="hasError('Name', 'maxLength')">Имя не должно превышать 100 символов</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="100">
+                <mat-error *ngIf="hasError('Patronymic', 'maxLength')">Отчество не должно превышать 100 символов</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Группа</mat-label>
+                <mat-select formControlName="Group">
+                    <mat-optgroup [label]="this.form.controls.Group.value">
+                        <mat-option *ngFor="let group of groups" [value]="group.Id">{{ group.Name }}</mat-option>
+                    </mat-optgroup>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="password">
+            <a [routerLink]="['resetPassword/student', this.form.controls.Id.value]" (click)="onNoClick()">Сбросить пароль</a>
+        </div>
+    </mat-dialog-content>
+    <div class="line"></div>
+    <mat-dialog-actions>
+        <button mat-raised-button class="cancel" (click)="onNoClick()">Отмена</button>
+        <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">Изменить</button>
+    </mat-dialog-actions>
+</form>

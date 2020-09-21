@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 20px;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+.close-icon {
+  float: right;
+}
+
+.title {
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+th {
+  width: 100px;
+}
+
+.student-name {
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+}
+
+.mat-progress-spinner {
+  position: initial;
+}

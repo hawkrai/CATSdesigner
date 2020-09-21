@@ -1,0 +1,54 @@
+.app-sidenav-subject {
+    height: 100%;
+    flex: 1;
+
+    .mat-divider {
+        border-top-color: white;
+    }
+
+    .app-sidenav-menu-subject {
+        background-color: #3f51b5;
+        color: white;
+        //box-shadow: 6px 0 6px rgba(0,0,0,.1);
+        max-width: 300px;
+        .white-icon {
+            color: white;
+        }
+        /* Note: If you're using an SVG icon, you should make the class target the `<svg>` element */
+        .white-icon svg {
+            fill: white;
+        }
+        a {
+            text-align: center;
+            color: white;
+        }
+
+        .mat-list-item-content{
+            cursor: pointer;
+        }
+
+        .spacer {
+            height: 50px;
+        }
+
+        .mat-list-item.active {
+            background: #394b86;
+        }
+    }
+
+    .app-sidenav-content-subject {
+        min-height: 86vh;
+        height: 100%;
+        width: 100%;       
+
+
+        .subject-frame {
+            height: 100%;
+            iframe {
+                height: 100%;
+                width: 100%;
+                border: none;
+            }
+        }
+    }
+}

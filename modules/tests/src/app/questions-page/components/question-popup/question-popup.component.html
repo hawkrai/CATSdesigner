@@ -1,0 +1,133 @@
+<ng-container *ngIf="!data.event || question;else loading">
+  <ng-container>
+    <div class="question-popup-header">
+      <div class="question-popup-container">{{'Вопрос для теста '}}</div>
+      <div class="question-popup-container-small">{{data.title}}</div>
+    </div>
+    <div mat-dialog-content [formGroup]="formGroup">
+      <mat-form-field class="question-popup-full">
+        <input formControlName="title" matInput [placeholder]="'Текст вопроса'"
+               [value]="question && question.Title ? question.Title : ''"
+               (change)="writeTitle($event, 'Title')">
+        <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
+          {{"Длина превышает 255 символов"}}
+        </mat-error>
+        <mat-error *ngIf="formGroup.controls.title.hasError('required')">
+          {{"Введите название вопроса"}}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-content>
+      <p>Задание к вопросу</p>
+      <ckeditor [(ngModel)]="question.Description"
+                #myckeditor="ngModel"
+                name="myckeditor"
+                required
+                [config]="ckeConfig"
+                debounce="500"
+                (paste)="onPaste($event)"
+                (change)="onChange1($event)">
+      </ckeditor>
+    </div>
+
+    <div mat-dialog-content>
+      <h1 mat-dialog-title class="question-popup-container">{{'Ответы'}}</h1>
+    </div>
+    <div mat-dialog-content>
+      <div class="question-popup-types-container">
+        <div class="question-popup-types-container-button">
+          <button mat-raised-button color="primary" (click)="addAnswer()">Добавить ответ</button>
+        </div>
+        <div class="question-popup-types-container-dropdown">
+          <mat-form-field>
+            <mat-label>{{"Тип вопроса"}}</mat-label>
+            <mat-select (selectionChange)="onValueChange($event)" [value]="question.QuestionType || 0">
+              <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id">
+                {{type.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div mat-dialog-content class="question-popup-answers">
+      <ng-container *ngIf="chosenQuestionType === 0">
+        <mat-radio-group [(ngModel)]="chosenType" (change)="kkkk($event)"
+                         aria-labelledby="example-radio-group-label"
+                         class="example-radio-group question-popup-answers-input">
+          <mat-radio-button class="example-radio-button question-popup-answers-item"
+                            *ngFor="let control of charsde, let i = index" [value]="control">
+            <input class="question-popup-answers-item-input" matInput [(ngModel)]="chars[control]">
+            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                      matTooltipClass="example-tooltip-blue">delete
+            </mat-icon>
+          </mat-radio-button>
+        </mat-radio-group>
+      </ng-container>
+      <ng-container *ngIf="chosenQuestionType === 1">
+        <section class="example-section">
+          <mat-checkbox class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[control][1]"
+                        *ngFor="let control of charsde, let i = index">
+            <input class="question-popup-answers-item-input" matInput [(ngModel)]="charsNeskolko[control][0]">
+            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                      matTooltipClass="example-tooltip-blue">delete
+            </mat-icon>
+          </mat-checkbox>
+        </section>
+      </ng-container>
+      <ng-container *ngIf="chosenQuestionType === 2">
+        <div *ngFor="let control of charsde, let i = index">
+          {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
+                                 [(ngModel)]="charsWords[control]">
+          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                    matTooltipClass="example-tooltip-blue">delete
+          </mat-icon>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="chosenQuestionType === 3">
+        <div *ngFor="let control of charsde, let i = index">
+          {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
+                                 [(ngModel)]="charsSequence[control]">
+          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+                    matTooltipClass="example-tooltip-blue">delete
+          </mat-icon>
+        </div>
+      </ng-container>
+    </div>
+
+    <div mat-dialog-content [formGroup]="formGroup">
+      <mat-form-field class="question-popup-complexity">
+        <input matInput formControlName="ComplexityLevel" type="number" [placeholder]="'Уровень сложности'"
+               [value]="question && question.ComplexityLevel ? question.ComplexityLevel : 0"
+               (change)="writeTitle($event, 'ComplexityLevel', true)">
+        <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('max')">
+          {{"Сложность максимум может быть 10"}}
+        </mat-error>
+        <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('min')">
+          {{"Сложность должно быть больше нуля"}}
+        </mat-error>
+        <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('required')">
+          {{"Введите сложность"}}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+      <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>{{'button.save' | translate :
+        'Сохранить'}}
+      </button>
+    </div>
+  </ng-container>
+</ng-container>
+<ng-template #loading>
+  <div class="question-popup-loader">
+    <mat-progress-spinner
+      class="example-margin"
+      [color]="'primary'"
+      [mode]="'indeterminate'">
+    </mat-progress-spinner>
+  </div>
+</ng-template>

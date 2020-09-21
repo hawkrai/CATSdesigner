@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Добавление даты консультации</h1>
+<div mat-dialog-content>
+  <mat-form-field class="dialog-datepicker">
+    <mat-label>Дата консультации</mat-label>
+    <input matInput [matDatepicker]="dp" [formControl]="date">
+    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+    <mat-datepicker #dp></mat-datepicker>
+    <mat-error *ngIf="date.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions class="dialog-buttons">
+  <button mat-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
+  <button mat-flat-button class="dialog-button" color="primary" [disabled]="date.invalid" [mat-dialog-close]="date.value">Сохранить</button>
+</div>

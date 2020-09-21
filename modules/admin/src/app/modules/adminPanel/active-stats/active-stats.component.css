@@ -1,0 +1,58 @@
+h1 {
+  font-weight: 400;
+  font-size: 28px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/deep/ text {
+  font-weight: 400;
+  font-size: 14px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.inline {
+  display: flex;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 18px;
+  width: 100%;
+  padding-right: 70px;
+}
+
+.active {
+  margin-top: 20px;
+  margin-bottom: 18px;
+  font-size: 22px;
+}
+
+.main {
+  margin-top: 50px;
+}
+
+.div1 {
+  font-weight: 400;
+  width: 100%;
+  padding-left: 60px;
+}
+
+.div2 {
+  font-weight: 400;
+  width: 100%;
+  margin-top: 30px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-progress-spinner {
+  display: inline;
+}
+
+.charts {
+  display: flex;
+  margin: 0 auto;
+}

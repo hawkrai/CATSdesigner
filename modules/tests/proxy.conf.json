@@ -1,0 +1,23 @@
+{
+  "/TestPassing/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/Tests/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/api/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/*": ""
+    }
+  }
+}

@@ -1,0 +1,48 @@
+h1 {
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 33px;
+}
+
+.mat-dialog-title {
+  display: flex;
+  border-bottom: 1px;
+}
+
+mat-dialog-content {
+  width: 450px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-right: 0px;
+}
+
+.checkbox {
+  margin-top: 20px;
+}
+
+mat-dialog-actions {
+  float: right;
+}
+
+.close-icon {
+  float: right;
+  width: 10%;
+  padding: 0px;
+}
+
+.title {
+  width: 90%;
+  font-size: 24px;
+}
+
+.main-search-group {
+  display: flex;
+  width: 100%;
+  padding-bottom: 25px;
+}
+
+.mat-button {
+  color: black;
+}

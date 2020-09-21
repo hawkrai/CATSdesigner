@@ -1,0 +1,47 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@material/button/dist/mdc.button.min.css";
+@import "~material-design-icons/iconfont/material-icons.css";
+@import "~@material/data-table/dist/mdc.data-table.min.css";
+@import "~@material/tab-bar/dist/mdc.tab-bar.min.css";
+@import "~@material/tab-indicator/dist/mdc.tab-indicator.min.css";
+@import "~@material/tab/dist/mdc.tab.min.css";
+@import "~@material/dialog/dist/mdc.dialog.min.css";
+@import "~@material/checkbox/dist/mdc.checkbox.min.css";
+@import "~@material/form-field/dist/mdc.form-field.min.css";
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+html {
+  background-color: #f5f5f5;
+}
+:root {
+  --mdc-theme-primary: #3f51b5;
+}
+.mdc-drawer .mdc-list-item--activated {
+  color: var(--mdc-theme-primary, #3f51b5);
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99999;
+}
+
+._excel-file {
+  font-size: 36px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+p {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+mat-label {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+h2 {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

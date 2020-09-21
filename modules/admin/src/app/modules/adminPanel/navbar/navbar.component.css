@@ -1,0 +1,85 @@
+.main-button {
+    margin-left: 10px;
+}
+
+.main {
+    white-space: normal;
+}
+
+.mat-button {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: lighter;
+}
+
+.mat-icon-button {
+    color: white;
+    font-size: 28px;
+}
+
+.nav-flex {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.mat-icon.icon {
+    color: white;
+    vertical-align: bottom;
+    margin-right: 0px;
+    padding-bottom: 15px;
+}
+
+button.mat-menu-item {
+    font-size: 14px;
+    font-weight: lighter;
+    color: white;
+}
+
+.mat-menu-item:hover {
+    background: cornflowerblue;
+}
+
+.material-icons {
+    color: white;
+    font-size: 34px;
+    border-top: 10px;
+    margin-right: 3px;
+}
+
+.main-icon {
+    vertical-align: bottom;
+    padding-bottom: 10px;
+    font-size: 28px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover,
+a:active {
+    color: lightgray;
+}
+
+.navigation-items {
+    list-style-type: none;
+    padding: 0;
+    margin: 100px;
+}
+
+/deep/ .mat-menu-content {
+    background-color: steelblue;
+}
+
+mat-toolbar {
+    margin-top: -8px;
+    border-radius: 0px;
+    background-color: steelblue;
+    box-sizing: content-box;
+    position: relative;
+    margin-left: -24px;
+    overflow: hidden;
+}

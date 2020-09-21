@@ -1,0 +1,25 @@
+mat-dialog-content {
+  width: 450px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.checkbox {
+  margin-top: 20px;
+}
+
+mat-dialog-actions {
+  margin-top: 20px;
+}
+
+mat-dialog-actions {
+    float: right;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: lighter;
+}

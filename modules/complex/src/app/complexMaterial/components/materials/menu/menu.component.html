@@ -1,0 +1,13 @@
+<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+  <mat-icon>more_horiz</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openPDF()">
+    <mat-icon>book</mat-icon>
+    <span>Читать</span>
+  </button>
+  <button mat-menu-item disabled>
+    <mat-icon>voicemail</mat-icon>
+    <span>Обучение</span>
+  </button>
+</mat-menu>

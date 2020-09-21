@@ -1,0 +1,39 @@
+.stats-table {
+  width: 97%;
+  margin-top: 25px;
+  margin-left: 25px;
+}
+
+.main-header {
+  text-align: left;
+  display: flex;
+  font-size: 16px;
+}
+
+.main-header p {
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+  text-align: center;
+  border: 1px solid #CCC;
+  padding: 0 !important;
+}
+
+.column {
+  width: 10%;
+}
+
+.all {
+  background: antiquewhite;
+}
+
+.numberColumn {
+  width: 5%;
+}
+
+.familyColumn {
+  width: 16%;
+}
