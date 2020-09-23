@@ -53,9 +53,9 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   ngOnInit() {
-    this.testService.getFiles().subscribe((fda)=>{
+    /*this.testService.getFiles().subscribe((fda)=>{
       console.log(fda);
-    })
+    })*/
     /*localStorage.setItem("currentUser",JSON.stringify({id:10031,role:"ds", userName:"popova"}));
     localStorage.setItem("currentSubject",JSON.stringify({id: "3", Name:"Тестирование ПО"}));
     localStorage.setItem("locale","rus");*/

@@ -48,7 +48,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public concept: any;
   public loader: boolean;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-  private selectedConcept: string;
+  public selectedConcept: string;
   private conceptId: any;
 
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,

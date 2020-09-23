@@ -3,7 +3,6 @@
     <!-- Handle branch node menu items -->
     <span *ngIf="child.Children && child.Children.length > 0">
       <button mat-menu-item color="primary" [matMenuTriggerFor]="menu.childMenu">
-        <mat-icon>{{child.iconName}}</mat-icon>
         <span>{{child.Name}}</span>
       </button>
       <app-menu-item #menu [items]="child.Children" (onSelectConcept)="selectConcept($event)"></app-menu-item>
@@ -11,7 +10,6 @@
     <!-- Handle leaf node menu items -->
     <span *ngIf="!child.Children || child.Children.length === 0">
       <button mat-menu-item [routerLink]="child.route" (click)="selectConcept(child.Id)">
-        <mat-icon>{{child.iconName}}</mat-icon>
         <span>{{child.Name}}</span>
       </button>
     </span>
