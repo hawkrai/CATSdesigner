@@ -35,7 +35,7 @@
   <span *ngFor="let item of navItems">
     <!-- Handle branch node buttons here -->
     <span *ngIf="item.Children && item.Children.length > 0">
-      <button mat-raised-button color="primary" [matMenuTriggerFor]="menu.childMenu">
+      <button mat-raised-button color="primary" [matMenuTriggerFor]="menu.childMenu" (click)="selectConcept(item.Id)">
         {{item.Name}}
         <mat-icon>expand_more</mat-icon>
       </button>

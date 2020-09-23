@@ -10,9 +10,10 @@
   font-size: 16px;
 }
 
-.cdk-global-overlay-wrapper {  
+.cdk-global-overlay-wrapper {
   display: -webkit-box;
   position: absolute;
+  left: 30%;
   z-index: 1000;
   overflow: auto;
   pointer-events: auto;
