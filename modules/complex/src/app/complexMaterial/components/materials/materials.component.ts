@@ -33,10 +33,11 @@ export class MaterialComponent implements OnInit {
     });  
   }
   
-  openPDF(): void {
+  openPDF(path: string): void {
+    debugger;
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '800px',
-      data: { name: 'name', animal: 'a' }
+      data: { name: 'name', url: path }
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -5,7 +5,7 @@ export class Complex {
     this.subjectId = _subjectId;
   }
 
-  name: string;
+  name?: string;
 
   container?: string;
   subjectId?: number;

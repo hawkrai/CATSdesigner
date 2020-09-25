@@ -3,9 +3,9 @@
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
     <li class="mat-tree-node">
       <!-- use a disabled button to provide padding for tree leaf -->
-      <button mat-icon-button disabled></button>
+      <button class="invisible" mat-icon-button disabled></button>
       <mat-icon> insert_drive_file</mat-icon>
-      <a class ="btn" (click)="openPDF()">
+      <a class="btn clickable" (click)="openPDF(node.FilePath)">
         {{node.Name}}
       </a><menu-icon></menu-icon>
     </li>

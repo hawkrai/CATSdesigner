@@ -6,6 +6,7 @@ import { ComponentType } from '@angular/cdk/typings/portal';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogData } from '../../../models/DialogData';
 import { ComplexService } from '../../../service/complex.service';
+import { Complex } from '../../../models/Complex';
 
 /**
  * @title Menu with icons
@@ -19,7 +20,12 @@ export class GridMenuComponent {
   @Input()
   complexId: string;
 
-  constructor(public dialog: MatDialog, private complexService: ComplexService, private router: Router) { }  
+  constructor(public dialog: MatDialog, private complexService: ComplexService, private router: Router) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+  }  
 
   openEditPopup(): void {
 
@@ -31,14 +37,38 @@ export class GridMenuComponent {
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,
-        isPublished: res.IsPublished
+        isPublished: res.Published
       };
 
       const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);
 
       dialogRef.afterClosed().subscribe(result => {
-        this.router.navigate(['/main']);
+        console.log(result);
+        if (!result.isNew) {
+          const complex: Complex = {
+            elementId: +this.complexId,
+            name: result.name,
+            isPublished: result.isPublished && result.isPublished === true
+          }
+          this.complexService.editRootConcept(complex).subscribe(result => {
+            debugger;
+            if (result['Code'] === '200') {
+              this.router.navigateByUrl('/main');
+            }
+          });
+        }
       }); 
+    });
+  }
+
+  onDeleteClick(): void {
+    const complex: Complex = {
+      elementId: +this.complexId     
+    }
+    this.complexService.deleteRootConcept(complex).subscribe(result => {
+      if (result['Code'] === '200') {
+        this.router.navigateByUrl('/main');
+      }
     });
   }
 

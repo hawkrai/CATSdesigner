@@ -7,9 +7,9 @@
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Предмет</mat-label>
-      <input name="shortName" maxlength="100" placeholder="Название предмета" matInput [(ngModel)]="data.subjectName" [disabled]="!data.isNew">
+      <input name="shortName" maxlength="100" placeholder="Название предмета" matInput [(ngModel)]="data.subjectName" [disabled]=true>
     </mat-form-field>
-   <mat-checkbox name="isPublishedCheckBox" matInput [(ngModel)]="data.isPublished" *ngIf="!data.isNew">Опубликовать</mat-checkbox>   
+   <mat-checkbox name="isPublishedCheckBox" matInput [(ngModel)]="data.isPublished" *ngIf="!data.isNew">Материал опубликован</mat-checkbox>   
   </form>
 </div>
 <div mat-dialog-actions>

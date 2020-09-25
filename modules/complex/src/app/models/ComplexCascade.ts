@@ -1,7 +1,8 @@
 export class ComplexCascade{
   Id: string;
   Name: string;
-  IsPublished: boolean;
+  Published: boolean;
   SubjectName: string;
+  FilePath: string;
   children?: ComplexCascade[];
 }

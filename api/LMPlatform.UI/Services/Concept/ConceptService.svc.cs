@@ -74,8 +74,8 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-                var authorId = WebSecurity.CurrentUserId;
-                var root = ConceptManagementService.CreateRootConcept(name, authorId, subjectId);
+                //var authorId = WebSecurity.CurrentUserId;
+                var root = ConceptManagementService.CreateRootConcept(name, 2, subjectId);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
                 return new ConceptResult
                 {
@@ -99,12 +99,12 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-				//var authorId = WebSecurity.CurrentUserId;
+                //var authorId = WebSecurity.CurrentUserId;
                 //var concepts = CurrentUserIsLector()  ?
                 //    ConceptManagementService.GetRootElements(authorId) :
                 //    ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
-                
-                var concepts = ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
+
+                var concepts = ConceptManagementService.GetRootElementsBySubject(subjectId);//.Where(c => c.Published);
                 concepts = concepts.Where(c => c.SubjectId == subjectId);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
 
@@ -194,7 +194,7 @@ namespace LMPlatform.UI.Services.Concept
             {
                 var source = ConceptManagementService.GetById(conceptId);
                 var canDelete = source != null && source.Author.Id == WebSecurity.CurrentUserId;
-                if (canDelete)
+                if (canDelete || true)
                 {
                     ConceptManagementService.Remove(conceptId, source.IsGroup);
                 }
@@ -338,11 +338,12 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult GetConceptCascade(int parenttId)
         {
-            var concept = ConceptManagementService.GetTreeConceptByElementId(parenttId);
+            var conceptViewData = new ConceptViewData(ConceptManagementService.GetTreeConceptByElementId(parenttId), true);
+            PopulateFilePath(conceptViewData);
 
             var res = new ConceptResult
             {
-                Concept = new ConceptViewData(concept, true),
+                Concept = conceptViewData,
                 Message = SuccessMessage,
                 Code = SuccessCode
             };
@@ -372,10 +373,10 @@ namespace LMPlatform.UI.Services.Concept
 	        }
 
 	        if (!children.HasData) return;
-	        var attach = FilesManagementService.GetAttachments(children.Container).FirstOrDefault();
-	        if (attach == null) return;
-	        var uploadFolder = "UploadedFiles";
-	        children.FilePath = $"/{uploadFolder}/{attach.PathName}/{attach.FileName}";
+            var attach = FilesManagementService.GetAttachments(children.Container).FirstOrDefault();
+            if (attach == null) return;
+            var uploadFolder = "UploadedFiles";
+            children.FilePath = $"/{uploadFolder}/{attach.PathName}/{attach.FileName}";
         }
 
         private bool CurrentUserIsLector()

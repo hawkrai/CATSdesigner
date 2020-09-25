@@ -10,5 +10,7 @@ export interface DialogData {
   subjectName?: string;
   isPublished?: boolean;
 
+  url?: string;
+
   isNew?: boolean
 }

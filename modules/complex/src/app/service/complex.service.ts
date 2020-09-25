@@ -22,6 +22,12 @@ export class ComplexService {
     );
   }
 
+  public getRootConceptsSubjectName(subjectId: string): Observable<ComplexGrid[]> {
+    return this.http.get('/Services/Concept/ConceptService.svc/GetRootConcepts?subjectId=' + subjectId).pipe(
+      map(res => res['SubjectName'])
+    );
+  }
+
   public getConceptCascade(parentId: string): Observable<ComplexCascade>{
     return this.http.get('/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' + parentId).pipe(
       map(res => res['Concept'])
@@ -35,6 +41,14 @@ export class ComplexService {
   }
 
   public editRootConcept(complex: Complex) {
-    this.http.post('Services/Concept/ConceptService.svc/EditRootConcept', complex);
+    return this.http.post('/Services/Concept/ConceptService.svc/EditRootConcept', complex);
+  }
+
+  public addRootConcept(complex: Complex) {
+    return this.http.post('/Services/Concept/ConceptService.svc/CreateRootConcept', complex);
+  }
+
+  public deleteRootConcept(complex: Complex) {
+    return this.http.post('/Services/Concept/ConceptService.svc/Remove', complex);
   }
 }
