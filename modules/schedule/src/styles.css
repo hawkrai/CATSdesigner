@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+.flatpickr-time{
+  height: 18%;
+}
+
+.flatpickr-time .flatpickr-am-pm {
+  height: 100%;
+}
+
+.cal-week-view .cal-starts-within-day .cal-event{
+  border-left-width: 5px;
+  border-radius: 0px;
+  border-bottom-width: 1px ;
+  border-bottom-color: grey;
+  border-top-width: 1px ;
+  border-top-color: grey;
+  border-right-width: 1px ;
+  border-right-color: grey;
+}
+
+.cal-week-view .cal-time-events .cal-event table{
+  width: 95%;
+}
+
+.cal-day-view .cal-hour-segment.cal-after-hour-start .cal-time {
+  display: block;
+}

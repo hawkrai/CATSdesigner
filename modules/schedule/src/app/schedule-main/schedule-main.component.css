@@ -1,0 +1,17 @@
+
+h3 {
+  margin: 0 0 10px;
+}
+
+pre {
+  background-color: #f5f5f5;
+  padding: 15px;
+}
+
+.schedule {
+  width: 90%;
+}
+
+.cal-week-view .cal-time-events .cal-event {
+  border-bottom: 0px;
+}
