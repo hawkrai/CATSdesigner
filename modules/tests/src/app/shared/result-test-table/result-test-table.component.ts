@@ -121,7 +121,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
       this.barChartLabels.push(entire[0]);
       this.barChartData[0].data.push(entire[1]);
     }
-    this.hideChart = this.barChartData[0].data.every(value => value === 0);
+    //this.hideChart = this.barChartData[0].data.every(value => value === 0);
   }
 
   private getShortName(pupil): string {

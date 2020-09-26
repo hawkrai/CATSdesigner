@@ -1,10 +1,10 @@
-<ng-container *ngIf="!data.event || question;else loading">
+<ng-container *ngIf="!loader; else loading">
   <ng-container>
     <div class="question-popup-header">
       <div class="question-popup-container">{{'Вопрос для теста '}}</div>
       <div class="question-popup-container-small">{{data.title}}</div>
     </div>
-    <div mat-dialog-content [formGroup]="formGroup">
+    <div mat-dialog-content *ngIf="formGroup" [formGroup]="formGroup">
       <mat-form-field class="question-popup-full">
         <input formControlName="title" matInput [placeholder]="'Текст вопроса'"
                [value]="question && question.Title ? question.Title : ''"
@@ -29,6 +29,26 @@
                 (paste)="onPaste($event)"
                 (change)="onChange1($event)">
       </ckeditor>
+    </div>
+
+    <div class="basic-container" *ngIf="navItems?.length">
+  <span *ngFor="let item of navItems">
+    <!-- Handle branch node buttons here -->
+    <span *ngIf="item.Children && item.Children.length > 0">
+      <button mat-raised-button color="primary" [matMenuTriggerFor]="menu.childMenu" (click)="selectConcept(item.Id)">
+        {{item.Name}}
+        <mat-icon>expand_more</mat-icon>
+      </button>
+      <app-menu-item #menu [items]="item.Children" (onSelectConcept)="selectConcept($event)"></app-menu-item>
+    </span>
+    <!-- Leaf node buttons here -->
+    <span *ngIf="!item.Children || item.Children.length === 0">
+      <button mat-button color="primary" [routerLink]="item.route" (click)="selectConcept(item.Id)">
+        {{item.Name}}
+      </button>
+    </span>
+  </span>
+      <div class="basic-container-text" *ngIf="selectedConcept">{{selectedConcept}}</div>
     </div>
 
     <div mat-dialog-content>
@@ -97,7 +117,7 @@
       </ng-container>
     </div>
 
-    <div mat-dialog-content [formGroup]="formGroup">
+    <div mat-dialog-content *ngIf="formGroup" [formGroup]="formGroup">
       <mat-form-field class="question-popup-complexity">
         <input matInput formControlName="ComplexityLevel" type="number" [placeholder]="'Уровень сложности'"
                [value]="question && question.ComplexityLevel ? question.ComplexityLevel : 0"

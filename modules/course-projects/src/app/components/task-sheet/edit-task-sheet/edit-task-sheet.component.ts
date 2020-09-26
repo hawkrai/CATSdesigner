@@ -5,10 +5,14 @@ import {FormControl, Validators} from '@angular/forms';
 import {Template} from '../../../models/template.model';
 import {TaskSheetService} from '../../../services/task-sheet.service';
 import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
+import { Group } from 'src/app/models/group.model';
+import { Project } from 'src/app/models/project.model';
+import { ProjectsService } from 'src/app/services/projects.service';
 
 interface DialogData {
   subjectId: string;
   taskSheet: TaskSheet;
+  groups: Group[];
 }
 
 @Component({
@@ -17,6 +21,9 @@ interface DialogData {
   styleUrls: ['./edit-task-sheet.component.less']
 })
 export class EditTaskSheetComponent implements OnInit {
+
+  private COUNT = 1000000;
+  private PAGE = 1;
 
   private templateNameControl: FormControl = new FormControl(null,
     [Validators.maxLength(30), Validators.required]);
@@ -44,15 +51,21 @@ export class EditTaskSheetComponent implements OnInit {
   private endDateControl = new FormControl(this.data.taskSheet.DateEnd);
 
   private templates: Template[];
+  private selectedGroups: any[];
+  private projects: Project[];
+  private taskSheets: TaskSheet[];
 
   constructor(private taskSheetService: TaskSheetService,
               private snackBar: MatSnackBar,
               public dialogRef: MatDialogRef<EditTaskSheetComponent>,
+              private projectsService: ProjectsService,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
     this.taskSheetService.getTemplateList({entity: 'CourseProjectTaskSheetTemplate', subjectId: this.data.subjectId})
       .subscribe(res => this.templates = res);
+      this.retrieveProjects();
+      this.retrieveTaskSheets();
   }
 
   onCancelClick(): void {
@@ -78,6 +91,13 @@ export class EditTaskSheetComponent implements OnInit {
       this.facultyControl.invalid || this.headCathedraControl.invalid || this.startDateControl.invalid || this.endDateControl.invalid;
   }
 
+  isSelectedGroupsInvalid(): boolean{
+    if(this.selectedGroups == undefined){
+      return true
+    }
+    return this.selectedGroups.length < 1;
+  }
+
   saveTemplate() {
     const template = new TaskSheetTemplate();
     template.Name = this.templateNameControl.value;
@@ -85,6 +105,22 @@ export class EditTaskSheetComponent implements OnInit {
     this.taskSheetService.editTemplate(template).subscribe(() => {
       this.ngOnInit();
       this.snackBar.open('Шаблон успешно сохранен', null, {
+        duration: 2000
+      });
+    });
+  }
+
+  applyTemplate(){
+    this.projects.forEach(element => {
+      if (element.Group != null){
+        if (this.selectedGroups.includes(element.Group)){
+          let taskSheet = this.taskSheets.find(i => i.CourseProjectId === element.Id);
+          this.populateSheet(taskSheet);
+          this.taskSheetService.editTaskSheet(taskSheet).subscribe();
+        }
+      }
+
+      this.snackBar.open('Шаблон успешно применен', null, {
         duration: 2000
       });
     });
@@ -104,6 +140,28 @@ export class EditTaskSheetComponent implements OnInit {
     taskSheet.HeadCathedra = this.headCathedraControl.value;
     taskSheet.DateStart = this.startDateControl.value;
     taskSheet.DateEnd = this.endDateControl.value;
+  }
+
+  retrieveProjects() {
+    this.projectsService.getProjects(
+      'count=' + this.COUNT +
+      '&page=' + this.PAGE +
+      '&filter={"subjectId":"' + this.data.subjectId + '","searchString":"' + '' + '"}' +
+      '&filter[subjectId]=' + this.data.subjectId +
+      '&sorting[' + 'Id' + ']=' + 'desc'
+    )
+      .subscribe(res => this.projects = res.Items);
+  }
+
+  retrieveTaskSheets() {
+    this.taskSheetService.getTaskSheets(
+      'count=' + this.COUNT +
+      '&page=' + this.PAGE +
+      '&filter={"subjectId":"' + this.data.subjectId + '","searchString":"' + '' + '"}' +
+      '&filter[subjectId]=' + this.data.subjectId +
+      '&sorting[' + 'Id' + ']=' + 'desc'
+    )
+      .subscribe(res => this.taskSheets = res);
   }
 
 }

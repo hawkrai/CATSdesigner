@@ -11,8 +11,9 @@
 }
 
 .cdk-global-overlay-wrapper {
-  display: flex;
+  display: -webkit-box;
   position: absolute;
+  left: 30%;
   z-index: 1000;
   overflow: auto;
   pointer-events: auto;
@@ -20,6 +21,10 @@
 
 .cdk-global-scrollblock {
   overflow-y: hidden;
+}
+
+.mat-dialog-container{
+	border-radius: unset !important;
 }
 
 .mat-checkbox-layout {

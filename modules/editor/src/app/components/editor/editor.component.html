@@ -1,0 +1,36 @@
+<div class="flex-container">
+      <div class="flex-tree-container">
+          <div class="flex-search-region">
+              <mat-form-field class="flex-search-input">
+                <mat-label>Поиск</mat-label>
+                <input matInput [(ngModel)]="searchField">
+              </mat-form-field>
+              <button mat-icon-button color="primary" aria-label="Search icon">
+                <mat-icon>search</mat-icon>
+              </button>
+          </div>
+          <tree
+            [treeControl]="treeControl"
+            [dataSource]="dataSource"
+            [hasChild]="hasChild"
+            (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
+            (onAddEvent)="openAddDialog($event)"
+            (onRemoveEvent)="openRemoveDialog($event)"
+            (onEditContentEvent)="editDocument($event)"
+            (onEditStructureEvent)="editStructure($event)"
+          ></tree>
+      </div>
+      <div class="flex-editor-container">
+          <div class="row" id="editor">
+              <ckeditor
+                  [editor]="editor"
+                  [(ngModel)]="model.editorData"
+                  [config]="model.config"
+                  [disabled]="model.isReadOnly"
+              ></ckeditor>
+          </div>
+          <div class="btn-holder" align="right">
+            <button *ngIf="!model.isReadOnly" (click)="saveDocument($event)" mat-raised-button color="primary">Сохранить</button>
+          </div>
+      </div>
+</div>

@@ -7,10 +7,11 @@ import {Answer} from "../../../models/question/answer.model";
 import {ActivatedRoute} from "@angular/router";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
-import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
+import {combineLatest, of, Subject} from "rxjs";
+import {catchError, takeUntil, tap} from "rxjs/operators";
 import {Base64UploaderPlugin} from "../../../core/Base64Upload";
 import {FormUtils} from "../../../utils/form.utils";
+import {NavItem} from "../../../models/nav-item";
 
 
 @AutoUnsubscribe
@@ -23,6 +24,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public question: Question = new Question();
   public chosenQuestionType: any = 0;
   public chosenType: any;
+  navItems: NavItem[] = [];
   ckconfig = {
     // include any other configuration you want
     extraPlugins: [Base64UploaderPlugin]
@@ -43,7 +45,11 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     {id: 2, label: "Ввод с клавиатуры"},
     {id: 3, label: "Последовательность элементов"}];
   public formGroup: FormGroup;
+  public concept: any;
+  public loader: boolean;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public selectedConcept: string;
+  private conceptId: any;
 
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
@@ -56,6 +62,8 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   ngOnInit() {
+    this.loader = true;
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
     this.ckeConfig = {
       allowedContent: false,
       extraPlugins: "divarea",
@@ -63,10 +71,19 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     };
     this.initForm();
     if (this.data.event) {
-      this.testService.getQuestion(this.data.event)
-        .pipe(takeUntil(this.unsubscribeStream$))
-        .subscribe((question) => {
+      combineLatest(this.testService.getQuestion(this.data.event), (this.data.isEUMKTest ? this.testService.getConcepts(subject.id) : of(null)))
+        .pipe(takeUntil(this.unsubscribeStream$),
+          catchError(error => {
+            this.loader = false;
+            return of(false);
+          }))
+        .subscribe(([question, concept]) => {
           this.question = question;
+          this.navItems = concept;
+          if (this.data.isEUMKTest) {
+            this.conceptId = question.ConceptId;
+            this.getConceptName();
+          }
           this.newCase = false;
           this.formGroup = this.formBuilder.group({
             title: new FormControl(this.question.Title, Validators.compose([
@@ -83,9 +100,15 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           });
           this.chosenQuestionType = question.QuestionType;
           this.initExisting(this.question.Answers);
+          this.loader = false;
         });
     } else {
       this.newCase = true;
+      this.testService.getConcepts(subject.id)
+        .pipe(
+          tap((concept) => this.navItems = concept),
+          takeUntil(this.unsubscribeStream$)
+        ).subscribe();
       this.formGroup = this.formBuilder.group({
         title: new FormControl("", Validators.compose([
           Validators.maxLength(255), Validators.required
@@ -99,6 +122,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           Validators.required
         ]))
       });
+      this.loader = false;
     }
   }
 
@@ -252,6 +276,9 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       /*this.question['QuestionType'] = 0;
       this.question['Id'] = 0;
       this.question['ConceptId'] = null;*/
+      if (this.data.isEUMKTest) {
+        this.question.ConceptId = this.conceptId;
+      }
       this.testService.saveQuestion(this.question)
         .pipe(takeUntil(this.unsubscribeStream$))
         .subscribe((res) => {
@@ -274,6 +301,29 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  selectConcept(Id: any) {
+    this.conceptId = Id;
+    this.question.ConceptId = Id;
+    this.getConceptName();
+  }
+
+  public getChildById(concepts: any, id): any {
+    for (const concept of concepts) {
+      if (concept.Id === id) {
+        return concept;
+      }
+
+      if (concept.Children && concept.Children.length > 0) {
+        const resultOrderItem = this.getChildById(concept.Children, id);
+
+        if (resultOrderItem) {
+          return resultOrderItem;
+        }
+      }
+    }
+    return null;
   }
 
   private initForm() {
@@ -333,5 +383,10 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       );
       this.charsde = Object.keys(this.charsSequence);
     }
+  }
+
+  private getConceptName() {
+    let questionConcept = this.getChildById(this.navItems, this.question.ConceptId);
+    this.selectedConcept = questionConcept.ShortName;
   }
 }

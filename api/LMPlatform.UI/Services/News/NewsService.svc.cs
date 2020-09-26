@@ -152,11 +152,11 @@ namespace LMPlatform.UI.Services.News
                     Code = "200"
                 };
             }
-            catch
+            catch(Exception e)
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при удалении новости",
+                    Message = "Произошла ошибка при удалении новости" + e.Message,
                     Code = "500"
                 };
             }

@@ -10,7 +10,11 @@ namespace LMPlatform.UI.Services.Concept
     {
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/CreateRootConcept")]
-        ConceptResult SaveRootConcept(string name, string container, int subject);
+        ConceptResult SaveRootConcept(string name, string container, int subjectId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/EditRootConcept")]
+        ConceptResult EditRootConcept(int elementId, string name, bool isPublished);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/AttachSiblings")]
@@ -21,7 +25,7 @@ namespace LMPlatform.UI.Services.Concept
         ConceptViewData GetConcept(int elementId);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetRootConcepts")]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetRootConcepts?subjectId={subjectId}")]
         ConceptResult GetRootConcepts(int subjectId);
 
         [OperationContract]
@@ -33,7 +37,7 @@ namespace LMPlatform.UI.Services.Concept
         ConceptPageTitleData GetConceptTitleInfo(int subjectId);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConcepts")]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConcepts?parentId={parentId}")]
         ConceptResult GetConcepts(int parentId);
 
         [OperationContract]
@@ -46,7 +50,7 @@ namespace LMPlatform.UI.Services.Concept
 
 		[OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/Remove")]
-        ConceptResult Remove(int id);
+        ConceptResult Remove(int elementId);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetNextConceptData?elementId={elementId}")]
@@ -59,5 +63,9 @@ namespace LMPlatform.UI.Services.Concept
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConceptViews?conceptId={conceptId}&groupId={groupId}")]
         ConceptService.MonitoringData GetConceptViews(int conceptId, int groupId);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConceptCascade?parenttId={parenttId}")]
+        ConceptResult GetConceptCascade(int parenttId);
     }
 }
