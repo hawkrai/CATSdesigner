@@ -131,9 +131,19 @@ namespace LMPlatform.Data.Repositories
 		public void DeleteNews(SubjectNews news)
 		{
 			using var context = new LmPlatformModelsContext();
-			var model = context.Set<SubjectNews>().FirstOrDefault(e => e.Id == news.Id);
-			context.Delete(model);
-			context.SaveChanges();
+			var model = context.Set<SubjectNews>().Include(e => e.Attachments).FirstOrDefault(e => e.Id == news.Id);
+            if (model != null)
+            {
+                foreach (var attachment in model.Attachments.ToList())
+                {
+                    context.Delete(attachment);
+                }
+
+                context.SaveChanges();
+
+                context.Delete(model);
+                context.SaveChanges();
+            }
 		}
 
 		public void DeleteLection(Lectures lectures)

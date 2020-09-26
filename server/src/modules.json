@@ -1,38 +1,38 @@
 {
     "web": {
-        "path": "d:/.temp/apps/container",
+        "path": "/home/educatsb/apps/container",
         "entryPoint": "index.html"
     },
     "subject": {
-        "path": "d:/.temp/apps/subject",
+        "path": "/home/educatsb/apps/subject",
         "entryPoint": "index.html"
     },
     "testsModule": {
-        "path": "d:/.temp/apps/testsModule",
+        "path": "/home/educatsb/apps/testsModule",
         "entryPoint": "index.html"
     },
     "course": {
-        "path": "d:/.temp/apps/course",
+        "path": "/home/educatsb/apps/course",
         "entryPoint": "index.html"
     },
     "admin": {
-        "path": "d:/.temp/apps/admin",
+        "path": "/home/educatsb/apps/admin",
         "entryPoint": "index.html"
     },    
     "control": {
-        "path": "d:/.temp/apps/admin",
+        "path": "/home/educatsb/apps/admin",
         "entryPoint": "index.html"
     },
     "confirmation": {
-        "path": "d:/.temp/apps/confirmation",
+        "path": "/home/educatsb/apps/confirmation",
         "entryPoint": "index.html"
     },
     "libBook": {
-        "path": "d:/.temp/apps/libBook",
+        "path": "/home/educatsb/apps/libBook",
         "entryPoint": "index.html"
     },
     "complex": {
-        "path": "d:/.temp/apps/complex",
+        "path": "/home/educatsb/apps/complex",
         "entryPoint": "index.html"
     }
 }
