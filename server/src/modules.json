@@ -34,5 +34,9 @@
     "complex": {
         "path": "/home/educatsb/apps/complex",
         "entryPoint": "index.html"
+    },    
+    "calendar": {
+        "path": "/home/educatsb/apps/calendar",
+        "entryPoint": "index.html"
     }
 }

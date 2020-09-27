@@ -11,6 +11,7 @@ app.use(express.static(path.resolve('/home/educatsb/apps')));
 
 const allowedExt = [
   '.js',
+  'gif',
   '.ico',
   '.css',
   '.png',

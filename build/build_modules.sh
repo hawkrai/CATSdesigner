@@ -6,6 +6,7 @@ export cp_path=$modules_path'/course-projects'
 export confirmation_path=$modules_path'/confirmation'
 export editor_path=$modules_path'/editor'
 export complex_path=$modules_path'/complex'
+export schedule_path=$modules_path'/schedule'
 
 cd $admin_path
 npm i
@@ -32,5 +33,9 @@ npm i
 npm run build
 
 cd $editor_path
+npm i
+npm run build
+
+cd $schedule_path
 npm i
 npm run build
