@@ -1,0 +1,38 @@
+<div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Текст"
+    [(ngModel)]="note.title"
+  />
+  <input
+    class="form-control"
+    type="text"
+    mwlFlatpickr
+    [altInput]="true"
+    [convertModelValue]="true"
+    [enableTime]="true"
+    [(ngModel)]="note.start"
+    dateFormat="Y-m-dTH:i"
+    altFormat="F j, Y H:i"
+    placeholder="Начало"
+  />
+  <input
+    class="form-control"
+    type="text"
+    mwlFlatpickr
+    [altInput]="true"
+    [convertModelValue]="true"
+    [enableTime]="true"
+    [locale]="'Russian'"
+    [(ngModel)]="note.end"
+    dateFormat="Y-m-dTH:i"
+    altFormat="F j, Y H:i"
+    placeholder="Конец"
+  />
+  <button mat-raised-button color="warn" (click)="add()">
+    Сохранить
+  </button>
+  <button mat-button color="warn" (click)=onCancelClick()> Выйти </button>
+</div>
+

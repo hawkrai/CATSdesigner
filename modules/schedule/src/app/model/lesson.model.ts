@@ -9,4 +9,5 @@ export class Lesson {
   building: string;
   classroom: string;
   color: string;
+  subjectId: string;
 }

@@ -16,6 +16,8 @@ import localeRu from '@angular/common/locales/ru';
 import {HttpClientModule} from '@angular/common/http';
 import {DateFormatterParams} from 'angular-calendar';
 import {MatDialogModule} from '@angular/material/dialog';
+import {AddNoteComponent} from './modal/add-note/add-note.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 registerLocaleData(localeRu);
 
@@ -32,6 +34,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
   declarations: [
     AppComponent,
     ScheduleMainComponent,
+    AddNoteComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     AppRoutingModule,
     MatDialogModule,
     HttpClientModule,
+    MatTooltipModule,
     MatFormFieldModule,
     FlatpickrModule.forRoot(),
     CalendarModule.forRoot({
@@ -57,7 +61,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
   providers: [],
   exports: [AppComponent],
   bootstrap: [AppComponent],
-  entryComponents: []
+  entryComponents: [AddNoteComponent]
 })
 export class AppModule {
 

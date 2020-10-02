@@ -23,8 +23,7 @@ export class LessonService {
     return this.http.post<any>('/Profile/GetProfileInfoCalendar', {userLogin: username});
   }
 
-
-  login(): Observable<Login> {
-    return this.http.post<Login>('/api/Account/Login?userName=ypal0898&password=ypal0898',  {});
+  getAllSubjects(username: string ): Observable<any> {
+    return this.http.post<any>('/Profile/GetProfileInfoSubjects', {userLogin: username});
   }
 }

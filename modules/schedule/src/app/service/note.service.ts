@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {Note} from '../model/note.model';
+import {NOTES} from '../mock/note-mock';
 
 
 @Injectable({
@@ -7,4 +10,8 @@ import { Injectable } from '@angular/core';
 export class NoteService {
 
   constructor() { }
+
+  getNotes(): Observable<Note[]> {
+    return of(NOTES);
+  }
 }
