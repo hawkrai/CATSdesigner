@@ -22,6 +22,11 @@ export const getUser = createSelector(
   (state: ISubjectState) => state.user
 );
 
+export const isUserLector = createSelector(
+  subjectSelector,
+  state => state.user.role.toLowerCase() === 'lector'
+);
+
 export const getSubjects = createSelector(
   subjectSelector,
   state => state.subjects

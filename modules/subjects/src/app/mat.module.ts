@@ -19,7 +19,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatRadioModule} from '@angular/material/radio';
-
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   exports: [
@@ -43,7 +43,8 @@ import {MatRadioModule} from '@angular/material/radio';
     MatSlideToggleModule,
     MatRippleModule,
     MatGridListModule,
-    MatRadioModule
+    MatRadioModule,
+    MatTabsModule
   ]
 })
 export class MatModule { }

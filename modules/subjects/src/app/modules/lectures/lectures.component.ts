@@ -1,8 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
+
+import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {GroupsService} from '../../services/groups/groups.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-lectures',
@@ -11,10 +14,10 @@ import {GroupsService} from '../../services/groups/groups.service';
 })
 export class LecturesComponent implements OnInit {
 
-  public tab = 1;
-  public teacher = false;
-
-  subjectId: number;
+  selectedTab = 0;
+  isTeacher$: Observable<boolean>;
+  tabs = ['Лекции', 'Посещение лекций']
+  subjectId$: Observable<number>;
 
   constructor(private store: Store<IAppState>,
               private groupsService: GroupsService,) {
@@ -22,14 +25,7 @@ export class LecturesComponent implements OnInit {
 
   ngOnInit() {
     this.groupsService.loadDate();
-    this.store.pipe(select(getUser)).subscribe(user => {
-      if (user && user.role.toLowerCase() === 'lector') {
-        this.teacher = true;
-      }
-    });
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
-    });
+    this.isTeacher$ = this.store.select(subjectSelectors.isUserLector);
+    this.subjectId$ = this.store.select(getSubjectId);
   }
-
 }

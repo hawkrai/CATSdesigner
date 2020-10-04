@@ -1,33 +1,37 @@
 <div class="lectures-component">
+  <mat-tab-group>
+
+  </mat-tab-group>
   <div class="mdc-tab-bar" role="tablist">
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 1"
-            (click)="tab = 1"
+    <button *ngFor="let tab of tabs;let idx = index" class="mdc-tab" role="tab" aria-selected="true"
+            [tabindex]="idx"
+            [class.mdc-tab--active]="tab === idx"
+            (click)="tab = idx"
     >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">Лекции</span>
+        <span class="mdc-tab__text-label">tab</span>
       </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === idx">
         <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 2"
-            (click)="tab = 2"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Посещение лекций</span>
-          </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
-      <span class="mdc-tab__ripple"></span>
-    </button>
+<!--    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"-->
+<!--            [class.mdc-tab&#45;&#45;active]="tab === 2"-->
+<!--            (click)="tab = 2"-->
+<!--    >-->
+<!--          <span class="mdc-tab__content">-->
+<!--            <span class="mdc-tab__text-label">Посещение лекций</span>-->
+<!--          </span>-->
+<!--      <span class="mdc-tab-indicator" [class.mdc-tab-indicator&#45;&#45;active]="tab === 2">-->
+<!--            <span class="mdc-tab-indicator__content mdc-tab-indicator__content&#45;&#45;underline"></span>-->
+<!--          </span>-->
+<!--      <span class="mdc-tab__ripple"></span>-->
+<!--    </button>-->
   </div>
 
   <div class="lectures-component__body">
-    <app-lectures-list *ngIf="tab === 1" [subjectId]="subjectId"  [teacher]="teacher"></app-lectures-list>
-    <app-visit-lectures *ngIf="tab === 2" [subjectId]="subjectId" [teacher]="teacher"> </app-visit-lectures>
+    <app-lectures-list *ngIf="selectedTab === 0" [subjectId]="subjectId$ | async"  [teacher]="isTeacher$ | async"></app-lectures-list>
+    <app-visit-lectures *ngIf="selectedTab === 1" [subjectId]="subjectId$ | async" [teacher]="isTeacher$ | async"> </app-visit-lectures>
   </div>
 </div>

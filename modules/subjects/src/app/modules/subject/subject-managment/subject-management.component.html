@@ -49,14 +49,14 @@
     <h3 mat-dialog-title class="mat-typography title">Группы</h3>
     <mat-form-field class="example-full-width">
       <mat-label>Группы</mat-label>
-      <mat-select [(value)]="selectedGroup.id" multiple>
+      <mat-select [(value)]="selectedGroups" multiple>
         <mat-select-trigger>
           {{ selectedGroups.length ? getSelectedValue(selectedGroups[0]) : "" }}
           <span
             *ngIf="selectedGroups?.length > 1"
             class="example-additional-selection"
           >
-            (+{{ selectedGroups.length - 1 }} {{ selectedGroups.length |  }})
+            (+{{ selectedGroups.length - 1 }} {{ selectedGroups.length | pluar:'другой':'другие' }})
           </span>
         </mat-select-trigger>
         <mat-option *ngFor="let group of groupList" [value]="group.id">
