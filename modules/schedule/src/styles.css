@@ -10,18 +10,46 @@
 .cal-week-view .cal-starts-within-day .cal-event{
   border-left-width: 5px;
   border-radius: 0px;
-  border-bottom-width: 1px ;
+  border-bottom-width: 0px ;
   border-bottom-color: grey;
-  border-top-width: 1px ;
+  border-top-width: 0px ;
   border-top-color: grey;
-  border-right-width: 1px ;
+  border-right-width: 0px ;
   border-right-color: grey;
 }
 
 .cal-week-view .cal-time-events .cal-event table{
-  width: 95%;
+  width: 98%;
 }
 
 .cal-day-view .cal-hour-segment.cal-after-hour-start .cal-time {
   display: block;
 }
+
+.cal-week-view .cal-hour-segment{
+  background-color: white;
+}
+
+.cal-week-view .cal-header.cal-weekend span {
+  color: grey;
+}
+
+.cal-week-view .cal-day-headers span {
+  color: grey;
+}
+
+.cal-week-view .cal-header.cal-weekend b {
+  font-weight: initial;
+  color: grey;
+}
+
+.cal-week-view .cal-day-headers b {
+  font-weight: initial;
+  color: grey;
+}
+
+.cal-week-view .cal-time {
+  color: grey;
+  font-weight: initial;
+}
+
