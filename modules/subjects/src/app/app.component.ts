@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {GroupsService} from './services/groups/groups.service';
 import {IAppState} from './store/state/app.state';
 import {Store} from '@ngrx/store';
-import {SetSubject, SetUser} from './store/actions/subject.actions';
-import {User} from './models/user.model';
+import * as subjectActions from './store/actions/subject.actions';
 import {CatsMessageService} from './services/cats.message';
+import {User} from './models/user.model';
+import {Subject} from './models/subject.model';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,8 +14,6 @@ import {CatsMessageService} from './services/cats.message';
 export class AppComponent implements OnInit{
 
   title = 'lmsNew';
-  user: User;
-  group: {id: '', Name: ''};
 
   constructor(private groupsService: GroupsService,
               private catsMessageService: CatsMessageService,
@@ -24,10 +23,12 @@ export class AppComponent implements OnInit{
     this.catsMessageService.setupMessageCommunication();
     // localStorage.setItem('currentSubject', JSON.stringify({id: "2026", Name:"Тестирование ПО"}));
     // localStorage.setItem('currentUser', JSON.stringify({id: 2, role: 'lector', userName: 'popova'}));
-    this.group = JSON.parse(localStorage.getItem('currentSubject'));
-    this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.group && this.store.dispatch(new SetSubject(this.group));
-    this.store.dispatch(new SetUser(this.user));
+    const subject = JSON.parse(localStorage.getItem('currentSubject')) as Subject;
+    const user = JSON.parse(localStorage.getItem('currentUser')) as User;
+    if (subject) {
+      this.store.dispatch(subjectActions.setSubject({ subject }));
+    }
+    this.store.dispatch(subjectActions.setUser({ user }));
 
   }
 }

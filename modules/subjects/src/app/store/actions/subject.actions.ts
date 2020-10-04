@@ -1,21 +1,47 @@
-import {Action} from "@ngrx/store";
+import { SubjectForm } from './../../models/subject-form.model';
+import {createAction, props} from "@ngrx/store";
 import {User} from '../../models/user.model';
+import {Subject} from '../../models/subject.model';
 
-export enum ESubjectActions {
-  SET_SUBJECT = '[Subject] Set Subject',
-  SET_USER = '[Subject] Set User',
-}
+export const setSubject = createAction(
+  '[Subject] Set Subject',
+  props<{ subject: Subject }>()
+);
 
-export class SetSubject implements Action{
-  public readonly type = ESubjectActions.SET_SUBJECT;
+export const setUser = createAction(
+  '[Subject] Set User',
+  props<{ user: User }>()
+);
 
-  constructor(public payload: {id: '', Name: ''}) {}
-}
+export const loadSubjects = createAction(
+  '[Subject] Load Subjects'
+);
 
-export class SetUser implements Action{
-  public readonly type = ESubjectActions.SET_USER;
+export const loadSubjectsSuccess = createAction(
+  '[Subject] Load Subjects Success',
+  props<{ subjects: Subject[] }>()
+);
 
-  constructor(public payload: User) {}
-}
+export const saveSubjectSuccess = createAction(
+  '[Subject] Save Subject Success'
+);
 
-export type SubjectActions =  SetSubject | SetUser;
+export const saveSubject = createAction(
+  '[Subject] Save Subject',
+  props<{ subject: SubjectForm }>()
+);
+
+export const deleteSubject = createAction(
+  '[Subject] Delete Subject',
+  props<{ id: number }>()
+);
+
+export const deleteSubjectSuccess = createAction(
+  '[Subject] Delete Subject Success'
+);
+
+// todo
+export const loadSubjectsFail = createAction(
+  '[Subject] Load Subjects Fail',
+  props<{ error: any }>()
+);

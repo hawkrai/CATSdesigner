@@ -1,15 +1,21 @@
 import {Component, OnInit} from '@angular/core';
+import {ComponentType} from '@angular/cdk/typings/portal';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {Store} from '@ngrx/store';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+
+import * as subjectActions from '../../store/actions/subject.actions';
+import {Subject} from '../../models/subject.model';
+import {IAppState} from '../../store/state/app.state';
+import {DeletePopoverComponent} from '../../shared/delete-popover/delete-popover.component';
+import {SubjectLectorComponent} from './subject-lector/subject-lector.component';
 import {SubjectService} from '../../services/subject.service';
 import {SubjectManagementComponent} from './subject-managment/subject-management.component';
 import {DialogData} from '../../models/dialog-data.model';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DeletePopoverComponent} from '../../shared/delete-popover/delete-popover.component';
-import {SubjectLectorComponent} from './subject-lector/subject-lector.component';
-import {SetSubject} from '../../store/actions/subject.actions';
-import {Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
-import {Router} from '@angular/router';
+import * as subjectSelectors from '../../store/selectors/subject.selector';
+import { tap } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-subject',
@@ -17,23 +23,21 @@ import {Router} from '@angular/router';
   styleUrls: ['./subject.component.less']
 })
 export class SubjectComponent implements OnInit {
-
-  public subjects;
+  subjects$: Observable<Subject[]>;
   public displayedColumns = ['name', 'shortName', 'actions'];
 
-  constructor(private subjectService: SubjectService,
+  constructor(
               private store: Store<IAppState>,
               private router: Router,
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.refreshDate();
+    this.store.dispatch(subjectActions.loadSubjects());
+    this.subjects$ = this.store.select(subjectSelectors.getSubjects);
+    // this.refreshDate();
   }
 
   refreshDate() {
-    this.subjectService.getSubjects().subscribe(res => {
-      this.subjects = res;
-    })
   }
 
   constructorSubject(subjectId?) {
@@ -42,11 +46,11 @@ export class SubjectComponent implements OnInit {
     };
     const dialogRef = this.openDialog(dialogData, SubjectManagementComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.refreshDate();
-      }
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result) {
+    //     this.refreshDate();
+    //   }
+    // });
   }
 
   lector(subjectId: string) {
@@ -57,18 +61,17 @@ export class SubjectComponent implements OnInit {
     this.openDialog(dialogData, SubjectLectorComponent);
   }
 
-  deleteSubject(subject) {
+  deleteSubject(subject : Subject) {
     const dialogData: DialogData = {
       title: 'Удаление предмета',
-      body: 'предмет "' + subject.DisplayName + '"',
+      body: `предмет "${subject.DisplayName}"`,
       buttonText: 'Удалить'
     };
     const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.subjectService.deleteSubjects(subject.SubjectId)
-          .subscribe(() => this.refreshDate());
+        this.store.dispatch(subjectActions.deleteSubject({ id: subject.SubjectId }))
       }
     });
   }
@@ -77,11 +80,10 @@ export class SubjectComponent implements OnInit {
     return this.dialog.open(popover, {data});
   }
 
-  setSubject(subject) {
-    const currentSubject = {id: subject.SubjectId, Name: subject.DisplayName};
-    if (currentSubject.id) {
-      this.store.dispatch(new SetSubject(currentSubject));
-      localStorage.setItem('currentSubject', JSON.stringify(currentSubject));
+  setSubject(subject: Subject): void {
+    if (subject && subject.SubjectId) {
+      this.store.dispatch(subjectActions.setSubject({ subject }));
+      localStorage.setItem('currentSubject', JSON.stringify(subject));
       this.router.navigate(['/news']);
     }
   }

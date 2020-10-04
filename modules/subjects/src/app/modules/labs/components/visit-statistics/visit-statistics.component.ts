@@ -24,9 +24,9 @@ export class VisitStatisticsComponent implements OnInit {
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
 
-  private subjectId: string;
+  private subjectId: number;
   private group: Group;
-  private student: any[];
+  student: any[];
 
   public labs: Lab[];
   public  header = [{head: 'empty', text: '', length: 2}];

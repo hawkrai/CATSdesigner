@@ -30,6 +30,7 @@ import {SubgroupingComponent} from './components/subgrouping/subgrouping.compone
 import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
 import {SubjectModule} from './modules/subject/subject.module';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
+import {SubjectEffects} from './store/effects/subject.effects';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,7 @@ import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover
     PracticalModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [

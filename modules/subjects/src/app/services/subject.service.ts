@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {Subject} from '../models/subject.model';
+import { SubjectForm } from '../models/subject-form.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,47 +12,47 @@ export class SubjectService {
   constructor(private http: HttpClient) {
   }
 
-  public editSubject(subjectId: string): Observable<any> {
-    return this.http.get('Subject/EditSubject/' + subjectId);
+  public editSubject(subjectId: number): Observable<SubjectForm> {
+    return this.http.get<SubjectForm>('Subject/EditSubject/' + subjectId);
   }
 
-  public saveSubject(body): Observable<any> {
+  public saveSubject(body: SubjectForm): Observable<any> {
     return this.http.post('Subject/SaveSubject', body);
   }
 
-  public editGroups(subjectId: string): Observable<any> {
+  public editGroups(subjectId: number): Observable<any> {
     return this.http.get('Subject/SubGroups?subjectId=' + subjectId);
   }
 
-  public subGroupsChangeGroup(subjectId: string, groupId: string): Observable<any> {
+  public subGroupsChangeGroup(subjectId: number, groupId: string): Observable<any> {
     return this.http.post('Subject/SubGroupsChangeGroup', {subjectId, groupId});
   }
 
-  public getSubjects(): Observable<any> {
-    return this.http.get('Subject/Subjects');
+  public getSubjects(): Observable<Subject[]> {
+    return this.http.get<Subject[]>('Subject/Subjects');
   }
 
-  public deleteSubjects(subjectId: string): Observable<any> {
+  public deleteSubjects(subjectId: number): Observable<any> {
     return this.http.get('Subject/DeleteSubject/' + subjectId);
   }
 
-  public getCreateModel(): Observable<any> {
-    return this.http.get('Subject/Create');
+  public getCreateModel(): Observable<SubjectForm> {
+    return this.http.get<SubjectForm>('Subject/Create');
   }
 
-  public getJoinedLector(subjectId: string): Observable<any> {
+  public getJoinedLector(subjectId: number): Observable<any> {
     return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId);
   }
 
-  public joinedLector(subjectId: string, lectorId: string): Observable<any> {
+  public joinedLector(subjectId: number, lectorId: string): Observable<any> {
     return this.http.post('Services/CoreService.svc/JoinLector', {subjectId, lectorId});
   }
 
-  public disjoinLector(subjectId: string, lectorId: string): Observable<any> {
+  public disjoinLector(subjectId: number, lectorId: string): Observable<any> {
     return this.http.post('Services/CoreService.svc/DisjoinLector', {subjectId, lectorId});
   }
 
-  public getNoAdjointLectors(subjectId: string): Observable<any> {
+  public getNoAdjointLectors(subjectId: number): Observable<any> {
     return this.http.get('Services/CoreService.svc/GetNoAdjointLectors/' + subjectId);
   }
 

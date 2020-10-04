@@ -25,8 +25,8 @@ export class ResultsComponent implements OnInit {
   public displayedColumns: string[] = ['position', 'name'];
 
   public selectedGroup: Group;
-  private subjectId: string;
-  private student: any[];
+  private subjectId: number;
+  student: any[];
   header: any[];
 
   private user;

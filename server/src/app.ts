@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 const targetDomain = "http://host27072020.of.by";
 
-app.use(express.static(path.resolve('/home/educatsb/apps')));
+app.use(express.static(path.resolve('/.temp/apps')));
 
 const allowedExt = [
   '.js',

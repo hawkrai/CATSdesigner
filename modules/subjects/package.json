@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
-    "build": "ng build",
+    "build": "ng build --watch",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": ".ng e2e"
@@ -44,6 +44,7 @@
     "moment": "^2.26.0",
     "ngx-color-picker": "^9.1.0",
     "rxjs": "~6.4.0",
+    "subsink": "^1.0.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
   },

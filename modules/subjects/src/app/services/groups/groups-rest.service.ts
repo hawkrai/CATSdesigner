@@ -15,13 +15,13 @@ export class GroupsRestService {
   constructor(private http: HttpClient,
               private converterService: ConverterService) { }
 
-  public getAllGroups(subjectId: string): Observable<any> {
+  public getAllGroups(subjectId: number): Observable<any> {
     return this.http.get('Services/CoreService.svc/GetGroupsV2/' + subjectId).pipe(
       map(res => this.converterService.groupsModelConverter(res['Groups']))
     );
   }
 
-  public getAllOldGroups(subjectId: string): Observable<any> {
+  public getAllOldGroups(subjectId: number): Observable<any> {
     return this.http.get('Services/CoreService.svc/GetGroupsV3/' + subjectId).pipe(
       map(res => this.converterService.groupsModelConverter(res['Groups']))
     );

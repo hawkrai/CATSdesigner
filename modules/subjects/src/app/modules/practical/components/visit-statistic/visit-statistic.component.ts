@@ -17,9 +17,9 @@ export class VisitStatisticComponent implements OnInit {
 
   @Input() teacher: boolean;
 
-  private subjectId: string;
+  private subjectId: number;
   private group: Group;
-  private student: any[];
+  student: any[];
   public displayColumn = [];
 
 

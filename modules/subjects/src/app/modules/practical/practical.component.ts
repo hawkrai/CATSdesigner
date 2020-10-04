@@ -17,14 +17,14 @@ export class PracticalComponent implements OnInit {
   public groups: Group[];
   public selectedGroup: Group;
 
-  private subjectId: string;
+  private subjectId: number;
   public teacher = false;
   public detachedGroup = false;
 
   constructor(private groupsService: GroupsService,
               private store: Store<IAppState>) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.groupsService.loadDate();
     this.store.pipe(select(getUser)).subscribe(user => {
       if (user && user.role.toLowerCase() === 'lector') {
@@ -38,7 +38,7 @@ export class PracticalComponent implements OnInit {
     });
   }
 
-  loadGroup() {
+  loadGroup(): void {
     if (this.detachedGroup) {
       this.groupsService.getAllOldGroups(this.subjectId).subscribe(res => {
         this.groups = res;

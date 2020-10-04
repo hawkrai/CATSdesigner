@@ -22,7 +22,7 @@ export class PracticalLessonsComponent implements OnInit {
   @Input() teacher: boolean;
 
   public practicalLessons;
-  private subjectId: string;
+  private subjectId: number;
 
   public tableHeaders = [
     {name: '№'},

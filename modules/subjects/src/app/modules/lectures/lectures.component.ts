@@ -14,7 +14,7 @@ export class LecturesComponent implements OnInit {
   public tab = 1;
   public teacher = false;
 
-  private subjectId: string;
+  subjectId: number;
 
   constructor(private store: Store<IAppState>,
               private groupsService: GroupsService,) {

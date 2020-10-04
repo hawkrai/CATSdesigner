@@ -23,7 +23,7 @@ export class LabsComponent implements OnInit {
   public groups: Group[];
   public selectedGroup: Group;
 
-  private subjectId: string;
+  private subjectId: number;
   public teacher = false;
   public detachedGroup = false;
 

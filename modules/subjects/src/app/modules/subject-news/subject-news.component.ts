@@ -22,7 +22,7 @@ export class SubjectNewsComponent implements OnInit {
 
   private teacher: boolean = false;
 
-  private subjectId: string;
+  private subjectId: number;
 
   public news: News[];
   public selectNews: News = null;
@@ -129,6 +129,6 @@ export class SubjectNewsComponent implements OnInit {
         Name: attachment.name
       })
     });
-    return newAttachments;
+    return newAttachments
   }
 }

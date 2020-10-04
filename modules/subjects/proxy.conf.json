@@ -1,14 +1,17 @@
 {
   "/Services/*": {
-    "target": " http://localhost:8080",
-    "secure": false
+    "target": "http://educats.by",
+    "secure": false,
+    "changeOrigin": true
   },
   "/Statistic/*": {
-    "target": " http://localhost:8080",
-    "secure": false
+    "target": "http://educats.by",
+    "secure": false,
+    "changeOrigin": true
   },
-  "/Subject/*": {
-    "target": " http://localhost:8080",
-    "secure": false
+  "*/Subject/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "changeOrigin": true
   }
 }

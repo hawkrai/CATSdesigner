@@ -16,10 +16,11 @@ const http_proxy_middleware_1 = require("http-proxy-middleware");
 const modules = __importStar(require("./modules.json"));
 const app = express_1.default();
 const port = 3000;
-const targetDomain = "http://localhost:84";
-app.use(express_1.default.static(path_1.default.resolve('d:/.temp/apps')));
+const targetDomain = "http://host27072020.of.by";
+app.use(express_1.default.static(path_1.default.resolve('/.temp/apps')));
 const allowedExt = [
     '.js',
+    'gif',
     '.ico',
     '.css',
     '.png',
@@ -38,6 +39,7 @@ const proxyServiceOptions = {
     changeOrigin: true,
     pathRewrite: {
         '^/subject/Services': 'Services',
+        '^/course/Services': 'Services',
         '^/Services': 'Services',
     },
 };
@@ -67,13 +69,38 @@ const proxyApigOptions = {
     changeOrigin: true,
     pathRewrite: {
         '^/course/api': 'api',
+        '^/subject/api': 'api',
+    }
+};
+const proxyAdmingOptions = {
+    target: targetDomain,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/Administration': 'Administration',
+    }
+};
+const proxyProfileOptions = {
+    target: targetDomain,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/Profile': 'Profile',
+    }
+};
+const proxySubjectOptions = {
+    target: targetDomain,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/subject/Subject': 'Subject',
     }
 };
 app.use('*/Services/*', http_proxy_middleware_1.createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', http_proxy_middleware_1.createProxyMiddleware(proxyAccountOptions));
+app.use('*/Profile/*', http_proxy_middleware_1.createProxyMiddleware(proxyProfileOptions));
 app.use('*/TestPassing/*', http_proxy_middleware_1.createProxyMiddleware(proxyTestPassingOptions));
 app.use('*/Tests/*', http_proxy_middleware_1.createProxyMiddleware(proxyTestOptions));
 app.use('*/api/*', http_proxy_middleware_1.createProxyMiddleware(proxyApigOptions));
+app.use('*/Administration/*', http_proxy_middleware_1.createProxyMiddleware(proxyAdmingOptions));
+app.use('*/subject/Subject/*', http_proxy_middleware_1.createProxyMiddleware(proxySubjectOptions));
 app.get('*', (req, res) => {
     let url = req.url;
     let module = getModule(url);

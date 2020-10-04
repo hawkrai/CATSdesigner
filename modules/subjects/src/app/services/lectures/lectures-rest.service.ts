@@ -30,7 +30,7 @@ export class LecturesRestService {
     return this.http.post('Services/Lectures/LecturesService.svc/Delete', lecture);
   }
 
-  public getCalendar(subjectId: string): Observable<Calendar[]> {
+  public getCalendar(subjectId: number): Observable<Calendar[]> {
     return this.http.get('Services/Lectures/LecturesService.svc/GetCalendar/' + subjectId).pipe(
       map(res => this.converterService.calendarModelsConverter(res['Calendar']))
     );
