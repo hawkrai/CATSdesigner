@@ -23,8 +23,8 @@
   overflow-y: hidden;
 }
 
-.mat-dialog-container{
-	border-radius: unset !important;
+.mat-dialog-container {
+  border-radius: unset !important;
 }
 
 .mat-checkbox-layout {
@@ -39,6 +39,7 @@
 .mat-form-field {
   width: 100%;
 }
+
 .mat-radio-label-content {
   width: 93%;
 }
@@ -48,7 +49,7 @@
   box-shadow: none;
 }
 
-.mat-cell{
+.mat-cell {
   justify-content: left;
 }
 
@@ -71,6 +72,14 @@
   width: inherit;
 }
 
-.mat-snack-bar-container{
+.mat-tab-label-content {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+.mat-snack-bar-container {
   background: #3d497b;
+  top: 100%;
+  height: 48px;
+  position: sticky;
 }
