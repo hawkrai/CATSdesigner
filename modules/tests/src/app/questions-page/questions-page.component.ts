@@ -8,8 +8,8 @@ import {Test} from "../models/test.model";
 import {QuestionOtherTestComponent} from "./components/question-other-test/question-other-test.component";
 import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
-import {catchError, takeUntil} from "rxjs/operators";
-import {Subject, throwError} from "rxjs";
+import {catchError, switchMap, takeUntil, tap} from "rxjs/operators";
+import {Observable, Subject, throwError} from "rxjs";
 import {DeleteQuestionConfirmationPopupComponent} from "./components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 
 
@@ -46,27 +46,30 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
         this.test = test;
         this.isEUMKTest = test.BeforeEUMK || test.ForEUMK;
       });
-    this.loadQuestions();
+    this.loadQuestions()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
   }
 
-  public loadQuestions(): void {
-    this.testService.getQuestionsByTest(this.testId)
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((questions) => {
-        this.questions = questions;
-        this.questionsDefault = questions;
-      });
+  public loadQuestions(): Observable<Question[]> {
+    return this.testService.getQuestionsByTest(this.testId)
+      .pipe(
+        tap((questions) => {
+          this.questions = questions;
+          this.questionsDefault = questions;
+        }));
   }
 
   public deleteQuestion(event): void {
     this.testService.deleteQuestion(event)
-      .pipe(takeUntil(this.unsubscribeStream$),
+      .pipe(
+        switchMap(() => this.loadQuestions()),
+        takeUntil(this.unsubscribeStream$),
         catchError(() => {
           this.openSnackBar("Не удалось удалить вопрос");
           return throwError(null);
         }))
       .subscribe();
-    this.loadQuestions();
     this.cdr.detectChanges();
   }
 
@@ -104,7 +107,9 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
         if (result) {
-          this.loadQuestions();
+          this.loadQuestions()
+            .pipe(takeUntil(this.unsubscribeStream$))
+            .subscribe();
         }
       });
   }
@@ -121,7 +126,9 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
         if (result) {
-          this.loadQuestions();
+          this.loadQuestions()
+            .pipe(takeUntil(this.unsubscribeStream$))
+            .subscribe();
         }
       });
   }

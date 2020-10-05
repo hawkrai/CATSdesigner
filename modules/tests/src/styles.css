@@ -11,12 +11,12 @@
 }
 
 .cdk-global-overlay-wrapper {
-  display: -webkit-box;
+  /*display: -webkit-box;
   position: absolute;
   left: 30%;
   z-index: 1000;
   overflow: auto;
-  pointer-events: auto;
+  pointer-events: auto;*/
 }
 
 .cdk-global-scrollblock {
