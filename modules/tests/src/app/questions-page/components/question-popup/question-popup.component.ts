@@ -387,6 +387,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
 
   private getConceptName() {
     let questionConcept = this.getChildById(this.navItems, this.question.ConceptId);
-    this.selectedConcept = questionConcept.ShortName;
+    this.selectedConcept = questionConcept.Name;
   }
 }

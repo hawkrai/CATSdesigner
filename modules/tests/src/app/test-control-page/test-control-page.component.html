@@ -1,7 +1,7 @@
 <div *ngIf="!loading">
   <!--<app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>-->
-  <mat-tab-group class="container-table-tests" (selectedTabChange)="onChange($event)">
+  <mat-tab-group class="container-table" (selectedTabChange)="onChange($event)">
     <mat-tab label="Темы тестов">
       <ng-container *ngIf="currentTabIndex === 0">
         <app-main-page [allowChanges]="allowChanges"

@@ -117,6 +117,10 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
 
   onYesClick() {
     if (this.formGroup.valid) {
+      this.editingTest.ForSelfStudy = false;
+      this.editingTest.BeforeEUMK = false;
+      this.editingTest.ForEUMK = false;
+      this.editingTest.ForNN = false;
       switch (this.chosenType) {
         case "Тест для самоконтроля": {
           this.editingTest.ForSelfStudy = true;
