@@ -30,7 +30,6 @@ export class SubjectManagementComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<SubjectManagementComponent>,
     public subjectService: SubjectService,
-    private store: Store<IAppState>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dialogRef.disableClose = true;
   }
@@ -60,10 +59,8 @@ export class SubjectManagementComponent implements OnInit, OnDestroy {
   }
 
   save(): void {
-    
     this.subject.SelectedGroups = [...this.selectedGroups];
-    this.store.dispatch(subjectActions.saveSubject({ subject: this.subject }));
-    this.dialogRef.close(true);
+    this.dialogRef.close(this.subject);
   }
 
   private setGroupList(): void {

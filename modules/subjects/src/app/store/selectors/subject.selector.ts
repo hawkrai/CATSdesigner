@@ -9,12 +9,12 @@ export const subjectSelector = createSelector(
 
 export const getSubjectId = createSelector(
   subjectSelector,
-  (state: ISubjectState) => state.subject ? state.subject.SubjectId : -1
+  (state: ISubjectState) => state.subjectId
 );
 
-export const getSubject = createSelector(
+export const getSubjects = createSelector(
   subjectSelector,
-  (state: ISubjectState) => state.subject
+  state => state.subjects
 );
 
 export const getUser = createSelector(
@@ -25,9 +25,4 @@ export const getUser = createSelector(
 export const isUserLector = createSelector(
   subjectSelector,
   state => state.user.role.toLowerCase() === 'lector'
-);
-
-export const getSubjects = createSelector(
-  subjectSelector,
-  state => state.subjects
 );

@@ -13,7 +13,7 @@ import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
 })
 export class PracticalComponent implements OnInit {
 
-  public tab = 1;
+  tabs = ['Практические занятия', 'Статистика посещения', 'Результаты']
   public groups: Group[];
   public selectedGroup: Group;
 

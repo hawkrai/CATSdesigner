@@ -17,8 +17,8 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 })
 export class LecturesListComponent implements OnInit {
 
-  @Input() teacher: boolean;
-  @Input() subjectId: string;
+  @Input() isTeacher: boolean;
+  @Input() subjectId: number;
 
   public tableHeaders = [
     {name: '№'},
@@ -33,8 +33,9 @@ export class LecturesListComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.subjectId)
     this.refreshDate();
-    const column = this.teacher ? {name: 'Действие'} : {name: 'Скачать'};
+    const column = this.isTeacher ? {name: 'Действие'} : {name: 'Скачать'};
     this.tableHeaders.push(column);
   }
 

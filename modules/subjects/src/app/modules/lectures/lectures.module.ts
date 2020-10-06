@@ -7,6 +7,7 @@ import {MatModule} from '../../mat.module';
 import {LecturePopoverComponent} from './components/lecture-popover/lecture-popover.component';
 import {FormsModule} from '@angular/forms';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
   declarations: [LecturesComponent, LecturesListComponent, VisitLecturesComponent, LecturePopoverComponent],
@@ -14,7 +15,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     CommonModule,
     MatModule,
     FormsModule,
-    DragDropModule
+    DragDropModule,
+    SharedModule
   ],
   entryComponents: [
     LecturePopoverComponent

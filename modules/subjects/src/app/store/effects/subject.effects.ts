@@ -5,7 +5,7 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 
 import {SubjectService} from '../../services/subject.service';
 import * as subjectActions from '../actions/subject.actions';
-import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, map,  switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class SubjectEffects {

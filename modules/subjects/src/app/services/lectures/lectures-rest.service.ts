@@ -16,7 +16,7 @@ export class LecturesRestService {
   constructor(private http: HttpClient,
               private converterService: ConverterService) {}
 
-  public getAllLectures(subjectId: string): Observable<Lecture[]> {
+  public getAllLectures(subjectId: number): Observable<Lecture[]> {
     return this.http.get('Services/Lectures/LecturesService.svc/GetLectures/' + subjectId).pipe(
       map(res => this.converterService.lecturesModelConverter(res['Lectures']))
     );
@@ -26,7 +26,7 @@ export class LecturesRestService {
     return this.http.post('Services/Lectures/LecturesService.svc/Save', lecture);
   }
 
-  public deleteLecture(lecture: {id: string, subjectId: string}) {
+  public deleteLecture(lecture: {id: string, subjectId: number}) {
     return this.http.post('Services/Lectures/LecturesService.svc/Delete', lecture);
   }
 
@@ -36,9 +36,9 @@ export class LecturesRestService {
     );
   }
 
-  public getLecturesMarkVisiting(subjectId: string, groupId: string): Observable<GroupsVisiting[]> {
+  public getLecturesMarkVisiting(subjectId: number, groupId: string): Observable<GroupsVisiting[]> {
     const params = new HttpParams()
-      .set('subjectId', subjectId)
+      .set('subjectId', subjectId.toString())
       .set('groupId', groupId);
     return this.http.get('Services/CoreService.svc/GetLecturesMarkVisitingV2', {params}).pipe(
       map(res => this.converterService.groupsVisitingConverter(res['GroupsVisiting']))

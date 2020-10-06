@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import {FilterPipe} from './pipes/filter.pipe';
 import { PluarPipe } from './pipes/pluar.pipe';
 import { ContentHostDirective } from './directives/content-host.directive';
+import {FirstCapitalPipe} from './pipes/first-capital.pipe';
 
 
 
@@ -10,14 +11,17 @@ import { ContentHostDirective } from './directives/content-host.directive';
   declarations: [
     FilterPipe,
     PluarPipe,
-    ContentHostDirective
+    ContentHostDirective,
+    FirstCapitalPipe
   ],
   imports: [
     CommonModule
   ],
   exports: [
     FilterPipe,
-    PluarPipe
+    PluarPipe,
+    ContentHostDirective,
+    FirstCapitalPipe
   ]
 })
 export class SharedModule { }

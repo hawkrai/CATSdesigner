@@ -19,8 +19,8 @@ import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visi
 })
 export class VisitLecturesComponent implements OnInit {
 
-  @Input() subjectId: string;
-  @Input() teacher: boolean;
+  @Input() subjectId: number;
+  @Input() isTeacher: boolean;
 
   public calendar: Calendar[];
   public groups: Group[];
@@ -100,7 +100,7 @@ export class VisitLecturesComponent implements OnInit {
   }
 
   setVisitMarks(date, index) {
-    if (this.teacher) {
+    if (this.isTeacher) {
       const visits = {date: date.date, students: []};
       this.groupsVisiting.lecturesMarksVisiting.forEach(res => {
         const visit = {

@@ -4,9 +4,9 @@ import * as subjectActions from '../actions/subject.actions';
 
 export const subjectReducers = createReducer(
   initialSubjectState,
-  on(subjectActions.setSubject, (state, action): ISubjectState => ({
+  on(subjectActions.setSubjectId, (state, action): ISubjectState => ({
     ...state,
-    subject: action.subject
+    subjectId: action.id
   })),
   on(subjectActions.setUser, (state, action): ISubjectState => ({
     ...state,

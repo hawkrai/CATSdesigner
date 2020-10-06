@@ -31,6 +31,8 @@ import {SubSettingsComponent} from './components/sub-settings/sub-settings.compo
 import {SubjectModule} from './modules/subject/subject.module';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
 import {SubjectEffects} from './store/effects/subject.effects';
+import {LecturesListComponent} from './modules/lectures/components/lectures-list/lectures-list.component';
+import {VisitLecturesComponent} from './modules/lectures/components/visit-lectures/visit-lectures.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,9 @@ import {SubjectEffects} from './store/effects/subject.effects';
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     SubgroupingComponent,
-    CheckPlagiarismPopoverComponent
+    CheckPlagiarismPopoverComponent,
+    LecturesListComponent,
+    VisitLecturesComponent
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

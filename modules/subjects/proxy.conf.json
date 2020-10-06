@@ -1,15 +1,15 @@
 {
-  "/Services/*": {
+  "/subject/Services/*": {
     "target": "http://educats.by",
     "secure": false,
     "changeOrigin": true
   },
-  "/Statistic/*": {
+  "/subject/Statistic/*": {
     "target": "http://educats.by",
     "secure": false,
     "changeOrigin": true
   },
-  "*/Subject/*": {
+  "/subject/Subject/*": {
     "target": "http://educats.by",
     "secure": false,
     "changeOrigin": true

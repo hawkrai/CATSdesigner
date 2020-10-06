@@ -28,7 +28,7 @@ export class LecturesService {
     return this.store$.pipe(select(getLecturesCalendar));
   }
 
-  public getAllLectures(subjectId: string): Observable<Lecture[]> {
+  public getAllLectures(subjectId: number): Observable<Lecture[]> {
     return this.rest.getAllLectures(subjectId);
   }
 
@@ -36,11 +36,11 @@ export class LecturesService {
     return this.rest.createLecture(lecture);
   }
 
-  public deleteLecture(lecture: {id: string, subjectId: string}) {
+  public deleteLecture(lecture: {id: string, subjectId: number}) {
     return this.rest.deleteLecture(lecture);
   }
 
-  public getLecturesMarkVisiting(subjectId: string, groupId: string): Observable<GroupsVisiting[]> {
+  public getLecturesMarkVisiting(subjectId: number, groupId: string): Observable<GroupsVisiting[]> {
     return this.rest.getLecturesMarkVisiting(subjectId, groupId);
   }
 

@@ -3,9 +3,9 @@ import {createAction, props} from "@ngrx/store";
 import {User} from '../../models/user.model';
 import {Subject} from '../../models/subject.model';
 
-export const setSubject = createAction(
+export const setSubjectId = createAction(
   '[Subject] Set Subject',
-  props<{ subject: Subject }>()
+  props<{ id: number }>()
 );
 
 export const setUser = createAction(

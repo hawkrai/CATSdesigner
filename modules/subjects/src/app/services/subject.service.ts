@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Subject} from '../models/subject.model';
 import { SubjectForm } from '../models/subject-form.model';
 
@@ -8,7 +8,7 @@ import { SubjectForm } from '../models/subject-form.model';
   providedIn: 'root'
 })
 export class SubjectService {
-
+  private subjectsSub = new BehaviorSubject<Subject[]>([]);
   constructor(private http: HttpClient) {
   }
 

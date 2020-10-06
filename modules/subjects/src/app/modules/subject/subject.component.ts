@@ -15,6 +15,7 @@ import {SubjectManagementComponent} from './subject-managment/subject-management
 import {DialogData} from '../../models/dialog-data.model';
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import { tap } from 'rxjs/operators';
+import {SubjectForm} from '../../models/subject-form.model';
 
 
 @Component({
@@ -34,23 +35,19 @@ export class SubjectComponent implements OnInit {
   ngOnInit() {
     this.store.dispatch(subjectActions.loadSubjects());
     this.subjects$ = this.store.select(subjectSelectors.getSubjects);
-    // this.refreshDate();
   }
 
-  refreshDate() {
-  }
 
   constructorSubject(subjectId?) {
     const dialogData: DialogData = {
       model: {subjectId: subjectId}
     };
     const dialogRef = this.openDialog(dialogData, SubjectManagementComponent);
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.refreshDate();
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.dispatch(subjectActions.saveSubject({ subject: result as SubjectForm }));
+      }
+    });
   }
 
   lector(subjectId: string) {
@@ -82,7 +79,7 @@ export class SubjectComponent implements OnInit {
 
   setSubject(subject: Subject): void {
     if (subject && subject.SubjectId) {
-      this.store.dispatch(subjectActions.setSubject({ subject }));
+      this.store.dispatch(subjectActions.setSubjectId({ id: subject.SubjectId }));
       localStorage.setItem('currentSubject', JSON.stringify(subject));
       this.router.navigate(['/news']);
     }

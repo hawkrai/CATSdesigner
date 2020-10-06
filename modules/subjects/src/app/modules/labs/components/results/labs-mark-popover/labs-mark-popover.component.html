@@ -1,8 +1,16 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content class="results__popover" #popoverContent>
-  <form class="example-form" #formElement>
-    <mat-form-field class="example-full-width">
-      <mat-label>Преподаватель</mat-label>
+  <form class="example-form" [formGroup]="markForm">
+    <mat-form-field appearance="fill" class="example-full-width">
+        <mat-label>Преподаватель</mat-label>
+        <mat-select formControlName="lector">
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let lector of joinedLectors$ | async" [value]="lector">
+            {{animal.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="animalControl.hasError('required')">Please choose an animal</mat-error>
+        <mat-hint>{{animalControl.value?.sound}}</mat-hint>
       <input name="teacher" matInput placeholder="Преподаватель" [(ngModel)]="data.body.teacher">
     </mat-form-field>
     <mat-form-field class="example-full-width">

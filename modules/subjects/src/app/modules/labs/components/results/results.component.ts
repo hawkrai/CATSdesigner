@@ -94,33 +94,34 @@ export class ResultsComponent implements OnInit {
   }
 
   setMark(student, labId: string, recommendedMark?) {
-    if (this.teacher) {
-      const mark = student.Marks.find(mark => mark.LabId.toString() === labId);
-      if (mark) {
-        const labsMark = {
-          id: mark.StudentLabMarkId ? mark.StudentLabMarkId : '0',
-          comment: mark.Comment,
-          mark: mark.Mark,
-          date: mark.Date,
-          labId: mark.LabId.toString(),
-          studentId: student.StudentId.toString(),
-          students: this.student
-        };
-        const dialogData: DialogData = {
-          title: 'Выставление отметки',
-          buttonText: 'Сохранить',
-          body: labsMark,
-          model: recommendedMark
-        };
-        const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
+    if (!this.teacher) {
+      return;
+    }
+    const mark = student.Marks.find(mark => mark.LabId.toString() === labId);
+    if (mark) {
+      const labsMark = {
+        id: mark.StudentLabMarkId ? mark.StudentLabMarkId : '0',
+        comment: mark.Comment,
+        mark: mark.Mark,
+        date: mark.Date,
+        labId: mark.LabId.toString(),
+        studentId: student.StudentId,
+        students: this.student
+      };
+      const dialogData: DialogData = {
+        title: 'Выставление отметки',
+        buttonText: 'Сохранить',
+        body: labsMark,
+        model: recommendedMark
+      };
+      const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
 
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.labService.setLabsMark(labsMark)
-              .subscribe(res => res.Code === '200' && this.refreshStudents());
-          }
-        });
-      }
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.labService.setLabsMark(labsMark)
+            .subscribe(res => res.Code === '200' && this.refreshStudents());
+        }
+      });
     }
   }
 

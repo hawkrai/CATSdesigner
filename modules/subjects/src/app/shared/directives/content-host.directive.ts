@@ -1,18 +1,28 @@
-import {ComponentFactoryResolver, Directive, ElementRef, Input, ViewContainerRef} from '@angular/core';
+import {ComponentFactoryResolver, Directive, ElementRef, Input, OnInit, Type, ViewContainerRef} from '@angular/core';
 
 @Directive({
   selector: '[appContentHost]'
 })
-export class ContentHostDirective {
+export class ContentHostDirective implements OnInit {
 
-  @Input() component
+  @Input() component: Type<any>;
+  @Input() props: any[];
   constructor(
     private resolver: ComponentFactoryResolver,
-    private elementRef: ElementRef
+    private viewContainerRef: ViewContainerRef
   ) { }
 
-  createComponent(type) {
-    const factory = this.resolver.resolveComponentFactory(SubjectComponent)
+  ngOnInit(): void {
+    this.viewContainerRef.clear();
+    const factory = this.resolver.resolveComponentFactory(this.component);
+    const componentRef = this.viewContainerRef.createComponent(factory);
+    for (const prop of this.props) {
+      componentRef.instance[prop.name] = prop.value;
+    }
   }
+
+  // createComponent(type) {
+  //   const factory = this.resolver.resolveComponentFactory(SubjectComponent)
+  // }
 
 }
