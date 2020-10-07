@@ -1,0 +1,122 @@
+<div class = "schedule" >
+  <div class="row text-center" style = "width:101.2%;border-bottom-width: 1px;border-left-width: 0px;border-top-width: 0px;border-right-width: 1px;border-style: solid;">
+    <div class="col-md-4" style="margin-top: 1%">
+      <h3 style="font-size: 15px;color: gray;margin-top: 4%;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
+    </div>
+    <div class="col-md-4" style="margin-top: 1%">
+      <h3 style="color:indigo;font-size: 1.5rem">Расписание занятий</h3>
+    </div>
+    <div class="col-md-4" style="margin-top: 1%;margin-bottom: 1%;padding-right: 0px">
+      <div class="btn-group">
+        <div
+          style="color: blue"
+          class="btn btn-light"
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
+          <
+        </div>
+        <div
+          style="background-color: #f8f9fa"
+          class="btn"
+          mwlCalendarToday
+          [(viewDate)]="viewDate"
+        >
+        Сегодня
+        </div>
+        <div
+          style="color: blue"
+          class="btn btn-light"
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="closeOpenMonthViewDay()"
+        >
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div [ngSwitch]="view">
+    <mwl-calendar-week-view
+      *ngSwitchCase="CalendarView.Week"
+      [locale] = "locale"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [dayStartHour]="8"
+      [dayEndHour]="24"
+      [weekStartsOn]="1"
+      [hourSegments]="1"
+      [hourSegmentHeight]="50"
+      (eventTimesChanged)="eventTimesChanged($event)"
+      [eventTemplate]= "eventTemplateCustom">
+    </mwl-calendar-week-view>
+  </div>
+
+
+  <ng-template #eventTemplate let-event="event">
+    <div class="cal-event-title">
+      <div *ngIf="isLesson(event)">
+        <table>
+          <thead>
+          <tr style="line-height: 30%;"><h6 style = "font-size: 14px; left: 0%;color: indigo; float: left;">{{getTime(event.title)}}</h6>  <p style = "line-height: 100%;font-size: 13px;float:right;color: black">{{getLocation(event.title)}}</p></tr>
+          <tr style="line-height: 30%;"><a href = "{{getReferenceToSubject(event.title)}}"><h6 style = "left: 0%;color: black; float: left">{{getName(event.title)}}</h6></a> <h6 style = "overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: indigo; color: indigo">{{getType(event.title)}}</h6></tr>
+          <tr style="line-height: 30%;"><p style = "font-size: 13px;color: black; line-height: 100%; margin-bottom: 0%;">{{getThirdString(event.title)}}</p></tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <div style = 'height: 95%' *ngIf="isNote(event)">
+      <p style = "white-space: pre-wrap;line-height: 15px;color:black">{{event.title}}</p>
+    </div>
+  </ng-template>
+
+  <ng-template #hourSegmentTemplate let-segment="segment" let-locale="locale">
+    <div
+      class="cal-hour-segment"
+      [class.cal-hour-start]="segment.isStart"
+      [class.cal-after-hour-start]="!segment.isStart"
+      [ngClass]="segment.cssClass">
+    <span class="cal-time">
+      {{ segment.date | calendarDate:'dayViewHour':locale }}
+    </span>
+    </div>
+  </ng-template>
+
+
+  <ng-template
+    #eventTemplateCustom
+    let-weekEvent="weekEvent"
+    let-eventClicked="eventClicked">
+    <div
+      class="cal-event"
+      style = "box-shadow: 10px 14px 28px rgba(0,0,0,0.25), 10px 10px 10px rgba(0,0,0,0.22)"
+      [ngStyle]="{ 'border-left-color': getColor(weekEvent.event.title)}"
+      [style.backgroundColor]="weekEvent.event.color?.primary"
+      (mwlClick)="eventClicked.emit({
+                  event: weekEvent.event,
+                  sourceEvent: weekEvent.event
+                })">
+      <mwl-calendar-event-actions
+        [event]="weekEvent.event">
+      </mwl-calendar-event-actions>
+      &ngsp;
+      <mwl-calendar-event-title
+        [event]="weekEvent.event"
+        [customTemplate]="eventTemplate"
+        view="week">
+      </mwl-calendar-event-title>
+    </div>
+  </ng-template>
+</div>
+
+
+<div class="control-panel" style="margin-top:5%;margin-bottom:5%">
+  <!--div class="control-panel-inner-block mat-elevation-z21" style="top:80%">
+    <button matTooltipClass="tooltip" matTooltip="Info about the action" mat-raised-button class="control-button"  (click)="addNote()">Создать заметку</button>
+  </div-->
+</div>
+

@@ -8,8 +8,8 @@ import {Test} from "../models/test.model";
 import {QuestionOtherTestComponent} from "./components/question-other-test/question-other-test.component";
 import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
-import {catchError, takeUntil} from "rxjs/operators";
-import {Subject, throwError} from "rxjs";
+import {catchError, switchMap, takeUntil, tap} from "rxjs/operators";
+import {Observable, Subject, throwError} from "rxjs";
 import {DeleteQuestionConfirmationPopupComponent} from "./components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 
 
@@ -26,6 +26,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
   public test: Test;
   public testId: string;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  private isEUMKTest: boolean;
 
   constructor(private testService: TestService,
               private route: ActivatedRoute,
@@ -43,28 +44,32 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       .subscribe((test: Test) => {
         console.log("this.test " + this.test);
         this.test = test;
+        this.isEUMKTest = test.BeforeEUMK || test.ForEUMK;
       });
-    this.loadQuestions();
+    this.loadQuestions()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
   }
 
-  public loadQuestions(): void {
-    this.testService.getQuestionsByTest(this.testId)
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((questions) => {
-        this.questions = questions;
-        this.questionsDefault = questions;
-      });
+  public loadQuestions(): Observable<Question[]> {
+    return this.testService.getQuestionsByTest(this.testId)
+      .pipe(
+        tap((questions) => {
+          this.questions = questions;
+          this.questionsDefault = questions;
+        }));
   }
 
   public deleteQuestion(event): void {
     this.testService.deleteQuestion(event)
-      .pipe(takeUntil(this.unsubscribeStream$),
+      .pipe(
+        switchMap(() => this.loadQuestions()),
+        takeUntil(this.unsubscribeStream$),
         catchError(() => {
           this.openSnackBar("Не удалось удалить вопрос");
           return throwError(null);
         }))
       .subscribe();
-    this.loadQuestions();
     this.cdr.detectChanges();
   }
 
@@ -93,7 +98,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     const title = this.test.Title;
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       width: "700px",
-      data: {event, title, test: this.testId},
+      data: {event, title, test: this.testId, isEUMKTest: this.isEUMKTest},
       autoFocus: false,
       maxHeight: "100vh"
     });
@@ -102,7 +107,9 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
         if (result) {
-          this.loadQuestions();
+          this.loadQuestions()
+            .pipe(takeUntil(this.unsubscribeStream$))
+            .subscribe();
         }
       });
   }
@@ -119,7 +126,9 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
         if (result) {
-          this.loadQuestions();
+          this.loadQuestions()
+            .pipe(takeUntil(this.unsubscribeStream$))
+            .subscribe();
         }
       });
   }

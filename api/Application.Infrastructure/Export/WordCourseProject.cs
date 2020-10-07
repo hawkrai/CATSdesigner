@@ -270,8 +270,9 @@ namespace Application.Infrastructure.Export
         {
             var doc = new XmlDocument();
             var root = doc.CreateElement("YearlyWorks");
+            var publishData = awork.CourseProject.DateStart.HasValue ? awork.CourseProject.DateStart.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
             root.SetAttribute("DiplomProjectId", awork.CourseProject.CourseProjectId.ToString());
-            root.SetAttribute("year", awork.ApproveDate.HasValue ? awork.ApproveDate.Value.ToString("yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty);
+            root.SetAttribute("year", publishData);
 
             var children = new List<XmlElement>();
 
@@ -326,11 +327,11 @@ namespace Application.Infrastructure.Export
             head.InnerText = awork.CourseProject.HeadCathedra;
             children.Add(head);
 
-            children.AddRange(CreateStringNodes(doc, "InputData", awork.CourseProject.InputData, 439, 638, 8));
+            children.AddRange(CreateStringNodes(doc, "InputData", awork.CourseProject.InputData, 30, 638, 8));
 
-            children.AddRange(CreateStringNodes(doc, "RPZContent", awork.CourseProject.RpzContent, 331, 638, 15));
+            children.AddRange(CreateStringNodes(doc, "RPZContent", awork.CourseProject.RpzContent, 30, 638, 15));
 
-            children.AddRange(CreateStringNodes(doc, "DrawMaterials", awork.CourseProject.DrawMaterials, 403, 638, 7));
+            children.AddRange(CreateStringNodes(doc, "DrawMaterials", awork.CourseProject.DrawMaterials, 30, 638, 7));
 
             children.AddRange(CreateStringNodes(doc, "Consultants", awork.CourseProject.Consultants, 271, 638, 6));
 
@@ -353,6 +354,26 @@ namespace Application.Infrastructure.Export
             }
 
             children.AddRange(CreateStringNodes(doc, "Workflow", percentageGraph.ToString(), 638, 638, 14));
+
+            var pd1 = doc.CreateElement("item");
+            pd1.SetAttribute("name", "PublishData_1");
+            pd1.InnerText = publishData;
+            children.Add(pd1);
+
+            var pd2 = doc.CreateElement("item");
+            pd2.SetAttribute("name", "PublishData_2");
+            pd2.InnerText = publishData;
+            children.Add(pd2);
+
+            var shortStudentName = doc.CreateElement("item");
+            shortStudentName.SetAttribute("name", "ShortStudentName");
+            shortStudentName.InnerText = string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+            children.Add(shortStudentName);
+
+            var shortLecturerName = doc.CreateElement("item");
+            shortLecturerName.SetAttribute("name", "ShortLecturerName");
+            shortLecturerName.InnerText = string.Format("{0}.{1}. {2}", awork.CourseProject.Lecturer.FirstName[0], awork.CourseProject.Lecturer.MiddleName[0], awork.CourseProject.Lecturer.LastName);
+            children.Add(shortLecturerName);
 
             foreach (var item in children)
             {

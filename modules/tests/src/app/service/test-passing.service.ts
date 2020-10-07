@@ -26,9 +26,9 @@ export class TestPassingService {
     return this.http.get<Test[]>("/TestPassing/getAvailableTests?subjectId=" + subjectId);
   }
 
-  getNextQuestion(testId: string, questionNumber: string): Observable<TestQuestion> {
+  getNextQuestion(testId: string, questionNumber: string, excludeCorrectnessIndicator = true): Observable<TestQuestion> {
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    return this.http.get<TestQuestion>("/TestPassing/GetNextQuestionJson?testId=" + testId + "&questionNumber=" + questionNumber + "&excludeCorrectnessIndicator=true" + "&userId=" + user.id);
+    return this.http.get<TestQuestion>("/TestPassing/GetNextQuestionJson?testId=" + testId + "&questionNumber=" + questionNumber + "&excludeCorrectnessIndicator=" + excludeCorrectnessIndicator + "&userId=" + user.id);
   }
 
   getStudentResults(subjectId: string): Observable<Test[]> {
@@ -52,7 +52,7 @@ export class TestPassingService {
   }
 
   getControlItems(subjectId: string): Observable<ControlItems[]> {
-    return this.http.get<ControlItems[]>("/TestPassing/GetControlItems?subjectId="+ subjectId);
+    return this.http.get<ControlItems[]>("/TestPassing/GetControlItems?subjectId=" + subjectId);
   }
 
   getAnswersForEndedTest(testID: number, userId: number): Observable<ControlItems[]> {

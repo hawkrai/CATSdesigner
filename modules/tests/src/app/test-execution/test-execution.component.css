@@ -45,7 +45,11 @@
   background-color: #00a65a;
 }
 .failed{
-  background-color: #989898;
+  background-color: #980403;
+}
+
+.not-answered{
+  background-color: #5d6158;
 }
 
 .now{

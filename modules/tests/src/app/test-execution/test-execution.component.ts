@@ -4,7 +4,7 @@ import {TestQuestion} from "../models/question/test-question.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TestService} from "../service/test.service";
 import {Test} from "../models/test.model";
-import {map, take, takeUntil} from "rxjs/operators";
+import {map, switchMap, take, takeUntil, tap} from "rxjs/operators";
 import {Observable, Subject, timer} from "rxjs";
 import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
@@ -22,6 +22,9 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
   public testId: string;
   public test: Test;
   public questionArray: number[];
+  public allAnswersArray: number[] = [];
+  public trueAnswersArray: number[] = [];
+  public falseAnswersArray: number[] = [];
   public result: any;
   public counter$: Observable<string>;
   public count = 60;
@@ -38,51 +41,59 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
     this.testId = this.route.snapshot.paramMap.get("id");
     this.questionNumber = "1";
     this.testService.getTestById(this.testId)
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((test) => {
-        this.test = test;
-        this.fillQuestionArray();
-        console.log("this.test", this.test);
-      });
-    this.testPassingService.getNextQuestion(this.testId, this.questionNumber)
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((question: TestQuestion) => {
-        this.question = question;
-        if (!this.question.Seconds && this.question.Seconds === 0) {
-          //this.router.navigate(["/test-result"]);
-        }
-        this.questionNumber = question && question.Number.toString();
-        this.questionArray = question && question.IncompleteQuestionsNumbers;
-        this.counter$ = timer(0, 1000).pipe(
-          take(this.question.Seconds),
-          map(() => {
-            if (this.question.Seconds && this.question.Seconds != 0) {
-              --this.question.Seconds;
-              const hour: number = Math.floor(this.question.Seconds / 3600);
-              let restTime: number = this.question.Seconds - 3600 * hour;
-              const minute: number = Math.floor(restTime / 60);
-              restTime = restTime - 60 * minute;
-              if (hour === 0 && minute === 0 && restTime === 0) {
+      .pipe(
+        tap((test) => {
+          this.test = test;
+          this.fillQuestionArray();
+        }),
+        switchMap((test) => this.testPassingService.getNextQuestion(this.testId, this.questionNumber, !test.ForSelfStudy)),
+        tap((question: TestQuestion) => {
+          this.question = question;
+          if (!this.question.Seconds && this.question.Seconds === 0) {
+            //this.router.navigate(["/test-result"]);
+          }
+          this.questionNumber = question && question.Number.toString();
+          this.allAnswersArray = question && question.IncompleteQuestionsNumbers;
+          this.counter$ = timer(0, 1000).pipe(
+            take(this.question.Seconds),
+            map(() => {
+              if (this.question.Seconds && this.question.Seconds != 0) {
+                --this.question.Seconds;
+                const hour: number = Math.floor(this.question.Seconds / 3600);
+                let restTime: number = this.question.Seconds - 3600 * hour;
+                const minute: number = Math.floor(restTime / 60);
+                restTime = restTime - 60 * minute;
+                if (hour === 0 && minute === 0 && restTime === 0) {
+                  //this.router.navigate(["/test-result"]);
+                }
+                return (hour >= 10 ? hour.toString() : "0" + hour.toString()) + ":" + (minute >= 10 ? minute.toString() : "0" + minute.toString()) + ":" + (restTime >= 10 ? restTime.toString() : "0" + restTime.toString());
+              }
+              else {
                 //this.router.navigate(["/test-result"]);
               }
-              return (hour >= 10 ? hour.toString() : "0" + hour.toString()) + ":" + (minute >= 10 ? minute.toString() : "0" + minute.toString()) + ":" + (restTime >= 10 ? restTime.toString() : "0" + restTime.toString());
-            }
-            else {
-              //this.router.navigate(["/test-result"]);
-            }
-          })
-        );
-      });
+            })
+          );
+        }),
+        takeUntil(this.unsubscribeStream$))
+      .subscribe();
   }
 
-  public nextQuestion(answered: boolean, questionNumber?): void {
+  public nextQuestion(answer: any, questionNumber?): void {
     if (this.questionArray.length !== 0) {
       if (questionNumber && !this.questionArray.includes(questionNumber)) {
         return;
       }
-      if (answered) {
+      if (answer.answered) {
         const index = this.questionArray.indexOf(Number(this.questionNumber));
+        const index1 = this.allAnswersArray.indexOf(Number(this.questionNumber));
         this.questionArray.splice(index, 1);
+        if (answer.isTrue) {
+          this.allAnswersArray.splice(index1, 1);
+          this.trueAnswersArray.push(Number(this.questionNumber));
+        } else {
+          this.allAnswersArray.splice(index1, 1);
+          this.falseAnswersArray.push(Number(this.questionNumber));
+        }
       }
       if (this.questionArray.length !== 0) {
         if (questionNumber && this.questionArray.includes(questionNumber)) {
@@ -99,7 +110,7 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
             this.questionNumber = this.questionArray[0].toString();
           }
         }
-        this.testPassingService.getNextQuestion(this.testId, this.questionNumber)
+        this.testPassingService.getNextQuestion(this.testId, this.questionNumber, !this.test.ForSelfStudy)
           .pipe(takeUntil(this.unsubscribeStream$))
           .subscribe((question: TestQuestion) => {
             if (question && question.Question) {

@@ -38,6 +38,18 @@
                     <mat-icon class="white-icon">school</mat-icon>
                 </div>                
                 <div mat-line>КП</div>
+            </a> 
+            <a mat-list-item [ngClass]="{active: clickedItem === 'complex'}" (click)="openModule('', 'complex', 'complex')"> 
+                <div mat-line>
+                    <mat-icon class="white-icon">topic</mat-icon>
+                </div>                
+                <div mat-line>УЭМК</div>
+            </a>           
+            <a mat-list-item [ngClass]="{active: clickedItem === 'libBook'}" (click)="openModule('', 'libBook', 'libBook')"> 
+                <div mat-line>
+                    <mat-icon class="white-icon">library_books</mat-icon>
+                </div>                
+                <div mat-line>Интерактивный учебник</div>
             </a>
             <mat-divider></mat-divider>
             <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 

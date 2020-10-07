@@ -1,0 +1,17 @@
+.flex-input {
+  display: flex;
+  flex-basis: 100%;
+  height: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.input-holder {
+  width: 100%;
+}
+
+.mat-dialog-actions {
+  &[align='right'] {
+    justify-content: flex-end;
+  }
+}
