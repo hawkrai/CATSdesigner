@@ -1,20 +1,20 @@
 <div class="subject-news-component content" *ngIf="news; else: load">
   <div class="subject-news-component__actions">
-    <div class="subject-news-component__actions" *ngIf="teacher">
+    <div class="subject-news-component__actions" *ngIf="isTeacher$ | async">
       <button mat-raised-button color="primary" (click)="constructorNews()">Добавить новость</button>
       <button mat-raised-button class="hide-action" (click)="disableNews()">Скрыть все новости</button>
       <button mat-raised-button (click)="enableNews()">Показать все новости</button>
     </div>
     <div class="subject-news-component__news" *ngFor="let oneNews of news"
-         [ngClass]="{'_disable': oneNews.disabled && teacher,
-                     '_hide': oneNews.disabled && !teacher
+         [ngClass]="{'_disable': oneNews.disabled && isTeacher$ | async,
+                     '_hide': oneNews.disabled && !(isTeacher$ | async)
                      }"
          (mouseover)="selectNews = oneNews"
          (mouseleave)="selectNews = null"
     >
       <div class="subject-news-component__news-header">
         <p class="subject-news-component__news-title">{{ oneNews.title }}</p>
-        <div class="subject-news-component__news-action" *ngIf="teacher && selectNews === oneNews">
+        <div class="subject-news-component__news-action" [style.opacity]="selectNews === oneNews ? 1 : 0" *ngIf="isTeacher$ | async">
           <button mat-icon-button color="primary" matTooltip="Редактировать новость" (click)="constructorNews(oneNews)">
             <mat-icon>edit</mat-icon>
           </button>
