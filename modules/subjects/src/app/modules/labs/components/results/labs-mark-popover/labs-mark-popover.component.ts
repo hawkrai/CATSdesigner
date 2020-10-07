@@ -11,7 +11,9 @@ import {SubjectService} from '../../../../../services/subject.service';
 import {merge, Observable} from 'rxjs';
 
 import * as subjectSelectors from '../../../../../store/selectors/subject.selector';
-import {switchMap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
+import {Lector} from '../../../../../models/lector.model';
+import {validateDate} from '../../../../../shared/validators/date.validator';
 
 export const MY_FORMATS = {
   parse: {
@@ -35,19 +37,21 @@ export const MY_FORMATS = {
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
 export class LabsMarkPopoverComponent implements OnInit {
-  date = new FormControl(new Date());
-  joinedLectors$: Observable<any[]>;
+  joinedLectors$: Observable<Lector[]>;
+
+  datepickerFilter(d: Date | null): boolean {
+    return d <= new Date();
+  }
 
   markForm = new FormGroup({
     lector: new FormControl('', [Validators.required]),
-    mark: new FormControl(),
-    date: new FormControl(),
-    comment: new FormControl()
+    mark: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]),
+    date: new FormControl(new Date(), [Validators.required, validateDate]),
+    comment: new FormControl('')
   })
 
   constructor(
@@ -56,22 +60,36 @@ export class LabsMarkPopoverComponent implements OnInit {
     private subjectService: SubjectService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private datePipe: DatePipe) {
+
     this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {
     this.joinedLectors$ = this.store.select(subjectSelectors.getSubjectId).pipe(
-      switchMap(id => this.subjectService.getJoinedLector(id))
+      switchMap(id => this.subjectService.getJoinedLector(id).pipe(
+        map(r => r.Lectors as Lector[])
+      ))
     );
-    this.setDate(this.date.value);
   }
 
   onClick(): void {
     this.dialogRef.close();
   }
 
-  setDate(date) {
-    this.data.body.date = this.datePipe.transform(date, 'dd.MM.yyyy');
+  onSubmit(): void {
+    if (this.markForm.invalid) {
+      return;
+    }
+    this.markForm.patchValue({
+      date: this.setDate(this.markForm.get('date').value)
+    });
+    console.log(this.markForm.value)
+    this.dialogRef.close(this.markForm.value);
+  }
+
+  setDate(date: string): string {
+    const format = 'dd.MM.yyyy';
+    return this.datePipe.transform(date, format);
   }
 
 }

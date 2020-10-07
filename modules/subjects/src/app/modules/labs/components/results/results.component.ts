@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Group} from "../../../../models/group.model";
 import {LabsService} from "../../../../services/labs/labs.service";
 import {select, Store} from '@ngrx/store';
@@ -11,14 +11,18 @@ import {ComponentType} from '@angular/cdk/typings/portal';
 import {LabsMarkPopoverComponent} from './labs-mark-popover/labs-mark-popover.component';
 import {LabsRestService} from '../../../../services/labs/labs-rest.service';
 import {Lab, ScheduleProtectionLab} from '../../../../models/lab.model';
+import {MarkForm} from '../../../../models/mark-form.model';
+import {Mark} from '../../../../models/mark.model';
+import {map, switchMap} from 'rxjs/operators';
+import {SubSink} from 'subsink';
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.less']
 })
-export class ResultsComponent implements OnInit {
-
+export class ResultsComponent implements OnInit, OnDestroy {
+  private subs = new SubSink();
   @Input() teacher: boolean;
 
   public numberSubGroups: number[] = [1, 2];
@@ -116,12 +120,21 @@ export class ResultsComponent implements OnInit {
       };
       const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.labService.setLabsMark(labsMark)
-            .subscribe(res => res.Code === '200' && this.refreshStudents());
+      this.subs.add(dialogRef.afterClosed().pipe(
+        map((result: MarkForm) => ({
+          ...labsMark,
+          comment: result.comment,
+          lecturerId: result.lector,
+          date: result.date,
+          mark: result.mark
+        })),
+        switchMap(labsMark => this.labService.setLabsMark(labsMark))
+      ).subscribe((result ) => {
+        if (result.Code === '200') {
+          this.refreshStudents();
         }
-      });
+      }));
+
     }
   }
 
@@ -145,5 +158,9 @@ export class ResultsComponent implements OnInit {
       return student;
     });
     return students
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

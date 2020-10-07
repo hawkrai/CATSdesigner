@@ -45,6 +45,7 @@ import {CheckPlagiarismStudentComponent} from './components/job-protection/check
     CommonModule,
     MatModule,
     ReactiveFormsModule,
+    FormsModule,
     SharedModule,
     DragDropModule
   ],
