@@ -30,7 +30,6 @@ import {SubgroupingComponent} from './components/subgrouping/subgrouping.compone
 import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
 import {SubjectModule} from './modules/subject/subject.module';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
-import {SubjectEffects} from './store/effects/subject.effects';
 import {LecturesListComponent} from './modules/lectures/components/lectures-list/lectures-list.component';
 import {VisitLecturesComponent} from './modules/lectures/components/visit-lectures/visit-lectures.component';
 
@@ -61,7 +60,7 @@ import {VisitLecturesComponent} from './modules/lectures/components/visit-lectur
     PracticalModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [

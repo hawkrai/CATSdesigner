@@ -13,9 +13,7 @@ import {SubjectLectorComponent} from './subject-lector/subject-lector.component'
 import {SubjectService} from '../../services/subject.service';
 import {SubjectManagementComponent} from './subject-managment/subject-management.component';
 import {DialogData} from '../../models/dialog-data.model';
-import * as subjectSelectors from '../../store/selectors/subject.selector';
-import { tap } from 'rxjs/operators';
-import {SubjectForm} from '../../models/subject-form.model';
+import {SubSink} from 'subsink';
 
 
 @Component({
@@ -25,16 +23,21 @@ import {SubjectForm} from '../../models/subject-form.model';
 })
 export class SubjectComponent implements OnInit {
   subjects$: Observable<Subject[]>;
+  private subs = new SubSink();
   public displayedColumns = ['name', 'shortName', 'actions'];
 
   constructor(
+              private subjectService: SubjectService,
               private store: Store<IAppState>,
               private router: Router,
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.store.dispatch(subjectActions.loadSubjects());
-    this.subjects$ = this.store.select(subjectSelectors.getSubjects);
+    this.refreshSubjects();
+  }
+
+  refreshSubjects(): void {
+    this.subjects$ = this.subjectService.getSubjects();
   }
 
 
@@ -45,7 +48,9 @@ export class SubjectComponent implements OnInit {
     const dialogRef = this.openDialog(dialogData, SubjectManagementComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(subjectActions.saveSubject({ subject: result as SubjectForm }));
+        this.subs.add(
+          this.subjectService.saveSubject(result).subscribe(() => this.refreshSubjects())
+        )
       }
     });
   }
@@ -68,7 +73,10 @@ export class SubjectComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(subjectActions.deleteSubject({ id: subject.SubjectId }))
+        this.subs.add(
+          this.subjectService.deleteSubjects(subject.SubjectId).subscribe(
+            () => this.refreshSubjects())
+        );
       }
     });
   }

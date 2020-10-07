@@ -12,10 +12,6 @@ export const getSubjectId = createSelector(
   (state: ISubjectState) => state.subjectId
 );
 
-export const getSubjects = createSelector(
-  subjectSelector,
-  state => state.subjects
-);
 
 export const getUser = createSelector(
   subjectSelector,

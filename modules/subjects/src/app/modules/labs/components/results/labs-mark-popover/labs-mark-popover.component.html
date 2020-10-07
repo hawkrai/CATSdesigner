@@ -9,7 +9,6 @@
             {{lector.FullName}}
           </mat-option>
         </mat-select>
-<!--        <mat-error *ngIf="animalControl.hasError('required')">Please choose an animal</mat-error>-->
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Выставьте отметку (от 0 до 10)</mat-label>
@@ -22,7 +21,6 @@
              [matDatepickerFilter]="datepickerFilter"
              formControlName="date"
              [matDatepicker]="picker"
-             [value]="markForm.get('date').value"
 
       >
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

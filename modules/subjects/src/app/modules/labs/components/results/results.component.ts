@@ -13,7 +13,7 @@ import {LabsRestService} from '../../../../services/labs/labs-rest.service';
 import {Lab, ScheduleProtectionLab} from '../../../../models/lab.model';
 import {MarkForm} from '../../../../models/mark-form.model';
 import {Mark} from '../../../../models/mark.model';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, withLatestFrom} from 'rxjs/operators';
 import {SubSink} from 'subsink';
 
 @Component({
@@ -56,7 +56,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     });
   }
 
-  refreshStudents() {
+  refreshStudents(): void {
     this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
       this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
         this.student = this.filterStudentMarks(res, lab.labs);
@@ -75,10 +75,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   setHeader(subGroup, labs: Lab[]) {
     this.header = [];
-    labs = labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
-    labs.forEach(lab => {
-      this.header.push({head: lab.labId.toString(), text: lab.shortName})
-    });
+    this.header = labs
+      .filter(lab => lab.subGroup.toString() === subGroup.toString())
+      .map(l => ({ head: l.labId.toString(), text: l.shortName }));
   }
 
   setSubGroupDisplayColumns() {
