@@ -61,4 +61,9 @@ export class AppComponent implements OnInit {
     }
   }
 
+  downloadArchive() {
+    const url = 'http://localhost:8080/Cp/';
+    location.href = url + 'GetZipTaskSheet?id=' + this.selectedGroup.Id + '&subjectId=' + this.subjectId;
+  }
+
 }
