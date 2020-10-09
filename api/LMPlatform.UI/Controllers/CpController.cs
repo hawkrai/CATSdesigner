@@ -69,6 +69,28 @@ namespace LMPlatform.UI.Controllers
             WordCourseProject.CourseProjectToWord(docName, courseProject, this.Response);
         }
 
+        public void GetZipTaskSheet(int id, int subjectId)
+        {
+            var courseProjects = new LmPlatformModelsContext().CourseProjects
+                                .Where(x => x.SubjectId == subjectId)
+                                .Where(x => x.AssignedCourseProjects.Count() == 1)
+                                .Include(x =>
+                        x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
+                                .Where(x => x.AssignedCourseProjects.FirstOrDefault().Student.GroupId == id);
+
+            string fileName = "NoGroup";
+            if (courseProjects.Count() > 0)
+            {
+                fileName = courseProjects.FirstOrDefault().AssignedCourseProjects.FirstOrDefault().Student.Group.Name;
+                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+            }
+            else
+            {
+                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+            }
+
+        }
+
         [System.Web.Http.HttpPost]
         public void DisableNews(string subjectId)
         {
