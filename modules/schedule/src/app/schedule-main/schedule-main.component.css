@@ -10,6 +10,7 @@ pre {
 
 .schedule {
   width: 80%;
+  overflow: auto;
 }
 
 .cal-week-view .cal-time-events .cal-event {

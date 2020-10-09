@@ -1,15 +1,15 @@
 <div class = "schedule" >
-  <div class="row text-center" style = "width:101.2%;border-bottom-width: 1px;border-left-width: 0px;border-top-width: 0px;border-right-width: 1px;border-style: solid;">
+  <div class="row text-center" style = "margin-right: 0px;">
     <div class="col-md-4" style="margin-top: 1%">
-      <h3 style="font-size: 15px;color: gray;margin-top: 4%;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
+      <h3 style="font-size: 1em;color: gray;margin-top: 4%;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
     </div>
-    <div class="col-md-4" style="margin-top: 1%">
-      <h3 style="color:indigo;font-size: 1.5rem">Расписание занятий</h3>
+    <div class="col-md-4" style="margin-top: 1.5%">
+      <h3 style="color:blue;font-size: 1.5rem">Расписание занятий</h3>
     </div>
     <div class="col-md-4" style="margin-top: 1%;margin-bottom: 1%;padding-right: 0px">
       <div class="btn-group">
         <div
-          style="color: blue"
+          style="color: blue;cursor: pointer;"
           class="btn btn-light"
           mwlCalendarPreviousView
           [view]="view"
@@ -19,15 +19,15 @@
           <
         </div>
         <div
-          style="background-color: #f8f9fa"
+          style="background-color: #f8f9fa; cursor: pointer;"
           class="btn"
           mwlCalendarToday
           [(viewDate)]="viewDate"
         >
-        Сегодня
+          Сегодня
         </div>
         <div
-          style="color: blue"
+          style="color: blue;cursor: pointer;"
           class="btn btn-light"
           mwlCalendarNextView
           [view]="view"
@@ -39,7 +39,7 @@
       </div>
     </div>
   </div>
-  <div [ngSwitch]="view">
+  <div style = "margin-bottom: 2px" [ngSwitch]="view">
     <mwl-calendar-week-view
       *ngSwitchCase="CalendarView.Week"
       [locale] = "locale"
@@ -52,7 +52,9 @@
       [hourSegments]="1"
       [hourSegmentHeight]="50"
       (eventTimesChanged)="eventTimesChanged($event)"
-      [eventTemplate]= "eventTemplateCustom">
+      [eventTemplate]= "eventTemplateCustom"
+      (hourSegmentClicked) ="hourClick()"
+    >
     </mwl-calendar-week-view>
   </div>
 
@@ -62,14 +64,29 @@
       <div *ngIf="isLesson(event)">
         <table>
           <thead>
-          <tr style="line-height: 30%;"><h6 style = "font-size: 14px; left: 0%;color: indigo; float: left;">{{getTime(event.title)}}</h6>  <p style = "line-height: 100%;font-size: 13px;float:right;color: black">{{getLocation(event.title)}}</p></tr>
-          <tr style="line-height: 30%;"><a href = "{{getReferenceToSubject(event.title)}}"><h6 style = "left: 0%;color: black; float: left">{{getName(event.title)}}</h6></a> <h6 style = "overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: indigo; color: indigo">{{getType(event.title)}}</h6></tr>
-          <tr style="line-height: 30%;"><p style = "font-size: 13px;color: black; line-height: 100%; margin-bottom: 0%;">{{getThirdString(event.title)}}</p></tr>
+          <tr style="line-height: 30%;">
+            <div style = "display: flex;justify-content: space-between;">
+              <h6 style = "background: linear-gradient(blue, pink);-webkit-background-clip: text;-webkit-text-fill-color: transparent;margin-bottom: 0.4em;margin-top: 0.6em;font-size: 13px; left: 0%;color: indigo; float: left;">{{getTime(event.title)}}</h6>
+              <p style = "margin-top: 0.6em;margin-bottom: 0.4em;line-height: 100%;font-size: 13px;float:right;color: black">{{getLocation(event.title)}}</p>
+            </div>
+          </tr>
+          <tr style="line-height: 30%;">
+            <div style = "display: flex;justify-content: space-between;">
+              <h6 matTooltip="{{getToolTip(event?.title)}}" matTooltipClass="example-tooltip-blue" (click) = "rerouteToSubject(event.title)" style = "cursor: pointer;left: 0%;color: black; float: left">{{getName(event.title)}}</h6>
+              <h6 style = "padding-left: 8px;padding-right: 8px;overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: gray; color: blue">{{getType(event.title)}}</h6>
+            </div>
+          </tr>
+          <tr style="line-height: 30%;">
+            <div style = "display: flex;justify-content: space-between;">
+              <p style = "font-size: 13px;color: black; line-height: 100%; margin-bottom: 0%;">{{getThirdString(event.title)}}</p>
+              <p style = "line-height: 100%;margin-bottom: 0%;font-size: 13px;float:right;color: black;cursor: pointer;">...</p>
+            </div>
+          </tr>
           </thead>
         </table>
       </div>
     </div>
-    <div style = 'height: 95%' *ngIf="isNote(event)">
+    <div *ngIf="isNote(event)">
       <p style = "white-space: pre-wrap;line-height: 15px;color:black">{{event.title}}</p>
     </div>
   </ng-template>
@@ -93,7 +110,7 @@
     let-eventClicked="eventClicked">
     <div
       class="cal-event"
-      style = "box-shadow: 10px 14px 28px rgba(0,0,0,0.25), 10px 10px 10px rgba(0,0,0,0.22)"
+      style = "box-shadow: 10px 14px 28px rgba(0,0,0,0.25), 10px 10px 10px rgba(0,0,0,0.22); overflow: auto; "
       [ngStyle]="{ 'border-left-color': getColor(weekEvent.event.title)}"
       [style.backgroundColor]="weekEvent.event.color?.primary"
       (mwlClick)="eventClicked.emit({
@@ -115,8 +132,6 @@
 
 
 <div class="control-panel" style="margin-top:5%;margin-bottom:5%">
-  <!--div class="control-panel-inner-block mat-elevation-z21" style="top:80%">
-    <button matTooltipClass="tooltip" matTooltip="Info about the action" mat-raised-button class="control-button"  (click)="addNote()">Создать заметку</button>
-  </div-->
+  <!--button class="btn btn-primary" (click)="addNote()">Создать заметку</button-->
 </div>
 
