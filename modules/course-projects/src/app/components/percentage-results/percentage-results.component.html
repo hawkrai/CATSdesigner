@@ -1,6 +1,6 @@
 <div class="percentage-results-component" *ngIf="selectedGroup; else load">
   <div class="percentage-results-component__header">
-    <mat-form-field class="percentage-results-component__search" appearance="outline">
+    <mat-form-field class="percentage-results-component__search">
       <mat-label>Поиск по теме, фамилии</mat-label>
       <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
       <mat-icon matSuffix>search</mat-icon>
