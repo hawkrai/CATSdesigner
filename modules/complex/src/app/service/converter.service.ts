@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ComplexGrid } from '../models/ComplexGrid';
 import { ComplexTree, TreeNode } from '../models/ComplexTree';
-import { ComplexCascade } from '../models/ComplexCascade';
+import { Group} from '../models/Group';
+import { ConceptMonitoring } from '../models/ConceptMonitoring';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,8 @@ export class ConverterService {
     return concepts.map(con => this.conceptConverter(con));
   }
 
+
+
   public mapConverter(concept: any) {
     var tree = new ComplexTree([]);
     tree.result.push(new TreeNode(concept.Id, concept.Name, null, concept.FilePath));
@@ -39,5 +42,35 @@ export class ConverterService {
       tree.result.push(new TreeNode(concept.Id, concept.Name, parentId, concept.FilePath));
       this.childMapConverter(concept.children, tree, concept.Id);
     }
+  }
+
+  
+
+
+  private monitoringConverter(monitoring: any) {
+    var monitor = new ConceptMonitoring();
+    monitor.name = monitoring.Name;
+    monitor.seconds = monitoring.Seconds;
+
+    return monitor;
+  }
+
+  public monitoringsConverter(monitorings: any) {
+    return monitorings.map(mon => this.monitoringConverter(mon))
+  }
+
+
+
+
+  private groupConverter(groupRes: any) {
+    var group = new Group();
+    group.Id = groupRes.GroupId;
+    group.Name = groupRes.GroupName;
+
+    return group;
+  }
+
+  public groupsConverter(groups: any) {
+    return groups.map(gr => this.groupConverter(gr))
   }
 }

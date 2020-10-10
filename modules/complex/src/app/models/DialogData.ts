@@ -12,5 +12,7 @@ export interface DialogData {
 
   url?: string;
 
-  isNew?: boolean
+  isNew?: boolean;
+
+  nodeId?: string;
 }

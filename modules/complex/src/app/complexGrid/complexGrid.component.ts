@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+//import { select, Store } from '@ngrx/store';
+//import { IAppState } from '../store/states/app.state';
+//import { getSubjectId } from '../store/selectors/subject.selector';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/typings/portal';
@@ -18,9 +21,11 @@ export class ComplexGridComponent implements OnInit {
 
   complexes;
   subjectName;
+  subjectId;
 
   constructor(public dialog: MatDialog,
         private complexService: ComplexService,
+        //private store: Store<IAppState>,
         private router: Router) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -29,12 +34,22 @@ export class ComplexGridComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.complexService.getRootConcepts('3').subscribe(res => {
+    //this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+    //  this.subjectId = subjectId;
+    //  this.complexService.getRootConcepts(this.subjectId).subscribe(res => {
+    //    this.complexes = res;
+    //  });
+    //  this.complexService.getRootConceptsSubjectName(this.subjectId).subscribe(res => {
+    //    this.subjectName = res;
+    //  });      
+    //})
+    this.subjectId = '3';
+    this.complexService.getRootConcepts(this.subjectId).subscribe(res => {
       this.complexes = res;
     });
-    this.complexService.getRootConceptsSubjectName('3').subscribe(res => {
+    this.complexService.getRootConceptsSubjectName(this.subjectId).subscribe(res => {
       this.subjectName = res;
-    });
+    });      
   }
   onAddButtonClick() {
 
