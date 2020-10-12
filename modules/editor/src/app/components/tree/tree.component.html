@@ -3,10 +3,10 @@
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding cdkDrag [cdkDragData]="node">
     <li class="mat-tree-node">
       <button mat-icon-button disabled></button>
-      <label (click)="onActivateTreeNodeEvent.emit({ node: node, event: $event }); nodeSelected(node.id)"
+      <label (click)="onActivateTreeNodeEvent.emit({ node: node, event: $event }); nodeSelected(node.Id)"
         matRipple
-        [ngClass]="{highlight:isActive(node.id)}"
-        >{{node.name}}</label>
+        [ngClass]="{highlight:isActive(node.Id)}"
+        >{{node.Name}}</label>
       <crud-document-menu
           [document]="node"
           (onAddEvent)="onAddEvent.emit(node)"
@@ -21,15 +21,15 @@
     <li>
       <div class="mat-tree-node">
         <button mat-icon-button matTreeNodeToggle
-                [attr.aria-label]="'toggle ' + node.name">
+                [attr.aria-label]="'toggle ' + node.Name">
           <mat-icon class="mat-icon-rtl-mirror">
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        <label (click)="onActivateTreeNodeEvent.emit({ node: node, event: $event }); nodeSelected(node.id)"
+        <label (click)="onActivateTreeNodeEvent.emit({ node: node, event: $event }); nodeSelected(node.Id)"
           matRipple
-          [ngClass]="{highlight:isActive(node.id)}"
-        >{{node.name}}</label>
+          [ngClass]="{highlight:isActive(node.Id)}"
+        >{{node.Name}}</label>
         <crud-document-menu
           [document]="node"
           (onAddEvent)="onAddEvent.emit(node)"
