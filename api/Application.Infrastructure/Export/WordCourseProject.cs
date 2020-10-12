@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+using LMPlatform.Models;
 using LMPlatform.Models.CP;
 using Microsoft.Office.Interop.Word;
 using Font = System.Drawing.Font;
@@ -31,6 +33,37 @@ namespace Application.Infrastructure.Export
             CreateDoc(work, response);
             response.Flush();
             response.End();
+        }
+
+        public static void CourseProjectsToArchive(string fileName, IQueryable<CourseProject> courseProjects, HttpResponseBase response)
+        {
+            IDictionary<string, byte[]> bytelist = CreateDocs(courseProjects);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
+                {
+                    foreach (var attachment in bytelist)
+                    {
+                        var entry = zipArchive.CreateEntry(attachment.Key);
+
+                        using MemoryStream originalFile = new MemoryStream(attachment.Value);
+                        using var zipEntryStream = entry.Open();
+                        originalFile.CopyTo(zipEntryStream);
+                    }
+                }
+
+                response.Clear();
+                response.Charset = "ru-ru";
+                response.HeaderEncoding = Encoding.UTF8;
+                response.ContentEncoding = Encoding.UTF8;
+                response.ContentType = "application/zip";
+                response.AddHeader("Content-Disposition", "attachment;filename=" + fileName + ".zip");
+                ms.Seek(0, SeekOrigin.Begin);
+                ms.WriteTo(response.OutputStream);
+                response.Flush();
+                response.End();
+            }
         }
 
         private static void CreateDoc(CourseProject work, HttpResponseBase response)
@@ -80,6 +113,70 @@ namespace Application.Infrastructure.Export
                     catch (Exception)
                     {
                         //todo: log
+                    }
+                }
+            }
+        }
+
+        private static IDictionary<string, byte[]> CreateDocs(IQueryable<CourseProject> courseProjects)
+        {
+            IDictionary<string, byte[]> byteList = new Dictionary<string, byte[]>(courseProjects.Count());
+
+            Microsoft.Office.Interop.Word.Application app = null;
+            string tempFileName = null;
+            object falseValue = false;
+            var missing = Type.Missing;
+            object save = WdSaveOptions.wdSaveChanges;
+            object original = WdOriginalFormat.wdOriginalDocumentFormat;
+            string docName = null;
+            Student student = null;
+
+            try
+            {
+                var url = string.Format("{0}.Export.cptasklist.doc", Assembly.GetExecutingAssembly().GetName().Name);
+                using (var templateStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(url))
+                {
+
+                    foreach (var item in courseProjects)
+                    {
+                        object tempdot = tempFileName = SaveToTemp(templateStream);
+
+                        app = new Microsoft.Office.Interop.Word.Application();
+                        var doc = app.Documents.Open(ref tempdot, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+
+                        if (doc == null)
+                        {
+                            throw new ApplicationException("Unable to open the word template! Try to add Launch and Activation permissions for Word DCOM component for current IIS user (IIS_IUSRS for example). Or set Identity to Interactive User.");
+                        }
+
+                        FillDoc(doc, item);
+                        doc.Save();
+                        doc.Close(ref save, ref original, ref falseValue);
+
+                        student = item.AssignedCourseProjects.FirstOrDefault().Student;
+                        docName = $"{student.LastName}_{student.FirstName}.doc";
+
+                        SaveToDictionary(tempFileName, byteList, docName);
+                    }
+                }
+                return byteList;
+            }
+            finally
+            {
+                if (app != null)
+                {
+                    object dontSave = WdSaveOptions.wdDoNotSaveChanges;
+                    app.Quit(ref dontSave, ref original, ref falseValue);
+                }
+
+                if (tempFileName != null)
+                {
+                    try
+                    {
+                        File.Delete(tempFileName);
+                    }
+                    catch (Exception)
+                    {
                     }
                 }
             }
@@ -164,6 +261,28 @@ namespace Application.Infrastructure.Export
             }
         }
 
+        private static void SaveToDictionary(string fileName, IDictionary<string, byte[]> byteList, string docName)
+        {
+            using var reader = File.OpenRead(fileName);
+            using MemoryStream memStream = new MemoryStream();
+            using BinaryWriter stream = new BinaryWriter(memStream);
+            var bt = new byte[1024];
+            var count = 0;
+            while ((count = reader.Read(bt, 0, 1024)) == 1024)
+            {
+                stream.Write(bt);
+            }
+
+            if (count > 0)
+            {
+                var bt2 = new byte[count];
+                Array.Copy(bt, bt2, count);
+                stream.Write(bt2);
+            }
+
+            byteList.Add(docName, memStream.ToArray());
+        }
+
         #endregion
 
         #region Export Html view
@@ -238,11 +357,11 @@ namespace Application.Infrastructure.Export
             head.InnerText = work.HeadCathedra;
             children.Add(head);
 
-            children.AddRange(CreateStringNodes(doc, "InputData", work.InputData, 439, 638,8));
+            children.AddRange(CreateStringNodes(doc, "InputData", work.InputData, 30, 638,8));
 
-            children.AddRange(CreateStringNodes(doc, "RPZContent", work.RpzContent, 331, 638, 15));
+            children.AddRange(CreateStringNodes(doc, "RPZContent", work.RpzContent, 30, 638, 16));
 
-            children.AddRange(CreateStringNodes(doc, "DrawMaterials", work.DrawMaterials, 403, 638, 7));
+            children.AddRange(CreateStringNodes(doc, "DrawMaterials", work.DrawMaterials, 30, 638, 7));
 
             children.AddRange(CreateStringNodes(doc, "Consultants", work.Consultants, 271, 638, 6));
 

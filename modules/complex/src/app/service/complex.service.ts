@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 import { ComplexGrid } from '../models/ComplexGrid';
 import { ComplexCascade } from '../models/ComplexCascade';
 import { ComplexTree } from '../models/ComplexTree';
+import { ConceptMonitoring } from '../models/ConceptMonitoring';
 import { Complex } from '../models/Complex';
 import { ConverterService } from "./converter.service";
 
@@ -37,6 +38,12 @@ export class ComplexService {
   public getConceptTree(parentId: string): Observable<ComplexTree> {
     return this.http.get('/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' + parentId).pipe(
       map(res => this.converterService.mapConverter(res['Concept']))
+    );
+  }
+
+  public getConceptMonitoring(conceptId: string, groupId: string): Observable<ConceptMonitoring[]> {
+    return this.http.get('/Services/Concept/ConceptService.svc/GetConceptViews?conceptId=' + conceptId + '&groupId=' + groupId).pipe(
+      map(res => this.converterService.monitoringsConverter(res['Views']))
     );
   }
 

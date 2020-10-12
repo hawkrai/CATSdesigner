@@ -7,7 +7,7 @@
       <mat-icon> insert_drive_file</mat-icon>
       <a class="btn clickable" (click)="openPDF(node.FilePath)">
         {{node.Name}}
-      </a><menu-icon></menu-icon>
+      </a><menu-icon nodeId={{node.Id}}></menu-icon>
     </li>
   </mat-tree-node>
   <!-- This is the tree node template for expandable nodes -->

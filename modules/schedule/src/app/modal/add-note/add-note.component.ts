@@ -38,6 +38,18 @@ export class AddNoteComponent implements OnInit {
     this.dialogRef.close(this.note);
   }
 
+  get title(): FormControl {
+    return this.formGroup.get('title') as FormControl;
+  }
+
+  get start(): FormControl {
+    return this.formGroup.get('start') as FormControl;
+  }
+
+  get end(): FormControl {
+    return this.formGroup.get('end') as FormControl;
+  }
+
   // tslint:disable-next-line:typedef
   onCancelClick() {
     this.dialogRef.close(null);
