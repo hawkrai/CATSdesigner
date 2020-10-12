@@ -4,6 +4,7 @@ import {FilterPipe} from './pipes/filter.pipe';
 import { PluarPipe } from './pipes/pluar.pipe';
 import { ContentHostDirective } from './directives/content-host.directive';
 import {FirstCapitalPipe} from './pipes/first-capital.pipe';
+import {FormsModule} from '@angular/forms';
 
 
 
@@ -15,7 +16,8 @@ import {FirstCapitalPipe} from './pipes/first-capital.pipe';
     FirstCapitalPipe
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   exports: [
     FilterPipe,

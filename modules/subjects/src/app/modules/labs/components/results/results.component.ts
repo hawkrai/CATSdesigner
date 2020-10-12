@@ -32,7 +32,6 @@ export class ResultsComponent implements OnInit, OnDestroy {
   private subjectId: number;
   student: any[];
   header: any[];
-
   private user;
 
   public labProperty: {labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]};
@@ -74,7 +73,6 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   setHeader(subGroup, labs: Lab[]) {
-    this.header = [];
     this.header = labs
       .filter(lab => lab.subGroup.toString() === subGroup.toString())
       .map(l => ({ head: l.labId.toString(), text: l.shortName }));

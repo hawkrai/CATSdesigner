@@ -99,17 +99,18 @@ export class VisitLecturesComponent implements OnInit {
     });
   }
 
-  setVisitMarks(date, index) {
+  setVisitMarks(date, index): void {
     if (this.isTeacher) {
-      const visits = {date: date.date, students: []};
-      this.groupsVisiting.lecturesMarksVisiting.forEach(res => {
-        const visit = {
+      const visits = {
+        date: date.date,
+        students: this.groupsVisiting.lecturesMarksVisiting.map(res => ({
           name: res.StudentName,
           mark: res.Marks[index].Mark,
-          comment: ''
-        };
-        visits.students.push(visit);
-      });
+          comment: res.Marks[index].Comment
+        }))
+      };
+
+      console.log(this.groupsVisiting.lecturesMarksVisiting);
 
       const dialogData: DialogData = {
         title: 'Посещаемость студентов',
@@ -121,7 +122,7 @@ export class VisitLecturesComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.lecturesService.setLecturesVisitingDate(
-            {lecturesMarks: this.getModelVisitLabs(JSON.parse(JSON.stringify(this.groupsVisiting.lecturesMarksVisiting)), index, result.students)})
+            {lecturesMarks: this.getModelVisitLabs(this.groupsVisiting.lecturesMarksVisiting, index, result.students)})
         }
       });
     }
@@ -130,6 +131,8 @@ export class VisitLecturesComponent implements OnInit {
   getModelVisitLabs(lecturesMarksVisiting: LecturesMarksVisiting[], index, visits) {
     for (let i = 0; i < visits.length; i++) {
       lecturesMarksVisiting[i].Marks[index].Mark = visits[i].mark ? visits[i].mark.toString() : '';
+      lecturesMarksVisiting[i].Marks[index].Comment = visits[i].comment ? visits[i].comment.toString() : '';
+
     }
     return lecturesMarksVisiting
   }

@@ -123,10 +123,10 @@ export class ConverterService {
 
   public markModelConverter(mark: any) {
     const newMark = new Mark();
-    newMark.date = mark.Date;
-    newMark.lecturesVisitId = mark.LecuresVisitId;
-    newMark.mark = mark.Mark;
-    newMark.markId = mark.MarkId;
+    // newMark. = mark.Date;
+    newMark.LecturesVisitId = mark.LecuresVisitId;
+    newMark.Mark = mark.Mark;
+    newMark.MarkId = mark.MarkId;
     return newMark;
   }
 

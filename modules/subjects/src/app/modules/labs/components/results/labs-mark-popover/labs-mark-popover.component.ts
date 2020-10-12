@@ -83,7 +83,6 @@ export class LabsMarkPopoverComponent implements OnInit {
     this.markForm.patchValue({
       date: this.setDate(this.markForm.get('date').value)
     });
-    console.log(this.markForm.value)
     this.dialogRef.close(this.markForm.value);
   }
 
