@@ -40,13 +40,13 @@ export class EditorComponent implements OnInit {
   public documents: DocumentPreview[];
 
   //University subject. Zeros for test.
-  public subjectId: Number = 0;
-  public authorId: Number = 0;
+  public SubjectId: Number = 0;
+  public UserId: Number = 0;
 
   //Tree
-  treeControl = new NestedTreeControl<IDocumentTree>(node => node.children);
+  treeControl = new NestedTreeControl<IDocumentTree>(node => node.Children);
   dataSource = new MatTreeNestedDataSource<IDocumentTree>();
-  hasChild = (_: number, node: IDocumentTree) => !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: IDocumentTree) => !!node.Children && node.Children.length > 0;
 
   //Node
   public currentNodeHasChild = false;
@@ -62,29 +62,30 @@ export class EditorComponent implements OnInit {
   constructor(private _bookService: DocumentService, private _modalService: ModalService, public dialog: MatDialog) {}
 
   ngOnInit() {
-    this.subjectId = 1;
+    this.SubjectId = 1;
+    this.UserId = 1;
     this.newDocument = new DocumentPreview();
     this.reloadTree();
   }
 
   //TREE
   reloadTree() {
-    this._bookService.getDocumentsBySubjectId(this.subjectId).subscribe(data => {
+    this._bookService.getDocumentsBySubjectId(this.SubjectId).subscribe(data => {
       this.documents = data;
     });
-    this._bookService.getDocumentsTreeBySubjectId(this.subjectId).subscribe(data => {
+    this._bookService.getDocumentsTreeBySubjectId(this.SubjectId).subscribe(data => {
       this.dataSource.data = data;
     });
   }
 
   onActivateTreeNodeEvent(doc) {
     var node = doc.node;
-    this._bookService.getContent(node.id).subscribe(doc => {
-      this.model.editorData = doc.text;
+    this._bookService.getContent(node.Id).subscribe(doc => {
+      this.model.editorData = doc.Text;
       this.currentDocument = doc;
     })
-    this.currentNodeHasChild = node.children.length > 0;
-    this.currentNodeId = node.id;
+    this.currentNodeHasChild = node.Children.length > 0;
+    this.currentNodeId = node.Id;
     this.model.isReadOnly = true;
   }
 
@@ -96,7 +97,7 @@ export class EditorComponent implements OnInit {
   }
 
   editStructure(node) {
-    var document = this.documents.find(x => x.id == node.id);
+    var document = this.documents.find(x => x.Id == node.Id);
     if(document) {
       const dialogRef = this.dialog.open(EditDocumentDialogComponent, {
         data: document
@@ -113,7 +114,7 @@ export class EditorComponent implements OnInit {
   }
 
   saveDocument(event) {
-    this.currentDocument.text = this.model.editorData;
+    this.currentDocument.Text = this.model.editorData;
     this._bookService.saveDocument(this.currentDocument).subscribe(res => {
       this.reloadTree();
       this.model.isReadOnly = true;
@@ -122,7 +123,7 @@ export class EditorComponent implements OnInit {
 
   openRemoveDialog(document = undefined): void {
     const dialogRef = this.dialog.open(RemoveDocumentDialogComponent, {
-      data: { id: document.id, name: document.name }
+      data: { Id: document.Id, Name: document.Name }
     });
 
     dialogRef.afterClosed().subscribe(newDocument => {
@@ -137,7 +138,7 @@ export class EditorComponent implements OnInit {
 
     if(document) {
       data = {
-        parentId: document.id
+        ParentId: document.Id
       };
     }
     const dialogRef = this.dialog.open(AddDocumentDialogComponent, {
@@ -146,11 +147,11 @@ export class EditorComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(newDocument => {
       if(newDocument) {
-        if(newDocument.id == undefined || newDocument.id == 0) {
-          newDocument.id == 0
-          newDocument.text = "";
-          newDocument.subjectId = this.subjectId;
-          newDocument.authorId = this.authorId;
+        if(newDocument.Id == undefined || newDocument.Id == 0) {
+          newDocument.Id == 0
+          newDocument.Text = "";
+          newDocument.UserId = this.UserId;
+          newDocument.SubjectId = this.SubjectId;
         }
         this._bookService.saveDocument(newDocument).subscribe(res => {
           this.reloadTree();

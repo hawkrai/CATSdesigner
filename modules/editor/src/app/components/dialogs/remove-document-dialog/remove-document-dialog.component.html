@@ -1,8 +1,8 @@
 <h1 mat-dialog-title>Подтверждение</h1>
 <div mat-dialog-content>
-  <p>Вы уверены, что хотите удалить "{{data.name}}"?</p>
+  <p>Вы уверены, что хотите удалить "{{data.Name}}"?</p>
 </div>
 <div mat-dialog-actions align="right">
   <button mat-raised-button (click)="onNoClick()">Нет</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data.id" cdkFocusInitial>Да</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data.Id" cdkFocusInitial>Да</button>
 </div>
