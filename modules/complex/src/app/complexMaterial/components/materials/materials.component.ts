@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MaterialsPopoverComponent } from './materials-popover/materials-popover.component';
-import { MenuComponent } from './menu/menu.component';
+import { MonitoringPopoverComponent } from './monitoring-popover/monitoring-popover.component';
 import { ComplexCascade } from '../../../models/ComplexCascade';
 import { ComplexService } from '../../../service/complex.service';
 
@@ -43,5 +43,16 @@ export class MaterialComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
-  };    
+  };
+
+  openMonitoring(nodeId: string, nodeName: string): void {
+    const dialogRef = this.dialog.open(MonitoringPopoverComponent, {
+      width: '800px',
+      data: { title: 'Title', nodeId: nodeId, name: nodeName }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 }

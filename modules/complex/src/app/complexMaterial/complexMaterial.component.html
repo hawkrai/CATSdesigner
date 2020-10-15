@@ -1,6 +1,16 @@
-<a class="main-anchor" routerLink="/main">< К списку ЭУМК</a>
+<div class="materials-body">
+  <table>    
+    <td style="width: 800px">
+      <a class="main-anchor" routerLink="/main">< К списку ЭУМК</a>
+    </td>
+    <td style="font-size: 30px">
+      <b>{{complexName}}</b>
+    </td>    
+  </table>
+  <app-material-tree class="material" [complexId]="complexID"></app-material-tree>
+</div>
 
-<app-material-tree [complexId]="complexID"></app-material-tree>
+
 <!--<mat-tab-group>
   <mat-tab label="ЭУМК">
     <div class="labs-component__body">
