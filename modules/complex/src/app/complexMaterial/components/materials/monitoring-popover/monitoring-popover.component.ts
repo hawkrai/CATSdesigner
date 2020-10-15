@@ -1,12 +1,11 @@
 import { Component, Input, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-//import { select, Store } from '@ngrx/store';
-//import { IAppState } from '../../../../store/states/app.state';
-//import { getSubjectId } from '../../../../store/selectors/subject.selector';
+import { select, Store } from '@ngrx/store';
+import { IAppState } from '../../../../store/states/app.state';
+import { getSubjectId } from '../../../../store/selectors/subject.selector';
 import { FormControl, Validators } from '@angular/forms';
 import { ComplexService } from '../../../../service/complex.service';
 import { GroupService } from '../../../../service/group.service';
-import { ConceptMonitoring } from '../../../../models/ConceptMonitoring';
 import { Group } from '../../../../models/Group';
 import { DialogData } from '../../../../models/DialogData';
 
@@ -30,24 +29,19 @@ export class MonitoringPopoverComponent implements OnInit {
     public dialogRef: MatDialogRef<MonitoringPopoverComponent>,
     private complexService: ComplexService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    //private store: Store<IAppState>,
+    private store: Store<IAppState>,
     private groupService: GroupService) { }
 
   ngOnInit() {
-    //this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-    //  this.subjectId = subjectId;
-    //  this.groupService.getGroups(this.subjectId).subscribe(gr => {
-    //    this.groups = gr;
-    //    this.selected = this.groups[0];
-    //  })
-    //})
-    this.subjectId = '3';
-    this.groupService.getGroups(this.subjectId).subscribe(gr => {
-      this.groups = gr;
-      this.selected = this.groups[0];
-      this.complexService.getConceptMonitoring(this.data.nodeId, this.selected.Id).subscribe(res => {
-        this.dataSource = res;
-      });
+    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.subjectId = subjectId;
+      this.groupService.getGroups(this.subjectId).subscribe(gr => {
+        this.groups = gr;
+        this.selected = this.groups[0];
+        this.complexService.getConceptMonitoring(this.data.nodeId, this.selected.Id).subscribe(res => {
+          this.dataSource = res;
+        });
+      })    
     })    
   }
 
