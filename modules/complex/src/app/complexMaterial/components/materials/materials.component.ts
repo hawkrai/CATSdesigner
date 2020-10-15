@@ -33,15 +33,15 @@ export class MaterialComponent implements OnInit {
     });  
   }
   
-  openPDF(path: string): void {
-    debugger;
+  openPDF(filename: string): void {
+    const path = '/api/Upload?fileName=' + filename;
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '800px',
       data: { name: 'name', url: path }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');      
+      console.log('The dialog was closed');
     });
-  }
+  };    
 }
