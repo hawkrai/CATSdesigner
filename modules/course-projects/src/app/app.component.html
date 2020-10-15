@@ -87,6 +87,10 @@
            *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
         <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
       </div>
+      <div class="_action"  matTooltip="Скачать архивом листы задания" matTooltipPosition="above"
+            *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
+            <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
+      </div>
     </div>
     <app-projects *ngIf="tab === 1" [courseUser]="courseUser"></app-projects>
     <app-task-sheet *ngIf="tab === 2" [courseUser]="courseUser" [groups]="groups"></app-task-sheet>

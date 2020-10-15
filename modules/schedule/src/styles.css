@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
 .flatpickr-time{
   height: 18%;
 }
@@ -53,3 +55,10 @@
   font-weight: initial;
 }
 
+.cal-week-view .cal-event-container:not(.cal-draggable) {
+  cursor: auto;
+}
+
+.cal-week-view {
+  min-width: 1000px;
+}
