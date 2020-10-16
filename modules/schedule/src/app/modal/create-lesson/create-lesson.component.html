@@ -1,26 +1,27 @@
 <div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
   <form [formGroup]="formGroup">
     <mat-form-field>
-      <mat-select [(ngModel)]="lesson.subjectId" formControlName="subjectF" required class="form-control">
+      <mat-select [ngModel] ="changedLesson.subjectId"  [(ngModel)]="lesson.subjectId" formControlName="subjectF" required class="form-control">
         <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{subject.Name}}</mat-option>
       </mat-select>
       <mat-error *ngIf="subjectF.hasError( 'required')">Поле не может быть пустым</mat-error>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select formControlName="type" required class="form-control">
-        <mat-option *ngFor="let type of lessonTypes" [value]="type">{{type}}</mat-option>
+      <mat-select [ngModel] ="changedType" formControlName="type" required class="form-control">
+        <mat-option *ngFor="let type of lessonTypes" [value]="type[0]">{{type[1]}}</mat-option>
       </mat-select>
       <mat-error *ngIf="type.hasError('required')">Поле не может быть пустым</mat-error>
     </mat-form-field>
 
     <mat-form-field>
-      <input [(ngModel)]="lesson.color" type="color" matInput formControlName="color" required  placeholder="Цвет">
+      <input [ngModel] ="changedLesson.color" [(ngModel)]="lesson.color" type="color" matInput formControlName="color" required  placeholder="Цвет">
       <mat-error *ngIf="color.hasError( 'required')">Поле не может быть пустым</mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <input
+        [ngModel] ="changedLesson.start"
         type="text"
         matInput formControlName="start" required
         mwlFlatpickr

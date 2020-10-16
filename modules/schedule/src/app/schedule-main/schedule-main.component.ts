@@ -8,10 +8,10 @@ import {AddNoteComponent} from '../modal/add-note/add-note.component';
 import {Note} from '../model/note.model';
 import {NoteService} from '../service/note.service';
 import {MatDialog} from '@angular/material';
-import {NewsService} from '../service/news.service';
 import {Overlay} from '@angular/cdk/overlay';
 import {Message} from '../../../../../container/src/app/core/models/message';
 import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.component';
+import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 
 
 const colors: any = {
@@ -38,7 +38,9 @@ export class ScheduleMainComponent implements OnInit {
       }
     }
   ];
-
+  toolTip = 'Скрыть новости';
+  scheduleWidth = '80%';
+  hideButton = '>';
   startTimes: string[] = [' 08:00', ' 09:55', ' 11:40', ' 13:15'];
   endTimes: string[] = [' 09:35', ' 11:30', ' 13:15', ' 15:00'];
   locale = 'ru';
@@ -50,6 +52,7 @@ export class ScheduleMainComponent implements OnInit {
   CalendarView = CalendarView;
   viewDate: Date = new Date();
   user: any;
+  isNewsEnable = true;
   modalData: {
     action: string;
     event: CalendarEvent;
@@ -63,12 +66,11 @@ export class ScheduleMainComponent implements OnInit {
 
   constructor(private lessonservice: LessonService,
               private noteService: NoteService,
-              private newsService: NewsService,
               private overlay: Overlay,
               private dialog: MatDialog ) {}
 
   ngOnInit() {
-    /*localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));*/
+    localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
       let i = 0;
@@ -194,8 +196,6 @@ export class ScheduleMainComponent implements OnInit {
     const splitted = title.split('|', 5);
     return ' ' + splitted[4] + ' ';
   }
-
-
 
   getThirdString(title: string): any {
     const splitted = title.split('|', 6);
@@ -325,5 +325,65 @@ export class ScheduleMainComponent implements OnInit {
     lesson.classroom = '110';
     lesson.subjectId = les.subjectId;
     return lesson;
+  }
+
+  deleteEvent(eventToDelete: CalendarEvent) {
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      width: '15%',
+      height: '18%',
+      data: {}
+    }) ;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null) {
+        if (result) {
+          this.events = this.events.filter(event => event !== eventToDelete);
+          this.refresh.next();
+        }
+      }
+    });
+  }
+
+  changeEvent(eventToDelete: CalendarEvent) {
+    const dialogRef = this.dialog.open(CreateLessonComponent,
+      {width: '300px', data: {userName: this.user.userName,  event: eventToDelete}});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null) {
+        this.events = this.events.filter(event => event !== eventToDelete);
+        this.lesson = this.createLesson(result, 0);
+        this.lessons.push(this.lesson);
+        this.events.push({
+          id: this.lesson.id,
+          start: this.lesson.start,
+          end: this.lesson.end,
+          title: this.calculateTitel(this.lesson),
+          color: colors.color,
+          resizable: {
+            beforeStart: false,
+            afterEnd: false,
+          },
+          draggable: false,
+          meta: 'lesson'
+        });
+        this.refresh.next();
+      }
+    });
+  }
+
+  public test() {
+    console.log(12312);
+  }
+
+  public hideNews() {
+    if (this.isNewsEnable === false ) {
+      this.isNewsEnable = true;
+      this.scheduleWidth = '80%';
+      this.hideButton = '>';
+      this.toolTip = 'Скрыть новости';
+    } else {
+      this.toolTip = 'Раскрыть новости';
+      this.hideButton = '<';
+      this.scheduleWidth = '100%';
+      this.isNewsEnable = false;
+    }
   }
 }

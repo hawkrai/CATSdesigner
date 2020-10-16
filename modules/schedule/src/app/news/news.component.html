@@ -1,0 +1,19 @@
+<div *ngIf="isEnableNews">
+  <div style="margin-top: 8%;">
+     <p style="font-family: Roboto;font-size: 24px; color: #3F51B5;position: relative;left: 30%;width: 70%">Новости</p>
+  </div>
+  <table style="margin-left:6%;margin-right:2%">
+    <tr *ngFor="let item of news" >
+     <div [ngStyle]="{ 'border-left':calcColor(item)}" >
+        <div style="margin-left:3%;" >
+          <h6 (click) = "openItemInfo(item)" style = "color: gray;font-family: Roboto;font-size:1em;line-height:20px;cursor: pointer;left: 0%;font-weight: initial; ">{{item?.Title}}</h6>
+        </div>
+        <div style="margin-left:3%; display: flex;justify-content: space-between;">
+          <h6 matTooltip="{{getToolTip(item)}}" matTooltipClass="example-tooltip-blue" style = "cursor: pointer;font-size:14px;line-height:20px;left: 0%;float: left">{{getSubjectShortName(item?.SubjectId)}}</h6>
+          <h6 style = "font-size:14px;line-height:20px;left: 0%;font-weight: initial; float: right;color: gray;font-family: Roboto;font-size:1em;">{{item.EditDate.slice(6,-2) | date:'dd.MM.yyyy' }}</h6>
+        </div>
+        <p></p>
+      </div>
+    </tr>
+  </table>
+</div>

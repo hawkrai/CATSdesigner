@@ -22,6 +22,10 @@ import { CreateLessonComponent } from './modal/create-lesson/create-lesson.compo
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
+import { ConfirmationComponent } from './modal/confirmation/confirmation.component';
+import {MatMenuModule} from '@angular/material/menu';
+import { NewsComponent } from './news/news.component';
+import { NewsInfoComponent } from './modal/news-info/news-info.component';
 registerLocaleData(localeRu);
 
 class CustomDateFormatter extends CalendarNativeDateFormatter {
@@ -38,7 +42,10 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     AppComponent,
     ScheduleMainComponent,
     AddNoteComponent,
-    CreateLessonComponent
+    CreateLessonComponent,
+    ConfirmationComponent,
+    NewsComponent,
+    NewsInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -64,11 +71,12 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
       }
     }),
     MatSelectModule,
+    MatMenuModule,
   ],
   providers: [],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
-  entryComponents: [AddNoteComponent, CreateLessonComponent]
+  entryComponents: [AddNoteComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent]
 })
 export class AppModule {
 
