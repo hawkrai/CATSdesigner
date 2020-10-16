@@ -7,7 +7,7 @@
         matRipple
         [ngClass]="{highlight:isActive(node.Id)}"
         >{{node.Name}}</label>
-      <crud-document-menu
+      <crud-document-menu *ngIf="!isReadOnly"
           [document]="node"
           (onAddEvent)="onAddEvent.emit(node)"
           (onRemoveEvent)="onRemoveEvent.emit(node)"
@@ -30,7 +30,7 @@
           matRipple
           [ngClass]="{highlight:isActive(node.Id)}"
         >{{node.Name}}</label>
-        <crud-document-menu
+        <crud-document-menu *ngIf="!isReadOnly"
           [document]="node"
           (onAddEvent)="onAddEvent.emit(node)"
           (onRemoveEvent)="onRemoveEvent.emit(node)"
