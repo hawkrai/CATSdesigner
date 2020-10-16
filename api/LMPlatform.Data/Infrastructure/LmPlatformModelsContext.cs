@@ -18,6 +18,7 @@ namespace LMPlatform.Data.Infrastructure
         #region Constructors
 
         public LmPlatformModelsContext()
+            : base("DefaultConnection")
         {
 	        
         }
