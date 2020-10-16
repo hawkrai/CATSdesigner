@@ -8,7 +8,7 @@
               <button mat-icon-button color="primary" aria-label="Search icon">
                 <mat-icon>search</mat-icon>
               </button>
-              <button mat-icon-button color="primary" aria-label="Add icon"  (click)="openAddDialog($event)">
+              <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)">
                 <mat-icon>add_circle</mat-icon>
               </button>
           </div>
