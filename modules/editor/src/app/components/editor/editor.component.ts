@@ -67,7 +67,7 @@ export class EditorComponent implements OnInit {
     var currentUser = JSON.parse(localStorage.getItem("currentUser"));
     this.SubjectId = currentSubject ? currentSubject.id : 1;
     this.UserId = currentUser ? currentUser.id : 1;
-    this.isReadOnly = currentUser ? currentUser.role != "lector" ? true : false : false;
+    this.isReadOnly = currentUser ? currentUser.role != "lector" ? true : false : true;
     this.newDocument = new DocumentPreview();
     this.reloadTree();
   }
