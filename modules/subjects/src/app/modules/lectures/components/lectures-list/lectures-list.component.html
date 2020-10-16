@@ -1,4 +1,4 @@
-<div class="lectures-list-component" *ngIf="lectures; else: load">
+<div class="lectures-list-component" *ngIf="!isLoading;else load">
   <div class="lectures-list-component__actions" *ngIf="isTeacher">
     <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить тему</button>
   </div>
@@ -11,7 +11,7 @@
         </th>
       </tr>
       </thead>
-      <tbody cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
+      <tbody [cdkDropListDisabled]="!isTeacher" cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
       <tr class="mdc-data-table__row" *ngFor="let lecture of lectures" cdkDrag>
         <td class="mdc-data-table__cell">{{ lecture.order }}</td>
         <td class="mdc-data-table__cell">{{ lecture.theme }}</td>

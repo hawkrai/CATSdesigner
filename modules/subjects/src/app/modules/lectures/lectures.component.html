@@ -1,7 +1,7 @@
 <div class="lectures-component content">
   <mat-tab-group mat-stretch-tabs>
     <mat-tab *ngFor="let tab of tabs; let idx = index" [tabindex]="idx"  [label]="tab | appFirstCapital">
-      <ng-template matTabContent>
+      <ng-template matTabContent animationDuration="0ms">
         <app-lectures-list *ngIf="idx === 0" [subjectId]="subjectId$ | async"  [isTeacher]="isTeacher$ | async"></app-lectures-list>
         <app-visit-lectures *ngIf="idx === 1" [subjectId]="subjectId$ | async" [isTeacher]="isTeacher$ | async"> </app-visit-lectures>
       </ng-template>

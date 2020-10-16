@@ -1,3 +1,4 @@
+import { Module } from './../models/module';
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
@@ -28,6 +29,10 @@ export class CoreService {
           return this.listOfSubjects;
         })
       );
+  }
+
+  public getSubjectSelectedModules(id: number): Observable<Module[]> {
+    return this.http.get<Module[]>(`/Services/Subjects/SubjectsService.svc/SubjectModules/${id}`);
   }
 
   public getGroups(): Observable<any> {

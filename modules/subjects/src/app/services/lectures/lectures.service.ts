@@ -9,6 +9,7 @@ import {Lecture} from '../../models/lecture.model';
 import {map} from 'rxjs/operators';
 import {GroupsVisiting, LecturesMarksVisiting} from '../../models/groupsVisiting.model';
 import {HttpParams} from '@angular/common/http';
+import {Swap} from '../../models/swap.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,10 @@ export class LecturesService {
 
   public createLecture(lecture: Lecture) {
     return this.rest.createLecture(lecture);
+  }
+
+  public swapLecture(swap: Swap) {
+    return this.rest.swapLectures(swap);
   }
 
   public deleteLecture(lecture: {id: string, subjectId: number}) {

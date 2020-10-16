@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Router, ActivatedRoute  } from '@angular/router';
-import { CoreService } from './../../../../core/services/core.service';
-import { AuthenticationService } from './../../../../core/services/auth.service';
-import { Message } from './../../../../core/models/message';
+import {Observable} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {CoreService} from './../../../../core/services/core.service';
+import {AuthenticationService} from './../../../../core/services/auth.service';
+import {Message} from './../../../../core/models/message';
+import {map, mergeMap} from 'rxjs/operators';
+import {Module, ModuleType} from 'src/app/core/models/module';
+import {MatIconRegistry} from '@angular/material/icon';
 
 @Component({
   selector: 'app-subject',
@@ -13,15 +17,27 @@ import { Message } from './../../../../core/models/message';
 })
 export class SubjectComponent implements OnInit {
   public selectedModule: SafeResourceUrl;
-  private availableFragments:string[] =  ["news", "lectures", "labs", "practical", "testsModule", "course", "settings", "libBook", "complex"];
-  private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "practical", "page", "", "settings", "libBook", ""];
+  public modules$: Observable<Module[]>;
   public clickedItem: string;
   public isLector:boolean = false;
-  private originalModule: string; 
-  constructor(private sanitizer: DomSanitizer, private coseService: CoreService, private router: Router, private location: Location, private activeRouter: ActivatedRoute, private autService: AuthenticationService ) { }
+  private originalModule: string;
+  private availableFragments =  ["news", "lectures", "labs", "practical", "testsModule", "course", "settings", "libBook", "complex"];
+  private availablePagesFromFragment =  ["news", "lectures", "labs", "practical", "page", "", "settings", "libBook", ""];
+  constructor(
+    private sanitizer: DomSanitizer,
+    private coseService: CoreService,
+    private router: Router,
+    private location: Location,
+    private activeRouter: ActivatedRoute,
+    private iconRegistry: MatIconRegistry,
+    private autService: AuthenticationService ) { }
 
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
+    this.modules$ = this.activeRouter.params.pipe(
+      map((params: Params) => params.id),
+      mergeMap(id => this.coseService.getSubjectSelectedModules(id)));
+
     this.activeRouter.fragment.subscribe((fragment: string) => {
       let index = this.availableFragments.indexOf(fragment);
       if(index >= 0){
@@ -33,7 +49,7 @@ export class SubjectComponent implements OnInit {
       this.navigate(this.clickedItem);
       this.initState(this.availablePagesFromFragment[index]);
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    });        
+    });
   }
 
   private navigate(fragment: string) {
@@ -59,10 +75,10 @@ export class SubjectComponent implements OnInit {
         break;
       case "practical":
         return "subject";
-        break;    
+        break;
       case "testsModule":
         return "testsModule";
-        break; 
+        break;
       case "course":
         return "course";
       case "libBook":
@@ -70,16 +86,16 @@ export class SubjectComponent implements OnInit {
         break;
       case "complex":
         return "complex";
-        break; 
+        break;
       case "settings":
         return "subject";
-        break; 
+        break;
       default:
         break;
     }
   }
 
-  openModule(fragment: string, module: string, item:string) {
+  openModule(fragment: string, module: string, item: string) {
     this.clickedItem = item;
     if (this.originalModule == module) {
       let message: Message = new Message();
@@ -89,9 +105,80 @@ export class SubjectComponent implements OnInit {
     }
     else {
       this.originalModule = module;
-      this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${module}/${fragment}`);      
+      this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${module}/${fragment}`);
     }
-    this.navigate(this.clickedItem);   
+    this.navigate(this.clickedItem);
   }
 
+  getFragmentByModuleType(type: ModuleType): string {
+    switch (type) {
+      case ModuleType.News:
+        return 'news';
+      case ModuleType.Lectures:
+        return 'lectures';
+      case ModuleType.Practical:
+        return 'practical';
+      case ModuleType.Labs:
+        return 'labs';
+      case ModuleType.SmartTest:
+        return 'page';
+      case ModuleType.YeManagment:
+        return '';
+      case ModuleType.ComplexMaterial:
+        return '';
+    }
+  }
+
+  getClickedItem(type: ModuleType): string {
+    switch (type) {
+      case ModuleType.News:
+        return 'news';
+      case ModuleType.Lectures:
+        return 'lectures';
+      case ModuleType.Practical:
+        return 'practical';
+      case ModuleType.Labs:
+        return 'labs';
+      case ModuleType.SmartTest:
+        return 'testModule';
+      case ModuleType.YeManagment:
+        return 'course';
+      case ModuleType.ComplexMaterial:
+        return 'complex';
+    }
+  }
+
+  getModule(type: ModuleType) {
+    switch (type) {
+      case ModuleType.News:
+      case ModuleType.Lectures:
+      case ModuleType.Practical:
+      case ModuleType.Labs:
+        return 'subject';
+      case ModuleType.SmartTest:
+        return 'testModule';
+      case ModuleType.YeManagment:
+        return 'course';
+      case ModuleType.ComplexMaterial:
+        return 'complex';
+    }
+  }
+
+  getImage(type: ModuleType): string {
+    switch (type) {
+      case ModuleType.News:
+      case ModuleType.Lectures:
+      case ModuleType.Practical:
+      case ModuleType.Labs:
+        return 'subject';
+      case ModuleType.SmartTest:
+        return 'assessment';
+      case ModuleType.YeManagment:
+        return 'school';
+      case ModuleType.ComplexMaterial:
+        return 'topic';
+      default:
+        return 'clear';
+    }
+  }
 }

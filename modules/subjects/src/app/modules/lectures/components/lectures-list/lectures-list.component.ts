@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Lecture} from '../../../../models/lecture.model';
 import {Attachment} from "../../../../models/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
@@ -9,16 +9,22 @@ import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-p
 import {LecturesService} from '../../../../services/lectures/lectures.service';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {Swap} from '../../../../models/swap.model';
+import {SubSink} from 'subsink';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-lectures-list',
   templateUrl: './lectures-list.component.html',
   styleUrls: ['./lectures-list.component.less']
 })
-export class LecturesListComponent implements OnInit {
+export class LecturesListComponent implements OnInit, OnDestroy {
 
   @Input() isTeacher: boolean;
   @Input() subjectId: number;
+  isLoading = false;
+
+  private subs = new SubSink();
 
   public tableHeaders = [
     {name: '№'},
@@ -32,17 +38,21 @@ export class LecturesListComponent implements OnInit {
               private lecturesService: LecturesService) {
   }
 
-  ngOnInit() {
-    console.log(this.subjectId)
+  ngOnInit(): void {
     this.refreshDate();
     const column = this.isTeacher ? {name: 'Действие'} : {name: 'Скачать'};
     this.tableHeaders.push(column);
   }
 
-  refreshDate() {
-    this.lecturesService.getAllLectures(this.subjectId).subscribe(lectures => {
-      this.lectures = lectures && lectures.sort(lecture => +lecture.order);
-    });
+  refreshDate(): void {
+    this.subs.add(
+      this.lecturesService.getAllLectures(this.subjectId)
+        .pipe(tap(() => this.isLoading = true))
+        .subscribe(lectures => {
+          this.lectures = lectures && lectures.sort(lecture => +lecture.order);
+          this.isLoading = false;
+        }, () => this.isLoading = false)
+    );
   }
 
   openFilePopup(attachments: Attachment[]) {
@@ -122,12 +132,20 @@ export class LecturesListComponent implements OnInit {
     };
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    const temp = this.lectures[event.previousIndex].order;
-    this.lectures[event.previousIndex].order = this.lectures[event.currentIndex].order;
-    this.lectures[event.currentIndex].order = temp;
-    moveItemInArray(this.lectures, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<string[]>): void {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    this.subs.add(
+      this.lecturesService.swapLecture(
+        new Swap(this.subjectId.toString(), event.previousIndex, event.currentIndex)
+      ).subscribe(() => this.refreshDate())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 
 }

@@ -43,7 +43,7 @@ export class SubjectComponent implements OnInit {
 
   constructorSubject(subjectId?) {
     const dialogData: DialogData = {
-      model: {subjectId: subjectId}
+      model: { subjectId }
     };
     const dialogRef = this.openDialog(dialogData, SubjectManagementComponent);
     dialogRef.afterClosed().subscribe(result => {

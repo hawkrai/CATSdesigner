@@ -6,6 +6,7 @@ import { ConverterService} from "../converter.service";
 import {Calendar} from "../../models/calendar.model";
 import {Lecture} from "../../models/lecture.model";
 import {GroupsVisiting, LecturesMarksVisiting} from "../../models/groupsVisiting.model";
+import {Swap} from '../../models/swap.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class LecturesRestService {
     return this.http.get('Services/Lectures/LecturesService.svc/GetLectures/' + subjectId).pipe(
       map(res => this.converterService.lecturesModelConverter(res['Lectures']))
     );
+  }
+
+  public swapLectures(swap: Swap) {
+    return this.http.post('Services/Lectures/LecturesService.svc/SwapLectures', swap);
   }
 
   public createLecture(lecture: Lecture) {

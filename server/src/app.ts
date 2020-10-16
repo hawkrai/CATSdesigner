@@ -5,8 +5,8 @@ import * as modules from './modules.json';
 
 const app = express();
 const port = 3000;
-// const targetDomain = 'http://localhost:6478';
-const targetDomain = "http://host27072020.of.by";
+const targetDomain = 'http://localhost:6478';
+// const targetDomain = "http://host27072020.of.by";
 
 app.use(express.static(path.resolve('/.temp/apps')));
 
@@ -106,6 +106,7 @@ app.use('*/Tests/*', createProxyMiddleware(proxyTestOptions));
 app.use('*/api/*', createProxyMiddleware(proxyApigOptions));
 app.use('*/Administration/*', createProxyMiddleware(proxyAdmingOptions));
 app.use('*/subject/Subject/*', createProxyMiddleware(proxySubjectOptions));
+
 
 app.get('*', (req,res) => {
   let url = req.url;

@@ -19,6 +19,7 @@ export class LabsRestService {
       map(res => this.converterService.labsWorkConverter(res['Labs']))
     );
   }
+
   public getProtectionSchedule(subjectId: number, groupId: string): Observable<any> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
