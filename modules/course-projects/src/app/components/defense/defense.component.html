@@ -17,14 +17,14 @@
       </mat-slide-toggle>
       <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before"
               (click)="downloadArchive()">
-        <mat-icon>cloud_download</mat-icon>
+        <mat-icon>get_app</mat-icon>
       </button>
       <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before"
               *ngIf="!detachedGroup" (click)="checkPlagiarism()">
         <mat-icon>visibility</mat-icon>
       </button>
       <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="retrieveFiles()">
-        <mat-icon>refresh</mat-icon>
+        <mat-icon>cached</mat-icon>
       </button>
     </ng-container>
     <button mat-raised-button color="primary" *ngIf="canAddJob" [disabled]="!courseUser.HasAssignedDiplomProject"

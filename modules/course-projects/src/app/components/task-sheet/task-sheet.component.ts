@@ -92,7 +92,6 @@ export class TaskSheetComponent implements OnInit {
   }
 
   downloadTaskSheet() {
-    const url = 'http://localhost:8080/Cp/';
-    location.href = url + 'GetTasksSheetDocument?courseProjectId=' + this.courseProjectId;
+    location.href = '/Cp/GetTasksSheetDocument?courseProjectId=' + this.courseProjectId;
   }
 }
