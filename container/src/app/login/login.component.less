@@ -17,36 +17,42 @@ table{
   width: 56vw;
   vertical-align: middle;
   padding: 0px;
-  background-image: url("./../../assets/images/back.jpg");
+  background-image: linear-gradient(-135deg, #3597ffcc,  #FF7C8Dcc);
+
+  .cat {
+    width: 18vw;
+    display: block;
+    margin: 0 auto;
+  }
 
   >img {
-    width: 20vw;
+    width: 18vw;
     display: block;
     margin: 0 auto;
   }
 
   >p{
-    margin-top: 1vw;
+    margin-top: 0.8vw;
     color: #ffffff;
-    font-size: 1.8vw;
+    font-size: 1.6vw;
     text-align: center;
   }
   
   >h1{
-    font-size: 2.5vw;
+    font-size: 2vw;
     color: #ffffff;
     text-align: center;
-    margin-top: 2.5vw;
+    margin-top: 3vw;
   }
   
   >.logo{
-    margin-top: -10px;
-    width: 20vw;
+    margin-top: -15px;
+    width: 18vw;
   }
   
   >a {
     display: block;
-    margin: 4vw auto 0 auto;
+    margin: 5vw auto 0 auto;
     width: 80px;
     height: 80px;
   }
@@ -73,7 +79,6 @@ form {
 
       mat-form-field  { 
         font-size: 16px; 
-        margin-top: 1vh;
         display: block;
         ::ng-deep .mat-input-element::placeholder {
           color: #818181;
@@ -121,7 +126,6 @@ form {
 
       >a {
         font-size: 16px;
-        text-decoration-line: none;
         color: #3f51b5;
       }
 
@@ -192,6 +196,38 @@ form {
     background: #ffffff;
   }
 
+#mascot-body {
+  width: 11vw;
+  position: relative;
+  z-index: 1;
+}
+
+#mascot-tail {
+  width: 10vw;
+  margin-left: -3.5vw;
+  animation: mascot-tail__rotation__1 1000ms 0ms linear forwards, mascot-tail__rotation__2 1000ms 1000ms  run 3s infinite;
+}
+
+@keyframes mascot-tail__rotation__1 {
+  from {
+      transform: translateX(0) translateY(0) rotate(0deg);
+  }
+
+  to {
+      transform: translateX(0px) translateY(2.5vw) rotate(40deg);
+  }
+}
+@keyframes mascot-tail__rotation__2 {
+  from {
+      transform: translateX(0px) translateY(2.5vw) rotate(40deg);
+  }
+
+  to {
+      transform: translateX(0) translateY(0) rotate(0deg);
+  }
+}
+
+
   @media (max-width:1024px){
     .col-first{
       width: 50vw;
@@ -204,12 +240,8 @@ form {
         font-size: 2.2vw;
         text-align: center;
       }
-      
-      >.logo{
-        width: 25vw;
-      }
 
-      >img{
+      img, .cat, .logo {
         width: 25vw;
       }
 
@@ -226,6 +258,13 @@ form {
       }
     }
 
+    #mascot-body {
+      width: 14.5vw;
+  }
+
+    #mascot-tail {
+      width: 12.5vw;
+    }
     .col-second{
       padding: 0 4vw;
 
@@ -257,6 +296,7 @@ form {
     .col-first{
       width: 100vw;
       height: 250px;
+
       >.cat {
         display: none;
       }
@@ -281,9 +321,9 @@ form {
     
       .icon_p{
         
-        font-size: 40px;
-        margin-left: -16px;
-        margin-top: -2px;
+        font-size: 30px;
+        margin-left: -5px;
+        margin-top: -12px;
       }
     }
 
@@ -295,11 +335,11 @@ form {
           width: 92vw;
   
           >.title{
-            display: none;
+            margin-top: 9vh;
           }
 
           >.fields{
-            margin-top: 3vh;
+            margin-top: 5vh;
           }
 
           >.loginbtn>button{
