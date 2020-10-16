@@ -42,6 +42,7 @@ export class EditorComponent implements OnInit {
   //University subject. Zeros for test.
   public SubjectId: Number = 0;
   public UserId: Number = 0;
+  public isReadOnly: Boolean = true;
 
   //Tree
   treeControl = new NestedTreeControl<IDocumentTree>(node => node.Children);
@@ -62,8 +63,11 @@ export class EditorComponent implements OnInit {
   constructor(private _bookService: DocumentService, private _modalService: ModalService, public dialog: MatDialog) {}
 
   ngOnInit() {
-    this.SubjectId = 1;
-    this.UserId = 1;
+    var currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
+    var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    this.SubjectId = currentSubject ? currentSubject.id : 1;
+    this.UserId = currentUser ? currentUser.id : 1;
+    this.isReadOnly = currentUser ? currentUser.role != "lector" ? true : false : false;
     this.newDocument = new DocumentPreview();
     this.reloadTree();
   }
@@ -136,7 +140,7 @@ export class EditorComponent implements OnInit {
   openAddDialog(document): void {
     var data = {};
 
-    if(document) {
+    if(document && document.Id) {
       data = {
         ParentId: document.Id
       };

@@ -33,7 +33,6 @@ namespace Application.Infrastructure.AccountManagement
                     firstLoad = DataBaseInitializer.InitializeDatabase(context);
                 }
 
-                WebSecurity.InitializeDatabaseConnection("DefaultConnection", "Users", "UserId", "UserName", autoCreateTables: false);
 
                 if (firstLoad)
                 {

@@ -73,7 +73,7 @@ namespace Application.Infrastructure.DocumentsManagement
             
             if (document != null)
             {
-                repositoriesContainer.DocumentRepository.Delete(document);
+                repositoriesContainer.DocumentRepository.RemoveDocument(document);
                 repositoriesContainer.ApplyChanges();
                 return true;
             }

@@ -20,8 +20,6 @@ namespace LMPlatform.Data.Repositories
 
         public bool SaveDocument(Documents document, int subjectId)
         {
-            //using (var context = new LmPlatformModelsContext())
-            //{
             Documents result = null;
             if (document.Id == 0)// Add
             {
@@ -36,7 +34,22 @@ namespace LMPlatform.Data.Repositories
             DataContext.SaveChanges();
 
             return !(result == null);
-            //}
+        }
+
+        public bool RemoveDocument(Documents document)
+        {
+            Documents result = null;
+
+            var documentSubject = DataContext.Set<DocumentSubject>().FirstOrDefault(x => x.DocumentId == document.Id);
+            var documentEntity = DataContext.Set<Documents>().FirstOrDefault(x => x.Id == document.Id);
+
+            if (documentSubject != null)
+                DataContext.Set<DocumentSubject>().Remove(documentSubject);
+
+            if (documentEntity != null)
+                result = DataContext.Set<Documents>().Remove(documentEntity);
+
+            return !(result == null);
         }
     }
 }

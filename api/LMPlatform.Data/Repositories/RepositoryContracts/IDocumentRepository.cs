@@ -11,5 +11,6 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
     public interface IDocumentRepository : IRepositoryBase<Documents>
     {
         bool SaveDocument(Documents document, int subjectId);
+        bool RemoveDocument(Documents document);
     }
 }
