@@ -47,6 +47,12 @@ export class ComplexService {
     );
   }
 
+  public getConceptNameById(conceptId: string): Observable<string> {
+    return this.http.get('/Services/Concept/ConceptService.svc/GetConcept?elementId=' + conceptId).pipe(
+      map(res => res['Name'])
+    );
+  }
+
   public editRootConcept(complex: Complex) {
     return this.http.post('/Services/Concept/ConceptService.svc/EditRootConcept', complex);
   }
