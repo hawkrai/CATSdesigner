@@ -23,7 +23,7 @@
             <mat-cell *matCellDef="let element" class="mat-header-cell-action"
                       (click)="openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
                       [matTooltip]="element[1].test[i].testName">
-              {{element[1].test[i].points ? element[1].test[i].points + "(" + element[1].test[i].percent + "%)" :
+              {{element[1].test[i].points ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
               "тест не пройден"}}
             </mat-cell>
           </ng-container>
@@ -39,7 +39,7 @@
       </div>
     </div>
   </ng-container>
-  <div class="result-test-table-chart" *ngIf="!hideChart">
+  <div class="result-test-table-chart" *ngIf="showChart">
     <canvas class="result-test-table-chart-graph"
       baseChart
             [datasets]="barChartData"
@@ -49,6 +49,9 @@
             [legend]="barChartLegend"
             [chartType]="barChartType">
     </canvas>
+  </div>
+  <div class="result-test-table-warning" *ngIf="!showChart">
+    {{"Нет результатов для отображения"}}
   </div>
 </ng-container>
 
