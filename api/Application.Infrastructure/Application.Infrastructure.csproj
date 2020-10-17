@@ -156,6 +156,8 @@
     <Compile Include="CTO\SubjectData.cs" />
     <Compile Include="CTO\TaskSheetData.cs" />
     <Compile Include="CTO\UserData.cs" />
+    <Compile Include="DocumentsManagement\DocumentManagementService.cs" />
+    <Compile Include="DocumentsManagement\IDocumentManagementService.cs" />
     <Compile Include="DPManagement\AuthorizationHelper.cs" />
     <Compile Include="DPManagement\CorrelationService.cs" />
     <Compile Include="DPManagement\DpManagementService.cs">

@@ -120,7 +120,7 @@
     <div mat-dialog-content *ngIf="formGroup" [formGroup]="formGroup">
       <mat-form-field class="question-popup-complexity">
         <input matInput formControlName="ComplexityLevel" type="number" [placeholder]="'Уровень сложности'"
-               [value]="question && question.ComplexityLevel ? question.ComplexityLevel : 0"
+               [value]="question && question.ComplexityLevel ? question.ComplexityLevel : 1"
                (change)="writeTitle($event, 'ComplexityLevel', true)">
         <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('max')">
           {{"Сложность максимум может быть 10"}}

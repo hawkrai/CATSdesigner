@@ -1,12 +1,12 @@
 export class DocumentPreview {
-  public id: Number;
-  public name: string;
-  public text: string;
-  public description: string;
-  public authorId: Number;
-  public parentId: Number;
-  public subjectId: Number;
-  public parentOrder: Number;
+  public Id: Number;
+  public Name: string;
+  public Text: string;
+  public Description: string;
+  public UserId: Number;
+  public ParentId: Number;
+  public SubjectId: Number;
+  public ParentOrder: Number;
 
   constructor() {
   }

@@ -306,6 +306,7 @@
     <Compile Include="ApiControllers\CP\CpPercentageResultController.cs" />
     <Compile Include="ApiControllers\CP\CpTaskSheetController.cs" />
     <Compile Include="ApiControllers\CP\CpTaskSheetTemplateController.cs" />
+    <Compile Include="ApiControllers\DocumentsController.cs" />
     <Compile Include="ApiControllers\DP\CorrelationController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectNewsController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectAssignmentController.cs" />
@@ -393,6 +394,10 @@
       <DependentUpon>ConceptService.svc</DependentUpon>
     </Compile>
     <Compile Include="Services\Concept\IConceptService.cs" />
+    <Compile Include="Services\Documents\DocumentService.svc.cs">
+      <DependentUpon>DocumentService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Documents\IDocumentService.cs" />
     <Compile Include="Services\Files\FilesService.svc.cs">
       <DependentUpon>FilesService.svc</DependentUpon>
     </Compile>
@@ -533,6 +538,8 @@
     <Compile Include="ViewModels\ChatViewModel\UserDetail.cs" />
     <Compile Include="ViewModels\ComplexMaterialsViewModel\AddOrEditRootConceptViewModel.cs" />
     <Compile Include="ViewModels\ComplexMaterialsViewModel\WatchingTimeViewModel.cs" />
+    <Compile Include="ViewModels\DocumenViewModels\DocumentPreview.cs" />
+    <Compile Include="ViewModels\DocumenViewModels\DocumentsTree.cs" />
     <Compile Include="ViewModels\DPViewModels\DiplomProjectViewModel.cs" />
     <Compile Include="ViewModels\KnowledgeTestingViewModels\AnswerViewModel.cs" />
     <Compile Include="ViewModels\KnowledgeTestingViewModels\QuestionItemListViewModel.cs" />
@@ -620,6 +627,7 @@
     <Content Include="Services\BTS\ProjectsService.svc" />
     <Content Include="Services\Concept\ConceptService.svc" />
     <Content Include="Services\CoreService.svc" />
+    <Content Include="Services\Documents\DocumentService.svc" />
     <Content Include="Services\Files\FilesService.svc" />
     <Content Include="Services\Materials\MaterialsService.svc" />
     <Content Include="Services\Messages\MessagesService.svc" />

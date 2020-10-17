@@ -38,17 +38,17 @@ export class EditDocumentDialogComponent implements OnInit {
   }
 
   onYesClick() {
-    if(this.data.name && this.data.description &&
-      this.data.name.length > 0 && this.data.name.length < 256 &&
-      this.data.description.length > 0 && this.data.description.length < 256) {
+    if(this.data.Name && this.data.Description &&
+      this.data.Name.length > 0 && this.data.Name.length < 256 &&
+      this.data.Description.length > 0 && this.data.Description.length < 256) {
         this.dialogRef.close({
-          id: this.data.id,
-          name: this.data.name,
-          description: this.data.description,
-          parentId: this.data.parentId,
-          subjectId: this.data.subjectId,
-          parentOrder: this.data.parentOrder,
-          text: this.data.text
+          id: this.data.Id,
+          name: this.data.Name,
+          description: this.data.Description,
+          parentId: this.data.ParentId,
+          subjectId: this.data.SubjectId,
+          parentOrder: this.data.ParentOrder,
+          text: this.data.Text
         });
     }
     else {

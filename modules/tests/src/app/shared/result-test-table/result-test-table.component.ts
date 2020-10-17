@@ -44,7 +44,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public barChartData: ChartDataSets[] = [
     {data: [], label: "Оценка"}
   ];
-  public hideChart: boolean = true;
+  public showChart: boolean = false;
   @Input()
   public tests: any;
   @Input()
@@ -121,7 +121,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
       this.barChartLabels.push(entire[0]);
       this.barChartData[0].data.push(entire[1]);
     }
-    //this.hideChart = this.barChartData[0].data.every(value => value === 0);
+    this.showChart = (<number[]>this.barChartData[0]?.data).some(value => !!value);
   }
 
   private getShortName(pupil): string {

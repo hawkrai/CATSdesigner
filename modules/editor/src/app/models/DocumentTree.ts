@@ -1,13 +1,13 @@
 export class DocumentTree {
-  constructor(public id: Number, public name: string, public children?: DocumentTree[]) {
+  constructor(public Id: Number, public Name: string, public Children?: DocumentTree[]) {
   }
 
   hasChild(): boolean {
-    return this.children.length > 0;
+    return this.Children.length > 0;
   }
 }
 export interface IDocumentTree {
-  id: Number;
-  name: string;
-  children?: IDocumentTree[];
+  Id: Number;
+  Name: string;
+  Children?: IDocumentTree[];
 }

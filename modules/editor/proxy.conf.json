@@ -1,0 +1,9 @@
+{
+  "/libBook/*": {
+    "target": "http://localhost:6478",
+    "secure": false,
+    "pathRewrite": {
+      "^/libBook/*": ""
+    }
+  }
+}

@@ -209,6 +209,11 @@ namespace LMPlatform.Data.Infrastructure
 
 		public DbSet<AccessCode> AccessCode { get; set; }
 
+        public DbSet<Documents> Documents { get; set; }
+
+        public DbSet<DocumentSubject> DocumentSubjects { get; set; }
+
+
         #endregion DataContext Members
 
         #region Protected Members
@@ -497,6 +502,33 @@ namespace LMPlatform.Data.Infrastructure
 				.WithMany(u => u.Attachments)
 				.HasForeignKey(a => a.UserId)
 				.WillCascadeOnDelete(false);
+
+            #region Documents entity
+
+            modelBuilder.Entity<Documents>()
+                .HasOptional(x => x.Parent)
+                .WithMany(x => x.Childrens)
+                .HasForeignKey(x => x.ParentId);
+
+            modelBuilder.Entity<Documents>()
+                        .HasRequired(x => x.User)
+                        .WithMany(x => x.Documents)
+                        .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<Subject>()
+                .HasMany(x => x.DocumentSubjects)
+                .WithRequired(x => x.Subject)
+                .HasForeignKey(x => x.SubjectId);
+
+            modelBuilder.Entity<Documents>()
+                .HasMany(x => x.DocumentSubjects)
+                .WithRequired(x => x.Document)
+                .HasForeignKey(x => x.DocumentId);
+
+            modelBuilder.Entity<DocumentSubject>()
+                .HasKey(x => new { x.DocumentId, x.SubjectId });
+
+            #endregion
 
             MapKnowledgeTestingEntities(modelBuilder);
             MapBTSEntities(modelBuilder);

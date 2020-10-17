@@ -1,0 +1,10 @@
+<div class = "dialog" style="overflow-y: initial !important">
+  <div class="header">
+    <h4 style="  padding-left: 20px;padding-top: 15px;padding-bottom: 15px; padding-right: 20px">{{data.itemNews.Title}}</h4>
+  </div>
+  <div [innerHTML] = "data.itemNews.Body" class="body" style="margin-top: 5px;max-height: 35vh;overflow-y: auto;">
+  </div>
+  <div>
+    <h6 (click) = "rerouteToSubject()" style="cursor: pointer;font-weight: initial;color: #777; ">{{data.itemNews.Subject.Name}}</h6>
+  </div>
+</div>
