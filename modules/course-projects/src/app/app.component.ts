@@ -53,17 +53,15 @@ export class AppComponent implements OnInit {
   }
 
   getExcelFile() {
-    const url = 'http://localhost:8080/Statistic/';
     if (this.tab === 4) {
-      location.href = url + 'GetPercentageCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.Id;
+      location.href = '/Statistic/GetPercentageCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.Id;
     } else if (this.tab === 5) {
-      location.href = url + 'GetVisitCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.Id;
+      location.href = '/Statistic/GetVisitCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.Id;
     }
   }
 
   downloadArchive() {
-    const url = 'http://localhost:8080/Cp/';
-    location.href = url + 'GetZipTaskSheet?id=' + this.selectedGroup.Id + '&subjectId=' + this.subjectId;
+    location.href = '/Cp/GetZipTaskSheet?id=' + this.selectedGroup.Id + '&subjectId=' + this.subjectId;
   }
 
 }
