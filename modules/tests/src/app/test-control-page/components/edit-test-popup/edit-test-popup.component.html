@@ -17,7 +17,7 @@
     <mat-form-field class="edit-test-wrapper">
       <textarea matInput [placeholder]="'Описание теста'"
                 [value]="editingTest.Description ? editingTest.Description : ''"
-                rows="10"
+                rows="5"
                 formControlName="description"
                 (change)="writeTitle($event, 'Description')"></textarea>
       <mat-error *ngIf="formGroup.controls.description.hasError('maxlength')">

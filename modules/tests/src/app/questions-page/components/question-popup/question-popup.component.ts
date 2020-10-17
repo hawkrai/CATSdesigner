@@ -47,8 +47,8 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public formGroup: FormGroup;
   public concept: any;
   public loader: boolean;
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
   public selectedConcept: string;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
   private conceptId: any;
 
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
@@ -104,11 +104,13 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
         });
     } else {
       this.newCase = true;
-      this.testService.getConcepts(subject.id)
-        .pipe(
-          tap((concept) => this.navItems = concept),
-          takeUntil(this.unsubscribeStream$)
-        ).subscribe();
+      if (this.data.isEUMKTest) {
+        this.testService.getConcepts(subject.id)
+          .pipe(
+            tap((concept) => this.navItems = concept),
+            takeUntil(this.unsubscribeStream$)
+          ).subscribe();
+      }
       this.formGroup = this.formBuilder.group({
         title: new FormControl("", Validators.compose([
           Validators.maxLength(255), Validators.required
@@ -116,7 +118,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
         description: new FormControl("", Validators.compose([
           Validators.maxLength(1000)
         ])),
-        ComplexityLevel: new FormControl(0, Validators.compose([
+        ComplexityLevel: new FormControl(1, Validators.compose([
           Validators.max(10),
           Validators.min(1),
           Validators.required
