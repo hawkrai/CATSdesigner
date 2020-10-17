@@ -71,7 +71,7 @@
       mat-raised-button
       color="primary"
       (click)="save()"
-      [disabled]="!formElement.checkValidity()"
+      [disabled]="!formElement.checkValidity() && !hasSelectedModule()"
     >
       Сохранить
     </button>

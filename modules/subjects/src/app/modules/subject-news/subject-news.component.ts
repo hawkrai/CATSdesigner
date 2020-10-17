@@ -39,9 +39,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isTeacher$ = this.store.select(subjectSelectors.isUserLector);
-    this.subs.add(
-      this.store.pipe(select(subjectSelectors.getSubjectId)).subscribe(subjectId => this.subjectId = subjectId)
-    );
+    this.store.pipe(select(subjectSelectors.getSubjectId)).subscribe(subjectId => this.subjectId = subjectId)
 
     this.newsService.loadData();
     this.refreshDate();

@@ -16,8 +16,7 @@ const http_proxy_middleware_1 = require("http-proxy-middleware");
 const modules = __importStar(require("./modules.json"));
 const app = express_1.default();
 const port = 3000;
-const targetDomain = 'http://localhost:6478';
-// const targetDomain = "http://host27072020.of.by";
+const targetDomain = "http://host27072020.of.by";
 app.use(express_1.default.static(path_1.default.resolve('/.temp/apps')));
 const allowedExt = [
     '.js',

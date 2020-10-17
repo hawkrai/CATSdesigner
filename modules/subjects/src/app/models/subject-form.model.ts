@@ -6,7 +6,8 @@ export class SubjectForm {
     SubjectId: number;
     Color: string;
     SelectedGroups: number[];
-} 
+    Modules: SubjectModule[]
+}
 
 export class SubjectModule {
     Name: string;

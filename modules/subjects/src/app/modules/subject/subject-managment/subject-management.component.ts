@@ -8,6 +8,8 @@ import {SubjectService} from '../../../services/subject.service';
 import { SubjectForm } from 'src/app/models/subject-form.model';
 import { IAppState } from 'src/app/store/state/app.state';
 import * as subjectActions from '../../../store/actions/subject.actions';
+import {iif} from 'rxjs';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 
 interface Group {
   id: number,
@@ -23,6 +25,14 @@ export class SubjectManagementComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
   isLoading = false;
   subject: SubjectForm;
+
+  // form = new FormGroup({
+  //   name: new FormControl('', [Validators.required, Validators.maxLength(256)]),
+  //   abbreviation: new FormControl('', [Validators.required, Validators.maxLength(10)]),
+  //   modules: new FormGroup({}),
+  //   color: new FormControl('', [Validators.required])
+
+  // })
 
   groupList: Group[] = [];
   selectedGroups: number[] = [];
@@ -44,21 +54,22 @@ export class SubjectManagementComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.data.model && this.data.model.subjectId) {
-      this.subs.add(this.subjectService.editSubject(this.data.model.subjectId).subscribe(res => {
-          this.subject = res;
-          this.setGroupList();
-        }
-      ));
-
+      this.subjectService.editSubject(this.data.model.subjectId).subscribe(res => {
+        this.subject = res;
+        this.setGroupList();
+      });
     } else {
       this.subjectService.getCreateModel().subscribe(res => {
         this.subject = res;
         this.setGroupList();
-      })
+      });
     }
   }
 
   save(): void {
+    if (!this.hasSelectedModule()) {
+      return;
+    }
     this.subject.SelectedGroups = [...this.selectedGroups];
     this.dialogRef.close(this.subject);
   }
@@ -79,5 +90,8 @@ export class SubjectManagementComponent implements OnInit, OnDestroy {
     return this.groupList.find(group => group.id === id).value;
   }
 
+  hasSelectedModule(): boolean {
+    return this.subject.Modules.some(m => m.Checked);
+  }
 
 }

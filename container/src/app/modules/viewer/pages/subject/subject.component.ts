@@ -17,7 +17,7 @@ import {MatIconRegistry} from '@angular/material/icon';
 })
 export class SubjectComponent implements OnInit {
   public selectedModule: SafeResourceUrl;
-  public modules$: Observable<Module[]>;
+  // public modules$: Observable<Module[]>;
   public clickedItem: string;
   public isLector:boolean = false;
   private originalModule: string;
@@ -34,9 +34,9 @@ export class SubjectComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
-    this.modules$ = this.activeRouter.params.pipe(
-      map((params: Params) => params.id),
-      mergeMap(id => this.coseService.getSubjectSelectedModules(id)));
+    // this.modules$ = this.activeRouter.params.pipe(
+    //   map((params: Params) => params.id),
+    //   mergeMap(id => this.coseService.getSubjectSelectedModules(id)));
 
     this.activeRouter.fragment.subscribe((fragment: string) => {
       let index = this.availableFragments.indexOf(fragment);
