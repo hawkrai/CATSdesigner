@@ -19,6 +19,7 @@ using Application.Infrastructure.UserManagement;
 using Application.Infrastructure.WatchingTimeManagement;
 using Application.Infrastructure.BTS;
 using Application.Infrastructure.TinCanManagement;
+using Application.Infrastructure.DocumentsManagement;
 
 namespace Application.Infrastructure
 {
@@ -56,6 +57,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<ITestQuestionPassingService, TestQuestionPassingService>();
             containerWrapper.Register<IMatrixManagmentService, MatrixManagmentService>();
             containerWrapper.Register<ITinCanManagementService, TinCanManagementService>();
+            containerWrapper.Register<IDocumentManagementService, DocumentManagementService>();
             return containerWrapper;
         }
     }

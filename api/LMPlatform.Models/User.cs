@@ -39,6 +39,8 @@ namespace LMPlatform.Models
 
 		public ICollection<Attachment> Attachments { get; set; }
 
+		public ICollection<Documents> Documents { get; set; }
+
 		public virtual DateTime? LastLogin { get; set; }
 
 		public virtual string Attendance { get; set; }

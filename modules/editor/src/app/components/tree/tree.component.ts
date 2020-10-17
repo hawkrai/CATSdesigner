@@ -10,6 +10,8 @@ export class TreeComponent implements OnInit {
   @Input() treeControl;
   @Input() dataSource;
   @Input() hasChild;
+  @Input() isReadOnly;
+
   @Output() onActivateTreeNodeEvent = new EventEmitter();
 
   @Output() onAddEvent = new EventEmitter();
