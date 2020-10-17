@@ -1,0 +1,14 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoadData" class="spinner" color="primary"></mat-spinner>
+<div class="main" *ngIf="this.isLoadData">
+    <div [hidden]="!this.isDataSourceForLecture()">
+        <h1>Лекции</h1>
+        <app-item-table [isLab]="false" [dataSource]="this.dataSourceForLecture"></app-item-table>
+    </div>
+    <div [hidden]="!this.isDataSourceForLab()">
+        <h1>Лабораторные работы</h1>
+        <app-item-table [isLab]="true" [dataSource]="this.dataSourceForLab"></app-item-table>
+    </div>
+    <div *ngIf="!this.isDataSourceForLecture() && !this.isDataSourceForLab()">
+        <p>Материалов по данному предмету не найдено.</p>
+    </div>
+</div>

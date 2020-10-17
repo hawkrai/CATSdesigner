@@ -1,0 +1,36 @@
+.main {
+    font-weight: lighter;
+    margin-left: 90px;
+}
+
+h1 {
+    font-weight: lighter;
+    font-size: 28px;
+    width: 95%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid lavender;
+}
+
+mat-form-field {
+    width: 95%;
+}
+
+.export-button {
+    float: right;
+    margin-right: 100px;
+}
+
+.btn {
+    padding: 7px 35px;
+    font-size: 14px;
+    background: green;
+    border: 0px;
+    color: white;
+    margin-right: 10px;
+}
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

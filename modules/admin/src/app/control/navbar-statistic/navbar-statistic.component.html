@@ -1,0 +1,16 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<div class="tabs-container" *ngIf="isLoad">    
+    <button *ngIf="this.groupName && this.isSubject()" mat-raised-button [matMenuTriggerFor]="subject" color="accent">
+        Предметы
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #subject="matMenu" yPosition="below">
+        <button *ngFor="let element of this.subjectResponse.Subjects" routerLink="/control/item/{{this.groupName}}/{{element.Id}}" mat-menu-item>
+            {{ element.Name }}
+        </button>
+    </mat-menu>
+    <button *ngIf="this.groupName && this.isSubject()" mat-raised-button aria-label="Stats" [routerLink]="['/control/statistic', groupName]" color="warn">
+        Статистика
+    </button>
+
+</div>

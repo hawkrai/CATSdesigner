@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AdminModule } from './modules/adminPanel/admin.modal';
 import { LoginModule } from './modules/login/login.module';
-import { ControlModule } from './modules/control/control.module';
+import { ControlModule } from './control/control.module';
 import { HttpClientModule } from '@angular/common/http';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
