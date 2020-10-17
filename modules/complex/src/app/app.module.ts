@@ -2,10 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+import { appReducers } from "./store/reducers/app.reducers";
 import { AppComponent } from './app.component';
 import { LoginComponent } from "./login/login.component";
 import { ComplexGridModule } from "./complexGrid/complexGrid.module";
@@ -26,14 +28,14 @@ import { MatModule } from "./mat.module";
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    StoreModule.forRoot(appReducers),
+    StoreDevtoolsModule.instrument(),
     MatModule,
     AppRoutingModule,
     ComplexMaterialModule,
     ComplexGridModule
   ],
-  providers: [
-    DatePipe
-  ],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

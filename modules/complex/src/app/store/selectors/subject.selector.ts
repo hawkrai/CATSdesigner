@@ -12,7 +12,7 @@ export const getSubject = createSelector(
   (state: ISubjectState) => state.subject
 );
 
-//export const getUser = createSelector(
-//  (state: IAppState) => state.subject,
-//  (state: ISubjectState) => state.user
-//);
+export const getUser = createSelector(
+  (state: IAppState) => state.subject,
+  (state: ISubjectState) => state.user
+);

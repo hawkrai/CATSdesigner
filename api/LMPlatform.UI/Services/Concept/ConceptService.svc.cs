@@ -13,6 +13,7 @@ using Application.Infrastructure.WatchingTimeManagement;
 using Application.Infrastructure.StudentManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
+using System.Configuration;
 
 namespace LMPlatform.UI.Services.Concept
 {
@@ -375,8 +376,7 @@ namespace LMPlatform.UI.Services.Concept
 	        if (!children.HasData) return;
             var attach = FilesManagementService.GetAttachments(children.Container).FirstOrDefault();
             if (attach == null) return;
-            var uploadFolder = "UploadedFiles";
-            children.FilePath = $"/{uploadFolder}/{attach.PathName}/{attach.FileName}";
+            children.FilePath = $"{attach.PathName}//{ attach.FileName}";
         }
 
         private bool CurrentUserIsLector()
