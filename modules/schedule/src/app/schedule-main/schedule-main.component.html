@@ -1,10 +1,10 @@
-<div class = "schedule" >
+<div class = "schedule" [ngStyle]="{ 'width': scheduleWidth}" >
   <div class="row text-center" style = "margin-right: 0px;">
     <div class="col-md-4" style="margin-top: 1%">
-      <h3 style="font-size: 1em;color: gray;margin-top: 4%;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
+      <h3 style="font-size: 1em;color: gray;margin-top: 4%;font-family: Roboto;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
     </div>
-    <div class="col-md-4" style="margin-top: 1.5%">
-      <h3 style="color:blue;font-size: 1.5rem">Расписание занятий</h3>
+    <div class="col-md-4" style="margin-top: 1.5%;font-family: Roboto;">
+      <h6 style="color:#3F51B5;font-size: 1.5rem;">Расписание занятий</h6>
     </div>
     <div class="col-md-4" style="margin-top: 1%;margin-bottom: 1%;padding-right: 0px">
       <div class="btn-group">
@@ -19,7 +19,7 @@
           <
         </div>
         <div
-          style="background-color: #f8f9fa; cursor: pointer;"
+          style="background-color: #f8f9fa; cursor: pointer;font-family: Roboto;"
           class="btn"
           mwlCalendarToday
           [(viewDate)]="viewDate"
@@ -35,6 +35,9 @@
           (viewDateChange)="closeOpenMonthViewDay()"
         >
           >
+        </div>
+        <div style="margin-left:40%;">
+          <p matTooltip="{{toolTip}}" matTooltipClass="example-tooltip-blue" (click) = "hideNews()" style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5">{{hideButton}}</p>
         </div>
       </div>
     </div>
@@ -66,20 +69,24 @@
           <thead>
           <tr style="line-height: 30%;">
             <div style = "display: flex;justify-content: space-between;">
-              <h6 style = "background: linear-gradient(blue, pink);-webkit-background-clip: text;-webkit-text-fill-color: transparent;margin-bottom: 0.4em;margin-top: 0.6em;font-size: 13px; left: 0%;color: indigo; float: left;">{{getTime(event.title)}}</h6>
+              <h6 style = "background: linear-gradient(#3596FF, #FF7C8D);-webkit-background-clip: text;-webkit-text-fill-color: transparent;margin-bottom: 0.4em;margin-top: 0.6em;font-size: 13px; left: 0%;color: indigo; float: left;">{{getTime(event.title)}}</h6>
               <p style = "margin-top: 0.6em;margin-bottom: 0.4em;line-height: 100%;font-size: 13px;float:right;color: black">{{getLocation(event.title)}}</p>
             </div>
           </tr>
           <tr style="line-height: 30%;">
             <div style = "display: flex;justify-content: space-between;">
               <h6 matTooltip="{{getToolTip(event?.title)}}" matTooltipClass="example-tooltip-blue" (click) = "rerouteToSubject(event.title)" style = "cursor: pointer;left: 0%;color: black; float: left">{{getName(event.title)}}</h6>
-              <h6 style = "padding-left: 8px;padding-right: 8px;overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: gray; color: blue">{{getType(event.title)}}</h6>
+              <h6 style = "padding-left: 8px;padding-right: 8px;overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: #3F51B5; color: #3F51B5">{{getType(event.title)}}</h6>
             </div>
           </tr>
           <tr style="line-height: 30%;">
             <div style = "display: flex;justify-content: space-between;">
               <p style = "font-size: 13px;color: black; line-height: 100%; margin-bottom: 0%;">{{getThirdString(event.title)}}</p>
-              <p style = "line-height: 100%;margin-bottom: 0%;font-size: 13px;float:right;color: black;cursor: pointer;">...</p>
+              <button  style="float: right;background: white;border-width: 0px" mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;</button>
+              <mat-menu #menu="matMenu">
+                <button (click)="deleteEvent(event)" mat-menu-item>Удалить</button>
+                <button (click)="changeEvent(event)" mat-menu-item>Редактировать</button>
+              </mat-menu>
             </div>
           </tr>
           </thead>
@@ -130,6 +137,9 @@
   </ng-template>
 </div>
 
+<div *ngIf="isNewsEnable" class="news" >
+  <app-news></app-news>
+</div>
 
 <div class="control-panel" style="margin-top:5%;margin-bottom:5%">
   <!--button class="btn btn-primary" (click)="addNote()">Создать заметку</button-->
