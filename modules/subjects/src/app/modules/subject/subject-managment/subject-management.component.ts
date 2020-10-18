@@ -1,4 +1,3 @@
-import { Store } from '@ngrx/store';
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {SubSink} from 'subsink';
@@ -6,9 +5,6 @@ import {SubSink} from 'subsink';
 import {DialogData} from '../../../models/dialog-data.model';
 import {SubjectService} from '../../../services/subject.service';
 import { SubjectForm } from 'src/app/models/subject-form.model';
-import { IAppState } from 'src/app/store/state/app.state';
-import * as subjectActions from '../../../store/actions/subject.actions';
-import {iif} from 'rxjs';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 
 interface Group {
