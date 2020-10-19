@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+server/
+build/
+api/LMPlatform.UI/Web.config
