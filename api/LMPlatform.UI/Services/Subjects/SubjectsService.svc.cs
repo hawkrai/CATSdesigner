@@ -8,6 +8,8 @@ using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Parental;
 using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
+using System.Collections.Generic;
+using LMPlatform.UI.ViewModels.SubjectViewModels;
 
 namespace LMPlatform.UI.Services.Subjects
 {
@@ -15,8 +17,9 @@ namespace LMPlatform.UI.Services.Subjects
     public class SubjectsService : ISubjectsService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
-
+        private readonly LazyDependency<IModulesManagementService> modulesManagementService = new LazyDependency<IModulesManagementService>();
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
+        public IModulesManagementService ModulesManagementService => modulesManagementService.Value;
 
         public SubjectsResult GetSubjectsBySession()
         {
@@ -29,6 +32,18 @@ namespace LMPlatform.UI.Services.Subjects
 
             return result;
         }
+
+        public IEnumerable<ModulesViewModel> GetSubjectModules(string subjectId)
+        {
+            var subject = SubjectManagementService.GetSubject(int.Parse(subjectId));
+
+            var modules = ModulesManagementService.GetModules()
+                .Where(e => e.Visible)
+                .Select(m => new ModulesViewModel(m, subject.SubjectModules.Any(e => e.ModuleId == m.Id))).ToList();
+
+            return modules.Where(m => m.Checked);
+        }
+
 
         public SubjectResult Update(SubjectViewData subject)
         {
@@ -43,5 +58,6 @@ namespace LMPlatform.UI.Services.Subjects
                 Subject = new SubjectViewData(loadedSubject)
             };
         }
+
     }
 }

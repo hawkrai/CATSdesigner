@@ -1,7 +1,9 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 using System.ServiceModel.Web;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Parental;
+using LMPlatform.UI.ViewModels.SubjectViewModels;
 
 namespace LMPlatform.UI.Services.Subjects
 {
@@ -15,5 +17,9 @@ namespace LMPlatform.UI.Services.Subjects
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "/List", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         SubjectsResult GetSubjectsBySession();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/Modules/{subjectId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        IEnumerable<ModulesViewModel> GetSubjectModules(string subjectId);
     }
 }
