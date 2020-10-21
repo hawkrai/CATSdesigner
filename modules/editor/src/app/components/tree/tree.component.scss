@@ -13,7 +13,7 @@
 
 .mat-tree-node {
 
-  background-color: white;
+  background-color: transparent;//#fafafa
   user-select: none;
   cursor: move;
   &.cdk-drag-preview { // while dragging
@@ -25,6 +25,7 @@
 
   label {
     padding: 11px;
+    margin: 0px 1px;
     border-radius: 20px;
   }
 
