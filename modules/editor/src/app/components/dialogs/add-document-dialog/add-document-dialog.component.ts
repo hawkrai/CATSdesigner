@@ -43,13 +43,14 @@ export class AddDocumentDialogComponent implements OnInit {
       this.data.Name.length > 0 && this.data.Name.length < 256 &&
       this.data.Description.length > 0 && this.data.Description.length < 256) {
         this.dialogRef.close({
-          id: this.data.Id,
-          name: this.data.Name,
-          description: this.data.Description,
-          parentId: this.data.ParentId,
-          subjectId: this.data.SubjectId,
-          parentOrder: this.data.ParentOrder,
-          text: this.data.Text
+          Id: this.data.Id,
+          Name: this.data.Name,
+          Description: this.data.Description,
+          ParentId: this.data.ParentId,
+          SubjectId: this.data.SubjectId,
+          ParentOrder: this.data.ParentOrder,
+          Text: this.data.Text,
+          UserId: this.data.UserId
         });
     }
     else {

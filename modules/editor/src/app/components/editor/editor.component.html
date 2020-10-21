@@ -12,17 +12,19 @@
                 <mat-icon>add_circle</mat-icon>
               </button>
           </div>
-          <tree
-            [treeControl]="treeControl"
-            [dataSource]="dataSource"
-            [hasChild]="hasChild"
-            [isReadOnly]="isReadOnly"
-            (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
-            (onAddEvent)="openAddDialog($event)"
-            (onRemoveEvent)="openRemoveDialog($event)"
-            (onEditContentEvent)="editDocument($event)"
-            (onEditStructureEvent)="editStructure($event)"
-          ></tree>
+          <div class="tree-area">
+            <tree
+              [treeControl]="treeControl"
+              [dataSource]="dataSource"
+              [hasChild]="hasChild"
+              [isReadOnly]="isReadOnly"
+              (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
+              (onAddEvent)="openAddDialog($event)"
+              (onRemoveEvent)="openRemoveDialog($event)"
+              (onEditContentEvent)="editDocument($event)"
+              (onEditStructureEvent)="editStructure($event)"
+            ></tree>
+          </div>
       </div>
       <div class="flex-editor-container">
           <div class="row" id="editor">
