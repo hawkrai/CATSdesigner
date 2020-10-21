@@ -1,6 +1,6 @@
 <div class="lectures-list-component" *ngIf="lectures; else: load">
   <div class="lectures-list-component__actions" *ngIf="teacher">
-    <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить лекцию</button>
+    <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить тему</button>
   </div>
   <div class="mdc-data-table">
     <table class="mdc-data-table__table">
@@ -11,9 +11,9 @@
         </th>
       </tr>
       </thead>
-      <tbody cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
-      <tr class="mdc-data-table__row" *ngFor="let lecture of lectures" cdkDrag>
-        <td class="mdc-data-table__cell">{{ lecture.order }}</td>
+      <tbody [cdkDragDisabled]="!teacher" cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
+      <tr class="mdc-data-table__row" *ngFor="let lecture of lectures: let idx = index" cdkDrag>
+        <td class="mdc-data-table__cell">{{ idx + 1 }}</td>
         <td class="mdc-data-table__cell">{{ lecture.theme }}</td>
         <td class="mdc-data-table__cell">{{ lecture.duration }}</td>
         <td class="mdc-data-table__cell" *ngIf="!teacher">
@@ -32,6 +32,7 @@
             <mat-icon>delete_forever</mat-icon>
           </button>
         </td>
+        <div class="mdc-data-table__row-placeholder" *cdkDragPlaceholder></div>
       </tr>
       </tbody>
     </table>

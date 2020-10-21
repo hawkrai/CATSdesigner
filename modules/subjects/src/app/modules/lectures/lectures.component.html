@@ -5,7 +5,7 @@
             (click)="tab = 1"
     >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">Лекции</span>
+        <span class="mdc-tab__text-label">{{ 'Лекции' | firstLetterUppercase }}</span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
         <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -17,7 +17,7 @@
             (click)="tab = 2"
     >
           <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Посещение лекций</span>
+            <span class="mdc-tab__text-label">{{ 'Посещение лекций' | firstLetterUppercase }}</span>
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -27,7 +27,7 @@
   </div>
 
   <div class="lectures-component__body">
-    <app-lectures-list *ngIf="tab === 1" [subjectId]="subjectId"  [teacher]="teacher"></app-lectures-list>
-    <app-visit-lectures *ngIf="tab === 2" [subjectId]="subjectId" [teacher]="teacher"> </app-visit-lectures>
+    <app-lectures-list *ngIf="tab === 1" [subjectId]="subjectId"  [teacher]="isTeacher$ | async"></app-lectures-list>
+    <app-visit-lectures *ngIf="tab === 2" [subjectId]="subjectId" [teacher]="isTeacher$ | async"> </app-visit-lectures>
   </div>
 </div>

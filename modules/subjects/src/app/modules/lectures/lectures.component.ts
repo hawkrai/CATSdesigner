@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+import { isTeacher } from './../../store/selectors/subject.selector';
 import {Component, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
@@ -12,9 +14,9 @@ import {GroupsService} from '../../services/groups/groups.service';
 export class LecturesComponent implements OnInit {
 
   public tab = 1;
-  public teacher = false;
 
   private subjectId: string;
+  isTeacher$: Observable<boolean>;
 
   constructor(private store: Store<IAppState>,
               private groupsService: GroupsService,) {
@@ -22,11 +24,7 @@ export class LecturesComponent implements OnInit {
 
   ngOnInit() {
     this.groupsService.loadDate();
-    this.store.pipe(select(getUser)).subscribe(user => {
-      if (user && user.role.toLowerCase() === 'lector') {
-        this.teacher = true;
-      }
-    });
+    this.isTeacher$ = this.store.select(isTeacher);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
     });

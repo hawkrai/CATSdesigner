@@ -1,3 +1,4 @@
+import { OnDestroy } from '@angular/core';
 import {Component, Input, OnInit} from '@angular/core';
 import {Lecture} from '../../../../models/lecture.model';
 import {Attachment} from "../../../../models/attachment.model";
@@ -15,7 +16,7 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
   templateUrl: './lectures-list.component.html',
   styleUrls: ['./lectures-list.component.less']
 })
-export class LecturesListComponent implements OnInit {
+export class LecturesListComponent implements OnInit, OnDestroy {
 
   @Input() teacher: boolean;
   @Input() subjectId: string;
@@ -38,9 +39,18 @@ export class LecturesListComponent implements OnInit {
     this.tableHeaders.push(column);
   }
 
+  ngOnDestroy(): void {
+    this.lectures.forEach((l, index) => {
+      if (l.order !== index.toString()) {
+        this.lecturesService.createLecture(l);
+      }
+    });
+  }
+
   refreshDate() {
     this.lecturesService.getAllLectures(this.subjectId).subscribe(lectures => {
       this.lectures = lectures && lectures.sort(lecture => +lecture.order);
+      console.log(this.lectures);
     });
   }
 
@@ -72,9 +82,9 @@ export class LecturesListComponent implements OnInit {
 
   constructorLecture(lecture?: Lecture) {
     const newLecture = lecture ? {...lecture} : this.getEmptyLecture();
-
+    newLecture.order = (this.lectures.length - 1).toString();
     const dialogData: DialogData = {
-      title: lecture ? 'Редактирование лекции' : 'Добавление лекции',
+      title: lecture ? 'Редактирование темы лекции' : 'Добавление темы лекции',
       buttonText: 'Сохранить',
       model: newLecture
     };
@@ -122,10 +132,8 @@ export class LecturesListComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    const temp = this.lectures[event.previousIndex].order;
-    this.lectures[event.previousIndex].order = this.lectures[event.currentIndex].order;
-    this.lectures[event.currentIndex].order = temp;
+    this.lectures[event.previousIndex].order = event.currentIndex.toString();
+    this.lectures[event.currentIndex].order = event.previousIndex.toString();
     moveItemInArray(this.lectures, event.previousIndex, event.currentIndex);
   }
 

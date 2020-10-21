@@ -11,9 +11,9 @@
         </th>
       </tr>
       </thead>
-      <tbody cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
-      <tr class="mdc-data-table__row" *ngFor="let lesson of practicalLessons" cdkDrag>
-        <td class="mdc-data-table__cell">{{ lesson.Order }}</td>
+      <tbody [cdkDragDisabled]="!teacher" cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
+      <tr class="mdc-data-table__row" *ngFor="let lesson of practicalLessons; let idx = index" cdkDrag>
+        <td class="mdc-data-table__cell">{{ index + 1 }}</td>
         <td class="mdc-data-table__cell">{{ lesson.Theme }}</td>
         <td class="mdc-data-table__cell">{{ lesson.ShortName }}</td>
         <td class="mdc-data-table__cell">{{ lesson.Duration }}</td>
@@ -33,6 +33,7 @@
             <mat-icon>delete_forever</mat-icon>
           </button>
         </td>
+        <div class="mdc-data-table__row-placeholder" *cdkDragPlaceholder></div>
       </tr>
       </tbody>
     </table>

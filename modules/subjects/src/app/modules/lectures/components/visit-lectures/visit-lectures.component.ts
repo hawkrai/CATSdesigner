@@ -76,7 +76,7 @@ export class VisitLecturesComponent implements OnInit {
 
   settingVisitDate() {
     const dialogData: DialogData = {
-      title: 'График посещения',
+      title: 'График занятий',
       buttonText: 'Добавить',
       body: {service: this.lecturesService, restBody: {subjectId: this.subjectId}},
     };
