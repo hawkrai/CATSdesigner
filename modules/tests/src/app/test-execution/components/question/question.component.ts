@@ -49,7 +49,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   public answerQuestion(): void {
-    if (this.charsNeskolko[0] || this.charsNeskolko[1] || this.charsNeskolko[2] || this.charsNeskolko[3] || this.charsNeskolko[4] || this.charsNeskolko[5] || this.charsNeskolko[6] || this.charsNeskolko[7] || this.charsNeskolko[8] || this.chosenAnswer || this.value) {
+    if (this.question.Question.QuestionType === 3 || this.charsNeskolko[0] || this.charsNeskolko[1] || this.charsNeskolko[2] || this.charsNeskolko[3] || this.charsNeskolko[4] || this.charsNeskolko[5] || this.charsNeskolko[6] || this.charsNeskolko[7] || this.charsNeskolko[8] || this.chosenAnswer || this.value) {
       const user = JSON.parse(localStorage.getItem("currentUser"));
       console.log(this.chosenAnswer);
       const request = {

@@ -14,10 +14,12 @@ import {formatDate} from '@angular/common';
 })
 export class CreateLessonComponent implements OnInit {
 
+  changedLesson: any = new LessonAdd();
+  changedType: string;
   formGroup: any;
   lesson: any = new LessonAdd() ;
   subjects: any[] = [];
-  lessonTypes: string[] = ['Лекция', 'Лаб.работа'];
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа']];
 
   constructor(public dialogRef: MatDialogRef<CreateLessonComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any,
@@ -26,7 +28,14 @@ export class CreateLessonComponent implements OnInit {
   ngOnInit(): void {
     this.lessonservice.getAllSubjects(this.data.userName).subscribe(subjects => {
       this.subjects = subjects;
-      console.log(subjects);
+      if (this.data.event != null) {
+        const format = 'yyyy-MM-dd';
+        const locale = 'en-US';
+        this.changedLesson.start = formatDate(this.data.event.start, format, locale);
+        this.changedLesson.color = this.getColor(this.data.event.title);
+        this.changedLesson.subjectId = this.getSubject(this.data.event.title);
+        this.changedType = this.lessonTypes.find(type => type[1] === this.getType(this.data.event.title).trim())[0];
+      }
     });
     this.formGroup = new FormGroup({
       subjectF: new FormControl('', [Validators.required]),
@@ -57,7 +66,7 @@ export class CreateLessonComponent implements OnInit {
   // tslint:disable-next-line:typedef
   add() {
     this.lesson.title = this.subjects.find(subject => subject.Id == this.lesson.subjectId).ShortName +
-      ' - ' + this.formGroup.controls.type.value;
+      ' - ' + this.lessonTypes.find(type => type[0] === this.formGroup.controls.type.value)[1];
     const format = 'yyyy-MM-dd';
     const locale = 'en-US';
     this.lesson.start = formatDate(this.lesson.start, format, locale);
@@ -67,6 +76,21 @@ export class CreateLessonComponent implements OnInit {
   // tslint:disable-next-line:typedef
   onCancelClick() {
     this.dialogRef.close(null);
+  }
+
+  getSubject(title: string): any {
+    const splitted = title.split('|', 8);
+    return this.subjects.find(subject => subject.Id == splitted[7]).Id;
+  }
+
+  getType(title: string): any {
+    const splitted = title.split('|', 5);
+    return ' ' + splitted[4] + ' ';
+  }
+
+  getColor(title: string): any {
+    const splitted = title.split('|', 7);
+    return splitted[6] ;
   }
 
 }

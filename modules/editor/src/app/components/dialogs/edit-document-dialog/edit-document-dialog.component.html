@@ -3,7 +3,7 @@
   <div class="flex-input">
     <mat-form-field class="input-holder">
       <mat-label>Наименование</mat-label>
-      <input matInput [(ngModel)]="data.name" [formControl]="nameFormControl" [errorStateMatcher]="matcher">
+      <input matInput [(ngModel)]="data.Name" [formControl]="nameFormControl" [errorStateMatcher]="matcher">
       <mat-error *ngIf="nameFormControl.hasError('required')">
         Необходимо наименование
       </mat-error>
@@ -12,7 +12,7 @@
   <div class="flex-input">
     <mat-form-field class="input-holder">
       <mat-label>Описание</mat-label>
-      <input matInput [(ngModel)]="data.description" [formControl]="descriptionFormControl" [errorStateMatcher]="matcher">
+      <input matInput [(ngModel)]="data.Description" [formControl]="descriptionFormControl" [errorStateMatcher]="matcher">
       <mat-error *ngIf="descriptionFormControl.hasError('required')">
         Необходимо описание
       </mat-error>

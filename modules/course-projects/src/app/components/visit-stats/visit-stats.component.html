@@ -6,7 +6,7 @@
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
   </div>
-  <button mat-raised-button color="primary" *ngIf="courseUser.IsLecturer" (click)="addDate()">Добавить дату консультации</button>
+  <button mat-raised-button color="primary" *ngIf="courseUser.IsLecturer" (click)="addDate()">Добавить дату</button>
   <div class="visit-stats-component__body">
     <app-visit-stats-list [visitStatsList]="visitStatsList" [consultations]="consultations"></app-visit-stats-list>
   </div>

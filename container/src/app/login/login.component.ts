@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   returnUrl: string;
+  hide=true;
 
   constructor(
         private formBuilder: FormBuilder,
@@ -28,7 +29,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-        userName: ['', Validators.  required],
+        userName: ['', Validators.required],
         password: ['', Validators.required]
     });    
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';

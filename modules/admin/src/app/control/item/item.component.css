@@ -1,0 +1,25 @@
+h1 {
+    font-weight: lighter;
+    font-size: 28px;
+    width: 95%;
+    padding-bottom: 20px;
+    border-bottom: 1px solid lavender;
+}
+
+.main {
+    font-weight: lighter;
+    margin-left: 90px;
+}
+
+p {
+    font-weight: lighter;
+    font-size: 28px;
+    text-align: center;
+    margin-top: 200px;
+}
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}

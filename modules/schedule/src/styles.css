@@ -48,6 +48,7 @@
 .cal-week-view .cal-day-headers b {
   font-weight: initial;
   color: grey;
+  font-family: Roboto;
 }
 
 .cal-week-view .cal-time {

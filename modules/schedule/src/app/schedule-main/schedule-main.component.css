@@ -9,10 +9,19 @@ pre {
 }
 
 .schedule {
-  width: 80%;
   overflow: auto;
 }
 
 .cal-week-view .cal-time-events .cal-event {
   border-bottom: 0px;
+}
+
+.news {
+  width: 18%;
+  left: 82%;
+  top: 0%;
+  position: absolute;
+  overflow: auto;
+  max-height: 122%;
+  box-shadow: -10px 14px 28px rgba(0,0,0,0.25), -10px 10px 10px rgba(0,0,0,0.22);
 }
