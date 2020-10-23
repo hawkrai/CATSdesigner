@@ -70,7 +70,7 @@ namespace LMPlatform.UI.Services
 	    LectorResult GetJoinedLector(string subjectId);
 
 	    [OperationContract]
-		[WebInvoke(UriTemplate = "/DisjoinLector/", RequestFormat = WebMessageFormat.Json, Method = "POST")]
+		[WebInvoke(UriTemplate = "/DisjoinLector", RequestFormat = WebMessageFormat.Json, Method = "POST")]
 	    ResultViewData DisjoinLector(int subjectId, int lectorId);
 
         //TODO: Find way to reemove /All

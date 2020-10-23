@@ -1,5 +1,4 @@
-import { getSubject } from './../../../../../modules/subjects/src/app/store/selectors/subject.selector';
-import { Module, ModuleType } from './../models/module.model';
+import { ModuleType } from './../models/module.model';
 import { Injectable } from "@angular/core";
 
 export interface MenuConfig {
@@ -22,6 +21,13 @@ export class MenuService {
         [ModuleType.SmartTest, { fragment: 'page', module: 'testsModule', item: 'testsModule', icon: 'assessment' }],
         [ModuleType.YeManagment, { fragment: '', module: 'course', item: 'course', icon: 'school' }],
         [ModuleType.ComplexMaterial, { fragment: '', module: 'subject', item: 'complex', icon: 'topic' }],
+        [ModuleType.Dsm, { fragment: '', module: '', item: '', icon: '' }],
+        [ModuleType.LabAttachments, { fragment: '', module: '', item: '', icon: '' }],
+        [ModuleType.Projects, { fragment: '', module: '', item: '', icon: '' }],
+        [ModuleType.Results, { fragment: '', module: '', item: '', icon: '' }],
+        [ModuleType.ScheduleProtection, { fragment: '', module: '', item: '', icon: '' }],
+        [ModuleType.StatisticsVisits, { fragment: '', module: '', item: '', icon: '' }],
+        [ModuleType.SubjectAttachments, { fragment: '', module: '', item: '', icon: '' }],
     ]);
 
     getSubjectInfo(type: ModuleType): MenuConfig {
@@ -42,5 +48,9 @@ export class MenuService {
 
     getFirstModuleType(): ModuleType {
         return Array.from(this.subjectsInfo.keys())[0];
+    }
+
+    getModuleFromItem(item: string): string {
+        return Array.from(this.subjectsInfo.values()).find(c => c.item === item).module;
     }
 }

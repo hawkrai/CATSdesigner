@@ -1,6 +1,6 @@
 export class Mark {
-  date: Date;
-  lecturesVisitId: string;
-  mark: string;
-  markId: string;
+  LecturesVisitId: number;
+  Mark: string;
+  MarkId: string;
+  Comment: string
 }

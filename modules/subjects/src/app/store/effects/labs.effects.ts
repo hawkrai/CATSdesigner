@@ -22,7 +22,7 @@ export class LabsEffects {
     ofType(ELabsActions.LOAD_LABS, ELabsActions.LOAD_LABS_CALENDAR),
     withLatestFrom(this.store.pipe(select(getSubjectId))),
     withLatestFrom(this.store.pipe(select(getCurrentGroup))),
-    switchMap(([[_, subjectId], group]: [[any, string], Group]) => {
+    switchMap(([[_, subjectId], group]: [[any, number], Group]) => {
       return this.rest.getProtectionSchedule(subjectId, group.groupId)
     }),
     switchMap((protectionSchedule) => {

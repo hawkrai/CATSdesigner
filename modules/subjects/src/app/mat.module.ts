@@ -20,6 +20,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatRadioModule} from '@angular/material/radio';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatTabsModule} from '@angular/material/tabs';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatRippleModule,
     MatGridListModule,
     MatRadioModule,
-    DragDropModule
+    DragDropModule,
+    MatTabsModule
   ]
 })
 export class MatModule { }

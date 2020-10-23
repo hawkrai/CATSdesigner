@@ -9,7 +9,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="visit-lectures-component__header-actions" *ngIf="teacher">
+    <div class="visit-lectures-component__header-actions" *ngIf="isTeacher">
       <button mat-raised-button color="primary" (click)="settingVisitDate()">Управление расписанием</button>
       <button mat-raised-button color="warn" (click)="deletePopover()">Удалить все даты</button>
       <div class="_excel-file" (click)="getExcelFile()">

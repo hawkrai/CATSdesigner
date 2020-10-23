@@ -1,5 +1,5 @@
 <div class="practical-lessons-component" *ngIf="practicalLessons; else: load">
-  <div class="practical-lessons-component__actions" *ngIf="teacher">
+  <div class="practical-lessons-component__actions" *ngIf="isTeacher">
     <button mat-raised-button color="primary" (click)="constructorLesson()">Добавить практическое занятие</button>
   </div>
   <div class="mdc-data-table">
@@ -11,20 +11,20 @@
         </th>
       </tr>
       </thead>
-      <tbody [cdkDragDisabled]="!teacher" cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
-      <tr class="mdc-data-table__row" *ngFor="let lesson of practicalLessons; let idx = index" cdkDrag>
+      <tbody cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
+      <tr [cdkDragDisabled]="!teacher" class="mdc-data-table__row" *ngFor="let lesson of practicalLessons; let idx = index" cdkDrag>
         <td class="mdc-data-table__cell">{{ index + 1 }}</td>
         <td class="mdc-data-table__cell">{{ lesson.Theme }}</td>
         <td class="mdc-data-table__cell">{{ lesson.ShortName }}</td>
         <td class="mdc-data-table__cell">{{ lesson.Duration }}</td>
-        <td class="mdc-data-table__cell" *ngIf="!teacher">
+        <td class="mdc-data-table__cell" *ngIf="!isTeacher">
           <button class="mdc-button" *ngIf="lesson.Attachments.length > 0"
                   (click)="openFilePopup(lesson.attachments)">
             <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
             <span class="mdc-button__label">Файлы</span>
           </button>
         </td>
-        <td class="mdc-data-table__cell" *ngIf="teacher">
+        <td class="mdc-data-table__cell" *ngIf="isTeacher">
           <button mat-icon-button color="primary" matTooltip="Редактировать практическое занятие"
                   (click)="constructorLesson(lesson)">
             <mat-icon>edit</mat-icon>

@@ -2,18 +2,19 @@ import { createSelector } from '@ngrx/store';
 import {IAppState} from "../state/app.state";
 import {ISubjectState} from "../state/subject.state";
 
-export const getSubject = createSelector(
+export const subjectSelector = createSelector(
   (state: IAppState) => state.subject,
-  (state: ISubjectState) => state.subject
+  subject => subject
 );
 
 export const getSubjectId = createSelector(
-  getSubject,
-  subject => subject.id
+  subjectSelector,
+  (state: ISubjectState) => state.subjectId
 );
 
+
 export const getUser = createSelector(
-  (state: IAppState) => state.subject,
+  subjectSelector,
   (state: ISubjectState) => state.user
 );
 

@@ -1,3 +1,4 @@
+import { take, tap } from 'rxjs/operators';
 import { MenuService } from './../../../../core/services/menu.service';
 import { Module, ModuleType } from './../../../../core/models/module.model';
 import { switchMap, map } from 'rxjs/operators';
@@ -34,10 +35,9 @@ export class SubjectComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
+
     this.activeRouter.fragment.subscribe((fragment: string) => {
-      // const availableItems = this.menuService.getAvailableItems();
       let type = this.menuService.getModuleTypeByItem(fragment);
-      // let index = availableItems.indexOf(fragment);
       if(type){
         this.clickedItem = fragment
       } else {
@@ -48,9 +48,9 @@ export class SubjectComponent implements OnInit {
       this.initState(this.menuService.getSubjectInfo(type).fragment);
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     });
-    this.modules$ = this.activeRouter.params.pipe(
-      switchMap((params: Params) => this.coreService.getSubjectModules(+params.id)
-    )); 
+    // this.modules$ = this.activeRouter.params.pipe(
+    //   switchMap((params: Params) => this.coreService.getSubjectModules(+params.id))
+    //   ); 
   }
 
   private navigate(fragment: string) {
@@ -59,36 +59,11 @@ export class SubjectComponent implements OnInit {
   }
 
   private initState(fragment:string): void {
-    this.originalModule = this.getModuleFromFragment();
+    this.originalModule = this.menuService.getModuleFromItem(this.clickedItem);
     this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${this.originalModule}/${fragment}`);
   }
 
-  private getModuleFromFragment(): string {
-    switch (this.clickedItem) {
-      case "news":
-        return "subject";
-      case "lectures":
-        return "subject";
-      case "labs":
-        return "subject";
-      case "practical":
-        return "subject";
-      case "testsModule":
-        return "testsModule";
-      case "course":
-        return "course";
-      case "libBook":
-        return "libBook";
-      case "complex":
-        return "complex";
-      case "settings":
-        return "subject";
-      default:
-        break;
-    }
-  }
-
-  openModule(fragment: string, module: string, item:string) {
+  openModule(fragment: string, module: string, item: string) {
     this.clickedItem = item;
     if (this.originalModule == module) {
       let message: Message = new Message();
@@ -98,9 +73,9 @@ export class SubjectComponent implements OnInit {
     }
     else {
       this.originalModule = module;
-      this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${module}/${fragment}`);      
+      this.selectedModule = this.sanitizer.bypassSecurityTrustResourceUrl(`/${module}/${fragment}`);
     }
-    this.navigate(this.clickedItem);   
+    this.navigate(this.clickedItem);
   }
 
   navigateToModule(type: ModuleType): void {
@@ -110,5 +85,9 @@ export class SubjectComponent implements OnInit {
 
   getModuleIcon(type: ModuleType): string {
     return this.menuService.getSubjectInfo(type).icon;
+  }
+
+  getModuleItem(type: ModuleType): string {
+    return this.menuService.getSubjectInfo(type).item;
   }
 }

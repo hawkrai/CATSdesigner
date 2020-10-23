@@ -14,14 +14,15 @@ export class LabsRestService {
   constructor(private http: HttpClient,
               private converterService: ConverterService) {}
 
-  public getLabWork(subjectId: string): Observable<Lab[]> {
+  public getLabWork(subjectId: number): Observable<Lab[]> {
     return this.http.get('/Services/Labs/LabsService.svc/GetLabs/' + subjectId).pipe(
       map(res => this.converterService.labsWorkConverter(res['Labs']))
     );
   }
-  public getProtectionSchedule(subjectId: string, groupId: string): Observable<any> {
+
+  public getProtectionSchedule(subjectId: number, groupId: string): Observable<any> {
     const params = new HttpParams()
-      .set('subjectId', subjectId)
+      .set('subjectId', subjectId.toString())
       .set('groupId', groupId);
     return this.http.get('Services/Labs/LabsService.svc/GetLabsV2', {params}).pipe(
       map(res => {
@@ -31,9 +32,9 @@ export class LabsRestService {
     )
   }
 
-  public getMarks(subjectId: string, groupId: string): Observable<any> {
+  public getMarks(subjectId: number, groupId: string): Observable<any> {
     const params = new HttpParams()
-      .set('subjectId', subjectId)
+      .set('subjectId', subjectId.toString())
       .set('groupId', groupId);
     return this.http.get('Services/Labs/LabsService.svc/GetMarksV2', {params}).pipe(
       map(res => res['Students']))
@@ -43,7 +44,7 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/Save', lab);
   }
 
-  public deleteLab(lab: {id: string, subjectId: string}) {
+  public deleteLab(lab: {id: string, subjectId: number}) {
     return this.http.post('Services/Labs/LabsService.svc/Delete', lab);
   }
 
@@ -63,7 +64,7 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/SaveStudentLabsMark', body);
   }
 
-  public getFilesLab(body: {subjectId: string, userId: number}): Observable<any> {
+  public getFilesLab(body: {subjectId: number, userId: number}): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/GetFilesLab', body).pipe(
       map(res => res['UserLabFiles']));
   }
@@ -76,9 +77,9 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/SendFile', body);
   }
 
-  public getAllStudentFilesLab(subjectId: string, groupId: string): Observable<any> {
+  public getAllStudentFilesLab(subjectId: number, groupId: string): Observable<any> {
     const params = new HttpParams()
-      .set('subjectId', subjectId)
+      .set('subjectId', subjectId.toString())
       .set('groupId', groupId);
     return this.http.get('Services/Labs/LabsService.svc/GetFilesV2', {params}).pipe(
       map(res => res['Students']));
