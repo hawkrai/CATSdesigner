@@ -13,7 +13,7 @@
       <mat-list>
         <mat-list-item matRipple class="mat-list-option" *ngFor="let group of groups; index as i; trackBy: trackByFn"
                        (click)="move(i, groups, data.selectedGroups)">
-          {{group.Name}}
+          {{group.GroupName}}
         </mat-list-item>
       </mat-list>
     </div>
@@ -22,7 +22,7 @@
       <mat-list>
         <mat-list-item matRipple class="mat-list-option" *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
                        (click)="move(i, data.selectedGroups, groups)">
-          {{group.Name}}
+          {{group.GroupName}}
         </mat-list-item>
       </mat-list>
     </div>

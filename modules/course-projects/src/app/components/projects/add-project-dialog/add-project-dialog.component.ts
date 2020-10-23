@@ -1,12 +1,12 @@
 import {Component, Inject} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {Group} from '../../../models/group.model';
+import { CoreGroup } from 'src/app/models/core-group.model';
 
 interface DialogData {
   name: string;
-  groups: Group[];
-  selectedGroups: Group[];
+  groups: CoreGroup[];
+  selectedGroups: CoreGroup[];
   edit: boolean;
 }
 
@@ -20,20 +20,20 @@ export class AddProjectDialogComponent {
   private nameControl: FormControl = new FormControl(this.data.name,
     [Validators.minLength(3), Validators.maxLength(255), Validators.required]);
 
-  private groups: Group[];
+  private groups: CoreGroup[];
 
   constructor(public dialogRef: MatDialogRef<AddProjectDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.Id === g.Id));
+    this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId));
   }
 
   onCancelClick(): void {
     this.dialogRef.close();
   }
 
-  move(i: number, origin: Group[], dest: Group[]) {
+  move(i: number, origin: CoreGroup[], dest: CoreGroup[]) {
     const group = origin.splice(i, 1)[0];
-    const destIndex = dest.findIndex(g => g.Name > group.Name);
+    const destIndex = dest.findIndex(g => g.GroupName > group.GroupName);
     if (destIndex < 0) {
       dest.push(group);
     } else {

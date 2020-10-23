@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {VisitStats} from '../../models/visit-stats.model';
-import {Group} from '../../models/group.model';
 import {VisitStatsService} from '../../services/visit-stats.service';
 import {Subscription} from 'rxjs';
 import {Consultation} from '../../models/consultation.model';
@@ -13,6 +12,7 @@ import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-popover.component';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
+import { CoreGroup } from 'src/app/models/core-group.model';
 
 @Component({
   selector: 'app-visit-stats',
@@ -21,7 +21,7 @@ import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog
 })
 export class VisitStatsComponent implements OnInit, OnChanges {
 
-  @Input() selectedGroup: Group;
+  @Input() selectedGroup: CoreGroup;
   @Input() courseUser: CourseUser;
 
   private COUNT = 1000;
@@ -62,7 +62,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     this.visitStatsList = null;
     this.visitStatsSubscription = this.visitStatsService.getVisitStats({
       count: this.COUNT, page: this.PAGE,
-      filter: '{"groupId":' + this.selectedGroup.Id + ',"subjectId":' + this.subjectId + ',"searchString":"' + this.searchString + '"}'
+      filter: '{"groupId":' + this.selectedGroup.GroupId + ',"subjectId":' + this.subjectId + ',"searchString":"' + this.searchString + '"}'
     })
       .subscribe(res => {
         this.visitStatsList = this.assignResults(res.Students.Items, res.CourseProjectConsultationDates);
