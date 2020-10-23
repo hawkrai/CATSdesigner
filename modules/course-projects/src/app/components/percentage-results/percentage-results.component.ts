@@ -117,7 +117,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         max: 100,
         regex: '^[0-9]*$',
         errorMsg: 'Введите число от 0 до 100',
-        label: 'Результат',
+        label: 'Результат процентовки',
         symbol: '%',
         comment: pr.Comment,
         expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage

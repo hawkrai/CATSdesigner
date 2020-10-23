@@ -92,11 +92,11 @@
         Открепленные группы
         </mat-slide-toggle>
       </div>
-      <div class="_excel-file" matTooltip="Загрузить документ Excel" matTooltipPosition="above"
+      <div class="_excel-file" matTooltip="Загрузить документ Excel"
            *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
         <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
       </div>
-      <div class="_action"  matTooltip="Скачать архивом листы задания" matTooltipPosition="above"
+      <div class="_action"  matTooltip="Скачать архивом листы задания"
             *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
             <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
       </div>
