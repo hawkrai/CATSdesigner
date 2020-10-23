@@ -18,8 +18,6 @@ import { Observable } from 'rxjs';
 })
 export class SubjectComponent implements OnInit {
   public selectedModule: SafeResourceUrl;
-  // private availableFragments:string[] =  ["news", "lectures", "labs", "practical", "testsModule", "course", "settings", "libBook", "complex"];
-  // private availablePagesFromFragment:string[] =  ["news", "lectures", "labs", "practical", "page", "", "settings", "libBook", ""];
   public clickedItem: string;
   public isLector:boolean = false;
   private originalModule: string; 
@@ -48,9 +46,9 @@ export class SubjectComponent implements OnInit {
       this.initState(this.menuService.getSubjectInfo(type).fragment);
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     });
-    // this.modules$ = this.activeRouter.params.pipe(
-    //   switchMap((params: Params) => this.coreService.getSubjectModules(+params.id))
-    //   ); 
+    this.modules$ = this.activeRouter.params.pipe(
+      switchMap((params: Params) => this.coreService.getSubjectModules(+params.id))
+      ); 
   }
 
   private navigate(fragment: string) {
