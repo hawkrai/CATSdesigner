@@ -89,26 +89,19 @@ form{
       }
     
       >.sign-in{
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 4vh;
-  
-        >a {
-          font-size: 16px;
-          color: #3f51b5;
-          margin-left: 10px;
+        margin-top: 2vh;
+        margin-bottom: 6vh;
+
+        > button{
+            font-size: 16px;
+            width: 26vw;
+            height: 48px;
         }
-  
-        >p {
-          color: #2e2e2e;
-          margin: 0;
-          min-width: 170px;
-          font-size: 16px;
-        }
+
       }
 
       .fields{
-          margin-top: 4vh;
+          margin-top: 2vh;
       }
 }
 
@@ -119,10 +112,11 @@ form{
 
 .mat-hint,
 .mat-error {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .mat-form-field {
+    margin-top: 1.5vh;
     width: 26vw;
     float: left;
 }
@@ -134,9 +128,9 @@ form{
 }
 
 .mat-raised-button{
-    margin: 6vh 0;
+    margin-top: 6vh;
     width: 26vw;
-    height: 6vh;
+    height: 48px;
     font-size: 16px;
     width: 26vw;
 }
@@ -175,7 +169,7 @@ form{
     .icon_p{
       font-size: 50px;
       margin-left: -26px;
-      margin-top: -26px;
+      margin-top: -30px;
     }
   }
 
@@ -193,7 +187,11 @@ form {
 
       >.mat-raised-button{
         width: 42vw;
-    }
+      }
+
+      >.sign-in>.mat-stroked-button{
+        width: 42vw;
+      }
   }
 }
 
@@ -243,6 +241,11 @@ form {
         }
 
         >.mat-raised-button{
+          width: 92vw;
+        }
+
+        >.sign-in>.mat-stroked-button{
+          font-size: 16px;
           width: 92vw;
         }
       }
