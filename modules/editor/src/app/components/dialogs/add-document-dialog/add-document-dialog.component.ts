@@ -29,27 +29,35 @@ export class AddDocumentDialogComponent implements OnInit {
 
   matcher = new DocumentErrorStateMatcher();
 
+  description: string;
+  isEnableToSave: boolean;
+
   constructor(public dialogRef: MatDialogRef<AddDocumentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DocumentPreview) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.description = this.data.ParentId && this.data.ParentId != 0 ? "новой темы" : "нового учебника";
+    this.isEnableToSave = false;
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
+  onModelChanged() {
+    this.isEnableToSave = (this.data.Name && this.data.Name.length > 0 && this.data.Name.length < 256) ? true : false;
+  }
+
   onYesClick() {
-    if(this.data.Name && this.data.Description &&
-      this.data.Name.length > 0 && this.data.Name.length < 256 &&
-      this.data.Description.length > 0 && this.data.Description.length < 256) {
+    if(this.isEnableToSave) {
         this.dialogRef.close({
-          id: this.data.Id,
-          name: this.data.Name,
-          description: this.data.Description,
-          parentId: this.data.ParentId,
-          subjectId: this.data.SubjectId,
-          parentOrder: this.data.ParentOrder,
-          text: this.data.Text
+          Id: this.data.Id,
+          Name: this.data.Name,
+          ParentId: this.data.ParentId,
+          SubjectId: this.data.SubjectId,
+          ParentOrder: this.data.ParentOrder,
+          Text: this.data.Text,
+          UserId: this.data.UserId
         });
     }
     else {

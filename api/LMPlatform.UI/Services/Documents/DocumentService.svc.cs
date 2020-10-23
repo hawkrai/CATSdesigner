@@ -102,7 +102,6 @@ namespace LMPlatform.UI.Services.Documents
                 existingDocument.Name = documentDTO.Name;
                 existingDocument.ParentId = documentDTO.ParentId;
                 existingDocument.UserId = documentDTO.UserId;
-                existingDocument.Description = documentDTO.Description;
                 existingDocument.Text = documentDTO.Text;
                 existingDocument.ParentOrder = documentDTO.ParentOrder;
 
@@ -144,7 +143,6 @@ namespace LMPlatform.UI.Services.Documents
             UserId = document.UserId,
             ParentId = document.ParentId,
             Name = document.Name,
-            Description = document.Description,
             Text = document.Text,
             ParentOrder = document.ParentOrder
         };
@@ -155,7 +153,6 @@ namespace LMPlatform.UI.Services.Documents
             UserId = document.UserId,
             ParentId = document.ParentId,
             Name = document.Name,
-            Description = document.Description,
             Text = document.Text,
             ParentOrder = document.ParentOrder
         };
