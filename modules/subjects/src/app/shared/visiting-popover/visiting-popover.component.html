@@ -4,10 +4,6 @@
   <h2>{{data.body.date}}</h2>
 </div>
 <div class="visiting-popover__table" *ngIf="data.body">
-<<<<<<< HEAD
-=======
-
->>>>>>> Subjects
   <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
 
     <ng-container matColumnDef="position">
@@ -23,10 +19,6 @@
     <ng-container matColumnDef="mark">
       <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
       <mat-cell *matCellDef="let element">
-<<<<<<< HEAD
-        <mat-form-field class="example-full-width" >
-          <input name="mark" min="1" max="4" required type="number" matInput [(ngModel)]="element.mark">
-=======
         <mat-form-field>
           <mat-select [(ngModel)]="+element.mark" name="mark">
             <mat-option></mat-option>
@@ -34,7 +26,6 @@
               {{mark}}
             </mat-option>
           </mat-select>
->>>>>>> Subjects
         </mat-form-field>
       </mat-cell>
     </ng-container>
@@ -42,11 +33,7 @@
     <ng-container matColumnDef="comment">
       <mat-header-cell *matHeaderCellDef> Комментарий</mat-header-cell>
       <mat-cell *matCellDef="let element">
-<<<<<<< HEAD
-        <mat-form-field class="example-full-width">
-=======
         <mat-form-field>
->>>>>>> Subjects
           <input name="comment" matInput [(ngModel)]="element.comment">
         </mat-form-field>
       </mat-cell>
@@ -58,9 +45,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
-<<<<<<< HEAD
-  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
-=======
   <button mat-raised-button (click)="onSave()" color="primary">{{data.buttonText}}</button>
->>>>>>> Subjects
 </div>

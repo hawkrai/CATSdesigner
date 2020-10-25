@@ -6,10 +6,7 @@ import {LoadLecturesCalendar} from '../../store/actions/lectures.actions';
 import {getLecturesCalendar} from '../../store/selectors/lectures.selectors';
 import {Observable} from 'rxjs';
 import {Lecture} from '../../models/lecture.model';
-import {map} from 'rxjs/operators';
 import {GroupsVisiting, LecturesMarksVisiting} from '../../models/groupsVisiting.model';
-import {HttpParams} from '@angular/common/http';
-import {Swap} from '../../models/swap.model';
 
 @Injectable({
   providedIn: 'root'

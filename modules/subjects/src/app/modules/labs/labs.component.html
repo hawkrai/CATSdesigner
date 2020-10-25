@@ -1,9 +1,9 @@
-<div class="labs-component content">
-  <mat-tab-group mat-stretch-tabs [selectedIndex]="tab" (selectedIndexChange)="tab = $event">
+<div class="labs-component content" *var="isTeacher$ | async as isTeacher">
+  <mat-tab-group animationDuration="0ms" mat-stretch-tabs [selectedIndex]="tab" (selectedIndexChange)="tab = $event">
     <mat-tab style="text-align: center;" *ngFor="let label of tabs; let idx = index" [tabindex]="idx" [label]="label | firstLetterUppercase">
       <ng-template matTabContent>
         <div class="labs-component__body">
-          <div class="labs-component__select-group" *ngIf="tab === 2 || tab === 3 || tab === 4 || (tab === 5 && teacher)">
+          <div class="labs-component__select-group" *ngIf="tab === 1 || tab === 2 || tab === 3 || (tab === 4 && isTeacher)">
             <mat-form-field>
               <mat-select [value]="groups.length ? groups[0].groupId : ''">
                 <mat-option *ngFor="let group of groups"
@@ -30,7 +30,7 @@
             >
               <mat-icon>get_app</mat-icon>
             </button>
-            <div class="_excel-file" *ngIf="(tab === 2 || tab === 3) && teacher" (click)="getExcelFile()">
+            <div class="_excel-file" *ngIf="(tab === 2 || tab === 3) && isTeacher" (click)="getExcelFile()">
               <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
             </div>
             <button *ngIf="tab === 4"
@@ -50,11 +50,11 @@
               <mat-icon>cached</mat-icon>
             </button>
           </div>
-          <app-labs-work *ngIf="tab === 0" [teacher]="teacher"></app-labs-work>
-          <app-protection-schedule *ngIf="tab === 1 && selectedGroup" [teacher]="teacher"></app-protection-schedule>
-          <app-visit-statistics *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-visit-statistics>
-          <app-results *ngIf="tab === 3 && selectedGroup" [teacher]="teacher"></app-results>
-          <app-job-protection *ngIf="tab === 4" [teacher]="teacher" [refresh]="refreshJobProtection"></app-job-protection>
+          <app-labs-work *ngIf="tab === 0" [teacher]="isTeacher"></app-labs-work>
+          <app-protection-schedule *ngIf="tab === 1 && selectedGroup" [teacher]="isTeacher"></app-protection-schedule>
+          <app-visit-statistics *ngIf="tab === 2 && selectedGroup" [teacher]="isTeacher"></app-visit-statistics>
+          <app-results *ngIf="tab === 3 && selectedGroup" [teacher]="isTeacher"></app-results>
+          <app-job-protection *ngIf="tab === 4" [teacher]="isTeacher" [refresh]="refreshJobProtection"></app-job-protection>
         </div>
       </ng-template>
     </mat-tab>

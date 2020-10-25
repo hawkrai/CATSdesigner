@@ -1,3 +1,4 @@
+import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -10,7 +11,8 @@ import { FirstLetterUppercasePipe } from './pipes/first-letter-uppercase.pipe';
   declarations: [
     FilterPipe,
     FirstLetterUppercasePipe,
-    PluarPipe
+    PluarPipe,
+    VarDirective
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import { FirstLetterUppercasePipe } from './pipes/first-letter-uppercase.pipe';
     FilterPipe,
     PluarPipe,
     FirstLetterUppercasePipe,
-    CommonModule
+    CommonModule,
+    VarDirective
   ]
 })
 export class SharedModule { }

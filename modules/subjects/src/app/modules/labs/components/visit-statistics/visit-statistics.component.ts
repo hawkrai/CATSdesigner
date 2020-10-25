@@ -133,7 +133,6 @@ export class VisitStatisticsComponent implements OnInit {
   setSubGroupDisplayColumnsLab(subGroup) {
     this.header = [{head: 'emptyPosition', text: '', length: 1}, {head: 'emptyName', text: '', length: 1}];
     const labs = this.labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
-    console.log(labs)
     labs.forEach(lab => {
       this.header.push({head: lab.labId.toString(), text: lab.shortName, length: Math.floor(lab.duration/2)})
     });

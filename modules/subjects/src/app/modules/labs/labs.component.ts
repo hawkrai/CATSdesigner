@@ -1,8 +1,9 @@
+import { Observable } from 'rxjs';
 import {Component, EventEmitter, OnInit} from '@angular/core';
 import {Group} from "../../models/group.model";
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {select, Store} from '@ngrx/store';
-import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
+import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {GroupsService} from '../../services/groups/groups.service';
 import {getCurrentGroup} from '../../store/selectors/groups.selectors';
@@ -25,7 +26,7 @@ export class LabsComponent implements OnInit {
   public selectedGroup: Group;
 
   private subjectId: number;
-  public teacher = false;
+  public isTeacher$: Observable<boolean>;
   public detachedGroup = false;
 
   public refreshJobProtection = new EventEmitter();
@@ -38,14 +39,9 @@ export class LabsComponent implements OnInit {
   ngOnInit() {
     this.groupsService.loadDate();
 
-    this.store.pipe(select(getUser)).subscribe(user => {
-      if (user && user.role.toLowerCase() === 'lector') {
-        this.teacher = true;
-      }
-    });
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+    this.isTeacher$ = this.store.select(subjectSelectors.isTeacher)
+    this.store.pipe(select(subjectSelectors.getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-
       this.loadGroup();
     });
   }

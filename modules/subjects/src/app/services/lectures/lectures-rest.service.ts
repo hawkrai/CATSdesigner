@@ -6,7 +6,6 @@ import { ConverterService} from "../converter.service";
 import {Calendar} from "../../models/calendar.model";
 import {Lecture} from "../../models/lecture.model";
 import {GroupsVisiting, LecturesMarksVisiting} from "../../models/groupsVisiting.model";
-import {Swap} from '../../models/swap.model';
 
 @Injectable({
   providedIn: 'root'

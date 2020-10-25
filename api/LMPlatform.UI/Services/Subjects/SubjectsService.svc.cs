@@ -8,6 +8,8 @@ using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Parental;
 using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
+using LMPlatform.UI.ViewModels.SubjectViewModels;
+using System.Collections.Generic;
 
 namespace LMPlatform.UI.Services.Subjects
 {
@@ -43,6 +45,17 @@ namespace LMPlatform.UI.Services.Subjects
             {
                 Subject = new SubjectViewData(loadedSubject)
             };
+        }
+
+        public IEnumerable<ModulesViewModel> GetSubjectModules(string subjectId)
+        {
+            var subject = SubjectManagementService.GetSubject(int.Parse(subjectId));
+
+            var modules = ModulesManagementService.GetModules()
+                .Where(e => e.Visible)
+                .Select(m => new ModulesViewModel(m, subject.SubjectModules.Any(e => e.ModuleId == m.Id))).ToList();
+
+            return modules.Where(m => m.Checked);
         }
     }
 }

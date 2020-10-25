@@ -13,7 +13,7 @@ import {SubjectComponent} from './modules/subject/subject.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'subject',
+    redirectTo: 'news',
     pathMatch: 'full'
   },
   { path: 'news', component: SubjectNewsComponent},
