@@ -3,12 +3,7 @@
     <button mat-raised-button color="primary" (click)="constructorSubject()">Добавить предмет</button>
   </div>
   <table mat-table
-<<<<<<< HEAD
-         #table
-         [dataSource]="subjects"
-=======
          [dataSource]="subjects$ | async"
->>>>>>> Subjects
          class="mat-elevation-z14 example-list">
 
     <ng-container matColumnDef="name">
