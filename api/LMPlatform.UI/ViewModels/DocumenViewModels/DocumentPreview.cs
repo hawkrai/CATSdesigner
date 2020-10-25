@@ -10,8 +10,6 @@ namespace LMPlatform.UI.ViewModels.DocumentsViewModels
         [DataMember]
         public string Name { get; set; }
         [DataMember] 
-        public string Description { get; set; }
-        [DataMember] 
         public int? SubjectId { get; set; }
         [DataMember] 
         public int? ParentId { get; set; }
