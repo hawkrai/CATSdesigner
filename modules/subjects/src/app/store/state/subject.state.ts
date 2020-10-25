@@ -1,11 +1,12 @@
 import {User} from '../../models/user.model';
+import {Subject} from '../../models/subject.model';
 
 export interface ISubjectState {
-  subject: any;
+  subjectId: number;
   user: User;
-}
+};
 
 export const initialSubjectState: ISubjectState = {
-  subject: {id: '', Name: ''},
+  subjectId: null,
   user: null
 };

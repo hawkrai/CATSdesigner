@@ -25,7 +25,7 @@ export class LabsWorkComponent implements OnInit {
   public labsWork: Lab[];
   public displayedColumns: string[] = ['position', 'theme', 'shortName', 'clock'];
 
-  private subjectId: string;
+  private subjectId: number;
 
   constructor(private labService: LabsService,
               private store: Store<IAppState>,

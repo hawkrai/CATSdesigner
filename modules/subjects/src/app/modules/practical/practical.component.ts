@@ -1,10 +1,11 @@
+import { Observable } from 'rxjs';
+import * as subjectSelectors from '../../store/selectors/subject.selector';
 import { Component, OnInit } from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {Group} from '../../models/group.model';
 import {GroupsService} from '../../services/groups/groups.service';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
-import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
 
 @Component({
   selector: 'app-practical',
@@ -13,32 +14,28 @@ import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
 })
 export class PracticalComponent implements OnInit {
 
-  public tab = 1;
+  tabs = ['Практические занятия', 'Статистика посещения', 'Результаты']
   public groups: Group[];
   public selectedGroup: Group;
 
-  private subjectId: string;
-  public teacher = false;
+  private subjectId: number;
+  isTeacher$: Observable<boolean>;
   public detachedGroup = false;
 
   constructor(private groupsService: GroupsService,
               private store: Store<IAppState>) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.groupsService.loadDate();
-    this.store.pipe(select(getUser)).subscribe(user => {
-      if (user && user.role.toLowerCase() === 'lector') {
-        this.teacher = true;
-      }
-    });
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+    this.isTeacher$ = this.store.select(subjectSelectors.isTeacher);
+    this.store.pipe(select(subjectSelectors.getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
       this.loadGroup();
     });
   }
 
-  loadGroup() {
+  loadGroup(): void {
     if (this.detachedGroup) {
       this.groupsService.getAllOldGroups(this.subjectId).subscribe(res => {
         this.groups = res;

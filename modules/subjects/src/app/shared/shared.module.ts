@@ -1,18 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FilterPipe} from './filter.pipe/filter.pipe';
+import {FormsModule} from '@angular/forms';
 
-
+import {FilterPipe} from './pipes/filter.pipe';
+import { PluarPipe } from './pipes/pluar.pipe';
+import { FirstLetterUppercasePipe } from './pipes/first-letter-uppercase.pipe';
 
 @NgModule({
   declarations: [
-    FilterPipe
+    FilterPipe,
+    FirstLetterUppercasePipe,
+    PluarPipe
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   exports: [
-    FilterPipe
+    FilterPipe,
+    PluarPipe,
+    FirstLetterUppercasePipe,
+    CommonModule
   ]
 })
 export class SharedModule { }

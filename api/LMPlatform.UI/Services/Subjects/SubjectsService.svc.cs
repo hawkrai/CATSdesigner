@@ -15,8 +15,9 @@ namespace LMPlatform.UI.Services.Subjects
     public class SubjectsService : ISubjectsService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
-
+        private readonly LazyDependency<IModulesManagementService> modulesManagementService = new LazyDependency<IModulesManagementService>();
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
+        public IModulesManagementService ModulesManagementService => modulesManagementService.Value;
 
         public SubjectsResult GetSubjectsBySession()
         {

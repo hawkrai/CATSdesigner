@@ -26,7 +26,7 @@ export class ProtectionScheduleComponent implements OnInit {
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'theme'];
 
-  private subjectId: string;
+  private subjectId: number;
 
   constructor(private labService: LabsService,
               private store: Store<IAppState>,

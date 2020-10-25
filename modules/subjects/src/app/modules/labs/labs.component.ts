@@ -19,11 +19,12 @@ import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-pop
 })
 export class LabsComponent implements OnInit {
 
-  public tab = 1;
+  tabs = ['Лабораторные работы', 'График защиты', 'Статистика посещения', 'Результаты', 'Защита работ'];
+  tab = 0;
   public groups: Group[];
   public selectedGroup: Group;
 
-  private subjectId: string;
+  private subjectId: number;
   public teacher = false;
   public detachedGroup = false;
 
@@ -86,10 +87,10 @@ export class LabsComponent implements OnInit {
       )
       .subscribe(group => {
         const url = 'http://localhost:8080/Statistic/';
-        if (this.tab === 3) {
+        if (this.tab === 2) {
           location.href = url + 'GetVisitLabs?subjectId=' +  this.subjectId + '&groupId=' + group.groupId +
             '&subGroupOneId=' + group.subGroupsOne.subGroupId + '&subGroupTwoId=' + group.subGroupsTwo.subGroupId;
-        } else if (this.tab === 4) {
+        } else if (this.tab === 3) {
           location.href = url + 'GetLabsMarks?subjectId=' +  this.subjectId + '&groupId=' + group.groupId;
         }
       });
