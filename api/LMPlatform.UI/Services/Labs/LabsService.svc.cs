@@ -458,8 +458,7 @@ namespace LMPlatform.UI.Services.Labs
 						LabsMarkTotal = e.LabsMarkTotal,
 						TestMark = e.TestMark,
 						LabVisitingMark = e.LabVisitingMark,
-						Marks = e.StudentLabMarks,
-						AllTestsPassed = e.AllTestsPassed
+						Marks = e.StudentLabMarks
 					}).ToList(),
 					Message = "",
 					Code = "200"

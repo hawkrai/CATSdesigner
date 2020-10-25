@@ -35,8 +35,6 @@
 		[DataMember]
 		public int SubGroup { get; set; }
 
-		[DataMember]
-		public bool AllTestsPassed { get; set; }
 
 	}
 }

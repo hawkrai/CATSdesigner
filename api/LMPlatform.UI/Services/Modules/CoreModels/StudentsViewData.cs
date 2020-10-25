@@ -36,8 +36,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
 	        {
                 var sum = (double)test.Where(e => e.Points != null).Sum(e => e.Points);
 				TestMark = Math.Round((double)(sum / test.Count(e => e.Points != null)), 1).ToString(CultureInfo.InvariantCulture);
-                AllTestsPassed = test.All(e => e.Points != null);
-	        }
+            }
 
 
 	        FileLabs = userLabsFile;
@@ -207,9 +206,6 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
 
 		[DataMember]
 		public string TestMark { get; set; }
-
-        [DataMember]
-        public bool AllTestsPassed { get; set; }
 
         [DataMember]
         public string PracticalMarkTotal { get; set; }
