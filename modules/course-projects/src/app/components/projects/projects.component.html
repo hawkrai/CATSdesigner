@@ -1,6 +1,6 @@
 <div class="projects-component" *ngIf="projects; else: load">
   <div class="projects-component__header">
-    <button mat-raised-button class="actions" color="primary" *ngIf="courseUser.IsLecturer" (click)="addProject()">Добавить проект</button>
+    <button mat-raised-button class="actions" color="primary" *ngIf="courseUser.IsLecturer" (click)="addProject()">Добавить тему</button>
     <mat-form-field class="projects-component__search">
       <mat-label>Поиск темы, студента, группы</mat-label>
       <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">

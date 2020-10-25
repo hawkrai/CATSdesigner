@@ -2,39 +2,43 @@
       <div class="flex-tree-container">
           <div class="flex-search-region">
               <mat-form-field class="flex-search-input">
-                <mat-label>Поиск</mat-label>
+                <mat-label>Поиск по учебнику</mat-label>
                 <input matInput [(ngModel)]="searchField">
               </mat-form-field>
               <button mat-icon-button color="primary" aria-label="Search icon">
                 <mat-icon>search</mat-icon>
               </button>
-              <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)">
+              <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" matTooltip="Добавление нового учебника">
                 <mat-icon>add_circle</mat-icon>
               </button>
           </div>
-          <tree
-            [treeControl]="treeControl"
-            [dataSource]="dataSource"
-            [hasChild]="hasChild"
-            [isReadOnly]="isReadOnly"
-            (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
-            (onAddEvent)="openAddDialog($event)"
-            (onRemoveEvent)="openRemoveDialog($event)"
-            (onEditContentEvent)="editDocument($event)"
-            (onEditStructureEvent)="editStructure($event)"
-          ></tree>
+          <div class="tree-area">
+            <tree
+              [treeControl]="treeControl"
+              [dataSource]="dataSource"
+              [hasChild]="hasChild"
+              [isReadOnly]="isReadOnly"
+              (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
+              (onAddEvent)="openAddDialog($event)"
+              (onRemoveEvent)="openRemoveDialog($event)"
+              (onEditContentEvent)="editDocument($event)"
+              (onEditStructureEvent)="editStructure($event)"
+            ></tree>
+          </div>
       </div>
       <div class="flex-editor-container">
           <div class="row" id="editor">
               <ckeditor
                   [editor]="editor"
                   [(ngModel)]="model.editorData"
+                  (ngModelChange)="onEditorModelChanged()"
                   [config]="model.config"
                   [disabled]="model.isReadOnly"
               ></ckeditor>
           </div>
           <div class="btn-holder" align="right">
-            <button *ngIf="!model.isReadOnly" (click)="saveDocument($event)" mat-raised-button color="primary">Сохранить</button>
+            <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">Отмена</button>
+            <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">Сохранить</button>
           </div>
       </div>
 </div>

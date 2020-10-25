@@ -28,27 +28,35 @@ export class EditDocumentDialogComponent implements OnInit {
 
   matcher = new DocumentErrorStateMatcher();
 
+  isEnableToSave: boolean;
+  oldName: string;
+
   constructor(public dialogRef: MatDialogRef<EditDocumentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DocumentPreview) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isEnableToSave = false;
+    this.oldName = this.data.Name;
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
+  onModelChanged() {
+    this.isEnableToSave = (this.data.Name && this.data.Name.length > 0 && this.data.Name.length < 256 && this.data.Name != this.oldName) ? true : false;
+  }
+
   onYesClick() {
-    if(this.data.Name && this.data.Description &&
-      this.data.Name.length > 0 && this.data.Name.length < 256 &&
-      this.data.Description.length > 0 && this.data.Description.length < 256) {
+    if(this.isEnableToSave) {
         this.dialogRef.close({
-          id: this.data.Id,
-          name: this.data.Name,
-          description: this.data.Description,
-          parentId: this.data.ParentId,
-          subjectId: this.data.SubjectId,
-          parentOrder: this.data.ParentOrder,
-          text: this.data.Text
+          Id: this.data.Id,
+          Name: this.data.Name,
+          ParentId: this.data.ParentId,
+          SubjectId: this.data.SubjectId,
+          ParentOrder: this.data.ParentOrder,
+          UserId: this.data.UserId,
+          Text: this.data.Text
         });
     }
     else {

@@ -18,10 +18,10 @@
         <td class="mdc-data-table__cell">{{ percentage.Percentage }}</td>
         <td class="mdc-data-table__cell">{{ percentage.Date | date:'dd.MM.yyyy' }}</td>
         <td class="mdc-data-table__cell" *ngIf="percentagesComponent.getCourseUser().IsLecturer">
-          <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before" (click)="percentagesComponent.editStage(percentage)">
+          <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="percentagesComponent.editStage(percentage)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before" (click)="percentagesComponent.deleteStage(percentage.Id)">
+          <button mat-icon-button color="primary" matTooltip="Удалить" (click)="percentagesComponent.deleteStage(percentage.Id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

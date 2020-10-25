@@ -1,7 +1,7 @@
 <div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
   <form [formGroup]="formGroup">
     <mat-form-field>
-      <mat-select [ngModel] ="changedLesson.subjectId"  [(ngModel)]="lesson.subjectId" formControlName="subjectF" required class="form-control">
+      <mat-select [ngModel] ="lesson.subjectId"  [(ngModel)]="lesson.subjectId" formControlName="subjectF" required class="form-control">
         <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{subject.Name}}</mat-option>
       </mat-select>
       <mat-error *ngIf="subjectF.hasError( 'required')">Поле не может быть пустым</mat-error>
@@ -15,13 +15,28 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input [ngModel] ="changedLesson.color" [(ngModel)]="lesson.color" type="color" matInput formControlName="color" required  placeholder="Цвет">
+      <input [ngModel] ="lesson.color" [(ngModel)]="lesson.color" type="color" matInput formControlName="color" required  placeholder="Цвет">
       <mat-error *ngIf="color.hasError( 'required')">Поле не может быть пустым</mat-error>
+    </mat-form-field>
+
+    <mat-form-field [formGroup]="formGroup">
+      <input  [ngModel]="lesson.teacher" [(ngModel)]="lesson.teacher" id="teacher" formControlName="teacher"  required matInput placeholder="Преподаватель" >
+      <mat-error *ngIf="teacher.hasError('required')"> Поле должно быть заполнено</mat-error>
+    </mat-form-field>
+
+    <mat-form-field [formGroup]="formGroup">
+      <input  [ngModel]="lesson.building" [(ngModel)]="lesson.building" id="building" formControlName="building" required matInput placeholder="Корпус" >
+      <mat-error *ngIf="building.hasError('required')"> Поле должно быть заполнено</mat-error>
+    </mat-form-field>
+
+    <mat-form-field  [formGroup]="formGroup">
+      <input [ngModel]="lesson.classroom"  [(ngModel)]="lesson.classroom" id="classroom" formControlName="classroom" required matInput placeholder="Аудитория" >
+      <mat-error *ngIf="teacher.hasError('classroom')"> Поле должно быть заполнено</mat-error>
     </mat-form-field>
 
     <mat-form-field>
       <input
-        [ngModel] ="changedLesson.start"
+        [ngModel] ="lesson.start"
         type="text"
         matInput formControlName="start" required
         mwlFlatpickr
@@ -29,17 +44,33 @@
         [convertModelValue]="true"
         [enableTime]="true"
         [(ngModel)]="lesson.start"
-        dateFormat="Y-m-d"
-        altFormat="F j, Y"
-        placeholder="Число"
+        dateFormat="Y-m-dTH:i"
+        altFormat="F j, Y H:i"
+        placeholder="Начало"
+      />
+      <mat-error *ngIf="start.hasError( 'required')">Поле не может быть пустым</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        [ngModel] ="lesson.end"
+        type="text"
+        matInput formControlName="end" required
+        mwlFlatpickr
+        [altInput]="true"
+        [convertModelValue]="true"
+        [enableTime]="true"
+        [(ngModel)]="lesson.end"
+        dateFormat="Y-m-dTH:i"
+        altFormat="F j, Y H:i"
+        placeholder="Конец"
       />
       <mat-error *ngIf="start.hasError( 'required')">Поле не может быть пустым</mat-error>
     </mat-form-field>
   </form >
   <p></p>
-  <button class="btn btn-success" (click)="add()" [disabled]="formGroup.invalid">
-    Сохранить
-  </button>
-  <button class="btn btn-danger" (click)=onCancelClick()> Выйти </button>
+  <button mat-raised-button color="primary" (click)="add()" [disabled]="formGroup.invalid">Сохранить</button>
+  <button mat-raised-button color="warn" (click)=onCancelClick()>Отмена</button>
+
 </div>
 
