@@ -24,9 +24,9 @@ export class VisitStatisticsComponent implements OnInit {
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
 
-  private subjectId: string;
+  private subjectId: number;
   private group: Group;
-  private student: any[];
+  student: any[];
 
   public labs: Lab[];
   public  header = [{head: 'empty', text: '', length: 2}];
@@ -133,7 +133,6 @@ export class VisitStatisticsComponent implements OnInit {
   setSubGroupDisplayColumnsLab(subGroup) {
     this.header = [{head: 'emptyPosition', text: '', length: 1}, {head: 'emptyName', text: '', length: 1}];
     const labs = this.labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
-    console.log(labs)
     labs.forEach(lab => {
       this.header.push({head: lab.labId.toString(), text: lab.shortName, length: Math.floor(lab.duration/2)})
     });

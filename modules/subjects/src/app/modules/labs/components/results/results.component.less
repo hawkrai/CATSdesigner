@@ -102,13 +102,17 @@
     }
   }
   .comment {
-    position: relative;
-
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 3px;
     &-icon {
-      position: absolute;
       font-size: 10px;
-      bottom: -1px;
-      right: -3px;
+      &.mat-icon {
+        width: auto;
+        height: auto;
+      }
     }
+
   }
 }

@@ -27,11 +27,12 @@ export const MY_FORMATS = {
   styleUrls: ['./visit-date-popover.component.less'],
   providers: [
     {
+      
       provide: DateAdapter,
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
-
+    {provide: MAT_DATE_LOCALE, useValue: 'ru'},
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })

@@ -28,7 +28,7 @@ export class JobProtectionComponent implements OnInit {
   public openedPanelId = 0;
 
   public numberSubGroups: number[] = [];
-  public subjectId: string;
+  public subjectId: number;
   public user: User;
   public displayedColumns = ['files', 'comments', 'date', 'action'];
 

@@ -1,8 +1,9 @@
+import { Observable } from 'rxjs';
 import {Component, EventEmitter, OnInit} from '@angular/core';
 import {Group} from "../../models/group.model";
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {select, Store} from '@ngrx/store';
-import {getSubjectId, getUser} from '../../store/selectors/subject.selector';
+import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {GroupsService} from '../../services/groups/groups.service';
 import {getCurrentGroup} from '../../store/selectors/groups.selectors';
@@ -19,12 +20,13 @@ import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-pop
 })
 export class LabsComponent implements OnInit {
 
-  public tab = 1;
+  tabs = ['Лабораторные работы', 'График защиты', 'Статистика посещения', 'Результаты', 'Защита работ'];
+  tab = 0;
   public groups: Group[];
   public selectedGroup: Group;
 
-  private subjectId: string;
-  public teacher = false;
+  private subjectId: number;
+  public isTeacher$: Observable<boolean>;
   public detachedGroup = false;
 
   public refreshJobProtection = new EventEmitter();
@@ -37,14 +39,9 @@ export class LabsComponent implements OnInit {
   ngOnInit() {
     this.groupsService.loadDate();
 
-    this.store.pipe(select(getUser)).subscribe(user => {
-      if (user && user.role.toLowerCase() === 'lector') {
-        this.teacher = true;
-      }
-    });
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+    this.isTeacher$ = this.store.select(subjectSelectors.isTeacher)
+    this.store.pipe(select(subjectSelectors.getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-
       this.loadGroup();
     });
   }
@@ -86,10 +83,10 @@ export class LabsComponent implements OnInit {
       )
       .subscribe(group => {
         const url = 'http://localhost:8080/Statistic/';
-        if (this.tab === 3) {
+        if (this.tab === 2) {
           location.href = url + 'GetVisitLabs?subjectId=' +  this.subjectId + '&groupId=' + group.groupId +
             '&subGroupOneId=' + group.subGroupsOne.subGroupId + '&subGroupTwoId=' + group.subGroupsTwo.subGroupId;
-        } else if (this.tab === 4) {
+        } else if (this.tab === 3) {
           location.href = url + 'GetLabsMarks?subjectId=' +  this.subjectId + '&groupId=' + group.groupId;
         }
       });

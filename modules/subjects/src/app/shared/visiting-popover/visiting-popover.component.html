@@ -19,8 +19,13 @@
     <ng-container matColumnDef="mark">
       <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <mat-form-field class="example-full-width" >
-          <input name="mark" min="1" max="4" required type="number" matInput [(ngModel)]="element.mark">
+        <mat-form-field>
+          <mat-select [(ngModel)]="+element.mark" name="mark">
+            <mat-option></mat-option>
+            <mat-option *ngFor="let mark of possibleMarks" [value]="mark">
+              {{mark}}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </mat-cell>
     </ng-container>
@@ -28,7 +33,7 @@
     <ng-container matColumnDef="comment">
       <mat-header-cell *matHeaderCellDef> Комментарий</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <mat-form-field class="example-full-width">
+        <mat-form-field>
           <input name="comment" matInput [(ngModel)]="element.comment">
         </mat-form-field>
       </mat-cell>
@@ -40,5 +45,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+  <button mat-raised-button (click)="onSave()" color="primary">{{data.buttonText}}</button>
 </div>
