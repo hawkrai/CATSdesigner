@@ -1,5 +1,4 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Group} from '../../models/group.model';
 import {PercentageResultsService} from '../../services/percentage-results.service';
 import {Subscription} from 'rxjs';
 import {StudentPercentageResults} from '../../models/student-percentage-results.model';
@@ -11,6 +10,7 @@ import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-perce
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
+import { CoreGroup } from 'src/app/models/core-group.model';
 
 @Component({
   selector: 'app-percentage-results',
@@ -19,7 +19,7 @@ import {IAppState} from '../../store/state/app.state';
 })
 export class PercentageResultsComponent implements OnInit, OnChanges {
 
-  @Input() selectedGroup: Group;
+  @Input() selectedGroup: CoreGroup;
   @Input() courseUser: CourseUser;
 
   private COUNT = 1000;
@@ -57,9 +57,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     this.percentageResultsSubscription = this.percentageResultsService.getPercentageResults({
       count: this.COUNT,
       page: this.PAGE,
-      filter: '{"groupId":' + this.selectedGroup.Id +
+      filter: '{"groupId":' + this.selectedGroup.GroupId +
         ',"subjectId":"' + this.subjectId + '",' +
-        '"secretaryId":' + this.selectedGroup.Id + ',' +
+        '"secretaryId":' + this.selectedGroup.GroupId + ',' +
         '"searchString":"' + this.searchString + '"}',
     })
       .subscribe(res => {
@@ -117,7 +117,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         max: 100,
         regex: '^[0-9]*$',
         errorMsg: 'Введите число от 0 до 100',
-        label: 'Результат',
+        label: 'Результат процентовки',
         symbol: '%',
         comment: pr.Comment,
         expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage

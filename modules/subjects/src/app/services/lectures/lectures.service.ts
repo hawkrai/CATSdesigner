@@ -6,9 +6,7 @@ import {LoadLecturesCalendar} from '../../store/actions/lectures.actions';
 import {getLecturesCalendar} from '../../store/selectors/lectures.selectors';
 import {Observable} from 'rxjs';
 import {Lecture} from '../../models/lecture.model';
-import {map} from 'rxjs/operators';
 import {GroupsVisiting, LecturesMarksVisiting} from '../../models/groupsVisiting.model';
-import {HttpParams} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +26,7 @@ export class LecturesService {
     return this.store$.pipe(select(getLecturesCalendar));
   }
 
-  public getAllLectures(subjectId: string): Observable<Lecture[]> {
+  public getAllLectures(subjectId: number): Observable<Lecture[]> {
     return this.rest.getAllLectures(subjectId);
   }
 
@@ -36,11 +34,11 @@ export class LecturesService {
     return this.rest.createLecture(lecture);
   }
 
-  public deleteLecture(lecture: {id: string, subjectId: string}) {
+  public deleteLecture(lecture: {id: string, subjectId: number}) {
     return this.rest.deleteLecture(lecture);
   }
 
-  public getLecturesMarkVisiting(subjectId: string, groupId: string): Observable<GroupsVisiting[]> {
+  public getLecturesMarkVisiting(subjectId: number, groupId: string): Observable<GroupsVisiting[]> {
     return this.rest.getLecturesMarkVisiting(subjectId, groupId);
   }
 

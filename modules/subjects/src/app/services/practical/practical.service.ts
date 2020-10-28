@@ -15,11 +15,11 @@ export class PracticalService {
               private rest: PracticalRestService) {
   }
 
-  public getAllPracticalLessons(subjectId: string): Observable<Lecture[]> {
+  public getAllPracticalLessons(subjectId: number): Observable<Lecture[]> {
     return this.rest.getAllPracticalLessons(subjectId);
   }
 
-  public getMarks(subjectId: string, groupId: string): Observable<any> {
+  public getMarks(subjectId: number, groupId: string): Observable<any> {
     return this.rest.getMarks(subjectId, groupId);
   }
 
@@ -27,7 +27,7 @@ export class PracticalService {
     return this.rest.createPracticalLessons(practicalLesson);
   }
 
-  public deletePracticalLessons(practicalLesson: {id: string, subjectId: string}) {
+  public deletePracticalLessons(practicalLesson: {id: string, subjectId: number}) {
     return this.rest.deletePracticalLessons(practicalLesson);
   }
 

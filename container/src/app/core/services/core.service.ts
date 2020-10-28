@@ -5,6 +5,7 @@ import {map,} from "rxjs/operators";
 
 import {Subject} from "../models/subject";
 import {Message} from "../models/message";
+import { Module } from "../models/module.model";
 
 
 @Injectable({providedIn: "root"})
@@ -28,6 +29,10 @@ export class CoreService {
           return this.listOfSubjects;
         })
       );
+  }
+
+  public getSubjectModules(subjectId: number): Observable<Module[]> {
+    return this.http.get<Module[]>(`/Services/Subjects/SubjectsService.svc/Modules/${subjectId}`);
   }
 
   public getGroups(): Observable<any> {

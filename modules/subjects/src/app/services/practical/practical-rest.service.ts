@@ -14,13 +14,13 @@ export class PracticalRestService {
   constructor(private http: HttpClient) {
   }
 
-  public getAllPracticalLessons(subjectId: string): Observable<Lecture[]> {
+  public getAllPracticalLessons(subjectId: number): Observable<Lecture[]> {
     return this.http.get('Services/Practicals/PracticalService.svc/GetPracticals/' + subjectId).pipe(
       map(res => res['Practicals'])
     );
   }
 
-  public getMarks(subjectId: string, groupId: string): Observable<any> {
+  public getMarks(subjectId: number, groupId: string): Observable<any> {
     return this.http.post('Services/Practicals/PracticalService.svc/GetPracticalsVisitingData', {subjectId, groupId}).pipe(
       map(res => res['Students']))
   }
@@ -29,7 +29,7 @@ export class PracticalRestService {
     return this.http.post('Services/Practicals/PracticalService.svc/Save', practicalLesson);
   }
 
-  public deletePracticalLessons(practicalLesson: {id: string, subjectId: string}) {
+  public deletePracticalLessons(practicalLesson: {id: string, subjectId: number}) {
     return this.http.post('Services/Practicals/PracticalService.svc/Delete', practicalLesson);
   }
 }

@@ -3,8 +3,6 @@ import {Subscription} from 'rxjs';
 import {CourseUser} from '../../models/course-user.model';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {AddProjectDialogComponent} from './add-project-dialog/add-project-dialog.component';
-import {Group} from '../../models/group.model';
-import {ProjectGroupService} from '../../services/project-group.service';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import {AssignProjectDialogComponent} from './assign-project-dialog/assign-project-dialog.component';
 import {ProjectsService} from '../../services/projects.service';
@@ -13,6 +11,8 @@ import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {AppComponent} from '../../app.component';
+import { CoreGroup } from 'src/app/models/core-group.model';
+import {GroupService} from '../../services/group.service';
 
 @Component({
   selector: 'app-projects',
@@ -26,7 +26,7 @@ export class ProjectsComponent implements OnInit {
   private COUNT = 1000000;
   private PAGE = 1;
 
-  private groups: Group[];
+  private groups: CoreGroup[];
   private projects: Project[];
   private projectsSubscription: Subscription;
 
@@ -36,7 +36,7 @@ export class ProjectsComponent implements OnInit {
   private direction = 'desc';
 
   constructor(private appComponent: AppComponent,
-              private projectGroupService: ProjectGroupService,
+              private groupService: GroupService,
               private projectsService: ProjectsService,
               private dialog: MatDialog,
               private snackBar: MatSnackBar,
@@ -47,7 +47,7 @@ export class ProjectsComponent implements OnInit {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
-      this.projectGroupService.getGroups(this.subjectId).subscribe(res => this.groups = res);
+      this.groupService.getGroups(this.subjectId).subscribe(res => this.groups = res.Groups);
       this.retrieveProjects();
     });
   }
@@ -108,7 +108,7 @@ export class ProjectsComponent implements OnInit {
 
   addProject() {
     const dialogRef = this.dialog.open(AddProjectDialogComponent, {
-      width: '700px',
+      width: '500px',
       data: {
         groups: this.groups,
         selectedGroups: this.groups.slice()
@@ -133,7 +133,7 @@ export class ProjectsComponent implements OnInit {
         data: {
           name: project.Theme,
           groups: this.groups,
-          selectedGroups: this.groups.filter(g => response.SelectedGroupsIds.find(id => g.Id === id)),
+          selectedGroups: this.groups.filter(g => response.SelectedGroupsIds.find(id => g.GroupId === id)),
           edit: true
         }
       });

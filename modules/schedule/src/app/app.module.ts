@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { CalendarModule, CalendarNativeDateFormatter, CalendarDateFormatter } from 'angular-calendar';
@@ -26,6 +26,10 @@ import { ConfirmationComponent } from './modal/confirmation/confirmation.compone
 import {MatMenuModule} from '@angular/material/menu';
 import { NewsComponent } from './news/news.component';
 import { NewsInfoComponent } from './modal/news-info/news-info.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatButtonModule} from '@angular/material/button';
+import { SelectEventTypeComponent } from './modal/select-event-type/select-event-type.component';
+import {MatRadioModule} from '@angular/material/radio';
 registerLocaleData(localeRu);
 
 class CustomDateFormatter extends CalendarNativeDateFormatter {
@@ -45,10 +49,12 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     CreateLessonComponent,
     ConfirmationComponent,
     NewsComponent,
-    NewsInfoComponent
+    NewsInfoComponent,
+    SelectEventTypeComponent
   ],
   imports: [
     BrowserModule,
+    MatButtonModule,
     NoopAnimationsModule,
     BrowserAnimationsModule,
     CommonModule,
@@ -58,6 +64,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     HttpClientModule,
     MatInputModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
     MatFormFieldModule,
     ReactiveFormsModule,
     FlatpickrModule.forRoot(),
@@ -72,11 +79,12 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     }),
     MatSelectModule,
     MatMenuModule,
+    MatRadioModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
-  entryComponents: [AddNoteComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent]
+  entryComponents: [AddNoteComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent, SelectEventTypeComponent]
 })
 export class AppModule {
 

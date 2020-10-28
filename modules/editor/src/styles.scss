@@ -4,3 +4,5 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+#ckf-modal { z-index: 10101 !important; }
+.ckf-file-preview-root { z-index: 10110 !important; }

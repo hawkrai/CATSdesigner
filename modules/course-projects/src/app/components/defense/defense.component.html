@@ -15,15 +15,15 @@
       >
         Открепленные группы
       </mat-slide-toggle>
-      <button mat-icon-button color="primary" matTooltip="Скачать архивом" matTooltipPosition="before"
+      <button mat-icon-button color="primary" matTooltip="Скачать архивом"
               (click)="downloadArchive()">
         <mat-icon>get_app</mat-icon>
       </button>
-      <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ" matTooltipPosition="before"
+      <button mat-icon-button color="primary" matTooltip="Проверка на плагиат всех работ"
               *ngIf="!detachedGroup" (click)="checkPlagiarism()">
         <mat-icon>visibility</mat-icon>
       </button>
-      <button mat-icon-button color="primary" matTooltip="Обновить данные" matTooltipPosition="before" (click)="retrieveFiles()">
+      <button mat-icon-button color="primary" matTooltip="Обновить данные" (click)="retrieveFiles()">
         <mat-icon>cached</mat-icon>
       </button>
     </ng-container>
@@ -53,11 +53,11 @@
             <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
             <td class="mdc-data-table__cell">
               <ng-container *ngIf="!studentFile.IsReturned">
-                <button mat-icon-button color="primary" matTooltip="Редактировать" matTooltipPosition="before"
+                <button mat-icon-button color="primary" matTooltip="Редактировать"
                         (click)="addJob(studentFile)">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="primary" matTooltip="Удалить" matTooltipPosition="before"
+                <button mat-icon-button color="primary" matTooltip="Удалить"
                         (click)="deleteJob(studentFile)">
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -99,20 +99,20 @@
                 <td class="mdc-data-table__cell">{{ fileLab.Date }}</td>
                 <td class="mdc-data-table__cell">
                   <ng-container *ngIf="!fileLab.IsReturned && !fileLab.IsReceived">
-                    <button mat-icon-button color="primary" matTooltip="Принять работу" matTooltipPosition="before"
+                    <button mat-icon-button color="primary" matTooltip="Принять работу"
                             (click)="approveJob(fileLab, student.StudentId)">
                       <mat-icon>thumb_up</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="Вернуть работу" matTooltipPosition="before"
+                    <button mat-icon-button color="primary" matTooltip="Вернуть работу"
                             (click)="addJob(fileLab, student.StudentId)">
                       <mat-icon>call_missed_outgoing</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="Проверить на плагиат" matTooltipPosition="before"
+                    <button mat-icon-button color="primary" matTooltip="Проверить на плагиат"
                             (click)="checkPlagiarismFile(fileLab)">
                       <mat-icon>visibility</mat-icon>
                     </button>
                   </ng-container>
-                  <button mat-icon-button color="primary" matTooltip="Отклонить работу" matTooltipPosition="before"
+                  <button mat-icon-button color="primary" matTooltip="Отклонить работу"
                           *ngIf="fileLab.IsReceived" (click)="restoreFromArchive(fileLab, student.StudentId)">
                     <mat-icon>thumb_down</mat-icon>
                   </button>

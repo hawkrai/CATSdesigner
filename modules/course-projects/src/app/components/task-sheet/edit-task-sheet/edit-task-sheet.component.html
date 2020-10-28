@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Редактирование листа задания</h1>
 <div mat-dialog-content style="display: block">
   <mat-form-field class="form-field">
-    <mat-label>Шаблон</mat-label>
+    <mat-label>Выберите готовый шаблон</mat-label>
     <mat-select (selectionChange)="onTemplateChange($event)">
       <mat-option *ngFor="let template of templates" [value]="template">
         {{template.Name}}
@@ -15,15 +15,15 @@
       <mat-error *ngIf="templateNameControl.invalid">До 30 символов</mat-error>
     </mat-form-field>
     <button mat-flat-button class="saveTemplateButton" color="primary" [disabled]="templateNameControl.invalid || isFormInvalid()"
-            (click)="saveTemplate()">Сохранить шаблон</button>
+            (click)="saveTemplate()">Создать шаблон</button>
   </div>
 
   <div class="apply-template">
     <mat-form-field>
       <mat-label>Группы</mat-label>
       <mat-select multiple [(value)]="selectedGroups">
-        <mat-option *ngFor="let group of data.groups" [value]="group.Name">
-          {{group.Name}}
+        <mat-option *ngFor="let group of data.groups" [value]="group.GroupName">
+          {{group.GroupName}}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -87,7 +87,7 @@
 
 </div>
 <div mat-dialog-actions class="dialog-buttons">
-  <button mat-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
   <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()" [disabled]="isFormInvalid()">
     Сохранить
   </button>

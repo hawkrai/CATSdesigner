@@ -4,11 +4,11 @@
         <table>
             <td class="col-first">
                     <div class="cat">
-                        <img id="mascot-body" src="./../../../assets/back.jpg" />
-                        <img id="mascot-tail" />
+                        <img id="mascot-body" src="./../../../assets/logo.png" />
+                        <img id="mascot-tail" src="./../../assets/logo.png"/>
                     </div>
                     <br>
-                    <img class="logo" />
+                    <img class="logo" src="./logo.png"/>
                     <p>Care about the students </p> 
                     <h1>Адаптивная обучающая система</h1>
                     <button mat-fab href="#">
@@ -18,11 +18,8 @@
             <td class="col-second">
                 <div class="inner-container" >
                 <form [formGroup]="this.form" (ngSubmit)="submit()">
-                    <h1 class="title">Создайте аккаунт!</h1>
-                    <div class="sign-in">
-						<p>Аккаунт уже существует?</p>
-						<a routerLink="/login" href="">Войти</a>
-					</div>
+                    <h1 class="title">Новый пользователь!</h1>
+
                     <div class="fields">
                         <mat-form-field>
                             <input type="text" matInput placeholder="Логин" formControlName="Username" maxlength="30">
@@ -77,6 +74,9 @@
                         </mat-form-field>
                     </div>
                     <button mat-raised-button  (click)="this.register()">Зарегистрироваться</button>
+                    <div class="sign-in">
+						<button mat-stroked-button color="primary" routerLink="/login" href="">Отмена</button>
+					</div>
                 </form>
                 </div>
             </td>

@@ -1,3 +1,7 @@
+import { concatAll, map, take } from 'rxjs/operators';
+import { MatTable } from '@angular/material';
+import { isTeacher } from './../../../../store/selectors/subject.selector';
+import { OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import {Component, Input, OnInit} from '@angular/core';
 import {Lecture} from '../../../../models/lecture.model';
 import {Attachment} from "../../../../models/attachment.model";
@@ -9,38 +13,60 @@ import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-p
 import {LecturesService} from '../../../../services/lectures/lectures.service';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {Swap} from '../../../../models/swap.model';
+import {SubSink} from 'subsink';
+import {tap} from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lectures-list',
   templateUrl: './lectures-list.component.html',
   styleUrls: ['./lectures-list.component.less']
 })
-export class LecturesListComponent implements OnInit {
+export class LecturesListComponent implements OnInit, OnChanges {
+  @Input() isTeacher: boolean;
+  @Input() subjectId: number;
+  @ViewChild('table', { static: false }) table: MatTable<Lecture>;
 
-  @Input() teacher: boolean;
-  @Input() subjectId: string;
+  isLoading = false;
 
-  public tableHeaders = [
-    {name: '№'},
-    {name: 'Тема лекции'},
-    {name: 'Количество часов'},
-  ];
+
+  displayedColumns: string[] = ['index', 'theme', 'duration', ];
+
 
   public lectures: Lecture[];
+  private lecturesCopy: Lecture[];
 
   constructor(public dialog: MatDialog,
               private lecturesService: LecturesService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.refreshDate();
-    const column = this.teacher ? {name: 'Действие'} : {name: 'Скачать'};
-    this.tableHeaders.push(column);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.isTeacher) {
+      if (this.isTeacher) {
+        this.displayedColumns.push('actions');
+      }
+      else {
+        this.displayedColumns.push('files');
+      }
+    }
+  }
+
+  hasChanges(): boolean {
+    if (!this.lectures) {
+      return false;
+    }
+    return this.lectures.some((l) => l.order !== this.lecturesCopy.find(lc => lc.id === l.id).order);
   }
 
   refreshDate() {
     this.lecturesService.getAllLectures(this.subjectId).subscribe(lectures => {
       this.lectures = lectures && lectures.sort(lecture => +lecture.order);
+      this.lecturesCopy = [...this.lectures.map(l => ({ ...l }))];
     });
   }
 
@@ -72,9 +98,9 @@ export class LecturesListComponent implements OnInit {
 
   constructorLecture(lecture?: Lecture) {
     const newLecture = lecture ? {...lecture} : this.getEmptyLecture();
-
+    newLecture.order = (this.lectures.length - 1).toString();
     const dialogData: DialogData = {
-      title: lecture ? 'Редактирование лекции' : 'Добавление лекции',
+      title: lecture ? 'Редактирование темы лекции' : 'Добавление темы лекции',
       buttonText: 'Сохранить',
       model: newLecture
     };
@@ -121,12 +147,24 @@ export class LecturesListComponent implements OnInit {
     };
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    const temp = this.lectures[event.previousIndex].order;
-    this.lectures[event.previousIndex].order = this.lectures[event.currentIndex].order;
-    this.lectures[event.currentIndex].order = temp;
-    moveItemInArray(this.lectures, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<Lecture[]>): void {
+    const prevIndex = this.lectures.findIndex(l => l.id === event.item.data.id);
+    if (prevIndex === event.currentIndex) {
+      return;
+    }
+    this.lectures[prevIndex].order = event.currentIndex.toString();
+    this.lectures[event.currentIndex].order = prevIndex.toString();
+    moveItemInArray(this.lectures, prevIndex, event.currentIndex);
+    this.table.renderRows();
+  }
+
+  saveChanges(): void {
+    from(this.lectures.filter(l => l.order !== this.lecturesCopy.find(lc => lc.id === l.id).order))
+    .pipe(
+      map(l => this.lecturesService.createLecture(l)),
+      concatAll()
+    )
+    .subscribe(() => this.refreshDate());
   }
 
 }

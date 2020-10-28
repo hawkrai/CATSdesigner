@@ -1,35 +1,36 @@
-import {Component, ElementRef, OnInit, ViewChildren} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChildren} from '@angular/core';
 import {News} from '../../models/news.model';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
 import {IAppState} from "../../store/state/app.state";
 import {select, Store} from '@ngrx/store';
-import {getSubjectId, getUser} from "../../store/selectors/subject.selector";
 import {takeUntil} from 'rxjs/operators';
-import {Subject} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {NewsPopoverComponent} from './news-popover/news-popover.component';
 import {NewsService} from '../../services/news/news.service';
 import {DialogData} from '../../models/dialog-data.model';
 import {Attachment} from '../../models/attachment.model';
+import * as subjectSelectors from '../../store/selectors/subject.selector';
+import {SubSink} from 'subsink';
 
 @Component({
   selector: 'app-subject-news',
   templateUrl: './subject-news.component.html',
   styleUrls: ['./subject-news.component.less']
 })
-export class SubjectNewsComponent implements OnInit {
+export class SubjectNewsComponent implements OnInit, OnDestroy {
 
-  private teacher: boolean = false;
-
-  private subjectId: string;
+  isTeacher$: Observable<boolean>;
+  private subs = new SubSink()
+  private subjectId: number;
 
   public news: News[];
   public selectNews: News = null;
   private unsubscription$: Subject<any> = new Subject();
 
   @ViewChildren("popoverContent")
-  private popoverContent: ElementRef<any>;
+  private popoverContent: ElementRef;
 
   constructor(private newsService: NewsService,
               public dialog: MatDialog,
@@ -37,15 +38,15 @@ export class SubjectNewsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.pipe(select(getUser)).subscribe(user => {
-      if (user && user.role.toLowerCase() === 'lector') {
-        this.teacher = true;
-      }
-    });
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => this.subjectId = subjectId);
+    this.isTeacher$ = this.store.select(subjectSelectors.isTeacher);
+    this.store.pipe(select(subjectSelectors.getSubjectId)).subscribe(subjectId => this.subjectId = subjectId)
 
     this.newsService.loadData();
     this.refreshDate();
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 
   refreshDate() {
@@ -129,6 +130,6 @@ export class SubjectNewsComponent implements OnInit {
         Name: attachment.name
       })
     });
-    return newAttachments;
+    return newAttachments
   }
 }
