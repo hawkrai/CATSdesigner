@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ChangeDetectionStrategy} from '@angular/core';
 import { Subject } from 'rxjs';
-import {CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView} from 'angular-calendar';
+import {CalendarEvent, CalendarEventTimesChangedEvent, CalendarView} from 'angular-calendar';
 import {Lesson} from '../model/lesson.model';
 import {LessonService} from '../service/lesson.service';
 import {AddNoteComponent} from '../modal/add-note/add-note.component';
@@ -12,6 +12,8 @@ import {Overlay} from '@angular/cdk/overlay';
 import {Message} from '../../../../../container/src/app/core/models/message';
 import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.component';
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
+import {DatePipe} from '@angular/common';
+import {SelectEventTypeComponent} from '../modal/select-event-type/select-event-type.component';
 
 
 const colors: any = {
@@ -29,17 +31,11 @@ const colors: any = {
 })
 export class ScheduleMainComponent implements OnInit {
 
-  actions: CalendarEventAction[] = [
-    {
-      label: '<i class="fa fa-fw fa-times"></i>',
-      a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter(iEvent => iEvent !== event);
-      }
-    }
-  ];
+  isLoadActive = true;
   toolTip = 'Скрыть новости';
   scheduleWidth = '80%';
+  newsWidth = '18%';
+  newsLeft = '82%';
   hideButton = '>';
   startTimes: string[] = [' 08:00', ' 09:55', ' 11:40', ' 13:15'];
   endTimes: string[] = [' 09:35', ' 11:30', ' 13:15', ' 15:00'];
@@ -52,11 +48,6 @@ export class ScheduleMainComponent implements OnInit {
   CalendarView = CalendarView;
   viewDate: Date = new Date();
   user: any;
-  isNewsEnable = true;
-  modalData: {
-    action: string;
-    event: CalendarEvent;
-  };
 
   refresh: Subject<any> = new Subject();
 
@@ -67,11 +58,14 @@ export class ScheduleMainComponent implements OnInit {
   constructor(private lessonservice: LessonService,
               private noteService: NoteService,
               private overlay: Overlay,
-              private dialog: MatDialog ) {}
+              private dialog: MatDialog,
+              private datePipe: DatePipe) {}
 
   ngOnInit() {
     localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.isLoadActive = false;
+    console.log(this.isLoadActive);
     this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
       let i = 0;
       les.Labs.forEach(lab => {
@@ -113,27 +107,7 @@ export class ScheduleMainComponent implements OnInit {
         this.subjects = subjects;
         this.refresh.next();
       });
-
     });
-    /*this.noteService.getNotes().subscribe(notes => {
-      this.notes = notes;
-      notes.forEach(note => {
-        this.events.push({
-          id: note.id,
-          start: note.start,
-          end: note.end,
-          title: note.title,
-          color: colors.color,
-          actions: this.actions,
-          resizable: {
-            beforeStart: true,
-            afterEnd: true,
-          },
-          draggable: true,
-          meta: 'note'
-        });
-      });
-    });*/
   }
 
   // tslint:disable-next-line:typedef
@@ -145,18 +119,6 @@ export class ScheduleMainComponent implements OnInit {
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
   }
-  /*
-    getEventsById(id: string): any {
-      return this.events.find((event) => {
-        return event.id === id;
-      });
-    }
-
-    getLessonById(id: string): any {
-      return this.lessons.find((lesson) => {
-        return lesson.id === id;
-      });
-    }*/
 
   calculateTitel(lesson: Lesson): any {
     let minS;
@@ -171,7 +133,7 @@ export class ScheduleMainComponent implements OnInit {
     }
     return  lesson.start.getHours() + ':' + minS + '-'
       +  lesson.end.getHours() + ':' + minE
-      + '|a.' + lesson.classroom + '|к.' + lesson.building
+      + '|' + lesson.classroom + '|' + lesson.building
       + '|' + lesson.shortname + '|' + lesson.type
       + '|' + lesson.teacher  + '|' + lesson.color
       + '|' + lesson.subjectId;
@@ -184,7 +146,7 @@ export class ScheduleMainComponent implements OnInit {
 
   getLocation(title: string): any {
     const splitted = title.split('|', 3);
-    return splitted[1] + ' ' + splitted[2];
+    return 'а.' + splitted[1] + ' к.' + splitted[2];
   }
 
   getName(title: string): any {
@@ -202,42 +164,18 @@ export class ScheduleMainComponent implements OnInit {
     return splitted[5] ;
   }
 
-  getColor(title: string): any {
-    const splitted = title.split('|', 7);
-    return splitted[6] ;
+  getColor(event: any): any {
+    if (this.isLesson(event)) {
+      const splitted = event.title.split('|', 7);
+      return splitted[6] ;
+    } else {
+      return 'white';
+    }
   }
 
   getReferenceToSubject(title: string): any {
     const splitted = title.split('|', 8);
     return '/Subject?subjectId=' + splitted[7] ;
-  }
-
-  // tslint:disable-next-line:typedef
-  addNote() {
-    const dialogRef = this.dialog.open(AddNoteComponent, {width: '300px'});
-    dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
-        this.notes.push(result);
-        this.events = [
-          ...this.events,
-          {
-            id: result.id,
-            start: result.start,
-            end: result.end,
-            title: result.title,
-            color: colors.color,
-            actions: this.actions,
-            draggable: true,
-            resizable: {
-              beforeStart: true,
-              afterEnd: true
-            },
-            meta: 'note'
-          }
-        ];
-      }
-      this.refresh.next();
-    });
   }
 
   isLesson(event): boolean {
@@ -286,11 +224,12 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   hourClick() {
-    if (this.user.role === 'lector') {
-      const dialogRef = this.dialog.open(CreateLessonComponent, {width: '300px', data: {userName: this.user.userName}});
-      dialogRef.afterClosed().subscribe(result => {
-        if (result != null) {
-          this.lesson = this.createLesson(result, 0);
+    const dialogRef = this.dialog.open(SelectEventTypeComponent, {width: '300px', data: {userName: this.user.userName}});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null) {
+        if (result.type === 'lesson') {
+          console.log(result.lesson);
+          this.lesson = this.createLessonAll(result.lesson, 0);
           this.lessons.push(this.lesson);
           this.events.push({
             id: this.lesson.id,
@@ -305,10 +244,28 @@ export class ScheduleMainComponent implements OnInit {
             draggable: false,
             meta: 'lesson'
           });
-          this.refresh.next();
+        } else if (result.type === 'note') {
+          this.notes.push(result.note);
+          this.events = [
+            ...this.events,
+            {
+              id: result.note.id,
+              start: result.note.start,
+              end: result.note.end,
+              title: result.note.title,
+              color: colors.color,
+              draggable: true,
+              resizable: {
+                beforeStart: true,
+                afterEnd: true
+              },
+              meta: 'note'
+            }
+          ];
         }
-      });
-    }
+        this.refresh.next();
+      }
+    });
   }
 
   createLesson(les: any, i: number): Lesson {
@@ -327,10 +284,26 @@ export class ScheduleMainComponent implements OnInit {
     return lesson;
   }
 
+  createLessonAll(les: any, i: number): Lesson {
+    const lesson: Lesson = new Lesson();
+    const splitted = les.title.split(' ', 3);
+    lesson.shortname = splitted[0].trim();
+    lesson.type = splitted[2].trim();
+    lesson.color = les.color;
+    lesson.start = new Date(les.start);
+    lesson.end = new Date(les.end);
+    lesson.id = les.id;
+    lesson.teacher = les.teacher;
+    lesson.building = les.building;
+    lesson.classroom = les.classroom;
+    lesson.subjectId = les.subjectId;
+    return lesson;
+  }
+
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
-      width: '15%',
-      height: '18%',
+      width: '200px',
+      height: '150px',
       data: {}
     }) ;
     dialogRef.afterClosed().subscribe(result => {
@@ -343,13 +316,36 @@ export class ScheduleMainComponent implements OnInit {
     });
   }
 
+  changeNote(eventToDelete: CalendarEvent) {
+    const dialogRef = this.dialog.open(AddNoteComponent, {width: '300px', data: { event: eventToDelete}, position: {top: '11%'}});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null) {
+        this.events = this.events.filter(event => event !== eventToDelete);
+        this.events.push({
+          id: result.id,
+          start: result.start,
+          end: result.end,
+          title: result.title,
+          color: colors.color,
+          resizable: {
+            beforeStart: true,
+            afterEnd: true,
+          },
+          draggable: true,
+          meta: eventToDelete.meta
+        });
+        this.refresh.next();
+      }
+    });
+  }
+
   changeEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
       {width: '300px', data: {userName: this.user.userName,  event: eventToDelete}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.events = this.events.filter(event => event !== eventToDelete);
-        this.lesson = this.createLesson(result, 0);
+        this.lesson = this.createLessonAll(result, 0);
         this.lessons.push(this.lesson);
         this.events.push({
           id: this.lesson.id,
@@ -362,28 +358,30 @@ export class ScheduleMainComponent implements OnInit {
             afterEnd: false,
           },
           draggable: false,
-          meta: 'lesson'
+          meta: eventToDelete.meta
         });
         this.refresh.next();
       }
     });
   }
 
-  public test() {
-    console.log(12312);
-  }
-
   public hideNews() {
-    if (this.isNewsEnable === false ) {
-      this.isNewsEnable = true;
+    if (this.newsWidth === '0%' ) {
+      this.newsWidth = '18%';
+      this.newsLeft = '82%';
       this.scheduleWidth = '80%';
       this.hideButton = '>';
       this.toolTip = 'Скрыть новости';
     } else {
       this.toolTip = 'Раскрыть новости';
+      this.newsLeft = '100%';
       this.hideButton = '<';
       this.scheduleWidth = '100%';
-      this.isNewsEnable = false;
+      this.newsWidth = '0%';
     }
+  }
+
+  public getTimeNote(event: any): string {
+    return this.datePipe.transform(event.start, 'HH:mm') + '-' + this.datePipe.transform(event.end, 'HH:mm');
   }
 }

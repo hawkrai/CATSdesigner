@@ -1,38 +1,47 @@
 <div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
-  <input
-    type="text"
-    class="form-control"
-    placeholder="Текст"
-    [(ngModel)]="note.title"
-  />
-  <input
-    class="form-control"
-    type="text"
-    mwlFlatpickr
-    [altInput]="true"
-    [convertModelValue]="true"
-    [enableTime]="true"
-    [(ngModel)]="note.start"
-    dateFormat="Y-m-dTH:i"
-    altFormat="F j, Y H:i"
-    placeholder="Начало"
-  />
-  <input
-    class="form-control"
-    type="text"
-    mwlFlatpickr
-    [altInput]="true"
-    [convertModelValue]="true"
-    [enableTime]="true"
-    [locale]="'Russian'"
-    [(ngModel)]="note.end"
-    dateFormat="Y-m-dTH:i"
-    altFormat="F j, Y H:i"
-    placeholder="Конец"
-  />
-  <button class="btn btn-success" (click)="add()">
+  <form [formGroup]="formGroup">
+    <mat-form-field>
+      <input type="text" matInput class="form-control" formControlName="title"  placeholder="Текст" [(ngModel)]="note.title" [ngModel] ="data.event.title"/>
+      <mat-error *ngIf="title.hasError( 'required')">Поле не может быть пустым</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        class="form-control"
+        matInput
+        formControlName="start"
+        type="text"
+        mwlFlatpickr
+        [altInput]="true"
+        [convertModelValue]="true"
+        [enableTime]="true"
+        [(ngModel)]="note.start"
+        [ngModel] ="note.start"
+        dateFormat="Y-m-dTH:i"
+        altFormat="F j, Y H:i"
+        placeholder="Начало"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        class="form-control"
+        matInput
+        formControlName="end"
+        type="text"
+        mwlFlatpickr
+        [altInput]="true"
+        [convertModelValue]="true"
+        [enableTime]="true"
+        [(ngModel)]="note.end"
+        [ngModel] ="note.end"
+        dateFormat="Y-m-dTH:i"
+        altFormat="F j, Y H:i"
+        placeholder="Конец"
+      />
+    </mat-form-field>
+  </form>
+  <button mat-raised-button color="primary" [disabled]="formGroup.invalid" (click)="add()">
     Сохранить
   </button>
-  <button class="btn btn-danger" (click)=onCancelClick()> Выйти </button>
+  <button mat-raised-button color="warn" (click)=onCancelClick()> Выйти </button>
 </div>
 
