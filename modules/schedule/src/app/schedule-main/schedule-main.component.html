@@ -3,27 +3,26 @@
 
 <div *ngIf="!isLoadActive">
   <div class = "schedule" [ngStyle]="{ 'width': scheduleWidth}" >
-    <div class="row text-center" style = "margin-right: 0px;">
-      <div class="col-md-4" style="margin-top: 1%">
-        <h3 style="font-size: 1em;color: gray;margin-top: 4%;font-family: Roboto;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
+    <div class="row text-center" style = "margin-right: 0px; height: 70px;">
+      <div class="col-md-4" style="margin-top: 0.8%">
+        <h3 style="font-size: 1em;color: #383838;margin-top: 4%;font-family: Roboto, Helvetica Neue, sans-serif;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
       </div>
-      <div class="col-md-4" style="margin-top: 1.5%;font-family: Roboto;">
+      <div class="col-md-4" style="margin-top: 1.5%;font-family: Roboto, Helvetica Neue, sans-serif;">
         <h6 style="color:#3F51B5;font-size: 1.5rem;">Расписание занятий</h6>
       </div>
-      <div class="col-md-4" style="margin-top: 1%;margin-bottom: 1%;padding-right: 0px">
-        <div class="btn-group">
+      <div class="col-md-4" style="margin-top: 1.05%;margin-bottom: 1%;padding-right: 0px">
+        <div class="btn-group" style="display: flex; line-height: 0; justify-content: space-between;">
+          <div class="container-date" style="display: flex;">
           <div
-            style="color: blue;cursor: pointer;"
+            style="color: blue;cursor: pointer; "
             class="btn btn-light"
             mwlCalendarPreviousView
             [view]="view"
             [(viewDate)]="viewDate"
             (viewDateChange)="closeOpenMonthViewDay()"
-          >
-            <
-          </div>
+          >&lt;</div>
           <div
-            style="background-color: #f8f9fa; cursor: pointer;font-family: Roboto;"
+            style="margin-left: -5px; background-color: #f8f9fa; cursor: pointer;font-family:Roboto, Helvetica Neue, sans-serif; color: #383838"
             class="btn"
             mwlCalendarToday
             [(viewDate)]="viewDate"
@@ -31,7 +30,7 @@
             Сегодня
           </div>
           <div
-            style="color: blue;cursor: pointer;"
+            style="color: blue; cursor: pointer; margin-left: -5px;"
             class="btn btn-light"
             mwlCalendarNextView
             [view]="view"
@@ -40,7 +39,8 @@
           >
             >
           </div>
-          <div style="margin-left:40%;">
+        </div>
+          <div style="margin-right: 2%; margin-top: 3.1%;">
             <p matTooltip="{{toolTip}}" matTooltipClass="example-tooltip-blue" (click) = "hideNews()" style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5">{{hideButton}}</p>
           </div>
         </div>
@@ -57,7 +57,7 @@
         [dayEndHour]="24"
         [weekStartsOn]="1"
         [hourSegments]="1"
-        [hourSegmentHeight]="50"
+        [hourSegmentHeight]="80"
         (eventTimesChanged)="eventTimesChanged($event)"
         [eventTemplate]= "eventTemplateCustom"
         (hourSegmentClicked) ="hourClick()"
@@ -69,28 +69,29 @@
     <ng-template #eventTemplate let-event="event">
       <div class="cal-event-title">
         <div *ngIf="isLesson(event)">
-          <table>
+          <table style="margin: 0 4%">
             <thead>
             <tr style="line-height: 30%;">
-              <div style = "display: flex;justify-content: space-between;">
-                <h6 style = "background: linear-gradient(#3596FF, #FF7C8D);-webkit-background-clip: text;-webkit-text-fill-color: transparent;margin-bottom: 0.4em;margin-top: 0.6em;font-size: 13px; left: 0%;color: indigo; float: left;">{{getTime(event.title)}}</h6>
-                <p style = "margin-top: 0.6em;margin-bottom: 0.4em;line-height: 100%;font-size: 13px;float:right;color: black">{{getLocation(event.title)}}</p>
+              <div style = "display: flex;justify-content: space-between;margin-top: 6%;">
+                <h6 style = "background: #383838;-webkit-background-clip: text;-webkit-text-fill-color: transparent;margin-bottom: 0.4em;margin-top: 0.6em;font-size: 14px; left: 0%; float: left;font-family: Roboto, Helvetica Neue, sans-serif">{{getTime(event.title)}}</h6>
+                <p style = "font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 0.6em;margin-bottom: 0.4em;line-height: 100%;font-size: 14px;float:right;color: #383838">{{getLocation(event.title)}}</p>
               </div>
             </tr>
             <tr style="line-height: 30%;">
-              <div style = "display: flex;justify-content: space-between;">
-                <h6 matTooltip="{{getToolTip(event?.title)}}" matTooltipClass="example-tooltip-blue" (click) = "rerouteToSubject(event.title)" style = "cursor: pointer;left: 0%;color: black; float: left">{{getName(event.title)}}</h6>
-                <h6 style = "padding-left: 8px;padding-right: 8px;overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: #3F51B5; color: #3F51B5">{{getType(event.title)}}</h6>
+              <div style = "display: flex;justify-content: space-between;margin-top: 5%;">
+                <h6 matTooltip="{{getToolTip(event?.title)}}" matTooltipClass="example-tooltip-blue" (click) = "rerouteToSubject(event.title)" style = "cursor: pointer; padding-top: 3px; left: 0%;font-size: 14px; color: black; float: left; color: #383838; font-family: Roboto, Helvetica Neue, sans-serif;">{{getName(event.title)}}</h6>
+                <h6 style = "font-family: Roboto, Helvetica Neue, sans-serif; padding-top: 4px; padding-bottom: 4px; padding-left: 10px;padding-right: 10px;overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: #3f51b55e; color: #3F51B5">{{getType(event.title)}}</h6>
               </div>
             </tr>
             <tr style="line-height: 30%;">
-              <div style = "display: flex;justify-content: space-between;">
-                <p style = "font-size: 13px;color: black; line-height: 100%; margin-bottom: 0%;">{{getThirdString(event.title)}}</p>
-                <button  style="color: black;line-height: 18px;float: right;background: white;border-width: 0px" mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;</button>
+              <div style = "display: flex;justify-content: space-between; margin-top: 4%;">
+                <p style = "font-family: Roboto, Helvetica Neue, sans-serif; font-size: 14px;color: #383838; line-height: 100%; margin-bottom: 0%;">{{getThirdString(event.title)}}</p>
+                <button  style="color: black; padding: 0px; min-width: 20px; line-height: 18px;float: right;background: white;border-width: 0px" mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
                 <mat-menu #menu="matMenu">
                   <button (click)="deleteEvent(event)" mat-menu-item>Удалить</button>
                   <button (click)="changeEvent(event)" mat-menu-item>Редактировать</button>
                 </mat-menu>
+              </button>
               </div>
             </tr>
             </thead>
@@ -135,7 +136,7 @@
       let-eventClicked="eventClicked">
       <div
         class="cal-event"
-        style = "box-shadow: 10px 14px 28px rgba(0,0,0,0.25), 10px 10px 10px rgba(0,0,0,0.22); overflow: auto; "
+        style = "box-shadow: 5px 5px 5px rgba(187,187,187,0.25); overflow: auto; "
         [ngStyle]="{ 'border-left-color': getColor(weekEvent.event)}"
         [style.backgroundColor]="weekEvent.event.color?.primary"
         (mwlClick)="eventClicked.emit({

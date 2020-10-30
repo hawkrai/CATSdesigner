@@ -33,7 +33,7 @@ export class ScheduleMainComponent implements OnInit {
 
   isLoadActive = true;
   toolTip = 'Скрыть новости';
-  scheduleWidth = '80%';
+  scheduleWidth = '82%';
   newsWidth = '18%';
   newsLeft = '82%';
   hideButton = '>';
@@ -369,7 +369,7 @@ export class ScheduleMainComponent implements OnInit {
     if (this.newsWidth === '0%' ) {
       this.newsWidth = '18%';
       this.newsLeft = '82%';
-      this.scheduleWidth = '80%';
+      this.scheduleWidth = '82%';
       this.hideButton = '>';
       this.toolTip = 'Скрыть новости';
     } else {
