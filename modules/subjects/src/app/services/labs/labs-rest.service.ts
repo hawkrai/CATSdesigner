@@ -1,3 +1,4 @@
+import { ScheduleProtectionLab } from './../../models/lab.model';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
@@ -20,7 +21,7 @@ export class LabsRestService {
     );
   }
 
-  public getProtectionSchedule(subjectId: number, groupId: string): Observable<any> {
+  public getProtectionSchedule(subjectId: number, groupId: string): Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]}> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId);
@@ -42,6 +43,10 @@ export class LabsRestService {
 
   public createLab(lab: Lab) {
     return this.http.post('Services/Labs/LabsService.svc/Save', lab);
+  }
+
+  public updateLabsOrder(objs: { Id: number, Order: number }[]) {
+    return this.http.post('Services/Labs/LabsService.svc/UpdateLabsOrder', { objs });
   }
 
   public deleteLab(lab: {id: string, subjectId: number}) {

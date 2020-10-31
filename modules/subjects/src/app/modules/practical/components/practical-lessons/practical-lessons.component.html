@@ -3,39 +3,63 @@
     <button mat-raised-button color="primary" (click)="constructorLesson()">Добавить практическое занятие</button>
   </div>
   <div class="mdc-data-table">
-    <table class="mdc-data-table__table">
-      <thead>
-      <tr class="mdc-data-table__header-row">
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngFor="let header of tableHeaders">
-          {{header.name}}
-        </th>
-      </tr>
-      </thead>
-      <tbody cdkDropList class="mdc-data-table__content example-list" (cdkDropListDropped)="drop($event)">
-      <tr [cdkDragDisabled]="!teacher" class="mdc-data-table__row" *ngFor="let lesson of practicalLessons; let idx = index" cdkDrag>
-        <td class="mdc-data-table__cell">{{ index + 1 }}</td>
-        <td class="mdc-data-table__cell">{{ lesson.Theme }}</td>
-        <td class="mdc-data-table__cell">{{ lesson.ShortName }}</td>
-        <td class="mdc-data-table__cell">{{ lesson.Duration }}</td>
-        <td class="mdc-data-table__cell" *ngIf="!isTeacher">
-          <button class="mdc-button" *ngIf="lesson.Attachments.length > 0"
-                  (click)="openFilePopup(lesson.attachments)">
-            <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
-            <span class="mdc-button__label">Файлы</span>
-          </button>
-        </td>
-        <td class="mdc-data-table__cell" *ngIf="isTeacher">
-          <button mat-icon-button color="primary" matTooltip="Редактировать практическое занятие"
-                  (click)="constructorLesson(lesson)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" matTooltip="Удалить практическое занятие" (click)="deleteLesson(lesson)">
-            <mat-icon>delete_forever</mat-icon>
-          </button>
-        </td>
-        <div class="mdc-data-table__row-placeholder" *cdkDragPlaceholder></div>
-      </tr>
-      </tbody>
+    <table 
+    #table
+    class="table"
+    mat-table
+    [dataSource]="practicalLessons"
+    cdkDropList
+    [cdkDropListData]="practicalLessons"
+    (cdkDropListDropped)="drop($event)"
+    >
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef> № </th>
+      <td mat-cell *matCellDef="let idx = index">
+          {{idx + 1}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="theme">
+      <th mat-header-cell *matHeaderCellDef> Тема лекции </th>
+      <td mat-cell *matCellDef="let element">
+          {{element.Theme}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="shortName">
+      <th mat-header-cell *matHeaderCellDef> Краткое название </th>
+      <td mat-cell *matCellDef="let element">
+          {{element.ShortName}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="duration">
+      <th mat-header-cell *matHeaderCellDef> Часы </th>
+      <td mat-cell *matCellDef="let element">
+          {{element.Duration}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="files" *ngIf="!isTeacher">
+      <th mat-header-cell *matHeaderCellDef> Файлы </th>
+      <td mat-cell *matCellDef="let element">
+        <button class="mdc-button" *ngIf="lesson.Attachments.length > 0"
+          (click)="openFilePopup(lesson.attachments)">
+          <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
+          <span class="mdc-button__label">Файлы</span>
+        </button>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions" *ngIf="isTeacher">
+      <th mat-header-cell *matHeaderCellDef>Действие</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" matTooltip="Редактировать практическое занятие"
+        (click)="constructorLesson(lesson)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Удалить практическое занятие" (click)="deleteLesson(lesson)">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [cdkDragDisabled]="!isTeacher" cdkDragLockAxis="y" cdkDrag [cdkDragData]="row"></tr>
     </table>
   </div>
 </div>

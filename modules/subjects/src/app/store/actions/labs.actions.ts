@@ -1,36 +1,35 @@
-import {Action} from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import {Lab, ScheduleProtectionLab} from '../../models/lab.model';
 
+export const loadLabs = createAction(
+  '[Labs] Load Labs'
+);
 
-export enum ELabsActions {
-  LOAD_LABS = '[Labs] Load Labs',
-  SET_LABS = '[Labs] Set Labs',
-  LOAD_LABS_CALENDAR = '[Labs] Load Labs Calendar',
-  SET_LABS_CALENDAR = '[Labs] Set Labs Calendar'
-}
+export const loadLabsSuccess = createAction(
+  '[Labs] Load Labs Success',
+  props<{ labs: Lab[] }>()
+);
 
-export class LoadLabs implements Action {
-  public readonly type = ELabsActions.LOAD_LABS;
-}
+export const loadLabsSchedule = createAction(
+  '[Labs] Load Labs Schedule'
+);
 
-export class SetLabs implements Action{
-  public readonly type = ELabsActions.SET_LABS;
+export const laodLabsScheduleSuccess = createAction(
+  '[Labs] Load Labs Schedule Success',
+  props<{ scheduleProtectionLabs: ScheduleProtectionLab[] }>()
+);
 
-  constructor(public payload: Lab[]) {}
-}
+export const createLab = createAction(
+  '[Labs] Create Lab',
+  props<{ lab: Lab }>()
+);
 
-export class LoadLabsCalendar implements Action{
-  public readonly type = ELabsActions.LOAD_LABS_CALENDAR;
-}
+export const deleteLab = createAction(
+  '[Labs] Delete Lab',
+  props<{ id: string }>()
+);
 
-export class SetLabsCalendar implements Action{
-  public readonly type = ELabsActions.SET_LABS_CALENDAR;
-
-  constructor(public payload: ScheduleProtectionLab[]) {}
-}
-
-export type LabsActions =
-  LoadLabs
-  | SetLabs
-  | LoadLabsCalendar
-  | SetLabsCalendar;
+export const updateLabsOrder = createAction(
+  '[Labs] Update Labs Order',
+  props<{ labs: Lab[] }>()
+);

@@ -28,6 +28,7 @@ export class MenuService {
         [ModuleType.ScheduleProtection, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.StatisticsVisits, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.SubjectAttachments, { fragment: '', module: '', item: '', icon: '' }],
+        [ModuleType.InteractiveTutorial, { fragment: '', module: 'libBook', item: 'libBook', icon: 'library_book' }]
     ]);
 
     getSubjectInfo(type: ModuleType): MenuConfig {

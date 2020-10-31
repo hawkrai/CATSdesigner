@@ -19,6 +19,7 @@ export enum ModuleType {
     Results = 12,
     StatisticsVisits = 13,
     Practical = 10,
-    ComplexMaterial = 14
+    ComplexMaterial = 14,
+    InteractiveTutorial = 15
 }
 

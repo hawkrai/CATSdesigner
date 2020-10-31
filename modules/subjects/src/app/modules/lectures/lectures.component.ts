@@ -1,9 +1,10 @@
-import { Observable } from 'rxjs';
-import { isTeacher } from './../../store/selectors/subject.selector';
+import { map } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
 import {Component, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 
 import * as subjectSelectors from '../../store/selectors/subject.selector';
+import * as groupActions from '../../store/actions/groups.actions';
 import {IAppState} from '../../store/state/app.state';
 import {GroupsService} from '../../services/groups/groups.service';
 
@@ -16,8 +17,7 @@ import {GroupsService} from '../../services/groups/groups.service';
 export class LecturesComponent implements OnInit {
 
   selectedTab = 0;
-  subjectId$: Observable<number>;
-  isTeacher$: Observable<boolean>;
+  state$: Observable<{ isTeacher: boolean, subjectId: number }>;
   tabs = ['Лекции', 'Посещение лекций'];
 
   constructor(private store: Store<IAppState>,
@@ -25,8 +25,11 @@ export class LecturesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupsService.loadDate();
-    this.isTeacher$ = this.store.select(subjectSelectors.isTeacher);
-    this.subjectId$ = this.store.select(subjectSelectors.getSubjectId);
+    this.store.dispatch(groupActions.loadGroups());
+    const isTeacher$ = this.store.select(subjectSelectors.isTeacher);
+    const subjectId$ = this.store.select(subjectSelectors.getSubjectId);
+    this.state$ = combineLatest(isTeacher$, subjectId$).pipe(
+      map(([isTeacher, subjectId]) => ({ isTeacher, subjectId }))
+    );
   }
 }

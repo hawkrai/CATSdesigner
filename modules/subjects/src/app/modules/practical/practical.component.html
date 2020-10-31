@@ -2,11 +2,11 @@
   <mat-tab-group mat-stretch-tabs animationDuration="0ms">
     <mat-tab *ngFor="let tab of tabs; let idx = index" [tabindex]="idx"  [label]="tab | firstLetterUppercase">
       <ng-template matTabContent>
-        <div>
+        <div *ngIf="state$ | async as state;else load">
           <div class="practical-component__select-group" *ngIf="idx === 1 || idx === 2">
             <mat-form-field>
-              <mat-select [value]="groups ? groups[0].groupId : ''">
-                <mat-option *ngFor="let group of groups"
+              <mat-select [value]="groups ? state.groups[0].groupId : ''">
+                <mat-option *ngFor="let group of state.groups"
                             (onSelectionChange)="_selectedGroup($event)"
                             [value]="group.groupId"
                 >
@@ -22,12 +22,17 @@
               Открепленные группы
             </mat-slide-toggle>
           </div>
-          <app-practical-lessons *ngIf="idx === 0" [isTeacher]="isTeacer$ | async"></app-practical-lessons>
+          <app-practical-lessons *ngIf="idx === 0" [isTeacher]="state.isTeacher"></app-practical-lessons>
           <!--    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>-->
-          <app-visit-statistic *ngIf="idx === 1 && selectedGroup" [isTeacher]="isTeacer$ | async"></app-visit-statistic>
+          <app-visit-statistic *ngIf="idx === 1 && state.group" [isTeacher]="state.isTeacer"></app-visit-statistic>
           <!--    <app-results *ngIf="tab === 4 && selectedGroup" [teacher]="teacher"></app-results>-->
           <!--    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>-->
         </div>
+        <ng-template #load>
+          <div class="spinner">
+            <mat-spinner></mat-spinner>
+          </div>
+        </ng-template>
       </ng-template>
     </mat-tab>
   </mat-tab-group>

@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 
 import * as subjectActions from '../../store/actions/subject.actions';
+import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {Subject} from '../../models/subject.model';
 import {IAppState} from '../../store/state/app.state';
 import {DeletePopoverComponent} from '../../shared/delete-popover/delete-popover.component';
@@ -27,32 +28,25 @@ export class SubjectComponent implements OnInit {
   public displayedColumns = ['name', 'shortName', 'actions'];
 
   constructor(
-              private subjectService: SubjectService,
               private store: Store<IAppState>,
               private router: Router,
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.refreshSubjects();
+    this.subjects$ = this.store.select(subjectSelectors.getSubjects);
   }
-
-  refreshSubjects(): void {
-    this.subjects$ = this.subjectService.getSubjects();
-  }
-
 
   constructorSubject(subjectId?) {
     const dialogData: DialogData = {
       model: { subjectId }
     };
     const dialogRef = this.openDialog(dialogData, SubjectManagementComponent);
-    dialogRef.afterClosed().subscribe(result => {
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.subs.add(
-          this.subjectService.saveSubject(result).subscribe(() => this.refreshSubjects())
-        )
+        this.store.dispatch(subjectActions.saveSubject({ subject: result }))
       }
-    });
+    }));
   }
 
   lector(subjectId: string) {
@@ -71,14 +65,13 @@ export class SubjectComponent implements OnInit {
     };
     const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.subs.add(
-          this.subjectService.deleteSubjects(subject.SubjectId).subscribe(
-            () => this.refreshSubjects())
-        );
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.store.dispatch(subjectActions.deleteSubejctById({ subjectId: subject.SubjectId }));
+        }
+      })
+    );
   }
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {

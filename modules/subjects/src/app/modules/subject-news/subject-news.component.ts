@@ -1,18 +1,27 @@
+import { map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
 import {Component, ElementRef, OnDestroy, OnInit, ViewChildren} from '@angular/core';
 import {News} from '../../models/news.model';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
 import {IAppState} from "../../store/state/app.state";
-import {select, Store} from '@ngrx/store';
-import {takeUntil} from 'rxjs/operators';
-import {Observable, Subject} from 'rxjs';
+import {Store} from '@ngrx/store';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {NewsPopoverComponent} from './news-popover/news-popover.component';
 import {NewsService} from '../../services/news/news.service';
 import {DialogData} from '../../models/dialog-data.model';
 import {Attachment} from '../../models/attachment.model';
 import * as subjectSelectors from '../../store/selectors/subject.selector';
+import * as newsSelectors from '../../store/selectors/news.selectors';
+import * as newsActions from '../../store/actions/news.actions';
 import {SubSink} from 'subsink';
+
+interface NewsState {
+  isTeacher: boolean;
+  news: News[];
+  selectedNews: News
+}
 
 @Component({
   selector: 'app-subject-news',
@@ -21,59 +30,50 @@ import {SubSink} from 'subsink';
 })
 export class SubjectNewsComponent implements OnInit, OnDestroy {
 
-  isTeacher$: Observable<boolean>;
+  state$: Observable<NewsState>;
+
   private subs = new SubSink()
-  private subjectId: number;
 
   public news: News[];
-  public selectNews: News = null;
-  private unsubscription$: Subject<any> = new Subject();
 
-  @ViewChildren("popoverContent")
-  private popoverContent: ElementRef;
+  // @ViewChildren("popoverContent")
+  // private popoverContent: ElementRef;
 
-  constructor(private newsService: NewsService,
-              public dialog: MatDialog,
+  constructor(
+              private dialog: MatDialog,
               private store: Store<IAppState>) {
   }
 
   ngOnInit() {
-    this.isTeacher$ = this.store.select(subjectSelectors.isTeacher);
-    this.store.pipe(select(subjectSelectors.getSubjectId)).subscribe(subjectId => this.subjectId = subjectId)
-
-    this.newsService.loadData();
-    this.refreshDate();
+    this.store.dispatch(newsActions.loadNews());
+    const isTeacher$ = this.store.select(subjectSelectors.isTeacher);
+    const news$ = this.store.select(newsSelectors.getNews);
+    const selectedNews$ = this.store.select(newsSelectors.getSelectedNews);
+    this.state$ = combineLatest([isTeacher$, news$, selectedNews$]).pipe(
+      map(([isTeacher, news, selectedNews]) => ({ isTeacher, news, selectedNews }))
+    );
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
-  refreshDate() {
-    this.newsService.getAllNews()
-      .pipe(
-        takeUntil(this.unsubscription$)
-      )
-      .subscribe(
-        (news: News[]) => {
-          this.news = news;
-        }
-      )
+  disableNews(): void {
+    this.store.dispatch(newsActions.disableAllNews());
   }
 
-  disableNews() {
-    this.newsService.disableAllNews(this.subjectId);
+  enableNews(): void {
+    this.store.dispatch(newsActions.enableAllNews());
   }
 
-  enableNews() {
-    this.newsService.enableAllNews(this.subjectId);
+  onSelectNews(news: News): void {
+    this.store.dispatch(newsActions.setSelectedNews({ news }));
   }
 
   constructorNews(news?: News) {
     const nowDate = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
     const newNews = {
       id: news ? news.id : '0',
-      subjectId: this.subjectId,
       title: news ? news.title : '',
       body: news ? news.body : '',
       disabled: news ? news.disabled : false,
@@ -88,15 +88,17 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     };
     const dialogRef = this.openDialog(dialogData, NewsPopoverComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        result.attachments = this.attachmentToModel([...result.attachments]);
-        news ? this.newsService.updateNews(result) : this.newsService.createNews(result);
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          result.attachments = this.attachmentToModel([...result.attachments]);
+          this.store.dispatch(newsActions.saveNews({ news: result }));
+        }
+      })
+    );
   }
 
-  deleteNews(news: News) {
+  deleteNews(subjectId: number, news: News) {
     const dialogData: DialogData = {
       title: 'Удаление новости',
       body: 'новость "' + news.title + '"',
@@ -105,11 +107,13 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     };
     const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.newsService.deleteNews(news.id, this.subjectId)
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.store.dispatch(newsActions.deleteNewsById({ id: news.id }));
+        }
+      })
+    );
   }
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {

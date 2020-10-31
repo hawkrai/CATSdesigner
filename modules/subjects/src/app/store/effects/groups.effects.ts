@@ -1,12 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Actions, Effect, ofType} from '@ngrx/effects';
-import {select, Store} from '@ngrx/store';
+import { Actions, ofType, createEffect } from '@ngrx/effects';
+import {Store} from '@ngrx/store';
 import {IAppState} from '../state/app.state';
-import {map, switchMap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {getSubjectId} from '../selectors/subject.selector';
 import {GroupsRestService} from '../../services/groups/groups-rest.service';
-import {EGroupsActions, LoadGroups, SetGroups} from '../actions/groups.actions';
-import {Group} from '../../models/group.model';
+import * as groupActions from '../actions/groups.actions';
 
 @Injectable()
 export class GroupsEffects {
@@ -17,13 +16,17 @@ export class GroupsEffects {
   ) {
   }
 
-  @Effect()
-  getGroups$ = this.actions$.pipe(
-    ofType<LoadGroups>(EGroupsActions.LOAD_GROUPS),
-    withLatestFrom(this.store.pipe(select(getSubjectId))),
-    switchMap(([_, subjectId]) => this.rest.getAllGroups(subjectId)),
-    map((groups: Group[]) => {
-      return new SetGroups(groups)
-    })
-  );
+  getGroups$ = createEffect(() => this.actions$.pipe(
+    ofType(groupActions.loadGroups),
+    switchMap(() => this.store.select(getSubjectId)),
+    switchMap(subjectId => this.rest.getAllGroups(subjectId)),
+    map(groups => groupActions.loadGroupsSuccess({ groups }))
+  ));
+
+  getOldGroups$ = createEffect(() => this.actions$.pipe(
+    ofType(groupActions.loadOldGroups),
+    switchMap(() => this.store.select(getSubjectId)),
+    switchMap(subjectId => this.rest.getAllOldGroups(subjectId)),
+    map(groups => groupActions.loadGroupsSuccess({ groups }))
+  ));
 }

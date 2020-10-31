@@ -34,6 +34,10 @@ export class LecturesService {
     return this.rest.createLecture(lecture);
   }
 
+  public updateLecturesOrder(objs: { Id: number, Order: number }[]) {
+    return this.rest.updateLecturesOrder(objs);
+  }
+
   public deleteLecture(lecture: {id: string, subjectId: number}) {
     return this.rest.deleteLecture(lecture);
   }
@@ -59,6 +63,7 @@ export class LecturesService {
       res.Code === '200' && this.loadCalendar()
     })
   }
+
 
   public setLecturesVisitingDate(body: {lecturesMarks: LecturesMarksVisiting[]}) {
     this.rest.setLecturesVisitingDate(body).subscribe(res => {

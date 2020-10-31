@@ -1,4 +1,6 @@
-<mat-sidenav-container class="app-sidenav-subject" *ngIf="modules$ | async as modules; else load"  autosize="true">
+
+
+<mat-sidenav-container class="app-sidenav-subject" *ngIf="modules$ | async as modules; else load" autosize="true">
     <mat-sidenav opened mode="side" class="app-sidenav-menu-subject">
         <mat-nav-list>
             <a mat-list-item 
@@ -53,13 +55,13 @@
                     <mat-icon class="white-icon">topic</mat-icon>
                 </div>                
                 <div mat-line>УЭМК</div>
-            </a>           -->
+            </a>          
             <a mat-list-item [ngClass]="{active: clickedItem === 'libBook'}" (click)="openModule('', 'libBook', 'libBook')"> 
                 <div mat-line>
                     <mat-icon class="white-icon">library_books</mat-icon>
                 </div>                
                 <div mat-line>Интерактивный учебник</div>
-            </a>
+            </a> -->
             <mat-divider></mat-divider>
             <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 
                 <div mat-line>
