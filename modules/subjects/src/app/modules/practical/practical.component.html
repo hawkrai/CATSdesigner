@@ -1,67 +1,34 @@
-<div class="practical-component">
-  <div class="mdc-tab-bar" role="tablist">
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 1"
-            (click)="tab = 1"
-    >
-      <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">Практические занятия</span>
-      </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
-        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-      </span>
-      <span class="mdc-tab__ripple"></span>
-    </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 2"
-            (click)="tab = 2"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Статистика посещения</span>
-          </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
-      <span class="mdc-tab__ripple"></span>
-    </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 3"
-            (click)="tab = 3"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Результаты</span>
-          </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
-      <span class="mdc-tab__ripple"></span>
-    </button>
-  </div>
-
-  <div class="practical-component__body">
-    <div class="practical-component__select-group" *ngIf="tab === 2 || tab === 3">
-      <mat-form-field>
-        <mat-select [value]="groups ? groups[0].groupId : ''">
-          <mat-option *ngFor="let group of groups"
-                      (onSelectionChange)="_selectedGroup($event)"
-                      [value]="group.groupId"
-          >
-            {{group.groupName}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-slide-toggle class="example-margin"
-                        [color]="'primary'"
-                        [checked]="detachedGroup"
-                        (change)="groupStatusChange($event)"
-      >
-        Открепленные группы
-      </mat-slide-toggle>
-    </div>
-    <app-practical-lessons *ngIf="tab === 1" [teacher]="teacher"></app-practical-lessons>
-<!--    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>-->
-    <app-visit-statistic *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-visit-statistic>
-<!--    <app-results *ngIf="tab === 4 && selectedGroup" [teacher]="teacher"></app-results>-->
-<!--    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>-->
-  </div>
+<div class="practical-component content">
+  <mat-tab-group mat-stretch-tabs animationDuration="0ms">
+    <mat-tab *ngFor="let tab of tabs; let idx = index" [tabindex]="idx"  [label]="tab | firstLetterUppercase">
+      <ng-template matTabContent>
+        <div>
+          <div class="practical-component__select-group" *ngIf="idx === 1 || idx === 2">
+            <mat-form-field>
+              <mat-select [value]="groups ? groups[0].groupId : ''">
+                <mat-option *ngFor="let group of groups"
+                            (onSelectionChange)="_selectedGroup($event)"
+                            [value]="group.groupId"
+                >
+                  {{group.groupName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-slide-toggle class="example-margin"
+                              [color]="'primary'"
+                              [checked]="detachedGroup"
+                              (change)="groupStatusChange($event)"
+            >
+              Открепленные группы
+            </mat-slide-toggle>
+          </div>
+          <app-practical-lessons *ngIf="idx === 0" [isTeacher]="isTeacer$ | async"></app-practical-lessons>
+          <!--    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>-->
+          <app-visit-statistic *ngIf="idx === 1 && selectedGroup" [isTeacher]="isTeacer$ | async"></app-visit-statistic>
+          <!--    <app-results *ngIf="tab === 4 && selectedGroup" [teacher]="teacher"></app-results>-->
+          <!--    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>-->
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </div>

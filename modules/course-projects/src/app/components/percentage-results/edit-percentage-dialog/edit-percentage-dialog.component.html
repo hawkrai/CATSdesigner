@@ -23,7 +23,7 @@
   <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
 </div>
 <div mat-dialog-actions>
-  <button mat-button class="dialog-button" (click)="onCancelClick()">
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
     Отмена
   </button>
   <button mat-flat-button class="dialog-button" color="primary" [disabled]="isFormInvalid()"

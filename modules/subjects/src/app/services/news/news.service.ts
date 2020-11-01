@@ -35,19 +35,19 @@ export class NewsService {
     );
   }
 
-  deleteNews(newsId: string, subjectId: string) {
+  deleteNews(newsId: string, subjectId: number) {
     this.rest.deleteNews(newsId, subjectId).subscribe(
       (res) => res.Code === '200' && this.store$.dispatch(new DeleteNewsById(newsId))
     );
   }
 
-  disableAllNews(subjectId: string) {
+  disableAllNews(subjectId: number) {
     this.rest.disableNews(subjectId).subscribe(
       (res) => res.Code === '200' && this.loadData()
     );
   }
 
-  enableAllNews(subjectId: string) {
+  enableAllNews(subjectId: number) {
     this.rest.enableNews(subjectId).subscribe(
       (res) => res.Code === '200' && this.loadData()
     );

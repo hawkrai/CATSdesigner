@@ -9,5 +9,5 @@ export class LecturesMarksVisiting {
   Login: string;
   StudentId: string;
   StudentName: string;
-  Marks: any[];
+  Marks: Mark[];
 }

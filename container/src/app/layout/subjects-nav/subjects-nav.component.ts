@@ -20,24 +20,22 @@ export class SubjectsNavComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
-    var that = this;
     this.coreService.getSubjects().subscribe((subjects) => {
-      that.subjects = subjects;
-      if(that.subjects.length > 0) {
+      this.subjects = subjects;
+      if(this.subjects.length > 0) {
         let urls = this.router.url.split('/');
         let subjectId = 0;
         subjectId = + urls[urls.length - 1].split("#")[0];           
-        that.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
-        if(that.coreService.selectedSubject !== undefined && that.coreService.selectedSubject !== null) {
+        this.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
+        if(this.coreService.selectedSubject) {
           console.log(subjectId);
           //that.redirectToSelected();
-          that.setupLocalInfo(that.coreService.selectedSubject); 
+          this.setupLocalInfo(this.coreService.selectedSubject); 
         }
                
       }
     });
   }
-
   setupLocalInfo(subject: Subject): void {
     this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name });  
   }

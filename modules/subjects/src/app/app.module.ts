@@ -30,6 +30,8 @@ import {SubgroupingComponent} from './components/subgrouping/subgrouping.compone
 import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
 import {SubjectModule} from './modules/subject/subject.module';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
+import {LecturesListComponent} from './modules/lectures/components/lectures-list/lectures-list.component';
+import {VisitLecturesComponent} from './modules/lectures/components/visit-lectures/visit-lectures.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,9 @@ import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     SubgroupingComponent,
-    CheckPlagiarismPopoverComponent
+    CheckPlagiarismPopoverComponent,
+    LecturesListComponent,
+    VisitLecturesComponent
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

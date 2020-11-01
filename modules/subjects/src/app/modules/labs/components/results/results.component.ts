@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Group} from "../../../../models/group.model";
 import {LabsService} from "../../../../services/labs/labs.service";
 import {select, Store} from '@ngrx/store';
@@ -11,24 +11,27 @@ import {ComponentType} from '@angular/cdk/typings/portal';
 import {LabsMarkPopoverComponent} from './labs-mark-popover/labs-mark-popover.component';
 import {LabsRestService} from '../../../../services/labs/labs-rest.service';
 import {Lab, ScheduleProtectionLab} from '../../../../models/lab.model';
+import {MarkForm} from '../../../../models/mark-form.model';
+import {Mark} from '../../../../models/mark.model';
+import {map, switchMap, withLatestFrom} from 'rxjs/operators';
+import {SubSink} from 'subsink';
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.less']
 })
-export class ResultsComponent implements OnInit {
-
+export class ResultsComponent implements OnInit, OnDestroy {
+  private subs = new SubSink();
   @Input() teacher: boolean;
 
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
 
   public selectedGroup: Group;
-  private subjectId: string;
-  private student: any[];
+  private subjectId: number;
+  student: any[];
   header: any[];
-
   private user;
 
   public labProperty: {labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]};
@@ -52,7 +55,7 @@ export class ResultsComponent implements OnInit {
     });
   }
 
-  refreshStudents() {
+  refreshStudents(): void {
     this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
       this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
         this.student = this.filterStudentMarks(res, lab.labs);
@@ -70,11 +73,9 @@ export class ResultsComponent implements OnInit {
   }
 
   setHeader(subGroup, labs: Lab[]) {
-    this.header = [];
-    labs = labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
-    labs.forEach(lab => {
-      this.header.push({head: lab.labId.toString(), text: lab.shortName})
-    });
+    this.header = labs
+      .filter(lab => lab.subGroup.toString() === subGroup.toString())
+      .map(l => ({ head: l.labId.toString(), text: l.shortName }));
   }
 
   setSubGroupDisplayColumns() {
@@ -94,33 +95,43 @@ export class ResultsComponent implements OnInit {
   }
 
   setMark(student, labId: string, recommendedMark?) {
-    if (this.teacher) {
-      const mark = student.Marks.find(mark => mark.LabId.toString() === labId);
-      if (mark) {
-        const labsMark = {
-          id: mark.StudentLabMarkId ? mark.StudentLabMarkId : '0',
-          comment: mark.Comment,
-          mark: mark.Mark,
-          date: mark.Date,
-          labId: mark.LabId.toString(),
-          studentId: student.StudentId.toString(),
-          students: this.student
-        };
-        const dialogData: DialogData = {
-          title: 'Выставление отметки',
-          buttonText: 'Сохранить',
-          body: labsMark,
-          model: recommendedMark
-        };
-        const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
+    if (!this.teacher) {
+      return;
+    }
+    const mark = student.Marks.find(mark => mark.LabId.toString() === labId);
+    if (mark) {
+      const labsMark = {
+        id: mark.StudentLabMarkId ? mark.StudentLabMarkId : '0',
+        comment: mark.Comment,
+        mark: mark.Mark,
+        date: mark.Date,
+        labId: mark.LabId.toString(),
+        studentId: student.StudentId,
+        students: this.student
+      };
+      const dialogData: DialogData = {
+        title: 'Выставление отметки',
+        buttonText: 'Сохранить',
+        body: labsMark,
+        model: recommendedMark
+      };
+      const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
 
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.labService.setLabsMark(labsMark)
-              .subscribe(res => res.Code === '200' && this.refreshStudents());
-          }
-        });
-      }
+      this.subs.add(dialogRef.afterClosed().pipe(
+        map((result: MarkForm) => ({
+          ...labsMark,
+          comment: result.comment,
+          lecturerId: result.lector,
+          date: result.date,
+          mark: result.mark
+        })),
+        switchMap(labsMark => this.labService.setLabsMark(labsMark))
+      ).subscribe((result ) => {
+        if (result.Code === '200') {
+          this.refreshStudents();
+        }
+      }));
+
     }
   }
 
@@ -144,5 +155,9 @@ export class ResultsComponent implements OnInit {
       return student;
     });
     return students
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

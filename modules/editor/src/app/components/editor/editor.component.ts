@@ -21,6 +21,7 @@ export class EditorComponent implements OnInit {
 
   //Text editor
   public editor = Editor;
+  isEditorModelChanged: boolean;
   public model = {
     editorData: '',
     isReadOnly: true,
@@ -30,7 +31,7 @@ export class EditorComponent implements OnInit {
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
         '|', 'indent', 'outdent',
-        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed',
+        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'exportPdf',// 'ckfinder',
         '|', 'MathType',
         '|', 'undo', 'redo' ],
     }
@@ -69,6 +70,7 @@ export class EditorComponent implements OnInit {
     this.UserId = currentUser ? currentUser.id : 1;
     this.isReadOnly = currentUser ? currentUser.role != "lector" ? true : false : true;
     this.newDocument = new DocumentPreview();
+    this.isEditorModelChanged = false;
     this.reloadTree();
   }
 
@@ -125,6 +127,11 @@ export class EditorComponent implements OnInit {
     });
   }
 
+  undoEditing() {
+    this.model.editorData = this.currentDocument.Text;
+    this.model.isReadOnly = true;
+  }
+
   openRemoveDialog(document = undefined): void {
     const dialogRef = this.dialog.open(RemoveDocumentDialogComponent, {
       data: { Id: document.Id, Name: document.Name }
@@ -163,4 +170,9 @@ export class EditorComponent implements OnInit {
       }
     });
   }
+
+  onEditorModelChanged() {
+    this.isEditorModelChanged = true;
+  }
+
 }

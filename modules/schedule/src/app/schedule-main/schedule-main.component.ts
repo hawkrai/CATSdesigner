@@ -370,6 +370,7 @@ export class ScheduleMainComponent implements OnInit {
       this.newsWidth = '18%';
       this.newsLeft = '82%';
       this.scheduleWidth = '82%';
+
       this.hideButton = '>';
       this.toolTip = 'Скрыть новости';
     } else {
@@ -385,3 +386,4 @@ export class ScheduleMainComponent implements OnInit {
     return this.datePipe.transform(event.start, 'HH:mm') + '-' + this.datePipe.transform(event.end, 'HH:mm');
   }
 }
+

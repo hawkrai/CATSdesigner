@@ -18,7 +18,7 @@
             </a>
           </td>
           <td class="mdc-data-table__cell example-content">
-            <a matTooltip="{{data.body.uploadedFile.Name}}" matTooltipPosition="below"
+            <a matTooltip="{{data.body.uploadedFile.Name}}"
                href="{{data.body.uploadedFile.IdFile === -1 ? '#' : data.body.uploadedFile.Url}}">
               {{data.body.uploadedFile.Name}}
             </a>
@@ -33,7 +33,7 @@
             </td>
           </ng-template>
           <td class="mdc-data-table__cell" style="padding-left: 0">
-            <button mat-icon-button color="primary" matTooltip="Удалить файл" matTooltipPosition="before" (click)="deleteFile()">
+            <button mat-icon-button color="primary" matTooltip="Удалить файл" (click)="deleteFile()">
               <mat-icon>clear</mat-icon>
             </button>
           </td>

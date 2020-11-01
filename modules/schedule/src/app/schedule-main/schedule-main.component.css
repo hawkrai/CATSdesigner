@@ -9,6 +9,8 @@ pre {
 }
 
 .schedule {
+  overflow: auto;
+  margin-bottom: 3%;
 }
 
 .cal-week-view .cal-time-events .cal-event {
@@ -28,4 +30,3 @@ pre {
   height: 100%;
   width: 100%;
 }
-

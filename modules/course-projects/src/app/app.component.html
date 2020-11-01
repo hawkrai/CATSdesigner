@@ -77,17 +77,26 @@
   <div class="app-component__body">
     <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
       <mat-form-field>
-        <mat-select [value]="groups ? groups[0].Id : ''">
-          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.Id">
-            {{group.Name}}
+        <mat-select [value]="groups ? groups[0].GroupId : ''">
+          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.GroupId">
+            {{group.GroupName}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="_excel-file" matTooltip="Загрузить документ Excel" matTooltipPosition="above"
+      <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
+        <mat-slide-toggle 
+        [color]="'primary'"
+        [checked]="detachedGroup"
+        (change)="groupStatusChange($event)"
+        >
+        Открепленные группы
+        </mat-slide-toggle>
+      </div>
+      <div class="_excel-file" matTooltip="Загрузить документ Excel"
            *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
         <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
       </div>
-      <div class="_action"  matTooltip="Скачать архивом листы задания" matTooltipPosition="above"
+      <div class="_action"  matTooltip="Скачать архивом листы задания"
             *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
             <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
       </div>

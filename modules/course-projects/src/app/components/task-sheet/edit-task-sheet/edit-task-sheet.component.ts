@@ -5,14 +5,14 @@ import {FormControl, Validators} from '@angular/forms';
 import {Template} from '../../../models/template.model';
 import {TaskSheetService} from '../../../services/task-sheet.service';
 import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
-import { Group } from 'src/app/models/group.model';
 import { Project } from 'src/app/models/project.model';
 import { ProjectsService } from 'src/app/services/projects.service';
+import { CoreGroup } from 'src/app/models/core-group.model';
 
 interface DialogData {
   subjectId: string;
   taskSheet: TaskSheet;
-  groups: Group[];
+  groups: CoreGroup[];
 }
 
 @Component({

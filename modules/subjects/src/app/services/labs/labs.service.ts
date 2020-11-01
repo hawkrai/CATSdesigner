@@ -29,11 +29,11 @@ export class LabsService {
     return this.store$.pipe(select(getLabsCalendar))
   }
 
-  public getLabWork(subjectId: string): Observable<Lab[]> {
+  public getLabWork(subjectId: number): Observable<Lab[]> {
     return this.rest.getLabWork(subjectId);
   }
 
-  public getMarks(subjectId: string, groupId: string): Observable<any> {
+  public getMarks(subjectId: number, groupId: string): Observable<any> {
     return this.rest.getMarks(subjectId, groupId);
   }
 
@@ -41,7 +41,7 @@ export class LabsService {
     return this.rest.createLab(lab);
   }
 
-  public deleteLab(lab: {id: string, subjectId: string}) {
+  public deleteLab(lab: {id: string, subjectId: number}) {
     return this.rest.deleteLab(lab);
   }
 
@@ -65,7 +65,7 @@ export class LabsService {
     return this.rest.setLabsMark(body);
   }
 
-  public getFilesLab(body: {subjectId: string, userId: number}): Observable<any> {
+  public getFilesLab(body: {subjectId: number, userId: number}): Observable<any> {
     return this.rest.getFilesLab(body);
   }
 
@@ -77,7 +77,7 @@ export class LabsService {
     return this.rest.sendUserFile(body);
   }
 
-  public getAllStudentFilesLab(subjectId: string, groupId: string): Observable<any> {
+  public getAllStudentFilesLab(subjectId: number, groupId: string): Observable<any> {
     return this.rest.getAllStudentFilesLab(subjectId, groupId);
   }
 

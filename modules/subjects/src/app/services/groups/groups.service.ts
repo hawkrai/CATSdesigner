@@ -27,7 +27,7 @@ export class GroupsService {
     this.store$.dispatch(new SetCurrentGroup(group));
   }
 
-  getAllOldGroups(subjectId: string): Observable<Group[]> {
+  getAllOldGroups(subjectId: number): Observable<Group[]> {
     return this.rest.getAllOldGroups(subjectId);
   }
 }

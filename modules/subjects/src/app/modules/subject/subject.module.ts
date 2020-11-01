@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SubjectComponent} from './subject.component';
@@ -20,7 +21,8 @@ import {SubjectLectorComponent} from './subject-lector/subject-lector.component'
     MatModule,
     FormsModule,
     SharedModule,
-    ColorPickerModule
+    ColorPickerModule,
+    RouterModule
   ],
   exports: [
     SubjectComponent
