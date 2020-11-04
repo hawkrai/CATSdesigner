@@ -8,7 +8,7 @@
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Тема курсового проекта</th>
         <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let consultation of consultations">
           <div class="header-date">
-            <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)"
+            <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)" matTooltip="Удалить дату"
                *ngIf="visitStatsComponent.getCourseUser().IsLecturer">
               {{consultation.Day | date:'dd.MM.yyyy'}}
             </a>
