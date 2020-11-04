@@ -36,7 +36,6 @@ export class AppComponent implements OnInit {
       this.subjectId = subjectId;
 
       this.courseUserService.getUser().subscribe(res => this.courseUser = res);
-
       this.retrieveGroups(false);
     });
   }
