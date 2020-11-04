@@ -17,6 +17,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
+        [HttpDelete]
         public void Delete(int id)
         {
             PercentageService.DeleteConsultationDate(WebSecurity.CurrentUserId, id);
