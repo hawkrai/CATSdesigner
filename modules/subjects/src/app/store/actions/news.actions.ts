@@ -41,3 +41,7 @@ export const setSelectedNews = createAction(
   '[News] Set Selected News',
   props<{ news: News }>()
 );
+
+export const resetNews = createAction(
+  '[News] Reset News'
+);

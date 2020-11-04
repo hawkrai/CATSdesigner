@@ -33,3 +33,7 @@ export const updateLabsOrder = createAction(
   '[Labs] Update Labs Order',
   props<{ labs: Lab[] }>()
 );
+
+export const resetLabs = createAction(
+  '[Labs] Reset Labs'
+);

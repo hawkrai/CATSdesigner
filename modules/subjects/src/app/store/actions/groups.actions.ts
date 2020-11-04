@@ -23,3 +23,7 @@ export const setCurrentGroupById = createAction(
 export const loadOldGroups = createAction(
   '[Groups] Load Old Groups'
 );
+
+export const resetGroups = createAction(
+  '[Groups] Reset Groups'
+);

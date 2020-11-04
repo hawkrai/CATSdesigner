@@ -28,7 +28,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
   public displayedColumns: string[] = ['position', 'theme', 'shortName', 'clock'];
-  public labs: Lab[];
+  public labs: Lab[] = [];
   private labsCopy: Lab[] = [];
 
   constructor(
@@ -57,6 +57,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (toSave.length) {
       this.store.dispatch(labsActions.updateLabsOrder({ labs: toSave }));
     }
+    this.store.dispatch(labsActions.resetLabs());
   }
 
   constructorLab(lab?: Lab) {

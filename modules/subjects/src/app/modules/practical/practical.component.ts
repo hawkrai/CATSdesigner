@@ -1,7 +1,7 @@
 import { map } from 'rxjs/operators';
 import { Observable, combineLatest } from 'rxjs';
 import {Store} from '@ngrx/store';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 
 import {Group} from '../../models/group.model';
@@ -21,7 +21,7 @@ interface State {
   templateUrl: './practical.component.html',
   styleUrls: ['./practical.component.less']
 })
-export class PracticalComponent implements OnInit {
+export class PracticalComponent implements OnInit, OnDestroy {
 
   tabs = ['Практические занятия', 'Статистика посещения', 'Результаты']
   public groups: Group[];
@@ -31,6 +31,10 @@ export class PracticalComponent implements OnInit {
   public detachedGroup = false;
 
   constructor(private store: Store<IAppState>) { }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(groupActions.resetGroups());
+  }
 
   ngOnInit(): void {
     this.loadGroup();

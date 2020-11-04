@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
@@ -22,7 +22,7 @@ import {SubSink} from 'subsink';
   templateUrl: './subject.component.html',
   styleUrls: ['./subject.component.less']
 })
-export class SubjectComponent implements OnInit {
+export class SubjectComponent implements OnInit, OnDestroy {
   subjects$: Observable<Subject[]>;
   private subs = new SubSink();
   public displayedColumns = ['name', 'shortName', 'actions'];
@@ -31,6 +31,9 @@ export class SubjectComponent implements OnInit {
               private store: Store<IAppState>,
               private router: Router,
               public dialog: MatDialog) { }
+  ngOnDestroy(): void {
+    this.store.dispatch(subjectActions.resetSubjects());
+  }
 
   ngOnInit() {
     this.subjects$ = this.store.select(subjectSelectors.getSubjects);

@@ -1,6 +1,6 @@
 import { map } from 'rxjs/operators';
 import { Observable, combineLatest } from 'rxjs';
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Store} from '@ngrx/store';
 
 import * as subjectSelectors from '../../store/selectors/subject.selector';
@@ -14,7 +14,7 @@ import {GroupsService} from '../../services/groups/groups.service';
   templateUrl: './lectures.component.html',
   styleUrls: ['./lectures.component.less']
 })
-export class LecturesComponent implements OnInit {
+export class LecturesComponent implements OnInit, OnDestroy {
 
   selectedTab = 0;
   state$: Observable<{ isTeacher: boolean, subjectId: number }>;
@@ -22,6 +22,9 @@ export class LecturesComponent implements OnInit {
 
   constructor(private store: Store<IAppState>,
               private groupsService: GroupsService) {
+  }
+  ngOnDestroy(): void {
+    this.store.dispatch(groupActions.resetGroups());
   }
 
   ngOnInit() {

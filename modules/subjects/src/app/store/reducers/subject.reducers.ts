@@ -15,5 +15,9 @@ export const subjectReducers = createReducer(
   on(subjectActions.loadSubjectsSuccess, (state, action): ISubjectState => ({
     ...state,
     subjects: action.subjects
+  })),
+  on(subjectActions.resetSubjects, (state): ISubjectState => ({
+    ...state,
+    subjects: []
   }))
 );

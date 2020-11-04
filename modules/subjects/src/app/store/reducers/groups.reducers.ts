@@ -16,5 +16,10 @@ export const groupsReducers = createReducer(
   on(groupActions.setCurrentGroupById, (state, action): GroupsState => ({
     ...state,
     currentGroup: state.groups.find(g => g.groupId === action.id)
+  })),
+  on(groupActions.resetGroups, (state): GroupsState => ({
+    ...state,
+    currentGroup: null,
+    groups: []
   }))
 );

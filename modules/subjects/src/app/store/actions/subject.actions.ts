@@ -31,3 +31,7 @@ export const deleteSubejctById = createAction(
   '[Subject] Delete Subject By Id',
   props<{ subjectId: number }>()
 );
+
+export const resetSubjects = createAction(
+  '[Subjects] Reset Subjects'
+);

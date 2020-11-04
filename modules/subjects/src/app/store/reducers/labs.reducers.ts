@@ -11,5 +11,10 @@ export const labsReducers = createReducer(
   on(labsActions.loadLabsSuccess, (state, action): LabsState => ({
     ...state,
     labs: action.labs
+  })),
+  on(labsActions.resetLabs, (state): LabsState => ({
+    ...state,
+    labs: [],
+    schedule: []
   }))
 );

@@ -56,6 +56,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    this.store.dispatch(newsActions.resetNews());
   }
 
   disableNews(): void {

@@ -76,7 +76,6 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   refreshDate() {
     this.practicalService.getAllPracticalLessons(this.subjectId).subscribe(res => {
       this.practicalLessons = res;
-      console.log(res);
       this.practicalCopy = [...res.map(p => ({ ...p }))];
     });
   }

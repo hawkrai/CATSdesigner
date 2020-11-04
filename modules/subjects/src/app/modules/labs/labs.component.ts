@@ -1,5 +1,5 @@
 import { Observable, combineLatest } from 'rxjs';
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {select, Store} from '@ngrx/store';
 import {ComponentType} from '@angular/cdk/typings/portal';
@@ -27,12 +27,11 @@ interface State {
   templateUrl: './labs.component.html',
   styleUrls: ['./labs.component.less']
 })
-export class LabsComponent implements OnInit {
+export class LabsComponent implements OnInit, OnDestroy {
 
   tabs = ['Лабораторные работы', 'График защиты', 'Статистика посещения', 'Результаты', 'Защита работ'];
   tab = 0;
   public state$: Observable<State>;
-  public isTeacher$: Observable<boolean>;
   public detachedGroup = false;
 
   public refreshJobProtection = new EventEmitter();
@@ -40,6 +39,9 @@ export class LabsComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private store: Store<IAppState>) {
+  }
+  ngOnDestroy(): void {
+    this.store.dispatch(groupActions.resetGroups());
   }
 
   ngOnInit() {

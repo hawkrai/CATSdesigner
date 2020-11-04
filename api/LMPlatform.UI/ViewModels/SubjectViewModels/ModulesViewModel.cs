@@ -10,6 +10,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             ModuleId = module.Id;
             Checked = check;
             Type = module.ModuleType;
+            Order = module.Order;
         }
 
         public ModulesViewModel()
@@ -20,6 +21,11 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
         {
             get;
             set;
+        }
+
+        public int Order
+        {
+            get;set;
         }
 
         public int ModuleId

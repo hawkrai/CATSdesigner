@@ -62,7 +62,6 @@
                 </div>                
                 <div mat-line>Интерактивный учебник</div>
             </a> -->
-            <mat-divider></mat-divider>
             <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 
                 <div mat-line>
                     <mat-icon class="white-icon">settings</mat-icon>
