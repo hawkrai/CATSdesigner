@@ -16,7 +16,7 @@ interface DialogData {
 export class AddStageDialogComponent {
 
   private nameControl: FormControl = new FormControl(this.data.name,
-    [Validators.minLength(3), Validators.maxLength(100), Validators.required]);
+    [Validators.minLength(3), Validators.maxLength(100), Validators.required, this.noWhitespaceValidator]);
 
   private percentageControl: FormControl = new FormControl(this.data.percentage,
     [Validators.min(0), Validators.max(100), Validators.pattern('^\\d*$'), Validators.required]);
@@ -36,4 +36,10 @@ export class AddStageDialogComponent {
     this.dialogRef.close();
   }
 
+  public noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { 'whitespace': true };
+  }
+  
 }

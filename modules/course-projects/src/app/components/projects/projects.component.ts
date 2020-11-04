@@ -116,12 +116,16 @@ export class ProjectsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
+      var checkTheme = this.projects.find((i) => i.Theme === result.name);
+      if (result != null && checkTheme == undefined) {
         this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.Id))
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Тема успешно сохранена');
           });
+      }
+      else{
+        this.addFlashMessage('Такая тема уже существует');
       }
     });
   }
@@ -151,24 +155,30 @@ export class ProjectsComponent implements OnInit {
   }
 
   deleteProject(project: Project) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '500px',
-      data: {
-        label: 'Удаление темы курсового проекта',
-        message: 'Вы действительно хотите удалить тему курсового проекта?',
-        actionName: 'Удалить',
-        color: 'primary'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result != null && result) {
-        this.projectsService.deleteProject(project.Id).subscribe(() => {
-          this.ngOnInit();
-          this.addFlashMessage('Тема успешно удалена');
-        });
-      }
-    });
+    if(project.Student === null){
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '500px',
+        data: {
+          label: 'Удаление темы курсового проекта',
+          message: 'Вы действительно хотите удалить тему курсового проекта?',
+          actionName: 'Удалить',
+          color: 'primary'
+        }
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result != null && result) {
+          this.projectsService.deleteProject(project.Id).subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage('Тема успешно удалена');
+          });
+        }
+      });
+    }
+    else{
+      this.addFlashMessage('Отмените назначение темы');
+    }
+    
   }
 
   assignProject(project: Project) {
@@ -219,8 +229,8 @@ export class ProjectsComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '540px',
       data: {
-        label: 'Отменить назначение курсового проекта',
-        message: 'Вы действительно хотите отменить назначение курсового проекта?',
+        label: 'Отменить назначение темы курсового проекта',
+        message: 'Вы действительно хотите отменить назначение темы курсового проекта?',
         actionName: 'Убрать назначение',
         color: 'primary'
       }
