@@ -28,16 +28,37 @@ export class NewsPopoverComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const values = JSON.stringify(
+
+  }
+
+  ngAfterViewInit(): void {
+    const values1 = JSON.stringify(
       this.data.model.attachments.map(attachment => `${attachment.name}/${attachment.id}/${attachment.pathName}/${attachment.fileName}`
     ));
+    console.log(values1)
+    // if (this.data.model.attachments.length) {
+    //   this.fileService.getAttachment({values, deleteValues: 'DELETE'})
+    //     .subscribe(files => this.files = files);
+    // }
+    let values = '["';
+    this.data.model.attachments.forEach((attachment, index) => {
+      values += attachment.name + '/' + attachment.id + '/' + attachment.pathName + '/' +
+        attachment.fileName;
+      if (index < this.data.model.attachments.length - 1) {
+        values += '","'
+      }
+    });
+
+    values += '"]';
+    console.log(values, '2');
+
     if (this.data.model.attachments.length) {
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
         .subscribe(files => this.files = files);
     }
   }
 
-  onSave(data): void {
+  onSave(): void {
     this.data.model.attachments = [];
     if (this.files.length) {
       this.files.forEach(file => {
@@ -51,7 +72,8 @@ export class NewsPopoverComponent implements OnInit {
       });
 
     }
-    this.dialogRef.close(data)
+    console.log(this.data.model);
+    this.dialogRef.close(this.data.model);
   }
 
   uploadFile(event) {

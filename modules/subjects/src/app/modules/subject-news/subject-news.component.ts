@@ -73,6 +73,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   constructorNews(news?: News) {
     const nowDate = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
+    console.log(news);
     const newNews = {
       id: news ? news.id : '0',
       title: news ? news.title : '',

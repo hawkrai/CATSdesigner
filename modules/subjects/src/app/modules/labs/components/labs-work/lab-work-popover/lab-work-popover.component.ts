@@ -22,6 +22,7 @@ export class LabWorkPopoverComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    console.log(this.data.model);
     let values = '["';
     this.data.model.attachments.forEach((attachment, index) => {
       values += attachment.name + '/' + attachment.id + '/' + attachment.pathName + '/' +
@@ -43,7 +44,7 @@ export class LabWorkPopoverComponent implements AfterViewInit {
     this.dialogRef.close();
   }
 
-  onSave(data): void {
+  onSave(): void {
     this.data.model.attachments = [];
     if (this.files.length) {
       this.files.forEach(file => {
@@ -57,7 +58,8 @@ export class LabWorkPopoverComponent implements AfterViewInit {
       });
 
     }
-    this.dialogRef.close(data)
+    console.log(this.data.model);
+    this.dialogRef.close(this.data.model);
   }
 
   uploadFile(event) {

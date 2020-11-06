@@ -28,12 +28,15 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   private subjectId: number;
 
   public displayedColumns: string[] = [
+
+  ];
+
+  private defaultColumns = [
     'index',
     'theme',
     'shortName',
     'duration',
-  ];
-
+  ]
 
   constructor(
     public dialog: MatDialog,         
@@ -42,8 +45,6 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     private practicalService: PracticalService) { }
 
   ngOnInit() {
-    const column = this.isTeacher ? 'actions' : 'files';
-    this.displayedColumns.push(column);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
@@ -53,12 +54,8 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isTeacher) {
-      if (this.isTeacher) {
-        this.displayedColumns.push('actions');
-      }
-      else {
-        this.displayedColumns.push('files');
-      }
+      const column = this.isTeacher ? 'actions' : 'files';
+      this.displayedColumns = [...this.defaultColumns, column];
     }
   }
 

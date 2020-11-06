@@ -11,6 +11,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             Checked = check;
             Type = module.ModuleType;
             Order = module.Order;
+            Required = module.Required;
         }
 
         public ModulesViewModel()
@@ -44,6 +45,11 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
         {
             get;
             set;
+        }
+
+        public bool Required
+        {
+            get;set;
         }
     }
 }

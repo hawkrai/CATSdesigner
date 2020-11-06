@@ -32,5 +32,7 @@ namespace LMPlatform.Models
         }
 
         public int Order { get; set; }
+
+        public bool Required { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 <div class="practical-lessons-component" *ngIf="practicalLessons; else: load">
   <div class="practical-lessons-component__actions" *ngIf="isTeacher">
-    <button mat-raised-button color="primary" (click)="constructorLesson()">Добавить практическое занятие</button>
+    <button mat-raised-button color="primary" (click)="constructorLesson()">Добавить занятие</button>
   </div>
   <div class="mdc-data-table">
     <table 
@@ -19,7 +19,7 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="theme">
-      <th mat-header-cell *matHeaderCellDef> Тема лекции </th>
+      <th mat-header-cell *matHeaderCellDef> Тема занятия </th>
       <td mat-cell *matCellDef="let element">
           {{element.Theme}}
       </td>
@@ -54,7 +54,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button color="primary" matTooltip="Удалить практическое занятие" (click)="deleteLesson(lesson)">
-          <mat-icon>delete_forever</mat-icon>
+          <mat-icon>delete</mat-icon>
         </button>
       </td>
     </ng-container>

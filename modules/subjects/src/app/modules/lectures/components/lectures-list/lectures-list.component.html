@@ -1,6 +1,6 @@
 <div class="lectures-list-component" *ngIf="lectures; else: load">
   <div class="lectures-list-component__actions" *ngIf="isTeacher">
-    <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить тему</button>
+    <button mat-raised-button color="primary" (click)="constructorLecture()">Добавить лекцию</button>
   </div>
   <table #table class="table" mat-table [dataSource]="lectures" cdkDropList
   [cdkDropListData]="lectures"
@@ -34,7 +34,7 @@
     </td>
   </ng-container>
   <ng-container matColumnDef="actions" *ngIf="isTeacher">
-    <th mat-header-cell *matHeaderCellDef> Действия </th>
+    <th mat-header-cell *matHeaderCellDef> Действие </th>
     <td mat-cell *matCellDef="let element">
       <div>
         <button mat-icon-button color="primary" matTooltip="Редактировать лекцию"
@@ -42,7 +42,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button color="primary" matTooltip="Удалить лекцию" (click)="deleteLectures(lecture)">
-          <mat-icon>delete_forever</mat-icon>
+          <mat-icon>delete</mat-icon>
         </button>
       </div>
     </td>

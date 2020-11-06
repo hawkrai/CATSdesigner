@@ -36,6 +36,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.store.dispatch(subjectActions.loadSubjects());
     this.subjects$ = this.store.select(subjectSelectors.getSubjects);
   }
 

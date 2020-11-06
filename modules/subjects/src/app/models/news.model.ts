@@ -1,3 +1,5 @@
+import { Attachment } from './attachment.model';
+
 export class News {
   id: string;
   title: string;
@@ -5,5 +7,6 @@ export class News {
   dateCreate: string;
   disabled: boolean;
   subjectId: string;
-  attachments?: any[];
+  pathFile: string
+  attachments?: Attachment[];
 }
