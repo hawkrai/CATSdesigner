@@ -8,7 +8,7 @@ import { AdminComponent } from './admin/admin.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { RegisterComponent } from './register/register.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
-
+import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   {
@@ -42,7 +42,8 @@ const routes: Routes = [
     path: 'adminPanel', 
     component: AdminComponent,
     canActivate: [NoAuthGuardAdmin],
-  }  
+  },
+  { path: 'about', component: AboutComponent }
 ];
 
 @NgModule({
