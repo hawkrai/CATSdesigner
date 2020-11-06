@@ -113,6 +113,9 @@ export class TaskSheetComponent implements OnInit {
             });
           });
         }
+        else{
+          this.ngOnInit();
+        }
       });
     });
   }
@@ -128,6 +131,6 @@ export class TaskSheetComponent implements OnInit {
   }
 
   downloadTaskSheet() {
-    location.href = '/Cp/GetTasksSheetDocument?courseProjectId=' + this.courseProjectId;
+    location.href = location.origin + '/Cp/GetTasksSheetDocument?courseProjectId=' + this.courseProjectId;
   }
 }

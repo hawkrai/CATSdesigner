@@ -46,7 +46,7 @@
           <tr class="mdc-data-table__row" *ngFor="let studentFile of userLabFiles"
               [ngClass]="{'sticky': studentFile.IsReceived, 'fix': studentFile.IsReturned}">
             <td class="mdc-data-table__cell">
-              <a href="api/Upload?filename={{studentFile.Attachments[0].PathName}}//{{studentFile.Attachments[0].FileName}}">
+              <a href="api/Upload?filename={{studentFile.Attachments[0].PathName}}//{{studentFile.Attachments[0].FileName}}" color="primary">
                 {{ studentFile.Attachments[0].Name }}
               </a>
             </td>
@@ -91,7 +91,7 @@
               <tr class="mdc-data-table__row" *ngFor="let fileLab of student.FileLabs"
                   [ngClass]="{'sticky': fileLab.IsReceived, 'fix': fileLab.IsReturned}">
                 <td class="mdc-data-table__cell">
-                  <a href="api/Upload?filename={{fileLab.Attachments[0].PathName}}//{{fileLab.Attachments[0].FileName}}">
+                  <a href="api/Upload?filename={{fileLab.Attachments[0].PathName}}//{{fileLab.Attachments[0].FileName}}" color="primary">
                     {{ fileLab.Attachments[0].Name }}
                   </a>
                 </td>

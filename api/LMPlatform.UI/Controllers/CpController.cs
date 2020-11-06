@@ -47,6 +47,7 @@ namespace LMPlatform.UI.Controllers
             return this.Json(courseProjectSubjects, JsonRequestBehavior.AllowGet);
         }
 
+        [System.Web.Http.HttpGet]
         public void GetTasksSheetDocument(int courseProjectId)
         {
             var courseProject =
@@ -69,6 +70,7 @@ namespace LMPlatform.UI.Controllers
             WordCourseProject.CourseProjectToWord(docName, courseProject, this.Response);
         }
 
+        [System.Web.Http.HttpGet]
         public void GetZipTaskSheet(int id, int subjectId)
         {
             var courseProjects = new LmPlatformModelsContext().CourseProjects
@@ -103,6 +105,7 @@ namespace LMPlatform.UI.Controllers
             this.CpManagementService.DisableNews(int.Parse(subjectId), false);
         }
 
+        [System.Web.Http.HttpGet]
         public string GetTasksSheetHtml(int courseProjectId)
         {
             //todo
