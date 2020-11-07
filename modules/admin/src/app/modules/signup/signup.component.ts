@@ -30,14 +30,14 @@ export class SignupComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-        Username: new FormControl('', [Validators.required, Validators.minLength(3),
+        Username: new FormControl('', [Validators.required, Validators.minLength(3),Validators.maxLength(30),
           Validators.pattern('^[A-Za-z0-9_.-]{3,30}$')], ValidateEmailNotTaken.createValidator(this.accountService)),
-        Password: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9]{6,30}$'),
-        Validators.minLength(6), Validators.maxLength(30), this.passwordValidator]),
+        Password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+          Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator]),
         ConfirmPassword: new FormControl(''),
         Surname: new FormControl('', [Validators.required, Validators.minLength(1), Validators.pattern('[^ ]*'), Validators.maxLength(30)]),
         Name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.pattern('[^ ]*'), Validators.maxLength(30)]),
-        Patronymic: new FormControl(''),
+        Patronymic: new FormControl('', [Validators.pattern('[^ ]*'), Validators.maxLength(30)]),
         GroupId: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]),
         SecretId: new FormControl(1),
         SecretAnswer: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(100)])
