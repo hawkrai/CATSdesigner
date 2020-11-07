@@ -43,8 +43,6 @@ export class VisitStatisticsComponent implements OnInit {
 
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
         this.group = group;
-        this.labService.loadData();
-
         this.labService.getLabsProtectionSchedule().subscribe(res => {
           this.labs = res;
         });

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, SimpleChanges, AfterViewChecked, ChangeDetectorRef, ViewChild } from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Attachment} from '../../../../models/attachment.model';
 import {DialogData} from '../../../../models/dialog-data.model';
@@ -11,31 +11,38 @@ import {PracticalService} from '../../../../services/practical/practical.service
 import {getSubjectId} from '../../../../store/selectors/subject.selector';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {PracticalLessonPopoverComponent} from '../practical-lesson-popover/practical-lesson-popover.component';
-
+import {Practical} from '../../../../models/practical.model';
+import { MatTable } from '@angular/material';
 @Component({
   selector: 'app-practical-lessons',
   templateUrl: './practical-lessons.component.html',
   styleUrls: ['./practical-lessons.component.less']
 })
-export class PracticalLessonsComponent implements OnInit {
+export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   @Input() isTeacher: boolean;
+  @ViewChild('table', { static: false }) table: MatTable<Practical>;
 
-  public practicalLessons;
+  public practicalLessons: Practical[];
+  public practicalCopy: Practical[];
   private subjectId: number;
 
-  public tableHeaders = [
-    {name: '№'},
-    {name: 'Название'},
-    {name: 'Краткое название'},
-    {name: 'Часы'},
-    {name: 'Действие'},
+  public displayedColumns: string[] = [
+
   ];
 
+  private defaultColumns = [
+    'index',
+    'theme',
+    'shortName',
+    'duration',
+  ]
 
-  constructor(public dialog: MatDialog,
-              private store: Store<IAppState>,
-              private practicalService: PracticalService) { }
+  constructor(
+    public dialog: MatDialog,         
+    private store: Store<IAppState>,    
+    private cdRef: ChangeDetectorRef,
+    private practicalService: PracticalService) { }
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
@@ -44,11 +51,30 @@ export class PracticalLessonsComponent implements OnInit {
       this.refreshDate();
     })
   }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.isTeacher) {
+      const column = this.isTeacher ? 'actions' : 'files';
+      this.displayedColumns = [...this.defaultColumns, column];
+    }
+  }
+
+  ngOnDestroy(): void {
+    const toSave = this.practicalLessons.filter(l => l.Order !== this.practicalCopy.find(lc => lc.PracticalId === l.PracticalId).Order);
+    if (toSave.length) {
+      this.practicalService.updatePracticalsOrder(toSave.map(l => ({ Id: l.PracticalId, Order: l.Order }))).subscribe();   
+    }
+  }
+
+  ngAfterViewChecked(): void {
+    this.cdRef.detectChanges();
+  }
 
   refreshDate() {
     this.practicalService.getAllPracticalLessons(this.subjectId).subscribe(res => {
       this.practicalLessons = res;
-    })
+      this.practicalCopy = [...res.map(p => ({ ...p }))];
+    });
   }
 
   constructorLesson(lesson?) {
@@ -86,11 +112,14 @@ export class PracticalLessonsComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    const temp = this.practicalLessons[event.previousIndex].Order;
-    this.practicalLessons[event.previousIndex].Order = this.practicalLessons[event.currentIndex].Order;
-    this.practicalLessons[event.currentIndex].Order = temp;
-    moveItemInArray(this.practicalLessons, event.previousIndex, event.currentIndex);
+    const prevIndex = this.practicalLessons.findIndex(l => l.PracticalId === event.item.data.PracticalId);
+    if (prevIndex === event.currentIndex) {
+      return;
+    }
+    this.practicalLessons[prevIndex].Order = event.currentIndex;
+    this.practicalLessons[event.currentIndex].Order = prevIndex;
+    moveItemInArray(this.practicalLessons, prevIndex, event.currentIndex);
+    this.table.renderRows();
   }
 
   openFilePopup(attachments: Attachment[]) {

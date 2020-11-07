@@ -24,7 +24,7 @@ export class ConverterService {
     newNews.dateCreate = news.DateCreate;
     newNews.disabled = news.Disabled;
     newNews.subjectId = news.SubjectId;
-    newNews.attachments = news.Attachments;
+    newNews.attachments = news.Attachments.map(attachment => this.attachmentModelConverter(attachment));
     return newNews;
   }
 
@@ -149,7 +149,7 @@ export class ConverterService {
     newLab.pathFile = lab.PathFile;
     newLab.attachments = lab.Attachments ? lab.Attachments.map(res => this.attachmentModelConverter(res)) : lab.Attachments;
     newLab.scheduleProtectionLabsRecomend = lab.ScheduleProtectionLabsRecomend ?
-        lab.ScheduleProtectionLabsRecomend.map(res => this.scheduleProtectionLabsRecomendConverter(res)) : lab.ScheduleProtectionLabsRecomend;
+      lab.ScheduleProtectionLabsRecomend.map(res => this.scheduleProtectionLabsRecomendConverter(res)) : lab.ScheduleProtectionLabsRecomend;
     newLab.shortName = lab.ShortName;
     newLab.subGroup = lab.SubGroup;
     newLab.subjectId = lab.SubjectId;

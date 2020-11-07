@@ -1,8 +1,15 @@
+import { IAppState } from './../state/app.state';
 import {createSelector} from '@ngrx/store';
-import {IAppState} from "../state/app.state";
-import {INewsState} from "../state/news.state";
+import {INewsState} from '../state/news.state';
+
+const getNewsState = (state: IAppState) => state.news;
 
 export const getNews = createSelector(
-  (state: IAppState) => state.news,
-  (state: INewsState) => state.newsList
+  getNewsState,
+  (state: INewsState) => state.news
+);
+
+export const getSelectedNews = createSelector(
+  getNewsState,
+  state => state.selectedNews
 );

@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {Observable} from 'rxjs';
-import {LoadGroups, SetCurrentGroup} from '../../store/actions/groups.actions';
 import {getGroups} from '../../store/selectors/groups.selectors';
 import {Group} from '../../models/group.model';
 import {GroupsRestService} from './groups-rest.service';
@@ -15,19 +14,19 @@ export class GroupsService {
               private rest: GroupsRestService) {
   }
 
-  loadDate() {
-    this.store$.dispatch(new LoadGroups())
-  }
+  // loadDate() {
+  //   this.store$.dispatch(new LoadGroups())
+  // }
 
-  getAllGroups(): Observable<Group[]> {
-    return this.store$.pipe(select(getGroups));
-  }
+  // getAllGroups(): Observable<Group[]> {
+  //   return this.store$.pipe(select(getGroups));
+  // }
 
-  setCurrentGroup(group: Group) {
-    this.store$.dispatch(new SetCurrentGroup(group));
-  }
+  // setCurrentGroup(group: Group) {
+  //   this.store$.dispatch(new SetCurrentGroup(group));
+  // }
 
-  getAllOldGroups(subjectId: number): Observable<Group[]> {
-    return this.rest.getAllOldGroups(subjectId);
-  }
+  // getAllOldGroups(subjectId: number): Observable<Group[]> {
+  //   return this.rest.getAllOldGroups(subjectId);
+  // }
 }
