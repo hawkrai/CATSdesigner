@@ -407,6 +407,13 @@ namespace Application.Infrastructure.CPManagement
             return Context.CourseProjectTaskSheetTemplates.Single(x => x.Id == id);
         }
 
+        public PagedList<CourseProjectTaskSheetTemplate> GetTaskSheetTemplates(GetPagedListParams parms)
+        {
+            var lecturerId = int.Parse(parms.Filters["lecturerId"]);
+            var query = Context.CourseProjectTaskSheetTemplates.Where(x => x.LecturerId == lecturerId);
+            return query.ApplyPaging(parms);
+        }
+
         public void SaveTaskSheetTemplate(CourseProjectTaskSheetTemplate template)
         {
             var existingTemplate = Context.CourseProjectTaskSheetTemplates.FirstOrDefault(x => x.Name.Trim() == template.Name.Trim())
