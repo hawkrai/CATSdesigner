@@ -36,7 +36,6 @@ export class AppComponent implements OnInit {
       this.subjectId = subjectId;
 
       this.courseUserService.getUser().subscribe(res => this.courseUser = res);
-
       this.retrieveGroups(false);
     });
   }
@@ -76,18 +75,18 @@ export class AppComponent implements OnInit {
   }
 
   getExcelFile() {
-    const url = 'http://localhost:8080/Statistic/';
+    //const url = 'http://localhost:8080/Statistic/';
 
     if (this.tab === 4) {
-      location.href = url + 'GetPercentageCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.GroupId;
+      location.href = location.origin + '/Statistic/GetPercentageCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.GroupId;
     } else if (this.tab === 5) {
-      location.href = url + 'GetVisitCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.GroupId;
+      location.href = location.origin + '/Statistic/GetVisitCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.GroupId;
     }
   }
 
   downloadArchive() {
-    const url = 'http://localhost:8080/Cp/';
-    location.href = url + 'GetZipTaskSheet?id=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
+    //const url = 'http://localhost:8080/Cp/';
+    location.href = location.origin + '/Cp/GetZipTaskSheet?id=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
   }
 
 }

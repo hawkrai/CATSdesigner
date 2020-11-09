@@ -26,6 +26,10 @@ export class LecturesRestService {
     return this.http.post('Services/Lectures/LecturesService.svc/Save', lecture);
   }
 
+  public updateLecturesOrder(objs: { Id: number, Order: number }[]) {
+    return this.http.post('Services/Lectures/LecturesService.svc/UpdateLecturesOrder', { objs });
+  }
+
   public deleteLecture(lecture: {id: string, subjectId: number}) {
     return this.http.post('Services/Lectures/LecturesService.svc/Delete', lecture);
   }

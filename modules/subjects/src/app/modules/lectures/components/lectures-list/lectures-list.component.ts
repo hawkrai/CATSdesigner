@@ -1,7 +1,6 @@
-import { concatAll, map, take } from 'rxjs/operators';
+import { AfterViewChecked } from '@angular/core';
 import { MatTable } from '@angular/material';
-import { isTeacher } from './../../../../store/selectors/subject.selector';
-import { OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import {Component, Input, OnInit} from '@angular/core';
 import {Lecture} from '../../../../models/lecture.model';
 import {Attachment} from "../../../../models/attachment.model";
@@ -13,17 +12,13 @@ import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-p
 import {LecturesService} from '../../../../services/lectures/lectures.service';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {Swap} from '../../../../models/swap.model';
-import {SubSink} from 'subsink';
-import {tap} from 'rxjs/operators';
-import { from, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lectures-list',
   templateUrl: './lectures-list.component.html',
   styleUrls: ['./lectures-list.component.less']
 })
-export class LecturesListComponent implements OnInit, OnChanges {
+export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
   @Input() isTeacher: boolean;
   @Input() subjectId: number;
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
@@ -38,6 +33,7 @@ export class LecturesListComponent implements OnInit, OnChanges {
   private lecturesCopy: Lecture[];
 
   constructor(public dialog: MatDialog,
+    private cdRef: ChangeDetectorRef,
               private lecturesService: LecturesService) {
   }
 
@@ -56,15 +52,20 @@ export class LecturesListComponent implements OnInit, OnChanges {
     }
   }
 
-  hasChanges(): boolean {
-    if (!this.lectures) {
-      return false;
+  ngAfterViewChecked(): void {
+    this.cdRef.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    const toSave = this.lectures.filter(l => l.order !== this.lecturesCopy.find(lc => lc.id === l.id).order);
+    if (toSave.length) {
+      this.lecturesService.updateLecturesOrder(toSave.map(l => ({ Id: +l.id, Order: +l.order }))).subscribe();   
     }
-    return this.lectures.some((l) => l.order !== this.lecturesCopy.find(lc => lc.id === l.id).order);
   }
 
   refreshDate() {
     this.lecturesService.getAllLectures(this.subjectId).subscribe(lectures => {
+      console.log(lectures)
       this.lectures = lectures && lectures.sort(lecture => +lecture.order);
       this.lecturesCopy = [...this.lectures.map(l => ({ ...l }))];
     });
@@ -156,15 +157,6 @@ export class LecturesListComponent implements OnInit, OnChanges {
     this.lectures[event.currentIndex].order = prevIndex.toString();
     moveItemInArray(this.lectures, prevIndex, event.currentIndex);
     this.table.renderRows();
-  }
-
-  saveChanges(): void {
-    from(this.lectures.filter(l => l.order !== this.lecturesCopy.find(lc => lc.id === l.id).order))
-    .pipe(
-      map(l => this.lecturesService.createLecture(l)),
-      concatAll()
-    )
-    .subscribe(() => this.refreshDate());
   }
 
 }

@@ -14,6 +14,7 @@ export class SubjectModule {
     ModuleId: number;
     Checked: boolean;
     Type: number;
+    Required: boolean;
 }
 
 export class SubjectGroup {

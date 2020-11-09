@@ -42,6 +42,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             return SaveProject(project);
         }
 
+        [HttpDelete]
         public void Delete(int id)
         {
             CpManagementService.DeleteProject(WebSecurity.CurrentUserId, id);

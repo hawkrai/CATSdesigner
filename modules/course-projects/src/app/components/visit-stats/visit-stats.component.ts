@@ -182,7 +182,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
 
   deleteVisitDate(consultation: Consultation) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '450px',
+      width: '400px',
       data: {
         label: 'Удаление даты консультации',
         message: 'Вы действительно хотите удалить дату консультации?',

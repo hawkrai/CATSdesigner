@@ -1,3 +1,4 @@
+import { Practical } from './../../models/practical.model';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
@@ -14,7 +15,7 @@ export class PracticalRestService {
   constructor(private http: HttpClient) {
   }
 
-  public getAllPracticalLessons(subjectId: number): Observable<Lecture[]> {
+  public getAllPracticalLessons(subjectId: number): Observable<Practical[]> {
     return this.http.get('Services/Practicals/PracticalService.svc/GetPracticals/' + subjectId).pipe(
       map(res => res['Practicals'])
     );
@@ -23,6 +24,10 @@ export class PracticalRestService {
   public getMarks(subjectId: number, groupId: string): Observable<any> {
     return this.http.post('Services/Practicals/PracticalService.svc/GetPracticalsVisitingData', {subjectId, groupId}).pipe(
       map(res => res['Students']))
+  }
+
+  public updatePracticalsOrder(objs: { Id: number, Order: number}[]) {
+    return this.http.post('Services/Practicals/PracticalService.svc/UpdateOrder', { objs });
   }
 
   public createPracticalLessons(practicalLesson) {

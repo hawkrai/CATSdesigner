@@ -992,5 +992,29 @@ namespace LMPlatform.UI.Services.Labs
 			HttpContext.Current.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.1
 			HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
 		}
-	}
+
+        public ResultViewData UpdateLabsOrder(List<UpdateOrder> objs)
+        {
+            try
+            {
+				foreach (var obj in objs)
+                {
+					SubjectManagementService.UpdateLabOrder(obj.Id, obj.Order);
+                }
+				return new ResultViewData
+				{
+					Code = "200",
+					Message = "Лабораторные работы успешно сохранены"
+				};
+            }
+			catch (Exception ex)
+            {
+				return new ResultViewData
+				{
+					Code = "500",
+					Message = ex.Message
+				};
+            }
+        }
+    }
 }

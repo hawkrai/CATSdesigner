@@ -31,7 +31,7 @@ namespace Application.Infrastructure.GroupManagement
         public List<Group> GetGroups(IQuery<Group> query = null)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-	        return repositoriesContainer.GroupsRepository.GetAll(query).ToList();
+	        return repositoriesContainer.GroupsRepository.GetAll(query).OrderBy(x => x.Name).ToList();
         }
 
         public IPageableList<Group> GetGroupsPageable(string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null)

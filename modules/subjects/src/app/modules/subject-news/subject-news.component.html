@@ -1,25 +1,25 @@
-<div class="subject-news-component content" *ngIf="news; else: load">
+<div class="subject-news-component content" *ngIf="state$ | async as state; else: load">
   <div class="subject-news-component__actions">
-    <div class="subject-news-component__actions" *ngIf="isTeacher$ | async">
+    <div class="subject-news-component__actions" *ngIf="state.isTeacher">
       <button mat-raised-button color="primary" (click)="constructorNews()">Добавить новость</button>
       <button mat-raised-button class="hide-action" (click)="disableNews()">Скрыть все новости</button>
       <button mat-raised-button (click)="enableNews()">Показать все новости</button>
     </div>
-    <div class="subject-news-component__news" *ngFor="let oneNews of news"
-         [ngClass]="{'_disable': oneNews.disabled && isTeacher$ | async,
-                     '_hide': oneNews.disabled && !(isTeacher$ | async)
+    <div class="subject-news-component__news" *ngFor="let oneNews of state.news"
+         [ngClass]="{'_disable': oneNews.disabled && state.isTeacher,
+                     '_hide': oneNews.disabled && !state.isTeacher
                      }"
-         (mouseover)="selectNews = oneNews"
-         (mouseleave)="selectNews = null"
+         (mouseover)="onSelectNews(oneNews)"
+         (mouseleave)="onSelectNews(null)"
     >
       <div class="subject-news-component__news-header">
         <p class="subject-news-component__news-title">{{ oneNews.title }}</p>
-        <div class="subject-news-component__news-action" [style.opacity]="selectNews === oneNews ? 1 : 0" *ngIf="isTeacher$ | async">
+        <div class="subject-news-component__news-action" [style.opacity]="state.selectedNews === oneNews ? 1 : 0" *ngIf="state.isTeacher">
           <button mat-icon-button color="primary" matTooltip="Редактировать новость" (click)="constructorNews(oneNews)">
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button color="primary" matTooltip="Удалить новость" (click)="deleteNews(oneNews)">
-            <mat-icon>delete_forever</mat-icon>
+            <mat-icon>delete</mat-icon>
           </button>
         </div>
       </div>

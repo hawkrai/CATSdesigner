@@ -11,6 +11,7 @@ import {VisitDatePopoverComponent} from '../../../../shared/visit-date-popover/v
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
+import * as labsActions from '../../../../store/actions/labs.actions';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -38,7 +39,7 @@ export class ProtectionScheduleComponent implements OnInit {
       this.subjectId = subjectId;
 
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-        this.labService.loadData();
+        this.store.dispatch(labsActions.loadLabs());
         this.labService.getCalendar().subscribe(res => {
           this.scheduleProtectionLabs = res;
           this.scheduleProtectionLabs.forEach(lab => {

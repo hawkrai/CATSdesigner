@@ -48,7 +48,7 @@
     <mat-card class="attachment-card" *ngFor="let file of this.files; let i=index ">
         <p class="attachment-name ">{{ file.name }}</p>
         <button mat-button matTooltip="Удалить " class="delete-button " aria-label="Delete " (click)="this.deleteAttachment(i) ">
-            <mat-icon>delete_forever</mat-icon>
+            <mat-icon>delete</mat-icon>
         </button>
     </mat-card>
 </div>

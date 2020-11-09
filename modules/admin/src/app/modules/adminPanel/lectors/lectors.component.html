@@ -54,7 +54,7 @@
                         <mat-icon>edit</mat-icon>
                     </button>
                     <button mat-button matTooltip="Удалить преподавателя" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete " (click)="deleteProfessor(element.Id) ">
-                    <mat-icon>delete_forever</mat-icon>
+                    <mat-icon>delete</mat-icon>
                     </button>
                     <button *ngIf="this.isNotActive(element)" mat-button matTooltip="Восстановить преподавателя" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Edit " (click)="restoreProfessor(element) ">
                         <mat-icon>rotate_right</mat-icon>

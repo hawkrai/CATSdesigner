@@ -10,10 +10,6 @@
       <input name="shortName" maxlength="100" matInput placeholder="Сокращенное название" [(ngModel)]="data.model.shortName">
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <mat-label>Порядковый номер лабораторной работы</mat-label>
-        <input name="order"  min="1" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
-    </mat-form-field>
-    <mat-form-field class="example-full-width">
       <mat-label>Количество часов(1-99)</mat-label>
       <input name="duration" min="1" max="99" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
     </mat-form-field>
@@ -59,7 +55,7 @@
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
   <button mat-raised-button
-          (click)="onSave(data.model || data.body)"
+          (click)="onSave()"
           color="primary"
           [disabled]="!formElement.checkValidity()"
   >

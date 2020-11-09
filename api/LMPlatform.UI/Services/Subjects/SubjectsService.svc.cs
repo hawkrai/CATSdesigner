@@ -55,7 +55,7 @@ namespace LMPlatform.UI.Services.Subjects
                 .Where(e => e.Visible)
                 .Select(m => new ModulesViewModel(m, subject.SubjectModules.Any(e => e.ModuleId == m.Id))).ToList();
 
-            return modules.Where(m => m.Checked);
+            return modules.Where(m => m.Checked).OrderBy(m => m.Order);
         }
     }
 }

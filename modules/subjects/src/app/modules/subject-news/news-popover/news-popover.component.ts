@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Inject} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {DialogData} from '../../../models/dialog-data.model';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -10,7 +10,7 @@ import {Attachment} from '../../../models/attachment.model';
   templateUrl: './news-popover.component.html',
   styleUrls: ['./news-popover.component.less']
 })
-export class NewsPopoverComponent implements AfterViewInit{
+export class NewsPopoverComponent implements OnInit {
   public Editor = ClassicEditor;
   public files = [];
   public model;
@@ -27,7 +27,19 @@ export class NewsPopoverComponent implements AfterViewInit{
     this.dialogRef.close();
   }
 
+  ngOnInit(): void {
+
+  }
+
   ngAfterViewInit(): void {
+    const values1 = JSON.stringify(
+      this.data.model.attachments.map(attachment => `${attachment.name}/${attachment.id}/${attachment.pathName}/${attachment.fileName}`
+    ));
+    console.log(values1)
+    // if (this.data.model.attachments.length) {
+    //   this.fileService.getAttachment({values, deleteValues: 'DELETE'})
+    //     .subscribe(files => this.files = files);
+    // }
     let values = '["';
     this.data.model.attachments.forEach((attachment, index) => {
       values += attachment.name + '/' + attachment.id + '/' + attachment.pathName + '/' +
@@ -38,6 +50,7 @@ export class NewsPopoverComponent implements AfterViewInit{
     });
 
     values += '"]';
+    console.log(values, '2');
 
     if (this.data.model.attachments.length) {
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
@@ -45,7 +58,7 @@ export class NewsPopoverComponent implements AfterViewInit{
     }
   }
 
-  onSave(data): void {
+  onSave(): void {
     this.data.model.attachments = [];
     if (this.files.length) {
       this.files.forEach(file => {
@@ -59,7 +72,8 @@ export class NewsPopoverComponent implements AfterViewInit{
       });
 
     }
-    this.dialogRef.close(data)
+    console.log(this.data.model);
+    this.dialogRef.close(this.data.model);
   }
 
   uploadFile(event) {
@@ -70,6 +84,7 @@ export class NewsPopoverComponent implements AfterViewInit{
   }
 
   onPaste(clipboardData: DataTransfer): void {
+    
     if (clipboardData.files.length > 0) {
       this.fileService.uploadFile(clipboardData.files[0])
         .subscribe(files => this.files.push(files[0]));

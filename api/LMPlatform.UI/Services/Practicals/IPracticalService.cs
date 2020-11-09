@@ -50,5 +50,9 @@ namespace LMPlatform.UI.Services.Practicals
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/DeleteVisitingDate")]
         ResultViewData DeleteVisitingDate(int id);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/UpdateOrder", RequestFormat = WebMessageFormat.Json, Method = "POST")]
+        ResultViewData UpdateOrders(List<UpdateOrder> objs);
     }
 }

@@ -14,5 +14,6 @@ namespace LMPlatform.UI.Services.Parental
         [OperationContract]
         [WebInvoke(UriTemplate = "/LoadGroup?groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
         ParentalResult LoadGroup(string groupId);
+
     }
 }

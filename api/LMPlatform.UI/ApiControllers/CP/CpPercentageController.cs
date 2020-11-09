@@ -39,6 +39,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             return SavePercentage(percentage);
         }
 
+        [HttpDelete]
         public void Delete(int id)
         {
             PercentageService.DeletePercentage(WebSecurity.CurrentUserId, id);

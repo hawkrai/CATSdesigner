@@ -4,7 +4,7 @@ import {Lab} from "../../models/lab.model";
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {LabsRestService} from './labs-rest.service';
-import {LoadLabs} from '../../store/actions/labs.actions';
+// import {LoadLabs} from '../../store/actions/labs.actions';
 import {getLabs, getLabsCalendar} from '../../store/selectors/labs.selectors';
 
 @Injectable({
@@ -17,9 +17,9 @@ export class LabsService {
               private rest: LabsRestService) {
   }
 
-  loadData() {
-    this.store$.dispatch(new LoadLabs());
-  }
+  // loadData() {
+  //   this.store$.dispatch(new LoadLabs());
+  // }
 
   public getLabsProtectionSchedule() {
     return this.store$.pipe(select(getLabs));
@@ -45,17 +45,17 @@ export class LabsService {
     return this.rest.deleteLab(lab);
   }
 
-  public createDateVisit(body: {subGroupId: string, date: string}) {
-    this.rest.createDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.loadData()
-    })
-  }
+  // public createDateVisit(body: {subGroupId: string, date: string}) {
+  //   this.rest.createDateVisit(body).subscribe(res => {
+  //     res.Code === '200' && this.loadData()
+  //   })
+  // }
 
-  public deleteDateVisit(body: {id: string}) {
-    this.rest.deleteDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.loadData()
-    })
-  }
+  // public deleteDateVisit(body: {id: string}) {
+  //   this.rest.deleteDateVisit(body).subscribe(res => {
+  //     res.Code === '200' && this.loadData()
+  //   })
+  // }
 
   public setLabsVisitingDate(body) {
     return this.rest.setLabsVisitingDate(body);

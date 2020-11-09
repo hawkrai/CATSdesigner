@@ -832,7 +832,6 @@ namespace Application.Infrastructure.SubjectManagement
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
-
 			repositoriesContainer.LecturesRepository.Save(lectures);
 			repositoriesContainer.ApplyChanges();
 
@@ -841,6 +840,37 @@ namespace Application.Infrastructure.SubjectManagement
 
 			return lectures;
 		}
+
+		public Lectures UpdateLectureOrder(int id, int order)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			var lecture = repositoriesContainer.LecturesRepository.GetBy(new Query<Lectures>(l => l.Id == id));
+			lecture.Order = order;
+			repositoriesContainer.LecturesRepository.Save(lecture);
+			repositoriesContainer.ApplyChanges();
+			return lecture;
+
+		}
+
+		public Practical UpdatePracticalOrder(int id, int order)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			var practical = repositoriesContainer.PracticalRepository.GetBy(new Query<Practical>(p => p.Id == id));
+			practical.Order = order;
+			repositoriesContainer.PracticalRepository.Save(practical);
+			repositoriesContainer.ApplyChanges();
+			return practical;
+		}
+
+		public Labs UpdateLabOrder(int id, int order)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			var lab = repositoriesContainer.LabsRepository.GetBy(new Query<Labs>(l => l.Id == id));
+			lab.Order = order;
+			repositoriesContainer.LabsRepository.Save(lab);
+			repositoriesContainer.ApplyChanges();
+			return lab;
+        }
 
 		private string GetGuidFileName()
 		{
@@ -1204,5 +1234,6 @@ namespace Application.Infrastructure.SubjectManagement
 
 			return count;
 		}
-	}
+
+    }
 }

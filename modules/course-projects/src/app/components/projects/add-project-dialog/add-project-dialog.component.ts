@@ -18,7 +18,7 @@ interface DialogData {
 export class AddProjectDialogComponent {
 
   private nameControl: FormControl = new FormControl(this.data.name,
-    [Validators.minLength(3), Validators.maxLength(255), Validators.required]);
+    [Validators.minLength(3), Validators.maxLength(255), Validators.required, this.noWhitespaceValidator]);
 
   private groups: CoreGroup[];
 
@@ -53,6 +53,12 @@ export class AddProjectDialogComponent {
 
   trackByFn(index, item) {
     return item.Id;
+  }
+
+  public noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { 'whitespace': true };
   }
 
 }

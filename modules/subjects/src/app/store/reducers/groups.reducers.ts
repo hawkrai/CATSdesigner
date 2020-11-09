@@ -1,21 +1,25 @@
+import { createReducer, on } from '@ngrx/store';
 import {GroupsState, initialGroupsState} from '../state/groups.state';
-import {EGroupsActions, GroupsActions} from '../actions/groups.actions';
+import * as groupActions from '../actions/groups.actions';
 
-export const groupsReducers = (state = initialGroupsState, action: GroupsActions): GroupsState => {
-  switch (action.type) {
-    case EGroupsActions.SET_GROUPS:
-      return {
-        ...state,
-        groups: action.payload
-      };
-
-    case EGroupsActions.SET_CURRENT_GROUP:
-      return {
-        ...state,
-        currentGroup: action.payload
-      };
-
-    default:
-      return state;
-  }
-};
+export const groupsReducers = createReducer(
+  initialGroupsState,
+  on(groupActions.loadGroupsSuccess, (state, action): GroupsState => ({
+    ...state,
+    groups: action.groups,
+    currentGroup: action.groups && action.groups.length ? action.groups[0] : null
+  })),
+  on(groupActions.setCurrentGroup, (state, action): GroupsState => ({
+    ...state,
+    currentGroup: action.group
+  })),
+  on(groupActions.setCurrentGroupById, (state, action): GroupsState => ({
+    ...state,
+    currentGroup: state.groups.find(g => g.groupId === action.id)
+  })),
+  on(groupActions.resetGroups, (state): GroupsState => ({
+    ...state,
+    currentGroup: null,
+    groups: []
+  }))
+);

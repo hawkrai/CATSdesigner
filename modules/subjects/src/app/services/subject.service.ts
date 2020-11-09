@@ -32,7 +32,7 @@ export class SubjectService {
     return this.http.get<Subject[]>('Subject/Subjects');
   }
 
-  public deleteSubjects(subjectId: number): Observable<any> {
+  public deleteSubject(subjectId: number): Observable<any> {
     return this.http.get('Subject/DeleteSubject/' + subjectId);
   }
 

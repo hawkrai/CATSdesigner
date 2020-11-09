@@ -53,6 +53,12 @@ namespace Application.Infrastructure.SubjectManagement
 
         Lectures SaveLectures(Lectures lectures, IList<Attachment> attachments, int userId);
 
+        Lectures UpdateLectureOrder(int id, int order);
+
+        Labs UpdateLabOrder(int id, int order);
+
+        Practical UpdatePracticalOrder(int id, int order);
+
         Labs SaveLabs(Labs labs, IList<Attachment> attachments, int userId);
 
 		UserLabFiles SaveUserLabFiles(UserLabFiles userLabFiles, IList<Attachment> attachments);

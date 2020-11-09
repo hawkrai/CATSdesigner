@@ -34,6 +34,10 @@ export class TaskSheetService {
     return this.http.get('api/CpTaskSheetTemplate', {params: new HttpParams({fromObject: params})});
   }
 
+  public getTemplates(params: string): Observable<any> {
+    return this.http.get('api/CpTaskSheetTemplate', { params: new HttpParams({ fromString: params })});
+  }
+
   public editTemplate(template: TaskSheetTemplate): Observable<any> {
     return this.http.post('api/CpTaskSheetTemplate', template);
   }

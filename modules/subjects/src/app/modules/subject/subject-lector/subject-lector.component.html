@@ -1,7 +1,7 @@
 <div class="subject-lector" *ngIf="joinedLectors && allLectors">
   <h1 mat-dialog-title>{{data.title}}</h1>
   <mat-form-field class="subject-lector__body">
-    <mat-select [value]="selectedLector ? selectedLector.LectorId : ''">
+    <mat-select [value]="selectedLector ? selectedLector.LectorId : ''" placeholder="Выберете преподавателя">
       <mat-option *ngFor="let lector of allLectors"
                   (onSelectionChange)="_selectedLector($event)"
                   [value]="lector.LectorId"

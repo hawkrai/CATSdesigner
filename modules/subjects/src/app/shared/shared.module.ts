@@ -6,13 +6,15 @@ import {FormsModule} from '@angular/forms';
 import {FilterPipe} from './pipes/filter.pipe';
 import { PluarPipe } from './pipes/pluar.pipe';
 import { FirstLetterUppercasePipe } from './pipes/first-letter-uppercase.pipe';
+import { ToColumnPipe } from './pipes/to-column.pipe';
 
 @NgModule({
   declarations: [
     FilterPipe,
     FirstLetterUppercasePipe,
     PluarPipe,
-    VarDirective
+    VarDirective,
+    ToColumnPipe
   ],
   imports: [
     CommonModule,
@@ -23,7 +25,8 @@ import { FirstLetterUppercasePipe } from './pipes/first-letter-uppercase.pipe';
     PluarPipe,
     FirstLetterUppercasePipe,
     CommonModule,
-    VarDirective
+    VarDirective,
+    ToColumnPipe
   ]
 })
 export class SharedModule { }
