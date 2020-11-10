@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Lecture} from '../../models/lecture.model';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {Lab} from '../../models/lab.model';
 
 @Injectable({
@@ -22,8 +22,11 @@ export class PracticalRestService {
   }
 
   public getMarks(subjectId: number, groupId: string): Observable<any> {
-    return this.http.post('Services/Practicals/PracticalService.svc/GetPracticalsVisitingData', {subjectId, groupId}).pipe(
-      map(res => res['Students']))
+    return this.http.post('Services/Practicals/PracticalService.svc/GetPracticalsVisitingData', {subjectId, groupId})
+    // .pipe(
+    //   tap(x => console.log(x)),
+
+    //   map(res => res['Students']))
   }
 
   public updatePracticalsOrder(objs: { Id: number, Order: number}[]) {

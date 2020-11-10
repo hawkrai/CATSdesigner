@@ -39,7 +39,9 @@ export class VisitStatisticComponent implements OnInit {
         //   this.scheduleProtection = res;
         // });
         this.displayColumn = [];
-        this.refreshMarks();
+        if (this.subjectId && this.group) {
+          this.refreshMarks();
+        }
       });
     });
   }
@@ -47,6 +49,7 @@ export class VisitStatisticComponent implements OnInit {
   refreshMarks() {
     this.practicalService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
       this.student = res;
+      console.log(res)
       res && this.setDisplayColumn(res);
     })
   }
