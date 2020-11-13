@@ -41,7 +41,7 @@ export class NewsComponent implements OnInit {
   }
 
   public openItemInfo(item: any) {
-    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '700px',  position: {top: '10%'}, data: {itemNews: item}});
+    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '600px',  position: {top: '10%'}, data: {itemNews: item}});
   }
 
   public getSubjectShortName(id: number) {

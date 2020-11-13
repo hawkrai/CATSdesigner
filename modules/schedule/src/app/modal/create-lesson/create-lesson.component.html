@@ -1,4 +1,4 @@
-<div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
+<div class="example-container" style="overflow-y: initial !important" xmlns:position="http://www.w3.org/1999/xhtml">
   <form [formGroup]="formGroup">
     <mat-form-field>
       <mat-select [ngModel] ="lesson.subjectId"  [(ngModel)]="lesson.subjectId" formControlName="subjectF" required class="form-control">
@@ -69,8 +69,8 @@
     </mat-form-field>
   </form >
   <p></p>
-  <button mat-raised-button color="primary" (click)="add()" [disabled]="formGroup.invalid">Сохранить</button>
-  <button mat-raised-button color="warn" (click)=onCancelClick()>Отмена</button>
+  <button mat-raised-button color="primary" style="margin-top: 20px;" (click)="add()" [disabled]="formGroup.invalid">Сохранить</button>
+  <button mat-stroked-button color="primary" style="margin-top: 10px;" (click)=onCancelClick()>Отмена</button>
 
 </div>
 
