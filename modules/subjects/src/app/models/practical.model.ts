@@ -6,7 +6,7 @@ export class Practical {
     Duration: number;
     SubjectId: number;
     Order: number;
-    PathFile: number;
+    PathFile: string;
     ShortName: string;
     Attachments: Attachment[]
 }

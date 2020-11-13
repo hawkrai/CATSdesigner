@@ -33,6 +33,7 @@ import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover
 import {LecturesListComponent} from './modules/lectures/components/lectures-list/lectures-list.component';
 import {VisitLecturesComponent} from './modules/lectures/components/visit-lectures/visit-lectures.component';
 import { SubjectEffect } from './store/effects/subject.effects';
+import { PracticalsEffects } from './store/effects/practicals.effects';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,7 @@ import { SubjectEffect } from './store/effects/subject.effects';
     PracticalModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [

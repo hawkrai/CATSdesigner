@@ -1,3 +1,4 @@
+import { CreateEntity } from './../../models/form/create-entity.model';
 import { ScheduleProtectionLab } from './../../models/lab.model';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
@@ -5,6 +6,7 @@ import {Observable} from 'rxjs';
 import {map} from "rxjs/operators";
 import {ConverterService} from "../converter.service";
 import {Lab} from "../../models/lab.model";
+import { UpdateLab } from 'src/app/models/form/update-lab.model';
 
 @Injectable({
   providedIn: 'root'
@@ -41,12 +43,16 @@ export class LabsRestService {
       map(res => res['Students']))
   }
 
-  public createLab(lab: Lab) {
+  public createLab(lab: CreateEntity) {
     return this.http.post('Services/Labs/LabsService.svc/Save', lab);
   }
 
   public updateLabsOrder(objs: { Id: number, Order: number }[]) {
     return this.http.post('Services/Labs/LabsService.svc/UpdateLabsOrder', { objs });
+  }
+
+  public updateLabs(labs: UpdateLab[]) {
+    return this.http.post('Services/Labs/LabsService.svc/UpdateLabs', { labs });
   }
 
   public deleteLab(lab: {id: string, subjectId: number}) {

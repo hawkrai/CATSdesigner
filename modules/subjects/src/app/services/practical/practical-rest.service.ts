@@ -5,6 +5,8 @@ import {Observable} from 'rxjs';
 import {Lecture} from '../../models/lecture.model';
 import {map, tap} from 'rxjs/operators';
 import {Lab} from '../../models/lab.model';
+import { UpdateLab } from 'src/app/models/form/update-lab.model';
+import { CreateEntity } from 'src/app/models/form/create-entity.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,17 +25,13 @@ export class PracticalRestService {
 
   public getMarks(subjectId: number, groupId: string): Observable<any> {
     return this.http.post('Services/Practicals/PracticalService.svc/GetPracticalsVisitingData', {subjectId, groupId})
-    // .pipe(
-    //   tap(x => console.log(x)),
-
-    //   map(res => res['Students']))
   }
 
-  public updatePracticalsOrder(objs: { Id: number, Order: number}[]) {
-    return this.http.post('Services/Practicals/PracticalService.svc/UpdateOrder', { objs });
+  public updatePracticals(practicals: UpdateLab[]) {
+    return this.http.post('Services/Practicals/PracticalService.svc/UpdatePracticals', { practicals });
   }
 
-  public createPracticalLessons(practicalLesson) {
+  public createPracticalLessons(practicalLesson: CreateEntity) {
     return this.http.post('Services/Practicals/PracticalService.svc/Save', practicalLesson);
   }
 

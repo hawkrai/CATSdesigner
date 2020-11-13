@@ -46,7 +46,9 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
     this.store.dispatch(groupActions.loadGroups());
     this.store.select(groupSelectors.getGroups).subscribe(res => {
       this.groups = res;
-      this.selectGroupId = res[0].groupId;
+      if (res && res.length > 0) {
+        this.selectGroupId = res[0].groupId;
+      }
     });
 
     this.lecturesService.loadCalendar();
@@ -85,7 +87,7 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
 
   settingVisitDate() {
     const dialogData: DialogData = {
-      title: 'График занятий',
+      title: 'Даты занятий',
       buttonText: 'Добавить',
       body: {service: this.lecturesService, restBody: {subjectId: this.subjectId}},
     };

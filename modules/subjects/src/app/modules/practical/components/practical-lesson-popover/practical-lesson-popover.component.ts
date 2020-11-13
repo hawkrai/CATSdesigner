@@ -19,6 +19,7 @@ export class PracticalLessonPopoverComponent implements AfterViewInit {
     private fileService: FileService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dialogRef.disableClose = true;
+    this.data.model.shortName = `ПР${this.data.model.order}`;
   }
 
   ngAfterViewInit(): void {

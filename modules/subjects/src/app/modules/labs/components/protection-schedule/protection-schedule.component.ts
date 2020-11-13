@@ -12,6 +12,7 @@ import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
 import * as labsActions from '../../../../store/actions/labs.actions';
+import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -27,7 +28,6 @@ export class ProtectionScheduleComponent implements OnInit {
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'theme'];
 
-  private subjectId: number;
 
   constructor(private labService: LabsService,
               private store: Store<IAppState>,
@@ -35,24 +35,20 @@ export class ProtectionScheduleComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
+    this.store.dispatch(labsActions.loadLabsSchedule());
 
-      this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-        this.store.dispatch(labsActions.loadLabs());
-        this.labService.getCalendar().subscribe(res => {
-          this.scheduleProtectionLabs = res;
-          this.scheduleProtectionLabs.forEach(lab => {
-            if (!this.numberSubGroups.includes(lab.subGroup)) {
-              this.numberSubGroups.push(lab.subGroup);
-              this.numberSubGroups.sort((a, b) => a-b)
-            }
-          });
-        });
-        this.labService.getLabsProtectionSchedule().subscribe(res => {
-          this.labs = res;
-        })
+    this.store.select(labsSelectors.getLabsCalendar).subscribe(res => {
+      this.scheduleProtectionLabs = res;
+      this.scheduleProtectionLabs.forEach(lab => {
+        if (!this.numberSubGroups.includes(lab.subGroup)) {
+          this.numberSubGroups.push(lab.subGroup);
+          this.numberSubGroups.sort((a, b) => a-b)
+        }
       });
+    });
+
+    this.store.select(labsSelectors.getLabs).subscribe(res => {
+       this.labs = res;
     });
   }
 

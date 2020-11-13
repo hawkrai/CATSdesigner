@@ -4,16 +4,16 @@ import {MatOptionSelectionChange} from "@angular/material/core";
 import {select, Store} from '@ngrx/store';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {filter, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
-import {GroupsService} from '../../services/groups/groups.service';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
 import * as groupActions from '../../store/actions/groups.actions';
 import {Group} from '../../models/group.model';
 import {DialogData} from '../../models/dialog-data.model';
 import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
+import * as labsActions from '../../store/actions/labs.actions';
 
 interface State {
   groups: Group[];
@@ -46,7 +46,7 @@ export class LabsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.state$ = combineLatest(
-      this.store.select(groupSelectors.getGroups), 
+      this.store.select(groupSelectors.getGroups),
       this.store.select(groupSelectors.getCurrentGroup),
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(subjectSelectors.getSubjectId)
@@ -71,6 +71,7 @@ export class LabsComponent implements OnInit, OnDestroy {
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
+      this.store.dispatch(labsActions.loadLabsSchedule());
     }
   }
 
