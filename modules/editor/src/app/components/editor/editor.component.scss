@@ -2,10 +2,11 @@
   background-color: #fafafa;
   display: flex;
   width: calc(100% - 20px);
-  height: calc(100vh - 20px);
+  height: calc(100% - 20px);
   flex-flow: row nowrap;
   padding: 10px;
   justify-content: flex-start;
+  overflow-x: hidden;
 
   .flex-tree-container {
     height: calc(100% - 41px);
