@@ -12,12 +12,12 @@
     
     /* Handle */
     ::ng-deep ::-webkit-scrollbar-thumb {
-    background: #3f51b5;
+    background: #a7a7a7;
     border-radius: 1px;
     }
     
     /* Handle on hover */
     ::ng-deep ::-webkit-scrollbar-thumb:hover {
-    background: #3f51b5;
+    background: #a7a7a7;
     }
   
