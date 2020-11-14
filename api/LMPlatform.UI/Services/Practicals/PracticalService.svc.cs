@@ -240,13 +240,17 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public ResultViewData UpdateOrders(List<UpdateOrder> objs)
+        public ResultViewData UpdatePracticals(List<UpdateLab> practicals)
         {
             try
             {
-                foreach (var obj in objs)
+                foreach (var practical in practicals)
                 {
-                    SubjectManagementService.UpdatePracticalOrder(obj.Id, obj.Order);
+                    var response = Save(practical.SubjectId, practical.Id, practical.Theme, practical.Duration, practical.Order, practical.ShortName, practical.PathFile, practical.Attachments);
+                    if (response.Code == "500")
+                    {
+                        throw new Exception(response.Message);
+                    }
                 }
                 return new ResultViewData
                 {

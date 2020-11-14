@@ -20,8 +20,7 @@ export class LecturesComponent implements OnInit, OnDestroy {
   state$: Observable<{ isTeacher: boolean, subjectId: number }>;
   tabs = ['Лекции', 'Посещение лекций'];
 
-  constructor(private store: Store<IAppState>,
-              private groupsService: GroupsService) {
+  constructor(private store: Store<IAppState>) {
   }
   ngOnDestroy(): void {
     this.store.dispatch(groupActions.resetGroups());

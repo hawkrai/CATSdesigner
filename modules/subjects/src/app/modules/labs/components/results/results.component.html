@@ -16,7 +16,10 @@
         <ng-container *ngFor="let scheduleProtectionLab of header; let j = index"
                       matColumnDef="{{scheduleProtectionLab.head}}"
         >
-          <th mat-header-cell *matHeaderCellDef >
+          <th mat-header-cell *matHeaderCellDef
+          [matTooltip]="scheduleProtectionLab.tooltip"
+          matTooltipPosition="above" 
+          >
             <div>{{scheduleProtectionLab.text}}</div>
           </th>
           <td mat-cell

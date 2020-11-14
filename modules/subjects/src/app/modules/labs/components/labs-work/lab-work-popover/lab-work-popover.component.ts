@@ -19,10 +19,10 @@ export class LabWorkPopoverComponent implements AfterViewInit {
     private fileService: FileService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dialogRef.disableClose = true;
+    this.data.model.shortName = `ЛР${this.data.model.order}`;
   }
 
   ngAfterViewInit(): void {
-    console.log(this.data.model);
     let values = '["';
     this.data.model.attachments.forEach((attachment, index) => {
       values += attachment.name + '/' + attachment.id + '/' + attachment.pathName + '/' +

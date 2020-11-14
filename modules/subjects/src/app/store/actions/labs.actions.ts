@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { CreateEntity } from 'src/app/models/form/create-entity.model';
 import {Lab, ScheduleProtectionLab} from '../../models/lab.model';
 
 export const loadLabs = createAction(
@@ -21,7 +22,7 @@ export const laodLabsScheduleSuccess = createAction(
 
 export const createLab = createAction(
   '[Labs] Create Lab',
-  props<{ lab: Lab }>()
+  props<{ lab: CreateEntity }>()
 );
 
 export const deleteLab = createAction(
@@ -29,8 +30,8 @@ export const deleteLab = createAction(
   props<{ id: string }>()
 );
 
-export const updateLabsOrder = createAction(
-  '[Labs] Update Labs Order',
+export const updateLabs = createAction(
+  '[Labs] Update Labs',
   props<{ labs: Lab[] }>()
 );
 

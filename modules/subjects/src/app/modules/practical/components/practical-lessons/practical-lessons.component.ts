@@ -5,14 +5,18 @@ import {DialogData} from '../../../../models/dialog-data.model';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
-import {PracticalService} from '../../../../services/practical/practical.service';
-import {getSubjectId} from '../../../../store/selectors/subject.selector';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {PracticalLessonPopoverComponent} from '../practical-lesson-popover/practical-lesson-popover.component';
 import {Practical} from '../../../../models/practical.model';
 import { MatTable } from '@angular/material';
+
+import * as practicalsActions from '../../../../store/actions/practicals.actions';
+import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
+import { CreateEntity } from 'src/app/models/form/create-entity.model';
+import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
+
 @Component({
   selector: 'app-practical-lessons',
   templateUrl: './practical-lessons.component.html',
@@ -25,7 +29,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
   public practicalLessons: Practical[];
   public practicalCopy: Practical[];
-  private subjectId: number;
+  private prefix = 'ПР';
 
   public displayedColumns: string[] = [
 
@@ -42,14 +46,14 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     public dialog: MatDialog,         
     private store: Store<IAppState>,    
     private cdRef: ChangeDetectorRef,
-    private practicalService: PracticalService) { }
+    private practicalService: PracticalRestService) { }
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
-
-      this.refreshDate();
-    })
+    this.store.dispatch(practicalsActions.loadPracticals());
+    this.store.select(practicalsSelectors.getPracticals).subscribe(res => {
+      this.practicalLessons = res;
+      this.practicalCopy = [...res.map(p => ({ ...p }))];
+    });
   }
   
   ngOnChanges(changes: SimpleChanges): void {
@@ -60,10 +64,14 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   }
 
   ngOnDestroy(): void {
-    const toSave = this.practicalLessons.filter(l => l.Order !== this.practicalCopy.find(lc => lc.PracticalId === l.PracticalId).Order);
+    const toSave = this.practicalLessons.filter(p => {
+      const copy =  this.practicalCopy.find(pc => pc.PracticalId === p.PracticalId);
+      return p.Order !== copy.Order || p.ShortName !== copy.ShortName;
+    });
     if (toSave.length) {
-      this.practicalService.updatePracticalsOrder(toSave.map(l => ({ Id: l.PracticalId, Order: l.Order }))).subscribe();   
+      this.store.dispatch(practicalsActions.updatePracticals({ practicals: toSave }));
     }
+    this.store.dispatch(practicalsActions.resetPracticals());
   }
 
   ngAfterViewChecked(): void {
@@ -71,10 +79,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   }
 
   refreshDate() {
-    this.practicalService.getAllPracticalLessons(this.subjectId).subscribe(res => {
-      this.practicalLessons = res;
-      this.practicalCopy = [...res.map(p => ({ ...p }))];
-    });
+
   }
 
   constructorLesson(lesson?) {
@@ -90,12 +95,12 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         result.attachments = JSON.stringify(result.attachments);
-        this.practicalService.createPracticalLessons(result).subscribe(res => res['Code'] === "200" && this.refreshDate());
+        this.store.dispatch(practicalsActions.createPractical({ practical: result as CreateEntity }));
       }
     });
   }
 
-  deleteLesson(lesson) {
+  deleteLesson(lesson: Practical) {
     const dialogData: DialogData = {
       title: 'Удаление практического занятия',
       body: 'практическое занятие "' + lesson.Theme + '"',
@@ -105,8 +110,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.practicalService.deletePracticalLessons({id: lesson.PracticalId, subjectId: this.subjectId})
-          .subscribe(res => res['Code'] === "200" && this.refreshDate());
+        this.store.dispatch(practicalsActions.deletePractical({ id: lesson.PracticalId.toString() }));
       }
     });
   }
@@ -116,8 +120,10 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     if (prevIndex === event.currentIndex) {
       return;
     }
-    this.practicalLessons[prevIndex].Order = event.currentIndex;
-    this.practicalLessons[event.currentIndex].Order = prevIndex;
+    this.practicalLessons[prevIndex].Order = event.currentIndex + 1;
+    this.practicalLessons[prevIndex].ShortName = `${this.prefix}${this.practicalLessons[prevIndex].Order}`;
+    this.practicalLessons[event.currentIndex].Order = prevIndex + 1;
+    this.practicalLessons[event.currentIndex].ShortName = `${this.prefix}${this.practicalLessons[event.currentIndex].Order}`;
     moveItemInArray(this.practicalLessons, prevIndex, event.currentIndex);
     this.table.renderRows();
   }
@@ -152,13 +158,12 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     return this.dialog.open(popover, {data});
   }
 
-  private getLesson(lesson?) {
+  private getLesson(lesson?: Practical) {
     return {
       id: lesson ? lesson.PracticalId : 0,
-      subjectId: this.subjectId,
       theme: lesson ? lesson.Theme : '',
       duration: lesson ? lesson.Duration : '',
-      order: lesson ? lesson.Order : 0,
+      order: lesson ? lesson.Order : this.practicalLessons.length + 1,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],
       shortName: lesson ? lesson.ShortName : ''

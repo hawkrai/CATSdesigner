@@ -107,7 +107,7 @@ namespace LMPlatform.UI.Services.Labs
 		ResultPSubjectViewData CheckPlagiarismSubjects(string subjectId, int type, int threshold, bool isCp);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/UpdateLabsOrder")]
-        ResultViewData UpdateLabsOrder(List<UpdateOrder> objs);
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/UpdateLabs")]
+        ResultViewData UpdateLabs(List<UpdateLab> labs);
     }
 }

@@ -7,8 +7,8 @@
             *ngFor="let module of modules" 
             [ngClass]="{active: clickedItem === getModuleItem(module.Type)}" 
             (click)="navigateToModule(module.Type)">
-                <div mat-line>
-                    <mat-icon class="white-icon">{{getModuleIcon(module.Type)}}</mat-icon>
+                <div mat-line style="display: flex; justify-content: center;">
+                    <img [src]="getModuleIcon(module.Type)" alt="Icon" class="icon">
                 </div>                
                 <div mat-line>{{module.Name}}</div>
             </a> 

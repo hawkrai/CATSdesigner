@@ -471,7 +471,7 @@
     <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingResult.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingViewData.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesResult.cs" />
-    <Compile Include="Services\Modules\UpdateOrder.cs" />
+    <Compile Include="Services\Modules\UpdateLab.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesViewData.cs" />
     <Compile Include="Services\Modules\AttachmentViewData.cs" />
     <Compile Include="Services\Modules\Lectures\StudentMarkForDate.cs" />
@@ -500,6 +500,7 @@
     <Compile Include="Services\Modules\ResultViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />
+    <Compile Include="Services\Modules\UpdateOrder.cs" />
     <Compile Include="Services\News\INewsService.cs" />
     <Compile Include="Services\News\NewsService.svc.cs">
       <DependentUpon>NewsService.svc</DependentUpon>

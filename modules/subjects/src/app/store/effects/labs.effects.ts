@@ -1,3 +1,5 @@
+import { ConverterService } from './../../services/converter.service';
+import { LabsService } from './../../services/labs/labs.service';
 import {Injectable} from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import {Action, Store} from '@ngrx/store';
@@ -15,6 +17,7 @@ export class LabsEffects {
 
   constructor(private actions$: Actions,
               private store: Store<IAppState>,
+              private converterService: ConverterService,
               private rest: LabsRestService) {
   }
 
@@ -50,9 +53,9 @@ export class LabsEffects {
     ))
   ));
 
-  updateLabsOrder$ = createEffect(() => this.actions$.pipe(
-    ofType(labsActions.updateLabsOrder),
-    map(({ labs }) => labs.map(l => ({ Id: +l.labId, Order: l.order }))),
-    switchMap(objs => this.rest.updateLabsOrder(objs))
+  updateLabs$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.updateLabs),
+    map(({ labs }) => this.converterService.labsUpdateConverter(labs)),
+    switchMap(labs => this.rest.updateLabs(labs))
   ), { dispatch: false });
-} 
+}

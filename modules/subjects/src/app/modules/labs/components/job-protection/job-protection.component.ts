@@ -9,9 +9,11 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AddLabPopoverComponent} from './add-lab-popover/add-lab-popover.component';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {User} from '../../../../models/user.model';
-import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
 import {filter} from 'rxjs/operators';
 import {CheckPlagiarismStudentComponent} from './check-plagiarism-student/check-plagiarism-student.component';
+
+import * as groupActions from '../../../../store/actions/groups.actions';
+import * as groupSelectors from '../../../../store/selectors/groups.selectors';
 
 @Component({
   selector: 'app-job-protection',
@@ -55,7 +57,7 @@ export class JobProtectionComponent implements OnInit {
 
   refreshDate(date?) {
     if (this.teacher) {
-      this.store.pipe(select(getCurrentGroup))
+      this.store.pipe(select(groupSelectors.getCurrentGroup))
         .pipe(filter(group => !!group))
         .subscribe(group => {
           this.labService.getAllStudentFilesLab(this.subjectId, group.groupId).subscribe(students => {

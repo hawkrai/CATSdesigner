@@ -25,7 +25,7 @@
               (dblclick)="setVisitMarks(scheduleProtectionLab, i)">
             {{element.LabVisitingMark[i] && element.LabVisitingMark[i].Mark}}
             <div *ngIf="element.LabVisitingMark[i] && element.LabVisitingMark[i].Comment" class="comment">
-              <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
+              <mat-icon class="comment-icon" [matTooltip]="element.LabVisitingMark[i].Comment" matTooltipPosition="above">chat_bubble_outline</mat-icon>
             </div>
           </td>
         </ng-container>
@@ -34,7 +34,11 @@
         <ng-container *ngFor='let labName of header'
                       matColumnDef="{{labName.head}}"
         >
-          <th class="lab-name" mat-header-cell *matHeaderCellDef
+          <th 
+          [matTooltip]="labName.tooltip"
+          [matTooltipDisabled]="!labName.tooltip"
+          matTooltipPosition="above"
+          class="lab-name" mat-header-cell *matHeaderCellDef
               [attr.colspan]="labName.length">
             {{labName.text}}
           </th>
