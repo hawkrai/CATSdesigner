@@ -32,7 +32,7 @@
 							<mat-error *ngIf="hasError('password', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
                             <mat-error *ngIf="hasError('password', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="this.isControlInvalid('password')">Используйте только латинские буквы (хотя бы одну маленькую и большую), знак подчеркивания и хотя бы одну цифру.</mat-error>
+                            
 							<button mat-icon-button matSuffix (click)="hide = !hide">
 								<mat-icon> {{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 							</button>

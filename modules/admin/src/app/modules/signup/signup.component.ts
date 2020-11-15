@@ -119,4 +119,8 @@ export class SignupComponent implements OnInit {
         window.parent.location.href = "/login";
       });
   }
+
+  cancel() {
+    window.parent.location.href = "/login";
+  }
 }
