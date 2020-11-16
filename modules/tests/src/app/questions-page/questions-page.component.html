@@ -20,6 +20,7 @@
                [forNN]="test?.ForNN"
                (addNewQuestion)="addNewQuestion()"
                (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest($event)"
+               (createNeuralNetworkEvent)="createNeuralNetwork()"
                (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
 <div class="question-page-container-table-tests">
   <app-table-questions
