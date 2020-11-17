@@ -3,6 +3,7 @@ using LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm;
 using LMPlatform.AdaptiveLearningCore.Models;
 using LMPlatform.AdaptiveLearningCore.Shared;
 using LMPlatform.AdaptiveLearningCore.SimpleAdaptivityAlgorithm;
+using LMPlatform.Models.AdaptivityLearning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,11 @@ namespace LMPlatform.AdaptiveLearningCore
             adaptivityAlgorithm.MarkAllAvailableThemas(predTestResults);
 
             return predTestResults.Where(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN).Select(x => x.ThemaId).ToList();
+        }
+
+        public void ProcessPredTestResults(IEnumerable<PredTestResults> predTestResults)
+        {
+            adaptivityAlgorithm.MarkAllAvailableThemas(predTestResults);
         }
 
         public List<int> PrepareListOfTestQuestions(IEnumerable<ThemaResult> prevThemaResult, IEnumerable<TestQuestion> testQuestions,

@@ -1,5 +1,6 @@
 ﻿using LMPlatform.AdaptiveLearningCore.BaseAdaptivityAlgorithm;
 using LMPlatform.AdaptiveLearningCore.Shared;
+using LMPlatform.Models.AdaptivityLearning;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -59,19 +59,17 @@
     <Compile Include="ExtendedAdaptivityAlgorithm\TestPreparatorBlock\PerformanceEstimater.cs" />
     <Compile Include="ExtendedAdaptivityAlgorithm\TestPreparatorBlock\TestDificultyPreparator.cs" />
     <Compile Include="ExtendedAdaptivityAlgorithm\TestPreparatorBlock\TestQuestionPreparator.cs" />
-    <Compile Include="Models\ConceptThema.cs" />
-    <Compile Include="Models\PredTestResults.cs" />
     <Compile Include="Models\TestQuestion.cs" />
-    <Compile Include="Models\ThemaResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shared\AdaptivityType.cs" />
     <Compile Include="Shared\TestsDifficulties.cs" />
-    <Compile Include="Shared\ThemaResults.cs" />
-    <Compile Include="Shared\ThemaResume.cs" />
-    <Compile Include="Shared\ThemaSolutions.cs" />
     <Compile Include="SimpleAdaptivityAlgorithm\SimpleAdaptivity.cs" />
     <Compile Include="SimpleAdaptivityAlgorithm\TestResultSimpleProcessor.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\LMPlatform.Models\LMPlatform.Models.csproj">
+      <Project>{498FCA3E-909B-4830-9B55-0A8847E38B7A}</Project>
+      <Name>LMPlatform.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
