@@ -37,6 +37,10 @@ export class FilesComponent implements OnInit {
 
     values += '"]';
 
+    console.log(values);
+    console.log('check');
+    console.log(JSON.stringify(attachments.map(a => `${a.Name}/${a.Id}/${a.PathName}/${a.FileName}`)));
+
     if (attachments.length) {
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
         .subscribe(files => this.files = files);

@@ -10,6 +10,7 @@
 
     using LMPlatform.Models;
     using LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel;
+    using Newtonsoft.Json;
 
     public class NewsController : ApiController
     {
@@ -52,61 +53,62 @@
             }
         }
 
-        [System.Web.Http.HttpPost]
-        public JsonResult Save([FromBody]SubjectNews model)
-        {
-            try
-            {
-                model.EditDate = DateTime.Now;
-                SubjectManagementService.SaveNews(model);
-                return new JsonResult()
-                {
-                    Data = new
-                    {
-                        Message = "Новость успешно сохранена",
-                        Error = false
-                    }
-                };
-            }
-            catch (Exception)
-            {
-                return new JsonResult()
-                {
-                    Data = new
-                    {
-                        Message = "Произошла ошибка при сохранении новости",
-                        Error = true
-                    }
-                };
-            }
-        }
+        //[System.Web.Http.HttpPost]
+        //public JsonResult Save([FromBody]SubjectNews model)
+        //{
+        //    try
+        //    {
+        //        model.EditDate = DateTime.Now;
+        //        var attachments = JsonConvert.DeserializeObject<List<Attachment>>(model.Attachments);
+        //        SubjectManagementService.SaveNews(model);
+        //        return new JsonResult()
+        //        {
+        //            Data = new
+        //            {
+        //                Message = "Новость успешно сохранена",
+        //                Error = false
+        //            }
+        //        };
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return new JsonResult()
+        //        {
+        //            Data = new
+        //            {
+        //                Message = "Произошла ошибка при сохранении новости",
+        //                Error = true
+        //            }
+        //        };
+        //    }
+        //}
 
-        [System.Web.Http.HttpPost]
-        public JsonResult Delete([FromUri]SubjectNews deleteData)
-        {
-            try
-            {
-                SubjectManagementService.DeleteNews(deleteData);
-                return new JsonResult()
-                {
-                    Data = new
-                    {
-                        Message = "Новость успешно удалена",
-                        Error = false
-                    }
-                };
-            }
-            catch (Exception)
-            {
-                return new JsonResult()
-                {
-                    Data = new
-                    {
-                        Message = "Произошла ошибка при удалении новости",
-                        Error = true
-                    }
-                };
-            }
-        }
+        //[System.Web.Http.HttpPost]
+        //public JsonResult Delete([FromUri]SubjectNews deleteData)
+        //{
+        //    try
+        //    {
+        //        SubjectManagementService.DeleteNews(deleteData);
+        //        return new JsonResult()
+        //        {
+        //            Data = new
+        //            {
+        //                Message = "Новость успешно удалена",
+        //                Error = false
+        //            }
+        //        };
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return new JsonResult()
+        //        {
+        //            Data = new
+        //            {
+        //                Message = "Произошла ошибка при удалении новости",
+        //                Error = true
+        //            }
+        //        };
+        //    }
+        //}
     }
 }

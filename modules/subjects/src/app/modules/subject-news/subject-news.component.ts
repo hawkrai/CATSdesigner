@@ -1,7 +1,7 @@
 import { map } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs';
-import {Component, ElementRef, OnDestroy, OnInit, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit } from '@angular/core';
 import {News} from '../../models/news.model';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
@@ -9,7 +9,6 @@ import {IAppState} from "../../store/state/app.state";
 import {Store} from '@ngrx/store';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {NewsPopoverComponent} from './news-popover/news-popover.component';
-import {NewsService} from '../../services/news/news.service';
 import {DialogData} from '../../models/dialog-data.model';
 import {Attachment} from '../../models/attachment.model';
 import * as subjectSelectors from '../../store/selectors/subject.selector';
@@ -36,8 +35,6 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   public news: News[];
 
-  // @ViewChildren("popoverContent")
-  // private popoverContent: ElementRef;
 
   constructor(
               private dialog: MatDialog,
@@ -73,7 +70,6 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   constructorNews(news?: News) {
     const nowDate = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
-    console.log(news);
     const newNews = {
       id: news ? news.id : '0',
       title: news ? news.title : '',
@@ -100,7 +96,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     );
   }
 
-  deleteNews(subjectId: number, news: News) {
+  deleteNews(news: News) {
     const dialogData: DialogData = {
       title: 'Удаление новости',
       body: 'новость "' + news.title + '"',

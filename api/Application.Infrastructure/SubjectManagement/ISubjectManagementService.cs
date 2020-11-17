@@ -23,9 +23,9 @@ namespace Application.Infrastructure.SubjectManagement
 
         Subject SaveSubject(Subject subject);
 
-        SubjectNews SaveNews(SubjectNews news);
+        SubjectNews SaveNews(SubjectNews news, IList<Attachment> attachments);
 
-        void DeleteNews(SubjectNews news);
+        void DeleteNews(int id, int subjectId);
 
         void DeleteLection(Lectures lectures);
 

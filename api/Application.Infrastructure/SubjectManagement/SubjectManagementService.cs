@@ -135,18 +135,64 @@ namespace Application.Infrastructure.SubjectManagement
 			return subject;
 		}
 
-		public SubjectNews SaveNews(SubjectNews news)
+		public SubjectNews SaveNews(SubjectNews news, IList<Attachment> attachments)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			repositoriesContainer.SubjectRepository.SaveNews(news);
+			if (!string.IsNullOrEmpty(news.Attachments))
+			{
+				var deleteFiles =
+					repositoriesContainer.AttachmentRepository.GetAll(
+						new Query<Attachment>(e => e.PathName == news.Attachments)).ToList().Where(e => attachments.All(x => x.Id != e.Id)).ToList();
+
+				foreach (var attachment in deleteFiles)
+				{
+					FilesManagementService.DeleteFileAttachment(attachment);
+				}
+			}
+			else
+			{
+				news.Attachments = GetGuidFileName();
+			}
+
+			FilesManagementService.SaveFiles(attachments.Where(e => e.Id == 0), news.Attachments);
+
+			foreach (var attachment in attachments)
+			{
+				if (attachment.Id == 0)
+				{
+					attachment.PathName = news.Attachments;
+					repositoriesContainer.AttachmentRepository.Save(attachment);
+				}
+			}
+
+			repositoriesContainer.NewsRepository.SaveNews(news);
 			repositoriesContainer.ApplyChanges();
+
 			return news;
 		}
 
-		public void DeleteNews(SubjectNews news)
+		public void DeleteNews(int id, int subjectId)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			repositoriesContainer.SubjectRepository.DeleteNews(news);
+			var news =
+				repositoriesContainer.NewsRepository.GetBy(
+					new Query<SubjectNews>(e => e.Id == id && e.SubjectId == subjectId));
+
+			var deleteFiles =
+				repositoriesContainer.AttachmentRepository.GetAll(
+					new Query<Attachment>(e => e.PathName == news.Attachments)).ToList();
+
+
+			foreach (var attachment in deleteFiles)
+			{
+				FilesManagementService.DeleteFileAttachment(attachment);
+			}
+
+			repositoriesContainer.ApplyChanges();
+
+			repositoriesContainer.NewsRepository.Delete(news);
+
+			repositoriesContainer.ApplyChanges();
 		}
 
 		public void DeleteLection(Lectures lectures)

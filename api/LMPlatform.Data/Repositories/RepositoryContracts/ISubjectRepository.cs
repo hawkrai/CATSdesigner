@@ -11,10 +11,6 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
         List<Subject> GetSubjectsV2(int groupId = 0, int lecturerId = 0);
 
         List<Subject> GetSubjectsLite(int? groupId = null);
-        
-        SubjectNews SaveNews(SubjectNews news);
-
-        void DeleteNews(SubjectNews news);
 
         void DeleteLection(Lectures lectures);
 

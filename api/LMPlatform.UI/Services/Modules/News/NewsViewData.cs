@@ -1,15 +1,25 @@
-﻿using System.Linq;
-using System.Runtime.Serialization;
-using LMPlatform.UI.Services.Modules.Files;
-using LMPlatform.UI.Services.Modules.Lectures;
+﻿using System.Runtime.Serialization;
 
 namespace LMPlatform.UI.Services.Modules.News
 {
+    using Application.Core;
+    using Application.Infrastructure.FilesManagement;
     using Models;
+    using System.Collections.Generic;
 
     [DataContract]
     public class NewsViewData
     {
+        private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
+
+        public IFilesManagementService FilesManagementService
+        {
+            get
+            {
+                return filesManagementService.Value;
+            }
+        }
+
         public NewsViewData()
         {
         }
@@ -22,13 +32,7 @@ namespace LMPlatform.UI.Services.Modules.News
             SubjectId = news.SubjectId;
             DateCreate = news.EditDate.ToShortDateString();
 	        Disabled = news.Disabled;
-            Attachments = news.Attachments.Select(a => new AttachmentViewData
-            {
-                AttachmentType = a.AttachmentType,
-                FileName = a.FileName,
-                Name = a.Name,
-                PathName = a.PathName
-            }).ToArray();
+            Attachments = FilesManagementService.GetAttachments(news.Attachments);
         }
 
         [DataMember]
@@ -50,6 +54,6 @@ namespace LMPlatform.UI.Services.Modules.News
         public bool Disabled { get; set; }
 
         [DataMember]
-        public AttachmentViewData[] Attachments { get; set; }
+        public IList<Attachment> Attachments { get; set; }
     }
 }
