@@ -464,6 +464,7 @@
     <Compile Include="Services\Modules\Labs\UserLabFilesResult.cs" />
     <Compile Include="Services\Modules\Labs\UserlabFilesViewData.cs" />
     <Compile Include="Services\Modules\LectorResult.cs" />
+    <Compile Include="Services\Modules\LectorsResult.cs" />
     <Compile Include="Services\Modules\LectorViewData.cs" />
     <Compile Include="Services\Modules\Lectures\CalendarResult.cs" />
     <Compile Include="Services\Modules\Lectures\CalendarViewData.cs" />

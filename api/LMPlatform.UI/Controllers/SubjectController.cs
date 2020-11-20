@@ -40,7 +40,7 @@ namespace LMPlatform.UI.Controllers
         {
             var lectures = new List<Attachment>();
             foreach (var att in this.SubjectManagementService.GetLecturesAttachments(int.Parse(subjectId)))
-                lectures.AddRange(this.FilesManagementService.GetAttachments(att).ToList());
+                lectures.AddRange(FilesManagementService.GetAttachments(att).ToList());
 
             var labs = new List<Attachment>();
             foreach (var att in this.SubjectManagementService.GetLabsAttachments(int.Parse(subjectId)))
@@ -61,6 +61,24 @@ namespace LMPlatform.UI.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
+
+        public ActionResult GetFileSubjectV2(int subjectId)
+        {
+            var attachements = SubjectManagementService.GetSubjectAttachments(subjectId);
+            return new JsonResult
+            {
+                Data = new
+                {
+                    Attachment = attachements
+                    .Where(att => !string.IsNullOrEmpty(att))
+                    .Select(att => FilesManagementService.GetAttachments(att))
+                    .Where(att => att.Count > 0)
+                    .Aggregate((acc, x) => acc.Concat(x).ToList())
+                },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
 
         [AllowAnonymous]
         public ActionResult GetFileSubjectJson(string subjectId)

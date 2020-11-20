@@ -1,9 +1,12 @@
+import { Store } from '@ngrx/store';
+import { StudentMark } from './../../models/student-mark.model';
 import { ConverterService } from './../converter.service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Lab} from "../../models/lab.model";
 import {LabsRestService} from './labs-rest.service';
-// import {LoadLabs} from '../../store/actions/labs.actions';
+import * as labSelectors from '../../store/selectors/labs.selectors';
+import { IAppState } from 'src/app/store/state/app.state';
 
 @Injectable({
   providedIn: 'root'
@@ -11,16 +14,22 @@ import {LabsRestService} from './labs-rest.service';
 
 export class LabsService {
 
-  constructor(private converterService: ConverterService,
+  constructor(
+    private store: Store<IAppState>,
+    private converterService: ConverterService,
               private rest: LabsRestService) {
+  }
+
+  public getCalendar() {
+    return this.store.select(labSelectors.getLabsCalendar);
   }
 
   public getLabWork(subjectId: number): Observable<Lab[]> {
     return this.rest.getLabWork(subjectId);
   }
 
-  public getMarks(subjectId: number, groupId: string): Observable<any> {
-    return this.rest.getMarks(subjectId, groupId);
+  public getMarks(subjectId: number, groupId: string): Observable<StudentMark[]> {
+    return this.rest.getMarksV2(subjectId, groupId);
   }
 
   public createLab(lab: Lab) {

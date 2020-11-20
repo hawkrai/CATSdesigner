@@ -27,6 +27,7 @@ export class ConverterService {
     newNews.dateCreate = news.DateCreate;
     newNews.disabled = news.Disabled;
     newNews.subjectId = news.SubjectId;
+    newNews.pathFile = news.PathFile;
     newNews.attachments = news.Attachments.map(attachment => this.attachmentModelConverter(attachment));
     return newNews;
   }

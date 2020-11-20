@@ -7,5 +7,6 @@ export class News {
   dateCreate: string;
   disabled: boolean;
   subjectId: string;
+  pathFile: string;
   attachments?: Attachment[];
 }

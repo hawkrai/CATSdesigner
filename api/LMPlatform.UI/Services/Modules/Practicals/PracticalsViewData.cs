@@ -40,7 +40,7 @@
             Order = practical.Order;
             PathFile = practical.Attachments;
             ShortName = practical.ShortName;
-            Attachments = FilesManagementService.GetAttachments(practical.Attachments);
+            Attachments = string.IsNullOrWhiteSpace(practical.Attachments) ? new List<Attachment>() : FilesManagementService.GetAttachments(practical.Attachments);
         }
 
         [DataMember]

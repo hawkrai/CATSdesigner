@@ -94,8 +94,10 @@ namespace Application.Infrastructure.SubjectManagement
         List<string> GetLecturesAttachments(int subjectId);
 
         List<string> GetLabsAttachments(int subjectId);
-
         List<string> GetPracticalsAttachments(int subjectId);
+        List<string> GetNewsAttachments(int subjectId);
+
+        IEnumerable<string> GetSubjectAttachments(int subjectId);
 
         void DeleteSubject(int id);
 
@@ -131,6 +133,7 @@ namespace Application.Infrastructure.SubjectManagement
 
         IList<SubGroup> GetSubGroupsV3(int subjectId, int groupId);
 
+        IList<SubGroup> GetSubGroupsV4(int subjectId, int groupId);
         List<Labs> GetLabsV2(int subjectId);
 
 	    IList<SubGroup> GetSubGroupsV2WithScheduleProtectionLabs(int subjectId, int groupId);

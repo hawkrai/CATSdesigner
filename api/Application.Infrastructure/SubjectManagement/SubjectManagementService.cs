@@ -468,6 +468,18 @@ namespace Application.Infrastructure.SubjectManagement
 			return subjectGroup.SubjectGroups.First(e => e.GroupId == groupId).SubGroups.ToList();
 		}
 
+		public IList<SubGroup> GetSubGroupsV4(int subjectId, int groupId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			var subjectGroup =
+				repositoriesContainer.SubjectRepository
+					.GetBy(new Query<Subject>(e => e.Id == subjectId && e.SubjectGroups.Any(x => x.GroupId == groupId))
+						.Include(e => e.SubjectGroups.Select(x => x.SubGroups.Select(c => c.SubjectStudents)))
+						.Include(e => e.SubjectGroups.Select(x => x.SubGroups.Select(c => c.ScheduleProtectionLabs))));
+
+			return subjectGroup.SubjectGroups.First(e => e.GroupId == groupId).SubGroups.ToList();
+		}
+
 		public IList<SubGroup> GetSubGroupsV2WithScheduleProtectionLabs(int subjectId, int groupId)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
@@ -734,7 +746,7 @@ namespace Application.Infrastructure.SubjectManagement
 			{
 				var model = new List<string>();
 				model.AddRange(
-					repositoriesContainer.LecturesRepository.GetAll(new Query<Lectures>(e => e.SubjectId == subjectId).Include(e => e.Attachments)).Select(e => e.Attachments).ToList());
+					repositoriesContainer.LecturesRepository.GetAll(new Query<Lectures>(e => e.SubjectId == subjectId)).Select(e => e.Attachments).ToList());
 				return model;
 			}
 		}
@@ -745,7 +757,7 @@ namespace Application.Infrastructure.SubjectManagement
 			{
 				var model = new List<string>();
 				model.AddRange(
-					repositoriesContainer.LabsRepository.GetAll(new Query<Labs>(e => e.SubjectId == subjectId).Include(e => e.Attachments)).Select(e => e.Attachments).ToList());
+					repositoriesContainer.LabsRepository.GetAll(new Query<Labs>(e => e.SubjectId == subjectId)).Select(e => e.Attachments).ToList());
 				return model;
 			}
 		}
@@ -756,10 +768,33 @@ namespace Application.Infrastructure.SubjectManagement
 			{
 				var model = new List<string>();
 				model.AddRange(
-					repositoriesContainer.PracticalRepository.GetAll(new Query<Practical>(e => e.SubjectId == subjectId).Include(e => e.Attachments)).Select(e => e.Attachments).ToList());
+					repositoriesContainer.PracticalRepository.GetAll(new Query<Practical>(e => e.SubjectId == subjectId)).Select(e => e.Attachments).ToList());
 				return model;
 			}
 		}
+
+		public IEnumerable<string> GetSubjectAttachments(int subjectId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			var subject = repositoriesContainer.SubjectRepository.GetBy(
+				new Query<Subject>(e => e.Id == subjectId)
+				.Include(s => s.Labs)
+				.Include(s => s.Practicals)
+				.Include(s => s.SubjectNewses)
+				.Include(s => s.Lectures));
+
+			return subject.Labs.Select(x => x.Attachments)
+				.Concat(subject.Lectures.Select(x => x.Attachments))
+				.Concat(subject.Practicals.Select(x => x.Attachments))
+				.Concat(subject.SubjectNewses.Select(x => x.Attachments));
+
+		}
+
+		public List<string> GetNewsAttachments(int subjectId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.NewsRepository.GetAll(new Query<SubjectNews>(e => e.SubjectId == subjectId)).Select(e => e.Attachments).ToList();
+        }
 
 		public void DeleteSubject(int id)
 		{

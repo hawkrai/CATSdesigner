@@ -1,3 +1,4 @@
+import { StudentMark } from './../../../../models/student-mark.model';
 import {Component, Input, OnInit} from '@angular/core';
 import {LabsService} from "../../../../services/labs/labs.service";
 import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
@@ -29,7 +30,7 @@ export class VisitStatisticsComponent implements OnInit {
 
   private subjectId: number;
   private group: Group;
-  student: any[];
+  student: StudentMark[];
 
   public labs: Lab[];
   public header: { head:string, text: string, length: number, tooltip?: string }[];
@@ -99,7 +100,7 @@ export class VisitStatisticsComponent implements OnInit {
       });
 
       const dialogData: DialogData = {
-        title: 'Посещаемость студентов',
+        title: 'Посещаемость занятий',
         buttonText: 'Сохранить',
         body: visits
       };

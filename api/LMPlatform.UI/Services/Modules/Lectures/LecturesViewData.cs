@@ -26,7 +26,7 @@ namespace LMPlatform.UI.Services.Modules.Lectures
             SubjectId = lectures.SubjectId;
             Order = lectures.Order;
             PathFile = lectures.Attachments;
-            Attachments = FilesManagementService.GetAttachments(lectures.Attachments);
+            Attachments = string.IsNullOrEmpty(lectures.Attachments) ? new List<Attachment>() : FilesManagementService.GetAttachments(lectures.Attachments);
         }
 
         [DataMember]

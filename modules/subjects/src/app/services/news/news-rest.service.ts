@@ -33,7 +33,7 @@ export class NewsRestService {
     return this.http.post('Services/News/NewsService.svc/EnableNews', {subjectId});
   }
 
-  public deleteNews(id: string, subjectId: number): Observable<any> {
+  public deleteNews(id: number, subjectId: number): Observable<any> {
     return this.http.post('Services/News/NewsService.svc/Delete', {id, subjectId});
   }
 }

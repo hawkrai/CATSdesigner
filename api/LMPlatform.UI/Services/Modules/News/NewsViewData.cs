@@ -32,7 +32,8 @@ namespace LMPlatform.UI.Services.Modules.News
             SubjectId = news.SubjectId;
             DateCreate = news.EditDate.ToShortDateString();
 	        Disabled = news.Disabled;
-            Attachments = FilesManagementService.GetAttachments(news.Attachments);
+            PathFile = news.Attachments;
+            Attachments = string.IsNullOrEmpty(news.Attachments) ? new List<Attachment>() : FilesManagementService.GetAttachments(news.Attachments);
         }
 
         [DataMember]
@@ -52,6 +53,9 @@ namespace LMPlatform.UI.Services.Modules.News
 
 		[DataMember]
         public bool Disabled { get; set; }
+
+        [DataMember]
+        public string PathFile { get; set; }
 
         [DataMember]
         public IList<Attachment> Attachments { get; set; }

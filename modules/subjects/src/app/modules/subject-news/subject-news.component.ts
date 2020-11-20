@@ -77,6 +77,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
       disabled: news ? news.disabled : false,
       isOldDate: false,
       dateCreate: news ? news.dateCreate : nowDate,
+      pathFile: news ? news.pathFile : '',
       attachments: news ? news.attachments : []
     };
     const dialogData: DialogData = {
@@ -89,7 +90,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          result.attachments = this.attachmentToModel([...result.attachments]);
+          result.attachments = JSON.stringify(result.attachments);
           this.store.dispatch(newsActions.saveNews({ news: result }));
         }
       })
