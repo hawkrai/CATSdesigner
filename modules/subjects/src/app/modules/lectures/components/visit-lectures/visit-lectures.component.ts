@@ -1,5 +1,5 @@
 import { loadGroups } from './../../../../store/actions/groups.actions';
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {Calendar} from '../../../../models/calendar.model';
 import {LecturesService} from "../../../../services/lectures/lectures.service";
@@ -15,13 +15,14 @@ import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visi
 import { IAppState } from 'src/app/store/state/app.state';
 import { Store } from '@ngrx/store';
 import * as groupSelectors from '../../../../store/selectors/groups.selectors';
+import * as groupActions from '../../../../store/actions/groups.actions';
 
 @Component({
   selector: 'app-visit-lectures',
   templateUrl: './visit-lectures.component.html',
   styleUrls: ['./visit-lectures.component.less']
 })
-export class VisitLecturesComponent implements OnInit {
+export class VisitLecturesComponent implements OnInit, OnDestroy {
 
   @Input() subjectId: number;
   @Input() isTeacher: boolean;
@@ -32,17 +33,22 @@ export class VisitLecturesComponent implements OnInit {
   public displayedColumns: string[] = [];
   public selectGroupId: string;
 
-  constructor(private groupsService: GroupsService,
+  constructor(
     private store: Store<IAppState>,
               private lecturesService: LecturesService,
               public dialog: MatDialog) {
   }
+  ngOnDestroy(): void {
+    this.store.dispatch(groupActions.resetGroups());
+  }
 
   ngOnInit() {
-    this.store.dispatch(loadGroups);
+    this.store.dispatch(groupActions.loadGroups());
     this.store.select(groupSelectors.getGroups).subscribe(res => {
       this.groups = res;
-      this.selectGroupId = res[0].groupId;
+      if (res && res.length > 0) {
+        this.selectGroupId = res[0].groupId;
+      }
     });
 
     this.lecturesService.loadCalendar();
@@ -81,7 +87,7 @@ export class VisitLecturesComponent implements OnInit {
 
   settingVisitDate() {
     const dialogData: DialogData = {
-      title: 'График занятий',
+      title: 'Даты занятий',
       buttonText: 'Добавить',
       body: {service: this.lecturesService, restBody: {subjectId: this.subjectId}},
     };

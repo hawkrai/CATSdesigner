@@ -5,7 +5,7 @@
         <div *ngIf="state$ | async as state;else load">
           <div class="practical-component__select-group" *ngIf="idx === 1 || idx === 2">
             <mat-form-field>
-              <mat-select [value]="groups ? state.groups[0].groupId : ''">
+              <mat-select [value]="state.group && state.group.groupId">
                 <mat-option *ngFor="let group of state.groups"
                             (onSelectionChange)="_selectedGroup($event)"
                             [value]="group.groupId"
@@ -24,7 +24,7 @@
           </div>
           <app-practical-lessons *ngIf="idx === 0" [isTeacher]="state.isTeacher"></app-practical-lessons>
           <!--    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>-->
-          <app-visit-statistic *ngIf="idx === 1 && state.group" [isTeacher]="state.isTeacer"></app-visit-statistic>
+          <app-visit-statistic *ngIf="idx === 1 && state.group" [isTeacher]="state.isTeacher"></app-visit-statistic>
           <!--    <app-results *ngIf="tab === 4 && selectedGroup" [teacher]="teacher"></app-results>-->
           <!--    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>-->
         </div>

@@ -9,6 +9,7 @@ import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import * as groupActions from '../../store/actions/groups.actions';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
+import * as practicalActions from '../../store/actions/practicals.actions';
 
 interface State {
   groups: Group[];
@@ -61,6 +62,7 @@ export class PracticalComponent implements OnInit, OnDestroy {
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
+      this.store.dispatch(practicalActions.loadPracticals());
     }
   }
 

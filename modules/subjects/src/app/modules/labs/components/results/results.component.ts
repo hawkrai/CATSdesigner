@@ -31,8 +31,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   public selectedGroup: Group;
   private subjectId: number;
   student: any[];
-  header: any[];
-  private user;
+  header: { head: string, text: string, tooltip: string }[];
 
   public labProperty: {labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]};
 
@@ -43,7 +42,6 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.store.pipe(select(getUser)).subscribe(user => this.user = user);
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
@@ -75,7 +73,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   setHeader(subGroup, labs: Lab[]) {
     this.header = labs
       .filter(lab => lab.subGroup.toString() === subGroup.toString())
-      .map(l => ({ head: l.labId.toString(), text: l.shortName }));
+      .map(l => ({ head: l.labId.toString(), text: l.shortName, tooltip: l.theme }));
   }
 
   setSubGroupDisplayColumns() {

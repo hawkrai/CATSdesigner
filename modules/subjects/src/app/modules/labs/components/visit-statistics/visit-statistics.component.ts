@@ -10,6 +10,9 @@ import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
 import {Group} from '../../../../models/group.model';
+import * as labsActions from '../../../../store/actions/labs.actions';
+import * as labsSelectors from '../../../../store/selectors/labs.selectors';
+
 
 @Component({
   selector: 'app-visit-statistics',
@@ -29,7 +32,7 @@ export class VisitStatisticsComponent implements OnInit {
   student: any[];
 
   public labs: Lab[];
-  public  header = [{head: 'empty', text: '', length: 2}];
+  public header: { head:string, text: string, length: number, tooltip?: string }[];
   public displayColumnsLab = [];
 
   constructor(private labService: LabsService,
@@ -43,20 +46,20 @@ export class VisitStatisticsComponent implements OnInit {
 
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
         this.group = group;
-        this.labService.getLabsProtectionSchedule().subscribe(res => {
+        this.store.dispatch(labsActions.loadLabsSchedule());
+        this.store.select(labsSelectors.getLabs).subscribe(res => {
           this.labs = res;
         });
 
-        this.labService.getCalendar().subscribe(res => {
+        this.store.select(labsSelectors.getLabsCalendar).subscribe(res => {
           this.scheduleProtectionLabs = res;
           this.scheduleProtectionLabs.forEach(lab => {
             if (!this.numberSubGroups.includes(lab.subGroup)) {
               this.numberSubGroups.push(lab.subGroup);
-              this.numberSubGroups.sort((a, b) => a-b)
+              this.numberSubGroups.sort((a, b) => a - b);
             }
           });
-        });
-
+        })
         this.refreshMarks();
       });
     });
@@ -132,7 +135,7 @@ export class VisitStatisticsComponent implements OnInit {
     this.header = [{head: 'emptyPosition', text: '', length: 1}, {head: 'emptyName', text: '', length: 1}];
     const labs = this.labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
     labs.forEach(lab => {
-      this.header.push({head: lab.labId.toString(), text: lab.shortName, length: Math.floor(lab.duration/2)})
+      this.header.push({head: lab.labId.toString(), text: lab.shortName, length: Math.floor(lab.duration/2), tooltip: lab.theme })
     });
     this.displayColumnsLab = this.header.map(res => res.head);
   }

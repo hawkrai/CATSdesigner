@@ -16,6 +16,7 @@ import {FileDownloadPopoverComponent} from '../../../../shared/file-download-pop
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import { SubSink } from 'subsink';
+import { CreateEntity } from 'src/app/models/form/create-entity.model';
 
 @Component({
   selector: 'app-labs-work',
@@ -30,6 +31,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   public displayedColumns: string[] = ['position', 'theme', 'shortName', 'clock'];
   public labs: Lab[] = [];
   private labsCopy: Lab[] = [];
+  private prefix = 'ЛР';
 
   constructor(
     private store: Store<IAppState>,
@@ -53,9 +55,13 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
-    const toSave = this.labs.filter(l => l.order !== this.labsCopy.find(lc => lc.labId === lc.labId).order);
+    const toSave = this.labs.filter(l => {
+      const copy =  this.labsCopy.find(lc => l.labId === lc.labId);
+      return l.order !== copy.order || l.shortName !== copy.shortName;
+    }
+    );
     if (toSave.length) {
-      this.store.dispatch(labsActions.updateLabsOrder({ labs: toSave }));
+      this.store.dispatch(labsActions.updateLabs({ labs: toSave }));
     }
     this.store.dispatch(labsActions.resetLabs());
   }
@@ -70,11 +76,11 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     };
     const dialogRef = this.openDialog(dialogData, LabWorkPopoverComponent);
 
-    this.subs.add(    
+    this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           result.attachments = JSON.stringify(result.attachments);
-          this.store.dispatch(labsActions.createLab({ lab: result }));
+          this.store.dispatch(labsActions.createLab({ lab: result as CreateEntity }));
         }
       })
     );
@@ -133,8 +139,10 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (prevIndex === event.currentIndex) {
       return;
     }
-    this.labs[prevIndex].order = event.currentIndex;
-    this.labs[event.currentIndex].order = prevIndex;
+    this.labs[prevIndex].order = event.currentIndex + 1;
+    this.labs[prevIndex].shortName = `${this.prefix}${this.labs[prevIndex].order}`;
+    this.labs[event.currentIndex].order = prevIndex + 1;
+    this.labs[event.currentIndex].shortName = `${this.prefix}${this.labs[event.currentIndex].order}`;
     moveItemInArray(this.labs, prevIndex, event.currentIndex);
     this.table.renderRows();
   }
@@ -144,7 +152,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       id: lab ? lab.labId : 0,
       theme: lab ? lab.theme : '',
       duration: lab ? lab.duration : '',
-      order: lab ? lab.order : 0,
+      order: lab ? lab.order : this.labs.length + 1,
       pathFile: lab ? lab.pathFile : '',
       attachments: lab ? lab.attachments : [],
       shortName: lab ? lab.shortName : ''

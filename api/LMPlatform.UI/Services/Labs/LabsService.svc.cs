@@ -993,14 +993,18 @@ namespace LMPlatform.UI.Services.Labs
 			HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
 		}
 
-        public ResultViewData UpdateLabsOrder(List<UpdateOrder> objs)
+        public ResultViewData UpdateLabs(List<UpdateLab> labs)
         {
             try
             {
-				foreach (var obj in objs)
-                {
-					SubjectManagementService.UpdateLabOrder(obj.Id, obj.Order);
-                }
+				foreach (var lab in labs)
+				{
+					var response = Save(lab.SubjectId, lab.Id, lab.Theme, lab.Duration, lab.Order, lab.ShortName, lab.PathFile, lab.Attachments);
+					if (response.Code == "500")
+                    {
+						throw new Exception("Не удалось обновить лабораторные работы");
+                    }
+				}
 				return new ResultViewData
 				{
 					Code = "200",

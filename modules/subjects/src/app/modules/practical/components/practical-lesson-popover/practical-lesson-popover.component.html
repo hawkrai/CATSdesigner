@@ -6,8 +6,8 @@
       <textarea class="practical-lesson-component__news-text" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <mat-label>Короткое название</mat-label>
-      <input name="shortName" matInput placeholder="Сокращенное название" [(ngModel)]="data.model.shortName">
+      <mat-label>Сокращенное название</mat-label>
+      <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Количество часов(1-99)</mat-label>

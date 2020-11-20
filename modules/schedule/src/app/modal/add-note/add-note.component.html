@@ -1,7 +1,7 @@
 <div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
   <form [formGroup]="formGroup">
     <mat-form-field>
-      <input type="text" matInput class="form-control" formControlName="title"  placeholder="Текст" [(ngModel)]="note.title" [ngModel] ="data.event.title"/>
+      <input type="text" matInput class="form-control" formControlName="title"  placeholder="Название события" [(ngModel)]="note.title" [ngModel] ="data.event.title"/>
       <mat-error *ngIf="title.hasError( 'required')">Поле не может быть пустым</mat-error>
     </mat-form-field>
     <mat-form-field>
@@ -18,7 +18,7 @@
         [ngModel] ="note.start"
         dateFormat="Y-m-dTH:i"
         altFormat="F j, Y H:i"
-        placeholder="Начало"
+        placeholder="Начало события"
       />
     </mat-form-field>
     <mat-form-field>
@@ -35,13 +35,13 @@
         [ngModel] ="note.end"
         dateFormat="Y-m-dTH:i"
         altFormat="F j, Y H:i"
-        placeholder="Конец"
+        placeholder="Конец события"
       />
     </mat-form-field>
   </form>
-  <button mat-raised-button color="primary" [disabled]="formGroup.invalid" (click)="add()">
+  <button mat-raised-button color="primary" style="margin-top: 20px;" [disabled]="formGroup.invalid" (click)="add()">
     Сохранить
   </button>
-  <button mat-raised-button color="warn" (click)=onCancelClick()> Выйти </button>
+  <button mat-stroked-button color="primary" style="margin-top: 10px; margin-bottom: 10px;" (click)=onCancelClick()> Отмена </button>
 </div>
 

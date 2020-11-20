@@ -9,6 +9,7 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { RegisterComponent } from './register/register.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 import { AboutComponent } from './about/about.component';
+import { ResetComponent } from './reset/reset.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,7 @@ const routes: Routes = [
   },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'forgot', component: ResetComponent },
   { path: 'progControl', component: ProgressControlComponent },
   { 
     path: 'adminPanel', 

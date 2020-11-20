@@ -1,11 +1,9 @@
+import { ConverterService } from './../converter.service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Lab} from "../../models/lab.model";
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
 import {LabsRestService} from './labs-rest.service';
 // import {LoadLabs} from '../../store/actions/labs.actions';
-import {getLabs, getLabsCalendar} from '../../store/selectors/labs.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -13,20 +11,8 @@ import {getLabs, getLabsCalendar} from '../../store/selectors/labs.selectors';
 
 export class LabsService {
 
-  constructor(private store$: Store<IAppState>,
+  constructor(private converterService: ConverterService,
               private rest: LabsRestService) {
-  }
-
-  // loadData() {
-  //   this.store$.dispatch(new LoadLabs());
-  // }
-
-  public getLabsProtectionSchedule() {
-    return this.store$.pipe(select(getLabs));
-  }
-
-  public getCalendar() {
-    return this.store$.pipe(select(getLabsCalendar))
   }
 
   public getLabWork(subjectId: number): Observable<Lab[]> {
@@ -38,24 +24,12 @@ export class LabsService {
   }
 
   public createLab(lab: Lab) {
-    return this.rest.createLab(lab);
+    return this.rest.createLab(this.converterService.labToCreateEntity(lab));
   }
 
   public deleteLab(lab: {id: string, subjectId: number}) {
     return this.rest.deleteLab(lab);
   }
-
-  // public createDateVisit(body: {subGroupId: string, date: string}) {
-  //   this.rest.createDateVisit(body).subscribe(res => {
-  //     res.Code === '200' && this.loadData()
-  //   })
-  // }
-
-  // public deleteDateVisit(body: {id: string}) {
-  //   this.rest.deleteDateVisit(body).subscribe(res => {
-  //     res.Code === '200' && this.loadData()
-  //   })
-  // }
 
   public setLabsVisitingDate(body) {
     return this.rest.setLabsVisitingDate(body);
@@ -67,6 +41,10 @@ export class LabsService {
 
   public getFilesLab(body: {subjectId: number, userId: number}): Observable<any> {
     return this.rest.getFilesLab(body);
+  }
+
+  public updateLabs(labs: Lab[]): Observable<any> {
+    return this.rest.updateLabs(this.converterService.labsUpdateConverter(labs));
   }
 
   public deleteUserFile(body: {id: string}): Observable<any> {

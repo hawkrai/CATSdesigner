@@ -89,19 +89,19 @@
 
 .cal-week-view .cal-day-headers .cal-header.cal-past{
   border: #FCFCFC;
-  padding-top: 1.3%;
+  padding-top: 20px;
   font-size: 14px;
 }
 
 .cal-week-view .cal-day-headers .cal-header.cal-today{
   border: #FCFCFC;
-  padding-top: 1.3%;
+  padding-top: 20px;
   font-size: 14px;
 }
 
 .cal-week-view .cal-day-headers .cal-header.cal-future{
   border: #FCFCFC;
-  padding-top: 1.3%;
+  padding-top: 20px;
   font-size: 14px;
 }
 

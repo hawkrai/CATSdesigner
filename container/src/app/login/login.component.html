@@ -9,7 +9,7 @@
 					<br>
 					<img src="./../../assets/images/logo.png" class="logo" />
 					<p>Care about the students </p> 
-					<h1><a routerLink="/about">Адаптивная обучающая система</a></h1>
+					<h1><a routerLink="/about" class = "aboutlink">Адаптивная обучающая система</a></h1>
 					<a mat-fab color="primary" href="#">
 						<mat-icon class="icon_p">play_arrow</mat-icon>
 					</a>
@@ -21,10 +21,18 @@
 					<h1 class="title">Добро пожаловать!</h1>
 					<div class="fields">
 						<mat-form-field class="default" color="primary">
-							<input matInput color="primary" formControlName="userName" placeholder="Имя пользователя" type="text">
+							<input matInput color="primary" formControlName="userName" placeholder="Имя пользователя" type="text" maxlength="30">
+							<mat-error *ngIf="hasError('userName', 'required')">Поле не может быть пустым</mat-error>
+                            <mat-error *ngIf="hasError('userName', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
+                            <mat-error *ngIf="hasError('userName', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
+                            <mat-error *ngIf="hasError('userName', 'pattern')">Используйте только латинские буквы, цифры, точку или знак подчеркивания.</mat-error>
 						</mat-form-field>
 						<mat-form-field>
-							<input matInput [type]="hide ? 'password' : 'text'" color="primary" type="password" placeholder="Пароль" formControlName="password">
+							<input matInput [type]="hide ? 'password' : 'text'" color="primary" type="password" placeholder="Пароль" formControlName="password" maxlength="30">
+							<mat-error *ngIf="hasError('password', 'required')">Поле не может быть пустым</mat-error>
+                            <mat-error *ngIf="hasError('password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
+                            <mat-error *ngIf="hasError('password', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
+                            
 							<button mat-icon-button matSuffix (click)="hide = !hide">
 								<mat-icon> {{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
 							</button>

@@ -2,12 +2,12 @@
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
   <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
-      <mat-label>Название лабораторной работы</mat-label>
+      <mat-label>Название работы</mat-label>
       <textarea class="lab-work-component__news-text" maxlength="256" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <mat-label>Сокращенное название лабораторной работы</mat-label>
-      <input name="shortName" maxlength="100" matInput placeholder="Сокращенное название" [(ngModel)]="data.model.shortName">
+      <mat-label>Сокращенное название</mat-label>
+      <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Количество часов(1-99)</mat-label>
