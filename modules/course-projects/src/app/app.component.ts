@@ -85,8 +85,7 @@ export class AppComponent implements OnInit {
   }
 
   downloadArchive() {
-    //const url = 'http://localhost:8080/Cp/';
-    location.href = location.origin + '/Cp/GetZipTaskSheet?id=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
+    location.href = location.origin + '/api/CPTaskSheetDownload?groupId=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
   }
 
 }
