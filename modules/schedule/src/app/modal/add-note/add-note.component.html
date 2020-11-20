@@ -1,5 +1,7 @@
 <div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
+  
   <form [formGroup]="formGroup">
+    
     <mat-form-field>
       <input type="text" matInput class="form-control" formControlName="title"  placeholder="Название события" [(ngModel)]="note.title" [ngModel] ="data.event.title"/>
       <mat-error *ngIf="title.hasError( 'required')">Поле не может быть пустым</mat-error>
@@ -39,9 +41,11 @@
       />
     </mat-form-field>
   </form>
-  <button mat-raised-button color="primary" style="margin-top: 20px;" [disabled]="formGroup.invalid" (click)="add()">
+  <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
+  <button mat-raised-button color="primary" [disabled]="formGroup.invalid" (click)="add()">
     Сохранить
   </button>
-  <button mat-stroked-button color="primary" style="margin-top: 10px; margin-bottom: 10px;" (click)=onCancelClick()> Отмена </button>
+  <button mat-raised-button color="basic" style="margin-left: 20px;" (click)=onCancelClick()> Отмена </button>
+</div>
 </div>
 
