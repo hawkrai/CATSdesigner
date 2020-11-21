@@ -12,6 +12,7 @@ using LMPlatform.Models;
 using System.Collections.Generic;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
+using Application.Infrastructure.Export;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -522,6 +523,21 @@ namespace Application.Infrastructure.CPManagement
                 DateStart = dp.DateStart
                 
             };
+        }
+
+        public string GetTasksSheetHtml(int courseProjectId)
+        {
+            // TODO
+            var courseProject =
+                new LmPlatformModelsContext().CourseProjects
+                    .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
+                    //.Include(x=>x.Lecturer.CoursePercentagesGraphs)
+                    //.Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
+                    .Single(x => x.CourseProjectId == courseProjectId);
+
+            return courseProject.AssignedCourseProjects.Count == 1
+                ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First())
+                : WordCourseProject.CourseProjectToDocView(courseProject);
         }
 
         public void SaveTaskSheet(int userId, TaskSheetData taskSheet)

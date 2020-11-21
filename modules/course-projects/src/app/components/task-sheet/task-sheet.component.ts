@@ -131,6 +131,6 @@ export class TaskSheetComponent implements OnInit {
   }
 
   downloadTaskSheet() {
-    location.href = location.origin + '/Cp/GetTasksSheetDocument?courseProjectId=' + this.courseProjectId;
+    location.href = location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + this.courseProjectId;
   }
 }
