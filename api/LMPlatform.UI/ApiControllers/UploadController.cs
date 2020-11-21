@@ -121,12 +121,16 @@ namespace LMPlatform.UI.ApiControllers
 		private IEnumerable<AttachedFile> _GetUploadedFiles(string filesPath, string deleteValues)
 		{
 			var values = JsonConvert.DeserializeObject<List<string>>(filesPath);
-			var files =
-				values.Select(value => value.Split(new[] { '/' }))
-					.Select(
-						split =>
-							new AttachedFile(split[0], split[3], new FileInfo(_storageRoot + split[2] + "//" + split[3]), Convert.ToInt32(split[1]), deleteValues))
-					.ToList();
+			var files = new List<AttachedFile>();
+			foreach (var split in values.Select(value => value.Split(new[] { '/' })))
+            {
+				var filePath = _storageRoot + split[2] + "//" + split[3];
+				if (File.Exists(filePath))
+                {
+					var file = new AttachedFile(split[0], split[3], new FileInfo(filePath), Convert.ToInt32(split[1]), deleteValues);
+					files.Add(file);
+                }
+            }
 
 			return files;
 		}

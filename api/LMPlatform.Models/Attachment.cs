@@ -19,8 +19,8 @@ namespace LMPlatform.Models
 
 		public User Author { get; set; }
 
-        public int? SubjectNewsId { get; set; }
+        //public int? SubjectNewsId { get; set; }
 
-        public SubjectNews SubjectNews { get; set; }
+        //public SubjectNews SubjectNews { get; set; }
 	}
 }

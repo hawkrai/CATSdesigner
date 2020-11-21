@@ -1,8 +1,8 @@
-<div class="protection-schedule-component" *ngIf="student && header; else: load">
-  <div class="protection-schedule-component__subGroup" *ngFor="let i of numberSubGroups">
+<div class="protection-schedule-component" *ngIf="students && header; else: load">
+  <div class="protection-schedule-component__subGroup" *ngFor="let i of getSubGroups(students)">
     <span mat-dialog-title class="protection-schedule-component__subGroup-title">Подгруппа {{i}}</span>
     <div class="protection-schedule-component__subGroup-table">
-      <table mat-table [dataSource]="student | filterSubGroup:'SubGroup': i" class="mat-elevation-z14">
+      <table mat-table [dataSource]="students | filterSubGroup:'SubGroup': i" class="mat-elevation-z14">
         <ng-container matColumnDef="position">
           <th mat-header-cell *matHeaderCellDef>№</th>
           <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
@@ -29,18 +29,16 @@
             <div *ngIf="(element | markProperty: scheduleProtectionLab.head: labProperty) as markProperty;"
                  (dblclick)="setMark(element, scheduleProtectionLab.head, markProperty.recommendedMark);"
                  class="mark">
-<!--              {{markProperty.mark | json}}-->
               <div *ngIf="markProperty.mark">
                 {{markProperty.mark.Mark}}
-                <div *ngIf="markProperty.mark.Mark && markProperty.mark.Comment" class="comment" [matTooltip]="markProperty.mark.Comment">
+                <div *ngIf="markProperty.mark.Mark && markProperty.mark.Comment" class="comment" [matTooltip]="markProperty.mark.Comment" matTooltipPosition="above">
                   <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
                 </div>
-
               </div>
               <div *ngIf="markProperty.recommendedMark" style="opacity: 0.3">
                 {{markProperty.recommendedMark}}
               </div>
-              <div *ngIf="(element | checkVisit: scheduleProtectionLab.head: labProperty.labs)" class="not-visit"></div>
+              <div *ngIf="(element | checkVisit: scheduleProtectionLab.head: labProperty.labs)" [matTooltip]="getMissingTooltip(element)" class="not-visit"></div>
             </div>
           </td>
         </ng-container>
@@ -55,7 +53,7 @@
 
         <ng-container matColumnDef="total-test">
           <th mat-header-cell *matHeaderCellDef>Средний балл за тесты</th>
-          <td mat-cell *matCellDef="let element"> {{element.TestMark}}</td>
+          <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed && !element.TestMark"> {{element.TestMark}}</td>
         </ng-container>
 
         <ng-container matColumnDef="total">
@@ -63,7 +61,7 @@
           <td mat-cell
               *matCellDef="let element"
               [ngClass]="{'not-all': element | isAll}">
-            <p>{{_getTotal(element) | number}}</p></td>
+            <p>{{getTotal(element) | number}}</p></td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

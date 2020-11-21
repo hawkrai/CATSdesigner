@@ -25,6 +25,12 @@ namespace Application.Infrastructure.LecturerManagement
             }
         }
 
+		public Lecturer GetLecturerBase(int userId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.LecturerRepository.GetBy(new Query<Lecturer>(e => e.Id == userId));
+		}
+
 		public List<List<string>> GetLecturesScheduleMarks(int subjectId, int groupId)
 		{
 			var data = new List<List<string>>();

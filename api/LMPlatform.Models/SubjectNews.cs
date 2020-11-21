@@ -47,6 +47,6 @@ namespace LMPlatform.Models
             set;
         }
 
-        public ICollection<Attachment> Attachments { get; set; }
+        public string Attachments { get; set; }
     }
 }

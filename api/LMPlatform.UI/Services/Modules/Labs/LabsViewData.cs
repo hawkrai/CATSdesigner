@@ -44,7 +44,7 @@
             Order = labs.Order;
             PathFile = labs.Attachments;
             ShortName = labs.ShortName;
-            Attachments = FilesManagementService.GetAttachments(labs.Attachments);
+            Attachments = string.IsNullOrEmpty(labs.Attachments) ? new List<Attachment>() : FilesManagementService.GetAttachments(labs.Attachments);
         }
 
 		[DataMember]

@@ -32,27 +32,11 @@ export class NewsPopoverComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    const values1 = JSON.stringify(
+    const values = JSON.stringify(
       this.data.model.attachments.map(attachment => `${attachment.name}/${attachment.id}/${attachment.pathName}/${attachment.fileName}`
     ));
-    console.log(values1)
-    // if (this.data.model.attachments.length) {
-    //   this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-    //     .subscribe(files => this.files = files);
-    // }
-    let values = '["';
-    this.data.model.attachments.forEach((attachment, index) => {
-      values += attachment.name + '/' + attachment.id + '/' + attachment.pathName + '/' +
-        attachment.fileName;
-      if (index < this.data.model.attachments.length - 1) {
-        values += '","'
-      }
-    });
 
-    values += '"]';
-    console.log(values, '2');
-
-    if (this.data.model.attachments.length) {
+    if (values.length) {
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
         .subscribe(files => this.files = files);
     }
@@ -72,7 +56,6 @@ export class NewsPopoverComponent implements OnInit {
       });
 
     }
-    console.log(this.data.model);
     this.dialogRef.close(this.data.model);
   }
 
