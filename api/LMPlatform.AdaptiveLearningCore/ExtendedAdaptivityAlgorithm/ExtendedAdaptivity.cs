@@ -6,6 +6,7 @@ using LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm.GetSolutionBlo
 using LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm.TestPreparatorBlock;
 using LMPlatform.AdaptiveLearningCore.Models;
 using LMPlatform.AdaptiveLearningCore.Shared;
+using LMPlatform.Models.AdaptivityLearning;
 using System;
 using System.Collections.Generic;
 using System.Linq;

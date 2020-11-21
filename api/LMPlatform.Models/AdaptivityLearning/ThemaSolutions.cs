@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMPlatform.AdaptiveLearningCore.Shared
+namespace LMPlatform.Models.AdaptivityLearning
 {
 	public enum ThemaSolutions
 	{

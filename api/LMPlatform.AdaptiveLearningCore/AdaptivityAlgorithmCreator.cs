@@ -2,6 +2,7 @@
 using LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm;
 using LMPlatform.AdaptiveLearningCore.Shared;
 using LMPlatform.AdaptiveLearningCore.SimpleAdaptivityAlgorithm;
+using LMPlatform.Models.AdaptivityLearning;
 using System;
 using System.Collections.Generic;
 using System.Linq;

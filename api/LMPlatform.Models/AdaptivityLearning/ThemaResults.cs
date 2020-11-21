@@ -1,6 +1,6 @@
-﻿namespace LMPlatform.AdaptiveLearningCore.Shared
+﻿namespace LMPlatform.Models.AdaptivityLearning
 {
-	public enum  ThemaResults
+	public enum ThemaResults
 	{
 		NOT_LEARNED,
 		BAD_LEARNED,

@@ -382,6 +382,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Services\AdaptiveLearning\AdaptiveLearningService.svc.cs">
+      <DependentUpon>AdaptiveLearningService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\AdaptiveLearning\IAdaptiveLearningService.cs" />
     <Compile Include="Services\BTS\IBugsService.cs" />
     <Compile Include="Services\BTS\IProjectsService.cs" />
     <Compile Include="Services\BTS\BugsService.svc.cs">
@@ -422,6 +426,7 @@
     <Compile Include="Services\Lectures\LecturesService.svc.cs">
       <DependentUpon>LecturesService.svc</DependentUpon>
     </Compile>
+    <Compile Include="Services\Modules\AdaptivityViewResult.cs" />
     <Compile Include="Services\Modules\BTS\ProjectFilesResult.cs" />
     <Compile Include="Services\Modules\BTS\ProjectMatrixRequirementViewData.cs" />
     <Compile Include="Services\Modules\BTS\ProjectMatrixViewData.cs" />
@@ -625,6 +630,7 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <Content Include="Services\AdaptiveLearning\AdaptiveLearningService.svc" />
     <Content Include="Services\BTS\BugsService.svc" />
     <Content Include="Services\BTS\ProjectsService.svc" />
     <Content Include="Services\Concept\ConceptService.svc" />
@@ -679,6 +685,10 @@
     <ProjectReference Include="..\Application.SearchEngine\Application.SearchEngine.csproj">
       <Project>{8371cb8f-cc57-426f-a9d5-0b2ab3bc64e7}</Project>
       <Name>Application.SearchEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LMPlatform.AdaptiveLearningCore\LMPlatform.AdaptiveLearningCore.csproj">
+      <Project>{599AFB1C-9C09-4976-AD4D-B4D5A2D436CB}</Project>
+      <Name>LMPlatform.AdaptiveLearningCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\LMPlatform.Data\LMPlatform.Data.csproj">
       <Project>{79EE9ED9-A7E4-43DB-B01F-FF693309ADC9}</Project>

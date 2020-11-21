@@ -1,4 +1,5 @@
 ﻿using LMPlatform.AdaptiveLearningCore.Models;
+using LMPlatform.Models.AdaptivityLearning;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +12,7 @@ namespace LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm.CurrentPer
 		internal static RemainigMaterialResult EvalueteRemainigMaterial(IEnumerable<ConceptThema> allThemasInCurrentConcept)
 		{
 			var allThemasCount = (double)allThemasInCurrentConcept.Count();
-			var learnedThemasCount = allThemasInCurrentConcept.Count(x => x.ThemaResume == Shared.ThemaResume.LEARNED);
+			var learnedThemasCount = allThemasInCurrentConcept.Count(x => x.ThemaResume == ThemaResume.LEARNED);
 
 			var themasCountRatio = learnedThemasCount / allThemasCount;
 
