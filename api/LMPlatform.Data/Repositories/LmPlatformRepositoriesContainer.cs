@@ -69,6 +69,8 @@ namespace LMPlatform.Data.Repositories
 
         public IDocumentRepository DocumentRepository { get; set; }
 
+        public INewsRepository NewsRepository { get; set; }
+
         public void ApplyChanges()
         {
             _dataContext.SaveChanges();
@@ -110,6 +112,7 @@ namespace LMPlatform.Data.Repositories
             TestQuestionPassResultsRepository = new TestQuestionPassResultsRepository(_dataContext);
             ProjectMatrixRequirementsRepository = new ProjectMatrixRequirementsRepository(_dataContext);
             DocumentRepository = new DocumentRepository(_dataContext);
+            NewsRepository = new NewsRepository(_dataContext);
         }
     }
 }

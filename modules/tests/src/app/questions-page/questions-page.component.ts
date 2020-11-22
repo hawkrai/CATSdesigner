@@ -11,6 +11,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {catchError, switchMap, takeUntil, tap} from "rxjs/operators";
 import {Observable, Subject, throwError} from "rxjs";
 import {DeleteQuestionConfirmationPopupComponent} from "./components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
+import {NeuralNetworkPopupComponent} from "./components/neural-network-popup/neural-network-popup.component";
 
 
 @AutoUnsubscribe
@@ -92,6 +93,17 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
           this.deleteQuestion(event);
         }
       });
+  }
+
+  public createNeuralNetwork():void{
+    const dialogRef = this.dialog.open(NeuralNetworkPopupComponent, {
+      width: "500px",
+      data: {questions: this.questions, testId: this.testId}
+    });
+
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
   }
 
   public openPopup(event): void {

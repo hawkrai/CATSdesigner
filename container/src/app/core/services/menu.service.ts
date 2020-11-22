@@ -27,7 +27,7 @@ export class MenuService {
         [ModuleType.Results, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.ScheduleProtection, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.StatisticsVisits, { fragment: '', module: '', item: '', icon: '' }],
-        [ModuleType.SubjectAttachments, { fragment: '', module: '', item: '', icon: '../../../assets/icons/folder.png' }],
+        [ModuleType.SubjectAttachments, { fragment: 'files', module: 'subject', item: 'files', icon: '../../../assets/icons/folder.png' }],
         [ModuleType.InteractiveTutorial, { fragment: '', module: 'libBook', item: 'libBook', icon: '../../../assets/icons/notebook.png' }]
     ]);
 

@@ -67,7 +67,7 @@ namespace LMPlatform.UI.Controllers
                 docName = $"{courseProject.Theme}";
             }
 
-            WordCourseProject.CourseProjectToWord(docName, courseProject, this.Response);
+            WordCourseProject.CourseProjectToWord(docName, courseProject);
         }
 
         [System.Web.Http.HttpGet]

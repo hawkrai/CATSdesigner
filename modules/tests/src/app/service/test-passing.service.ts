@@ -58,4 +58,8 @@ export class TestPassingService {
   getAnswersForEndedTest(testID: number, userId: number): Observable<ControlItems[]> {
     return this.http.get<ControlItems[]>("/TestPassing/GetAnswersForEndedTest?testId=" + testID + "&userId=" + userId);
   }
+
+  saveNeuralNetwork(data: string, testId: number): Observable<any> {
+    return this.http.post<any>("/TestPassing/SaveNeuralNetwork", {data, testId});
+  }
 }

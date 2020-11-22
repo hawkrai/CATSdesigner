@@ -248,7 +248,7 @@ export class ProjectsComponent implements OnInit {
 
   downloadTaskSheet(project: Project) {
     //const url = 'http://localhost:8080/Cp/';
-    location.href = location.origin + '/Cp/GetTasksSheetDocument?courseProjectId=' + project.Id;
+    location.href = location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + project.Id;
   }
 
   addFlashMessage(msg: string) {

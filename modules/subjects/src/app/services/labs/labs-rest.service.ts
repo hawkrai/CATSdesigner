@@ -1,3 +1,4 @@
+import { StudentMark } from './../../models/student-mark.model';
 import { CreateEntity } from './../../models/form/create-entity.model';
 import { ScheduleProtectionLab } from './../../models/lab.model';
 import {Injectable} from '@angular/core';
@@ -35,11 +36,19 @@ export class LabsRestService {
     )
   }
 
-  public getMarks(subjectId: number, groupId: string): Observable<any> {
+  // public getMarks(subjectId: number, groupId: string): Observable<any> {
+  //   const params = new HttpParams()
+  //     .set('subjectId', subjectId.toString())
+  //     .set('groupId', groupId);
+  //   return this.http.get('Services/Labs/LabsService.svc/GetMarksV2', {params}).pipe(
+  //     map(res => res['Students']))
+  // }
+
+  public getMarksV2(subjectId: number, groupId: string): Observable<StudentMark[]> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId);
-    return this.http.get('Services/Labs/LabsService.svc/GetMarksV2', {params}).pipe(
+    return this.http.get('Services/Labs/LabsService.svc/GetMarksV3', {params}).pipe(
       map(res => res['Students']))
   }
 

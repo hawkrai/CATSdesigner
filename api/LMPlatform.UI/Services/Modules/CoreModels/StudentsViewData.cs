@@ -25,41 +25,29 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
         {
             StudentId = student.Id;
             FullName = student.FullName;
-	        Login = student.User.UserName;
             GroupId = student.GroupId;
             LabVisitingMark = new List<LabVisitingMarkViewData>();
             PracticalVisitingMark = new List<PracticalVisitingMarkViewData>();
             StudentLabMarks = new List<StudentLabMarkViewData>();
             StudentPracticalMarks = new List<StudentPracticalMarkViewData>();
 
-			if (test != null && test.Any() && test.Any(e => e.Points != null))
+			if (test != null && test.Any() && test.Any(e => e.Points.HasValue))
 	        {
                 var sum = (double)test.Where(e => e.Points != null).Sum(e => e.Points);
 				TestMark = Math.Round((double)(sum / test.Where(e => e.Points != null).Count()), 1).ToString(CultureInfo.InvariantCulture);
 	        }
 
-	        FileLabs = userLabsFile;
+            AllTestsPassed = test.Count > 0  && test.All(e => e.Points.HasValue);
+
+            FileLabs = userLabsFile;
 
             if (labs != null)
             {
                 foreach (var lab in labs)
                 {
-                    if (student.StudentLabMarks.Any(e => e.LabId == lab.Id))
-                    {
-	                    var model =
-		                    student.StudentLabMarks.FirstOrDefault(e => e.LabId == lab.Id && !string.IsNullOrEmpty(e.Mark)) != null ? student.StudentLabMarks.FirstOrDefault(e => e.LabId == lab.Id && !string.IsNullOrEmpty(e.Mark)) : student.StudentLabMarks.FirstOrDefault(e => e.LabId == lab.Id);
+                    var model = student.StudentLabMarks.FirstOrDefault(e => e.LabId == lab.Id && e.StudentId == student.Id);
 
-                        StudentLabMarks.Add(new StudentLabMarkViewData
-                                                {
-                                                    LabId = lab.Id,
-													Mark = model.Mark,
-                                                    StudentId = StudentId,
-													Comment = model.Comment,
-													Date = model.Date,
-													StudentLabMarkId = model.Id
-                                                });        
-                    }
-                    else
+                    if (model == null)
                     {
                         StudentLabMarks.Add(new StudentLabMarkViewData
                         {
@@ -68,8 +56,22 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             StudentId = StudentId,
                             Comment = string.Empty,
                             Date = string.Empty,
-                            StudentLabMarkId = 0
-                        });    
+                            StudentLabMarkId = 0,
+                            LecturerId = new int?()
+                        });
+                    }
+                    else
+                    {
+                        StudentLabMarks.Add(new StudentLabMarkViewData
+                        {
+                            LabId = lab.Id,
+                            Mark = model.Mark,
+                            StudentId = StudentId,
+                            Comment = model.Comment,
+                            Date = model.Date,
+                            StudentLabMarkId = model.Id,
+                            LecturerId = model.LecturerId.HasValue ? model.LecturerId.Value : new int?()
+                        });
                     }
                 }   
             }
@@ -78,14 +80,15 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             {
                 foreach (var practical in practicals)
                 {
-                    if (student.StudentPracticalMarks.Any(e => e.PracticalId == practical.Id))
+                    var model = student.StudentPracticalMarks.FirstOrDefault(e => e.PracticalId == practical.Id);
+                    if (model != null)
                     {
                         StudentPracticalMarks.Add(new StudentPracticalMarkViewData
                         {
                             PracticalId = practical.Id,
-                            Mark = student.StudentPracticalMarks.FirstOrDefault(e => e.PracticalId == practical.Id).Mark,
+                            Mark = model.Mark,
                             StudentId = StudentId,
-                            StudentPracticalMarkId = student.StudentPracticalMarks.FirstOrDefault(e => e.PracticalId == practical.Id).Id
+                            StudentPracticalMarkId = model.Id
                         });
                     }
                     else
@@ -105,27 +108,28 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             {
                 foreach (var scheduleProtectionLab in scheduleProtectionLabs)
                 {
-                    if (student.ScheduleProtectionLabMarks.Any(e => e.ScheduleProtectionLabId == scheduleProtectionLab.Id))
+                    var model = student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleProtectionLab.Id && e.StudentId == student.Id);
+                    if (model != null)
                     {
-                        this.LabVisitingMark.Add(new LabVisitingMarkViewData
-                                                {
-                                                    Comment = student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleProtectionLab.Id).Comment,
-                                                    Mark = student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleProtectionLab.Id).Mark,
-                                                    ScheduleProtectionLabId = scheduleProtectionLab.Id,
-                                                    StudentId = this.StudentId,
-                                                    LabVisitingMarkId = student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleProtectionLab.Id).Id
-                                                });    
+                        LabVisitingMark.Add(new LabVisitingMarkViewData
+                        {
+                            Comment = model.Comment,
+                            Mark = model.Mark,
+                            ScheduleProtectionLabId = scheduleProtectionLab.Id,
+                            StudentId = student.Id,
+                            LabVisitingMarkId = model.Id
+                        });    
                     }
                     else
                     {
-                        this.LabVisitingMark.Add(new LabVisitingMarkViewData
-                                                {
-                                                    Comment = string.Empty,
-                                                    Mark = string.Empty,
-                                                    ScheduleProtectionLabId = scheduleProtectionLab.Id,
-                                                    StudentId = this.StudentId,
-                                                    LabVisitingMarkId = 0
-                                                });       
+                        LabVisitingMark.Add(new LabVisitingMarkViewData
+                        {
+                            Comment = string.Empty,
+                            Mark = string.Empty,
+                            ScheduleProtectionLabId = scheduleProtectionLab.Id,
+                            StudentId = this.StudentId,
+                            LabVisitingMarkId = 0
+                        });       
                     }
                 }
             }
@@ -134,20 +138,22 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             {
                 foreach (var scheduleProtectionPractical in scheduleProtectionPracticals)
                 {
-                    if (student.ScheduleProtectionPracticalMarks.Any(e => e.ScheduleProtectionPracticalId == scheduleProtectionPractical.Id))
+                    var model = student.ScheduleProtectionPracticalMarks
+                        .FirstOrDefault(e => e.ScheduleProtectionPracticalId == scheduleProtectionPractical.Id && e.StudentId == student.Id);
+                    if (model != null)
                     {
-                        this.PracticalVisitingMark.Add(new PracticalVisitingMarkViewData
+                        PracticalVisitingMark.Add(new PracticalVisitingMarkViewData
                         {
-                            Comment = student.ScheduleProtectionPracticalMarks.FirstOrDefault(e => e.ScheduleProtectionPracticalId == scheduleProtectionPractical.Id).Comment,
-                            Mark = student.ScheduleProtectionPracticalMarks.FirstOrDefault(e => e.ScheduleProtectionPracticalId == scheduleProtectionPractical.Id).Mark,
+                            Comment = model.Comment,
+                            Mark = model.Mark,
                             ScheduleProtectionPracticalId = scheduleProtectionPractical.Id,
-                            StudentId = this.StudentId,
-                            PracticalVisitingMarkId = student.ScheduleProtectionPracticalMarks.FirstOrDefault(e => e.ScheduleProtectionPracticalId == scheduleProtectionPractical.Id).Id
+                            StudentId = student.Id,
+                            PracticalVisitingMarkId = student.Id
                         });
                     }
                     else
                     {
-                        this.PracticalVisitingMark.Add(new PracticalVisitingMarkViewData
+                        PracticalVisitingMark.Add(new PracticalVisitingMarkViewData
                         {
                             Comment = string.Empty,
                             Mark = string.Empty,
@@ -160,19 +166,20 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             }
 
 			double number;
-			var summ = this.StudentLabMarks.Where(studentLabMarkViewData => !string.IsNullOrEmpty(studentLabMarkViewData.Mark) && double.TryParse(studentLabMarkViewData.Mark, out number)).Sum(studentLabMarkViewData => double.Parse(studentLabMarkViewData.Mark));
-            if (StudentLabMarks.Count(e => !string.IsNullOrEmpty(e.Mark)) != 0)
-            {
-				LabsMarkTotal = Math.Round(summ / StudentLabMarks.Count(e => !string.IsNullOrEmpty(e.Mark) && double.TryParse(e.Mark, out number)), 1).ToString(CultureInfo.InvariantCulture);    
-            }
-
-			summ = this.StudentPracticalMarks.Where(studentPracticalMarkViewData => !string.IsNullOrEmpty(studentPracticalMarkViewData.Mark) && double.TryParse(studentPracticalMarkViewData.Mark, out number)).Sum(studentPracticalMarkViewData => double.Parse(studentPracticalMarkViewData.Mark));
-
-            var countMark =
-				this.StudentPracticalMarks.Count(studentPracticalMarkViewData => !string.IsNullOrEmpty(studentPracticalMarkViewData.Mark) && double.TryParse(studentPracticalMarkViewData.Mark, out number));
+			var summ = StudentLabMarks.Where(studentLabMarkViewData => !string.IsNullOrEmpty(studentLabMarkViewData.Mark) && double.TryParse(studentLabMarkViewData.Mark, out number)).Sum(studentLabMarkViewData => double.Parse(studentLabMarkViewData.Mark));
+            var countMark = StudentLabMarks.Count(e => !string.IsNullOrEmpty(e.Mark) && double.TryParse(e.Mark, out number));
             if (countMark != 0)
             {
-				PracticalMarkTotal = countMark != 0 ? (summ / countMark).ToString(CultureInfo.InvariantCulture) : "0";
+				LabsMarkTotal = Math.Round(summ / countMark, 1).ToString(CultureInfo.InvariantCulture);    
+            }
+
+			summ = StudentPracticalMarks.Where(studentPracticalMarkViewData => !string.IsNullOrEmpty(studentPracticalMarkViewData.Mark) && double.TryParse(studentPracticalMarkViewData.Mark, out number)).Sum(studentPracticalMarkViewData => double.Parse(studentPracticalMarkViewData.Mark));
+
+            countMark = StudentPracticalMarks.Count(studentPracticalMarkViewData => !string.IsNullOrEmpty(studentPracticalMarkViewData.Mark) && double.TryParse(studentPracticalMarkViewData.Mark, out number));
+            if (countMark != 0)
+            {
+                PracticalMarkTotal = Math.Round(summ / countMark).ToString(CultureInfo.InvariantCulture);
+
             }
         }
 
@@ -205,6 +212,9 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
 
 		[DataMember]
 		public string TestMark { get; set; }
+
+        [DataMember]
+        public bool AllTestsPassed { get; set; }
 
         [DataMember]
         public string PracticalMarkTotal { get; set; }

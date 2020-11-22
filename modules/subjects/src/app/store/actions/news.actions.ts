@@ -22,7 +22,7 @@ export const saveNewsSuccess = createAction(
 
 export const deleteNewsById = createAction(
   '[News] Delete News By Id',
-  props<{ id: string }>()
+  props<{ id: number }>()
 );
 
 export const deleteNewsSuccess = createAction(

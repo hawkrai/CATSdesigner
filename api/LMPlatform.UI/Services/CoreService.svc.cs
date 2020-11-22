@@ -66,7 +66,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -74,14 +74,16 @@ namespace LMPlatform.UI.Services
 			}	
 		}
 
-		public LectorResult GetJoinedLector(string subjectId)
+
+
+		public LectorsResult GetJoinedLector(string subjectId)
 		{
 			try
 			{
 				var id = int.Parse(subjectId);
 				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId);
 
-				return new LectorResult
+				return new LectorsResult
 				{
 					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),
 					Message = "Присоединенные преподаватели успешно загружены",
@@ -90,7 +92,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -112,7 +114,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -120,7 +122,7 @@ namespace LMPlatform.UI.Services
 			}	
 		}
 
-		public LectorResult GetNoAdjointLectors(string subjectId)
+		public LectorsResult GetNoAdjointLectors(string subjectId)
 		{
 			try
 			{
@@ -128,7 +130,7 @@ namespace LMPlatform.UI.Services
 					.Where(e => e.Id != this.CurrentUserId && !e.SubjectLecturers
 						            .Any(x => x.SubjectId == int.Parse(subjectId) && x.Owner == this.CurrentUserId));
 
-				return new LectorResult
+				return new LectorsResult
 				{
 					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),
 					Message = "Преподаватели успешно загружены",
@@ -137,7 +139,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -847,15 +849,24 @@ namespace LMPlatform.UI.Services
             }
         }
 
-        public LectorResult GetLecturers()
+        public LectorsResult GetLecturers()
         {
             var lecturers = LecturerManagementService.GetLecturers(e => e.LastName, lite: true)
 	            .Select(e => new LectorViewData(e))
 	            .ToList();
-            return new LectorResult
+            return new LectorsResult
             {
                 Lectors = lecturers
             };
+        }
+
+        public LectorResult GetLecturer(string userId)
+        {
+			var lector = LecturerManagementService.GetLecturerBase(int.Parse(userId));
+			return new LectorResult
+			{
+				Lector = new LectorViewData(lector)
+			};
         }
 
         protected int CurrentUserId => WebSecurity.CurrentUserId;

@@ -22,5 +22,8 @@
 
         [DataMember]
         public string Date { get; set; }
+
+        [DataMember]
+        public int? LecturerId { get; set; }
     }
 }

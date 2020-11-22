@@ -1,12 +1,12 @@
 import { Attachment } from './attachment.model';
 
 export class News {
-  id: string;
+  id: number;
   title: string;
   body: string;
   dateCreate: string;
   disabled: boolean;
   subjectId: string;
-  pathFile: string
+  pathFile: string;
   attachments?: Attachment[];
 }

@@ -36,29 +36,29 @@
 }
 
 .cal-week-view .cal-header.cal-weekend span {
-  color: grey;
+  color:  #808080;
   font-family: Roboto, Helvetica Neue, sans-serif;
 }
 
 .cal-week-view .cal-day-headers span {
-  color: grey;
+  color:  #808080;
   font-family: Roboto, Helvetica Neue, sans-serif;
   opacity: 100%;
 }
 
 .cal-week-view .cal-header.cal-weekend b {
   font-weight: initial;
-  color: grey;
+  color:  #363636;
 }
 
 .cal-week-view .cal-day-headers b {
   font-family: Roboto, Helvetica Neue, sans-serif;
   font-weight: initial;
-  color: grey;
+  color:  #363636;
 }
 
 .cal-week-view .cal-time {
-  color: grey;
+  color: #808080;
   font-weight: initial;
 }
 
@@ -90,19 +90,19 @@
 .cal-week-view .cal-day-headers .cal-header.cal-past{
   border: #FCFCFC;
   padding-top: 20px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .cal-week-view .cal-day-headers .cal-header.cal-today{
   border: #FCFCFC;
   padding-top: 20px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .cal-week-view .cal-day-headers .cal-header.cal-future{
   border: #FCFCFC;
   padding-top: 20px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .cal-week-view .cal-header.cal-today{
@@ -115,8 +115,11 @@
 
 .cal-week-view .cal-time{
   padding-top: 32px;
-  font-size: 14px;
+  font-size: 12px;
   font-family: Roboto, Helvetica Neue, sans-serif;
 }
 
 
+.mat-menu-panel{
+  box-shadow: 0px 4px 4px rgba(0,0,0,0.1);
+}
