@@ -37,8 +37,12 @@ export class NewsPopoverComponent implements OnInit {
     ));
 
     if (values.length) {
+      console.log(values)
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-        .subscribe(files => this.files = files);
+        .subscribe(files => {
+          console.log(files)
+          this.files = files
+        });
     }
   }
 

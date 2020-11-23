@@ -12,13 +12,14 @@
          (mouseover)="onSelectNews(oneNews)"
          (mouseleave)="onSelectNews(null)"
     >
+    
       <div class="subject-news-component__news-header">
-        <p class="subject-news-component__news-title">{{ oneNews.title }}</p>
-        <div class="subject-news-component__news-action" [style.opacity]="state.selectedNews === oneNews ? 1 : 0" *ngIf="state.isTeacher">
-          <button mat-icon-button color="primary" matTooltip="Редактировать новость" (click)="constructorNews(oneNews)">
+        <p class="subject-news-component__news-title">{{ oneNews.title | firstLetterUppercase }}</p>
+        <div class="subject-news-component__news-action" [style.opacity]="state.selectedNews === oneNews ? 1 : 0"  *ngIf="state.isTeacher">
+          <button mat-icon-button color="primary" matTooltip="Редактировать новость" matTooltipPosition="above" (click)="constructorNews(oneNews)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Удалить новость" (click)="deleteNews(oneNews)">
+          <button mat-icon-button color="primary" matTooltip="Удалить новость" matTooltipPosition="above" (click)="deleteNews(oneNews)">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
@@ -26,12 +27,15 @@
       <div class="subject-news-component__news-content" [innerHtml]="oneNews.body"></div>
       <div *ngIf="oneNews.attachments.length">
         <h4 class="attachment-text mat-typography">Файлы</h4>
-        <a class="attachment" *ngFor="let file of oneNews.attachments" (click)="_filesDownload(file)">{{file.Name}}</a>
+        <div class="attachments-container">
+          <a class="attachment" *ngFor="let file of oneNews.attachments" (click)="_filesDownload(file)">{{file.name}}</a>
+        </div>
       </div>
       <p class="subject-news-component__news-date">{{oneNews.dateCreate}}</p>
     </div>
   </div>
 </div>
+
 <ng-template #load>
   <mat-spinner></mat-spinner>
 </ng-template>
