@@ -15,14 +15,13 @@ import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visi
 import { IAppState } from 'src/app/store/state/app.state';
 import { Store } from '@ngrx/store';
 import * as groupSelectors from '../../../../store/selectors/groups.selectors';
-import * as groupActions from '../../../../store/actions/groups.actions';
 
 @Component({
   selector: 'app-visit-lectures',
   templateUrl: './visit-lectures.component.html',
   styleUrls: ['./visit-lectures.component.less']
 })
-export class VisitLecturesComponent implements OnInit, OnDestroy {
+export class VisitLecturesComponent implements OnInit {
 
   @Input() subjectId: number;
   @Input() isTeacher: boolean;
@@ -38,12 +37,8 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
               private lecturesService: LecturesService,
               public dialog: MatDialog) {
   }
-  ngOnDestroy(): void {
-    this.store.dispatch(groupActions.resetGroups());
-  }
 
   ngOnInit() {
-    this.store.dispatch(groupActions.loadGroups());
     this.store.select(groupSelectors.getGroups).subscribe(res => {
       this.groups = res;
       if (res && res.length > 0) {

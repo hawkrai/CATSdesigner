@@ -90,7 +90,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     attachments.forEach(attachment => {
       if (attachment.isDownload) {
         setTimeout(() => {
-          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+          window.open('/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
         }, 1000)
 
       }
@@ -98,8 +98,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   }
 
   constructorLecture(lecture?: Lecture) {
-    const newLecture = lecture ? {...lecture} : this.getEmptyLecture();
-    newLecture.order = (this.lectures.length - 1).toString();
+    const newLecture = lecture ? { ...lecture } : this.getEmptyLecture();
     const dialogData: DialogData = {
       title: lecture ? 'Редактирование темы лекции' : 'Добавление темы лекции',
       buttonText: 'Сохранить',
@@ -109,6 +108,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        console.log()
         result.attachments = JSON.stringify(result.attachments);
         this.lecturesService.createLecture(result).subscribe(res => res['Code'] === "200" && this.refreshDate());
       }
@@ -136,13 +136,13 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     return this.dialog.open(popover, {data});
   }
 
-  getEmptyLecture() {
+  getEmptyLecture(): Lecture {
     return {
       id: '0',
-      subjectId: this.subjectId,
+      subjectId: this.subjectId.toString(),
       theme: '',
       duration: '',
-      order: '',
+      order: (this.lectures.length - 1).toString(),
       pathFile: '',
       attachments: [],
     };
