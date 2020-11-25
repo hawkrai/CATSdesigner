@@ -84,11 +84,11 @@ namespace LMPlatform.UI.Controllers
             if (courseProjects.Count() > 0)
             {
                 fileName = courseProjects.FirstOrDefault().AssignedCourseProjects.FirstOrDefault().Student.Group.Name;
-                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+                //WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
             }
             else
             {
-                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+                //WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
             }
 
         }
