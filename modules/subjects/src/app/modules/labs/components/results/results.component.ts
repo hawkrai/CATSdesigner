@@ -135,9 +135,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
     .filter(visiting => this.labProperty.scheduleProtectionLabs
       .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString())
     ).map(visiting => ({ mark: visiting.Mark, date: this.labProperty.scheduleProtectionLabs
-      .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString()).date}));
-      const pipe = new DatePipe('en-Us');
-    return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${pipe.transform(sc.date, 'dd.mm.yyyy')}`).join('\n');
+      .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString()).date}))
+      .filter(sc => !!sc.mark);
+    return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${sc.date}`).join('\n');
   }
 
   ngOnDestroy(): void {
