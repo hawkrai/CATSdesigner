@@ -1,5 +1,6 @@
+import { SubSink } from 'subsink';
 import { StudentMark } from './../../../../models/student-mark.model';
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import {LabsService} from "../../../../services/labs/labs.service";
 import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
 import {select, Store} from '@ngrx/store';
@@ -20,10 +21,10 @@ import * as labsSelectors from '../../../../store/selectors/labs.selectors';
   templateUrl: './visit-statistics.component.html',
   styleUrls: ['./visit-statistics.component.less']
 })
-export class VisitStatisticsComponent implements OnInit {
+export class VisitStatisticsComponent implements OnInit, OnDestroy {
 
   @Input() teacher: boolean;
-
+  private subs = new SubSink();
   public scheduleProtectionLabs: ScheduleProtectionLab[];
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
@@ -41,36 +42,50 @@ export class VisitStatisticsComponent implements OnInit {
               public dialog: MatDialog) {
   }
 
+  ngOnDestroy(): void {
+     this.subs.unsubscribe();
+  }
+
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
-
-      this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-        this.group = group;
-        this.store.dispatch(labsActions.loadLabsSchedule());
-        this.store.select(labsSelectors.getLabs).subscribe(res => {
-          this.labs = res;
-        });
-
-        this.store.select(labsSelectors.getLabsCalendar).subscribe(res => {
-          this.scheduleProtectionLabs = res;
-          this.scheduleProtectionLabs.forEach(lab => {
-            if (!this.numberSubGroups.includes(lab.subGroup)) {
-              this.numberSubGroups.push(lab.subGroup);
-              this.numberSubGroups.sort((a, b) => a - b);
-            }
-          });
-        })
-        this.refreshMarks();
-      });
-    });
+    this.subs.add(
+      this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+        this.subjectId = subjectId;
+  
+        this.subs.add(
+          this.store.pipe(select(getCurrentGroup)).subscribe(group => {
+            this.group = group;
+            this.store.dispatch(labsActions.loadLabsSchedule());
+            this.subs.add(
+              this.store.select(labsSelectors.getLabs).subscribe(res => {
+                this.labs = res;
+              })
+            );
+    
+            this.subs.add(
+              this.store.select(labsSelectors.getLabsCalendar).subscribe(res => {
+                this.scheduleProtectionLabs = res;
+                this.scheduleProtectionLabs.forEach(lab => {
+                  if (!this.numberSubGroups.includes(lab.subGroup)) {
+                    this.numberSubGroups.push(lab.subGroup);
+                    this.numberSubGroups.sort((a, b) => a - b);
+                  }
+                });
+              })
+            );
+            this.refreshMarks();
+          })
+        );
+      })
+    );
   }
 
   refreshMarks() {
-    this.labService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
-      this.student = res;
-      this.setSubGroupDisplayColumnsLab(res[0].SubGroup);
-    })
+    this.subs.add(
+      this.labService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
+        this.student = res;
+        this.setSubGroupDisplayColumnsLab(res[0].SubGroup);
+      })
+    );
   }
 
 
@@ -106,13 +121,15 @@ export class VisitStatisticsComponent implements OnInit {
       };
       const dialogRef = this.openDialog(dialogData, VisitingPopoverComponent);
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          const visitsModel = {Id: [], comments: [], dateId: date.id, marks: [], students, studentsId: []};
-          this.labService.setLabsVisitingDate(this.getModelVisitLabs(students, index, visitsModel, result.students))
-            .subscribe(res => res.Code === '200' && this.refreshMarks());
-        }
-      });
+      this.subs.add(
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            const visitsModel = {Id: [], comments: [], dateId: date.id, marks: [], students, studentsId: []};
+            this.labService.setLabsVisitingDate(this.getModelVisitLabs(students, index, visitsModel, result.students))
+              .subscribe(res => res.Code === '200' && this.refreshMarks());
+          }
+        })
+      );
     }
   }
 

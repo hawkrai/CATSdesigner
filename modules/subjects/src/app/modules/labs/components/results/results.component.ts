@@ -41,26 +41,34 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
+    this.subs.add(
+      this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+        this.subjectId = subjectId; 
+        this.subs.add(
+          this.store.pipe(select(getCurrentGroup)).subscribe(group => {
+            this.selectedGroup = group;
+            this.students = null;
+            this.refreshStudents();
+          })
+        );
+      })
+    );
 
-      this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-        this.selectedGroup = group;
-        this.students = null;
-        this.refreshStudents();
-      });
-    });
   }
 
   refreshStudents(): void {
-    this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
-      this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-        this.students = res;
-        res && this.setHeader(res[0].SubGroup, lab.labs);
-        this.setSubGroupDisplayColumns();
-      });
-      this.labProperty = lab;
-    });
+    this.subs.add(
+      this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
+        this.subs.add(
+          this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+            this.students = res;
+            res && this.setHeader(res[0].SubGroup, lab.labs);
+            this.setSubGroupDisplayColumns();
+          })
+        );
+        this.labProperty = lab;
+      })
+    );
   }
 
   getSubGroups(students: StudentMark[]): number[] {
