@@ -1,11 +1,12 @@
+import { Router } from '@angular/router';
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import * as rxjs from 'rxjs';
 import {map,} from "rxjs/operators";
 
-import {Subject} from "../models/subject";
 import {Message} from "../models/message";
 import { Module } from "../models/module.model";
+import { Subject } from '../models/subject';
 
 
 @Injectable({providedIn: "root"})
@@ -13,15 +14,56 @@ export class CoreService {
   public selectedSubject: Subject;
   private listOfSubjects: Subject[];
 
-  constructor(private http: HttpClient) {
+  private subjectIdSub = new rxjs.Subject<number>();
+  private updateSubjectSub = new rxjs.Subject<void>();
+
+  constructor(
+    private http: HttpClient,
+    private router: Router
+    ) {
     this.selectedSubject = null;
+  }
+
+  public onNewSubjectId(): rxjs.Observable<number> {
+    return this.subjectIdSub.asObservable();
+  }
+
+  public onUpdateSubjects(): rxjs.Observable<void> {
+    return this.updateSubjectSub.asObservable();
   }
 
   public sendMessage(message: Message): void {
     window.frames[0].postMessage([{channel: message.Type, value: message.Value}], "*");
   }
 
-  public getSubjects(): Observable<Subject[]> {
+  public setupMessageCommunication(): void {
+    window.addEventListener("message", (event: MessageEvent) => this.receiveMessage(event), false);          
+}
+
+  private receiveMessage(event: MessageEvent): void {
+      let message: any = event.data[0];
+
+      if (!message) {
+          return;
+      }
+      console.log(`New message - ${message.channel} , value - ${message.value}`);
+      if (message.channel == "Route"){
+          this.router.navigateByUrl(`/${message.value}`);
+      }      
+      if (message.channel === 'SubjectId') {
+        const currentSubject = this.getCurrentSubject();
+        if (!currentSubject || currentSubject.id !== +message.value) {
+          console.log('new subject');
+          this.subjectIdSub.next(+message.value);
+        }
+      }  
+      if (message.channel === 'UpdateSubjects') {
+        console.log('update subjects');
+        this.updateSubjectSub.next();
+      }
+    };
+
+  public getSubjects(): rxjs.Observable<Subject[]> {
     return this.http.get<any>(`/Services/Subjects/SubjectsService.svc/List`)
       .pipe(
         map(subjects => {
@@ -31,11 +73,11 @@ export class CoreService {
       );
   }
 
-  public getSubjectModules(subjectId: number): Observable<Module[]> {
+  public getSubjectModules(subjectId: number): rxjs.Observable<Module[]> {
     return this.http.get<Module[]>(`/Services/Subjects/SubjectsService.svc/Modules/${subjectId}`);
   }
 
-  public getGroups(): Observable<any> {
+  public getGroups(): rxjs.Observable<any> {
     return this.http.get<any>("/Services/CoreService.svc/GetAllGroupsLite/");
   }
 

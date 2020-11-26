@@ -34,6 +34,7 @@ import {LecturesListComponent} from './modules/lectures/components/lectures-list
 import {VisitLecturesComponent} from './modules/lectures/components/visit-lectures/visit-lectures.component';
 import { SubjectEffect } from './store/effects/subject.effects';
 import { PracticalsEffects } from './store/effects/practicals.effects';
+import { CatsEffects } from './store/effects/cats.effects';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,7 @@ import { PracticalsEffects } from './store/effects/practicals.effects';
     PracticalModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [

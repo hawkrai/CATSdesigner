@@ -1,3 +1,4 @@
+import { Message } from './../../../../../container/src/app/core/models/message';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -22,4 +23,11 @@ export class CatsMessageService {
             this.router.navigateByUrl(`/${message.value}`);
         }        
       };
+
+    public sendMessage(message: Message): void {
+        console.log(message);
+        window.parent.postMessage([{channel: message.Type, value: message.Value}], '*');
+    }
+    
+    
 }
