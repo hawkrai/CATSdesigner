@@ -8,5 +8,9 @@ export class Practical {
     Order: number;
     PathFile: string;
     ShortName: string;
+    Audience: number;
+    BuildingNumber: string;
+    Start: Date;
+    End: Date;
     Attachments: Attachment[]
 }

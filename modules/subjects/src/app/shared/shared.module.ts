@@ -7,6 +7,7 @@ import {FilterPipe} from './pipes/filter.pipe';
 import { PluarPipe } from './pipes/pluar.pipe';
 import { FirstLetterUppercasePipe } from './pipes/first-letter-uppercase.pipe';
 import { ToColumnPipe } from './pipes/to-column.pipe';
+import { FlatpickrModule } from 'angularx-flatpickr';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ToColumnPipe } from './pipes/to-column.pipe';
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    FlatpickrModule.forRoot()
   ],
   exports: [
     FilterPipe,
@@ -26,7 +28,8 @@ import { ToColumnPipe } from './pipes/to-column.pipe';
     FirstLetterUppercasePipe,
     CommonModule,
     VarDirective,
-    ToColumnPipe
+    ToColumnPipe,
+    FlatpickrModule
   ]
 })
 export class SharedModule { }
