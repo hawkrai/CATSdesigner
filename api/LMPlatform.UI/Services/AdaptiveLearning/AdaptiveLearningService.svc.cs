@@ -136,5 +136,10 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 			return adaptivityType is null ? null : new AdaptiveLearningProcessor(adaptivityType.Value);
 		}
+
+		public void SaveSelectedAdaptivityType(int userId, int complexId, int adaptivityType)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
