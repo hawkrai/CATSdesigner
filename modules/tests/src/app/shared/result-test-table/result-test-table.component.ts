@@ -49,6 +49,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public tests: any;
   @Input()
   public size: number;
+
+  @Input()
+  public group: string;
   @Input()
   public name: string;
   public scareThing: any = [];
@@ -105,9 +108,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
           }
           let entire = [];
           entire.push(this.getShortName(pupil));
-          entire.push(sumOfMarks / this.testSize);
+          entire.push((sumOfMarks / this.testSize).toFixed(2));
           mass.push(entire);
-          pupil.push(sumOfMarks / this.testSize);
+          pupil.push((sumOfMarks / this.testSize).toFixed(2));
           if (this.size) {
             pupil.push(pupil[1].test.length === this.size && pupil[1].test.every((test)=>test.percent));
           }

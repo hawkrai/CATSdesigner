@@ -112,7 +112,6 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       width: "700px",
       data: {event, title, test: this.testId, isEUMKTest: this.isEUMKTest},
       autoFocus: false,
-      maxHeight: "100vh"
     });
 
     dialogRef.afterClosed()
@@ -131,7 +130,6 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
       width: "700px",
       data: {event, test: this.testId},
       autoFocus: false,
-      maxHeight: "90vh"
     });
 
     dialogRef.afterClosed()

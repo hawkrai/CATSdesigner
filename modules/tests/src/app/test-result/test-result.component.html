@@ -2,10 +2,18 @@
             [smallText]="'Доступные тесты'"></app-header>-->
 <div class="test-result__container">
   <div class="test-result__title" *ngIf="test">
-    {{"Тест - " + test.Title + " - завершен"}}
+    {{"Тест на тему «" + test.Title + "» завершен"}}
   </div>
   <div class="test-result__mark">
+  {{"Время прохождения: " + startTime + " - " + endTime}}
+</div>
+  <div class="test-result__mark">
     {{"Ваша оценка - " + mark}}
+  </div>
+
+  <div class="test-result__backlink" (click)="navigate()">
+    <mat-icon>keyboard_backspace</mat-icon>
+    {{"Вернуться к тестам"}}
   </div>
   <div class="test-result__results">
     <div class="test-result__results-line" *ngFor="let question of result">

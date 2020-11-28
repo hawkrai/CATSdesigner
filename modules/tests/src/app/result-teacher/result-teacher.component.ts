@@ -59,7 +59,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   public ngOnInit(): void {
-
+    this.initArrays();
     this.user = JSON.parse(localStorage.getItem("currentUser"));
     this.subject = JSON.parse(localStorage.getItem("currentSubject"));
     this.testService.getGroupsBySubjectId(this.subject.id)
@@ -151,9 +151,11 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
           this.resultsOriginal.push(results.Results);
           this.resultsOriginal.forEach((resultsOriginal: Result[]) => {
             resultsOriginal.forEach((result: Result) => {
-              const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => group.value.toString() === results.GroupId.toString());
-              result.groupName = groupName.display;
-              console.log("result.groupName = groupName.display");
+              if (!result.groupName) {
+                const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => Number(group.value) === results.GroupId);
+                result.groupName = groupName.display;
+                console.log("result.groupName = groupName.display");
+              }
             });
           });
         });
@@ -210,7 +212,6 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   private decomposeResult(results: Result[], notTouchStList?: boolean): void {
-    this.initArrays();
     if (results) {
       results.forEach((result) => {
           if (!notTouchStList) {
@@ -250,7 +251,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
         }
       );
       const groupName = results && results.length && results[0].groupName;
-      if (!this.knowledgeControlTestsMass.some(test => test.groupName === groupName)) {
+      if (!this.knowledgeControlTestsMass.some(test => test.group === groupName)) {
         this.knowledgeControlTestsMass.push({res: Object.assign({}, this.knowledgeControlTests), group: groupName});
         this.selfControlTestsMass.push({res: Object.assign({}, this.selfControlTests), group: groupName});
         this.nNTestsMass.push({res: Object.assign({}, this.nNTests), group: groupName});
