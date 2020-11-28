@@ -4,7 +4,7 @@ import {TestQuestion} from "../models/question/test-question.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TestService} from "../service/test.service";
 import {Test} from "../models/test.model";
-import {map, switchMap, take, takeUntil, tap} from "rxjs/operators";
+import {map, switchMap, takeUntil, tap} from "rxjs/operators";
 import {Observable, Subject, timer} from "rxjs";
 import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
@@ -38,6 +38,7 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   ngOnInit() {
+    localStorage.setItem("start", JSON.stringify(new Date));
     this.testId = this.route.snapshot.paramMap.get("id");
     this.questionNumber = "1";
     this.testService.getTestById(this.testId)
@@ -55,8 +56,8 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
           this.questionNumber = question && question.Number.toString();
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers;
           this.counter$ = timer(0, 1000).pipe(
-            take(this.question.Seconds),
             map(() => {
+              console.log("1" + this.question.Seconds);
               if (this.question.Seconds && this.question.Seconds != 0) {
                 --this.question.Seconds;
                 const hour: number = Math.floor(this.question.Seconds / 3600);
@@ -69,7 +70,8 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
                 return (hour >= 10 ? hour.toString() : "0" + hour.toString()) + ":" + (minute >= 10 ? minute.toString() : "0" + minute.toString()) + ":" + (restTime >= 10 ? restTime.toString() : "0" + restTime.toString());
               }
               else {
-                //this.router.navigate(["/test-result"]);
+                console.log("2" + this.question.Seconds);
+                return "00:00:00";
               }
             })
           );

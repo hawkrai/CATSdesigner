@@ -41,7 +41,7 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
   }
 
   onYesClick(): void {
-    this.request.testId = <string>this.testId;
+    this.request.testId = <string>this.data.test;
     this.request.questionItems = [];
     Object.keys(this.chosenQuestions).forEach(value => {
       if (this.chosenQuestions[value])
@@ -56,7 +56,6 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
 
   public onValueChange(event): void {
     console.log(event);
-    this.testId = event.value;
     this.testService.getQuestionsFromOtherTest(event.value)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(questions => {
