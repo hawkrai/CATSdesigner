@@ -34,28 +34,7 @@
           <mat-form-field>
               <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="50">
           </mat-form-field>
-
-          <mat-form-field>
-              <mat-label>Группа</mat-label>
-              <mat-select formControlName="GroupId" maxlength="30">
-                  <mat-option *ngFor="let item of groups" [value]="item.Id">
-                      {{item.Name}}
-                  </mat-option>
-              </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-              <mat-label>Секретный вопрос</mat-label>
-              <mat-select formControlName="QuestionId">
-                  <mat-option *ngFor="let item of quest" [value]="item.value">
-                      {{item.text}}
-                  </mat-option>
-              </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-              <input matInput placeholder="Ответ на секретный вопрос" formControlName="Answer" maxlength="30">
-          </mat-form-field>
-
-
+          
           <div class="checkbox">
               <mat-checkbox formControlName="IsSecretary">Секретарь ГЭК</mat-checkbox>
           </div>

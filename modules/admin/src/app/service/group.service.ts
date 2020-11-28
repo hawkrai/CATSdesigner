@@ -32,7 +32,7 @@ export class GroupService {
     }
 
     deleteGroup(groupId): Observable<void> {
-        return this.http.delete<void>(this.api + 'DeleteGroupJson/' + groupId);
+        return this.http.get<void>(this.api + 'DeleteGroupJson/' + groupId);
     }
 
     getListOfGroupsByLecturerId(lectureId): Observable<LecturerGroup> {
