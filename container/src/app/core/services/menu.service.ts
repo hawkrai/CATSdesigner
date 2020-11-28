@@ -20,7 +20,7 @@ export class MenuService {
         [ModuleType.Labs, { fragment: 'labs', module: 'subject', item: 'labs', icon: '../../../assets/icons/chemistry-lab-instrument.png' }],
         [ModuleType.SmartTest, { fragment: 'page', module: 'testsModule', item: 'testsModule', icon: '../../../assets/icons/test.png' }],
         [ModuleType.YeManagment, { fragment: '', module: 'course', item: 'course', icon: '../../../assets/icons/graduation-hat.png' }],
-        [ModuleType.ComplexMaterial, { fragment: '', module: 'subject', item: 'complex', icon: '../../../assets/icons/information.png' }],
+        [ModuleType.ComplexMaterial, { fragment: '', module: 'complex', item: 'complex', icon: '../../../assets/icons/information.png' }],
         [ModuleType.Dsm, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.LabAttachments, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.Projects, { fragment: '', module: '', item: '', icon: '' }],
