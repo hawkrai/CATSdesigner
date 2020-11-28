@@ -83,7 +83,7 @@ namespace Application.Infrastructure.Export
             }
         }
 
-        public static HttpResponseMessage CourseProjectsToArchive(string fileName, IQueryable<CourseProject> courseProjects, HttpResponseBase response)
+        public static HttpResponseMessage CourseProjectsToArchive(string fileName, IQueryable<CourseProject> courseProjects)
         {
             IDictionary<string, byte[]> bytelist = CreateDocs(courseProjects);
 
