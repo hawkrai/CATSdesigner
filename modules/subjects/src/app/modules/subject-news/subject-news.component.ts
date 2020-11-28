@@ -43,10 +43,10 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(newsActions.loadNews());
-    const isTeacher$ = this.store.select(subjectSelectors.isTeacher);
-    const news$ = this.store.select(newsSelectors.getNews);
-    const selectedNews$ = this.store.select(newsSelectors.getSelectedNews);
-    this.state$ = combineLatest([isTeacher$, news$, selectedNews$]).pipe(
+    this.state$ = combineLatest([
+      this.store.select(subjectSelectors.isTeacher), 
+      this.store.select(newsSelectors.getNews),
+      this.store.select(newsSelectors.getSelectedNews)]).pipe(
       map(([isTeacher, news, selectedNews]) => ({ isTeacher, news, selectedNews }))
     );
   }
@@ -119,20 +119,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     return this.dialog.open(popover, {data});
   }
 
-  _filesDownload(attachment: any) {
-    window.open('http://localhost:8080/api/Upload?fileName=' + attachment.PathName + '//' + attachment.FileName)
-  }
-
-  public attachmentToModel(attachments: Attachment[]) {
-    const newAttachments = [];
-    attachments.forEach(attachment => {
-      newAttachments.push({
-        FileName: attachment.fileName,
-        PathName: attachment.pathName,
-
-        Name: attachment.name
-      })
-    });
-    return newAttachments
+  _filesDownload(attachment: Attachment) {
+    window.open('/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName);
   }
 }

@@ -34,7 +34,7 @@ export class VisitStatisticComponent implements OnInit {
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
         this.group = group;
         // this.practicalService.loadData();
-        //
+        
         // this.practicalService.getCalendar().subscribe(res => {
         //   this.scheduleProtection = res;
         // });
@@ -49,7 +49,6 @@ export class VisitStatisticComponent implements OnInit {
   refreshMarks() {
     this.practicalService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
       this.student = res;
-      console.log(res)
       res && this.setDisplayColumn(res);
     })
   }

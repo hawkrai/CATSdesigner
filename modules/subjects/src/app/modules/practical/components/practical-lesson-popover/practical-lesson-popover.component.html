@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<div mat-dialog-content class="practical-lesson-component__popover" #popoverContent>
+<div mat-dialog-content style="max-height: none;" class="practical-lesson-component__popover" #popoverContent>
   <form class="example-form">
     <mat-form-field class="example-full-width">
       <mat-label>Название практического занятия</mat-label>
@@ -9,10 +9,57 @@
       <mat-label>Краткое название</mat-label>
       <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
     </mat-form-field>
+    <div class="example-form-container">
+      <mat-form-field class="example-full-width">
+        <mat-label>Начало занятия</mat-label>
+        <input
+        type="text"
+          matInput 
+          [(ngModel)]="data.model.start"
+          name="start"
+          mwlFlatpickr
+          [altInput]="true"
+          [enableTime]="true"
+          dateFormat="Y-m-dTH:i"
+          altFormat="F j, Y H:i"
+          required
+          placeholder="Начало занятия"
+        />
+
+
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Конец занятия</mat-label>
+        <input
+        type="text"
+          matInput 
+          [(ngModel)]="data.model.end"
+          name="end"
+          mwlFlatpickr
+          [altInput]="true"
+          [enableTime]="true"
+          dateFormat="Y-m-dTH:i"
+          altFormat="F j, Y H:i"
+          required
+          placeholder="Конец занятия"
+        />
+      </mat-form-field>
+    </div>
     <mat-form-field class="example-full-width">
       <mat-label>Количество часов(1-99)</mat-label>
       <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
     </mat-form-field>
+
+    <div class="example-form-container">
+      <mat-form-field class="example-full-width">
+        <mat-label>Корпус</mat-label>
+        <input [(ngModel)]="data.model.buildingNumber" name="buildingNumber" required type="text" maxlength="3" matInput placeholder="Корпус">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Аудитория</mat-label>
+        <input name="audience" required type="number" min="1" max="1000" matInput placeholder="Аудитория" [(ngModel)]="data.model.audience">
+      </mat-form-field>
+    </div>
     <h4 class="attachment-text mat-typography">Прикрепленный материал</h4>
     <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
     <button mat-flat-button class="practical-lesson-component__popover-file-button" (click)="csvInput.click()">Добавить файл</button>

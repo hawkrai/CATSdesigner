@@ -2,7 +2,7 @@
 
 <mat-sidenav-container class="app-sidenav-subject" *ngIf="modules$ | async as modules; else load" autosize="true">
     <mat-sidenav opened mode="side" class="app-sidenav-menu-subject">
-        <mat-nav-list>
+        <mat-nav-list style="padding-top: 0;">
             <a mat-list-item 
             *ngFor="let module of modules" 
             [ngClass]="{active: clickedItem === getModuleItem(module.Type)}" 

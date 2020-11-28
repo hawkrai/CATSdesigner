@@ -25,9 +25,9 @@
   </ng-container>
   <ng-container matColumnDef="files" *ngIf="!isTeacher">
     <th mat-header-cell *matHeaderCellDef> Скачать </th>
-    <td mat-cell *matCellDef>
-      <button class="mdc-button" *ngIf="lecture.attachments.length > 0"
-        (click)="openFilePopup(lecture.attachments)">
+    <td mat-cell *matCellDef="let element">
+      <button class="mdc-button" *ngIf="element.attachments.length > 0"
+        (click)="openFilePopup(element.attachments)">
       <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
       <span class="mdc-button__label">Файлы</span>
     </button>
@@ -38,10 +38,10 @@
     <td mat-cell *matCellDef="let element">
       <div>
         <button mat-icon-button color="primary" matTooltip="Редактировать лекцию"
-        (click)="constructorLecture(lecture)">
+        (click)="constructorLecture(element)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="primary" matTooltip="Удалить лекцию" (click)="deleteLectures(lecture)">
+        <button mat-icon-button color="primary" matTooltip="Удалить лекцию" (click)="deleteLectures(element)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
