@@ -92,7 +92,7 @@ export class ProjectsComponent implements OnInit {
         label: 'Выбор темы курсового проекта',
         message: 'Вы действительно хотите выбрать данную тему курсового проекта?',
         actionName: 'Выбрать',
-        color: 'accent'
+        color: 'primary'
       }
     });
 
@@ -205,23 +205,9 @@ export class ProjectsComponent implements OnInit {
   }
 
   approveChoice(project: Project) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '540px',
-      data: {
-        label: 'Подтверждение выбора темы курсового проекта',
-        message: 'Вы действительно хотите подтвердить выбор данной темы курсового проекта?',
-        actionName: 'Подтвердить',
-        color: 'accent'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result != null && result) {
-        this.projectsService.approveChoice(project.Id).subscribe(() => {
-          this.ngOnInit();
-          this.addFlashMessage('Тема успешно подтверждена');
-        });
-      }
+    this.projectsService.approveChoice(project.Id).subscribe(() => {
+      this.ngOnInit();
+      this.addFlashMessage('Тема успешно подтверждена');
     });
   }
 
