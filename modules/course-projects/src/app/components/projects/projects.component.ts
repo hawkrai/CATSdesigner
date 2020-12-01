@@ -118,7 +118,7 @@ export class ProjectsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       var checkTheme = this.projects.find((i) => i.Theme === result.name);
       if (result != null && checkTheme == undefined) {
-        this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.Id))
+        this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Тема успешно сохранена');
@@ -144,7 +144,7 @@ export class ProjectsComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result != null) {
-          this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.Id))
+          this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
               this.addFlashMessage('Тема успешно сохранена');
