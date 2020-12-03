@@ -11,9 +11,9 @@ namespace LMPlatform.UI.Services.Modules
 	{
 		[DataMember]
 		public int? NextThemaId { get; set; }
-		
+
 		[DataMember]
-		public bool NeedToSelectAdaptivityType { get; set; }
+		public string NextMaterialPath { get; set; }
 
 		[DataMember]
 		public bool NeedToDoPredTest { get; set; }
