@@ -3,5 +3,10 @@ export class Attachment {
   name: string;
   fileName: string;
   pathName?: string;
-  attachmentType: number;
+  attachmentType: AttachmentType;
+}
+
+
+export enum AttachmentType {
+  Audio, Video, Document, Image
 }
