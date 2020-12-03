@@ -116,16 +116,18 @@ export class ProjectsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      var checkTheme = this.projects.find((i) => i.Theme === result.name);
-      if (result != null && checkTheme == undefined) {
-        this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
+      if (result != null && result.name != null) {
+        var checkTheme = this.projects.find((i) => i.Theme === result.name);
+        if (checkTheme == undefined){
+          this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Тема успешно сохранена');
           });
-      }
-      else{
-        this.addFlashMessage('Такая тема уже существует');
+        }
+        else{
+          this.addFlashMessage('Такая тема уже существует');
+        } 
       }
     });
   }
