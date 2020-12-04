@@ -22,7 +22,7 @@
 
                     <div class="fields">
                         <mat-form-field>
-                            <input type="text" matInput placeholder="Логин" formControlName="Username" maxlength="30">
+                            <input type="text" matInput placeholder="Имя пользоователя" formControlName="Username" maxlength="30">
                             <mat-error *ngIf="hasError('Username', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('Username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
                             <mat-error *ngIf="hasError('Username', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
@@ -80,9 +80,9 @@
                             <mat-error *ngIf="hasError('SecretAnswer', 'required')">Поле не может быть пустым</mat-error>
                         </mat-form-field>
                     </div>
-                    <button mat-raised-button  (click)="this.register()">Зарегистрироваться</button>
+                    <button mat-raised-button (click)="this.register()">Зарегистрироваться</button>
                     <div class="sign-in">
-						<button mat-stroked-button color="primary" routerLink="/login" href="">Отмена</button>
+						<button mat-raised-button color="basic" routerLink="/login" href="">Отмена</button>
 					</div>
                 </form>
                 </div>
