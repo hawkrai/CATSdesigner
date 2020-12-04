@@ -10,7 +10,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {LabsMarkPopoverComponent} from './labs-mark-popover/labs-mark-popover.component';
 import {LabsRestService} from '../../../../services/labs/labs-rest.service';
-import {Lab, ScheduleProtectionLab} from '../../../../models/lab.model';
+import { Lab, ScheduleProtectionLabs } from '../../../../models/lab.model';
 import {MarkForm} from '../../../../models/mark-form.model';
 import {filter, map, switchMap} from 'rxjs/operators';
 import {SubSink} from 'subsink';
@@ -32,7 +32,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['position', 'name'];
   header: { head: string, text: string, tooltip: string }[];
 
-  public labProperty: {labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]};
+  public labProperty: {labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[]};
 
   constructor(private labService: LabsService,
               private store: Store<IAppState>,
@@ -58,9 +58,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   refreshStudents(): void {
     this.subs.add(
-      this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
+      this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.GroupId).subscribe(lab => {
         this.subs.add(
-          this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+          this.labService.getMarks(this.subjectId, this.selectedGroup.GroupId).subscribe(res => {
             this.students = res;
             res && this.setHeader(res[0].SubGroup, lab.labs);
             this.setSubGroupDisplayColumns();
@@ -75,10 +75,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
     return [...new Set(students.map(s => s.SubGroup))].sort((a, b) => a - b);
   }
 
-  setHeader(subGroup, labs: Lab[]) {
+  setHeader(subGroup: number, labs: Lab[]) {
     this.header = labs
-      .filter(lab => lab.subGroup.toString() === subGroup.toString())
-      .map(l => ({ head: l.labId.toString(), text: l.shortName, tooltip: l.theme }));
+      .filter(lab => lab.SubGroup === subGroup)
+      .map(l => ({ head: l.LabId.toString(), text: l.ShortName, tooltip: l.Theme }));
   }
 
   setSubGroupDisplayColumns() {
@@ -141,9 +141,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
   getMissingTooltip(studentMark: StudentMark) {
     const missingSchedule = studentMark.LabVisitingMark
     .filter(visiting => this.labProperty.scheduleProtectionLabs
-      .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString())
+      .find(schedule => schedule.ScheduleProtectionLabId === visiting.ScheduleProtectionLabId)
     ).map(visiting => ({ mark: visiting.Mark, date: this.labProperty.scheduleProtectionLabs
-      .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString()).date}))
+      .find(schedule => schedule.ScheduleProtectionLabId === visiting.ScheduleProtectionLabId).Date}))
       .filter(sc => !!sc.mark);
     return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${sc.date}`).join('\n');
   }

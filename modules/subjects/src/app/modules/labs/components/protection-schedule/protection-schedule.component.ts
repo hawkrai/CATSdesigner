@@ -1,7 +1,7 @@
 import { SubSink } from 'subsink';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import {LabsService} from "../../../../services/labs/labs.service";
-import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
+import { Lab, ScheduleProtectionLabs } from "../../../../models/lab.model";
 import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
@@ -22,7 +22,7 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
   @Input() teacher: boolean;
   private subs = new SubSink();
   public labs: Lab[];
-  public scheduleProtectionLabs: ScheduleProtectionLab[];
+  public scheduleProtectionLabs: ScheduleProtectionLabs[];
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'theme'];
   public subGroupIds: number[] = [];
@@ -41,8 +41,8 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
         this.scheduleProtectionLabs = res;
         console.log(res);
         this.scheduleProtectionLabs.forEach(lab => {
-          if (!this.numberSubGroups.includes(lab.subGroup)) {
-            this.numberSubGroups.push(lab.subGroup);
+          if (!this.numberSubGroups.includes(lab.SubGroup)) {
+            this.numberSubGroups.push(lab.SubGroup);
             this.numberSubGroups.sort((a, b) => a-b)
           }
         });
@@ -68,20 +68,20 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
   }
 
   _getSubGroupLabs(i: number) {
-    return this.labs.filter(res => res.subGroup === i);
+    return this.labs.filter(res => res.SubGroup === i);
   }
 
   _getSubGroupDay(i: number) {
-    return this.scheduleProtectionLabs.filter(res => res.subGroup === i);
+    return this.scheduleProtectionLabs.filter(res => res.SubGroup === i);
   }
 
   _getSubGroupDisplayColumns(i: number) {
-    return [...this.displayedColumns, ...this._getSubGroupDay(i).map(res => res.date + res.id)];
+    return [...this.displayedColumns, ...this._getSubGroupDay(i).map(res => res.Date + res.ScheduleProtectionLabId)];
   }
 
   settingVisitDate(index) {
     const dialogData: DialogData = {
-      title: 'График посещения',
+      title: 'Даты занятий',
       buttonText: 'Добавить',
       body: {service: this.labService, restBody: {subGroupId: this.getSubGroupId(index)}},
       model: index

@@ -14,10 +14,10 @@
         </ng-container>
 
         <ng-container *ngFor="let scheduleProtectionLab of _getSubGroupDay(i); let i = index"
-                      matColumnDef="{{scheduleProtectionLab.date + scheduleProtectionLab.id}}"
+                      matColumnDef="{{scheduleProtectionLab.Date + scheduleProtectionLab.ScheduleProtectionLabId}}"
         >
           <th mat-header-cell *matHeaderCellDef>
-            <div class="header-date">{{scheduleProtectionLab.date}}</div>
+            <div class="header-date">{{scheduleProtectionLab.Date}}</div>
           </th>
           <td mat-cell
               *matCellDef="let element"

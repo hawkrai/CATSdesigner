@@ -1,5 +1,5 @@
+import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import { MatTable } from '@angular/material';
-import { Observable } from 'rxjs';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {Store} from '@ngrx/store';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
@@ -11,12 +11,11 @@ import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {LabWorkPopoverComponent} from './lab-work-popover/lab-work-popover.component';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
-import {Attachment} from '../../../../models/attachment.model';
+import {Attachment} from '../../../../models/file/attachment.model';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import { SubSink } from 'subsink';
-import { CreateEntity } from 'src/app/models/form/create-entity.model';
 
 @Component({
   selector: 'app-labs-work',
@@ -56,8 +55,8 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
     const toSave = this.labs.filter(l => {
-      const copy =  this.labsCopy.find(lc => l.labId === lc.labId);
-      return l.order !== copy.order || l.shortName !== copy.shortName;
+      const copy =  this.labsCopy.find(lc => l.LabId === lc.LabId);
+      return l.Order !== copy.Order || l.ShortName !== copy.ShortName;
     }
     );
     if (toSave.length) {
@@ -70,7 +69,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     const newLab = this.getLab(lab);
 
     const dialogData: DialogData = {
-      title: lab ? 'Редактирование лабораторную работу' : 'Добавление лабораторную работу',
+      title: lab ? 'Редактирование лабораторной работы' : 'Добавление лабораторной работы',
       buttonText: 'Сохранить',
       model: newLab
     };
@@ -80,7 +79,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           result.attachments = JSON.stringify(result.attachments);
-          this.store.dispatch(labsActions.createLab({ lab: result as CreateEntity }));
+          this.store.dispatch(labsActions.saveLab({ lab: result as CreateLessonEntity }));
         }
       })
     );
@@ -89,7 +88,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   deleteLab(lab: Lab) {
     const dialogData: DialogData = {
       title: 'Удаление лабораторной работы',
-      body: 'лабораторную работу "' + lab.theme + '"',
+      body: 'лабораторную работу "' + lab.Theme + '"',
       buttonText: 'Удалить'
     };
     const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
@@ -97,7 +96,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.store.dispatch(labsActions.deleteLab({ id: lab.labId }));
+          this.store.dispatch(labsActions.deleteLab({ id: lab.LabId }));
         }
       })
     );
@@ -135,27 +134,27 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   drop(event: CdkDragDrop<Lab[]>): void {
     console.log(event.item.data);
-    const prevIndex = this.labs.findIndex(l => l.labId === event.item.data.labId);
+    const prevIndex = this.labs.findIndex(l => l.LabId === event.item.data.labId);
     if (prevIndex === event.currentIndex) {
       return;
     }
-    this.labs[prevIndex].order = event.currentIndex + 1;
-    this.labs[prevIndex].shortName = `${this.prefix}${this.labs[prevIndex].order}`;
-    this.labs[event.currentIndex].order = prevIndex + 1;
-    this.labs[event.currentIndex].shortName = `${this.prefix}${this.labs[event.currentIndex].order}`;
+    this.labs[prevIndex].Order = event.currentIndex + 1;
+    this.labs[prevIndex].ShortName = `${this.prefix}${this.labs[prevIndex].Order}`;
+    this.labs[event.currentIndex].Order = prevIndex + 1;
+    this.labs[event.currentIndex].ShortName = `${this.prefix}${this.labs[event.currentIndex].Order}`;
     moveItemInArray(this.labs, prevIndex, event.currentIndex);
     this.table.renderRows();
   }
 
   private getLab(lab?: Lab) {
     return {
-      id: lab ? lab.labId : 0,
-      theme: lab ? lab.theme : '',
-      duration: lab ? lab.duration : '',
-      order: lab ? lab.order : this.labs.length + 1,
-      pathFile: lab ? lab.pathFile : '',
-      attachments: lab ? lab.attachments : [],
-      shortName: lab ? lab.shortName : ''
+      id: lab ? lab.LabId : 0,
+      theme: lab ? lab.Theme : '',
+      duration: lab ? lab.Duration : '',
+      order: lab ? lab.Order : this.labs.length + 1,
+      pathFile: lab ? lab.PathFile : '',
+      attachments: lab ? lab.Attachments : [],
+      shortName: lab ? lab.ShortName : ''
     };
   }
 

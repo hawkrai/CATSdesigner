@@ -60,7 +60,7 @@ export class JobProtectionComponent implements OnInit {
       this.store.pipe(select(groupSelectors.getCurrentGroup))
         .pipe(filter(group => !!group))
         .subscribe(group => {
-          this.labService.getAllStudentFilesLab(this.subjectId, group.groupId).subscribe(students => {
+          this.labService.getAllStudentFilesLab(this.subjectId, group.GroupId).subscribe(students => {
             this.students = date ? this.setPriority(date, students) : students;
             students.forEach(student => {
               if (!this.numberSubGroups.includes(student.SubGroup)) {
