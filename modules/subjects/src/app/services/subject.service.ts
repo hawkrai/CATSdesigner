@@ -3,6 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Subject} from '../models/subject.model';
 import { SubjectForm } from '../models/subject-form.model';
+import { Lector } from '../models/lector.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +34,18 @@ export class SubjectService {
     return this.http.get<Subject[]>('Subject/Subjects');
   }
 
-  public deleteSubjects(subjectId: number): Observable<any> {
+  public deleteSubject(subjectId: number): Observable<any> {
     return this.http.get('Subject/DeleteSubject/' + subjectId);
   }
 
   public getCreateModel(): Observable<SubjectForm> {
     return this.http.get<SubjectForm>('Subject/Create');
+  }
+
+  public getLector(id: number): Observable<Lector> {
+    return this.http.get(`Services/CoreService.svc/GetLecturer/${id}`).pipe(
+      map(res => res['Lector'])
+    );
   }
 
   public getJoinedLector(subjectId: number): Observable<any> {

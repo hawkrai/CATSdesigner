@@ -1,24 +1,41 @@
-import {AfterViewInit, Component, Inject} from '@angular/core';
+import { Russian } from 'flatpickr/dist/l10n/ru';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FileService} from '../../../../services/file.service';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {Attachment} from '../../../../models/attachment.model';
-
+import flatpickr from 'flatpickr';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-lab-work-popover',
   templateUrl: './practical-lesson-popover.component.html',
   styleUrls: ['./practical-lesson-popover.component.less']
 })
-export class PracticalLessonPopoverComponent implements AfterViewInit {
+export class PracticalLessonPopoverComponent implements OnInit, AfterViewInit {
 
   public files = [];
-
+  start: string;
   constructor(
     public dialogRef: MatDialogRef<PracticalLessonPopoverComponent>,
     private fileService: FileService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dialogRef.disableClose = true;
+    this.data.model.shortName = `ПР${this.data.model.order}`;
+  }
+
+  flatpickrFactory() {
+    flatpickr.localize(Russian);
+    return flatpickr;
+  }
+   
+  ngOnInit(): void {
+    this.flatpickrFactory();
+    const format = 'yyyy-MM-dd HH:mm';
+    const locale = 'en-US';
+    this.data.model.start = formatDate(this.data.model.start, format, locale);
+    this.data.model.end = formatDate(this.data.model.end, format, locale);
+
   }
 
   ngAfterViewInit(): void {

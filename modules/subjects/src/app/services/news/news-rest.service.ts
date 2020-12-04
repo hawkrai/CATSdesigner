@@ -1,25 +1,28 @@
+import { ConverterService } from 'src/app/services/converter.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ConverterService } from "../converter.service";
 import {map} from "rxjs/operators";
+import { News } from 'src/app/models/news.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewsRestService {
 
-  constructor(private http: HttpClient,
-              private converterService: ConverterService) { }
+  constructor(
+    private http: HttpClient,
+    private converterService: ConverterService
+    ) { }
 
-  public getAllNews(subjectId: number): Observable<any> {
+  public getAllNews(subjectId: number): Observable<News[]> {
     return this.http.get('Services/News/NewsService.svc/GetNews/' + subjectId).pipe(
       map(res =>  this.converterService.newsModelsConverter(res['News']))
     );
   }
 
   public saveNews(news: any): Observable<any> {
-    return this.http.post('Services/News/NewsService.svc/Save', {...news});
+    return this.http.post('Services/News/NewsService.svc/Save', {...news });
   }
 
   public disableNews(subjectId: number): Observable<any> {
@@ -30,7 +33,7 @@ export class NewsRestService {
     return this.http.post('Services/News/NewsService.svc/EnableNews', {subjectId});
   }
 
-  public deleteNews(id: string, subjectId: number): Observable<any> {
+  public deleteNews(id: number, subjectId: number): Observable<any> {
     return this.http.post('Services/News/NewsService.svc/Delete', {id, subjectId});
   }
 }

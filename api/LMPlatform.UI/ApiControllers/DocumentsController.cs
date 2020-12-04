@@ -67,9 +67,9 @@ namespace LMPlatform.UI.ApiControllers
             {
                 foreach (var document in documents)
                 {
-                    if (document.Childrens.Any())
+                    if (DocumentManagementService.GetByParentId(document.Id).Any())
                     {
-                        RemoveChilds(document.Childrens);
+                        RemoveChilds(DocumentManagementService.GetByParentId(document.Id));
                     }
                     DocumentManagementService.RemoveDocument(document);
                 }

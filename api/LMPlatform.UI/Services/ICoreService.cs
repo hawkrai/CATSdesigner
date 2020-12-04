@@ -59,7 +59,7 @@ namespace LMPlatform.UI.Services
 
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetNoAdjointLectors/{subjectId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-		LectorResult GetNoAdjointLectors(string subjectId);
+		LectorsResult GetNoAdjointLectors(string subjectId);
 
 		[OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/JoinLector")]
@@ -67,7 +67,7 @@ namespace LMPlatform.UI.Services
 
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetJoinedLector/{subjectId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-	    LectorResult GetJoinedLector(string subjectId);
+	    LectorsResult GetJoinedLector(string subjectId);
 
 	    [OperationContract]
 		[WebInvoke(UriTemplate = "/DisjoinLector", RequestFormat = WebMessageFormat.Json, Method = "POST")]
@@ -76,10 +76,14 @@ namespace LMPlatform.UI.Services
         //TODO: Find way to reemove /All
         [OperationContract]
         [WebInvoke(UriTemplate = "/GetLecturers/All", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-        LectorResult GetLecturers();
+        LectorsResult GetLecturers();
 
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetGroupsByUser/{userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		GroupsResult GetGroupsByUser(string userId);
+
+		[OperationContract]
+		[WebInvoke(UriTemplate = "/GetLecturer/{userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+		LectorResult GetLecturer(string userId);
     }
 }

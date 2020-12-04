@@ -10,14 +10,14 @@
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <div mat-dialog-actions>
+  <div>
     <button mat-raised-button
             class="visit-date__action"
             color="primary"
             [disabled]="!newDate"
             (click)="createDate()">{{data.buttonText}}</button>
   </div>
-  <p mat-dialog-title class="visit-date__table-title">График</p>
+  <p mat-dialog-title class="visit-date__table-title">Выбранные даты</p>
   <div class="mdc-data-table example-container mat-elevation-z8">
     <table class="mdc-data-table__table">
       <tbody class="mdc-data-table__content">
@@ -25,7 +25,7 @@
         <td class="mdc-data-table__cell">{{ calendar.date }}</td>
         <td class="mdc-data-table__cell visit-date__table-action">
           <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(calendar)">
-            <mat-icon>delete_forever</mat-icon>
+            <mat-icon>delete</mat-icon>
           </button>
         </td>
       </tr>

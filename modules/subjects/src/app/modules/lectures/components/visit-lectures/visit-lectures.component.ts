@@ -1,4 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { loadGroups } from './../../../../store/actions/groups.actions';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {Calendar} from '../../../../models/calendar.model';
 import {LecturesService} from "../../../../services/lectures/lectures.service";
@@ -11,6 +12,9 @@ import {VisitDatePopoverComponent} from '../../../../shared/visit-date-popover/v
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
+import { IAppState } from 'src/app/store/state/app.state';
+import { Store } from '@ngrx/store';
+import * as groupSelectors from '../../../../store/selectors/groups.selectors';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -28,16 +32,18 @@ export class VisitLecturesComponent implements OnInit {
   public displayedColumns: string[] = [];
   public selectGroupId: string;
 
-  constructor(private groupsService: GroupsService,
+  constructor(
+    private store: Store<IAppState>,
               private lecturesService: LecturesService,
               public dialog: MatDialog) {
   }
 
   ngOnInit() {
-    this.groupsService.loadDate();
-    this.groupsService.getAllGroups().subscribe(res => {
+    this.store.select(groupSelectors.getGroups).subscribe(res => {
       this.groups = res;
-      this.selectGroupId = res[0].groupId;
+      if (res && res.length > 0) {
+        this.selectGroupId = res[0].groupId;
+      }
     });
 
     this.lecturesService.loadCalendar();
@@ -76,7 +82,7 @@ export class VisitLecturesComponent implements OnInit {
 
   settingVisitDate() {
     const dialogData: DialogData = {
-      title: 'График занятий',
+      title: 'Даты занятий',
       buttonText: 'Добавить',
       body: {service: this.lecturesService, restBody: {subjectId: this.subjectId}},
     };
@@ -109,8 +115,6 @@ export class VisitLecturesComponent implements OnInit {
           comment: res.Marks[index].Comment
         }))
       };
-
-      console.log(this.groupsVisiting.lecturesMarksVisiting);
 
       const dialogData: DialogData = {
         title: 'Посещаемость студентов',

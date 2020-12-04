@@ -2,7 +2,8 @@
 <div mat-dialog-content style="display: block">
   <mat-form-field class="form-field">
     <mat-label>Выберите готовый шаблон</mat-label>
-    <mat-select (selectionChange)="onTemplateChange($event)">
+    <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
+      <mat-option *ngIf="data.taskSheetTemplate != undefined" value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
       <mat-option *ngFor="let template of templates" [value]="template">
         {{template.Name}}
       </mat-option>

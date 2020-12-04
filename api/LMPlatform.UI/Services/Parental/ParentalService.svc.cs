@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
@@ -6,6 +7,7 @@ using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
+using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Parental;
 using Microsoft.AspNet.SignalR;
 

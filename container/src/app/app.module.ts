@@ -18,6 +18,7 @@ import { AdminComponent } from './admin/admin.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 import { RegisterComponent } from './register/register.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
     AdminComponent,
     ProgressControlComponent,
     RegisterComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    ResetComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content class="results__popover" #popoverContent>
   <form class="example-form" [formGroup]="markForm">
-    <mat-form-field appearance="fill" class="example-full-width">
+    <!-- <mat-form-field appearance="fill" class="example-full-width">
         <mat-label>Преподаватель</mat-label>
         <mat-select formControlName="lector">
           <mat-option>Выберете преподавателя</mat-option>
@@ -9,16 +9,15 @@
             {{lector.FullName}}
           </mat-option>
         </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
     <mat-form-field class="example-full-width">
       <mat-label>Выставьте отметку (от 0 до 10)</mat-label>
       <input type="number" matInput formControlName="mark" placeholder="Оценка">
-      <mat-hint *ngIf="data.model">Рекомендуемая оценка {{data.model}}</mat-hint>
+      <mat-hint *ngIf="data.model">Рекомендуемая оценка {{data.model.recommendedMark}}</mat-hint>
     </mat-form-field>
     <mat-form-field class="date">
       <mat-label>Дата выставления</mat-label>
       <input matInput
-             [matDatepickerFilter]="datepickerFilter"
              formControlName="date"
              [matDatepicker]="picker"
 
@@ -31,9 +30,10 @@
       <textarea class="results__comment" matInput formControlName="comment"></textarea>
     </mat-form-field>
   </form>
+  <p *ngIf="lector$ | async as lector">Оценку поставил(а) {{lector.FullName}}</p>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button mat-dialog-close>Отмена</button>
   <button mat-raised-button
           (click)="onSubmit()"
           color="primary"

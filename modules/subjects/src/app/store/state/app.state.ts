@@ -1,8 +1,9 @@
-import {initialSubjectState, ISubjectState} from "./subject.state";
-import {INewsState, initialNewsState} from "./news.state";
-import {GroupsState, initialGroupsState} from './groups.state';
-import {initialLecturesState, LecturesState} from './lectures.state';
-import {initialLabsState, LabsState} from './labs.state';
+import { ISubjectState } from "./subject.state";
+import { INewsState } from "./news.state";
+import { GroupsState } from './groups.state';
+import { LecturesState } from './lectures.state';
+import { LabsState } from './labs.state';
+import { IPracticalState } from './practicals.state';
 
 
 export interface IAppState {
@@ -10,17 +11,7 @@ export interface IAppState {
   news: INewsState;
   groups: GroupsState;
   lectures: LecturesState;
-  labs: LabsState
-}
-
-export const initialAppState: IAppState = {
-  subject: initialSubjectState,
-  news: initialNewsState,
-  groups: initialGroupsState,
-  lectures: initialLecturesState,
-  labs: initialLabsState
+  labs: LabsState,
+  practicals: IPracticalState
 };
 
-export function getInitialState(): IAppState {
-  return initialAppState;
-}

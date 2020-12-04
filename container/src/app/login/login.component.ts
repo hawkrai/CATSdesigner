@@ -59,15 +59,7 @@ export class LoginComponent implements OnInit {
             });
   }
 
-  private passwordValidator(control: FormControl): ValidationErrors {
-    const value = control.value;
-    const hasNumber = /[0-9]/.test(value);
-    const hasCapitalLetter = /[A-Z]/.test(value);
-    const hasLowercaseLetter = /[a-z]/.test(value);
-    const passwordValid = hasNumber && hasCapitalLetter && hasLowercaseLetter;
-    if (!passwordValid) {
-     return {invalid: 'Password invalid'};
-    }
+  private passwordValidator(control: FormControl): ValidationErrors {    
     return null;
    }
 

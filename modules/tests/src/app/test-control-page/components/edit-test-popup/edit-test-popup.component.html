@@ -1,10 +1,11 @@
 <div class="popup-container-parent" *ngIf="editingTest;else loading">
   <div class="popup-container-child">
-  <h1 mat-dialog-title class="popup-container">{{!this.newTest ? 'Редактирование теста' : 'Создание теста'}}</h1>
+  <h1 mat-dialog-title class="popup-container">{{!this.newTest ? 'Редактирование теста' : 'Добавление теста'}}</h1>
   <ng-container [formGroup]="formGroup">
     <div mat-dialog-content>
       <mat-form-field>
         <input matInput formControlName="title" [placeholder]="'Название теста'"
+               [required]="true"
                [value]="editingTest.Title ? editingTest.Title : ''"
                (change)="writeTitle($event, 'Title')">
         <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
@@ -19,7 +20,7 @@
       <mat-form-field class="edit-test-wrapper">
       <textarea matInput [placeholder]="'Описание теста'"
                 [value]="editingTest.Description ? editingTest.Description : ''"
-                rows="5"
+                rows="3"
                 formControlName="description"
                 (change)="writeTitle($event, 'Description')"></textarea>
         <mat-error *ngIf="formGroup.controls.description.hasError('maxlength')">
@@ -30,6 +31,7 @@
     <div mat-dialog-content class="edit-test-questions">
       <mat-form-field>
         <input matInput type="number" [placeholder]="'Количество вопросов'"
+               [required]="true"
                [value]="editingTest.CountOfQuestions ? editingTest.CountOfQuestions : 5"
                formControlName="countOfQuestions"
                (change)="writeTitle($event, 'CountOfQuestions')">
@@ -49,6 +51,7 @@
       <mat-form-field>
         <input matInput type="number"
                [placeholder]="'Время на тест (мин)'"
+               [required]="true"
                [value]="editingTest.TimeForCompleting ? editingTest.TimeForCompleting : 10"
                formControlName="timeForCompleting"
                (change)="writeTitle($event, 'TimeForCompleting')">
@@ -83,7 +86,7 @@
     </div>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+    <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
     <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>{{'button.save' | translate :
       'Сохранить'}}
     </button>

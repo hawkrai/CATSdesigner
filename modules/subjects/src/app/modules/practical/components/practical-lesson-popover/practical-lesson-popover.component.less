@@ -13,15 +13,24 @@
   }
 }
 
+
 .example-form {
   min-width: 150px;
   max-width: 500px;
   width: 100%;
   margin-bottom: 25px;
 
+  &-container {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 0 30px;
+  }
+
   .example-full-width {
     width: 100%;
   }
+
+  
 }
 
 .file-table {

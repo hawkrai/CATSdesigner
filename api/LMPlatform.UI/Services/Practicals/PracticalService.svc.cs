@@ -44,7 +44,7 @@ namespace LMPlatform.UI.Services.Practicals
 
                 return new PracticalsResult
                 {
-                    Practicals = model,
+                    Practicals = model.OrderBy(x => x.Order).ToList(),
                     Message = "Практические занятия успешно загружены",
                     Code = "200"
                 };
@@ -235,6 +235,34 @@ namespace LMPlatform.UI.Services.Practicals
                 return new ResultViewData
                 {
                     Message = "Произошла ошибка при удалении даты",
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData UpdatePracticals(List<UpdateLab> practicals)
+        {
+            try
+            {
+                foreach (var practical in practicals)
+                {
+                    var response = Save(practical.SubjectId, practical.Id, practical.Theme, practical.Duration, practical.Order, practical.ShortName, practical.PathFile, practical.Attachments);
+                    if (response.Code == "500")
+                    {
+                        throw new Exception(response.Message);
+                    }
+                }
+                return new ResultViewData
+                {
+                    Message = "Практические занятия успешно обновлены",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при обновлении практических занятий." + ex.Message,
                     Code = "500"
                 };
             }

@@ -2,16 +2,12 @@
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
   <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
-      <mat-label>Название лабораторной работы</mat-label>
+      <mat-label>Название работы</mat-label>
       <textarea class="lab-work-component__news-text" maxlength="256" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <mat-label>Сокращенное название лабораторной работы</mat-label>
-      <input name="shortName" maxlength="100" matInput placeholder="Сокращенное название" [(ngModel)]="data.model.shortName">
-    </mat-form-field>
-    <mat-form-field class="example-full-width">
-      <mat-label>Порядковый номер лабораторной работы</mat-label>
-        <input name="order"  min="1" required type="number" matInput placeholder="Порядок" [(ngModel)]="data.model.order">
+      <mat-label>Краткое название</mat-label>
+      <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Количество часов(1-99)</mat-label>
@@ -59,7 +55,7 @@
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
   <button mat-raised-button
-          (click)="onSave(data.model || data.body)"
+          (click)="onSave()"
           color="primary"
           [disabled]="!formElement.checkValidity()"
   >

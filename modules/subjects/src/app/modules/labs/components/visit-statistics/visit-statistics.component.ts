@@ -1,4 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { SubSink } from 'subsink';
+import { StudentMark } from './../../../../models/student-mark.model';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import {LabsService} from "../../../../services/labs/labs.service";
 import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
 import {select, Store} from '@ngrx/store';
@@ -10,26 +12,29 @@ import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
 import {Group} from '../../../../models/group.model';
+import * as labsActions from '../../../../store/actions/labs.actions';
+import * as labsSelectors from '../../../../store/selectors/labs.selectors';
+
 
 @Component({
   selector: 'app-visit-statistics',
   templateUrl: './visit-statistics.component.html',
   styleUrls: ['./visit-statistics.component.less']
 })
-export class VisitStatisticsComponent implements OnInit {
+export class VisitStatisticsComponent implements OnInit, OnDestroy {
 
   @Input() teacher: boolean;
-
+  private subs = new SubSink();
   public scheduleProtectionLabs: ScheduleProtectionLab[];
   public numberSubGroups: number[] = [1, 2];
   public displayedColumns: string[] = ['position', 'name'];
 
   private subjectId: number;
   private group: Group;
-  student: any[];
+  student: StudentMark[];
 
   public labs: Lab[];
-  public  header = [{head: 'empty', text: '', length: 2}];
+  public header: { head:string, text: string, length: number, tooltip?: string }[];
   public displayColumnsLab = [];
 
   constructor(private labService: LabsService,
@@ -37,38 +42,50 @@ export class VisitStatisticsComponent implements OnInit {
               public dialog: MatDialog) {
   }
 
+  ngOnDestroy(): void {
+     this.subs.unsubscribe();
+  }
+
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
-
-      this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-        this.group = group;
-        this.labService.loadData();
-
-        this.labService.getLabsProtectionSchedule().subscribe(res => {
-          this.labs = res;
-        });
-
-        this.labService.getCalendar().subscribe(res => {
-          this.scheduleProtectionLabs = res;
-          this.scheduleProtectionLabs.forEach(lab => {
-            if (!this.numberSubGroups.includes(lab.subGroup)) {
-              this.numberSubGroups.push(lab.subGroup);
-              this.numberSubGroups.sort((a, b) => a-b)
-            }
-          });
-        });
-
-        this.refreshMarks();
-      });
-    });
+    this.subs.add(
+      this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+        this.subjectId = subjectId;
+  
+        this.subs.add(
+          this.store.pipe(select(getCurrentGroup)).subscribe(group => {
+            this.group = group;
+            this.store.dispatch(labsActions.loadLabsSchedule());
+            this.subs.add(
+              this.store.select(labsSelectors.getLabs).subscribe(res => {
+                this.labs = res;
+              })
+            );
+    
+            this.subs.add(
+              this.store.select(labsSelectors.getLabsCalendar).subscribe(res => {
+                this.scheduleProtectionLabs = res;
+                this.scheduleProtectionLabs.forEach(lab => {
+                  if (!this.numberSubGroups.includes(lab.subGroup)) {
+                    this.numberSubGroups.push(lab.subGroup);
+                    this.numberSubGroups.sort((a, b) => a - b);
+                  }
+                });
+              })
+            );
+            this.refreshMarks();
+          })
+        );
+      })
+    );
   }
 
   refreshMarks() {
-    this.labService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
-      this.student = res;
-      this.setSubGroupDisplayColumnsLab(res[0].SubGroup);
-    })
+    this.subs.add(
+      this.labService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
+        this.student = res;
+        this.setSubGroupDisplayColumnsLab(res[0].SubGroup);
+      })
+    );
   }
 
 
@@ -98,19 +115,21 @@ export class VisitStatisticsComponent implements OnInit {
       });
 
       const dialogData: DialogData = {
-        title: 'Посещаемость студентов',
+        title: 'Посещаемость занятий',
         buttonText: 'Сохранить',
         body: visits
       };
       const dialogRef = this.openDialog(dialogData, VisitingPopoverComponent);
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          const visitsModel = {Id: [], comments: [], dateId: date.id, marks: [], students, studentsId: []};
-          this.labService.setLabsVisitingDate(this.getModelVisitLabs(students, index, visitsModel, result.students))
-            .subscribe(res => res.Code === '200' && this.refreshMarks());
-        }
-      });
+      this.subs.add(
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            const visitsModel = {Id: [], comments: [], dateId: date.id, marks: [], students, studentsId: []};
+            this.labService.setLabsVisitingDate(this.getModelVisitLabs(students, index, visitsModel, result.students))
+              .subscribe(res => res.Code === '200' && this.refreshMarks());
+          }
+        })
+      );
     }
   }
 
@@ -134,7 +153,7 @@ export class VisitStatisticsComponent implements OnInit {
     this.header = [{head: 'emptyPosition', text: '', length: 1}, {head: 'emptyName', text: '', length: 1}];
     const labs = this.labs.filter(lab => lab.subGroup.toString() === subGroup.toString());
     labs.forEach(lab => {
-      this.header.push({head: lab.labId.toString(), text: lab.shortName, length: Math.floor(lab.duration/2)})
+      this.header.push({head: lab.labId.toString(), text: lab.shortName, length: Math.floor(lab.duration/2), tooltip: lab.theme })
     });
     this.displayColumnsLab = this.header.map(res => res.head);
   }

@@ -2,18 +2,20 @@
   <ng-container *ngFor="let studentResults of scareThing, let iq = index">
     <div class="result-test-table-container"
          *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
-      {{"Подгруппа " + (iq+1)}}
+      <div class="result-test-table-subgroup">
+        {{"Группа " + group + ", Подгруппа " + (iq+1)}}
+      </div>
       <div class="result-test-table-table">
         <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
           <!-- Position Column -->
           <ng-container matColumnDef="Id">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> No.</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> №</mat-header-cell>
             <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index+1}}</mat-cell>
           </ng-container>
 
           <!-- Name Column -->
           <ng-container matColumnDef="Name">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Название теста</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">ФИО студента</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element[1].name}}
             </mat-cell>
           </ng-container>
@@ -30,7 +32,9 @@
 
           <ng-container matColumnDef="average">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средний балл</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-average" [class.all]="size && element[3]" [class.notAll]="size && !element[3]"> {{element[2]}}</mat-cell>
+            <mat-cell *matCellDef="let element" class="mat-header-cell-average" [class.all]="size && element[3]"
+                      [class.notAll]="size && !element[3]"> {{element[2]}}
+            </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -41,7 +45,7 @@
   </ng-container>
   <div class="result-test-table-chart" *ngIf="showChart">
     <canvas class="result-test-table-chart-graph"
-      baseChart
+            baseChart
             [datasets]="barChartData"
             [labels]="barChartLabels"
             [options]="barChartOptions"

@@ -20,20 +20,34 @@
         <td class="mdc-data-table__cell">{{ student.Name }}</td>
         <td class="mdc-data-table__cell">{{ student.Group }}</td>
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
-          <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">{{result.Mark}}</td>
+          <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">
+            {{result.Mark}}
+            <div class="comment" *ngIf="result && result.Comment">
+              <mat-icon class="comment-icon" matTooltip={{result.Comment}}>chat_bubble_outline</mat-icon>
+            </div>
+          </td>
         </ng-container>
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsLecturer">
           <td class="mdc-data-table__cell data-cell clickable" (click)="percentageResultsComponent.setResult(result)"
               *ngFor="let result of student.PercentageResults">
             {{ result.Mark }}
+            <div class="comment" *ngIf="result && result.Comment">
+              <mat-icon class="comment-icon" matTooltip={{result.Comment}}>chat_bubble_outline</mat-icon>
+            </div>
           </td>
         </ng-container>
         <td class="mdc-data-table__cell data-cell" *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
           {{ student.Mark }}
+          <div class="comment" *ngIf="student && student.Comment">
+            <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
+          </div>
         </td>
         <td class="mdc-data-table__cell data-cell clickable" *ngIf="percentageResultsComponent.getCourseUser().IsLecturer"
             (click)="percentageResultsComponent.setMark(student)">
           {{ student.Mark }}
+          <div class="comment" *ngIf="student && student.Comment">
+            <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
+          </div>
         </td>
       </tr>
       </tbody>

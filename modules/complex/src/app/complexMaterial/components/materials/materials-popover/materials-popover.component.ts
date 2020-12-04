@@ -11,10 +11,27 @@ export class MaterialsPopoverComponent{
 
   public files = [];
   page: number = 1
+
+  isAdaptive: boolean;
+  needToChooseAdaptivityType: boolean;
+  needToGetInitialTest: boolean;
+  shouldWaitPresettedTime: boolean;
+  showMaterial: boolean;
+  toTestButtonVisible: boolean;
   
   constructor(
     public dialogRef: MatDialogRef<MaterialsPopoverComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.isAdaptive = data.isAdaptive;
+    this.needToChooseAdaptivityType = data.needToChooseAdaptivityType;
+    this.needToGetInitialTest = data.needToGetInitialTest;
+    this.shouldWaitPresettedTime = data.shouldWaitPresettedTime;
+
+    this.showMaterial = !this.isAdaptive || !(this.needToChooseAdaptivityType || this.needToGetInitialTest);
+
+    this.toTestButtonVisible = this.isAdaptive && !(this.needToChooseAdaptivityType || this.needToGetInitialTest);
+
+  }
 
   onNoClick(): void {
     this.dialogRef.close();

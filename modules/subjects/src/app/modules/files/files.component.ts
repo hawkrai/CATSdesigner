@@ -19,27 +19,20 @@ export class FilesComponent implements OnInit {
   ngOnInit() {
     this.store$.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.fileService.getSubjectFile({subjectId}).subscribe(attachments => {
-        console.log(attachments)
-        this.attachmentsToFiles([...attachments.Lectures, ...attachments.Labs, ...attachments.Practicals])
+        this.attachmentsToFiles([...attachments]);
       })
     });
   }
 
   attachmentsToFiles(attachments) {
-    let values = '["';
-    attachments.forEach((attachment, index) => {
-      values += attachment.Name + '/' + attachment.Id + '/' + attachment.PathName + '/' +
-        attachment.FileName;
-      if (index < attachments.length - 1) {
-        values += '","'
-      }
-    });
-
-    values += '"]';
+    const values = JSON.stringify(attachments.map(a => `${a.Name}/${a.Id}/${a.PathName}/${a.FileName}`));
 
     if (attachments.length) {
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-        .subscribe(files => this.files = files);
+        .subscribe(files => {
+          console.log(files);
+          this.files = files
+        });
     }
   }
 

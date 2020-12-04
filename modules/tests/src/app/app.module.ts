@@ -47,6 +47,7 @@ import {SelectAutocompleteModule} from "mat-select-autocomplete";
 import {LoginComponent} from "./login/login.component";
 import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 import {MenuItemComponent} from "./questions-page/components/question-popup/components/menu-item/menu-item.component";
+import { NeuralNetworkPopupComponent } from './questions-page/components/neural-network-popup/neural-network-popup.component';
 
 
 @NgModule({
@@ -84,7 +85,8 @@ import {MenuItemComponent} from "./questions-page/components/question-popup/comp
     TestResultComponent,
     TranslatePipe,
     AutocompleteFormComponent,
-    LoginComponent
+    LoginComponent,
+    NeuralNetworkPopupComponent
   ],
   imports: [
     FormsModule,
@@ -110,6 +112,7 @@ import {MenuItemComponent} from "./questions-page/components/question-popup/comp
     QuestionPopupComponent,
     QuestionOtherTestComponent,
     DeleteQuestionConfirmationPopupComponent,
+    NeuralNetworkPopupComponent,
     AnswersPopupComponent],
   bootstrap: [AppComponent]
 })

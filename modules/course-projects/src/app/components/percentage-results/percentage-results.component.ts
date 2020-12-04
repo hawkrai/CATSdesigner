@@ -110,7 +110,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   setResult(pr: PercentageResult) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
-      width: '300px',
+      width: '400px',
       data: {
         mark: pr.Mark !== '-' ? pr.Mark : null,
         min: 0,
@@ -145,7 +145,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   setMark(student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
-      width: '500px',
+      width: '400px',
       data: {
         mark: student.Mark !== '-' ? student.Mark : null,
         min: 1,

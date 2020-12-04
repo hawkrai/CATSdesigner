@@ -49,13 +49,11 @@ namespace LMPlatform.UI.Services.Subjects
 
         public IEnumerable<ModulesViewModel> GetSubjectModules(string subjectId)
         {
-            var subject = SubjectManagementService.GetSubject(int.Parse(subjectId));
-
-            var modules = ModulesManagementService.GetModules()
+            var modules = ModulesManagementService.GetModules(int.Parse(subjectId))
                 .Where(e => e.Visible)
-                .Select(m => new ModulesViewModel(m, subject.SubjectModules.Any(e => e.ModuleId == m.Id))).ToList();
+                .Select(m => new ModulesViewModel(m, true)).ToList();
 
-            return modules.Where(m => m.Checked);
+            return modules.OrderBy(m => m.Order);
         }
     }
 }

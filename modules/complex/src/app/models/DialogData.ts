@@ -15,4 +15,10 @@ export interface DialogData {
   isNew?: boolean;
 
   nodeId?: string;
+
+  //Adaptive Learning
+  isAdaptive?: boolean;
+  needToChooseAdaptivityType?: boolean;
+  needToGetInitialTest?: boolean;
+  shouldWaitPresettedTime?: boolean;
 }

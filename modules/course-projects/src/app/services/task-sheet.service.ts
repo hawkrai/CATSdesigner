@@ -14,8 +14,7 @@ export class TaskSheetService {
   }
 
   public getTaskSheetHtml(params: any): Observable<any> {
-    return this.http.get('Cp/GetTasksSheetHtml',
-      {params: new HttpParams({fromObject: params}), responseType: 'text'});
+    return this.http.get('api/CpTaskSheetHtml', {params: new HttpParams({fromObject: params})});
   }
 
   public getTaskSheet(params: any): Observable<any> {
@@ -32,6 +31,10 @@ export class TaskSheetService {
 
   public getTemplate(params: any): Observable<any> {
     return this.http.get('api/CpTaskSheetTemplate', {params: new HttpParams({fromObject: params})});
+  }
+
+  public getTemplates(params: string): Observable<any> {
+    return this.http.get('api/CpTaskSheetTemplate', { params: new HttpParams({ fromString: params })});
   }
 
   public editTemplate(template: TaskSheetTemplate): Observable<any> {

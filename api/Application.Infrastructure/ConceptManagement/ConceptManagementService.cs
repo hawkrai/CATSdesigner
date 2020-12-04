@@ -23,6 +23,7 @@ namespace Application.Infrastructure.ConceptManagement
         private const string TestSectionName = "Блок контроля знаний";
 
 
+
         private readonly string _storageRootTemp = ConfigurationManager.AppSettings["FileUploadPathTemp"];
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();

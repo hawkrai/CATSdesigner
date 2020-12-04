@@ -1,58 +1,47 @@
-import {Action} from "@ngrx/store";
-import {News} from "../../models/news.model";
+import { createAction } from '@ngrx/store';
+import { props } from '@ngrx/store';
+import {News} from '../../models/news.model';
 
-export enum ENewsActions {
-  LOAD_NEWS = '[News] Load News',
-  CREATE_NEWS = '[News] Create News',
-  UPDATE_NEWS = '[News] Update News',
-  DELETE_NEWS_BY_ID = '[News] Delete News By Id',
-  DISABLE_ALL_NEWS = '[News] Disable All News',
-  ENABLE_ALL_NEWS = '[News] Enable All News',
-  SET_NEWS = '[News] Set News',
-}
+export const loadNews = createAction(
+  '[News] Load News',
+);
 
-export class LoadNews implements Action {
-  public readonly type = ENewsActions.LOAD_NEWS;
-}
+export const loadNewsSuccess = createAction(
+  '[News] Load News Success',
+  props<{ news: News[] }>()
+);
 
-export class SetNews implements Action{
-  public readonly type = ENewsActions.SET_NEWS;
+export const saveNews = createAction(
+  '[News] Save News',
+  props<{ news: News }>()
+);
 
-  constructor(public payload: News[]) {}
-}
+export const saveNewsSuccess = createAction(
+  '[News] Save News Success'
+);
 
-export class CreateNews implements Action{
-  public readonly type = ENewsActions.CREATE_NEWS;
+export const deleteNewsById = createAction(
+  '[News] Delete News By Id',
+  props<{ id: number }>()
+);
 
-  constructor(public payload: News) {}
-}
+export const deleteNewsSuccess = createAction(
+  '[News] Delete News Success'
+);
 
-export class UpdateNews implements Action{
-  public readonly type = ENewsActions.UPDATE_NEWS;
+export const disableAllNews = createAction(
+  '[News] Disable All News'
+);
 
-  constructor(public payload: News) {}
-}
+export const enableAllNews = createAction(
+  '[News] Enable All News'
+);
 
-export class DeleteNewsById implements Action{
-  public readonly type = ENewsActions.DELETE_NEWS_BY_ID;
+export const setSelectedNews = createAction(
+  '[News] Set Selected News',
+  props<{ news: News }>()
+);
 
-  constructor(public payload: string) {}
-}
-
-export class DisableAllNews implements Action{
-  public readonly type = ENewsActions.DISABLE_ALL_NEWS;
-}
-
-export class EnableAllNews implements Action{
-  public readonly type = ENewsActions.ENABLE_ALL_NEWS;
-}
-
-export type NewsActions =
-  LoadNews
-  | SetNews
-  | SetNews
-  | CreateNews
-  | UpdateNews
-  | DisableAllNews
-  | DeleteNewsById
-  | EnableAllNews;
+export const resetNews = createAction(
+  '[News] Reset News'
+);

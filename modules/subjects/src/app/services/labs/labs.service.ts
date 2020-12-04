@@ -1,11 +1,13 @@
+import { Store } from '@ngrx/store';
+import { StudentMark } from './../../models/student-mark.model';
+import { ConverterService } from './../converter.service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Lab} from "../../models/lab.model";
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
 import {LabsRestService} from './labs-rest.service';
-import {LoadLabs} from '../../store/actions/labs.actions';
-import {getLabs, getLabsCalendar} from '../../store/selectors/labs.selectors';
+import * as labSelectors from '../../store/selectors/labs.selectors';
+import * as labsActions from '../../store/actions/labs.actions';
+import { IAppState } from 'src/app/store/state/app.state';
 
 @Injectable({
   providedIn: 'root'
@@ -13,48 +15,30 @@ import {getLabs, getLabsCalendar} from '../../store/selectors/labs.selectors';
 
 export class LabsService {
 
-  constructor(private store$: Store<IAppState>,
+  constructor(
+    private store: Store<IAppState>,
+    private converterService: ConverterService,
               private rest: LabsRestService) {
   }
 
-  loadData() {
-    this.store$.dispatch(new LoadLabs());
-  }
-
-  public getLabsProtectionSchedule() {
-    return this.store$.pipe(select(getLabs));
-  }
-
   public getCalendar() {
-    return this.store$.pipe(select(getLabsCalendar))
+    return this.store.select(labSelectors.getLabsCalendar);
   }
 
   public getLabWork(subjectId: number): Observable<Lab[]> {
     return this.rest.getLabWork(subjectId);
   }
 
-  public getMarks(subjectId: number, groupId: string): Observable<any> {
-    return this.rest.getMarks(subjectId, groupId);
+  public getMarks(subjectId: number, groupId: string): Observable<StudentMark[]> {
+    return this.rest.getMarksV2(subjectId, groupId);
   }
 
   public createLab(lab: Lab) {
-    return this.rest.createLab(lab);
+    return this.rest.createLab(this.converterService.labToCreateEntity(lab));
   }
 
   public deleteLab(lab: {id: string, subjectId: number}) {
     return this.rest.deleteLab(lab);
-  }
-
-  public createDateVisit(body: {subGroupId: string, date: string}) {
-    this.rest.createDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.loadData()
-    })
-  }
-
-  public deleteDateVisit(body: {id: string}) {
-    this.rest.deleteDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.loadData()
-    })
   }
 
   public setLabsVisitingDate(body) {
@@ -67,6 +51,10 @@ export class LabsService {
 
   public getFilesLab(body: {subjectId: number, userId: number}): Observable<any> {
     return this.rest.getFilesLab(body);
+  }
+
+  public updateLabs(labs: Lab[]): Observable<any> {
+    return this.rest.updateLabs(this.converterService.labsUpdateConverter(labs));
   }
 
   public deleteUserFile(body: {id: string}): Observable<any> {
@@ -95,5 +83,18 @@ export class LabsService {
 
   public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
     return this.rest.checkPlagiarismSubjects(body);
+  }
+
+  public createDateVisit(body: {subGroupId: string, date: string}) {
+    this.rest.createDateVisit(body).subscribe(res => {
+      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
+    })
+  }
+
+
+  public deleteDateVisit(body: {id: string}) {
+    this.rest.deleteDateVisit(body).subscribe(res => {
+      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
+    })
   }
 }

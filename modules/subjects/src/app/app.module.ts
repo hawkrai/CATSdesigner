@@ -1,3 +1,4 @@
+import { FlatpickrModule } from 'angularx-flatpickr';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
@@ -32,6 +33,9 @@ import {SubjectModule} from './modules/subject/subject.module';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
 import {LecturesListComponent} from './modules/lectures/components/lectures-list/lectures-list.component';
 import {VisitLecturesComponent} from './modules/lectures/components/visit-lectures/visit-lectures.component';
+import { SubjectEffect } from './store/effects/subject.effects';
+import { PracticalsEffects } from './store/effects/practicals.effects';
+import { CatsEffects } from './store/effects/cats.effects';
 
 @NgModule({
   declarations: [
@@ -60,7 +64,7 @@ import {VisitLecturesComponent} from './modules/lectures/components/visit-lectur
     PracticalModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [

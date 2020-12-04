@@ -1,21 +1,20 @@
+import { createReducer, on } from '@ngrx/store';
 import {initialLabsState, LabsState} from '../state/labs.state';
-import {ELabsActions, LabsActions} from '../actions/labs.actions';
+import * as labsActions from '../actions/labs.actions';
 
-export const labsReducers = (state = initialLabsState, action: LabsActions): LabsState => {
-  switch (action.type) {
-    case ELabsActions.SET_LABS:
-      return {
-        ...state,
-        labs: action.payload
-      };
-
-    case ELabsActions.SET_LABS_CALENDAR:
-      return {
-        ...state,
-        calendar: action.payload
-      };
-
-    default:
-      return state
-  }
-};
+export const labsReducers = createReducer(
+  initialLabsState,
+  on(labsActions.laodLabsScheduleSuccess, (state, action): LabsState => ({
+    ...state,
+    schedule: action.scheduleProtectionLabs
+  })),
+  on(labsActions.loadLabsSuccess, (state, action): LabsState => ({
+    ...state,
+    labs: action.labs
+  })),
+  on(labsActions.resetLabs, (state): LabsState => ({
+    ...state,
+    labs: [],
+    schedule: []
+  }))
+);

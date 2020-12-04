@@ -111,6 +111,8 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
             takeUntil(this.unsubscribeStream$)
           ).subscribe();
       }
+      this.question.ComlexityLevel = 1;
+      this.question.ComplexityLevel = 1;
       this.formGroup = this.formBuilder.group({
         title: new FormControl("", Validators.compose([
           Validators.maxLength(255), Validators.required

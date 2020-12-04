@@ -5,7 +5,8 @@
       <tbody>
       <tr class="mdc-data-table__row" *ngFor="let file of files">
         <td class="mdc-data-table__cell example-content icon-cell">
-          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i>
+          <!-- <i class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i> -->
+          <img [src]="file.ThumbnailUrl" alt="Thumbnail" class="image">
         </td>
         <td class="mdc-data-table__cell example-content">
           <a matTooltip="{{file.Name}}" matTooltipPosition="below"

@@ -3,8 +3,8 @@
   flex-flow: column nowrap;
 
   &__actions {
-    margin-bottom: 20px;
-
+    margin-bottom: 10px;
+    
     button {
       margin-right: 14px;
     }
@@ -23,9 +23,10 @@
 
     &-header {
       display: flex;
+      align-items: flex-end;
       margin-bottom: 10px;
       .mat-icon-button {
-        width: 20px;
+        width: 30px;
         height: 30px;
       }
     }
@@ -44,7 +45,7 @@
     }
 
     &-content {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     &-date {
@@ -60,12 +61,19 @@
     border: 0;
     font-size: 18px;
   }
-
+  .attachments-container {
+    display: grid;
+    gap: 5px;
+    justify-items: flex-start;
+  }
   .attachment {
     font-size: 14px;
     color: #3f51b5;
     cursor: pointer;
     border-bottom: 1px solid #3f51b5;
+  }
+  .mat-icon-button {
+    line-height: 1;
   }
 }
 
@@ -75,4 +83,6 @@
   .subject-news-component__news-title {
     color: #777;
   }
+
 }
+

@@ -149,7 +149,10 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             SubjectId = subjectId;
 			this.Color = "#ffffff";
             Title = SubjectId == 0 ? "Создание предмета" : "Редактирование предмета";
-            Modules = ModulesManagementService.GetModules().Where(e => e.Visible).Select(e => new ModulesViewModel(e)).ToList();
+            Modules = ModulesManagementService
+                .GetModules().Where(e => e.Visible).Select(e => new ModulesViewModel(e, e.Required))
+                .OrderBy(x => x.Order)
+                .ToList();
 	        FillSubjectGroups();
             if (subjectId != 0)
             {
@@ -164,6 +167,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
                     {
                         module.Checked = true;
                     }
+
                 }
 
 				SelectedGroups = new List<int>();

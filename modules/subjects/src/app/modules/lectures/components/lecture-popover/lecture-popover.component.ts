@@ -21,20 +21,12 @@ export class LecturePopoverComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    let values = '["';
-    this.data.model.attachments.forEach((attachment, index) => {
-      values += attachment.name + '/' + attachment.id + '/' + attachment.pathName + '/' +
-      attachment.fileName;
-      if (index < this.data.model.attachments.length - 1) {
-        values += '","'
-      }
-    });
-
-    values += '"]';
-
+    const values = JSON.stringify(this.data.model.attachments.map(a => `${a.name}/${a.id}/${a.pathName}/${a.fileName}`));
     if (this.data.model.attachments.length) {
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-        .subscribe(files => this.files = files);
+        .subscribe(files => {
+          this.files = files
+        });
     }
   }
 
@@ -42,8 +34,9 @@ export class LecturePopoverComponent implements AfterViewInit {
     this.dialogRef.close();
   }
 
-  onSave(data): void {
+  onSave(): void {
     this.data.model.attachments = [];
+    
     if (this.files.length) {
       this.files.forEach(file => {
         const attachment: Attachment = {
@@ -56,7 +49,7 @@ export class LecturePopoverComponent implements AfterViewInit {
       });
 
     }
-    this.dialogRef.close(data)
+    this.dialogRef.close(this.data.model)
   }
 
   uploadFile(event) {

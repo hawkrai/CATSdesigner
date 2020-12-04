@@ -5,6 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Web;
@@ -22,51 +25,7 @@ namespace Application.Infrastructure.Export
     {
         #region Export Word document
 
-        public static void CourseProjectToWord(string fileName, CourseProject work, HttpResponseBase response)
-        {
-            response.Clear();
-            response.Charset = "ru-ru";
-            response.HeaderEncoding = Encoding.UTF8;
-            response.ContentEncoding = Encoding.UTF8;
-            response.ContentType = "application/vnd.ms-word";
-            response.AddHeader("Content-Disposition", "attachment; filename=" + fileName + ".doc");
-            CreateDoc(work, response);
-            response.Flush();
-            response.End();
-        }
-
-        public static void CourseProjectsToArchive(string fileName, IQueryable<CourseProject> courseProjects, HttpResponseBase response)
-        {
-            IDictionary<string, byte[]> bytelist = CreateDocs(courseProjects);
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
-                {
-                    foreach (var attachment in bytelist)
-                    {
-                        var entry = zipArchive.CreateEntry(attachment.Key);
-
-                        using MemoryStream originalFile = new MemoryStream(attachment.Value);
-                        using var zipEntryStream = entry.Open();
-                        originalFile.CopyTo(zipEntryStream);
-                    }
-                }
-
-                response.Clear();
-                response.Charset = "ru-ru";
-                response.HeaderEncoding = Encoding.UTF8;
-                response.ContentEncoding = Encoding.UTF8;
-                response.ContentType = "application/zip";
-                response.AddHeader("Content-Disposition", "attachment;filename=" + fileName + ".zip");
-                ms.Seek(0, SeekOrigin.Begin);
-                ms.WriteTo(response.OutputStream);
-                response.Flush();
-                response.End();
-            }
-        }
-
-        private static void CreateDoc(CourseProject work, HttpResponseBase response)
+        public static HttpResponseMessage CourseProjectToWord(string fileName, CourseProject work)
         {
             Microsoft.Office.Interop.Word.Application app = null;
             string tempfileName = null;
@@ -93,7 +52,13 @@ namespace Application.Infrastructure.Export
                     doc.Save();
                     doc.Close(ref save, ref original, ref falseValue);
 
-                    SaveToResponse(tempfileName, response);
+                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+                    response.Content = new StreamContent(File.OpenRead(tempfileName));
+                    response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                    response.Content.Headers.ContentDisposition.FileName = fileName + ".doc";
+                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-word");
+
+                    return response;
                 }
             }
             finally
@@ -116,6 +81,37 @@ namespace Application.Infrastructure.Export
                     }
                 }
             }
+        }
+
+        public static HttpResponseMessage CourseProjectsToArchive(string fileName, IQueryable<CourseProject> courseProjects)
+        {
+            IDictionary<string, byte[]> bytelist = CreateDocs(courseProjects);
+
+            var pushStreamContent = new PushStreamContent((stream, content, context) =>
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
+                    {
+                        foreach (var attachment in bytelist)
+                        {
+                            var entry = zipArchive.CreateEntry(attachment.Key);
+
+                            using MemoryStream originalFile = new MemoryStream(attachment.Value);
+                            using var zipEntryStream = entry.Open();
+                            originalFile.CopyTo(zipEntryStream);
+                        }
+                    }
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    ms.WriteTo(stream);
+                }
+                stream.Close();
+            }, "application/zip");
+
+            pushStreamContent.Headers.Add("Content-Disposition", "attachment; filename=" + fileName);
+
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = pushStreamContent };
         }
 
         private static IDictionary<string, byte[]> CreateDocs(IQueryable<CourseProject> courseProjects)
@@ -239,26 +235,6 @@ namespace Application.Infrastructure.Export
             }
 
             return tmpfile;
-        }
-
-        private static void SaveToResponse(string fileName, HttpResponseBase stream)
-        {
-            using (var reader = File.OpenRead(fileName))
-            {
-                var bt = new byte[1024];
-                var count = 0;
-                while ((count = reader.Read(bt, 0, 1024)) == 1024)
-                {
-                    stream.BinaryWrite(bt);
-                }
-
-                if (count > 0)
-                {
-                    var bt2 = new byte[count];
-                    Array.Copy(bt, bt2, count);
-                    stream.BinaryWrite(bt2);
-                }
-            }
         }
 
         private static void SaveToDictionary(string fileName, IDictionary<string, byte[]> byteList, string docName)

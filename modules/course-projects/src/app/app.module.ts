@@ -31,7 +31,8 @@ import {
     MatSortModule,
     MatTableModule,
     MatTabsModule, MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    DateAdapter
 } from '@angular/material';
 import {TaskSheetComponent} from './components/task-sheet/task-sheet.component';
 import {VisitStatsComponent} from './components/visit-stats/visit-stats.component';
@@ -54,6 +55,7 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {AddJobDialogComponent} from './components/defense/add-project-dialog/add-job-dialog.component';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
 import {CheckPlagiarismStudentComponent} from './components/defense/check-plagiarism-student/check-plagiarism-student.component';
+import { CustomDateAdapter } from './custom-date-adapter';
 
 @NgModule({
   declarations: [
@@ -114,7 +116,8 @@ import {CheckPlagiarismStudentComponent} from './components/defense/check-plagia
         MatRippleModule
     ],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'}
+    {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},
+    {provide: DateAdapter, useClass: CustomDateAdapter}
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
     AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent, AddJobDialogComponent,

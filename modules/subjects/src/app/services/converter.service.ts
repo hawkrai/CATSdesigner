@@ -1,3 +1,5 @@
+import { Practical } from './../models/practical.model';
+import { CreateEntity } from './../models/form/create-entity.model';
 import {Injectable} from '@angular/core';
 import {News} from '../models/news.model';
 import {Attachment} from '../models/attachment.model';
@@ -7,6 +9,7 @@ import {Group, SubGroup} from "../models/group.model";
 import {GroupsVisiting, LecturesMarksVisiting} from "../models/groupsVisiting.model";
 import {Mark} from "../models/mark.model";
 import {Lab, ScheduleProtectionLab, ScheduleProtectionLabsRecomend} from "../models/lab.model";
+import { UpdateLab } from '../models/form/update-lab.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +27,8 @@ export class ConverterService {
     newNews.dateCreate = news.DateCreate;
     newNews.disabled = news.Disabled;
     newNews.subjectId = news.SubjectId;
-    newNews.attachments = news.Attachments;
+    newNews.pathFile = news.PathFile;
+    newNews.attachments = news.Attachments.map(attachment => this.attachmentModelConverter(attachment));
     return newNews;
   }
 
@@ -149,7 +153,7 @@ export class ConverterService {
     newLab.pathFile = lab.PathFile;
     newLab.attachments = lab.Attachments ? lab.Attachments.map(res => this.attachmentModelConverter(res)) : lab.Attachments;
     newLab.scheduleProtectionLabsRecomend = lab.ScheduleProtectionLabsRecomend ?
-        lab.ScheduleProtectionLabsRecomend.map(res => this.scheduleProtectionLabsRecomendConverter(res)) : lab.ScheduleProtectionLabsRecomend;
+      lab.ScheduleProtectionLabsRecomend.map(res => this.scheduleProtectionLabsRecomendConverter(res)) : lab.ScheduleProtectionLabsRecomend;
     newLab.shortName = lab.ShortName;
     newLab.subGroup = lab.SubGroup;
     newLab.subjectId = lab.SubjectId;
@@ -174,4 +178,50 @@ export class ConverterService {
     return schedules.map(res => this.scheduleProtectionLabConverter(res));
   }
 
+  public labUpdateConverter(lab: Lab): UpdateLab {
+    const updateLab = new UpdateLab();
+    updateLab.Id = +lab.labId;
+    updateLab.ShortName = lab.shortName;
+    updateLab.PathFile = lab.pathFile;
+    updateLab.Attachments = JSON.stringify(lab.attachments);
+    updateLab.Duration = lab.duration;
+    updateLab.Theme = lab.theme;
+    updateLab.Order = lab.order;
+    updateLab.SubjectId = lab.subjectId;
+    return updateLab;
+  }
+
+  public labsUpdateConverter(labs: Lab[]): UpdateLab[] {
+    return labs.map(l => this.labUpdateConverter(l));
+  }
+
+  public labToCreateEntity(lab: Lab): CreateEntity {
+    const entity = new CreateEntity();
+    entity.attachments = JSON.stringify(lab.attachments);
+    entity.duration = lab.duration;
+    entity.id = +lab.labId;
+    entity.subjectId = lab.subjectId;
+    entity.shortName = lab.shortName;
+    entity.theme = lab.theme;
+    entity.pathFile = lab.pathFile;
+    entity.order = lab.order;
+    return entity;
+  }
+
+  public practicalToCreateEntity(practical: Practical): UpdateLab {
+    const entity = new UpdateLab();
+    entity.Attachments = JSON.stringify(practical.Attachments);
+    entity.Duration = practical.Duration;
+    entity.Id = practical.PracticalId;
+    entity.SubjectId = practical.SubjectId;
+    entity.ShortName = practical.ShortName;
+    entity.Theme = practical.Theme;
+    entity.PathFile = practical.PathFile;
+    entity.Order = practical.Order;
+    return entity;
+  }
+
+  public practicalsUpdateConverter(labs: Practical[]): UpdateLab[] {
+    return labs.map(p => this.practicalToCreateEntity(p));
+  }
 }

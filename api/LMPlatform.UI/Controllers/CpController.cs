@@ -47,6 +47,7 @@ namespace LMPlatform.UI.Controllers
             return this.Json(courseProjectSubjects, JsonRequestBehavior.AllowGet);
         }
 
+        [System.Web.Http.HttpGet]
         public void GetTasksSheetDocument(int courseProjectId)
         {
             var courseProject =
@@ -66,9 +67,10 @@ namespace LMPlatform.UI.Controllers
                 docName = $"{courseProject.Theme}";
             }
 
-            WordCourseProject.CourseProjectToWord(docName, courseProject, this.Response);
+            WordCourseProject.CourseProjectToWord(docName, courseProject);
         }
 
+        [System.Web.Http.HttpGet]
         public void GetZipTaskSheet(int id, int subjectId)
         {
             var courseProjects = new LmPlatformModelsContext().CourseProjects
@@ -82,11 +84,11 @@ namespace LMPlatform.UI.Controllers
             if (courseProjects.Count() > 0)
             {
                 fileName = courseProjects.FirstOrDefault().AssignedCourseProjects.FirstOrDefault().Student.Group.Name;
-                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+                //WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
             }
             else
             {
-                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+                //WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
             }
 
         }
@@ -103,6 +105,7 @@ namespace LMPlatform.UI.Controllers
             this.CpManagementService.DisableNews(int.Parse(subjectId), false);
         }
 
+        [System.Web.Http.HttpGet]
         public string GetTasksSheetHtml(int courseProjectId)
         {
             //todo

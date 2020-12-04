@@ -17,5 +17,5 @@ export class SubGroup {
   scheduleProtectionLabs: [];
   scheduleProtectionLabsRecomendMark: string;
   students: [];
-  subGroupId: string;
+  subGroupId: number;
 }

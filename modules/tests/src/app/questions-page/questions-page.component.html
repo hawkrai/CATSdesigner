@@ -18,8 +18,10 @@
                [adminTests]="false"
                [adminQuestions]="true"
                [forNN]="test?.ForNN"
+               [hideSearch]="true"
                (addNewQuestion)="addNewQuestion()"
                (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest($event)"
+               (createNeuralNetworkEvent)="createNeuralNetwork()"
                (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
 <div class="question-page-container-table-tests">
   <app-table-questions

@@ -27,15 +27,19 @@
     <h3 mat-dialog-title class="mat-typography title">Модули</h3>
 
     <div class="section">
-      <section class="example-section">
-        <mat-checkbox
+      <section class="example-section" [ngStyle]="{ 'grid-template-columns': 'repeat(' + columnsCount + ', 1fr)' }">
+        <div *ngFor="let module of subject.Modules | toColumn:columnsCount">
+          <mat-checkbox
           class="example-margin"
-          *ngFor="let module of subject.Modules"
+          *ngIf="module"
           [color]="'primary'"
+          [disabled]="module.Required"
           [(ngModel)]="module.Checked"
         >
           {{ module.Name }}
         </mat-checkbox>
+        </div>
+
       </section>
     </div>
 
@@ -71,7 +75,7 @@
       mat-raised-button
       color="primary"
       (click)="save()"
-      [disabled]="!formElement.checkValidity() && !hasSelectedModule()"
+      [disabled]="!formElement.checkValidity()"
     >
       Сохранить
     </button>

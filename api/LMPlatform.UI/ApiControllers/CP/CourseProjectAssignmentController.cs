@@ -21,6 +21,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             CpManagementService.AssignProject(WebSecurity.CurrentUserId, updateModel.ProjectId, updateModel.StudentId);
         }
 
+        [HttpDelete]
         public void Delete(int id)
         {
             CpManagementService.DeleteAssignment(WebSecurity.CurrentUserId, id);

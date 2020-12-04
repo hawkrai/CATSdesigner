@@ -5,7 +5,7 @@ export class Lab {
   attachments: Attachment[] | any;
   duration: number;
   order: number;
-  pathFile: number;
+  pathFile: string;
   scheduleProtectionLabsRecomend: ScheduleProtectionLabsRecomend[];
   shortName: string;
   subGroup: number;

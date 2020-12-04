@@ -12,6 +12,7 @@ using Application.Core;
 
 namespace LMPlatform.UI.Services.Lectures
 {
+    using Application.Infrastructure.FilesManagement;
     using Models;
     using Modules;
 
@@ -19,34 +20,38 @@ namespace LMPlatform.UI.Services.Lectures
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
+        private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
 
         public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
+        public IFilesManagementService FilesManagementService => filesManagementService.Value;
+
         public LecturesResult GetLectures(string subjectId)
         {
-            try
-            {
-	            var id = int.Parse(subjectId);
-	            var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
-                var model = SubjectManagementService.GetSubject(lecturesQuery).Lectures.Select(e => new LecturesViewData(e)).ToList();
+            var id = int.Parse(subjectId);
+            var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
+            var model = SubjectManagementService.GetSubject(lecturesQuery).Lectures.Select(e => new LecturesViewData(e)).ToList();
 
-                return new LecturesResult
-                {
-                    Lectures = model.OrderBy(e => e.Order).ToList(),
-                    Message = "Лекции успешно загружены",
-                    Code = "200"
-                };
-            }
-            catch
+            return new LecturesResult
             {
-                return new LecturesResult
-                {
-                    Message = "Произошла ошибка при получении лекций",
-                    Code = "500"
-                };
-            }
+                Lectures = model.OrderBy(e => e.Order).ToList(),
+                Message = "Лекции успешно загружены",
+                Code = "200"
+            };
+            //try
+            //{
+
+            //}
+            //catch
+            //{
+            //    return new LecturesResult
+            //    {
+            //        Message = "Произошла ошибка при получении лекций",
+            //        Code = "500"
+            //    };
+            //}
         }
 
         public CalendarResult GetCalendar(string subjectId)
@@ -74,6 +79,51 @@ namespace LMPlatform.UI.Services.Lectures
                 return new CalendarResult
                 {
                     Message = "Произошла ошибка при получении рассписания лекций",
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData UpdateLecturesOrder(List<UpdateOrder> objs)
+        {
+            try
+            {
+                foreach(var obj in objs)
+                {
+                    SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
+                }
+                return new ResultViewData
+                {
+                    Message = "Лекции успешно обновлены",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при обновлении лекций." + ex.Message,
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData UpdateLectureOrder(UpdateOrder obj)
+        {
+            try
+            {
+                SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
+                return new ResultViewData
+                {
+                    Message = "Лекция успешно обновлена",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при обновлении лекции." + ex.Message,
                     Code = "500"
                 };
             }

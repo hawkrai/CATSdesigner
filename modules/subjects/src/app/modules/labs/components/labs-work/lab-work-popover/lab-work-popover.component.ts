@@ -19,6 +19,7 @@ export class LabWorkPopoverComponent implements AfterViewInit {
     private fileService: FileService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dialogRef.disableClose = true;
+    this.data.model.shortName = `ЛР${this.data.model.order}`;
   }
 
   ngAfterViewInit(): void {
@@ -43,7 +44,7 @@ export class LabWorkPopoverComponent implements AfterViewInit {
     this.dialogRef.close();
   }
 
-  onSave(data): void {
+  onSave(): void {
     this.data.model.attachments = [];
     if (this.files.length) {
       this.files.forEach(file => {
@@ -57,7 +58,8 @@ export class LabWorkPopoverComponent implements AfterViewInit {
       });
 
     }
-    this.dialogRef.close(data)
+
+    this.dialogRef.close(this.data.model);
   }
 
   uploadFile(event) {

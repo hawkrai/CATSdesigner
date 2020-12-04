@@ -13,6 +13,7 @@ interface DialogData {
   subjectId: string;
   taskSheet: TaskSheet;
   groups: CoreGroup[];
+  taskSheetTemplate: Template;
 }
 
 @Component({
@@ -54,6 +55,7 @@ export class EditTaskSheetComponent implements OnInit {
   private selectedGroups: any[];
   private projects: Project[];
   private taskSheets: TaskSheet[];
+  private selectedTemplate = "data.taskSheetTemplate";
 
   constructor(private taskSheetService: TaskSheetService,
               private snackBar: MatSnackBar,

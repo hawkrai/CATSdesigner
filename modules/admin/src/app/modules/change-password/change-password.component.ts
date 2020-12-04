@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { questions } from '../../shared/questions';
 import { AccountService } from '../../service/account.service';
@@ -21,7 +21,6 @@ export class ChangePasswordComponent implements OnInit {
     private dialog: MatDialog,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<ChangePasswordComponent>,
     @Inject(MAT_DIALOG_DATA) public data: string
   ) { }
 
@@ -47,13 +46,14 @@ export class ChangePasswordComponent implements OnInit {
       this.submitEM.emit(this.form.value);
     }
   }
-
+  cancel(){
+    window.parent.location.href = "/login";  
+  }
   verify() {
     this.accountService.verifySecretQuestion(this.form.controls.Username.value,
       this.form.controls.SecretQuestion.value, this.form.controls.SecretAnswer.value).subscribe(
         res => {
           if (res === 'OK') {
-            this.dialogRef.close();
             this.dialog.open( ResetPasswordModalComponent, {
               data: this.form.controls.Username.value
             });
