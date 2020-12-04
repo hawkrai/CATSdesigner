@@ -18,8 +18,9 @@ namespace Application.Infrastructure.SubjectManagement
         public IEnumerable<Module> GetModules(int subjectId)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-	        return repositoriesContainer.ModulesRepository.GetAll().Where(
-		        s => s.SubjectModules.Any(sm=>sm.SubjectId==subjectId)
+	        return repositoriesContainer.ModulesRepository.GetAll()
+                .Where(
+		        s => s.SubjectModules.Any(sm => sm.SubjectId == subjectId)
 	        ).ToList();
         }
     }

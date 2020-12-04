@@ -17,10 +17,10 @@
   </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label>Комментарий</mat-label>
-    <textarea matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
+    <textarea class="commentInput" matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
     <mat-error *ngIf="commentControl.invalid">До 255 символов</mat-error>
+    <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
   </mat-form-field>
-  <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">

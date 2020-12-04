@@ -23,7 +23,7 @@
             <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
           </td>
           <td class="mdc-data-table__cell example-content">
-            <a matTooltip="{{file.Name}}" matTooltipPosition="below"
+            <a matTooltip="Скачать" matTooltipPosition="above"
                href="{{file.IdFile === -1 ? '#' : file.Url}}">
               {{file.Name}}
             </a>
@@ -51,7 +51,7 @@
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
   <button mat-raised-button
-          (click)="onSave(data.model || data.body)"
+          (click)="onSave()"
           color="primary"
           [disabled]="!formElement.checkValidity()"
   >{{data.buttonText}}</button>

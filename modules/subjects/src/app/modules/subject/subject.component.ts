@@ -15,7 +15,8 @@ import {SubjectService} from '../../services/subject.service';
 import {SubjectManagementComponent} from './subject-managment/subject-management.component';
 import {DialogData} from '../../models/dialog-data.model';
 import {SubSink} from 'subsink';
-
+import * as catsActions from '../../store/actions/cats.actions';
+import { Message } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-subject',
@@ -91,6 +92,6 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   navigateToSubject(subjectId: number): void {
-    // window.location.href = `/web/viewer/subject/${subjectId}`;
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('SubjectId', subjectId.toString())}));
   }
 }

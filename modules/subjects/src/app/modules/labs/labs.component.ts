@@ -1,7 +1,7 @@
 import { Observable, combineLatest } from 'rxjs';
 import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {map} from 'rxjs/operators';
@@ -30,7 +30,7 @@ interface State {
 export class LabsComponent implements OnInit, OnDestroy {
 
   tabs = ['Лабораторные работы', 'График защиты', 'Статистика посещения', 'Результаты', 'Защита работ'];
-  tab = 0;
+  selectedTab = 0;
   public state$: Observable<State>;
   public detachedGroup = false;
 
@@ -84,10 +84,10 @@ export class LabsComponent implements OnInit, OnDestroy {
       return;
     }
     const url = 'http://localhost:8080/Statistic/';
-    if (this.tab === 2) {
+    if (this.selectedTab === 2) {
       location.href = url + 'GetVisitLabs?subjectId=' +  subjectId + '&groupId=' + group.groupId +
         '&subGroupOneId=' + group.subGroupsOne.subGroupId + '&subGroupTwoId=' + group.subGroupsTwo.subGroupId;
-    } else if (this.tab === 3) {
+    } else if (this.selectedTab === 3) {
       location.href = url + 'GetLabsMarks?subjectId=' +  subjectId + '&groupId=' + group.groupId;
     }
   }

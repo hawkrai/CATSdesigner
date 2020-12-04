@@ -41,26 +41,34 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
+    this.subs.add(
+      this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+        this.subjectId = subjectId; 
+        this.subs.add(
+          this.store.pipe(select(getCurrentGroup)).subscribe(group => {
+            this.selectedGroup = group;
+            this.students = null;
+            this.refreshStudents();
+          })
+        );
+      })
+    );
 
-      this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-        this.selectedGroup = group;
-        this.students = null;
-        this.refreshStudents();
-      });
-    });
   }
 
   refreshStudents(): void {
-    this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
-      this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
-        this.students = res;
-        res && this.setHeader(res[0].SubGroup, lab.labs);
-        this.setSubGroupDisplayColumns();
-      });
-      this.labProperty = lab;
-    });
+    this.subs.add(
+      this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.groupId).subscribe(lab => {
+        this.subs.add(
+          this.labService.getMarks(this.subjectId, this.selectedGroup.groupId).subscribe(res => {
+            this.students = res;
+            res && this.setHeader(res[0].SubGroup, lab.labs);
+            this.setSubGroupDisplayColumns();
+          })
+        );
+        this.labProperty = lab;
+      })
+    );
   }
 
   getSubGroups(students: StudentMark[]): number[] {
@@ -135,9 +143,9 @@ export class ResultsComponent implements OnInit, OnDestroy {
     .filter(visiting => this.labProperty.scheduleProtectionLabs
       .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString())
     ).map(visiting => ({ mark: visiting.Mark, date: this.labProperty.scheduleProtectionLabs
-      .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString()).date}));
-      const pipe = new DatePipe('en-Us');
-    return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${pipe.transform(sc.date, 'dd.mm.yyyy')}`).join('\n');
+      .find(schedule => schedule.id.toString() === visiting.ScheduleProtectionLabId.toString()).date}))
+      .filter(sc => !!sc.mark);
+    return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${sc.date}`).join('\n');
   }
 
   ngOnDestroy(): void {

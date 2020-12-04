@@ -25,14 +25,14 @@ interface State {
 export class PracticalComponent implements OnInit, OnDestroy {
 
   tabs = ['Практические занятия', 'Статистика посещения', 'Результаты']
-  public groups: Group[];
-  public selectedGroup: Group;
 
   state$: Observable<State>;
   public detachedGroup = false;
 
   constructor(private store: Store<IAppState>) { }
+  selectedTab = 0;
 
+  
   ngOnDestroy(): void {
     this.store.dispatch(groupActions.resetGroups());
   }

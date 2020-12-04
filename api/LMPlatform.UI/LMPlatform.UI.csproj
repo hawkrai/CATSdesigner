@@ -305,6 +305,8 @@
     <Compile Include="ApiControllers\CP\CpPercentageController.cs" />
     <Compile Include="ApiControllers\CP\CpPercentageResultController.cs" />
     <Compile Include="ApiControllers\CP\CpTaskSheetController.cs" />
+    <Compile Include="ApiControllers\CP\CPTaskSheetDownloadController.cs" />
+    <Compile Include="ApiControllers\CP\CpTaskSheetHtmlController.cs" />
     <Compile Include="ApiControllers\CP\CpTaskSheetTemplateController.cs" />
     <Compile Include="ApiControllers\DocumentsController.cs" />
     <Compile Include="ApiControllers\DP\CorrelationController.cs" />

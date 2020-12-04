@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using System.Web.Security;
+using Application.Core.Data;
 using Application.Core.UI.Controllers;
 using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure.DPManagement;
@@ -12,6 +13,7 @@ using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
+using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.AccountViewModels;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
@@ -264,7 +266,7 @@ namespace LMPlatform.UI.Controllers
         [AllowAnonymous]
         public ActionResult GetGroupsJson()
         {
-            var groups = this.GroupManagementService.GetGroups();
+            var groups = this.GroupManagementService.GetGroups(new Query<Group>().Include(e => e.Students));
 
             var responseModel = groups.Select(l => GroupViewModel.FormGroup(l, null));
 
@@ -311,7 +313,7 @@ namespace LMPlatform.UI.Controllers
 
         }
 
-        [HttpDelete]
+        [HttpPost]
         public ActionResult DeleteUserJson(int id)
         {
             try
@@ -340,7 +342,7 @@ namespace LMPlatform.UI.Controllers
             return JsonResponse(new {resultMessage = user.FullName, attendance = data});
         }
 
-        [HttpDelete]
+        [HttpGet]
         public ActionResult DeleteStudentJson(int id)
         {
             try
@@ -359,7 +361,7 @@ namespace LMPlatform.UI.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpGet]
         public ActionResult DeleteLecturerJson(int id)
         {
             try
@@ -383,7 +385,7 @@ namespace LMPlatform.UI.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpGet]
         public ActionResult DeleteGroupJson(int id)
         {
             try

@@ -165,6 +165,10 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       duration: lesson ? lesson.Duration : '',
       order: lesson ? lesson.Order : this.practicalLessons.length + 1,
       pathFile: lesson ? lesson.PathFile : '',
+      start: lesson ? lesson.Start : new Date().toString(),
+      end: lesson ? lesson.End : new Date(new Date().getTime() +  90 * 60000).toString(),
+      buildingNumber: lesson ? lesson.BuildingNumber : null,
+      audience: lesson ? lesson.Audience: null,
       attachments: lesson ? lesson.Attachments : [],
       shortName: lesson ? lesson.ShortName : ''
     };

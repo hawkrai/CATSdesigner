@@ -6,7 +6,6 @@ import {Store} from '@ngrx/store';
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import * as groupActions from '../../store/actions/groups.actions';
 import {IAppState} from '../../store/state/app.state';
-import {GroupsService} from '../../services/groups/groups.service';
 
 
 @Component({
@@ -24,6 +23,10 @@ export class LecturesComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.store.dispatch(groupActions.resetGroups());
+  }
+
+  selectTab(tab: number): void {
+    this.selectedTab = tab;
   }
 
   ngOnInit() {

@@ -30,7 +30,7 @@ export class ProfessorService {
     }
 
     deleteProfessor(professorId): Observable<void> {
-        return this.http.delete<void>(this.api + 'DeleteLecturerJson/' + professorId);
+        return this.http.get<void>(this.api + 'DeleteLecturerJson/' + professorId);
     }
 
 }

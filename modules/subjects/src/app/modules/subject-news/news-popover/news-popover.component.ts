@@ -38,11 +38,15 @@ export class NewsPopoverComponent implements OnInit {
 
     if (values.length) {
       this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-        .subscribe(files => this.files = files);
+        .subscribe(files => {
+          this.files = files
+        });
     }
   }
 
   onSave(): void {
+    console.log(this.data.model.attachments);
+    console.log(this.files);
     this.data.model.attachments = [];
     if (this.files.length) {
       this.files.forEach(file => {

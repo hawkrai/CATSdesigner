@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {Lab} from "../../models/lab.model";
 import {LabsRestService} from './labs-rest.service';
 import * as labSelectors from '../../store/selectors/labs.selectors';
+import * as labsActions from '../../store/actions/labs.actions';
 import { IAppState } from 'src/app/store/state/app.state';
 
 @Injectable({
@@ -82,5 +83,18 @@ export class LabsService {
 
   public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
     return this.rest.checkPlagiarismSubjects(body);
+  }
+
+  public createDateVisit(body: {subGroupId: string, date: string}) {
+    this.rest.createDateVisit(body).subscribe(res => {
+      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
+    })
+  }
+
+
+  public deleteDateVisit(body: {id: string}) {
+    this.rest.deleteDateVisit(body).subscribe(res => {
+      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
+    })
   }
 }
