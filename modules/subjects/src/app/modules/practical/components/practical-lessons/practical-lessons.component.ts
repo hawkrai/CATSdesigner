@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, SimpleChanges, AfterViewChecked, ChangeDetectorRef, ViewChild } from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {Attachment} from '../../../../models/attachment.model';
+import {Attachment} from '../../../../models/file/attachment.model';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 import {ComponentType} from '@angular/cdk/typings/portal';
@@ -14,8 +14,7 @@ import { MatTable } from '@angular/material';
 
 import * as practicalsActions from '../../../../store/actions/practicals.actions';
 import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
-import { CreateEntity } from 'src/app/models/form/create-entity.model';
-import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
+import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
 
 @Component({
   selector: 'app-practical-lessons',
@@ -45,8 +44,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   constructor(
     public dialog: MatDialog,         
     private store: Store<IAppState>,    
-    private cdRef: ChangeDetectorRef,
-    private practicalService: PracticalRestService) { }
+    private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.store.dispatch(practicalsActions.loadPracticals());
@@ -82,7 +80,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
   }
 
-  constructorLesson(lesson?) {
+  constructorLesson(lesson?: Practical) {
     const newLesson = this.getLesson(lesson);
 
     const dialogData: DialogData = {
@@ -95,7 +93,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         result.attachments = JSON.stringify(result.attachments);
-        this.store.dispatch(practicalsActions.createPractical({ practical: result as CreateEntity }));
+        this.store.dispatch(practicalsActions.savePractical({ practical: result as CreateLessonEntity }));
       }
     });
   }
@@ -110,7 +108,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.store.dispatch(practicalsActions.deletePractical({ id: lesson.PracticalId.toString() }));
+        this.store.dispatch(practicalsActions.deletePractical({ id: lesson.PracticalId }));
       }
     });
   }
@@ -138,12 +136,12 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this._filesDownload(result)
+        this.filesDownload(result)
       }
     });
   }
 
-  _filesDownload(attachments: any[]) {
+  filesDownload(attachments: any[]) {
     attachments.forEach(attachment => {
       if (attachment.isDownload) {
         setTimeout(() => {
@@ -165,10 +163,10 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       duration: lesson ? lesson.Duration : '',
       order: lesson ? lesson.Order : this.practicalLessons.length + 1,
       pathFile: lesson ? lesson.PathFile : '',
-      start: lesson ? lesson.Start : new Date().toString(),
-      end: lesson ? lesson.End : new Date(new Date().getTime() +  90 * 60000).toString(),
-      buildingNumber: lesson ? lesson.BuildingNumber : null,
-      audience: lesson ? lesson.Audience: null,
+      // start: lesson ? lesson.Start : new Date().toString(),
+      // end: lesson ? lesson.End : new Date(new Date().getTime() +  90 * 60000).toString(),
+      // buildingNumber: lesson ? lesson.BuildingNumber : null,
+      // audience: lesson ? lesson.Audience: null,
       attachments: lesson ? lesson.Attachments : [],
       shortName: lesson ? lesson.ShortName : ''
     };
