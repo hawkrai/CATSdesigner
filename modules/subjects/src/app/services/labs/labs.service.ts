@@ -29,17 +29,10 @@ export class LabsService {
     return this.rest.getLabWork(subjectId);
   }
 
-  public getMarks(subjectId: number, groupId: string): Observable<StudentMark[]> {
+  public getMarks(subjectId: number, groupId: number): Observable<StudentMark[]> {
     return this.rest.getMarksV2(subjectId, groupId);
   }
 
-  public createLab(lab: Lab) {
-    return this.rest.createLab(this.converterService.labToCreateEntity(lab));
-  }
-
-  public deleteLab(lab: {id: string, subjectId: number}) {
-    return this.rest.deleteLab(lab);
-  }
 
   public setLabsVisitingDate(body) {
     return this.rest.setLabsVisitingDate(body);
@@ -53,9 +46,9 @@ export class LabsService {
     return this.rest.getFilesLab(body);
   }
 
-  public updateLabs(labs: Lab[]): Observable<any> {
-    return this.rest.updateLabs(this.converterService.labsUpdateConverter(labs));
-  }
+  // public updateLabs(labs: Lab[]): Observable<any> {
+  //   return this.rest.updateLabs(this.converterService.labsUpdateConverter(labs));
+  // }
 
   public deleteUserFile(body: {id: string}): Observable<any> {
     return this.rest.deleteUserFile(body);
@@ -65,7 +58,7 @@ export class LabsService {
     return this.rest.sendUserFile(body);
   }
 
-  public getAllStudentFilesLab(subjectId: number, groupId: string): Observable<any> {
+  public getAllStudentFilesLab(subjectId: number, groupId: number): Observable<any> {
     return this.rest.getAllStudentFilesLab(subjectId, groupId);
   }
 
@@ -77,22 +70,22 @@ export class LabsService {
     return this.rest.cancelReceivedLabFile(body);
   }
 
-  public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
+  public checkPlagiarism(body: {subjectId: number, userFileId: number}): Observable<any> {
     return this.rest.checkPlagiarism(body);
   }
 
-  public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
+  public checkPlagiarismSubjects(body: {subjectId: number, threshold: string, type: string}): Observable<any> {
     return this.rest.checkPlagiarismSubjects(body);
   }
 
-  public createDateVisit(body: {subGroupId: string, date: string}) {
+  public createDateVisit(body: {subGroupId: number, date: string}) {
     this.rest.createDateVisit(body).subscribe(res => {
       res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
     })
   }
 
 
-  public deleteDateVisit(body: {id: string}) {
+  public deleteDateVisit(body: {id: number}) {
     this.rest.deleteDateVisit(body).subscribe(res => {
       res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
     })

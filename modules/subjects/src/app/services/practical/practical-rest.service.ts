@@ -7,6 +7,7 @@ import {map, tap} from 'rxjs/operators';
 import {Lab} from '../../models/lab.model';
 import { UpdateLab } from 'src/app/models/form/update-lab.model';
 import { CreateEntity } from 'src/app/models/form/create-entity.model';
+import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +18,13 @@ export class PracticalRestService {
   constructor(private http: HttpClient) {
   }
 
-  public getAllPracticalLessons(subjectId: number): Observable<Practical[]> {
+  public getPracticals(subjectId: number): Observable<Practical[]> {
     return this.http.get('Services/Practicals/PracticalService.svc/GetPracticals/' + subjectId).pipe(
       map(res => res['Practicals'])
     );
   }
 
-  public getMarks(subjectId: number, groupId: string): Observable<any> {
+  public getMarks(subjectId: number, groupId: number): Observable<any> {
     return this.http.post('Services/Practicals/PracticalService.svc/GetPracticalsVisitingData', {subjectId, groupId})
   }
 
@@ -31,11 +32,11 @@ export class PracticalRestService {
     return this.http.post('Services/Practicals/PracticalService.svc/UpdatePracticals', { practicals });
   }
 
-  public createPracticalLessons(practicalLesson: CreateEntity) {
+  public savePractical(practicalLesson: CreateLessonEntity) {
     return this.http.post('Services/Practicals/PracticalService.svc/Save', practicalLesson);
   }
 
-  public deletePracticalLessons(practicalLesson: {id: string, subjectId: number}) {
+  public deletePractical(practicalLesson: {id: number, subjectId: number}) {
     return this.http.post('Services/Practicals/PracticalService.svc/Delete', practicalLesson);
   }
 }
