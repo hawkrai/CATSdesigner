@@ -1,4 +1,4 @@
-import { AttachedFile } from './../../../models/attached-file.model';
+import { AttachedFile } from '../../../models/file/attached-file.model';
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
@@ -9,12 +9,14 @@ import { Component, Input, EventEmitter, Output } from '@angular/core';
 export class FileUploaderComponent {
 
   @Input() header: string;
+  @Input() disabled: boolean;
   @Input() files: AttachedFile[] = [];
   @Output() delete = new EventEmitter<AttachedFile>();
   @Output() upload = new EventEmitter<File>();
 
   uploadFile(input: HTMLInputElement) {
     this.upload.emit(input.files[0]);
+    input.value = null;
   }
 
   deleteFile(file: AttachedFile) {

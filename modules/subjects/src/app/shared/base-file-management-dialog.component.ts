@@ -1,57 +1,63 @@
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { MAT_DIALOG_DATA } from '@angular/material';
-import { Inject, OnInit } from '@angular/core';
+import { Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
+
 import { DialogData } from '../models/dialog-data.model';
-import { FileService } from '../services/file.service';
-import { AttachedFile } from '../models/attached-file.model';
+import { AttachedFile } from '../models/file/attached-file.model';
+import { IAppState } from '../store/state/app.state';
+import * as filesActions from '../store/actions/files.actions';
+import * as filesSelectors from '../store/selectors/files.selectors';
 
-
-export class BaseFileManagementComponent<T> implements OnInit {
-    public files: AttachedFile[] = [];
+export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
+    public files$: Observable<AttachedFile[]>;
 
     constructor(
         protected dialogRef: MatDialogRef<T>,
-        protected fileService: FileService,
+        protected store: Store<IAppState>,
         @Inject(MAT_DIALOG_DATA) protected data: DialogData
-    ) {}
+    ) {
+        dialogRef.disableClose = true;
+    }
 
     ngOnInit(): void {
-        const values = JSON.stringify(
-          this.data.model.attachments.map(attachment => `${attachment.name}/${attachment.id}/${attachment.pathName}/${attachment.fileName}`
-        ));
     
-        if (values.length) {
-          this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-            .subscribe(files => {
-              this.files = files
-            });
+        if (this.data.model.attachments) {
+            const values = JSON.stringify(
+                this.data.model.attachments.map(attachment => `${attachment.name}/${attachment.id}/${attachment.pathName}/${attachment.fileName}`
+            ));
+            this.store.dispatch(filesActions.loadAttachments({ values }));
+            this.files$ = this.store.select(filesSelectors.getFiles);
         }
     }
 
+    ngOnDestroy(): void {
+        this.store.dispatch(filesActions.reset());
+    }
 
-    onSave(): void {
-        this.data.model.attachments = this.files
+
+    onSave(files: AttachedFile[]): void {
+        this.data.model.attachments = files
         .map(f => ({ id: f.IdFile > 0 ? f.IdFile : 0 , name: f.Name, attachmentType: f.Type, fileName: f.GuidFileName}));
         this.dialogRef.close(this.data.model);
     }
 
     uploadFile(file: File) {
-        const index = this.files.length;
-        this.files.push(null);
-        this.fileService.uploadFile(file).subscribe(files => {
-            this.files[index] = files[0];
-        }, () => this.files.splice(index, 1));
+        this.store.dispatch(filesActions.uploadFile({ file }));
     }
 
-    onClose(): void {
-        this.files.filter(f => f.IdFile <= 0)
-        .forEach(f => this.deleteFile(f));
-        this.dialogRef.close();
+    onClose(files: AttachedFile[], toSave: boolean): void {
+        if (toSave) {
+            this.onSave(files);
+        } else {
+            files.filter(f => f.IdFile <= 0)
+            .forEach(f => this.deleteFile(f));
+            this.dialogRef.close();
+        }
     }
 
     deleteFile(file: AttachedFile) {
-        console.log(file)
-        this.fileService.deleteFile(file.DeleteUrl)
-        .subscribe(res => console.log(res));
+        this.store.dispatch(filesActions.deleteFile({ file }));
     }
 }
