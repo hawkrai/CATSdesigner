@@ -1,22 +1,23 @@
+import { DialogService } from './../../services/dialog.service';
 import { map } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs';
 import {Component, OnDestroy, OnInit } from '@angular/core';
 import {News} from '../../models/news.model';
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
 import {IAppState} from "../../store/state/app.state";
 import {Store} from '@ngrx/store';
-import {ComponentType} from '@angular/cdk/typings/portal';
 import {NewsPopoverComponent} from './news-popover/news-popover.component';
 import {DialogData} from '../../models/dialog-data.model';
-import {Attachment} from '../../models/attachment.model';
+import {Attachment} from '../../models/file/attachment.model';
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import * as newsSelectors from '../../store/selectors/news.selectors';
 import * as newsActions from '../../store/actions/news.actions';
+import * as filesActions from '../../store/actions/files.actions';
 import {SubSink} from 'subsink';
 
 interface NewsState {
+  color: string
   isTeacher: boolean;
   news: News[];
   selectedNews: News
@@ -30,24 +31,21 @@ interface NewsState {
 export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   state$: Observable<NewsState>;
-
   private subs = new SubSink()
 
-  public news: News[];
-
-
   constructor(
-              private dialog: MatDialog,
-              private store: Store<IAppState>) {
+    private dialogService: DialogService,
+    private store: Store<IAppState>) {
   }
 
   ngOnInit() {
     this.store.dispatch(newsActions.loadNews());
-    this.state$ = combineLatest([
+    this.state$ = combineLatest(
+      this.store.select(subjectSelectors.getSubjectColor),
       this.store.select(subjectSelectors.isTeacher), 
       this.store.select(newsSelectors.getNews),
-      this.store.select(newsSelectors.getSelectedNews)]).pipe(
-      map(([isTeacher, news, selectedNews]) => ({ isTeacher, news, selectedNews }))
+      this.store.select(newsSelectors.getSelectedNews)).pipe(
+      map(([color, isTeacher, news, selectedNews]) => ({ color, isTeacher, news, selectedNews }))
     );
   }
 
@@ -56,36 +54,22 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     this.store.dispatch(newsActions.resetNews());
   }
 
-  disableNews(): void {
-    this.store.dispatch(newsActions.disableAllNews());
-  }
-
-  enableNews(): void {
-    this.store.dispatch(newsActions.enableAllNews());
+  disableNews(disable: boolean): void {
+    this.store.dispatch(disable ? newsActions.disableAllNews() : newsActions.enableAllNews());
   }
 
   onSelectNews(news: News): void {
     this.store.dispatch(newsActions.setSelectedNews({ news }));
   }
 
-  constructorNews(news?: News) {
-    const nowDate = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
-    const newNews = {
-      id: news ? news.id : '0',
-      title: news ? news.title : '',
-      body: news ? news.body : '',
-      disabled: news ? news.disabled : false,
-      isOldDate: false,
-      dateCreate: news ? news.dateCreate : nowDate,
-      pathFile: news ? news.pathFile : '',
-      attachments: news ? news.attachments : []
-    };
+  constructorNews(news: News): void {
+    const newNews = this.createNews(news);
     const dialogData: DialogData = {
       title: news ? 'Редактирование новости' : 'Добавление новости',
       buttonText: 'Сохранить',
       model: newNews
     };
-    const dialogRef = this.openDialog(dialogData, NewsPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(dialogData, NewsPopoverComponent);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -100,26 +84,39 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
   deleteNews(news: News) {
     const dialogData: DialogData = {
       title: 'Удаление новости',
-      body: 'новость "' + news.title + '"',
+      body: 'новость "' + news.Title + '"',
       buttonText: 'Удалить',
-      model: news.id
+      model: news.NewsId
     };
-    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(dialogData, DeletePopoverComponent);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.store.dispatch(newsActions.deleteNewsById({ id: news.id }));
+          this.store.dispatch(newsActions.deleteNewsById({ id: news.NewsId }));
         }
       })
     );
   }
 
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
+  fileDownload(attachment: Attachment) {
+    this.store.dispatch(filesActions.downloadFile({ pathName: attachment.PathName, fileName: attachment.FileName }));
   }
 
-  _filesDownload(attachment: Attachment) {
-    window.open('/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName);
+  private createNews(news: News) {
+    const nowDate = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
+    const newNews = {
+      id: news ? news.NewsId : '0',
+      title: news ? news.Title : '',
+      body: news ? news.Body : '',
+      disabled: news ? news.Disabled : false,
+      isOldDate: false,
+      dateCreate: news ? news.DateCreate : nowDate,
+      pathFile: news ? news.PathFile : '',
+      attachments: news ? news.Attachments.map(
+        attachment => ({ id: attachment.Id, name: attachment.Name, pathName: attachment.PathName, fileName: attachment.FileName, attachmentType: attachment.AttachmentType })) 
+        : []
+    };
+    return newNews;
   }
 }
