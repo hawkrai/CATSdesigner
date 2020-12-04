@@ -94,6 +94,12 @@ namespace LMPlatform.UI.Controllers
             return this.Json(testViewModels, JsonRequestBehavior.AllowGet);
         }
 
+        [System.Web.Http.HttpGet]
+        public int GetEUMKTestIdForSubject(int subjectId)
+        {
+            return this.TestsManagementService.GetTestsForSubject(subjectId).FirstOrDefault(x => x.ForEUMK)?.Id ?? -1;
+        }
+
         public JsonResult GetRecomendations(int subjectId)
         {
             var result = new List<object>();

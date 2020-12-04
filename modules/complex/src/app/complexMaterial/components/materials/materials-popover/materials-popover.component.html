@@ -7,10 +7,14 @@
   <span *ngIf="showTimer">Переход к тестам будет доступен через {{time}}</span>
   <pdf-viewer *ngIf="showMaterial" [src]=data.url [render-text]="true" [(page)]="page" [show-all]="true" style="display:block"></pdf-viewer>
 
+  <div *ngIf="isTest">
+      <app-test-execution testId="{{testId}}"></app-test-execution>
+   </div>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">Отмена</button>
-  <button *ngIf="needToGetInitialTest" mat-raised-button>Пройти предтест</button>
+  <button *ngIf="needToGetInitialTest" mat-raised-button (click)="goToPredTest()">Пройти предтест</button>
   <button *ngIf="toTestButtonVisible" mat-raised-button [disabled]='!toTestButtonEnabled'>К тестам</button>
+  <button id='continueButton' *ngIf="isTest" mat-raised-button [disabled]="true">Завершить</button>
 </div>
 

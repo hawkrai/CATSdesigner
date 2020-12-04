@@ -2,12 +2,16 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogData } from '../../../../models/DialogData';
 import { AdaptivityService } from '../../../../service/adaptivity.service';
+import { TestExecutionComponent } from '../adaptiveLearningTests/adaptive-learning-test.component';
+import { TestService } from '../../../../service/test.service';
 
 @Component({
   selector: 'app-materials-popover',
   templateUrl: './materials-popover.component.html',
   styleUrls: ['./materials-popover.component.less']
 })
+
+
 export class MaterialsPopoverComponent{
 
   public files = [];
@@ -26,18 +30,22 @@ export class MaterialsPopoverComponent{
   seconds: number;
   time: string;
 
+  isTest: boolean;
+  testId: string;
+
   constructor(
     public dialogRef: MatDialogRef<MaterialsPopoverComponent>,
     private adaptivityService: AdaptivityService,
+    private testService: TestService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     debugger;
     this.isAdaptive = data.isAdaptive;
     this.needToGetInitialTest = data.needToGetInitialTest;
     this.shouldWaitPresettedTime = data.shouldWaitPresettedTime;
 
-    this.showMaterial = !this.isAdaptive || !this.needToGetInitialTest;
+    this.showMaterial = !this.isAdaptive || !(this.needToGetInitialTest || this.isTest);
 
-    this.toTestButtonVisible = this.isAdaptive && !this.needToGetInitialTest;
+    this.toTestButtonVisible = this.isAdaptive || !(this.needToGetInitialTest || this.isTest);
 
     if (this.isAdaptive && this.shouldWaitPresettedTime) {
       this.showTimer = true;
@@ -53,13 +61,25 @@ export class MaterialsPopoverComponent{
   }
 
   processAndSavePredTest(): void {
-    this.adaptivityService.processPredTtest('1', '2').subscribe(res => {
+    this.adaptivityService.processPredTtest('1', this.testId).subscribe(res => {
       if ((res as any).Code == '200') {
         this.adaptivityService.getNextThemaRes('1', '2', '3', this.adaptivityType).subscribe(themaRes => {
           this.needToGetInitialTest = themaRes.needToDoPredTest;
           this.shouldWaitPresettedTime = themaRes.shouldWaitPresettedTime;
         });
       }
+    });
+  }
+
+  goToPredTest() {
+    this.testService.getPredTest('3').subscribe(res => {
+      this.testId = `${res}`;
+      this.isTest = true;
+
+      this.needToGetInitialTest = false;
+      this.shouldWaitPresettedTime = false;
+      this.showMaterial = false;
+      this.toTestButtonVisible = false;
     });
   }
 

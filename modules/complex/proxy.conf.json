@@ -3,12 +3,25 @@
     "target": "http://localhost:6478",
     "secure": false,
     "logLevel": "debug",
-    "changeOrigin": true        
+    "changeOrigin": true
   },
   "/Services/*": {
     "target": " http://localhost:6478",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
+  },
+  "/TestPassing/*": {
+    "target": "http://localhost:6478",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/Tests/*": {
+    "target": "http://localhost:6478",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
   }
+
 }
