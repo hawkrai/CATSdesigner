@@ -1,25 +1,30 @@
-import {createSelector} from '@ngrx/store';
+import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {IAppState} from '../state/app.state';
-import {GroupsState} from '../state/groups.state';
+import {IGroupsState} from '../state/groups.state';
 
-const groupSelector = (state: IAppState) => state.groups;
+const groupsSelector = createFeatureSelector<IAppState, IGroupsState>('groups');
 
 export const getGroups = createSelector(
-  groupSelector,
-  (state: GroupsState) => state.groups
+  groupsSelector,
+  state => state.groups
 );
 
 export const getCurrentGroup = createSelector(
-  groupSelector,
-  (state: GroupsState) => state.currentGroup
+  groupsSelector,
+  state => state.currentGroup
+);
+
+export const getCurrentGroupId = createSelector(
+  getCurrentGroup,
+  group => !!group ? group.GroupId : null
 );
 
 
 export const getCurrentGroupSubGroupIds = createSelector(
-  groupSelector,
+  groupsSelector,
   state => state.currentGroup ? [
-    state.currentGroup.subGroupsOne ? state.currentGroup.subGroupsOne.subGroupId : null, 
-    state.currentGroup.subGroupsTwo ? state.currentGroup.subGroupsTwo.subGroupId : null, 
-    state.currentGroup.subGroupsThird ? state.currentGroup.subGroupsThird.subGroupId : null
+    state.currentGroup.subGroupsOne ? state.currentGroup.subGroupsOne.SubGroupId : null, 
+    state.currentGroup.subGroupsTwo ? state.currentGroup.subGroupsTwo.SubGroupId : null, 
+    state.currentGroup.subGroupsThird ? state.currentGroup.subGroupsThird.SubGroupId : null
   ].filter(id => id !== null) : []
 );

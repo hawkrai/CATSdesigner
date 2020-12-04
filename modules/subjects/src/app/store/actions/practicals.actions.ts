@@ -1,3 +1,4 @@
+import { CreateLessonEntity } from './../../models/form/create-lesson-entity.model';
 import { createAction, props } from '@ngrx/store';
 import { CreateEntity } from 'src/app/models/form/create-entity.model';
 
@@ -22,12 +23,12 @@ export const loadMarksSucces = createAction(
 
 export const deletePractical = createAction(
     '[Practical] Delete Practical',
-    props<{ id: string }>()
+    props<{ id: number }>()
 );
 
-export const createPractical = createAction(
-    '[Practical] Create Practical',
-    props<{ practical: CreateEntity }>()
+export const savePractical = createAction(
+    '[Practical] Save Practical',
+    props<{ practical: CreateLessonEntity }>()
 );
 
 export const resetPracticals = createAction(

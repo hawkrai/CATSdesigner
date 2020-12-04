@@ -1,14 +1,12 @@
 import { ConverterService } from './../../services/converter.service';
-import { LabsService } from './../../services/labs/labs.service';
 import {Injectable} from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import {Action, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import {map, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators';
 
 import {IAppState} from '../state/app.state';
 import {LabsRestService} from '../../services/labs/labs-rest.service';
-import {getCurrentGroup} from '../selectors/groups.selectors';
-import {Group} from '../../models/group.model';
+import * as groupsSelector  from '../selectors/groups.selectors';
 import * as labsActions from '../actions/labs.actions';
 import * as subjectSelectors from '../selectors/subject.selector';
 
@@ -23,8 +21,8 @@ export class LabsEffects {
 
   schedule$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.loadLabsSchedule),
-    withLatestFrom(this.store.select(subjectSelectors.getSubjectId),this.store.select(getCurrentGroup)),
-    switchMap(([_, subjectId, group]: [Action, number, Group]) => this.rest.getProtectionSchedule(subjectId, group.groupId)),
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId),this.store.select(groupsSelector.getCurrentGroupId)),
+    switchMap(([_, subjectId, groupId]) => this.rest.getProtectionSchedule(subjectId, groupId)),
     mergeMap(({ labs, scheduleProtectionLabs }) => [labsActions.loadLabsSuccess({ labs }), labsActions.laodLabsScheduleSuccess({ scheduleProtectionLabs })])
     )
   );
@@ -46,16 +44,16 @@ export class LabsEffects {
   ));
 
   createLab$ = createEffect(() => this.actions$.pipe(
-    ofType(labsActions.createLab),
+    ofType(labsActions.saveLab),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ lab }, subjectId]) => (lab.subjectId = subjectId, this.rest.createLab(lab)).pipe(
+    switchMap(([{ lab }, subjectId]) => (lab.subjectId = subjectId, this.rest.saveLab(lab)).pipe(
       map(() => labsActions.loadLabs())
     ))
   ));
 
-  updateLabs$ = createEffect(() => this.actions$.pipe(
-    ofType(labsActions.updateLabs),
-    map(({ labs }) => this.converterService.labsUpdateConverter(labs)),
-    switchMap(labs => this.rest.updateLabs(labs))
-  ), { dispatch: false });
+  // updateLabs$ = createEffect(() => this.actions$.pipe(
+  //   ofType(labsActions.updateLabs),
+  //   map(({ labs }) => this.converterService.labsUpdateConverter(labs)),
+  //   switchMap(labs => this.rest.updateLabs(labs))
+  // ), { dispatch: false });
 }

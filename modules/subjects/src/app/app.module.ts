@@ -1,4 +1,3 @@
-import { FlatpickrModule } from 'angularx-flatpickr';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
@@ -13,7 +12,7 @@ import {LabsModule} from './modules/labs/labs.module';
 import {DeletePopoverComponent} from "./shared/delete-popover/delete-popover.component";
 import {MatModule} from "./mat.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {appReducers} from "./store/reducers/app.reducers";
+import {appReducers} from "./store/reducers/app.reducer";
 import {StoreModule} from '@ngrx/store';
 import {EffectsModule} from '@ngrx/effects';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
@@ -36,6 +35,7 @@ import {VisitLecturesComponent} from './modules/lectures/components/visit-lectur
 import { SubjectEffect } from './store/effects/subject.effects';
 import { PracticalsEffects } from './store/effects/practicals.effects';
 import { CatsEffects } from './store/effects/cats.effects';
+import { FilesEffects } from './store/effects/files.effects';
 
 @NgModule({
   declarations: [
@@ -64,7 +64,7 @@ import { CatsEffects } from './store/effects/cats.effects';
     PracticalModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects]),
     StoreDevtoolsModule.instrument()
   ],
   entryComponents: [

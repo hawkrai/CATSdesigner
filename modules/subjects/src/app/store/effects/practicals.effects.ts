@@ -8,7 +8,6 @@ import * as groupSelectors from '../selectors/groups.selectors';
 import * as subjectSelectors from '../selectors/subject.selector';
 import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
 import { IAppState } from '../state/app.state';
-import { CreateEntity } from 'src/app/models/form/create-entity.model';
 import { ConverterService } from 'src/app/services/converter.service';
 
 @Injectable()
@@ -24,7 +23,7 @@ export class PracticalsEffects {
     loadPracticals$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.loadPracticals),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([_, subjectId]: [Action, number]) => this.practicalsService.getAllPracticalLessons(subjectId).pipe(
+        switchMap(([_, subjectId]) => this.practicalsService.getPracticals(subjectId).pipe(
             map(practicals =>  practicalsActions.loadPracticalsSuccess({ practicals }))
         ))
     ));
@@ -32,22 +31,22 @@ export class PracticalsEffects {
     deletePractical$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.deletePractical),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([{ id }, subjectId]: [{ id: string }, number]) => this.practicalsService.deletePracticalLessons({ id, subjectId}).pipe(
+        switchMap(([{ id }, subjectId]) => this.practicalsService.deletePractical({ id, subjectId}).pipe(
             map(() => practicalsActions.loadPracticals())
         ))
     ));
 
     createPractical$ = createEffect(() => this.actions$.pipe(
-        ofType(practicalsActions.createPractical),
+        ofType(practicalsActions.savePractical),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([{ practical }, subjectId]: [{ practical: CreateEntity }, number]) => (practical.subjectId = subjectId, this.practicalsService.createPracticalLessons(practical)).pipe(
+        switchMap(([{ practical }, subjectId]) => (practical.subjectId = subjectId, this.practicalsService.savePractical(practical)).pipe(
             map(() => practicalsActions.loadPracticals())
         ))
     ));
 
-    updatePracticals$ = createEffect(() => this.actions$.pipe(
-        ofType(practicalsActions.updatePracticals),
-        map(({ practicals }) => this.converterService.practicalsUpdateConverter(practicals)),
-        switchMap(practicals => this.practicalsService.updatePracticals(practicals))
-      ), { dispatch: false });
+    // updatePracticals$ = createEffect(() => this.actions$.pipe(
+    //     ofType(practicalsActions.updatePracticals),
+    //     map(({ practicals }) => this.converterService.practicalsUpdateConverter(practicals)),
+    //     switchMap(practicals => this.practicalsService.updatePracticals(practicals))
+    //   ), { dispatch: false });
 }
