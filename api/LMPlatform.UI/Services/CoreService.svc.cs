@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Extensions;
+using Application.Core.Helpers;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.StudentManagement;
@@ -25,7 +26,7 @@ using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services
 {
-    [Authorize]
+    [JwtAuth]
     public class CoreService : ICoreService
 	{
 		private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
@@ -293,7 +294,7 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var groups = this.GroupManagementService.GetLecturesGroups(WebSecurity.CurrentUserId);
+				var groups = this.GroupManagementService.GetLecturesGroups(UserContext.CurrentUserId);
 
 				var groupsViewModel = new List<GroupsViewData>();
 
@@ -793,6 +794,6 @@ namespace LMPlatform.UI.Services
 			};
         }
 
-        protected int CurrentUserId => WebSecurity.CurrentUserId;
+        protected int CurrentUserId => UserContext.CurrentUserId;
 	}
 }

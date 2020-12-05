@@ -7,10 +7,12 @@ using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.SearchEngine.SearchMethods;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.SearchViewModel;
 
 namespace LMPlatform.UI.Controllers
 {
+    [JwtAuth]
     public class SearchController : BasicController
     {
         private readonly LazyDependency<IGroupManagementService> _groupRepository =

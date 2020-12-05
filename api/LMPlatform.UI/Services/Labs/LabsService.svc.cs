@@ -21,6 +21,7 @@ using Application.Infrastructure.KnowledgeTestsManagement;
 using System.Globalization;
 using System.Configuration;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.StudentManagement;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
@@ -144,7 +145,7 @@ namespace LMPlatform.UI.Services.Labs
                     ShortName = shortName,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
                 
                 return new ResultViewData
                 {
@@ -276,7 +277,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, WebSecurity.CurrentUserId, mark, comment, date, id));
+				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id));
 
                 return new ResultViewData
                 {

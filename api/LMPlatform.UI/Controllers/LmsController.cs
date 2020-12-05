@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using Application.Core;
 using Application.Core.Extensions;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.StudentManagement;
@@ -27,19 +28,19 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public ActionResult Index(string userLogin = "")
         {
-            var model = new LmsViewModel(WebSecurity.CurrentUserId, this.User.IsInRole("lector"))
+            var model = new LmsViewModel(UserContext.CurrentUserId, this.User.IsInRole("lector"))
             {
                 UserActivity = new UserActivityViewModel()
             };
             var dynamicModel = model.AsExpandoObject();
             dynamicModel.ShowDpSectionForUser =
-                this.DpManagementService.ShowDpSectionForUser(WebSecurity.CurrentUserId);
-            dynamicModel.IsMyProfile = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin;
-            dynamicModel.UserLogin = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin
-                ? WebSecurity.CurrentUserName
+                this.DpManagementService.ShowDpSectionForUser(UserContext.CurrentUserId);
+            dynamicModel.IsMyProfile = string.IsNullOrEmpty(userLogin) || UserContext.CurrentUserName == userLogin;
+            dynamicModel.UserLogin = string.IsNullOrEmpty(userLogin) || UserContext.CurrentUserName == userLogin
+                ? UserContext.CurrentUserName
                 : userLogin;
             dynamicModel.UnconfirmedStudents =
-                this.StudentManagementService.CountUnconfirmedStudents(WebSecurity.CurrentUserId) > 0;
+                this.StudentManagementService.CountUnconfirmedStudents(UserContext.CurrentUserId) > 0;
 
             return JsonResponse(model);
         }

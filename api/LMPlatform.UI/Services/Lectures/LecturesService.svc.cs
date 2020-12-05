@@ -9,6 +9,8 @@ using System.Globalization;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
 using Application.Core;
+using Application.Core.Helpers;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services.Lectures
 {
@@ -16,6 +18,7 @@ namespace LMPlatform.UI.Services.Lectures
     using Models;
     using Modules;
 
+    [JwtAuth]
     public class LecturesService : ILecturesService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -142,7 +145,7 @@ namespace LMPlatform.UI.Services.Lectures
                     Order = order,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
 
                 return new ResultViewData
                 {

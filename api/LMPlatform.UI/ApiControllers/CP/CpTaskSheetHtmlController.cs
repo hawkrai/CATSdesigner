@@ -6,9 +6,11 @@ using System.Net.Http;
 using System.Web.Http;
 using Application.Core;
 using Application.Infrastructure.CPManagement;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CpTaskSheetHtmlController : ApiController
     {
         private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.GroupManagement;
@@ -28,7 +29,7 @@ namespace LMPlatform.UI.Controllers
     {
         public string TestContentPath => ConfigurationManager.AppSettings["TestContentPath"];
 
-        protected int CurrentUserId => int.Parse(WebSecurity.CurrentUserId.ToString(CultureInfo.InvariantCulture));
+        protected int CurrentUserId => int.Parse(UserContext.CurrentUserId.ToString(CultureInfo.InvariantCulture));
 
         //[OverrideAuthorization]
         //[JwtAuth(Roles = "lector")]
@@ -384,7 +385,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult Subjects(int subjectId)
         {
-            var s = this.SubjectsManagementService.GetUserSubjects(WebSecurity.CurrentUserId).Where(e => !e.IsArchive);
+            var s = this.SubjectsManagementService.GetUserSubjects(UserContext.CurrentUserId).Where(e => !e.IsArchive);
             var CourseProjectSubjects = s.Where(cs =>
                     this.ModulesManagementService.GetModules(cs.Id).Any(m => m.ModuleType == ModuleType.SmartTest))
                 .Select(e => new SubjectViewModel(e)).ToList();

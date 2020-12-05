@@ -1,11 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Web.Http;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CourseProjectAssignmentController : ApiController
     {
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
@@ -18,12 +21,12 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public void Post([FromBody]AssignProjectUpdateModel updateModel)
         {
-            CpManagementService.AssignProject(WebSecurity.CurrentUserId, updateModel.ProjectId, updateModel.StudentId);
+            CpManagementService.AssignProject(UserContext.CurrentUserId, updateModel.ProjectId, updateModel.StudentId);
         }
 
         public void Post(int id)
         {
-            CpManagementService.DeleteAssignment(WebSecurity.CurrentUserId, id);
+            CpManagementService.DeleteAssignment(UserContext.CurrentUserId, id);
         }
 
         public class AssignProjectUpdateModel

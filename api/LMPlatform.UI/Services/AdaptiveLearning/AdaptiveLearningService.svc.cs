@@ -16,12 +16,14 @@ using System.ServiceModel;
 using System.Text;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services.AdaptiveLearning
 {
-	// NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "AdaptiveLearningService" in code, svc and config file together.
-	// NOTE: In order to launch WCF Test Client for testing this service, please select AdaptiveLearningService.svc or AdaptiveLearningService.svc.cs at the Solution Explorer and start debugging.
-	public class AdaptiveLearningService : IAdaptiveLearningService
+    [JwtAuth]
+    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "AdaptiveLearningService" in code, svc and config file together.
+    // NOTE: In order to launch WCF Test Client for testing this service, please select AdaptiveLearningService.svc or AdaptiveLearningService.svc.cs at the Solution Explorer and start debugging.
+    public class AdaptiveLearningService : IAdaptiveLearningService
 	{
 		private const int NEEDED_QUSTIONS_COUNT = 10;
 
