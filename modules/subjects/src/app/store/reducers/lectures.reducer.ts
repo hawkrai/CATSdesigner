@@ -20,8 +20,12 @@ export const lecturesReducer = createReducer(
   })),
   on(lecturesActions.resetLectures, (state): ILecturesState => ({
     ...state,
-    lectures: [],
-    calendar: []
+    lectures: []
+  })),
+  on(lecturesActions.resetVisiting, (state): ILecturesState => ({
+    ...state,
+    calendar: [],
+    groupsVisiting: null
   })),
   on(lecturesActions.updateOrderSuccess, (state, { prevIndex, currentIndex }): ILecturesState => ({
     ...state, 

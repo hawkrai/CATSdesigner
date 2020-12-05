@@ -23,8 +23,8 @@ export const getCurrentGroupId = createSelector(
 export const getCurrentGroupSubGroupIds = createSelector(
   groupsSelector,
   state => state.currentGroup ? [
-    state.currentGroup.subGroupsOne ? state.currentGroup.subGroupsOne.SubGroupId : null, 
-    state.currentGroup.subGroupsTwo ? state.currentGroup.subGroupsTwo.SubGroupId : null, 
-    state.currentGroup.subGroupsThird ? state.currentGroup.subGroupsThird.SubGroupId : null
+    state.currentGroup.SubGroupsOne ? state.currentGroup.SubGroupsOne.SubGroupId : null, 
+    state.currentGroup.SubGroupsTwo ? state.currentGroup.SubGroupsTwo.SubGroupId : null, 
+    state.currentGroup.SubGroupsThird ? state.currentGroup.SubGroupsThird.SubGroupId : null
   ].filter(id => id !== null) : []
 );

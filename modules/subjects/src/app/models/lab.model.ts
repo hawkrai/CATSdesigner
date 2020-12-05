@@ -2,7 +2,7 @@ import {Attachment} from "./file/attachment.model";
 
 export class Lab {
   LabId: number;
-  Attachments: Attachment[] | any;
+  Attachments: Attachment[];
   Duration: number;
   Order: number;
   PathFile: string;

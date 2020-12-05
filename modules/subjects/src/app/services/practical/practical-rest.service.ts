@@ -28,8 +28,8 @@ export class PracticalRestService {
     return this.http.post('Services/Practicals/PracticalService.svc/GetPracticalsVisitingData', {subjectId, groupId})
   }
 
-  public updatePracticals(practicals: UpdateLab[]) {
-    return this.http.post('Services/Practicals/PracticalService.svc/UpdatePracticals', { practicals });
+  public updatePracticalsOrder(subjectId: number, practicals: { Id: number, Order: number }[]) {
+    return this.http.post('Services/Practicals/PracticalService.svc/UpdatePracticalsOrder', { subjectId, practicals });
   }
 
   public savePractical(practicalLesson: CreateLessonEntity) {

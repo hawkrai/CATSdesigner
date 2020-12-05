@@ -2,7 +2,7 @@
   <div class="protection-schedule-component__subGroup" *ngFor="let i of numberSubGroups">
     <span class="protection-schedule-component__subGroup-title">Подгруппа {{i}}</span>
     <div class="protection-schedule-component__subGroup-table">
-      <table mat-table [dataSource]="student | filterSubGroup:'SubGroup': i" class="mat-elevation-z14">
+      <table mat-table [dataSource]="student | filter:'SubGroup': i" class="mat-elevation-z14">
         <ng-container matColumnDef="position">
           <th mat-header-cell *matHeaderCellDef>№</th>
           <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>

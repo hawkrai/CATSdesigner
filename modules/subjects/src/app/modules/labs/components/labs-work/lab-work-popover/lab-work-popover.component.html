@@ -1,4 +1,4 @@
-<ng-container *ngIf="files$ | async as files">
+<ng-container *var="files$ | async as files">
   <h2 mat-dialog-title>{{data.title}}</h2>
   <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
     <form class="example-form" #formElement>

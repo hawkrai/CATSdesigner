@@ -1,4 +1,3 @@
-import { downloadExcel } from './../actions/lectures.actions';
 import {Injectable} from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -86,7 +85,22 @@ export class LecturesEffects {
     ofType(lecturesActions.downloadExcel),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
     tap(([_, subjectId, groupId]) => {
-      window.open(`/Statistic/GetVisitLecture?subjectId=${subjectId}&groupId=${groupId}`, '_blank')
+      // window.open(`/Statistic/GetVisitLecture?subjectId=${subjectId}&groupId=${groupId}`, '_blank')
     })
-  ), { dispatch: false})
+  ), { dispatch: false});
+
+  createDateVisit$ = createEffect(() => this.actions$.pipe(
+    ofType(lecturesActions.createDateVisit),
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+    switchMap(([{ date }, subjectId]) => this.rest.createDateVisit(subjectId, date).pipe(
+      map(() => lecturesActions.loadCalendar())
+    ))
+  ));
+
+  deleteDateVisit$ = createEffect(() => this.actions$.pipe(
+    ofType(lecturesActions.deleteDateVisit),
+    switchMap(({ id }) => this.rest.deleteDateVisit(id).pipe(
+      map(() => lecturesActions.loadCalendar())
+    ))
+  ));
 }

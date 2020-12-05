@@ -1,4 +1,4 @@
-<ng-container *ngIf="files$ | async as files">
+<ng-container *var="files$ | async as files">
   <h2 mat-dialog-title>{{data.title}}</h2>
   <div mat-dialog-content style="max-height: none;" class="practical-lesson-component__popover" #popoverContent>
     <form class="example-form">
@@ -18,9 +18,9 @@
     </form>
   </div>
   <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClose()">Отмена</button>
+    <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
     <button mat-raised-button
-            (click)="onClose()"
+            (click)="onClose(files, true)"
             color="primary"
             [disabled]="!(data.model.theme && data.model.duration)"
     >

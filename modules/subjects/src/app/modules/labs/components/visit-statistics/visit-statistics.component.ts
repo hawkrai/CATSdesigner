@@ -24,7 +24,7 @@ import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 })
 export class VisitStatisticsComponent implements OnInit, OnDestroy {
 
-  @Input() teacher: boolean;
+  @Input() isTeacher: boolean;
   private subs = new SubSink();
   public scheduleProtectionLabs: ScheduleProtectionLabs[];
   public numberSubGroups: number[] = [1, 2];
@@ -103,7 +103,7 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
   }
 
   setVisitMarks(date: ScheduleProtectionLabs, index) {
-    if (this.teacher) {
+    if (this.isTeacher) {
       const students = this._getStudentGroup(date.SubGroup);
       const visits = {date: date.Date, students: []};
       students.forEach(student => {

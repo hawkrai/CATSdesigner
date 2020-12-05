@@ -5,9 +5,9 @@ export class Group {
   LecturesMarkVisiting: string;
   ScheduleProtectionPracticals: [];
   Students: [];
-  subGroupsOne: SubGroup;
-  subGroupsTwo: SubGroup;
-  subGroupsThird: SubGroup;
+  SubGroupsOne: SubGroup;
+  SubGroupsTwo: SubGroup;
+  SubGroupsThird: SubGroup;
 }
 
 export class SubGroup {

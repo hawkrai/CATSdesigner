@@ -1,3 +1,4 @@
+import { isTeacher } from './../../../../store/selectors/subject.selector';
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Group} from "../../../../models/group.model";
 import {LabsService} from "../../../../services/labs/labs.service";
@@ -24,7 +25,7 @@ import { DatePipe } from '@angular/common';
 })
 export class ResultsComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
-  @Input() teacher: boolean;
+  @Input() isTeacher: boolean;
 
   public selectedGroup: Group;
   private subjectId: number;
@@ -90,7 +91,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   setMark(student: StudentMark, labId: string, recommendedMark?) {
-    if (!this.teacher) {
+    if (!this.isTeacher) {
       return;
     }
     const mark = student.Marks.find(mark => mark.LabId.toString() === labId);

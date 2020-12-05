@@ -1,4 +1,4 @@
-<div class="subject-news-component" *ngIf="files$ | async as files">
+<div class="subject-news-component" *var="files$ | async as files">
   <h2 mat-dialog-title>{{data.title}}</h2>
   <div class="subject-news-component__popover">
     <form class="example-form" #formElement>

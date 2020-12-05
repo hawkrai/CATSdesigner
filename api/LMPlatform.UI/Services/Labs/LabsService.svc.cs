@@ -520,11 +520,6 @@ namespace LMPlatform.UI.Services.Labs
 			};
 		}
 
-		//public IList<SubGroup> GetMarksV4(int subjectId, int groupId)
-		//{
-		//	return SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
-		//}
-
 		public StudentsMarksResult GetFilesV2(int subjectId, int groupId, bool isCp)
 		{
 			try

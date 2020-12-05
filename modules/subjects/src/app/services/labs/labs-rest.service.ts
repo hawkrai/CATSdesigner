@@ -1,11 +1,9 @@
 import { CreateLessonEntity } from './../../models/form/create-lesson-entity.model';
 import { StudentMark } from './../../models/student-mark.model';
-import { CreateEntity } from './../../models/form/create-entity.model';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from "rxjs/operators";
-import {ConverterService} from "../converter.service";
 import {Lab, ScheduleProtectionLabs} from "../../models/lab.model";
 import { UpdateLab } from 'src/app/models/form/update-lab.model';
 
@@ -54,9 +52,8 @@ export class LabsRestService {
   public saveLab(lab: CreateLessonEntity) {
     return this.http.post('Services/Labs/LabsService.svc/Save', lab);
   }
-
-  public updateLabsOrder(objs: { Id: number, Order: number }[]) {
-    return this.http.post('Services/Labs/LabsService.svc/UpdateLabsOrder', { objs });
+  public updateLabsOrder(subjectId: number, labs: { Id: number, Order: number }[]) {
+    return this.http.post('Services/Labs/LabsService.svc/UpdateLabsOrder', { subjectId, labs });
   }
 
   public updateLabs(labs: UpdateLab[]) {
@@ -67,12 +64,12 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/Delete', lab);
   }
 
-  public createDateVisit(body: { subGroupId: number, date: string }): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/SaveScheduleProtectionDate', body);
+  public createDateVisit(subGroupId: number, date: string ): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/SaveScheduleProtectionDate', { subGroupId, date });
   }
 
-  public deleteDateVisit(body: { id: number }): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/DeleteVisitingDate', body);
+  public deleteDateVisit(id: number): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/DeleteVisitingDate', { id });
   }
 
   public setLabsVisitingDate(body): Observable<any> {

@@ -1,3 +1,4 @@
+import { isTeacher } from './../../../../store/selectors/subject.selector';
 import {Component, EventEmitter, Input, OnInit} from '@angular/core';
 import {LabsService} from '../../../../services/labs/labs.service';
 import {select, Store} from '@ngrx/store';
@@ -22,7 +23,7 @@ import * as groupSelectors from '../../../../store/selectors/groups.selectors';
 })
 export class JobProtectionComponent implements OnInit {
 
-  @Input() teacher: boolean;
+  @Input() isTeacher: boolean;
   @Input() refresh: EventEmitter<any>;
 
   public files;
@@ -56,7 +57,7 @@ export class JobProtectionComponent implements OnInit {
   }
 
   refreshDate(date?) {
-    if (this.teacher) {
+    if (this.isTeacher) {
       this.store.pipe(select(groupSelectors.getCurrentGroup))
         .pipe(filter(group => !!group))
         .subscribe(group => {
@@ -102,14 +103,14 @@ export class JobProtectionComponent implements OnInit {
 
   addLab(file?) {
     let body = {comments: '', attachments: []};
-    if (!this.teacher && file) {
+    if (!this.isTeacher && file) {
       body = {comments: file.Comments, attachments: file.Attachments}
     }
     const dialogData: DialogData = {
-      title: this.teacher ? 'Загрузить исправленный вариант работы' : 'На защиту лабораторной работы',
+      title: this.isTeacher ? 'Загрузить исправленный вариант работы' : 'На защиту лабораторной работы',
       buttonText: 'Отправить работу',
       body: body,
-      model: this.teacher ? 'Комментарий (необязательно)' : 'Комментарий (Например, Лабораторная работа №1)'
+      model: this.isTeacher ? 'Комментарий (необязательно)' : 'Комментарий (Например, Лабораторная работа №1)'
     };
     const dialogRef = this.openDialog(dialogData, AddLabPopoverComponent);
 
@@ -168,7 +169,7 @@ export class JobProtectionComponent implements OnInit {
       comments: data.comments,
       id: file ? file.Id : '0',
       isCp: false,
-      isRet: this.teacher,
+      isRet: this.isTeacher,
       pathFile: file ? file.Attachments[0].PathName : '',
       subjectId: this.subjectId,
       userId: this.user.id.toString()

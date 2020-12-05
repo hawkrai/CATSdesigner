@@ -86,7 +86,7 @@ export class LabsComponent implements OnInit, OnDestroy {
     const url = 'http://localhost:8080/Statistic/';
     if (this.selectedTab === 2) {
       location.href = url + 'GetVisitLabs?subjectId=' +  subjectId + '&groupId=' + group.GroupId +
-        '&subGroupOneId=' + group.subGroupsOne.SubGroupId + '&subGroupTwoId=' + group.subGroupsTwo.SubGroupId;
+        '&subGroupOneId=' + group.SubGroupsOne.SubGroupId + '&subGroupTwoId=' + group.SubGroupsTwo.SubGroupId;
     } else if (this.selectedTab === 3) {
       location.href = url + 'GetLabsMarks?subjectId=' +  subjectId + '&groupId=' + group.GroupId;
     }

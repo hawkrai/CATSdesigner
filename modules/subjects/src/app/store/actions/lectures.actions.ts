@@ -68,3 +68,19 @@ export const setLecturesVisitingDate = createAction(
 export const downloadExcel = createAction(
   '[Lectures] Download Excel'
 );
+
+export const resetVisiting = createAction(
+  '[Lectures] Reset Visiting'
+);
+
+export const createDateVisit = createAction(
+  '[Lectures] Create Date Visit',
+  props<{ date: string }>()
+);
+
+export const deleteDateVisit = createAction(
+  '[Lectures] Delete Date Visit',
+  props<{ id: number }>()
+);
+
+

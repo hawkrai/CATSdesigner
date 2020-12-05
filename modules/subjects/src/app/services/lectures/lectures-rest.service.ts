@@ -48,12 +48,12 @@ export class LecturesRestService {
     )
   }
 
-  public createDateVisit(body: {subjectId: string, date: string}): Observable<any> {
-    return this.http.post('Services/Lectures/LecturesService.svc/SaveDateLectures', body);
+  public createDateVisit(subjectId: number, date: string): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/SaveDateLectures', { subjectId, date });
   }
 
-  public deleteDateVisit(body: {id: string}): Observable<any> {
-    return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDate', body);
+  public deleteDateVisit(id: number): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDate', { id });
   }
 
   public deleteAllDate(body: {dateIds: number[]}): Observable<any> {

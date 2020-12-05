@@ -17,12 +17,12 @@ export class FilesEffects {
         private filesService: FilesService 
     ) {}
 
-    downloadFile$ = createEffect(() => this.actions$.pipe(
+    downloadFile = createEffect(() => this.actions$.pipe(
         ofType(filesActions.downloadFile),
         tap(({ pathName, fileName }) => {
-            window.open(`/api/Upload?fileName=${pathName}//${fileName}`);  
+            window.open(`/api/Upload?fileName=${pathName}//${fileName}`, '_blank');  
         })
-    ));
+    ), { dispatch: false });
 
     loadAttachments$ = createEffect(() => this.actions$.pipe(
         ofType(filesActions.loadAttachments),

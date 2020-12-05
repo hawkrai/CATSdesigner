@@ -1,4 +1,3 @@
-import { DialogService } from './../../../../services/dialog.service';
 import { Observable } from 'rxjs';
 import { AfterViewChecked } from '@angular/core';
 import { SubSink } from 'subsink';
@@ -17,6 +16,8 @@ import {Attachment} from "../../../../models/file/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
 import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
+import { attachmentConverter } from 'src/app/utils';
+import { DialogService } from './../../../../services/dialog.service';
 
 @Component({
   selector: 'app-lectures-list',
@@ -29,7 +30,8 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   private subs = new SubSink();
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
 
-  displayedColumns: string[] = ['index', 'theme', 'duration', ];
+  defaultColumns = ['index', 'theme', 'duration'];
+  displayedColumns: string[] = [];
 
 
   public lectures$: Observable<Lecture[]>;
@@ -47,12 +49,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isTeacher) {
-      if (this.isTeacher) {
-        this.displayedColumns.push('actions');
-      }
-      else {
-        this.displayedColumns.push('files');
-      }
+      this.displayedColumns = [...this.defaultColumns, this.isTeacher ? 'actions' : 'files'];
     }
   }
 
@@ -61,10 +58,6 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   }
 
   ngOnDestroy(): void {
-    // const toSave = this.lectures.filter(l => l.Order !== this.lecturesCopy.find(lc => lc.LecturesId === l.LecturesId).Order);
-    // if (toSave.length) {
-    //   this.lecturesService.updateLecturesOrder(toSave.map(l => ({ Id: l.LecturesId, Order: l.Order }))).subscribe();   
-    // }
     this.subs.unsubscribe();
     this.store.dispatch(lecturesActions.resetLectures());
   }
@@ -97,8 +90,8 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     // });
   }
 
-  constructorLecture(lecturesCount: number, lecture?: Lecture) {
-    const newLecture = lecture ? { ...lecture } : this.getEmptyLecture(lecturesCount);
+  constructorLecture(lecturesCount: number, lecture: Lecture) {
+    const newLecture = this.getLecture(lecturesCount, lecture);
     const dialogData: DialogData = {
       title: lecture ? 'Редактирование темы лекции' : 'Добавление темы лекции',
       buttonText: 'Сохранить',
@@ -133,16 +126,15 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     );
   }
 
-
-  getEmptyLecture(lecturesCount: number) {
+  private getLecture(lecturesCount: number, lecture: Lecture) {
     return {
-      id: 0,
+      id: lecture ? lecture.LecturesId : 0,
       subjectId: this.subjectId,
-      theme: '',
-      duration: 0,
-      order: lecturesCount + 1,
-      pathFile: '',
-      attachments: [],
+      theme: lecture ? lecture.Theme : '',
+      duration: lecture ? lecture.Duration : 0,
+      order: lecture ? lecture.Order : lecturesCount,
+      pathFile: lecture ? lecture.PathFile : '',
+      attachments: lecture ? lecture.Attachments.map(attachment => attachmentConverter(attachment)) : [],
     };
   }
 

@@ -63,10 +63,10 @@
         <mat-icon>cached</mat-icon>
       </button>
     </div>
-    <app-labs-work *ngIf="selectedTab === 0" [teacher]="state.isTeacher"></app-labs-work>
-    <app-protection-schedule *ngIf="selectedTab === 1 && state.group" [teacher]="state.isTeacher"></app-protection-schedule>
-    <app-visit-statistics *ngIf="selectedTab === 2 && state.group" [teacher]="state.isTeacher"></app-visit-statistics>
-    <app-results *ngIf="selectedTab === 3 && state.group" [teacher]="state.isTeacher"></app-results>
-    <app-job-protection *ngIf="selectedTab === 4" [teacher]="state.isTeacher" [refresh]="refreshJobProtection"></app-job-protection>
+    <app-labs-work *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-labs-work>
+    <app-protection-schedule *ngIf="selectedTab === 1 && state.group" [isTeacher]="state.isTeacher"></app-protection-schedule>
+    <app-visit-statistics *ngIf="selectedTab === 2 && state.group" [isTeacher]="state.isTeacher"></app-visit-statistics>
+    <app-results *ngIf="selectedTab === 3 && state.group" [isTeacher]="state.isTeacher"></app-results>
+    <app-job-protection *ngIf="selectedTab === 4" [isTeacher]="state.isTeacher" [refresh]="refreshJobProtection"></app-job-protection>
   </div>
 </div>

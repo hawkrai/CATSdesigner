@@ -1,12 +1,10 @@
 import { Store } from '@ngrx/store';
 import { StudentMark } from './../../models/student-mark.model';
-import { ConverterService } from './../converter.service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Lab} from "../../models/lab.model";
 import {LabsRestService} from './labs-rest.service';
 import * as labSelectors from '../../store/selectors/labs.selectors';
-import * as labsActions from '../../store/actions/labs.actions';
 import { IAppState } from 'src/app/store/state/app.state';
 
 @Injectable({
@@ -16,13 +14,7 @@ import { IAppState } from 'src/app/store/state/app.state';
 export class LabsService {
 
   constructor(
-    private store: Store<IAppState>,
-    private converterService: ConverterService,
-              private rest: LabsRestService) {
-  }
-
-  public getCalendar() {
-    return this.store.select(labSelectors.getLabsCalendar);
+    private rest: LabsRestService) {
   }
 
   public getLabWork(subjectId: number): Observable<Lab[]> {
@@ -32,7 +24,6 @@ export class LabsService {
   public getMarks(subjectId: number, groupId: number): Observable<StudentMark[]> {
     return this.rest.getMarksV2(subjectId, groupId);
   }
-
 
   public setLabsVisitingDate(body) {
     return this.rest.setLabsVisitingDate(body);
@@ -45,10 +36,6 @@ export class LabsService {
   public getFilesLab(body: {subjectId: number, userId: number}): Observable<any> {
     return this.rest.getFilesLab(body);
   }
-
-  // public updateLabs(labs: Lab[]): Observable<any> {
-  //   return this.rest.updateLabs(this.converterService.labsUpdateConverter(labs));
-  // }
 
   public deleteUserFile(body: {id: string}): Observable<any> {
     return this.rest.deleteUserFile(body);
@@ -78,16 +65,4 @@ export class LabsService {
     return this.rest.checkPlagiarismSubjects(body);
   }
 
-  public createDateVisit(body: {subGroupId: number, date: string}) {
-    this.rest.createDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
-    })
-  }
-
-
-  public deleteDateVisit(body: {id: number}) {
-    this.rest.deleteDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
-    })
-  }
 }

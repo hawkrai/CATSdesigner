@@ -35,8 +35,13 @@ export const resetPracticals = createAction(
     '[Practical] Reset Practicals'
 );
 
-export const updatePracticals = createAction(
-    '[Practical] Update Practicals',
-    props<{ practicals: Practical[] }>()
-);
 
+export const updateOrder = createAction(
+    '[Practicals] Update Order',
+    props<{ prevIndex: number, currentIndex: number }>()
+);
+  
+export const updateOrderSuccess = createAction(
+    '[Practicals] Update Order Success',
+    props<{ prevIndex: number, currentIndex: number }>()
+);

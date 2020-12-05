@@ -17,6 +17,6 @@ export class LecturePopoverComponent extends BaseFileManagementComponent<Lecture
     dialogRef: MatDialogRef<LecturePopoverComponent>,
     store: Store<IAppState>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-      super(dialogRef, store, data)
+      super(dialogRef, store, data);
   }
 }

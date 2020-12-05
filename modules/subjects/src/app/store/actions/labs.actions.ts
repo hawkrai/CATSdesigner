@@ -38,3 +38,23 @@ export const updateLabs = createAction(
 export const resetLabs = createAction(
   '[Labs] Reset Labs'
 );
+
+export const updateOrder = createAction(
+  '[Labs] Update Order',
+  props<{ prevIndex: number, currentIndex: number }>()
+);
+
+export const updateOrderSuccess = createAction(
+  '[Labs] Update Order Success',
+  props<{ prevIndex: number, currentIndex: number }>()
+);
+
+export const createDateVisit = createAction(
+  '[Labs] Create Date Visit',
+  props<{ subGroupId: number, date: string }>()
+);
+
+export const deleteDateVisit = createAction(
+  '[Labs] Delete Date Visit',
+  props<{ id: number }>()
+);

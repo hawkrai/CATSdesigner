@@ -15,6 +15,7 @@ import * as newsSelectors from '../../store/selectors/news.selectors';
 import * as newsActions from '../../store/actions/news.actions';
 import * as filesActions from '../../store/actions/files.actions';
 import {SubSink} from 'subsink';
+import { attachmentConverter } from 'src/app/utils';
 
 interface NewsState {
   color: string
@@ -113,9 +114,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
       isOldDate: false,
       dateCreate: news ? news.DateCreate : nowDate,
       pathFile: news ? news.PathFile : '',
-      attachments: news ? news.Attachments.map(
-        attachment => ({ id: attachment.Id, name: attachment.Name, pathName: attachment.PathName, fileName: attachment.FileName, attachmentType: attachment.AttachmentType })) 
-        : []
+      attachments: news ? news.Attachments.map(attachment => attachmentConverter(attachment)) : []
     };
     return newNews;
   }

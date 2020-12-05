@@ -18,7 +18,6 @@ import {EffectsModule} from '@ngrx/effects';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {NewsEffects} from "./store/effects/news.effects";
 import {GroupsEffects} from './store/effects/groups.effects';
-import {VisitDatePopoverComponent} from './shared/visit-date-popover/visit-date-popover.component';
 import {DatePipe} from '@angular/common';
 import {LecturesEffects} from './store/effects/lectures.effects';
 import {LabsEffects} from './store/effects/labs.effects';
@@ -42,7 +41,6 @@ import { FilesEffects } from './store/effects/files.effects';
     AppComponent,
     SideMenuComponent,
     DeletePopoverComponent,
-    VisitDatePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     SubgroupingComponent,
@@ -69,7 +67,6 @@ import { FilesEffects } from './store/effects/files.effects';
   ],
   entryComponents: [
     DeletePopoverComponent,
-    VisitDatePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     SubgroupingComponent,

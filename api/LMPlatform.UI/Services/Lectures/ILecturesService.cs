@@ -57,5 +57,9 @@ namespace LMPlatform.UI.Services.Lectures
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/DeleteVisitingDate")]
         ResultViewData DeleteVisitingDate(int id);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/GetLecturesMarkVisitingV2?subjectId={subjectId}&groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+        LecturesMarkVisitingResult GetLecturesMarkVisitingV2(int subjectId, int groupId);
     }
 }

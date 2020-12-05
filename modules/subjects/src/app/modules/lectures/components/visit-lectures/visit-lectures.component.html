@@ -1,12 +1,7 @@
 <div class="visit-lectures-component" *ngIf="state$ | async as state; else: load">
-  <div class="visit-lectures-component__header">
-    <div class="visit-lectures-component__header-actions" *ngIf="isTeacher">
-      <button mat-raised-button color="primary" (click)="settingVisitDate()">Управление расписанием</button>
-      <button mat-raised-button color="warn" (click)="deletePopover()">Удалить все даты</button>
-      <div class="_excel-file" (click)="getExcelFile()">
-        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
-      </div>
-    </div>
+  <div class="visit-lectures-component-actions" *ngIf="isTeacher">
+    <button mat-raised-button color="primary" (click)="settingVisitDate()">Управление расписанием</button>
+    <button mat-raised-button color="warn" (click)="deletePopover()">Удалить все даты</button>
   </div>
   <div class="visit-lectures-component__table-lecture-visiting" *ngIf="state.groupsVisiting">
     <table mat-table [dataSource]="state.groupsVisiting.LecturesMarksVisiting" class="mat-elevation-z14">
@@ -28,6 +23,9 @@
             style="text-align: center;"
             (dblclick)="setVisitMarks(day, state.groupsVisiting.LecturesMarksVisiting, i)"
         >
+        <div *ngIf="element.Marks[i] && element.Marks[i].Comment" class="comment" [matTooltip]="element.Marks[i].Comment" matTooltipPosition="above">
+          <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
+        </div>
           {{element.Marks[i] && element.Marks[i].Mark}}
         </td>
       </ng-container>
