@@ -41,6 +41,7 @@ h2, mat-label, p, div {
 
 .mat-radio-label-content {
   width: 93%;
+  white-space: pre-wrap;
   font-size: 14px;
 }
 
@@ -103,6 +104,6 @@ h2, mat-label, p, div {
   margin: 0 15px;
 }
 
-.mat-dialog-container{
+.mat-dialog-container {
   padding: 12px 24px 24px;
 }

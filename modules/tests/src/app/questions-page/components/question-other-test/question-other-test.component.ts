@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {TestService} from "../../../service/test.service";
 import {Test} from "../../../models/test.model";
@@ -8,16 +8,18 @@ import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 
+
 @AutoUnsubscribe
 @Component({
-  selector: 'app-question-other-test',
-  templateUrl: './question-other-test.component.html',
-  styleUrls: ['./question-other-test.component.less']
+  selector: "app-question-other-test",
+  templateUrl: "./question-other-test.component.html",
+  styleUrls: ["./question-other-test.component.less"]
 })
 export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements OnInit {
   public tests: Test[];
   public testId: number | string;
   public questions: Question[];
+  public filteredQuestions: Question[];
   public chosenQuestions: { [key: string]: string } = {};
   public request: Question = new Question();
   private unsubscribeStream$: Subject<void> = new Subject<void>();
@@ -32,8 +34,8 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
     this.testService.getTestForLector()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((tests) => {
-      this.tests = tests;
-    })
+        this.tests = tests;
+      });
   }
 
   onNoClick(): void {
@@ -59,7 +61,20 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
     this.testService.getQuestionsFromOtherTest(event.value)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(questions => {
-      this.questions = questions;
-    });
+        questions.forEach((question) => {
+          var sliced = question.Title.slice(0, 80);
+          if (sliced.length < question.Title.length) {
+            sliced += "...";
+          }
+          question.tooltipTitle = sliced;
+        });
+
+        this.questions = questions;
+        this.filteredQuestions = questions;
+      });
+  }
+
+  public filterQuestions(event): void {
+    this.filteredQuestions = this.questions.filter((question) => question.Title.toLowerCase().includes(event.target.value.toLowerCase()));
   }
 }
