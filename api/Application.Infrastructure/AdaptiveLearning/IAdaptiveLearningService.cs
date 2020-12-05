@@ -1,4 +1,5 @@
 ﻿using LMPlatform.Models.AdaptivityLearning;
+using LMPlatform.Models.KnowledgeTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,10 @@ namespace Application.Infrastructure.AdaptiveLearning
 		IEnumerable<PredTestResults> GetPredTestResults(int conceptId, int userId);
 		void SaveProcessedPredTestResult(int conceptId, int userId, IEnumerable<PredTestResults> predTestResults);
 
-		IEnumerable<ConceptThema> GetAllAvaiableThemas(int conceptId, int userId);
+		int GeDynamicTestResult(int testId, int userId);
+		int CreateDynamicTestForUser(int subjectId);
+
+		IEnumerable<ConceptThema> GetAllAvaiableThemas(int subjectId, int userId);
 		void SaveThemaResult(ThemaResults themaSolutions, int themaId, int userId);
 	}
 }

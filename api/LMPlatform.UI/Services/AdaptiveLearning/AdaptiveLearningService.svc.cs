@@ -40,11 +40,11 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public ITestPassingService TestPassingService => testPassingService.Value;
 		public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
 
-		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int complexId, int adaptivityType)
+		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int adaptivityType)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			
-			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(userId, complexId);
+			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(subjectId, userId);
 			if (allAvailableThemas is null || !allAvailableThemas.Any())
 			{
 				return new AdaptivityViewResult
@@ -54,25 +54,10 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					NeedToDoPredTest = true,
 					Code = "500"
 				};
-			}
+			}		
 
-
-			var currentThemaTests = QuestionsManagementService.GetQuestionsByConceptId(1/*GetCurrentThema*/).Select(x => x.TestId)
-				.Distinct();
-
-			int themaResult = 0;
-			foreach (var themsTest in currentThemaTests)
-			{
-				var test = TestsManagementService.GetTest(themsTest);
-				if (test.ForEUMK)
-				{
-					themaResult += TestPassingService
-						.GetStidentResults(subjectId, userId)
-						.FirstOrDefault(x => x.TestId == test.Id)
-						.Points.Value;
-										
-				}
-			}
+			int themaResult = AdaptiveLearningManagementService.GeDynamicTestResult(testId, userId);
+			
 			
 			var currentRes = adaptivityProcessor.GetResultByCurrentThema(1, themaResult, allAvailableThemas);
 
@@ -87,12 +72,12 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			};
 		}
 
-		public void ProcessPredTestResults(int userId, int complexId, int adaptivityType)
+		public void ProcessPredTestResults(int userId, int testId, int adaptivityType)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			
 			var availableThemas = AdaptiveLearningManagementService
-				.GetPredTestResults(complexId, userId)?
+				.GetPredTestResults(testId, userId)?
 				.Select(x => new PredTestResults
 				{
 					ThemaId = x.ThemaId,
@@ -101,10 +86,10 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				});
 			
 			adaptivityProcessor.ProcessPredTestResults(availableThemas);
-			AdaptiveLearningManagementService.SaveProcessedPredTestResult(complexId, userId, availableThemas);
+			AdaptiveLearningManagementService.SaveProcessedPredTestResult(testId, userId, availableThemas);
 		}
 
-		public JsonResult GetQuestionsForThema(int userId, int complexId, int monitoringRes, int adaptivityType)
+		public int GetDynamicTestIdForThema(int userId, int subjectId, int complexId, int monitoringRes, int adaptivityType)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			var allQuestions = QuestionsManagementService
@@ -117,9 +102,11 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				});
 
 			var questionIds =  adaptivityProcessor.PrepareListOfTestQuestions(null, allTestQuestions, monitoringRes, 0, NEEDED_QUSTIONS_COUNT).ToArray();
-			var selectedQuestions = allQuestions.Where(x => questionIds.Contains(x.Id));
 
-			return null;
+			var dynamicTestId = AdaptiveLearningManagementService.CreateDynamicTestForUser(subjectId);
+			QuestionsManagementService.CopyQuestionsToTest(dynamicTestId, questionIds);
+
+			return dynamicTestId;
 		}
 
 		private TestsDifficulties GetTestDifficultyByComplexityLevel(int complexityLevel)
