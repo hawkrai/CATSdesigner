@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { CreateEntity } from 'src/app/models/form/create-entity.model';
-import {Lab, ScheduleProtectionLab} from '../../models/lab.model';
+import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
+import {Lab, ScheduleProtectionLabs } from '../../models/lab.model';
 
 export const loadLabs = createAction(
   '[Labs] Load Labs'
@@ -17,17 +17,17 @@ export const loadLabsSchedule = createAction(
 
 export const laodLabsScheduleSuccess = createAction(
   '[Labs] Load Labs Schedule Success',
-  props<{ scheduleProtectionLabs: ScheduleProtectionLab[] }>()
+  props<{ scheduleProtectionLabs: ScheduleProtectionLabs[] }>()
 );
 
-export const createLab = createAction(
-  '[Labs] Create Lab',
-  props<{ lab: CreateEntity }>()
+export const saveLab = createAction(
+  '[Labs] Save Lab',
+  props<{ lab: CreateLessonEntity }>()
 );
 
 export const deleteLab = createAction(
   '[Labs] Delete Lab',
-  props<{ id: string }>()
+  props<{ id: number }>()
 );
 
 export const updateLabs = createAction(
@@ -37,4 +37,24 @@ export const updateLabs = createAction(
 
 export const resetLabs = createAction(
   '[Labs] Reset Labs'
+);
+
+export const updateOrder = createAction(
+  '[Labs] Update Order',
+  props<{ prevIndex: number, currentIndex: number }>()
+);
+
+export const updateOrderSuccess = createAction(
+  '[Labs] Update Order Success',
+  props<{ prevIndex: number, currentIndex: number }>()
+);
+
+export const createDateVisit = createAction(
+  '[Labs] Create Date Visit',
+  props<{ subGroupId: number, date: string }>()
+);
+
+export const deleteDateVisit = createAction(
+  '[Labs] Delete Date Visit',
+  props<{ id: number }>()
 );

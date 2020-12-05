@@ -1,21 +1,17 @@
 .visit-lectures-component {
 
-  &__header {
-    display: flex;
-
-    button {
-      margin-left: 14px;
-    }
-
-    &-actions {
-      padding: 15px 0;
-      display: flex;
-      height: 36px;
-    }
+  &-actions {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 0 14px;
+    height: 36px;
+    margin-top: 25px;
+    align-items: flex-end;
+    justify-content: flex-start;
   }
 
-
   &__table-lecture-visiting {
+    margin-top: 30px;
     table.mat-table {
       width: 100%;
     }
@@ -46,6 +42,7 @@
     }
 
     td {
+      position: relative;
       border-top: 1px solid rgba(0, 0, 0, .12);
     }
 
@@ -56,8 +53,15 @@
   }
 }
 
-._excel-file {
-  .iconify { 
-    color: rgb(61, 80, 182);
+.comment {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  &-icon {
+    font-size: 12px;
+    &.mat-icon {
+      width: auto;
+      height: auto;
+    }
   }
 }

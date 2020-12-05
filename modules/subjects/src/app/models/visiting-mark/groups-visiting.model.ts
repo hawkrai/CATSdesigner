@@ -1,13 +1,13 @@
-import {Mark} from "./mark.model";
+import {Mark} from '../mark.model';
 
 export class GroupsVisiting {
-  groupId: string;
-  lecturesMarksVisiting: LecturesMarksVisiting[];
+  GroupId: number;
+  LecturesMarksVisiting: LecturesMarksVisiting[];
 }
 
 export class LecturesMarksVisiting {
   Login: string;
-  StudentId: string;
+  StudentId: number;
   StudentName: string;
   Marks: Mark[];
 }

@@ -8,8 +8,8 @@ import {map} from 'rxjs/operators';
 
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
-import * as groupSelectors from '../../store/selectors/groups.selectors';
-import * as groupActions from '../../store/actions/groups.actions';
+import * as groupsSelectors from '../../store/selectors/groups.selectors';
+import * as groupsActions from '../../store/actions/groups.actions';
 import {Group} from '../../models/group.model';
 import {DialogData} from '../../models/dialog-data.model';
 import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
@@ -41,13 +41,13 @@ export class LabsComponent implements OnInit, OnDestroy {
     private store: Store<IAppState>) {
   }
   ngOnDestroy(): void {
-    this.store.dispatch(groupActions.resetGroups());
+    this.store.dispatch(groupsActions.resetGroups());
   }
 
   ngOnInit() {
     this.state$ = combineLatest(
-      this.store.select(groupSelectors.getGroups),
-      this.store.select(groupSelectors.getCurrentGroup),
+      this.store.select(groupsSelectors.getGroups),
+      this.store.select(groupsSelectors.getCurrentGroup),
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(subjectSelectors.getSubjectId)
       ).pipe(map(([groups, group, isTeacher, subjectId]) => ({ groups, group, isTeacher, subjectId })));
@@ -57,9 +57,9 @@ export class LabsComponent implements OnInit, OnDestroy {
 
   loadGroup(): void {
     if (this.detachedGroup) {
-      this.store.dispatch(groupActions.loadOldGroups());
+      this.store.dispatch(groupsActions.loadOldGroups());
     } else {
-      this.store.dispatch(groupActions.loadGroups());
+      this.store.dispatch(groupsActions.loadGroups());
     }
   }
 
@@ -68,15 +68,15 @@ export class LabsComponent implements OnInit, OnDestroy {
     this.loadGroup()
   }
 
-  _selectedGroup(event: MatOptionSelectionChange) {
+  selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
-      this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
+      this.store.dispatch(groupsActions.setCurrentGroupById({ id: event.source.value }));
       this.store.dispatch(labsActions.loadLabsSchedule());
     }
   }
 
   downloadAll(group: Group, subjectId: number) {
-    location.href = 'http://localhost:8080/Subject/GetZipLabs?id=' +  group.groupId + '&subjectId=' + subjectId;
+    location.href = 'http://localhost:8080/Subject/GetZipLabs?id=' +  group.GroupId + '&subjectId=' + subjectId;
   }
 
   getExcelFile(group: Group, subjectId: number): void {
@@ -85,10 +85,10 @@ export class LabsComponent implements OnInit, OnDestroy {
     }
     const url = 'http://localhost:8080/Statistic/';
     if (this.selectedTab === 2) {
-      location.href = url + 'GetVisitLabs?subjectId=' +  subjectId + '&groupId=' + group.groupId +
-        '&subGroupOneId=' + group.subGroupsOne.subGroupId + '&subGroupTwoId=' + group.subGroupsTwo.subGroupId;
+      location.href = url + 'GetVisitLabs?subjectId=' +  subjectId + '&groupId=' + group.GroupId +
+        '&subGroupOneId=' + group.SubGroupsOne.SubGroupId + '&subGroupTwoId=' + group.SubGroupsTwo.SubGroupId;
     } else if (this.selectedTab === 3) {
-      location.href = url + 'GetLabsMarks?subjectId=' +  subjectId + '&groupId=' + group.groupId;
+      location.href = url + 'GetLabsMarks?subjectId=' +  subjectId + '&groupId=' + group.GroupId;
     }
   }
 

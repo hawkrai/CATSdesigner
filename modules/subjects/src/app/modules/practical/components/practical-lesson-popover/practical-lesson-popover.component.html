@@ -1,110 +1,29 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
-<div mat-dialog-content style="max-height: none;" class="practical-lesson-component__popover" #popoverContent>
-  <form class="example-form">
-    <mat-form-field class="example-full-width">
-      <mat-label>Название практического занятия</mat-label>
-      <textarea class="practical-lesson-component__news-text" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
-    </mat-form-field>
-    <mat-form-field class="example-full-width">
-      <mat-label>Краткое название</mat-label>
-      <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
-    </mat-form-field>
-    <div class="example-form-container">
+<ng-container *var="files$ | async as files">
+  <h2 mat-dialog-title>{{data.title}}</h2>
+  <div mat-dialog-content style="max-height: none;" class="practical-lesson-component__popover" #popoverContent>
+    <form class="example-form">
       <mat-form-field class="example-full-width">
-        <mat-label>Начало занятия</mat-label>
-        <input
-        type="text"
-          matInput 
-          [(ngModel)]="data.model.start"
-          name="start"
-          mwlFlatpickr
-          [altInput]="true"
-          [enableTime]="true"
-          dateFormat="Y-m-dTH:i"
-          altFormat="F j, Y H:i"
-          required
-          placeholder="Начало занятия"
-        />
-
-
+        <mat-label>Название практического занятия</mat-label>
+        <textarea class="practical-lesson-component__news-text" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
       </mat-form-field>
       <mat-form-field class="example-full-width">
-        <mat-label>Конец занятия</mat-label>
-        <input
-        type="text"
-          matInput 
-          [(ngModel)]="data.model.end"
-          name="end"
-          mwlFlatpickr
-          [altInput]="true"
-          [enableTime]="true"
-          dateFormat="Y-m-dTH:i"
-          altFormat="F j, Y H:i"
-          required
-          placeholder="Конец занятия"
-        />
-      </mat-form-field>
-    </div>
-    <mat-form-field class="example-full-width">
-      <mat-label>Количество часов(1-99)</mat-label>
-      <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
-    </mat-form-field>
-
-    <div class="example-form-container">
-      <mat-form-field class="example-full-width">
-        <mat-label>Корпус</mat-label>
-        <input [(ngModel)]="data.model.buildingNumber" name="buildingNumber" required type="text" maxlength="3" matInput placeholder="Корпус">
+        <mat-label>Краткое название</mat-label>
+        <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
       </mat-form-field>
       <mat-form-field class="example-full-width">
-        <mat-label>Аудитория</mat-label>
-        <input name="audience" required type="number" min="1" max="1000" matInput placeholder="Аудитория" [(ngModel)]="data.model.audience">
+        <mat-label>Количество часов(1-99)</mat-label>
+        <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
       </mat-form-field>
-    </div>
-    <h4 class="attachment-text mat-typography">Прикрепленный материал</h4>
-    <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="uploadFile($event)" />
-    <button mat-flat-button class="practical-lesson-component__popover-file-button" (click)="csvInput.click()">Добавить файл</button>
-    <div class="mdc-data-table file-table" *ngIf="files.length">
-      <table class="mdc-data-table__table">
-        <tbody>
-        <tr class="mdc-data-table__row" *ngFor="let file of files">
-          <td class="mdc-data-table__cell example-content icon-cell">
-            <i class="material-icons mdc-list-item__graphic"
-               aria-hidden="true"
-               *ngIf="file.Type.toLowerCase() !== 'image'; else image">description</i>
-            <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
-          </td>
-          <td class="mdc-data-table__cell example-content">
-            <a matTooltip="{{file.Name}}" matTooltipPosition="below"
-               href="{{file.IdFile === -1 ? '#' : file.Url}}">
-              {{file.Name}}
-            </a>
-          </td>
-          <td class="mdc-data-table__cell example-content">{{file.Type}}</td>
-          <td class="mdc-data-table__cell example-content">{{(file.Size / 1024).toFixed(2)}} КБ</td>
-          <td class="mdc-data-table__cell" style="color: red" *ngIf="file.IdFile === -1; else attached">
-            Загруженный файл
-          </td>
-          <ng-template #attached>
-            <td class="mdc-data-table__cell" style="color: blue" *ngIf="file.IdFile !== -1">Прикрепленный файл
-            </td>
-          </ng-template>
-          <td class="mdc-data-table__cell" style="padding-left: 0">
-            <button mat-icon-button color="primary" matTooltip="Удалить файл" matTooltipPosition="before" (click)="deleteFile(file)">
-              <mat-icon>clear</mat-icon>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </form>
-</div>
-<div mat-dialog-actions>
-  <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button
-          (click)="onSave(data.model || data.body)"
-          color="primary"
-          [disabled]="!(data.model.theme && data.model.duration)"
-  >
-    {{data.buttonText}}</button>
-</div>
+      <app-file-uploader header="Прикрепленный материал" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
+    <button mat-raised-button
+            (click)="onClose(files, true)"
+            color="primary"
+            [disabled]="!(data.model.theme && data.model.duration)"
+    >
+      {{data.buttonText}}</button>
+  </div>
+</ng-container>

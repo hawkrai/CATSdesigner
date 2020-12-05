@@ -1,12 +1,8 @@
 <div class="visit-date__container">
-  <h1 mat-dialog-title>{{data.title}}</h1>
+  <h2 mat-dialog-title>{{data.title}}</h2>
   <mat-form-field>
     <mat-label>Дата</mat-label>
-    <input matInput
-           [matDatepicker]="picker"
-           [value]="date.value"
-           (dateChange)="setDate($event.value)"
-    >
+    <input matInput #dateInput [matDatepicker]="picker">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
@@ -14,17 +10,17 @@
     <button mat-raised-button
             class="visit-date__action"
             color="primary"
-            [disabled]="!newDate"
-            (click)="createDate()">{{data.buttonText}}</button>
+            [disabled]="!dateInput.value"
+            (click)="onCreateDate(dateInput.value)">{{data.buttonText}}</button>
   </div>
   <p mat-dialog-title class="visit-date__table-title">Выбранные даты</p>
   <div class="mdc-data-table example-container mat-elevation-z8">
     <table class="mdc-data-table__table">
       <tbody class="mdc-data-table__content">
-      <tr class="mdc-data-table__row" *ngFor="let calendar of calendar">
-        <td class="mdc-data-table__cell">{{ calendar.date }}</td>
+       <tr class="mdc-data-table__row" *ngFor="let day of schedule">
+        <td class="mdc-data-table__cell">{{ day.Date }}</td>
         <td class="mdc-data-table__cell visit-date__table-action">
-          <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(calendar)">
+          <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(day)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
@@ -36,3 +32,5 @@
     <button mat-raised-button (click)="onClick()">Закрыть</button>
   </div>
 </div>
+
+<!-- [value]="date.value" -->

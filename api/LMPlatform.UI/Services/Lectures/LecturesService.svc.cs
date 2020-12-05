@@ -30,28 +30,28 @@ namespace LMPlatform.UI.Services.Lectures
 
         public LecturesResult GetLectures(string subjectId)
         {
-            var id = int.Parse(subjectId);
-            var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
-            var model = SubjectManagementService.GetSubject(lecturesQuery).Lectures.Select(e => new LecturesViewData(e)).ToList();
 
-            return new LecturesResult
+            try
             {
-                Lectures = model.OrderBy(e => e.Order).ToList(),
-                Message = "Лекции успешно загружены",
-                Code = "200"
-            };
-            //try
-            //{
+                var id = int.Parse(subjectId);
+                var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
+                var model = SubjectManagementService.GetSubject(lecturesQuery).Lectures.Select(e => new LecturesViewData(e)).ToList();
 
-            //}
-            //catch
-            //{
-            //    return new LecturesResult
-            //    {
-            //        Message = "Произошла ошибка при получении лекций",
-            //        Code = "500"
-            //    };
-            //}
+                return new LecturesResult
+                {
+                    Lectures = model.OrderBy(e => e.Order).ToList(),
+                    Message = "Лекции успешно загружены",
+                    Code = "200"
+                };
+            }
+            catch
+            {
+                return new LecturesResult
+                {
+                    Message = "Произошла ошибка при получении лекций",
+                    Code = "500"
+                };
+            }
         }
 
         public CalendarResult GetCalendar(string subjectId)
@@ -269,7 +269,7 @@ namespace LMPlatform.UI.Services.Lectures
 						{
 							Id = e.MarkId,
 							Mark = e.Mark,
-							LecturesScheduleVisitingId = e.LecuresVisitId,
+							LecturesScheduleVisitingId = e.LecturesVisitId,
 							StudentId = student.StudentId,
                             Comment = e.Comment
 						}).ToList());
@@ -365,5 +365,81 @@ namespace LMPlatform.UI.Services.Lectures
 				};
 			}
 		}
+
+        public LecturesMarkVisitingResult GetLecturesMarkVisitingV2(int subjectId, int groupId)
+        {
+            try
+            {
+                var groups = this.GroupManagementService.GetGroup(groupId);
+
+                var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
+
+                var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
+
+                foreach (var student in groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName))
+                {
+                    var data = new List<MarkViewData>();
+
+                    foreach (var lecturesScheduleVisiting in lecturesVisitingData.OrderBy(e => e.Date))
+                    {
+                        var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
+
+                        if (lecturesVisitMark != null)
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = lecturesVisitMark.Mark,
+                                MarkId = lecturesVisitMark.Id,
+                                Comment = lecturesVisitMark.Comment
+                            });
+                        }
+                        else
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = string.Empty,
+                                MarkId = 0
+                            });
+                        }
+                    }
+
+                    lecturesVisiting.Add(new LecturesMarkVisitingViewData
+                    {
+                        StudentId = student.Id,
+                        StudentName = student.FullName,
+                        Login = student.User.UserName,
+                        Marks = data
+                    });
+                }
+
+                var dataResulet = new List<LecturesGroupsVisitingViewData>
+                {
+                    new LecturesGroupsVisitingViewData
+                    {
+                        GroupId = groupId,
+                        LecturesMarksVisiting = lecturesVisiting
+                    }
+                };
+
+                return new LecturesMarkVisitingResult
+                {
+                    GroupsVisiting = dataResulet,
+                    Message = "",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LecturesMarkVisitingResult()
+                {
+                    Message = ex.Message + "\n" + ex.StackTrace,
+                    Code = "500"
+                };
+            }
+        }
     }
 }

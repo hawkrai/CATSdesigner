@@ -1,9 +1,10 @@
 import { Practical } from '../../models/practical.model';
-export interface IPracticalState {
+
+export interface IPracticalsState {
   practicals: Practical[];
 }
 
-export const initialPracticalsState: IPracticalState = {
+export const initialPracticalsState: IPracticalsState = {
   practicals: []
 }
 
