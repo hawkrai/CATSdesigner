@@ -16,18 +16,14 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 	{
 		[OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetQuestionsForThema")]
-		JsonResult GetQuestionsForThema(int userId, int complexId, int monitoringRes);
+		JsonResult GetQuestionsForThema(int userId, int complexId, int monitoringRes, int adaptivityType);
 
 		[OperationContract]
-		[WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetNextThema?userId={userId}&subjectId={subjectId}&complexId={complexId}")]
-		AdaptivityViewResult GetNextThema(int userId, int subjectId, int complexId, int currentThemaId);
+		[WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetNextThema?userId={userId}&subjectId={subjectId}&complexId={complexId}&adaptivityType={adaptivityType}")]
+		AdaptivityViewResult GetNextThema(int userId, int subjectId, int complexId, int adaptivityType);
 
 		[OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/ProcessPredTestResults")]
-		void ProcessPredTestResults(int userId, int complexId);
-
-		[OperationContract]
-		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveSelectedAdaptivityType")]
-		void SaveSelectedAdaptivityType(int userId, int complexId, int adaptivityType);
+		void ProcessPredTestResults(int userId, int complexId, int adaptivityType);
 	}
 }

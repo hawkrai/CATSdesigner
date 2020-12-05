@@ -132,7 +132,8 @@
     <Compile Include="AccountManagement\AccountManagementService.cs" />
     <Compile Include="AccountManagement\IAccountManagementService.cs" />
     <Compile Include="AccountManagement\SimpleMembershipInitializer.cs" />
-    <Compile Include="AdaptiveLearning\IAdaptiveLearning.cs" />
+    <Compile Include="AdaptiveLearning\AdaptiveLearningService.cs" />
+    <Compile Include="AdaptiveLearning\IAdaptiveLearningService.cs" />
     <Compile Include="ApplicationServiceModule.cs" />
     <Compile Include="BTS\IMatrixManagmentService.cs" />
     <Compile Include="BTS\MatrixManagmentService.cs" />

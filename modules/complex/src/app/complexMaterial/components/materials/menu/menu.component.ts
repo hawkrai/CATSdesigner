@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { MaterialsPopoverComponent } from '../materials-popover/materials-popover.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogData } from '../../../../models/DialogData';
+import { AdaptivityService } from '../../../../service/adaptivity.service';
 
 /**
  * @title Menu with icons
@@ -18,7 +19,8 @@ export class MenuComponent {
   @Input()
   nodeFilePath: string;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,
+    private adaptivityService: AdaptivityService, ) { }
 
   openPDF(): void {
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
@@ -31,26 +33,31 @@ export class MenuComponent {
     });
   };
 
-  openAdaptivityPopup(): void {
-    
-    const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-      width: '800px',
-      data: this.prepareDialogData()
-    });
+  openAdaptivityPopup(adaptivityType: number): void {
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+    this.adaptivityService
+      .getNextThemaRes('1', '2', '4', adaptivityType)
+      .subscribe(themaRes => {
+        const path = '/api/Upload?fileName=' + themaRes.nextMaterialPath;
+        const diaogData: DialogData =
+        {
+          name: `${themaRes.nextThemaId}`,
+          url: path,
+          isAdaptive: true,
+          needToGetInitialTest: themaRes.needToDoPredTest          
+        };
+
+        const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
+          width: '800px',
+          data: diaogData
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+
+      });    
   };
 
-  prepareDialogData(): DialogData {
-    const path = '/api/Upload?fileName=' + this.nodeFilePath;
-    return {
-      name: 'name',
-      url: path,
-      isAdaptive: true,
-      needToGetInitialTest: false,
-      needToChooseAdaptivityType: true
-    }
-  }
+
 }

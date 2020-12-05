@@ -18,8 +18,10 @@ export class AdaptivityService {
   constructor(private http: HttpClient,
     private converterService: ConverterService) { }
 
-  public getNextThemaRes(userId: string, subjectId: string, conceptId: string): Observable<Adaptivity> {
-    return this.http.get(`/Services/AdaptiveLearning/AdaptiveLearningService.svc/GetNextThema?userId=${userId}&subjectId=${subjectId}&complexId=${conceptId}`);
+  public getNextThemaRes(userId: string, subjectId: string, conceptId: string, adaptivity: number): Observable<Adaptivity> {
+    return this.http.get(`/Services/AdaptiveLearning/AdaptiveLearningService.svc/GetNextThema?userId=${userId}&subjectId=${subjectId}&complexId=${conceptId}&adaptivityType=${adaptivity}`).pipe(
+      map(res => this.converterService.nextThemaResConverter(res))
+    );;
   }
 
   public processPredTtest(userId: string, complexId: string) {

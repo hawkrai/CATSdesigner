@@ -3,6 +3,7 @@ import { ComplexGrid } from '../models/ComplexGrid';
 import { ComplexTree, TreeNode } from '../models/ComplexTree';
 import { Group} from '../models/Group';
 import { ConceptMonitoring } from '../models/ConceptMonitoring';
+import { Adaptivity } from '../models/Adaptivity';
 
 @Injectable({
   providedIn: 'root'
@@ -72,5 +73,14 @@ export class ConverterService {
 
   public groupsConverter(groups: any) {
     return groups.map(gr => this.groupConverter(gr))
+  }
+
+  public nextThemaResConverter(themaRes: any) {
+    var nextThemaRes = new Adaptivity();
+    nextThemaRes.nextThemaId = themaRes.NextThemaId;
+    nextThemaRes.nextMaterialPath = themaRes.NextMaterialPath;
+    nextThemaRes.needToDoPredTest = themaRes.NeedToDoPredTest;
+
+    return nextThemaRes;
   }
 }
