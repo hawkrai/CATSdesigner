@@ -14,8 +14,9 @@ export class TestService {
   constructor(private http: HttpClient) {
   }
   
-  getPredTest(subjectId: string): Observable<number> {
-    return this.http.get<number>("/Tests/GetEUMKTestIdForSubject?subjectId=" + subjectId);
+  getPredTest(): Observable<number> {
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+    return this.http.get<number>("/Tests/GetEUMKTestIdForSubject?subjectId=" + subject.id);
   }
 
   getQuestionsByTest(testId: string): Observable<Question[]> {

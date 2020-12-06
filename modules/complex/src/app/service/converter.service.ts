@@ -80,6 +80,9 @@ export class ConverterService {
     nextThemaRes.nextThemaId = themaRes.NextThemaId;
     nextThemaRes.nextMaterialPath = themaRes.NextMaterialPath;
     nextThemaRes.needToDoPredTest = themaRes.NeedToDoPredTest;
+    nextThemaRes.shouldWaitPresettedTime = themaRes.ShouldWaitBeforeTest;
+    nextThemaRes.timeToWait = themaRes.TimeToWait;
+    nextThemaRes.isLearningEnded = themaRes.IsLearningEnded;
 
     return nextThemaRes;
   }

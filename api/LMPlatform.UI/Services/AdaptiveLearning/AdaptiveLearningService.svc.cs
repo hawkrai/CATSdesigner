@@ -40,11 +40,11 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public ITestPassingService TestPassingService => testPassingService.Value;
 		public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
 
-		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int adaptivityType)
+		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			
-			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(subjectId, userId);
+			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(subjectId, adaptivityType, userId);
 			if (allAvailableThemas is null || !allAvailableThemas.Any())
 			{
 				return new AdaptivityViewResult
@@ -59,20 +59,36 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			int themaResult = AdaptiveLearningManagementService.GeDynamicTestResult(testId, userId);
 			
 			
-			var currentRes = adaptivityProcessor.GetResultByCurrentThema(1, themaResult, allAvailableThemas);
+			var currentRes = adaptivityProcessor.GetResultByCurrentThema(currentThemaId, themaResult, allAvailableThemas);
 
-			AdaptiveLearningManagementService.SaveThemaResult(currentRes.ResultByCurrentThema, 1, userId);
+			AdaptiveLearningManagementService.SaveThemaResult(currentRes.ResultByCurrentThema, currentRes.NextStepSolution, currentThemaId, adaptivityType, userId);
+			AdaptiveLearningManagementService.ClearDynamicTestData(testId);
+
+			if (currentRes.NextStepSolution == ThemaSolutions.END_PROCCESS)
+			{
+				return new AdaptivityViewResult
+				{
+					NextThemaId = null,
+					NextMaterialPath = null,
+					NeedToDoPredTest = false,
+					IsLearningEnded = true,
+					Code = "200"
+				};
+			}
+			
 			var nextConcept = ConceptManagementService.GetLiteById(currentRes.NextThemaId.Value);
 			return new AdaptivityViewResult
 			{
 				NextThemaId = currentRes.NextThemaId,
 				NextMaterialPath = GetFilePath(nextConcept),
 				NeedToDoPredTest = false,
+				ShouldWaitBeforeTest = currentRes.NextStepSolution == ThemaSolutions.REPEAT_CURRENT,
+				TimeToWait = 10,
 				Code = "200"
 			};
 		}
 
-		public void ProcessPredTestResults(int userId, int testId, int adaptivityType)
+		public AdaptivityViewResult ProcessPredTestResults(int userId, int testId, int adaptivityType)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			
@@ -86,14 +102,27 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				});
 			
 			adaptivityProcessor.ProcessPredTestResults(availableThemas);
-			AdaptiveLearningManagementService.SaveProcessedPredTestResult(testId, userId, availableThemas);
+			AdaptiveLearningManagementService.SaveProcessedPredTestResult(testId, userId, adaptivityType, availableThemas);
+
+			var first = availableThemas.First();
+			var firstConcept = ConceptManagementService.GetLiteById(first.ThemaId);
+
+			return new AdaptivityViewResult
+			{
+				NextThemaId = first.ThemaId,
+				NextMaterialPath = GetFilePath(firstConcept),
+				NeedToDoPredTest = false,
+				Code = "200"
+			};
 		}
 
 		public int GetDynamicTestIdForThema(int userId, int subjectId, int complexId, int monitoringRes, int adaptivityType)
 		{
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			var allQuestions = QuestionsManagementService
-				.GetQuestionsByConceptId(complexId);
+				.GetQuestionsByConceptId(complexId)
+				.GroupBy(x => x.Title)
+				.Select(x => new { x.First().Id, x.First().ComlexityLevel });// This workaround is necessary because of wrong table behaviour
 				
 			var allTestQuestions = allQuestions.Select(x => new TestQuestion
 				{
@@ -101,12 +130,60 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 					TestQuestionDificulty = GetTestDifficultyByComplexityLevel(x.ComlexityLevel)
 				});
 
-			var questionIds =  adaptivityProcessor.PrepareListOfTestQuestions(null, allTestQuestions, monitoringRes, 0, NEEDED_QUSTIONS_COUNT).ToArray();
+			var prevThemas = AdaptiveLearningManagementService
+				.GetAllAvaiableThemas(subjectId, adaptivityType, userId)
+				.Where(x => x.FinalThemaResult.HasValue)
+				.Select(x => new ThemaResult() 
+				{
+					ThemaId = x.ThemaId,
+					ResultByCurrentThema = x.FinalThemaResult.Value,
+					NextStepSolution = ThemaSolutions.GET_NEXT
+				})
+				.ToList();
 
-			var dynamicTestId = AdaptiveLearningManagementService.CreateDynamicTestForUser(subjectId);
+			var questionIds =  adaptivityProcessor.PrepareListOfTestQuestions(prevThemas, allTestQuestions, monitoringRes, 0, NEEDED_QUSTIONS_COUNT).ToArray();
+
+			var dynamicTestId = AdaptiveLearningManagementService.CreateDynamicTestForUser(subjectId, NEEDED_QUSTIONS_COUNT);
 			QuestionsManagementService.CopyQuestionsToTest(dynamicTestId, questionIds);
 
 			return dynamicTestId;
+		}
+
+		public AdaptivityViewResult GetFirstThema(int userId, int subjectId, int adaptivityType)
+		{
+			var allAvailableThemas = AdaptiveLearningManagementService.GetAllAvaiableThemas(subjectId, adaptivityType, userId);
+			if (allAvailableThemas is null || !allAvailableThemas.Any())
+			{
+				return new AdaptivityViewResult
+				{
+					NextThemaId = null,
+					NextMaterialPath = null,
+					NeedToDoPredTest = true,
+					Code = "500"
+				};
+			}
+			var first = allAvailableThemas.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN);
+			if (first is null)
+			{
+				return new AdaptivityViewResult
+				{
+					NextThemaId = null,
+					NextMaterialPath = null,
+					NeedToDoPredTest = false,
+					IsLearningEnded = true,
+					Code = "200"
+				};
+			}
+
+			var firstConcept = ConceptManagementService.GetLiteById(first.ThemaId);
+
+			return new AdaptivityViewResult
+			{
+				NextThemaId = first.ThemaId,
+				NextMaterialPath = GetFilePath(firstConcept),
+				NeedToDoPredTest = false,
+				Code = "200"
+			};
 		}
 
 		private TestsDifficulties GetTestDifficultyByComplexityLevel(int complexityLevel)

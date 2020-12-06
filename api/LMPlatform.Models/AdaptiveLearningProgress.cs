@@ -8,6 +8,7 @@ namespace LMPlatform.Models
 		public int UserId { get; set; }
 		public int	SubjectId { get; set; }
 		public int	ConceptId { get; set; }
+		public int AdaptivityId { get; set; }
 		public int ThemaSolution { get; set; }
 		public int? FinalThemaResult { get; set; }
 		public DateTime? PassedDate { get; set; }

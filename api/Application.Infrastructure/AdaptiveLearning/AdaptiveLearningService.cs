@@ -13,19 +13,20 @@ namespace Application.Infrastructure.AdaptiveLearning
 {
 	public class AdaptiveLearningService : IAdaptiveLearningService
 	{
-		public IEnumerable<ConceptThema> GetAllAvaiableThemas(int subjectId, int userId)
+		public IEnumerable<ConceptThema> GetAllAvaiableThemas(int subjectId, int adaptivityId, int userId)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				return repositoriesContainer.AdaptiveLearningProgressRepository.GetAll()
-					.Where(x => x.SubjectId == subjectId && x.UserId == userId)
+					.Where(x => x.SubjectId == subjectId && x.UserId == userId && x.AdaptivityId == adaptivityId)
 					.Select(x => new ConceptThema 
 					{
 						ThemaId = x.ConceptId,
-						ThemaResume = (ThemaResume)Enum.ToObject(typeof(ThemaResume), x.ThemaSolution),
-						FinalThemaResult = (ThemaResults)Enum.ToObject(typeof(ThemaResume), x.FinalThemaResult),
+						ThemaResume = (ThemaResume)x.ThemaSolution,
+						FinalThemaResult = (ThemaResults?)x.FinalThemaResult,
 						DateOfPass = x.PassedDate
-					});
+					})
+					.ToList();
 			}
 
 		}
@@ -65,10 +66,11 @@ namespace Application.Infrastructure.AdaptiveLearning
 
 		}
 
-		public void SaveProcessedPredTestResult(int subjectId, int userId, IEnumerable<PredTestResults> predTestResults)
+		public void SaveProcessedPredTestResult(int testId, int userId, int adaptivityId, IEnumerable<PredTestResults> predTestResults)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
+				var subjectId = repositoriesContainer.TestsRepository.GetAll().First(x => x.Id == testId).SubjectId;
 				foreach (var predTestRes in predTestResults)
 				{
 					var adaptiveThemaDescr = new AdaptiveLearningProgress
@@ -76,6 +78,7 @@ namespace Application.Infrastructure.AdaptiveLearning
 						UserId = userId,
 						SubjectId = subjectId,
 						ConceptId = predTestRes.ThemaId,
+						AdaptivityId = adaptivityId,
 						ThemaSolution = (int)predTestRes.ThemaResume,
 						FinalThemaResult = null,
 						PassedDate = predTestRes.ThemaResume == ThemaResume.LEARNED ? DateTime.Today : default(DateTime?)
@@ -88,16 +91,21 @@ namespace Application.Infrastructure.AdaptiveLearning
 		}
 
 		
-		public void SaveThemaResult(ThemaResults themaSolutions, int themaId, int userId)
+		public void SaveThemaResult(ThemaResults themaRes, ThemaSolutions nextStepSolution, int themaId, int adaptivityId, int userId)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var recordToUpdate = repositoriesContainer.AdaptiveLearningProgressRepository.GetAll()
-					.SingleOrDefault(x => x.ConceptId == themaId && x.UserId == userId);
+					.SingleOrDefault(x => x.ConceptId == themaId && x.UserId == userId && x.AdaptivityId == adaptivityId);
 
 				if (recordToUpdate != null)
 				{
-					recordToUpdate.FinalThemaResult = (int)themaSolutions;
+					recordToUpdate.FinalThemaResult = (int)themaRes;
+					if (nextStepSolution != ThemaSolutions.REPEAT_CURRENT)
+					{
+						recordToUpdate.PassedDate = DateTime.Today;
+						recordToUpdate.ThemaSolution = (int)ThemaResume.LEARNED;
+					}
 					
 					repositoriesContainer.AdaptiveLearningProgressRepository.Save(recordToUpdate);
 					repositoriesContainer.ApplyChanges();
@@ -105,7 +113,7 @@ namespace Application.Infrastructure.AdaptiveLearning
 			}
 		}
 
-		public int CreateDynamicTestForUser(int subjectId)
+		public int CreateDynamicTestForUser(int subjectId, int questionsCount)
 		{
 			var test =  new Test
 			{
@@ -114,11 +122,11 @@ namespace Application.Infrastructure.AdaptiveLearning
 				TimeForCompleting = 45,
 				SetTimeForAllTest = false,
 				SubjectId = subjectId,
-				CountOfQuestions = 10,
+				CountOfQuestions = questionsCount,
 				ForSelfStudy = false,
 				ForEUMK = false,
 				BeforeEUMK = false,
-				ForNN =false,
+				ForNN = false,
 				IsNecessary = false
 			};
 
@@ -126,7 +134,7 @@ namespace Application.Infrastructure.AdaptiveLearning
 			{
 				repositoriesContainer.TestsRepository.Save(test);
 				repositoriesContainer.ApplyChanges();
-				return repositoriesContainer.TestsRepository.GetAll().Last().Id;
+				return repositoriesContainer.TestsRepository.GetAll().ToList().Last().Id;
 			}
 		}
 
@@ -135,10 +143,34 @@ namespace Application.Infrastructure.AdaptiveLearning
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				IRepositoryBase<AnswerOnTestQuestion> repository = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>();
-				return repository.GetAll(
+				return 10 * repository.GetAll(
 							new Query<AnswerOnTestQuestion>(
 								testAnswer => testAnswer.TestId == testId && testAnswer.UserId == userId))
 							.Sum(x => x.Points);
+			}
+		}
+
+		public void ClearDynamicTestData(int testId)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				IRepositoryBase<AnswerOnTestQuestion> answerRepository = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>();
+				var answersForDelete = answerRepository.GetAll().Where(x => x.TestId == testId);
+				answerRepository.Delete(answersForDelete);
+
+				IRepositoryBase<TestPassResult> testPassRepository = repositoriesContainer.RepositoryFor<TestPassResult>();
+				var testPassResForDelete = testPassRepository.GetAll().Where(x => x.TestId == testId);
+				testPassRepository.Delete(testPassResForDelete);
+
+				var questionsForDelete = repositoriesContainer.QuestionsRepository.GetAll().Where(x => x.TestId == testId);
+				repositoriesContainer.QuestionsRepository.Delete(questionsForDelete);
+				
+				var tetsQuestPassResForDelete = repositoriesContainer.TestQuestionPassResultsRepository.GetAll().Where(x => x.TestId == testId);
+				repositoriesContainer.TestQuestionPassResultsRepository.Delete(tetsQuestPassResForDelete);
+				
+				var testsForDelete = repositoriesContainer.TestsRepository.GetAll().Where(x => x.Id == testId);
+				repositoriesContainer.TestsRepository.Delete(testsForDelete);
+				
 			}
 		}
 	}
