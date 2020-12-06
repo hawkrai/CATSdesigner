@@ -1,8 +1,8 @@
-import { INewsState, initialNewsState } from './../state/news.state';
+import { INewsState, initialNewsState } from '../state/news.state';
 import { createReducer, on } from '@ngrx/store';
 import * as newsActinos from '../actions/news.actions';
 
-export const newsReducers = createReducer(
+export const newsReducer = createReducer(
   initialNewsState,
   on(newsActinos.loadNewsSuccess, (state, action): INewsState => ({
     ...state,

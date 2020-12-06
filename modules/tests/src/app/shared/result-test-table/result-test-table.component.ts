@@ -8,6 +8,7 @@ import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {TestPassingService} from "../../service/test-passing.service";
 
 
 @AutoUnsubscribe
@@ -52,6 +53,11 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
 
   @Input()
   public group: string;
+
+  @Input()
+  public groupId: string;
+  @Input()
+  public forSelf: boolean = false;
   @Input()
   public name: string;
   public scareThing: any = [];
@@ -63,7 +69,8 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public sendAverageMarks: EventEmitter<any> = new EventEmitter();
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog,
+              private testPassingService: TestPassingService) {
     super();
   }
 
@@ -97,6 +104,11 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     }
   }
 
+  public downloadExcel(): void {
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+    this.testPassingService.downloadExcel(this.groupId, subject.id, this.forSelf).pipe(takeUntil(this.unsubscribeStream$)).subscribe();
+  }
+
   private getAverageMark(): void {
     let mass = [];
     for (let subGroup of this.scareThing) {
@@ -112,7 +124,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
           mass.push(entire);
           pupil.push((sumOfMarks / this.testSize).toFixed(2));
           if (this.size) {
-            pupil.push(pupil[1].test.length === this.size && pupil[1].test.every((test)=>test.percent));
+            pupil.push(pupil[1].test.length === this.size && pupil[1].test.every((test) => test.percent));
           }
         }
       }
@@ -131,5 +143,4 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     const pupilName: string[] = pupil[1].name.split(" ");
     return pupilName[0] + " " + pupilName[1][0] + "." + pupilName[2][0] + ".";
   }
-
 }

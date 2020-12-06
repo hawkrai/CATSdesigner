@@ -4,6 +4,9 @@
          *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
       <div class="result-test-table-subgroup">
         {{"Группа " + group + ", Подгруппа " + (iq+1)}}
+        <mat-icon class="result-test-table-subgroup-load" color="primary" (click)="downloadExcel()"
+                  matTooltipClass="example-tooltip-blue">insert_drive_file
+        </mat-icon>
       </div>
       <div class="result-test-table-table">
         <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">

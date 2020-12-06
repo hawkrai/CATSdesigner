@@ -1,12 +1,10 @@
 import { Store } from '@ngrx/store';
 import { StudentMark } from './../../models/student-mark.model';
-import { ConverterService } from './../converter.service';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Lab} from "../../models/lab.model";
 import {LabsRestService} from './labs-rest.service';
 import * as labSelectors from '../../store/selectors/labs.selectors';
-import * as labsActions from '../../store/actions/labs.actions';
 import { IAppState } from 'src/app/store/state/app.state';
 
 @Injectable({
@@ -16,29 +14,15 @@ import { IAppState } from 'src/app/store/state/app.state';
 export class LabsService {
 
   constructor(
-    private store: Store<IAppState>,
-    private converterService: ConverterService,
-              private rest: LabsRestService) {
-  }
-
-  public getCalendar() {
-    return this.store.select(labSelectors.getLabsCalendar);
+    private rest: LabsRestService) {
   }
 
   public getLabWork(subjectId: number): Observable<Lab[]> {
     return this.rest.getLabWork(subjectId);
   }
 
-  public getMarks(subjectId: number, groupId: string): Observable<StudentMark[]> {
+  public getMarks(subjectId: number, groupId: number): Observable<StudentMark[]> {
     return this.rest.getMarksV2(subjectId, groupId);
-  }
-
-  public createLab(lab: Lab) {
-    return this.rest.createLab(this.converterService.labToCreateEntity(lab));
-  }
-
-  public deleteLab(lab: {id: string, subjectId: number}) {
-    return this.rest.deleteLab(lab);
   }
 
   public setLabsVisitingDate(body) {
@@ -53,10 +37,6 @@ export class LabsService {
     return this.rest.getFilesLab(body);
   }
 
-  public updateLabs(labs: Lab[]): Observable<any> {
-    return this.rest.updateLabs(this.converterService.labsUpdateConverter(labs));
-  }
-
   public deleteUserFile(body: {id: string}): Observable<any> {
     return this.rest.deleteUserFile(body);
   }
@@ -65,7 +45,7 @@ export class LabsService {
     return this.rest.sendUserFile(body);
   }
 
-  public getAllStudentFilesLab(subjectId: number, groupId: string): Observable<any> {
+  public getAllStudentFilesLab(subjectId: number, groupId: number): Observable<any> {
     return this.rest.getAllStudentFilesLab(subjectId, groupId);
   }
 
@@ -77,24 +57,12 @@ export class LabsService {
     return this.rest.cancelReceivedLabFile(body);
   }
 
-  public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
+  public checkPlagiarism(body: {subjectId: number, userFileId: number}): Observable<any> {
     return this.rest.checkPlagiarism(body);
   }
 
-  public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
+  public checkPlagiarismSubjects(body: {subjectId: number, threshold: string, type: string}): Observable<any> {
     return this.rest.checkPlagiarismSubjects(body);
   }
 
-  public createDateVisit(body: {subGroupId: string, date: string}) {
-    this.rest.createDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
-    })
-  }
-
-
-  public deleteDateVisit(body: {id: string}) {
-    this.rest.deleteDateVisit(body).subscribe(res => {
-      res.Code === '200' && this.store.dispatch(labsActions.loadLabsSchedule());
-    })
-  }
 }

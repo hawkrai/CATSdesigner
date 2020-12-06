@@ -2,16 +2,19 @@
 using System.Linq;
 using System.Web.Mvc;
 using Application.Core.Extensions;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
+    [JwtAuth]
     public class ComplexMaterialController : BasicController
     {
         public IConceptManagementService ConceptManagementService =>
@@ -42,7 +45,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult AddRootConcept(string subjectId)
         {
-            var conceptViewModel = new AddOrEditRootConceptViewModel(WebSecurity.CurrentUserId, 0);
+            var conceptViewModel = new AddOrEditRootConceptViewModel(UserContext.CurrentUserId, 0);
             if (int.TryParse(subjectId, out var currentSubjectId))
                 conceptViewModel.SelectedSubjectId = currentSubjectId;
             var dynamicObj = conceptViewModel.AsExpandoObject();
@@ -52,7 +55,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult EditRootConcept(int id)
         {
-            var conceptViewModel = new AddOrEditRootConceptViewModel(WebSecurity.CurrentUserId, id);
+            var conceptViewModel = new AddOrEditRootConceptViewModel(UserContext.CurrentUserId, id);
             var dynamicObj = conceptViewModel.AsExpandoObject();
             dynamicObj.Subjects = conceptViewModel.GetSubjects(conceptViewModel.Author);
             return JsonResponse(dynamicObj);
@@ -60,7 +63,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult AddConcept(int parentId)
         {
-            var conceptViewModel = new AddOrEditConceptViewModel(WebSecurity.CurrentUserId, 0, parentId);
+            var conceptViewModel = new AddOrEditConceptViewModel(UserContext.CurrentUserId, 0, parentId);
             var dynamicObj = conceptViewModel.AsExpandoObject();
             dynamicObj.Subjects = conceptViewModel.GetSubjects(conceptViewModel.Author);
             return JsonResponse(dynamicObj);
@@ -69,7 +72,7 @@ namespace LMPlatform.UI.Controllers
         public ActionResult AddFolderConcept(int parentId)
         {
             var conceptViewModel =
-                new AddOrEditConceptViewModel(WebSecurity.CurrentUserId, 0, parentId)
+                new AddOrEditConceptViewModel(UserContext.CurrentUserId, 0, parentId)
                 {
                     IsGroup = true
                 };
@@ -80,7 +83,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult EditConcept(int id, int parentId)
         {
-            var conceptViewModel = new AddOrEditConceptViewModel(WebSecurity.CurrentUserId, id, parentId);
+            var conceptViewModel = new AddOrEditConceptViewModel(UserContext.CurrentUserId, id, parentId);
             var dynamicObj = conceptViewModel.AsExpandoObject();
             dynamicObj.Subjects = conceptViewModel.GetSubjects(conceptViewModel.Author);
             return JsonResponse(dynamicObj);
@@ -88,7 +91,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult OpenConcept(int id)
         {
-            var conceptViewModel = new AddOrEditConceptViewModel(WebSecurity.CurrentUserId, id);
+            var conceptViewModel = new AddOrEditConceptViewModel(UserContext.CurrentUserId, id);
             var dynamicObj = conceptViewModel.AsExpandoObject();
             dynamicObj.RelativePathForActiveAttachment = conceptViewModel.GetRelativePathForActiveAttachment();
             return JsonResponse(dynamicObj);

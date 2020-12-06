@@ -15,7 +15,4 @@ export class DeletePopoverComponent {
     this.dialogRef.disableClose = true;
   }
 
-  onClick(): void {
-    this.dialogRef.close();
-  }
 }

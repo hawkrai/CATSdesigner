@@ -59,7 +59,7 @@ export class PracticalComponent implements OnInit, OnDestroy {
     this.loadGroup()
   }
 
-  _selectedGroup(event: MatOptionSelectionChange) {
+  selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
       this.store.dispatch(practicalActions.loadPracticals());

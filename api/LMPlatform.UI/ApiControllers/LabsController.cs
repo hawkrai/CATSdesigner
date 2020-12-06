@@ -1,4 +1,6 @@
-﻿namespace LMPlatform.UI.ApiControllers
+﻿using LMPlatform.UI.Attributes;
+
+namespace LMPlatform.UI.ApiControllers
 {
     using System;
     using System.Linq;
@@ -11,6 +13,7 @@
 
     using LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel;
 
+    [JwtAuth]
     public class LabsController : ApiController
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();

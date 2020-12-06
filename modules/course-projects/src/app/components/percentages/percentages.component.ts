@@ -106,7 +106,7 @@ export class PercentagesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result) {
-        this.percentagesService.deleteStage({id}).subscribe(() => {
+        this.percentagesService.deleteStage(id).subscribe(() => {
           this.ngOnInit();
           this.addFlashMessage('Этап успешно удален');
         });

@@ -19,13 +19,12 @@
     </div>
 
     <div mat-dialog-content>
-      <p>Задание к вопросу</p>
+      <p class="question-popup-container-sub">Задание к вопросу</p>
       <ckeditor [(ngModel)]="question.Description"
                 #myckeditor="ngModel"
                 name="myckeditor"
-                required
                 [config]="ckeConfig"
-                debounce="500"
+                debounce="400"
                 (paste)="onPaste($event)"
                 (change)="onChange1($event)">
       </ckeditor>
@@ -80,7 +79,7 @@
           <mat-radio-button class="example-radio-button question-popup-answers-item"
                             *ngFor="let control of charsde, let i = index" [value]="control">
             <input class="question-popup-answers-item-input" matInput [(ngModel)]="chars[control]">
-            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)" color="primary"
                       matTooltipClass="example-tooltip-blue">delete
             </mat-icon>
           </mat-radio-button>
@@ -91,7 +90,7 @@
           <mat-checkbox class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[control][1]"
                         *ngFor="let control of charsde, let i = index">
             <input class="question-popup-answers-item-input" matInput [(ngModel)]="charsNeskolko[control][0]">
-            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+            <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)" color="primary"
                       matTooltipClass="example-tooltip-blue">delete
             </mat-icon>
           </mat-checkbox>
@@ -101,7 +100,7 @@
         <div *ngFor="let control of charsde, let i = index">
           {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
                                  [(ngModel)]="charsWords[control]">
-          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)" color="primary"
                     matTooltipClass="example-tooltip-blue">delete
           </mat-icon>
         </div>
@@ -110,7 +109,7 @@
         <div *ngFor="let control of charsde, let i = index">
           {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
                                  [(ngModel)]="charsSequence[control]">
-          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)"
+          <mat-icon matTooltip="Удалить ответ" (click)="deleteAnswer(control)" color="primary"
                     matTooltipClass="example-tooltip-blue">delete
           </mat-icon>
         </div>
@@ -123,10 +122,10 @@
                [value]="question && question.ComplexityLevel ? question.ComplexityLevel : 1"
                (change)="writeTitle($event, 'ComplexityLevel', true)">
         <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('max')">
-          {{"Сложность максимум может быть 10"}}
+          {{"Сложность вопроса не может быть больше 10"}}
         </mat-error>
         <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('min')">
-          {{"Сложность должно быть больше нуля"}}
+          {{"Сложность вопроса должна быть больше нуля"}}
         </mat-error>
         <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('required')">
           {{"Введите сложность"}}

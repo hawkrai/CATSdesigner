@@ -10,9 +10,11 @@ using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.SearchEngine.SearchMethods;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services.Search
 {
+    [JwtAuth]
     public class SearchService : ISearchService
     {
         private readonly LazyDependency<IStudentManagementService> _studentRepository = new LazyDependency<IStudentManagementService>();

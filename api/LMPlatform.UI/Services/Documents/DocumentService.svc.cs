@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services.Documents
 {
+    [JwtAuth]
     public class DocumentService : IDocumentService
     {
         private readonly LazyDependency<IDocumentManagementService> _documentManagementService = new LazyDependency<IDocumentManagementService>();

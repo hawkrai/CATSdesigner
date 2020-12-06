@@ -1,9 +1,14 @@
 .result-test-table {
 
-  &-subgroup{
+  &-subgroup {
     font-size: 20px;
+    display: flex;
+
+    &-load {
+      cursor: pointer;
+    }
   }
-  &-warning{
+  &-warning {
     margin-left: 15px;
   }
   &-container {
@@ -15,7 +20,7 @@
       margin-top: 10px;
     }
   }
-  &-table{
+  &-table {
     margin-top: 20px;
   }
 
@@ -38,10 +43,10 @@
 .mat-header-cell-average {
   font-size: 17px;
   flex: 0 0 5%;
-  &.all{
-    color: #111b91;
+  &.all {
+    color: #388E3C;
   }
-  &.notAll{
+  &.notAll {
     color: #619cff;
   }
 }

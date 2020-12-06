@@ -1,8 +1,10 @@
-import {AfterViewInit, Component, Inject} from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { Store } from '@ngrx/store';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+
+import { BaseFileManagementComponent } from 'src/app/shared/base-file-management-dialog.component';
 import {DialogData} from '../../../../../models/dialog-data.model';
-import {Attachment} from '../../../../../models/attachment.model';
-import {FileService} from '../../../../../services/file.service';
+import { IAppState } from 'src/app/store/state/app.state';
 
 
 @Component({
@@ -10,67 +12,12 @@ import {FileService} from '../../../../../services/file.service';
   templateUrl: './lab-work-popover.component.html',
   styleUrls: ['./lab-work-popover.component.less']
 })
-export class LabWorkPopoverComponent implements AfterViewInit {
-
-  public files = [];
-
+export class LabWorkPopoverComponent extends BaseFileManagementComponent<LabWorkPopoverComponent> {
   constructor(
-    public dialogRef: MatDialogRef<LabWorkPopoverComponent>,
-    private fileService: FileService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-    this.dialogRef.disableClose = true;
-    this.data.model.shortName = `ЛР${this.data.model.order}`;
-  }
-
-  ngAfterViewInit(): void {
-    let values = '["';
-    this.data.model.attachments.forEach((attachment, index) => {
-      values += attachment.name + '/' + attachment.id + '/' + attachment.pathName + '/' +
-        attachment.fileName;
-      if (index < this.data.model.attachments.length - 1) {
-        values += '","'
-      }
-    });
-
-    values += '"]';
-
-    if (this.data.model.attachments.length) {
-      this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-        .subscribe(files => this.files = files);
-    }
-  }
-
-  onClick(): void {
-    this.dialogRef.close();
-  }
-
-  onSave(): void {
-    this.data.model.attachments = [];
-    if (this.files.length) {
-      this.files.forEach(file => {
-        const attachment: Attachment = {
-          id: '0',
-          name: file['Name'],
-          attachmentType: file['Type'],
-          fileName: file['GuidFileName']
-        };
-        this.data.model.attachments.push(attachment);
-      });
-
-    }
-
-    this.dialogRef.close(this.data.model);
-  }
-
-  uploadFile(event) {
-    this.fileService.uploadFile(event.target.files[0]).subscribe(files => {
-        this.files.push(files[0]);
-      }
-    )
-  }
-
-  deleteFile(file) {
-    this.fileService.deleteFile(file.DeleteUrl)
-      .subscribe(res => console.log(res));
+    dialogRef: MatDialogRef<LabWorkPopoverComponent>,
+    store: Store<IAppState>,
+    @Inject(MAT_DIALOG_DATA) data: DialogData) {
+      super(dialogRef, store, data)
+      this.data.model.shortName = `ЛР${this.data.model.order}`;
   }
 }

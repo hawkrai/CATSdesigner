@@ -15,6 +15,12 @@
   <div class="test-execution-block-question">
     <app-question *ngIf="question" [question]="question" [questionNumber]="questionNumber"
                   (goToNextQuestion)="nextQuestion($event)" [test]="test"></app-question>
+    <mat-progress-spinner
+      *ngIf="!question"
+      class="example-margin"
+      [color]="'primary'"
+      [mode]="'indeterminate'">
+    </mat-progress-spinner>
   </div>
   <div class="test-execution-block-progress" *ngIf="test">
     <div class="test-execution-block-progress-block">

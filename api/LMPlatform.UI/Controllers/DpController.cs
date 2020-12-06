@@ -4,16 +4,19 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.Export;
 using Application.Infrastructure.FilesManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
+    [JwtAuth]
     public class DpController : Controller
     {
         private readonly LazyDependency<IDpManagementService> _dpManagementService =
@@ -29,13 +32,13 @@ namespace LMPlatform.UI.Controllers
         [System.Web.Http.HttpPost]
         public void DisableNews()
         {
-            this.DpManagementService.DisableNews(WebSecurity.CurrentUserId, true);
+            this.DpManagementService.DisableNews(UserContext.CurrentUserId, true);
         }
 
         [System.Web.Http.HttpPost]
         public void EnableNews()
         {
-            this.DpManagementService.DisableNews(WebSecurity.CurrentUserId, false);
+            this.DpManagementService.DisableNews(UserContext.CurrentUserId, false);
         }
 
         public ActionResult GetFileNews(int id)
@@ -55,14 +58,14 @@ namespace LMPlatform.UI.Controllers
             {
                 this.DpManagementService.SaveNews(new DiplomProjectNews
                 {
-                    LecturerId = WebSecurity.CurrentUserId,
+                    LecturerId = UserContext.CurrentUserId,
                     Id = int.Parse(id),
                     Attachments = pathFile,
                     Title = title,
                     Body = body,
                     Disabled = bool.Parse(disabled),
                     EditDate = DateTime.Now
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
                 return new JsonResult
                 {
                     Data = new

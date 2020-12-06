@@ -7,9 +7,11 @@ using System.Web.Http;
 using Application.Infrastructure.Export;
 using LMPlatform.Data.Infrastructure;
 using System.Data.Entity;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CPTaskSheetDownloadController : ApiController
     {
         public HttpResponseMessage Get(int courseProjectId)

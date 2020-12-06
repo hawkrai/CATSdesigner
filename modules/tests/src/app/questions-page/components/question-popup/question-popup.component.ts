@@ -65,9 +65,9 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.loader = true;
     const subject = JSON.parse(localStorage.getItem("currentSubject"));
     this.ckeConfig = {
-      allowedContent: false,
+      allowedContent: true,
       extraPlugins: "divarea",
-      forcePasteAsPlainText: true
+      forcePasteAsPlainText: false
     };
     this.initForm();
     if (this.data.event) {

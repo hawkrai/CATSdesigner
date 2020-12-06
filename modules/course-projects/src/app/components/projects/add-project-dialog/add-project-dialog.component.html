@@ -3,7 +3,7 @@
 <div mat-dialog-content>
   <mat-form-field class="form-field">
     <mat-label>Тема курсового проекта</mat-label>
-    <input matInput [formControl]="nameControl" [(ngModel)]="data.name">
+    <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
     <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
   </mat-form-field>
   <mat-label style="font-size: 12px">Группы:</mat-label>

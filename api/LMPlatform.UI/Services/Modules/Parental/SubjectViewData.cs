@@ -17,6 +17,7 @@ namespace LMPlatform.UI.Services.Modules.Parental
             Name = subject.Name;
             ShortName = subject.ShortName;
             IsNeededCopyToBts = subject.IsNeededCopyToBts;
+            Color = subject.Color;
         }
 
         [DataMember]
@@ -30,5 +31,8 @@ namespace LMPlatform.UI.Services.Modules.Parental
 
         [DataMember]
         public bool IsNeededCopyToBts { get; set; }
+
+        [DataMember]
+        public string Color { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.SubjectManagement;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.News;
 
 namespace LMPlatform.UI.Services.News
@@ -12,6 +13,7 @@ namespace LMPlatform.UI.Services.News
     using Newtonsoft.Json;
     using System.Collections.Generic;
 
+    [JwtAuth]
     public class NewsService : INewsService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();

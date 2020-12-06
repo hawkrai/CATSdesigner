@@ -30,7 +30,6 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   constructor(
               private store: Store<IAppState>,
-              private router: Router,
               public dialog: MatDialog) { }
   ngOnDestroy(): void {
     this.store.dispatch(subjectActions.resetSubjects());
@@ -81,14 +80,6 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
-  }
-
-  setSubject(subject: Subject): void {
-    if (subject && subject.SubjectId) {
-      this.store.dispatch(subjectActions.setSubjectId({ id: subject.SubjectId }));
-      localStorage.setItem('currentSubject', JSON.stringify(subject));
-      this.router.navigate(['/news']);
-    }
   }
 
   navigateToSubject(subjectId: number): void {
