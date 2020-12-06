@@ -3,6 +3,7 @@ using Application.Infrastructure.AdaptiveLearning;
 using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
+using Application.Infrastructure.WatchingTimeManagement;
 using LMPlatform.AdaptiveLearningCore;
 using LMPlatform.AdaptiveLearningCore.Models;
 using LMPlatform.AdaptiveLearningCore.Shared;
@@ -30,6 +31,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		private readonly LazyDependency<ITestsManagementService> testsManagementService = new LazyDependency<ITestsManagementService>();
 		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
 		private readonly LazyDependency<IConceptManagementService> _conceptManagementService = new LazyDependency<IConceptManagementService>(); 
+		private readonly LazyDependency<IWatchingTimeService> _watchingTimeService = new LazyDependency<IWatchingTimeService>();
 		private readonly LazyDependency<IFilesManagementService> _filesManagementService =
 			 new LazyDependency<IFilesManagementService>();
 
@@ -39,6 +41,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public ITestsManagementService TestsManagementService => testsManagementService.Value;
 		public ITestPassingService TestPassingService => testPassingService.Value;
 		public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
+		public IWatchingTimeService WatchingTimeService => _watchingTimeService.Value;
 
 		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType)
 		{
@@ -76,14 +79,14 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				};
 			}
 			
-			var nextConcept = ConceptManagementService.GetLiteById(currentRes.NextThemaId.Value);
+			
 			return new AdaptivityViewResult
 			{
 				NextThemaId = currentRes.NextThemaId,
-				NextMaterialPath = GetFilePath(nextConcept),
+				NextMaterialPath = GetNextThemaPath(currentRes.NextThemaId.Value, out int timeToWait),
 				NeedToDoPredTest = false,
 				ShouldWaitBeforeTest = currentRes.NextStepSolution == ThemaSolutions.REPEAT_CURRENT,
-				TimeToWait = 10,
+				TimeToWait = timeToWait,
 				Code = "200"
 			};
 		}
@@ -110,7 +113,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			return new AdaptivityViewResult
 			{
 				NextThemaId = first.ThemaId,
-				NextMaterialPath = GetFilePath(firstConcept),
+				NextMaterialPath = GetNextThemaPath(first.ThemaId, out int timeToWait),
 				NeedToDoPredTest = false,
 				Code = "200"
 			};
@@ -175,12 +178,12 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				};
 			}
 
-			var firstConcept = ConceptManagementService.GetLiteById(first.ThemaId);
-
 			return new AdaptivityViewResult
 			{
 				NextThemaId = first.ThemaId,
-				NextMaterialPath = GetFilePath(firstConcept),
+				NextMaterialPath = GetNextThemaPath(first.ThemaId, out int timeToWait),
+				ShouldWaitBeforeTest = (ThemaSolutions)first.ThemaResume == ThemaSolutions.REPEAT_CURRENT,
+				TimeToWait = timeToWait,
 				NeedToDoPredTest = false,
 				Code = "200"
 			};
@@ -198,13 +201,26 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			return new AdaptiveLearningProcessor(adaptivityType);
 		}
 
-		private string GetFilePath(LMPlatform.Models.Concept concept)
+		private string GetFilePath(string container)
 		{
-			var attach = FilesManagementService.GetAttachments(concept.Container).FirstOrDefault();
+			var attach = FilesManagementService.GetAttachments(container).FirstOrDefault();
 			if (attach == null) return string.Empty;
 			return  $"{attach.PathName}//{ attach.FileName}";
 		}
-
 		
+		private List<string> GetNextThemaPath(int themaId, out int generalTime)
+		{
+			var concept = ConceptManagementService.GetLiteById(themaId);
+
+			if (concept.IsGroup)
+			{
+				var tree = ConceptManagementService.GetElementsByParentId(themaId);
+				generalTime = tree.Sum(x => WatchingTimeService.GetEstimatedTime(x.Container));
+				return  tree.Select(x => GetFilePath(x.Container)).ToList();
+			}
+			generalTime = WatchingTimeService.GetEstimatedTime(concept.Container);
+			return new List<string> { GetFilePath(concept.Container) };
+		}
+
 	}
 }

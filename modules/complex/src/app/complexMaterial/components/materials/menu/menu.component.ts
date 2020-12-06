@@ -38,7 +38,7 @@ export class MenuComponent {
     this.adaptivityService
       .getFirstThema(adaptivityType)
       .subscribe(themaRes => {
-        const path = '/api/Upload?fileName=' + themaRes.nextMaterialPath;
+        const path = '/api/Upload?fileName=' + themaRes.nextMaterialPaths[0];
         const diaogData: DialogData =
         {
           name: `${themaRes.nextThemaId}`,

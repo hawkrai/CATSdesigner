@@ -42,7 +42,6 @@ export class AdaptivityService {
   }
 
   public getFirstThema(adaptivityType: number): Observable<Adaptivity> {
-    debugger;
     const user = JSON.parse(localStorage.getItem("currentUser"));
     const subject = JSON.parse(localStorage.getItem("currentSubject"));
 

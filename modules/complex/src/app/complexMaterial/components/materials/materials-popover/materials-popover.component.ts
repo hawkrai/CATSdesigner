@@ -18,6 +18,8 @@ export class MaterialsPopoverComponent{
   public files = [];
   page: number = 1;
   path: string;
+  currentPathIndex: number;
+  materialPathes: string[];
 
   themaId: string;
   adaptivityType: number;
@@ -37,6 +39,8 @@ export class MaterialsPopoverComponent{
   testId: string;
   isPredTest: boolean;
 
+  nextButtonVisible: boolean;
+  prevButtonVisible: boolean;
   toTestButtonVisible: boolean;
   toTestButtonEnabled: boolean; 
 
@@ -62,6 +66,8 @@ export class MaterialsPopoverComponent{
 
   initFieldsByAdaptivity(adaptivity: Adaptivity) {
     this.themaId = adaptivity.nextThemaId;
+    this.currentPathIndex = 0;
+    this.materialPathes = adaptivity.nextMaterialPaths;
     this.needToGetInitialTest = adaptivity.needToDoPredTest;
     this.shouldWaitPresettedTime = adaptivity.shouldWaitPresettedTime;
     this.isEndLearning = adaptivity.isLearningEnded;
@@ -69,6 +75,7 @@ export class MaterialsPopoverComponent{
     this.showMaterial = !(this.needToGetInitialTest || this.isTest || this.isEndLearning);
 
     this.toTestButtonVisible = this.showMaterial;
+    this.checkMaterialsContainerForButtonsVisibility();
 
     if (this.shouldWaitPresettedTime) {
       this.showTimer = true;
@@ -93,7 +100,7 @@ export class MaterialsPopoverComponent{
 
   processTestAndGetNext() {
     this.adaptivityService.getNextThemaRes(this.testId, this.themaId, this.adaptivityType).subscribe(res => {
-      this.path = '/api/Upload?fileName=' + res.nextMaterialPath;
+      this.path = '/api/Upload?fileName=' + res.nextMaterialPaths[0];
       this.isTest = false;
       this.studentSeconds = 0;
       this.initFieldsByAdaptivity(res);
@@ -102,7 +109,7 @@ export class MaterialsPopoverComponent{
 
   processAndSavePredTest(): void {
     this.adaptivityService.processPredTtest(this.testId, this.adaptivityType).subscribe(res => {
-      this.path = '/api/Upload?fileName=' + res.nextMaterialPath;
+      this.path = '/api/Upload?fileName=' + res.nextMaterialPaths[0];
       this.isTest = false;
       this.studentSeconds = 0;
       this.initFieldsByAdaptivity(res);
@@ -118,6 +125,8 @@ export class MaterialsPopoverComponent{
 
       this.showMaterial = false;
       this.toTestButtonVisible = false;
+      this.prevButtonVisible = false;
+      this.nextButtonVisible = false;
       this.needToGetInitialTest = false;
       this.shouldWaitPresettedTime = false;
     });
@@ -131,9 +140,29 @@ export class MaterialsPopoverComponent{
 
       this.showMaterial = false;
       this.toTestButtonVisible = false;
+      this.prevButtonVisible = false;
+      this.nextButtonVisible = false;
       this.needToGetInitialTest = false;
       this.shouldWaitPresettedTime = false;
     });
+  }
+
+  goToPrevMaterial() {
+    --this.currentPathIndex;
+    this.path = '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex];
+    this.checkMaterialsContainerForButtonsVisibility()
+  }
+
+  goToNextMaterial() {
+    ++this.currentPathIndex;
+    this.path = '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex];
+    this.checkMaterialsContainerForButtonsVisibility()
+  }
+
+  checkMaterialsContainerForButtonsVisibility() {
+    this.prevButtonVisible = this.currentPathIndex != 0;
+    this.nextButtonVisible = this.currentPathIndex < this.materialPathes.length - 1;
+    this.toTestButtonVisible = !this.nextButtonVisible;
   }
 
   countDown() {
