@@ -193,7 +193,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result) {
-        this.visitStatsService.deleteDate({id: consultation.Id}).subscribe(() => {
+        this.visitStatsService.deleteDate(consultation.Id).subscribe(() => {
           this.ngOnInit();
           this.addFlashMessage('Дата успешно удалена');
         });

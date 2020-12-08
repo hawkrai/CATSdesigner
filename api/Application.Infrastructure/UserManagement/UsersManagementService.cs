@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web.Helpers;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models.DP;
 using WebMatrix.WebData;
@@ -171,7 +172,7 @@ namespace Application.Infrastructure.UserManagement
         {
             get
             {
-                var userName = WebSecurity.CurrentUserName;
+                var userName = UserContext.CurrentUserName;
 
                 return GetUser(userName);
             }

@@ -783,10 +783,9 @@ namespace Application.Infrastructure.SubjectManagement
 				.Include(s => s.SubjectNewses)
 				.Include(s => s.Lectures));
 
-			return subject.Labs.Select(x => x.Attachments)
-				.Concat(subject.Lectures.Select(x => x.Attachments))
-				.Concat(subject.Practicals.Select(x => x.Attachments))
-				.Concat(subject.SubjectNewses.Select(x => x.Attachments));
+			return subject.Lectures.Select(x => x.Attachments)
+				.Concat(subject.Labs.Select(x => x.Attachments))
+				.Concat(subject.Practicals.Select(x => x.Attachments));
 
 		}
 

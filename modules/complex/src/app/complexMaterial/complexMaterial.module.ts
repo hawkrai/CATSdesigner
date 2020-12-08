@@ -9,6 +9,8 @@ import { MaterialComponent } from './components/materials/materials.component';
 import { ComplexMaterialComponent } from './complexMaterial.component';
 import { MenuComponent } from './components/materials/menu/menu.component';
 import { AppRoutingModule } from '../app-routing.module';
+import { TestExecutionComponent } from './components/materials/adaptiveLearningTests/adaptive-learning-test.component';
+import { QuestionComponent } from './components/materials/adaptiveLearningTests/components/question/question.component';
 
 @NgModule({
     declarations: [
@@ -16,6 +18,8 @@ import { AppRoutingModule } from '../app-routing.module';
       ComplexMaterialComponent,
       MaterialsPopoverComponent,
       MonitoringPopoverComponent,
+      TestExecutionComponent,
+      QuestionComponent,
       MenuComponent
     ],
     imports: [

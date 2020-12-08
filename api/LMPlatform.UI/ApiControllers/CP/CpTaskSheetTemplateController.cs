@@ -2,12 +2,15 @@
 using System.Web.Http.ModelBinding;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using LMPlatform.Models.CP;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CpTaskSheetTemplateController : ApiController
     {
         public CourseProjectTaskSheetTemplate Get(int templateId)
@@ -22,7 +25,7 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public void Post([FromBody] CourseProjectTaskSheetTemplate template)
         {
-            template.LecturerId = WebSecurity.CurrentUserId;
+            template.LecturerId = UserContext.CurrentUserId;
             CpManagementService.SaveTaskSheetTemplate(template);
         }
 

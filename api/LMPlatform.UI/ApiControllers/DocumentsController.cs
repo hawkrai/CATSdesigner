@@ -9,9 +9,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers
 {
+    [JwtAuth]
     public class DocumentController : ApiController
     {
         private readonly LazyDependency<IDocumentManagementService> _documentManagementService = new LazyDependency<IDocumentManagementService>();

@@ -7,6 +7,8 @@ namespace Application.Infrastructure.FilesManagement
     {
         void DeleteFileAttachment(Attachment attachment);
 
+        void DeleteFileAttachment(string filePath, string fileName);
+
         string GetFileDisplayName(string guid);
 
         void SaveFiles(IEnumerable<Attachment> attachment, string path = "");

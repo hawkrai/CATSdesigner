@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace Application.Infrastructure.AdaptiveLearning
 {
-	public interface IAdaptiveLearning
+	public interface IAdaptiveLearningService
 	{
-		AdaptivityType? GetAdaptivityType(int conceptId, int userId);
-		void SaveSelectedAdaptivityType(AdaptivityType selectedType, int conceptId, int userId);	
-		
 		IEnumerable<PredTestResults> GetPredTestResults(int conceptId, int userId);
 		void SaveProcessedPredTestResult(int conceptId, int userId, IEnumerable<PredTestResults> predTestResults);
 

@@ -9,9 +9,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CourseProjectSubjectController : ApiController
     {
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]

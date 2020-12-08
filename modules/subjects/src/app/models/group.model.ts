@@ -1,21 +1,21 @@
 export class Group {
-  countUnconfirmedStudents: number;
-  groupId: string;
-  groupName: string;
-  lecturesMarkVisiting: string;
-  scheduleProtectionPracticals: [];
-  students: [];
-  subGroupsOne: SubGroup;
-  subGroupsTwo: SubGroup;
-  subGroupsThird: SubGroup;
+  CountUnconfirmedStudents: number;
+  GroupId: number;
+  GroupName: string;
+  LecturesMarkVisiting: string;
+  ScheduleProtectionPracticals: [];
+  Students: [];
+  SubGroupsOne: SubGroup;
+  SubGroupsTwo: SubGroup;
+  SubGroupsThird: SubGroup;
 }
 
 export class SubGroup {
-  groupId: string;
-  labs: [];
-  name: string;
-  scheduleProtectionLabs: [];
-  scheduleProtectionLabsRecomendMark: string;
-  students: [];
-  subGroupId: number;
+  GroupId: string;
+  Labs: [];
+  Name: string;
+  ScheduleProtectionLabs: [];
+  ScheduleProtectionLabsRecomendMark: string;
+  Students: [];
+  SubGroupId: number;
 }

@@ -53,7 +53,7 @@ export class SubjectsNavComponent implements OnInit {
     });
   }
   setupLocalInfo(subject: Subject): void {
-    this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name });  
+    this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name, color: subject.Color });  
   }
 
   changeSubject(id: number): void {   

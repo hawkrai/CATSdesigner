@@ -13,9 +13,21 @@
       <span class="mdc-tab__ripple"></span>
     </button>
   </div>
-  <div class="lectures-component__body">
+  <div class="lectures-component-body">
+    <div class="lectures-component-controls" *ngIf="selectedTab !== 0">
+      <mat-form-field>
+        <mat-select [value]="state.groups ? state.groups[0].GroupId : 0">
+          <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)" [value]="group.GroupId">
+            {{group.GroupName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="_excel-file" (click)="getExcelFile()">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
+    </div>
     <app-lectures-list *ngIf="selectedTab === 0" [subjectId]="state.subjectId"  [isTeacher]="state.isTeacher"></app-lectures-list>
-    <app-visit-lectures *ngIf="selectedTab === 1" [subjectId]="state.subjectId" [isTeacher]="state.isTeacher"> </app-visit-lectures>
+    <app-visit-lectures *ngIf="selectedTab === 1" [subjectId]="state.subjectId" [isTeacher]="state.isTeacher" [groupId]="state.groupId"> </app-visit-lectures>
   </div>
 </div>
 

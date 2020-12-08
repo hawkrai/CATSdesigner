@@ -17,6 +17,7 @@ import {ResultPipe} from './components/results/result.pipe/result.pipe';
 import {MarkPropertyPipe} from './components/results/mark-property.pipe/mark-property.pipe';
 import {VisitPipe} from './components/results/visit.pipe/visit.pipe';
 import {CheckPlagiarismStudentComponent} from './components/job-protection/check-plagiarism-student/check-plagiarism-student.component';
+import { VisitDateLabsPopoverComponent } from './components/protection-schedule/visit-date-labs-popover/visit-date-labs-popover.component';
 
 
 @NgModule({
@@ -33,13 +34,15 @@ import {CheckPlagiarismStudentComponent} from './components/job-protection/check
     CheckPlagiarismStudentComponent,
     ResultPipe,
     MarkPropertyPipe,
-    VisitPipe
+    VisitPipe,
+    VisitDateLabsPopoverComponent
   ],
   entryComponents: [
     LabWorkPopoverComponent,
     LabsMarkPopoverComponent,
     AddLabPopoverComponent,
-    CheckPlagiarismStudentComponent
+    CheckPlagiarismStudentComponent,
+    VisitDateLabsPopoverComponent
   ],
   imports: [
     CommonModule,

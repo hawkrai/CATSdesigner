@@ -1,11 +1,11 @@
-import {Lab, ScheduleProtectionLab} from '../../models/lab.model';
+import { Lab, ScheduleProtectionLabs } from '../../models/lab.model';
 
-export interface LabsState {
+export interface ILabsState {
   labs: Lab[];
-  schedule: ScheduleProtectionLab[];
+  schedule: ScheduleProtectionLabs[];
 }
 
-export const initialLabsState: LabsState = {
+export const initialLabsState: ILabsState = {
   labs: [],
   schedule: []
 };

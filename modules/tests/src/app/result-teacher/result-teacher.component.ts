@@ -86,11 +86,13 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
         this.results = results[0].Results;
         this.results.forEach((result: Result) => {
           result.groupName = groupName.display;
+          result.groupId = groupName.value;
         });
         this.resultsOriginal.push(results[0].Results);
         this.resultsOriginal.forEach((results: Result[]) => {
           results.forEach((result: Result) => {
             result.groupName = groupName.display;
+            result.groupId = groupName.value;
           });
         });
         /*console.log("decompose 1");
@@ -154,6 +156,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
               if (!result.groupName) {
                 const groupName: AutocompleteModel = this.groupsList.find((group: AutocompleteModel) => Number(group.value) === results.GroupId);
                 result.groupName = groupName.display;
+                result.groupId = groupName.value;
                 console.log("result.groupName = groupName.display");
               }
             });
@@ -251,12 +254,14 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
         }
       );
       const groupName = results && results.length && results[0].groupName;
+      const groupId = results && results.length && results[0].groupId;
       if (!this.knowledgeControlTestsMass.some(test => test.group === groupName)) {
-        this.knowledgeControlTestsMass.push({res: Object.assign({}, this.knowledgeControlTests), group: groupName});
-        this.selfControlTestsMass.push({res: Object.assign({}, this.selfControlTests), group: groupName});
-        this.nNTestsMass.push({res: Object.assign({}, this.nNTests), group: groupName});
-        this.beforeEUMKTestsMass.push({res: Object.assign({}, this.beforeEUMKTests), group: groupName});
-        this.forEUMKTestsMass.push({res: Object.assign({}, this.forEUMKTests), group: groupName});
+        this.knowledgeControlTestsMass.push({res: Object.assign({}, this.knowledgeControlTests), group: groupName, groupId});
+        this.selfControlTestsMass.push({res: Object.assign({}, this.selfControlTests), group: groupName, groupId});
+        this.nNTestsMass.push({res: Object.assign({}, this.nNTests), group: groupName, groupId});
+        this.beforeEUMKTestsMass.push({res: Object.assign({}, this.beforeEUMKTests), group: groupName, groupId});
+        this.forEUMKTestsMass.push({res: Object.assign({}, this.forEUMKTests), group: groupName, groupId});
+        this.initArrays();
       }
     }
   }
