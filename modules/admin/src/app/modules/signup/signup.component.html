@@ -22,7 +22,7 @@
 
                     <div class="fields">
                         <mat-form-field>
-                            <input type="text" matInput placeholder="Имя пользо вателя" formControlName="Username" maxlength="30">
+                            <input type="text" matInput placeholder="Имя пользователя" formControlName="Username" maxlength="30">
                             <mat-error *ngIf="hasError('Username', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('Username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
                             <mat-error *ngIf="hasError('Username', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
@@ -34,7 +34,7 @@
                             <mat-error *ngIf="hasError('Password', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
                             <mat-error *ngIf="hasError('Password', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="this.isControlInvalid('Password')">Используйте только латинские буквы (хотя бы одну маленькую и большую), знак подчеркивания и хотя бы одну цифру.</mat-error>
+                            <mat-error *ngIf="this.isControlInvalid('Password') && !hasError('Password', 'minlength') && !hasError('Password', 'required')">Используйте только латинские буквы (хотя бы одну маленькую и большую), знак подчеркивания и хотя бы одну цифру.</mat-error>
                         </mat-form-field>
                         <mat-form-field>
                             <input matInput type="password" placeholder="Подтверждение пароля" formControlName="ConfirmPassword" maxlength="30">
@@ -43,14 +43,14 @@
                         <mat-form-field>
                             <input matInput placeholder="Фамилия" formControlName="Surname" maxlength="30">
                             <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
-                            <mat-error *ngIf="hasError('Surname', 'minlength')">Вы ввели меньше 1 символа</mat-error>
+                            <mat-error *ngIf="hasError('Surname', 'minlength')">Вы ввели меньше 3 символов</mat-error>
                             <mat-error *ngIf="hasError('Surname', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
                             <mat-error *ngIf="hasError('Surname', 'pattern')">Не используйте пробелы</mat-error>
                         </mat-form-field>
                         <mat-form-field>
                             <input matInput placeholder="Имя" formControlName="Name" maxlength="30">
                             <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
-                            <mat-error *ngIf="hasError('Name', 'minlength')">Вы ввели меньше 1 символа</mat-error>
+                            <mat-error *ngIf="hasError('Name', 'minlength')">Вы ввели меньше 3 символов</mat-error>
                             <mat-error *ngIf="hasError('Name', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
                             <mat-error *ngIf="hasError('Name', 'pattern')">Не используйте пробелы</mat-error>
                         </mat-form-field>
