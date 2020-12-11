@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
+import { Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modulecommunicationservice: ModuleCommunicationService, private router: Router) { }
 
   ngOnInit(): void {
+    this.modulecommunicationservice.receiveMessage1(window, this.router);
   }
 
 }
