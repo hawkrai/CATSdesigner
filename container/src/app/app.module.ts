@@ -18,6 +18,8 @@ import { AdminComponent } from './admin/admin.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 import { RegisterComponent } from './register/register.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { AboutComponent } from './about/about.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
     AdminComponent,
     ProgressControlComponent,
     RegisterComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
@@ -38,8 +41,8 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatetialModule,
-    CoreModule
-    
+    CoreModule,
+    MatButtonModule
   ],
   providers: [
     LayoutService
@@ -47,3 +50,5 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
