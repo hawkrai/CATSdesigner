@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using LMPlatform.UI.Services.Modules.Practicals;
@@ -14,6 +16,7 @@ using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Services.Practicals
 {
+    [JwtAuth]
     public class PracticalService : IPracticalService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -44,7 +47,7 @@ namespace LMPlatform.UI.Services.Practicals
 
                 return new PracticalsResult
                 {
-                    Practicals = model,
+                    Practicals = model.OrderBy(x => x.Order).ToList(),
                     Message = "Практические занятия успешно загружены",
                     Code = "200"
                 };
@@ -73,7 +76,7 @@ namespace LMPlatform.UI.Services.Practicals
                     ShortName = shortName,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
                 return new ResultViewData
                 {
                     Message = "Практическое занятие успешно сохранено",
@@ -235,6 +238,34 @@ namespace LMPlatform.UI.Services.Practicals
                 return new ResultViewData
                 {
                     Message = "Произошла ошибка при удалении даты",
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData UpdatePracticals(List<UpdateLab> practicals)
+        {
+            try
+            {
+                foreach (var practical in practicals)
+                {
+                    var response = Save(practical.SubjectId, practical.Id, practical.Theme, practical.Duration, practical.Order, practical.ShortName, practical.PathFile, practical.Attachments);
+                    if (response.Code == "500")
+                    {
+                        throw new Exception(response.Message);
+                    }
+                }
+                return new ResultViewData
+                {
+                    Message = "Практические занятия успешно обновлены",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при обновлении практических занятий." + ex.Message,
                     Code = "500"
                 };
             }

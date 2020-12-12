@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
+using Application.Core.Helpers;
 using LMPlatform.Models;
 using Microsoft.AspNet.SignalR;
 using LMPlatform.UI;
@@ -27,7 +28,7 @@ namespace LMPlatform.UI
         public void Connect(string userName, string userRole)
         {
             var id = Context.ConnectionId;
-            userName = WebSecurity.CurrentUserName;
+            userName = UserContext.CurrentUserName;
             //if (Roles.IsUserInRole(userName, "admin")) userRole = "admin";
             //else if (Roles.IsUserInRole(userName, "lector")) userRole = "lector";
             //else userRole = "student";

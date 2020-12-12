@@ -1,30 +1,29 @@
-import {Action} from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import {Group} from '../../models/group.model';
 
+export const loadGroups = createAction(
+  '[Groups] Load Groups'
+);
 
-export enum EGroupsActions {
-  LOAD_GROUPS = '[Groups] Load Groups',
-  SET_GROUPS = '[Groups] Set Groups',
-  SET_CURRENT_GROUP = '[Labs] Set current Group'
-}
+export const loadGroupsSuccess = createAction(
+  '[Groups] Load Groups Success',
+  props<{ groups: Group[] }>()
+);
 
-export class LoadGroups implements Action {
-  public readonly type = EGroupsActions.LOAD_GROUPS;
-}
+export const setCurrentGroup = createAction(
+  '[Groups] Set Current Group',
+  props<{ group: Group }>()
+);
 
-export class SetGroups implements Action {
-  public readonly type = EGroupsActions.SET_GROUPS;
+export const setCurrentGroupById = createAction(
+  '[Groups] Set Curret Group By Id',
+  props<{ id: number }>()
+);
 
-  constructor(public payload: Group[]) {}
-}
+export const loadOldGroups = createAction(
+  '[Groups] Load Old Groups'
+);
 
-export class SetCurrentGroup implements Action{
-  public readonly type = EGroupsActions.SET_CURRENT_GROUP;
-
-  constructor(public payload: Group) {}
-}
-
-export type GroupsActions =
-  LoadGroups
-  | SetGroups
-  | SetCurrentGroup;
+export const resetGroups = createAction(
+  '[Groups] Reset Groups'
+);

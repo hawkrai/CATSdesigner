@@ -1,66 +1,17 @@
-<mat-sidenav-container class="app-sidenav-subject" *ngIf="modules$ | async as modules; else load"  autosize="true">
+
+
+<mat-sidenav-container class="app-sidenav-subject" *ngIf="modules$ | async as modules; else load" autosize="true">
     <mat-sidenav opened mode="side" class="app-sidenav-menu-subject">
-        <mat-nav-list>
+        <mat-nav-list style="padding-top: 0;">
             <a mat-list-item 
             *ngFor="let module of modules" 
             [ngClass]="{active: clickedItem === getModuleItem(module.Type)}" 
             (click)="navigateToModule(module.Type)">
-                <div mat-line>
-                    <mat-icon class="white-icon">{{getModuleIcon(module.Type)}}</mat-icon>
+                <div mat-line style="display: flex; justify-content: center;">
+                    <img [src]="getModuleIcon(module.Type)" alt="Icon" class="icon">
                 </div>                
                 <div mat-line>{{module.Name}}</div>
             </a> 
-            <!-- <a mat-list-item [ngClass]="{active: clickedItem === 'news'}" (click)="openModule('news', 'subject', 'news')">
-                <div mat-line>
-                    <mat-icon class="white-icon">subject</mat-icon>
-                </div>                
-                <div mat-line>Новости</div> 
-            </a>
-            <a mat-list-item [ngClass]="{active: clickedItem === 'lectures'}" (click)="openModule('lectures', 'subject', 'lectures')">
-                <div mat-line>
-                    <mat-icon class="white-icon">subject</mat-icon>
-                </div>                
-                <div mat-line>Лекции</div> 
-            </a> 
-            <a mat-list-item [ngClass]="{active: clickedItem === 'practical'}" (click)="openModule('practical', 'subject', 'practical')">
-                <div mat-line>
-                    <mat-icon class="white-icon">subject</mat-icon>
-                </div>                
-                <div mat-line>Практические</div>
-                <div mat-line>работы</div> 
-            </a>
-            <a mat-list-item [ngClass]="{active: clickedItem === 'labs'}" (click)="openModule('labs', 'subject', 'labs')">
-                <div mat-line>
-                    <mat-icon class="white-icon">subject</mat-icon>
-                </div>                
-                <div mat-line>Лабораторные</div>
-                <div mat-line>работы</div> 
-            </a>
-            <a mat-list-item [ngClass]="{active: clickedItem === 'testsModule'}" (click)="openModule('page', 'testsModule', 'testsModule')"> 
-                <div mat-line>
-                    <mat-icon class="white-icon">assessment</mat-icon>
-                </div>                
-                <div mat-line>Тесты</div>
-            </a>
-            <a mat-list-item [ngClass]="{active: clickedItem === 'course'}" (click)="openModule('', 'course', 'course')"> 
-                <div mat-line>
-                    <mat-icon class="white-icon">school</mat-icon>
-                </div>                
-                <div mat-line>КП</div>
-            </a> 
-            <a mat-list-item [ngClass]="{active: clickedItem === 'complex'}" (click)="openModule('', 'complex', 'complex')"> 
-                <div mat-line>
-                    <mat-icon class="white-icon">topic</mat-icon>
-                </div>                
-                <div mat-line>УЭМК</div>
-            </a>           -->
-            <a mat-list-item [ngClass]="{active: clickedItem === 'libBook'}" (click)="openModule('', 'libBook', 'libBook')"> 
-                <div mat-line>
-                    <mat-icon class="white-icon">library_books</mat-icon>
-                </div>                
-                <div mat-line>Интерактивный учебник</div>
-            </a>
-            <mat-divider></mat-divider>
             <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 
                 <div mat-line>
                     <mat-icon class="white-icon">settings</mat-icon>

@@ -1,7 +1,24 @@
 .lectures-component {
-  padding: 0 15px;
+  &-controls {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 0 14px;
+  }
+}
 
-  .mdc-tab-bar {
-    display: flex;
+.mdc-tab-bar {
+  display: flex;
+
+}
+
+.mdc-tab {
+  text-transform: none;
+}
+
+._excel-file {
+  .iconify { 
+    color: rgb(61, 80, 182);
   }
 }

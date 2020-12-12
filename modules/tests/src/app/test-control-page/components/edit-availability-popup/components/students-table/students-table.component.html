@@ -28,11 +28,11 @@
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
           <mat-icon (click)="changeAvailability(element.Id, !element.Unlocked)" *ngIf="!element.Unlocked"
-                    matTooltip="Доступность теста"
+                    matTooltip="Доступность теста" color="primary"
                     matTooltipClass="example-tooltip-blue">lock
           </mat-icon>
           <mat-icon (click)="changeAvailability(element.Id, !element.Unlocked)" *ngIf="element.Unlocked"
-                    matTooltip="Доступность теста"
+                    matTooltip="Доступность теста" color="primary"
                     matTooltipClass="example-tooltip-blue">lock_open
           </mat-icon>
         </mat-cell>

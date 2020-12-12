@@ -36,13 +36,14 @@
       {{"Тесты для контроля знаний"}}
     </div>
     <div *ngFor="let test of knowledgeControlTestsMass">
-      <div class="result-teacher-group">{{test.group}}</div>
       <div
         *ngIf="test.res &&
             (test.res[0] || test.res[1] || test.res[2]) &&
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
         <app-result-test-table [size]="size" [loading]="loading" [tests]="test.res"
-                               [name]="'knowledgeControlTests'"></app-result-test-table>
+                               [name]="'knowledgeControlTests'"
+                               [groupId]="test.groupId"
+                               [group]="test.group"></app-result-test-table>
       </div>
     </div>
   </div>
@@ -56,6 +57,9 @@
             (test.res[0] || test.res[1] || test.res[2]) &&
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
         <app-result-test-table [loading]="loading" [tests]="test.res"
+                               [group]="test.group"
+                               [groupId]="test.groupId"
+                               [forSelf]="true"
                                [name]="'selfControlTests'"></app-result-test-table>
       </div>
     </div>
@@ -70,6 +74,8 @@
             (test.res[0] || test.res[1] || test.res[2]) &&
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
         <app-result-test-table [loading]="loading" [tests]="test.res"
+                               [group]="test.group"
+                               [groupId]="test.groupId"
                                [name]="'beforeEUMKTests'"></app-result-test-table>
       </div>
     </div>
@@ -84,6 +90,8 @@
             (test.res[0] || test.res[1] || test.res[2]) &&
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
         <app-result-test-table [loading]="loading" [tests]="test.res"
+                               [group]="test.group"
+                               [groupId]="test.groupId"
                                [name]="'forEUMKTests'"></app-result-test-table>
       </div>
     </div>
@@ -97,7 +105,9 @@
         *ngIf="test.res &&
             (test.res[0] || test.res[1] || test.res[2]) &&
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
-        <app-result-test-table [loading]="loading" [tests]="test.res" [name]="'nNTests'"></app-result-test-table>
+        <app-result-test-table [loading]="loading"
+                               [groupId]="test.groupId"
+                               [group]="test.group" [tests]="test.res" [name]="'nNTests'"></app-result-test-table>
       </div>
     </div>
   </div>

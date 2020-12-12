@@ -3,13 +3,17 @@ using System.Linq;
 using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.SubjectManagement;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.News;
 
 namespace LMPlatform.UI.Services.News
 {
     using Models;
     using Modules;
+    using Newtonsoft.Json;
+    using System.Collections.Generic;
 
+    [JwtAuth]
     public class NewsService : INewsService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -21,9 +25,8 @@ namespace LMPlatform.UI.Services.News
             try
             {
 	            var id = int.Parse(subjectId);
-	            var query = new Query<Subject>(e => e.Id == id)
-		            .Include(e => e.SubjectNewses)
-                    .Include(e => e.SubjectNewses.Select(sn => sn.Attachments));
+                var query = new Query<Subject>(e => e.Id == id)
+                    .Include(e => e.SubjectNewses);
                 var model = SubjectManagementService.GetSubject(query).SubjectNewses
 	                .OrderByDescending(e => e.EditDate)
 	                .Select(e => new NewsViewData(e))
@@ -90,7 +93,7 @@ namespace LMPlatform.UI.Services.News
 			}
 	    }
 
-	    public ResultViewData Save(int subjectId, int id, string title, string body, bool disabled, bool isOldDate, Attachment[] attachments)
+        public ResultViewData Save(int subjectId, int id, string title, string body, bool disabled, bool isOldDate, string pathFile, string attachments)
         {
             try
             {
@@ -98,28 +101,27 @@ namespace LMPlatform.UI.Services.News
                 var news = SubjectManagementService.GetNews(id, subjectId);
 
                 if (id != 0 && isOldDate || id != 0 && disabled)
-	            {
-		            date = news.EditDate;
-	            }
-				else if (id != 0 && !disabled)
-	            {
-		            if (news.Disabled)
-		            {
-			            date = DateTime.Now;
-		            }
-	            }
-
-                var model = new SubjectNews
                 {
-                    Id = id,
+                    date = news.EditDate;
+                }
+                else if (id != 0 && !disabled)
+                {
+                    if (news.Disabled)
+                    {
+                        date = DateTime.Now;
+                    }
+                }
+                var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
+                SubjectManagementService.SaveNews(new SubjectNews
+                {
                     SubjectId = subjectId,
                     Body = body,
                     EditDate = date,
                     Title = title,
-					Disabled = disabled,
-                    Attachments = attachments
-                };
-                SubjectManagementService.SaveNews(model);
+                    Disabled = disabled,
+                    Attachments = pathFile,
+                    Id = id
+                }, attachmentsModel);
                 return new ResultViewData
                 {
                     Message = "Новость успешно сохранена",
@@ -140,12 +142,7 @@ namespace LMPlatform.UI.Services.News
         {
             try
             {
-                var model = new SubjectNews
-                {
-                    Id = id,
-                    SubjectId = subjectId,
-                };
-                SubjectManagementService.DeleteNews(model);
+                SubjectManagementService.DeleteNews(id, subjectId);
                 return new ResultViewData
                 {
                     Message = "Новость успешно удалена",

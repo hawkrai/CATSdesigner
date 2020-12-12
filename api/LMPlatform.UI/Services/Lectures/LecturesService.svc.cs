@@ -9,27 +9,35 @@ using System.Globalization;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
 using Application.Core;
+using Application.Core.Helpers;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services.Lectures
 {
+    using Application.Infrastructure.FilesManagement;
     using Models;
     using Modules;
 
+    [JwtAuth]
     public class LecturesService : ILecturesService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
+        private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
 
         public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
+        public IFilesManagementService FilesManagementService => filesManagementService.Value;
+
         public LecturesResult GetLectures(string subjectId)
         {
+
             try
             {
-	            var id = int.Parse(subjectId);
-	            var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
+                var id = int.Parse(subjectId);
+                var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
                 var model = SubjectManagementService.GetSubject(lecturesQuery).Lectures.Select(e => new LecturesViewData(e)).ToList();
 
                 return new LecturesResult
@@ -79,6 +87,51 @@ namespace LMPlatform.UI.Services.Lectures
             }
         }
 
+        public ResultViewData UpdateLecturesOrder(List<UpdateOrder> objs)
+        {
+            try
+            {
+                foreach(var obj in objs)
+                {
+                    SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
+                }
+                return new ResultViewData
+                {
+                    Message = "Лекции успешно обновлены",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при обновлении лекций." + ex.Message,
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData UpdateLectureOrder(UpdateOrder obj)
+        {
+            try
+            {
+                SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
+                return new ResultViewData
+                {
+                    Message = "Лекция успешно обновлена",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при обновлении лекции." + ex.Message,
+                    Code = "500"
+                };
+            }
+        }
+
         public ResultViewData Save(int subjectId, int id, string theme, int duration, int order, string pathFile, string attachments)
         {
             try
@@ -92,7 +145,7 @@ namespace LMPlatform.UI.Services.Lectures
                     Order = order,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
 
                 return new ResultViewData
                 {
@@ -219,7 +272,7 @@ namespace LMPlatform.UI.Services.Lectures
 						{
 							Id = e.MarkId,
 							Mark = e.Mark,
-							LecturesScheduleVisitingId = e.LecuresVisitId,
+							LecturesScheduleVisitingId = e.LecturesVisitId,
 							StudentId = student.StudentId,
                             Comment = e.Comment
 						}).ToList());
@@ -315,5 +368,81 @@ namespace LMPlatform.UI.Services.Lectures
 				};
 			}
 		}
+
+        public LecturesMarkVisitingResult GetLecturesMarkVisitingV2(int subjectId, int groupId)
+        {
+            try
+            {
+                var groups = this.GroupManagementService.GetGroup(groupId);
+
+                var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
+
+                var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
+
+                foreach (var student in groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName))
+                {
+                    var data = new List<MarkViewData>();
+
+                    foreach (var lecturesScheduleVisiting in lecturesVisitingData.OrderBy(e => e.Date))
+                    {
+                        var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
+
+                        if (lecturesVisitMark != null)
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = lecturesVisitMark.Mark,
+                                MarkId = lecturesVisitMark.Id,
+                                Comment = lecturesVisitMark.Comment
+                            });
+                        }
+                        else
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = string.Empty,
+                                MarkId = 0
+                            });
+                        }
+                    }
+
+                    lecturesVisiting.Add(new LecturesMarkVisitingViewData
+                    {
+                        StudentId = student.Id,
+                        StudentName = student.FullName,
+                        Login = student.User.UserName,
+                        Marks = data
+                    });
+                }
+
+                var dataResulet = new List<LecturesGroupsVisitingViewData>
+                {
+                    new LecturesGroupsVisitingViewData
+                    {
+                        GroupId = groupId,
+                        LecturesMarksVisiting = lecturesVisiting
+                    }
+                };
+
+                return new LecturesMarkVisitingResult
+                {
+                    GroupsVisiting = dataResulet,
+                    Message = "",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LecturesMarkVisitingResult()
+                {
+                    Message = ex.Message + "\n" + ex.StackTrace,
+                    Code = "500"
+                };
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ import { StatsComponent } from './control/stats/stats.component';
 import { AdminGenerateComponent } from './modules/adminPanel/admin-generate/admin-generate.component';
 import { GroupNotFoundComponent } from './control/group-not-found/group-not-found.component';
 import {ProfileComponent} from './modules/adminPanel/profile/profile.component';
+import {ChangePasswordComponent} from './modules/change-password/change-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'admin', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'resetPassword/student/:studentId', component: ResetThePasswordComponent },
   { path: 'resetPassword/lector/:lectorId', component: ResetThePasswordComponent },
   { path: 'register', component: SignupComponent },
+  { path: 'forgot', component: ChangePasswordComponent },
   { path: 'profile/:login', component: ProfileComponent },
   {
     path: 'admin', component: AdminGenerateComponent, children: [

@@ -23,9 +23,9 @@ namespace Application.Infrastructure.SubjectManagement
 
         Subject SaveSubject(Subject subject);
 
-        SubjectNews SaveNews(SubjectNews news);
+        SubjectNews SaveNews(SubjectNews news, IList<Attachment> attachments);
 
-        void DeleteNews(SubjectNews news);
+        void DeleteNews(int id, int subjectId);
 
         void DeleteLection(Lectures lectures);
 
@@ -52,6 +52,12 @@ namespace Application.Infrastructure.SubjectManagement
         Lectures GetLectures(int id);
 
         Lectures SaveLectures(Lectures lectures, IList<Attachment> attachments, int userId);
+
+        Lectures UpdateLectureOrder(int id, int order);
+
+        Labs UpdateLabOrder(int id, int order);
+
+        Practical UpdatePracticalOrder(int id, int order);
 
         Labs SaveLabs(Labs labs, IList<Attachment> attachments, int userId);
 
@@ -88,8 +94,10 @@ namespace Application.Infrastructure.SubjectManagement
         List<string> GetLecturesAttachments(int subjectId);
 
         List<string> GetLabsAttachments(int subjectId);
-
         List<string> GetPracticalsAttachments(int subjectId);
+        List<string> GetNewsAttachments(int subjectId);
+
+        IEnumerable<string> GetSubjectAttachments(int subjectId);
 
         void DeleteSubject(int id);
 
@@ -125,6 +133,7 @@ namespace Application.Infrastructure.SubjectManagement
 
         IList<SubGroup> GetSubGroupsV3(int subjectId, int groupId);
 
+        IList<SubGroup> GetSubGroupsV4(int subjectId, int groupId);
         List<Labs> GetLabsV2(int subjectId);
 
 	    IList<SubGroup> GetSubGroupsV2WithScheduleProtectionLabs(int subjectId, int groupId);

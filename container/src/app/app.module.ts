@@ -20,6 +20,8 @@ import { RegisterComponent } from './register/register.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { AboutComponent } from './about/about.component';
 import { MatButtonModule } from '@angular/material/button';
+import { ResetComponent } from './reset/reset.component';
+
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { MatButtonModule } from '@angular/material/button';
     ProgressControlComponent,
     RegisterComponent,
     ConfirmationComponent,
-    AboutComponent
+    AboutComponent,
+    ResetComponent
   ],
   imports: [
     BrowserModule,

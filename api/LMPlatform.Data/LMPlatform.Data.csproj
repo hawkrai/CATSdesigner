@@ -123,6 +123,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AdaptiveLearningProgressRepository.cs" />
     <Compile Include="Repositories\AnswerOnTestQuestionRepository.cs" />
     <Compile Include="Repositories\BugLogsRepository.cs" />
     <Compile Include="Repositories\BugsRepository.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Repositories\MaterialsRepository.cs" />
     <Compile Include="Repositories\MessageRepository.cs" />
     <Compile Include="Repositories\ModulesRepository.cs" />
+    <Compile Include="Repositories\NewsRepository.cs" />
     <Compile Include="Repositories\ProjectCommentsRepository.cs" />
     <Compile Include="Repositories\PracticalRepository.cs" />
     <Compile Include="Repositories\ProjectInitializer .cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Repositories\ProjectsRepository.cs" />
     <Compile Include="Repositories\ProjectUsersRepository.cs" />
     <Compile Include="Repositories\QuestionsRepository.cs" />
+    <Compile Include="Repositories\RepositoryContracts\IAdaptiveLearningProgressRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IAttachmentRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IBugLogsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IBugsRepository.cs" />
@@ -158,6 +161,7 @@
     <Compile Include="Repositories\RepositoryContracts\IMessageRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IModulesRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\ILecturerRepository.cs" />
+    <Compile Include="Repositories\RepositoryContracts\INewsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IProjectCommentsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IPracticalRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IProjectMatrixRequirementsRepository.cs" />

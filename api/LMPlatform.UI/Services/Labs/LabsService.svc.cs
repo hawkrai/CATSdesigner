@@ -21,6 +21,7 @@ using Application.Infrastructure.KnowledgeTestsManagement;
 using System.Globalization;
 using System.Configuration;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.StudentManagement;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
@@ -144,7 +145,7 @@ namespace LMPlatform.UI.Services.Labs
                     ShortName = shortName,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
                 
                 return new ResultViewData
                 {
@@ -271,11 +272,12 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-        public ResultViewData SaveStudentLabsMark(int studentId, int labId, int lecturerId, string mark, string comment, string date, int id, List<StudentsViewData> students)
+
+		public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id)
         {
             try
             {
-				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, lecturerId, mark, comment, date, id));
+				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id));
 
                 return new ResultViewData
                 {
@@ -409,12 +411,12 @@ namespace LMPlatform.UI.Services.Labs
 		{
 			try
 			{
-				var group = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
-					.Include(e => e.Students.Select(x => x.StudentLabMarks))
-					.Include(e => e.Students.Select(x => x.ScheduleProtectionLabMarks))
-					.Include(e => e.Students.Select(x => x.User))).ToList()[0];
+                var group = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
+                    .Include(e => e.Students.Select(x => x.StudentLabMarks))
+                    .Include(e => e.Students.Select(x => x.ScheduleProtectionLabMarks))
+                    .Include(e => e.Students.Select(x => x.User))).ToList()[0];
 
-				IList<SubGroup> subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
+                IList<SubGroup> subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
 
 				IList<SubGroup> subGroupsWithSchedule = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, group.Id).ToList();
 
@@ -423,6 +425,7 @@ namespace LMPlatform.UI.Services.Labs
 				var students = new List<StudentsViewData>();
 
                 var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
+
 
                 foreach (var student in group.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.LastName))
 				{
@@ -472,6 +475,50 @@ namespace LMPlatform.UI.Services.Labs
 					Code = "500"
 				};
 			}
+		}
+
+		public StudentsMarksResult GetMarksV3(int subjectId, int groupId)
+        {
+
+			var subject = SubjectManagementService.GetSubject(
+				new Query<Subject>(x => x.Id == subjectId)
+				.Include(x => x.Labs)
+				.Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.ScheduleProtectionLabs)))
+				.Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.SubjectStudents)))
+				.Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.ScheduleProtectionLabMarks)))
+				.Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.StudentLabMarks))));
+
+			var marks = new List<StudentMark>();
+
+			var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
+
+			var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
+	
+			foreach (var student in group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName))
+			{
+				var subGroup = group.SubGroups.FirstOrDefault(x => x.SubjectStudents.Any(x => x.StudentId == student.Id));
+
+				var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionLabs: subGroup.ScheduleProtectionLabs, labs: subject.Labs);
+
+				marks.Add(new StudentMark
+				{
+					FullName = student.FullName,
+					SubGroup = subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : subGroup.Name == "third" ? 3 : 4,
+					StudentId = student.Id,
+					LabsMarkTotal = studentViewData.LabsMarkTotal,
+					TestMark = studentViewData.TestMark,
+					LabVisitingMark = studentViewData.LabVisitingMark,
+					Marks = studentViewData.StudentLabMarks,
+					AllTestsPassed = studentViewData.AllTestsPassed
+				}) ;
+			}
+
+			return new StudentsMarksResult
+			{
+				Students = marks,
+				Message = "",
+				Code = "200"
+			};
 		}
 
 		public StudentsMarksResult GetFilesV2(int subjectId, int groupId, bool isCp)
@@ -527,8 +574,9 @@ namespace LMPlatform.UI.Services.Labs
 
 		public LabsResult GetLabsV2(int subjectId, int groupId)
 		{
-			try
-			{
+	
+            try
+            {
 				var labs = this.SubjectManagementService.GetLabsV2(subjectId).OrderBy(e => e.Order);
 
 				var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
@@ -700,15 +748,15 @@ namespace LMPlatform.UI.Services.Labs
 					Code = "200"
 				};
 			}
-			catch
-			{
-				return new LabsResult
-				{
-					Message = "Произошла ошибка при получении лабораторых работ",
-					Code = "500"
-				};
-			}
-		}
+            catch
+            {
+                return new LabsResult
+                {
+                    Message = "Произошла ошибка при получении лабораторых работ",
+                    Code = "500"
+                };
+            }
+        }
 
 		public ResultViewData ReceivedLabFile(int userFileId)
 		{
@@ -992,5 +1040,33 @@ namespace LMPlatform.UI.Services.Labs
 			HttpContext.Current.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.1
 			HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
 		}
-	}
+
+        public ResultViewData UpdateLabs(List<UpdateLab> labs)
+        {
+            try
+            {
+				foreach (var lab in labs)
+				{
+					var response = Save(lab.SubjectId, lab.Id, lab.Theme, lab.Duration, lab.Order, lab.ShortName, lab.PathFile, lab.Attachments);
+					if (response.Code == "500")
+                    {
+						throw new Exception("Не удалось обновить лабораторные работы");
+                    }
+				}
+				return new ResultViewData
+				{
+					Code = "200",
+					Message = "Лабораторные работы успешно сохранены"
+				};
+            }
+			catch (Exception ex)
+            {
+				return new ResultViewData
+				{
+					Code = "500",
+					Message = ex.Message
+				};
+            }
+        }
+    }
 }

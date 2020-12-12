@@ -14,10 +14,12 @@ using Application.Core.Exceptions;
 using Application.Core.UI;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.FilesManagement;
+using LMPlatform.UI.Attributes;
 using Newtonsoft.Json;
 
 namespace LMPlatform.UI.ApiControllers
 {
+    [JwtAuth]
     public class UploadController : ApiController
 	{
 		private readonly LazyDependency<IFilesManagementService> _filesManagementService = new LazyDependency<IFilesManagementService>();
@@ -32,17 +34,18 @@ namespace LMPlatform.UI.ApiControllers
 
 		#region UploadController Members
 
-		[System.Web.Http.HttpDelete]
-		public string DeleteFiles()
+		[System.Web.Http.HttpPost]
+		public HttpStatusCodeResult DeleteFiles(string filename)
 		{
-		    var context = HttpContext.Current;
-            var file = _storageRootTemp + "/" + context.Request["filename"];
-            if (File.Exists(file))
-		    {
-                File.Delete(file);    
-		    }
-
-			return HttpStatusCode.OK.ToString();
+			try
+            {
+				var split = filename.Split(new string[] { "//" }, StringSplitOptions.None);
+				FilesManagementService.DeleteFileAttachment(split[0], split[1]);
+				return new HttpStatusCodeResult(HttpStatusCode.OK);
+			} catch (Exception ex)
+            {
+				return new HttpStatusCodeResult(HttpStatusCode.BadRequest, ex.Message);
+            }
 		}
 
 		[System.Web.Http.HttpGet]
@@ -121,12 +124,16 @@ namespace LMPlatform.UI.ApiControllers
 		private IEnumerable<AttachedFile> _GetUploadedFiles(string filesPath, string deleteValues)
 		{
 			var values = JsonConvert.DeserializeObject<List<string>>(filesPath);
-			var files =
-				values.Select(value => value.Split(new[] { '/' }))
-					.Select(
-						split =>
-							new AttachedFile(split[0], split[3], new FileInfo(_storageRoot + split[2] + "//" + split[3]), Convert.ToInt32(split[1]), deleteValues))
-					.ToList();
+			var files = new List<AttachedFile>();
+			foreach (var split in values.Select(value => value.Split(new[] { '/' })))
+            {
+				var filePath = _storageRoot + split[2] + "//" + split[3];
+				if (File.Exists(filePath))
+                {
+					var file = new AttachedFile(split[0], split[3], new FileInfo(filePath), Convert.ToInt32(split[1]), deleteValues);
+					files.Add(file);
+                }
+            }
 
 			return files;
 		}

@@ -1,37 +1,41 @@
+import { LabMark } from './../../../../../models/mark/lab-mark.model';
 import {Pipe, PipeTransform} from '@angular/core';
-import {Lab, ScheduleProtectionLab} from '../../../../../models/lab.model';
+
+import { Lab, ScheduleProtectionLabs } from '../../../../../models/lab.model';
+import { StudentMark } from './../../../../../models/student-mark.model';
+
 
 @Pipe({
   name: 'markProperty'
 })
 export class MarkPropertyPipe implements PipeTransform {
-  transform(value: any, ...args: [string, { labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[] }]): any {
+  transform(value: StudentMark, labId: number, labs: Lab[], schedule: ScheduleProtectionLabs[]): { mark: LabMark, recommendedMark: string } {
     const markProperty = {mark: null, recommendedMark: null};
-    const mark = value.Marks.find(res => res.LabId.toString() === args[0]);
+    const mark = value.Marks.find(mark => mark.LabId === labId);
     if (mark && mark.Mark) {
       markProperty.mark = mark;
     } else {
-      for (let i = 0; i < args[1].scheduleProtectionLabs.length; i++) {
-        const calendar = args[1].scheduleProtectionLabs[i];
-        const oldDateArr = calendar.date.split('.');
+      for (let i = 0; i < schedule.length; i++) {
+        const calendar = schedule[i];
+        const oldDateArr = calendar.Date.split('.');
         const oldDate = new Date(oldDateArr[1] + '.' + oldDateArr[0] + '.' + oldDateArr[2]);
-        if (oldDate.valueOf() === new Date().valueOf()) {
-          const lab = args[1].labs.find(lab => lab.labId.toString() === args[0]);
-          const scheduleProtectionLab = lab.scheduleProtectionLabsRecomend.find(res =>
-            res.scheduleProtectionId.toString() === calendar.id.toString()
+        if (oldDate === new Date()) {
+          const lab = labs.find(lab => lab.LabId === labId);
+          const scheduleProtectionLab = lab.ScheduleProtectionLabsRecomend.find(res =>
+            res.ScheduleProtectionId === calendar.ScheduleProtectionLabId
           );
 
           if (scheduleProtectionLab) {
-            markProperty.recommendedMark = scheduleProtectionLab.mark;
+            markProperty.recommendedMark = scheduleProtectionLab.Mark;
           }
         } else if (oldDate > new Date()) {
-          const lab = args[1].labs.find(lab => lab.labId.toString() === args[0]);
-          const scheduleProtectionLab = lab.scheduleProtectionLabsRecomend.find(res =>
-            res.scheduleProtectionId.toString() === calendar.id.toString()
+          const lab = labs.find(lab => lab.LabId === labId);
+          const scheduleProtectionLab = lab.ScheduleProtectionLabsRecomend.find(res =>
+            res.ScheduleProtectionId === calendar.ScheduleProtectionLabId
           );
 
           if (scheduleProtectionLab) {
-            markProperty.recommendedMark = scheduleProtectionLab.mark;
+            markProperty.recommendedMark = scheduleProtectionLab.Mark;
           }
           break;
         } else {

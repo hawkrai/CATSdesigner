@@ -1,3 +1,4 @@
+import { SharedModule } from './../../shared/shared.module';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SubjectNewsComponent} from './subject-news.component';
@@ -12,7 +13,8 @@ import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
     CommonModule,
     MatModule,
     FormsModule,
-    CKEditorModule
+    CKEditorModule,
+    SharedModule
   ],
   entryComponents: [
     NewsPopoverComponent

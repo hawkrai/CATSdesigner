@@ -10,6 +10,7 @@ import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import { CoreGroup } from 'src/app/models/core-group.model';
+import { Template } from 'src/app/models/template.model';
 
 @Component({
   selector: 'app-task-sheet',
@@ -27,6 +28,8 @@ export class TaskSheetComponent implements OnInit {
 
   private subjectId: string;
   private courseProjectId: number;
+  private templates: any[];
+  private tepmlate: Template;
 
   constructor(private projectThemeService: ProjectThemeService,
               private taskSheetService: TaskSheetService,
@@ -45,6 +48,7 @@ export class TaskSheetComponent implements OnInit {
             this.courseProjectId = res[0].Id;
           }
           this.retrieveTaskSheetHtml();
+          this.retrieveTemplates();
         });
     });
   }
@@ -67,6 +71,27 @@ export class TaskSheetComponent implements OnInit {
       });
   }
 
+  getTaskSheetTemplate(taskSheet: any): object{
+    var checkTheme = this.templates.find((i) => i.InputData == taskSheet.InputData
+    && i.Faculty == i.Faculty
+    && i.HeadCathedra == i.HeadCathedra
+    && i.RpzContent == i.RpzContent
+    && i.DrawMaterials == i.DrawMaterials
+    && i.Univer == i.Univer
+    && i.DateEnd == i.DateEnd
+    && i.DateStart == i.DateStart);
+
+    if (checkTheme != undefined){
+      this.tepmlate = new Template();
+      this.tepmlate.Id = String(checkTheme.Id);
+      this.tepmlate.Name = checkTheme.Name;
+      return this.tepmlate;
+    }
+    else{
+      return undefined;
+    }
+  }
+
   editTaskSheet() {
     this.taskSheetService.getTaskSheet({courseProjectId: this.courseProjectId}).subscribe(response => {
       const dialogRef = this.dialog.open(EditTaskSheetComponent, {
@@ -75,6 +100,7 @@ export class TaskSheetComponent implements OnInit {
           subjectId: this.subjectId,
           taskSheet: response,
           groups: this.groups,
+          taskSheetTemplate: this.getTaskSheetTemplate(response),
         }
       });
 
@@ -87,11 +113,24 @@ export class TaskSheetComponent implements OnInit {
             });
           });
         }
+        else{
+          this.ngOnInit();
+        }
       });
     });
   }
 
+  retrieveTemplates() {
+    this.taskSheetService.getTemplates(
+      'count=1000000' +
+      '&page=1' +
+      '&filter={"lecturerId":"' + this.courseUser.UserId + '","searchString":"' + '' + '"}' +
+      '&filter[lecturerId]=' + this.courseUser.UserId +
+      '&sorting[' + 'Id' + ']=' + 'desc'
+    ).subscribe(res => this.templates = res.Items);
+  }
+
   downloadTaskSheet() {
-    location.href = '/Cp/GetTasksSheetDocument?courseProjectId=' + this.courseProjectId;
+    location.href = location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + this.courseProjectId;
   }
 }

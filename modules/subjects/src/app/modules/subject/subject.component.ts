@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {ComponentType} from '@angular/cdk/typings/portal';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 
 import * as subjectActions from '../../store/actions/subject.actions';
+import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {Subject} from '../../models/subject.model';
 import {IAppState} from '../../store/state/app.state';
 import {DeletePopoverComponent} from '../../shared/delete-popover/delete-popover.component';
@@ -14,45 +15,42 @@ import {SubjectService} from '../../services/subject.service';
 import {SubjectManagementComponent} from './subject-managment/subject-management.component';
 import {DialogData} from '../../models/dialog-data.model';
 import {SubSink} from 'subsink';
-
+import * as catsActions from '../../store/actions/cats.actions';
+import { Message } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-subject',
   templateUrl: './subject.component.html',
   styleUrls: ['./subject.component.less']
 })
-export class SubjectComponent implements OnInit {
+export class SubjectComponent implements OnInit, OnDestroy {
   subjects$: Observable<Subject[]>;
   private subs = new SubSink();
   public displayedColumns = ['name', 'shortName', 'actions'];
 
   constructor(
-              private subjectService: SubjectService,
               private store: Store<IAppState>,
-              private router: Router,
               public dialog: MatDialog) { }
+  ngOnDestroy(): void {
+    this.store.dispatch(subjectActions.resetSubjects());
+  }
 
   ngOnInit() {
-    this.refreshSubjects();
+    this.store.dispatch(subjectActions.loadSubjects());
+    this.subjects$ = this.store.select(subjectSelectors.getSubjects);
   }
-
-  refreshSubjects(): void {
-    this.subjects$ = this.subjectService.getSubjects();
-  }
-
 
   constructorSubject(subjectId?) {
     const dialogData: DialogData = {
       model: { subjectId }
     };
     const dialogRef = this.openDialog(dialogData, SubjectManagementComponent);
-    dialogRef.afterClosed().subscribe(result => {
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.subs.add(
-          this.subjectService.saveSubject(result).subscribe(() => this.refreshSubjects())
-        )
+        this.store.dispatch(subjectActions.saveSubject({ subject: result }))
       }
-    });
+    }));
   }
 
   lector(subjectId: string) {
@@ -71,29 +69,20 @@ export class SubjectComponent implements OnInit {
     };
     const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.subs.add(
-          this.subjectService.deleteSubjects(subject.SubjectId).subscribe(
-            () => this.refreshSubjects())
-        );
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.store.dispatch(subjectActions.deleteSubejctById({ subjectId: subject.SubjectId }));
+        }
+      })
+    );
   }
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, {data});
   }
 
-  setSubject(subject: Subject): void {
-    if (subject && subject.SubjectId) {
-      this.store.dispatch(subjectActions.setSubjectId({ id: subject.SubjectId }));
-      localStorage.setItem('currentSubject', JSON.stringify(subject));
-      this.router.navigate(['/news']);
-    }
-  }
-
   navigateToSubject(subjectId: number): void {
-    // window.location.href = `/web/viewer/subject/${subjectId}`;
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('SubjectId', subjectId.toString())}));
   }
 }

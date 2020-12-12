@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure;
@@ -40,7 +41,7 @@ namespace LMPlatform.UI.Controllers
         {
             var lectures = new List<Attachment>();
             foreach (var att in this.SubjectManagementService.GetLecturesAttachments(int.Parse(subjectId)))
-                lectures.AddRange(this.FilesManagementService.GetAttachments(att).ToList());
+                lectures.AddRange(FilesManagementService.GetAttachments(att).ToList());
 
             var labs = new List<Attachment>();
             foreach (var att in this.SubjectManagementService.GetLabsAttachments(int.Parse(subjectId)))
@@ -61,6 +62,24 @@ namespace LMPlatform.UI.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
+
+        public ActionResult GetFileSubjectV2(int subjectId)
+        {
+            var attachements = SubjectManagementService.GetSubjectAttachments(subjectId);
+            return new JsonResult
+            {
+                Data = new
+                {
+                    Attachment = attachements
+                    .Where(att => !string.IsNullOrEmpty(att))
+                    .Select(att => FilesManagementService.GetAttachments(att))
+                    .Where(att => att.Count > 0)
+                    .Aggregate((acc, x) => acc.Concat(x).ToList())
+                },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
 
         [AllowAnonymous]
         public ActionResult GetFileSubjectJson(string subjectId)
@@ -91,7 +110,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult Index(int subjectId)
         {
-            if (this.SubjectManagementService.IsWorkingSubject(WebSecurity.CurrentUserId, subjectId))
+            if (this.SubjectManagementService.IsWorkingSubject(UserContext.CurrentUserId, subjectId))
             {
                 var model = new SubjectWorkingViewModel(subjectId);
                 return JsonResponse(model);
@@ -142,7 +161,7 @@ namespace LMPlatform.UI.Controllers
                 };
             }
 
-            model.Save(WebSecurity.CurrentUserId, color);
+            model.Save(UserContext.CurrentUserId, color);
             return null;
         }
 
@@ -238,7 +257,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult Subjects()
         {
-            var model = new SubjectManagementViewModel(WebSecurity.CurrentUserId.ToString(CultureInfo.InvariantCulture));
+            var model = new SubjectManagementViewModel(UserContext.CurrentUserId.ToString(CultureInfo.InvariantCulture));
             var subjects = model.Subjects;
             return JsonResponse(subjects);
         }
@@ -246,7 +265,7 @@ namespace LMPlatform.UI.Controllers
         public ActionResult GetSubjectsForCM()
         {
             var model = new SubjectManagementViewModel(
-                WebSecurity.CurrentUserId.ToString(CultureInfo.InvariantCulture));
+                UserContext.CurrentUserId.ToString(CultureInfo.InvariantCulture));
             var subjects = model.Subjects.Where(x => SubjectModuleRepository.GetCMSubjectIds().Contains(x.SubjectId))
                 .ToList();
             return JsonResponse(subjects);
@@ -294,7 +313,7 @@ namespace LMPlatform.UI.Controllers
         {
             var searchString = dataTableParam.GetSearchString();
             var subjects = this.ApplicationService<ISubjectManagementService>().GetSubjectsLecturer(
-                WebSecurity.CurrentUserId, pageInfo: dataTableParam.ToPageInfo(), searchString: searchString);
+                UserContext.CurrentUserId, pageInfo: dataTableParam.ToPageInfo(), searchString: searchString);
 
             return DataTableExtensions.GetResults(subjects.Items.Select(this._GetSubjectRow), dataTableParam,
                 subjects.TotalCount);
@@ -312,13 +331,13 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult IsAvailableSubjectName(string name, string id)
         {
-            return this.Json(!this.SubjectManagementService.IsSubjectName(name, id, WebSecurity.CurrentUserId),
+            return this.Json(!this.SubjectManagementService.IsSubjectName(name, id, UserContext.CurrentUserId),
                 JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult IsAvailableSubjectShortName(string name, string id)
         {
-            return this.Json(!this.SubjectManagementService.IsSubjectShortName(name, id, WebSecurity.CurrentUserId),
+            return this.Json(!this.SubjectManagementService.IsSubjectShortName(name, id, UserContext.CurrentUserId),
                 JsonRequestBehavior.AllowGet);
         }
     }

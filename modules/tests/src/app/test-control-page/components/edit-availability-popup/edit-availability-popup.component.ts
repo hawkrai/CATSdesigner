@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {TestService} from "../../../service/test.service";
 import {Group} from "../../../models/group.model";
@@ -9,13 +9,20 @@ import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 
+
 @AutoUnsubscribe
 @Component({
-  selector: 'app-edit-availability-popup',
-  templateUrl: './edit-availability-popup.component.html',
-  styleUrls: ['./edit-availability-popup.component.less']
+  selector: "app-edit-availability-popup",
+  templateUrl: "./edit-availability-popup.component.html",
+  styleUrls: ["./edit-availability-popup.component.less"]
 })
 export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implements OnInit {
+
+  public groups: Group[];
+  public subGroups: SubGroup[];
+  public subGroupsDefault: SubGroup[];
+  public groupId: number;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialogRef: MatDialogRef<EditAvailabilityPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
@@ -24,20 +31,14 @@ export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implemen
     super();
   }
 
-  public groups: Group[];
-  public subGroups: SubGroup[];
-  public subGroupsDefault: SubGroup[];
-  public groupId: number;
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
-
   ngOnInit() {
     this.testService.getGroupsBySubjectId("3")
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((groups) => {
-      this.groups = groups;
-      this.groupId = groups[0].Id;
-      this.getSubGroups();
-    });
+        this.groups = groups;
+        this.groupId = groups[0].Id;
+        this.getSubGroups();
+      });
   }
 
   onNoClick(): void {
@@ -50,9 +51,9 @@ export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implemen
     this.testService.getSubGroupsBySubjectIdGroupIdTestId(subject.id, this.data.event, this.groupId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((subGroups) => {
-      this.subGroups = subGroups;
-      this.subGroupsDefault = subGroups;
-    })
+        this.subGroups = subGroups;
+        this.subGroupsDefault = subGroups;
+      });
   }
 
   public onValueChange(event): void {
@@ -71,9 +72,9 @@ export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implemen
     this.testService.changeAvailabilityForStudent(testAvailabilityRequest)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(() => {
-      this.getSubGroups();
-      this.cdr.detectChanges();
-    })
+        this.getSubGroups();
+        this.cdr.detectChanges();
+      });
   }
 
   public changeTestAvailabilityForAll(event: any): void {
@@ -86,16 +87,16 @@ export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implemen
     this.testService.changeAvailabilityForAllStudents(testAvailabilityRequest)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(() => {
-      this.getSubGroups();
-      this.cdr.detectChanges();
-    })
+        this.getSubGroups();
+        this.cdr.detectChanges();
+      });
   }
 
   public onSearchValueChange(event): void {
     this.subGroups = (JSON.parse(JSON.stringify(this.subGroupsDefault)));
     this.subGroups.forEach((student) => {
       student.Students = (student.Students.filter((student) => {
-        return student.Name.includes(event.currentTarget.value);
+        return student.Name.toLowerCase().includes(event.currentTarget.value.toLowerCase());
       }));
     });
   }

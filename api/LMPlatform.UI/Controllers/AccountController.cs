@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.LecturerManagement;
@@ -62,16 +63,13 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public JsonResult UserSessionCheck()
         {
-            WebSecurity.RequireAuthenticatedUser();
-
             return this.Json(new
             {
-                id = WebSecurity.CurrentUserId,
-                userName = WebSecurity.CurrentUserName,
-                role = Roles.GetRolesForUser().FirstOrDefault()
+                id = UserContext.Id,
+                userName = UserContext.Name,
+                role = UserContext.Role
             }, JsonRequestBehavior.AllowGet); 
         } 
 
@@ -107,9 +105,12 @@ namespace LMPlatform.UI.Controllers
                 if (!this.User.IsInRole("admin")) this.UsersManagementService.UpdateLastLoginDate(model.UserName);
 
                 this.Response.Cookies.Add(new HttpCookie("Authorization", token)
-                    {Expires = DateTime.UtcNow.AddMonths(1)});
+                    { Expires = DateTime.UtcNow.AddMonths(1) });
 
-                return StatusCode(HttpStatusCode.OK);
+                return this.Json(new
+                {
+                    token = token
+                }, JsonRequestBehavior.AllowGet);
             }
 
             return StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
@@ -121,8 +122,11 @@ namespace LMPlatform.UI.Controllers
         {
             var loginViewModel = new LoginViewModel();
             loginViewModel.LogOut();
-            var authCookie = this.Response.Cookies["LMPlatform"];
-            if (authCookie is {}) authCookie.Expires = DateTime.Now.AddDays(-5);
+            var authCookie = this.Response.Cookies["Authorization"];
+            if (authCookie is {})
+            {
+                authCookie.Expires = DateTime.Now.AddDays(-5);
+            }
 
             return StatusCode(HttpStatusCode.OK);
         }
@@ -223,9 +227,9 @@ namespace LMPlatform.UI.Controllers
                                         SkypeContact = model.SkypeContact,
                                         Phone = model.Phone,
                                         Email = model.Email,
-                                        Id = WebSecurity.CurrentUserId
+                                        Id = UserContext.CurrentUserId
                                     },
-                                Id = WebSecurity.CurrentUserId
+                                Id = UserContext.CurrentUserId
                             });
 
                     modData.ModifyLecturer();
@@ -250,9 +254,9 @@ namespace LMPlatform.UI.Controllers
                                         SkypeContact = model.SkypeContact,
                                         Phone = model.Phone,
                                         Email = model.Email,
-                                        Id = WebSecurity.CurrentUserId
+                                        Id = UserContext.CurrentUserId
                                     },
-                                Id = WebSecurity.CurrentUserId
+                                Id = UserContext.CurrentUserId
                             });
 
                     modData.ModifyStudent();

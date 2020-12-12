@@ -53,6 +53,8 @@ namespace Application.Infrastructure.FilesManagement
 		        .ToList();
         }
 
+
+
         public void DeleteFileAttachment(Attachment attachment)
         {
             var filePath = _storageRoot + attachment.PathName + "//" + attachment.FileName;
@@ -63,6 +65,20 @@ namespace Application.Infrastructure.FilesManagement
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
+            }
+        }
+
+        public void DeleteFileAttachment(string pathName, string fileName)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var attachment = repositoriesContainer.AttachmentRepository.GetBy(new Query<Attachment>(x => x.PathName == pathName && x.FileName == fileName));
+            var tempFilePath = Path.Combine(_tempStorageRoot, attachment.FileName);
+            if (attachment != null)
+            {
+                DeleteFileAttachment(attachment);
+            } else if (File.Exists(tempFilePath))
+            {
+                File.Delete(tempFilePath);
             }
         }
 

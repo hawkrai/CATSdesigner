@@ -4,9 +4,8 @@ import {getSubjectId} from '../../../../store/selectors/subject.selector';
 import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
 import {MatDialog} from '@angular/material/dialog';
 import {IAppState} from '../../../../store/state/app.state';
-import {PracticalService} from '../../../../services/practical/practical.service';
+import {PracticalRestService} from '../../../../services/practical/practical-rest.service';
 import {Group} from '../../../../models/group.model';
-import {ScheduleProtectionLab} from '../../../../models/lab.model';
 
 @Component({
   selector: 'app-visit-statistic',
@@ -25,7 +24,7 @@ export class VisitStatisticComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private store: Store<IAppState>,
-              private practicalService: PracticalService) { }
+              private practicalService: PracticalRestService) { }
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
@@ -34,18 +33,20 @@ export class VisitStatisticComponent implements OnInit {
       this.store.pipe(select(getCurrentGroup)).subscribe(group => {
         this.group = group;
         // this.practicalService.loadData();
-        //
+        
         // this.practicalService.getCalendar().subscribe(res => {
         //   this.scheduleProtection = res;
         // });
         this.displayColumn = [];
-        this.refreshMarks();
+        if (this.subjectId && this.group) {
+          this.refreshMarks();
+        }
       });
     });
   }
 
   refreshMarks() {
-    this.practicalService.getMarks(this.subjectId, this.group.groupId).subscribe(res => {
+    this.practicalService.getMarks(this.subjectId, this.group.GroupId).subscribe(res => {
       this.student = res;
       res && this.setDisplayColumn(res);
     })

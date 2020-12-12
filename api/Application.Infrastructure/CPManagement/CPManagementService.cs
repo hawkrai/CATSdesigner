@@ -12,6 +12,7 @@ using LMPlatform.Models;
 using System.Collections.Generic;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
+using Application.Infrastructure.Export;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -344,6 +345,9 @@ namespace Application.Infrastructure.CPManagement
                             AssignedCourseProjectId = cp.Id,
                             Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
                             Group = cp.CourseProject.Theme,
+                            Comment = cp.Comment,
+                            LecturerName = cp.LecturerName,
+                            MarkDate = cp.MarkDate,
                             PercentageResults = s.CoursePercentagesResults.Select(pr => new PercentageResultData
                             {
                                 Id = pr.Id,
@@ -366,6 +370,7 @@ namespace Application.Infrastructure.CPManagement
             {
                 return (from s in query
                         let lecturer = s.AssignedCourseProjects.FirstOrDefault().CourseProject.Lecturer
+                        let cp = s.AssignedCourseProjects.FirstOrDefault()
                         select new StudentData
                         {
                             Id = s.Id,
@@ -374,6 +379,9 @@ namespace Application.Infrastructure.CPManagement
                             AssignedCourseProjectId = s.AssignedCourseProjects.FirstOrDefault().Id,
                             Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
                             Group = s.AssignedCourseProjects.FirstOrDefault().CourseProject.Theme,
+                            Comment = cp.Comment,
+                            LecturerName = cp.LecturerName,
+                            MarkDate = cp.MarkDate,
                             PercentageResults = s.CoursePercentagesResults.Select(pr => new PercentageResultData
                             {
                                 Id = pr.Id,
@@ -399,12 +407,22 @@ namespace Application.Infrastructure.CPManagement
             AuthorizationHelper.ValidateLecturerAccess(Context, lecturerId);
             var assignedCourseProject = Context.AssignedCourseProjects.Single(x => x.Id == courseStudentMarkModel.AssignedProjectId);
             assignedCourseProject.Mark = courseStudentMarkModel.Mark;
+            assignedCourseProject.MarkDate = courseStudentMarkModel.Date;
+            assignedCourseProject.Comment = courseStudentMarkModel.Comment;
+            assignedCourseProject.LecturerName = courseStudentMarkModel.LecturerName;
             Context.SaveChanges();
         }
 
         public CourseProjectTaskSheetTemplate GetTaskSheetTemplate(int id)
         {
             return Context.CourseProjectTaskSheetTemplates.Single(x => x.Id == id);
+        }
+
+        public PagedList<CourseProjectTaskSheetTemplate> GetTaskSheetTemplates(GetPagedListParams parms)
+        {
+            var lecturerId = int.Parse(parms.Filters["lecturerId"]);
+            var query = Context.CourseProjectTaskSheetTemplates.Where(x => x.LecturerId == lecturerId);
+            return query.ApplyPaging(parms);
         }
 
         public void SaveTaskSheetTemplate(CourseProjectTaskSheetTemplate template)
@@ -515,6 +533,21 @@ namespace Application.Infrastructure.CPManagement
                 DateStart = dp.DateStart
                 
             };
+        }
+
+        public string GetTasksSheetHtml(int courseProjectId)
+        {
+            // TODO
+            var courseProject =
+                new LmPlatformModelsContext().CourseProjects
+                    .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
+                    //.Include(x=>x.Lecturer.CoursePercentagesGraphs)
+                    //.Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
+                    .Single(x => x.CourseProjectId == courseProjectId);
+
+            return courseProject.AssignedCourseProjects.Count == 1
+                ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First())
+                : WordCourseProject.CourseProjectToDocView(courseProject);
         }
 
         public void SaveTaskSheet(int userId, TaskSheetData taskSheet)

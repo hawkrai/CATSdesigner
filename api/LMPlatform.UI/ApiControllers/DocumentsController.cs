@@ -9,9 +9,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers
 {
+    [JwtAuth]
     public class DocumentController : ApiController
     {
         private readonly LazyDependency<IDocumentManagementService> _documentManagementService = new LazyDependency<IDocumentManagementService>();
@@ -67,9 +69,9 @@ namespace LMPlatform.UI.ApiControllers
             {
                 foreach (var document in documents)
                 {
-                    if (document.Childrens.Any())
+                    if (DocumentManagementService.GetByParentId(document.Id).Any())
                     {
-                        RemoveChilds(document.Childrens);
+                        RemoveChilds(DocumentManagementService.GetByParentId(document.Id));
                     }
                     DocumentManagementService.RemoveDocument(document);
                 }

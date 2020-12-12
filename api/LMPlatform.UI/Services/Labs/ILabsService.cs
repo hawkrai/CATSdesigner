@@ -64,7 +64,7 @@ namespace LMPlatform.UI.Services.Labs
 		// OK
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveStudentLabsMark")]
-        ResultViewData SaveStudentLabsMark(int studentId, int labId, int lecturerId, string mark, string comment, string date, int id, List<StudentsViewData> students);
+        ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id);
 
         // OK
         [OperationContract]
@@ -105,5 +105,13 @@ namespace LMPlatform.UI.Services.Labs
         [OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/CheckPlagiarismSubjects")]
 		ResultPSubjectViewData CheckPlagiarismSubjects(string subjectId, int type, int threshold, bool isCp);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/UpdateLabs")]
+        ResultViewData UpdateLabs(List<UpdateLab> labs);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetMarksV3?subjectId={subjectId}&groupId={groupId}")]
+        StudentsMarksResult GetMarksV3(int subjectId, int groupId);
     }
 }

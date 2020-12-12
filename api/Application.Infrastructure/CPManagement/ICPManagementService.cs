@@ -48,6 +48,8 @@ namespace Application.Infrastructure.CPManagement
 
         CourseProjectTaskSheetTemplate GetTaskSheetTemplate(int id);
 
+        PagedList<CourseProjectTaskSheetTemplate> GetTaskSheetTemplates(GetPagedListParams parms);
+
         void SaveTaskSheetTemplate(CourseProjectTaskSheetTemplate template);
 
         void DeleteUserFromAcpProject(int id, int projectId);
@@ -57,6 +59,8 @@ namespace Application.Infrastructure.CPManagement
         TaskSheetData GetTaskSheet(int courseProjectId);
 
         List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms);
+
+        string GetTasksSheetHtml(int courseProjectId);
 
         void SaveTaskSheet(int userId, TaskSheetData taskSheet);
 

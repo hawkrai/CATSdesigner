@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSidenav } from '@angular/material/sidenav';
-import { LayoutService } from "../layout.service";
 import { CoreService } from "../../core/services/core.service";
 import { Subject } from "../../core/models/subject";
-import { map } from 'rxjs/operators';
 import { AuthenticationService } from './../../core/services/auth.service';
+import { switchMap } from 'rxjs/operators';
+
 @Component({
   selector: 'app-subjects-nav',
   templateUrl: './subjects-nav.component.html',
@@ -16,10 +15,14 @@ export class SubjectsNavComponent implements OnInit {
   subjects: Subject[];
   public isLector:boolean = false;
 
-  constructor(private layouService: LayoutService, public coreService: CoreService, private router: Router, private autService: AuthenticationService) {}
+  constructor(
+    public coreService: CoreService,
+    private router: Router, 
+    private autService: AuthenticationService) {}
 
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
+
     this.coreService.getSubjects().subscribe((subjects) => {
       this.subjects = subjects;
       if(this.subjects.length > 0) {
@@ -29,15 +32,28 @@ export class SubjectsNavComponent implements OnInit {
         this.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
         if(this.coreService.selectedSubject) {
           console.log(subjectId);
-          //that.redirectToSelected();
           this.setupLocalInfo(this.coreService.selectedSubject); 
         }
                
       }
     });
+
+    this.coreService.onNewSubjectId().subscribe(subjectId => {
+      this.changeSubject(subjectId);
+    });
+
+    this.coreService.onUpdateSubjects().pipe(
+      switchMap(() => this.coreService.getSubjects())
+    ).subscribe(subjects => {
+      this.subjects = subjects;
+      if (this.coreService.selectedSubject) {
+        const selectedSubject = this.subjects.find(s => s.Id === this.coreService.selectedSubject.Id);
+        this.changeSubject(selectedSubject ? selectedSubject.Id : -1);
+      }
+    });
   }
   setupLocalInfo(subject: Subject): void {
-    this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name });  
+    this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name, color: subject.Color });  
   }
 
   changeSubject(id: number): void {   

@@ -1,11 +1,19 @@
-import {Lab, ScheduleProtectionLab} from '../../models/lab.model';
+import { StudentMark } from 'src/app/models/student-mark.model';
+import { UserLabFile } from 'src/app/models/user-lab-file.model';
+import { Lab, ScheduleProtectionLabs } from '../../models/lab.model';
 
-export interface LabsState {
+export interface ILabsState {
   labs: Lab[];
-  calendar: ScheduleProtectionLab[];
+  schedule: ScheduleProtectionLabs[];
+  students: StudentMark[];
+  studentsLabsFiles: StudentMark[],
+  userLabsFiles: UserLabFile[];
 }
 
-export const initialLabsState: LabsState = {
+export const initialLabsState: ILabsState = {
   labs: [],
-  calendar: []
+  schedule: [],
+  students: [],
+  studentsLabsFiles: [],
+  userLabsFiles: []
 };

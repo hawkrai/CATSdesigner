@@ -1,9 +1,11 @@
 import {News} from "../../models/news.model";
 
 export interface INewsState {
-  newsList: News[];
+  news: News[];
+  selectedNews: News;
 }
 
 export const initialNewsState: INewsState = {
-  newsList: []
+  news: [],
+  selectedNews: null
 };

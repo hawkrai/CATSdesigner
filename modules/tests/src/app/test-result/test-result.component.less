@@ -1,17 +1,17 @@
 .test-result {
   &__container {
-    padding-top: 50px;
+    padding-top: 20px;
     padding-left: 20px;
     padding-right: 20px;
   }
 
   &__title {
-    font-size: 26px;
+    font-size: 20px;
     padding-bottom: 5px;
   }
 
   &__mark {
-    font-size: 19px;
+    font-size: 14px;
     padding-bottom: 10px;
   }
 
@@ -22,7 +22,7 @@
       height: 25px;
       &-mark {
         display: flex;
-        font-size: 20px;
+        font-size: 14px;
         flex: 0 0 20%;
       }
       &-color {
@@ -39,6 +39,11 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    color: grey;
+
+    &:hover{
+      color: #3f51b5;
+    }
   }
 }
 .right{

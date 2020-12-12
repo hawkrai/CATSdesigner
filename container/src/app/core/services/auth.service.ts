@@ -25,7 +25,7 @@ export class AuthenticationService {
     } 
 
     login(username, password) {
-        return this.http.post<any>(`/Account/Login`, 
+        return this.http.post<any>(`/Account/LoginJWT`, 
             {
                 userName: username,
                 password: password

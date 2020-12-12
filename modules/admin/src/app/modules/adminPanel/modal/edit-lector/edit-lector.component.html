@@ -17,36 +17,6 @@
           <mat-form-field>
               <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="50">
           </mat-form-field>
-
-          <mat-form-field>
-              <input matInput formControlName="Email" placeholder="Email" maxlength="30">
-              <mat-error *ngIf="hasError('Email', 'required')">Поле не может быть пустым</mat-error>
-          </mat-form-field>
-
-          <mat-form-field>
-              <input matInput formControlName="SkypeContact" placeholder="Skype" maxlength="50">
-          </mat-form-field>
-
-          <mat-form-field>
-              <span matPrefix>+375 &nbsp;</span>
-              <input matInput formControlName="Phone" placeholder="Номер" maxlength="50">
-          </mat-form-field>
-
-          <mat-form-field>
-              <input matInput formControlName="Skill" placeholder="Способности" maxlength="255">
-          </mat-form-field>
-
-          <mat-form-field>
-              <input matInput formControlName="About" placeholder="О преподаватели" maxlength="255">
-          </mat-form-field>
-
-          <mat-form-field>
-              <mat-label>Группы</mat-label>
-              <mat-select formControlName="Groups" multiple>
-                  <mat-option *ngFor="let group of groups" [value]="group.Id">{{ group.Name }}</mat-option>
-              </mat-select>
-          </mat-form-field>
-
           <div class="checkbox">
               <mat-checkbox formControlName="IsSecretary">Секретарь ГЭК</mat-checkbox>
           </div>

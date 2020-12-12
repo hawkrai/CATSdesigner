@@ -23,7 +23,7 @@ export class NewsComponent implements OnInit {
               private dialog: MatDialog) { }
 
   ngOnInit() {
-    localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    //localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
       this.subjects = subjects;
@@ -41,7 +41,7 @@ export class NewsComponent implements OnInit {
   }
 
   public openItemInfo(item: any) {
-    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '700px',  position: {top: '10%'}, data: {itemNews: item}});
+    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '600px',  position: {top: '10%'}, data: {itemNews: item}});
   }
 
   public getSubjectShortName(id: number) {

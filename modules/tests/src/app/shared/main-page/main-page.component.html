@@ -23,7 +23,7 @@
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="forNN">
-        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной
+        <button (click)="createNeuralNetwork()" mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной
           сети
         </button>
       </div>
