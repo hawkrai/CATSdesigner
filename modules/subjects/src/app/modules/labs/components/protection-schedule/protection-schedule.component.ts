@@ -1,101 +1,66 @@
-import { SubSink } from 'subsink';
-import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { Lab, ScheduleProtectionLabs } from "../../../../models/lab.model";
 import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import * as groupSelectors from '../../../../store/selectors/groups.selectors';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import { VisitDateLabsPopoverComponent } from './visit-date-labs-popover/visit-date-labs-popover.component';
+import { DialogService } from 'src/app/services/dialog.service';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-protection-schedule',
   templateUrl: './protection-schedule.component.html',
   styleUrls: ['./protection-schedule.component.less']
 })
-export class ProtectionScheduleComponent implements OnInit, OnDestroy, OnChanges {
+export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() isTeacher: boolean;
-  private subs = new SubSink();
-  public labs: Lab[];
-  public scheduleProtectionLabs: ScheduleProtectionLabs[];
-  public numberSubGroups: number[] = [1, 2];
+  @Input() groupId: number;
+
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], subGroupsIds: number[] }>;
   public displayedColumns: string[] = ['position', 'theme'];
-  public subGroupIds: number[] = [];
-
-
+  public numberSubGroups = [1, 2];
   constructor(
-              private store: Store<IAppState>,
-              public dialog: MatDialog) {
+    private store: Store<IAppState>,
+    private dialogService: DialogService) {
+  }
+  ngOnDestroy(): void {
+    this.store.dispatch(labsActions.resetLabs());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
+    if (changes.groupId && changes.groupId.currentValue) {
+      this.store.dispatch(labsActions.loadLabsSchedule());
+    }
   }
 
   ngOnInit() {
-    this.store.dispatch(labsActions.loadLabsSchedule());
-
-    this.subs.add(
-      this.store.select(labsSelectors.getLabsCalendar).subscribe(res => {
-        this.scheduleProtectionLabs = res;
-        this.scheduleProtectionLabs.forEach(lab => {
-          if (!this.numberSubGroups.includes(lab.SubGroup)) {
-            this.numberSubGroups.push(lab.SubGroup);
-            this.numberSubGroups.sort((a, b) => a-b)
-          }
-        });
-      })
-    );
-
-    this.subs.add(
-      this.store.select(groupSelectors.getCurrentGroupSubGroupIds).subscribe(res => {
-        this.subGroupIds = res;
-      })
-    );
-
-    this.subs.add(
-      this.store.select(labsSelectors.getLabs).subscribe(res => {
-        this.labs = res;
-     })
-    );
+    this.state$ = combineLatest(
+      this.store.select(labsSelectors.getLabs),
+      this.store.select(labsSelectors.getLabsCalendar),
+      this.store.select(groupSelectors.getCurrentGroupSubGroupIds)
+    ).pipe(
+      map(([labs, scheduleProtectionLabs, subGroupsIds]) => ({ labs, scheduleProtectionLabs, subGroupsIds }))
+    )
   }
 
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
+  getSubGroupDisplayColumns(schedule: ScheduleProtectionLabs[]) {
+    return [...this.displayedColumns, ...schedule.map(res => res.Date + res.ScheduleProtectionLabId)];
   }
 
-  _getSubGroupLabs(i: number) {
-    return this.labs.filter(res => res.SubGroup === i);
-  }
-
-  _getSubGroupDay(i: number) {
-    return this.scheduleProtectionLabs.filter(res => res.SubGroup === i);
-  }
-
-  _getSubGroupDisplayColumns(i: number) {
-    return [...this.displayedColumns, ...this._getSubGroupDay(i).map(res => res.Date + res.ScheduleProtectionLabId)];
-  }
-
-  settingVisitDate(index: number) {
+  settingVisitDate(subGroup: number, subGroupId: number) {
     const dialogData: DialogData = {
       title: 'Даты занятий',
       buttonText: 'Добавить',
-      body: { subGroupId: this.getSubGroupId(index), subGroup: index },
+      body: { subGroupId, subGroup },
     };
 
-    this.openDialog(dialogData, VisitDateLabsPopoverComponent);
-  }
-
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
-
-  private getSubGroupId(i) {
-    return this.subGroupIds[i - 1];
+    this.dialogService.openDialog(VisitDateLabsPopoverComponent, dialogData);
   }
 
 }

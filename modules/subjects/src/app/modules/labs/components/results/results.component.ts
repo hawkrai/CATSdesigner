@@ -1,5 +1,7 @@
+import { LabMark } from './../../../../models/mark/lab-mark.model';
+import { DialogService } from 'src/app/services/dialog.service';
 import { isTeacher } from './../../../../store/selectors/subject.selector';
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import {Group} from "../../../../models/group.model";
 import {LabsService} from "../../../../services/labs/labs.service";
 import {select, Store} from '@ngrx/store';
@@ -17,95 +19,64 @@ import {filter, map, switchMap} from 'rxjs/operators';
 import {SubSink} from 'subsink';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { DatePipe } from '@angular/common';
+import { Observable, combineLatest } from 'rxjs';
+
+import * as labsActions from '../../../../store/actions/labs.actions';
+import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.less']
 })
-export class ResultsComponent implements OnInit, OnDestroy {
+export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   private subs = new SubSink();
   @Input() isTeacher: boolean;
+  @Input() groupId: number;
 
-  public selectedGroup: Group;
-  private subjectId: number;
-  students: StudentMark[];
-  displayedColumns: string[] = ['position', 'name'];
-  header: { head: string, text: string, tooltip: string }[];
+  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLabs[], students: StudentMark[] }>;
 
-  public labProperty: {labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[]};
-
-  constructor(private labService: LabsService,
-              private store: Store<IAppState>,
-              private labsRestService: LabsRestService,
-              public dialog: MatDialog) {
+  constructor(
+    private store: Store<IAppState>,
+    private dialogService: DialogService) {
   }
 
-  ngOnInit() {
-    this.subs.add(
-      this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-        this.subjectId = subjectId; 
-        this.subs.add(
-          this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-            this.selectedGroup = group;
-            this.students = null;
-            this.refreshStudents();
-          })
-        );
-      })
-    );
-
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.groupId && changes.groupId.currentValue) {
+      this.store.dispatch(labsActions.loadLabsSchedule());
+      this.store.dispatch(labsActions.loadLabStudents());
+    }
   }
 
-  refreshStudents(): void {
-    this.subs.add(
-      this.labsRestService.getProtectionSchedule(this.subjectId, this.selectedGroup.GroupId).subscribe(lab => {
-        this.subs.add(
-          this.labService.getMarks(this.subjectId, this.selectedGroup.GroupId).subscribe(res => {
-            this.students = res;
-            res && this.setHeader(res[0].SubGroup, lab.labs);
-            this.setSubGroupDisplayColumns();
-          })
-        );
-        this.labProperty = lab;
-      })
+  ngOnInit(): void {
+    this.state$ = combineLatest(
+      this.store.select(labsSelectors.getLabsCalendar),
+      this.store.select(labsSelectors.getLabs),
+      this.store.select(labsSelectors.getLabStudents)
+    ).pipe(
+      map(([schedule, labs, students]) => ({ schedule, labs, students }))
     );
   }
 
-  getSubGroups(students: StudentMark[]): number[] {
-    return [...new Set(students.map(s => s.SubGroup))].sort((a, b) => a - b);
+  getHeaders(subGroupLabs: Lab[]): { head: string, text: string, tooltip: string }[] {
+    return subGroupLabs.map(l => ({ head: l.LabId.toString(), text: l.ShortName, tooltip: l.Theme }));
   }
 
-  setHeader(subGroup: number, labs: Lab[]) {
-    this.header = labs
-      .filter(lab => lab.SubGroup === subGroup)
-      .map(l => ({ head: l.LabId.toString(), text: l.ShortName, tooltip: l.Theme }));
+  getSubGroupDisplayColumns(subGroupLabs: Lab[]): string[] {
+    return ['position', 'name', ...subGroupLabs.map(l => l.LabId.toString()), 'total-lab', 'total-test', 'total'];
   }
 
-  setSubGroupDisplayColumns() {
-    this.displayedColumns = ['position', 'name', ...this.header.map(res => res.head), 'total-lab', 'total-test', 'total'];
+  getTotal(student): number {
+    return ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2);
   }
 
-  getTotal(student) {
-    return ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2)
-  }
-
-  setMark(student: StudentMark, labId: string, recommendedMark?) {
+  setMark(student: StudentMark, labId: string, recommendedMark: string) {
     if (!this.isTeacher) {
       return;
     }
-    const mark = student.Marks.find(mark => mark.LabId.toString() === labId);
+    const mark = student.Marks.find(mark => mark.LabId === +labId);
     if (mark) {
-      const dateValues = mark.Date.split('.');
-      const labsMark = {
-        id: mark.StudentLabMarkId ? mark.StudentLabMarkId : '0',
-        comment: mark.Comment,
-        mark: mark.Mark,
-        date: mark.Date ? new Date(+dateValues[2], +dateValues[1], +dateValues[1]) : new Date( ),
-        labId: mark.LabId.toString(),
-        studentId: student.StudentId,
-      };
-      console.log(labsMark.date);
+      const labsMark = this.getLabMark(mark, student.StudentId);
       const dialogData: DialogData = {
         title: 'Выставление оценки',
         buttonText: 'Сохранить',
@@ -115,7 +86,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
           lecturerId: mark.LecturerId
         }
       };
-      const dialogRef = this.openDialog(dialogData, LabsMarkPopoverComponent);
+      const dialogRef = this.dialogService.openDialog(LabsMarkPopoverComponent, dialogData);
 
       this.subs.add(dialogRef.afterClosed().pipe(
         filter(r => r),
@@ -125,31 +96,37 @@ export class ResultsComponent implements OnInit, OnDestroy {
           date: new DatePipe('en-US').transform(result.date, 'dd.mm.yyyy'),
           mark: result.mark
         })),
-        switchMap(labsMark => this.labService.setLabsMark(labsMark))
-      ).subscribe((result ) => {
-        if (result.Code === '200') {
-          this.refreshStudents();
-        }
+      ).subscribe((labMark) => {
+        this.store.dispatch(labsActions.setLabMark({ labMark }));
       }));
 
     }
   }
 
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
-
-  getMissingTooltip(studentMark: StudentMark) {
+  getMissingTooltip(studentMark: StudentMark, schedule: ScheduleProtectionLabs[]) {
     const missingSchedule = studentMark.LabVisitingMark
-    .filter(visiting => this.labProperty.scheduleProtectionLabs
+    .filter(visiting => schedule
       .find(schedule => schedule.ScheduleProtectionLabId === visiting.ScheduleProtectionLabId)
-    ).map(visiting => ({ mark: visiting.Mark, date: this.labProperty.scheduleProtectionLabs
+    ).map(visiting => ({ mark: visiting.Mark, date: schedule
       .find(schedule => schedule.ScheduleProtectionLabId === visiting.ScheduleProtectionLabId).Date}))
       .filter(sc => !!sc.mark);
     return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${sc.date}`).join('\n');
   }
 
+  private getLabMark(mark: LabMark, studentId: number) {
+    const dateValues = mark.Date.split('.');
+    return {
+      id: mark.StudentLabMarkId ? mark.StudentLabMarkId : 0,
+      comment: mark.Comment,
+      mark: mark.Mark,
+      date: mark.Date ? new Date(+dateValues[2], +dateValues[1], +dateValues[1]) : new Date( ),
+      labId: mark.LabId,
+      studentId: studentId,
+    }
+  };
+
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    this.store.dispatch(labsActions.resetLabs());
   }
 }

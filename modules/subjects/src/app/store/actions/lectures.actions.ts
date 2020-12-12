@@ -65,10 +65,6 @@ export const setLecturesVisitingDate = createAction(
   props<{ lecturesMarks: LecturesMarksVisiting[] }>()
 );
 
-export const downloadExcel = createAction(
-  '[Lectures] Download Excel'
-);
-
 export const resetVisiting = createAction(
   '[Lectures] Reset Visiting'
 );
@@ -82,5 +78,10 @@ export const deleteDateVisit = createAction(
   '[Lectures] Delete Date Visit',
   props<{ id: number }>()
 );
+
+export const getVisitingExcel = createAction(
+  '[Lectures] Get Visiting Excel'
+);
+
 
 

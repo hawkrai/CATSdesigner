@@ -6,7 +6,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {SubjectNewsModule} from './modules/subject-news/subject-news.module';
 import {LecturesModule} from './modules/lectures/lectures.module';
-import {SideMenuComponent} from './components/side-menu/side-menu.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LabsModule} from './modules/labs/labs.module';
 import {DeletePopoverComponent} from "./shared/delete-popover/delete-popover.component";
@@ -39,7 +38,6 @@ import { FilesEffects } from './store/effects/files.effects';
 @NgModule({
   declarations: [
     AppComponent,
-    SideMenuComponent,
     DeletePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,

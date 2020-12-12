@@ -1,15 +1,6 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content class="results__popover" #popoverContent>
   <form class="example-form" [formGroup]="markForm">
-    <!-- <mat-form-field appearance="fill" class="example-full-width">
-        <mat-label>Преподаватель</mat-label>
-        <mat-select formControlName="lector">
-          <mat-option>Выберете преподавателя</mat-option>
-          <mat-option *ngFor="let lector of joinedLectors$ | async" [value]="lector.LectorId">
-            {{lector.FullName}}
-          </mat-option>
-        </mat-select>
-    </mat-form-field> -->
     <mat-form-field class="example-full-width">
       <mat-label>Выставьте отметку (от 0 до 10)</mat-label>
       <input type="number" matInput formControlName="mark" placeholder="Оценка">
@@ -28,9 +19,9 @@
     <mat-form-field class="example-full-width">
       <mat-label>Комментарий</mat-label>
       <textarea class="results__comment" matInput formControlName="comment"></textarea>
+      <mat-hint *ngIf="lector$ | async as lector"><span *ngIf="data.model.lecturerId">Оценку поставил(а)</span> {{lector.FullName | initials}}</mat-hint>
     </mat-form-field>
   </form>
-  <p *ngIf="lector$ | async as lector">Оценку поставил(а) {{lector.FullName}}</p>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button mat-dialog-close>Отмена</button>

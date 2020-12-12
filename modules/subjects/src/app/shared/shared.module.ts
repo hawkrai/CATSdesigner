@@ -1,3 +1,5 @@
+import { PluckPipe } from './pipes/pluck.pipe';
+import { UniquePipe } from './pipes/unique.pipe';
 import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12,6 +14,8 @@ import { ToColumnPipe } from './pipes/to-column.pipe';
 import { FileUploaderComponent } from './components/file-uploader/file-uploader.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { VisitDatePopoverComponent } from './visit-date-popover/visit-date-popover.component';
+import { InitialsPipe } from './pipes/initials.pipe';
+import { OrderByPipe } from './pipes/order-by.pipe';
 
 @NgModule({
   declarations: [
@@ -22,7 +26,11 @@ import { VisitDatePopoverComponent } from './visit-date-popover/visit-date-popov
     ToColumnPipe,
     FileUploaderComponent,
     LoaderComponent,
-    VisitDatePopoverComponent
+    VisitDatePopoverComponent,
+    UniquePipe,
+    PluckPipe,
+    InitialsPipe,
+    OrderByPipe
   ],
   imports: [
     CommonModule,
@@ -39,7 +47,11 @@ import { VisitDatePopoverComponent } from './visit-date-popover/visit-date-popov
     ToColumnPipe,
     FlatpickrModule,
     FileUploaderComponent,
-    VisitDatePopoverComponent
+    VisitDatePopoverComponent,
+    UniquePipe,
+    PluckPipe,
+    InitialsPipe,
+    OrderByPipe
   ]
 })
 export class SharedModule { }
