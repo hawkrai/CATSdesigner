@@ -12,12 +12,12 @@
       </div>
     </div>
   </div>
-  <div class="test-execution-block-question">
-    <app-question *ngIf="question" [question]="question" [questionNumber]="questionNumber"
+  <div class="test-execution-block-question" *ngIf="question">
+    <app-question class="test-execution-block-question" [question]="question" [questionNumber]="questionNumber"
                   (goToNextQuestion)="nextQuestion($event)" [test]="test"></app-question>
+  </div>
+  <div class="test-execution-block-question-spinner" *ngIf="!question">
     <mat-progress-spinner
-      *ngIf="!question"
-      class="example-margin"
       [color]="'primary'"
       [mode]="'indeterminate'">
     </mat-progress-spinner>
