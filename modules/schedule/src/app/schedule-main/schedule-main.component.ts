@@ -14,6 +14,7 @@ import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.compon
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 import {DatePipe} from '@angular/common';
 import {SelectEventTypeComponent} from '../modal/select-event-type/select-event-type.component';
+import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 
 
 const colors: any = {
@@ -59,10 +60,11 @@ export class ScheduleMainComponent implements OnInit {
               private noteService: NoteService,
               private overlay: Overlay,
               private dialog: MatDialog,
-              private datePipe: DatePipe) {}
+              private datePipe: DatePipe,
+              private modulecommunicationservice: ModuleCommunicationService) {}
 
   ngOnInit() {
-    //localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
     console.log(this.isLoadActive);
@@ -211,12 +213,9 @@ export class ScheduleMainComponent implements OnInit {
     const message: Message = new Message();
     message.Value = this.getReferenceToSubject(title);
     message.Type = 'Route';
-    this.sendMessage(message);
+    this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
-  public sendMessage(message: Message): void {
-    window.parent.postMessage([{channel: message.Type, value: message.Value}], '*');
-  }
 
   getToolTip(title: string): any {
     const splitted = title.split('|', 8);
