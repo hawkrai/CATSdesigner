@@ -1,10 +1,8 @@
-<div class="check-plagiarism" [ngClass]="{'result': result}">
-  <h1 mat-dialog-title>Проверка на плагиат</h1>
-  <div *ngIf="!isLoad; else: load">
-  </div>
-  <div *ngIf="result">
+<div class="check-plagiarism result" *ngIf="plagResults$ | async as plagResults; else load">
+  <h2 mat-dialog-title>Проверка на плагиат</h2>
+  <div *ngIf="plagResults">
       <table mat-table
-             [dataSource]="result"
+             [dataSource]="plagResults"
              class="mat-elevation-z14 example-list">
 
         <ng-container matColumnDef="coeff">

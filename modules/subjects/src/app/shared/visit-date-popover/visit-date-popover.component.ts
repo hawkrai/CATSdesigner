@@ -62,7 +62,7 @@ export class VisitDatePopoverComponent {
       body: 'дату и все связанные с ней данные',
       buttonText: 'Удалить'
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

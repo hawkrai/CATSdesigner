@@ -60,7 +60,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
       title: 'Даты занятий',
       buttonText: 'Добавить'
     };
-    this.dialogService.openDialog(dialogData, VisitDateLecturesPopoverComponent);
+    this.dialogService.openDialog(VisitDateLecturesPopoverComponent, dialogData);
   }
 
   deletePopover() {
@@ -69,7 +69,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
       body: 'даты и все связанные с ними данные',
       buttonText: 'Удалить'
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -94,7 +94,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
         buttonText: 'Сохранить',
         body: visits
       };
-      const dialogRef = this.dialogService.openDialog(dialogData, VisitingPopoverComponent);
+      const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs(lecturesMarksVisiting, index, result.students) }));

@@ -48,3 +48,13 @@ export const deleteFileSuccess = createAction(
 export const loadSubjectFiles = createAction(
     '[Files] Load Subject Files'
 );
+
+export const getExcelData = createAction(
+    '[Files] Get Excel Data',
+    props<{ response: Blob }>()
+);
+
+export const getZipData = createAction(
+    '[Files] Get Zip Data',
+    props<{ response: ArrayBuffer }>()
+);

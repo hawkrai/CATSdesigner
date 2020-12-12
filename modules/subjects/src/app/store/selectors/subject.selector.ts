@@ -24,6 +24,11 @@ export const getUser = createSelector(
   state => state.user
 );
 
+export const getUserId = createSelector(
+  getUser,
+  user => user ? user.id : null
+);
+
 export const isTeacher = createSelector(
   getUser,
   user => user && user.role.toLowerCase() === 'lector'

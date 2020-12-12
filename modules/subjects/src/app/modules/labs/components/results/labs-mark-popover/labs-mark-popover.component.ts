@@ -1,17 +1,18 @@
-import { Observable } from 'rxjs';
+import { iif, Observable } from 'rxjs';
 import {Component, Inject, OnInit} from '@angular/core';
+import { Store } from '@ngrx/store';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {DialogData} from '../../../../../models/dialog-data.model';
-import {DatePipe} from '@angular/common';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
-import {IAppState} from '../../../../../store/state/app.state';
-import {Store} from '@ngrx/store';
-import {SubjectService} from '../../../../../services/subject.service';
 
+import {SubjectService} from '../../../../../services/subject.service';
 import {validateDate} from '../../../../../shared/validators/date.validator';
 import { Lector } from 'src/app/models/lector.model';
+import { IAppState } from 'src/app/store/state/app.state';
+import {DialogData} from '../../../../../models/dialog-data.model';
+import * as subjectSelectors from '../../../../../store/selectors/subject.selector';
+import { switchMap } from 'rxjs/operators';
 
 export const MY_FORMATS = {
   parse: {
@@ -51,17 +52,19 @@ export class LabsMarkPopoverComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<LabsMarkPopoverComponent>,
     private subjectService: SubjectService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private datePipe: DatePipe) {
+    private store: Store<IAppState>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    ) {
 
     this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {
-    console.log(this.data.model.lecturerId);
-    if (this.data.model.lecturerId) {
-      this.lector$ = this.subjectService.getLector(this.data.model.lecturerId);
-    }
+    this.lector$ = iif(() => this.data.model.lecturerId, 
+    this.subjectService.getLector(this.data.model.lecturerId),
+    this.store.select(subjectSelectors.getUser).pipe(
+      switchMap(user => this.subjectService.getLector(+user.id))
+    )) ;
     Object.keys(this.markForm.controls).forEach(k => {
       this.markForm.patchValue({ [k]: this.data.body[k] });
     });

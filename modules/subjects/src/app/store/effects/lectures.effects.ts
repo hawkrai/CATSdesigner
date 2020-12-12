@@ -4,11 +4,12 @@ import { Store } from '@ngrx/store';
 
 import {IAppState} from '../state/app.state';
 import {LecturesRestService} from '../../services/lectures/lectures-rest.service';
-import {map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap, withLatestFrom} from 'rxjs/operators';
 import * as lecturesActions from '../actions/lectures.actions';
 import * as subjectSelectors from '../selectors/subject.selector';
 import * as leacturesSelectors from '../selectors/lectures.selectors';
 import * as groupsSelectors from '../selectors/groups.selectors';
+import * as filesActions from '../actions/files.actions';
 
 @Injectable()
 export class LecturesEffects {
@@ -81,14 +82,6 @@ export class LecturesEffects {
     ))
   ));
 
-  downloadExcel = createEffect(() => this.actions$.pipe(
-    ofType(lecturesActions.downloadExcel),
-    withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
-    tap(([_, subjectId, groupId]) => {
-      // window.open(`/Statistic/GetVisitLecture?subjectId=${subjectId}&groupId=${groupId}`, '_blank')
-    })
-  ), { dispatch: false});
-
   createDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
@@ -101,6 +94,14 @@ export class LecturesEffects {
     ofType(lecturesActions.deleteDateVisit),
     switchMap(({ id }) => this.rest.deleteDateVisit(id).pipe(
       map(() => lecturesActions.loadCalendar())
+    ))
+  ));
+
+  downloadExcel = createEffect(() => this.actions$.pipe(
+    ofType(lecturesActions.getVisitingExcel),
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
+    switchMap(([_, subjectId, groupId]) => this.rest.getVisitingExcel(subjectId, groupId).pipe(
+      map((response) => filesActions.getExcelData({ response }))
     ))
   ));
 }

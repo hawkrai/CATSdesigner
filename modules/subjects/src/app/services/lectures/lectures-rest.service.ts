@@ -1,8 +1,9 @@
-import { CreateLectureEntity } from './../../models/form/create-lecture-entity.model';
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from "rxjs/operators";
+
+import { CreateLectureEntity } from './../../models/form/create-lecture-entity.model';
 import {Calendar} from "../../models/calendar.model";
 import {Lecture} from "../../models/lecture.model";
 import {GroupsVisiting, LecturesMarksVisiting} from "../../models/visiting-mark/groups-visiting.model";
@@ -62,5 +63,13 @@ export class LecturesRestService {
 
   public setLecturesVisitingDate(body: {lecturesMarks: LecturesMarksVisiting[]}): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/SaveMarksCalendarData', body);
+  }
+
+  public getVisitingExcel(subjectId: number, groupId: number): Observable<Blob> {
+    const params = new HttpParams()
+      .set('subjectId', subjectId.toString())
+      .set('groupId', groupId.toString());
+
+    return this.http.get('Statistic/GetVisitLecture', { params, responseType: 'blob' });
   }
 }

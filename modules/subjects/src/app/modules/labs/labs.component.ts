@@ -1,5 +1,5 @@
 import { Observable, combineLatest } from 'rxjs';
-import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {Store} from '@ngrx/store';
 import {ComponentType} from '@angular/cdk/typings/portal';
@@ -13,7 +13,10 @@ import * as groupsActions from '../../store/actions/groups.actions';
 import {Group} from '../../models/group.model';
 import {DialogData} from '../../models/dialog-data.model';
 import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
+
 import * as labsActions from '../../store/actions/labs.actions';
+import * as filesActions from '../../store/actions/files.actions';
+import { MatSlideToggleChange } from '@angular/material';
 
 interface State {
   groups: Group[];
@@ -33,8 +36,6 @@ export class LabsComponent implements OnInit, OnDestroy {
   selectedTab = 0;
   public state$: Observable<State>;
   public detachedGroup = false;
-
-  public refreshJobProtection = new EventEmitter();
 
   constructor(
     public dialog: MatDialog,
@@ -63,7 +64,7 @@ export class LabsComponent implements OnInit, OnDestroy {
     }
   }
 
-  groupStatusChange(event) {
+  groupStatusChange(event: MatSlideToggleChange): void {
     this.detachedGroup = event.checked;
     this.loadGroup()
   }
@@ -75,25 +76,20 @@ export class LabsComponent implements OnInit, OnDestroy {
     }
   }
 
-  downloadAll(group: Group, subjectId: number) {
-    location.href = 'http://localhost:8080/Subject/GetZipLabs?id=' +  group.GroupId + '&subjectId=' + subjectId;
+  downloadAll() {
+    this.store.dispatch(labsActions.getLabsAsZip());
   }
 
-  getExcelFile(group: Group, subjectId: number): void {
-    if (!group) {
-      return;
-    }
-    const url = 'http://localhost:8080/Statistic/';
+  getExcelFile(): void {
     if (this.selectedTab === 2) {
-      location.href = url + 'GetVisitLabs?subjectId=' +  subjectId + '&groupId=' + group.GroupId +
-        '&subGroupOneId=' + group.SubGroupsOne.SubGroupId + '&subGroupTwoId=' + group.SubGroupsTwo.SubGroupId;
+      this.store.dispatch(labsActions.getVisitingExcel());
     } else if (this.selectedTab === 3) {
-      location.href = url + 'GetLabsMarks?subjectId=' +  subjectId + '&groupId=' + group.GroupId;
+      this.store.dispatch(labsActions.getMarksExcel());
     }
   }
 
-  _refreshJobProtection() {
-    this.refreshJobProtection.emit(new Date());
+  refreshJobProtection() {
+    this.store.dispatch(labsActions.refreshJobProtection());
   }
 
   checkPlagiarism(subjectId: number) {
