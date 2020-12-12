@@ -1,3 +1,5 @@
+import { Adaptivity } from "./Adaptivity";
+
 export interface DialogData {
   width?: string;
   title?: string;  
@@ -18,7 +20,6 @@ export interface DialogData {
 
   //Adaptive Learning
   isAdaptive?: boolean;
-  needToChooseAdaptivityType?: boolean;
-  needToGetInitialTest?: boolean;
-  shouldWaitPresettedTime?: boolean;
+  adaptivityType?: number;
+  adaptivity?: Adaptivity; 
 }
