@@ -26,7 +26,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             StudentId = student.Id;
             FullName = student.FullName;
             GroupId = student.GroupId;
-            Login = student.User.UserName;
+            Login = student.User != null ? student.User.UserName : string.Empty;
             LabVisitingMark = new List<LabVisitingMarkViewData>();
             PracticalVisitingMark = new List<PracticalVisitingMarkViewData>();
             StudentLabMarks = new List<StudentLabMarkViewData>();
