@@ -18,7 +18,10 @@ import { AdminComponent } from './admin/admin.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 import { RegisterComponent } from './register/register.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { AboutComponent } from './about/about.component';
+import { MatButtonModule } from '@angular/material/button';
 import { ResetComponent } from './reset/reset.component';
+
 
 @NgModule({
   declarations: [
@@ -32,6 +35,7 @@ import { ResetComponent } from './reset/reset.component';
     ProgressControlComponent,
     RegisterComponent,
     ConfirmationComponent,
+    AboutComponent,
     ResetComponent
   ],
   imports: [
@@ -40,8 +44,8 @@ import { ResetComponent } from './reset/reset.component';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatetialModule,
-    CoreModule
-    
+    CoreModule,
+    MatButtonModule
   ],
   providers: [
     LayoutService
@@ -49,3 +53,5 @@ import { ResetComponent } from './reset/reset.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
