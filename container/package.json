@@ -24,6 +24,7 @@
     "@angular/router": "~9.1.1",
     "ngx-post-message": "^1.5.3",
     "rxjs": "~6.5.4",
+    "test-mipe-bntu-schedule": "0.0.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

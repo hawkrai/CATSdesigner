@@ -68,7 +68,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
       buttonText: 'Скачать',
       body: JSON.parse(JSON.stringify(attachments))
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, FileDownloadPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -97,7 +97,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
       buttonText: 'Сохранить',
       model: newLecture
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, LecturePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(LecturePopoverComponent, dialogData);
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
@@ -115,7 +115,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
       buttonText: 'Удалить',
       model: lecture.LecturesId
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {

@@ -53,12 +53,10 @@ export class CoreService {
       if (message.channel === 'SubjectId') {
         const currentSubject = this.getCurrentSubject();
         if (!currentSubject || currentSubject.id !== +message.value) {
-          console.log('new subject');
           this.subjectIdSub.next(+message.value);
         }
       }  
       if (message.channel === 'UpdateSubjects') {
-        console.log('update subjects');
         this.updateSubjectSub.next();
       }
     };

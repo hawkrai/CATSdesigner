@@ -32,7 +32,7 @@ export class FilesService {
   }
   
   public deleteFile(deleteUrl: string): Observable<any> {
-    return this.http.delete(deleteUrl);
+    return this.http.post(deleteUrl, null);
   }
 
 }

@@ -70,7 +70,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
       buttonText: 'Сохранить',
       model: newNews
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, NewsPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(NewsPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -89,7 +89,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
       buttonText: 'Удалить',
       model: news.NewsId
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {

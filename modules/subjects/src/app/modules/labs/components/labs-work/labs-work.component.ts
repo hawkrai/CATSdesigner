@@ -4,7 +4,7 @@ import { MatTable } from '@angular/material';
 import {Store} from '@ngrx/store';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { SubSink } from 'subsink';
-import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, AfterViewChecked, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, AfterViewChecked, ViewChild } from '@angular/core';
 
 import {Lab} from "../../../../models/lab.model";
 import {IAppState} from '../../../../store/state/app.state';
@@ -23,13 +23,11 @@ import { attachmentConverter } from 'src/app/utils';
   templateUrl: './labs-work.component.html',
   styleUrls: ['./labs-work.component.less']
 })
-export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
+export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
-  public defaultColumns = ['position', 'theme', 'shortName', 'clock'];
-  public displayedColumns: string[] = [];
   public labs$: Observable<Lab[]>;
   private prefix = 'ЛР';
 
@@ -44,11 +42,9 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     this.labs$ = this.store.select(labsSelectors.getLabs);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.isTeacher) {
-      const column = this.isTeacher ? 'actions' : 'files';
-      this.displayedColumns = [...this.defaultColumns, column];
-    }
+  getDisplayedColumns(): string[] {
+    const defaultColumns = ['position', 'theme', 'shortName', 'clock'];
+    return defaultColumns.concat(this.isTeacher ? 'actions' : 'files');
   }
 
   ngAfterViewChecked(): void {
@@ -67,7 +63,7 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       buttonText: 'Сохранить',
       model: newLab
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, LabWorkPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(LabWorkPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -85,7 +81,7 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       body: 'лабораторную работу "' + lab.Theme + '"',
       buttonText: 'Удалить'
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -102,7 +98,7 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       buttonText: 'Скачать',
       body: JSON.parse(JSON.stringify(attachments))
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, FileDownloadPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

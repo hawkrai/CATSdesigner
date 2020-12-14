@@ -5,7 +5,7 @@ import {SubSink} from 'subsink';
 
 import {DialogData} from '../../../models/dialog-data.model';
 import {SubjectService} from '../../../services/subject.service';
-import { SubjectForm } from 'src/app/models/subject-form.model';
+import { SubjectForm } from 'src/app/models/form/subject-form.model';
 
 
 interface Group {

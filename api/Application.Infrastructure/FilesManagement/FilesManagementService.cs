@@ -68,11 +68,11 @@ namespace Application.Infrastructure.FilesManagement
             }
         }
 
-        public void DeleteFileAttachment(string filePath, string fileName)
+        public void DeleteFileAttachment(string pathName, string fileName)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-            var attachment = repositoriesContainer.AttachmentRepository.GetBy(new Query<Attachment>(x => x.PathName == filePath && x.FileName == fileName));
-            var tempFilePath = Path.Combine(_tempStorageRoot, fileName);
+            var attachment = repositoriesContainer.AttachmentRepository.GetBy(new Query<Attachment>(x => x.PathName == pathName && x.FileName == fileName));
+            var tempFilePath = Path.Combine(_tempStorageRoot, attachment.FileName);
             if (attachment != null)
             {
                 DeleteFileAttachment(attachment);

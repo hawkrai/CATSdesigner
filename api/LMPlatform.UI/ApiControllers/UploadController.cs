@@ -34,14 +34,12 @@ namespace LMPlatform.UI.ApiControllers
 
 		#region UploadController Members
 
-		[System.Web.Http.HttpDelete]
-		public HttpStatusCodeResult DeleteFiles()
+		[System.Web.Http.HttpPost]
+		public HttpStatusCodeResult DeleteFiles(string filename)
 		{
 			try
             {
-				var context = HttpContext.Current;
-				var fileName = context.Request.QueryString["filename"];
-				var split = fileName.Split(new string[] { "//" }, StringSplitOptions.None);
+				var split = filename.Split(new string[] { "//" }, StringSplitOptions.None);
 				FilesManagementService.DeleteFileAttachment(split[0], split[1]);
 				return new HttpStatusCodeResult(HttpStatusCode.OK);
 			} catch (Exception ex)

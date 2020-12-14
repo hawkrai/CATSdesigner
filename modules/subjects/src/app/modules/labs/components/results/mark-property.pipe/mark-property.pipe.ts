@@ -1,3 +1,4 @@
+import { LabMark } from './../../../../../models/mark/lab-mark.model';
 import {Pipe, PipeTransform} from '@angular/core';
 
 import { Lab, ScheduleProtectionLabs } from '../../../../../models/lab.model';
@@ -8,17 +9,17 @@ import { StudentMark } from './../../../../../models/student-mark.model';
   name: 'markProperty'
 })
 export class MarkPropertyPipe implements PipeTransform {
-  transform(value: StudentMark, labId: number, { labs, scheduleProtectionLabs }: { labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[] }): any {
+  transform(value: StudentMark, labId: number, labs: Lab[], schedule: ScheduleProtectionLabs[]): { mark: LabMark, recommendedMark: string } {
     const markProperty = {mark: null, recommendedMark: null};
     const mark = value.Marks.find(mark => mark.LabId === labId);
     if (mark && mark.Mark) {
       markProperty.mark = mark;
     } else {
-      for (let i = 0; i < scheduleProtectionLabs.length; i++) {
-        const calendar = scheduleProtectionLabs[i];
+      for (let i = 0; i < schedule.length; i++) {
+        const calendar = schedule[i];
         const oldDateArr = calendar.Date.split('.');
         const oldDate = new Date(oldDateArr[1] + '.' + oldDateArr[0] + '.' + oldDateArr[2]);
-        if (oldDate.valueOf() === new Date().valueOf()) {
+        if (oldDate === new Date()) {
           const lab = labs.find(lab => lab.LabId === labId);
           const scheduleProtectionLab = lab.ScheduleProtectionLabsRecomend.find(res =>
             res.ScheduleProtectionId === calendar.ScheduleProtectionLabId
