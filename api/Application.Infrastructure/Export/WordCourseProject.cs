@@ -40,7 +40,7 @@ namespace Application.Infrastructure.Export
             return response;
         }
 
-        public static HttpResponseMessage CourseProjectsToArchive(string fileName, IQueryable<CourseProject> courseProjects)
+        public static HttpResponseMessage CourseProjectsToArchive(string fileName, IList<CourseProject> courseProjects)
         {
             IDictionary<string, byte[]> bytelist = CreateDocs(courseProjects);
 
@@ -71,7 +71,7 @@ namespace Application.Infrastructure.Export
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = pushStreamContent };
         }
 
-        private static IDictionary<string, byte[]> CreateDocs(IQueryable<CourseProject> courseProjects)
+        private static IDictionary<string, byte[]> CreateDocs(IList<CourseProject> courseProjects)
         {
             var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
             IDictionary<string, byte[]> byteList = new Dictionary<string, byte[]>(courseProjects.Count());
