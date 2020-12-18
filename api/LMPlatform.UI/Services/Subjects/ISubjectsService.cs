@@ -22,5 +22,6 @@ namespace LMPlatform.UI.Services.Subjects
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "/Modules/{subjectId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         IEnumerable<ModulesViewModel> GetSubjectModules(string subjectId);
+
     }
 }

@@ -20,6 +20,12 @@ namespace Application.Infrastructure.GroupManagement
 					.Include(e => e.Students.Select(x => x.User)));
         }
 
+        public Group GetGroup(IQuery<Group> query = null)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.GroupsRepository.GetBy(query);
+        }
+
         public Group GetGroupWithLiteStudents(int groupId)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();

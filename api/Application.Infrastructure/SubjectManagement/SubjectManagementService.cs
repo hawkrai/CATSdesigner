@@ -921,10 +921,9 @@ namespace Application.Infrastructure.SubjectManagement
 			return lectures;
 		}
 
-		public Lectures UpdateLectureOrder(int id, int order)
+		public Lectures UpdateLectureOrder(Lectures lecture, int order)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var lecture = repositoriesContainer.LecturesRepository.GetBy(new Query<Lectures>(l => l.Id == id));
 			lecture.Order = order;
 			repositoriesContainer.LecturesRepository.Save(lecture);
 			repositoriesContainer.ApplyChanges();
@@ -932,20 +931,18 @@ namespace Application.Infrastructure.SubjectManagement
 
 		}
 
-		public Practical UpdatePracticalOrder(int id, int order)
+		public Practical UpdatePracticalOrder(Practical practical, int order)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var practical = repositoriesContainer.PracticalRepository.GetBy(new Query<Practical>(p => p.Id == id));
 			practical.Order = order;
 			repositoriesContainer.PracticalRepository.Save(practical);
 			repositoriesContainer.ApplyChanges();
 			return practical;
 		}
 
-		public Labs UpdateLabOrder(int id, int order)
+		public Labs UpdateLabOrder(Labs lab, int order)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var lab = repositoriesContainer.LabsRepository.GetBy(new Query<Labs>(l => l.Id == id));
 			lab.Order = order;
 			repositoriesContainer.LabsRepository.Save(lab);
 			repositoriesContainer.ApplyChanges();
@@ -1315,5 +1312,29 @@ namespace Application.Infrastructure.SubjectManagement
 			return count;
 		}
 
-    }
+		public IList<Labs> GetSubjectLabs(int subjectId)
+		{
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.LabsRepository.GetAll(new Query<Labs>(x => x.SubjectId == subjectId))
+				.OrderBy(x => x.Order)
+				.ToList();
+
+		}
+
+		public IList<Practical> GetSubjectPracticals(int subjectId)
+		{
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.PracticalRepository.GetAll(new Query<Practical>(x => x.SubjectId == subjectId))
+				.OrderBy(x => x.Order)
+				.ToList();
+		}
+
+		public IList<Lectures> GetSubjectLectures(int subjectId)
+		{
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.LecturesRepository.GetAll(new Query<Lectures>(x => x.SubjectId == subjectId))
+				.OrderBy(x => x.Order)
+				.ToList();
+		}
+	}
 }

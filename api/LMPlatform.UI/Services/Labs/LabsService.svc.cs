@@ -204,11 +204,11 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public ResultViewData SaveLabsVisitingDataSingle(int dateId, string mark, string comment, int studentsId, int id)
+		public ResultViewData SaveLabsVisitingDataSingle(int dateId, string mark, string comment, int studentsId, int id, bool showForStudent)
 		{
 			try
 			{
-				SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(id, studentsId, comment, mark, dateId));
+				SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(id, studentsId, comment, mark, dateId, showForStudent));
 
 				return new ResultViewData
 				{
@@ -226,7 +226,7 @@ namespace LMPlatform.UI.Services.Labs
 			}
 		}
 
-        public ResultViewData SaveLabsVisitingData(int dateId, List<string> marks, List<string> comments, List<int> studentsId, List<int> Id, List<StudentsViewData> students)
+        public ResultViewData SaveLabsVisitingData(int dateId, List<string> marks, List<string> comments, List<int> studentsId, List<int> Id, List<StudentsViewData> students, List<bool> showForStudents)
         {
             try
             {
@@ -238,6 +238,7 @@ namespace LMPlatform.UI.Services.Labs
                     var currentComment = comments[i];
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
+					var showForStudent = showForStudents[i];
 
                     foreach (var student in students)
                     {
@@ -247,7 +248,7 @@ namespace LMPlatform.UI.Services.Labs
                             {
                                 if (labVisiting.ScheduleProtectionLabId == dateId)
                                 {
-                                    SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId));
+                                    SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
                                 }
                             }
                         }
@@ -272,11 +273,11 @@ namespace LMPlatform.UI.Services.Labs
         }
 
 
-		public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id)
+		public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id, bool showForStudent)
         {
             try
             {
-				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, WebSecurity.CurrentUserId, mark, comment, date, id));
+				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, WebSecurity.CurrentUserId, mark, comment, date, id, showForStudent));
 
                 return new ResultViewData
                 {
@@ -1040,17 +1041,24 @@ namespace LMPlatform.UI.Services.Labs
 			HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
 		}
 
-        public ResultViewData UpdateLabs(List<UpdateLab> labs)
+        public ResultViewData UpdateLabsOrder(int subjectId, int prevIndex, int curIndex)
         {
             try
             {
-				foreach (var lab in labs)
-				{
-					var response = Save(lab.SubjectId, lab.Id, lab.Theme, lab.Duration, lab.Order, lab.ShortName, lab.PathFile, lab.Attachments);
-					if (response.Code == "500")
+				var labs = SubjectManagementService.GetSubjectLabs(subjectId);
+				if (prevIndex < curIndex)
+                {
+					foreach(var entry in labs.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(labs[prevIndex]).Select((x, index) => new {  Value = x, Index = index}))
                     {
-						throw new Exception("Не удалось обновить лабораторные работы");
+						SubjectManagementService.UpdateLabOrder(entry.Value, entry.Index + prevIndex);
                     }
+                }
+				else
+                {
+					foreach (var entry in new List<Models.Labs> { labs[prevIndex] }.Concat(labs.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
+					{
+						SubjectManagementService.UpdateLabOrder(entry.Value, entry.Index + curIndex);
+					}
 				}
 				return new ResultViewData
 				{
@@ -1067,5 +1075,23 @@ namespace LMPlatform.UI.Services.Labs
 				};
             }
         }
+
+        public HasProtectionViewData HasJobProtections(int subjectId)
+        {
+			var subjectGroups = GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId))
+				.Include(x => x.Students));
+
+			var subjectNewFilse = SubjectManagementService.GetUserLabFiles(0, subjectId)
+				.Where(x => !x.IsReceived && !x.IsReturned && !x.IsCoursProject);
+
+			return new HasProtectionViewData
+			{
+				HasJobProtections = subjectGroups.Select(x => new HasJobProtection
+				{
+					GroupId = x.Id,
+					HasJob = x.Students.Any(student => subjectNewFilse.Any(x => x.UserId == student.Id))
+				})
+			};
+		}
     }
 }

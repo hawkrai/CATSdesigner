@@ -23,12 +23,8 @@ namespace LMPlatform.UI.Services.Lectures
         ResultViewData Save(int subjectId, int id, string theme, int duration, int order, string pathFile, string attachments);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/UpdateLectureOrder")]
-        ResultViewData UpdateLectureOrder(UpdateOrder obj);
-
-        [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/UpdateLecturesOrder")]
-        ResultViewData UpdateLecturesOrder(List<UpdateOrder> objs);
+        ResultViewData UpdateLecturesOrder(int subjectId, int prevIndex, int curIndex);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/Delete")]
