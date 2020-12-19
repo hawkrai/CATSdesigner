@@ -2,7 +2,6 @@ import { createReducer, on } from '@ngrx/store';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import {initialLabsState, ILabsState} from '../state/labs.state';
 import * as labsActions from '../actions/labs.actions';
-import { Lab } from 'src/app/models/lab.model';
 
 export const labsReducer = createReducer(
   initialLabsState,
@@ -24,10 +23,6 @@ export const labsReducer = createReducer(
     schedule: [],
     students: []
   })),
-  on(labsActions.updateOrderSuccess, (state, { prevIndex, currentIndex }): ILabsState => ({
-      ...state, 
-      labs: state.labs.map((l, index): Lab => index === prevIndex ? { ...l, Order: currentIndex + 1 } : index === currentIndex ? { ...l, Order: prevIndex + 1 } : l)
-  })),
   on(labsActions.loadStudentsLabsFilesSuccess, (state, { studentsLabsFiles }): ILabsState => ({
     ...state,
     studentsLabsFiles
@@ -39,5 +34,9 @@ export const labsReducer = createReducer(
   on(labsActions.updateUserLabsFilesSuccess, (state, { userLabsFiles, userId }): ILabsState => ({
     ...state,
     studentsLabsFiles: state.studentsLabsFiles.map((s): StudentMark => s.StudentId === userId ? { ...s, FileLabs: userLabsFiles } : s)
+  })),
+  on(labsActions.setJobProtections, (state, { hasJobProtections }): ILabsState => ({
+    ...state,
+    hasJobProtections
   }))
 );

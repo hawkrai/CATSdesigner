@@ -29,11 +29,10 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
   @Input() groupId: number;
   private subs = new SubSink();
   
-  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], students: StudentMark[] }>;
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], students: StudentMark[], userId: string }>;
 
   constructor(
     private store: Store<IAppState>,
-    private labsService: LabsRestService,
     public dialogService: DialogService) {
   }
 
@@ -53,9 +52,10 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
     this.state$ = combineLatest(
       this.store.select(labsSelectors.getLabs),
       this.store.select(labsSelectors.getLabsCalendar),
-      this.store.select(labsSelectors.getLabStudents)
+      this.store.select(labsSelectors.getLabStudents),
+      this.store.select(subjectSelectors.getUserId)
     ).pipe(
-      map(([labs, scheduleProtectionLabs, students]) => ({ labs, scheduleProtectionLabs, students }))
+      map(([labs, scheduleProtectionLabs, students, userId]) => ({ labs, scheduleProtectionLabs, students, userId }))
     );
   }
 
@@ -79,7 +79,8 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
         students: students.map(s => ({ 
           name: s.FullName, 
           mark: s.LabVisitingMark[index].Mark, 
-          comment: s.LabVisitingMark[index].Comment 
+          comment: s.LabVisitingMark[index].Comment,
+          showForStudent: s.LabVisitingMark[index].ShowForStudent
         }))
       };
       const dialogData: DialogData = {
@@ -93,16 +94,15 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
         dialogRef.afterClosed().pipe(
           filter(result => result),
           map(result => this.getVisitingLabs(students, index, schedule.ScheduleProtectionLabId, result.students)),
-          switchMap(visiting => this.labsService.setLabsVisitingDate(visiting))
-        ).subscribe(() => {
-          this.store.dispatch(labsActions.loadLabStudents());
+        ).subscribe((visiting) => {
+          this.store.dispatch(labsActions.setLabsVisitingDate({ visiting }));
         })
       );
     }
   }
 
-  private getVisitingLabs(students: StudentMark[], index: number, dateId: number, visits): { Id: number[], comments: string[], dateId: number, marks: string[], students: StudentMark[] } {
-    const visitsModel = { Id: [], comments: [], dateId, marks: [], studentsId: [], students };
+  private getVisitingLabs(students: StudentMark[], index: number, dateId: number, visits): { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } {
+    const visitsModel = { Id: [], comments: [], showForStudents: [], dateId, marks: [], studentsId: [], students };
 
     students.forEach(student => {
       visitsModel.Id.push(student.LabVisitingMark[index].LabVisitingMarkId);
@@ -111,6 +111,7 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
     visits.forEach(visit => {
       visitsModel.marks.push(visit.mark ? visit.mark.toString() : '');
       visitsModel.comments.push(visit.comment);
+      visitsModel.showForStudents.push(visit.showForStudent);
     });
     return visitsModel
   }

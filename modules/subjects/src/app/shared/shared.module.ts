@@ -1,3 +1,6 @@
+import { WidthPipe } from './pipes/width.pipe';
+import { AnyPipe } from './pipes/any.pipe';
+import { FindPipe } from './pipes/find.pipe';
 import { PluckPipe } from './pipes/pluck.pipe';
 import { UniquePipe } from './pipes/unique.pipe';
 import { VarDirective } from './directives/var.directive';
@@ -7,7 +10,7 @@ import {FormsModule} from '@angular/forms';
 import { FlatpickrModule } from 'angularx-flatpickr';
 
 import {FilterPipe} from './pipes/filter.pipe';
-import { PluarPipe } from './pipes/pluar.pipe';
+import { PluralPipe } from './pipes/plural.pipe';
 import { MatModule } from '../mat.module';
 import { FirstLetterUppercasePipe } from './pipes/first-letter-uppercase.pipe';
 import { ToColumnPipe } from './pipes/to-column.pipe';
@@ -16,12 +19,16 @@ import { LoaderComponent } from './components/loader/loader.component';
 import { VisitDatePopoverComponent } from './visit-date-popover/visit-date-popover.component';
 import { InitialsPipe } from './pipes/initials.pipe';
 import { OrderByPipe } from './pipes/order-by.pipe';
+import { DeletePopoverComponent } from './delete-popover/delete-popover.component';
+import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.component';
+import { FileDownloadPopoverComponent } from './file-download-popover/file-download-popover.component';
+import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/check-plagiarism-popover.component';
 
 @NgModule({
   declarations: [
     FilterPipe,
     FirstLetterUppercasePipe,
-    PluarPipe,
+    PluralPipe,
     VarDirective,
     ToColumnPipe,
     FileUploaderComponent,
@@ -30,17 +37,30 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     UniquePipe,
     PluckPipe,
     InitialsPipe,
-    OrderByPipe
-  ],
+    OrderByPipe,
+    DeletePopoverComponent,
+    VisitingPopoverComponent,
+    FileDownloadPopoverComponent,
+    CheckPlagiarismPopoverComponent,
+    FindPipe,
+    AnyPipe,
+    WidthPipe
+    ],
   imports: [
     CommonModule,
     FormsModule,
     MatModule,
     FlatpickrModule.forRoot()
   ],
+  entryComponents: [
+    DeletePopoverComponent,
+    VisitingPopoverComponent,
+    FileDownloadPopoverComponent,
+    CheckPlagiarismPopoverComponent,
+  ],
   exports: [
     FilterPipe,
-    PluarPipe,
+    PluralPipe,
     FirstLetterUppercasePipe,
     CommonModule,
     VarDirective,
@@ -51,7 +71,11 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     UniquePipe,
     PluckPipe,
     InitialsPipe,
-    OrderByPipe
-  ]
+    OrderByPipe,
+    FindPipe,
+    AnyPipe,
+    WidthPipe
+  ],
+
 })
 export class SharedModule { }

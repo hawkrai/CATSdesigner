@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from "rxjs/operators";
 
@@ -22,15 +22,15 @@ export class LecturesRestService {
     );
   }
 
-  public saveLecture(lecture: CreateLectureEntity) {
+  public saveLecture(lecture: CreateLectureEntity): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/Save', lecture);
   }
 
-  public updateLecturesOrder(subjectId: number, lectures: { Id: number, Order: number }[]) {
-    return this.http.post('Services/Lectures/LecturesService.svc/UpdateLecturesOrder', { subjectId, lectures });
+  public updateLecturesOrder(subjectId: number, prevIndex: number, curIndex: number): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/UpdateLecturesOrder', { subjectId, prevIndex, curIndex });
   }
 
-  public deleteLecture(lecture: { id: number, subjectId: number }) {
+  public deleteLecture(lecture: { id: number, subjectId: number }): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/Delete', lecture);
   }
 

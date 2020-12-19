@@ -58,3 +58,12 @@ export const getZipData = createAction(
     '[Files] Get Zip Data',
     props<{ response: ArrayBuffer }>()
 );
+
+export const getAttachmentsAsZip = createAction(
+    '[Files] Get Attachments As Zip',
+    props<{ attachmentsIds: number[] }>()
+);
+
+export const downloadAsZipLoadedFiles = createAction(
+    '[Files] Download As Zip Loaded Files'
+);

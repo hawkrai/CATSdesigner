@@ -20,10 +20,10 @@
     </div>
   </div>
   <ng-template #studentContent>
-    <ng-container [ngTemplateOutlet]="table" [ngTemplateOutletContext]="{item: state.files}"></ng-container>
     <div class="job-protection__actions">
       <button mat-raised-button color="primary" (click)="addLab()">Добавить работу</button>
     </div>
+    <ng-container [ngTemplateOutlet]="table" [ngTemplateOutletContext]="{item: state.files}"></ng-container>
   </ng-template>
   <ng-template #table let-item="item" let-studentId="studentId">
     <table mat-table [dataSource]="item" class="mat-elevation-z14">
@@ -96,7 +96,7 @@
       <button *ngIf="!item.IsReceived"
               mat-icon-button color="primary"
               matTooltip="Принять работу"
-              (click)="receivedLabFile(item.Id)"
+              (click)="receiveLabFile(item.Id)"
       >
         <mat-icon>thumb_up_alt</mat-icon>
       </button>

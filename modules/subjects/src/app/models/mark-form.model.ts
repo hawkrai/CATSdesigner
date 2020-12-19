@@ -3,4 +3,5 @@ export class MarkForm {
   mark: string;
   date: string;
   comment: string;
+  showForStudent: boolean;
 }
