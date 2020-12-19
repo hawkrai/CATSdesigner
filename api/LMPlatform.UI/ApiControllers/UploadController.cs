@@ -14,10 +14,12 @@ using Application.Core.Exceptions;
 using Application.Core.UI;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.FilesManagement;
+using LMPlatform.UI.Attributes;
 using Newtonsoft.Json;
 
 namespace LMPlatform.UI.ApiControllers
 {
+    [JwtAuth]
     public class UploadController : ApiController
 	{
 		private readonly LazyDependency<IFilesManagementService> _filesManagementService = new LazyDependency<IFilesManagementService>();

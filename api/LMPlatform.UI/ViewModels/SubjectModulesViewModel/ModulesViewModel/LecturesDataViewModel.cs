@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Helpers;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
@@ -125,7 +126,7 @@ namespace LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel
                 Order = 0,
                 Attachments = PathFile,
                 Id = LecturesId
-            }, attachments, WebSecurity.CurrentUserId);
+            }, attachments, UserContext.CurrentUserId);
             return true;
         }
     }

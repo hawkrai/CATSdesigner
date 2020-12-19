@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using Application.Core.Extensions;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.BugManagement;
 using Application.Infrastructure.LecturerManagement;
@@ -89,7 +90,7 @@ namespace LMPlatform.UI.Controllers
         [HttpPost]
         public ActionResult SaveProject(AddOrEditProjectViewModel model)
         {
-            model.Save(WebSecurity.CurrentUserId);
+            model.Save(UserContext.CurrentUserId);
             return StatusCode(HttpStatusCode.OK);
         }
 
@@ -127,12 +128,12 @@ namespace LMPlatform.UI.Controllers
         [HttpPost]
         public ActionResult SaveBug(AddOrEditBugViewModel model)
         {
-            model.Save(WebSecurity.CurrentUserId, _currentProjectId);
+            model.Save(UserContext.CurrentUserId, _currentProjectId);
             var bugLog = new BugLog
             {
                 BugId = model.BugId,
-                UserId = WebSecurity.CurrentUserId,
-                UserName = this.ProjectManagementService.GetCreatorName(WebSecurity.CurrentUserId),
+                UserId = UserContext.CurrentUserId,
+                UserName = this.ProjectManagementService.GetCreatorName(UserContext.CurrentUserId),
                 PrevStatusId = _prevBugStatus,
                 CurrStatusId = model.StatusId,
                 LogDate = DateTime.Now
@@ -171,7 +172,7 @@ namespace LMPlatform.UI.Controllers
             var users = new List<User>();
 
             var currProjectUser =
-                context.GetProjectUsers(_currentProjectId).Single(e => e.UserId == WebSecurity.CurrentUserId);
+                context.GetProjectUsers(_currentProjectId).Single(e => e.UserId == UserContext.CurrentUserId);
             if (currProjectUser.ProjectRoleId == 1)
                 users.Add(_context.GetUser(currProjectUser.UserId));
             else
@@ -192,9 +193,9 @@ namespace LMPlatform.UI.Controllers
             var bug = new BugManagementService().GetBug(_currentBugId);
             var context = new ProjectManagementService();
             var projectRoleId = context.GetProjectUsers(bug.ProjectId)
-                .Single(e => e.UserId == WebSecurity.CurrentUserId).ProjectRoleId;
+                .Single(e => e.UserId == UserContext.CurrentUserId).ProjectRoleId;
             return bug.AssignedDeveloperId == 0 && projectRoleId == 1 ||
-                   bug.AssignedDeveloperId == WebSecurity.CurrentUserId || projectRoleId != 1;
+                   bug.AssignedDeveloperId == UserContext.CurrentUserId || projectRoleId != 1;
         }
 
         [HttpGet]

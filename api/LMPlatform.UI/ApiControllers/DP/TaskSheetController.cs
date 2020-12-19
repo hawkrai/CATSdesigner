@@ -2,12 +2,15 @@
 using System.Net.Http;
 using System.Web.Http;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.DTO;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.DP
 {
+    [JwtAuth]
     public class TaskSheetController : ApiController
     {
         public object Get(int diplomProjectId)
@@ -22,7 +25,7 @@ namespace LMPlatform.UI.ApiControllers.DP
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }
 
-            DpManagementService.SaveTaskSheet(WebSecurity.CurrentUserId, taskSheet);
+            DpManagementService.SaveTaskSheet(UserContext.CurrentUserId, taskSheet);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

@@ -5,12 +5,15 @@ using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CpTaskSheetController : ApiController
     {
         public object Get(int courseProjectId)
@@ -20,7 +23,7 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public List<TaskSheetData> Get([ModelBinder] GetPagedListParams parms)
         {
-            return CpManagementService.GetTaskSheets(WebSecurity.CurrentUserId, parms);
+            return CpManagementService.GetTaskSheets(UserContext.CurrentUserId, parms);
         }
 
         public HttpResponseMessage Post([FromBody]TaskSheetData taskSheet)
@@ -30,7 +33,7 @@ namespace LMPlatform.UI.ApiControllers.CP
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }
 
-            CpManagementService.SaveTaskSheet(WebSecurity.CurrentUserId, taskSheet);
+            CpManagementService.SaveTaskSheet(UserContext.CurrentUserId, taskSheet);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.BugManagement;
 using LMPlatform.UI.Services.Modules.BTS;
 using WebMatrix.WebData;
@@ -16,9 +17,9 @@ namespace LMPlatform.UI.Services.BTS
 
         public BugsResult Index(int pageSize, int pageNumber, string sortingPropertyName, bool desc = false, string searchString = null)
         {
-            var bugs = BugManagementService.GetUserBugs(WebSecurity.CurrentUserId, pageSize, pageNumber, sortingPropertyName, desc, searchString)
+            var bugs = BugManagementService.GetUserBugs(UserContext.CurrentUserId, pageSize, pageNumber, sortingPropertyName, desc, searchString)
                 .Select(e => new BugViewData(e)).ToList();
-            var totalCount = BugManagementService.GetUserBugsCount(WebSecurity.CurrentUserId, searchString);
+            var totalCount = BugManagementService.GetUserBugsCount(UserContext.CurrentUserId, searchString);
             return new BugsResult
             {
                 Bugs = bugs,

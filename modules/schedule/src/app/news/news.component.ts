@@ -4,6 +4,7 @@ import {LessonService} from '../service/lesson.service';
 import {MatDialog} from '@angular/material/dialog';
 import {NewsInfoComponent} from '../modal/news-info/news-info.component';
 import {Message} from '../../../../../container/src/app/core/models/message';
+import {ModuleCommunicationComponent, ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 
 @Component({
   selector: 'app-news',
@@ -20,10 +21,11 @@ export class NewsComponent implements OnInit {
 
   constructor(private newsService: NewsService,
               private lessonservice: LessonService,
+              private modulecommunicationservice: ModuleCommunicationService,
               private dialog: MatDialog) { }
 
   ngOnInit() {
-    localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
       this.subjects = subjects;
@@ -63,11 +65,7 @@ export class NewsComponent implements OnInit {
     const message: Message = new Message();
     message.Value = '/Subject?subjectId=' + item.SubjectId;
     message.Type = 'Route';
-    this.sendMessage(message);
-  }
-
-  public sendMessage(message: Message): void {
-    window.parent.postMessage([{channel: message.Type, value: message.Value}], '*');
+    this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
   public calcColor(item: any): any {

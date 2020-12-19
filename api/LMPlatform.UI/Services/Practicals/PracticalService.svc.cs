@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using LMPlatform.UI.Services.Modules.Practicals;
@@ -14,6 +16,7 @@ using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Services.Practicals
 {
+    [JwtAuth]
     public class PracticalService : IPracticalService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -73,7 +76,7 @@ namespace LMPlatform.UI.Services.Practicals
                     ShortName = shortName,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
                 return new ResultViewData
                 {
                     Message = "Практическое занятие успешно сохранено",

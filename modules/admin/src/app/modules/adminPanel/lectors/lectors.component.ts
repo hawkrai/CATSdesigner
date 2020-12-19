@@ -38,7 +38,7 @@ export class LectorsComponent implements OnInit {
   }
 
   isNotActive(professor) {
-    return professor.IsActive;
+    return !professor.IsActive;
   }
 
   restoreProfessor(professor) {

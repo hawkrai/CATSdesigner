@@ -2,6 +2,6 @@
   <div class="confirmation-text">{{'Вы действительно хотите удалить вопрос?'}}</div>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+  <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
   <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>Да</button>
 </div>

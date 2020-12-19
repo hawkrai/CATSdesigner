@@ -42,10 +42,7 @@ export class LectorModalComponent implements OnInit {
       Name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
       Patronymic: new FormControl('', [Validators.maxLength(50)]),
       IsSecretary: new FormControl(false),
-      IsLecturerHasGraduateStudents: new FormControl(false),
-      GroupId: new FormControl(professor.Groups),
-      QuestionId: new FormControl(1),
-      Answer: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(100)])
+      IsLecturerHasGraduateStudents: new FormControl(false)
     }, {
       validator: MustMatch('Password', 'ConfirmPassword')
     });
@@ -102,9 +99,6 @@ export class LectorModalComponent implements OnInit {
     object.Surname = this.form.controls.Surname.value;
     object.Name = this.form.controls.Name.value || '';
     object.Patronymic = this.form.controls.Patronymic.value || '';
-    object.QuestionId = this.form.controls.QuestionId.value;
-    object.Group = this.form.controls.GroupId.value;
-    object.Answer = this.form.controls.Answer.value;
     object.IsSecretary = this.form.controls.IsSecretary.value;
     object.IsLecturerHasGraduateStudents = this.form.controls.IsLecturerHasGraduateStudents.value;
     return object;

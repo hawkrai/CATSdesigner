@@ -14,7 +14,7 @@ using Application.Infrastructure.GroupManagement;
 
 namespace LMPlatform.UI.Services.Subjects
 {
-    [JwtAuth(Roles = "lector")]
+    [JwtAuth]
     public class SubjectsService : ISubjectsService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -27,7 +27,7 @@ namespace LMPlatform.UI.Services.Subjects
 
         public SubjectsResult GetSubjectsBySession()
         {
-            var subjects = SubjectManagementService.GetUserSubjectsV2(WebSecurity.CurrentUserId);
+            var subjects = SubjectManagementService.GetUserSubjectsV2(UserContext.CurrentUserId);
 
             var result = new SubjectsResult
             {

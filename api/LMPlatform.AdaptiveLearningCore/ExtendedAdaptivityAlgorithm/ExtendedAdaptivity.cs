@@ -26,14 +26,14 @@ namespace LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm
 			var themaSolution = ThemaSolutionLinker.GetThemaSolution(currentPerformance, currentResult, themasForRepeat);
 
 			var nextThemaId = themaSolution == ThemaSolutions.REPEAT_CURRENT ? currentThemaId :
-				themaSolution == ThemaSolutions.GET_NEXT ? allAvailableThemes.First(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN).ThemaId :
+				themaSolution == ThemaSolutions.GET_NEXT ? allAvailableThemes.FirstOrDefault(x => x.ThemaResume == ThemaResume.NEED_TO_LEARN && x.ThemaId != currentThemaId)?.ThemaId :
 				themaSolution == ThemaSolutions.REPEAT_PREV ? GetThemaForRepeat(themasForRepeat, currentPerformance) : default(int?);
 			
 			return new ThemaResult() 
 			{
 				ThemaId = currentThemaId,
 				ResultByCurrentThema = currentResult,
-				NextStepSolution = themaSolution,
+				NextStepSolution = nextThemaId is null ? ThemaSolutions.END_PROCCESS : themaSolution,
 				NextThemaId = nextThemaId
 			};
 		}

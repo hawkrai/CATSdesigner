@@ -4,18 +4,21 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.Export;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
+    [JwtAuth]
     public class CpController : Controller
     {
         private readonly LazyDependency<ICPManagementService> _cpManagementService =
@@ -40,7 +43,7 @@ namespace LMPlatform.UI.Controllers
 
         public ActionResult Subjects(int subjectId)
         {
-            var s = this.SubjectManagementService.GetUserSubjects(WebSecurity.CurrentUserId).Where(e => !e.IsArchive);
+            var s = this.SubjectManagementService.GetUserSubjects(UserContext.CurrentUserId).Where(e => !e.IsArchive);
             var courseProjectSubjects = s.Where(cs =>
                     this.ModulesManagementService.GetModules(cs.Id).Any(m => m.ModuleType == ModuleType.YeManagment))
                 .Select(e => new SubjectViewModel(e)).ToList();
@@ -84,11 +87,11 @@ namespace LMPlatform.UI.Controllers
             if (courseProjects.Count() > 0)
             {
                 fileName = courseProjects.FirstOrDefault().AssignedCourseProjects.FirstOrDefault().Student.Group.Name;
-                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+                //WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
             }
             else
             {
-                WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
+                //WordCourseProject.CourseProjectsToArchive(fileName, courseProjects, this.Response);
             }
 
         }
@@ -138,7 +141,7 @@ namespace LMPlatform.UI.Controllers
                     Body = body,
                     Disabled = bool.Parse(disabled),
                     EditDate = DateTime.Now
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
                 return new JsonResult
                 {
                     Data = new

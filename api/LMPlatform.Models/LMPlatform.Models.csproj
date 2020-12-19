@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessCode.cs" />
+    <Compile Include="AdaptiveLearningProgress.cs" />
     <Compile Include="AdaptivityLearning\AdaptivityType.cs" />
     <Compile Include="AdaptivityLearning\ConceptThema.cs" />
     <Compile Include="AdaptivityLearning\PredTestResults.cs" />

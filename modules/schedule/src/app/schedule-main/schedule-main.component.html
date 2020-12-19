@@ -5,7 +5,7 @@
   <div class = "schedule" [ngStyle]="{ 'width': scheduleWidth}" >
     <div class="row text-center" style = "margin-right: 0px; height: 70px;">
       <div class="col-md-4" style="margin-top: 33px">
-        <h3 style="font-size: 12px;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
+        <h3 style="font-size: 16px;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
       </div>
       <div class="col-md-4" style="margin-top: 24px;font-family: Roboto, Helvetica Neue, sans-serif;">
         <h6 style="color:#3F51B5;font-size: 1.5rem;">Расписание занятий</h6>
@@ -23,7 +23,7 @@
             (viewDateChange)="closeOpenMonthViewDay()"
           >&lt;</div>
           <div
-            style="margin-left: -5px; padding-top: 10px; font-size: 12px; background-color: #f8f9fa; cursor: pointer;font-family:Roboto, Helvetica Neue, sans-serif; color: #808080"
+            style="margin-left: -5px; padding-top: 10px; font-size: 16px; background-color: #f8f9fa; cursor: pointer;font-family:Roboto, Helvetica Neue, sans-serif; color: #808080"
             class="btn"
             mwlCalendarToday
             [(viewDate)]="viewDate"

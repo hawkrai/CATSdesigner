@@ -3,10 +3,12 @@ using System.Web.Mvc;
 using Application.Core;
 using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
+    [JwtAuth]
     public class RemoteApiController : Controller
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService =
