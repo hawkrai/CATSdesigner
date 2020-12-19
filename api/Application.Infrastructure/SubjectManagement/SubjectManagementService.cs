@@ -465,6 +465,11 @@ namespace Application.Infrastructure.SubjectManagement
 					.GetBy(new Query<Subject>(e => e.Id == subjectId && e.SubjectGroups.Any(x => x.GroupId == groupId))
 						.Include(e => e.SubjectGroups.Select(x => x.SubGroups.Select(c => c.SubjectStudents.Select(t => t.Student.User)))));
 
+            if (subjectGroup?.SubjectGroups?.FirstOrDefault(e => e.GroupId == groupId)?.SubGroups == null)
+            {
+                return new List<SubGroup>();
+            }
+
 			return subjectGroup.SubjectGroups.First(e => e.GroupId == groupId).SubGroups.ToList();
 		}
 
