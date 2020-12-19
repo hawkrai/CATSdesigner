@@ -1,8 +1,3 @@
-export class PlagiarismResult {
-    docs: string[];
-    correctDocs: CorrectDoc[]
-}
-
 export class CorrectDoc {
     coeff: string;
     doc: string;
