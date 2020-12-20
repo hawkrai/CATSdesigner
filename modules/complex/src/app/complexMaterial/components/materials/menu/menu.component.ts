@@ -25,7 +25,7 @@ export class MenuComponent {
   openPDF(): void {
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '800px',
-      data: { title: 'Title', animal: 'a' }
+      data: { title: 'Title' }
     });
 
     dialogRef.afterClosed().subscribe(result => {

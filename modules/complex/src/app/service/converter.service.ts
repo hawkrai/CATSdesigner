@@ -4,6 +4,7 @@ import { ComplexTree, TreeNode } from '../models/ComplexTree';
 import { Group} from '../models/Group';
 import { ConceptMonitoring } from '../models/ConceptMonitoring';
 import { Adaptivity } from '../models/Adaptivity';
+import { ComplexCascade } from '../models/ComplexCascade';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +52,7 @@ export class ConverterService {
   private monitoringConverter(monitoring: any) {
     var monitor = new ConceptMonitoring();
     monitor.name = monitoring.Name;
-    monitor.seconds = monitoring.Seconds;
+    monitor.seconds = this.getStrTime(monitoring.Seconds);
 
     return monitor;
   }
@@ -60,8 +61,24 @@ export class ConverterService {
     return monitorings.map(mon => this.monitoringConverter(mon))
   }
 
+  getStrTime(seconds: number): string {
+    if (seconds < 60) {
+      return `${seconds} сек`;
+    }
+    var min = Math.floor(seconds / 60);
+    var sec = seconds % 60;
+    
+    return `${min} мин ${sec} сек`
+  }
 
+  public filterNonGroupItems(conceptsCascade: ComplexCascade): ComplexCascade[] {
+    conceptsCascade.children = conceptsCascade.children.filter(x => x.children.length > 0);
+    for (var concept of conceptsCascade.children) {
+      this.filterNonGroupItems(concept);
+    }
 
+    return [conceptsCascade];
+  }
 
   private groupConverter(groupRes: any) {
     var group = new Group();
