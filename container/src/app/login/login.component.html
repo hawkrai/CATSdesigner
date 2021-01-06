@@ -21,13 +21,13 @@
 					<h1 class="title">Добро пожаловать!</h1>
 					<div class="fields">
 						<mat-form-field class="default" color="primary">
-							<input matInput color="primary" formControlName="userName" placeholder="Имя пользователя" type="text">
+							<input matInput color="primary" formControlName="userName" placeholder="Имя пользователя" type="text" maxlength="30">
 						</mat-form-field>
 						<mat-form-field>
-							<input matInput [type]="hide ? 'password' : 'text'" color="primary" type="password" placeholder="Пароль" formControlName="password">
-							<button mat-icon-button matSuffix (click)="hide = !hide">
+							<input matInput [type]="hide ? 'password' : 'text'" color="primary" type="password" placeholder="Пароль" formControlName="password" maxlength="30">
+							<a mat-icon-button matSuffix (click)="hide = !hide">
 								<mat-icon> {{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-							</button>
+							</a>
 						</mat-form-field>
 					</div>
 
@@ -35,12 +35,12 @@
 						<a routerLink="/forgot" title= "Перейдите, чтобы восстановить пароль" href="">Забыли пароль?</a>
 					</div>
 					
-					<div class="loginbtn" >
-						<button  mat-raised-button title= "Нажмите, чтобы войти в систему" color="primary" [class.spinner]="submitted" [disabled]="submitted" (click)="onSubmit() ">Войти в систему</button>                
+					<div class="loginbtn">
+						<button  mat-raised-button title= "Нажмите, чтобы войти в систему" color="primary" [class.spinner]="submitted" [disabled]="submitted" type=submit (click)="onSubmit()">Войти в систему</button>                
 					</div>
 
-					<div class="btn_w" >
-						<button mat-stroked-button title= "Нажмите, чтобы просмотреть успеваемость студентов" color="primary" routerLink="/progControl" href="">Контроль успеваемости</button>
+					<div class="btn_w">
+						<button mat-raised-button title= "Нажмите, чтобы просмотреть успеваемость студентов" color="basic" routerLink="/progControl" type=button href="">Контроль успеваемости</button>
 					</div>
 
 					<div class="sign-up">
