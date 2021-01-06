@@ -50,5 +50,9 @@ namespace LMPlatform.UI.Services.Practicals
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/DeleteVisitingDate")]
         ResultViewData DeleteVisitingDate(int id);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/UpdatePracticals", RequestFormat = WebMessageFormat.Json, Method = "POST")]
+        ResultViewData UpdatePracticals(List<UpdateLab> practicals);
     }
 }

@@ -10,10 +10,11 @@ using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
 using System.Collections.Generic;
+using Application.Core.Helpers;
 
 namespace LMPlatform.UI.Services.Subjects
 {
-    [JwtAuth(Roles = "lector")]
+    [JwtAuth]
     public class SubjectsService : ISubjectsService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -23,7 +24,7 @@ namespace LMPlatform.UI.Services.Subjects
 
         public SubjectsResult GetSubjectsBySession()
         {
-            var subjects = SubjectManagementService.GetUserSubjectsV2(WebSecurity.CurrentUserId);
+            var subjects = SubjectManagementService.GetUserSubjectsV2(UserContext.CurrentUserId);
 
             var result = new SubjectsResult
             {
@@ -49,13 +50,11 @@ namespace LMPlatform.UI.Services.Subjects
 
         public IEnumerable<ModulesViewModel> GetSubjectModules(string subjectId)
         {
-            var subject = SubjectManagementService.GetSubject(int.Parse(subjectId));
-
-            var modules = ModulesManagementService.GetModules()
+            var modules = ModulesManagementService.GetModules(int.Parse(subjectId))
                 .Where(e => e.Visible)
-                .Select(m => new ModulesViewModel(m, subject.SubjectModules.Any(e => e.ModuleId == m.Id))).ToList();
+                .Select(m => new ModulesViewModel(m, true)).ToList();
 
-            return modules.Where(m => m.Checked);
+            return modules.OrderBy(m => m.Order);
         }
     }
 }

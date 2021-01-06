@@ -11,10 +11,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Application.Core.Helpers;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CourseProjectNewsController : ApiController
     {
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
@@ -28,7 +31,7 @@ namespace LMPlatform.UI.ApiControllers.CP
         [HttpGet]
         public List<NewsData> Get(int id)
         {
-            return CpManagementService.GetNewses(WebSecurity.CurrentUserId, id);
+            return CpManagementService.GetNewses(UserContext.CurrentUserId, id);
         }
 
         //[System.Web.Http.HttpPost]

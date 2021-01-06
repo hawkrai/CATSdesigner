@@ -14,7 +14,6 @@
 
   .example-section {
     display: grid;
-    grid-template-columns: repeat(2, 50%);
     grid-column-gap: 15px;
     grid-row-gap: 5px;
     margin-bottom: 21px;
@@ -48,4 +47,12 @@
   &-actions {
     justify-content: flex-end;
   }
+}
+
+::ng-deep.mat-checkbox-disabled.mat-checkbox-checked .mat-checkbox-background {
+  background: #3f51b5;
+}
+
+::ng-deep.mat-checkbox-disabled .mat-checkbox-label {
+  color: inherit
 }

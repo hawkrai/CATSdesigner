@@ -71,35 +71,6 @@ namespace LMPlatform.Data.Repositories
 			return subjectGroup.Select(sg => sg.Subject).ToList();
 		}
 
-		public SubjectNews SaveNews(SubjectNews news)
-		{
-			using var context = new LmPlatformModelsContext();
-            if (news.Id != 0)
-			{
-				context.Update(news);
-			}
-			else
-			{
-				context.Add(news);
-			}
-
-            foreach (var attachment in news.Attachments)
-            {
-                attachment.SubjectNewsId = news.Id;
-				if (attachment.Id != 0)
-                {
-                    context.Update(attachment);
-                }
-                else
-                {
-                    context.Add(attachment);
-                }
-			}
-
-			context.SaveChanges();
-			return news;
-		}
-
 		public bool IsSubjectName(string name, string id, int userId)
 		{
 			using (var context = new LmPlatformModelsContext())
@@ -128,23 +99,6 @@ namespace LMPlatform.Data.Repositories
 			return false;
 		}
 
-		public void DeleteNews(SubjectNews news)
-		{
-			using var context = new LmPlatformModelsContext();
-			var model = context.Set<SubjectNews>().Include(e => e.Attachments).FirstOrDefault(e => e.Id == news.Id);
-            if (model != null)
-            {
-                foreach (var attachment in model.Attachments.ToList())
-                {
-                    context.Delete(attachment);
-                }
-
-                context.SaveChanges();
-
-                context.Delete(model);
-                context.SaveChanges();
-            }
-		}
 
 		public void DeleteLection(Lectures lectures)
 		{

@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>Редактирование графика процентовки</h1>
+<h1 mat-dialog-title>Добавление этапа</h1>
 <div mat-dialog-content>
   <mat-form-field class="form-field">
     <mat-label>Название этапа</mat-label>
-    <input matInput [formControl]="nameControl" [(ngModel)]="data.name">
+    <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
     <mat-error *ngIf="nameControl.invalid">От 3 до 100 символов</mat-error>
   </mat-form-field>
   <mat-form-field class="form-field">

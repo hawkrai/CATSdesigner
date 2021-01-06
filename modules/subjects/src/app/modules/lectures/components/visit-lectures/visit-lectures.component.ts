@@ -1,87 +1,66 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {MatOptionSelectionChange} from "@angular/material/core";
+import { Store } from '@ngrx/store';
+import { combineLatest, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import {Calendar} from '../../../../models/calendar.model';
-import {LecturesService} from "../../../../services/lectures/lectures.service";
-import {Group} from "../../../../models/group.model";
-import {GroupsVisiting, LecturesMarksVisiting} from "../../../../models/groupsVisiting.model";
-import {GroupsService} from '../../../../services/groups/groups.service';
+import {GroupsVisiting, LecturesMarksVisiting} from "../../../../models/visiting-mark/groups-visiting.model";
 import {DialogData} from '../../../../models/dialog-data.model';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {VisitDatePopoverComponent} from '../../../../shared/visit-date-popover/visit-date-popover.component';
-import {ComponentType} from '@angular/cdk/typings/portal';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
+import { IAppState } from 'src/app/store/state/app.state';
+import * as lecturesSelectors from '../../../../store/selectors/lectures.selectors';
+import * as  lecturesActions from '../../../../store/actions/lectures.actions';
+import { DialogService } from 'src/app/services/dialog.service';
+import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
 
 @Component({
   selector: 'app-visit-lectures',
   templateUrl: './visit-lectures.component.html',
   styleUrls: ['./visit-lectures.component.less']
 })
-export class VisitLecturesComponent implements OnInit {
+export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() subjectId: number;
   @Input() isTeacher: boolean;
+  @Input() groupId: number;
 
-  public calendar: Calendar[];
-  public groups: Group[];
-  public groupsVisiting: GroupsVisiting;
+  state$: Observable<{ calendar: Calendar[], groupsVisiting: GroupsVisiting }>;
   public displayedColumns: string[] = [];
-  public selectGroupId: string;
 
-  constructor(private groupsService: GroupsService,
-              private lecturesService: LecturesService,
-              public dialog: MatDialog) {
-  }
+  constructor(
+    private store: Store<IAppState>,
+    private dialogService: DialogService
+    ) {}
 
-  ngOnInit() {
-    this.groupsService.loadDate();
-    this.groupsService.getAllGroups().subscribe(res => {
-      this.groups = res;
-      this.selectGroupId = res[0].groupId;
-    });
-
-    this.lecturesService.loadCalendar();
-    this.refreshDataCalendar();
-
-  }
-
-  private refreshDataCalendar() {
-    this.lecturesService.getCalendar().subscribe(res => {
-      this.calendar = res;
-      this.displayedColumns = ['position', 'name', ...this.calendar.map(res => res.date.toString() + res.id)];
-      this.refreshDataGroupVisitMark();
-    });
-  }
-
-  private refreshDataGroupVisitMark() {
-    this.lecturesService.getLecturesMarkVisiting(this.subjectId, this.selectGroupId).subscribe(res => {
-      this.groupsVisiting = res ? res[0] : null;
-    })
-  }
-
-  _selectedGroup(event: MatOptionSelectionChange) {
-    if (event.isUserInput) {
-      this.selectGroupId = event.source.value;
-      this.refreshDataGroupVisitMark();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.groupId && changes.groupId.currentValue) {
+      this.store.dispatch(lecturesActions.loadGroupsVisiting());
     }
   }
 
-  deleteAllDate() {
-    const dateIds = [];
-    this.calendar.forEach(res => {
-      dateIds.push(res.id);
-    });
-    this.lecturesService.deleteAllDate({dateIds});
+  ngOnInit() {
+    this.store.dispatch(lecturesActions.loadCalendar());
+    this.state$ = combineLatest(
+      this.store.select(lecturesSelectors.getCalendar),
+      this.store.select(lecturesSelectors.getGroupsVisiting)
+    ).pipe(
+      map(([calendar, groupsVisiting]) => ({ calendar, groupsVisiting })),
+      tap(({ calendar}) => {
+        this.displayedColumns = ['position', 'name', ...calendar.map(res => res.Date + res.Id)];
+      })
+      );
+  }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(lecturesActions.resetVisiting());
   }
 
   settingVisitDate() {
     const dialogData: DialogData = {
-      title: 'График занятий',
-      buttonText: 'Добавить',
-      body: {service: this.lecturesService, restBody: {subjectId: this.subjectId}},
+      title: 'Даты занятий',
+      buttonText: 'Добавить'
     };
-
-    this.openDialog(dialogData, VisitDatePopoverComponent);
+    this.dialogService.openDialog(VisitDateLecturesPopoverComponent, dialogData);
   }
 
   deletePopover() {
@@ -90,59 +69,46 @@ export class VisitLecturesComponent implements OnInit {
       body: 'даты и все связанные с ними данные',
       buttonText: 'Удалить'
     };
-    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.deleteAllDate();
+        this.store.dispatch(lecturesActions.deleteAllDate());
       }
     });
   }
 
-  setVisitMarks(date, index): void {
+  setVisitMarks(date: Calendar, lecturesMarksVisiting: LecturesMarksVisiting[], index: number): void {
     if (this.isTeacher) {
       const visits = {
-        date: date.date,
-        students: this.groupsVisiting.lecturesMarksVisiting.map(res => ({
-          name: res.StudentName,
-          mark: res.Marks[index].Mark,
-          comment: res.Marks[index].Comment
+        date: date.Date,
+        students: lecturesMarksVisiting.map(student => ({
+          name: student.StudentName,
+          mark: student.Marks[index].Mark,
+          comment: student.Marks[index].Comment
         }))
       };
-
-      console.log(this.groupsVisiting.lecturesMarksVisiting);
 
       const dialogData: DialogData = {
         title: 'Посещаемость студентов',
         buttonText: 'Сохранить',
         body: visits
       };
-      const dialogRef = this.openDialog(dialogData, VisitingPopoverComponent);
-
+      const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.lecturesService.setLecturesVisitingDate(
-            {lecturesMarks: this.getModelVisitLabs(this.groupsVisiting.lecturesMarksVisiting, index, result.students)})
+          this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs(lecturesMarksVisiting, index, result.students) }));
         }
       });
     }
   }
 
-  getModelVisitLabs(lecturesMarksVisiting: LecturesMarksVisiting[], index, visits) {
-    for (let i = 0; i < visits.length; i++) {
-      lecturesMarksVisiting[i].Marks[index].Mark = visits[i].mark ? visits[i].mark.toString() : '';
-      lecturesMarksVisiting[i].Marks[index].Comment = visits[i].comment ? visits[i].comment.toString() : '';
-
-    }
-    return lecturesMarksVisiting
-  }
-
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
-
-  getExcelFile() {
-    location.href = 'http://localhost:8080/Statistic/GetVisitLecture?subjectId=' + this.subjectId + '&groupId=' + this.selectGroupId;
+  getModelVisitLabs(lecturesMarksVisiting: LecturesMarksVisiting[], index: number, students: { name: string, mark: string, comment: string}[]): LecturesMarksVisiting[] {
+    students.forEach((student, i) => {
+      lecturesMarksVisiting[i].Marks[index].Mark = student.mark ? student.mark : '';
+      lecturesMarksVisiting[i].Marks[index].Comment = student.comment ? student.comment : '';
+    });
+    return lecturesMarksVisiting;
   }
 
 }

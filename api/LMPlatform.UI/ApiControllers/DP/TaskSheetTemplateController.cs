@@ -1,11 +1,14 @@
 ﻿using System.Web.Http;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using LMPlatform.Models.DP;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.DP
 {
+    [JwtAuth]
     public class TaskSheetTemplateController : ApiController
     {
         public DiplomProjectTaskSheetTemplate Get(int templateId)
@@ -15,7 +18,7 @@ namespace LMPlatform.UI.ApiControllers.DP
 
         public void Post([FromBody] DiplomProjectTaskSheetTemplate template)
         {
-            template.LecturerId = WebSecurity.CurrentUserId;
+            template.LecturerId = UserContext.CurrentUserId;
             DpManagementService.SaveTaskSheetTemplate(template);
         }
 

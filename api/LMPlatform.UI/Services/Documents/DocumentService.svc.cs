@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services.Documents
 {
+    [JwtAuth]
     public class DocumentService : IDocumentService
     {
         private readonly LazyDependency<IDocumentManagementService> _documentManagementService = new LazyDependency<IDocumentManagementService>();
@@ -64,26 +66,20 @@ namespace LMPlatform.UI.Services.Documents
         {
             var documents = DocumentManagementService.GetBySubjectId(subjectId).Where(x => x.ParentId == null);
 
-            return documents.Select(book => new DocumentsTree()
+            IEnumerable<DocumentsTree> ParseData(IEnumerable<Models.Documents> documents)
             {
-                Id = book.Id,
-                Name = book.Name,
-                Children = DocumentManagementService.GetByParentId(book.Id).Select(section => new DocumentsTree()//book.Childrens
+                foreach(var document in documents)
                 {
-                    Id = section.Id,
-                    Name = section.Name,
-                    Children = DocumentManagementService.GetByParentId(section.Id).Select(subsection => new DocumentsTree()//section.Childrens
+                    yield return new DocumentsTree()
                     {
-                        Id = subsection.Id,
-                        Name = subsection.Name,
-                        Children = DocumentManagementService.GetByParentId(subsection.Id).Select(paragraph => new DocumentsTree()//subsection.Childrens
-                        {
-                            Id = paragraph.Id,
-                            Name = paragraph.Name
-                        })
-                    })
-                })
-            });
+                        Id = document.Id,
+                        Name = document.Name,
+                        Children = ParseData(DocumentManagementService.GetByParentId(document.Id))
+                    };
+                }
+            }
+
+            return ParseData(documents);
         }
 
         public bool UpdateDocument(DocumentPreview document)

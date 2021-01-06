@@ -110,7 +110,7 @@ export class ResetThePasswordComponent implements OnInit {
   setNewPassword() {
     const passwordModel = new ResetPassword();
     passwordModel.FullName = this.student.FullName;
-    passwordModel.Login = this.student.UserName;
+    passwordModel.Login = this.student.UserName || this.student.Login;
     passwordModel.Password = this.form.controls.password.value;
     passwordModel.ConfirmPassword = this.form.controls.confirmPassword.value;
     console.log(passwordModel);

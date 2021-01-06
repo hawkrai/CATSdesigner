@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
@@ -6,12 +7,15 @@ using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
+using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Parental;
 using Microsoft.AspNet.SignalR;
 
 namespace LMPlatform.UI.Services.Parental
 {
-	public class ParentalService : IParentalService
+    [JwtAuth]
+    public class ParentalService : IParentalService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;

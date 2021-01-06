@@ -1,37 +1,70 @@
-.test-execution-block-progress{
+.test-execution-block-progress {
   position: absolute;
   bottom: 20px;
   display: flex;
   width: 97%;
 }
-.test-execution-block-progress-value{
+
+.test-execution-block-progress-value {
 
 }
-.test-execution-block-question{
 
-}
-.test-execution-block-time{
+.test-execution-block-question {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 100%;
 }
-.test-execution-block-time-value{
+
+.question-title {
+  display: flex;
+  align-items: flex-end;
+  margin-left: 15px;
+}
+
+.question-title-big {
+  font-size: 26px;
+}
+
+.question-title-small {
+  display: flex;
+  align-items: flex-end;
+  padding-left: 10px;
+  font-weight: normal;
+  line-height: 1;
+  color: #999999;
+  margin-bottom: 4px;
+}
+
+.test-execution-block-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.test-execution-block-time {
+  margin-right: 15px;
+}
+
+.test-execution-block-time-value {
   display: flex;
   height: 60px;
   justify-content: flex-end;
   align-items: center;
   width: 100%;
+  color: #3f51b5;
 }
-.test-execution-container{
+
+.test-execution-container {
 
 }
 
-.test-execution-block-progress-block{
+.test-execution-block-progress-block {
   display: flex;
   width: 100%;
   justify-content: space-around;
 }
 
-.test-execution-block-progress-block-item{
+.test-execution-block-progress-block-item {
   border: 1px solid #a0a0a0;;
   display: flex;
   width: inherit;
@@ -41,17 +74,33 @@
   align-items: center;
   cursor: pointer;
 }
-.answered{
+
+.answered {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.answered-show {
   background-color: #00a65a;
+  color: white;
 }
-.failed{
+
+.failed {
   background-color: #980403;
+  color: white;
 }
 
-.not-answered{
-  background-color: #5d6158;
+.not-answered {
+  background-color: #595d54;
+  color: white;
 }
 
-.now{
-  background-color: rgba(0, 11, 120, 0.62);
+.absent {
+  background-color: #595d54;
+  color: #42463d;
+}
+
+.now {
+  background-color: #6c7fff;
+  color: white;
 }

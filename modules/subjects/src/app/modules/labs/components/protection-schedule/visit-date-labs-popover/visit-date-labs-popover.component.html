@@ -1,0 +1,7 @@
+<app-visit-date-popover 
+    (createDate)="onCreateDate($event)" 
+    (close)="onClose($event)" 
+    (deleteDay)="onDeleteDay($event)" 
+    [data]="data" 
+    [schedule]="schedule$ | async">
+</app-visit-date-popover>

@@ -5,6 +5,7 @@ export class Question {
   Test?: any;
   TestId?: number;
   Title?: string;
+  tooltipTitle?: string;
   Description?: any;
   ComlexityLevel?: number;
   ComplexityLevel?: number;

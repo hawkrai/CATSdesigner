@@ -29,8 +29,8 @@ export class VisitStatsService {
     return this.http.post('api/CourseProjectConsultationDate', {Day: date, SubjectId: subjectId});
   }
 
-  public deleteDate(params: any): Observable<any> {
-    return this.http.delete('api/CourseProjectConsultationDate', {params: new HttpParams({fromObject: params})});
+  public deleteDate(id: string): Observable<any> {
+    return this.http.post('api/CourseProjectConsultationDate/' + id, null);
   }
 
 }

@@ -1,7 +1,7 @@
-<div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
+<div class="example-container" style="overflow-y: initial !important" xmlns:position="http://www.w3.org/1999/xhtml">
   <form [formGroup]="formGroup">
     <mat-form-field>
-      <mat-select [ngModel] ="lesson.subjectId"  [(ngModel)]="lesson.subjectId" formControlName="subjectF" required class="form-control">
+      <mat-select [ngModel] ="lesson.subjectId"  [(ngModel)]="lesson.subjectId" style="color: #383838;"formControlName="subjectF" required class="form-control">
         <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{subject.Name}}</mat-option>
       </mat-select>
       <mat-error *ngIf="subjectF.hasError( 'required')">Поле не может быть пустым</mat-error>
@@ -69,8 +69,9 @@
     </mat-form-field>
   </form >
   <p></p>
-  <button mat-raised-button color="primary" (click)="add()" [disabled]="formGroup.invalid">Сохранить</button>
-  <button mat-raised-button color="warn" (click)=onCancelClick()>Отмена</button>
-
+  <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
+  <button mat-raised-button color="primary"  (click)="add()" [disabled]="formGroup.invalid">Сохранить</button>
+  <button mat-raised-button color="basic" style="margin-left: 20px;" (click)="onCancelClick()">Отмена</button>
+</div>
 </div>
 

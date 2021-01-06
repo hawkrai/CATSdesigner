@@ -19,7 +19,7 @@ export class CreateLessonComponent implements OnInit {
   formGroup: any;
   lesson: any = new Lesson() ;
   subjects: any[] = [];
-  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа']];
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'], ['3', 'Практ.работа']];
 
   constructor(public dialogRef: MatDialogRef<CreateLessonComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any,

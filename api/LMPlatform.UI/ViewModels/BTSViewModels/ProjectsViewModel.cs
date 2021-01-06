@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.ProjectManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Data.Repositories;
@@ -86,7 +87,7 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public bool IsProjectManager()
         {
-            var projectUser = new ProjectManagementService().GetProjectUsers(ProjectId).Count(e => e.UserId == WebSecurity.CurrentUserId && e.ProjectRoleId == 3);
+            var projectUser = new ProjectManagementService().GetProjectUsers(ProjectId).Count(e => e.UserId == UserContext.CurrentUserId && e.ProjectRoleId == 3);
 
             if (projectUser == 0)
             {
@@ -288,7 +289,7 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public void SaveComment(string comment)
         {
-            var currentUserId = WebSecurity.CurrentUserId;
+            var currentUserId = UserContext.CurrentUserId;
             var newComment = new ProjectComment
             {
                 CommentText = comment,

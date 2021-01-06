@@ -7,6 +7,7 @@ using System.Text;
 using System.Web.Mvc;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.DPManagement;
@@ -15,12 +16,14 @@ using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using LMPlatform.UI.ViewModels.LmsViewModels;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
+    [JwtAuth]
     public class ProfileController : BasicController
     {
         private readonly LazyDependency<ICPManagementService> _cpManagementService =
@@ -52,10 +55,10 @@ namespace LMPlatform.UI.Controllers
                 };
 
                 this.ViewBag.ShowDpSectionForUser =
-                    this.DpManagementService.ShowDpSectionForUser(WebSecurity.CurrentUserId);
+                    this.DpManagementService.ShowDpSectionForUser(UserContext.CurrentUserId);
 
-                this.ViewData["userName"] = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin
-                    ? WebSecurity.CurrentUserName
+                this.ViewData["userName"] = string.IsNullOrEmpty(userLogin) || UserContext.CurrentUserName == userLogin
+                    ? UserContext.CurrentUserName
                     : userLogin;
 
                 return JsonResponse(model);
@@ -63,12 +66,12 @@ namespace LMPlatform.UI.Controllers
 
             if (this.User.IsInRole("admin"))
             {
-                var model = new LmsViewModel(WebSecurity.GetUserId(userLogin), this.User.IsInRole("lector"))
+                var model = new LmsViewModel(UserContext.CurrentUserId, this.User.IsInRole("lector"))
                 {
                     UserActivity = new UserActivityViewModel()
                 };
-                this.ViewData["userName"] = string.IsNullOrEmpty(userLogin) || WebSecurity.CurrentUserName == userLogin
-                    ? WebSecurity.CurrentUserName
+                this.ViewData["userName"] = string.IsNullOrEmpty(userLogin) || UserContext.CurrentUserName == userLogin
+                    ? UserContext.CurrentUserName
                     : userLogin;
 
                 return JsonResponse(model);

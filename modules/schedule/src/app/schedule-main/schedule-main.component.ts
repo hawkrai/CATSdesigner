@@ -33,7 +33,7 @@ export class ScheduleMainComponent implements OnInit {
 
   isLoadActive = true;
   toolTip = 'Скрыть новости';
-  scheduleWidth = '80%';
+  scheduleWidth = '82%';
   newsWidth = '18%';
   newsLeft = '82%';
   hideButton = '>';
@@ -62,7 +62,7 @@ export class ScheduleMainComponent implements OnInit {
               private datePipe: DatePipe) {}
 
   ngOnInit() {
-    localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    //localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
     console.log(this.isLoadActive);
@@ -317,7 +317,7 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   changeNote(eventToDelete: CalendarEvent) {
-    const dialogRef = this.dialog.open(AddNoteComponent, {width: '300px', data: { event: eventToDelete}, position: {top: '11%'}});
+    const dialogRef = this.dialog.open(AddNoteComponent, {width: '500px', data: { event: eventToDelete}, position: {top: '11%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.events = this.events.filter(event => event !== eventToDelete);
@@ -341,7 +341,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '300px', data: {userName: this.user.userName,  event: eventToDelete}});
+      {width: '500px', data: {userName: this.user.userName,  event: eventToDelete}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.events = this.events.filter(event => event !== eventToDelete);
@@ -369,7 +369,8 @@ export class ScheduleMainComponent implements OnInit {
     if (this.newsWidth === '0%' ) {
       this.newsWidth = '18%';
       this.newsLeft = '82%';
-      this.scheduleWidth = '80%';
+      this.scheduleWidth = '82%';
+
       this.hideButton = '>';
       this.toolTip = 'Скрыть новости';
     } else {
@@ -385,3 +386,4 @@ export class ScheduleMainComponent implements OnInit {
     return this.datePipe.transform(event.start, 'HH:mm') + '-' + this.datePipe.transform(event.end, 'HH:mm');
   }
 }
+

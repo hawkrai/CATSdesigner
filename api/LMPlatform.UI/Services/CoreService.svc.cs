@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Extensions;
+using Application.Core.Helpers;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.StudentManagement;
@@ -25,7 +26,7 @@ using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services
 {
-    [Authorize]
+    [JwtAuth]
     public class CoreService : ICoreService
 	{
 		private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
@@ -66,7 +67,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -74,14 +75,16 @@ namespace LMPlatform.UI.Services
 			}	
 		}
 
-		public LectorResult GetJoinedLector(string subjectId)
+
+
+		public LectorsResult GetJoinedLector(string subjectId)
 		{
 			try
 			{
 				var id = int.Parse(subjectId);
 				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId);
 
-				return new LectorResult
+				return new LectorsResult
 				{
 					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),
 					Message = "Присоединенные преподаватели успешно загружены",
@@ -90,7 +93,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -112,7 +115,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -120,7 +123,7 @@ namespace LMPlatform.UI.Services
 			}	
 		}
 
-		public LectorResult GetNoAdjointLectors(string subjectId)
+		public LectorsResult GetNoAdjointLectors(string subjectId)
 		{
 			try
 			{
@@ -128,7 +131,7 @@ namespace LMPlatform.UI.Services
 					.Where(e => e.Id != this.CurrentUserId && !e.SubjectLecturers
 						            .Any(x => x.SubjectId == int.Parse(subjectId) && x.Owner == this.CurrentUserId));
 
-				return new LectorResult
+				return new LectorsResult
 				{
 					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),
 					Message = "Преподаватели успешно загружены",
@@ -137,7 +140,7 @@ namespace LMPlatform.UI.Services
 			}
 			catch (Exception ex)
 			{
-				return new LectorResult
+				return new LectorsResult
 				{
 					Message = ex.Message + "\n" + ex.StackTrace,
 					Code = "500"
@@ -149,7 +152,7 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var subjects = this.SubjectManagementService.GetSubjectsByLectorOwner(this.CurrentUserId, lite: true);
+				var subjects = SubjectManagementService.GetSubjectsByLectorOwner(this.CurrentUserId, lite: true);
 
 				return new SubjectsResult
 				{
@@ -291,7 +294,7 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var groups = this.GroupManagementService.GetLecturesGroups(WebSecurity.CurrentUserId);
+				var groups = this.GroupManagementService.GetLecturesGroups(UserContext.CurrentUserId);
 
 				var groupsViewModel = new List<GroupsViewData>();
 
@@ -456,82 +459,6 @@ namespace LMPlatform.UI.Services
             }
         }
 
-        public LecturesMarkVisitingResult GetLecturesMarkVisitingV2(int subjectId, int groupId)
-		{
-			try
-			{
-				var groups = this.GroupManagementService.GetGroup(groupId);
-
-				var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
-
-				var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
-
-				foreach (var student in groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName))
-				{
-					var data = new List<MarkViewData>();
-
-					foreach (var lecturesScheduleVisiting in lecturesVisitingData.OrderBy(e => e.Date))
-                    {
-                        var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
-
-                        if (lecturesVisitMark != null)
-						{
-							data.Add(new MarkViewData
-							{
-								Date = lecturesScheduleVisiting.Date.ToShortDateString(),
-								LecuresVisitId = lecturesScheduleVisiting.Id,
-								Mark = lecturesVisitMark.Mark,
-								MarkId = lecturesVisitMark.Id,
-								Comment = lecturesVisitMark.Comment
-							});
-						}
-						else
-						{
-							data.Add(new MarkViewData
-							{
-								Date = lecturesScheduleVisiting.Date.ToShortDateString(),
-								LecuresVisitId = lecturesScheduleVisiting.Id,
-								Mark = string.Empty,
-								MarkId = 0
-							});
-						}
-					}
-
-					lecturesVisiting.Add(new LecturesMarkVisitingViewData
-					{
-						StudentId = student.Id,
-						StudentName = student.FullName,
-						Login = student.User.UserName,
-						Marks = data
-					});
-				}
-
-				var dataResulet = new List<LecturesGroupsVisitingViewData>
-                {
-                    new LecturesGroupsVisitingViewData
-                    {
-                        GroupId = groupId,
-                        LecturesMarksVisiting = lecturesVisiting
-                    }
-                };
-
-				return new LecturesMarkVisitingResult
-				{
-					GroupsVisiting = dataResulet,
-					Message = "",
-					Code = "200"
-				};
-			}
-			catch (Exception ex)
-			{
-				return new LecturesMarkVisitingResult()
-				{
-					Message = ex.Message + "\n" + ex.StackTrace,
-					Code = "500"
-				};
-			}
-		}
-
 		public GroupsResult GetGroupsByUser(string userId)
 		{
 			try
@@ -635,7 +562,7 @@ namespace LMPlatform.UI.Services
                                 data.Add(new MarkViewData
                                 {
                                     Date = lecturesScheduleVisiting.Date.ToShortDateString(),
-                                    LecuresVisitId = lecturesScheduleVisiting.Id,
+                                    LecturesVisitId = lecturesScheduleVisiting.Id,
                                     Mark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id).Mark,
                                     MarkId = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id).Id
                                 });
@@ -645,7 +572,7 @@ namespace LMPlatform.UI.Services
                                 data.Add(new MarkViewData
                                 {
                                     Date = lecturesScheduleVisiting.Date.ToShortDateString(),
-                                    LecuresVisitId = lecturesScheduleVisiting.Id,
+                                    LecturesVisitId = lecturesScheduleVisiting.Id,
                                     Mark = string.Empty,
                                     MarkId = 0
                                 });
@@ -847,17 +774,26 @@ namespace LMPlatform.UI.Services
             }
         }
 
-        public LectorResult GetLecturers()
+        public LectorsResult GetLecturers()
         {
             var lecturers = LecturerManagementService.GetLecturers(e => e.LastName, lite: true)
 	            .Select(e => new LectorViewData(e))
 	            .ToList();
-            return new LectorResult
+            return new LectorsResult
             {
                 Lectors = lecturers
             };
         }
 
-        protected int CurrentUserId => WebSecurity.CurrentUserId;
+        public LectorResult GetLecturer(string userId)
+        {
+			var lector = LecturerManagementService.GetLecturerBase(int.Parse(userId));
+			return new LectorResult
+			{
+				Lector = new LectorViewData(lector)
+			};
+        }
+
+        protected int CurrentUserId => UserContext.CurrentUserId;
 	}
 }

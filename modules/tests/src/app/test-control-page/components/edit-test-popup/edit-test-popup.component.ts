@@ -72,6 +72,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       });
       this.editingTest = new Test();
       this.editingTest.CountOfQuestions = 5;
+      this.editingTest.TimeForCompleting = 10;
       this.editingTest.SetTimeForAllTest = true;
     }
   }
@@ -176,6 +177,6 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   checkBoxTrue(event: MatCheckboxChange) {
-    this.editingTest.SetTimeForAllTest = event.checked;
+    this.editingTest.SetTimeForAllTest = !event.checked;
   }
 }

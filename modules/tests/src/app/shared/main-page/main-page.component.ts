@@ -51,6 +51,9 @@ export class MainPageComponent implements OnChanges {
   @Output()
   public addQuestionFromOtherTestEvent: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  public createNeuralNetworkEvent: EventEmitter<any> = new EventEmitter();
+
   constructor() {
   }
 
@@ -77,5 +80,9 @@ export class MainPageComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log("ngOnChanges - MainPageComponent " + this.inputValue);
+  }
+
+  public createNeuralNetwork(): void {
+    this.createNeuralNetworkEvent.emit();
   }
 }

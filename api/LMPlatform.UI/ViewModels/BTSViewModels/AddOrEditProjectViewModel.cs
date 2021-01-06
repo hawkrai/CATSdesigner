@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.ProjectManagement;
 using LMPlatform.Data.Repositories.RepositoryContracts;
 using LMPlatform.Models;
@@ -55,7 +56,7 @@ namespace LMPlatform.UI.ViewModels.BTSViewModels
 
         public AddOrEditProjectViewModel()
         {
-            CreatorId = WebSecurity.CurrentUserId;
+            CreatorId = UserContext.CurrentUserId;
         }
 
         public AddOrEditProjectViewModel(int projectId)

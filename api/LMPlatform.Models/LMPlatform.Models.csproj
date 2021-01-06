@@ -116,6 +116,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessCode.cs" />
+    <Compile Include="AdaptiveLearningProgress.cs" />
+    <Compile Include="AdaptivityLearning\AdaptivityType.cs" />
+    <Compile Include="AdaptivityLearning\ConceptThema.cs" />
+    <Compile Include="AdaptivityLearning\PredTestResults.cs" />
+    <Compile Include="AdaptivityLearning\ThemaResult.cs" />
+    <Compile Include="AdaptivityLearning\ThemaResults.cs" />
+    <Compile Include="AdaptivityLearning\ThemaResume.cs" />
+    <Compile Include="AdaptivityLearning\ThemaSolutions.cs" />
     <Compile Include="Attachment.cs" />
     <Compile Include="AttachmentType.cs" />
     <Compile Include="BTS\BugQuentity.cs" />
@@ -212,6 +220,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

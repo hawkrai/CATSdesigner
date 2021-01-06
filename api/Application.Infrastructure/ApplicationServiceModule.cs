@@ -20,6 +20,7 @@ using Application.Infrastructure.WatchingTimeManagement;
 using Application.Infrastructure.BTS;
 using Application.Infrastructure.TinCanManagement;
 using Application.Infrastructure.DocumentsManagement;
+using Application.Infrastructure.AdaptiveLearning;
 
 namespace Application.Infrastructure
 {
@@ -58,6 +59,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<IMatrixManagmentService, MatrixManagmentService>();
             containerWrapper.Register<ITinCanManagementService, TinCanManagementService>();
             containerWrapper.Register<IDocumentManagementService, DocumentManagementService>();
+            containerWrapper.Register<IAdaptiveLearningService, AdaptiveLearningService>();
             return containerWrapper;
         }
     }

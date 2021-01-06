@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from '../core/services/auth.service';
 
 @Component({
@@ -29,8 +29,10 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-        userName: ['', Validators.required],
-        password: ['', Validators.required]
+        userName: new FormControl('', [Validators.required, Validators.minLength(3),Validators.maxLength(30),
+          Validators.pattern('^[A-Za-z0-9_.-]{3,30}$')]),
+        password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+          Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator]),
     });    
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
@@ -57,4 +59,16 @@ export class LoginComponent implements OnInit {
             });
   }
 
+  private passwordValidator(control: FormControl): ValidationErrors {    
+    return null;
+   }
+
+   hasError = (controlName: string, errorName: string) => {
+    return this.loginForm.controls[controlName].hasError(errorName);
+  }
+
+  isControlInvalid(controlName: string): boolean {
+    const control = this.loginForm.controls[controlName];
+    return control.invalid && control.touched;
+  }
 }

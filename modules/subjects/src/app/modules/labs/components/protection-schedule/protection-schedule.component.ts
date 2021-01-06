@@ -1,89 +1,66 @@
-import {Component, Input, OnInit, OnChanges, SimpleChanges} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {Group} from "../../../../models/group.model";
-import {LabsService} from "../../../../services/labs/labs.service";
-import {Lab, ScheduleProtectionLab} from "../../../../models/lab.model";
-import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../../../store/selectors/subject.selector';
+import { combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Lab, ScheduleProtectionLabs } from "../../../../models/lab.model";
+import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
-import {VisitDatePopoverComponent} from '../../../../shared/visit-date-popover/visit-date-popover.component';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
+import * as groupSelectors from '../../../../store/selectors/groups.selectors';
+import * as labsActions from '../../../../store/actions/labs.actions';
+import * as labsSelectors from '../../../../store/selectors/labs.selectors';
+import { VisitDateLabsPopoverComponent } from './visit-date-labs-popover/visit-date-labs-popover.component';
+import { DialogService } from 'src/app/services/dialog.service';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-protection-schedule',
   templateUrl: './protection-schedule.component.html',
   styleUrls: ['./protection-schedule.component.less']
 })
-export class ProtectionScheduleComponent implements OnInit {
+export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Input() teacher: boolean;
+  @Input() isTeacher: boolean;
+  @Input() groupId: number;
 
-  public labs: Lab[];
-  public scheduleProtectionLabs: ScheduleProtectionLab[];
-  public numberSubGroups: number[] = [1, 2];
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], subGroupsIds: number[] }>;
   public displayedColumns: string[] = ['position', 'theme'];
+  public numberSubGroups = [1, 2];
+  constructor(
+    private store: Store<IAppState>,
+    private dialogService: DialogService) {
+  }
+  ngOnDestroy(): void {
+    this.store.dispatch(labsActions.resetLabs());
+  }
 
-  private subjectId: number;
-
-  constructor(private labService: LabsService,
-              private store: Store<IAppState>,
-              public dialog: MatDialog) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.groupId && changes.groupId.currentValue) {
+      this.store.dispatch(labsActions.loadLabsSchedule());
+    }
   }
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
-
-      this.store.pipe(select(getCurrentGroup)).subscribe(group => {
-        this.labService.loadData();
-        this.labService.getCalendar().subscribe(res => {
-          this.scheduleProtectionLabs = res;
-          this.scheduleProtectionLabs.forEach(lab => {
-            if (!this.numberSubGroups.includes(lab.subGroup)) {
-              this.numberSubGroups.push(lab.subGroup);
-              this.numberSubGroups.sort((a, b) => a-b)
-            }
-          });
-        });
-        this.labService.getLabsProtectionSchedule().subscribe(res => {
-          this.labs = res;
-        })
-      });
-    });
+    this.state$ = combineLatest(
+      this.store.select(labsSelectors.getLabs),
+      this.store.select(labsSelectors.getLabsCalendar),
+      this.store.select(groupSelectors.getCurrentGroupSubGroupIds)
+    ).pipe(
+      map(([labs, scheduleProtectionLabs, subGroupsIds]) => ({ labs, scheduleProtectionLabs, subGroupsIds }))
+    )
   }
 
-  _getSubGroupLabs(i: number) {
-    return this.labs.filter(res => res.subGroup === i);
+  getSubGroupDisplayColumns(schedule: ScheduleProtectionLabs[]) {
+    return [...this.displayedColumns, ...schedule.map(res => res.Date + res.ScheduleProtectionLabId)];
   }
 
-  _getSubGroupDay(i: number) {
-    return this.scheduleProtectionLabs.filter(res => res.subGroup === i);
-  }
-
-  _getSubGroupDisplayColumns(i: number) {
-    return [...this.displayedColumns, ...this._getSubGroupDay(i).map(res => res.date + res.id)];
-  }
-
-  settingVisitDate(index) {
+  settingVisitDate(subGroup: number, subGroupId: number) {
     const dialogData: DialogData = {
-      title: 'График посещения',
+      title: 'Даты занятий',
       buttonText: 'Добавить',
-      body: {service: this.labService, restBody: {subGroupId: this.getSubGroupId(index)}},
-      model: index
+      body: { subGroupId, subGroup },
     };
 
-    this.openDialog(dialogData, VisitDatePopoverComponent);
-  }
-
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
-
-  private getSubGroupId(i) {
-    return this.scheduleProtectionLabs.find(res => res.subGroup === i).subGroupId;
+    this.dialogService.openDialog(VisitDateLabsPopoverComponent, dialogData);
   }
 
 }

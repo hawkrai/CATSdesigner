@@ -1,73 +1,65 @@
-import { concatAll, map, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { AfterViewChecked } from '@angular/core';
+import { SubSink } from 'subsink';
 import { MatTable } from '@angular/material';
-import { isTeacher } from './../../../../store/selectors/subject.selector';
-import { OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import {Component, Input, OnInit} from '@angular/core';
-import {Lecture} from '../../../../models/lecture.model';
-import {Attachment} from "../../../../models/attachment.model";
-import {DialogData} from '../../../../models/dialog-data.model';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+
+import { IAppState } from 'src/app/store/state/app.state';
 import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.component';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
-import {LecturesService} from '../../../../services/lectures/lectures.service';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {Swap} from '../../../../models/swap.model';
-import {SubSink} from 'subsink';
-import {tap} from 'rxjs/operators';
-import { from, Observable } from 'rxjs';
+import {Lecture} from '../../../../models/lecture.model';
+import {Attachment} from "../../../../models/file/attachment.model";
+import {DialogData} from '../../../../models/dialog-data.model';
+import * as lecturesActions from '../../../../store/actions/lectures.actions';
+import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
+import { attachmentConverter } from 'src/app/utils';
+import { DialogService } from './../../../../services/dialog.service';
 
 @Component({
   selector: 'app-lectures-list',
   templateUrl: './lectures-list.component.html',
   styleUrls: ['./lectures-list.component.less']
 })
-export class LecturesListComponent implements OnInit, OnChanges {
+export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
   @Input() isTeacher: boolean;
   @Input() subjectId: number;
+  private subs = new SubSink();
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
 
-  isLoading = false;
+  defaultColumns = ['index', 'theme', 'duration'];
+  displayedColumns: string[] = [];
 
 
-  displayedColumns: string[] = ['index', 'theme', 'duration', ];
+  public lectures$: Observable<Lecture[]>;
 
-
-  public lectures: Lecture[];
-  private lecturesCopy: Lecture[];
-
-  constructor(public dialog: MatDialog,
-              private lecturesService: LecturesService) {
+  constructor(
+    private store: Store<IAppState>,
+    private dialogService: DialogService,
+    private cdRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
-    this.refreshDate();
+    this.store.dispatch(lecturesActions.loadLectures());
+    this.lectures$ = this.store.select(lecturesSelectors.getLectures);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isTeacher) {
-      if (this.isTeacher) {
-        this.displayedColumns.push('actions');
-      }
-      else {
-        this.displayedColumns.push('files');
-      }
+      this.displayedColumns = [...this.defaultColumns, this.isTeacher ? 'actions' : 'files'];
     }
   }
 
-  hasChanges(): boolean {
-    if (!this.lectures) {
-      return false;
-    }
-    return this.lectures.some((l) => l.order !== this.lecturesCopy.find(lc => lc.id === l.id).order);
+  ngAfterViewChecked(): void {
+    this.cdRef.detectChanges();
   }
 
-  refreshDate() {
-    this.lecturesService.getAllLectures(this.subjectId).subscribe(lectures => {
-      this.lectures = lectures && lectures.sort(lecture => +lecture.order);
-      this.lecturesCopy = [...this.lectures.map(l => ({ ...l }))];
-    });
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+    this.store.dispatch(lecturesActions.resetLectures());
   }
 
   openFilePopup(attachments: Attachment[]) {
@@ -76,95 +68,80 @@ export class LecturesListComponent implements OnInit, OnChanges {
       buttonText: 'Скачать',
       body: JSON.parse(JSON.stringify(attachments))
     };
-    const dialogRef = this.openDialog(dialogData, FileDownloadPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this._filesDownload(result)
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.filesDownload(result)
+        }
+      })
+    );
   }
 
-  _filesDownload(attachments: any[]) {
-    attachments.forEach(attachment => {
-      if (attachment.isDownload) {
-        setTimeout(() => {
-          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
-        }, 1000)
+  filesDownload(attachments: Attachment[]) {
+    // attachments.forEach(attachment => {
+    //   if (attachment.isDownload) {
+    //     setTimeout(() => {
+    //       window.open('/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+    //     }, 1000)
 
-      }
-    });
+    //   }
+    // });
   }
 
-  constructorLecture(lecture?: Lecture) {
-    const newLecture = lecture ? {...lecture} : this.getEmptyLecture();
-    newLecture.order = (this.lectures.length - 1).toString();
+  constructorLecture(lecturesCount: number, lecture: Lecture) {
+    const newLecture = this.getLecture(lecturesCount, lecture);
     const dialogData: DialogData = {
       title: lecture ? 'Редактирование темы лекции' : 'Добавление темы лекции',
       buttonText: 'Сохранить',
       model: newLecture
     };
-    const dialogRef = this.openDialog(dialogData, LecturePopoverComponent);
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        result.attachments = JSON.stringify(result.attachments);
-        this.lecturesService.createLecture(result).subscribe(res => res['Code'] === "200" && this.refreshDate());
-      }
-    });
+    const dialogRef = this.dialogService.openDialog(LecturePopoverComponent, dialogData);
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          result.attachments = JSON.stringify(result.attachments);
+          this.store.dispatch(lecturesActions.saveLecture({ lecture: result }));
+        }
+      })
+    );
   }
 
   deleteLectures(lecture: Lecture) {
     const dialogData: DialogData = {
       title: 'Удаление лекции',
-      body: 'лекцию "' + lecture.theme + '"',
+      body: 'лекцию "' + lecture.Theme + '"',
       buttonText: 'Удалить',
-      model: lecture.id
+      model: lecture.LecturesId
     };
-    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.lecturesService.deleteLecture({id: lecture.id, subjectId: this.subjectId})
-          .subscribe(res => res['Code'] === "200" && this.refreshDate());
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.store.dispatch(lecturesActions.deleteLecture({ id: lecture.LecturesId }));
+        }
+      })
+    );
   }
 
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
-
-  getEmptyLecture() {
+  private getLecture(lecturesCount: number, lecture: Lecture) {
     return {
-      id: '0',
+      id: lecture ? lecture.LecturesId : 0,
       subjectId: this.subjectId,
-      theme: '',
-      duration: '',
-      order: '',
-      pathFile: '',
-      attachments: [],
+      theme: lecture ? lecture.Theme : '',
+      duration: lecture ? lecture.Duration : 0,
+      order: lecture ? lecture.Order : lecturesCount,
+      pathFile: lecture ? lecture.PathFile : '',
+      attachments: lecture ? lecture.Attachments.map(attachment => attachmentConverter(attachment)) : [],
     };
   }
 
   drop(event: CdkDragDrop<Lecture[]>): void {
-    const prevIndex = this.lectures.findIndex(l => l.id === event.item.data.id);
-    if (prevIndex === event.currentIndex) {
-      return;
-    }
-    this.lectures[prevIndex].order = event.currentIndex.toString();
-    this.lectures[event.currentIndex].order = prevIndex.toString();
-    moveItemInArray(this.lectures, prevIndex, event.currentIndex);
+    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    this.store.dispatch(lecturesActions.updateOrder({ prevIndex: event.previousIndex, currentIndex: event.currentIndex }));
     this.table.renderRows();
-  }
-
-  saveChanges(): void {
-    from(this.lectures.filter(l => l.order !== this.lecturesCopy.find(lc => lc.id === l.id).order))
-    .pipe(
-      map(l => this.lecturesService.createLecture(l)),
-      concatAll()
-    )
-    .subscribe(() => this.refreshDate());
   }
 
 }

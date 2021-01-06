@@ -164,6 +164,7 @@
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtendedExtensions.cs" />
     <Compile Include="Extensions\StringExtentions.cs" />
+    <Compile Include="Helpers\UserContext.cs" />
     <Compile Include="PdfConvertor\WordToPdfConvertor.cs" />
     <Compile Include="Helpers\CommonHelpers.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />

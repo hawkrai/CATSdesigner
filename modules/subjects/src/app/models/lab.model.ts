@@ -1,26 +1,26 @@
-import {Attachment} from "./attachment.model";
+import {Attachment} from "./file/attachment.model";
 
 export class Lab {
-  labId: string;
-  attachments: Attachment[] | any;
-  duration: number;
-  order: number;
-  pathFile: number;
-  scheduleProtectionLabsRecomend: ScheduleProtectionLabsRecomend[];
-  shortName: string;
-  subGroup: number;
-  subjectId: number;
-  theme: string;
+  LabId: number;
+  Attachments: Attachment[];
+  Duration: number;
+  Order: number;
+  PathFile: string;
+  ScheduleProtectionLabsRecomend: ScheduleProtectionLabsRecomend[];
+  ShortName: string;
+  SubGroup: number;
+  SubjectId: number;
+  Theme: string;
 }
 
 export class ScheduleProtectionLabsRecomend {
-  mark: number;
-  scheduleProtectionId: string;
+  Mark: string;
+  ScheduleProtectionId: number;
 }
 
-export class ScheduleProtectionLab {
-  id: string;
-  date: string;
-  subGroup: number;
-  subGroupId: string;
+export class ScheduleProtectionLabs {
+  ScheduleProtectionLabId: number;
+  Date: string;
+  SubGroup: number;
+  SubGroupId: number;
 }

@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using Application.Core;
 using Application.Infrastructure.TinCanManagement;
 using Ionic.Zip;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Controllers
 {
+    [JwtAuth]
     public class TinCanModController : Controller
     {
         private readonly LazyDependency<ITinCanManagementService> _tinCanManagementService =
