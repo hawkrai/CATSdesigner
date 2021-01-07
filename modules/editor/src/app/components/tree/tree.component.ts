@@ -1,4 +1,8 @@
+import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { IDocumentTree } from 'src/app/models/DocumentTree';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 
 @Component({
   selector: 'tree',
@@ -7,12 +11,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class TreeComponent implements OnInit {
 
-  @Input() treeControl;
-  @Input() dataSource;
+  @Input() treeControl : NestedTreeControl<IDocumentTree>;
+  @Input() dataSource : MatTreeNestedDataSource<IDocumentTree>;
   @Input() hasChild;
   @Input() isReadOnly;
 
   @Output() onActivateTreeNodeEvent = new EventEmitter();
+  @Output() onExpandOrCollapseNode = new EventEmitter();
 
   @Output() onAddEvent = new EventEmitter();
   @Output() onRemoveEvent = new EventEmitter();
@@ -21,7 +26,9 @@ export class TreeComponent implements OnInit {
 
   currentNodeId: Number;
 
-  constructor() { this.currentNodeId = 0; }
+  constructor() {
+    this.currentNodeId = 0;
+  }
 
   ngOnInit(): void {
   }

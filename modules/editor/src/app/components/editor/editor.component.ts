@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 import { DocumentService } from 'src/app/services/document.service';
 import { DocumentPreview } from 'src/app/models/DocumentPreview';
@@ -11,6 +11,7 @@ import { RemoveDocumentDialogComponent } from '../dialogs/remove-document-dialog
 import { AddDocumentDialogComponent } from '../dialogs/add-document-dialog/add-document-dialog.component';
 import { EditDocumentDialogComponent } from '../dialogs/edit-document-dialog/edit-document-dialog.component';
 import { environment } from '../../../environments/environment';
+import { TreeComponent } from '../tree/tree.component';
 
 @Component({
   selector: 'app-editor',
@@ -19,6 +20,8 @@ import { environment } from '../../../environments/environment';
 })
 
 export class EditorComponent implements OnInit {
+
+  @ViewChild(TreeComponent) treeChild : TreeComponent;
 
   //Text editor
   public editor = Editor;
@@ -47,6 +50,8 @@ export class EditorComponent implements OnInit {
   public isReadOnly: Boolean = true;
 
   //Tree
+  isAnyNodeExpanded = false;
+
   treeControl = new NestedTreeControl<IDocumentTree>(node => node.Children);
   dataSource = new MatTreeNestedDataSource<IDocumentTree>();
   hasChild = (_: number, node: IDocumentTree) => !!node.Children && node.Children.length > 0;
@@ -82,6 +87,7 @@ export class EditorComponent implements OnInit {
     });
     this._bookService.getDocumentsTreeBySubjectId(this.SubjectId).subscribe(data => {
       this.dataSource.data = data;
+      this.treeControl.dataNodes = this.dataSource.data;
     });
   }
 
@@ -94,6 +100,11 @@ export class EditorComponent implements OnInit {
     this.currentNodeHasChild = node.Children.length > 0;
     this.currentNodeId = node.Id;
     this.model.isReadOnly = true;
+
+    this.treeControl.expand(node);
+    if(this.treeControl.isExpanded(node)) {
+      this.isAnyNodeExpanded = true;
+    }
   }
 
   // DOCUMENT
@@ -150,7 +161,8 @@ export class EditorComponent implements OnInit {
 
     if(document && document.Id) {
       data = {
-        ParentId: document.Id
+        ParentId: document.Id,
+        Name: ''
       };
     }
     const dialogRef = this.dialog.open(AddDocumentDialogComponent, {
@@ -176,4 +188,37 @@ export class EditorComponent implements OnInit {
     this.isEditorModelChanged = true;
   }
 
+  collapseTree() {
+    this.treeControl.collapseAll();
+    this.isAnyNodeExpanded = false;
+  }
+
+  expandTree() {
+    this.treeControl.expandAll();
+    this.isAnyNodeExpanded = true;
+  }
+
+  onExpandOrCollapseNode(node) {
+    if(this.treeControl.isExpanded(node)) {
+      this.isAnyNodeExpanded = true;
+    }
+    else {
+      this.checkExpandedNodes(this.treeControl.dataNodes);
+    }
+  }
+
+  checkExpandedNodes(nodes : IDocumentTree[]) {
+    for(var i = 0; i < nodes.length; i++) {
+      if(this.treeControl.isExpanded(nodes[i])) {
+        this.isAnyNodeExpanded = true;
+        break;
+      }
+      else if(nodes[i].Children?.length > 0) {
+        this.checkExpandedNodes(nodes[i].Children);
+      }
+      else {
+        this.isAnyNodeExpanded = false;
+      }
+    }
+  }
 }
