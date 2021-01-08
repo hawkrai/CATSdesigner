@@ -24,12 +24,8 @@
   <mat-drawer #drawer [mode]="'side'" position="end">
     <div class="flex-tree-container">
       <div class="flex-search-region">
-        <mat-form-field class="flex-search-input">
-          <mat-label>Поиск по учебнику</mat-label>
-          <input matInput [(ngModel)]="searchField">
-        </mat-form-field>
         <div class="flex-search-btn-holder">
-          <button mat-icon-button color="primary" aria-label="Search icon">
+          <button mat-icon-button color="primary" aria-label="Search icon" matTooltip="Поиск по книжке">
             <mat-icon>search</mat-icon>
           </button>
           <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" matTooltip="Добавление нового учебника">
@@ -49,6 +45,7 @@
           [dataSource]="dataSource"
           [hasChild]="hasChild"
           [isReadOnly]="isReadOnly"
+          [currentNodeId]="currentNode.Id"
           (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
           (onExpandOrCollapseNode)="onExpandOrCollapseNode($event)"
           (onAddEvent)="openAddDialog($event)"

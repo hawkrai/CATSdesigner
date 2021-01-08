@@ -15,6 +15,7 @@ export class TreeComponent implements OnInit {
   @Input() dataSource : MatTreeNestedDataSource<IDocumentTree>;
   @Input() hasChild;
   @Input() isReadOnly;
+  @Input() currentNodeId;
 
   @Output() onActivateTreeNodeEvent = new EventEmitter();
   @Output() onExpandOrCollapseNode = new EventEmitter();
@@ -24,24 +25,13 @@ export class TreeComponent implements OnInit {
   @Output() onEditContentEvent = new EventEmitter();
   @Output() onEditStructureEvent = new EventEmitter();
 
-  currentNodeId: Number;
-
   constructor() {
-    this.currentNodeId = 0;
   }
 
   ngOnInit(): void {
   }
 
-  nodeSelected(nodeId) {
-    this.currentNodeId = nodeId;
-  }
-
   isActive(nodeId) {
     return this.currentNodeId == nodeId;
-  }
-
-  drop($event) {
-
   }
 }

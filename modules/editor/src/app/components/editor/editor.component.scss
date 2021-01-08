@@ -5,6 +5,7 @@
 
   mat-drawer {
     box-shadow: 0px 2px 10px rgba(56, 56, 56, 0.2);
+    width: 20%;
   }
 
   .flex-tree-container {
@@ -23,14 +24,10 @@
       display: flex;
       flex-basis: 100%;
       align-items: flex-start;
-      padding: 9.5px;
-
-      .flex-search-input {
-        flex-basis: 60%;
-      }
+      padding: 1px;
 
       .flex-search-btn-holder {
-        flex-basis: 40%;
+        flex-basis: 100%;
       }
     }
   }
@@ -40,7 +37,7 @@
     flex-shrink: 3;
 
     .btn-holder {
-      padding-top: 5px;
+      padding: 1px;
 
       button {
         margin-left: 5px;
@@ -54,7 +51,7 @@
 }
 
 :host ::ng-deep .ck-editor__editable_inline {
-  height: calc(100vh - 87px);
+  height: calc(100vh - 84px);
 }
 
 /* width */

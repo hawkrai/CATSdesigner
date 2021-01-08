@@ -1,9 +1,9 @@
-<mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree" cdkDropList (cdkDropListDropped)="drop($event)">
+<mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
   <!-- Implementation without child nodes -->
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
     <li class="mat-tree-node">
       <button mat-icon-button disabled></button>
-      <label (click)="onActivateTreeNodeEvent.emit({ node: node, event: $event }); nodeSelected(node.Id)"
+      <label (click)="onActivateTreeNodeEvent.emit(node)"
         matRipple
         [ngClass]="{highlight:isActive(node.Id)}"
         >{{node.Name}}</label>
@@ -25,7 +25,7 @@
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        <label (click)="onActivateTreeNodeEvent.emit({ node: node, event: $event }); nodeSelected(node.Id)"
+        <label (click)="onActivateTreeNodeEvent.emit(node)"
           matRipple
           [ngClass]="{highlight:isActive(node.Id)}"
         >{{node.Name}}</label>
