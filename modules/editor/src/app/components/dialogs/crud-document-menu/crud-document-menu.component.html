@@ -1,21 +1,18 @@
 <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Crud document menu">
-  <mat-icon color="primary">more_horiz</mat-icon>
+  <mat-icon>more_horiz</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="onAddEvent.emit()">
-    <mat-icon color="primary">note_add</mat-icon>
-    <span>Добавить новую тему</span>
-  </button>
   <button mat-menu-item (click)="onEditStructureEvent.emit(document)">
-    <mat-icon color="primary">title</mat-icon>
     <span>Переименовать</span>
   </button>
-  <button mat-menu-item (click)="onEditContentEvent.emit(document)">
-    <mat-icon color="primary">edit</mat-icon>
-    <span>Редактировать</span>
-  </button>
   <button mat-menu-item (click)="onRemoveEvent.emit(document)">
-    <mat-icon color="primary">delete_outline</mat-icon>
     <span>Удалить</span>
   </button>
+  <button mat-menu-item (click)="onAddEvent.emit()">
+    <span>Добавить новую тему</span>
+  </button>
+  <button *ngIf="!hasChild(document)" mat-menu-item (click)="onEditContentEvent.emit(document)">
+    <span>Редактировать</span>
+  </button>
+
 </mat-menu>
