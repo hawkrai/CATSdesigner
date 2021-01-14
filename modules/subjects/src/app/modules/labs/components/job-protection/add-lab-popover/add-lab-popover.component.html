@@ -3,11 +3,11 @@
   <div mat-dialog-content class="job-protection__popover" #popoverContent>
     <form class="example-form" #formElement>
       <mat-form-field class="example-full-width">
-        <mat-label>{{data.model}}</mat-label>
+        <mat-label>{{data.body}}</mat-label>
         <textarea class="lab-work-component__news-text"
                   name="body"
                   matInput
-                  [(ngModel)]="data.body.comments"
+                  [(ngModel)]="data.model.comments"
                   (paste)="onPaste($event.clipboardData)">
         </textarea>
       </mat-form-field>

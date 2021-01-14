@@ -4,11 +4,13 @@ import { Store } from '@ngrx/store';
 
 import {IAppState} from '../state/app.state';
 import {LecturesRestService} from '../../services/lectures/lectures-rest.service';
-import {map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {map, switchMap, withLatestFrom} from 'rxjs/operators';
 import * as lecturesActions from '../actions/lectures.actions';
 import * as subjectSelectors from '../selectors/subject.selector';
 import * as leacturesSelectors from '../selectors/lectures.selectors';
 import * as groupsSelectors from '../selectors/groups.selectors';
+import * as filesActions from '../actions/files.actions';
+import * as catsActions from '../actions/cats.actions';
 
 @Injectable()
 export class LecturesEffects {
@@ -45,7 +47,7 @@ export class LecturesEffects {
   saveLecture$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.saveLecture),
     switchMap(({ lecture }) => this.rest.saveLecture(lecture).pipe(
-      map(() => lecturesActions.loadLectures())
+      switchMap(body => [catsActions.showMessage({ body }), lecturesActions.loadLectures()])
     ))
   ));
 
@@ -53,18 +55,16 @@ export class LecturesEffects {
     ofType(lecturesActions.deleteLecture),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
     switchMap(([{ id }, subjectId]) => this.rest.deleteLecture({ id, subjectId }).pipe(
-      map(() => lecturesActions.loadLectures())
+      switchMap(body => [catsActions.showMessage({ body }), lecturesActions.loadLectures()])
     ))
   ));
 
   updateOrder$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.updateOrder),
-    withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(leacturesSelectors.getLectures)),
-    switchMap(([{ prevIndex, currentIndex }, subjectId, lectures]) => 
-    this.rest.updateLecturesOrder(subjectId, [{ Id: lectures[prevIndex].LecturesId, Order: currentIndex + 1 }, { Id: lectures[currentIndex].LecturesId, Order: prevIndex + 1 }]).pipe(
-      map(() => lecturesActions.updateOrderSuccess({ prevIndex, currentIndex }))
-    ))
-  ));
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+    switchMap(([{ prevIndex, currentIndex }, subjectId]) => 
+    this.rest.updateLecturesOrder(subjectId, prevIndex, currentIndex))
+  ), { dispatch: false });
 
   deleteAllDate$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.deleteAllDate),
@@ -77,17 +77,9 @@ export class LecturesEffects {
   setLecturesMarksVisiting = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.setLecturesVisitingDate),
     switchMap(({ lecturesMarks }) => this.rest.setLecturesVisitingDate({ lecturesMarks }).pipe(
-      map(() => lecturesActions.loadGroupsVisiting())
+      switchMap(body => [catsActions.showMessage({ body }), lecturesActions.loadGroupsVisiting()])
     ))
   ));
-
-  downloadExcel = createEffect(() => this.actions$.pipe(
-    ofType(lecturesActions.downloadExcel),
-    withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
-    tap(([_, subjectId, groupId]) => {
-      // window.open(`/Statistic/GetVisitLecture?subjectId=${subjectId}&groupId=${groupId}`, '_blank')
-    })
-  ), { dispatch: false});
 
   createDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.createDateVisit),
@@ -101,6 +93,14 @@ export class LecturesEffects {
     ofType(lecturesActions.deleteDateVisit),
     switchMap(({ id }) => this.rest.deleteDateVisit(id).pipe(
       map(() => lecturesActions.loadCalendar())
+    ))
+  ));
+
+  downloadExcel = createEffect(() => this.actions$.pipe(
+    ofType(lecturesActions.getVisitingExcel),
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
+    switchMap(([_, subjectId, groupId]) => this.rest.getVisitingExcel(subjectId, groupId).pipe(
+      map((response) => filesActions.getExcelData({ response }))
     ))
   ));
 }

@@ -19,6 +19,10 @@ namespace LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm.TestPrepar
 		{
 			var generalCount = (double)prevThemaResult.Count();
 
+			if (generalCount == 0)
+			{
+				return PerformanceResults.MEDIUM;
+			}
 			var notBadRatio = prevThemaResult.Count(x => x.ResultByCurrentThema == ThemaResults.MEDIUM_LEARNED) / generalCount;
 			var goodRatio = prevThemaResult.Count(x => x.ResultByCurrentThema == ThemaResults.WELL_LEARNED) / generalCount;
 			var excellentRatio = prevThemaResult.Count(x => x.ResultByCurrentThema == ThemaResults.FULL_LEARNED) / generalCount;

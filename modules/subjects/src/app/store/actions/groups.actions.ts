@@ -27,3 +27,7 @@ export const loadOldGroups = createAction(
 export const resetGroups = createAction(
   '[Groups] Reset Groups'
 );
+
+export const loadStudentGroup = createAction(
+  '[Groups] Load Student Group'
+);

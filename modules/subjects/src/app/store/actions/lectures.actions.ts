@@ -51,11 +51,6 @@ export const updateOrder = createAction(
   props<{ prevIndex: number, currentIndex: number }>()
 );
 
-export const updateOrderSuccess = createAction(
-  '[Lectures] Update Order Success',
-  props<{ prevIndex: number, currentIndex: number }>()
-);
-
 export const deleteAllDate = createAction(
   '[Lectures] Delete All Date'
 );
@@ -63,10 +58,6 @@ export const deleteAllDate = createAction(
 export const setLecturesVisitingDate = createAction(
   '[Lectures] Set Lectures Visiting Date',
   props<{ lecturesMarks: LecturesMarksVisiting[] }>()
-);
-
-export const downloadExcel = createAction(
-  '[Lectures] Download Excel'
 );
 
 export const resetVisiting = createAction(
@@ -82,5 +73,10 @@ export const deleteDateVisit = createAction(
   '[Lectures] Delete Date Visit',
   props<{ id: number }>()
 );
+
+export const getVisitingExcel = createAction(
+  '[Lectures] Get Visiting Excel'
+);
+
 
 

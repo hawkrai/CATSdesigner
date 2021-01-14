@@ -1,11 +1,13 @@
-<div class="labs-component content">
+<div class="labs-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" *ngFor="let tab of tabs; let idx = index" [tabindex]="idx"
             [class.mdc-tab--active]="idx === selectedTab"
             (click)="selectedTab = idx"
     >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}}</span>
+        <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}} 
+          <mat-icon class="priority-icon" *ngIf="state.isTeacher && idx === 4 && (state.hasJobProtections | any:'HasJob')" class="priority-icon" [color]="'primary'">priority_high</mat-icon>
+        </span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="idx === selectedTab">
         <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -13,60 +15,66 @@
       <span class="mdc-tab__ripple"></span>
     </button>
   </div>
-  <div class="labs-component__body" *ngIf="state$ | async as state">
-    <div class="labs-component__select-group" *ngIf="selectedTab === 1 || selectedTab === 2 || selectedTab === 3 || (selectedTab === 4 && state.isTeacher)">
-      <mat-form-field>
-        <mat-select [value]="state.groups.length ? state.groups[0].GroupId : ''">
-          <mat-option *ngFor="let group of state.groups"
-                      (onSelectionChange)="selectedGroup($event)"
-                      [value]="group.GroupId"
-          >
-            {{group.GroupName}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-slide-toggle *ngIf="selectedTab !== 1"
-        class="example-margin"
-        [color]="'primary'"
-        [checked]="detachedGroup"
-        (change)="groupStatusChange($event)"
-      >
-        Открепленные группы
-      </mat-slide-toggle>
-      <button *ngIf="selectedTab === 4"
-        mat-icon-button
-        color="primary"
-        matTooltip="Скачать архивом"
-        (click)="downloadAll(state.group, state.subjectId)"
-      >
-        <mat-icon>get_app</mat-icon>
-      </button>
-      <div class="_excel-file" 
-      *ngIf="(selectedTab === 2 || selectedTab === 3) && state.isTeacher" 
-      (click)="getExcelFile(state.group, state.subjectId)">
-        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+  <div class="labs-component__body">
+    <ng-container *ngIf="state.isTeacher">
+      <div class="labs-component__select-group" *ngIf="selectedTab === 1 || selectedTab === 2 || selectedTab === 3 || selectedTab === 4">
+        <mat-form-field>
+          <mat-select [value]="state.groups.length ? state.groups[0].GroupId : ''">
+            <mat-option *ngFor="let group of state.groups"
+                        (onSelectionChange)="selectedGroup($event)"
+                        [value]="group.GroupId"
+            >
+              {{group.GroupName}}
+            <mat-icon *ngIf="state.isTeacher && selectedTab === 4 && (state.hasJobProtections | find:'GroupId':group.GroupId).HasJob" [color]="'primary'">priority_high</mat-icon>
+            </mat-option>
+            <mat-select-trigger>
+              <span #name>{{state.group.GroupName}}</span>
+              <mat-icon [style.left.px]="name | width" *ngIf="state.isTeacher && selectedTab === 4 && (state.hasJobProtections | find:'GroupId':state.group.GroupId).HasJob" class="priority-icon" [color]="'primary'">priority_high</mat-icon>
+            </mat-select-trigger>
+          </mat-select>
+        </mat-form-field>
+        <mat-slide-toggle *ngIf="selectedTab !== 1"
+          [color]="'primary'"
+          [checked]="detachedGroup"
+          (change)="groupStatusChange($event)"
+        >
+          Открепленные группы
+        </mat-slide-toggle>
+        <button *ngIf="selectedTab === 4"
+          mat-icon-button
+          color="primary"
+          matTooltip="Скачать архивом"
+          (click)="downloadAll()"
+        >
+          <mat-icon>get_app</mat-icon>
+        </button>
+        <div class="_excel-file" 
+        *ngIf="(selectedTab === 2 || selectedTab === 3) && state.isTeacher" 
+        (click)="getExcelFile()">
+          <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+        </div>
+        <button *ngIf="selectedTab === 4"
+                mat-icon-button
+                color="primary"
+                matTooltip="Проверить на плагиат всех работ"
+                (click)="checkPlagiarism(state.subjectId)"
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button *ngIf="selectedTab === 4"
+                mat-icon-button
+                color="primary"
+                matTooltip="Обновить данные"
+                (click)="refreshJobProtection()"
+        >
+          <mat-icon>cached</mat-icon>
+        </button>
       </div>
-      <button *ngIf="selectedTab === 4"
-              mat-icon-button
-              color="primary"
-              matTooltip="Проверить на плагиат всех работ"
-              (click)="checkPlagiarism(state.subjectId)"
-      >
-        <mat-icon>visibility</mat-icon>
-      </button>
-      <button *ngIf="selectedTab === 4"
-              mat-icon-button
-              color="primary"
-              matTooltip="Обновить данные"
-              (click)="_refreshJobProtection()"
-      >
-        <mat-icon>cached</mat-icon>
-      </button>
-    </div>
+    </ng-container>
     <app-labs-work *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-labs-work>
-    <app-protection-schedule *ngIf="selectedTab === 1 && state.group" [isTeacher]="state.isTeacher"></app-protection-schedule>
-    <app-visit-statistics *ngIf="selectedTab === 2 && state.group" [isTeacher]="state.isTeacher"></app-visit-statistics>
-    <app-results *ngIf="selectedTab === 3 && state.group" [isTeacher]="state.isTeacher"></app-results>
-    <app-job-protection *ngIf="selectedTab === 4" [isTeacher]="state.isTeacher" [refresh]="refreshJobProtection"></app-job-protection>
+    <app-protection-schedule *ngIf="selectedTab === 1 && state.group" [groupId]="state.group.GroupId && state.group.GroupId" [isTeacher]="state.isTeacher"></app-protection-schedule>
+    <app-visit-statistics *ngIf="selectedTab === 2 && state.group" [groupId]="state.group.GroupId" [isTeacher]="state.isTeacher"></app-visit-statistics>
+    <app-results *ngIf="selectedTab === 3 && state.group" [groupId]="state.group.GroupId" [isTeacher]="state.isTeacher"></app-results>
+    <app-job-protection *ngIf="selectedTab === 4 && state.group" [groupId]="state.group.GroupId" [isTeacher]="state.isTeacher"></app-job-protection>
   </div>
-</div>
+</div>~

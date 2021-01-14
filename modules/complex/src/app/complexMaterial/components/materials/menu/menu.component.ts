@@ -36,19 +36,20 @@ export class MenuComponent {
   openAdaptivityPopup(adaptivityType: number): void {
 
     this.adaptivityService
-      .getNextThemaRes('1', '2', '4', adaptivityType)
+      .getFirstThema(adaptivityType)
       .subscribe(themaRes => {
-        const path = '/api/Upload?fileName=' + themaRes.nextMaterialPath;
+        const path = '/api/Upload?fileName=' + (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0]);
         const diaogData: DialogData =
         {
           name: `${themaRes.nextThemaId}`,
           url: path,
+          adaptivityType: adaptivityType,
           isAdaptive: true,
-          needToGetInitialTest: themaRes.needToDoPredTest          
+          adaptivity: themaRes                 
         };
 
         const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-          width: '800px',
+          width: '1200px',
           data: diaogData
         });
 

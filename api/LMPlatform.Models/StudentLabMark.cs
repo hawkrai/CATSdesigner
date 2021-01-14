@@ -14,6 +14,8 @@ namespace LMPlatform.Models
 
         public string Date { get; set; }
 
+        public bool ShowForStudent { get; set; }
+
         public Labs Lab { get; set; }
 
         public Student Student { get; set; }
@@ -27,7 +29,7 @@ namespace LMPlatform.Models
 
         }
 
-        public StudentLabMark(int labId, int studentId, int lecturerId, string mark, string comment, string date, int id)
+        public StudentLabMark(int labId, int studentId, int lecturerId, string mark, string comment, string date, int id, bool showForStudent)
         {
             LabId = labId;
             StudentId = studentId;
@@ -36,6 +38,7 @@ namespace LMPlatform.Models
             Comment = comment;
             Date = date;
             Id = id;
+            ShowForStudent = showForStudent;
         }
     }
 }

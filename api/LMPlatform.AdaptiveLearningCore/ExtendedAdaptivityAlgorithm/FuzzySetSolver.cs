@@ -134,7 +134,14 @@ namespace LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm
 					}).ToDictionary(x => x.Key, x => x.Value);
 
 				var loopRes = loopResDict.First(x => x.Value == loopResDict.Values.Max());
-				resDict.Add(loopRes.Key, loopRes.Value);
+				if (resDict.ContainsKey(loopRes.Key))
+				{
+					resDict[loopRes.Key] += loopRes.Value;
+				}
+				else
+				{
+					resDict.Add(loopRes.Key, loopRes.Value);
+				}
 			}
 			
 			return resDict.First(x => x.Value == resDict.Values.Max()).Key;

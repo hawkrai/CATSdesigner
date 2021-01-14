@@ -22,7 +22,6 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-    
         if (this.data.model.attachments) {
             const values = JSON.stringify(
                 this.data.model.attachments.map(attachment => `${attachment.name}/${attachment.id}/${attachment.pathName}/${attachment.fileName}`

@@ -27,63 +27,20 @@ namespace Application.Infrastructure.Export
 
         public static HttpResponseMessage CourseProjectToWord(string fileName, CourseProject work)
         {
-            Microsoft.Office.Interop.Word.Application app = null;
-            string tempfileName = null;
-            object falseValue = false;
-            var missing = Type.Missing;
-            object save = WdSaveOptions.wdSaveChanges;
-            object original = WdOriginalFormat.wdOriginalDocumentFormat;
-            try
-            {
-                var url = string.Format("{0}.Export.cptasklist.doc", Assembly.GetExecutingAssembly().GetName().Name);
-                using (var templateStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(url))
-                {
-                    object tempdot = tempfileName = SaveToTemp(templateStream);
 
-                    app = new Microsoft.Office.Interop.Word.Application();
-                    var doc = app.Documents.Open(ref tempdot, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
+            byte[] byteArray = CreateDoc(work, cinfo);
 
-                    if (doc == null)
-                    {
-                        throw new ApplicationException("Unable to open the word template! Try to add Launch and Activation permissions for Word DCOM component for current IIS user (IIS_IUSRS for example). Or set Identity to Interactive User.");
-                    }
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StreamContent(new MemoryStream(byteArray));
+            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+            response.Content.Headers.ContentDisposition.FileName = fileName + ".docx";
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-word");
 
-                    FillDoc(doc, work);
-                    doc.Save();
-                    doc.Close(ref save, ref original, ref falseValue);
-
-                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-                    response.Content = new StreamContent(File.OpenRead(tempfileName));
-                    response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-                    response.Content.Headers.ContentDisposition.FileName = fileName + ".doc";
-                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-word");
-
-                    return response;
-                }
-            }
-            finally
-            {
-                if (app != null)
-                {
-                    object dontSave = WdSaveOptions.wdDoNotSaveChanges;
-                    app.Quit(ref dontSave, ref original, ref falseValue);
-                }
-
-                if (tempfileName != null)
-                {
-                    try
-                    {
-                        File.Delete(tempfileName);
-                    }
-                    catch (Exception)
-                    {
-                        //todo: log
-                    }
-                }
-            }
+            return response;
         }
 
-        public static HttpResponseMessage CourseProjectsToArchive(string fileName, IQueryable<CourseProject> courseProjects)
+        public static HttpResponseMessage CourseProjectsToArchive(string fileName, IList<CourseProject> courseProjects)
         {
             IDictionary<string, byte[]> bytelist = CreateDocs(courseProjects);
 
@@ -114,149 +71,33 @@ namespace Application.Infrastructure.Export
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = pushStreamContent };
         }
 
-        private static IDictionary<string, byte[]> CreateDocs(IQueryable<CourseProject> courseProjects)
+        private static IDictionary<string, byte[]> CreateDocs(IList<CourseProject> courseProjects)
         {
+            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
             IDictionary<string, byte[]> byteList = new Dictionary<string, byte[]>(courseProjects.Count());
-
-            Microsoft.Office.Interop.Word.Application app = null;
-            string tempFileName = null;
-            object falseValue = false;
-            var missing = Type.Missing;
-            object save = WdSaveOptions.wdSaveChanges;
-            object original = WdOriginalFormat.wdOriginalDocumentFormat;
-            string docName = null;
             Student student = null;
+            string docName = null;
 
-            try
+            foreach (var item in courseProjects)
             {
-                var url = string.Format("{0}.Export.cptasklist.doc", Assembly.GetExecutingAssembly().GetName().Name);
-                using (var templateStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(url))
-                {
+                var adp = item.AssignedCourseProjects.Count == 1 ? item.AssignedCourseProjects.First() : null;
+                var generator = adp is null ? new GenerateCPDocument(item, cinfo) : new GenerateCPDocument(adp, cinfo);
+                byte[] byteArray = generator.CreatePackageAsBytes();
 
-                    foreach (var item in courseProjects)
-                    {
-                        object tempdot = tempFileName = SaveToTemp(templateStream);
+                student = item.AssignedCourseProjects.FirstOrDefault().Student;
+                docName = $"{student.LastName}_{student.FirstName}.doc";
 
-                        app = new Microsoft.Office.Interop.Word.Application();
-                        var doc = app.Documents.Open(ref tempdot, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-
-                        if (doc == null)
-                        {
-                            throw new ApplicationException("Unable to open the word template! Try to add Launch and Activation permissions for Word DCOM component for current IIS user (IIS_IUSRS for example). Or set Identity to Interactive User.");
-                        }
-
-                        FillDoc(doc, item);
-                        doc.Save();
-                        doc.Close(ref save, ref original, ref falseValue);
-
-                        student = item.AssignedCourseProjects.FirstOrDefault().Student;
-                        docName = $"{student.LastName}_{student.FirstName}.doc";
-
-                        SaveToDictionary(tempFileName, byteList, docName);
-                    }
-                }
-                return byteList;
+                byteList.Add(docName, byteArray);
             }
-            finally
-            {
-                if (app != null)
-                {
-                    object dontSave = WdSaveOptions.wdDoNotSaveChanges;
-                    app.Quit(ref dontSave, ref original, ref falseValue);
-                }
-
-                if (tempFileName != null)
-                {
-                    try
-                    {
-                        File.Delete(tempFileName);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            }
+            return byteList;
         }
 
-        private static void FillDoc(Document document, CourseProject work)
+        private static byte[] CreateDoc(CourseProject work, CultureInfo cultureInfo)
         {
             var adp = work.AssignedCourseProjects.Count == 1 ? work.AssignedCourseProjects.First() : null;
-            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
-            var xmlData = adp == null ? CourseProjectToXml(work, cinfo) : CourseProjectToXml(adp, cinfo);
-
-            var nodes = xmlData.SelectNodes("//YearlyWorks/@year");
-            foreach (XmlNode node in nodes)
-            {
-                const string Bookn = "year";
-                var value = node.InnerText;
-                ReplaceBookmarkText(document, Bookn, value);
-                break;
-            }
-
-            nodes = xmlData.SelectNodes("//YearlyWorks/item[@name]");
-            foreach (XmlNode node in nodes)
-            {
-                var name = node.Attributes["name"];
-                var line = node.Attributes["line"];
-                var bookn = line != null ? string.Format("{0}_{1}", name.Value, line.Value) : name.Value;
-                var value = node.InnerText;
-                ReplaceBookmarkText(document, bookn, value);
-            }
-        }
-
-        private static void ReplaceBookmarkText(Document doc, string bookmarkName, string text)
-        {
-            if (doc.Bookmarks.Exists(bookmarkName))
-            {
-                object name = bookmarkName;
-                var range = doc.Bookmarks.get_Item(ref name).Range;
-
-                range.Text = text;
-                object newRange = range;
-                doc.Bookmarks.Add(bookmarkName, ref newRange);
-            }
-        }
-
-        private static string SaveToTemp(Stream stream)
-        {
-            var tmpfile = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), Path.GetTempFileName()), "doc");
-            stream.Seek(0, SeekOrigin.Begin);
-            using (var writer = File.Create(tmpfile))
-            {
-                var bt = new byte[1024];
-                var count = 0;
-                while ((count = stream.Read(bt, 0, 1024)) > 0)
-                {
-                    writer.Write(bt, 0, count);
-                }
-
-                writer.Flush();
-                writer.Close();
-            }
-
-            return tmpfile;
-        }
-
-        private static void SaveToDictionary(string fileName, IDictionary<string, byte[]> byteList, string docName)
-        {
-            using var reader = File.OpenRead(fileName);
-            using MemoryStream memStream = new MemoryStream();
-            using BinaryWriter stream = new BinaryWriter(memStream);
-            var bt = new byte[1024];
-            var count = 0;
-            while ((count = reader.Read(bt, 0, 1024)) == 1024)
-            {
-                stream.Write(bt);
-            }
-
-            if (count > 0)
-            {
-                var bt2 = new byte[count];
-                Array.Copy(bt, bt2, count);
-                stream.Write(bt2);
-            }
-
-            byteList.Add(docName, memStream.ToArray());
+            var generator = adp is null ? new GenerateCPDocument(work, cultureInfo) : new GenerateCPDocument(adp, cultureInfo);
+            var array = generator.CreatePackageAsBytes();
+            return array;
         }
 
         #endregion

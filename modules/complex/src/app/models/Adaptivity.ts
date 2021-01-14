@@ -1,6 +1,8 @@
 export class Adaptivity {
-  nextThemaId: number;
-  nextMaterialPath: number;
+  nextThemaId: string;
+  nextMaterialPaths: string[];
   needToDoPredTest: boolean;
   shouldWaitPresettedTime: boolean;
+  timeToWait?: number;
+  isLearningEnded: boolean;
 }

@@ -1,178 +1,146 @@
-import { isTeacher } from './../../../../store/selectors/subject.selector';
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
-import {LabsService} from '../../../../services/labs/labs.service';
-import {select, Store} from '@ngrx/store';
+import { DialogService } from 'src/app/services/dialog.service';
+import { SubSink } from 'subsink';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
+import {Store} from '@ngrx/store';
+import { Observable, combineLatest } from 'rxjs';
 import {IAppState} from '../../../../store/state/app.state';
-import {getSubjectId, getUser} from '../../../../store/selectors/subject.selector';
 import {DialogData} from '../../../../models/dialog-data.model';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {AddLabPopoverComponent} from './add-lab-popover/add-lab-popover.component';
-import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
-import {User} from '../../../../models/user.model';
-import {filter} from 'rxjs/operators';
-import {CheckPlagiarismStudentComponent} from './check-plagiarism-student/check-plagiarism-student.component';
+import {filter, map, withLatestFrom} from 'rxjs/operators';
+import { StudentMark } from 'src/app/models/student-mark.model';
+import { Attachment } from 'src/app/models/file/attachment.model';
+import { UserLabFile } from 'src/app/models/user-lab-file.model';
 
-import * as groupActions from '../../../../store/actions/groups.actions';
-import * as groupSelectors from '../../../../store/selectors/groups.selectors';
+import * as labsActions from '../../../../store/actions/labs.actions';
+import * as labsSelectors from '../../../../store/selectors/labs.selectors';
+import * as filesActions from '../../../../store/actions/files.actions';
+import * as subjectActions from '../../.././../store/selectors/subject.selector';
+import { attachmentConverter } from 'src/app/utils';
+import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
+import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
 
 @Component({
   selector: 'app-job-protection',
   templateUrl: './job-protection.component.html',
   styleUrls: ['./job-protection.component.less']
 })
-export class JobProtectionComponent implements OnInit {
+export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() isTeacher: boolean;
-  @Input() refresh: EventEmitter<any>;
+  @Input() groupId: number;
 
-  public files;
-  public students;
   public openedPanelId = 0;
+  private subs = new SubSink();
 
-  public numberSubGroups: number[] = [];
-  public subjectId: number;
-  public user: User;
   public displayedColumns = ['files', 'comments', 'date', 'action'];
-
-  constructor(private labService: LabsService,
-              private store: Store<IAppState>,
-              public dialog: MatDialog) {
+  state$: Observable<{ students: StudentMark[], files: UserLabFile[] }>;
+   
+  constructor(
+    private store: Store<IAppState>,
+    public dialogService: DialogService) {
   }
 
-  ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
-      this.refreshDate();
-    });
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 
-    let date = new Date();
-    this.refresh.subscribe(res => {
-      if (this.subjectId) {
-        this.students = null;
-        this.refreshDate(date);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.groupId && changes.groupId.currentValue) {
+      if (this.isTeacher) {
+        this.store.dispatch(labsActions.loadStudentsLabsFiles());
+      } else {
+        this.store.dispatch(labsActions.loadUserLabsFiles());
       }
-      date = res;
-    })
-  }
-
-  refreshDate(date?) {
-    if (this.isTeacher) {
-      this.store.pipe(select(groupSelectors.getCurrentGroup))
-        .pipe(filter(group => !!group))
-        .subscribe(group => {
-          this.labService.getAllStudentFilesLab(this.subjectId, group.GroupId).subscribe(students => {
-            this.students = date ? this.setPriority(date, students) : students;
-            students.forEach(student => {
-              if (!this.numberSubGroups.includes(student.SubGroup)) {
-                this.numberSubGroups.push(student.SubGroup);
-                this.numberSubGroups.sort((a, b) => a-b)
-              }
-            })
-          })
-        })
-    } else {
-      this.store.pipe(select(getUser))
-        .pipe(filter(user => !!user))
-        .subscribe(user => {
-          this.user = user;
-          this.labService.getFilesLab({subjectId: this.subjectId, userId: this.user.id}).subscribe(files => {
-            this.files = files;
-          })
-        })
     }
   }
 
-  downloadFile(attachment) {
-    window.open('http://localhost:8080/api/Upload?fileName=' + attachment.PathName + '//' + attachment.FileName)
+  ngOnInit(): void {
+    this.state$ = combineLatest(
+      this.store.select(labsSelectors.getStudentsLabsFiles),
+      this.store.select(labsSelectors.getUserLabsFiles)
+    ).pipe(
+      map(([students, files]) => ({ students, files }))
+    );
   }
 
-  setPriority(date, student) {
-    student.map(student => {
-      let isNew = false;
-      student.FileLabs.map(file => {
-        if (new Date(file.Date) > date) {
-          file.isNew = true;
-          isNew = true;
-        }
-      });
-      student.isNew = isNew;
-    });
-    return student;
+  hasNewLabs(student: StudentMark): boolean {
+    return student.FileLabs.some(this.isNewFile);
   }
 
-  addLab(file?) {
-    let body = {comments: '', attachments: []};
+  isNewFile = (file: UserLabFile): boolean => {
+    return  (this.isTeacher && !file.IsReturned && !file.IsReceived) || (!this.isTeacher && file.IsReturned);
+  }
+
+  downloadFile(attachment : Attachment): void {
+    this.store.dispatch(filesActions.downloadFile({ pathName: attachment.PathName, fileName: attachment.FileName }));
+  }
+
+  addLab(file: UserLabFile, studentId?: number): void {
+    let model = {comments: '', attachments: []};
     if (!this.isTeacher && file) {
-      body = {comments: file.Comments, attachments: file.Attachments}
+      model = { comments: file.Comments, attachments: file.Attachments.map(f => attachmentConverter(f)) }
     }
     const dialogData: DialogData = {
       title: this.isTeacher ? 'Загрузить исправленный вариант работы' : 'На защиту лабораторной работы',
       buttonText: 'Отправить работу',
-      body: body,
-      model: this.isTeacher ? 'Комментарий (необязательно)' : 'Комментарий (Например, Лабораторная работа №1)'
+      body: this.isTeacher ? 'Комментарий (необязательно)' : 'Комментарий (Например, Лабораторная работа №1)',
+      model
     };
-    const dialogRef = this.openDialog(dialogData, AddLabPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(AddLabPopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.labService.sendUserFile(this.getSendFile(result, file)).subscribe(
-          res => res.Code === '200' && this.refreshDate()
-        )
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().pipe(
+        filter(data => !!data),
+        withLatestFrom(this.store.select(subjectActions.getUserId)),
+        map(([data, userId]: [{ comments: string, attachments: Attachment[]}, string]) => this.getSendFile(data, file, studentId ? studentId : +userId))
+      ).subscribe(sendFile => {
+        this.store.dispatch(labsActions.sendUserFile({ sendFile }));
+      })
+    );
   }
 
-  cancelReceivedLabFile(file) {
-    this.labService.cancelReceivedLabFile({userFileId: file.Id}).subscribe(
-      res => res.Code === '200' && this.refreshDate()
-    )
+  cancelReceivedLabFile(userFileId: number): void {
+    this.store.dispatch(labsActions.cancelLabFile({ userFileId }));
   }
 
-  receivedLabFile(file) {
-    this.labService.receivedLabFile({userFileId: file.Id}).subscribe(
-      res => res.Code === '200' && this.refreshDate()
-    )
+  receiveLabFile(userFileId: number): void {
+    this.store.dispatch(labsActions.receiveLabFile({ userFileId }));
   }
 
-  checkPlagiarism(file) {
-    const dialogData: DialogData = {
-      body: {subjectId: this.subjectId, userFileId: file.Id}
+  checkPlagiarism(userFileId: number): void {
+     const dialogData: DialogData = {
+       body: { userFileId }
     };
-    this.openDialog(dialogData, CheckPlagiarismStudentComponent);
+    this.dialogService.openDialog(CheckPlagiarismStudentComponent, dialogData);
   }
 
-  deleteLabWork(file) {
+  deleteLabWork(userFileId: number ) {
     const dialogData: DialogData = {
       title: 'Удаление работы',
       body: 'работу',
       buttonText: 'Удалить'
     };
-    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.labService.deleteUserFile({id: file.Id}).subscribe(
-          res => res.Code === '200' && this.refreshDate()
-        )
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().pipe(
+        filter(result => !!result)
+      ).subscribe(() => {
+        this.store.dispatch(labsActions.deleteUserFile({ userFileId }));
+      })
+    );
   }
 
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
-
-  getSendFile(data: { comments: string, attachments: any[] }, file?) {
+  getSendFile(data: { comments: string, attachments: Attachment[] }, file: UserLabFile, userId: number) {
+    console.log(data);
     return {
       attachments: JSON.stringify(data.attachments),
       comments: data.comments,
-      id: file ? file.Id : '0',
+      id: file ? file.Id : 0,
       isCp: false,
       isRet: this.isTeacher,
-      pathFile: file ? file.Attachments[0].PathName : '',
-      subjectId: this.subjectId,
-      userId: this.user.id.toString()
+      pathFile: file ? file.PathFile : '',
+      userId
     }
   }
 

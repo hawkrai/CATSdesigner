@@ -13,3 +13,23 @@ export const getLabsCalendar = createSelector(
   labsSelector,
   state => state.schedule
 );
+
+export const getLabStudents = createSelector(
+  labsSelector,
+  state => state.students
+);
+
+export const getStudentsLabsFiles = createSelector(
+  labsSelector,
+  state => state.studentsLabsFiles
+);
+
+export const getUserLabsFiles = createSelector(
+  labsSelector,
+  state => state.userLabsFiles
+);
+
+export const HasJobProtections = createSelector(
+  labsSelector,
+  state => state.hasJobProtections
+);

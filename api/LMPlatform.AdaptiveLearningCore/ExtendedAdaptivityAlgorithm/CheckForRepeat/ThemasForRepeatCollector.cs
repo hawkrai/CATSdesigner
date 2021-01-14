@@ -18,7 +18,7 @@ namespace LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm.CheckForRe
 				.Select(x => new ThemasForRepeat() 
 					{
 						ThemaId = x.ThemaId,
-						RepeatResult = CheckForNeedToRepeat(x.DateOfPass.Value, x.FinalThemaResult)
+						RepeatResult = CheckForNeedToRepeat(x.DateOfPass.Value, x.FinalThemaResult.Value)
 					})
 				.ToList();
 

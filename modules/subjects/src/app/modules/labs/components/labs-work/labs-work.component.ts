@@ -1,10 +1,12 @@
+import { ConvertedAttachment } from './../../../../models/file/converted-attachment.model';
 import { DialogService } from './../../../../services/dialog.service';
 import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
 import {Store} from '@ngrx/store';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { SubSink } from 'subsink';
-import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, AfterViewChecked, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, AfterViewChecked, ViewChild } from '@angular/core';
+import { filter } from 'rxjs/operators';
 
 import {Lab} from "../../../../models/lab.model";
 import {IAppState} from '../../../../store/state/app.state';
@@ -17,19 +19,18 @@ import * as labsActions from '../../../../store/actions/labs.actions';
 import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import { attachmentConverter } from 'src/app/utils';
+import * as filesActions from '../../../../store/actions/files.actions';
 
 @Component({
   selector: 'app-labs-work',
   templateUrl: './labs-work.component.html',
   styleUrls: ['./labs-work.component.less']
 })
-export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
+export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
-  public defaultColumns = ['position', 'theme', 'shortName', 'clock'];
-  public displayedColumns: string[] = [];
   public labs$: Observable<Lab[]>;
   private prefix = 'ЛР';
 
@@ -44,11 +45,9 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     this.labs$ = this.store.select(labsSelectors.getLabs);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.isTeacher) {
-      const column = this.isTeacher ? 'actions' : 'files';
-      this.displayedColumns = [...this.defaultColumns, column];
-    }
+  getDisplayedColumns(): string[] {
+    const defaultColumns = ['position', 'theme', 'shortName', 'clock'];
+    return defaultColumns.concat(this.isTeacher ? 'actions' : 'files');
   }
 
   ngAfterViewChecked(): void {
@@ -67,7 +66,7 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       buttonText: 'Сохранить',
       model: newLab
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, LabWorkPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(LabWorkPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -85,7 +84,7 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
       body: 'лабораторную работу "' + lab.Theme + '"',
       buttonText: 'Удалить'
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -100,32 +99,26 @@ export class LabsWorkComponent implements OnInit, OnChanges, OnDestroy, AfterVie
     const dialogData: DialogData = {
       title: 'Файлы',
       buttonText: 'Скачать',
-      body: JSON.parse(JSON.stringify(attachments))
+      body: attachments.map(attachment => attachmentConverter(attachment))
     };
-    const dialogRef = this.dialogService.openDialog(dialogData, FileDownloadPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.filesDownload(result)
-      }
-    });
-  }
-
-  filesDownload(attachments: any[]) {
-    // attachments.forEach(attachment => {
-    //   if (attachment.isDownload) {
-    //     setTimeout(() => {
-    //       window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
-    //     }, 1000)
-
-    //   }
-    // });
+    this.subs.add(
+      dialogRef.afterClosed().pipe(
+        filter(r => !!r)
+      ).subscribe((result: ConvertedAttachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      })
+    );
   }
 
   drop(event: CdkDragDrop<Lab[]>): void {
-    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    this.store.dispatch(labsActions.updateOrder({ prevIndex: event.previousIndex, currentIndex: event.currentIndex }));
-    this.table.renderRows();
+    const prevIndex = event.container.data.findIndex(i => i.LabId == event.item.data.LabId);
+    if (prevIndex !== event.currentIndex) {
+      moveItemInArray(event.container.data, prevIndex, event.currentIndex);
+      this.store.dispatch(labsActions.updateOrder({ prevIndex, currentIndex: event.currentIndex }));
+      this.table.renderRows();
+    }
   }
 
   private getLab(labsCount: number, lab: Lab) {

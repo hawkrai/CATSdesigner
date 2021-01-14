@@ -26,6 +26,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             StudentId = student.Id;
             FullName = student.FullName;
             GroupId = student.GroupId;
+            Login = student.User != null ? student.User.UserName : string.Empty;
             LabVisitingMark = new List<LabVisitingMarkViewData>();
             PracticalVisitingMark = new List<PracticalVisitingMarkViewData>();
             StudentLabMarks = new List<StudentLabMarkViewData>();
@@ -34,7 +35,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
 			if (test != null && test.Any() && test.Any(e => e.Points.HasValue))
 	        {
                 var sum = (double)test.Where(e => e.Points != null).Sum(e => e.Points);
-				TestMark = Math.Round((double)(sum / test.Where(e => e.Points != null).Count()), 1).ToString(CultureInfo.InvariantCulture);
+				TestMark = Math.Round(sum / test.Count(e => e.Points != null), 1).ToString(CultureInfo.InvariantCulture);
 	        }
 
             AllTestsPassed = test.Count > 0  && test.All(e => e.Points.HasValue);
@@ -57,7 +58,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Comment = string.Empty,
                             Date = string.Empty,
                             StudentLabMarkId = 0,
-                            LecturerId = new int?()
+                            LecturerId = new int?(),
+                            ShowForStudent = false
                         });
                     }
                     else
@@ -70,7 +72,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Comment = model.Comment,
                             Date = model.Date,
                             StudentLabMarkId = model.Id,
-                            LecturerId = model.LecturerId.HasValue ? model.LecturerId.Value : new int?()
+                            LecturerId = model.LecturerId.HasValue ? model.LecturerId.Value : new int?(),
+                            ShowForStudent = model.ShowForStudent
                         });
                     }
                 }   
@@ -117,7 +120,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = model.Mark,
                             ScheduleProtectionLabId = scheduleProtectionLab.Id,
                             StudentId = student.Id,
-                            LabVisitingMarkId = model.Id
+                            LabVisitingMarkId = model.Id,
+                            ShowForStudent = model.ShowForStudent
                         });    
                     }
                     else
@@ -128,7 +132,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = string.Empty,
                             ScheduleProtectionLabId = scheduleProtectionLab.Id,
                             StudentId = this.StudentId,
-                            LabVisitingMarkId = 0
+                            LabVisitingMarkId = 0,
+                            ShowForStudent = false
                         });       
                     }
                 }

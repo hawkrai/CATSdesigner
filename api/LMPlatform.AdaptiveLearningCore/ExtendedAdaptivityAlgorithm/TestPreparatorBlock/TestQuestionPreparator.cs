@@ -24,19 +24,35 @@ namespace LMPlatform.AdaptiveLearningCore.ExtendedAdaptivityAlgorithm.TestPrepar
 		{
 			var weightList = TestTaskDificultyWeigths[difficulty];
 			var questionList = new List<TestQuestion>();
+			var neededCoef = neededQuestionsCount;
 
-			for(int i = 0; i < weightList.Length; ++i)
+			for (int i = 0; i < weightList.Length; ++i)
 			{
 				var weight = weightList[i];
-				var questionCount = (int)(neededQuestionsCount * weight);
+				var questionCount = (int)(neededCoef * weight);
 				if (questionCount > neededQuestionsCount)
 				{
 					questionCount = neededQuestionsCount;
 				}
-				questionList.AddRange(testQuestions
+				
+				var rangeToAdd = testQuestions
 					.Where(x => x.TestQuestionDificulty == TestTaskDificultyWeigths.Keys.ToList()[i])
-					.Take(questionCount));
-				neededQuestionsCount -= questionCount;
+					.Take(questionCount);
+
+				if (rangeToAdd.Any())
+				{
+					questionList.AddRange(rangeToAdd);
+					neededQuestionsCount -= rangeToAdd.Count();
+				}
+				
+			}
+			if (neededQuestionsCount != 0)
+			{
+				var addedQuestions = questionList.Select(x => x.TestQuestionId).ToArray();
+				questionList.AddRange(
+					testQuestions
+					.Where(x => !addedQuestions.Contains(x.TestQuestionId))
+					.Take(neededQuestionsCount));
 			}
 
 			return questionList;

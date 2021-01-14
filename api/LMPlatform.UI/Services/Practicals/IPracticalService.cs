@@ -52,7 +52,7 @@ namespace LMPlatform.UI.Services.Practicals
         ResultViewData DeleteVisitingDate(int id);
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "/UpdatePracticals", RequestFormat = WebMessageFormat.Json, Method = "POST")]
-        ResultViewData UpdatePracticals(List<UpdateLab> practicals);
+        [WebInvoke(UriTemplate = "/UpdatePracticalsOrder", RequestFormat = WebMessageFormat.Json, Method = "POST")]
+        ResultViewData UpdatePracticalsOrder(int subjectId, int prevIndex, int curIndex);
     }
 }

@@ -19,4 +19,7 @@ export class CrudDocumentMenuComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  hasChild(document) {
+    return document.Children?.length > 0;
+  }
 }

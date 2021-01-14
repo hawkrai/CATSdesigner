@@ -78,8 +78,11 @@ export class ConverterService {
   public nextThemaResConverter(themaRes: any) {
     var nextThemaRes = new Adaptivity();
     nextThemaRes.nextThemaId = themaRes.NextThemaId;
-    nextThemaRes.nextMaterialPath = themaRes.NextMaterialPath;
+    nextThemaRes.nextMaterialPaths = themaRes.NextMaterialPath;
     nextThemaRes.needToDoPredTest = themaRes.NeedToDoPredTest;
+    nextThemaRes.shouldWaitPresettedTime = themaRes.ShouldWaitBeforeTest;
+    nextThemaRes.timeToWait = themaRes.TimeToWait;
+    nextThemaRes.isLearningEnded = themaRes.IsLearningEnded;
 
     return nextThemaRes;
   }

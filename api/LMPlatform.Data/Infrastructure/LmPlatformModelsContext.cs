@@ -213,7 +213,7 @@ namespace LMPlatform.Data.Infrastructure
 
         public DbSet<DocumentSubject> DocumentSubjects { get; set; }
 
-
+        public DbSet<AdaptiveLearningProgress> AdaptiveLearningProgress { get; set; }
         #endregion DataContext Members
 
         #region Protected Members
