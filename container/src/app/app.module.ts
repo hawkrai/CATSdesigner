@@ -21,6 +21,7 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { AboutComponent } from './about/about.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ResetComponent } from './reset/reset.component';
+import { ToastModule } from './toast';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { ResetComponent } from './reset/reset.component';
     ReactiveFormsModule,
     MatetialModule,
     CoreModule,
-    MatButtonModule
+    MatButtonModule,
+    ToastModule.forRoot()
   ],
   providers: [
     LayoutService

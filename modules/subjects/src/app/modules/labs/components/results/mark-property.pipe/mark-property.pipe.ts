@@ -19,16 +19,17 @@ export class MarkPropertyPipe implements PipeTransform {
         const calendar = schedule[i];
         const oldDateArr = calendar.Date.split('.');
         const oldDate = new Date(oldDateArr[1] + '.' + oldDateArr[0] + '.' + oldDateArr[2]);
-        if (oldDate === new Date()) {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        if (oldDate.valueOf() === now.valueOf()) {
           const lab = labs.find(lab => lab.LabId === labId);
           const scheduleProtectionLab = lab.ScheduleProtectionLabsRecomend.find(res =>
             res.ScheduleProtectionId === calendar.ScheduleProtectionLabId
           );
-
           if (scheduleProtectionLab) {
             markProperty.recommendedMark = scheduleProtectionLab.Mark;
           }
-        } else if (oldDate > new Date()) {
+        } else if (oldDate.valueOf() > now.valueOf()) {
           const lab = labs.find(lab => lab.LabId === labId);
           const scheduleProtectionLab = lab.ScheduleProtectionLabsRecomend.find(res =>
             res.ScheduleProtectionId === calendar.ScheduleProtectionLabId
