@@ -78,9 +78,9 @@ export class AppComponent implements OnInit {
     //const url = 'http://localhost:8080/Statistic/';
 
     if (this.tab === 4) {
-      location.href = location.origin + '/Statistic/GetPercentageCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.GroupId;
+      location.href = location.origin + '/api/CpStatistic?group=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
     } else if (this.tab === 5) {
-      location.href = location.origin + '/Statistic/GetVisitCP?subjectId=' + this.subjectId + '&groupId=' + this.selectedGroup.GroupId;
+      location.href = location.origin + '/api/CpStatistic?groupId=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;
     }
   }
 
