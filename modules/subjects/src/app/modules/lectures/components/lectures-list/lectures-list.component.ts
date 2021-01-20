@@ -6,6 +6,7 @@ import { ChangeDetectorRef, OnChanges, OnDestroy, SimpleChanges, ViewChild } fro
 import {Component, Input, OnInit} from '@angular/core';
 import { Store } from '@ngrx/store';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { filter } from 'rxjs/operators';
 
 import { IAppState } from 'src/app/store/state/app.state';
 import {LecturePopoverComponent} from '../lecture-popover/lecture-popover.component';
@@ -18,6 +19,8 @@ import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
 import { attachmentConverter } from 'src/app/utils';
 import { DialogService } from './../../../../services/dialog.service';
+import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
+import * as filesActions from '../../../../store/actions/files.actions';
 
 @Component({
   selector: 'app-lectures-list',
@@ -66,28 +69,17 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     const dialogData: DialogData = {
       title: 'Файлы',
       buttonText: 'Скачать',
-      body: JSON.parse(JSON.stringify(attachments))
+      body: attachments.map(a => attachmentConverter(a))
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.filesDownload(result)
-        }
+      dialogRef.afterClosed().pipe(
+        filter(r => !!r)
+      ).subscribe((result: ConvertedAttachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
       })
     );
-  }
-
-  filesDownload(attachments: Attachment[]) {
-    // attachments.forEach(attachment => {
-    //   if (attachment.isDownload) {
-    //     setTimeout(() => {
-    //       window.open('/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
-    //     }, 1000)
-
-    //   }
-    // });
   }
 
   constructorLecture(lecturesCount: number, lecture: Lecture) {
@@ -139,9 +131,12 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   }
 
   drop(event: CdkDragDrop<Lecture[]>): void {
-    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    this.store.dispatch(lecturesActions.updateOrder({ prevIndex: event.previousIndex, currentIndex: event.currentIndex }));
-    this.table.renderRows();
+    const prevIndex = event.container.data.findIndex(i => i.LecturesId == event.item.data.LecturesId);
+    if (prevIndex !== event.currentIndex) {
+      moveItemInArray(event.container.data, prevIndex, event.currentIndex);
+      this.store.dispatch(lecturesActions.updateOrder({ prevIndex, currentIndex: event.currentIndex }));
+      this.table.renderRows();
+    }
   }
 
 }

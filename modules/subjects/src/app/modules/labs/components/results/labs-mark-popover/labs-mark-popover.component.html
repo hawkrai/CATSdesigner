@@ -18,6 +18,7 @@
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Комментарий</mat-label>
+      <mat-checkbox matTooltip="Показать комментарий студенту" matTooltipPosition="left" class="checkbox"  name="showForStudent" formControlName="showForStudent" [color]="'primary'"></mat-checkbox>
       <textarea class="results__comment" matInput formControlName="comment"></textarea>
       <mat-hint *ngIf="lector$ | async as lector"><span *ngIf="data.model.lecturerId">Оценку поставил(а)</span> {{lector.FullName | initials}}</mat-hint>
     </mat-form-field>

@@ -16,7 +16,7 @@ export class NewsRestService {
       map(res => res['News'])
     );
   }
-
+  
   public saveNews(news: any): Observable<any> {
     return this.http.post('Services/News/NewsService.svc/Save', {...news });
   }
