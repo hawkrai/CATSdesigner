@@ -11,6 +11,7 @@ using WebMatrix.WebData;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
 using System.Collections.Generic;
 using Application.Infrastructure.GroupManagement;
+using Application.Core.Helpers;
 
 namespace LMPlatform.UI.Services.Subjects
 {
