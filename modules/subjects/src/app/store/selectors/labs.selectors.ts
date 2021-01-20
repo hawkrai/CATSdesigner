@@ -28,8 +28,3 @@ export const getUserLabsFiles = createSelector(
   labsSelector,
   state => state.userLabsFiles
 );
-
-export const HasJobProtections = createSelector(
-  labsSelector,
-  state => state.hasJobProtections
-);

@@ -44,7 +44,7 @@ namespace LMPlatform.UI.ApiControllers.CP
                                 .Where(x => x.AssignedCourseProjects.Count() == 1)
                                 .Include(x =>
                         x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
-                                .Where(x => x.AssignedCourseProjects.FirstOrDefault().Student.GroupId == groupId).ToList();
+                                .Where(x => x.AssignedCourseProjects.FirstOrDefault().Student.GroupId == groupId);
 
             string fileName = "NoTaskSheet.zip";
             if (courseProjects.Count() > 0)

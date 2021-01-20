@@ -1,4 +1,3 @@
-import { ConvertedAttachment } from './../../../../models/file/converted-attachment.model';
 import { DialogService } from './../../../../services/dialog.service';
 import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
@@ -6,7 +5,6 @@ import {Store} from '@ngrx/store';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { SubSink } from 'subsink';
 import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, AfterViewChecked, ViewChild } from '@angular/core';
-import { filter } from 'rxjs/operators';
 
 import {Lab} from "../../../../models/lab.model";
 import {IAppState} from '../../../../store/state/app.state';
@@ -19,7 +17,6 @@ import * as labsActions from '../../../../store/actions/labs.actions';
 import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import { attachmentConverter } from 'src/app/utils';
-import * as filesActions from '../../../../store/actions/files.actions';
 
 @Component({
   selector: 'app-labs-work',
@@ -99,26 +96,32 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     const dialogData: DialogData = {
       title: 'Файлы',
       buttonText: 'Скачать',
-      body: attachments.map(attachment => attachmentConverter(attachment))
+      body: JSON.parse(JSON.stringify(attachments))
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
-    this.subs.add(
-      dialogRef.afterClosed().pipe(
-        filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
-      })
-    );
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.filesDownload(result)
+      }
+    });
+  }
+
+  filesDownload(attachments: any[]) {
+    // attachments.forEach(attachment => {
+    //   if (attachment.isDownload) {
+    //     setTimeout(() => {
+    //       window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
+    //     }, 1000)
+
+    //   }
+    // });
   }
 
   drop(event: CdkDragDrop<Lab[]>): void {
-    const prevIndex = event.container.data.findIndex(i => i.LabId == event.item.data.LabId);
-    if (prevIndex !== event.currentIndex) {
-      moveItemInArray(event.container.data, prevIndex, event.currentIndex);
-      this.store.dispatch(labsActions.updateOrder({ prevIndex, currentIndex: event.currentIndex }));
-      this.table.renderRows();
-    }
+    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    this.store.dispatch(labsActions.updateOrder({ prevIndex: event.previousIndex, currentIndex: event.currentIndex }));
+    this.table.renderRows();
   }
 
   private getLab(labsCount: number, lab: Lab) {

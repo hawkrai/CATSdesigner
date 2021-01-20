@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'plural'
+  name: 'pluar'
 })
-export class PluralPipe implements PipeTransform {
+export class PluarPipe implements PipeTransform {
   transform(value: number, plurForm: string, singularForm: string): string {
     return value > 1 ? singularForm : plurForm;
   }

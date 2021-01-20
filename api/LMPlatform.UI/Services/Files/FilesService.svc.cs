@@ -68,6 +68,5 @@ namespace LMPlatform.UI.Services.Files
 				};
 			}
 		}
-
 	}
 }

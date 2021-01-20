@@ -255,22 +255,6 @@ namespace LMPlatform.UI.Controllers
                 {FileDownloadName = subGroup.Student.FullName.Replace(" ", "_") + ".zip"};
         }
 
-        [HttpPost]
-        public FileResult GetAttachmentsAsZip(IEnumerable<int> attachmentsIds)
-        {
-            var zip = new ZipFile(Encoding.UTF8);
-            var name = Guid.NewGuid().ToString();
-            var attachments = FilesManagementService.GetAttachmentsByIds(attachmentsIds);
-            UtilZip.CreateZipFile(ConfigurationManager.AppSettings["FileUploadPath"], zip, attachments.ToList(), name);
-
-            var memoryStream = new MemoryStream();
-            zip.Save(memoryStream);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
-            return new FileStreamResult(memoryStream, "application/zip")
-            { FileDownloadName = name + ".zip" };
-        }
-
         public ActionResult Subjects()
         {
             var model = new SubjectManagementViewModel(UserContext.CurrentUserId.ToString(CultureInfo.InvariantCulture));
@@ -324,8 +308,6 @@ namespace LMPlatform.UI.Controllers
             return null;
         }
 
-
-
         [HttpPost]
         public DataTablesResult<SubjectListViewModel> GetSubjects(DataTablesParam dataTableParam)
         {
@@ -336,8 +318,6 @@ namespace LMPlatform.UI.Controllers
             return DataTableExtensions.GetResults(subjects.Items.Select(this._GetSubjectRow), dataTableParam,
                 subjects.TotalCount);
         }
-
-        
 
         public SubjectListViewModel _GetSubjectRow(Subject subject)
         {

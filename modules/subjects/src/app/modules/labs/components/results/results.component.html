@@ -33,7 +33,7 @@
                    class="mark">
                 <div *ngIf="markProperty.mark">
                   {{markProperty.mark.Mark}}
-                  <div *ngIf="markProperty.mark.Mark && markProperty.mark.Comment && (isTeacher || (markProperty.mark.ShowForStudent && markProperty.mark.StudentId === +state.userId))" class="comment" [matTooltip]="markProperty.mark.Comment" matTooltipPosition="above">
+                  <div *ngIf="markProperty.mark.Mark && markProperty.mark.Comment" class="comment" [matTooltip]="markProperty.mark.Comment" matTooltipPosition="above">
                     <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
                   </div>
                 </div>

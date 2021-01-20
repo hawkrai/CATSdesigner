@@ -87,37 +87,47 @@ namespace LMPlatform.UI.Services.Lectures
             }
         }
 
-        public ResultViewData UpdateLecturesOrder(int subjectId, int prevIndex, int curIndex)
+        public ResultViewData UpdateLecturesOrder(List<UpdateOrder> objs)
         {
             try
             {
-                var lectures = SubjectManagementService.GetSubjectLectures(subjectId);
-                if (prevIndex < curIndex)
+                foreach(var obj in objs)
                 {
-                    foreach (var entry in lectures.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(lectures[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
-                    {
-                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + prevIndex);
-                    }
-                }
-                else
-                {
-                    foreach (var entry in new List<Lectures> { lectures[prevIndex] }.Concat(lectures.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
-                    {
-                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + curIndex);
-                    }
+                    SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
                 }
                 return new ResultViewData
                 {
-                    Code = "200",
-                    Message = "Лекции успешно сохранены"
+                    Message = "Лекции успешно обновлены",
+                    Code = "200"
                 };
             }
             catch (Exception ex)
             {
                 return new ResultViewData
                 {
-                    Code = "500",
-                    Message = ex.Message
+                    Message = "Произошла ошибка при обновлении лекций." + ex.Message,
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData UpdateLectureOrder(UpdateOrder obj)
+        {
+            try
+            {
+                SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
+                return new ResultViewData
+                {
+                    Message = "Лекция успешно обновлена",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при обновлении лекции." + ex.Message,
+                    Code = "500"
                 };
             }
         }
@@ -373,7 +383,7 @@ namespace LMPlatform.UI.Services.Lectures
                 {
                     var data = new List<MarkViewData>();
 
-                    foreach (var lecturesScheduleVisiting in lecturesVisitingData)
+                    foreach (var lecturesScheduleVisiting in lecturesVisitingData.OrderBy(e => e.Date))
                     {
                         var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
 

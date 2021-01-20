@@ -7,7 +7,6 @@ import * as practicalsActions from '../actions/practicals.actions';
 import * as practicalsSelectros from '../selectors/practicals.selectors';
 import * as groupSelectors from '../selectors/groups.selectors';
 import * as subjectSelectors from '../selectors/subject.selector';
-import * as catsActions from '../actions/cats.actions';
 import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
 import { IAppState } from '../state/app.state';
 
@@ -30,16 +29,18 @@ export class PracticalsEffects {
 
     updateOrder$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.updateOrder),
-        withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([{ prevIndex, currentIndex }, subjectId]) => 
-        this.rest.updatePracticalsOrder(subjectId, prevIndex, currentIndex))
-    ), { dispatch: false });
+        withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(practicalsSelectros.getPracticals)),
+        switchMap(([{ prevIndex, currentIndex }, subjectId, practicals]) => 
+        this.rest.updatePracticalsOrder(subjectId, [{ Id: practicals[prevIndex].PracticalId, Order: currentIndex + 1 }, { Id: practicals[currentIndex].PracticalId, Order: prevIndex + 1 }]).pipe(
+          map(() => practicalsActions.updateOrderSuccess({ prevIndex, currentIndex }))
+        ))
+    ));
 
     deletePractical$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.deletePractical),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
         switchMap(([{ id }, subjectId]) => this.rest.deletePractical({ id, subjectId}).pipe(
-            switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadPracticals()])
+            map(() => practicalsActions.loadPracticals())
         ))
     ));
 
@@ -47,7 +48,7 @@ export class PracticalsEffects {
         ofType(practicalsActions.savePractical),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
         switchMap(([{ practical }, subjectId]) => (practical.subjectId = subjectId, this.rest.savePractical(practical)).pipe(
-            switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadPracticals()])
+            map(() => practicalsActions.loadPracticals())
         ))
     ));
 }

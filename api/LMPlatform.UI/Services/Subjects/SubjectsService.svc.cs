@@ -10,7 +10,7 @@ using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
 using System.Collections.Generic;
-using Application.Infrastructure.GroupManagement;
+using Application.Core.Helpers;
 
 namespace LMPlatform.UI.Services.Subjects
 {
@@ -19,11 +19,8 @@ namespace LMPlatform.UI.Services.Subjects
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         private readonly LazyDependency<IModulesManagementService> modulesManagementService = new LazyDependency<IModulesManagementService>();
-        private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
         public IModulesManagementService ModulesManagementService => modulesManagementService.Value;
-
-        public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
         public SubjectsResult GetSubjectsBySession()
         {

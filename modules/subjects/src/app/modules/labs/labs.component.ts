@@ -1,21 +1,21 @@
-import { first } from 'rxjs/operators';
-import { DialogService } from './../../services/dialog.service';
-import { HasJobProtection } from './../../models/has-job-protection.model';
 import { Observable, combineLatest } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {Store} from '@ngrx/store';
-import { map, tap } from 'rxjs/operators';
+import {ComponentType} from '@angular/cdk/typings/portal';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {map} from 'rxjs/operators';
 
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import * as groupsSelectors from '../../store/selectors/groups.selectors';
 import * as groupsActions from '../../store/actions/groups.actions';
 import {Group} from '../../models/group.model';
+import {DialogData} from '../../models/dialog-data.model';
 import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
 
 import * as labsActions from '../../store/actions/labs.actions';
-import * as labsSelectors from '../../store/selectors/labs.selectors';
+import * as filesActions from '../../store/actions/files.actions';
 import { MatSlideToggleChange } from '@angular/material';
 
 interface State {
@@ -23,7 +23,6 @@ interface State {
   group: Group;
   isTeacher: boolean;
   subjectId: number;
-  hasJobProtections: HasJobProtection[]
 }
 
 @Component({
@@ -39,7 +38,7 @@ export class LabsComponent implements OnInit, OnDestroy {
   public detachedGroup = false;
 
   constructor(
-    private dialogService: DialogService,
+    public dialog: MatDialog,
     private store: Store<IAppState>) {
   }
   ngOnDestroy(): void {
@@ -51,24 +50,10 @@ export class LabsComponent implements OnInit, OnDestroy {
       this.store.select(groupsSelectors.getGroups),
       this.store.select(groupsSelectors.getCurrentGroup),
       this.store.select(subjectSelectors.isTeacher),
-      this.store.select(subjectSelectors.getSubjectId),
-      this.store.select(labsSelectors.HasJobProtections)
-      ).pipe(
-        map(([groups, group, isTeacher, subjectId, hasJobProtections]) => ({ groups, group, isTeacher, subjectId, hasJobProtections })),
-      );
+      this.store.select(subjectSelectors.getSubjectId)
+      ).pipe(map(([groups, group, isTeacher, subjectId]) => ({ groups, group, isTeacher, subjectId })));
 
-  
-    this.store.select(subjectSelectors.isTeacher).pipe(
-      first()
-    ).subscribe(isTeacher => {
-      if (isTeacher) {
-        this.loadGroup();
-        this.store.dispatch(labsActions.checkJobProtections());
-      } else {
-        this.store.dispatch(groupsActions.loadStudentGroup());
-      }
-    });
-
+    this.loadGroup();
   }
 
   loadGroup(): void {
@@ -107,8 +92,15 @@ export class LabsComponent implements OnInit, OnDestroy {
     this.store.dispatch(labsActions.refreshJobProtection());
   }
 
-  checkPlagiarism() {
-    this.dialogService.openDialog(CheckPlagiarismPopoverComponent);
+  checkPlagiarism(subjectId: number) {
+    const dialogData: DialogData = {
+      body: subjectId
+    };
+    this.openDialog(dialogData, CheckPlagiarismPopoverComponent);
+  }
+
+  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
+    return this.dialog.open(popover, {data});
   }
 
 }

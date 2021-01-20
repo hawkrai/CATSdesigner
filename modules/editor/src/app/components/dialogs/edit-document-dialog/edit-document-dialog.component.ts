@@ -43,8 +43,8 @@ export class EditDocumentDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onModelChanged(newLine) {
-    this.isEnableToSave = (newLine.length > 0 && newLine.length < 256 && newLine != this.oldName) ? true : false;
+  onModelChanged() {
+    this.isEnableToSave = (this.data.Name && this.data.Name.length > 0 && this.data.Name.length < 256 && this.data.Name != this.oldName) ? true : false;
   }
 
   onYesClick() {

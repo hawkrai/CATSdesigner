@@ -14,4 +14,8 @@ export class FileDownloadPopoverComponent {
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dialogRef.disableClose = true;
   }
+
+  onClick(): void {
+    this.dialogRef.close();
+  }
 }

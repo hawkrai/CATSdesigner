@@ -1,4 +1,3 @@
-import { HasJobProtection } from './../../models/has-job-protection.model';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
@@ -10,7 +9,6 @@ import {Lab, ScheduleProtectionLabs} from "../../models/lab.model";
 import { UpdateLab } from 'src/app/models/form/update-lab.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { CorrectDoc } from 'src/app/models/plagiarism-result.model';
-import { PlagiarismResultSubject } from 'src/app/models/plagiarism-result-subject.model';
 
 @Injectable({
   providedIn: 'root'
@@ -57,8 +55,8 @@ export class LabsRestService {
   public saveLab(lab: CreateLessonEntity) {
     return this.http.post('Services/Labs/LabsService.svc/Save', lab);
   }
-  public updateLabsOrder(subjectId: number, prevIndex: number, curIndex: number) {
-    return this.http.post('Services/Labs/LabsService.svc/UpdateLabsOrder', { subjectId, prevIndex, curIndex });
+  public updateLabsOrder(subjectId: number, labs: { Id: number, Order: number }[]) {
+    return this.http.post('Services/Labs/LabsService.svc/UpdateLabsOrder', { subjectId, labs });
   }
 
   public updateLabs(labs: UpdateLab[]) {
@@ -77,11 +75,11 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/DeleteVisitingDate', { id });
   }
 
-  public setLabsVisitingDate(body: { Id: number[], comments: string[], dateId: number, marks: string[], showForStudents: boolean[], students: StudentMark[] }): Observable<any> {
+  public setLabsVisitingDate(body: { Id: number[], comments: string[], dateId: number, marks: string[], students: StudentMark[] }): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/SaveLabsVisitingData', body);
   }
 
-  public setLabsMark(body: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } ): Observable<any> {
+  public setLabsMark(body: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number } ): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/SaveStudentLabsMark', body);
   }
 
@@ -120,8 +118,7 @@ export class LabsRestService {
     );
   }
 
-  public checkPlagiarismSubjects(body: {subjectId: number, threshold: string, type: string}): Observable<PlagiarismResultSubject[]> {
-   console.log(body)
+  public checkPlagiarismSubjects(body: {subjectId: number, threshold: string, type: string}): Observable<any> {
     return this.http.post('api/Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
       map(res => res['DataD'])
     );
@@ -149,14 +146,5 @@ export class LabsRestService {
       .set('id', groupId.toString())
       .set('subjectId', subjectId.toString());
     return this.http.get('Subject/GetZipLabs', { params, responseType: 'arraybuffer' });
-  }
-
-  public hasJobProtections(subjectId: number): Observable<HasJobProtection[]> {
-    const params = new HttpParams()
-      .set('subjectId', subjectId.toString());
-    
-    return this.http.get('Services/Labs/LabsService.svc/HasJobProtections', { params }).pipe(
-      map(response => response['HasJobProtections'])
-    );
   }
 }

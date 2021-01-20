@@ -1,6 +1,7 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div class="visiting-popover__header">
-  <p>Редактируемая дата:  <span style="font-weight: bold;">{{data.body.date}}</span></p>
+  <p>Редактируемая дата: </p>
+  <h2>{{data.body.date}}</h2>
 </div>
 <div class="visiting-popover__table" *ngIf="data.body">
   <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
@@ -32,10 +33,9 @@
     <ng-container matColumnDef="comment">
       <mat-header-cell *matHeaderCellDef> Комментарий</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <mat-form-field style="margin-right: 20px;">
+        <mat-form-field>
           <input name="comment" matInput [(ngModel)]="element.comment">
         </mat-form-field>
-        <mat-checkbox  name="showForStudent" [(ngModel)]="element.showForStudent" [color]="'primary'"></mat-checkbox>
       </mat-cell>
     </ng-container>
 

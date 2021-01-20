@@ -1,14 +1,7 @@
-import { switchMap, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { PlagiarismResultSubject } from './../../models/plagiarism-result-subject.model';
-import { LabsRestService } from 'src/app/services/labs/labs-rest.service';
-import {Component} from "@angular/core";
-import {MatDialogRef} from "@angular/material/dialog";
-import { Store } from "@ngrx/store";
-import { IAppState } from "src/app/store/state/app.state";
-import * as subjectSelectors from '../../store/selectors/subject.selector';
-import * as filesActions from '../../store/actions/files.actions';
-import { CorrectDoc } from 'src/app/models/plagiarism-result.model';
+import {Component, Inject} from "@angular/core";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {DialogData} from '../../models/dialog-data.model';
+import {LabsService} from '../../services/labs/labs.service';
 
 @Component({
   selector: 'app-delete-popover',
@@ -19,29 +12,36 @@ export class CheckPlagiarismPopoverComponent {
 
   labelPosition: '0' | '1' = '0';
   percent = 50;
-  loading = false;
-  result$: Observable<PlagiarismResultSubject[]>;
+
+  result: any = '';
+  isLoad = false;
 
   displayedColumns = ['author', 'group', 'subject', 'file'];
 
   constructor(
-    private dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,
-    private store: Store<IAppState>,
-    private labsService: LabsRestService
-  ) {}
+    public dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,
+    private labsService: LabsService,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.dialogRef.disableClose = true;
+  }
 
   onClick(): void {
     this.dialogRef.close();
   }
+
   onSave() {
-    this.loading = true;
-    this.result$ = this.store.select(subjectSelectors.getSubjectId).pipe(
-      switchMap(subjectId => this.labsService.checkPlagiarismSubjects({ threshold: this.percent.toString(), subjectId, type: this.labelPosition })),
-      tap(() => this.loading = false)
-      );
+    this.result = '';
+    this.isLoad = true;
+    this.labsService.checkPlagiarismSubjects({threshold: this.percent.toString(), subjectId: this.data.body, type: this.labelPosition})
+      .subscribe(res => {
+        this.isLoad = false;
+        if (res) {
+          this.result = res
+        }
+    });
   }
 
-  downloadFile(plagResult: CorrectDoc): void {
-    this.store.dispatch(filesActions.downloadFile({ pathName: plagResult.DocPathName, fileName: plagResult.DocFileName }));
+  downloadFile(element) {
+    window.open('http://localhost:8080/api/Upload?fileName=' + element.DocPathName + '//' + element.DocFileName)
   }
 }

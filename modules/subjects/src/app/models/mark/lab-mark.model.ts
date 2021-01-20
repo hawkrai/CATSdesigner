@@ -6,5 +6,4 @@ export class LabMark {
     Date: string;
     StudentLabMarkId: number;
     LecturerId?: number;
-    ShowForStudent: boolean;
 }

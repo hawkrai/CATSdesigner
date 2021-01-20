@@ -5,11 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class OrderByPipe implements PipeTransform {
 
-    transform(arr: any[], field: string = null, desc = false): any[] {
+    transform(arr: any[], field: string, desc = false): any[] {
         if (field) {
-            if (arr.length && !Object.keys(arr[0]).includes(field)) {
-                throw new Error();
-            }
             const sort = arr.sort((a, b) => a[field] > b[field] ? 1 : -1);
             return desc ? sort.reverse() : sort;
         }

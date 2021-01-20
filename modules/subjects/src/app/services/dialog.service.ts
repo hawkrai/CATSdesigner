@@ -12,6 +12,6 @@ export class DialogService {
     ) {}
 
     openDialog<T>(dialogComponent: ComponentType<T>, data: DialogData = null): MatDialogRef<T> {
-        return this.dialog.open(dialogComponent, { data, autoFocus: false, position: { top: '0px', left: '0px'} });
+        return this.dialog.open(dialogComponent, { data, autoFocus: false });
     }
 }

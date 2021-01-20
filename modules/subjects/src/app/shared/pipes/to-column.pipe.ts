@@ -6,9 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ToColumnPipe implements PipeTransform {
 
   transform(arr: any[], length: number = 1): any[] {
-    if (length < 1) {
-      throw new Error('Length must be positive');
-    }
     const itemInColumn = Math.ceil(arr.length / length);
     const row = Array.from({ length })
       .map((_, index) => arr.slice(index * itemInColumn, index * itemInColumn + itemInColumn))

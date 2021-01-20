@@ -67,8 +67,8 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
     return student.FileLabs.some(this.isNewFile);
   }
 
-  isNewFile = (file: UserLabFile): boolean => {
-    return  (this.isTeacher && !file.IsReturned && !file.IsReceived) || (!this.isTeacher && file.IsReturned);
+  isNewFile(file: UserLabFile): boolean {
+    return !file.IsReturned && !file.IsReceived;
   }
 
   downloadFile(attachment : Attachment): void {
@@ -103,7 +103,7 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
     this.store.dispatch(labsActions.cancelLabFile({ userFileId }));
   }
 
-  receiveLabFile(userFileId: number): void {
+  receivedLabFile(userFileId: number): void {
     this.store.dispatch(labsActions.receiveLabFile({ userFileId }));
   }
 
@@ -132,7 +132,6 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getSendFile(data: { comments: string, attachments: Attachment[] }, file: UserLabFile, userId: number) {
-    console.log(data);
     return {
       attachments: JSON.stringify(data.attachments),
       comments: data.comments,

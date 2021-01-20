@@ -44,8 +44,7 @@ export class LabsMarkPopoverComponent implements OnInit {
   markForm = new FormGroup({
     mark: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]),
     date: new FormControl(new Date(), [Validators.required, validateDate]),
-    comment: new FormControl(''),
-    showForStudent: new FormControl(false)
+    comment: new FormControl('')
   });
 
   lector$: Observable<Lector>;

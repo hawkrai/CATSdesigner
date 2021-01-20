@@ -58,8 +58,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Comment = string.Empty,
                             Date = string.Empty,
                             StudentLabMarkId = 0,
-                            LecturerId = new int?(),
-                            ShowForStudent = false
+                            LecturerId = new int?()
                         });
                     }
                     else
@@ -72,8 +71,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Comment = model.Comment,
                             Date = model.Date,
                             StudentLabMarkId = model.Id,
-                            LecturerId = model.LecturerId.HasValue ? model.LecturerId.Value : new int?(),
-                            ShowForStudent = model.ShowForStudent
+                            LecturerId = model.LecturerId.HasValue ? model.LecturerId.Value : new int?()
                         });
                     }
                 }   
@@ -120,8 +118,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = model.Mark,
                             ScheduleProtectionLabId = scheduleProtectionLab.Id,
                             StudentId = student.Id,
-                            LabVisitingMarkId = model.Id,
-                            ShowForStudent = model.ShowForStudent
+                            LabVisitingMarkId = model.Id
                         });    
                     }
                     else
@@ -132,8 +129,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = string.Empty,
                             ScheduleProtectionLabId = scheduleProtectionLab.Id,
                             StudentId = this.StudentId,
-                            LabVisitingMarkId = 0,
-                            ShowForStudent = false
+                            LabVisitingMarkId = 0
                         });       
                     }
                 }

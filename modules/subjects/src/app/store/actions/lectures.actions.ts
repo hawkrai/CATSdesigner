@@ -51,6 +51,11 @@ export const updateOrder = createAction(
   props<{ prevIndex: number, currentIndex: number }>()
 );
 
+export const updateOrderSuccess = createAction(
+  '[Lectures] Update Order Success',
+  props<{ prevIndex: number, currentIndex: number }>()
+);
+
 export const deleteAllDate = createAction(
   '[Lectures] Delete All Date'
 );

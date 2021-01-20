@@ -20,8 +20,6 @@ namespace Application.Infrastructure.GroupManagement
 
         void DeleteGroup(int id);
 
-        Group GetGroup(IQuery<Group> query = null);
-
 	    List<string> GetLabsScheduleVisitings(int subjectId, int groupId, int subGorupId);
 
 		List<List<string>> GetLabsScheduleMarks(int subjectId, int groupId, int subGroupOneId, int subGroupTwoId);

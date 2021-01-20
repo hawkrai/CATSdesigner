@@ -102,12 +102,5 @@ namespace Application.Infrastructure.FilesManagement
         {
             return _storageRoot + attachment.PathName + "//" + attachment.FileName;
         }
-
-        public IList<Attachment> GetAttachmentsByIds(IEnumerable<int> ids)
-        {
-            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-
-            return repositoriesContainer.AttachmentRepository.GetAll(new Query<Attachment>(x => ids.Contains(x.Id))).ToList();
-        }
     }
 }

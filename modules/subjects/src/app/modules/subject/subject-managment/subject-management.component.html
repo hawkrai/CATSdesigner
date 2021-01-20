@@ -60,7 +60,7 @@
             *ngIf="selectedGroups?.length > 1"
             class="example-additional-selection"
           >
-            (+{{ selectedGroups.length - 1 }} {{ selectedGroups.length | plural:'другой':'другие' }})
+            (+{{ selectedGroups.length - 1 }} {{ selectedGroups.length | pluar:'другой':'другие' }})
           </span>
         </mat-select-trigger>
         <mat-option *ngFor="let group of groupList" [value]="group.id">

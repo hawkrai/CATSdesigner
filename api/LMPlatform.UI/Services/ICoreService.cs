@@ -80,9 +80,5 @@ namespace LMPlatform.UI.Services
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetLecturer/{userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		LectorResult GetLecturer(string userId);
-		[OperationContract]
-		[WebInvoke(UriTemplate = "/GetUserSubjectGroup?subjectId={subjectId}&userId={userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-		GroupResult GetUserSubjectGroup(int subjectId, int userId);
-			
-	}
+    }
 }

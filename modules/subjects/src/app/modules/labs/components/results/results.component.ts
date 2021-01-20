@@ -1,13 +1,21 @@
 import { LabMark } from './../../../../models/mark/lab-mark.model';
 import { DialogService } from 'src/app/services/dialog.service';
+import { isTeacher } from './../../../../store/selectors/subject.selector';
 import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import {Store} from '@ngrx/store';
+import {Group} from "../../../../models/group.model";
+import {LabsService} from "../../../../services/labs/labs.service";
+import {select, Store} from '@ngrx/store';
+import {getSubjectId} from '../../../../store/selectors/subject.selector';
 import {IAppState} from '../../../../store/state/app.state';
+import {getCurrentGroup} from '../../../../store/selectors/groups.selectors';
 import {DialogData} from '../../../../models/dialog-data.model';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {ComponentType} from '@angular/cdk/typings/portal';
 import {LabsMarkPopoverComponent} from './labs-mark-popover/labs-mark-popover.component';
+import {LabsRestService} from '../../../../services/labs/labs-rest.service';
 import { Lab, ScheduleProtectionLabs } from '../../../../models/lab.model';
 import {MarkForm} from '../../../../models/mark-form.model';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, switchMap} from 'rxjs/operators';
 import {SubSink} from 'subsink';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { DatePipe } from '@angular/common';
@@ -15,7 +23,6 @@ import { Observable, combineLatest } from 'rxjs';
 
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
-import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 
 @Component({
   selector: 'app-results',
@@ -27,7 +34,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTeacher: boolean;
   @Input() groupId: number;
 
-  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLabs[], students: StudentMark[], userId: string }>;
+  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLabs[], students: StudentMark[] }>;
 
   constructor(
     private store: Store<IAppState>,
@@ -45,10 +52,9 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     this.state$ = combineLatest(
       this.store.select(labsSelectors.getLabsCalendar),
       this.store.select(labsSelectors.getLabs),
-      this.store.select(labsSelectors.getLabStudents),
-      this.store.select(subjectSelectors.getUserId)
+      this.store.select(labsSelectors.getLabStudents)
     ).pipe(
-      map(([schedule, labs, students, userId]) => ({ schedule, labs, students, userId }))
+      map(([schedule, labs, students]) => ({ schedule, labs, students }))
     );
   }
 
@@ -88,8 +94,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
           ...labsMark,
           comment: result.comment,
           date: new DatePipe('en-US').transform(result.date, 'dd.mm.yyyy'),
-          mark: result.mark,
-          showForStudent: result.showForStudent
+          mark: result.mark
         })),
       ).subscribe((labMark) => {
         this.store.dispatch(labsActions.setLabMark({ labMark }));
@@ -117,7 +122,6 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
       date: mark.Date ? new Date(+dateValues[2], +dateValues[1], +dateValues[1]) : new Date( ),
       labId: mark.LabId,
       studentId: studentId,
-      showForStudent: mark.ShowForStudent
     }
   };
 

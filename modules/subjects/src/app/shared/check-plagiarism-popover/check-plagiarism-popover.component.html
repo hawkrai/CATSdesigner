@@ -1,5 +1,5 @@
-<div class="check-plagiarism result" >
-  <h2 mat-dialog-title>Проверка на плагиат</h2>
+<div class="check-plagiarism" [ngClass]="{'result': result}">
+  <h1 mat-dialog-title>Проверка на плагиат</h1>
   <div mat-dialog-content>
     <form class="example-form" #formElement>
       <section class="example-section">
@@ -14,11 +14,13 @@
       </mat-form-field>
     </form>
   </div>
-  <div *ngIf="result$ | async as result">
+  <div *ngIf="!isLoad; else: load">
+  </div>
+  <div *ngIf="result">
     <div *ngFor="let caster of result; let i = index">
       <p class="mat-typography text">Кастер {{i + 1}}</p>
       <table mat-table
-             [dataSource]="caster.correctDocs"
+             [dataSource]="caster['correctDocs']"
              class="mat-elevation-z14 example-list">
 
         <ng-container matColumnDef="author">
@@ -46,7 +48,6 @@
       </table>
     </div>
   </div>
-
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onClick()">Отмена</button>
     <button mat-raised-button

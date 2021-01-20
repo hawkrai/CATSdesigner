@@ -21,9 +21,6 @@
         public string Comment { get; set; }
 
         [DataMember]
-        public bool ShowForStudent { get; set; }
-
-        [DataMember]
         public string Date { get; set; }
 
         [DataMember]

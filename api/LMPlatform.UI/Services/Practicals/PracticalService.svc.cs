@@ -243,37 +243,30 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public ResultViewData UpdatePracticalsOrder(int subjectId, int prevIndex, int curIndex)
+        public ResultViewData UpdatePracticals(List<UpdateLab> practicals)
         {
             try
             {
-                var practicals = SubjectManagementService.GetSubjectPracticals(subjectId);
-                if (prevIndex < curIndex)
+                foreach (var practical in practicals)
                 {
-                    foreach (var entry in practicals.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(practicals[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
+                    var response = Save(practical.SubjectId, practical.Id, practical.Theme, practical.Duration, practical.Order, practical.ShortName, practical.PathFile, practical.Attachments);
+                    if (response.Code == "500")
                     {
-                        SubjectManagementService.UpdatePracticalOrder(entry.Value, entry.Index + prevIndex);
-                    }
-                }
-                else
-                {
-                    foreach (var entry in new List<Practical> { practicals[prevIndex] }.Concat(practicals.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
-                    {
-                        SubjectManagementService.UpdatePracticalOrder(entry.Value, entry.Index + curIndex);
+                        throw new Exception(response.Message);
                     }
                 }
                 return new ResultViewData
                 {
-                    Code = "200",
-                    Message = "Лекции успешно сохранены"
+                    Message = "Практические занятия успешно обновлены",
+                    Code = "200"
                 };
             }
             catch (Exception ex)
             {
                 return new ResultViewData
                 {
-                    Code = "500",
-                    Message = ex.Message
+                    Message = "Произошла ошибка при обновлении практических занятий." + ex.Message,
+                    Code = "500"
                 };
             }
         }

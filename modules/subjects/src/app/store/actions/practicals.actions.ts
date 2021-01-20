@@ -40,3 +40,8 @@ export const updateOrder = createAction(
     '[Practicals] Update Order',
     props<{ prevIndex: number, currentIndex: number }>()
 );
+  
+export const updateOrderSuccess = createAction(
+    '[Practicals] Update Order Success',
+    props<{ prevIndex: number, currentIndex: number }>()
+);

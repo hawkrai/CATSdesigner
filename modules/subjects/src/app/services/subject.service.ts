@@ -43,10 +43,6 @@ export class SubjectService {
     return this.http.get<SubjectForm>('Subject/Create');
   }
 
-  public getAttachmentsAsZip(attachmentsIds: number[]): Observable<ArrayBuffer> {
-    return this.http.post('Subject/GetAttachmentsAsZip', { attachmentsIds }, { responseType: 'arraybuffer' });
-  }
-
   public getLector(id: number): Observable<Lector> {
     return this.http.get(`Services/CoreService.svc/GetLecturer/${id}`).pipe(
       map(res => res['Lector'])

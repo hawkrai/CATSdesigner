@@ -13,5 +13,9 @@ export const practicalsReducer = createReducer(
     on(practicalsActions.resetPracticals, (state): IPracticalsState => ({
         ...state,
         practicals: []
+    })),
+    on(practicalsActions.updateOrderSuccess, (state, { prevIndex, currentIndex }): IPracticalsState => ({
+        ...state, 
+        practicals: state.practicals.map((p, index): Practical => index === prevIndex ? { ...p, Order: currentIndex + 1 } : index === currentIndex ? { ...p, Order: prevIndex + 1 } : p)
     }))
 );

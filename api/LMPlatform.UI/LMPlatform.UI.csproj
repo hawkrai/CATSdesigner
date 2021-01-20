@@ -454,7 +454,6 @@
     <Compile Include="Services\Modules\Concept\ConceptViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupsResult.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupsViewData.cs" />
-    <Compile Include="Services\Modules\CoreModels\GroupViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\StudentLabMarkViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\StudentMark.cs" />
     <Compile Include="Services\Modules\CoreModels\StudentPracticalMarkViewData.cs" />
@@ -463,8 +462,6 @@
     <Compile Include="Services\Modules\CoreModels\StudentsViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\SubGroupsViewData.cs" />
     <Compile Include="Services\Modules\Files\AttachmentResult.cs" />
-    <Compile Include="Services\Modules\Labs\HasJobProtection.cs" />
-    <Compile Include="Services\Modules\Labs\HasProtectionViewData.cs" />
     <Compile Include="Services\Modules\Labs\LabsResult.cs" />
     <Compile Include="Services\Modules\Labs\LabsViewData.cs" />
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
@@ -482,6 +479,7 @@
     <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingResult.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingViewData.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesResult.cs" />
+    <Compile Include="Services\Modules\UpdateLab.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesViewData.cs" />
     <Compile Include="Services\Modules\AttachmentViewData.cs" />
     <Compile Include="Services\Modules\Lectures\StudentMarkForDate.cs" />
@@ -510,6 +508,7 @@
     <Compile Include="Services\Modules\ResultViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />
+    <Compile Include="Services\Modules\UpdateOrder.cs" />
     <Compile Include="Services\News\INewsService.cs" />
     <Compile Include="Services\News\NewsService.svc.cs">
       <DependentUpon>NewsService.svc</DependentUpon>

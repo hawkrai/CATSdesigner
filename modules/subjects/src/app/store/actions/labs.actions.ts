@@ -1,4 +1,4 @@
-import { HasJobProtection } from './../../models/has-job-protection.model';
+import { CheckPlagiarismPopoverComponent } from './../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
 import { createAction, props } from '@ngrx/store';
 import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
@@ -43,7 +43,12 @@ export const resetLabs = createAction(
 );
 
 export const updateOrder = createAction(
-  '[Labs] Update Labs Order',
+  '[Labs] Update Order',
+  props<{ prevIndex: number, currentIndex: number }>()
+);
+
+export const updateOrderSuccess = createAction(
+  '[Labs] Update Order Success',
   props<{ prevIndex: number, currentIndex: number }>()
 );
 
@@ -68,7 +73,7 @@ export const setLabStudents = createAction(
 
 export const setLabMark = createAction(
   '[Labs] Set Lab Mark',
-  props<{ labMark: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } }>()
+  props<{ labMark: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number } }>()
 );
 
 export const loadStudentsLabsFiles = createAction(
@@ -133,18 +138,4 @@ export const getVisitingExcel = createAction(
 
 export const getLabsAsZip = createAction(
   '[Labs] Get Labs As Zip'
-);
-
-export const setLabsVisitingDate = createAction(
-  '[Labs] Set Labs Visiting Date',
-  props<{ visiting: { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } }>()
-);
-
-export const checkJobProtections = createAction(
-  '[Labs] Check Job Protection'
-);
-
-export const setJobProtections = createAction(
-  '[Labs] Set Job Protections',
-  props<{ hasJobProtections: HasJobProtection[] }>()
 );
