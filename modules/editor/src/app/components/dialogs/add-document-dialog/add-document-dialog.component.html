@@ -1,16 +1,13 @@
 <h1 mat-dialog-title>Создание {{description}}</h1>
 <div mat-dialog-content>
   <div class="flex-input">
-    <mat-form-field class="input-holder">
+    <mat-form-field class="full-width">
       <mat-label>Наименование</mat-label>
-      <input matInput [(ngModel)]="data.Name" (ngModelChange)="onModelChanged()" [formControl]="nameFormControl" [errorStateMatcher]="matcher">
-      <mat-error *ngIf="nameFormControl.hasError('required')">
-        Необходимо наименование
-      </mat-error>
+      <textarea required (ngModelChange)="onModelChanged($event)" class="news-text" maxlength="256" name="body" matInput [(ngModel)]="data.Name"></textarea>
     </mat-form-field>
   </div>
 </div>
 <div mat-dialog-actions align="right">
   <button mat-raised-button (click)="onNoClick()">Отмена</button>
-  <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial [disabled]="!isEnableToSave">Сохранить</button>
+  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="!isEnableToSave">Сохранить</button>
 </div>

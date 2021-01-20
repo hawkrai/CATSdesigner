@@ -18,3 +18,6 @@ export const newsReducer = createReducer(
     selectedNews: null
   }))
 );
+
+
+

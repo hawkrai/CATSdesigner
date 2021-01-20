@@ -407,15 +407,47 @@ namespace LMPlatform.UI.Services
             }
         }
 
-        public GroupsResult GetGroupsV3(string subjectId)
+		public GroupResult GetUserSubjectGroup(int subjectId, int userId)
+		{
+			var group = GroupManagementService.GetGroup(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup)
+			&& e.Students.Any(x => x.Id == userId)));
+			var subGroups = SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
+
+			return new GroupResult
+			{
+				Group = new GroupsViewData
+				{
+					GroupId = group.Id,
+					GroupName = group.Name,
+					SubGroupsOne = subGroups.Any(x => x.Name == "first") ? new SubGroupsViewData
+					{
+						Name = "Подгруппа 1",
+						SubGroupId = subGroups.First(e => e.Name == "first").Id
+					} : new SubGroupsViewData(),
+					SubGroupsTwo = subGroups.Any(x => x.Name == "second") ? new SubGroupsViewData
+					{
+						Name = "Подгруппа 2",
+						SubGroupId = subGroups.First(e => e.Name == "second").Id
+					} : new SubGroupsViewData(),
+					SubGroupsThird = subGroups.Any(x => x.Name == "third") ? new SubGroupsViewData
+					{
+						Name = "Подгруппа 3",
+						SubGroupId = subGroups.First(e => e.Name == "third").Id
+					} : new SubGroupsViewData(),
+				}
+			};
+
+		}
+
+		public GroupsResult GetGroupsV3(string subjectId)
         {
             try
             {
                 var id = int.Parse(subjectId);
-                var groups = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == id && !x.IsActiveOnCurrentGroup)));
+				var groups = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == id && !x.IsActiveOnCurrentGroup)));
 
 
-                var groupsViewData = new List<GroupsViewData>();
+				var groupsViewData = new List<GroupsViewData>();
 
                 foreach (var @group in groups)
                 {
@@ -458,6 +490,8 @@ namespace LMPlatform.UI.Services
                 };
             }
         }
+
+
 
 		public GroupsResult GetGroupsByUser(string userId)
 		{

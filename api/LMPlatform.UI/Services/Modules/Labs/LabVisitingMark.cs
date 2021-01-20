@@ -19,18 +19,18 @@
             StudentName = student.FullName;
             if (student.ScheduleProtectionLabMarks.Any(e => e.ScheduleProtectionLabId == scheduleId))
             {
-                Comment =
-                    student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleId)
-                        .Comment;
-                Mark =
-                    student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleId).Mark;
-                LabVisitingMarkId = student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleId).Id;
+                var schedule = student.ScheduleProtectionLabMarks.FirstOrDefault(e => e.ScheduleProtectionLabId == scheduleId);
+                Comment = schedule.Comment;
+                Mark = schedule.Mark;
+                LabVisitingMarkId = schedule.Id;
+                ShowForStudent = schedule.ShowForStudent;
             }
             else
             {
                 Comment = string.Empty;
                 Mark = string.Empty;
                 LabVisitingMarkId = 0;
+                ShowForStudent = false;
             }
         }
 
@@ -48,6 +48,9 @@
 
         [DataMember]
         public string Mark { get; set; }
+
+        [DataMember]
+        public bool ShowForStudent { get; set; }
 
         [DataMember]
         public int LabVisitingMarkId { get; set; }

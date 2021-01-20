@@ -4,7 +4,6 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {mergeMap, switchMap, withLatestFrom} from 'rxjs/operators';
 import {Store} from '@ngrx/store';
 import {IAppState} from '../state/app.state';
-import {getSubjectId} from '../selectors/subject.selector';
 import {NewsRestService} from '../../services/news/news-rest.service';
 import * as newsActions from '../actions/news.actions';
 import * as subjectSelectors from '../selectors/subject.selector';
@@ -20,7 +19,7 @@ export class NewsEffects {
 
   getNews$ = createEffect(() => this.actions$.pipe(
     ofType(newsActions.loadNews),
-    withLatestFrom(this.store.select(getSubjectId)),
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
     switchMap(([_, subjectId]) => this.rest.getAllNews(subjectId).pipe(
       map(news => newsActions.loadNewsSuccess({ news }))
     ))
@@ -28,16 +27,16 @@ export class NewsEffects {
 
   disableNews$ = createEffect(() => this.actions$.pipe(
     ofType(newsActions.disableAllNews),
-    switchMap(() => this.store.select(subjectSelectors.getSubjectId)),
-    mergeMap(subjectId => this.rest.disableNews(subjectId).pipe(
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+    mergeMap(([_, subjectId]) => this.rest.disableNews(subjectId).pipe(
       map(() => newsActions.loadNews())
     ))
   ));
 
   enableNews$ = createEffect(() => this.actions$.pipe(
     ofType(newsActions.enableAllNews),
-    switchMap(() => this.store.select(subjectSelectors.getSubjectId)),
-    mergeMap(subjectId => this.rest.enableNews(subjectId).pipe(
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+    mergeMap(([_, subjectId]) => this.rest.enableNews(subjectId).pipe(
       map(() => newsActions.loadNews())
     ))
   ));

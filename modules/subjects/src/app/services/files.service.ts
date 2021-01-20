@@ -24,8 +24,8 @@ export class FilesService {
   }
 
   public getSubjectFiles(subjectId: number): Observable<Attachment[]> {
-    const params = new HttpParams();
-    params.append('subjectId', subjectId.toString());
+    const params = new HttpParams()
+      .set('subjectId', subjectId.toString());
     return this.http.get<any>('Subject/GetFileSubjectV2', { params }).pipe(
       map(response => response.Attachment)
     );

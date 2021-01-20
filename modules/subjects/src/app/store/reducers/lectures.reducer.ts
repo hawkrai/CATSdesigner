@@ -26,9 +26,5 @@ export const lecturesReducer = createReducer(
     ...state,
     calendar: [],
     groupsVisiting: null
-  })),
-  on(lecturesActions.updateOrderSuccess, (state, { prevIndex, currentIndex }): ILecturesState => ({
-    ...state, 
-    lectures: state.lectures.map((l, index): Lecture => index === prevIndex ? { ...l, Order: currentIndex + 1 } : index === currentIndex ? { ...l, Order: prevIndex + 1 } : l)
   }))
 );

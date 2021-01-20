@@ -12,6 +12,8 @@ namespace LMPlatform.Models
 
         public string Mark { get; set; }
 
+        public bool ShowForStudent { get; set; }
+
         public Student Student { get; set; }
         
         public ScheduleProtectionLabs ScheduleProtectionLab { get; set; }
@@ -21,13 +23,14 @@ namespace LMPlatform.Models
 
         }
 
-        public ScheduleProtectionLabMark(int id, int studentId, string comment, string mark, int scheduleProtectionId)
+        public ScheduleProtectionLabMark(int id, int studentId, string comment, string mark, int scheduleProtectionId, bool showForStudent)
         {
             Id = id;
             StudentId = studentId;
             Comment = comment;
             Mark = mark;
             ScheduleProtectionLabId = scheduleProtectionId;
+            ShowForStudent = showForStudent;
         }
     }
 }

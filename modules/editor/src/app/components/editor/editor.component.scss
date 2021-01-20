@@ -1,20 +1,18 @@
 .flex-container {
   background-color: #fafafa;
-  display: flex;
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
-  flex-flow: row nowrap;
-  padding: 10px;
-  justify-content: flex-start;
-  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+
+  mat-drawer {
+    box-shadow: 0px 2px 10px rgba(56, 56, 56, 0.2);
+    width: 20%;
+  }
 
   .flex-tree-container {
-    height: calc(100% - 41px);
+    height: 100%;
     background-color: white;
     flex-shrink: 1;
-    width: 25%;
-    border: 1px solid #c4c4c4;
-    border-radius: 2px;
+    z-index: 50;
 
     .tree-area {
       border-top: 1px solid #c4c4c4;
@@ -25,11 +23,11 @@
     .flex-search-region {
       display: flex;
       flex-basis: 100%;
-      align-items: center;
-      margin: 10px;
+      align-items: flex-start;
+      padding: 1px;
 
-      .flex-search-input {
-        flex-basis: 85%;
+      .flex-search-btn-holder {
+        flex-basis: 100%;
       }
     }
   }
@@ -37,11 +35,9 @@
   .flex-editor-container {
     height: 100%;
     flex-shrink: 3;
-    width: 75%;
-    padding-left: 10px;
 
     .btn-holder {
-      padding-top: 5px;
+      padding: 1px;
 
       button {
         margin-left: 5px;
@@ -55,7 +51,7 @@
 }
 
 :host ::ng-deep .ck-editor__editable_inline {
-  height: calc(100vh - 100px);
+  height: calc(100vh - 84px);
 }
 
 /* width */
@@ -79,4 +75,30 @@
 /* Handle on hover */
 ::ng-deep ::-webkit-scrollbar-thumb:hover {
   background: #3f51b5;
+}
+
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  display: flex;
+  justify-content: space-around;
+  font-size: inherit;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .mat-row:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

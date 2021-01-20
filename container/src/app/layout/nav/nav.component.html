@@ -3,18 +3,10 @@
     <img src="/assets/images/nav-logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted">
   </a>
   <span class="example-spacer"></span>
-  <div *ngIf="!isAdmin">
-    <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
+  <div *ngIf="!isAdmin" >
+    <a mat-button [routerLink]="'/web/viewer'" >Предметы</a>
   </div>
-  <div *ngIf="isLector">
-    <a [matBadge]="unconfirmedStudents"
-       matBadgeOverlap="true"
-       matBadgeColor="warn"
-       mat-button
-       [routerLink]="'/web/confirmation'">
-      Подтверждение студентов</a>
-  </div>
-  <a *ngIf="isLector" mat-button [routerLink]="'/emails'">Дипломное проектирование</a>
+  <a *ngIf="isLector" mat-button [routerLink]="'/emails'" >Дипломное проектирование</a>
 
 
   <div class="flex-spacer"></div>
@@ -22,17 +14,33 @@
     <input matInput type="text" placeholder="Поиск">
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
+  <div *ngIf="isLector" >
+    <button  mat-icon-button  class="icon-h">
+       <mat-icon [matBadge]="unconfirmedStudents"
+       matBadgeOverlap="true"
+       matBadgePosition="above"
+       matBadgeColor="warn"
+       matBadgeSize="small"
+       [routerLink]="'/web/confirmation'" >
+       person_add_alt_1</mat-icon>
+    </button>
+  </div>
+  <button mat-icon-button [routerLink]="'/emails'"  class="icon-h">
+    <mat-icon matBadge="15"
+    matBadgeOverlap="true"
+    matBadgePosition="above"
+    matBadgeColor="warn"
+    matBadgeSize="small"
+    [routerLink]="'/web/confirmation'">mail</mat-icon>
+  </button>
+  <button mat-icon-button  class="end icon-h">
+    <img src="./../../assets/images/account.png" class="account" />
+  </button>
 
-  <a mat-button [routerLink]="'/emails'">Сообщения</a>
-
-  <button mat-icon-button [matMenuTriggerFor]="menu">
+  <button mat-icon-button [matMenuTriggerFor]="menu"  class="icon-h">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button *ngIf="!isAdmin" mat-menu-item>
-      <mat-icon>supervised_user_circle</mat-icon>
-      <span>Профиль</span>
-    </button>
     <button mat-menu-item>
       <mat-icon>info</mat-icon>
       <span>О системе</span>

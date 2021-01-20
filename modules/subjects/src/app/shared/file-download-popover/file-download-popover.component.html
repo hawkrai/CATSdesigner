@@ -9,6 +9,6 @@
   </mat-checkbox>
 </section>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+  <button mat-raised-button mat-dialog-close>Отмена</button>
+  <button mat-raised-button [mat-dialog-close]="data.body | filter:'isDownload':true" color="primary">{{data.buttonText}}</button>
 </div>
