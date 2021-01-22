@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   overflow-y: initial !important;
-  margin: 20px 100px;
-  
 }
 
 .example-container a > * {

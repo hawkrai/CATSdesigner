@@ -4,7 +4,7 @@ import flatpickr from 'flatpickr';
 import { Russian } from 'flatpickr/dist/l10n/ru';
 import {Note} from '../../model/note.model';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {formatDate} from '@angular/common';
+import {formatDate, Time} from '@angular/common';
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian);
@@ -21,8 +21,9 @@ export class AddNoteComponent implements OnInit {
 
   formGroup: any;
   note: Note = new Note();
-  startTime: string;
-  endTime: string;
+  dayOfNote: Date;
+  startTime: Time;
+  endTime: Time;
 
   constructor(public dialogRef: MatDialogRef<AddNoteComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any) { }
@@ -30,12 +31,14 @@ export class AddNoteComponent implements OnInit {
   ngOnInit(): void {
     flatpickrFactory();
     if (this.data.event != null) {
+      this.dayOfNote = this.data.event.start;
       this.note.title = this.data.event.title;
       this.note.start = this.data.event.start;
       this.note.end = this.data.event.end;
     }
     this.formGroup = new FormGroup({
       title: new FormControl('', [Validators.required]),
+      day: new FormControl('', [Validators.required]),
       start: new FormControl('', [Validators.required]),
       end: new FormControl('', [Validators.required]),
     });
@@ -48,6 +51,10 @@ export class AddNoteComponent implements OnInit {
 
   get title(): FormControl {
     return this.formGroup.get('title') as FormControl;
+  }
+
+  get day(): FormControl {
+    return this.formGroup.get('day') as FormControl;
   }
 
   get start(): FormControl {

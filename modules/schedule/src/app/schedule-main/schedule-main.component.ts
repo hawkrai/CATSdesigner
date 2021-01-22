@@ -13,7 +13,6 @@ import {Message} from '../../../../../container/src/app/core/models/message';
 import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.component';
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 import {DatePipe} from '@angular/common';
-import {SelectEventTypeComponent} from '../modal/select-event-type/select-event-type.component';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 
 
@@ -64,10 +63,9 @@ export class ScheduleMainComponent implements OnInit {
               private modulecommunicationservice: ModuleCommunicationService) {}
 
   ngOnInit() {
-    // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
-    console.log(this.isLoadActive);
     this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
       let i = 0;
       les.Labs.forEach(lab => {
@@ -223,7 +221,8 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   hourClick() {
-    const dialogRef = this.dialog.open(SelectEventTypeComponent, {width: '300px', data: {userName: this.user.userName}});
+    const dialogRef = this.dialog.open(CreateLessonComponent,
+      {width: '500px', disableClose: true, data: {userName: this.user.userName}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (result.type === 'lesson') {
@@ -302,6 +301,7 @@ export class ScheduleMainComponent implements OnInit {
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
       width: '200px',
+      disableClose: true,
       height: '150px',
       data: {}
     }) ;
@@ -316,15 +316,15 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   changeNote(eventToDelete: CalendarEvent) {
-    const dialogRef = this.dialog.open(AddNoteComponent, {width: '500px', data: { event: eventToDelete}, position: {top: '11%'}});
+    const dialogRef = this.dialog.open(CreateLessonComponent, {width: '500px', data: { note: eventToDelete}, position: {top: '11%'}});
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
+      if (result.note != null) {
         this.events = this.events.filter(event => event !== eventToDelete);
         this.events.push({
-          id: result.id,
-          start: result.start,
-          end: result.end,
-          title: result.title,
+          id: result.note.id,
+          start: result.note.start,
+          end: result.note.end,
+          title: result.note.title,
           color: colors.color,
           resizable: {
             beforeStart: true,
@@ -340,7 +340,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '500px', data: {userName: this.user.userName,  event: eventToDelete}});
+      {width: '500px', data: {userName: this.user.userName,  lesson: eventToDelete}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.events = this.events.filter(event => event !== eventToDelete);
