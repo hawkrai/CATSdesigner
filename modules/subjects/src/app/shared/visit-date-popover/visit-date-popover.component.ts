@@ -1,10 +1,14 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
+import * as moment from 'moment';
 
 import { DialogService } from './../../services/dialog.service';
 import { DialogData } from '../../models/dialog-data.model';
 import { DeletePopoverComponent } from '../delete-popover/delete-popover.component';
+import { timeValidator } from '../validators/time.validator';
+
 
 
 export const MY_FORMATS = {
@@ -48,8 +52,32 @@ export class VisitDatePopoverComponent {
     this.close.emit();
   }
 
-  onCreateDate(date: string): void {
-    this.createDate.emit(date.replace(/\./g, '/'));
+  private time = (control: AbstractControl) => {
+    return timeValidator(this.dateForm ? this.dateForm.get('start').value : null, control.value);
+  }
+
+  dateForm = new FormGroup({
+    date: new FormControl(new Date(), [Validators.required]),
+    start: new FormControl(moment().format("HH:mm"), [Validators.required]),
+    end: new FormControl(moment().add(1, 'hour').add(30, 'minutes').format("HH:mm"), [Validators.required, this.time]),
+    buildingNumber: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(3)]),
+    audience: new FormControl('', [Validators.required, Validators.min(1), Validators.max(999)])
+  });
+
+  ngOnInit(): void {
+
+  }
+
+  onCreateDate(): void {
+    if (this.dateForm.invalid) {
+
+    }
+    console.log({ 
+      ...this.dateForm.value, 
+      date: moment(this.dateForm.get('date').value).format('DD/MM/YYYY'), 
+      buildingNumber:  this.dateForm.get('buildingNumber').value.toUpperCase()
+    });
+    this.createDate.emit(this.dateForm.get('date').value.replace(/\./g, '/'));
   }
 
   onDeleteDate(day: any): void {
