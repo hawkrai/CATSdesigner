@@ -663,6 +663,7 @@ namespace Application.Infrastructure.SubjectManagement
 			repositoriesContainer.ApplyChanges();
 		}
 
+
 		public List<LecturesScheduleVisiting> GetScheduleVisitings(Query<LecturesScheduleVisiting> query)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
