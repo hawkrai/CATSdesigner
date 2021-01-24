@@ -79,6 +79,7 @@ export class LabsMarkPopoverComponent implements OnInit {
     if (this.markForm.invalid) {
       return;
     }
+    console.log(this.markForm.value);
     this.dialogRef.close(this.markForm.value);
   }
 }

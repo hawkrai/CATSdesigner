@@ -28,7 +28,6 @@ import { SubjectEffect } from './store/effects/subject.effects';
 import { PracticalsEffects } from './store/effects/practicals.effects';
 import { CatsEffects } from './store/effects/cats.effects';
 import { FilesEffects } from './store/effects/files.effects';
-import { ToastModule } from './toast/toast.module';
 
 @NgModule({
   declarations: [
@@ -52,8 +51,7 @@ import { ToastModule } from './toast/toast.module';
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects]),
-    StoreDevtoolsModule.instrument(),
-    ToastModule.forRoot()
+    StoreDevtoolsModule.instrument()
   ],
   entryComponents: [
     SubgroupingComponent

@@ -6,8 +6,7 @@ import { UniquePipe } from './pipes/unique.pipe';
 import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import { FlatpickrModule } from 'angularx-flatpickr';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {FilterPipe} from './pipes/filter.pipe';
 import { PluralPipe } from './pipes/plural.pipe';
@@ -50,7 +49,7 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
     CommonModule,
     FormsModule,
     MatModule,
-    FlatpickrModule.forRoot()
+    ReactiveFormsModule
   ],
   entryComponents: [
     DeletePopoverComponent,
@@ -65,7 +64,6 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
     CommonModule,
     VarDirective,
     ToColumnPipe,
-    FlatpickrModule,
     FileUploaderComponent,
     VisitDatePopoverComponent,
     UniquePipe,

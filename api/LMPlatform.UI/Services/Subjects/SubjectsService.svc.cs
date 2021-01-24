@@ -27,7 +27,7 @@ namespace LMPlatform.UI.Services.Subjects
 
         public SubjectsResult GetSubjectsBySession()
         {
-            var subjects = SubjectManagementService.GetUserSubjectsV2(UserContext.CurrentUserId);
+            var subjects = SubjectManagementService.GetUserSubjectsV2(WebSecurity.CurrentUserId);
 
             var result = new SubjectsResult
             {

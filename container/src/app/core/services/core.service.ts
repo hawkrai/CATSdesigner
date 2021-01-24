@@ -7,6 +7,7 @@ import {map,} from "rxjs/operators";
 import {Message} from "../models/message";
 import { Module } from "../models/module.model";
 import { Subject } from '../models/subject';
+import { ToastService } from 'src/app/toast';
 
 
 @Injectable({providedIn: "root"})
@@ -19,7 +20,8 @@ export class CoreService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
     ) {
     this.selectedSubject = null;
   }
@@ -58,6 +60,10 @@ export class CoreService {
       }  
       if (message.channel === 'UpdateSubjects') {
         this.updateSubjectSub.next();
+      }
+
+      if (message.channel === 'Toast') {
+        this.toastService.show(JSON.parse(message.value));
       }
     };
 
