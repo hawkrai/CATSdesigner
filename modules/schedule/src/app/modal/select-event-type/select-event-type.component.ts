@@ -26,14 +26,15 @@ export class SelectEventTypeComponent implements OnInit {
 
   select() {
     if (this.type === '1') {
-      const dialogRef = this.dialog.open(CreateLessonComponent, {width: '500px', data: {userName: this.data.userName}});
+      const dialogRef = this.dialog.open(CreateLessonComponent, {width: '500px', disableClose: true, data: {userName: this.data.userName}});
       dialogRef.afterClosed().subscribe(result => {
         if (result != null) {
           this.dialogRef.close({lesson: result, type: 'lesson'});
         }
       });
     } else if (this.type === '2') {
-      const dialogRef = this.dialog.open(AddNoteComponent, {width: '500px', data: { event: null}, position: {top: '11%'}});
+      const dialogRef = this.dialog.open(AddNoteComponent,
+        {width: '500px', disableClose: true, data: { event: null}, position: {top: '11%'}});
       dialogRef.afterClosed().subscribe(result => {
         if (result != null) {
           this.dialogRef.close({note: result, type: 'note'});
