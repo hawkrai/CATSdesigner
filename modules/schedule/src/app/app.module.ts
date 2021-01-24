@@ -30,6 +30,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonModule} from '@angular/material/button';
 import { SelectEventTypeComponent } from './modal/select-event-type/select-event-type.component';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatTabGroup, MatTabsModule} from '@angular/material/tabs';
 registerLocaleData(localeRu);
 
 class CustomDateFormatter extends CalendarNativeDateFormatter {
@@ -80,6 +81,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     MatSelectModule,
     MatMenuModule,
     MatRadioModule,
+    MatTabsModule
   ],
   providers: [DatePipe],
   exports: [AppComponent, MatTooltipModule],
