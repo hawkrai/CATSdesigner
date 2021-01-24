@@ -18,6 +18,8 @@ export interface DialogData {
 
   nodeId?: string;
 
+  attachments?: any[];
+
   //Adaptive Learning
   isAdaptive?: boolean;
   adaptivityType?: number;

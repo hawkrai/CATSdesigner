@@ -8,11 +8,11 @@
             <span class="material-icons mdc-list-item__graphic" aria-hidden="true">{{complex.name}}</span>
           </a>
         </div>
-        <grid-menu-icon class="bottom-menu" complexId={{complex.id}}></grid-menu-icon>
+        <grid-menu-icon class="bottom-menu" complexId={{complex.id}} *ngIf="isLucturer"></grid-menu-icon>
       </div>
     </mat-grid-tile>
   </div>
-  <mat-grid-tile>
+  <mat-grid-tile *ngIf="isLucturer">
     <div class="button-ripple-container" matRipple opentip-title="Добавить ЭУМК" (click)="onAddButtonClick()">
       <div>
         <i class="material-icons" aria-hidden="true">+</i>

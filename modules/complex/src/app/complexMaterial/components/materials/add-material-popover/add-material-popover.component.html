@@ -1,0 +1,49 @@
+<ng-container *var="files$ | async as files">
+  <h1 mat-dialog-title>Добавить элемент ЭУМК</h1>
+  <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
+    <form class="example-form" #formElement>
+      <div class="basic-container" *ngIf="navItems?.length">
+        <span *ngFor="let item of navItems">
+          <!-- Handle branch node buttons here -->
+          <span *ngIf="item.children && item.children.length > 0">
+            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu.childMenu" (click)="selectConcept(item.Id)">
+              {{item.Name}}
+              <mat-icon>expand_more</mat-icon>
+            </button>
+          </span>
+          <app-menu-item #menu [items]="item.children" (onSelectConcept)="selectConcept($event)"></app-menu-item>
+        </span>
+        <div class="basic-container-text" *ngIf="selectedConcept">{{selectedConcept}}</div>
+      </div>
+
+      <mat-radio-group aria-label="Выберите тип добавляемого элемента" style="display:block">
+        <mat-radio-button value="1" style="padding-right: 20px" (click)="switchFormTo(1)">Папка</mat-radio-button>
+        <mat-radio-button value="2" (click)="switchFormTo(2)">Файл</mat-radio-button>
+      </mat-radio-group>
+
+      <mat-form-field *ngIf="isFolder">
+        <mat-label>Введите имя папки</mat-label>
+        <input name="foderName" maxlength="100" placeholder="Имя папки" matInput>
+      </mat-form-field>
+
+      <div *ngIf="isFile">
+        <mat-form-field>
+          <mat-label>Введите имя файла</mat-label>
+          <input name="fileName" maxlength="100" placeholder="Имя файла" matInput>
+        </mat-form-field>
+        <app-file-uploader header="Прикрепленный документ" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+      </div>
+    </form>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="onNoClick()">Отмена</button>
+    <button mat-raised-button
+            (click)="onClose(data || data.body)"
+            color="primary"
+            [disabled]="!formElement.checkValidity()">
+      Сохранить
+    </button>
+  </div>
+</ng-container>
+  <!--[(ngModel)]="data.subjectName"-->
