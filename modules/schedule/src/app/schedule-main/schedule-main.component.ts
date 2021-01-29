@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import {CalendarEvent, CalendarEventTimesChangedEvent, CalendarView} from 'angular-calendar';
 import {Lesson} from '../model/lesson.model';
 import {LessonService} from '../service/lesson.service';
-import {AddNoteComponent} from '../modal/add-note/add-note.component';
 import {Note} from '../model/note.model';
 import {NoteService} from '../service/note.service';
 import {MatDialog} from '@angular/material';
@@ -63,7 +62,7 @@ export class ScheduleMainComponent implements OnInit {
               private modulecommunicationservice: ModuleCommunicationService) {}
 
   ngOnInit() {
-    localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
     this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
@@ -222,7 +221,7 @@ export class ScheduleMainComponent implements OnInit {
 
   hourClick() {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '500px', disableClose: true, data: {userName: this.user.userName}});
+      {width: '500px', disableClose: true, data: {user: this.user}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (result.type === 'lesson') {
@@ -315,11 +314,12 @@ export class ScheduleMainComponent implements OnInit {
     });
   }
 
-  changeNote(eventToDelete: CalendarEvent) {
-    const dialogRef = this.dialog.open(CreateLessonComponent, {width: '500px', data: { note: eventToDelete}, position: {top: '11%'}});
+  changeNote(eventToChange: CalendarEvent) {
+    const dialogRef = this.dialog.open(CreateLessonComponent, {width: '500px',
+      data: { note: eventToChange, user: this.user}, position: {top: '11%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result.note != null) {
-        this.events = this.events.filter(event => event !== eventToDelete);
+        this.events = this.events.filter(event => event !== eventToChange);
         this.events.push({
           id: result.note.id,
           start: result.note.start,
@@ -331,19 +331,19 @@ export class ScheduleMainComponent implements OnInit {
             afterEnd: true,
           },
           draggable: true,
-          meta: eventToDelete.meta
+          meta: eventToChange.meta
         });
         this.refresh.next();
       }
     });
   }
 
-  changeEvent(eventToDelete: CalendarEvent) {
+  changeLesson(lessonChanged: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '500px', data: {userName: this.user.userName,  lesson: eventToDelete}});
+      {width: '500px', data: {user: this.user,  lesson: lessonChanged}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
-        this.events = this.events.filter(event => event !== eventToDelete);
+        this.events = this.events.filter(event => event !== lessonChanged);
         this.lesson = this.createLessonAll(result, 0);
         this.lessons.push(this.lesson);
         this.events.push({
@@ -357,7 +357,7 @@ export class ScheduleMainComponent implements OnInit {
             afterEnd: false,
           },
           draggable: false,
-          meta: eventToDelete.meta
+          meta: lessonChanged.meta
         });
         this.refresh.next();
       }

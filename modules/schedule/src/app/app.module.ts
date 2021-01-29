@@ -16,7 +16,6 @@ import localeRu from '@angular/common/locales/ru';
 import {HttpClientModule} from '@angular/common/http';
 import {DateFormatterParams} from 'angular-calendar';
 import {MatDialogModule} from '@angular/material/dialog';
-import {AddNoteComponent} from './modal/add-note/add-note.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { CreateLessonComponent } from './modal/create-lesson/create-lesson.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -28,9 +27,9 @@ import { NewsComponent } from './news/news.component';
 import { NewsInfoComponent } from './modal/news-info/news-info.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonModule} from '@angular/material/button';
-import { SelectEventTypeComponent } from './modal/select-event-type/select-event-type.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatTabGroup, MatTabsModule} from '@angular/material/tabs';
+import { AllNewsComponent } from './modal/all-news/all-news.component';
 registerLocaleData(localeRu);
 
 class CustomDateFormatter extends CalendarNativeDateFormatter {
@@ -46,12 +45,11 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
   declarations: [
     AppComponent,
     ScheduleMainComponent,
-    AddNoteComponent,
     CreateLessonComponent,
     ConfirmationComponent,
     NewsComponent,
     NewsInfoComponent,
-    SelectEventTypeComponent
+    AllNewsComponent
   ],
   imports: [
     BrowserModule,
@@ -86,7 +84,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
   providers: [DatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
-  entryComponents: [AddNoteComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent, SelectEventTypeComponent]
+  entryComponents: [AllNewsComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent]
 })
 export class AppModule {
 
