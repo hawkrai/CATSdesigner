@@ -1,9 +1,6 @@
-.flex-input {
-  display: flex;
-  flex-basis: 100%;
+.mat-dialog-content {
   height: 100%;
-  flex-direction: row;
-  flex-wrap: wrap;
+  overflow-x: hidden;
 }
 
 .input-holder {
@@ -18,4 +15,20 @@
 
 .full-width {
   width: 100%;
+}
+
+:host ::ng-deep ckeditor {
+  height: 100%;
+
+  .ck-editor {
+    height: calc(100% - 10px);
+
+    .ck-editor__main {
+      height: calc(100% - 38px);
+
+      .ck-editor__editable_inline {
+        height: 100%;
+      }
+    }
+  }
 }

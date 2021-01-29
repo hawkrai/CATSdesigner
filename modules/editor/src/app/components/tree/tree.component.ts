@@ -34,4 +34,8 @@ export class TreeComponent implements OnInit {
   isActive(nodeId) {
     return this.currentNodeId == nodeId;
   }
+
+  cleanFromHtml(row) {
+    return row.replace(/<[^>]+>/g, '');
+  }
 }

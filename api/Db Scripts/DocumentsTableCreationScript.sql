@@ -1,7 +1,7 @@
 CREATE TABLE [LMPlatform].[dbo].[Documents] (
 	Id INT PRIMARY KEY IDENTITY (1,1),
 	ParentOrder INT NOT NULL,
-	Name NVARCHAR(128) NOT NULL,
+	Name NVARCHAR(2048) NOT NULL,
 	Text NVARCHAR(MAX),
 
 	-- Foreign keys

@@ -6,7 +6,7 @@
       <label (click)="onActivateTreeNodeEvent.emit(node)"
         matRipple
         [ngClass]="{highlight:isActive(node.Id)}"
-        >{{node.Name}}</label>
+        >{{cleanFromHtml(node.Name)}}</label>
       <crud-document-menu *ngIf="!isReadOnly"
           [document]="node"
           (onAddEvent)="onAddEvent.emit(node)"
@@ -28,7 +28,7 @@
         <label (click)="onActivateTreeNodeEvent.emit(node)"
           matRipple
           [ngClass]="{highlight:isActive(node.Id)}"
-        >{{node.Name}}</label>
+        >{{cleanFromHtml(node.Name)}}</label>
         <crud-document-menu *ngIf="!isReadOnly"
           [document]="node"
           (onAddEvent)="onAddEvent.emit(node)"
