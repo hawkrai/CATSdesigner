@@ -22,6 +22,9 @@ namespace LMPlatform.UI.Services.Modules.Labs
 		public bool IsReceived { get; set; }
         [DataMember]
         public bool IsReturned { get; set; }
+        [DataMember]
         public bool IsCoursProject { get; set; }
+        [DataMember]
+        public int? LabId { get; set; }
     }
 }

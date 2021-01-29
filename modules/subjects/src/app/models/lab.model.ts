@@ -23,4 +23,8 @@ export class ScheduleProtectionLabs {
   Date: string;
   SubGroup: number;
   SubGroupId: number;
+  StartTime: string;
+  EndTime: string;
+  Building: string;
+  Audience: string;
 }

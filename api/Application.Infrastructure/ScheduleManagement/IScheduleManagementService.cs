@@ -17,6 +17,8 @@ namespace Application.Infrastructure.ScheduleManagement
 
         IEnumerable<ScheduleModel> GetScheduleForDate(DateTime date);
 
-        IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime dateTime);
+        IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime endDate);
+
+        IEnumerable<ScheduleModel> GetUserSchedule(int userId, DateTime startDate, DateTime endDate);
     }
 }

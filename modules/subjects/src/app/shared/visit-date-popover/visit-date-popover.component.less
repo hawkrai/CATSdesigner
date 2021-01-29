@@ -5,6 +5,7 @@
     position: relative;
     height: 100%;
     display: grid;
+    min-width: 450px;
     grid-template-rows: auto 1fr auto;
     gap: 20px;
   }
@@ -37,6 +38,11 @@
       width: 100%;
       display: flex;
       gap: 0 20px;
+      justify-content: space-between;
+    }
+
+    &-group {
+      flex: 1;
     }
 
     &-error {

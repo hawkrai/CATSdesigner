@@ -1,5 +1,7 @@
-﻿using Application.Core.Data;
+﻿using Application.Core;
+using Application.Core.Data;
 using Application.Infrastructure.Models;
+using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using System;
@@ -12,17 +14,20 @@ namespace Application.Infrastructure.ScheduleManagement
 {
     public class ScheduleManagementService : IScheduleManagementService
     {
-        public bool CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
+
+		private readonly LazyDependency<ISubjectManagementService> _subjectManagementService = new LazyDependency<ISubjectManagementService>();
+
+		public ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
+
+		public bool CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
         {
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date)
-					.Include(x => x.Subject.SubjectLecturers))
+				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date))
 					.ToList()
 					.Select(x => LectureScheduleToModel(x));
 
-				var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date == date)
-					.Include(x => x.Subject.SubjectLecturers))
+				var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date == date))
 					.ToList()
 					.Select(x => LabScheduleToModel(x));
 
@@ -128,6 +133,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				Teachers = lecturesSchedule.Subject != null ? lecturesSchedule.Subject.SubjectLecturers : Enumerable.Empty<SubjectLecturer>(),
 				SubjectId = lecturesSchedule.SubjectId,
 				Type = ClassType.Lecture,
+				Date = lecturesSchedule.Date,
 				Id = lecturesSchedule.Id
 			};
 		}
@@ -146,9 +152,16 @@ namespace Application.Infrastructure.ScheduleManagement
 				Teachers = labSchedule.Subject != null ? labSchedule.Subject.SubjectLecturers : Enumerable.Empty<SubjectLecturer>(),
 				SubjectId = labSchedule.SubjectId,
 				Type = ClassType.Lab,
+				Date = labSchedule.Date,
 				Id = labSchedule.Id
 			};
 		}
 
-	}
+        public IEnumerable<ScheduleModel> GetUserSchedule(int userId, DateTime startDate, DateTime endDate)
+        {
+			var scedule = GetScheduleBetweenDates(startDate, endDate);
+			var subjects = SubjectManagementService.GetUserSubjects(userId);
+			return scedule.Where(day => subjects.Any(subject => day.SubjectId == subject.Id));
+        }
+    }
 }
