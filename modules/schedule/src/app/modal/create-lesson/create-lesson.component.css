@@ -20,3 +20,8 @@
 .mat-option-text {
   color: #383838;
 }
+
+.mat-dialog-content{
+  margin:0;
+  padding: 0 6px;
+}

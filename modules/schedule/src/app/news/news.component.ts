@@ -4,7 +4,8 @@ import {LessonService} from '../service/lesson.service';
 import {MatDialog} from '@angular/material/dialog';
 import {NewsInfoComponent} from '../modal/news-info/news-info.component';
 import {Message} from '../../../../../container/src/app/core/models/message';
-import {ModuleCommunicationComponent, ModuleCommunicationService} from 'test-mipe-bntu-schedule';
+import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
+import {AllNewsComponent} from '../modal/all-news/all-news.component';
 
 @Component({
   selector: 'app-news',
@@ -43,7 +44,7 @@ export class NewsComponent implements OnInit {
   }
 
   public openItemInfo(item: any) {
-    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '600px', disableClose: true,
+    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '600px',
                                         position: {top: '10%'}, data: {itemNews: item}});
   }
 
@@ -75,6 +76,11 @@ export class NewsComponent implements OnInit {
 
       return '4px solid ' + this.subject.Color;
     }
+  }
+
+  public openAllNews() {
+    const dialogRef = this.dialog.open(AllNewsComponent, {width: '600px', disableClose: true,
+      position: {top: '10%'}, data: {user: this.user}});
   }
 
 }
