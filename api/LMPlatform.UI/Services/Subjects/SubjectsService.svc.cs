@@ -1,13 +1,11 @@
 ﻿using System.Linq;
 using Application.Core;
 using Application.Infrastructure.SubjectManagement;
-using System.Web.Http;
 using Application.Core.Data;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Parental;
 using LMPlatform.UI.Attributes;
-using WebMatrix.WebData;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
 using System.Collections.Generic;
 using Application.Infrastructure.GroupManagement;
@@ -28,7 +26,7 @@ namespace LMPlatform.UI.Services.Subjects
 
         public SubjectsResult GetSubjectsBySession()
         {
-            var subjects = SubjectManagementService.GetUserSubjectsV2(WebSecurity.CurrentUserId);
+            var subjects = SubjectManagementService.GetUserSubjectsV2(UserContext.CurrentUserId);
 
             var result = new SubjectsResult
             {
@@ -59,6 +57,14 @@ namespace LMPlatform.UI.Services.Subjects
                 .Select(m => new ModulesViewModel(m, true)).ToList();
 
             return modules.OrderBy(m => m.Order);
+        }
+
+        public UserAssignedViewData UserAssigned(string subjectId)
+        {
+            return new UserAssignedViewData
+            {
+                IsAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, int.Parse(subjectId))
+            };
         }
     }
 }

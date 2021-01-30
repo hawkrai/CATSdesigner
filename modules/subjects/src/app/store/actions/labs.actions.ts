@@ -49,7 +49,7 @@ export const updateOrder = createAction(
 
 export const createDateVisit = createAction(
   '[Labs] Create Date Visit',
-  props<{ subGroupId: number, date: string }>()
+  props<{ obj: { subGroupId: number, date: string, startTime: string, endTime: string, building: string, audience: string } }>()
 );
 
 export const deleteDateVisit = createAction(

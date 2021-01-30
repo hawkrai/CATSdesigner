@@ -43,6 +43,8 @@ namespace LMPlatform.Models
 
 		public ICollection<LecturesScheduleVisiting> LecturesScheduleVisitings { get; set; }
 
+		public ICollection<ScheduleProtectionLabs> ScheduleProtectionLabs { get; set; }
+
 		public ICollection<ScheduleProtectionPractical> ScheduleProtectionPracticals { get; set; }
 
 		public ICollection<DocumentSubject> DocumentSubjects { get; set; }

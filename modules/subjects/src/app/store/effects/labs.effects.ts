@@ -63,7 +63,8 @@ export class LabsEffects {
 
   createDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.createDateVisit),
-    switchMap(({ date, subGroupId }) => this.rest.createDateVisit(subGroupId, date).pipe(
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+    switchMap(([{ obj }, subjectId]) => this.rest.createDateVisit({ ...obj, subjectId }).pipe(
       map(() => labsActions.loadLabsSchedule())
     ))
   ));

@@ -76,9 +76,9 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   addLab(file: UserLabFile, studentId?: number): void {
-    let model = {comments: '', attachments: []};
+    let model = {comment: '', attachments: [], isTeacher: false };
     if (!this.isTeacher && file) {
-      model = { comments: file.Comments, attachments: file.Attachments.map(f => attachmentConverter(f)) }
+      model = { comment: file.Comments, attachments: file.Attachments.map(f => attachmentConverter(f)), isTeacher: this.isTeacher }
     }
     const dialogData: DialogData = {
       title: this.isTeacher ? 'Загрузить исправленный вариант работы' : 'На защиту лабораторной работы',

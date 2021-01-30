@@ -29,6 +29,7 @@ import { PracticalsEffects } from './store/effects/practicals.effects';
 import { CatsEffects } from './store/effects/cats.effects';
 import { FilesEffects } from './store/effects/files.effects';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +52,7 @@ import { FilesEffects } from './store/effects/files.effects';
     ReactiveFormsModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects]),
-    StoreDevtoolsModule.instrument()
+    StoreDevtoolsModule.instrument(),
   ],
   entryComponents: [
     SubgroupingComponent

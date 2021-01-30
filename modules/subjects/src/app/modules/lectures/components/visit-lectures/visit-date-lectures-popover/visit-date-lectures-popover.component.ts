@@ -27,8 +27,8 @@ export class VisitDateLecturesPopoverComponent implements OnInit {
     this.schedule$ = this.store.select(lecturesSelectors.getCalendar);
   }
 
-  onCreateDate(date: string): void {
-    this.store.dispatch(lecturesActions.createDateVisit({ date }));
+  onCreateDate(obj: { date: string, startTime: string, endTime: string, building: string, audience: string }): void {
+    this.store.dispatch(lecturesActions.createDateVisit({ obj }));
   }
 
   onClose(): void {

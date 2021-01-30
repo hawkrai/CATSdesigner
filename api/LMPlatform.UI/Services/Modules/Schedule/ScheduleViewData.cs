@@ -13,9 +13,11 @@ namespace LMPlatform.UI.Services.Modules.Schedule
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public TimeSpan? Start { get; set; }
+        public string Start { get; set; }
         [DataMember]
-        public TimeSpan? End { get; set; }
+        public string Date { get; set; }
+        [DataMember]
+        public string End { get; set; }
         [DataMember]
         public ClassType Type { get; set; }
         [DataMember]

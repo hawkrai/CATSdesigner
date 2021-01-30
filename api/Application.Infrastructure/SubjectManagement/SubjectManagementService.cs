@@ -46,6 +46,12 @@ namespace Application.Infrastructure.SubjectManagement
 			}
 		}
 
+		public bool IsUserAssignedToSubject(int userId, int subjectId)
+        {
+			var subjects = GetUserSubjectsV2(userId);
+			return subjects.Any(subject => subject.Id == subjectId);
+        }
+
         public List<Subject> GetUserSubjectsV2(int userId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

@@ -43,6 +43,7 @@
     "material-design-icons": "^3.0.1",
     "moment": "^2.26.0",
     "ngx-color-picker": "^9.1.0",
+    "ngx-material-timepicker": "^5.5.3",
     "ngx-toastr": "^13.2.0",
     "rxjs": "~6.4.0",
     "subsink": "^1.0.1",
