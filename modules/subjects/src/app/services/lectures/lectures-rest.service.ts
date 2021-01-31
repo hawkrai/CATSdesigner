@@ -49,8 +49,10 @@ export class LecturesRestService {
     )
   }
 
-  public createDateVisit(subjectId: number, date: string): Observable<any> {
-    return this.http.post('Services/Lectures/LecturesService.svc/SaveDateLectures', { subjectId, date });
+  public createDateVisit(request: {
+    subjectId: number, date: string, startTime: string, endTime: string, building: string, audience: string
+  }): Observable<any> {
+    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLectures', request);
   }
 
   public deleteDateVisit(id: number): Observable<any> {

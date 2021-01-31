@@ -21,6 +21,7 @@ using Application.Infrastructure.BTS;
 using Application.Infrastructure.TinCanManagement;
 using Application.Infrastructure.DocumentsManagement;
 using Application.Infrastructure.AdaptiveLearning;
+using Application.Infrastructure.ScheduleManagement;
 
 namespace Application.Infrastructure
 {
@@ -60,6 +61,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<ITinCanManagementService, TinCanManagementService>();
             containerWrapper.Register<IDocumentManagementService, DocumentManagementService>();
             containerWrapper.Register<IAdaptiveLearningService, AdaptiveLearningService>();
+            containerWrapper.Register<IScheduleManagementService, ScheduleManagementService>();
             return containerWrapper;
         }
     }

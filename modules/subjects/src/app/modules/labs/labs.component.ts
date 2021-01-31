@@ -87,7 +87,6 @@ export class LabsComponent implements OnInit, OnDestroy {
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupsActions.setCurrentGroupById({ id: event.source.value }));
-      this.store.dispatch(labsActions.loadLabsSchedule());
     }
   }
 

@@ -14,10 +14,10 @@ namespace LMPlatform.UI.ApiControllers.CP
     {
         public HttpResponseMessage Post([FromBody] CourseStudentMarkModel courseStudentMarkModel)
         {
-            if (!ModelState.IsValid)
+            /*if (!ModelState.IsValid)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-            }
+            }*/
 
             CpManagementService.SetStudentDiplomMark(UserContext.CurrentUserId, courseStudentMarkModel);
             return new HttpResponseMessage(HttpStatusCode.OK);

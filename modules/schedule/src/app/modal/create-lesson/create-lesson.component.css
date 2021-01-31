@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   overflow-y: initial !important;
-  margin: 20px 100px;
-  
 }
 
 .example-container a > * {
@@ -21,4 +19,9 @@
 
 .mat-option-text {
   color: #383838;
+}
+
+.mat-dialog-content{
+  margin:0;
+  padding: 0 6px;
 }

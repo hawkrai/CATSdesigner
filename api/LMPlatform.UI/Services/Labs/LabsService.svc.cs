@@ -332,6 +332,7 @@ namespace LMPlatform.UI.Services.Labs
 					IsReceived = e.IsReceived,
 	                IsReturned = e.IsReturned,
 	                IsCoursProject = e.IsCoursProject,
+					LabId = e.LabId,
                     Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
 		            Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
 	            }).Where(x => x.IsCoursProject == isCoursPrj).ToList();
@@ -352,7 +353,7 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, bool isCp = false, bool isRet = false)
+		public ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, int? labId = null, bool isCp = false, bool isRet = false)
 		{
 			try
 			{
@@ -366,6 +367,7 @@ namespace LMPlatform.UI.Services.Labs
 					Comments = comments,
 					Attachments = pathFile,
 					Id = id,
+					LabId = labId,
 				    IsCoursProject = isCp,
 				    IsReceived = false,
 				    IsReturned = isRet

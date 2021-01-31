@@ -12,6 +12,7 @@ import {SubSink} from 'subsink';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { DatePipe } from '@angular/common';
 import { Observable, combineLatest } from 'rxjs';
+import * as moment from 'moment';
 
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
@@ -87,7 +88,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
         map((result: MarkForm) => ({
           ...labsMark,
           comment: result.comment,
-          date: new DatePipe('en-US').transform(result.date, 'dd.mm.yyyy'),
+          date: moment(result.date).format('DD.MM.YYYY'),
           mark: result.mark,
           showForStudent: result.showForStudent
         })),

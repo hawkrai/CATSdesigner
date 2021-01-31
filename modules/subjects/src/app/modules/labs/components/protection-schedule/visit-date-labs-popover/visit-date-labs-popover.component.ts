@@ -31,8 +31,8 @@ export class VisitDateLabsPopoverComponent implements OnInit {
   }
   
 
-  onCreateDate(date: string): void {
-    this.store.dispatch(labsActions.createDateVisit({ date, subGroupId: this.data.body.subGroupId }));
+  onCreateDate(obj: { date: string, startTime: string, endTime: string, building: string, audience: string }): void {
+    this.store.dispatch(labsActions.createDateVisit({ obj: { ...obj, subGroupId: this.data.body.subGroupId } }));
   }
 
   onClose(): void {

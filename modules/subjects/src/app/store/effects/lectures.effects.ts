@@ -84,7 +84,7 @@ export class LecturesEffects {
   createDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ date }, subjectId]) => this.rest.createDateVisit(subjectId, date).pipe(
+    switchMap(([{ obj }, subjectId]) => this.rest.createDateVisit({ ...obj, subjectId }).pipe(
       map(() => lecturesActions.loadCalendar())
     ))
   ));
@@ -96,7 +96,7 @@ export class LecturesEffects {
     ))
   ));
 
-  downloadExcel = createEffect(() => this.actions$.pipe(
+  downloadExcel$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.getVisitingExcel),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
     switchMap(([_, subjectId, groupId]) => this.rest.getVisitingExcel(subjectId, groupId).pipe(

@@ -79,7 +79,7 @@ namespace LMPlatform.UI.Services.Labs
         // OK
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SendFile")]
-        ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, bool isCp, bool isRet);
+        ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, int? labId, bool isCp, bool isRet);
 
         // OK
         [OperationContract]

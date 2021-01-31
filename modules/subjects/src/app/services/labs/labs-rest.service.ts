@@ -38,14 +38,6 @@ export class LabsRestService {
     )
   }
 
-  // public getMarks(subjectId: number, groupId: string): Observable<any> {
-  //   const params = new HttpParams()
-  //     .set('subjectId', subjectId.toString())
-  //     .set('groupId', groupId);
-  //   return this.http.get('Services/Labs/LabsService.svc/GetMarksV2', {params}).pipe(
-  //     map(res => res['Students']))
-  // }
-
   public getMarksV2(subjectId: number, groupId: number): Observable<StudentMark[]> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
@@ -69,8 +61,10 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/Delete', lab);
   }
 
-  public createDateVisit(subGroupId: number, date: string ): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/SaveScheduleProtectionDate', { subGroupId, date });
+  public createDateVisit(request: {
+    subGroupId: number, date: string, subjectId: number, startTime: string, endTime: string, building: string, audience: string
+   }): Observable<any> {
+    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLab', request);
   }
 
   public deleteDateVisit(id: number): Observable<any> {
