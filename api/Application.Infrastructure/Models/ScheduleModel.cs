@@ -29,6 +29,8 @@ namespace Application.Infrastructure.Models
 
         public IEnumerable<SubjectLecturer> Teachers { get; set; }
 
+        public IEnumerable<Note> Notes { get; set; }
+
     }
 
     public enum ClassType

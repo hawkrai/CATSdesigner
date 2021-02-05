@@ -221,6 +221,8 @@
     <Compile Include="MessageManagement\MessageManagementService.cs" />
     <Compile Include="Models\ProfileCalendarModel.cs" />
     <Compile Include="Models\ScheduleModel.cs" />
+    <Compile Include="NoteManagement\INoteManagementService.cs" />
+    <Compile Include="NoteManagement\NoteManagementService.cs" />
     <Compile Include="ProjectManagement\IProjectManagementService.cs" />
     <Compile Include="ProjectManagement\ProjectManagementService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

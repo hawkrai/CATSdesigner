@@ -73,6 +73,8 @@ namespace LMPlatform.Data.Repositories
 
         public IAdaptiveLearningProgressRepository AdaptiveLearningProgressRepository { get; set; }
 
+        public INotesRepository NotesRepository { get; set; }
+
         public void ApplyChanges()
         {
             _dataContext.SaveChanges();
@@ -116,6 +118,7 @@ namespace LMPlatform.Data.Repositories
             DocumentRepository = new DocumentRepository(_dataContext);
             NewsRepository = new NewsRepository(_dataContext);
             AdaptiveLearningProgressRepository = new AdaptiveLearningProgressRepository(_dataContext);
+            NotesRepository = new NotesRepository(_dataContext);
         }
     }
 }

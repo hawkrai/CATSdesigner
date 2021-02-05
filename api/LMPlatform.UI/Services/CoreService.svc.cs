@@ -57,6 +57,15 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
 				this.LecturerManagementService.DisjoinLector(subjectId, lectorId, CurrentUserId);
 
 				return new ResultViewData
@@ -103,8 +112,18 @@ namespace LMPlatform.UI.Services
 
 		public ResultViewData JoinLector(int subjectId, int lectorId)
 		{
+
 			try
 			{
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
 				this.LecturerManagementService.Join(subjectId, lectorId, CurrentUserId);
 
 				return new ResultViewData
