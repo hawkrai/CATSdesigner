@@ -337,7 +337,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\GreaterThanAttribute.cs" />
     <Compile Include="Attributes\JwtAuthAttribute.cs" />
-    <Compile Include="Attributes\UserAssignedToSubjectAttribute.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministrationController.cs" />
@@ -502,6 +501,7 @@
     <Compile Include="Services\Modules\Messages\RecipientViewData.cs" />
     <Compile Include="Services\Modules\News\NewsResult.cs" />
     <Compile Include="Services\Modules\News\NewsViewData.cs" />
+    <Compile Include="Services\Modules\Notes\NoteViewResult.cs" />
     <Compile Include="Services\Modules\Parental\ParentalResult.cs" />
     <Compile Include="Services\Modules\Parental\ParentalUser.cs" />
     <Compile Include="Services\Modules\Parental\SubjectListResult.cs" />
@@ -511,6 +511,7 @@
     <Compile Include="Services\Modules\Practicals\PracticalVisitingMarkViewData.cs" />
     <Compile Include="Services\Modules\Practicals\ScheduleProtectionPracticalViewData.cs" />
     <Compile Include="Services\Modules\ResultViewData.cs" />
+    <Compile Include="Services\Modules\Notes\NoteViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewResult.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />

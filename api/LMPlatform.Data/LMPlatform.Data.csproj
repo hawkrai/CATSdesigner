@@ -140,6 +140,7 @@
     <Compile Include="Repositories\MessageRepository.cs" />
     <Compile Include="Repositories\ModulesRepository.cs" />
     <Compile Include="Repositories\NewsRepository.cs" />
+    <Compile Include="Repositories\NotesRepository.cs" />
     <Compile Include="Repositories\ProjectCommentsRepository.cs" />
     <Compile Include="Repositories\PracticalRepository.cs" />
     <Compile Include="Repositories\ProjectInitializer .cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Repositories\RepositoryContracts\IModulesRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\ILecturerRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\INewsRepository.cs" />
+    <Compile Include="Repositories\RepositoryContracts\INotesRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IProjectCommentsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IPracticalRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IProjectMatrixRequirementsRepository.cs" />

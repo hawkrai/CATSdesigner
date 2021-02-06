@@ -135,7 +135,16 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-                var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
+				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 SubjectManagementService.SaveLabs(new Models.Labs
                 {
                     SubjectId = subjectId,
@@ -167,7 +176,16 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-                SubjectManagementService.DeleteLabs(id);
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
+				SubjectManagementService.DeleteLabs(id);
                 return new ResultViewData
                 {
                     Message = "Лабораторная работа успешно удалена",
@@ -322,6 +340,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
+
 	            var model = new List<UserlabFilesViewData>();
 	            var data = SubjectManagementService.GetUserLabFiles(userId, subjectId);
 	            model = data.Select(e => new UserlabFilesViewData
