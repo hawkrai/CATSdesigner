@@ -1,19 +1,20 @@
+<button style="background: white; outline: none; border-width: 0px; margin-left: 95%;" (click)="onCancelClick()">X</button>
 <mat-tab-group [selectedIndex]="selectedIndex">
   <mat-tab label="Занятие" [disabled]="disableLesson" >
-    <div class="example-container" style="overflow-y: initial !important;" xmlns:position="http://www.w3.org/1999/xhtml">
+    <div class="example-container" >
       <mat-dialog-content>
         <form [formGroup]="formGroup">
-          <button style="background: white;border-width: 0px; margin-left: 95%;" (click)="onCancelClick()">X</button>
           <mat-form-field>
             <mat-select [ngModel]="lesson.subjectId" [(ngModel)]="lesson.subjectId" style="color: #383838;"
-                        formControlName="subjectF" required class="form-control" placeholder="Выберите предмет">
+                        formControlName="subjectF" class="form-control" placeholder="Выберите предмет">
               <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{subject.Name}}</mat-option>
             </mat-select>
             <mat-error *ngIf="subjectF.hasError( 'required')">Поле не может быть пустым</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-            <mat-select [ngModel]="changedType" formControlName="type" required class="form-control" placeholder="Выберите тип прдмет">
+            <mat-select [ngModel]="changedType" formControlName="type" class="form-control"
+                        placeholder="Выберите тип предмета">
               <mat-option *ngFor="let type of lessonTypes" [value]="type[0]">{{type[1]}}</mat-option>
             </mat-select>
             <mat-error *ngIf="type.hasError('required')">Поле не может быть пустым</mat-error>
@@ -21,66 +22,79 @@
 
           <mat-form-field [formGroup]="formGroup">
             <input [ngModel]="lesson.teacher" [(ngModel)]="lesson.teacher" id="teacher" formControlName="teacher"
-                   required
                    matInput placeholder="Преподаватель">
             <mat-error *ngIf="teacher.hasError('required')"> Поле должно быть заполнено</mat-error>
           </mat-form-field>
-
-          <mat-form-field [formGroup]="formGroup">
-            <input type="text" [ngModel]="lesson.building" [(ngModel)]="lesson.building" id="building" formControlName="building"
-                   required matInput placeholder="Корпус">
-            <mat-error *ngIf="building.hasError('required')"> Поле должно быть заполнено</mat-error>
-            <mat-error *ngIf="building.hasError('maxlength')"> Вы ввели больше 3 символов</mat-error>
-          </mat-form-field>
-
-          <mat-form-field [formGroup]="formGroup">
-            <input type="text"  [ngModel]="lesson.classroom" [(ngModel)]="lesson.classroom" id="classroom"
-                   formControlName="classroom"
-                   required matInput placeholder="Аудитория">
-            <mat-error *ngIf="classroom.hasError('maxlength')"> Вы ввели больше 5 символов</mat-error>
-            <mat-error *ngIf="classroom.hasError('required')"> Поле должно быть заполнено</mat-error>
-          </mat-form-field>
-
           <mat-form-field>
             <input
-              [ngModel]="lesson.start"
+              class="form-control"
+              matInput
+              formControlName="dayEvent"
               type="text"
-              matInput formControlName="dayEvent" required
               mwlFlatpickr
               [altInput]="true"
               [convertModelValue]="true"
               [(ngModel)]="dayOfLesson"
-              [value] ="dayOfLesson"
-              dateFormat="Y-m-d"
-              altFormat="d-m-Y"
-              placeholder="Дата занятия"
+              [value]="dayOfLesson"
+              dateFormat="d.m.Y"
+              altFormat="d.m.Y"
+              placeholder="Дата"
             />
+            <!--input matInput [matDatepicker]="picker" formControlName="dayEvent">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker-->
             <mat-error *ngIf="dayEvent.hasError( 'required')">Поле не может быть пустым</mat-error>
           </mat-form-field>
           <mat-form-field style="width: 48%;">
-            <input matInput class="form-control" formControlName="startEvent" [(ngModel)]="startTimeOfLesson" [ngModel] ="startTimeOfLesson" type="time" placeholder="Время начала занятия">
+            <input type = 'time' matInput formControlName="startEvent" [(ngModel)]="startTimeOfLesson"
+                   [ngModel]="startTimeOfLesson"  placeholder="Начало занятия">
+            <ngx-material-timepicker #startTimepicker>
+            </ngx-material-timepicker>
             <mat-error *ngIf="startEvent.hasError( 'required')">Поле не может быть пустым</mat-error>
           </mat-form-field>
-          <mat-form-field style="width: 48%;margin-left: 4%">
-            <input matInput class="form-control" formControlName="endEvent" [(ngModel)]="endTimeOfLesson" [ngModel] ="endTimeOfLesson" type="time" placeholder="Время окончания занятия">
+          <mat-form-field style="width: 48%;margin-left: 4%; z-index: 4">
+            <input matInput type = 'time'  formControlName="endEvent" [(ngModel)]="endTimeOfLesson"
+                   [ngModel]="endTimeOfLesson" placeholder="Конец занятия">
+            <ngx-material-timepicker #endTimepicker>
+            </ngx-material-timepicker>
             <mat-error *ngIf="endEvent.hasError( 'required')">Поле не может быть пустым</mat-error>
           </mat-form-field>
+          <mat-form-field [formGroup]="formGroup" style="width: 48%;">
+            <input type="text" [ngModel]="lesson.building" [(ngModel)]="lesson.building" id="building"
+                   formControlName="building"
+                   matInput placeholder="Корпус">
+            <mat-error *ngIf="building.hasError('maxlength')"> Вы ввели больше 3 символов</mat-error>
+          </mat-form-field>
+
+          <mat-form-field [formGroup]="formGroup" style="width: 48%;margin-left: 4%">
+            <input type="text" [ngModel]="lesson.audience" [(ngModel)]="lesson.audience" id="audience"
+                   formControlName="audience"
+                   matInput placeholder="Аудитория">
+            <mat-error *ngIf="audience.hasError('maxlength')"> Номер аудитории обязателен</mat-error>
+            <mat-error *ngIf="audience.hasError('required')"> Поле должно быть заполнено</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input type="text" matInput class="form-control" formControlName="memo" placeholder="Заметка"
+                   [(ngModel)]="memo" [ngModel]="memo"/>
+          </mat-form-field>
+          <p></p>
+          <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
+            <button mat-raised-button color="basic" style="margin-right: 10px;margin-left: 60%" (click)="onCancelClick()">
+              Отмена
+            </button>
+            <button mat-raised-button color="primary" (click)="addLesson()" [disabled]="formGroup.invalid">Сохранить
+            </button>
+          </div>
         </form>
-        <p></p>
-        <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
-          <button mat-raised-button color="basic" style="margin-right: 10px;margin-left: 60%" (click)="onCancelClick()">
-            Отмена
-          </button>
-          <button mat-raised-button color="primary" (click)="addLesson()" [disabled]="formGroup.invalid">Сохранить</button>
-        </div>
       </mat-dialog-content>
     </div>
   </mat-tab>
   <mat-tab label="Событие" [disabled]="disableNote">
-    <div class="example-container"  xmlns:position="http://www.w3.org/1999/xhtml">
+    <div class="example-container" xmlns:position="http://www.w3.org/1999/xhtml">
       <form [formGroup]="formGroupNote" style="width: 99%;">
         <mat-form-field>
-          <input type="text" matInput class="form-control" formControlName="title"  placeholder="Название события" [(ngModel)]="note.title" [ngModel] ="data.event.title"/>
+          <input type="text" matInput class="form-control" formControlName="title" placeholder="Название события"
+                 [(ngModel)]="note.title" [ngModel]="data.event.title"/>
           <mat-error *ngIf="title.hasError( 'required')">Поле не может быть пустым</mat-error>
         </mat-form-field>
         <mat-form-field>
@@ -93,26 +107,31 @@
             [altInput]="true"
             [convertModelValue]="true"
             [(ngModel)]="dayOfNote"
-            [value] ="dayOfNote"
-            dateFormat="Y-m-d"
-            altFormat="d-m-Y"
-            placeholder="Дата события"
+            [value]="dayOfNote"
+            dateFormat="d.m.Y"
+            altFormat="d.m.Y"
+            placeholder="Дата"
           />
           <mat-error *ngIf="dayNote.hasError( 'required')">Поле не может быть пустым</mat-error>
         </mat-form-field>
         <mat-form-field style="width:48%;">
-          <input matInput class="form-control" formControlName="startNote"  [(ngModel)]="startTimeOfNote" [ngModel] ="startTimeOfNote" type="time" placeholder="Время начала события">
+          <input matInput class="form-control" formControlName="startNote" [(ngModel)]="startTimeOfNote"
+                 [ngModel]="startTimeOfNote" type="time" placeholder="Начало события">
           <mat-error *ngIf="startNote.hasError( 'required')">Поле не может быть пустым</mat-error>
         </mat-form-field>
-        <mat-form-field  style="width: 48%;margin-left: 4%">
-          <input matInput class="form-control" formControlName="endNote"  [(ngModel)]="endTimeOfNote" [ngModel] ="endTimeOfNote" type="time" placeholder="Время окончания события">
+        <mat-form-field style="width: 48%;margin-left: 4%">
+          <input matInput class="form-control" formControlName="endNote" [(ngModel)]="endTimeOfNote"
+                 [ngModel]="endTimeOfNote" type="time" placeholder="Конец события">
           <mat-error *ngIf="endNote.hasError( 'required')">Поле не может быть пустым</mat-error>
         </mat-form-field>
+        <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
+          <button mat-raised-button color="basic" style="margin-right: 10px;margin-left: 60%" (click)=onCancelClick()>
+            Отмена
+          </button>
+          <button mat-raised-button color="primary" [disabled]="formGroupNote.invalid" (click)="addNote()">Сохранить
+          </button>
+        </div>
       </form>
-      <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
-        <button mat-raised-button color="basic" style="margin-right: 10px;margin-left: 60%" (click)=onCancelClick()> Отмена </button>
-        <button mat-raised-button color="primary" [disabled]="formGroupNote.invalid" (click)="addNote()">Сохранить</button>
-      </div>
     </div>
   </mat-tab>
 </mat-tab-group>

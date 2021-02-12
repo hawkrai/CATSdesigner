@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Lesson} from '../../model/lesson.model';
@@ -15,6 +15,7 @@ export function flatpickrFactory() {
 }
 
 @Component({
+  encapsulation: ViewEncapsulation.None,
   selector: 'app-create-lesson',
   templateUrl: './create-lesson.component.html',
   styleUrls: ['./create-lesson.component.css']
@@ -27,10 +28,16 @@ export class CreateLessonComponent implements OnInit {
   lesson: any = new Lesson() ;
   subject: any;
   subjects: any[] = [];
-  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'], ['3', 'Практ.работа']];
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лабораторная работа'],
+    ['3', 'Практическое занятие'], ['4', 'Курсовое проектирование']];
   dayOfLesson: Date;
   startTimeOfLesson: string;
   endTimeOfLesson: string;
+  startHour: string;
+  startMin: string;
+  endHour: string;
+  endMin: string;
+  memo: string;
 
   formGroupNote: any;
   note: Note = new Note();
@@ -40,24 +47,35 @@ export class CreateLessonComponent implements OnInit {
   selectedIndex = 0;
   disableLesson = false;
   disableNote = false;
+  user: any;
 
   constructor(public dialogRef: MatDialogRef<CreateLessonComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any,
               private lessonservice: LessonService) { }
 
   ngOnInit(): void {
-    this.lessonservice.getAllSubjects(this.data.user.userName).subscribe(subjects => {
+    const format = 'dd.MM.yyyy';
+    const locale = 'en-US';
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.lessonservice.getAllSubjects(this.user.username).subscribe(subjects => {
       this.subjects = subjects;
       if (this.data.lesson != null) {
-        this.dayOfLesson = this.data.lesson.start.getDate();
-        this.startTimeOfLesson = this.data.lesson.start.getHours() + ':' + this.data.event.start.getMinutes();
-        this.endTimeOfLesson = this.data.lesson.end.getHours() + ':' + this.data.event.end.getMinutes();
-        this.lesson.color = this.getColor(this.data.lesson.title);
-        this.lesson.subjectId = this.getSubject(this.data.lesson.title);
-        this.lesson.teacher = this.getTeacher(this.data.lesson.title);
-        this.lesson.classroom = this.getClassroom(this.data.lesson.title);
-        this.lesson.building = this.getBuilding(this.data.lesson.title);
-        this.changedType = this.lessonTypes.find(type => type[1] === this.getType(this.data.lesson.title).trim())[0];
+        this.startHour = this.data.lesson.start.getHours().toString();
+        this.startMin = this.data.lesson.start.getMinutes().toString();
+        this.endHour = this.data.lesson.end.getHours().toString();
+        this.endMin  = this.data.lesson.end.getMinutes().toString();
+        this.fillTimeParameters();
+        this.dayOfLesson = this.lessonservice.formatDate1(this.data.lesson.start);
+        this.startTimeOfLesson = this.startHour + ':' + this.startMin;
+        this.endTimeOfLesson = this.endHour + ':' + this.endMin;
+
+        this.lesson.color = this.lessonservice.getColor(this.data.lesson.title);
+        this.lesson.subjectId = this.lessonservice.getSubject(this.data.lesson.title, this.subjects);
+        this.lesson.teacher = this.lessonservice.getTeacher(this.data.lesson.title);
+        this.lesson.audience = this.lessonservice.getAudience(this.data.lesson.title);
+        this.lesson.building = this.lessonservice.getBuilding(this.data.lesson.title);
+        this.memo = this.lessonservice.getMemo(this.data.lesson.title);
+        this.changedType = this.lessonTypes.find(type => type[1] === this.lessonservice.getType(this.data.lesson.title).trim())[0];
         this.disableNote = true;
       }
     });
@@ -68,8 +86,9 @@ export class CreateLessonComponent implements OnInit {
       endEvent: new FormControl('', [Validators.required]),
       type: new FormControl('', [Validators.required]),
       teacher: new FormControl('', [Validators.required]),
-      building: new FormControl('', [Validators.required, Validators.maxLength(3)]),
-      classroom: new FormControl('', [Validators.required, Validators.maxLength(5)]),
+      building: new FormControl('', [ Validators.maxLength(3)]),
+      audience: new FormControl('', [Validators.required, Validators.maxLength(5)]),
+      memo: new FormControl('', ),
     });
 
     this.formGroupNote = new FormGroup({
@@ -78,38 +97,52 @@ export class CreateLessonComponent implements OnInit {
       startNote: new FormControl('', [Validators.required]),
       endNote: new FormControl('', [Validators.required]),
     });
+    if (this.data.date != null) {
+      this.startHour = this.data.date.getHours() + '';
+      this.startMin = this.data.date.getMinutes() + '';
+      this.endHour = this.data.date.getHours() + 1 + '';
+      this.endMin = this.data.date.getMinutes() + '';
+      this.fillTimeParameters();
+      this.startTimeOfNote = this.startHour + ':' + this.startMin;
+      this.endTimeOfNote = this.endHour + ':' + this.endMin;
+      this.startTimeOfLesson = this.startHour + ':' + this.startMin;
+      this.endTimeOfLesson = this.endHour + ':' + this.endMin;
+      this.dayOfNote = new Date(formatDate(this.data.date, format, locale));
+      this.dayOfLesson = new Date(formatDate(this.data.date, format, locale));
+    }
     if (this.data.note != null) {
-      const format = 'yyyy-MM-dd';
-      const locale = 'en-US';
-      let startHour = this.data.note.start.getHours() + '';
-      let startMin: string = this.data.note.start.getMinutes() + '';
-      let endHour: string = this.data.note.end.getHours() + '';
-      let endMin: string = this.data.note.end.getMinutes() + '';
-      if (startHour.length === 1) {
-        startHour = '0' + startHour;
-      }
-      if (startMin.length === 1) {
-        startMin = '0' + startMin;
-      }
-      if (endHour.length === 1) {
-        endHour = '0' + endHour;
-      }
-      if (endMin.length === 1) {
-        endMin = '0' + endMin;
-      }
+      this.startHour = this.data.note.start.getHours() + '';
+      this.startMin = this.data.note.start.getMinutes() + '';
+      this.endHour = this.data.note.end.getHours() + '';
+      this.endMin = this.data.note.end.getMinutes() + '';
+      this.fillTimeParameters();
       this.dayOfNote = new Date(formatDate(this.data.note.start, format, locale));
-      this.startTimeOfNote = startHour + ':' + startMin;
-      this.endTimeOfNote = endHour + ':' + endMin;
+      this.startTimeOfNote = this.startHour + ':' + this.startMin;
+      this.endTimeOfNote = this.endHour + ':' + this.endMin;
       this.note.title = this.data.note.title;
       this.selectedIndex = 1;
       this.disableLesson = true;
-      console.log(this.startTimeOfNote);
     }
     if (this.data.user.role === 'student') {
       this.selectedIndex = 1;
       this.disableLesson = true;
     }
     flatpickrFactory();
+  }
+
+  fillTimeParameters() {
+    if (this.startHour.length === 1) {
+      this.startHour = '0' + this.startHour;
+    }
+    if (this.startMin.length === 1) {
+      this.startMin = '0' + this.startMin;
+    }
+    if (this.endHour.length === 1) {
+      this.endHour = '0' + this.endHour;
+    }
+    if (this.endMin.length === 1) {
+      this.endMin = '0' + this.endMin;
+    }
   }
 
   get title(): FormControl {
@@ -156,8 +189,8 @@ export class CreateLessonComponent implements OnInit {
     return this.formGroup.get('building') as FormControl;
   }
 
-  get classroom(): FormControl {
-    return this.formGroup.get('classroom') as FormControl;
+  get audience(): FormControl {
+    return this.formGroup.get('audience') as FormControl;
   }
 
   // tslint:disable-next-line:typedef
@@ -165,17 +198,17 @@ export class CreateLessonComponent implements OnInit {
     this.subject = this.subjects.find(subject => subject.Id == this.lesson.subjectId);
     this.lesson.title = this.subject.ShortName +
       ' - ' + this.lessonTypes.find(type => type[0] === this.formGroup.controls.type.value)[1];
-    this.lesson.color = this.subject.color;
-    this.lesson.start = this.dayOfLesson;
-    const day = new Date(this.dayOfLesson);
-    this.lesson.end = day;
+    this.lesson.color = this.subject.Color;
+    this.lesson.date = this.dayOfLesson;
     if (this.startTimeOfLesson > this.endTimeOfLesson) {
       const temp = this.startTimeOfLesson;
       this.startTimeOfLesson = this.endTimeOfLesson;
       this.endTimeOfLesson = temp;
     }
-    this.lesson.start.setHours(+this.startTimeOfLesson.split(':')[0], + this.startTimeOfLesson.split(':')[1]);
-    this.lesson.end.setHours(+this.endTimeOfLesson.split(':')[0], + this.endTimeOfLesson.split(':')[1]);
+    this.lesson.startTime = this.startTimeOfLesson;
+    this.lesson.endTime = this.endTimeOfLesson;
+    this.lesson.memo = {message: this.memo};
+
     this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
   }
 
@@ -198,33 +231,4 @@ export class CreateLessonComponent implements OnInit {
     this.dialogRef.close(null);
   }
 
-  getSubject(title: string): any {
-    const splitted = title.split('|', 8);
-    return this.subjects.find(subject => subject.Id == splitted[7]).Id;
-  }
-
-  getType(title: string): any {
-    const splitted = title.split('|', 5);
-    return ' ' + splitted[4] + ' ';
-  }
-
-  getColor(title: string): any {
-    const splitted = title.split('|', 7);
-    return splitted[6] ;
-  }
-
-  getTeacher(title: string): any {
-    const splitted = title.split('|', 6);
-    return splitted[5] ;
-  }
-
-  getClassroom(title: string): any {
-    const splitted = title.split('|', 3);
-    return  splitted[1];
-  }
-
-  getBuilding(title: string): any {
-    const splitted = title.split('|', 3);
-    return splitted[2];
-  }
 }

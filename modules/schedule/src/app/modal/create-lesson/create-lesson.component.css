@@ -6,7 +6,6 @@
 
 .example-container a > * {
   width: 100%;
-
 }
 
 .mat-form-field {
@@ -25,3 +24,11 @@
   margin:0;
   padding: 0 6px;
 }
+
+.mat-tab-label {
+  font-size: .875rem;
+  font-weight: 500;
+  color: #3F51B5;
+}
+
+

@@ -1,14 +1,33 @@
 import {Lesson} from '../model/lesson.model';
+import {formatDate} from '@angular/common';
+
+const format = 'dd.MM.yyyy';
+const locale = 'en-US';
 
 export const LESSONS: Lesson[] = [
-  {id: '1', start: new Date('2020-09-24 11:40'),
-    end: new Date('2020-09-24 14:05'),
-    shortname: 'ООП', name: '12312', teacher: 'Белова' ,
-    type: 'Лекция', building: '12', classroom: '104',
-    color: 'green', subjectId: '1'},
-  {id: '2', start: new Date('2020-09-15 15:50'),
-    end: new Date('2020-09-15 17:25'), shortname: 'ЯП',
-    name: '12312', teacher: 'Гурский' , type: 'Лекция',
-    building: '12', classroom: '104', color: 'red',
-    subjectId: '1'}
+  {id: '1', date: new Date(formatDate('11/02/2021', format, locale)),
+    startTime: '17:05',
+    endTime: '19:05',
+    shortname: 'ООП', teacher: 'Белова' , title: '123 - Лекция',
+    type: null, building: '12', audience: '104',
+    color: 'green', subjectId: '1', memo: {message: '2234234'}},
+  {id: '2', date: new Date(formatDate('11/02/2021', format, locale)),
+    startTime: '08:05',
+    endTime: '13:05', shortname: 'ЯП', teacher: 'Гурский' , title: '123 - Лекция', type: null,
+    building: '12', audience: '104', color: 'red',
+    subjectId: '1', memo: {message: '2234234'}}
+];
+
+export const les: any = {
+  Labs: LESSONS
+};
+
+export const SUBJECTS: any[] = [
+  {
+    Color: '#ca0000',
+    Completing: 0,
+    Id: 1,
+    Name: 'Тестовый предмет 2',
+    ShortName: 'ТП2',
+  }
 ];
