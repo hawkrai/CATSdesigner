@@ -1,7 +1,15 @@
+import { Observable } from 'rxjs';
 import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import { Store } from '@ngrx/store';
+import { switchMap } from 'rxjs/operators';
+
+import { LabsRestService } from 'src/app/services/labs/labs-rest.service';
+import { IAppState } from 'src/app/store/state/app.state';
 import {DialogData} from '../../../../../models/dialog-data.model';
-import {LabsService} from '../../../../../services/labs/labs.service';
+import * as subjectSelectors from '../../../../../store/selectors/subject.selector';
+import { CorrectDoc } from 'src/app/models/plagiarism-result.model';
+import * as filesActions from '../../../../../store/actions/files.actions';
 
 @Component({
   selector: 'app-delete-popover',
@@ -10,34 +18,30 @@ import {LabsService} from '../../../../../services/labs/labs.service';
 })
 export class CheckPlagiarismStudentComponent implements OnInit {
 
-  result: any;
-  isLoad = false;
+  plagResults$: Observable<CorrectDoc[]>;
 
   displayedColumns = ['coeff', 'author', 'group', 'subject', 'file'];
 
   constructor(
     public dialogRef: MatDialogRef<CheckPlagiarismStudentComponent>,
-    private labService: LabsService,
+    private store: Store<IAppState>,
+    private labsService: LabsRestService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {
-    this.labService.checkPlagiarism({subjectId: this.data.body.subjectId, userFileId: this.data.body.userFileId}).subscribe(
-      res => {
-        if (res) {
-          this.result = res
-        }
-      }
-    )
+    this.plagResults$ = this.store.select(subjectSelectors.getSubjectId).pipe(
+      switchMap(subjectId => this.labsService.checkPlagiarism(subjectId, this.data.body.userFileId))
+    );
   }
 
   onClick(): void {
     this.dialogRef.close();
   }
 
-  downloadFile(element) {
-    window.open('http://localhost:8080/api/Upload?fileName=' + element.DocPathName + '//' + element.DocFileName)
+  downloadFile(plagResult: CorrectDoc): void {
+    this.store.dispatch(filesActions.downloadFile({ pathName: plagResult.DocPathName, fileName: plagResult.DocFileName }));
   }
 
 }

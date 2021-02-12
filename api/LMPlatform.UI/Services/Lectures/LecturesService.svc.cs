@@ -9,6 +9,8 @@ using System.Globalization;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
 using Application.Core;
+using Application.Core.Helpers;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.Services.Lectures
 {
@@ -16,6 +18,7 @@ namespace LMPlatform.UI.Services.Lectures
     using Models;
     using Modules;
 
+    [JwtAuth]
     public class LecturesService : ILecturesService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -30,28 +33,28 @@ namespace LMPlatform.UI.Services.Lectures
 
         public LecturesResult GetLectures(string subjectId)
         {
-            var id = int.Parse(subjectId);
-            var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
-            var model = SubjectManagementService.GetSubject(lecturesQuery).Lectures.Select(e => new LecturesViewData(e)).ToList();
 
-            return new LecturesResult
+            try
             {
-                Lectures = model.OrderBy(e => e.Order).ToList(),
-                Message = "Лекции успешно загружены",
-                Code = "200"
-            };
-            //try
-            //{
+                var id = int.Parse(subjectId);
+                var lecturesQuery = new Query<Subject>(e => e.Id == id).Include(e => e.Lectures);
+                var model = SubjectManagementService.GetSubject(lecturesQuery).Lectures.Select(e => new LecturesViewData(e)).ToList();
 
-            //}
-            //catch
-            //{
-            //    return new LecturesResult
-            //    {
-            //        Message = "Произошла ошибка при получении лекций",
-            //        Code = "500"
-            //    };
-            //}
+                return new LecturesResult
+                {
+                    Lectures = model.OrderBy(e => e.Order).ToList(),
+                    Message = "Лекции успешно загружены",
+                    Code = "200"
+                };
+            }
+            catch
+            {
+                return new LecturesResult
+                {
+                    Message = "Произошла ошибка при получении лекций",
+                    Code = "500"
+                };
+            }
         }
 
         public CalendarResult GetCalendar(string subjectId)
@@ -84,47 +87,46 @@ namespace LMPlatform.UI.Services.Lectures
             }
         }
 
-        public ResultViewData UpdateLecturesOrder(List<UpdateOrder> objs)
+        public ResultViewData UpdateLecturesOrder(int subjectId, int prevIndex, int curIndex)
         {
             try
             {
-                foreach(var obj in objs)
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
                 {
-                    SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                var lectures = SubjectManagementService.GetSubjectLectures(subjectId);
+                if (prevIndex < curIndex)
+                {
+                    foreach (var entry in lectures.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(lectures[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
+                    {
+                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + prevIndex);
+                    }
+                }
+                else
+                {
+                    foreach (var entry in new List<Lectures> { lectures[prevIndex] }.Concat(lectures.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
+                    {
+                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + curIndex);
+                    }
                 }
                 return new ResultViewData
                 {
-                    Message = "Лекции успешно обновлены",
-                    Code = "200"
+                    Code = "200",
+                    Message = "Лекции успешно сохранены"
                 };
             }
             catch (Exception ex)
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при обновлении лекций." + ex.Message,
-                    Code = "500"
-                };
-            }
-        }
-
-        public ResultViewData UpdateLectureOrder(UpdateOrder obj)
-        {
-            try
-            {
-                SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
-                return new ResultViewData
-                {
-                    Message = "Лекция успешно обновлена",
-                    Code = "200"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при обновлении лекции." + ex.Message,
-                    Code = "500"
+                    Code = "500",
+                    Message = ex.Message
                 };
             }
         }
@@ -133,6 +135,15 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 SubjectManagementService.SaveLectures(new Lectures
                 {
@@ -142,7 +153,7 @@ namespace LMPlatform.UI.Services.Lectures
                     Order = order,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
 
                 return new ResultViewData
                 {
@@ -164,6 +175,15 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.DeleteLection(new Lectures { Id = id });
                 return new ResultViewData
                 {
@@ -185,7 +205,16 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
-				SubjectManagementService.SaveDateLectures(subjectId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                SubjectManagementService.SaveDateLectures(subjectId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
                 return new ResultViewData
                 {
                     Message = "Дата успешно добавлена",
@@ -269,7 +298,7 @@ namespace LMPlatform.UI.Services.Lectures
 						{
 							Id = e.MarkId,
 							Mark = e.Mark,
-							LecturesScheduleVisitingId = e.LecuresVisitId,
+							LecturesScheduleVisitingId = e.LecturesVisitId,
 							StudentId = student.StudentId,
                             Comment = e.Comment
 						}).ToList());
@@ -365,5 +394,81 @@ namespace LMPlatform.UI.Services.Lectures
 				};
 			}
 		}
+
+        public LecturesMarkVisitingResult GetLecturesMarkVisitingV2(int subjectId, int groupId)
+        {
+            try
+            {
+                var groups = this.GroupManagementService.GetGroup(groupId);
+
+                var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
+
+                var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
+
+                foreach (var student in groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName))
+                {
+                    var data = new List<MarkViewData>();
+
+                    foreach (var lecturesScheduleVisiting in lecturesVisitingData)
+                    {
+                        var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
+
+                        if (lecturesVisitMark != null)
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = lecturesVisitMark.Mark,
+                                MarkId = lecturesVisitMark.Id,
+                                Comment = lecturesVisitMark.Comment
+                            });
+                        }
+                        else
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = string.Empty,
+                                MarkId = 0
+                            });
+                        }
+                    }
+
+                    lecturesVisiting.Add(new LecturesMarkVisitingViewData
+                    {
+                        StudentId = student.Id,
+                        StudentName = student.FullName,
+                        Login = student.User.UserName,
+                        Marks = data
+                    });
+                }
+
+                var dataResulet = new List<LecturesGroupsVisitingViewData>
+                {
+                    new LecturesGroupsVisitingViewData
+                    {
+                        GroupId = groupId,
+                        LecturesMarksVisiting = lecturesVisiting
+                    }
+                };
+
+                return new LecturesMarkVisitingResult
+                {
+                    GroupsVisiting = dataResulet,
+                    Message = "",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LecturesMarkVisitingResult()
+                {
+                    Message = ex.Message + "\n" + ex.StackTrace,
+                    Code = "500"
+                };
+            }
+        }
     }
 }

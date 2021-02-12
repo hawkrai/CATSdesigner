@@ -1,10 +1,34 @@
 <div class="lectures-component content" *ngIf="state$ | async as state">
-  <mat-tab-group mat-stretch-tabs animationDuration="0ms"> 
-    <mat-tab *ngFor="let tab of tabs; let idx = index" [tabindex]="idx"  [label]="tab | firstLetterUppercase">
-      <ng-template matTabContent>
-        <app-lectures-list *ngIf="idx === 0" [subjectId]="state.subjectId"  [isTeacher]="state.isTeacher"></app-lectures-list>
-        <app-visit-lectures *ngIf="idx === 1" [subjectId]="state.subjectId" [isTeacher]="state.isTeacher"> </app-visit-lectures>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+  <div class="mdc-tab-bar" role="tablist">
+    <button class="mdc-tab" role="tab" aria-selected="true" [tabindex]="idx" *ngFor="let tab of tabs; let idx = index"
+            [class.mdc-tab--active]="idx === selectedTab"
+            (click)="selectTab(idx)"
+    >
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{ tab | firstLetterUppercase }}</span>
+      </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="idx === selectedTab">
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+  </div>
+  <div class="lectures-component-body">
+    <div class="lectures-component-controls" *ngIf="selectedTab !== 0">
+      <mat-form-field>
+        <mat-select [value]="state.groups ? state.groups[0].GroupId : 0">
+          <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)" [value]="group.GroupId">
+            {{group.GroupName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="_excel-file" (click)="getExcelFile()">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
+    </div>
+    <app-lectures-list *ngIf="selectedTab === 0" [subjectId]="state.subjectId"  [isTeacher]="state.isTeacher"></app-lectures-list>
+    <app-visit-lectures *ngIf="selectedTab === 1" [subjectId]="state.subjectId" [isTeacher]="state.isTeacher" [groupId]="state.groupId"> </app-visit-lectures>
+  </div>
 </div>
+
+

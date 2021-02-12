@@ -97,6 +97,13 @@ const proxySubjectOptions = {
   }
 }
 
+const proxyStatisticOptions = { 
+  target: targetDomain, 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/subject/Statistic': 'Statistic', // rewrite path
+  }
+}
 
 
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
@@ -107,6 +114,8 @@ app.use('*/Tests/*', createProxyMiddleware(proxyTestOptions));
 app.use('*/api/*', createProxyMiddleware(proxyApigOptions));
 app.use('*/Administration/*', createProxyMiddleware(proxyAdmingOptions));
 app.use('*/subject/Subject/*', createProxyMiddleware(proxySubjectOptions));
+app.use('*/subject/Statistic/*', createProxyMiddleware(proxyStatisticOptions));
+
 
 app.get('*', (req,res) => {
   let url = req.url;

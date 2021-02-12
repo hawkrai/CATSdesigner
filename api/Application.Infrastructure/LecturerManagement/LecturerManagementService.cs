@@ -70,7 +70,7 @@ namespace Application.Infrastructure.LecturerManagement
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 
 	        var lecturers = lite ? repositoriesContainer.LecturerRepository.GetAll() 
-		        : repositoriesContainer.LecturerRepository.GetAll(new Query<Lecturer>().Include(e => e.SubjectLecturers).Include(e => e.User).Include(e => e.SecretaryGroups));
+		        : repositoriesContainer.LecturerRepository.GetAll(new Query<Lecturer>().Include(e => e.SubjectLecturers.Select(x => x.Subject)).Include(e => e.User).Include(e => e.SecretaryGroups));
 	        if (orderBy is { })
 	        {
 		        lecturers = lecturers.OrderBy(orderBy);

@@ -35,6 +35,12 @@ export class ComplexService {
     );
   }
 
+  public getConceptCascadeFoldersOnly(parentId: string): Observable<ComplexCascade[]> {
+    return this.http.get('/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' + parentId).pipe(
+      map(res => this.converterService.filterNonGroupItems(res['Concept']))
+    );
+  }
+
   public getConceptTree(parentId: string): Observable<ComplexTree> {
     return this.http.get('/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' + parentId).pipe(
       map(res => this.converterService.mapConverter(res['Concept']))
@@ -63,5 +69,10 @@ export class ComplexService {
 
   public deleteRootConcept(complex: Complex) {
     return this.http.post('/Services/Concept/ConceptService.svc/Remove', complex);
+  }
+
+  public getConcepts(): Observable<any> {
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+    return this.http.get<any>("/Tests/GetConcepts?subjectId=" + subject.id);
   }
 }

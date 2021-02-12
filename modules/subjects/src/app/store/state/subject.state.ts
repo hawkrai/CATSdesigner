@@ -2,13 +2,13 @@ import {User} from '../../models/user.model';
 import {Subject} from '../../models/subject.model';
 
 export interface ISubjectState {
-  subjectId: number;
+  selectedSubject: { id: number, color: string };
   user: User;
   subjects: Subject[]
 };
 
 export const initialSubjectState: ISubjectState = {
-  subjectId: null,
+  selectedSubject: null,
   user: null,
   subjects: []
 };

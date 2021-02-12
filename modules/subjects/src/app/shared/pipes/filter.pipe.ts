@@ -1,11 +1,11 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
-  name: 'filterSubGroup'
+  name: 'filter',
 })
 export class FilterPipe implements PipeTransform {
-  transform(values: any[], ...args: [string, number]): any {
-    return values.filter(value => value[args[0]] === args[1]);
+  transform(arr: any[], key: string, value?: any): any {
+    return value === undefined || value === null ? arr : arr.filter(item => item[key] === value);
   }
 
 }

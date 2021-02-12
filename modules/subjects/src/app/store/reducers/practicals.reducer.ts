@@ -1,15 +1,16 @@
+import { Practical } from './../../models/practical.model';
 import { createReducer, on } from '@ngrx/store';
 
-import { initialPracticalsState, IPracticalState } from '../state/practicals.state';
+import { initialPracticalsState, IPracticalsState } from '../state/practicals.state';
 import * as practicalsActions from '../actions/practicals.actions';
 
 export const practicalsReducer = createReducer(
     initialPracticalsState,
-    on(practicalsActions.loadPracticalsSuccess, (state, action): IPracticalState => ({
+    on(practicalsActions.loadPracticalsSuccess, (state, action): IPracticalsState => ({
         ...state,
         practicals: action.practicals
     })),
-    on(practicalsActions.resetPracticals, (state): IPracticalState => ({
+    on(practicalsActions.resetPracticals, (state): IPracticalsState => ({
         ...state,
         practicals: []
     }))

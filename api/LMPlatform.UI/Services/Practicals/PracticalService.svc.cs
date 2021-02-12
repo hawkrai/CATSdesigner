@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using LMPlatform.UI.Services.Modules.Practicals;
@@ -14,6 +16,7 @@ using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Services.Practicals
 {
+    [JwtAuth]
     public class PracticalService : IPracticalService
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
@@ -63,6 +66,15 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 SubjectManagementService.SavePractical(new Practical
                 {
@@ -73,7 +85,7 @@ namespace LMPlatform.UI.Services.Practicals
                     ShortName = shortName,
                     Attachments = pathFile,
                     Id = id
-                }, attachmentsModel, WebSecurity.CurrentUserId);
+                }, attachmentsModel, UserContext.CurrentUserId);
                 return new ResultViewData
                 {
                     Message = "Практическое занятие успешно сохранено",
@@ -94,6 +106,15 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.DeletePracticals(id);
                 return new ResultViewData
                 {
@@ -115,6 +136,15 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.SaveScheduleProtectionPracticalDate(new ScheduleProtectionPractical
                 {
                     GroupId = groupId,
@@ -240,30 +270,46 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public ResultViewData UpdatePracticals(List<UpdateLab> practicals)
+        public ResultViewData UpdatePracticalsOrder(int subjectId, int prevIndex, int curIndex)
         {
             try
             {
-                foreach (var practical in practicals)
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
                 {
-                    var response = Save(practical.SubjectId, practical.Id, practical.Theme, practical.Duration, practical.Order, practical.ShortName, practical.PathFile, practical.Attachments);
-                    if (response.Code == "500")
+                    return new ResultViewData
                     {
-                        throw new Exception(response.Message);
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                var practicals = SubjectManagementService.GetSubjectPracticals(subjectId);
+                if (prevIndex < curIndex)
+                {
+                    foreach (var entry in practicals.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(practicals[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
+                    {
+                        SubjectManagementService.UpdatePracticalOrder(entry.Value, entry.Index + prevIndex);
+                    }
+                }
+                else
+                {
+                    foreach (var entry in new List<Practical> { practicals[prevIndex] }.Concat(practicals.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
+                    {
+                        SubjectManagementService.UpdatePracticalOrder(entry.Value, entry.Index + curIndex);
                     }
                 }
                 return new ResultViewData
                 {
-                    Message = "Практические занятия успешно обновлены",
-                    Code = "200"
+                    Code = "200",
+                    Message = "Лекции успешно сохранены"
                 };
             }
             catch (Exception ex)
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при обновлении практических занятий." + ex.Message,
-                    Code = "500"
+                    Code = "500",
+                    Message = ex.Message
                 };
             }
         }

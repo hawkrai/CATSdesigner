@@ -2,12 +2,15 @@
 using System.Web;
 using System.Web.Http;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.DTO;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.DP
 {
+    [JwtAuth]
     public class CorrelationController : ApiController
     {
         private readonly LazyDependency<ICorrelationService> correlationService = new LazyDependency<ICorrelationService>();
@@ -21,7 +24,7 @@ namespace LMPlatform.UI.ApiControllers.DP
         public List<Correlation> Get()
         {
             var entity = HttpUtility.ParseQueryString(Request.RequestUri.Query)["entity"];
-            return CorrelationService.GetCorrelation(entity, WebSecurity.CurrentUserId);
+            return CorrelationService.GetCorrelation(entity, UserContext.CurrentUserId);
         }
     }
 }

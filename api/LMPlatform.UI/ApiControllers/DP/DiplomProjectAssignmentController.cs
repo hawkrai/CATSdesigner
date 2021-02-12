@@ -1,11 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Web.Http;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
+using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.DP
 {
+    [JwtAuth]
     public class DiplomProjectAssignmentController : ApiController
     {
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
@@ -18,12 +21,12 @@ namespace LMPlatform.UI.ApiControllers.DP
 
         public void Post([FromBody]AssignProjectUpdateModel updateModel)
         {
-            DpManagementService.AssignProject(WebSecurity.CurrentUserId, updateModel.ProjectId, updateModel.StudentId);
+            DpManagementService.AssignProject(UserContext.CurrentUserId, updateModel.ProjectId, updateModel.StudentId);
         }
 
         public void Delete(int id)
         {
-            DpManagementService.DeleteAssignment(WebSecurity.CurrentUserId, id);
+            DpManagementService.DeleteAssignment(UserContext.CurrentUserId, id);
         }
 
         public class AssignProjectUpdateModel

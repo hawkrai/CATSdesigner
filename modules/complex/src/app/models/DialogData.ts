@@ -1,3 +1,5 @@
+import { Adaptivity } from "./Adaptivity";
+
 export interface DialogData {
   width?: string;
   title?: string;  
@@ -15,4 +17,11 @@ export interface DialogData {
   isNew?: boolean;
 
   nodeId?: string;
+
+  attachments?: any[];
+
+  //Adaptive Learning
+  isAdaptive?: boolean;
+  adaptivityType?: number;
+  adaptivity?: Adaptivity; 
 }

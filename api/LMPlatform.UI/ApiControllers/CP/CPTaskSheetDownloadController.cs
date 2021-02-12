@@ -7,9 +7,11 @@ using System.Web.Http;
 using Application.Infrastructure.Export;
 using LMPlatform.Data.Infrastructure;
 using System.Data.Entity;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CPTaskSheetDownloadController : ApiController
     {
         public HttpResponseMessage Get(int courseProjectId)
@@ -42,7 +44,7 @@ namespace LMPlatform.UI.ApiControllers.CP
                                 .Where(x => x.AssignedCourseProjects.Count() == 1)
                                 .Include(x =>
                         x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
-                                .Where(x => x.AssignedCourseProjects.FirstOrDefault().Student.GroupId == groupId);
+                                .Where(x => x.AssignedCourseProjects.FirstOrDefault().Student.GroupId == groupId).ToList();
 
             string fileName = "NoTaskSheet.zip";
             if (courseProjects.Count() > 0)

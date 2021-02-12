@@ -1,11 +1,11 @@
-import { SubjectForm } from '../../models/subject-form.model';
+import { SubjectForm } from '../../models/form/subject-form.model';
 import {createAction, props} from "@ngrx/store";
 import {User} from '../../models/user.model';
 import {Subject} from '../../models/subject.model';
 
-export const setSubjectId = createAction(
+export const setSubject = createAction(
   '[Subject] Set Subject',
-  props<{ id: number }>()
+  props<{ subject: { id: number, color: string } }>()
 );
 
 export const setUser = createAction(
@@ -35,3 +35,5 @@ export const deleteSubejctById = createAction(
 export const resetSubjects = createAction(
   '[Subjects] Reset Subjects'
 );
+
+

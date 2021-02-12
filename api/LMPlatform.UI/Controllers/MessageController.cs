@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.MessageManagement;
 using Application.Infrastructure.UserManagement;
@@ -29,7 +30,7 @@ namespace LMPlatform.UI.Controllers
 
         //    msg.Attachment = attachments;
 
-        //    if (this.ModelState.IsValid && msg.FromId == WebSecurity.CurrentUserId) msg.SaveMessage();
+        //    if (this.ModelState.IsValid && msg.FromId == UserContext.CurrentUserId) msg.SaveMessage();
 
         //    return StatusCode(HttpStatusCode.OK);
         //}
@@ -37,7 +38,7 @@ namespace LMPlatform.UI.Controllers
         [HttpPost]
         public ActionResult WriteMessage(MessageViewModel msg, string itemAttachments)
         {
-            if (this.ModelState.IsValid && msg.FromId == WebSecurity.CurrentUserId)  
+            if (this.ModelState.IsValid && msg.FromId == UserContext.CurrentUserId)  
             {
                 try
                 {
@@ -62,13 +63,13 @@ namespace LMPlatform.UI.Controllers
 
         public int MessagesCount()
         {
-            var messagesCount = this.MessageManagementService.GetUnreadUserMessages(WebSecurity.CurrentUserId).Count();
+            var messagesCount = this.MessageManagementService.GetUnreadUserMessages(UserContext.CurrentUserId).Count();
             return messagesCount;
         }
 
         public JsonResult GetSelectListOptions(string term)
         {
-            var recip = this.MessageManagementService.GetRecipients(WebSecurity.CurrentUserId);
+            var recip = this.MessageManagementService.GetRecipients(UserContext.CurrentUserId);
 
             var result = recip.Where(r => r.FullName.ToLower().Contains(term.ToLower()))
                 .Select(r => new

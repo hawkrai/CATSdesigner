@@ -20,6 +20,12 @@ namespace Application.Infrastructure.GroupManagement
 					.Include(e => e.Students.Select(x => x.User)));
         }
 
+        public Group GetGroup(IQuery<Group> query = null)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.GroupsRepository.GetBy(query);
+        }
+
         public Group GetGroupWithLiteStudents(int groupId)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
@@ -78,11 +84,10 @@ namespace Application.Infrastructure.GroupManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>().AddFilterClause(g => g.Id == id));
+                var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>(e => e.Id == id));
                 repositoriesContainer.GroupsRepository.Delete(group);
                 repositoriesContainer.ApplyChanges();
             }
-            new GroupSearchMethod().DeleteIndex(id);
         }
 
 		public List<string> GetLabsScheduleVisitings(int subjectId, int groupId, int subGorupId)

@@ -18,8 +18,8 @@ export class PercentagesService {
       return this.http.post('api/CpPercentage', {Id: id, Date: date, SubjectId: subjectId, Name: name, Percentage: percentage});
     }
 
-    public deleteStage(params: any): Observable<any> {
-      return this.http.delete('api/CpPercentage', {params: new HttpParams({ fromObject: params}) });
+    public deleteStage(id: string): Observable<any> {
+      return this.http.post('api/CpPercentage/' + id, null);
     }
 
 }

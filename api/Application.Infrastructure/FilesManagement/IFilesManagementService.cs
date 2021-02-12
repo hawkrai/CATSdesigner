@@ -7,11 +7,15 @@ namespace Application.Infrastructure.FilesManagement
     {
         void DeleteFileAttachment(Attachment attachment);
 
+        void DeleteFileAttachment(string filePath, string fileName);
+
         string GetFileDisplayName(string guid);
 
         void SaveFiles(IEnumerable<Attachment> attachment, string path = "");
 
         IList<Attachment> GetAttachments(string path);
+
+        IList<Attachment> GetAttachmentsByIds(IEnumerable<int> ids);
 
         IList<Attachment> GetAttachments(string filter, int filesPerPage, int page);
 

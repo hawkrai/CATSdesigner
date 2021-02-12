@@ -65,9 +65,9 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.loader = true;
     const subject = JSON.parse(localStorage.getItem("currentSubject"));
     this.ckeConfig = {
-      allowedContent: false,
+      allowedContent: true,
       extraPlugins: "divarea",
-      forcePasteAsPlainText: true
+      forcePasteAsPlainText: false
     };
     this.initForm();
     if (this.data.event) {
@@ -111,6 +111,8 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
             takeUntil(this.unsubscribeStream$)
           ).subscribe();
       }
+      this.question.ComlexityLevel = 1;
+      this.question.ComplexityLevel = 1;
       this.formGroup = this.formBuilder.group({
         title: new FormControl("", Validators.compose([
           Validators.maxLength(255), Validators.required

@@ -1,8 +1,14 @@
+import { combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
 import {Component, OnInit} from '@angular/core';
-import {FileService} from '../../services/file.service';
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
+import { map } from 'rxjs/operators';
+
 import {IAppState} from '../../store/state/app.state';
-import {getSubjectId} from '../../store/selectors/subject.selector';
+import { AttachedFile } from 'src/app/models/file/attached-file.model';
+import * as filesActions from '../../store/actions/files.actions';
+import * as filesSelectors from '../../store/selectors/files.selectors';
+import * as subjectSelector from '../../store/selectors/subject.selector';
 
 @Component({
   selector: 'app-files',
@@ -11,31 +17,24 @@ import {getSubjectId} from '../../store/selectors/subject.selector';
 })
 export class FilesComponent implements OnInit {
 
-  public files = [];
+  state$: Observable<{ isTeacher: boolean, files: AttachedFile[] }>;
+  constructor(
+    private store: Store<IAppState>
+    ) { }
 
-  constructor(private fileService: FileService,
-              private store$: Store<IAppState>) { }
-
-  ngOnInit() {
-    this.store$.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.fileService.getSubjectFile({subjectId}).subscribe(attachments => {
-        console.log(attachments);
-        // this.attachmentsToFiles([...attachments.Lectures, ...attachments.Labs, ...attachments.Practicals])
-      })
-    });
+  ngOnInit(): void {
+    this.store.dispatch(filesActions.loadSubjectFiles());
+    this.state$ = combineLatest(
+      this.store.select(filesSelectors.getFiles),
+      this.store.select(subjectSelector.isTeacher)
+    ).pipe(map(([files, isTeacher]) => ({ files, isTeacher })));
   }
 
-  attachmentsToFiles(attachments) {
-    const values = JSON.stringify(attachments.map(a => `${a.Name}/${a.Id}/${a.PathName}/${a.FileName}`));
-
-    if (attachments.length) {
-      this.fileService.getAttachment({values, deleteValues: 'DELETE'})
-        .subscribe(files => this.files = files);
-    }
+  deleteFile(file: AttachedFile) {
+    this.store.dispatch(filesActions.deleteFile({ file }));
   }
 
-  deleteFile(file) {
-    this.fileService.deleteFile(file.DeleteUrl)
-      .subscribe(res => console.log(res));
+  downloadAsZip(): void {
+    this.store.dispatch(filesActions.downloadAsZipLoadedFiles());
   }
 }

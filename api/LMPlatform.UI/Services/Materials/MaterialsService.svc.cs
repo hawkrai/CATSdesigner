@@ -2,10 +2,12 @@
 using System.Linq;
 using Application.Core;
 using Application.Infrastructure.MaterialsManagement;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.Materials;
 
 namespace LMPlatform.UI.Services.Materials
 {
+    [JwtAuth]
     public class MaterialsService : IMaterialsService
     {
         private readonly LazyDependency<IMaterialsManagementService> _materialsManagementService = new LazyDependency<IMaterialsManagementService>();

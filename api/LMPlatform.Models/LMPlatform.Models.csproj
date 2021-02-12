@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessCode.cs" />
+    <Compile Include="AdaptiveLearningProgress.cs" />
     <Compile Include="AdaptivityLearning\AdaptivityType.cs" />
     <Compile Include="AdaptivityLearning\ConceptThema.cs" />
     <Compile Include="AdaptivityLearning\PredTestResults.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Message.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleType.cs" />
+    <Compile Include="Note.cs" />
     <Compile Include="OAuthMembership.cs" />
     <Compile Include="Practical.cs" />
     <Compile Include="Project.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="ProjectUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Role.cs" />
+    <Compile Include="ScheduleBase.cs" />
     <Compile Include="ScheduleProtectionLabMark.cs" />
     <Compile Include="ScheduleProtectionLabs.cs" />
     <Compile Include="ScheduleProtectionPractical.cs" />

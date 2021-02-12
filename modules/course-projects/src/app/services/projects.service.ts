@@ -27,7 +27,7 @@ export class ProjectsService {
     }
 
     public deleteProject(id: string): Observable<any> {
-      return this.http.delete('api/courseProject/' + id);
+      return this.http.post('api/courseProject/' + id, null);
     }
 
     public getStudents(params: string): Observable<any> {
@@ -43,7 +43,7 @@ export class ProjectsService {
     }
 
     public removeAssignment(id: string): Observable<any> {
-      return this.http.delete('api/courseProjectAssignment/' + id);
+      return this.http.post('api/courseProjectAssignment/' + id, null);
     }
 
 }

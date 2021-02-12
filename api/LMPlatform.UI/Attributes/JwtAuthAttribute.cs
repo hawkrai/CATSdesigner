@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
+using Application.Core.Helpers;
 
 namespace LMPlatform.UI.Attributes
 {
@@ -21,9 +22,11 @@ namespace LMPlatform.UI.Attributes
 
             var authCookie = httpContext.Request.Cookies["Authorization"];
 
-            if (authCookie != null)
+            var autHeader = httpContext.Request.Headers["Authorization"];
+
+            if (authCookie != null || autHeader != null)
             {
-                var token = authCookie.Value;
+                var token = authCookie != null ? authCookie.Value : autHeader.Replace("Bearer","");
 
                 try
                 {
@@ -40,6 +43,10 @@ namespace LMPlatform.UI.Attributes
                         new Claim(ClaimsIdentity.DefaultRoleClaimType, json[ClaimsIdentity.DefaultRoleClaimType]),
                         new Claim("id", json["id"])
                     };
+
+                    UserContext.Id = json["id"];
+                    UserContext.Name = json[ClaimsIdentity.DefaultNameClaimType];
+                    UserContext.Role = json[ClaimsIdentity.DefaultRoleClaimType];
 
                     httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
 

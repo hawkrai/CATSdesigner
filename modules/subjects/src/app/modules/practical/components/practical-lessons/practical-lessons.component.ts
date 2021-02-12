@@ -1,21 +1,25 @@
+import { DialogService } from './../../../../services/dialog.service';
 import { Component, Input, OnInit, OnDestroy, SimpleChanges, AfterViewChecked, ChangeDetectorRef, ViewChild } from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import {Attachment} from '../../../../models/attachment.model';
-import {DialogData} from '../../../../models/dialog-data.model';
-import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { MatTable } from '@angular/material';
+import { SubSink } from 'subsink';
+
+import * as practicalsActions from '../../../../store/actions/practicals.actions';
+import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
+import * as filesActions from '../../../../store/actions/files.actions';
+import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
 import {IAppState} from '../../../../store/state/app.state';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {PracticalLessonPopoverComponent} from '../practical-lesson-popover/practical-lesson-popover.component';
 import {Practical} from '../../../../models/practical.model';
-import { MatTable } from '@angular/material';
-
-import * as practicalsActions from '../../../../store/actions/practicals.actions';
-import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
-import { CreateEntity } from 'src/app/models/form/create-entity.model';
-import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
+import {Attachment} from '../../../../models/file/attachment.model';
+import {DialogData} from '../../../../models/dialog-data.model';
+import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
+import { attachmentConverter } from 'src/app/utils';
+import { filter } from 'rxjs/operators';
+import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
 
 @Component({
   selector: 'app-practical-lessons',
@@ -27,33 +31,21 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Practical>;
 
-  public practicalLessons: Practical[];
-  public practicalCopy: Practical[];
+  public practicals$: Observable<Practical[]>;
   private prefix = 'ПР';
+  private subs = new SubSink();
 
-  public displayedColumns: string[] = [
+  public defaultColumns = ['index', 'theme', 'shortName', 'duration'];
+  public displayedColumns: string[] = this.defaultColumns;
 
-  ];
-
-  private defaultColumns = [
-    'index',
-    'theme',
-    'shortName',
-    'duration',
-  ]
-
-  constructor(
-    public dialog: MatDialog,         
+  constructor(    
     private store: Store<IAppState>,    
     private cdRef: ChangeDetectorRef,
-    private practicalService: PracticalRestService) { }
+    private dialogService: DialogService) { }
 
   ngOnInit() {
     this.store.dispatch(practicalsActions.loadPracticals());
-    this.store.select(practicalsSelectors.getPracticals).subscribe(res => {
-      this.practicalLessons = res;
-      this.practicalCopy = [...res.map(p => ({ ...p }))];
-    });
+    this.practicals$ = this.store.select(practicalsSelectors.getPracticals);
   }
   
   ngOnChanges(changes: SimpleChanges): void {
@@ -64,40 +56,33 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   }
 
   ngOnDestroy(): void {
-    const toSave = this.practicalLessons.filter(p => {
-      const copy =  this.practicalCopy.find(pc => pc.PracticalId === p.PracticalId);
-      return p.Order !== copy.Order || p.ShortName !== copy.ShortName;
-    });
-    if (toSave.length) {
-      this.store.dispatch(practicalsActions.updatePracticals({ practicals: toSave }));
-    }
     this.store.dispatch(practicalsActions.resetPracticals());
+    this.subs.unsubscribe();
   }
 
   ngAfterViewChecked(): void {
     this.cdRef.detectChanges();
   }
 
-  refreshDate() {
-
-  }
-
-  constructorLesson(lesson?) {
-    const newLesson = this.getLesson(lesson);
+  constructorLesson(lessonsCount: number, lesson: Practical) {
+    const newLesson = this.getLesson(lessonsCount, lesson);
 
     const dialogData: DialogData = {
       title: lesson ? 'Редактирование практического занятия' : 'Добавление практического занятия',
       buttonText: 'Сохранить',
       model: newLesson
     };
-    const dialogRef = this.openDialog(dialogData, PracticalLessonPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(PracticalLessonPopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+    this.subs.add(
+      dialogRef.afterClosed().pipe(
+        filter(r => !!r)
+      )
+      .subscribe(result => {
         result.attachments = JSON.stringify(result.attachments);
-        this.store.dispatch(practicalsActions.createPractical({ practical: result as CreateEntity }));
-      }
-    });
+        this.store.dispatch(practicalsActions.savePractical({ practical: result as CreateLessonEntity }));
+      })
+    );
   }
 
   deleteLesson(lesson: Practical) {
@@ -106,67 +91,55 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       body: 'практическое занятие "' + lesson.Theme + '"',
       buttonText: 'Удалить'
     };
-    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.store.dispatch(practicalsActions.deletePractical({ id: lesson.PracticalId.toString() }));
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed()
+      .pipe(
+        filter(r => !!r)
+      )
+      .subscribe(() => {
+        this.store.dispatch(practicalsActions.deletePractical({ id: lesson.PracticalId }));
+      })
+    );
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    const prevIndex = this.practicalLessons.findIndex(l => l.PracticalId === event.item.data.PracticalId);
-    if (prevIndex === event.currentIndex) {
-      return;
+  drop(event: CdkDragDrop<Practical[]>) {
+    const prevIndex = event.container.data.findIndex(i => i.PracticalId == event.item.data.PracticalId);
+    if (prevIndex !== event.currentIndex) {
+      moveItemInArray(event.container.data, prevIndex, event.currentIndex);
+      this.store.dispatch(practicalsActions.updateOrder({ prevIndex, currentIndex: event.currentIndex }));
+      this.table.renderRows();
     }
-    this.practicalLessons[prevIndex].Order = event.currentIndex + 1;
-    this.practicalLessons[prevIndex].ShortName = `${this.prefix}${this.practicalLessons[prevIndex].Order}`;
-    this.practicalLessons[event.currentIndex].Order = prevIndex + 1;
-    this.practicalLessons[event.currentIndex].ShortName = `${this.prefix}${this.practicalLessons[event.currentIndex].Order}`;
-    moveItemInArray(this.practicalLessons, prevIndex, event.currentIndex);
-    this.table.renderRows();
   }
 
   openFilePopup(attachments: Attachment[]) {
     const dialogData: DialogData = {
       title: 'Файлы',
       buttonText: 'Скачать',
-      body: JSON.parse(JSON.stringify(attachments))
+      body: attachments.map(a => attachmentConverter(a))
     };
-    const dialogRef = this.openDialog(dialogData, FileDownloadPopoverComponent);
+    const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this._filesDownload(result)
-      }
-    });
+    this.subs.add(
+      dialogRef.afterClosed().pipe(
+        filter(r => !!r)
+      ).subscribe((result: ConvertedAttachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      })
+    );
   }
 
-  _filesDownload(attachments: any[]) {
-    attachments.forEach(attachment => {
-      if (attachment.isDownload) {
-        setTimeout(() => {
-          window.open('http://localhost:8080/api/Upload?fileName=' + attachment.pathName + '//' + attachment.fileName)
-        }, 1000)
-
-      }
-    });
-  }
-
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
-
-  private getLesson(lesson?: Practical) {
+  private getLesson(lessonsCount: number, lesson: Practical) {
+    const order = lesson ? lesson.Order : lessonsCount;
     return {
       id: lesson ? lesson.PracticalId : 0,
       theme: lesson ? lesson.Theme : '',
       duration: lesson ? lesson.Duration : '',
-      order: lesson ? lesson.Order : this.practicalLessons.length + 1,
+      order,
       pathFile: lesson ? lesson.PathFile : '',
-      attachments: lesson ? lesson.Attachments : [],
-      shortName: lesson ? lesson.ShortName : ''
+      attachments: lesson ? lesson.Attachments.map(a => attachmentConverter(a)) : [],
+      shortName: lesson ? lesson.ShortName : `${this.prefix}${order}`
     };
   }
 

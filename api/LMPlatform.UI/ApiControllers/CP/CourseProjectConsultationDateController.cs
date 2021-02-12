@@ -3,24 +3,26 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using WebMatrix.WebData;
 using Application.Infrastructure.CTO;
+using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
+    [JwtAuth]
     public class CourseProjectConsultationDateController : ApiController
     {
         public HttpResponseMessage Post([FromBody]/*DateTime consultationDate, int subject*/CourseProjectConsultationDateData consultationDate)
         {
-            PercentageService.SaveConsultationDate(WebSecurity.CurrentUserId, consultationDate.Day, consultationDate.SubjectId);
+            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.SubjectId);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        [HttpDelete]
-        public void Delete(int id)
+        public void Post(int id)
         {
-            PercentageService.DeleteConsultationDate(WebSecurity.CurrentUserId, id);
+            PercentageService.DeleteConsultationDate(UserContext.CurrentUserId, id);
         }
 
         private ICpPercentageGraphService PercentageService

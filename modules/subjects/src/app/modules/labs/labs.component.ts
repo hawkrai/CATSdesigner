@@ -1,25 +1,29 @@
+import { first } from 'rxjs/operators';
+import { DialogService } from './../../services/dialog.service';
+import { HasJobProtection } from './../../models/has-job-protection.model';
 import { Observable, combineLatest } from 'rxjs';
-import { Component, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
-import {select, Store} from '@ngrx/store';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {map} from 'rxjs/operators';
+import {Store} from '@ngrx/store';
+import { map, tap } from 'rxjs/operators';
 
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
-import * as groupSelectors from '../../store/selectors/groups.selectors';
-import * as groupActions from '../../store/actions/groups.actions';
+import * as groupsSelectors from '../../store/selectors/groups.selectors';
+import * as groupsActions from '../../store/actions/groups.actions';
 import {Group} from '../../models/group.model';
-import {DialogData} from '../../models/dialog-data.model';
 import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
+
 import * as labsActions from '../../store/actions/labs.actions';
+import * as labsSelectors from '../../store/selectors/labs.selectors';
+import { MatSlideToggleChange } from '@angular/material';
 
 interface State {
   groups: Group[];
   group: Group;
   isTeacher: boolean;
   subjectId: number;
+  hasJobProtections: HasJobProtection[]
 }
 
 @Component({
@@ -30,81 +34,80 @@ interface State {
 export class LabsComponent implements OnInit, OnDestroy {
 
   tabs = ['Лабораторные работы', 'График защиты', 'Статистика посещения', 'Результаты', 'Защита работ'];
-  tab = 0;
+  selectedTab = 0;
   public state$: Observable<State>;
   public detachedGroup = false;
 
-  public refreshJobProtection = new EventEmitter();
-
   constructor(
-    public dialog: MatDialog,
+    private dialogService: DialogService,
     private store: Store<IAppState>) {
   }
   ngOnDestroy(): void {
-    this.store.dispatch(groupActions.resetGroups());
+    this.store.dispatch(groupsActions.resetGroups());
   }
 
   ngOnInit() {
     this.state$ = combineLatest(
-      this.store.select(groupSelectors.getGroups),
-      this.store.select(groupSelectors.getCurrentGroup),
+      this.store.select(groupsSelectors.getGroups),
+      this.store.select(groupsSelectors.getCurrentGroup),
       this.store.select(subjectSelectors.isTeacher),
-      this.store.select(subjectSelectors.getSubjectId)
-      ).pipe(map(([groups, group, isTeacher, subjectId]) => ({ groups, group, isTeacher, subjectId })));
+      this.store.select(subjectSelectors.getSubjectId),
+      this.store.select(labsSelectors.HasJobProtections)
+      ).pipe(
+        map(([groups, group, isTeacher, subjectId, hasJobProtections]) => ({ groups, group, isTeacher, subjectId, hasJobProtections })),
+      );
 
-    this.loadGroup();
+  
+    this.store.select(subjectSelectors.isTeacher).pipe(
+      first()
+    ).subscribe(isTeacher => {
+      if (isTeacher) {
+        this.loadGroup();
+        this.store.dispatch(labsActions.checkJobProtections());
+      } else {
+        this.store.dispatch(groupsActions.loadStudentGroup());
+      }
+    });
+
   }
 
   loadGroup(): void {
     if (this.detachedGroup) {
-      this.store.dispatch(groupActions.loadOldGroups());
+      this.store.dispatch(groupsActions.loadOldGroups());
     } else {
-      this.store.dispatch(groupActions.loadGroups());
+      this.store.dispatch(groupsActions.loadGroups());
     }
   }
 
-  groupStatusChange(event) {
+  groupStatusChange(event: MatSlideToggleChange): void {
     this.detachedGroup = event.checked;
     this.loadGroup()
   }
 
-  _selectedGroup(event: MatOptionSelectionChange) {
+  selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
-      this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
-      this.store.dispatch(labsActions.loadLabsSchedule());
+      this.store.dispatch(groupsActions.setCurrentGroupById({ id: event.source.value }));
     }
   }
 
-  downloadAll(group: Group, subjectId: number) {
-    location.href = 'http://localhost:8080/Subject/GetZipLabs?id=' +  group.groupId + '&subjectId=' + subjectId;
+  downloadAll() {
+    this.store.dispatch(labsActions.getLabsAsZip());
   }
 
-  getExcelFile(group: Group, subjectId: number): void {
-    if (!group) {
-      return;
-    }
-    const url = 'http://localhost:8080/Statistic/';
-    if (this.tab === 2) {
-      location.href = url + 'GetVisitLabs?subjectId=' +  subjectId + '&groupId=' + group.groupId +
-        '&subGroupOneId=' + group.subGroupsOne.subGroupId + '&subGroupTwoId=' + group.subGroupsTwo.subGroupId;
-    } else if (this.tab === 3) {
-      location.href = url + 'GetLabsMarks?subjectId=' +  subjectId + '&groupId=' + group.groupId;
+  getExcelFile(): void {
+    if (this.selectedTab === 2) {
+      this.store.dispatch(labsActions.getVisitingExcel());
+    } else if (this.selectedTab === 3) {
+      this.store.dispatch(labsActions.getMarksExcel());
     }
   }
 
-  _refreshJobProtection() {
-    this.refreshJobProtection.emit(new Date());
+  refreshJobProtection() {
+    this.store.dispatch(labsActions.refreshJobProtection());
   }
 
-  checkPlagiarism(subjectId: number) {
-    const dialogData: DialogData = {
-      body: subjectId
-    };
-    this.openDialog(dialogData, CheckPlagiarismPopoverComponent);
-  }
-
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
+  checkPlagiarism() {
+    this.dialogService.openDialog(CheckPlagiarismPopoverComponent);
   }
 
 }

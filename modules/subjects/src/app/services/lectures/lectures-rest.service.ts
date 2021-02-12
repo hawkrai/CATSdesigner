@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from "rxjs/operators";
-import { ConverterService} from "../converter.service";
+
+import { CreateLectureEntity } from './../../models/form/create-lecture-entity.model';
 import {Calendar} from "../../models/calendar.model";
 import {Lecture} from "../../models/lecture.model";
-import {GroupsVisiting, LecturesMarksVisiting} from "../../models/groupsVisiting.model";
+import {GroupsVisiting, LecturesMarksVisiting} from "../../models/visiting-mark/groups-visiting.model";
 
 @Injectable({
   providedIn: 'root'
@@ -13,55 +14,64 @@ import {GroupsVisiting, LecturesMarksVisiting} from "../../models/groupsVisiting
 
 export class LecturesRestService {
 
-  constructor(private http: HttpClient,
-              private converterService: ConverterService) {}
+  constructor(private http: HttpClient) {}
 
-  public getAllLectures(subjectId: number): Observable<Lecture[]> {
+  public getLectures(subjectId: number): Observable<Lecture[]> {
     return this.http.get('Services/Lectures/LecturesService.svc/GetLectures/' + subjectId).pipe(
-      map(res => this.converterService.lecturesModelConverter(res['Lectures']))
+      map(res => res['Lectures'])
     );
   }
 
-  public createLecture(lecture: Lecture) {
+  public saveLecture(lecture: CreateLectureEntity): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/Save', lecture);
   }
 
-  public updateLecturesOrder(objs: { Id: number, Order: number }[]) {
-    return this.http.post('Services/Lectures/LecturesService.svc/UpdateLecturesOrder', { objs });
+  public updateLecturesOrder(subjectId: number, prevIndex: number, curIndex: number): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/UpdateLecturesOrder', { subjectId, prevIndex, curIndex });
   }
 
-  public deleteLecture(lecture: {id: string, subjectId: number}) {
+  public deleteLecture(lecture: { id: number, subjectId: number }): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/Delete', lecture);
   }
 
   public getCalendar(subjectId: number): Observable<Calendar[]> {
     return this.http.get('Services/Lectures/LecturesService.svc/GetCalendar/' + subjectId).pipe(
-      map(res => this.converterService.calendarModelsConverter(res['Calendar']))
+      map(res => res['Calendar'])
     );
   }
 
-  public getLecturesMarkVisiting(subjectId: number, groupId: string): Observable<GroupsVisiting[]> {
+  public getLecturesMarkVisiting(subjectId: number, groupId: number): Observable<GroupsVisiting> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
-      .set('groupId', groupId);
-    return this.http.get('Services/CoreService.svc/GetLecturesMarkVisitingV2', {params}).pipe(
-      map(res => this.converterService.groupsVisitingConverter(res['GroupsVisiting']))
+      .set('groupId', groupId.toString());
+    return this.http.get('Services/Lectures/LecturesService.svc/GetLecturesMarkVisitingV2', {params}).pipe(
+      map(res => res['GroupsVisiting'] ? res['GroupsVisiting'][0] : null)
     )
   }
 
-  public createDateVisit(body: {subjectId: string, date: string}): Observable<any> {
-    return this.http.post('Services/Lectures/LecturesService.svc/SaveDateLectures', body);
+  public createDateVisit(request: {
+    subjectId: number, date: string, startTime: string, endTime: string, building: string, audience: string
+  }): Observable<any> {
+    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLectures', request);
   }
 
-  public deleteDateVisit(body: {id: string}): Observable<any> {
-    return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDate', body);
+  public deleteDateVisit(id: number): Observable<any> {
+    return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDate', { id });
   }
 
-  public deleteAllDate(body: {dateIds: string[]}): Observable<any> {
+  public deleteAllDate(body: {dateIds: number[]}): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/DeleteVisitingDates', body);
   }
 
   public setLecturesVisitingDate(body: {lecturesMarks: LecturesMarksVisiting[]}): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/SaveMarksCalendarData', body);
+  }
+
+  public getVisitingExcel(subjectId: number, groupId: number): Observable<Blob> {
+    const params = new HttpParams()
+      .set('subjectId', subjectId.toString())
+      .set('groupId', groupId.toString());
+
+    return this.http.get('Statistic/GetVisitLecture', { params, responseType: 'blob' });
   }
 }

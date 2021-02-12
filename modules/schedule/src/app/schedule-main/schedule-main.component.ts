@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import {CalendarEvent, CalendarEventTimesChangedEvent, CalendarView} from 'angular-calendar';
 import {Lesson} from '../model/lesson.model';
 import {LessonService} from '../service/lesson.service';
-import {AddNoteComponent} from '../modal/add-note/add-note.component';
 import {Note} from '../model/note.model';
 import {NoteService} from '../service/note.service';
 import {MatDialog} from '@angular/material';
@@ -13,7 +12,7 @@ import {Message} from '../../../../../container/src/app/core/models/message';
 import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.component';
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 import {DatePipe} from '@angular/common';
-import {SelectEventTypeComponent} from '../modal/select-event-type/select-event-type.component';
+import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 
 
 const colors: any = {
@@ -59,13 +58,13 @@ export class ScheduleMainComponent implements OnInit {
               private noteService: NoteService,
               private overlay: Overlay,
               private dialog: MatDialog,
-              private datePipe: DatePipe) {}
+              private datePipe: DatePipe,
+              private modulecommunicationservice: ModuleCommunicationService) {}
 
   ngOnInit() {
-    //localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
-    console.log(this.isLoadActive);
     this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
       let i = 0;
       les.Labs.forEach(lab => {
@@ -211,12 +210,9 @@ export class ScheduleMainComponent implements OnInit {
     const message: Message = new Message();
     message.Value = this.getReferenceToSubject(title);
     message.Type = 'Route';
-    this.sendMessage(message);
+    this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
-  public sendMessage(message: Message): void {
-    window.parent.postMessage([{channel: message.Type, value: message.Value}], '*');
-  }
 
   getToolTip(title: string): any {
     const splitted = title.split('|', 8);
@@ -224,7 +220,8 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   hourClick() {
-    const dialogRef = this.dialog.open(SelectEventTypeComponent, {width: '300px', data: {userName: this.user.userName}});
+    const dialogRef = this.dialog.open(CreateLessonComponent,
+      {width: '500px', disableClose: true, data: {user: this.user}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (result.type === 'lesson') {
@@ -303,6 +300,7 @@ export class ScheduleMainComponent implements OnInit {
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
       width: '200px',
+      disableClose: true,
       height: '150px',
       data: {}
     }) ;
@@ -316,35 +314,36 @@ export class ScheduleMainComponent implements OnInit {
     });
   }
 
-  changeNote(eventToDelete: CalendarEvent) {
-    const dialogRef = this.dialog.open(AddNoteComponent, {width: '500px', data: { event: eventToDelete}, position: {top: '11%'}});
+  changeNote(eventToChange: CalendarEvent) {
+    const dialogRef = this.dialog.open(CreateLessonComponent, {width: '500px',
+      data: { note: eventToChange, user: this.user}, position: {top: '11%'}});
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
-        this.events = this.events.filter(event => event !== eventToDelete);
+      if (result.note != null) {
+        this.events = this.events.filter(event => event !== eventToChange);
         this.events.push({
-          id: result.id,
-          start: result.start,
-          end: result.end,
-          title: result.title,
+          id: result.note.id,
+          start: result.note.start,
+          end: result.note.end,
+          title: result.note.title,
           color: colors.color,
           resizable: {
             beforeStart: true,
             afterEnd: true,
           },
           draggable: true,
-          meta: eventToDelete.meta
+          meta: eventToChange.meta
         });
         this.refresh.next();
       }
     });
   }
 
-  changeEvent(eventToDelete: CalendarEvent) {
+  changeLesson(lessonChanged: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '500px', data: {userName: this.user.userName,  event: eventToDelete}});
+      {width: '500px', data: {user: this.user,  lesson: lessonChanged}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
-        this.events = this.events.filter(event => event !== eventToDelete);
+        this.events = this.events.filter(event => event !== lessonChanged);
         this.lesson = this.createLessonAll(result, 0);
         this.lessons.push(this.lesson);
         this.events.push({
@@ -358,7 +357,7 @@ export class ScheduleMainComponent implements OnInit {
             afterEnd: false,
           },
           draggable: false,
-          meta: eventToDelete.meta
+          meta: lessonChanged.meta
         });
         this.refresh.next();
       }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Application.Core;
+using Application.Core.Helpers;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.BTS;
 using LMPlatform.UI.Services.Modules.BTS;
@@ -22,9 +23,9 @@ namespace LMPlatform.UI.Services.BTS
 
         public ProjectsResult Index(int pageSize, int pageNumber, string sortingPropertyName, bool desc = false, string searchString = null)
         {
-            var projects = ProjectManagementService.GetUserProjects(WebSecurity.CurrentUserId, pageSize, pageNumber, sortingPropertyName, desc, searchString)
+            var projects = ProjectManagementService.GetUserProjects(UserContext.CurrentUserId, pageSize, pageNumber, sortingPropertyName, desc, searchString)
                 .Select(e => new ProjectViewData(e)).ToList();
-            var totalCount = ProjectManagementService.GetUserProjectsCount(WebSecurity.CurrentUserId, searchString);
+            var totalCount = ProjectManagementService.GetUserProjectsCount(UserContext.CurrentUserId, searchString);
             return new ProjectsResult
             {
                 Projects = projects,

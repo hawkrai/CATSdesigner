@@ -3,13 +3,16 @@
   position: fixed;
 
   &-header {
-    display: flex;
+    display: block;
   }
   &-complexity {
     width: 100%;
     margin-top: 10px;
   }
   &-container {
+    &-sub {
+      margin-top: 1px;
+    }
     &.mat-dialog-title {
       font-weight: 400;
     }
@@ -20,8 +23,9 @@
     width: 27%;
     font: 400 20px/32px Roboto, "Helvetica Neue", sans-serif;
     text-align: left;
+    margin: 10px 0 0;
     &-small {
-      font-size: 16px;
+      font-size: 14px;
       color: #6c6c6c;
       width: 73%;
       display: flex;

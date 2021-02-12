@@ -32,11 +32,6 @@ namespace LMPlatform.UI.Services
         [WebInvoke(UriTemplate = "/GetGroupsV3/{subjectId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
         GroupsResult GetGroupsV3(string subjectId);
 
-		//
-        [OperationContract]
-		[WebInvoke(UriTemplate = "/GetLecturesMarkVisitingV2?subjectId={subjectId}&groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-		LecturesMarkVisitingResult GetLecturesMarkVisitingV2(int subjectId, int groupId);
-
 	    [OperationContract]
 	    [WebInvoke(UriTemplate = "/GetStudentsByGroupId/{groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 	    StudentsResult GetStudentsByGroupId(string groupId);
@@ -85,5 +80,9 @@ namespace LMPlatform.UI.Services
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetLecturer/{userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		LectorResult GetLecturer(string userId);
-    }
+		[OperationContract]
+		[WebInvoke(UriTemplate = "/GetUserSubjectGroup?subjectId={subjectId}&userId={userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+		GroupResult GetUserSubjectGroup(int subjectId, int userId);
+			
+	}
 }
