@@ -233,7 +233,7 @@ namespace Application.Infrastructure.Export
             {
                 dateStart = work.DateStart.HasValue ? work.DateStart.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
                 dateEnd = work.DateEnd != null && work.DateEnd.HasValue ? work.DateEnd.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
-                lecturer = string.Format("{0}.{1}. {2}", work.Lecturer.FirstName[0], work.Lecturer.MiddleName[0], work.Lecturer.LastName); ;
+                lecturer = string.Format("{0}.{1}. {2}", work.Lecturer.FirstName[0], work.Lecturer.MiddleName[0], work.Lecturer.LastName);
             }
             else
             {
@@ -5755,7 +5755,7 @@ namespace Application.Infrastructure.Export
             {
                 foreach (var pg in pgs)
                 {
-                    percentageGraph.AppendFormat(CultureInfo.CreateSpecificCulture("ru-RU"), "{3}. {0} \t{1}% \t{2:d MMMM yyyy} г.\n", pg.Name, pg.Percentage, pg.Date, y++);
+                    percentageGraph.AppendFormat(CultureInfo.CreateSpecificCulture("ru-RU"), "{3}. {0} — {1}% — {2:d MMMM yyyy} г.\n", pg.Name, pg.Percentage, pg.Date, y++);
                 }
             }
 
