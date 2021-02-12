@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
+import {Location} from '@angular/common';
 import * as rxjs from 'rxjs';
 import {map,} from "rxjs/operators";
 
@@ -21,7 +22,8 @@ export class CoreService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private location: Location
     ) {
     this.selectedSubject = null;
   }
@@ -50,7 +52,7 @@ export class CoreService {
       }
       console.log(`New message - ${message.channel} , value - ${message.value}`);
       if (message.channel == "Route"){
-          this.router.navigateByUrl(`/${message.value}`);
+        this.router.navigateByUrl(`/${message.value}`);
       }      
       if (message.channel === 'SubjectId') {
         const currentSubject = this.getCurrentSubject();
@@ -87,6 +89,12 @@ export class CoreService {
 
   public setCurrentSubject(subject: any): void {
     localStorage.setItem("currentSubject", JSON.stringify(subject));
+  }
+
+  public isUserAssignedToSubject(subjectId: number): rxjs.Observable<boolean> {
+    return this.http.get(`Services/Subjects/SubjectsService.svc/Assigned/${subjectId}`).pipe(
+      map(response => response['IsAssigned'])
+    );
   }
 
   public removeCurrentSubject(): void {

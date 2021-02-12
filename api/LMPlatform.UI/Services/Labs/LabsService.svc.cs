@@ -26,6 +26,7 @@ using Application.Infrastructure.StudentManagement;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using WebMatrix.WebData;
+using Application.Infrastructure.LabsManagement;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -59,6 +60,10 @@ namespace LMPlatform.UI.Services.Labs
         private readonly LazyDependency<IStudentManagementService> studentManagementService = new LazyDependency<IStudentManagementService>();
 
 		public IStudentManagementService StudentManagementService => studentManagementService.Value;
+
+		private readonly LazyDependency<ILabsManagementService> labsManagementService = new LazyDependency<ILabsManagementService>();
+
+		public ILabsManagementService LabsManagementService => labsManagementService.Value;
 
 		public LabsResult GetLabs(string subjectId)
         {
@@ -371,6 +376,40 @@ namespace LMPlatform.UI.Services.Labs
                 };
             }
         }
+
+		public UserLabFilesResult GetUserLabFiles(int userId, int labId)
+        {
+			try
+			{
+
+				var labFiles = LabsManagementService.GetUserLabFiles(userId, labId);
+				var model = labFiles.Select(e => new UserlabFilesViewData
+				{
+					Comments = e.Comments,
+					Id = e.Id,
+					PathFile = e.Attachments,
+					IsReceived = e.IsReceived,
+					IsReturned = e.IsReturned,
+					LabId = e.LabId,
+					Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+					Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
+				}).ToList();
+				return new UserLabFilesResult
+				{
+					UserLabFiles = model,
+					Message = "Данные получены",
+					Code = "200"
+				};
+			}
+			catch (Exception ex)
+			{
+				return new UserLabFilesResult
+				{
+					Message = "Произошла ошибка при получении данных",
+					Code = "500"
+				};
+			}
+		}
 
 		public ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, int? labId = null, bool isCp = false, bool isRet = false)
 		{

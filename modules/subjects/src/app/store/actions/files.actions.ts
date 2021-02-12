@@ -42,7 +42,7 @@ export const deleteFile = createAction(
 
 export const deleteFileSuccess = createAction(
     '[Files] Delete File Success',
-    props<{ pathName: string, fileName: string }>()
+    props<{ guidFileName: string }>()
 );
 
 export const loadSubjectFiles = createAction(

@@ -28,7 +28,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTeacher: boolean;
   @Input() groupId: number;
 
-  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLabs[], students: StudentMark[], userId: string }>;
+  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLabs[], students: StudentMark[], userId: number }>;
 
   constructor(
     private store: Store<IAppState>,
