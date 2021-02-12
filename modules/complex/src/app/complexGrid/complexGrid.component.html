@@ -5,11 +5,12 @@
       <div class="ripple-container mat-elevation-z6" matRipple>
         <div>
           <a routerLink="/cMaterial" state={{complex.id}}>
-            <span class="material-icons mdc-list-item__graphic" aria-hidden="true">{{complex.name}}</span>
+            <div class="tooltip material-icons mdc-list-item__graphic" aria-hidden="true">{{adjustNameLength(complex.name)}}</div>
           </a>
         </div>
-        <grid-menu-icon class="bottom-menu" complexId={{complex.id}} *ngIf="isLucturer"></grid-menu-icon>
+        <grid-menu-icon class="bottom-menu" complexId={{complex.id}} *ngIf="isLucturer"></grid-menu-icon>        
       </div>
+      <span class="tooltiptext">{{complex.fullname}}</span>
     </mat-grid-tile>
   </div>
   <mat-grid-tile *ngIf="isLucturer">
