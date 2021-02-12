@@ -19,5 +19,13 @@ namespace LMPlatform.UI.Services.Documents
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFullContent?documentId={documentId}")]
         DocumentPreview GetFullContent(int documentId);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/RemoveDocument?documentId={documentId}")]
+        bool RemoveDocument(int documentId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/UpdateDocument")]
+        int UpdateDocument(DocumentPreview document);
     }
 }
