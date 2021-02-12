@@ -9,7 +9,7 @@ import { NavComponent } from './layout/nav/nav.component';
 import { FooterComponent } from './layout/footer/footer.component';
 
 import { MatetialModule } from './shared/matetial/matetial.module';
-
+import {TranslatePipe} from "./pipe/translate.pipe";
 import { CoreModule } from './core/core.module';
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 import { LayoutService } from './layout/layout.service';
@@ -37,7 +37,8 @@ import { ToastModule } from './toast';
     RegisterComponent,
     ConfirmationComponent,
     AboutComponent,
-    ResetComponent
+    ResetComponent,
+    TranslatePipe
   ],
   imports: [
     BrowserModule,
@@ -50,7 +51,8 @@ import { ToastModule } from './toast';
     ToastModule.forRoot()
   ],
   providers: [
-    LayoutService
+    LayoutService,
+    TranslatePipe
   ],
   bootstrap: [AppComponent]
 })

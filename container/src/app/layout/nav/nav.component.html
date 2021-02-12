@@ -4,7 +4,7 @@
   </a>
   <span class="example-spacer"></span>
   <div *ngIf="!isAdmin" >
-    <a mat-button [routerLink]="'/web/viewer'" >Предметы</a>
+    <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
   </div>
   <a *ngIf="isLector" mat-button [routerLink]="'/emails'" >Дипломное проектирование</a>
 
@@ -13,6 +13,14 @@
     <input matInput type="text" placeholder="Поиск">
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
+
+  <mat-select class="mselect">
+    <mat-option  value="Ru">Ru
+    </mat-option>
+    <mat-option  value="eu">En
+    </mat-option>
+  </mat-select>
+
   <div *ngIf="isLector" >
     <button  mat-icon-button  class="icon-h">
        <mat-icon [matBadge]="unconfirmedStudents"
@@ -35,7 +43,6 @@
   <button mat-icon-button  class="end icon-h">
     <img src="./../../assets/images/account.png" class="account" />
   </button>
-
   <button mat-icon-button [matMenuTriggerFor]="menu"  class="icon-h">
     <mat-icon>more_vert</mat-icon>
   </button>

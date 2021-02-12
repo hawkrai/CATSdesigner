@@ -29,6 +29,8 @@ namespace LMPlatform.Models
 
 		public ICollection<Bug> Bugs { get; set; }
 
+		public ICollection<Note> Notes { get; set; }
+
 		public ICollection<Bug> DeveloperBugs { get; set; }
 
 		public ICollection<AnswerOnTestQuestion> UserAnswersOnTestQuestions { get; set; }

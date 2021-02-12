@@ -30,7 +30,7 @@ export class EditorComponent implements OnInit {
     editorData: '',
     isReadOnly: true,
     config: {
-      placeholder: 'Type the content here!',
+      placeholder: 'Введите содержание здесь...',
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
@@ -61,9 +61,6 @@ export class EditorComponent implements OnInit {
   public currentNode: IDocumentTree = { Id: 0, Children: [], Name: '' };
   public currentDocument: DocumentPreview;
 
-  //Add new document
-  public newDocument: DocumentPreview;
-
   //Search
   public searchField = "";
 
@@ -75,7 +72,6 @@ export class EditorComponent implements OnInit {
     this.SubjectId = currentSubject ? currentSubject.id : 1;
     this.UserId = currentUser ? currentUser.id : 1;
     this.isReadOnly = currentUser ? currentUser.role != "lector" ? true : false : environment.production;
-    this.newDocument = new DocumentPreview();
     this.isEditorModelChanged = false;
     this.reloadTree();
   }
@@ -113,6 +109,19 @@ export class EditorComponent implements OnInit {
     });
   }
 
+  getParentId(data: IDocumentTree[], childNodeId: Number) : Number {
+    var res: Number = 0;
+    data.forEach(node => {
+      if (node.Children && node.Children.find(c => c.Id === childNodeId)) {
+        res = node.Id;
+      }
+      else {
+        return this.getParentId(node.Children, childNodeId);
+      }
+    });
+    return res;
+  }
+
   onActivateTreeNodeEvent(document) {
     var node = document;
     this._bookService.getContent(node.Id).subscribe(doc => {
@@ -132,8 +141,17 @@ export class EditorComponent implements OnInit {
   // DOCUMENT
   editDocument(document) {
     if(document.Children.length == 0 && document.Id != 0){
-      this.onActivateTreeNodeEvent(document);
+      this._bookService.getContent(document.Id).subscribe(doc => {
+        this.model.editorData = doc.Text.replace(doc.Name, '');
+        this.currentDocument = doc;
+      })
+      this.currentNodeHasChild = false;
       this.model.isReadOnly = false;
+      this.currentNode = document;
+      this.treeControl.expand(document);
+      if(this.treeControl.isExpanded(document)) {
+        this.isAnyNodeExpanded = true;
+      }
     }
   }
 
@@ -146,6 +164,7 @@ export class EditorComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(newDocument => {
         if(newDocument) {
+          this.currentNode.Id = newDocument.Id;
           this._bookService.saveDocument(newDocument).subscribe(res => {
             this.reloadTree();
           });
@@ -175,7 +194,7 @@ export class EditorComponent implements OnInit {
     dialogRef.afterClosed().subscribe(newDocument => {
       this._bookService.removeDocument(newDocument).subscribe(res => {
         this.currentNodeHasChild = true;
-        this.currentNode = { Id: 0, Children: [], Name: '' };
+        this.currentNode.Id = this.getParentId(this.dataSource.data, this.currentNode.Id);
         this.reloadTree();
       });
     });
@@ -197,7 +216,7 @@ export class EditorComponent implements OnInit {
     dialogRef.afterClosed().subscribe(newDocument => {
       if(newDocument) {
         if(newDocument.Id == undefined || newDocument.Id == 0) {
-          newDocument.Id == 0
+          newDocument.Id = 0;
           newDocument.Text = "";
           newDocument.UserId = this.UserId;
           newDocument.SubjectId = this.SubjectId;
@@ -213,16 +232,6 @@ export class EditorComponent implements OnInit {
 
   onEditorModelChanged() {
     this.isEditorModelChanged = true;
-  }
-
-  collapseTree() {
-    this.treeControl.collapseAll();
-    this.isAnyNodeExpanded = false;
-  }
-
-  expandTree() {
-    this.treeControl.expandAll();
-    this.isAnyNodeExpanded = true;
   }
 
   onExpandOrCollapseNode(node) {

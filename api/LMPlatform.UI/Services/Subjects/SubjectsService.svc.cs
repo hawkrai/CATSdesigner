@@ -38,7 +38,16 @@ namespace LMPlatform.UI.Services.Subjects
 
         public SubjectResult Update(SubjectViewData subject)
         {
-	        var query = new Query<Subject>(s => s.Id == subject.Id)
+            var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subject.Id);
+            if (!isUserAssigned)
+            {
+                return new SubjectResult
+                {
+                    Code = "500",
+                    Message = "Пользователь не присоединён к предмету"
+                };
+            }
+            var query = new Query<Subject>(s => s.Id == subject.Id)
 		        .Include(s => s.SubjectGroups)
 		        .Include(s => s.SubjectModules);
             var loadedSubject = SubjectManagementService.GetSubject(query);

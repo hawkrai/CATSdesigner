@@ -4,10 +4,11 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Text;
 
 namespace LMPlatform.UI.Services.Schedule
 {
+    using LMPlatform.UI.Attributes;
+    using LMPlatform.UI.Services.Modules.Notes;
     using LMPlatform.UI.Services.Modules.Schedule;
     using Modules;
     [ServiceContract]
@@ -32,6 +33,22 @@ namespace LMPlatform.UI.Services.Schedule
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetUserSchedule?dateStart={dateStart}&dateEnd={dateEnd}")]
         ScheduleViewResult GetUserSchedule(string dateStart, string dateEnd);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/SaveNote")]
+        ResultViewData SaveNote(int id, int subjectId, string text, string date, string time);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/DeleteNote")]
+        ResultViewData DeleteNote(int id);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetUserNotes")]
+        NoteViewResult GetUserNotes();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetScheduleBetweenTime?date={date}&startTime={startTime}&endTime={endTime}")]
+        ScheduleViewResult GetScheduleBetweenTime(string date, string startTime, string endTime);
 
     }
 }

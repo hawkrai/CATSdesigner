@@ -1,10 +1,12 @@
 ﻿using Application.Core;
 using Application.Core.Helpers;
 using Application.Infrastructure.Models;
+using Application.Infrastructure.NoteManagement;
 using Application.Infrastructure.ScheduleManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
+using LMPlatform.UI.Services.Modules.Notes;
 using LMPlatform.UI.Services.Modules.Schedule;
 using System;
 using System.Globalization;
@@ -18,9 +20,11 @@ namespace LMPlatform.UI.Services.Schedule
     {
         private readonly LazyDependency<IScheduleManagementService> scheduleManagementService = new LazyDependency<IScheduleManagementService>();
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
+        private readonly LazyDependency<INoteManagementService> noteManagementService = new LazyDependency<INoteManagementService>();
         public IScheduleManagementService ScheduleManagementService => scheduleManagementService.Value;
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
+        public INoteManagementService NoteManagementService => noteManagementService.Value;
 
         public ScheduleViewResult GetSchedule(string dateStart, string dateEnd)
         {
@@ -28,7 +32,7 @@ namespace LMPlatform.UI.Services.Schedule
             var dateTimeEnd = DateTime.ParseExact(dateEnd, "dd-MM-yyyy", CultureInfo.InvariantCulture);
             return new ScheduleViewResult
             {
-                Schedule = ScheduleManagementService.GetScheduleBetweenDates(dateTimeStart, dateTimeEnd).Select(x => Convert(x))
+                Schedule = ScheduleManagementService.GetScheduleBetweenDates(dateTimeStart, dateTimeEnd).Select(x => new ScheduleViewData(x))
             };
         }
 
@@ -37,7 +41,7 @@ namespace LMPlatform.UI.Services.Schedule
             var dateTime = DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture);
             return new ScheduleViewResult
             {
-                Schedule = ScheduleManagementService.GetScheduleForDate(dateTime).Select(x => Convert(x))
+                Schedule = ScheduleManagementService.GetScheduleForDate(dateTime).Select(x => new ScheduleViewData(x))
             };
         }
 
@@ -113,7 +117,7 @@ namespace LMPlatform.UI.Services.Schedule
                 {
                     return new ResultViewData
                     {
-                        Message = "Время либо место занято",
+                        Message = "Время и место занято",
                         Code = "500"
                     };
                 }
@@ -142,33 +146,92 @@ namespace LMPlatform.UI.Services.Schedule
 			}
 		}
 
-        private ScheduleViewData Convert(ScheduleModel schedule)
-        {
-            return new ScheduleViewData
-            {
-                Audience = schedule.Audience,
-                Building = schedule.Building,
-                Color = schedule.Color,
-                End = schedule.End?.ToString(@"hh\:mm"),
-                Id = schedule.Id,
-                Name = schedule.Name,
-                ShortName = schedule.ShortName,
-                Start = schedule.Start?.ToString(@"hh\:mm"),
-                Date = schedule.Date.ToString("dd/MM/yyyy"),
-                SubjectId = schedule.SubjectId,
-                Teachers = schedule.Teachers.Select(x => new LectorViewData(x.Lecturer)),
-                Type = schedule.Type,
-
-            };
-        }
-
         public ScheduleViewResult GetUserSchedule(string dateStart, string dateEnd)
         {
             var dateTimeStart = DateTime.ParseExact(dateStart, "dd-MM-yyyy", CultureInfo.InvariantCulture);
             var dateTimeEnd = DateTime.ParseExact(dateEnd, "dd-MM-yyyy", CultureInfo.InvariantCulture);
             return new ScheduleViewResult
             {
-                Schedule = ScheduleManagementService.GetUserSchedule(UserContext.CurrentUserId, dateTimeStart, dateTimeEnd).Select(x => Convert(x))
+                Schedule = ScheduleManagementService.GetUserSchedule(UserContext.CurrentUserId, dateTimeStart, dateTimeEnd).Select(x => new ScheduleViewData(x))
+            };
+        }
+
+        public ResultViewData SaveNote(int id, int subjectId, string text, string date, string time)
+        {
+            try
+            {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                var dateTime = DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var timeSpan = DateTime.ParseExact(time, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
+                NoteManagementService.SaveNote(new Models.Note
+                {
+                    Date = dateTime,
+                    Id = id,
+                    Text = text,
+                    SubjectId = subjectId,
+                    Time = timeSpan,
+                    UserId = UserContext.CurrentUserId
+                });
+                return new ResultViewData
+                {
+                    Code = "200",
+                    Message = "Заметка успешно сохранена"
+                };
+            } catch
+            {
+                return new ResultViewData
+                {
+                    Message = "Не удалось сохранить заметку",
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData DeleteNote(int id)
+        {
+            try
+            {
+                NoteManagementService.DeleteNote(id);
+                return new ResultViewData
+                {
+                    Code = "200",
+                    Message = "Заметка успешно удалена"
+                };
+            }
+            catch
+            {
+                return new ResultViewData
+                {
+                    Message = "Не удалось удалить заметку",
+                    Code = "500"
+                };
+            }
+        }
+
+        public NoteViewResult GetUserNotes()
+        {
+            return new NoteViewResult
+            {
+                Notes = NoteManagementService.GetUserNotes(UserContext.CurrentUserId).Select(x => new NoteViewData(x))
+            };
+        }
+
+        public ScheduleViewResult GetScheduleBetweenTime(string date, string startTime, string endTime)
+        {
+            var dateTime = DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+            var start = DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
+            var end = DateTime.ParseExact(endTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
+            return new ScheduleViewResult
+            {
+                Schedule = ScheduleManagementService.GetScheduleBetweenTimes(dateTime, start, end).Select(x => new ScheduleViewData(x))
             };
         }
     }

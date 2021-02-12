@@ -91,6 +91,15 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var lectures = SubjectManagementService.GetSubjectLectures(subjectId);
                 if (prevIndex < curIndex)
                 {
@@ -126,6 +135,15 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 SubjectManagementService.SaveLectures(new Lectures
                 {
@@ -157,6 +175,15 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.DeleteLection(new Lectures { Id = id });
                 return new ResultViewData
                 {
@@ -178,7 +205,16 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
-				SubjectManagementService.SaveDateLectures(subjectId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                SubjectManagementService.SaveDateLectures(subjectId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
                 return new ResultViewData
                 {
                     Message = "Дата успешно добавлена",

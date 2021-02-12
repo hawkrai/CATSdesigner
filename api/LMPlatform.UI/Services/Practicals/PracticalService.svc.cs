@@ -66,6 +66,15 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 SubjectManagementService.SavePractical(new Practical
                 {
@@ -97,6 +106,15 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.DeletePracticals(id);
                 return new ResultViewData
                 {
@@ -118,6 +136,15 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.SaveScheduleProtectionPracticalDate(new ScheduleProtectionPractical
                 {
                     GroupId = groupId,
@@ -247,6 +274,15 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var practicals = SubjectManagementService.GetSubjectPracticals(subjectId);
                 if (prevIndex < curIndex)
                 {

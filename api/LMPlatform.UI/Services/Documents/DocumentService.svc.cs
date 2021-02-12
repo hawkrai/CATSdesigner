@@ -40,10 +40,11 @@ namespace LMPlatform.UI.Services.Documents
                     var childrens = DocumentManagementService.GetByParentId(document.Id);
                     if (!childrens.Any())
                     {
-                        content.Append(document.Text);
+                        content.Append($"{document.Name}<br>{document.Text}");
                     }
                     else
                     {
+                        content.Append($"{document.Name}<br>");
                         ParseData(childrens, ref content);
                     }
                 }
@@ -68,7 +69,7 @@ namespace LMPlatform.UI.Services.Documents
 
             IEnumerable<DocumentsTree> ParseData(IEnumerable<Models.Documents> documents)
             {
-                foreach(var document in documents)
+                foreach (var document in documents)
                 {
                     yield return new DocumentsTree()
                     {
