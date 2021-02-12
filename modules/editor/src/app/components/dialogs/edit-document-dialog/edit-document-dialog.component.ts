@@ -4,6 +4,7 @@ import { DocumentPreview } from 'src/app/models/DocumentPreview';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
+import * as san from './../../../helpers/string-helper'
 
 export class DocumentErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -52,7 +53,10 @@ export class EditDocumentDialogComponent implements OnInit {
   }
 
   onModelChanged(model) {
-    this.isEnableToSave = (model.editorData.replace(/<[^>]+>/g, '').length > 0 && model.editorData.replace(/<[^>]+>/g, '').length < 256 && this.oldName != model.editorData) ? true : false;
+    this.isEnableToSave =
+     (san.helper.sanitizeHtml(model.editorData).length > 0 &&
+      san.helper.sanitizeHtml(model.editorData).length < 256 &&
+      this.oldName != model.editorData);
   }
 
   onYesClick() {
