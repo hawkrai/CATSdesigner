@@ -563,8 +563,8 @@ namespace Application.Infrastructure.CPManagement
             dp.HeadCathedra = taskSheet.HeadCathedra;
             dp.Faculty = taskSheet.Faculty;
             dp.Univer = taskSheet.Univer;
-            dp.DateStart = taskSheet.DateStart;
-            dp.DateEnd = taskSheet.DateEnd;
+            dp.DateStart = taskSheet.DateStart?.AddDays(1);
+            dp.DateEnd = taskSheet.DateEnd?.AddDays(1);
 
             Context.SaveChanges();
         }
