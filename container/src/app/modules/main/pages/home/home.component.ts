@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-//import {ModuleCommunicationService} from 'tes//t-mipe-bntu-schedule';
+import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import { Router} from '@angular/router';
 
 @Component({
@@ -9,10 +9,10 @@ import { Router} from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  //constructor(private modulecommunicationservice: ModuleCommunicationService, private router: Router) { }
+  constructor(private modulecommunicationservice: ModuleCommunicationService, private router: Router) { }
 
   ngOnInit(): void {
-    //this.modulecommunicationservice.receiveMessage1(window, this.router);
+    this.modulecommunicationservice.receiveMessage1(window, this.router);
   }
 
 }
