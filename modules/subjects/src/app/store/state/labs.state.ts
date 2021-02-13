@@ -8,8 +8,8 @@ export interface ILabsState {
   schedule: ScheduleProtectionLabs[];
   students: StudentMark[];
   studentsLabsFiles: StudentMark[],
-  userLabsFiles: UserLabFile[];
-  hasJobProtections: HasJobProtection[]
+  hasJobProtections: HasJobProtection[],
+  userLabFiles: UserLabFile[]
 }
 
 export const initialLabsState: ILabsState = {
@@ -17,6 +17,6 @@ export const initialLabsState: ILabsState = {
   schedule: [],
   students: [],
   studentsLabsFiles: [],
-  userLabsFiles: [],
+  userLabFiles: [],
   hasJobProtections: []
 };

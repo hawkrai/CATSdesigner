@@ -24,12 +24,12 @@ export const getStudentsLabsFiles = createSelector(
   state => state.studentsLabsFiles
 );
 
-export const getUserLabsFiles = createSelector(
-  labsSelector,
-  state => state.userLabsFiles
-);
-
 export const HasJobProtections = createSelector(
   labsSelector,
   state => state.hasJobProtections
+);
+
+export const selectUserLabFiles = createSelector(
+  labsSelector,
+  state => state.userLabFiles
 );

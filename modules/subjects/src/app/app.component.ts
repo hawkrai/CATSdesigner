@@ -5,7 +5,6 @@ import * as subjectActions from './store/actions/subject.actions';
 import * as catsActions from './store/actions/cats.actions';
 import {User} from './models/user.model';
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -15,7 +14,9 @@ export class AppComponent implements OnInit{
 
   title = 'lmsNew';
 
-  constructor(private store: Store<IAppState>) { }
+  constructor(
+    private store: Store<IAppState>
+    ) { }
 
   ngOnInit(): void {
     this.store.dispatch(catsActions.setupMessageCommunication());

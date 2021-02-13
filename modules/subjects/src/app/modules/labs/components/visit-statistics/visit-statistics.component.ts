@@ -29,7 +29,7 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
   @Input() groupId: number;
   private subs = new SubSink();
   
-  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], students: StudentMark[], userId: string }>;
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], students: StudentMark[], userId: number }>;
 
   constructor(
     private store: Store<IAppState>,

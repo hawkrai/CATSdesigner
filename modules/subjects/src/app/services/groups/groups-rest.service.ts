@@ -24,10 +24,10 @@ export class GroupsRestService {
     );
   }
 
-  public getUserSubjectGroup(subjectId: number, userId: string): Observable<Group> {
+  public getUserSubjectGroup(subjectId: number, userId: number): Observable<Group> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
-      .set('userId', userId);
+      .set('userId', userId.toString());
     return this.http.get('Services/CoreService.svc/GetUserSubjectGroup', { params }).pipe(
       map(res => res['Group'])
     );

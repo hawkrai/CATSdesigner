@@ -18,6 +18,10 @@ import {MarkPropertyPipe} from './components/results/mark-property.pipe/mark-pro
 import {VisitPipe} from './components/results/visit.pipe/visit.pipe';
 import {CheckPlagiarismStudentComponent} from './components/job-protection/check-plagiarism-student/check-plagiarism-student.component';
 import { VisitDateLabsPopoverComponent } from './components/protection-schedule/visit-date-labs-popover/visit-date-labs-popover.component';
+import { StudentJobProtectionComponent } from './components/job-protection/student-job-protection/student-job-protection.component';
+import { TeacherJobProtectionComponent } from './components/job-protection/teacher-job-protection/teacher-job-protection.component';
+import { JobProtectionContentComponent } from './components/job-protection/job-protection-content/job-protection-content.component';
+import { JobProtectionItemComponent } from './components/job-protection/job-protection-item/job-protection-item.component';
 
 
 @NgModule({
@@ -35,7 +39,11 @@ import { VisitDateLabsPopoverComponent } from './components/protection-schedule/
     ResultPipe,
     MarkPropertyPipe,
     VisitPipe,
-    VisitDateLabsPopoverComponent
+    VisitDateLabsPopoverComponent,
+    StudentJobProtectionComponent,
+    TeacherJobProtectionComponent,
+    JobProtectionContentComponent,
+    JobProtectionItemComponent
   ],
   entryComponents: [
     LabWorkPopoverComponent,

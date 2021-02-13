@@ -84,11 +84,20 @@ export class LabsRestService {
       map(res => res['UserLabFiles']));
   }
 
+  public getUserLabFiles(userId: number, labId: number): Observable<UserLabFile[]> {
+    const params = new HttpParams()
+    .append('userId', userId.toString())
+    .append('labId', labId.toString());
+    return this.http.get('Services/Labs/LabsService.svc/GetUserLabFiles', { params }).pipe(
+      map(res => res['UserLabFiles'])
+    );
+  }
+
   public deleteUserFile(id: number): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/DeleteUserFile', { id });
   }
 
-  public sendUserFile(body: { subjectId: number, userId: number, id: number, comments: string, pathFile: string, attachments: string, isRet: boolean, isCp: boolean }): Observable<any> {
+  public sendUserFile(body: { subjectId: number, userId: number, id: number, comments: string, pathFile: string, attachments: string, isRet: boolean, labId: number }): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/SendFile', body);
   }
 
