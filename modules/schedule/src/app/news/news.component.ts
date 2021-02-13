@@ -26,7 +26,7 @@ export class NewsComponent implements OnInit {
   ngOnInit() {
     // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.newsService.getAllNews(this.user.username).subscribe(news => {
+    this.newsService.getAllNews(this.user.userName).subscribe(news => {
       this.news = news;
       if (this.news.length > 12) {
         this.news = this.news.slice(1, 13);
