@@ -69,7 +69,6 @@ export class ComplexGridComponent implements OnInit {
         subjectId: 3
       }
       this.complexService.addRootConcept(complex).subscribe(result => {
-        debugger;
         if (result['Code'] === '200') {
           this.router.navigateByUrl('/main');
         }
@@ -91,4 +90,13 @@ export class ComplexGridComponent implements OnInit {
       console.log('The dialog was closed');
     });
   }
+
+  adjustNameLength(componentName: string): string {
+    if (componentName.length <= 9) {
+      return componentName;
+    }
+
+    return `${componentName.substring(0, 8)}...`;
+  }
+
 }
