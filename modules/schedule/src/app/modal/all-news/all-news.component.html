@@ -1,1 +1,19 @@
-<p>all-news works!</p>
+<div class="example-container">
+  <mat-dialog-content style="padding-left:5px; padding-right:0px;   margin-top: -25px;">
+    <table style="width: 100%; top: 0px">
+      <tr *ngFor="let newItem of news">
+        <div class="header">
+          <h4 style=" font-family: Roboto, Helvetica Neue, sans-serif; ">{{newItem.Title}}</h4>
+        </div>
+        <div [innerHTML]="newItem.Body" class="body"
+             style="font-family: Roboto, Helvetica Neue, sans-serif;overflow-y: auto;">
+        </div>
+        <div>
+          <h6 (click)="rerouteToSubject()"
+              style="font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;color: #777; ">{{newItem.Subject.Name}}</h6>
+        </div>
+      </tr>
+    </table>
+  </mat-dialog-content>
+</div>
+
