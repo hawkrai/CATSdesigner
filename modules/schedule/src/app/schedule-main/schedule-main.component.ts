@@ -62,6 +62,9 @@ export class ScheduleMainComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
     this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
+      console.log(les);
+    });
+    this.lessonservice.getLessons().subscribe(les => {
       let i = 0;
       if (les.Labs !== undefined) {
         les.Labs.forEach(lab => {
@@ -106,7 +109,7 @@ export class ScheduleMainComponent implements OnInit {
           meta: 'lesson'
         });
       });
-      this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
+      this.lessonservice.getSubjects().subscribe(subjects => {
         this.subjects = subjects;
         this.refresh.next();
       });

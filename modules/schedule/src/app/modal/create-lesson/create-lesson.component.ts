@@ -57,7 +57,7 @@ export class CreateLessonComponent implements OnInit {
     const format = 'dd.MM.yyyy';
     const locale = 'en-US';
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.lessonservice.getAllSubjects(this.user.username).subscribe(subjects => {
+    this.lessonservice.getSubjects().subscribe(subjects => {
       this.subjects = subjects;
       if (this.data.lesson != null) {
         this.startHour = this.data.lesson.start.getHours().toString();
