@@ -61,7 +61,7 @@ export class ScheduleMainComponent implements OnInit {
     // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
-    this.lessonservice.getAllLessons(this.user.username).subscribe(les => {
+    this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
       let i = 0;
       if (les.Labs !== undefined) {
         les.Labs.forEach(lab => {
