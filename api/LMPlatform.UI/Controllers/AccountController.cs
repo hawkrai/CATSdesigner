@@ -62,6 +62,7 @@ namespace LMPlatform.UI.Controllers
             return StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
         }
 
+        
         [HttpGet]
         public JsonResult UserSessionCheck()
         {

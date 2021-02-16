@@ -9,8 +9,29 @@
   <a *ngIf="isLector" mat-button [routerLink]="'/emails'" >Дипломное проектирование</a>
 
   <div class="flex-spacer"></div>
+<<<<<<< HEAD
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy">
     <input matInput type="text" placeholder="Поиск">
+=======
+  <!--<mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy">
+    <input matInput type="text" placeholder="Поиск">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>-->
+  
+  <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
+    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" (input)="viewSearchResults()">
+    <mat-selection-list [multiple]="false">
+      <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['profile',result.Id]">Студент  |
+        {{result.FullName}}
+      </mat-list-option>
+      <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['profile',result.Id]">Преподаватель |  
+        {{result.FullName}}
+      </mat-list-option>
+      <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['group',result.Name]">Группа  |
+        {{result.Name}}
+      </mat-list-option>
+    </mat-selection-list>
+>>>>>>> aa493100c (just test)
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
   <div *ngIf="isLector" >
