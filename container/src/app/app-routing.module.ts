@@ -10,7 +10,12 @@ import { RegisterComponent } from './register/register.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 import { AboutComponent } from './about/about.component';
 import { ResetComponent } from './reset/reset.component';
+<<<<<<< HEAD
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
+=======
+import { StatsComponent } from './searchResults/stats/stats.component';
+import { ProfileComponent } from './searchResults/profile/profile.component';
+>>>>>>> 814893677 (just test)
 
 const routes: Routes = [
   {
@@ -35,6 +40,14 @@ const routes: Routes = [
         path: 'confirmation', 
         component: ConfirmationComponent
       },
+      {
+        path: 'group/:groupName',
+        component: StatsComponent
+      },
+      {
+        path: 'profile/:id',
+        component: ProfileComponent
+      }
     ]
   },
   { path: 'login', component: LoginComponent },

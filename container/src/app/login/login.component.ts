@@ -41,7 +41,6 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-
     if (this.loginForm.invalid) {
         this.submitted = false;
         return;
@@ -51,11 +50,13 @@ export class LoginComponent implements OnInit {
     this.authenticationService.login(this.f.userName.value, this.f.password.value)
         .pipe(first())
         .subscribe(
-            data => {
-                this.router.navigate([this.returnUrl]);
+          data => {
+            this.router.navigate([this.returnUrl]);
+            
             },
-            error => {                
-                this.loading = false;
+          error => {
+              this.loading = false;
+              
             });
   }
 

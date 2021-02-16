@@ -1,7 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ContentLayoutComponent } from './layout/content-layout/content-layout.component';
@@ -23,6 +29,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { ResetComponent } from './reset/reset.component';
 import { ToastModule } from './toast';
 
+import { ProfileComponent } from './searchResults/profile/profile.component';
+import { StatsComponent } from './searchResults/stats/stats.component';
+import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-stats-subject/table-for-stats-subject.component';
+
+
 
 @NgModule({
   declarations: [
@@ -38,7 +49,13 @@ import { ToastModule } from './toast';
     ConfirmationComponent,
     AboutComponent,
     ResetComponent,
+<<<<<<< HEAD
     TranslatePipe
+=======
+    ProfileComponent,
+    StatsComponent,
+    TableForStatsSubjectComponent
+>>>>>>> 814893677 (just test)
   ],
   imports: [
     BrowserModule,
@@ -48,6 +65,12 @@ import { ToastModule } from './toast';
     MatetialModule,
     CoreModule,
     MatButtonModule,
+
+    FormsModule,
+    MatTableModule,
+    MatDialogModule,
+    MatInputModule,
+    MatSelectModule,
     ToastModule.forRoot()
   ],
   providers: [

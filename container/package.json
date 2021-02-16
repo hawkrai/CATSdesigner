@@ -22,12 +22,17 @@
     "@angular/platform-browser": "~9.1.1",
     "@angular/platform-browser-dynamic": "~9.1.1",
     "@angular/router": "~9.1.1",
+<<<<<<< HEAD
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
+=======
+    "jspdf": "^2.3.0",
+>>>>>>> 814893677 (just test)
     "ngx-post-message": "^1.5.3",
     "rxjs": "~6.5.4",
     "test-mipe-bntu-schedule": "0.0.3",
     "tslib": "^1.10.0",
+    "xlsx": "^0.16.9",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
