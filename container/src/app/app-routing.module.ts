@@ -11,6 +11,7 @@ import { ProgressControlComponent } from './progress-control/progress-control.co
 import { AboutComponent } from './about/about.component';
 import { ResetComponent } from './reset/reset.component';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 =======
 import { StatsComponent } from './searchResults/stats/stats.component';
@@ -20,6 +21,10 @@ import { ProfileComponent } from './searchResults/profile/profile.component';
 =======
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 >>>>>>> 94e193bfb (fix phone input\profile button\add image check)
+=======
+import { StatsComponent } from './searchResults/stats/stats.component';
+import { ProfileComponent } from './searchResults/profile/profile.component';
+>>>>>>> aa493100c (just test)
 
 const routes: Routes = [
   {
@@ -51,10 +56,13 @@ const routes: Routes = [
       {
         path: 'profile/:id',
         component: ProfileComponent
+<<<<<<< HEAD
       },
       {
         path: 'personalAccount',
         component: ChangePersonalDataComponent
+=======
+>>>>>>> aa493100c (just test)
       }
     ]
   },

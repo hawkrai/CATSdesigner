@@ -24,6 +24,7 @@
     "@angular/router": "~9.1.1",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
 =======
@@ -32,6 +33,9 @@
 >>>>>>> 94e193bfb (fix phone input\profile button\add image check)
     "jspdf": "^2.3.0",
 >>>>>>> 814893677 (just test)
+=======
+    "jspdf": "^2.3.0",
+>>>>>>> aa493100c (just test)
     "ngx-post-message": "^1.5.3",
     "rxjs": "~6.5.4",
     "test-mipe-bntu-schedule": "0.0.3",
