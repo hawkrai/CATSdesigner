@@ -5,9 +5,10 @@ import * as modules from './modules.json';
 
 const app = express();
 const port = 3000;
-const targetDomain = "http://host27072020.of.by";
+//const targetDomain = "http://host27072020.of.by";
+const targetDomain = "http://localhost:6478";
 
-app.use(express.static(path.resolve('/home/educatsb/apps')));
+app.use(express.static(path.resolve('/.temp/apps')));
 
 const allowedExt = [
   '.js',
@@ -105,6 +106,13 @@ const proxyStatisticOptions = {
   }
 }
 
+const proxyElasticSearchOptions = { 
+  target: targetDomain, 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/ElasticSearch': 'ElasticSearch', // rewrite path
+  },
+}
 
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
@@ -115,6 +123,7 @@ app.use('*/api/*', createProxyMiddleware(proxyApigOptions));
 app.use('*/Administration/*', createProxyMiddleware(proxyAdmingOptions));
 app.use('*/subject/Subject/*', createProxyMiddleware(proxySubjectOptions));
 app.use('*/subject/Statistic/*', createProxyMiddleware(proxyStatisticOptions));
+app.use('*/ElasticSearch/*', createProxyMiddleware(proxyElasticSearchOptions));
 
 
 app.get('*', (req,res) => {

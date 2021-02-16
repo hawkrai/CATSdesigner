@@ -14,8 +14,8 @@
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>-->
   
-  <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy">
-    <input matInput [(ngModel)]="valueForSearch" (blur)="this.cleanSearchResults()" type="text" placeholder="Поиск" (input)="viewSearchResults()">
+  <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
+    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" (input)="viewSearchResults()">
     <mat-selection-list [multiple]="false">
       <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['profile',result.Id]">Студент  |
         {{result.FullName}}
