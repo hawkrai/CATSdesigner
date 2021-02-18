@@ -1,6 +1,6 @@
-<div class="protection-schedule-component" *ngIf="student && displayColumn.length; else: load">
-    <div class="protection-schedule-component__subGroup-table">
-      <table mat-table [dataSource]="student" class="mat-elevation-z14">
+<div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
+    <div class="protection-schedule-component-table" *ngIf="state.students.length">
+      <table mat-table [dataSource]="state.students" class="mat-elevation-z14">
         <ng-container matColumnDef="position">
           <th mat-header-cell *matHeaderCellDef>№</th>
           <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
@@ -8,27 +8,36 @@
 
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Студенты</th>
-          <td mat-cell *matCellDef="let element"> {{element.StudentName}}</td>
+          <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
         </ng-container>
 
-        <ng-container *ngFor="let scheduleProtection of student; let i = index"
-                      matColumnDef="{{scheduleProtection.PracticalVisitingMarkId + scheduleProtection.Date}}"
+        <ng-container *ngFor="let scheduleProtectionPractical of state.schedule; let idx = index"
+                      [matColumnDef]="scheduleProtectionPractical.Date + scheduleProtectionPractical.ScheduleProtectionPracticalId"
         >
           <th mat-header-cell *matHeaderCellDef>
-            <div class="header-date">{{scheduleProtection.Date}}</div>
+            <div class="header-date">{{scheduleProtectionPractical.Date}}</div>
           </th>
           <td mat-cell
-              *matCellDef="let element"
-              style="text-align: center;">
-            {{element.Mark}}
-            <div *ngIf="element.Comment" class="comment">
-              <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
-            </div>
+            *matCellDef="let element"
+            class="mark-cell"
+            (dblclick)="setVisitMarks(state.students, scheduleProtectionPractical, idx)">
+            {{element.PracticalVisitingMark[idx] && element.PracticalVisitingMark[idx].Mark}}
+            <mat-icon *ngIf="element.PracticalVisitingMark[idx] && element.PracticalVisitingMark[idx].Comment && (isTeacher || (element.PracticalVisitingMark[idx].ShowForStudent && element.PracticalVisitingMark[idx].StudentId === state.userId))" class="comment-icon" [matTooltip]="element.PracticalVisitingMark[idx].Comment" matTooltipPosition="above">chat_bubble_outline</mat-icon>
           </td>
         </ng-container>
-
-        <tr mat-header-row class="date-header" *matHeaderRowDef="displayColumn"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayColumn;"></tr>
+        <ng-container *ngFor="let practicalName of getHeaders(state.practicals)" matColumnDef="{{practicalName.head}}">
+          <th 
+          [matTooltip]="practicalName.tooltip"
+          [matTooltipDisabled]="!practicalName.tooltip"
+          matTooltipPosition="above"
+          class="name" mat-header-cell *matHeaderCellDef
+              [attr.colspan]="practicalName.length">
+            {{practicalName.text}}
+          </th>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="getHeaders(state.practicals) | pluck:'head'"></tr>
+        <tr mat-header-row class="date-header" *matHeaderRowDef="getDisplayedColumns(state.schedule)"></tr>
+        <tr mat-row *matRowDef="let row; columns: getDisplayedColumns(state.schedule)"></tr>
       </table>
     </div>
 </div>

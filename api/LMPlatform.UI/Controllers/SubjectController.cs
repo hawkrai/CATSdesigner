@@ -13,6 +13,7 @@ using Application.Core.UI.Controllers;
 using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure;
 using Application.Infrastructure.FilesManagement;
+using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.SubjectManagement;
 using Ionic.Zip;
 using LMPlatform.Data.Repositories;
@@ -33,9 +34,14 @@ namespace LMPlatform.UI.Controllers
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService =
             new LazyDependency<ISubjectManagementService>();
 
-        public IFilesManagementService FilesManagementService => this.filesManagementService.Value;
+        private readonly LazyDependency<IPracticalManagementService> practicalManagementService =
+            new LazyDependency<IPracticalManagementService>();
 
-        public ISubjectManagementService SubjectManagementService => this.subjectManagementService.Value;
+        public IFilesManagementService FilesManagementService => filesManagementService.Value;
+
+        public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
+        public IPracticalManagementService PracticalManagementService => practicalManagementService.Value;
+
 
         public ActionResult GetFileSubject(string subjectId)
         {
@@ -48,7 +54,7 @@ namespace LMPlatform.UI.Controllers
                 lectures.AddRange(this.FilesManagementService.GetAttachments(att).ToList());
 
             var practicals = new List<Attachment>();
-            foreach (var att in this.SubjectManagementService.GetPracticalsAttachments(int.Parse(subjectId)))
+            foreach (var att in this.PracticalManagementService.GetPracticalsAttachments(int.Parse(subjectId)))
                 lectures.AddRange(this.FilesManagementService.GetAttachments(att).ToList());
 
             return new JsonResult
@@ -93,7 +99,7 @@ namespace LMPlatform.UI.Controllers
                 lectures.AddRange(this.FilesManagementService.GetAttachments(att).ToList());
 
             var practicals = new List<Attachment>();
-            foreach (var att in this.SubjectManagementService.GetPracticalsAttachments(int.Parse(subjectId)))
+            foreach (var att in this.PracticalManagementService.GetPracticalsAttachments(int.Parse(subjectId)))
                 lectures.AddRange(this.FilesManagementService.GetAttachments(att).ToList());
 
             return new JsonResult
@@ -147,7 +153,7 @@ namespace LMPlatform.UI.Controllers
         public ActionResult SaveSubject(SubjectEditViewModel model)
         {
             var color = model.Color;
-
+            var isNew = model.SubjectId == 0;
             if (color == "#ffffff")
             {
                 var rnd = new Random();
@@ -162,7 +168,10 @@ namespace LMPlatform.UI.Controllers
             }
 
             model.Save(UserContext.CurrentUserId, color);
-            return null;
+            return Json(new {
+                Message = isNew ? "Предмет успешно добавлен" : "Предмет успешно отредактирован",
+                Code = "200"
+            });
         }
 
         public ActionResult GetFileLectures(int id)
@@ -189,7 +198,7 @@ namespace LMPlatform.UI.Controllers
         public ActionResult GetFilePracticals(int id)
         {
             if (id == 0) return JsonResponse(new List<Attachment>());
-            var model = this.SubjectManagementService.GetPractical(id);
+            var model = PracticalManagementService.GetPractical(id);
             return JsonResponse(this.FilesManagementService.GetAttachments(model.Attachments).ToList());
         }
 

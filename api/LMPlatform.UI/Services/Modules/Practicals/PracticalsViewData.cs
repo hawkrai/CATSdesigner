@@ -5,14 +5,13 @@
 
     using Application.Core;
     using Application.Infrastructure.FilesManagement;
-    using Application.Infrastructure.SubjectManagement;
 
     using LMPlatform.Models;
+    using LMPlatform.UI.Services.Modules.Schedule;
 
     [DataContract]
     public class PracticalsViewData
     {
-        private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
 
         public IFilesManagementService FilesManagementService
@@ -20,14 +19,6 @@
             get
             {
                 return filesManagementService.Value;
-            }
-        }
-
-        public ISubjectManagementService SubjectManagementService
-        {
-            get
-            {
-                return subjectManagementService.Value;
             }
         }
 
@@ -65,10 +56,9 @@
         public string PathFile { get; set; }
 
         [DataMember]
-        public IList<Attachment> Attachments
-        {
-            get;
-            set;
-        } 
+        public IList<Attachment> Attachments { get;  set; }
+
+        [DataMember]
+        public List<ScheduleProtectionLesson> ScheduleProtectionPracticalsRecommended { get; set; }
     }
 }

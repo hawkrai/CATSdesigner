@@ -1,17 +1,18 @@
 import { LabMark } from './../../../../../models/mark/lab-mark.model';
 import {Pipe, PipeTransform} from '@angular/core';
 
-import { Lab, ScheduleProtectionLabs } from '../../../../../models/lab.model';
+import { Lab } from '../../../../../models/lab.model';
 import { StudentMark } from './../../../../../models/student-mark.model';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 
 @Pipe({
   name: 'markProperty'
 })
 export class MarkPropertyPipe implements PipeTransform {
-  transform(value: StudentMark, labId: number, labs: Lab[], schedule: ScheduleProtectionLabs[]): { mark: LabMark, recommendedMark: string } {
+  transform(value: StudentMark, labId: number, labs: Lab[], schedule: ScheduleProtectionLab[]): { mark: LabMark, recommendedMark: string } {
     const markProperty = {mark: null, recommendedMark: null};
-    const mark = value.Marks.find(mark => mark.LabId === labId);
+    const mark = value.LabsMarks.find(mark => mark.LabId === labId);
     if (mark && mark.Mark) {
       markProperty.mark = mark;
     } else {
@@ -23,7 +24,7 @@ export class MarkPropertyPipe implements PipeTransform {
         now.setHours(0, 0, 0, 0);
         if (oldDate.valueOf() === now.valueOf()) {
           const lab = labs.find(lab => lab.LabId === labId);
-          const scheduleProtectionLab = lab.ScheduleProtectionLabsRecomend.find(res =>
+          const scheduleProtectionLab = lab.ScheduleProtectionLabsRecommended.find(res =>
             res.ScheduleProtectionId === calendar.ScheduleProtectionLabId
           );
           if (scheduleProtectionLab) {
@@ -31,7 +32,7 @@ export class MarkPropertyPipe implements PipeTransform {
           }
         } else if (oldDate.valueOf() > now.valueOf()) {
           const lab = labs.find(lab => lab.LabId === labId);
-          const scheduleProtectionLab = lab.ScheduleProtectionLabsRecomend.find(res =>
+          const scheduleProtectionLab = lab.ScheduleProtectionLabsRecommended.find(res =>
             res.ScheduleProtectionId === calendar.ScheduleProtectionLabId
           );
 

@@ -1,7 +1,7 @@
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { Lab, ScheduleProtectionLabs } from "../../../../models/lab.model";
+import { Lab } from "../../../../models/lab.model";
 import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
@@ -11,6 +11,7 @@ import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import { VisitDateLabsPopoverComponent } from './visit-date-labs-popover/visit-date-labs-popover.component';
 import { DialogService } from 'src/app/services/dialog.service';
 import { map, tap } from 'rxjs/operators';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -22,9 +23,8 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy
   @Input() isTeacher: boolean;
   @Input() groupId: number;
 
-  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], subGroupsIds: number[] }>;
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], subGroupsIds: number[] }>;
   public displayedColumns: string[] = ['position', 'theme'];
-  public numberSubGroups = [1, 2];
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService) {
@@ -49,7 +49,7 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy
     )
   }
 
-  getSubGroupDisplayColumns(schedule: ScheduleProtectionLabs[]) {
+  getSubGroupDisplayColumns(schedule: ScheduleProtectionLab[]) {
     return [...this.displayedColumns, ...schedule.map(res => res.Date + res.ScheduleProtectionLabId)];
   }
 

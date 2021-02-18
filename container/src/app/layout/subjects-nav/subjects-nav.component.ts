@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
+
 import { CoreService } from "../../core/services/core.service";
 import { Subject } from "../../core/models/subject";
 import { AuthenticationService } from './../../core/services/auth.service';
@@ -10,16 +12,21 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './subjects-nav.component.html',
   styleUrls: ['./subjects-nav.component.less']
 })
-export class SubjectsNavComponent implements OnInit {
+export class SubjectsNavComponent implements OnInit, AfterViewChecked {
   opened:boolean;
   subjects: Subject[];
   public isLector:boolean = false;
 
   constructor(
     public coreService: CoreService,
-    private router: Router, 
+    private router: Router,
+    private cdref: ChangeDetectorRef,
     private autService: AuthenticationService) {}
 
+  ngAfterViewChecked() {
+    this.cdref.detectChanges();
+  }
+  
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
 

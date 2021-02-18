@@ -34,8 +34,8 @@
       </mat-slide-toggle>
     </div>
     <app-practical-lessons *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-practical-lessons>
-    <!--    <app-protection-schedule *ngIf="tab === 2 && selectedGroup" [teacher]="teacher"></app-protection-schedule>-->
-    <app-visit-statistic *ngIf="selectedTab === 1 && state.group" [isTeacher]="state.isTeacher"></app-visit-statistic>
+    <app-practical-protection-schedule *ngIf="selectedTab === 1 && selectedGroup" [groupId]="state.group.GroupId" [isTeacher]="state.isTeacher"></app-practical-protection-schedule>
+    <app-visit-statistic *ngIf="selectedTab === 2 && state.group" [groupId]="state.group.GroupId" [isTeacher]="state.isTeacher"></app-visit-statistic>
     <!--    <app-results *ngIf="tab === 4 && selectedGroup" [teacher]="teacher"></app-results>-->
     <!--    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>-->
   </ng-container>

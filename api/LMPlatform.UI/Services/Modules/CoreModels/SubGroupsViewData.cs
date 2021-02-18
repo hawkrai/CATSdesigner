@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     using LMPlatform.UI.Services.Modules.Labs;
-    using LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel;
+    using LMPlatform.UI.Services.Modules.Schedule;
 
     [DataContract]
     public class SubGroupsViewData
@@ -28,6 +28,6 @@
         public List<ScheduleProtectionLabsViewData> ScheduleProtectionLabs { get; set; }
         
         [DataMember]
-        public List<ScheduleProtectionLab> ScheduleProtectionLabsRecomendMark { get; set; }
+        public List<ScheduleProtectionLesson> ScheduleProtectionLabsRecommendedMark { get; set; }
     }
 }
