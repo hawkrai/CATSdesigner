@@ -17,6 +17,7 @@
   </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label>Комментарий</mat-label>
+    <mat-checkbox class="checkbox" matTooltip="Показать комментарий студенту" matTooltipPosition="left" class="checkbox" (change)="showForStudentChange($event.checked)" [checked]="data.showForStudent" [color]="'primary'"></mat-checkbox>
     <textarea class="commentInput" matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
     <mat-error *ngIf="commentControl.invalid">До 255 символов</mat-error>
     <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>

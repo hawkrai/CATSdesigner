@@ -14,6 +14,8 @@ namespace Application.Infrastructure.CPManagement
 
         public string Comment { get; set; }
 
+        public bool ShowForStudent { get; set; }
+
         [Required(AllowEmptyStrings = false)]
         public string LecturerName { get; set; }
     }
