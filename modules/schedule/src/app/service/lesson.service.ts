@@ -28,6 +28,33 @@ export class LessonService {
     return this.http.post<any>('/Profile/GetProfileInfoCalendar', {userLogin: username});
   }
 
+  getLessonsByDates(start: string, end: string): Observable<any> {
+    return this.http.get<any>('Services/Schedule/ScheduleService.svc/GetSchedule?dateStart=' + start + '&dateEnd=' + end);
+
+  }
+
+  saveLab(Lab: any): Observable<any>  {
+    return this.http.post<any>('Services/Labs/LabsService.svc/Save', {lab: Lab});
+  }
+
+  saveLecture(lect: any): Observable<any>  {
+    return this.http.post<any>('Services/Lectures/LecturesService.svc/Save', {lecture: lect});
+  }
+
+  deleteLab(Lab: any): Observable<any>  {
+    return this.http.post<any>('Services/Labs/LabsService.svc/Delete', {lab: Lab});
+  }
+
+  getLessonsByDateAndTimes(date: string, start: string, end: string): Observable<any> {
+    return this.http.get<any>('Services/Schedule/GetScheduleBetweenTime?date=' + date + '&startTime=' + start + '&endTime=' + end);
+
+  }
+
+
+  deleteLecture(lect: any): Observable<any>  {
+    return this.http.post<any>('Services/Lectures/LecturesService.svc/Delete', {lecture: lect});
+  }
+
   getAllSubjects(username: string ): Observable<any> {
     return this.http.post<any>('/Profile/GetProfileInfoSubjects', {userLogin: username});
   }

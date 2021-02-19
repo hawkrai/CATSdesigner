@@ -68,6 +68,23 @@
       </mwl-calendar-week-view>
     </div>
 
+    <!--div style="margin-bottom: 2px" [ngSwitch]="view">
+      <mwl-calendar-day-view
+        *ngSwitchCase="CalendarView.Day"
+        [locale]="locale"
+        [viewDate]="viewDate"
+        [events]="events"
+        [refresh]="refresh"
+        [dayStartHour]="8"
+        [dayEndHour]="24"
+        [hourSegments]="1"
+        [hourSegmentHeight]="65"
+        (eventTimesChanged)="eventTimesChanged($event)"
+        [eventTemplate]="eventTemplateCustom"
+        (hourSegmentClicked)="hourClick($event.date)"
+      >
+      </mwl-calendar-day-view>
+    </div-->
 
     <ng-template #eventTemplate let-event="event">
       <div class="cal-event-title">

@@ -61,7 +61,7 @@ export class ScheduleMainComponent implements OnInit {
     // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.isLoadActive = false;
-    this.lessonservice.getAllLessons(this.user.userName).subscribe(les => {
+    this.lessonservice.getLessons().subscribe(les => {
       let i = 0;
       if (les.Labs !== undefined) {
         les.Labs.forEach(lab => {
@@ -106,7 +106,7 @@ export class ScheduleMainComponent implements OnInit {
           meta: 'lesson'
         });
       });
-      this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
+      this.lessonservice.getSubjects().subscribe(subjects => {
         this.subjects = subjects;
         this.refresh.next();
       });
@@ -142,7 +142,6 @@ export class ScheduleMainComponent implements OnInit {
     if (lesson.memo !== undefined) {
       memo = lesson.memo.message;
     }
-
     return  lesson.startTime.split(':')[0] + ':' + minS + '-'
       +  lesson.endTime.split(':')[0] + ':' + minE
       + '|' + lesson.audience + '|' + building
@@ -191,7 +190,7 @@ export class ScheduleMainComponent implements OnInit {
 
   hourClick(dateEvent: any) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '500px', disableClose: true, data: {user: this.user, date: dateEvent}, position: {top: '1%'}});
+      {width: '600px', height: '700px', disableClose: true, data: {user: this.user, date: dateEvent}, position: {top: '1%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (result.type === 'lesson') {
@@ -202,6 +201,7 @@ export class ScheduleMainComponent implements OnInit {
           endT.setHours(+this.lesson.endTime.split(':')[0], + this.lesson.endTime.split(':')[1]);
           this.lesson = this.createLessonAll(result.lesson, 0);
           this.lessons.push(this.lesson);
+          console.log(this.calculateTitel(this.lesson));
           this.events.push({
             id: this.lesson.id,
             start: startT,
@@ -259,9 +259,8 @@ export class ScheduleMainComponent implements OnInit {
 
   createLessonAll(les: any, i: number): Lesson {
     const lesson: Lesson = new Lesson();
-    const splitted = les.title.split(' ', 3);
-    lesson.shortname = splitted[0].trim();
-    lesson.type = splitted[2].trim();
+    lesson.shortname = les.shortname;
+    lesson.type = les.type;
     lesson.color = les.color;
     lesson.date = this.lessonservice.formatDate(les.date);
     lesson.startTime = les.startTime;
@@ -293,8 +292,8 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   changeNote(eventToChange: CalendarEvent) {
-    const dialogRef = this.dialog.open(CreateLessonComponent, {width: '500px',
-      data: { note: eventToChange, user: this.user}, position: {top: '3%'}});
+    const dialogRef = this.dialog.open(CreateLessonComponent, {width: '600px', height: '700px',
+      data: { note: eventToChange, user: this.user}, position: {top: '1%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result.note != null) {
         this.events = this.events.filter(event => event !== eventToChange);
@@ -318,7 +317,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeLesson(lessonChanged: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '500px', data: {user: this.user,  lesson: lessonChanged}});
+      {width: '600px', height: '700px', data: {user: this.user,  lesson: lessonChanged}, position: {top: '1%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.lesson = this.createLessonAll(result.lesson, 0);
