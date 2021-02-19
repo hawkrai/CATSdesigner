@@ -1,7 +1,7 @@
 <!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Результаты тестов'"></app-header>-->
 <app-main-page [allowChanges]="true"
-               [text]="'В данный момент тесты проходят:'"
+               [text]="'text.test.passing.now' | translate: 'В данный момент тесты проходят:'"
                [hideSearch]="true"
                (onValueChangeSearch)="filterStudents($event)"
                [adminTests]="false"

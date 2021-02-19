@@ -2,7 +2,7 @@
   <!--<app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>-->
   <mat-tab-group class="container-table" (selectedTabChange)="onChange($event)">
-    <mat-tab label="Темы тестов">
+    <mat-tab [label]="'text.test.theme.test' | translate: 'Темы тестов'">
       <ng-container *ngIf="currentTabIndex === 0">
         <app-main-page [allowChanges]="allowChanges"
                        [inputValue]="inputValue"
@@ -13,7 +13,7 @@
                        [hideSearch]="currentTabIndex === 0"
                        [adminQuestions]="false"></app-main-page>
         <div class="container-table-tests">
-          <app-main-table-tests [title]="'Тесты для контроля знаний'"
+          <app-main-table-tests [title]="'text.tests.for.control' | translate: 'Тесты для контроля знаний'"
                                 [allowChanges]="true"
                                 [tests]="knowledgeControlTests"
                                 (onOpenEditPopup)="openDialog($event)"
@@ -22,7 +22,7 @@
                                 (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
         </div>
         <div class="container-table-tests">
-          <app-main-table-tests [title]="'Тесты для самоконтроля'"
+          <app-main-table-tests [title]="'text.tests.for.self.control' | translate: 'Тесты для самоконтроля'"
                                 [allowChanges]="true"
                                 [tests]="selfControlTests"
                                 (onOpenEditPopup)="openDialog($event)"
@@ -31,7 +31,7 @@
                                 (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
         </div>
         <div class="container-table-tests">
-          <app-main-table-tests [title]="'Предтесты для обучения в ЭУМК'"
+          <app-main-table-tests [title]="'text.tests.for.pre.eumk' | translate: 'Предтесты для обучения в ЭУМК'"
                                 [allowChanges]="true"
                                 [tests]="beforeEUMKTests"
                                 (onOpenEditPopup)="openDialog($event)"
@@ -40,7 +40,7 @@
                                 (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
         </div>
         <div class="container-table-tests">
-          <app-main-table-tests [title]="'Тесты для обучения в ЭУМК'"
+          <app-main-table-tests [title]="'text.tests.for.eumk' | translate: 'Тесты для обучения в ЭУМК'"
                                 [allowChanges]="true"
                                 [tests]="forEUMKTests"
                                 (onOpenEditPopup)="openDialog($event)"
@@ -49,7 +49,7 @@
                                 (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
         </div>
         <div class="container-table-tests">
-          <app-main-table-tests [title]="'Тесты для обучения с искусственной нейронной сетью'"
+          <app-main-table-tests [title]="'text.tests.for.nn' | translate: 'Тесты для обучения с искусственной нейронной сетью'"
                                 [allowChanges]="true"
                                 [tests]="nNTests"
                                 (onOpenEditPopup)="openDialog($event)"
@@ -59,10 +59,10 @@
         </div>
       </ng-container>
     </mat-tab>
-    <mat-tab label="Результаты тестирования">
+    <mat-tab [label]="'text.test.result.test' | translate: 'Результаты тестировния'">
       <app-result-teacher *ngIf="currentTabIndex === 1" [size]="knowledgeControlTestsSize"></app-result-teacher>
     </mat-tab>
-    <mat-tab label="Контроль прохождения тестов">
+    <mat-tab [label]="'text.test.control.compleating.test' | translate: 'Контроль прохождения тестов'">
       <app-control-completing *ngIf="currentTabIndex === 2"
                               [filterCompletingString]="filterCompletingString"></app-control-completing>
     </mat-tab>
