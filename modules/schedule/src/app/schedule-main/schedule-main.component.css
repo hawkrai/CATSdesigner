@@ -1,8 +1,15 @@
-
 h3 {
   margin: 0 0 10px;
 }
 
+.mobileNews{
+  display: none;
+}
+
+.row{
+  padding-bottom: 10px;
+}
+ 
 pre {
   background-color: #f5f5f5;
   padding: 15px;
@@ -29,4 +36,14 @@ pre {
   margin: 10% auto auto;
   height: 100%;
   width: 100%;
+}
+
+@media (max-width:768px){
+  .mobileNews{
+    display: block;
+  }
+
+  .desktopNews{
+    display: none;
+  }
 }
