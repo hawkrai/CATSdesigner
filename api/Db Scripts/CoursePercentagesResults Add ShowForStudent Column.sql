@@ -1,0 +1,5 @@
+alter table CoursePercentagesResults
+add ShowForStudent bit
+
+update CoursePercentagesResults
+set CoursePercentagesResults.ShowForStudent = 0

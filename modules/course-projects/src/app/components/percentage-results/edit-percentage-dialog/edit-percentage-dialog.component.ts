@@ -15,6 +15,7 @@ interface DialogData {
   lecturer: string;
   date: string;
   total: boolean;
+  showForStudent: boolean;
   expected: number;
 }
 
@@ -42,6 +43,10 @@ export class EditPercentageDialogComponent {
 
   onDateChange() {
     this.data.date = this.date.value;
+  }
+
+  showForStudentChange(showForStudent: boolean) {
+    this.data.showForStudent = showForStudent
   }
 
   onCancelClick(): void {

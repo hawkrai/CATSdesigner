@@ -22,7 +22,7 @@
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
           <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">
             {{result.Mark}}
-            <div class="comment" *ngIf="result && result.Comment">
+            <div class="comment" *ngIf="result && result.Comment && result.ShowForStudent">
               <mat-icon class="comment-icon" matTooltip={{result.Comment}}>chat_bubble_outline</mat-icon>
             </div>
           </td>
@@ -38,7 +38,7 @@
         </ng-container>
         <td class="mdc-data-table__cell data-cell" *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
           {{ student.Mark }}
-          <div class="comment" *ngIf="student && student.Comment">
+          <div class="comment" *ngIf="student && student.Comment && student.ShowForStudent">
             <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
           </div>
         </td>
