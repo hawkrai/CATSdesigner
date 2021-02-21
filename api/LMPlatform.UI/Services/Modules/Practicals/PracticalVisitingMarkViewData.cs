@@ -53,5 +53,8 @@ namespace LMPlatform.UI.Services.Modules.Practicals
 
         [DataMember]
         public string Date { get; set; } 
+
+        [DataMember]
+        public bool ShowForStudent { get; set; }
     }
 }

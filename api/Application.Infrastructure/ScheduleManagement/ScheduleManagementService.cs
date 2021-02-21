@@ -100,6 +100,25 @@ namespace Application.Infrastructure.ScheduleManagement
 
 		}
 
+		public void SaveDatePractical(int subjectId, int groupId, DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().Save(new ScheduleProtectionPractical
+				{
+					Date = date,
+					SubjectId = subjectId,
+					Audience = audience,
+					Building = building,
+					EndTime = endTime,
+					StartTime = startTime,
+					GroupId = groupId,
+				});
+				repositoriesContainer.ApplyChanges();
+			}
+
+		}
+
 		public void SaveScheduleProtectionLabsDate(int subjectId, int subGroupId, DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

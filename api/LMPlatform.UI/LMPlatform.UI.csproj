@@ -469,9 +469,9 @@
     <Compile Include="Services\Modules\Labs\LabsResult.cs" />
     <Compile Include="Services\Modules\Labs\LabsViewData.cs" />
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
-    <Compile Include="Services\Modules\Labs\ScheduleProtectionLab.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionLesson.cs" />
     <Compile Include="Services\Modules\Labs\ScheduleProtectionLabResult.cs" />
-    <Compile Include="Services\Modules\Labs\ScheduleProtectionLabsViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionLabsViewData.cs" />
     <Compile Include="Services\Modules\Labs\UserLabFilesResult.cs" />
     <Compile Include="Services\Modules\Labs\UserlabFilesViewData.cs" />
     <Compile Include="Services\Modules\LectorResult.cs" />
@@ -508,9 +508,10 @@
     <Compile Include="Services\Modules\Practicals\PracticalsResult.cs" />
     <Compile Include="Services\Modules\Practicals\PracticalsViewData.cs" />
     <Compile Include="Services\Modules\Practicals\PracticalVisitingMarkViewData.cs" />
-    <Compile Include="Services\Modules\Practicals\ScheduleProtectionPracticalViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionPracticalViewData.cs" />
     <Compile Include="Services\Modules\ResultViewData.cs" />
     <Compile Include="Services\Modules\Notes\NoteViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewResult.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />

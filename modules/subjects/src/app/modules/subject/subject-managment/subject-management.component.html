@@ -1,5 +1,8 @@
 <div class="subject-management" *ngIf="subject">
-  <h2 mat-dialog-title>{{ subject.Title }}</h2>
+  <h2 mat-dialog-title class="dialog-header">
+    {{ subject.Title }}
+    <mat-icon (click)="onCancel()" style="cursor: pointer;">close</mat-icon>
+  </h2>
   <div>
     <form class="example-form" #formElement>
       <mat-form-field class="example-full-width">

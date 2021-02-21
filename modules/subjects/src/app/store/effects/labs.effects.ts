@@ -12,6 +12,7 @@ import * as subjectSelectors from '../selectors/subject.selector';
 import * as filesActions from '../actions/files.actions';
 import * as catsActions from '../actions/cats.actions';
 import { iif, of } from 'rxjs';
+import { ScheduleService } from 'src/app/services/schedule.service';
 
 @Injectable()
 export class LabsEffects {
@@ -19,6 +20,7 @@ export class LabsEffects {
   constructor(
     private actions$: Actions,
     private store: Store<IAppState>,
+    private scheduleService: ScheduleService,
     private rest: LabsRestService) {
   }
 
@@ -64,14 +66,14 @@ export class LabsEffects {
   createDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ obj }, subjectId]) => this.rest.createDateVisit({ ...obj, subjectId }).pipe(
+    switchMap(([{ obj }, subjectId]) => this.scheduleService.createLabDateVisit({ ...obj, subjectId }).pipe(
       map(() => labsActions.loadLabsSchedule())
     ))
   ));
 
   deleteDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.deleteDateVisit),
-    switchMap(({ id }) => this.rest.deleteDateVisit(id).pipe(
+    switchMap(({ id }) => this.scheduleService.deleteLabDateVisit(id).pipe(
       map(() => labsActions.loadLabsSchedule())
     ))
   ));

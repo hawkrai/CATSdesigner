@@ -24,7 +24,7 @@ interface State {
 })
 export class PracticalComponent implements OnInit, OnDestroy {
 
-  tabs = ['Практические занятия', 'Статистика посещения', 'Результаты']
+  tabs = ['Практические занятия', 'График защиты', 'Статистика посещения', 'Результаты']
 
   state$: Observable<State>;
   public detachedGroup = false;
@@ -62,7 +62,6 @@ export class PracticalComponent implements OnInit, OnDestroy {
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
-      this.store.dispatch(practicalActions.loadPracticals());
     }
   }
 

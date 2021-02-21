@@ -2,35 +2,21 @@
 
 namespace LMPlatform.Models
 {
-    public class ScheduleProtectionLabMark : ModelBase
+    public class ScheduleProtectionLabMark : ScheduleProtectionMarkBase
     {
         public int ScheduleProtectionLabId { get; set; }
 
         public int StudentId { get; set; }
-
-        public string Comment { get; set; }
-
-        public string Mark { get; set; }
-
-        public bool ShowForStudent { get; set; }
-
         public Student Student { get; set; }
-        
         public ScheduleProtectionLabs ScheduleProtectionLab { get; set; }
 
-        public ScheduleProtectionLabMark()
-        {
-
-        }
+        public ScheduleProtectionLabMark() { }
 
         public ScheduleProtectionLabMark(int id, int studentId, string comment, string mark, int scheduleProtectionId, bool showForStudent)
+            :base(id, comment, mark, showForStudent)
         {
-            Id = id;
-            StudentId = studentId;
-            Comment = comment;
-            Mark = mark;
             ScheduleProtectionLabId = scheduleProtectionId;
-            ShowForStudent = showForStudent;
+            StudentId = studentId;
         }
     }
 }

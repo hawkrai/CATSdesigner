@@ -1,9 +1,9 @@
-﻿namespace LMPlatform.UI.Services.Modules.Labs
+﻿namespace LMPlatform.UI.Services.Modules.Schedule
 {
     using System.Runtime.Serialization;
 
     [DataContract]
-    public class ScheduleProtectionLab
+    public class ScheduleProtectionLesson
     {
         [DataMember]
         public int ScheduleProtectionId { get; set; }

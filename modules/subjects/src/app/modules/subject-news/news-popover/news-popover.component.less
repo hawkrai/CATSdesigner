@@ -1,4 +1,9 @@
 .subject-news-component {
+  color: #363636;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   &__news-text {
     height: 100px;
   }
@@ -10,14 +15,13 @@
 }
 
 :host ::ng-deep .ck-editor__editable_inline {
-  height: 250px;
+  min-height: 150px;
 }
 :host ::ng-deep .ck.ck-editor {
   margin-top: 7px;
 }
 .example-form {
   min-width: 150px;
-  max-width: 500px;
   overflow: hidden;
   width: 100%;
   .example-full-width {
@@ -29,6 +33,7 @@
   margin-top: 15px;
   display: flex;
   flex-flow: column;
+  align-items: flex-end;
   .example-margin {
     margin: 0 10px;
   }
@@ -38,5 +43,6 @@
   &-actions {
     justify-content: flex-end;
     align-items: flex-end;
+    margin: auto 0 0;
   }
 }

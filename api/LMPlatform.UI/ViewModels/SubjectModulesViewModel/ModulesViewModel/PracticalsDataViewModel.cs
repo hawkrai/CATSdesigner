@@ -8,16 +8,15 @@ namespace LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel
 
     using Application.Core;
     using Application.Infrastructure.FilesManagement;
-    using Application.Infrastructure.SubjectManagement;
+    using Application.Infrastructure.PracticalManagement;
 
     using LMPlatform.Models;
 
     using Newtonsoft.Json;
-    using WebMatrix.WebData;
 
     public class PracticalsDataViewModel
     {
-        private readonly LazyDependency<ISubjectManagementService> _subjectManagementService = new LazyDependency<ISubjectManagementService>();
+        private readonly LazyDependency<IPracticalManagementService> _practicalManagementService = new LazyDependency<IPracticalManagementService>();
         private readonly LazyDependency<IFilesManagementService> _filesManagementService = new LazyDependency<IFilesManagementService>();
 
         public IFilesManagementService FilesManagementService
@@ -28,11 +27,11 @@ namespace LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel
             }
         }
 
-        public ISubjectManagementService SubjectManagementService
+        public IPracticalManagementService PracticalManagementService
         {
             get
             {
-                return _subjectManagementService.Value;
+                return _practicalManagementService.Value;
             }
         }
 
@@ -109,7 +108,7 @@ namespace LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel
             Attachments = new List<Attachment>();
             if (id != 0)
             {
-                var practicals = SubjectManagementService.GetPractical(id);
+                var practicals = PracticalManagementService.GetPractical(id);
                 Order = practicals.Order;
                 Theme = practicals.Theme;
                 Duration = practicals.Duration;
@@ -130,7 +129,7 @@ namespace LMPlatform.UI.ViewModels.SubjectModulesViewModel.ModulesViewModel
         {
             var attachments = JsonConvert.DeserializeObject<List<Attachment>>(attachmentsJson).ToList();
 
-            SubjectManagementService.SavePractical(new Practical
+            PracticalManagementService.SavePractical(new Practical
             {
                 SubjectId = SubjectId,
                 Duration = Duration,
