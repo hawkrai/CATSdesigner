@@ -2,22 +2,23 @@
             [smallText]="'Доступные тесты'"></app-header>-->
 <div class="test-result__container">
   <div class="test-result__title" *ngIf="test">
-    {{"Тест на тему «" + test.Title + "» завершен"}}
+    {{'text.test.theme.finished' | translate : ("Тест на тему «" + test.Title + "» завершен") : {title: test.Title} }}
   </div>
   <div class="test-result__mark">
-  {{"Время прохождения: " + startTime + " - " + endTime}}
-</div>
+    {{'text.test.time.completing' | translate : ("Время прохождения: " + startTime + " - " + endTime) :
+    {start: startTime, end: endTime} }}
+  </div>
   <div class="test-result__mark">
-    {{"Ваша оценка - " + mark}}
+    {{'text.test.your.mark' | translate: ("Ваша оценка - " + mark) : {mark:mark} }}
   </div>
 
   <div class="test-result__backlink" (click)="navigate()">
     <mat-icon>keyboard_backspace</mat-icon>
-    {{"Вернуться к тестам"}}
+    {{'text.test.back.to.test' | translate: "Вернуться к тестам"}}
   </div>
   <div class="test-result__results">
     <div class="test-result__results-line" *ngFor="let question of result">
-      <div class="test-result__results-line-mark">{{"Вопрос №" + question.Number}}</div>
+      <div class="test-result__results-line-mark">{{'text.test.question.num' | translate : ("Вопрос №" + question.Number) : {number: question.Number} }}</div>
       <div class="test-result__results-line-color"
            [class.right]="question.Points !== 0"
            [class.fail]="question.Points === 0"
@@ -28,6 +29,6 @@
   </div>
   <div class="test-result__backlink" (click)="navigate()">
     <mat-icon>keyboard_backspace</mat-icon>
-    {{"Вернуться к тестам"}}
+    {{'text.test.back.to.test' | translate: "Вернуться к тестам"}}
   </div>
 </div>

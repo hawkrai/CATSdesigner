@@ -10,6 +10,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import moment from "moment";
 
+
 @AutoUnsubscribe
 @Component({
   selector: "app-test-result",
@@ -22,9 +23,9 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   public test: Test;
   public testId: string;
   public mark: number = 0;
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
   public endTime: string;
   public startTime: string;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,

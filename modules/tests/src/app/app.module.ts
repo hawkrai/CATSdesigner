@@ -41,7 +41,7 @@ import {ChartsModule} from "ng2-charts";
 import {CKEditorModule} from 'ckeditor4-angular';
 import {QuestionOtherTestComponent} from "./questions-page/components/question-other-test/question-other-test.component";
 import {TestResultComponent} from "./test-result/test-result.component";
-import {TranslatePipe} from "./pipe/translate.pipe";
+import {TranslatePipe} from "../../../../container/src/app/pipe/translate.pipe";
 import {AutocompleteFormComponent} from "./shared/autocomplete-form/autocomplete-form.component";
 import {SelectAutocompleteModule} from "mat-select-autocomplete";
 import {LoginComponent} from "./login/login.component";

@@ -9,13 +9,13 @@
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Название теста</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.test.name' | translate: 'Название теста'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
       </ng-container>
 
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">Оценка</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{'text.test.mark' | translate: 'Оценка'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
           {{(element.Points ? element.Points : 0) + "(" + (element.Percent ? element.Percent : 0) + "%)"}}
         </mat-cell>

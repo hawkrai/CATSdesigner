@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from "@angular/core";
-import * as dataRU from 'src/app/core/translations/translations_ru.json';
-import * as dataEN from 'src/app/core/translations/translations_en.json';
+import * as dataRU from '../core/translations/translations_ru.json';
+import * as dataEN from '../core/translations/translations_en.json';
 
 
 @Pipe({name: "translate"})
