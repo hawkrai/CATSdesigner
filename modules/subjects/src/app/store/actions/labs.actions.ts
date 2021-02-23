@@ -3,7 +3,8 @@ import { createAction, props } from '@ngrx/store';
 import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
-import {Lab, ScheduleProtectionLabs } from '../../models/lab.model';
+import {Lab } from '../../models/lab.model';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 export const loadLabs = createAction(
   '[Labs] Load Labs'
@@ -20,7 +21,7 @@ export const loadLabsSchedule = createAction(
 
 export const laodLabsScheduleSuccess = createAction(
   '[Labs] Load Labs Schedule Success',
-  props<{ scheduleProtectionLabs: ScheduleProtectionLabs[] }>()
+  props<{ scheduleProtectionLabs: ScheduleProtectionLab[] }>()
 );
 
 export const saveLab = createAction(

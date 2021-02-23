@@ -57,7 +57,7 @@ export class CreateLessonComponent implements OnInit {
     const format = 'dd.MM.yyyy';
     const locale = 'en-US';
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.lessonservice.getAllSubjects(this.user.username).subscribe(subjects => {
+    this.lessonservice.getSubjects().subscribe(subjects => {
       this.subjects = subjects;
       if (this.data.lesson != null) {
         this.startHour = this.data.lesson.start.getHours().toString();
@@ -65,7 +65,9 @@ export class CreateLessonComponent implements OnInit {
         this.endHour = this.data.lesson.end.getHours().toString();
         this.endMin  = this.data.lesson.end.getMinutes().toString();
         this.fillTimeParameters();
-        this.dayOfLesson = this.lessonservice.formatDate1(this.data.lesson.start);
+        console.log(this.data.lesson.start);
+        this.dayOfLesson = this.data.lesson.start;
+        console.log(this.dayOfLesson);
         this.startTimeOfLesson = this.startHour + ':' + this.startMin;
         this.endTimeOfLesson = this.endHour + ':' + this.endMin;
 
@@ -107,8 +109,8 @@ export class CreateLessonComponent implements OnInit {
       this.endTimeOfNote = this.endHour + ':' + this.endMin;
       this.startTimeOfLesson = this.startHour + ':' + this.startMin;
       this.endTimeOfLesson = this.endHour + ':' + this.endMin;
-      this.dayOfNote = new Date(formatDate(this.data.date, format, locale));
-      this.dayOfLesson = new Date(formatDate(this.data.date, format, locale));
+      this.dayOfNote = this.data.date;
+      this.dayOfLesson = this.data.date;
     }
     if (this.data.note != null) {
       this.startHour = this.data.note.start.getHours() + '';
@@ -127,6 +129,8 @@ export class CreateLessonComponent implements OnInit {
       this.selectedIndex = 1;
       this.disableLesson = true;
     }
+    this.formGroup.controls.dayEvent.disable();
+    this.formGroupNote.controls.dayNote.disable();
     flatpickrFactory();
   }
 
@@ -196,10 +200,11 @@ export class CreateLessonComponent implements OnInit {
   // tslint:disable-next-line:typedef
   addLesson() {
     this.subject = this.subjects.find(subject => subject.Id == this.lesson.subjectId);
-    this.lesson.title = this.subject.ShortName +
-      ' - ' + this.lessonTypes.find(type => type[0] === this.formGroup.controls.type.value)[1];
+    this.lesson.title = this.subject.ShortName;
+    this.lesson.shortname = this.subject.ShortName;
     this.lesson.color = this.subject.Color;
     this.lesson.date = this.dayOfLesson;
+    this.lesson.type = this.lessonTypes.find(type => type[0] === this.formGroup.controls.type.value)[1];
     if (this.startTimeOfLesson > this.endTimeOfLesson) {
       const temp = this.startTimeOfLesson;
       this.startTimeOfLesson = this.endTimeOfLesson;
@@ -208,8 +213,8 @@ export class CreateLessonComponent implements OnInit {
     this.lesson.startTime = this.startTimeOfLesson;
     this.lesson.endTime = this.endTimeOfLesson;
     this.lesson.memo = {message: this.memo};
-
     this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
+    console.log(this.lesson);
   }
 
   addNote() {

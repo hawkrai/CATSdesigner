@@ -1,12 +1,13 @@
 ﻿namespace LMPlatform.UI.Services.Modules.Labs
 {
-	using System.Collections.Generic;
+    using LMPlatform.UI.Services.Modules.Schedule;
+    using System.Collections.Generic;
 	using System.Runtime.Serialization;
 
 	[DataContract]
 	public class ScheduleProtectionLabResult : ResultViewData
 	{
 		[DataMember]
-		public List<ScheduleProtectionLab> ScheduleProtectionLabRecomended { get; set; } 
+		public List<ScheduleProtectionLesson> ScheduleProtectionLabRecomended { get; set; } 
 	}
 }

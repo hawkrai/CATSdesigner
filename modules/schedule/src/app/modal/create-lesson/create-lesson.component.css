@@ -28,7 +28,15 @@
 .mat-tab-label {
   font-size: .875rem;
   font-weight: 500;
-  color: #3F51B5;
 }
 
+.mat-select{
+  border: 0px;
+  height: 0px;
+  padding: 0px;
+}
+
+.mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after, .mat-input-element:disabled {
+  color: black;
+}
 

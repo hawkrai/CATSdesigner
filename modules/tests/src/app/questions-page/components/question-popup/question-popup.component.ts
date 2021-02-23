@@ -12,6 +12,7 @@ import {catchError, takeUntil, tap} from "rxjs/operators";
 import {Base64UploaderPlugin} from "../../../core/Base64Upload";
 import {FormUtils} from "../../../utils/form.utils";
 import {NavItem} from "../../../models/nav-item";
+import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -40,10 +41,10 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public charsSequence: { [key: string]: string } = {};
   public charsde: any;
   public newCase: boolean;
-  public readonly ANSWER_TYPES: any = [{id: 0, label: "С одним вариантом"},
-    {id: 1, label: "С несколькими вариантами"},
-    {id: 2, label: "Ввод с клавиатуры"},
-    {id: 3, label: "Последовательность элементов"}];
+  public readonly ANSWER_TYPES: any = [{id: 0, label: "text.test.one.variant"},
+    {id: 1, label: "text.test.many.variant"},
+    {id: 2, label: "text.test.from.keyboard"},
+    {id: 3, label: "text.test.sequence"}];
   public formGroup: FormGroup;
   public concept: any;
   public loader: boolean;
@@ -55,6 +56,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
               @Inject(MAT_DIALOG_DATA) public data: any,
               private testService: TestService,
               private snackBar: MatSnackBar,
+              private translatePipe: TranslatePipe,
               private formBuilder: FormBuilder,
               private route: ActivatedRoute,
               private cdr: ChangeDetectorRef) {
@@ -239,7 +241,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           this.question.Answers[num].IsCorrect = 1;
           this.question.Answers[0].QuestionId = 0;
         } else {
-          this.openSnackBar("Проверьте варианты ответов. Они не должны быть пустыми");
+          this.openSnackBar(this.translatePipe.transform('text.test.check.correctness',"Проверьте варианты ответов. Они не должны быть пустыми"));
           return;
         }
       } else if (this.chosenQuestionType === 1) {
@@ -289,12 +291,12 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           if (res.ErrorMessage) {
             this.openSnackBar(res.ErrorMessage);
           } else {
-            this.newCase ? this.openSnackBar("Вопрос создан") : this.openSnackBar("Вопрос изменен");
+            this.newCase ? this.openSnackBar(this.translatePipe.transform('text.test.question.created',"Вопрос создан")) : this.openSnackBar(this.translatePipe.transform('text.test.question.changed',"Вопрос изменен"));
             this.dialogRef.close(true);
           }
 
         }, error1 => {
-          this.openSnackBar("Ошибка ответа сервера");
+          this.openSnackBar(this.translatePipe.transform('text.test.internal.server.error',"Ошибка ответа сервера"));
         });
     } else {
       FormUtils.highlightInvalidControls(this.formGroup);

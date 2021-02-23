@@ -1,11 +1,16 @@
-<button style="background: white; outline: none; border-width: 0px; margin-left: 95%;" (click)="onCancelClick()">X</button>
-<mat-tab-group [selectedIndex]="selectedIndex">
+<div>
+  <h2 mat-dialog-title class="visit-date__title" style = "margin: 0px; float: left; width: 94%">Добавление события в расписание</h2>
+
+  <button style="background: white; outline: none; border-width: 0px; width: 5%;
+  color: #3F51B5; font-weight: 600; position: relative; margin-left: 1%" (click)="onCancelClick()">X</button>
+</div>
+
+<mat-tab-group [selectedIndex]="selectedIndex" style = "float: left">
   <mat-tab label="Занятие" [disabled]="disableLesson" >
     <div class="example-container" >
-      <mat-dialog-content>
         <form [formGroup]="formGroup">
           <mat-form-field>
-            <mat-select [ngModel]="lesson.subjectId" [(ngModel)]="lesson.subjectId" style="color: #383838;"
+            <mat-select [ngModel]="lesson.subjectId" [(ngModel)]="lesson.subjectId"
                         formControlName="subjectF" class="form-control" placeholder="Выберите предмет">
               <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{subject.Name}}</mat-option>
             </mat-select>
@@ -78,15 +83,14 @@
                    [(ngModel)]="memo" [ngModel]="memo"/>
           </mat-form-field>
           <p></p>
-          <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
-            <button mat-raised-button color="basic" style="margin-right: 10px;margin-left: 60%" (click)="onCancelClick()">
+          <div style="display: flex; padding-bottom: 10px; float: right">
+            <button mat-raised-button color="basic" (click)=onCancelClick()>
               Отмена
             </button>
-            <button mat-raised-button color="primary" (click)="addLesson()" [disabled]="formGroup.invalid">Сохранить
+            <button mat-raised-button color="primary" (click)="addLesson()" style = 'margin-left: 10px' [disabled]="formGroup.invalid">Сохранить
             </button>
           </div>
         </form>
-      </mat-dialog-content>
     </div>
   </mat-tab>
   <mat-tab label="Событие" [disabled]="disableNote">
@@ -124,11 +128,11 @@
                  [ngModel]="endTimeOfNote" type="time" placeholder="Конец события">
           <mat-error *ngIf="endNote.hasError( 'required')">Поле не может быть пустым</mat-error>
         </mat-form-field>
-        <div style="display: flex;margin-top: 20px; margin-bottom: 10px;">
-          <button mat-raised-button color="basic" style="margin-right: 10px;margin-left: 60%" (click)=onCancelClick()>
+        <div style="display: flex; padding-bottom: 10px; float: right">
+          <button mat-raised-button color="basic" (click)=onCancelClick()>
             Отмена
           </button>
-          <button mat-raised-button color="primary" [disabled]="formGroupNote.invalid" (click)="addNote()">Сохранить
+          <button style = 'margin-left: 10px' mat-raised-button color="primary" [disabled]="formGroupNote.invalid" (click)="addNote()">Сохранить
           </button>
         </div>
       </form>

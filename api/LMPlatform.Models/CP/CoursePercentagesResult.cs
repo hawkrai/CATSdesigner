@@ -15,6 +15,8 @@ namespace LMPlatform.Models.CP
         [StringLength(50)]
         public string Comments { get; set; }
 
+        public bool ShowForStudent { get; set; }
+
         public virtual CoursePercentagesGraph CoursePercentagesGraph { get; set; }
 
         public virtual Student Student { get; set; }

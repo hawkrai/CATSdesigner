@@ -9,19 +9,19 @@
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> Вопрос</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> {{'text.test.question' | translate: 'Вопрос'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
       </ng-container>
 
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> {{'text.test.action' | translate: 'Действие'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
           <mat-icon (click)="openEditPopup(element.Id)" color="primary" class="table-question-icon"
-                    matTooltip="Редактировать вопрос"
+                    [matTooltip]="'text.test.edit.question' | translate : 'Редактировать вопрос'"
                     matTooltipClass="example-tooltip-blue">edit
           </mat-icon>
-          <mat-icon (click)="deleteQuestion(element.Id)" color="primary" matTooltip="Удалить вопрос"
+          <mat-icon (click)="deleteQuestion(element.Id)" color="primary" [matTooltip]="'text.test.delete.question' | translate : 'Удалить вопрос'"
                     matTooltipClass="example-tooltip-blue">delete
           </mat-icon>
         </mat-cell>

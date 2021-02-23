@@ -10,6 +10,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {MatSnackBar} from "@angular/material";
+import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -42,6 +43,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
 
   constructor(private testPassingService: TestPassingService,
               private snackBar: MatSnackBar,
+              private translatePipe: TranslatePipe,
               private router: Router) {
     super();
   }
@@ -97,7 +99,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
         )
         .subscribe();
     } else {
-      this.openSnackBar("Выберите вариант ответа");
+      this.openSnackBar(this.translatePipe.transform('text.test.choose.variant',"Выберите вариант ответа"));
     }
   }
 

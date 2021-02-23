@@ -7317,7 +7317,15 @@ namespace Application.Infrastructure.Export
 
             Run run157 = new Run();
             Text text142 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text142.Text = awork is null ? "" : string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+            if (awork.Student.MiddleName is null || awork.Student.MiddleName == "")
+            {
+                text142.Text = awork is null ? "" : string.Format("{0}. {1}", awork.Student.FirstName[0], awork.Student.LastName);
+            }
+            else
+            {
+                text142.Text = awork is null ? "" : string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+            }
+            
 
             run157.Append(text142);
             ProofError proofError25 = new ProofError() { Type = ProofingErrorValues.SpellStart };

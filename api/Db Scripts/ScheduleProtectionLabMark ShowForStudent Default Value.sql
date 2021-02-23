@@ -1,0 +1,3 @@
+use LMPlatform
+update ScheduleProtectionLabMarks
+set ScheduleProtectionLabMarks.ShowForStudent = 0

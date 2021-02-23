@@ -8,7 +8,7 @@ export class VisitPipe implements PipeTransform {
   transform(value: any, ...args: [string, Lab[]]): any {
     const lab = args[1].find(res => res.LabId.toString() === args[0].toString() && res.SubGroup === value.SubGroup);
     const scheduleIds = [];
-    lab.ScheduleProtectionLabsRecomend.forEach(schedule => {
+    lab.ScheduleProtectionLabsRecommended.forEach(schedule => {
       if (schedule.Mark === '10') {
         scheduleIds.push(schedule.ScheduleProtectionId.toString());
       }

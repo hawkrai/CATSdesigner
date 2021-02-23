@@ -3,35 +3,34 @@
     <div class="main-page-container-buttons" *ngIf="allowChanges">
       <div class="main-page-container-buttons-item" *ngIf="adminTests">
         <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'add'"
-                (click)="onOpenAddingPopup()">Добавить тест
+                (click)="onOpenAddingPopup()">{{'text.test.add.test' | translate : 'Добавить тест'}}
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminTests">
         <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'"
-                (click)="onOpenAddingPopup()">Ресурсы
+                (click)="onOpenAddingPopup()">{{'text.test.resources' | translate : 'Ресурсы'}}
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
         <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'add'"
-        (click)="onAddNewQuestion()">Добавить вопрос
+                (click)="onAddNewQuestion()">{{'text.test.add.questions' | translate : 'Добавить вопрос'}}
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
         <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'other-test'"
-        (click)="addQuestionFromOtherTest()">Добавить вопрос из
-          другого теста
+                (click)="addQuestionFromOtherTest()">{{'text.test.add.from.other.test' | translate : 'Добавить вопрос из другого теста'}}
         </button>
       </div>
       <div class="main-page-container-buttons-item" *ngIf="forNN">
-        <button (click)="createNeuralNetwork()" mat-raised-button class="main-page-container-buttons-item" [ngClass]="'neural'">Создание нейронной
-          сети
+        <button (click)="createNeuralNetwork()" mat-raised-button class="main-page-container-buttons-item"
+                [ngClass]="'neural'">{{'text.test.create.nn' | translate : 'Создание нейронной сети'}}
         </button>
       </div>
       <div *ngIf="groupDropdown && groups">
         <mat-form-field>
-          <mat-label>Выберите группу</mat-label>
+          <mat-label>{{'text.test.choose.group' | translate : 'Выберите группу'}}</mat-label>
           <mat-select [value]="groups[0].Id" (selectionChange)="onGroupValueChange($event)">
-            <mat-option *ngFor="let group of groups" [value]="group.Id" >
+            <mat-option *ngFor="let group of groups" [value]="group.Id">
               {{group.Name}}
             </mat-option>
           </mat-select>
@@ -45,9 +44,9 @@
     </div>
   </div>
   <div class="main-page-container-search-wrapper" *ngIf="!hideSearch">
-      <mat-form-field class="main-page-container-search-wrapper-field" appearance="outline">
-        <mat-label>Поиск</mat-label>
-        <input matInput placeholder="Введите название теста" [(ngModel)]="inputValue" (change)="onValueChange($event)">
-      </mat-form-field>
+    <mat-form-field class="main-page-container-search-wrapper-field" appearance="outline">
+      <mat-label>{{'text.test.search' | translate : 'Поиск'}}</mat-label>
+      <input matInput [placeholder]="'text.test.enter.test.name' | translate : 'Введите название теста'" [(ngModel)]="inputValue" (change)="onValueChange($event)">
+    </mat-form-field>
   </div>
 </div>

@@ -9,6 +9,7 @@ import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {TestPassingService} from "../../service/test-passing.service";
+import {TranslatePipe} from "../../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -42,9 +43,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public barChartType: ChartType = "bar";
   public barChartLegend = true;
   public barChartPlugins = [pluginDataLabels];
-  public barChartData: ChartDataSets[] = [
-    {data: [], label: "Оценка"}
-  ];
+  public barChartData: ChartDataSets[];
   public showChart: boolean = false;
   @Input()
   public tests: any;
@@ -70,11 +69,15 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialog: MatDialog,
+              private translatePipe: TranslatePipe,
               private testPassingService: TestPassingService) {
     super();
   }
 
   ngOnInit() {
+    this.barChartData = [
+      {data: [], label: this.translatePipe.transform("text.test.mark", "Оценка")}
+    ];
     for (let i = 0; i < 3; i++) {
       this.scareThing.push(Array.from(this.tests[i].entries()));
     }

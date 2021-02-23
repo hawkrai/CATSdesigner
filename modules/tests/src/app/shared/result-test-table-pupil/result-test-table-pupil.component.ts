@@ -3,6 +3,7 @@ import {Test} from "../../models/test.model";
 import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
 import {Label} from "ng2-charts";
 import * as pluginDataLabels from "chartjs-plugin-datalabels";
+import {TranslatePipe} from "../../../../../../container/src/app/pipe/translate.pipe";
 
 
 @Component({
@@ -41,12 +42,17 @@ export class ResultTestTablePupilComponent implements OnChanges {
   public barChartType: ChartType = "bar";
   public barChartLegend = true;
   public barChartPlugins = [pluginDataLabels];
-  public barChartData: ChartDataSets[] = [
-    {data: [], label: "Проценты"}
-  ];
+  public barChartData: ChartDataSets[];
+
+  constructor(private translatePipe: TranslatePipe) {
+
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.barChartLabels = [];
+    this.barChartData = [
+      {data: [], label: this.translatePipe.transform('text.text.percent',"Проценты")}
+    ];
     this.barChartData[0].data = [];
     this.tests && this.tests.forEach((test: Test) => {
       var sliced = test.Title.slice(0, 40);

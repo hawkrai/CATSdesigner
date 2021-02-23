@@ -53,9 +53,8 @@
           <input formControlName="building" type="text" matInput placeholder="Корпус">
         </mat-form-field>
         <div *ngIf="(dateForm.get('building').touched || dateForm.get('building').dirty) && dateForm.get('building').errors" class="visit-date__form-error">
-          <mat-error *ngIf="dateForm.get('building').hasError('required')">Номер корпуса обязателен</mat-error>
           <mat-error *ngIf="dateForm.get('building').hasError('minLength')">Минимальное количество символов: 1</mat-error>
-          <mat-error *ngIf="dateForm.get('building').hasError('maxLength')">Максимальное количество символов: 3</mat-error>
+          <mat-error *ngIf="dateForm.get('building').hasError('maxLength')">Максимальное количество символов: 5</mat-error>
         </div>
       </div>
       <div class="visit-date__form-group">
@@ -65,8 +64,8 @@
         </mat-form-field>
         <div *ngIf="(dateForm.get('audience').touched || dateForm.get('audience').dirty) && dateForm.get('audience').errors" class="visit-date__form-error">
           <mat-error *ngIf="dateForm.get('audience').hasError('required')">Номер аудитории обязателен</mat-error>
-          <mat-error *ngIf="dateForm.get('audience').hasError('min')">Минимальный номер аудитории: 1</mat-error>
-          <mat-error *ngIf="dateForm.get('audience').hasError('max')">Максимальный номер аудитории: 999</mat-error>
+          <mat-error *ngIf="dateForm.get('audience').hasError('minLength')">Минимальное количество символов: 1</mat-error>
+          <mat-error *ngIf="dateForm.get('audience').hasError('maxLength')">Максимальное количество символов: 5</mat-error>
         </div>
       </div>
     </div>

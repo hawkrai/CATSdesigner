@@ -13,6 +13,8 @@ namespace Application.Infrastructure.ScheduleManagement
 
         void SaveDateLectures(int subjectId, DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
 
+        public void SaveDatePractical(int subjectId, int groupId, DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
+
         bool CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
 
         IEnumerable<ScheduleModel> GetScheduleForDate(DateTime date);

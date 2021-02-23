@@ -6,11 +6,12 @@ import {map} from "rxjs/operators";
 
 import { CreateLessonEntity } from './../../models/form/create-lesson-entity.model';
 import { StudentMark } from './../../models/student-mark.model';
-import {Lab, ScheduleProtectionLabs} from "../../models/lab.model";
+import { Lab } from "../../models/lab.model";
 import { UpdateLab } from 'src/app/models/form/update-lab.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { CorrectDoc } from 'src/app/models/plagiarism-result.model';
 import { PlagiarismResultSubject } from 'src/app/models/plagiarism-result-subject.model';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class LabsRestService {
     );
   }
 
-  public getProtectionSchedule(subjectId: number, groupId: number): Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[]}> {
+  public getProtectionSchedule(subjectId: number, groupId: number): Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]}> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId.toString());
@@ -59,16 +60,6 @@ export class LabsRestService {
 
   public deleteLab(lab: { id: number, subjectId: number }) {
     return this.http.post('Services/Labs/LabsService.svc/Delete', lab);
-  }
-
-  public createDateVisit(request: {
-    subGroupId: number, date: string, subjectId: number, startTime: string, endTime: string, building: string, audience: string
-   }): Observable<any> {
-    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLab', request);
-  }
-
-  public deleteDateVisit(id: number): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/DeleteVisitingDate', { id });
   }
 
   public setLabsVisitingDate(body: { Id: number[], comments: string[], dateId: number, marks: string[], showForStudents: boolean[], students: StudentMark[] }): Observable<any> {

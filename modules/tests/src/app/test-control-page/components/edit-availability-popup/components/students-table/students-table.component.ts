@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SubGroup} from "../../../../../models/sub-group.model";
 
 
 @Component({
-  selector: 'app-students-table',
-  templateUrl: './students-table.component.html',
-  styleUrls: ['./students-table.component.less']
+  selector: "app-students-table",
+  templateUrl: "./students-table.component.html",
+  styleUrls: ["./students-table.component.less"]
 })
 export class StudentsTableComponent implements OnInit {
 
@@ -21,7 +21,7 @@ export class StudentsTableComponent implements OnInit {
   @Output()
   public onChangeAvailabilityForAll: EventEmitter<any> = new EventEmitter();
 
-  displayedColumns: string[] = ['Name', 'action'];
+  displayedColumns: string[] = ["Name", "action"];
 
 
   constructor() {

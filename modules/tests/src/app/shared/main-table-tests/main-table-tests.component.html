@@ -15,32 +15,32 @@
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> Название теста</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> {{'text.test.name' | translate: 'Название теста'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
       </ng-container>
 
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> {{'text.test.action' | translate: 'Действие'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
-          <mat-icon *ngIf="element.HasQuestions || !allowChanges" color="primary" class="main-table-tests-icon" (click)="navigateToTest(element.Id)" matTooltip="Пройти тест"
+          <mat-icon *ngIf="element.HasQuestions || !allowChanges" color="primary" class="main-table-tests-icon" (click)="navigateToTest(element.Id)" [matTooltip]="'text.test.pass.test' | translate: 'Пройти тест'"
                     matTooltipClass="example-tooltip-blue">play_circle_outline
           </mat-icon>
-          <mat-icon class="main-table-tests-icon" color="primary" (click)="openEditPopup(element)" *ngIf="allowChanges" matTooltip="Редактировать тест"
+          <mat-icon class="main-table-tests-icon" color="primary" (click)="openEditPopup(element)" *ngIf="allowChanges" [matTooltip]="'text.test.edit' | translate: 'Редактировать тест'"
                     matTooltipClass="example-tooltip-blue">edit
           </mat-icon>
-          <mat-icon class="main-table-tests-icon" color="primary" (click)="deleteTest(element.Id)" *ngIf="allowChanges" matTooltip="Удалить тест"
+          <mat-icon class="main-table-tests-icon" color="primary" (click)="deleteTest(element.Id)" *ngIf="allowChanges" [matTooltip]="'text.test.delete.test' | translate: 'Удалить тест'"
                     matTooltipClass="example-tooltip-blue">delete
           </mat-icon>
-          <mat-icon class="main-table-tests-icon" color="primary" (click)="navigateToQuestions(element.Id)" *ngIf="allowChanges" matTooltip="Перейти к вопросам"
+          <mat-icon class="main-table-tests-icon" color="primary" (click)="navigateToQuestions(element.Id)" *ngIf="allowChanges" [matTooltip]="'text.test.go.to.test' | translate: 'Перейти к вопросам'"
                     matTooltipClass="example-tooltip-blue">help
           </mat-icon>
           <mat-icon class="main-table-tests-icon" color="primary" (click)="openAvailabilityPopup(element.Id)" *ngIf="!element.Unlocked && allowChanges"
-                    matTooltip="Доступность теста"
+                    [matTooltip]="'text.test.availability' | translate: 'Доступность теста'"
                     matTooltipClass="example-tooltip-blue">lock
           </mat-icon>
           <mat-icon class="main-table-tests-icon" color="primary" (click)="openAvailabilityPopup(element.Id)" *ngIf="element.Unlocked && allowChanges"
-                    matTooltip="Доступность теста"
+                    [matTooltip]="'text.test.availability' | translate: 'Доступность теста'"
                     matTooltipClass="example-tooltip-blue">lock_open
           </mat-icon>
         </mat-cell>

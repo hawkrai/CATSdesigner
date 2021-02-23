@@ -210,6 +210,7 @@ namespace Application.Infrastructure.CPManagement
 
             coursePercentagesResult.Mark = percentageResultData.Mark;
             coursePercentagesResult.Comments = percentageResultData.Comment;
+            coursePercentagesResult.ShowForStudent = percentageResultData.ShowForStudent;
 
             Context.SaveChanges();
         }
