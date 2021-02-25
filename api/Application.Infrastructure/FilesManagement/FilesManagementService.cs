@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,14 @@ namespace Application.Infrastructure.FilesManagement
             foreach (var attach in attachments)
             {
                 SaveFile(attach, folder);
+            }
+        }
+
+        public void SaveFiles(IEnumerable<Attachment> attachments, Func<Attachment, string> property)
+        {
+            foreach (var attach in attachments)
+            {
+                SaveFile(attach, property.Invoke(attach));
             }
         }
 
