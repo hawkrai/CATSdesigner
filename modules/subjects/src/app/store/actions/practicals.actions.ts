@@ -65,4 +65,9 @@ export const deleteDateVisit = createAction(
 export const setPracticalsVisitingDate = createAction(
     '[Practicals] Set Practicals Visiting Date',
     props<{ visiting: { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } }>()
-  );
+);
+
+export const setPracticalMark = createAction(
+    '[Practicals] Set Practical Mark',
+    props<{ body: { studentId: number, practicalId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } }>()
+);

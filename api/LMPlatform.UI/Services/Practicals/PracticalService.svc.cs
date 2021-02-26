@@ -235,7 +235,7 @@ namespace LMPlatform.UI.Services.Practicals
                     Code = "200"
                 };
             }
-            catch (Exception ex)
+            catch
             {
                 return new ResultViewData
                 {
@@ -382,6 +382,28 @@ namespace LMPlatform.UI.Services.Practicals
                 return new PracticalsResult
                 {
                     Message = "Произошла ошибка при получении практических работ",
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData SaveStudentLabsMark(int studentId, int practicalId, string mark, string comment, string date, int id, bool showForStudent)
+        {
+            try
+            {
+                PracticalManagementService.SaveStudentPracticalMark(new StudentPracticalMark(practicalId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
+
+                return new ResultViewData
+                {
+                    Message = "Данные успешно добавлены",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при добавлении данных",
                     Code = "500"
                 };
             }

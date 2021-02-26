@@ -10,6 +10,10 @@ import {PracticalLessonPopoverComponent} from './components/practical-lesson-pop
 import { VisitStatisticComponent } from './components/visit-statistic/visit-statistic.component';
 import { PracticalProtectionScheduleComponent } from './components/practical-protection-schedule/practical-protection-schedule.component';
 import { VisitDatePracticalsPopoverComponent } from './components/practical-protection-schedule/visit-date-practicals-popover/visit-date-practicals-popover.component';
+import { ResultsComponent } from './components/results/results.component';
+import { MarkPropertyPipe } from './pipes/mark-property.pipe';
+import { ResultPipe } from './pipes/result.pipe';
+import { VisitPipe } from './pipes/visit.pipe';
 
 @NgModule({
   declarations: [
@@ -18,7 +22,7 @@ import { VisitDatePracticalsPopoverComponent } from './components/practical-prot
     PracticalLessonPopoverComponent, 
     VisitStatisticComponent, 
     PracticalProtectionScheduleComponent, 
-    VisitDatePracticalsPopoverComponent],
+    VisitDatePracticalsPopoverComponent, ResultsComponent, MarkPropertyPipe, ResultPipe, VisitPipe],
   imports: [
     CommonModule,
     MatModule,
