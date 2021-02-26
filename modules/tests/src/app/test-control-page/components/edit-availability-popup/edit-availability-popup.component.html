@@ -16,7 +16,7 @@
       <div class="availability-popup-content-blocks-item">
         <mat-form-field>
           <mat-label>{{'text.test.search' | translate : "Поиск"}}</mat-label>
-          <input matInput [placeholder]="'text.test.search' | translate :'Поиск'" (change)="onSearchValueChange($event)">
+          <input matInput [placeholder]="'text.test.search' | translate :'Поиск'" (keyup)="onSearchValueChange($event)">
         </mat-form-field>
       </div>
     </div>

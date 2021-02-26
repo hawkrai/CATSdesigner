@@ -52,7 +52,7 @@
   "text.test.question.created": "Question created",
   "text.test.question.changed": "Question changed",
   "text.test.internal.server.error": "Server response error",
-  "text.test.back.to.test": "Back to tests",
+  "text.test.back.to.test": "< Tests",
   "text.test.questions": "Questions",
   "text.test.cant.delete.question": "Failed to delete question",
   "text.test.choose.group": "Select group",
@@ -120,8 +120,14 @@
   "text.test.question.num": "Question #{number}",
   "text.test.theme.finished": "Test for theme «{title}» completed",
   "text.test.time.completing": "Time to pass: {start} - {end}",
-  "text.test.your.mark": "Your mark is {mark}",
+  "text.test.your.mark": "Your mark is {mark} ({percent}%)",
   "text.test.result.test": "Test results",
   "text.test.control.compleating.test": "Test passing control",
-  "text.test.theme.test": "Test Themes"
+  "text.test.theme.test": "Test Themes",
+  "text.test.date.completing": "Date passing test: ",
+  "text.test.time.start": "Test start time: ",
+  "text.test.time.end": "Test end time: ",
+  "text.test.time.for.question": "Time for question (sec)",
+  "text.test.result.mark": "Mark: {mark} ({percent}%)",
+  "text.test.new.questions.for.test": "Question №{number}"
 }

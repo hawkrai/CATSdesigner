@@ -59,6 +59,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public forSelf: boolean = false;
   @Input()
   public name: string;
+
+  @Input()
+  public testName: string;
   public scareThing: any = [];
   @Input()
   public loading: boolean;
@@ -139,11 +142,11 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
       this.barChartLabels.push(entire[0]);
       this.barChartData[0].data.push(entire[1]);
     }
-    this.showChart = (<number[]>this.barChartData[0]?.data).some(value => !!value);
+    this.showChart = (<number[]>this.barChartData[0]?.data).some(value => value.toString() != "NaN");
   }
 
   private getShortName(pupil): string {
     const pupilName: string[] = pupil[1].name.split(" ");
-    return pupilName[0] + " " + pupilName[1][0] + "." + pupilName[2][0] + ".";
+    return pupilName[0] + " " + pupilName[1][0] + "." + (pupilName[2] ? (pupilName[2][0] + ".") : "");
   }
 }

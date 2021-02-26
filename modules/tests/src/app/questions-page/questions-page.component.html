@@ -1,8 +1,7 @@
 <!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Управление тестами'"></app-header>-->
 <div class="question-page__backlink-first" (click)="navigate()">
-  <mat-icon>keyboard_backspace</mat-icon>
-  {{'text.test.back.to.test' | translate : "Вернуться к тестам"}}
+  {{'text.test.back.to.test' | translate : "< К тестам"}}
 </div>
 <div class="question-page-container">
   <div class="question-page-description-title">
@@ -30,7 +29,6 @@
     (onOpenEditPopup)="openPopup($event)">
   </app-table-questions>
   <div class="question-page__backlink" (click)="navigate()">
-    <mat-icon>keyboard_backspace</mat-icon>
-    {{'text.test.back.to.test' | translate : "Вернуться к тестам"}}
+    {{'text.test.back.to.test' | translate : "< К тестам"}}
   </div>
 </div>

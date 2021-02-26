@@ -26,6 +26,8 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   public endTime: string;
   public startTime: string;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public percent: number;
+  public endDate: string;
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,
@@ -37,6 +39,7 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   ngOnInit() {
     this.startTime = moment(JSON.parse(localStorage.getItem("start"))).format("HH:mm:ss");
     this.endTime = moment(new Date).format("HH:mm:ss");
+    this.endDate = moment(new Date).format("DD.MM.YYYY");
     this.testId = this.route.snapshot.queryParamMap.get("testId");
     const user = JSON.parse(localStorage.getItem("currentUser"));
     this.testService.getTestById(this.testId)
@@ -48,11 +51,14 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(result => {
         this.result = result;
-        console.log("this.result", this.result);
+        let correct: number = 0;
         this.result.forEach(result => {
           if (result.Points !== 0)
-            this.mark += 1;
+            correct += 1;
         });
+        const marks: number = correct / this.result?.length;
+        this.mark = Math.round(marks * 10);
+        this.percent = Math.round(marks * 100);
       });
 
   }

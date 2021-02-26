@@ -20,7 +20,7 @@
     <mat-table [dataSource]="subGroup.Students" class="mat-elevation-z8 table-test-bg">
       <!-- Name Column -->
       <ng-container matColumnDef="Name">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> {{'text.test.student.name' | translate : 'Имя'}}</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> {{'text.test.student.name' | translate : 'ФИО'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Name}}</mat-cell>
       </ng-container>
       <!-- Weight Column -->

@@ -1,11 +1,15 @@
 .result-test-table {
 
   &-subgroup {
+    align-items: flex-end;
     font-size: 20px;
     display: flex;
 
     &-load {
       cursor: pointer;
+      background: url(../icon/image.svg) no-repeat center;
+      width: 30px;
+      height: 30px;
     }
   }
   &-warning {
@@ -27,6 +31,10 @@
   &-chart {
     display: block;
     margin-top: 50px;
+
+    &-name{
+      margin-left: 15px;
+    }
   }
 }
 
@@ -44,10 +52,10 @@
   font-size: 17px;
   flex: 0 0 5%;
   &.all {
-    color: #388E3C;
+    color: #3f51b5;
   }
   &.notAll {
-    color: #619cff;
+    color: #1976D2;
   }
 }
 

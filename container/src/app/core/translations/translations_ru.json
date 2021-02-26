@@ -1,7 +1,7 @@
 {
   "subject": "Предметы",
   "button.save": "Сохранить",
-  "button.close": "Отмена",
+  "button.close": "Закрыть",
   "text.test.passing.now": "В данный момент тесты проходят:",
   "text.tests.for.control": "Тесты для контроля знаний",
   "text.test.for.control": "Тест для контроля знаний",
@@ -52,7 +52,7 @@
   "text.test.question.created": "Вопрос создан",
   "text.test.question.changed": "Вопрос изменен",
   "text.test.internal.server.error": "Ошибка ответа сервера",
-  "text.test.back.to.test": "Вернуться к тестам",
+  "text.test.back.to.test": "< К тестам",
   "text.test.questions": "Вопросы",
   "text.test.cant.delete.question": "Не удалось удалить вопрос",
   "text.test.choose.group": "Выберите группу",
@@ -87,7 +87,7 @@
   "text.test.want.to.delete.test": "Вы действительно хотите удалить тест?",
   "text.test.open.all": "Открыть для всех",
   "text.test.close.all": "Закрыть для всех",
-  "text.test.student.name": "Имя",
+  "text.test.student.name": "ФИО",
   "text.test.group": "Группа",
   "text.test.popup.subgroup": "Подгруппа ",
   "text.test.edit.test": "Редактирование теста",
@@ -120,8 +120,14 @@
   "text.test.question.num": "Вопрос №{number}",
   "text.test.theme.finished": "Тест на тему «{title}» завершен",
   "text.test.time.completing": "Время прохождения: {start} - {end}",
-  "text.test.your.mark": "Ваша оценка - {mark}",
+  "text.test.your.mark": "Ваша оценка - {mark} ({percent}%)",
   "text.test.result.test": "Результаты тестировния",
   "text.test.control.compleating.test": "Контроль прохождения тестов",
-  "text.test.theme.test": "Темы тестов"
+  "text.test.theme.test": "Темы тестов",
+  "text.test.date.completing": "Дата прохождения теста: ",
+  "text.test.time.start": "Время начала теста: ",
+  "text.test.time.end": "Время окончания теста: ",
+  "text.test.time.for.question": "Время на вопрос (сек)",
+  "text.test.result.mark": "Оценка: {mark} ({percent}%)",
+  "text.test.new.questions.for.test": "Вопрос №{number}"
 }

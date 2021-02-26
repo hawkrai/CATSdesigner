@@ -112,7 +112,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     const title = this.test.Title;
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       width: "700px",
-      data: {event, title, test: this.testId, isEUMKTest: this.isEUMKTest},
+      data: {event, title, test: this.testId, questionLength: this.questions.length, isEUMKTest: this.isEUMKTest},
       autoFocus: false,
     });
 
