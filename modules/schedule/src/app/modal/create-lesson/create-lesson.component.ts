@@ -8,6 +8,7 @@ import {formatDate} from '@angular/common';
 import {Note} from '../../model/note.model';
 import flatpickr from 'flatpickr';
 import {Russian} from 'flatpickr/dist/l10n/ru';
+import {NoteAdd} from "../../model/noteAdd.model";
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian);
@@ -22,14 +23,15 @@ export function flatpickrFactory() {
 })
 export class CreateLessonComponent implements OnInit {
 
-  changedLesson: any = new LessonAdd();
+  lessonAdd: LessonAdd = new LessonAdd();
+  noteAdd: NoteAdd = new NoteAdd();
   changedType: string;
   formGroup: any;
   lesson: any = new Lesson() ;
   subject: any;
   subjects: any[] = [];
-  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лабораторная работа'],
-    ['3', 'Практическое занятие'], ['4', 'Курсовое проектирование']];
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'],
+    ['3', 'Практ.работа'], ['4', 'КП']];
   dayOfLesson: Date;
   startTimeOfLesson: string;
   endTimeOfLesson: string;
@@ -57,7 +59,7 @@ export class CreateLessonComponent implements OnInit {
     const format = 'dd.MM.yyyy';
     const locale = 'en-US';
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.lessonservice.getSubjects().subscribe(subjects => {
+    this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
       this.subjects = subjects;
       if (this.data.lesson != null) {
         this.startHour = this.data.lesson.start.getHours().toString();
@@ -65,9 +67,7 @@ export class CreateLessonComponent implements OnInit {
         this.endHour = this.data.lesson.end.getHours().toString();
         this.endMin  = this.data.lesson.end.getMinutes().toString();
         this.fillTimeParameters();
-        console.log(this.data.lesson.start);
         this.dayOfLesson = this.data.lesson.start;
-        console.log(this.dayOfLesson);
         this.startTimeOfLesson = this.startHour + ':' + this.startMin;
         this.endTimeOfLesson = this.endHour + ':' + this.endMin;
 
@@ -213,8 +213,17 @@ export class CreateLessonComponent implements OnInit {
     this.lesson.startTime = this.startTimeOfLesson;
     this.lesson.endTime = this.endTimeOfLesson;
     this.lesson.memo = {message: this.memo};
-    this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
+    this.lessonAdd.subjectId = this.subject.Id;
+    this.lessonAdd.date = this.lessonservice.formatDate2(this.dayOfLesson);
+    this.lessonAdd.startTime = this.startTimeOfLesson;
+    this.lessonAdd.endTime = this.endTimeOfLesson;
+    this.lessonAdd.building = this.lesson.building;
+    this.lessonAdd.audience = this.lesson.building;
     console.log(this.lesson);
+    this.lessonservice.saveLecture(this.lessonAdd).subscribe(l => {
+      console.log(l);
+    });
+    this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
   }
 
   addNote() {
@@ -228,6 +237,10 @@ export class CreateLessonComponent implements OnInit {
     }
     this.note.start.setHours(+this.startTimeOfNote.split(':')[0], + this.startTimeOfNote.split(':')[1]);
     this.note.end.setHours(+this.endTimeOfNote.split(':')[0], + this.endTimeOfNote.split(':')[1]);
+    this.noteAdd.title = this.note.title;
+    this.noteAdd.startTime = this.startTimeOfNote;
+    this.noteAdd.endTime = this.endTimeOfNote;
+    this.noteAdd.date = this.lessonservice.formatDate2(this.dayOfNote);
     this.dialogRef.close({note: this.note, type: 'note'});
   }
 

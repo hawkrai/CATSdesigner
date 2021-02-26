@@ -6,6 +6,7 @@ import {NewsInfoComponent} from '../modal/news-info/news-info.component';
 import {Message} from '../../../../../container/src/app/core/models/message';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {AllNewsComponent} from '../modal/all-news/all-news.component';
+import {ScheduleMainComponent} from '../schedule-main/schedule-main.component';
 
 @Component({
   selector: 'app-news',
@@ -17,11 +18,14 @@ export class NewsComponent implements OnInit {
   user: any;
   news: any;
   isEnableNews = true;
+  toolTip = 'Скрыть новости';
 
   constructor(private newsService: NewsService,
               private lessonservice: LessonService,
               private modulecommunicationservice: ModuleCommunicationService,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog,
+              private schedule: ScheduleMainComponent) { }
+
 
   ngOnInit() {
     // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
@@ -60,8 +64,12 @@ export class NewsComponent implements OnInit {
   }
 
   public openAllNews() {
-    const dialogRef = this.dialog.open(AllNewsComponent, {width: '600px',
-      position: {top: '3%'}, data: {user: this.user}});
+    const dialogRef = this.dialog.open(AllNewsComponent, {width: '600px', height: '550px',
+      position: {top: '1%'}, data: {news: this.news}});
+  }
+
+  public hideNews() {
+    this.schedule.hideNews();
   }
 
 }
