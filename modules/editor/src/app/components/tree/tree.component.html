@@ -59,9 +59,9 @@
 <!-- standard material menu -->
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button mat-menu-item (click)="onEditStructureEvent.emit(item)"><span>Переименовать</span></button>
-    <button mat-menu-item (click)="onRemoveEvent.emit(item)"><span>Удалить</span></button>
-    <button mat-menu-item (click)="onAddEvent.emit(item)"><span>Добавить новую тему</span></button>
+    <button mat-menu-item (click)="onEditStructureEvent.emit(item)"><mat-icon color="primary">edit</mat-icon><span>Переименовать</span></button>
+    <button mat-menu-item (click)="onRemoveEvent.emit(item)"><mat-icon color="primary">delete</mat-icon><span>Удалить</span></button>
+    <button mat-menu-item (click)="onAddEvent.emit(item)"><mat-icon color="primary">note_add</mat-icon><span>Добавить новую тему</span></button>
     <!-- <button *ngIf="!item.Children.length" mat-menu-item (click)="onEditContentEvent.emit(item)"><span>Редактировать контент</span></button> -->
   </ng-template>
 </mat-menu>

@@ -17,6 +17,13 @@ mat-icon {
   }
 }
 
+.mat-menu-item {
+  .mat-icon {
+    margin-right: 0px;
+    vertical-align: sub;
+  }
+}
+
 .tree ul,
 .tree li {
   margin-top: 0;
