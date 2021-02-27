@@ -1,11 +1,11 @@
 <ng-container *ngIf="groups;else loading">
-  <h1 mat-dialog-title class="availability-popup-container">{{'Доступность теста'}}</h1>
+  <h1 mat-dialog-title class="availability-popup-container">{{'text.test.availability' | translate : 'Доступность теста'}}</h1>
 
   <div mat-dialog-content class="availability-popup-content">
     <div class="availability-popup-content-blocks">
       <div class="availability-popup-content-blocks-item">
         <mat-form-field>
-          <mat-label>{{"Группа"}}</mat-label>
+          <mat-label>{{'text.test.group' | translate : "Группа"}}</mat-label>
           <mat-select [value]="groups[0]?.Id" (selectionChange)="onValueChange($event)">
             <mat-option *ngFor="let group of groups" [value]="group.Id">
               {{group.Name}}
@@ -15,8 +15,8 @@
       </div>
       <div class="availability-popup-content-blocks-item">
         <mat-form-field>
-          <mat-label>{{"Поиск"}}</mat-label>
-          <input matInput placeholder="Поиск" (change)="onSearchValueChange($event)">
+          <mat-label>{{'text.test.search' | translate : "Поиск"}}</mat-label>
+          <input matInput [placeholder]="'text.test.search' | translate :'Поиск'" (keyup)="onSearchValueChange($event)">
         </mat-form-field>
       </div>
     </div>
@@ -26,7 +26,7 @@
     <!--TOdo bad naming of subgroup-->
     <app-students-table *ngFor="let subGroup of subGroups, let i = index"
                         [subGroup]="subGroup"
-                        [title]="'Подгруппа '+ (i+1)"
+                        [title]="('text.test.popup.subgroup' | translate :'Подгруппа ')+ (i+1)"
                         (onChangeAvailability)="changeTestAvailability($event)"
                         (onChangeAvailabilityForAll)="changeTestAvailabilityForAll($event)"></app-students-table>
   </div>

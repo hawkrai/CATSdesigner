@@ -10,6 +10,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {MatSnackBar} from "@angular/material";
+import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -42,6 +43,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
 
   constructor(private testPassingService: TestPassingService,
               private snackBar: MatSnackBar,
+              private translatePipe: TranslatePipe,
               private router: Router) {
     super();
   }
@@ -51,7 +53,9 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   public answerQuestion(): void {
-    if (this.question.Question.QuestionType === 3 || this.charsNeskolko[0] || this.charsNeskolko[1] || this.charsNeskolko[2] || this.charsNeskolko[3] || this.charsNeskolko[4] || this.charsNeskolko[5] || this.charsNeskolko[6] || this.charsNeskolko[7] || this.charsNeskolko[8] || this.chosenAnswer || this.value) {
+    if (this.question.Question.QuestionType === 3 || this.charsNeskolko[0] || this.charsNeskolko[1] ||
+      this.charsNeskolko[2] || this.charsNeskolko[3] || this.charsNeskolko[4] || this.charsNeskolko[5] ||
+      this.charsNeskolko[6] || this.charsNeskolko[7] || this.charsNeskolko[8] || this.chosenAnswer || this.value) {
       const user = JSON.parse(localStorage.getItem("currentUser"));
       console.log(this.chosenAnswer);
       const request = {
@@ -88,7 +92,10 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
       this.chosenAnswer = null;
       this.testPassingService.answerQuestionAndGetNext(request)
         .pipe(
-          tap(() => this.getOnNextQuestion(true, this.isTrue)),
+          tap(() => {
+            this.getOnNextQuestion(true, this.isTrue);
+            this.value = null;
+          }),
           takeUntil(this.unsubscribeStream$),
           catchError(() => {
             this.router.navigate(["/test-result"], {queryParams: {testId: this.test.Id}});
@@ -97,13 +104,14 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
         )
         .subscribe();
     } else {
-      this.openSnackBar("Выберите вариант ответа");
+      this.openSnackBar(this.translatePipe.transform("text.test.choose.variant", "Выберите вариант ответа"));
     }
   }
 
   public openSnackBar(message: string, action?: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
+      panelClass: "red-snack"
     });
   }
 

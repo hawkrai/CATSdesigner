@@ -8,6 +8,7 @@ using Application.Infrastructure.Export;
 using LMPlatform.Data.Infrastructure;
 using System.Data.Entity;
 using LMPlatform.UI.Attributes;
+using Application.Core.Helpers;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
@@ -40,7 +41,7 @@ namespace LMPlatform.UI.ApiControllers.CP
         public HttpResponseMessage Get(int groupId, int subjectId)
         {
             var courseProjects = new LmPlatformModelsContext().CourseProjects
-                                .Where(x => x.SubjectId == subjectId)
+                                .Where(x => x.SubjectId == subjectId && x.LecturerId == UserContext.CurrentUserId)
                                 .Where(x => x.AssignedCourseProjects.Count() == 1)
                                 .Include(x =>
                         x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))

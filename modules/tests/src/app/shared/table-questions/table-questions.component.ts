@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Question} from "../../models/question/question.model";
 
 
 @Component({
-  selector: 'app-table-questions',
-  templateUrl: './table-questions.component.html',
-  styleUrls: ['./table-questions.component.less']
+  selector: "app-table-questions",
+  templateUrl: "./table-questions.component.html",
+  styleUrls: ["./table-questions.component.less"]
 })
 export class TableQuestionsComponent implements OnInit {
 
@@ -20,7 +20,7 @@ export class TableQuestionsComponent implements OnInit {
 
   public test: any;
 
-  displayedColumns: string[] = ['Id', 'Title', 'action'];
+  displayedColumns: string[] = ["Id", "Title", "action"];
 
   constructor() {
   }
@@ -32,7 +32,7 @@ export class TableQuestionsComponent implements OnInit {
     this.onDeleteQuestion.emit(event);
   }
 
-  public openEditPopup(event): void{
+  public openEditPopup(event): void {
     this.onOpenEditPopup.emit(event);
   }
 }

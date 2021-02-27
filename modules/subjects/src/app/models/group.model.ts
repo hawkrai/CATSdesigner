@@ -15,7 +15,7 @@ export class SubGroup {
   Labs: [];
   Name: string;
   ScheduleProtectionLabs: [];
-  ScheduleProtectionLabsRecomendMark: string;
+  ScheduleProtectionLabsRecommendedMark: string;
   Students: [];
   SubGroupId: number;
 }

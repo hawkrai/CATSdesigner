@@ -8,6 +8,7 @@
     using Application.Infrastructure.SubjectManagement;
 
     using LMPlatform.Models;
+    using LMPlatform.UI.Services.Modules.Schedule;
 
     [DataContract]
     public class LabsViewData
@@ -79,6 +80,6 @@
         }
 
         [DataMember]
-        public List<ScheduleProtectionLab> ScheduleProtectionLabsRecomend { get; set; }
+        public List<ScheduleProtectionLesson> ScheduleProtectionLabsRecommended { get; set; }
     }
 }

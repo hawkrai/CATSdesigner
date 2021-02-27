@@ -27,6 +27,7 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using WebMatrix.WebData;
 using Application.Infrastructure.LabsManagement;
+using LMPlatform.UI.Services.Modules.Schedule;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -120,7 +121,7 @@ namespace LMPlatform.UI.Services.Labs
 						StudentId = e.StudentId,
 						LabsMarkTotal = e.LabsMarkTotal,
 						TestMark = e.TestMark,
-						Marks = e.StudentLabMarks
+						LabsMarks = e.StudentLabMarks
 					}).ToList(),
 					Message = "",
 					Code = "200"
@@ -177,10 +178,10 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-        public ResultViewData Delete(int id, int subjectId)
-        {
-            try
-            {
+		public ResultViewData Delete(int id, int subjectId)
+		{
+			try
+			{
 				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
 				if (!isUserAssigned)
 				{
@@ -191,42 +192,21 @@ namespace LMPlatform.UI.Services.Labs
 					};
 				}
 				SubjectManagementService.DeleteLabs(id);
-                return new ResultViewData
-                {
-                    Message = "Лабораторная работа успешно удалена",
-                    Code = "200"
-                };
-            }
-            catch (Exception e)
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при удалении лабораторной работы" + e.Message,
-                    Code = "500"
-                };
-            }
-        }
-
-        public ResultViewData SaveScheduleProtectionDate(int subGroupId, string date)
-        {
-            try
-            {
-				SubjectManagementService.SaveScheduleProtectionLabsDate(subGroupId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
-                return new ResultViewData
-                {
-                    Message = "Дата успешно добавлена",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при добавлении даты",
-                    Code = "500"
-                };
-            }
-        }
+				return new ResultViewData
+				{
+					Message = "Лабораторная работа успешно удалена",
+					Code = "200"
+				};
+			}
+			catch (Exception e)
+			{
+				return new ResultViewData
+				{
+					Message = "Произошла ошибка при удалении лабораторной работы" + e.Message,
+					Code = "500"
+				};
+			}
+		}
 
 		public ResultViewData SaveLabsVisitingDataSingle(int dateId, string mark, string comment, int studentsId, int id, bool showForStudent)
 		{
@@ -301,7 +281,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				        SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, WebSecurity.CurrentUserId, mark, comment, date, id, showForStudent));
+				        SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
 
                 return new ResultViewData
                 {
@@ -319,27 +299,6 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public ResultViewData DeleteVisitingDate(int id)
-        {
-            try
-            {
-                SubjectManagementService.DeleteLabsVisitingDate(id);
-
-                return new ResultViewData
-                {
-                    Message = "Дата успешно удалена",
-                    Code = "200"
-                };
-            }
-            catch (Exception)
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при удалении даты",
-                    Code = "500"
-                };
-            }
-        }
 
         public UserLabFilesResult GetFilesLab(int userId, int subjectId, bool isCoursPrj = false)
         {
@@ -522,7 +481,7 @@ namespace LMPlatform.UI.Services.Labs
 						LabsMarkTotal = e.LabsMarkTotal,
 						TestMark = e.TestMark,
 						LabVisitingMark = e.LabVisitingMark,
-						Marks = e.StudentLabMarks,
+						LabsMarks = e.StudentLabMarks,
 					}).ToList(),
 					Message = "",
 					Code = "200"
@@ -569,7 +528,7 @@ namespace LMPlatform.UI.Services.Labs
 					LabsMarkTotal = studentViewData.LabsMarkTotal,
 					TestMark = studentViewData.TestMark,
 					LabVisitingMark = studentViewData.LabVisitingMark,
-					Marks = studentViewData.StudentLabMarks,
+					LabsMarks = studentViewData.StudentLabMarks,
 					AllTestsPassed = studentViewData.AllTestsPassed
 				}) ;
 			}
@@ -651,14 +610,14 @@ namespace LMPlatform.UI.Services.Labs
 					LabId = e.Id,
 					SubjectId = e.SubjectId,
 					SubGroup = 1,
-					ScheduleProtectionLabsRecomend = subGroups.Any() ? subGroups
+					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
 						.FirstOrDefault(x => x.Name == "first").ScheduleProtectionLabs
 						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLab
+						.Select(x => new ScheduleProtectionLesson
 						{
 							ScheduleProtectionId = x.Id,
 							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLab>()
+						}).ToList() : new List<ScheduleProtectionLesson>()
 				}).ToList();
 
 
@@ -668,11 +627,11 @@ namespace LMPlatform.UI.Services.Labs
 				{
 					var mark = 10;
 					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 					{
 						if (i + 1 > durationCount - (lab.Duration / 2))
 						{
-							lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
 							if (i + 1 >= durationCount)
 							{
@@ -694,14 +653,14 @@ namespace LMPlatform.UI.Services.Labs
 					LabId = e.Id,
 					SubjectId = e.SubjectId,
 					SubGroup = 2,
-					ScheduleProtectionLabsRecomend = subGroups.Any() ? subGroups
+					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
 						.FirstOrDefault(x => x.Name == "second").ScheduleProtectionLabs
 						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLab
+						.Select(x => new ScheduleProtectionLesson
 						{
 							ScheduleProtectionId = x.Id,
 							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLab>()
+						}).ToList() : new List<ScheduleProtectionLesson>()
 				}).ToList();
 
 				durationCount = 0;
@@ -709,11 +668,11 @@ namespace LMPlatform.UI.Services.Labs
 				{
 					var mark = 10;
 					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 					{
 						if (i + 1 > durationCount - (lab.Duration / 2))
 						{
-							lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
 							if (i + 1 >= durationCount)
 							{
@@ -735,14 +694,14 @@ namespace LMPlatform.UI.Services.Labs
 					LabId = e.Id,
 					SubjectId = e.SubjectId,
 					SubGroup = 3,
-					ScheduleProtectionLabsRecomend = subGroups.Any() ? subGroups
+					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
 						.FirstOrDefault(x => x.Name == "third").ScheduleProtectionLabs
 						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLab
+						.Select(x => new ScheduleProtectionLesson
 						{
 							ScheduleProtectionId = x.Id,
 							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLab>()
+						}).ToList() : new List<ScheduleProtectionLesson>()
 				}).ToList();
 
 				durationCount = 0;
@@ -750,11 +709,11 @@ namespace LMPlatform.UI.Services.Labs
 				{
 					var mark = 10;
 					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 					{
 						if (i + 1 > durationCount - (lab.Duration / 2))
 						{
-							lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
 							if (i + 1 >= durationCount)
 							{

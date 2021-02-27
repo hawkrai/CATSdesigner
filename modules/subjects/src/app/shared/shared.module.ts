@@ -23,6 +23,8 @@ import { DeletePopoverComponent } from './delete-popover/delete-popover.componen
 import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.component';
 import { FileDownloadPopoverComponent } from './file-download-popover/file-download-popover.component';
 import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/check-plagiarism-popover.component';
+import { SortByPipe } from './pipes/sort-by.pipe';
+import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
     CheckPlagiarismPopoverComponent,
     FindPipe,
     AnyPipe,
-    WidthPipe
+    WidthPipe,
+    SortByPipe,
+    MarkPopoverComponent
     ],
   imports: [
     CommonModule,
@@ -58,6 +62,7 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
+    MarkPopoverComponent
   ],
   exports: [
     FilterPipe,
@@ -74,7 +79,8 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
     OrderByPipe,
     FindPipe,
     AnyPipe,
-    WidthPipe
+    WidthPipe,
+    SortByPipe
   ],
 
 })

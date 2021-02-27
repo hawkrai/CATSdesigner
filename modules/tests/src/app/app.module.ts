@@ -38,16 +38,16 @@ import {ResultTestTablePupilComponent} from "./shared/result-test-table-pupil/re
 import {AnswersPopupComponent} from "./shared/result-test-table/components/answers-popup/answers-popup.component";
 import {ControlCompletingComponent} from "./control-completing/control-completing.component";
 import {ChartsModule} from "ng2-charts";
-import {CKEditorModule} from 'ckeditor4-angular';
+import {CKEditorModule} from "ckeditor4-angular";
 import {QuestionOtherTestComponent} from "./questions-page/components/question-other-test/question-other-test.component";
 import {TestResultComponent} from "./test-result/test-result.component";
-import {TranslatePipe} from "./pipe/translate.pipe";
+import {TranslatePipe} from "../../../../container/src/app/pipe/translate.pipe";
 import {AutocompleteFormComponent} from "./shared/autocomplete-form/autocomplete-form.component";
 import {SelectAutocompleteModule} from "mat-select-autocomplete";
 import {LoginComponent} from "./login/login.component";
 import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 import {MenuItemComponent} from "./questions-page/components/question-popup/components/menu-item/menu-item.component";
-import { NeuralNetworkPopupComponent } from './questions-page/components/neural-network-popup/neural-network-popup.component';
+import {NeuralNetworkPopupComponent} from "./questions-page/components/neural-network-popup/neural-network-popup.component";
 
 
 @NgModule({

@@ -61,7 +61,7 @@ export class VisitDatePopoverComponent {
     date: new FormControl(moment(), [Validators.required]),
     startTime: new FormControl(moment().format("HH:mm"), [Validators.required]),
     endTime: new FormControl(moment().add(1, 'hour').add(30, 'minutes').format("HH:mm"), [Validators.required, this.time]),
-    building: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]),
+    building: new FormControl('', [Validators.minLength(1), Validators.maxLength(5)]),
     audience: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)])
   });
 

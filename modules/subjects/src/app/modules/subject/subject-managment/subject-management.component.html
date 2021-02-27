@@ -1,5 +1,8 @@
 <div class="subject-management" *ngIf="subject">
-  <h2 mat-dialog-title>{{ subject.Title }}</h2>
+  <h2 mat-dialog-title class="dialog-header">
+    {{ subject.Title }}
+    <mat-icon (click)="onCancel()" style="cursor: pointer;">close</mat-icon>
+  </h2>
   <div>
     <form class="example-form" #formElement>
       <mat-form-field class="example-full-width">
@@ -27,7 +30,7 @@
     <h3 mat-dialog-title class="mat-typography title">Модули</h3>
 
     <div class="section">
-      <section class="example-section" [ngStyle]="{ 'grid-template-columns': 'repeat(' + columnsCount + ', 1fr)' }">
+      <section class="example-section" [ngStyle]="{ 'grid-template-columns': 'repeat(' + columnsCount + ', auto)' }">
         <div *ngFor="let module of subject.Modules | toColumn:columnsCount">
           <mat-checkbox
           class="example-margin"
@@ -43,31 +46,37 @@
       </section>
     </div>
 
-    <h3 mat-dialog-title class="mat-typography title">Цвет предмета</h3>
-    <input
-      class="color-picker"
-      [(colorPicker)]="subject.Color"
-      [style.background]="subject.Color"
-    />
+    <div class="wrapper">
+      <div>
+        <h3 mat-dialog-title class="mat-typography title">Группы</h3>
+        <mat-form-field class="example-full-width">
+          <mat-label>Группы</mat-label>
+          <mat-select [(value)]="selectedGroups" multiple>
+            <mat-select-trigger>
+              {{ selectedGroups.length ? getSelectedValue(selectedGroups[0]) : "" }}
+              <span
+                *ngIf="selectedGroups?.length > 1"
+                class="example-additional-selection"
+              >
+                (+{{ selectedGroups.length - 1 }} {{ selectedGroups.length | plural:'другой':'другие' }})
+              </span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let group of groupList" [value]="group.id">
+              {{ group.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <h3 mat-dialog-title class="mat-typography title">Цвет предмета</h3>
+        <input
+          class="color-picker"
+          [(colorPicker)]="subject.Color"
+          [style.background]="subject.Color"
+        />
+      </div>
+    </div>
 
-    <h3 mat-dialog-title class="mat-typography title">Группы</h3>
-    <mat-form-field class="example-full-width">
-      <mat-label>Группы</mat-label>
-      <mat-select [(value)]="selectedGroups" multiple>
-        <mat-select-trigger>
-          {{ selectedGroups.length ? getSelectedValue(selectedGroups[0]) : "" }}
-          <span
-            *ngIf="selectedGroups?.length > 1"
-            class="example-additional-selection"
-          >
-            (+{{ selectedGroups.length - 1 }} {{ selectedGroups.length | plural:'другой':'другие' }})
-          </span>
-        </mat-select-trigger>
-        <mat-option *ngFor="let group of groupList" [value]="group.id">
-          {{ group.value }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
   </div>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onCancel()">Отмена</button>

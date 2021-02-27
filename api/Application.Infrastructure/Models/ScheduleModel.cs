@@ -27,7 +27,7 @@ namespace Application.Infrastructure.Models
 
         public int? SubjectId { get; set; }
 
-        public IEnumerable<SubjectLecturer> Teachers { get; set; }
+        public Lecturer Teacher { get; set; }
 
         public IEnumerable<Note> Notes { get; set; }
 

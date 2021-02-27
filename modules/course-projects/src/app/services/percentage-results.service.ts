@@ -15,18 +15,18 @@ export class PercentageResultsService {
     return this.http.get('api/CpPercentageResult', {params: new HttpParams({fromObject: params})});
   }
 
-  public setPercentage(studentId: string, percentageGraphId: string, mark: string, comment: string): Observable<any> {
+  public setPercentage(studentId: string, percentageGraphId: string, mark: string, comment: string, showForStudent: boolean): Observable<any> {
     return this.http.post('api/CpPercentageResult', {StudentId: studentId, PercentageGraphId: percentageGraphId, Mark: mark,
-      Comment: comment});
+      Comment: comment, ShowForStudent: showForStudent});
   }
 
-  public editPercentage(id: string, studentId: string, percentageGraphId: string, mark: string, comment: string): Observable<any> {
+  public editPercentage(id: string, studentId: string, percentageGraphId: string, mark: string, comment: string, showForStudent: boolean): Observable<any> {
     return this.http.post('api/CpPercentageResult', {Id: id, StudentId: studentId, PercentageGraphId: percentageGraphId,
-      Mark: mark, Comment: comment});
+      Mark: mark, Comment: comment, ShowForStudent: showForStudent});
   }
 
-  public setMark(assignedProjectId: string, mark: string, lecturerName: string, comment: string, date: string): Observable<any> {
-    return this.http.post('api/CourseStudentMark', {assignedProjectId, mark, lecturerName, comment, date});
+  public setMark(assignedProjectId: string, mark: string, lecturerName: string, comment: string, date: string, showForStudent: boolean): Observable<any> {
+    return this.http.post('api/CourseStudentMark', {assignedProjectId, mark, lecturerName, comment, date, showForStudent});
   }
 
 }

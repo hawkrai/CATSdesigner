@@ -4,8 +4,9 @@
 	using System.Runtime.Serialization;
 
 	using LMPlatform.UI.Services.Modules.Labs;
+    using LMPlatform.UI.Services.Modules.Practicals;
 
-	[DataContract]
+    [DataContract]
 	public class StudentMark
 	{
 		[DataMember]
@@ -18,16 +19,25 @@
 		public string Login { get; set; }
 
 		[DataMember]
-		public List<StudentLabMarkViewData> Marks { get; set; }
+		public List<StudentLabMarkViewData> LabsMarks { get; set; }
 
 		[DataMember]
 		public List<LabVisitingMarkViewData> LabVisitingMark { get; set; }
+
+		[DataMember]
+		public List<StudentPracticalMarkViewData> PracticalsMarks { get; set; }
+
+		[DataMember]
+		public List<PracticalVisitingMarkViewData> PracticalVisitingMark { get; set; }
 
 		[DataMember]
         public List<UserlabFilesViewData> FileLabs { get; set; }
 
 		[DataMember]
 		public string LabsMarkTotal { get; set; }
+
+		[DataMember]
+		public string PracticalsMarkTotal { get; set; }
 
 		[DataMember]
 		public string TestMark { get; set; }

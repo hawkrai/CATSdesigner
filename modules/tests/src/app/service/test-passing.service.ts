@@ -99,11 +99,4 @@ export class TestPassingService {
     headers["Accept"] = "application/json, text/javascript, */*; q=0.01";
     return new HttpHeaders(headers);
   }
-
-  private createBody(data: any): string {
-    return new HttpParams({
-      fromObject: {jsonData: JSON.stringify(data != null ? data : {})},
-      encoder: new CustomEncoder()
-    }).toString();
-  }
 }

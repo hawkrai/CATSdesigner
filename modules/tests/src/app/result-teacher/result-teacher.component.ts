@@ -10,6 +10,7 @@ import {Subject} from "rxjs";
 import {finalize, takeUntil} from "rxjs/operators";
 import {AutocompleteModel} from "../models/autocomplete.model";
 import {Results} from "../models/results.model";
+import {TranslatePipe} from "../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -37,11 +38,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   public groups: Group[];
   public groupsList: AutocompleteModel[] = [];
   public studentList: AutocompleteModel[] = [];
-  public testsList: AutocompleteModel[] = [{display: "Тесты для контроля знаний", value: "0"},
-    {display: "Тесты для самоконтроля", value: "1"},
-    {display: "Предтест для обучения в ЭУМК", value: "2"},
-    {display: "Тесты для обучения в ЭУМК", value: "3"},
-    {display: "Тесты для обучения с искусственной нейронной сетью", value: "4"}];
+  public testsList: AutocompleteModel[];
   public filterStudentsString: string;
   public groupId: number;
   public groupChangeCheckBoxes: string[] = [];
@@ -54,6 +51,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
+              private translatePipe: TranslatePipe,
               private testPassingService: TestPassingService) {
     super();
   }
@@ -62,6 +60,11 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     this.initArrays();
     this.user = JSON.parse(localStorage.getItem("currentUser"));
     this.subject = JSON.parse(localStorage.getItem("currentSubject"));
+    this.testsList = [{display: this.translatePipe.transform("text.tests.for.control", "Тесты для контроля знаний"), value: "0"},
+      {display: this.translatePipe.transform("text.tests.for.self.control", "Тесты для самоконтроля"), value: "1"},
+      {display: this.translatePipe.transform("text.tests.for.pre.eumk", "Предтест для обучения в ЭУМК"), value: "2"},
+      {display: this.translatePipe.transform("text.tests.for.eumk", "Тесты для обучения в ЭУМК"), value: "3"},
+      {display: this.translatePipe.transform("text.tests.for.nn", "Тесты для обучения с искусственной нейронной сетью"), value: "4"}];
     this.testService.getGroupsBySubjectId(this.subject.id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((groups: Group[]) => {

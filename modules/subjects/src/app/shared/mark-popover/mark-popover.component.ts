@@ -1,17 +1,17 @@
-import { iif, Observable } from 'rxjs';
-import {Component, Inject, OnInit} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import { iif, Observable } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DateAdapter, MatDialogRef, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 
-import {SubjectService} from '../../../../../services/subject.service';
-import {validateDate} from '../../../../../shared/validators/date.validator';
+import { DialogData } from 'src/app/models/dialog-data.model';
 import { Lector } from 'src/app/models/lector.model';
+import { SubjectService } from 'src/app/services/subject.service';
 import { IAppState } from 'src/app/store/state/app.state';
-import {DialogData} from '../../../../../models/dialog-data.model';
-import * as subjectSelectors from '../../../../../store/selectors/subject.selector';
+import { validateDate } from '../validators/date.validator';
+
+import * as subjectSelectors from '../../store/selectors/subject.selector';
 import { switchMap } from 'rxjs/operators';
 
 export const MY_FORMATS = {
@@ -27,9 +27,9 @@ export const MY_FORMATS = {
 };
 
 @Component({
-  selector: 'app-news-popover',
-  templateUrl: './labs-mark-popover.component.html',
-  styleUrls: ['./labs-mark-popover.component.less'],
+  selector: 'app-mark-popover',
+  templateUrl: './mark-popover.component.html',
+  styleUrls: ['./mark-popover.component.less'],
   providers: [
     {
       provide: DateAdapter,
@@ -39,7 +39,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class LabsMarkPopoverComponent implements OnInit {
+export class MarkPopoverComponent implements OnInit {
 
   markForm = new FormGroup({
     mark: new FormControl('', [Validators.required, Validators.min(1), Validators.max(10)]),
@@ -51,7 +51,7 @@ export class LabsMarkPopoverComponent implements OnInit {
   lector$: Observable<Lector>;
 
   constructor(
-    public dialogRef: MatDialogRef<LabsMarkPopoverComponent>,
+    public dialogRef: MatDialogRef<MarkPopoverComponent>,
     private subjectService: SubjectService,
     private store: Store<IAppState>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData

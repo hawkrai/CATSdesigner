@@ -1,4 +1,5 @@
 import {Attachment} from "./file/attachment.model";
+import { ScheduleProtectionRecommended } from "./schedule-protection/schedule-protection-recommended.model";
 
 export class Lab {
   LabId: number;
@@ -6,25 +7,11 @@ export class Lab {
   Duration: number;
   Order: number;
   PathFile: string;
-  ScheduleProtectionLabsRecomend: ScheduleProtectionLabsRecomend[];
+  ScheduleProtectionLabsRecommended: ScheduleProtectionRecommended[];
   ShortName: string;
   SubGroup: number;
   SubjectId: number;
   Theme: string;
 }
 
-export class ScheduleProtectionLabsRecomend {
-  Mark: string;
-  ScheduleProtectionId: number;
-}
 
-export class ScheduleProtectionLabs {
-  ScheduleProtectionLabId: number;
-  Date: string;
-  SubGroup: number;
-  SubGroupId: number;
-  StartTime: string;
-  EndTime: string;
-  Building: string;
-  Audience: string;
-}

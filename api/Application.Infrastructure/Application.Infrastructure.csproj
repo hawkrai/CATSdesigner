@@ -225,6 +225,8 @@
     <Compile Include="Models\ScheduleModel.cs" />
     <Compile Include="NoteManagement\INoteManagementService.cs" />
     <Compile Include="NoteManagement\NoteManagementService.cs" />
+    <Compile Include="PracticalManagement\IPracticalManagementService.cs" />
+    <Compile Include="PracticalManagement\PracticalManagementService.cs" />
     <Compile Include="ProjectManagement\IProjectManagementService.cs" />
     <Compile Include="ProjectManagement\ProjectManagementService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

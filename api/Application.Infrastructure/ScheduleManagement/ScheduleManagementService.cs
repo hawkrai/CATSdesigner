@@ -25,13 +25,17 @@ namespace Application.Infrastructure.ScheduleManagement
 			{
 				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date))
 					.ToList()
-					.Select(x => LectureScheduleToModel(x));
+					.Select(LectureScheduleToModel);
+
+				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date == date))
+					.ToList()
+					.Select(PracticalScheduleToModel);
 
 				var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date == date))
 					.ToList()
-					.Select(x => LabScheduleToModel(x));
+					.Select(LabScheduleToModel);
 
-				return !lecturesSchedule.Concat(labsSchedule).Any(x =>
+				return !lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule).Any(x =>
 					((x.Start <= startTime && x.End >= endTime) ||
 					(x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
 					(x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
@@ -50,13 +54,19 @@ namespace Application.Infrastructure.ScheduleManagement
 					.ToList()
 					.Select(x => LectureScheduleToModel(x));
 
+				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date >= startDate && x.Date <= endDate)
+					.Include(x => x.Subject.SubjectLecturers.Select(x => x.Lecturer))
+					.Include(x => x.Subject.Notes))
+					.ToList()
+					.Select(PracticalScheduleToModel);
+
 				var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date >= startDate && x.Date <= endDate)
 					.Include(x => x.Subject.SubjectLecturers.Select(x => x.Lecturer))
 					.Include(x => x.Subject.Notes))
 					.ToList()
 					.Select(x => LabScheduleToModel(x));
 
-				return lecturesSchedule.Concat(labsSchedule);
+				return lecturesSchedule.Concat(practicalsSchedule).Concat(labsSchedule);
 			}
 		}
 
@@ -70,13 +80,19 @@ namespace Application.Infrastructure.ScheduleManagement
 					.ToList()
 					.Select(x => LectureScheduleToModel(x));
 
+				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date == date)
+					.Include(x => x.Subject.SubjectLecturers.Select(x => x.Lecturer))
+					.Include(x => x.Subject.Notes))
+					.ToList()
+					.Select(PracticalScheduleToModel);
+
 				var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date == date)
 					.Include(x => x.Subject.SubjectLecturers.Select(x => x.Lecturer))
 					.Include(x => x.Subject.Notes))
 					.ToList()
 					.Select(x => LabScheduleToModel(x));
 
-				return lecturesSchedule.Concat(labsSchedule);
+				return lecturesSchedule.Concat(practicalsSchedule).Concat(labsSchedule);
 			}
 
 
@@ -94,6 +110,25 @@ namespace Application.Infrastructure.ScheduleManagement
 					Building = building,
 					EndTime = endTime,
 					StartTime = startTime
+				});
+				repositoriesContainer.ApplyChanges();
+			}
+
+		}
+
+		public void SaveDatePractical(int subjectId, int groupId, DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().Save(new ScheduleProtectionPractical
+				{
+					Date = date,
+					SubjectId = subjectId,
+					Audience = audience,
+					Building = building,
+					EndTime = endTime,
+					StartTime = startTime,
+					GroupId = groupId,
 				});
 				repositoriesContainer.ApplyChanges();
 			}
@@ -130,13 +165,32 @@ namespace Application.Infrastructure.ScheduleManagement
 				Start = lecturesSchedule.StartTime,
 				Name = lecturesSchedule.Subject?.Name ?? string.Empty,
 				ShortName = lecturesSchedule.Subject?.Color ?? string.Empty,
-				Teachers = lecturesSchedule.Subject?.SubjectLecturers ?? Enumerable.Empty<SubjectLecturer>(),
+				Teacher = SubjectManagementService.GetSubjectOwner(lecturesSchedule.SubjectId),
 				SubjectId = lecturesSchedule.SubjectId,
 				Type = ClassType.Lecture,
 				Date = lecturesSchedule.Date,
 				Id = lecturesSchedule.Id
 			};
 		}
+
+		private ScheduleModel PracticalScheduleToModel(ScheduleProtectionPractical practicalSchedule)
+        {
+			return new ScheduleModel
+			{
+				Audience = practicalSchedule.Audience,
+				Building = practicalSchedule.Building,
+				Color = practicalSchedule.Subject?.Color ?? string.Empty,
+				End = practicalSchedule.EndTime,
+				Start = practicalSchedule.StartTime,
+				Name = practicalSchedule.Subject?.Name ?? string.Empty,
+				ShortName = practicalSchedule.Subject?.Color ?? string.Empty,
+				Teacher = SubjectManagementService.GetSubjectOwner(practicalSchedule.SubjectId),
+				SubjectId = practicalSchedule.SubjectId,
+				Type = ClassType.Practical,
+				Date = practicalSchedule.Date,
+				Id = practicalSchedule.Id
+			};
+        }
 
 		private ScheduleModel LabScheduleToModel(ScheduleProtectionLabs labSchedule)
 		{
@@ -149,7 +203,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				Start = labSchedule.StartTime,
 				Name = labSchedule.Subject?.Name ?? string.Empty,
 				ShortName = labSchedule.Subject?.Color ?? string.Empty,
-				Teachers = labSchedule.Subject?.SubjectLecturers ?? Enumerable.Empty<SubjectLecturer>(),
+				Teacher = labSchedule.SubjectId.HasValue ? SubjectManagementService.GetSubjectOwner((int)labSchedule.SubjectId) : null,
 				SubjectId = labSchedule.SubjectId,
 				Type = ClassType.Lab,
 				Date = labSchedule.Date,
@@ -174,13 +228,19 @@ namespace Application.Infrastructure.ScheduleManagement
 					.ToList()
 					.Select(x => LectureScheduleToModel(x));
 
+				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date == date && x.StartTime >= startTime && x.EndTime <= endTime)
+					.Include(x => x.Subject.SubjectLecturers.Select(x => x.Lecturer))
+					.Include(x => x.Subject.Notes))
+					.ToList()
+					.Select(x => PracticalScheduleToModel(x));
+
 				var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date == date && x.StartTime >= startTime && x.EndTime <= endTime)
 					.Include(x => x.Subject.SubjectLecturers.Select(x => x.Lecturer))
 					.Include(x => x.Subject.Notes))
 					.ToList()
 					.Select(x => LabScheduleToModel(x));
 
-				return lecturesSchedule.Concat(labsSchedule);
+				return lecturesSchedule.Concat(practicalsSchedule).Concat(labsSchedule);
 			}
 		}
     }

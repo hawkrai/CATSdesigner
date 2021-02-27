@@ -1,13 +1,12 @@
 <!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Управление тестами'"></app-header>-->
 <div class="question-page__backlink-first" (click)="navigate()">
-  <mat-icon>keyboard_backspace</mat-icon>
-  {{"Вернуться к тестам"}}
+  {{'text.test.back.to.test' | translate : "< К тестам"}}
 </div>
 <div class="question-page-container">
   <div class="question-page-description-title">
     <div class="question-page-description-title-text">
-      Вопросы
+      {{'text.test.questions' | translate : 'Вопросы'}}
     </div>
     <div class="question-page-description-title-text" [ngClass]="'small'" *ngIf="test">
       {{test.Title}}
@@ -30,7 +29,6 @@
     (onOpenEditPopup)="openPopup($event)">
   </app-table-questions>
   <div class="question-page__backlink" (click)="navigate()">
-    <mat-icon>keyboard_backspace</mat-icon>
-    {{"Вернуться к тестам"}}
+    {{'text.test.back.to.test' | translate : "< К тестам"}}
   </div>
 </div>

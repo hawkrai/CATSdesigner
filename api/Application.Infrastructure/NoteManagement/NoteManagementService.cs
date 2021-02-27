@@ -39,5 +39,35 @@ namespace Application.Infrastructure.NoteManagement
                 repositoriesContainer.ApplyChanges();
             }
         }
+
+        public List<UserNote> GetPersonalNotes(int userId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+
+                return repositoriesContainer.RepositoryFor<UserNote>().GetAll(new Query<UserNote>(x => x.UserId == userId)).ToList();
+            }
+        }
+
+        public void SavePersonalNote(UserNote note)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                repositoriesContainer.RepositoryFor<UserNote>().Save(note);
+                repositoriesContainer.ApplyChanges();
+
+            }
+        }
+
+        public void DeletePersonalNote(int noteId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var repository = repositoriesContainer.RepositoryFor<UserNote>();
+                var note = repository.GetBy(new Query<UserNote>(x => x.Id == noteId));
+                repository.Delete(note);
+                repositoriesContainer.ApplyChanges();
+            }
+        }
     }
 }

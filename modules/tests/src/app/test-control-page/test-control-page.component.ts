@@ -11,6 +11,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {Group} from "../models/group.model";
+import {TranslatePipe} from "../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -46,6 +47,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
 
   constructor(private testService: TestService,
               private router: Router,
+              private translatePipe: TranslatePipe,
               private snackBar: MatSnackBar,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
@@ -115,7 +117,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .subscribe(() => {
         this.getTests(this.subject.id);
       },error1 => {
-        this.openSnackBar("Не удалось удалить тест");
+        this.openSnackBar(this.translatePipe.transform('text.test.error.delete.test',"Не удалось удалить тест"));
       });
   }
 

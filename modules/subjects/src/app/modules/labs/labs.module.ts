@@ -9,7 +9,6 @@ import {JobProtectionComponent} from './components/job-protection/job-protection
 import {MatModule} from '../../mat.module';
 import {LabWorkPopoverComponent} from './components/labs-work/lab-work-popover/lab-work-popover.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {LabsMarkPopoverComponent} from './components/results/labs-mark-popover/labs-mark-popover.component';
 import {AddLabPopoverComponent} from './components/job-protection/add-lab-popover/add-lab-popover.component';
 import {SharedModule} from '../../shared/shared.module';
 import {DragDropModule} from '@angular/cdk/drag-drop';
@@ -33,7 +32,6 @@ import { JobProtectionItemComponent } from './components/job-protection/job-prot
     ResultsComponent,
     JobProtectionComponent,
     LabWorkPopoverComponent,
-    LabsMarkPopoverComponent,
     AddLabPopoverComponent,
     CheckPlagiarismStudentComponent,
     ResultPipe,
@@ -47,7 +45,6 @@ import { JobProtectionItemComponent } from './components/job-protection/job-prot
   ],
   entryComponents: [
     LabWorkPopoverComponent,
-    LabsMarkPopoverComponent,
     AddLabPopoverComponent,
     CheckPlagiarismStudentComponent,
     VisitDateLabsPopoverComponent

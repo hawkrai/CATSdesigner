@@ -56,7 +56,7 @@ export class ComplexGridComponent implements OnInit {
       width: '400px',
       title: 'Создание ЭУМК',
       name: '',
-      subjectName: this.subjectName,
+      subjectName: this.subjectName,      
       isNew: true
     };
 
@@ -66,7 +66,10 @@ export class ComplexGridComponent implements OnInit {
       const complex: Complex = {
         name: result.name,
         container: '',
-        subjectId: 3
+        subjectId: this.subjectId,
+        includeLabs: result.includeLabs,
+        includeLectures: result.includeLectures,
+        includeTests: result.includeTests
       }
       this.complexService.addRootConcept(complex).subscribe(result => {
         if (result['Code'] === '200') {

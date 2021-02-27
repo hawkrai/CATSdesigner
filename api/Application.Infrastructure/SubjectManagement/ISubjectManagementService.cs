@@ -33,15 +33,11 @@ namespace Application.Infrastructure.SubjectManagement
 
         void DeleteLectionVisitingDate(int id);
 
-        void DeletePracticalsVisitingDate(int id);
-
         void DeleteLabsVisitingDate(int id);
 
         void DeleteLabs(int id);
 
         void DeleteNonReceivedUserFiles(int groupId, int subjId);
-
-        void DeletePracticals(int id);
 
         bool IsWorkingSubject(int userId, int subjectId);
 
@@ -59,10 +55,7 @@ namespace Application.Infrastructure.SubjectManagement
 
         Labs UpdateLabOrder(Labs labs, int order);
 
-        Practical UpdatePracticalOrder(Practical practical, int order);
-
         IList<Labs> GetSubjectLabs(int subjectId);
-        IList<Practical> GetSubjectPracticals(int subjectId);
         IList<Lectures> GetSubjectLectures(int subjectId);
 
         Labs SaveLabs(Labs labs, IList<Attachment> attachments, int userId);
@@ -70,10 +63,6 @@ namespace Application.Infrastructure.SubjectManagement
 		UserLabFiles SaveUserLabFiles(UserLabFiles userLabFiles, IList<Attachment> attachments);
 
         Labs GetLabs(int id);
-
-        Practical GetPractical(int id);
-
-        Practical SavePractical(Practical practical, IList<Attachment> attachments, int userId);
 
         void SaveDateLectures(int subjectId, DateTime date);
 
@@ -83,7 +72,6 @@ namespace Application.Infrastructure.SubjectManagement
 
         void SaveScheduleProtectionLabsDate(int subGroupId, DateTime date);
 
-        void SaveScheduleProtectionPracticalDate(ScheduleProtectionPractical scheduleProtectionPractical);
 
         SubGroup GetSubGroup(int subGroupId);
 
@@ -93,14 +81,10 @@ namespace Application.Infrastructure.SubjectManagement
 
         void SaveStudentLabsMark(StudentLabMark studentLabMark);
 
-        void SavePracticalVisitingData(List<ScheduleProtectionPracticalMark> protectionPracticalMarks);
-
-        void SavePracticalMarks(List<StudentPracticalMark> studentPracticalMarks);
-
         List<string> GetLecturesAttachments(int subjectId);
 
         List<string> GetLabsAttachments(int subjectId);
-        List<string> GetPracticalsAttachments(int subjectId);
+
         List<string> GetNewsAttachments(int subjectId);
 
         IEnumerable<string> GetSubjectAttachments(int subjectId);
@@ -135,6 +119,8 @@ namespace Application.Infrastructure.SubjectManagement
 
 	    List<Subject> GetSubjectsByLectorOwner(int userId, bool lite = false);
 
+        Lecturer GetSubjectOwner(int subjectId);
+
 	    IList<SubGroup> GetSubGroupsV2(int subjectId, int groupId);
 
         IList<SubGroup> GetSubGroupsV3(int subjectId, int groupId);
@@ -158,6 +144,7 @@ namespace Application.Infrastructure.SubjectManagement
 
 		List<ProfileCalendarModel> GetLecturesEvents(int groupId, int userId);
 
-        List<ScheduleProtectionPractical> GetScheduleProtectionPractical(int subjectId, int groupId);
+        void SavePracticalVisitingData(ScheduleProtectionPracticalMark protectionPracticalMarks);
+
     }
 }

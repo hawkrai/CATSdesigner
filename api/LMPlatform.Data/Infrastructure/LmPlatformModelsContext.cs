@@ -216,6 +216,8 @@ namespace LMPlatform.Data.Infrastructure
         public DbSet<AdaptiveLearningProgress> AdaptiveLearningProgress { get; set; }
 
         public DbSet<Note> Notes { get; set; }
+
+        public DbSet<UserNote> UserNotes { get; set; }
         #endregion DataContext Members
 
         #region Protected Members
@@ -494,13 +496,19 @@ namespace LMPlatform.Data.Infrastructure
                 .HasMany<Note>(e => e.Notes)
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.UserId)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<User>()
+                .HasMany<UserNote>(e => e.PersonalNotes)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.UserId)
+                .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Subject>()
-             .HasMany<Note>(e => e.Notes)
-             .WithRequired(e => e.Subject)
-             .HasForeignKey(e => e.SubjectId)
-             .WillCascadeOnDelete(false);
+                 .HasMany<Note>(e => e.Notes)
+                 .WithRequired(e => e.Subject)
+                 .HasForeignKey(e => e.SubjectId)
+                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Practical>()
                 .HasMany<StudentPracticalMark>(e => e.StudentPracticalMarks)

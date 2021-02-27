@@ -6,4 +6,5 @@ export class StudentPercentageResults extends Student {
   MarkDate: string;
   Comment: string;
   PercentageResults: PercentageResult[];
+  ShowForStudent: boolean;
 }

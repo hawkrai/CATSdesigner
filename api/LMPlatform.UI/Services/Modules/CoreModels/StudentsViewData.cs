@@ -91,7 +91,11 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             PracticalId = practical.Id,
                             Mark = model.Mark,
                             StudentId = StudentId,
-                            StudentPracticalMarkId = model.Id
+                            StudentPracticalMarkId = model.Id,
+                            Comment = model.Comment,
+                            Date = model.Date,
+                            ShowForStudent = model.ShowForStudent,
+                            LecturerId = model.LecturerId
                         });
                     }
                     else
@@ -101,7 +105,11 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             PracticalId = practical.Id,
                             Mark = string.Empty,
                             StudentId = StudentId,
-                            StudentPracticalMarkId = 0
+                            StudentPracticalMarkId = 0,
+                            Comment = string.Empty,
+                            Date = string.Empty,
+                            LecturerId = new int?(),
+                            ShowForStudent = false
                         });
                     }
                 }
@@ -153,7 +161,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = model.Mark,
                             ScheduleProtectionPracticalId = scheduleProtectionPractical.Id,
                             StudentId = student.Id,
-                            PracticalVisitingMarkId = student.Id
+                            PracticalVisitingMarkId = student.Id,
+                            ShowForStudent = model.ShowForStudent
                         });
                     }
                     else
@@ -164,7 +173,9 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = string.Empty,
                             ScheduleProtectionPracticalId = scheduleProtectionPractical.Id,
                             StudentId = this.StudentId,
-                            PracticalVisitingMarkId = 0
+                            PracticalVisitingMarkId = 0,
+                            ShowForStudent = false
+
                         });
                     }
                 }

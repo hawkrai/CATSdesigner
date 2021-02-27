@@ -8,6 +8,7 @@ import {Subject} from "rxjs";
 import {takeUntil, tap} from "rxjs/operators";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormUtils} from "../../../utils/form.utils";
+import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -18,11 +19,31 @@ import {FormUtils} from "../../../utils/form.utils";
 })
 export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnInit {
 
-  public CATEGORIES = [{name: "Тест для контроля знаний", tooltip: "Необходимо открывать доступ обучающимся для каждого прохождения теста"},
-    {name: "Тест для самоконтроля", tooltip: "Постоянно открыт для обучающихся"},
-    {name: "Предтест для обучения в ЭУМК", tooltip: "Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное Обучение, доступен из модуля ЭУМК"},
-    {name: "Тест для обучения в ЭУМК", tooltip: "Позволяют реализовать адаптивное обучение по результатам предтеста"},
-    {name: "Тест для обучения с искусственной нейронной сетью", tooltip: "Позволяет определять плохо изученные темы обучающимся"}];
+  public CATEGORIES = [{
+    name: "text.test.for.control",
+    value: "Тест для контроля знаний",
+    tooltip: "Необходимо открывать доступ обучающимся для каждого прохождения теста"
+  },
+    {
+      name: "text.test.for.self.control",
+      value: "Тест для самоконтроля",
+      tooltip: "Постоянно открыт для обучающихся"
+    },
+    {
+      name: "text.test.for.pre.eumk",
+      value: "Предтест для обучения в ЭУМК",
+      tooltip: "Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное Обучение, доступен из модуля ЭУМК"
+    },
+    {
+      name: "text.test.for.eumk",
+      value: "Тест для обучения в ЭУМК",
+      tooltip: "Позволяют реализовать адаптивное обучение по результатам предтеста"
+    },
+    {
+      name: "text.test.for.nn",
+      value: "Тест для обучения с искусственной нейронной сетью",
+      tooltip: "Позволяет определять плохо изученные темы обучающимся"
+    }];
 //todo any delete
   public user: any;
   public newTest: boolean = true;
@@ -35,6 +56,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   constructor(private testService: TestService,
               private formBuilder: FormBuilder,
               private snackBar: MatSnackBar,
+              private translatePipe: TranslatePipe,
               public dialogRef: MatDialogRef<EditTestPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     super();
@@ -142,7 +164,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       }
       this.editingTest.SubjectId = this.subject.id;
       if (!this.chosenType) {
-        this.openSnackBar("Выберите тип");
+        this.openSnackBar(this.translatePipe.transform("text.test.choose.type", "Выберите тип"));
       } else if (this.formGroup.valid && this.editingTest.Title) {
         this.testService.saveTest(this.editingTest)
           .pipe(
@@ -150,7 +172,8 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
               if (message && message.ErrorMessage) {
                 this.openSnackBar(message.ErrorMessage);
               } else {
-                this.newTest ? this.openSnackBar("Тест создан") : this.openSnackBar("Тест изменен");
+                this.newTest ? this.openSnackBar(this.translatePipe.transform("text.test.created", "Тест создан")) :
+                  this.openSnackBar(this.translatePipe.transform("text.test.edited", "Тест изменен"));
                 this.dialogRef.close(true);
               }
             }),
@@ -159,7 +182,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
           .subscribe();
       }
       else {
-        this.openSnackBar("Проверьте правильность заполенения данных");
+        this.openSnackBar(this.translatePipe.transform("text.test.check.data.correctness", "Проверьте правильность заполенения данных"));
       }
     } else {
       FormUtils.highlightInvalidControls(this.formGroup);

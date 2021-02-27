@@ -26,13 +26,13 @@ namespace Application.Infrastructure.GroupManagement
 
 		List<List<string>> GetLabsScheduleMarks(int subjectId, int groupId, int subGroupOneId, int subGroupTwoId);
 
-        List<string> GetCpScheduleVisitings(int subjectId, int groupId);
+        List<string> GetCpScheduleVisitings(int subjectId, int groupId, int lecturerId);
 
-        List<List<string>> GetCpScheduleMarks(int subjectId, int groupId);
+        List<List<string>> GetCpScheduleMarks(int subjectId, int groupId, int lecturerId);
 
-        List<string> GetCpPercentage(int subjectId, int groupId);
+        List<string> GetCpPercentage(int subjectId, int groupId, int lecturerId);
 
-        List<List<string>> GetCpMarks(int subjectId, int groupId);
+        List<List<string>> GetCpMarks(int subjectId, int groupId, int lecturerId);
 
         Group GetGroupByName(string groupName);
 

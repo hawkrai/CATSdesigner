@@ -27,5 +27,9 @@ namespace LMPlatform.UI.Services.Subjects
         [WebInvoke(Method = "GET", UriTemplate = "/Assigned/{subjectId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         UserAssignedViewData UserAssigned(string subjectId);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/GetSubjectOwner/{subjectId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        LectorResult GetSubjectOwner(string subjectId);
+
     }
 }
