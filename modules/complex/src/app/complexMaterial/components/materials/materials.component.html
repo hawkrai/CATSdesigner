@@ -8,9 +8,17 @@
       <a class="btn clickable" (click)="openPDF(node.FilePath)">
         {{node.Name}}
       </a>
-      <a class="btn clickable" *ngIf="isLucturer" (click)="openMonitoring(node.Id, node.Name)">
-        <mat-icon class="time-icon">access_time</mat-icon>
-      </a>  
+      <div class="work-icons" *ngIf="isLucturer">
+        <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)">
+          <mat-icon class="icon">access_time</mat-icon>
+        </a>
+        <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)">
+          <mat-icon class="icon">edit</mat-icon>
+        </a>
+        <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)">
+          <mat-icon class="icon">delete</mat-icon>
+        </a>
+      </div>
     </li>
   </mat-tree-node>
   <!-- This is the tree node template for expandable nodes -->

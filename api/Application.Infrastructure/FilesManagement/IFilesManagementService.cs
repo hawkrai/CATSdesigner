@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LMPlatform.Models;
 
 namespace Application.Infrastructure.FilesManagement
@@ -12,6 +13,8 @@ namespace Application.Infrastructure.FilesManagement
         string GetFileDisplayName(string guid);
 
         void SaveFiles(IEnumerable<Attachment> attachment, string path = "");
+
+        void SaveFiles(IEnumerable<Attachment> attachments, Func<Attachment, string> property);
 
         IList<Attachment> GetAttachments(string path);
 
