@@ -102,4 +102,11 @@ export class PracticalsEffects {
             switchMap((body) => [catsActions.showMessage({ body}), practicalsActions.loadMarks()])
         ))
     ));
+
+    setPracticalMark$ = createEffect(() => this.actions$.pipe(
+        ofType(practicalsActions.setPracticalMark),
+        switchMap(({ body }) => this.rest.setPracticalMark({ ...body }).pipe(
+            switchMap((body) => [catsActions.showMessage({ body }), practicalsActions.loadMarks()])
+        ))
+    ));
 }

@@ -49,5 +49,9 @@ namespace LMPlatform.UI.Services.Practicals
         [OperationContract]
         [WebInvoke(UriTemplate = "/UpdatePracticalsOrder", RequestFormat = WebMessageFormat.Json, Method = "POST")]
         ResultViewData UpdatePracticalsOrder(int subjectId, int prevIndex, int curIndex);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveStudentPracticalMark")]
+        ResultViewData SaveStudentLabsMark(int studentId, int practicalId, string mark, string comment, string date, int id, bool showForStudent);
     }
 }

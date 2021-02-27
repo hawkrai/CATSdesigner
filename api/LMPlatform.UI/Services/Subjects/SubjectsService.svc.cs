@@ -10,6 +10,7 @@ using LMPlatform.UI.ViewModels.SubjectViewModels;
 using System.Collections.Generic;
 using Application.Infrastructure.GroupManagement;
 using Application.Core.Helpers;
+using System;
 
 namespace LMPlatform.UI.Services.Subjects
 {
@@ -74,6 +75,28 @@ namespace LMPlatform.UI.Services.Subjects
             {
                 IsAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, int.Parse(subjectId))
             };
+        }
+
+        public LectorResult GetSubjectOwner(string subjectId)
+        {
+            try
+            {
+                var lectorOwner = SubjectManagementService.GetSubjectOwner(int.Parse(subjectId));
+                return new LectorResult
+                {
+                    Code = "200",
+                    Lector = new LectorViewData(lectorOwner, true),
+                    Message = "Владелец предмета успешно получен"
+                };
+            } catch
+            {
+                return new LectorResult
+                {
+                    Code = "500",
+                    Message = "Не удалось получить владельца предмета"
+                };
+            }
+
         }
     }
 }

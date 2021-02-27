@@ -51,18 +51,6 @@ namespace LMPlatform.UI.Services.Schedule
         ScheduleViewResult GetUserSchedule(string dateStart, string dateEnd);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/SaveNote")]
-        ResultViewData SaveNote(int id, int subjectId, string text, string date, string time);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/DeleteNote")]
-        ResultViewData DeleteNote(int id);
-
-        [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetUserNotes")]
-        NoteViewResult GetUserNotes();
-
-        [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetScheduleBetweenTime?date={date}&startTime={startTime}&endTime={endTime}")]
         ScheduleViewResult GetScheduleBetweenTime(string date, string startTime, string endTime);
 

@@ -24,7 +24,7 @@ namespace LMPlatform.UI.Services.Modules.Schedule
             Start = schedule.Start?.ToString(@"hh\:mm");
             Date = schedule.Date.ToString("dd/MM/yyyy");
             SubjectId = schedule.SubjectId;
-            Teachers = schedule.Teachers?.Select(x => new LectorViewData(x.Lecturer)) ?? Enumerable.Empty<LectorViewData>();
+            Teacher = schedule.Teacher == null ? null : new LectorViewData(schedule.Teacher);
             Type = schedule.Type;
             Notes = schedule.Notes?.Select(x => new NoteViewData(x)) ?? Enumerable.Empty<NoteViewData>();
         }
@@ -56,7 +56,7 @@ namespace LMPlatform.UI.Services.Modules.Schedule
 
         public int? SubjectId { get; set; }
         [DataMember]
-        public IEnumerable<LectorViewData> Teachers { get; set; }
+        public LectorViewData Teacher { get; set; }
 
         [DataMember]
         public IEnumerable<NoteViewData> Notes { get; set; }

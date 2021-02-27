@@ -24,6 +24,7 @@ import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.co
 import { FileDownloadPopoverComponent } from './file-download-popover/file-download-popover.component';
 import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/check-plagiarism-popover.component';
 import { SortByPipe } from './pipes/sort-by.pipe';
+import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { SortByPipe } from './pipes/sort-by.pipe';
     FindPipe,
     AnyPipe,
     WidthPipe,
-    SortByPipe
+    SortByPipe,
+    MarkPopoverComponent
     ],
   imports: [
     CommonModule,
@@ -60,6 +62,7 @@ import { SortByPipe } from './pipes/sort-by.pipe';
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
+    MarkPopoverComponent
   ],
   exports: [
     FilterPipe,

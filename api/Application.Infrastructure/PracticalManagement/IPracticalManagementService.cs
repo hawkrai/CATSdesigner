@@ -12,6 +12,8 @@ namespace Application.Infrastructure.PracticalManagement
 
         List<ScheduleProtectionPractical> GetScheduleProtectionPractical(int subjectId, int groupId);
 
+        void SaveStudentPracticalMark(StudentPracticalMark studentPracticalMark);
+
         List<ScheduleProtectionPractical> GetScheduleProtectionPractical(Query<ScheduleProtectionPractical> query);
         List<string> GetPracticalsAttachments(int subjectId);
         void SavePracticalVisitingData(List<ScheduleProtectionPracticalMark> protectionPracticalMarks);

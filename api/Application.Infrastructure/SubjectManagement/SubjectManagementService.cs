@@ -341,9 +341,12 @@ namespace Application.Infrastructure.SubjectManagement
 
 				foreach (var subjectNewse in news)
 				{
+					var subject = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject;
 					subjectNewse.Subject = new Subject
 					{
-						Name = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject.Name
+						Name = subject.Name,
+						Color = subject.Color,
+						ShortName = subject.ShortName
 					};
 				}
 
@@ -368,9 +371,12 @@ namespace Application.Infrastructure.SubjectManagement
 
 				foreach (var subjectNewse in news)
 				{
+					var subject = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject;
 					subjectNewse.Subject = new Subject
 												{
-													Name = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject.Name
+													Name = subject.Name,
+													Color = subject.Color,
+													ShortName = subject.ShortName
 												};
 				}
 
@@ -1190,5 +1196,18 @@ namespace Application.Infrastructure.SubjectManagement
 				.OrderBy(x => x.Order)
 				.ToList();
 		}
-	}
+
+        public Lecturer GetSubjectOwner(int subjectId)
+        {
+			try
+            {
+				using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+				var subjectLecturer = repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(new Query<SubjectLecturer>(x => x.SubjectId == subjectId && x.Owner.HasValue)).FirstOrDefault();
+				return repositoriesContainer.LecturerRepository.GetBy(new Query<Lecturer>(x => x.Id == subjectLecturer.Owner).Include(x => x.User));
+			} catch
+            {
+				return null;
+            }
+		}
+    }
 }

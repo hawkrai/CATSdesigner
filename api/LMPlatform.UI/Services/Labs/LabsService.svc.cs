@@ -281,7 +281,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				        SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, WebSecurity.CurrentUserId, mark, comment, date, id, showForStudent));
+				        SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
 
                 return new ResultViewData
                 {

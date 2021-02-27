@@ -1,0 +1,130 @@
+.protection-schedule-component {
+
+    &__title {
+      color: #363636;
+      font-weight: 400;
+    }
+  
+    &__table {
+      margin-bottom: 30px;
+      margin-top: 15px;
+  
+      .mat-column-position:first-of-type, .mat-header-cell:first-of-type {
+        max-width: 35px;
+        max-height: 55px;
+        width: 35px;;
+        height: 55px;
+        box-sizing: border-box;
+      }
+  
+  
+      table.mat-table {
+        width: 100%;
+      }
+      .mat-header-cell {
+        font-family: Roboto, sans-serif;
+        font-weight: 600;
+        color: #363636;
+        font-size: 14px;
+        padding-left: 10px;
+      }
+  
+      th.mat-header-cell:last-of-type {
+        padding-right: 0;
+      }
+  
+      td.mat-cell:first-of-type {
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+      }
+  
+      .mat-header-cell{
+        width: 5%;
+        padding-right: 10px;
+      }
+  
+      th.mat-header-cell:first-of-type {
+        padding-right: 0;
+        padding-left: 0;
+        text-align: center;
+      }
+  
+      .mat-column-name {
+        padding-left: 10px;
+        width: fit-content;
+      }
+  
+      .mat-cell {
+        &.mat-column-total-lab {
+          color: #D32F2F;
+          font-weight: 500;
+          padding: 0;
+          text-align: center;
+        }
+  
+        &.mat-column-total-test {
+          color: #1976D2;
+          font-weight: 500;
+          padding: 0;
+          text-align: center;
+        }
+  
+        &.mat-column-total {
+          color: #388E3C;
+          font-weight: 500;
+          padding: 0;
+          text-align: center;
+        }
+  
+        &.not-all {
+          p {
+            opacity: 0.5;
+          }
+        }
+      }
+  
+      tr.mat-header-row {
+        height: 86px;
+      }
+  
+      td {
+        border-top: 1px solid rgba(0,0,0,.12);
+      }
+  
+      td, th {
+        border-right: 1px solid rgba(0,0,0,.12);
+        border-bottom: 0;
+      }
+    }
+  
+    .mark {
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+  
+      .not-visit {
+        background: #BF360C;
+        width: 4.5px;
+        height: 4.5px;
+        border-radius: 2.25px;
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+      }
+    }
+    .comment {
+      position: absolute;
+      top: 0;
+      transform: translateY(-50%);
+      right: 3px;
+      &-icon {
+        font-size: 10px;
+        &.mat-icon {
+          width: auto;
+          height: auto;
+        }
+      }
+    }
+  }
+  

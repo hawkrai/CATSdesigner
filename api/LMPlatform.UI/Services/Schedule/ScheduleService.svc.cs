@@ -21,12 +21,10 @@ namespace LMPlatform.UI.Services.Schedule
     {
         private readonly LazyDependency<IScheduleManagementService> scheduleManagementService = new LazyDependency<IScheduleManagementService>();
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
-        private readonly LazyDependency<INoteManagementService> noteManagementService = new LazyDependency<INoteManagementService>();
         private readonly LazyDependency<IPracticalManagementService> practicalManagementService = new LazyDependency<IPracticalManagementService>();
         public IScheduleManagementService ScheduleManagementService => scheduleManagementService.Value;
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
-        public INoteManagementService NoteManagementService => noteManagementService.Value;
 
         public IPracticalManagementService PracticalManagementService => practicalManagementService.Value;
 
@@ -208,74 +206,6 @@ namespace LMPlatform.UI.Services.Schedule
             return new ScheduleViewResult
             {
                 Schedule = ScheduleManagementService.GetUserSchedule(UserContext.CurrentUserId, dateTimeStart, dateTimeEnd).Select(x => new ScheduleViewData(x))
-            };
-        }
-
-        public ResultViewData SaveNote(int id, int subjectId, string text, string date, string time)
-        {
-            try
-            {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
-                if (!isUserAssigned)
-                {
-                    return new ResultViewData
-                    {
-                        Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
-                    };
-                }
-                var dateTime = DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                var timeSpan = DateTime.ParseExact(time, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
-                NoteManagementService.SaveNote(new Models.Note
-                {
-                    Date = dateTime,
-                    Id = id,
-                    Text = text,
-                    SubjectId = subjectId,
-                    Time = timeSpan,
-                    UserId = UserContext.CurrentUserId
-                });
-                return new ResultViewData
-                {
-                    Code = "200",
-                    Message = "Заметка успешно сохранена"
-                };
-            } catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Не удалось сохранить заметку",
-                    Code = "500"
-                };
-            }
-        }
-
-        public ResultViewData DeleteNote(int id)
-        {
-            try
-            {
-                NoteManagementService.DeleteNote(id);
-                return new ResultViewData
-                {
-                    Code = "200",
-                    Message = "Заметка успешно удалена"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Не удалось удалить заметку",
-                    Code = "500"
-                };
-            }
-        }
-
-        public NoteViewResult GetUserNotes()
-        {
-            return new NoteViewResult
-            {
-                Notes = NoteManagementService.GetUserNotes(UserContext.CurrentUserId).Select(x => new NoteViewData(x))
             };
         }
 

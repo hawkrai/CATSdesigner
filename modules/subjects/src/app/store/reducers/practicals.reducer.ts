@@ -12,7 +12,8 @@ export const practicalsReducer = createReducer(
     on(practicalsActions.resetPracticals, (state): IPracticalsState => ({
         ...state,
         practicals: [],
-        schedule: []
+        schedule: [],
+        students: []
     })),
     on(practicalsActions.loadScheduleSuccess, (state, { schedule }): IPracticalsState => ({
         ...state,

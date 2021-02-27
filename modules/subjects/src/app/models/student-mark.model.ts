@@ -10,7 +10,7 @@ export class StudentMark {
     StudentId: number;
     PracticalsMarkTotal: string;
     PracticalVisitingMark: PracticalVisitingMark[];
-    PracticalsMark: PracticalMark[]
+    PracticalsMarks: PracticalMark[]
     LabsMarkTotal: string;
     LabVisitingMark: LabVisitingMark[];
     LabsMarks: LabMark[];

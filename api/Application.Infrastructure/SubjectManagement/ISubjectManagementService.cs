@@ -119,6 +119,8 @@ namespace Application.Infrastructure.SubjectManagement
 
 	    List<Subject> GetSubjectsByLectorOwner(int userId, bool lite = false);
 
+        Lecturer GetSubjectOwner(int subjectId);
+
 	    IList<SubGroup> GetSubGroupsV2(int subjectId, int groupId);
 
         IList<SubGroup> GetSubGroupsV3(int subjectId, int groupId);

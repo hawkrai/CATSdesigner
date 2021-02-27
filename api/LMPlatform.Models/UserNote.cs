@@ -7,17 +7,15 @@ using System.Threading.Tasks;
 
 namespace LMPlatform.Models
 {
-    public class Note : ModelBase
+    public class UserNote : ModelBase
     {
         public string Text { get; set; }
-
-        public int UserId { get; set; }
+        public DateTime Date { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
 
         public User User { get; set; }
 
-        public int SubjectId { get; set; }
-
-        public Subject Subject { get; set; }
-
+        public int UserId { get; set; }
     }
 }

@@ -1,0 +1,77 @@
+<div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
+    <div class="protection-schedule-component__body">
+        <div class="protection-schedule-component__table">
+            <table mat-table [dataSource]="state.students" class="mat-elevation-z14">
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef>№</th>
+                    <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Студенты</th>
+                    <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
+                </ng-container>
+
+                <ng-container *ngFor="let schedulePractical of getHeaders(state.practicals); let i = index"
+                            matColumnDef="{{schedulePractical.head}}"
+                >
+                <th mat-header-cell *matHeaderCellDef
+                [matTooltip]="schedulePractical.tooltip"
+                matTooltipPosition="above" 
+                >
+                    <div>{{schedulePractical.text}}</div>
+                </th>
+                <td mat-cell
+                    *matCellDef="let element"
+                    [ngStyle]="{ padding: 0, position: 'relative'}"
+                >
+                    <div *ngIf="element | markProperty:+schedulePractical.head:state.practicals:state.schedule as markProperty;"
+                        (dblclick)="setMark(element,+schedulePractical.head, markProperty.recommendedMark);"
+                        class="mark">
+                    <div *ngIf="markProperty.mark">
+                        {{markProperty.mark.Mark}}
+                        <div *ngIf="markProperty.mark.Mark && markProperty.mark.Comment && (isTeacher || (markProperty.mark.ShowForStudent && markProperty.mark.StudentId === state.userId))" class="comment" [matTooltip]="markProperty.mark.Comment" matTooltipPosition="above">
+                        <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
+                        </div>
+                    </div>
+                    <div *ngIf="markProperty.recommendedMark" style="opacity: 0.3">
+                        {{markProperty.recommendedMark}}
+                    </div>
+                    <div *ngIf="(element | visit:schedulePractical.head:state.practicals)" [matTooltip]="getMissingTooltip(element, state.schedule)" matTooltipPosition="above" class="not-visit"></div>
+                    </div>
+                </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="total-practical">
+                <th mat-header-cell *matHeaderCellDef>Средний балл</th>
+                <td mat-cell
+                    *matCellDef="let element">
+                    <p>{{element.PracticalsMarkTotal}}</p></td>
+                    [class.not-all]="element | isNotAll"
+                </ng-container>
+        
+                <ng-container matColumnDef="total-test">
+                <th mat-header-cell *matHeaderCellDef>Средний балл за тесты</th>
+                <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed && !element.TestMark"> {{element.TestMark}}</td>
+                </ng-container>
+        
+                <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef>Рейтинговая оценка</th>
+                <td mat-cell
+                [ngClass]="{'not-all': element | isNotAll}"
+                    *matCellDef="let element">
+                    <p>{{getTotal(element) | number}}</p></td>
+                    
+                </ng-container>
+        
+                <tr mat-header-row *matHeaderRowDef="getDisplayColumns(state.practicals)"></tr>
+                <tr mat-row *matRowDef="let row; columns: getDisplayColumns(state.practicals)"></tr>
+            </table>
+        </div>
+    </div>
+  </div>
+  <ng-template #load>
+    <div class="spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+  

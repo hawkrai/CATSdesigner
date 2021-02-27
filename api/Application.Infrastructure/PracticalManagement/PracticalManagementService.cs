@@ -207,5 +207,12 @@ namespace Application.Infrastructure.PracticalManagement
 
 			repositoriesContainer.ApplyChanges();
 		}
-    }
+
+        public void SaveStudentPracticalMark(StudentPracticalMark studentPracticalMark)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			repositoriesContainer.RepositoryFor<StudentPracticalMark>().Save(studentPracticalMark);
+			repositoriesContainer.ApplyChanges();
+		}
+	}
 }
