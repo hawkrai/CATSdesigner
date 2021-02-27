@@ -29,30 +29,29 @@ export class LessonService {
   }
 
   getLessonsByDates(start: string, end: string): Observable<any> {
-    return this.http.get<any>('Services/Schedule/ScheduleService.svc/GetSchedule?dateStart=' + start + '&dateEnd=' + end);
-
+    return this.http.get<any>('/Services/Schedule/ScheduleService.svc/GetSchedule?dateStart=' + start + '&dateEnd=' + end);
   }
 
   saveLab(Lab: any): Observable<any>  {
-    return this.http.post<any>('Services/Labs/LabsService.svc/Save', {lab: Lab});
+    return this.http.post<any>('/Services/Labs/ScheduleService.svc/SaveDateLab', {lab: Lab});
   }
 
   saveLecture(lect: any): Observable<any>  {
-    return this.http.post<any>('Services/Lectures/LecturesService.svc/Save', {lecture: lect});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures', {lecture: lect});
   }
 
   deleteLab(Lab: any): Observable<any>  {
-    return this.http.post<any>('Services/Labs/LabsService.svc/Delete', {lab: Lab});
+    return this.http.post<any>('/Services/Labs/LabsService.svc/Delete', {lab: Lab});
   }
 
   getLessonsByDateAndTimes(date: string, start: string, end: string): Observable<any> {
-    return this.http.get<any>('Services/Schedule/GetScheduleBetweenTime?date=' + date + '&startTime=' + start + '&endTime=' + end);
+    return this.http.get<any>('/Services/Schedule/GetScheduleBetweenTime?date=' + date + '&startTime=' + start + '&endTime=' + end);
 
   }
 
 
   deleteLecture(lect: any): Observable<any>  {
-    return this.http.post<any>('Services/Lectures/LecturesService.svc/Delete', {lecture: lect});
+    return this.http.post<any>('/Services/Lectures/LecturesService.svc/Delete', {lecture: lect});
   }
 
   getAllSubjects(username: string ): Observable<any> {
@@ -142,5 +141,9 @@ export class LessonService {
     const format = 'dd.MM.yyyy';
     const locale = 'en-US';
     return new Date(formatDate(this.datePipe.transform(date, 'dd-MM-yyyy'), format, locale));
+  }
+
+  formatDate2(date: Date): string {
+    return this.datePipe.transform(date, 'dd/MM/yyyy');
   }
 }

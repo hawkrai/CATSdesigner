@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {ChangeDetectionStrategy} from '@angular/core';
-import { Subject } from 'rxjs';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {Subject} from 'rxjs';
 import {CalendarEvent, CalendarEventTimesChangedEvent, CalendarView} from 'angular-calendar';
 import {Lesson} from '../model/lesson.model';
 import {LessonService} from '../service/lesson.service';
@@ -29,18 +28,24 @@ const colors: any = {
 })
 export class ScheduleMainComponent implements OnInit {
 
+  constructor(private lessonservice: LessonService,
+              private noteService: NoteService,
+              private dialog: MatDialog,
+              private datePipe: DatePipe,
+              private modulecommunicationservice: ModuleCommunicationService) {}
+
   isLoadActive = true;
-  toolTip = 'Скрыть новости';
+  toolTip = '';
   scheduleWidth = '82%';
   newsWidth = '18%';
   newsLeft = '82%';
-  hideButton = '>';
+  hideButton = '';
   locale = 'ru';
   lessons: Lesson[] = [];
   subjects: any[] = [];
   notes: Note[] = [];
   lesson: Lesson = new Lesson();
-  view: CalendarView = CalendarView.Week;
+  view: CalendarView;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
   user: any;
@@ -51,15 +56,23 @@ export class ScheduleMainComponent implements OnInit {
 
   activeDayIsOpen = true;
 
-  constructor(private lessonservice: LessonService,
-              private noteService: NoteService,
-              private dialog: MatDialog,
-              private datePipe: DatePipe,
-              private modulecommunicationservice: ModuleCommunicationService) {}
+  public isMobile(): boolean {
+    return window.matchMedia('screen and (max-width: 550px)').matches
+      || window.matchMedia('screen and (min-width: 550px) and (max-width: 767px)').matches;
+  }
 
   ngOnInit() {
-    // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
+    if (this.isMobile()) {
+      this.view = CalendarView.Day;
+    } else {
+      this.view = CalendarView.Week;
+    }
     this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.lessonservice.getLessonsByDates('21-02-2021', '28-02-2021').subscribe(
+      l => {
+        console.log(l);
+      }
+    );
     this.isLoadActive = false;
     this.lessonservice.getLessons().subscribe(les => {
       let i = 0;
@@ -106,7 +119,7 @@ export class ScheduleMainComponent implements OnInit {
           meta: 'lesson'
         });
       });
-      this.lessonservice.getSubjects().subscribe(subjects => {
+      this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
         this.subjects = subjects;
         this.refresh.next();
       });
@@ -350,8 +363,8 @@ export class ScheduleMainComponent implements OnInit {
       this.newsWidth = '18%';
       this.newsLeft = '82%';
       this.scheduleWidth = '82%';
-      this.hideButton = '>';
-      this.toolTip = 'Скрыть новости';
+      this.hideButton = '';
+      this.toolTip = '';
     } else {
       this.toolTip = 'Раскрыть новости';
       this.newsLeft = '100%';

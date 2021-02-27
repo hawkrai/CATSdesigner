@@ -1,6 +1,9 @@
 export class LessonAdd {
-  title: string;
-  start: Date;
-  color: string;
+  id: string;
   subjectId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  building: string;
+  audience: string;
 }

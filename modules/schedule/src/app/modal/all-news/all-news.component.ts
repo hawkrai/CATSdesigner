@@ -10,20 +10,11 @@ import {Message} from '../../../../../../container/src/app/core/models/message';
 })
 export class AllNewsComponent implements OnInit {
 
-  username: any;
-  news: any;
-  subject: any;
-  user: any;
-
   constructor(public dialogRef: MatDialogRef<AllNewsComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any, private newsService: NewsService) { }
 
 
   ngOnInit() {
-    this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.newsService.getAllNews(this.user.username).subscribe(news => {
-      this.news = news;
-    });
   }
 
   public rerouteToSubject() {

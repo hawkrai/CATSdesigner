@@ -5,6 +5,12 @@
     "logLevel": "debug",
     "changeOrigin": true
   },
+  "/Services/*": {
+    "target": "http://host27072020.of.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
   "/Tests/*": {
     "target": "http://educats.by",
     "secure": false,

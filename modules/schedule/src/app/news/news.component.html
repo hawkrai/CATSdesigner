@@ -1,6 +1,8 @@
 <div *ngIf="isEnableNews">
   <div style="margin-top: 22px;">
-     <p style="margin-bottom: 12px;font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;position: relative;left: 30%;width: 70%">Новости</p>
+    <p matTooltipClass="example-tooltip-blue" (click)="hideNews()" matTooltip = "Скрыть новости"
+         style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5; width: 10px; float: left; ">></p>
+     <p style="margin-bottom: 0px;font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;margin-left: 30%">Новости</p>
   </div>
   <table style="margin-right:10%; margin-left:10%;">
     <tr *ngFor="let item of news" >

@@ -1,19 +1,13 @@
-.header {
-  background-color: #3F51B5;
-  color: white;
+.dialog {
+  border-style: solid;
+  border-left-width: 5px;
+  border-radius: 0px;
+  border-bottom-width: 0px ;
+  border-top-width: 1px;
+  border-top-color: aliceblue;
+  border-right-width: 0px ;
+  box-shadow: 5px 5px 5px rgba(187,187,187,0.25);
+  margin: -10px;
 }
 
-.example-container {
-  display: flex;
-  flex-direction: column;
-  overflow-y: initial !important;
-}
-
-.example-container a > * {
-  width: 100%;
-}
-
-.mat-dialog-container{
-  padding: 0px;
-}
 
