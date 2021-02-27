@@ -32,7 +32,8 @@ export class EditAvailabilityPopupComponent extends AutoUnsubscribeBase implemen
   }
 
   ngOnInit() {
-    this.testService.getGroupsBySubjectId("3")
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+    this.testService.getGroupsBySubjectId(subject?.id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((groups) => {
         this.groups = groups;

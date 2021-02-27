@@ -42,6 +42,7 @@
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
         <app-result-test-table [size]="size" [loading]="loading" [tests]="test.res"
                                [name]="'knowledgeControlTests'"
+                               [testName]="'text.tests.for.control' | translate: 'Тесты для контроля знаний'"
                                [groupId]="test.groupId"
                                [group]="test.group"></app-result-test-table>
       </div>
@@ -59,6 +60,7 @@
         <app-result-test-table [loading]="loading" [tests]="test.res"
                                [group]="test.group"
                                [groupId]="test.groupId"
+                               [testName]="'text.tests.for.self.control' | translate: 'Тесты для самоконтроля'"
                                [forSelf]="true"
                                [name]="'selfControlTests'"></app-result-test-table>
       </div>
@@ -75,6 +77,7 @@
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
         <app-result-test-table [loading]="loading" [tests]="test.res"
                                [group]="test.group"
+                               [testName]="'text.tests.for.pre.eumk' | translate: 'Предтест для обучения в ЭУМК'"
                                [groupId]="test.groupId"
                                [name]="'beforeEUMKTests'"></app-result-test-table>
       </div>
@@ -92,6 +95,7 @@
         <app-result-test-table [loading]="loading" [tests]="test.res"
                                [group]="test.group"
                                [groupId]="test.groupId"
+                               [testName]="'text.tests.for.eumk' | translate: 'Тесты для обучения в ЭУМК'"
                                [name]="'forEUMKTests'"></app-result-test-table>
       </div>
     </div>
@@ -107,7 +111,10 @@
             (test.res[0].size!=0 || test.res[1].size!=0 || test.res[2].size!=0)">
         <app-result-test-table [loading]="loading"
                                [groupId]="test.groupId"
-                               [group]="test.group" [tests]="test.res" [name]="'nNTests'"></app-result-test-table>
+                               [testName]="'text.tests.for.nn' | translate: 'Тесты для обучения с искусственной нейронной сетью'"
+                               [group]="test.group"
+                               [tests]="test.res"
+                               [name]="'nNTests'"></app-result-test-table>
       </div>
     </div>
   </div>

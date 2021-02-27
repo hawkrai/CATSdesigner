@@ -1,13 +1,14 @@
 <div class="popup-container-parent" *ngIf="editingTest;else loading">
   <div class="popup-container-child">
-    <h1 mat-dialog-title class="popup-container">{{!this.newTest ? ('text.test.edit.test' | translate : 'Редактирование теста') : ('text.test.adding.test' | translate : 'Добавление теста')}}</h1>
+    <h1 mat-dialog-title class="popup-container">{{!this.newTest ? ('text.test.edit.test' | translate : 'Редактирование теста') :
+      ('text.test.adding.test' | translate : 'Добавление теста')}}</h1>
     <ng-container [formGroup]="formGroup">
       <div mat-dialog-content>
         <mat-form-field>
-          <input matInput formControlName="title" [placeholder]="'text.test.name' | translate : 'Название теста'"
-                 [required]="true"
-                 [value]="editingTest.Title ? editingTest.Title : ''"
-                 (change)="writeTitle($event, 'Title')">
+          <textarea matInput formControlName="title" [placeholder]="'text.test.name' | translate : 'Название теста'"
+                    [required]="true"
+                    [value]="editingTest.Title ? editingTest.Title : ''"
+                    (change)="writeTitle($event, 'Title')"></textarea>
           <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
             {{'text.test.error.max.length' | translate : "Длина превышает 255 символов"}}
           </mat-error>
@@ -44,13 +45,14 @@
           <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('required')">
             {{'text.test.error.enter.count.questions' | translate : "Введите количество вопросов"}}
           </mat-error>
-          <mat-hint>{{'text.test.hint.questions' | translate : 'Количество вопросов в тестовом наборе для каждого обучающегося'}}</mat-hint>
+          <mat-hint>{{'text.test.hint.questions' | translate : 'Количество вопросов в тестовом наборе для каждого обучающегося'}}
+          </mat-hint>
         </mat-form-field>
       </div>
       <div mat-dialog-content class="edit-test-time">
         <mat-form-field>
           <input matInput type="number"
-                 [placeholder]="'text.test.time.for.test' | translate : 'Время на тест (мин)'"
+                 [placeholder]="editingTest?.SetTimeForAllTest ? ('text.test.time.for.test' | translate : 'Время на тест (мин)') : ('text.test.time.for.question' | translate : 'Время на вопрос (сек)')"
                  [required]="true"
                  [value]="editingTest.TimeForCompleting ? editingTest.TimeForCompleting : 10"
                  formControlName="timeForCompleting"
