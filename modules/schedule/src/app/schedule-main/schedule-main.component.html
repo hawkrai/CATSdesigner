@@ -42,14 +42,14 @@
               >
             </div>
           </div>
-          <div style="margin-right: 2%; margin-top: 18px;">
+          <div style="margin-right: 2%; margin-top: 18px;" class="desktopNews">
             <p matTooltip="{{toolTip}}" matTooltipClass="example-tooltip-blue" (click)="hideNews()"
                style="fcursor: pointer;background-color:white;font-size: 24px;color: #3F51B5">{{hideButton}}</p>
           </div>
         </div>
       </div>
     </div>
-    <div style="margin-bottom: 2px" [ngSwitch]="view">
+    <div style="margin-bottom: 2px" class="deskShedular" [ngSwitch]="view">
       <mwl-calendar-week-view
         *ngSwitchCase="CalendarView.Week"
         [locale]="locale"
@@ -67,6 +67,7 @@
       >
       </mwl-calendar-week-view>
     </div>
+
 
     <!--div style="margin-bottom: 2px" [ngSwitch]="view">
       <mwl-calendar-day-view

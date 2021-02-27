@@ -14,6 +14,7 @@
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 
+
   <mat-select class="mselect" (selectionChange)="onValueChange($event)" [value]="locale">
     <mat-option *ngFor="let locale of locales" [value]="locale">
       {{locale.name}}
@@ -87,6 +88,13 @@
     </mat-menu>
 
     <div class="icons">
+      <mat-select class="mselect">
+        <mat-option class="mopt" value="Ru">Ru
+        </mat-option>
+        <mat-option  value="eu">En
+        </mat-option>
+      </mat-select>
+      
       <div *ngIf="isLector" >
         <button  mat-icon-button  class="icon-h">
           <mat-icon [matBadge]="unconfirmedStudents"

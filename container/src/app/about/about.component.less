@@ -18,7 +18,7 @@ table{
 .col-first{
   height: 100vh;
   width: 56vw;
-  vertical-align: top;
+  vertical-align: middle;
   padding: 70px;
   background-image: linear-gradient(-135deg, #3597ffcc,  #FF7C8Dcc);
 
@@ -44,7 +44,7 @@ table{
   >h1{
     font-size: 2vw;
     color: #ffffff;
-    text-align: censster;
+    text-align: center;
     margin-top: 3vw;
   }
   
@@ -65,19 +65,6 @@ table{
     }
   }
   
-  >a {
-    display: block;
-    margin: 5vw auto 0 auto;
-    width: 80px;
-    height: 80px;
-  }
-
-  .icon_p{
-    
-    font-size: 60px;
-    margin-left: -36px;
-    margin-top: -11px;
-  }
   
 }
 
@@ -125,3 +112,59 @@ table{
   }
 }
 
+@media (max-width:1024px){
+  .col-first{
+    width: 50vw;
+
+    >h1{
+      font-size: 2.7vw;
+    }
+    
+    >p{
+      font-size: 2.2vw;
+      text-align: center;
+    }
+
+    img, .cat, .logo {
+      width: 25vw;
+    }
+  }
+
+  #mascot-body {
+    width: 14.5vw;
+}
+
+  #mascot-tail {
+    width: 12.5vw;
+  }
+  
+}
+
+@media (max-width:657px){
+  .container{
+    flex-wrap: wrap;
+  }
+
+  .col-first{
+    width: 100vw;
+    height: 250px;
+
+    >.cat {
+      display: none;
+    }
+
+    >h1{
+      font-size: 19px;
+    }
+    
+    >p{
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    >.logo{
+      width: 160px;
+    }
+  }
+
+}
