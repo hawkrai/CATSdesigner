@@ -17,6 +17,7 @@ import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.compone
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { ProfileComponent } from './searchResults/profile/profile.component';
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 814893677 (just test)
 =======
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
@@ -25,6 +26,9 @@ import { ChangePersonalDataComponent } from './change-personal-data/change-perso
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { ProfileComponent } from './searchResults/profile/profile.component';
 >>>>>>> aa493100c (just test)
+=======
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
 
 const routes: Routes = [
   {
@@ -57,12 +61,18 @@ const routes: Routes = [
         path: 'profile/:id',
         component: ProfileComponent
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
       },
       {
         path: 'personalAccount',
         component: ChangePersonalDataComponent
+<<<<<<< HEAD
 =======
 >>>>>>> aa493100c (just test)
+=======
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
       }
     ]
   },

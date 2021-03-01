@@ -25,12 +25,16 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
 =======
 =======
     "crypto": "^1.0.1",
 >>>>>>> 94e193bfb (fix phone input\profile button\add image check)
+=======
+    "crypto": "^1.0.1",
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
     "jspdf": "^2.3.0",
 >>>>>>> 814893677 (just test)
 =======

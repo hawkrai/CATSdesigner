@@ -33,10 +33,15 @@ import { ProfileComponent } from './searchResults/profile/profile.component';
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-stats-subject/table-for-stats-subject.component';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
 =======
 >>>>>>> aa493100c (just test)
+=======
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
+import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
 
 
 
@@ -71,8 +76,14 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
 =======
     ProfileComponent,
     StatsComponent,
+<<<<<<< HEAD
     TableForStatsSubjectComponent
 >>>>>>> aa493100c (just test)
+=======
+    TableForStatsSubjectComponent,
+    ChangePersonalDataComponent,
+    ChangePasswordDialog
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
   ],
   imports: [
     BrowserModule,
@@ -83,9 +94,12 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     CoreModule,
     MatButtonModule,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> aa493100c (just test)
+=======
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
     FormsModule,
     MatTableModule,
     MatDialogModule,

@@ -43,6 +43,7 @@ export class ChangePasswordDialog {
   onSaveChangesClick(): void {
     this.showBadPasswordError = false;
     if (this.arePasswordsSame()) {
+<<<<<<< HEAD
       if (confirm("Вы уверены, что хотите изменить пароль?")) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
@@ -54,6 +55,14 @@ export class ChangePasswordDialog {
           }
         });
       }
+=======
+      this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
+        if (res) {
+          alert("Пароль успешно изменен!");
+          this.dialogRef.close();
+        }
+      });
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
     }
     else { this.showBadPasswordError = true;}
   }
