@@ -1,0 +1,79 @@
+<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<div>
+  <mat-card class="header">
+    <h2>Личный кабинет пользователя</h2>
+  </mat-card>
+</div>
+
+<div class="profile">
+
+  <mat-card class="profile-card">
+    <mat-card class="avatar">
+      <img *ngIf ="this.profileData.Avatar"src="{{this.profileData.Avatar}}" width="300px">
+      <img *ngIf ="!this.profileData.Avatar"src="{{this.defaultAvatar}}" width="300px">
+      
+    </mat-card>
+    <input style="display: none"
+           #fileInput
+           type="file" (change)="onFileSelected($event)">
+    <button mat-button (click)="fileInput.click()"> Загрузить фото </button>
+  </mat-card>
+
+
+  <mat-card class="data-container">
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Фамилия</mat-label>
+      <input matInput [(ngModel)]="this.profileData.Surname" [formControl]="surnameFormControl" maxlength="30">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Имя</mat-label>
+      <input matInput [(ngModel)]="this.profileData.Name" [formControl]="nameFormControl" maxlength="30">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Отчество</mat-label>
+      <input matInput [(ngModel)]="this.profileData.Patronymic" [formControl]="patronymicFormControl" maxlength="30">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Логин</mat-label>
+      <input matInput disabled value={{this.profileData.UserName}}>
+    </mat-form-field>
+
+    <a title= "Перейдите, чтобы сменить пароль" (click) = "this.openDialog()">Изменить пароль </a>
+  
+  </mat-card>
+
+  <mat-card class="data-container">
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Почта</mat-label>
+      <input matInput [(ngModel)]="this.profileData.Email" [formControl]="emailFormControl" maxlength="30">
+      <mat-error *ngIf="emailFormControl.invalid">Не верный формат почты</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Телефон</mat-label>
+      <input matInput [(ngModel)]="this.profileData.Phone" [formControl]="phoneFormControl" maxlength="30">
+      <mat-error *ngIf="phoneFormControl.hasError('pattern')">Номер не соответствует формату!</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Skype</mat-label>
+      <input matInput [(ngModel)]="this.profileData.SkypeContact" maxlength="30">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>О себе</mat-label>
+      <input matInput [(ngModel)]="this.profileData.About"  maxlength="500">
+    </mat-form-field>
+
+    
+    <button mat-button class="main-button" (click)="this.updatePersonalInfo()"> Сохранить изменения </button>
+    <button mat-button (click)="this.backClicked()">Отменить изменения</button>
+
+  </mat-card>
+
+</div>

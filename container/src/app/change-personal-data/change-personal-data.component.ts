@@ -1,0 +1,99 @@
+import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../core/services/auth.service';
+import { ProfileData } from '../core/models/searchResults/personal-data';
+import { ProfileService } from '../core/services/searchResults/profile.service';
+import { Location } from '@angular/common';
+import { PersonalDataService } from '../core/services/personal-data.service';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
+import { Validators, FormControl, ValidationErrors } from '@angular/forms';
+
+@Component({
+  selector: 'app-change-personal-data',
+  templateUrl: './change-personal-data.component.html',
+  styleUrls: ['./change-personal-data.component.less']
+})
+
+export class ChangePersonalDataComponent implements OnInit {
+  isLoad = false;
+  defaultAvatar!: string;
+  currentUserId!: number;
+  profileData!: ProfileData;
+
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  phoneFormControl = new FormControl('', [Validators.required/*, Validators.pattern('/^\s*([+]{1}375|80)\s?-?\s?(25|29|33|44)\s?-?\s?\d{3}\s?-?\s?\d{2}\s?-?\s?\d{2}$/')*/]);
+  nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+
+  surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+
+  patronymicFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+
+  constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
+    private profileService: ProfileService, private location: Location, public dialog: MatDialog) { }
+
+
+  onFileSelected(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    var buffer = this;
+
+    reader.onloadend = function () {
+      buffer.profileData.Avatar = reader.result.toString();
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+
+
+  ngOnInit(): void {
+    this.currentUserId = this.autService.currentUserValue.id;
+    this.getProfileData();
+    this.getAvatar();
+    this.isLoad = true;
+  }
+
+  backClicked() {
+    this.location.back();
+  }
+
+  getProfileData() {
+    this.dataService.getProfileData().subscribe((res) => {
+      this.profileData = res;
+    });
+  }
+
+  getAvatar() {
+    this.profileService.getDefaultAvatar().subscribe(res => {
+      this.defaultAvatar = res;
+    });
+  }
+
+  updatePersonalInfo() {
+    if ((!this.phoneFormControl.invalid || this.profileData.Phone == "") && (!this.emailFormControl.invalid || this.profileData.Email == "")) {
+      this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
+        if (res) {
+          alert("Изменения сохранены");
+        }
+        else {
+          alert("Изменения не сохранены");
+        }
+      });
+    }
+
+    else {
+      alert("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или не содержат символов(необязательные поля)");
+    }
+
+    
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(ChangePasswordDialog, {
+      width: '330px',
+    });
+  }
+}

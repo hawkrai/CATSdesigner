@@ -32,6 +32,8 @@ import { ToastModule } from './toast';
 import { ProfileComponent } from './searchResults/profile/profile.component';
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-stats-subject/table-for-stats-subject.component';
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
+import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
 
 
 
@@ -54,8 +56,14 @@ import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-s
 =======
     ProfileComponent,
     StatsComponent,
+<<<<<<< HEAD
     TableForStatsSubjectComponent
 >>>>>>> 814893677 (just test)
+=======
+    TableForStatsSubjectComponent,
+    ChangePersonalDataComponent,
+    ChangePasswordDialog
+>>>>>>> 94e193bfb (fix phone input\profile button\add image check)
   ],
   imports: [
     BrowserModule,
@@ -65,7 +73,6 @@ import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-s
     MatetialModule,
     CoreModule,
     MatButtonModule,
-
     FormsModule,
     MatTableModule,
     MatDialogModule,

@@ -19,7 +19,7 @@
   </mat-form-field>-->
   
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
-    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" (input)="viewSearchResults()">
+    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" (input)="viewSearchResults()"  maxlength="30">
     <mat-selection-list [multiple]="false">
       <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['profile',result.Id]">Студент  |
         {{result.FullName}}
@@ -136,7 +136,8 @@
         matBadgeSize="small"
         [routerLink]="'/web/confirmation'">mail</mat-icon>
       </button>
-      <button mat-icon-button  class="end icon-h">
+
+      <button mat-icon-button  [routerLink]="['personalAccount']" class="end icon-h">
         <img src="./../../assets/images/account.png" class="account" />
       </button>
 
