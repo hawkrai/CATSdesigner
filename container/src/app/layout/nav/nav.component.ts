@@ -18,7 +18,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public isAdmin: boolean;
   public unconfirmedStudents: number = 0;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-
+  public currentUserId!: number;
   valueForSearch!: string;
   
   searchResults !: string[];
@@ -38,6 +38,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
+    this.currentUserId = this.autService.currentUserValue.id;
     this.coreService.getGroups()
       .pipe(
         tap((groups: any) => {

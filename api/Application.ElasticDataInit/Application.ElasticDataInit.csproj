@@ -153,8 +153,8 @@
       <Project>{7D6B62DE-EC81-497D-844E-5BEDFED6DE9E}</Project>
       <Name>Application.ElasticDataModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ElastickSearchEngine\Application.ElasticSearchEngine.csproj">
-      <Project>{dbc900fe-2235-4de8-a79a-18e765ad1729}</Project>
+    <ProjectReference Include="..\Application.ElastickSearchEngine\Application.ElasticSearchEngine.csproj">
+      <Project>{62ef80d1-33c9-4a78-b3e5-13b4a961fe96}</Project>
       <Name>Application.ElasticSearchEngine</Name>
     </ProjectReference>
   </ItemGroup>

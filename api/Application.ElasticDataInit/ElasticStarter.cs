@@ -1,11 +1,7 @@
-﻿using Application.ElasticSearchEngine.SerachMethods;
-using Application.ElasticDataModels;
-using Newtonsoft.Json;
+﻿using Application.ElasticDataModels;
+using Application.ElasticSearchEngine.SerachMethods;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aplication.ElasticDataInit
 {

@@ -32,6 +32,8 @@ import { ToastModule } from './toast';
 import { ProfileComponent } from './searchResults/profile/profile.component';
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-stats-subject/table-for-stats-subject.component';
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
+import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
 
 
 
@@ -51,7 +53,9 @@ import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-s
     ResetComponent,
     ProfileComponent,
     StatsComponent,
-    TableForStatsSubjectComponent
+    TableForStatsSubjectComponent,
+    ChangePersonalDataComponent,
+    ChangePasswordDialog
   ],
   imports: [
     BrowserModule,
@@ -61,7 +65,6 @@ import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-s
     MatetialModule,
     CoreModule,
     MatButtonModule,
-
     FormsModule,
     MatTableModule,
     MatDialogModule,

@@ -12,6 +12,7 @@ import { AboutComponent } from './about/about.component';
 import { ResetComponent } from './reset/reset.component';
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { ProfileComponent } from './searchResults/profile/profile.component';
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
       {
         path: 'profile/:id',
         component: ProfileComponent
+      },
+      {
+        path: 'personalAccount',
+        component: ChangePersonalDataComponent
       }
     ]
   },

@@ -9,7 +9,6 @@ import { ProfileProject, ProfileInfoSubject, ProfileInfo } from '../../models/se
 export class ProfileService {
 
   api = '/Profile/';
-  /*api = 'https://4bd806d8-c304-479d-a907-f03b850403d0.mock.pstmn.io/';*/
   apiAccount = '/Account/';
 
 
