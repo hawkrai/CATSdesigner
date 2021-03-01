@@ -16,6 +16,18 @@ export class NavComponent implements OnInit, OnDestroy {
   public isAdmin: boolean;
   public unconfirmedStudents: number = 0;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+<<<<<<< HEAD
+=======
+  public currentUserId!: number;
+  valueForSearch!: string;
+  
+  searchResults !: string[];
+
+  lecturerSearchResults!: Lecturer[];
+  studentSearchResults!: Student[];
+  groupSearchResults!: Group[];
+
+>>>>>>> f126059ef (fix phone input\profile button\add image check)
 
   constructor(private layoutService: LayoutService,
               private coreService: CoreService,
@@ -25,6 +37,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
+    this.currentUserId = this.autService.currentUserValue.id;
     this.coreService.getGroups()
       .pipe(
         tap((groups: any) => {
