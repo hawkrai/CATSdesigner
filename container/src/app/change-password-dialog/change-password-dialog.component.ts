@@ -43,12 +43,17 @@ export class ChangePasswordDialog {
   onSaveChangesClick(): void {
     this.showBadPasswordError = false;
     if (this.arePasswordsSame()) {
-      this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
-        if (res) {
-          alert("Пароль успешно изменен!");
-          this.dialogRef.close();
-        }
-      });
+      if (confirm("Вы уверены, что хотите изменить пароль?")) {
+        this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
+          if (res) {
+            alert("Пароль успешно изменен!");
+            this.dialogRef.close();
+          }
+          else {
+            alert("Произошел сбой, пароль не был изменен!");
+          }
+        });
+      }
     }
     else { this.showBadPasswordError = true;}
   }
