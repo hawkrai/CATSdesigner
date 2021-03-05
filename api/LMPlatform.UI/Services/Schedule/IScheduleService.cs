@@ -7,6 +7,7 @@ using System.ServiceModel.Web;
 
 namespace LMPlatform.UI.Services.Schedule
 {
+    using LMPlatform.Models;
     using LMPlatform.UI.Attributes;
     using LMPlatform.UI.Services.Modules.Notes;
     using LMPlatform.UI.Services.Modules.Schedule;
@@ -28,15 +29,15 @@ namespace LMPlatform.UI.Services.Schedule
 
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveDateLab")]
-        ResultViewData SaveDateLab(int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience);
+        ResultViewData SaveDateLab(int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience, Note note);
 
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveDateLectures")]
-        ResultViewData SaveDateLectures(int subjectId, string date, string startTime, string endTime, string building, string audience);
+        ResultViewData SaveDateLectures(int subjectId, string date, string startTime, string endTime, string building, string audience, Note note);
 
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveDatePractical")]
-        ResultViewData SaveDatePractical(int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience);
+        ResultViewData SaveDatePractical(int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetSchedule?dateStart={dateStart}&dateEnd={dateEnd}")]

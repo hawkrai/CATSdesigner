@@ -504,11 +504,23 @@ namespace LMPlatform.Data.Infrastructure
                 .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<Subject>()
-                 .HasMany<Note>(e => e.Notes)
-                 .WithRequired(e => e.Subject)
-                 .HasForeignKey(e => e.SubjectId)
+            modelBuilder.Entity<ScheduleProtectionLabs>()
+                 .HasMany(e => e.Notes)
+                 .WithOptional(e => e.LabsSchedule)
+                 .HasForeignKey(e => e.LabsScheduleId)
                  .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<ScheduleProtectionPractical>()
+                .HasMany(e => e.Notes)
+                .WithOptional(e => e.PracticalSchedule)
+                .HasForeignKey(e => e.PracticalScheduleId)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<LecturesScheduleVisiting>()
+                .HasMany(e => e.Notes)
+                .WithOptional(e => e.LecturesSchedule)
+                .HasForeignKey(e => e.LecturesScheduleId)
+                .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Practical>()
                 .HasMany<StudentPracticalMark>(e => e.StudentPracticalMarks)

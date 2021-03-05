@@ -12,6 +12,8 @@ namespace LMPlatform.Models
 
         public Subject Subject { get; set; }
 
-        public ICollection<LecturesVisitMark> LecturesVisitMarks { get; set; } 
+        public ICollection<LecturesVisitMark> LecturesVisitMarks { get; set; }
+
+        public ICollection<Note> Notes { get; set; } = new List<Note>();
     }
 }
