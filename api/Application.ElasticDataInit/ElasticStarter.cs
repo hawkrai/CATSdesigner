@@ -8,7 +8,8 @@ namespace Aplication.ElasticDataInit
     static class ElasticStarter
     {
         //change to current dB connection
-        private static string CONNECTION_STRING_NAME = "name=ElasticContext";
+         private static string CONNECTION_STRING_NAME = "name=ElasticContext";
+        /*private static string CONNECTION_STRING_NAME = "DefaultConnection";*/
         //change to current elastic server params
         private static string ELASTIC_ADDRESS = "http://localhost:9200/";
         private static string ELASTIC_USERNAME = "elastic";
@@ -110,9 +111,9 @@ namespace Aplication.ElasticDataInit
             Console.ReadKey();
 
             //search in console
-           /* StartSearch(host, userName, password);
+            StartSearch(host, userName, password);
             Console.ReadKey();
-            */
+
         }
     }
 }

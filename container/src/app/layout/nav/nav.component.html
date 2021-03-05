@@ -10,6 +10,7 @@
 
   <div class="flex-spacer"></div>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy">
     <input matInput type="text" placeholder="Поиск">
 =======
@@ -17,6 +18,9 @@
     <input matInput type="text" placeholder="Поиск">
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>-->
+=======
+
+>>>>>>> 1d1c402e3 («search»)
   
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
     <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" (input)="viewSearchResults()"  maxlength="30">
@@ -53,7 +57,11 @@
     matBadgeSize="small"
     [routerLink]="'/web/confirmation'">mail</mat-icon>
   </button>
+<<<<<<< HEAD
   <button mat-icon-button  class="end icon-h">
+=======
+  <button mat-icon-button class="end icon-h" [routerLink]="['personalAccount']">
+>>>>>>> 1d1c402e3 («search»)
     <img src="./../../assets/images/account.png" class="account" />
   </button>
 
