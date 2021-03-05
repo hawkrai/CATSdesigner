@@ -32,6 +32,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { AllNewsComponent } from './modal/all-news/all-news.component';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
 
 registerLocaleData(localeRu);
 
@@ -52,7 +53,8 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     ConfirmationComponent,
     NewsComponent,
     NewsInfoComponent,
-    AllNewsComponent
+    AllNewsComponent,
+    TranslatePipe
   ],
   imports: [
     BrowserModule,
@@ -86,7 +88,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     MatTabsModule,
     MatDatepickerModule
   ],
-  providers: [DatePipe, MatDatepickerModule],
+  providers: [DatePipe, MatDatepickerModule, TranslatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
   entryComponents: [AllNewsComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent]
