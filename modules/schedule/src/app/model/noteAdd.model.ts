@@ -1,6 +1,6 @@
 export class NoteAdd {
-  id: string;
-  title: string;
+  id: number;
+  text: string;
   date: string;
   startTime: string;
   endTime: string;

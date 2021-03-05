@@ -5,17 +5,12 @@ const format = 'dd.MM.yyyy';
 const locale = 'en-US';
 
 export const LESSONS: Lesson[] = [
-  {id: '1', date: new Date(formatDate('11/02/2021', format, locale)),
-    startTime: '17:05',
-    endTime: '19:05',
-    shortname: 'ООП', teacher: 'Белова' , title: '123 - Лекция',
-    type: null, building: '12', audience: '104',
-    color: 'green', subjectId: '1', memo: {message: '2234234'}},
-  {id: '2', date: new Date(formatDate('11/02/2021', format, locale)),
-    startTime: '08:05',
-    endTime: '13:05', shortname: 'ЯП', teacher: 'Гурский' , title: '123 - Лекция', type: null,
-    building: '12', audience: '104', color: 'red',
-    subjectId: '1', memo: {message: '2234234'}}
+  {id: '1', Date: '11/02/2021',
+    Start: '17:05',
+    End: '19:05', Name: '123',
+    ShortName: 'ООП', Teacher: 'Белова' ,
+    Type: null, Building: '12', Audience: '104',
+    Color: 'green', SubjectId: '1', Notes: {message: '2234234'}}
 ];
 
 export const les: any = {

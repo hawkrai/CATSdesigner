@@ -11,6 +11,9 @@ import {DatePipe, formatDate} from '@angular/common';
 })
 export class LessonService {
 
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'],
+    ['3', 'Практ.работа']];
+
   constructor(private http: HttpClient,
               private datePipe: DatePipe) {
   }
@@ -40,8 +43,8 @@ export class LessonService {
     return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures', {lecture: lect});
   }
 
-  deleteLab(Lab: any): Observable<any>  {
-    return this.http.post<any>('/Services/Labs/LabsService.svc/Delete', {lab: Lab});
+  deleteLab(idLab: any): Observable<any>  {
+    return this.http.post<any>('/Services/Labs/LabsService.svc/Delete', {id: idLab});
   }
 
   getLessonsByDateAndTimes(date: string, start: string, end: string): Observable<any> {
@@ -49,9 +52,8 @@ export class LessonService {
 
   }
 
-
-  deleteLecture(lect: any): Observable<any>  {
-    return this.http.post<any>('/Services/Lectures/LecturesService.svc/Delete', {lecture: lect});
+  deleteLecture(lectId: any): Observable<any>  {
+    return this.http.post<any>('/Services/Lectures/LecturesService.svc/Delete', {id: lectId});
   }
 
   getAllSubjects(username: string ): Observable<any> {
@@ -145,5 +147,13 @@ export class LessonService {
 
   formatDate2(date: Date): string {
     return this.datePipe.transform(date, 'dd/MM/yyyy');
+  }
+
+  getLessonType(): any {
+    return this.lessonTypes;
+  }
+
+  getLessonTypeById(id: string): any {
+    return this.lessonTypes.find(type => type[0] == id)[1];
   }
 }

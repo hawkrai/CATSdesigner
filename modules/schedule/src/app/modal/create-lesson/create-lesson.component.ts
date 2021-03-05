@@ -8,7 +8,8 @@ import {formatDate} from '@angular/common';
 import {Note} from '../../model/note.model';
 import flatpickr from 'flatpickr';
 import {Russian} from 'flatpickr/dist/l10n/ru';
-import {NoteAdd} from "../../model/noteAdd.model";
+import {NoteAdd} from '../../model/noteAdd.model';
+import {NoteService} from '../../service/note.service';
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian);
@@ -27,11 +28,10 @@ export class CreateLessonComponent implements OnInit {
   noteAdd: NoteAdd = new NoteAdd();
   changedType: string;
   formGroup: any;
-  lesson: any = new Lesson() ;
+  lesson: Lesson = new Lesson() ;
   subject: any;
   subjects: any[] = [];
-  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'],
-    ['3', 'Практ.работа'], ['4', 'КП']];
+  lessonTypes: string[][];
   dayOfLesson: Date;
   startTimeOfLesson: string;
   endTimeOfLesson: string;
@@ -50,15 +50,18 @@ export class CreateLessonComponent implements OnInit {
   disableLesson = false;
   disableNote = false;
   user: any;
+  teacherSubject = 'Попова Ю.Б.';
 
   constructor(public dialogRef: MatDialogRef<CreateLessonComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any,
-              private lessonservice: LessonService) { }
+              private lessonservice: LessonService,
+              private noteService: NoteService) { }
 
   ngOnInit(): void {
     const format = 'dd.MM.yyyy';
     const locale = 'en-US';
     this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.lessonTypes = this.lessonservice.getLessonType();
     this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
       this.subjects = subjects;
       if (this.data.lesson != null) {
@@ -71,11 +74,11 @@ export class CreateLessonComponent implements OnInit {
         this.startTimeOfLesson = this.startHour + ':' + this.startMin;
         this.endTimeOfLesson = this.endHour + ':' + this.endMin;
 
-        this.lesson.color = this.lessonservice.getColor(this.data.lesson.title);
-        this.lesson.subjectId = this.lessonservice.getSubject(this.data.lesson.title, this.subjects);
-        this.lesson.teacher = this.lessonservice.getTeacher(this.data.lesson.title);
-        this.lesson.audience = this.lessonservice.getAudience(this.data.lesson.title);
-        this.lesson.building = this.lessonservice.getBuilding(this.data.lesson.title);
+        this.lesson.Color = this.lessonservice.getColor(this.data.lesson.title);
+        this.lesson.SubjectId = this.lessonservice.getSubject(this.data.lesson.title, this.subjects);
+        this.lesson.Teacher.ShortName = this.lessonservice.getTeacher(this.data.lesson.title);
+        this.lesson.Audience = this.lessonservice.getAudience(this.data.lesson.title);
+        this.lesson.Building = this.lessonservice.getBuilding(this.data.lesson.title);
         this.memo = this.lessonservice.getMemo(this.data.lesson.title);
         this.changedType = this.lessonTypes.find(type => type[1] === this.lessonservice.getType(this.data.lesson.title).trim())[0];
         this.disableNote = true;
@@ -129,6 +132,7 @@ export class CreateLessonComponent implements OnInit {
       this.selectedIndex = 1;
       this.disableLesson = true;
     }
+    this.formGroup.controls.teacher.disable();
     this.formGroup.controls.dayEvent.disable();
     this.formGroupNote.controls.dayNote.disable();
     flatpickrFactory();
@@ -199,27 +203,25 @@ export class CreateLessonComponent implements OnInit {
 
   // tslint:disable-next-line:typedef
   addLesson() {
-    this.subject = this.subjects.find(subject => subject.Id == this.lesson.subjectId);
-    this.lesson.title = this.subject.ShortName;
-    this.lesson.shortname = this.subject.ShortName;
-    this.lesson.color = this.subject.Color;
-    this.lesson.date = this.dayOfLesson;
-    this.lesson.type = this.lessonTypes.find(type => type[0] === this.formGroup.controls.type.value)[1];
+    this.subject = this.subjects.find(subject => subject.Id == this.lesson.SubjectId);
+    this.lesson.ShortName = this.subject.ShortName;
+    this.lesson.Color = this.subject.Color;
+    this.lesson.Date = this.lessonservice.formatDate2(this.dayOfLesson);
+    this.lesson.Type = this.lessonTypes.find(type => type[0] === this.formGroup.controls.type.value)[1];
     if (this.startTimeOfLesson > this.endTimeOfLesson) {
       const temp = this.startTimeOfLesson;
       this.startTimeOfLesson = this.endTimeOfLesson;
       this.endTimeOfLesson = temp;
     }
-    this.lesson.startTime = this.startTimeOfLesson;
-    this.lesson.endTime = this.endTimeOfLesson;
-    this.lesson.memo = {message: this.memo};
+    this.lesson.Start = this.startTimeOfLesson;
+    this.lesson.End = this.endTimeOfLesson;
+    this.lesson.Notes = {message: this.memo};
+    this.lesson.Teacher = {FullName: this.teacherSubject};
     this.lessonAdd.subjectId = this.subject.Id;
     this.lessonAdd.date = this.lessonservice.formatDate2(this.dayOfLesson);
     this.lessonAdd.startTime = this.startTimeOfLesson;
     this.lessonAdd.endTime = this.endTimeOfLesson;
-    this.lessonAdd.building = this.lesson.building;
-    this.lessonAdd.audience = this.lesson.building;
-    console.log(this.lesson);
+    this.lessonAdd.building = this.lesson.Building;
     this.lessonservice.saveLecture(this.lessonAdd).subscribe(l => {
       console.log(l);
     });
@@ -237,10 +239,14 @@ export class CreateLessonComponent implements OnInit {
     }
     this.note.start.setHours(+this.startTimeOfNote.split(':')[0], + this.startTimeOfNote.split(':')[1]);
     this.note.end.setHours(+this.endTimeOfNote.split(':')[0], + this.endTimeOfNote.split(':')[1]);
-    this.noteAdd.title = this.note.title;
+    this.noteAdd.text = this.note.title;
     this.noteAdd.startTime = this.startTimeOfNote;
     this.noteAdd.endTime = this.endTimeOfNote;
     this.noteAdd.date = this.lessonservice.formatDate2(this.dayOfNote);
+    console.log(this.noteAdd);
+    this.noteService.savePersonalNote(this.noteAdd).subscribe(l => {
+      console.log(l);
+    });
     this.dialogRef.close({note: this.note, type: 'note'});
   }
 
