@@ -15,7 +15,9 @@ namespace LMPlatform.UI.Services.Modules.Notes
             Id = note.Id;
             Text = note.Text;
             UserId = note.UserId;
-            SubjectId = note.SubjectId;
+            LecturesScheduleId = note.LecturesScheduleId;
+            LabsScheduleId = note.LabsScheduleId;
+            PracticalScheduleId = note.PracticalScheduleId;
         }
         [DataMember]
         public string Text { get; set; }
@@ -24,10 +26,17 @@ namespace LMPlatform.UI.Services.Modules.Notes
         public int UserId { get; set; }
 
         [DataMember]
-        public int SubjectId { get; set; }
+        public int? LecturesScheduleId { get; set; }
+
+        [DataMember]
+        public int? PracticalScheduleId { get; set; }
+
+        [DataMember]
+        public int? LabsScheduleId { get; set; }
 
         [DataMember]
         public int Id { get; set; }
 
+        public DateTime Date { get; set; }
     }
 }
