@@ -119,7 +119,12 @@ namespace Application.Infrastructure.CPManagement
                 {
                     Day = x.Day,
                     LecturerId = x.LecturerId,
-                    Id = x.Id
+                    Id = x.Id,
+                    SubjectId = x.SubjectId,
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime,
+                    Audience = x.Audience,
+                    Building = x.Building
                 })
                 .ToList();
         }
@@ -240,7 +245,7 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public void SaveConsultationDate(int userId, DateTime date, int subjectId)
+        public void SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
@@ -248,7 +253,11 @@ namespace Application.Infrastructure.CPManagement
             {
                 Day = date,
                 LecturerId = userId,
-                SubjectId = subjectId
+                SubjectId = subjectId,
+                StartTime = startTime,
+                EndTime = endTime,
+                Audience = audience,
+                Building = buildingNumber
              
             });
 
