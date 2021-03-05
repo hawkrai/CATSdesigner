@@ -1,22 +1,29 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1d1c402e3 («search»)
 
 <div class="buttons-row">
   <h2 class="header"> Личный кабинет пользователя</h2>
   <button mat-button class="cancel-button" (click)="this.backClicked()">Отменить изменения</button>
   <button mat-button class="edit-button" (click)="this.updatePersonalInfo()"> Сохранить изменения </button>
+<<<<<<< HEAD
 =======
 <div>
   <mat-card class="header">
     <h2>Личный кабинет пользователя</h2>
   </mat-card>
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+>>>>>>> 1d1c402e3 («search»)
 </div>
 
 <div class="profile">
 
   <mat-card class="profile-card">
     <mat-card class="avatar">
+<<<<<<< HEAD
 <<<<<<< HEAD
       <img *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}" width="300px">
       <img *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}" width="300px">
@@ -26,6 +33,11 @@
       <img *ngIf ="!this.profileData.Avatar"src="{{this.defaultAvatar}}" width="300px">
       
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+      <img *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}" width="300px">
+      <img *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}" width="300px">
+
+>>>>>>> 1d1c402e3 («search»)
     </mat-card>
     <input style="display: none"
            #fileInput
@@ -57,12 +69,17 @@
     </mat-form-field>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     <a title="Перейдите, чтобы сменить пароль" (click)="this.openDialog()">Изменить пароль </a>
 
 =======
     <a title= "Перейдите, чтобы сменить пароль" (click) = "this.openDialog()">Изменить пароль </a>
   
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+    <a title="Перейдите, чтобы сменить пароль" (click)="this.openDialog()">Изменить пароль </a>
+
+>>>>>>> 1d1c402e3 («search»)
   </mat-card>
 
   <mat-card class="data-container">
@@ -71,10 +88,14 @@
       <mat-label>Почта</mat-label>
       <input matInput [(ngModel)]="this.profileData.Email" [formControl]="emailFormControl" maxlength="30">
 <<<<<<< HEAD
+<<<<<<< HEAD
       <mat-error *ngIf="emailFormControl.invalid">Неверный формат почты</mat-error>
 =======
       <mat-error *ngIf="emailFormControl.invalid">Не верный формат почты</mat-error>
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+      <mat-error *ngIf="emailFormControl.invalid">Неверный формат почты</mat-error>
+>>>>>>> 1d1c402e3 («search»)
     </mat-form-field>
 
     <mat-form-field class="example-full-width">
@@ -91,6 +112,7 @@
     <mat-form-field class="example-full-width">
       <mat-label>О себе</mat-label>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <input matInput [(ngModel)]="this.profileData.About" maxlength="500">
     </mat-form-field>
 
@@ -100,13 +122,16 @@
 
 =======
       <input matInput [(ngModel)]="this.profileData.About"  maxlength="500">
+=======
+      <input matInput [(ngModel)]="this.profileData.About" maxlength="500">
+>>>>>>> 1d1c402e3 («search»)
     </mat-form-field>
-
-    
-    <button mat-button class="main-button" (click)="this.updatePersonalInfo()"> Сохранить изменения </button>
-    <button mat-button (click)="this.backClicked()">Отменить изменения</button>
 
   </mat-card>
 
 </div>
+<<<<<<< HEAD
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+
+>>>>>>> 1d1c402e3 («search»)

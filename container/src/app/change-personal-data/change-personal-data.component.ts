@@ -21,10 +21,14 @@ export class ChangePersonalDataComponent implements OnInit {
   profileData!: ProfileData;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
 =======
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+  emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
+>>>>>>> 1d1c402e3 («search»)
   phoneFormControl = new FormControl('', [Validators.required/*, Validators.pattern('/^\s*([+]{1}375|80)\s?-?\s?(25|29|33|44)\s?-?\s?\d{3}\s?-?\s?\d{2}\s?-?\s?\d{2}$/')*/]);
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
   Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
@@ -79,6 +83,9 @@ export class ChangePersonalDataComponent implements OnInit {
   updatePersonalInfo() {
     if ((!this.phoneFormControl.invalid || this.profileData.Phone == "") && (!this.emailFormControl.invalid || this.profileData.Email == "")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1d1c402e3 («search»)
       if (confirm("Вы уверены что хотите сохранить изменения?")) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
@@ -90,6 +97,7 @@ export class ChangePersonalDataComponent implements OnInit {
           }
         });
       }
+<<<<<<< HEAD
 =======
       this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
         if (res) {
@@ -100,6 +108,8 @@ export class ChangePersonalDataComponent implements OnInit {
         }
       });
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+>>>>>>> 1d1c402e3 («search»)
     }
 
     else {

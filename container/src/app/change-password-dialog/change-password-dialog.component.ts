@@ -44,6 +44,9 @@ export class ChangePasswordDialog {
     this.showBadPasswordError = false;
     if (this.arePasswordsSame()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1d1c402e3 («search»)
       if (confirm("Вы уверены, что хотите изменить пароль?")) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
@@ -55,6 +58,7 @@ export class ChangePasswordDialog {
           }
         });
       }
+<<<<<<< HEAD
 =======
       this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
         if (res) {
@@ -63,6 +67,8 @@ export class ChangePasswordDialog {
         }
       });
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+>>>>>>> 1d1c402e3 («search»)
     }
     else { this.showBadPasswordError = true;}
   }
