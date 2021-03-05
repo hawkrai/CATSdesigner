@@ -4,6 +4,8 @@ import {AuthenticationService} from "../../core/services/auth.service";
 import {first, takeUntil, tap} from "rxjs/operators";
 import {CoreService} from "../../core/services/core.service";
 import {Subject} from "rxjs";
+import { Lecturer, Student, Group } from '../../core/models/searchResults/search-results';
+import { SearchService } from '../../core/services/searchResults/search.service';
 
 
 @Component({
@@ -16,8 +18,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public isAdmin: boolean;
   public unconfirmedStudents: number = 0;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-<<<<<<< HEAD
-=======
+
   public currentUserId!: number;
   valueForSearch!: string;
   
@@ -27,11 +28,11 @@ export class NavComponent implements OnInit, OnDestroy {
   studentSearchResults!: Student[];
   groupSearchResults!: Group[];
 
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-
   constructor(private layoutService: LayoutService,
               private coreService: CoreService,
-              private autService: AuthenticationService) {
+              private autService: AuthenticationService,
+              private searchService: SearchService
+              ) {
   }
 
   public ngOnInit(): void {
@@ -63,6 +64,43 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.unsubscribeStream$.next(null);
     this.unsubscribeStream$.complete();
+  }
+
+
+
+  viewSearchResults() {
+    if (this.valueForSearch.length >= 3) {
+      this.viewGroupSearchResults();
+      this.viewLecturerSearchResults();
+      this.viewStudentSearchResults();
+    }
+    else {
+      this.cleanSearchResults();
+    }
+  }
+
+  cleanSearchResults() {
+    this.lecturerSearchResults = null;
+    this.studentSearchResults = null;
+    this.groupSearchResults = null;
+  }
+
+  viewLecturerSearchResults() {
+    this.searchService.getLecturerSearchResults(this.valueForSearch).subscribe(res => {
+       this.lecturerSearchResults = res;
+    });
+  }
+
+  viewStudentSearchResults() {
+    this.searchService.getStudentSearchResults(this.valueForSearch).subscribe(res => {
+      this.studentSearchResults = res;
+    });
+  }
+
+  viewGroupSearchResults() {
+    this.searchService.getGroupSearchResults(this.valueForSearch).subscribe(res => {
+      this.groupSearchResults = res;
+    });
   }
 
 }

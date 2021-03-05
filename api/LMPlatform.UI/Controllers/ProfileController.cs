@@ -183,6 +183,92 @@ namespace LMPlatform.UI.Controllers
             return this.Json(returnModel);
         }
 
+        [HttpGet]
+        public ActionResult GetProfileInfoSubjectsById(int id)
+        {
+            var userService = new UsersManagementService();
+
+            var subjectService = new SubjectManagementService();
+
+            var user = userService.GetUserById(id);
+
+            List<Subject> model;
+
+            if (user.Lecturer == null)
+                model = subjectService.GetSubjectsByStudent(user.Id);
+            else
+                model = subjectService.GetSubjectsByLector(user.Id);
+
+
+            var returnModel = new List<object>();
+
+            foreach (var subject in model)
+                returnModel.Add(new
+                {
+                    subject.Name,
+                    subject.Id,
+                    subject.ShortName,
+                    subject.Color,
+                    Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
+                        user.Student)
+                });
+
+            return this.Json(returnModel, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetProfileInfoById(int id)
+        {
+            var model = new ProfileVewModel();
+
+            var service = new UsersManagementService();
+
+            var user = service.GetUserById(id);
+
+            model.UserType = user.Lecturer != null ? "1" : "2";
+            model.Avatar = user.Avatar;
+            model.SkypeContact = user.SkypeContact;
+            model.Email = user.Email;
+            model.Phone = user.Phone;
+            model.About = user.About;
+            model.Id = user.Id;
+            model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy hh:mm:ss");
+            if (user.Lecturer != null)
+            {
+                model.Name = user.Lecturer.LastName + " " + user.Lecturer.FirstName + " " + user.Lecturer.MiddleName;
+                model.Skill = user.Lecturer.Skill;
+            }
+            else
+            {
+                model.Name = user.Student.LastName + " " + user.Student.FirstName + " " + user.Student.MiddleName;
+                var course = int.Parse(DateTime.Now.Year.ToString()) - int.Parse(user.Student.Group.StartYear);
+                if (DateTime.Now.Month >= 9) course += 1;
+
+                model.Skill = course > 5 ? "Окончил (-а)" : course + " курс";
+
+                model.Group = user.Student.Group.Name;
+                model.GroupId = user.Student.Group.Id;
+            }
+
+
+            return this.Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetUserProjectsById( int id)
+        {
+            var service = new UsersManagementService();
+
+            var user = service.GetUserById(id);
+
+            var project = this.ProjectManagementService.GetProjectsOfUser(user.Id);
+
+            return this.Json(project.Select(e => new
+            {
+                Name = e.Project.Title
+            }), JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public ActionResult GetProfileInfo(string userLogin)
         {

@@ -1,4 +1,5 @@
-﻿using Application.ElasticDataModels;
+﻿
+using Application.ElasticDataModels;
 using Application.ElasticSearchEngine.SerachMethods;
 using System;
 using System.Collections.Generic;
