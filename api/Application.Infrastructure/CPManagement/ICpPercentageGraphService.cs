@@ -25,7 +25,7 @@ namespace Application.Infrastructure.CPManagement
 
         void SaveConsultationMark(int userId, CourseProjectConsultationMarkData consultationMarkData);
 
-        void SaveConsultationDate(int userId, DateTime date, int subjectId);
+        void SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber);
 
         void DeleteConsultationDate(int userId, int id);
     }
