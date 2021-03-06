@@ -23,6 +23,7 @@ using LMPlatform.UI.Services.Modules.Labs;
 using LMPlatform.UI.Services.Modules.Parental;
 using LMPlatform.UI.Services.Modules.Practicals;
 using LMPlatform.UI.Attributes;
+using LMPlatform.UI.Services.Modules.Schedule;
 
 namespace LMPlatform.UI.Services
 {
@@ -57,6 +58,15 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
 				this.LecturerManagementService.DisjoinLector(subjectId, lectorId, CurrentUserId);
 
 				return new ResultViewData
@@ -103,8 +113,18 @@ namespace LMPlatform.UI.Services
 
 		public ResultViewData JoinLector(int subjectId, int lectorId)
 		{
+
 			try
 			{
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
 				this.LecturerManagementService.Join(subjectId, lectorId, CurrentUserId);
 
 				return new ResultViewData
@@ -631,8 +651,8 @@ namespace LMPlatform.UI.Services
                         ShortName = e.ShortName,
                         LabId = e.Id,
                         SubjectId = e.SubjectId,
-						ScheduleProtectionLabsRecomend = subGroups.Any() ? subGroups.FirstOrDefault(x => x.Name == "first").ScheduleProtectionLabs.OrderBy(x => x.Date)
-                            .Select(x => new ScheduleProtectionLab { ScheduleProtectionId = x.Id, Mark = string.Empty }).ToList() : new List<ScheduleProtectionLab>()
+						ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups.FirstOrDefault(x => x.Name == "first").ScheduleProtectionLabs.OrderBy(x => x.Date)
+                            .Select(x => new ScheduleProtectionLesson { ScheduleProtectionId = x.Id, Mark = string.Empty }).ToList() : new List<ScheduleProtectionLesson>()
                     }).ToList();
 
                     var durationCount = 0;
@@ -641,11 +661,11 @@ namespace LMPlatform.UI.Services
                     {
                         var mark = 10;
                         durationCount += lab.Duration / 2;
-                        for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+                        for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
                         {
                             if (i + 1 > durationCount - (lab.Duration / 2))
                             {
-                                lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+                                lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
                                 if (i + 1 >= durationCount)
                                 {
@@ -667,22 +687,22 @@ namespace LMPlatform.UI.Services
                         ShortName = e.ShortName,
                         LabId = e.Id,
                         SubjectId = e.SubjectId,
-                        ScheduleProtectionLabsRecomend = subGroups.Any() ?
+						ScheduleProtectionLabsRecommended = subGroups.Any() ?
 							subGroups.FirstOrDefault(x => x.Name == "second")
                             .ScheduleProtectionLabs.OrderBy(x => x.Date)
-                            .Select(x => new ScheduleProtectionLab { ScheduleProtectionId = x.Id, Mark = string.Empty })
-                            .ToList() : new List<ScheduleProtectionLab>()
+                            .Select(x => new ScheduleProtectionLesson { ScheduleProtectionId = x.Id, Mark = string.Empty })
+                            .ToList() : new List<ScheduleProtectionLesson>()
                     }).ToList();
                     durationCount = 0;
                     foreach (var lab in labsSecondSubGroup)
                     {
                         var mark = 10;
                         durationCount += lab.Duration / 2;
-                        for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+                        for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
                         {
                             if (i + 1 > durationCount - (lab.Duration / 2))
                             {
-                                lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+                                lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
                                 if (i + 1 >= durationCount)
                                 {
@@ -704,22 +724,22 @@ namespace LMPlatform.UI.Services
 						ShortName = e.ShortName,
 						LabId = e.Id,
 						SubjectId = e.SubjectId,
-						ScheduleProtectionLabsRecomend = subGroups.Any() ?
+						ScheduleProtectionLabsRecommended = subGroups.Any() ?
 							subGroups.FirstOrDefault(x => x.Name == "third")
 							.ScheduleProtectionLabs.OrderBy(x => x.Date)
-							.Select(x => new ScheduleProtectionLab { ScheduleProtectionId = x.Id, Mark = string.Empty })
-							.ToList() : new List<ScheduleProtectionLab>()
+							.Select(x => new ScheduleProtectionLesson { ScheduleProtectionId = x.Id, Mark = string.Empty })
+							.ToList() : new List<ScheduleProtectionLesson>()
 					}).ToList();
 					durationCount = 0;
 					foreach (var lab in labsThirdSubGroup)
 					{
 						var mark = 10;
 						durationCount += lab.Duration / 2;
-						for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+						for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 						{
 							if (i + 1 > durationCount - (lab.Duration / 2))
 							{
-								lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+								lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
 								if (i + 1 >= durationCount)
 								{
@@ -737,13 +757,7 @@ namespace LMPlatform.UI.Services
                                       GroupId = group.Id,
                                       GroupName = group.Name,
                                       LecturesMarkVisiting = lecturesVisiting,
-                                      ScheduleProtectionPracticals = scheduleProtectionPracticals.Select(e => new ScheduleProtectionPracticalViewData
-                                      {
-                                          GroupId = e.GroupId,
-                                          Date = e.Date.ToShortDateString(),
-                                          SubjectId = e.SubjectId,
-                                          ScheduleProtectionPracticalId = e.Id
-                                      }).ToList(),
+                                      ScheduleProtectionPracticals = scheduleProtectionPracticals.Select(e => new ScheduleProtectionPracticalViewData(e)).ToList(),
 									  Students = group.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.LastName).Select(e => new StudentsViewData(TestPassingService.GetStidentResults(subjectIntId, e.User.Id), e, null, scheduleProtectionPracticals, null, practicalsData)).ToList(),
                                       SubGroupsOne = subGroups.Any() ? new SubGroupsViewData
                                                          {

@@ -1,4 +1,5 @@
 <ng-container *var="files$ | async as files">
+  <button class="close" mat-button (click)="onNoClick()">X</button>
   <h1 mat-dialog-title>Добавить элемент ЭУМК</h1>
   <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
     <form class="example-form" #formElement>

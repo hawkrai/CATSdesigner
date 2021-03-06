@@ -1,14 +1,14 @@
 <div class="materials-body">
-  <table>    
-    <td style="width: 250px">
+  <table>
+    <tr>
       <a class="main-anchor" routerLink="/main">< К списку ЭУМК</a>
-    </td>
-    <td style="width: 550px">
+    </tr>
+    <tr>
+      <b style="font-size: 30px; padding-left:800px">{{complexName}}</b>
+    </tr>
+    <tr>
       <button mat-raised-button class="add-button" (click)="openAddPopup()">Добавить элемент</button>
-    </td>
-    <td style="font-size: 30px">
-      <b>{{complexName}}</b>
-    </td>    
+    </tr>
   </table>
   <app-material-tree class="material" [complexId]="complexID"></app-material-tree>
 </div>

@@ -19,6 +19,8 @@ namespace LMPlatform.Models
 
 		public bool IsNeededCopyToBts { get; set; }
 
+		public ICollection<Note> Notes { get; set; }
+
 		public ICollection<SubjectGroup> SubjectGroups { get; set; }
 
 		public ICollection<SubjectLecturer> SubjectLecturers { get; set; }
@@ -42,6 +44,8 @@ namespace LMPlatform.Models
 		public ICollection<Practical> Practicals { get; set; }
 
 		public ICollection<LecturesScheduleVisiting> LecturesScheduleVisitings { get; set; }
+
+		public ICollection<ScheduleProtectionLabs> ScheduleProtectionLabs { get; set; }
 
 		public ICollection<ScheduleProtectionPractical> ScheduleProtectionPracticals { get; set; }
 

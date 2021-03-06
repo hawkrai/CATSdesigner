@@ -14,11 +14,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     overflow: auto;
     pointer-events: auto;
   }
-  
+
   .cdk-global-scrollblock {
     overflow-y: hidden;
   }
-  
+
   .mat-dialog-container{
       border-radius: unset !important;
+      width: 30vw !important;
   }

@@ -286,7 +286,7 @@ namespace Application.Infrastructure.Export
             var i = 1;
             foreach (var pg in pgs)
             {
-                percentageGraph.AppendFormat(CultureInfo.CreateSpecificCulture("ru-RU"), "{3}. {0} \t{1}% \t{2:d MMMM yyyy} г.\n", pg.Name, pg.Percentage, pg.Date, i++);
+                percentageGraph.AppendFormat(CultureInfo.CreateSpecificCulture("ru-RU"), "{3}. {0} — {1}% — {2:d MMMM yyyy} г.\n", pg.Name, pg.Percentage, pg.Date, i++);
             }
 
             children.AddRange(CreateStringNodes(doc, "Workflow", percentageGraph.ToString(), 638, 638, 14));

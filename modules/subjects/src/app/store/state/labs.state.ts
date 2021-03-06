@@ -1,15 +1,16 @@
 import { HasJobProtection } from './../../models/has-job-protection.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
-import { Lab, ScheduleProtectionLabs } from '../../models/lab.model';
+import { Lab } from '../../models/lab.model';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 export interface ILabsState {
   labs: Lab[];
-  schedule: ScheduleProtectionLabs[];
+  schedule: ScheduleProtectionLab[];
   students: StudentMark[];
   studentsLabsFiles: StudentMark[],
-  userLabsFiles: UserLabFile[];
-  hasJobProtections: HasJobProtection[]
+  hasJobProtections: HasJobProtection[],
+  userLabFiles: UserLabFile[]
 }
 
 export const initialLabsState: ILabsState = {
@@ -17,6 +18,6 @@ export const initialLabsState: ILabsState = {
   schedule: [],
   students: [],
   studentsLabsFiles: [],
-  userLabsFiles: [],
+  userLabFiles: [],
   hasJobProtections: []
 };

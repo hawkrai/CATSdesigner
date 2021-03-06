@@ -180,6 +180,7 @@
     <Compile Include="Message.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleType.cs" />
+    <Compile Include="Note.cs" />
     <Compile Include="OAuthMembership.cs" />
     <Compile Include="Practical.cs" />
     <Compile Include="Project.cs" />
@@ -188,8 +189,10 @@
     <Compile Include="ProjectUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Role.cs" />
+    <Compile Include="ScheduleBase.cs" />
     <Compile Include="ScheduleProtectionLabMark.cs" />
     <Compile Include="ScheduleProtectionLabs.cs" />
+    <Compile Include="ScheduleProtectionMarkBase.cs" />
     <Compile Include="ScheduleProtectionPractical.cs" />
     <Compile Include="ScheduleProtectionPracticalMark.cs" />
     <Compile Include="TinCanObjects.cs" />
@@ -208,6 +211,7 @@
     <Compile Include="User.cs" />
     <Compile Include="UserLabFiles.cs" />
     <Compile Include="UserMessages.cs" />
+    <Compile Include="UserNote.cs" />
     <Compile Include="WatchingTime.cs" />
   </ItemGroup>
   <ItemGroup>

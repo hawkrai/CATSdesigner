@@ -18,7 +18,10 @@ export class SubjectEffect {
     saveSubject$ = createEffect(() => this.actions$.pipe(
         ofType(subjectActions.saveSubject),
         switchMap(({ subject }) => this.subjectService.saveSubject(subject).pipe(
-            switchMap(() =>[catsActions.sendMessage({ message: new Message('UpdateSubjects', '')}), subjectActions.loadSubjects()]),
+            switchMap(body =>[
+                catsActions.sendMessage({ message: new Message('UpdateSubjects', '')}), 
+                catsActions.showMessage({ body }),
+                subjectActions.loadSubjects()]),
         ))
     ));
 

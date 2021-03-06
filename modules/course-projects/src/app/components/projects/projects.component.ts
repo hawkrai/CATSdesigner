@@ -117,6 +117,7 @@ export class ProjectsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
+        result.name = result.name.replace("\n","");
         var checkTheme = this.projects.find((i) => i.Theme === result.name);
         if (checkTheme == undefined){
           this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
@@ -145,12 +146,19 @@ export class ProjectsComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        if (result != null) {
-          this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
+        if (result != null && result.name != null) {
+          result.name = result.name.replace("\n","");
+          var checkTheme = this.projects.find((i) => i.Theme === result.name);
+          if (checkTheme == undefined){
+            this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
               this.addFlashMessage('Тема успешно сохранена');
             });
+          }
+          else{
+            this.addFlashMessage('Такая тема уже существует');
+          }
         }
       });
     });
@@ -219,7 +227,7 @@ export class ProjectsComponent implements OnInit {
       data: {
         label: 'Отменить назначение темы курсового проекта',
         message: 'Вы действительно хотите отменить назначение темы курсового проекта?',
-        actionName: 'Убрать назначение',
+        actionName: 'Отменить назначение',
         color: 'primary'
       }
     });

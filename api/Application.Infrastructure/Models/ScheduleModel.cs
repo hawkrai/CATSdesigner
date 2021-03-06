@@ -13,6 +13,8 @@ namespace Application.Infrastructure.Models
         public TimeSpan? Start { get; set; }
         public TimeSpan? End { get; set; }
         public ClassType Type { get; set; }
+
+        public DateTime Date { get; set; }
         public string Audience { get; set; }
 
         public string Building { get; set; }
@@ -25,7 +27,9 @@ namespace Application.Infrastructure.Models
 
         public int? SubjectId { get; set; }
 
-        public IEnumerable<SubjectLecturer> Teachers { get; set; }
+        public Lecturer Teacher { get; set; }
+
+        public IEnumerable<Note> Notes { get; set; }
 
     }
 

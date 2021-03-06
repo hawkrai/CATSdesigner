@@ -1,5 +1,5 @@
 <ng-container *ngIf="tests?.length && !loading">
-  <div>
+
     <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg">
       <!-- Position Column -->
       <ng-container matColumnDef="Id">
@@ -9,13 +9,13 @@
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">Название теста</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.test.name' | translate: 'Название теста'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
       </ng-container>
 
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">Оценка</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{'text.test.mark' | translate: 'Оценка'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
           {{(element.Points ? element.Points : 0) + "(" + (element.Percent ? element.Percent : 0) + "%)"}}
         </mat-cell>
@@ -24,7 +24,7 @@
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
-  </div>
+
   <div class="result-test-table-chart">
     <canvas baseChart
             [datasets]="barChartData"

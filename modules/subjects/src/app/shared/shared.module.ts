@@ -6,6 +6,7 @@ import { UniquePipe } from './pipes/unique.pipe';
 import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {FilterPipe} from './pipes/filter.pipe';
@@ -22,6 +23,8 @@ import { DeletePopoverComponent } from './delete-popover/delete-popover.componen
 import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.component';
 import { FileDownloadPopoverComponent } from './file-download-popover/file-download-popover.component';
 import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/check-plagiarism-popover.component';
+import { SortByPipe } from './pipes/sort-by.pipe';
+import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
 
 @NgModule({
   declarations: [
@@ -43,19 +46,23 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
     CheckPlagiarismPopoverComponent,
     FindPipe,
     AnyPipe,
-    WidthPipe
+    WidthPipe,
+    SortByPipe,
+    MarkPopoverComponent
     ],
   imports: [
     CommonModule,
     FormsModule,
     MatModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMaterialTimepickerModule
   ],
   entryComponents: [
     DeletePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
+    MarkPopoverComponent
   ],
   exports: [
     FilterPipe,
@@ -72,7 +79,8 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
     OrderByPipe,
     FindPipe,
     AnyPipe,
-    WidthPipe
+    WidthPipe,
+    SortByPipe
   ],
 
 })

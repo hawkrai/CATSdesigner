@@ -1,14 +1,14 @@
 <mat-drawer-container class="flex-container">
   <mat-drawer-content>
     <div class="flex-editor-container">
-      <div class="btn-holder" align="right">
-        <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">Отмена</button>
-        <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">Сохранить</button>
+      <div class="btn-holder">
         <button (click)="drawer.toggle()" mat-icon-button>
           <mat-icon class="mat-icon-rtl-mirror" color="primary">
-            {{drawer.opened ? 'chevron_right' : 'chevron_left'}}
+            {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
           </mat-icon>
         </button>
+        <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">Отмена</button>
+        <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">Сохранить</button>
       </div>
       <div class="row" id="editor">
         <ckeditor
@@ -21,7 +21,7 @@
       </div>
     </div>
   </mat-drawer-content>
-  <mat-drawer #drawer [mode]="'side'" position="end">
+  <mat-drawer #drawer opened="true" [mode]="'side'">
     <div class="flex-tree-container">
       <div class="flex-search-region">
         <div class="flex-search-btn-holder">
@@ -31,12 +31,6 @@
           <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" matTooltip="Добавление нового учебника">
             <mat-icon>add_circle</mat-icon>
           </button>
-          <button *ngIf="!isReadOnly && isAnyNodeExpanded" mat-icon-button color="primary" (click)="collapseTree()" matTooltip="Свернуть дерево">
-            <mat-icon>expand_less</mat-icon>
-          </button>
-          <button *ngIf="!isReadOnly && !isAnyNodeExpanded" mat-icon-button color="primary" (click)="expandTree()" matTooltip="Развернуть дерево">
-            <mat-icon>expand_more</mat-icon>
-          </button>
         </div>
       </div>
       <div class="tree-area">
@@ -45,9 +39,9 @@
           [dataSource]="dataSource"
           [hasChild]="hasChild"
           [isReadOnly]="isReadOnly"
-          [currentNodeId]="currentNode.Id"
-          (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
-          (onExpandOrCollapseNode)="onExpandOrCollapseNode($event)"
+          [currentNodeId]="currentNodeId"
+          [documentsList]="documents"
+          (onActivateTreeNodeEvent)="activateNode($event)"
           (onAddEvent)="openAddDialog($event)"
           (onRemoveEvent)="openRemoveDialog($event)"
           (onEditContentEvent)="editDocument($event)"

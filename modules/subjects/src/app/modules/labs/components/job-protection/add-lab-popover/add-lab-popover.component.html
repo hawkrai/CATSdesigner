@@ -1,9 +1,16 @@
 <ng-container *var="files$ | async as files">
   <h2 mat-dialog-title>{{data.title}}</h2>
-  <div mat-dialog-content class="job-protection__popover" #popoverContent>
-    <form class="example-form" #formElement>
+  <div mat-dialog-content class="job-protection__popover">
+    <div class="example-form">
       <mat-form-field class="example-full-width">
-        <mat-label>{{data.body}}</mat-label>
+        <mat-select *ngIf="!data.body.isTeacher" [(ngModel)]="data.model.labId">
+          <mat-option *ngFor="let lab of labs$ | async" [value]="lab.LabId">
+            {{lab.Theme}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Комментарий (необязательно)</mat-label>
         <textarea class="lab-work-component__news-text"
                   name="body"
                   matInput
@@ -12,14 +19,14 @@
         </textarea>
       </mat-form-field>
       <app-file-uploader [disabled]="files.length > 0"  header="Прикрепленный материал (Можно добавить только один файл)" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
-    </form>
+    </div>
   </div>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
     <button mat-raised-button
-            (click)="onClose(files, true)"
+            (click)="onSave(files, true)"
             color="primary"
-            [disabled]="!formElement.checkValidity()"
+            [disabled]="!isValid(files)"
     >
       {{data.buttonText}}
     </button>

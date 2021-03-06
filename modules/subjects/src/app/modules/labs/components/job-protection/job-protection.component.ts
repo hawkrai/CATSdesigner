@@ -14,7 +14,7 @@ import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as filesActions from '../../../../store/actions/files.actions';
-import * as subjectActions from '../../.././../store/selectors/subject.selector';
+import * as subjectSelectors from '../../.././../store/selectors/subject.selector';
 import { attachmentConverter } from 'src/app/utils';
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
@@ -24,7 +24,7 @@ import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-pop
   templateUrl: './job-protection.component.html',
   styleUrls: ['./job-protection.component.less']
 })
-export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
+export class JobProtectionComponent implements OnChanges, OnDestroy {
 
   @Input() isTeacher: boolean;
   @Input() groupId: number;
@@ -32,7 +32,6 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
   public openedPanelId = 0;
   private subs = new SubSink();
 
-  public displayedColumns = ['files', 'comments', 'date', 'action'];
   state$: Observable<{ students: StudentMark[], files: UserLabFile[] }>;
    
   constructor(
@@ -48,19 +47,8 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
     if (changes.groupId && changes.groupId.currentValue) {
       if (this.isTeacher) {
         this.store.dispatch(labsActions.loadStudentsLabsFiles());
-      } else {
-        this.store.dispatch(labsActions.loadUserLabsFiles());
       }
     }
-  }
-
-  ngOnInit(): void {
-    this.state$ = combineLatest(
-      this.store.select(labsSelectors.getStudentsLabsFiles),
-      this.store.select(labsSelectors.getUserLabsFiles)
-    ).pipe(
-      map(([students, files]) => ({ students, files }))
-    );
   }
 
   hasNewLabs(student: StudentMark): boolean {
@@ -71,28 +59,20 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
     return  (this.isTeacher && !file.IsReturned && !file.IsReceived) || (!this.isTeacher && file.IsReturned);
   }
 
-  downloadFile(attachment : Attachment): void {
-    this.store.dispatch(filesActions.downloadFile({ pathName: attachment.PathName, fileName: attachment.FileName }));
-  }
-
-  addLab(file: UserLabFile, studentId?: number): void {
-    let model = {comments: '', attachments: []};
-    if (!this.isTeacher && file) {
-      model = { comments: file.Comments, attachments: file.Attachments.map(f => attachmentConverter(f)) }
-    }
+  addLab({ userId, file }: { userId: number, file: UserLabFile }): void {
     const dialogData: DialogData = {
       title: this.isTeacher ? 'Загрузить исправленный вариант работы' : 'На защиту лабораторной работы',
       buttonText: 'Отправить работу',
-      body: this.isTeacher ? 'Комментарий (необязательно)' : 'Комментарий (Например, Лабораторная работа №1)',
-      model
+      body: { isTeacher : this.isTeacher },
+      model: { comments: file ? file.Comments : '', attachments: file ? file.Attachments.map(a => attachmentConverter(a)) : [], labId: file ? file.LabId : 0 }
     };
     const dialogRef = this.dialogService.openDialog(AddLabPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(data => !!data),
-        withLatestFrom(this.store.select(subjectActions.getUserId)),
-        map(([data, userId]: [{ comments: string, attachments: Attachment[]}, string]) => this.getSendFile(data, file, studentId ? studentId : +userId))
+        withLatestFrom(this.store.select(subjectSelectors.getUserId)),
+        map(([data, currentUserId]: [{ comments: string, attachments: Attachment[],labId }, number]) => this.getSendFile(file, data, userId ? userId : currentUserId))
       ).subscribe(sendFile => {
         this.store.dispatch(labsActions.sendUserFile({ sendFile }));
       })
@@ -114,7 +94,7 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
     this.dialogService.openDialog(CheckPlagiarismStudentComponent, dialogData);
   }
 
-  deleteLabWork(userFileId: number ) {
+  deleteLab(deleteRequest: { userLabFileId: number, userId: number, labId: number }): void {
     const dialogData: DialogData = {
       title: 'Удаление работы',
       body: 'работу',
@@ -124,23 +104,24 @@ export class JobProtectionComponent implements OnInit, OnChanges, OnDestroy {
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
-        filter(result => !!result)
-      ).subscribe(() => {
-        this.store.dispatch(labsActions.deleteUserFile({ userFileId }));
+        filter(result => !!result),
+        withLatestFrom(this.store.select(subjectSelectors.getUserId))
+      ).subscribe(([_, currentUserId]) => {
+        deleteRequest.userId = deleteRequest.userId ? deleteRequest.userId : currentUserId;
+        this.store.dispatch(labsActions.deleteUserLabFile(deleteRequest));
       })
     );
   }
 
-  getSendFile(data: { comments: string, attachments: Attachment[] }, file: UserLabFile, userId: number) {
-    console.log(data);
+  getSendFile(file: UserLabFile, data: { comments: string, attachments: Attachment[], labId: number }, userId: number) {
     return {
       attachments: JSON.stringify(data.attachments),
-      comments: data.comments,
-      id: file ? file.Id : 0,
-      isCp: false,
+      comments: data.comments ? data.comments : '',
       isRet: this.isTeacher,
-      pathFile: file ? file.PathFile : '',
-      userId
+      userId,
+      labId: data.labId,
+      id: file ? file.Id : 0,
+      pathFile: file ? file.PathFile : ''
     }
   }
 

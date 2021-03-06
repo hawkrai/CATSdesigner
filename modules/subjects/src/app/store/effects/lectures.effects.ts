@@ -11,12 +11,14 @@ import * as leacturesSelectors from '../selectors/lectures.selectors';
 import * as groupsSelectors from '../selectors/groups.selectors';
 import * as filesActions from '../actions/files.actions';
 import * as catsActions from '../actions/cats.actions';
+import { ScheduleService } from 'src/app/services/schedule.service';
 
 @Injectable()
 export class LecturesEffects {
 
   constructor(private actions$: Actions,
               private store: Store<IAppState>,
+              private scheduleService: ScheduleService,
               private rest: LecturesRestService) {
   }
 
@@ -84,14 +86,14 @@ export class LecturesEffects {
   createDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ date }, subjectId]) => this.rest.createDateVisit(subjectId, date).pipe(
+    switchMap(([{ obj }, subjectId]) => this.scheduleService.createLectureDateVisit({ ...obj, subjectId }).pipe(
       map(() => lecturesActions.loadCalendar())
     ))
   ));
 
   deleteDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.deleteDateVisit),
-    switchMap(({ id }) => this.rest.deleteDateVisit(id).pipe(
+    switchMap(({ id }) => this.scheduleService.deleteLectureDateVisit(id).pipe(
       map(() => lecturesActions.loadCalendar())
     ))
   ));

@@ -39,7 +39,8 @@ export const MY_FORMATS = {
 })
 export class VisitDatePopoverComponent {
 
-  @Input() schedule: { Date: string }[];
+  @Input() schedule: { Date: string,   StartTime: string;
+    EndTime: string; }[];
   @Output() createDate = new EventEmitter<string>();
   @Output() close = new EventEmitter<void>();
   @Output() deleteDay = new EventEmitter<any>();
@@ -53,15 +54,15 @@ export class VisitDatePopoverComponent {
   }
 
   private time = (control: AbstractControl) => {
-    return timeValidator(this.dateForm ? this.dateForm.get('start').value : null, control.value);
+    return timeValidator(this.dateForm ? this.dateForm.get('startTime').value : null, control.value);
   }
 
-  dateForm = new FormGroup({
-    date: new FormControl(new Date(), [Validators.required]),
-    start: new FormControl(moment().format("HH:mm"), [Validators.required]),
-    end: new FormControl(moment().add(1, 'hour').add(30, 'minutes').format("HH:mm"), [Validators.required, this.time]),
-    buildingNumber: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(3)]),
-    audience: new FormControl('', [Validators.required, Validators.min(1), Validators.max(999)])
+  dateForm: FormGroup = new FormGroup({
+    date: new FormControl(moment(), [Validators.required]),
+    startTime: new FormControl(moment().format("HH:mm"), [Validators.required]),
+    endTime: new FormControl(moment().add(1, 'hour').add(30, 'minutes').format("HH:mm"), [Validators.required, this.time]),
+    building: new FormControl('', [Validators.minLength(1), Validators.maxLength(5)]),
+    audience: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)])
   });
 
   ngOnInit(): void {
@@ -70,14 +71,14 @@ export class VisitDatePopoverComponent {
 
   onCreateDate(): void {
     if (this.dateForm.invalid) {
-
+      console.log(this.dateForm);
+      return;
     }
-    console.log({ 
+    this.createDate.emit({ 
       ...this.dateForm.value, 
       date: moment(this.dateForm.get('date').value).format('DD/MM/YYYY'), 
-      buildingNumber:  this.dateForm.get('buildingNumber').value.toUpperCase()
+      buildingNumber:  this.dateForm.get('building').value.toUpperCase()
     });
-    this.createDate.emit(this.dateForm.get('date').value.replace(/\./g, '/'));
   }
 
   onDeleteDate(day: any): void {

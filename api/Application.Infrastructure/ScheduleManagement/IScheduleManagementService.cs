@@ -13,10 +13,16 @@ namespace Application.Infrastructure.ScheduleManagement
 
         void SaveDateLectures(int subjectId, DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
 
+        public void SaveDatePractical(int subjectId, int groupId, DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
+
         bool CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
 
         IEnumerable<ScheduleModel> GetScheduleForDate(DateTime date);
 
-        IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime dateTime);
+        IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime endDate);
+
+        IEnumerable<ScheduleModel> GetScheduleBetweenTimes(DateTime date, TimeSpan startTime, TimeSpan endTime);
+
+        IEnumerable<ScheduleModel> GetUserSchedule(int userId, DateTime startDate, DateTime endDate);
     }
 }

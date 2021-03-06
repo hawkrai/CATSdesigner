@@ -1,6 +1,5 @@
 .container{
   display: flex;
-  background-image: linear-gradient(-135deg, #3597ffcc,  #FF7C8Dcc);
 }
 
 table{
@@ -12,15 +11,16 @@ table{
   height: 100vh;
   vertical-align: middle;
   text-align: justify;
-  padding: 30px 30px 30px 10px;
-  color: #1f306f;
+  padding: 40px 50px 50px 50px;
+  color: black;
 }
 
 .col-first{
   height: 100vh;
-  width: 20vw;
-  vertical-align: top;
+  width: 56vw;
+  vertical-align: middle;
   padding: 70px;
+  background-image: linear-gradient(-135deg, #3597ffcc,  #FF7C8Dcc);
 
   .cat {
     width: 18vw;
@@ -44,7 +44,7 @@ table{
   >h1{
     font-size: 2vw;
     color: #ffffff;
-    text-align: censster;
+    text-align: center;
     margin-top: 3vw;
   }
   
@@ -54,42 +54,26 @@ table{
   }
 
   >.btn_back {
-    margin-top: 2vh;
+    margin-top: 12vh;
+	text-align: center;
 
     > button{
         font-size: 1.3vw;
         width: 26vw;
         height: 48px;
+		color: #3f51b5;
     }
   }
   
-  >a {
-    display: block;
-    margin: 5vw auto 0 auto;
-    width: 80px;
-    height: 80px;
-  }
-
-  .icon_p{
-    
-    font-size: 60px;
-    margin-left: -36px;
-    margin-top: -11px;
-  }
   
-    >.backbtn {
-      margin-top: 10vh;
-
-      > button{
-          font-size: 1.3vw;
-          width: 26vw;
-          height: 48px;
-      }
-    }
 }
+
   .title{
-    font-size: 30px;
+    font-size: 36px;
     text-align: center;
+	padding: 0px 0px 20px 0px;
+	line-height: 120%;
+	
   }
  .page-wrap{
     display: block;
@@ -128,3 +112,59 @@ table{
   }
 }
 
+@media (max-width:1024px){
+  .col-first{
+    width: 50vw;
+
+    >h1{
+      font-size: 2.7vw;
+    }
+    
+    >p{
+      font-size: 2.2vw;
+      text-align: center;
+    }
+
+    img, .cat, .logo {
+      width: 25vw;
+    }
+  }
+
+  #mascot-body {
+    width: 14.5vw;
+}
+
+  #mascot-tail {
+    width: 12.5vw;
+  }
+  
+}
+
+@media (max-width:657px){
+  .container{
+    flex-wrap: wrap;
+  }
+
+  .col-first{
+    width: 100vw;
+    height: 250px;
+
+    >.cat {
+      display: none;
+    }
+
+    >h1{
+      font-size: 19px;
+    }
+    
+    >p{
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    >.logo{
+      width: 160px;
+    }
+  }
+
+}

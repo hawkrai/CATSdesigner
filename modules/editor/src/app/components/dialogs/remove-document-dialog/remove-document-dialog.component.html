@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Подтверждение</h1>
 <div mat-dialog-content>
-  <p>Вы уверены, что хотите удалить "{{data.Name}}"?</p>
+  <p>Вы уверены, что хотите удалить "{{sanitizeHtml(data.Name)}}"?</p>
 </div>
 <div mat-dialog-actions align="right">
   <button mat-raised-button (click)="onNoClick()">Нет</button>

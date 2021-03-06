@@ -114,7 +114,7 @@ namespace Application.Infrastructure.CPManagement
         
         private List<Correlation> GetCourseProjectCorrelation(int subjectId, int? lecturerId)
         {
-            var projects = Context.CourseProjects.Where(x=>x.SubjectId == subjectId);
+            var projects = Context.CourseProjects.Where(x=>x.SubjectId == subjectId && x.LecturerId == lecturerId);
             var user = Context.Students.Any(x => x.Id == lecturerId);
             if (user)
             {

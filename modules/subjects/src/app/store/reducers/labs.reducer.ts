@@ -27,16 +27,16 @@ export const labsReducer = createReducer(
     ...state,
     studentsLabsFiles
   })),
-  on(labsActions.loadUserLabsFilesSuccess, (state, { userLabsFiles }): ILabsState => ({
-    ...state,
-    userLabsFiles
-  })),
-  on(labsActions.updateUserLabsFilesSuccess, (state, { userLabsFiles, userId }): ILabsState => ({
-    ...state,
-    studentsLabsFiles: state.studentsLabsFiles.map((s): StudentMark => s.StudentId === userId ? { ...s, FileLabs: userLabsFiles } : s)
-  })),
   on(labsActions.setJobProtections, (state, { hasJobProtections }): ILabsState => ({
     ...state,
     hasJobProtections
+  })),
+  on(labsActions.loadUserLabFilesSuccess, (state, { labFiles }): ILabsState => ({
+    ...state,
+    userLabFiles: labFiles
+  })),
+  on(labsActions.resetUserLabFiles, (state): ILabsState => ({
+    ...state,
+    userLabFiles: []
   }))
 );

@@ -16,14 +16,16 @@
           <mat-form-field>
             <mat-label>Начало занятия</mat-label>
             <input
-              type="time"
-              matInput 
-              formControlName="start"
-              placeholder="Начало занятия"
+            matInput
+            [ngxTimepicker]="startTimepicker"
+            formControlName="startTime"
+            [format]="24"
             />
+            <ngx-material-timepicker #startTimepicker>
+            </ngx-material-timepicker>
           </mat-form-field>
-          <div *ngIf="(dateForm.get('start').touched || dateForm.get('start').dirty) && dateForm.get('start').errors" class="visit-date__form-error">
-            <mat-error *ngIf="dateForm.get('start').hasError('required')">Поле начало занятия обязательно</mat-error>
+          <div *ngIf="(dateForm.get('startTime').touched || dateForm.get('startTime').dirty) && dateForm.get('startTime').errors" class="visit-date__form-error">
+            <mat-error *ngIf="dateForm.get('startTime').hasError('required')">Поле начало занятия обязательно</mat-error>
           </div>
         </div>
 
@@ -31,14 +33,16 @@
           <mat-form-field>
             <mat-label>Конец занятия</mat-label>
             <input
-              type="time"
-              matInput 
-              formControlName="end"
-              placeholder="Конец занятия"
+            matInput
+            [ngxTimepicker]="endTimepicker"
+            formControlName="endTime"
+            [format]="24"
             />
+            <ngx-material-timepicker #endTimepicker>
+            </ngx-material-timepicker>
           </mat-form-field>
-          <div *ngIf="(dateForm.get('end').touched || dateForm.get('end').dirty) && dateForm.get('end').errors" class="visit-date__form-error">
-            <mat-error *ngIf="dateForm.get('end').hasError('required')">Поле конец занятия обязательно</mat-error>
+          <div *ngIf="(dateForm.get('endTime').touched || dateForm.get('endTime').dirty) && dateForm.get('endTime').errors" class="visit-date__form-error">
+            <mat-error *ngIf="dateForm.get('endTime').hasError('required')">Поле конец занятия обязательно</mat-error>
           </div>
         </div>
     </div>
@@ -46,23 +50,22 @@
       <div class="visit-date__form-group">
         <mat-form-field>
           <mat-label>Корпус</mat-label>
-          <input formControlName="buildingNumber" type="text" matInput placeholder="Корпус">
+          <input formControlName="building" type="text" matInput placeholder="Корпус">
         </mat-form-field>
-        <div *ngIf="(dateForm.get('buildingNumber').touched || dateForm.get('buildingNumber').dirty) && dateForm.get('buildingNumber').errors" class="visit-date__form-error">
-          <mat-error *ngIf="dateForm.get('buildingNumber').hasError('required')">Номер корпуса обязателен</mat-error>
-          <mat-error *ngIf="dateForm.get('buildingNumber').hasError('minLength')">Минимальное количество символов: 1</mat-error>
-          <mat-error *ngIf="dateForm.get('buildingNumber').hasError('maxLength')">Максимальное количество символов: 3</mat-error>
+        <div *ngIf="(dateForm.get('building').touched || dateForm.get('building').dirty) && dateForm.get('building').errors" class="visit-date__form-error">
+          <mat-error *ngIf="dateForm.get('building').hasError('minLength')">Минимальное количество символов: 1</mat-error>
+          <mat-error *ngIf="dateForm.get('building').hasError('maxLength')">Максимальное количество символов: 5</mat-error>
         </div>
       </div>
       <div class="visit-date__form-group">
         <mat-form-field>
           <mat-label>Аудитория</mat-label>
-          <input formControlName="audience" type="number" matInput placeholder="Аудитория">
+          <input formControlName="audience" type="text" matInput placeholder="Аудитория">
         </mat-form-field>
         <div *ngIf="(dateForm.get('audience').touched || dateForm.get('audience').dirty) && dateForm.get('audience').errors" class="visit-date__form-error">
           <mat-error *ngIf="dateForm.get('audience').hasError('required')">Номер аудитории обязателен</mat-error>
-          <mat-error *ngIf="dateForm.get('audience').hasError('min')">Минимальный номер аудитории: 1</mat-error>
-          <mat-error *ngIf="dateForm.get('audience').hasError('max')">Максимальный номер аудитории: 999</mat-error>
+          <mat-error *ngIf="dateForm.get('audience').hasError('minLength')">Минимальное количество символов: 1</mat-error>
+          <mat-error *ngIf="dateForm.get('audience').hasError('maxLength')">Максимальное количество символов: 5</mat-error>
         </div>
       </div>
     </div>
@@ -77,7 +80,7 @@
       <table class="mdc-data-table__table">
         <tbody class="mdc-data-table__content">
          <tr class="mdc-data-table__row" *ngFor="let day of schedule">
-          <td class="mdc-data-table__cell">{{ day.Date }}</td>
+          <td class="mdc-data-table__cell">{{ day.Date }} <mat-hint *ngIf="day.StartTime && day.EndTime">{{day.StartTime}}-{{day.EndTime}}</mat-hint></td>
           <td class="mdc-data-table__cell visit-date__table-action">
             <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(day)">
               <mat-icon>delete</mat-icon>
@@ -93,15 +96,3 @@
     <button mat-raised-button (click)="onClick()">Закрыть</button>
   </div>
 </div>
-
-<!-- [value]="date.value" -->
-
-
-<!-- <div class="visit-date__form-container">
-<div>
-  <button mat-raised-button
-          class="visit-date__action"
-          color="primary"
-          [disabled]="dateForm.invalid"
-          (click)="onCreateDate()">{{data.buttonText}}</button>
-</div> -->

@@ -8,6 +8,7 @@ using LMPlatform.UI.Services.Modules.News;
 
 namespace LMPlatform.UI.Services.News
 {
+    using Application.Core.Helpers;
     using Models;
     using Modules;
     using Newtonsoft.Json;
@@ -53,7 +54,16 @@ namespace LMPlatform.UI.Services.News
 	    {
 			try
 			{
-				SubjectManagementService.DisableNews(subjectId, true);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                SubjectManagementService.DisableNews(subjectId, true);
 
 				return new ResultViewData
 				{
@@ -75,7 +85,16 @@ namespace LMPlatform.UI.Services.News
 	    {
 			try
 			{
-				SubjectManagementService.DisableNews(subjectId, false);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                SubjectManagementService.DisableNews(subjectId, false);
 
 				return new ResultViewData
 				{
@@ -97,6 +116,15 @@ namespace LMPlatform.UI.Services.News
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var date = DateTime.Now;
                 var news = SubjectManagementService.GetNews(id, subjectId);
 
@@ -142,6 +170,15 @@ namespace LMPlatform.UI.Services.News
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.DeleteNews(id, subjectId);
                 return new ResultViewData
                 {

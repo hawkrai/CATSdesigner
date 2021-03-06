@@ -1,17 +1,17 @@
 <ng-container *ngIf="tests;else loading">
-  <h1 mat-dialog-title class="question-other-test-container">{{'Добавление вопросов из другого теста'}}</h1>
+  <h1 mat-dialog-title class="question-other-test-container">{{'text.test.add.question.from.other' | translate : 'Добавление вопросов из другого теста'}}</h1>
   <div class="question-other-dropdowns">
     <div class="question-other-dropdown">
       <mat-form-field>
-        <mat-label>{{"Название теста"}}</mat-label>
+        <mat-label>{{'text.test.name' | translate : "Название теста"}}</mat-label>
         <mat-select (selectionChange)="onValueChange($event)">
-          <mat-option *ngFor="let test of tests" [value]="test.Id">
-            {{test.Title}}
+          <mat-option *ngFor="let test of tests" [value]="test.Id" [matTooltip]="test.Title">
+            {{test.tooltipTitle}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field>
-        <input matInput [placeholder]="'Поиск вопроса'"
+      <mat-form-field *ngIf="filteredQuestions?.length">
+        <input matInput [placeholder]="'text.test.search.question' | translate : 'Поиск вопроса'"
                (change)="filterQuestions($event)">
       </mat-form-field>
     </div>

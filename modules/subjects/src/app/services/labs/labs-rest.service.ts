@@ -6,11 +6,12 @@ import {map} from "rxjs/operators";
 
 import { CreateLessonEntity } from './../../models/form/create-lesson-entity.model';
 import { StudentMark } from './../../models/student-mark.model';
-import {Lab, ScheduleProtectionLabs} from "../../models/lab.model";
+import { Lab } from "../../models/lab.model";
 import { UpdateLab } from 'src/app/models/form/update-lab.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { CorrectDoc } from 'src/app/models/plagiarism-result.model';
 import { PlagiarismResultSubject } from 'src/app/models/plagiarism-result-subject.model';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class LabsRestService {
     );
   }
 
-  public getProtectionSchedule(subjectId: number, groupId: number): Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[]}> {
+  public getProtectionSchedule(subjectId: number, groupId: number): Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]}> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId.toString());
@@ -37,14 +38,6 @@ export class LabsRestService {
       })
     )
   }
-
-  // public getMarks(subjectId: number, groupId: string): Observable<any> {
-  //   const params = new HttpParams()
-  //     .set('subjectId', subjectId.toString())
-  //     .set('groupId', groupId);
-  //   return this.http.get('Services/Labs/LabsService.svc/GetMarksV2', {params}).pipe(
-  //     map(res => res['Students']))
-  // }
 
   public getMarksV2(subjectId: number, groupId: number): Observable<StudentMark[]> {
     const params = new HttpParams()
@@ -69,14 +62,6 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/Delete', lab);
   }
 
-  public createDateVisit(subGroupId: number, date: string ): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/SaveScheduleProtectionDate', { subGroupId, date });
-  }
-
-  public deleteDateVisit(id: number): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/DeleteVisitingDate', { id });
-  }
-
   public setLabsVisitingDate(body: { Id: number[], comments: string[], dateId: number, marks: string[], showForStudents: boolean[], students: StudentMark[] }): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/SaveLabsVisitingData', body);
   }
@@ -90,11 +75,20 @@ export class LabsRestService {
       map(res => res['UserLabFiles']));
   }
 
+  public getUserLabFiles(userId: number, labId: number): Observable<UserLabFile[]> {
+    const params = new HttpParams()
+    .append('userId', userId.toString())
+    .append('labId', labId.toString());
+    return this.http.get('Services/Labs/LabsService.svc/GetUserLabFiles', { params }).pipe(
+      map(res => res['UserLabFiles'])
+    );
+  }
+
   public deleteUserFile(id: number): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/DeleteUserFile', { id });
   }
 
-  public sendUserFile(body: { subjectId: number, userId: number, id: number, comments: string, pathFile: string, attachments: string, isRet: boolean, isCp: boolean }): Observable<any> {
+  public sendUserFile(body: { subjectId: number, userId: number, id: number, comments: string, pathFile: string, attachments: string, isRet: boolean, labId: number }): Observable<any> {
     return this.http.post('Services/Labs/LabsService.svc/SendFile', body);
   }
 

@@ -1,17 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
-import { DocumentService } from 'src/app/services/document.service';
-import { DocumentPreview } from 'src/app/models/DocumentPreview';
-import { ModalService } from 'src/app/services/modal.service';
+import { MatDialog } from '@angular/material/dialog';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { IDocumentTree } from 'src/app/models/DocumentTree';
-import { MatDialog } from '@angular/material/dialog';
-import { RemoveDocumentDialogComponent } from '../dialogs/remove-document-dialog/remove-document-dialog.component';
+
+import { environment } from '../../../environments/environment';
+import { IDocumentTree } from './../../models/DocumentTree';
+import { TreeComponent } from '../tree/tree.component';
+import { DocumentService } from './../../services/document.service';
+import { DocumentPreview } from './../../models/DocumentPreview';
+
 import { AddDocumentDialogComponent } from '../dialogs/add-document-dialog/add-document-dialog.component';
 import { EditDocumentDialogComponent } from '../dialogs/edit-document-dialog/edit-document-dialog.component';
-import { environment } from '../../../environments/environment';
-import { TreeComponent } from '../tree/tree.component';
+import { RemoveDocumentDialogComponent } from '../dialogs/remove-document-dialog/remove-document-dialog.component';
+
+import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 
 @Component({
   selector: 'app-editor',
@@ -23,14 +25,14 @@ export class EditorComponent implements OnInit {
 
   @ViewChild(TreeComponent) treeChild : TreeComponent;
 
-  //Text editor
-  public editor = Editor;
-  isEditorModelChanged: boolean;
-  public model = {
+  // text editor & config
+  editor = Editor;
+  isEditorModelChanged: boolean = false;
+  model = {
     editorData: '',
     isReadOnly: true,
     config: {
-      placeholder: 'Type the content here!',
+      placeholder: 'Введите содержание здесь...',
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
@@ -41,43 +43,40 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  //Linear list of documents without nestes
-  public documents: DocumentPreview[];
+  // linear list of documents without nestes
+  documents: DocumentPreview[];
 
-  //University subject. Zeros for test.
-  public SubjectId: Number = 0;
-  public UserId: Number = 0;
-  public isReadOnly: Boolean = true;
+  // info
+  UserId: Number;
+  SubjectId: Number;
+  isReadOnly: Boolean;
 
-  //Tree
-  isAnyNodeExpanded = false;
-
+  // tree
   treeControl = new NestedTreeControl<IDocumentTree>(node => node.Children);
   dataSource = new MatTreeNestedDataSource<IDocumentTree>();
+  linearTreeList = new Array<IDocumentTree>();
   hasChild = (_: number, node: IDocumentTree) => !!node.Children && node.Children.length > 0;
 
-  //Node
-  public currentNodeHasChild = false;
-  public currentNode: IDocumentTree = { Id: 0, Children: [], Name: '' };
-  public currentDocument: DocumentPreview;
+  // node
+  currentNodeId: Number;
+  currentDocument: DocumentPreview;
 
-  //Add new document
-  public newDocument: DocumentPreview;
-
-  //Search
-  public searchField = "";
-
-  constructor(private _bookService: DocumentService, private _modalService: ModalService, public dialog: MatDialog) {}
+  constructor(private _bookService: DocumentService, public dialog: MatDialog) {}
 
   ngOnInit() {
-    var currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
-    var currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
     this.SubjectId = currentSubject ? currentSubject.id : 1;
     this.UserId = currentUser ? currentUser.id : 1;
-    this.isReadOnly = currentUser ? currentUser.role != "lector" ? true : false : environment.production;
-    this.newDocument = new DocumentPreview();
-    this.isEditorModelChanged = false;
+    this.isReadOnly = currentUser ? currentUser.role != "lector" : environment.production;
     this.reloadTree();
+  }
+
+  ngOnDestroy() {
+    if(!this.model.isReadOnly) {
+      this.saveDocument(undefined);
+    }
   }
 
   //TREE
@@ -88,9 +87,11 @@ export class EditorComponent implements OnInit {
     this._bookService.getDocumentsTreeBySubjectId(this.SubjectId).subscribe(data => {
       this.dataSource.data = data;
       this.treeControl.dataNodes = this.dataSource.data;
+      this.updateLinearTreeNodesList();
 
-      if(this.currentNode.Id != 0) {
-        this.expand(this.dataSource.data, this.currentNode.Id);
+      if(this.currentNodeId && this.currentNodeId != 0) {
+        this.activateNode(this.currentNodeId);
+        this.expand(this.dataSource.data, this.currentNodeId);
         setTimeout(() => {
           const element = document.querySelector('.highlight');
           if (element) {
@@ -103,7 +104,10 @@ export class EditorComponent implements OnInit {
 
   expand(data: IDocumentTree[], nodeId: Number): any {
     data.forEach(node => {
-      if (node.Children && node.Children.find(c => c.Id === nodeId)) {
+      if(node.Id == nodeId) {
+        this.treeControl.expand(node);
+      }
+      else if (node.Children && node.Children.find(c => c.Id === nodeId)) {
         this.treeControl.expand(node);
         this.expand(this.treeControl.dataNodes, node.Id);
       }
@@ -113,27 +117,44 @@ export class EditorComponent implements OnInit {
     });
   }
 
-  onActivateTreeNodeEvent(document) {
-    var node = document;
-    this._bookService.getContent(node.Id).subscribe(doc => {
+  getParentId(data: IDocumentTree[], childNodeId: Number) : Number {
+    var res: Number = 0;
+    data.forEach(node => {
+      if (node.Children && node.Children.find(c => c.Id === childNodeId)) {
+        res = node.Id;
+      }
+      else {
+        return this.getParentId(node.Children, childNodeId);
+      }
+    });
+    return res;
+  }
+
+  activateNode(documentId) {
+    if(!this.model.isReadOnly && this.isEditorModelChanged) {
+      this.saveDocument(undefined);
+    }
+
+    this._bookService.getContent(documentId).subscribe(doc => {
       this.model.editorData = doc.Text;
       this.currentDocument = doc;
     })
-    this.currentNodeHasChild = node.Children.length > 0;
-    this.currentNode = node;
+    this.currentNodeId = documentId;
     this.model.isReadOnly = true;
 
-    this.treeControl.expand(node);
-    if(this.treeControl.isExpanded(node)) {
-      this.isAnyNodeExpanded = true;
-    }
+    this.treeControl.expand(this.linearTreeList.find(x => x.Id == documentId));
   }
 
   // DOCUMENT
   editDocument(document) {
     if(document.Children.length == 0 && document.Id != 0){
-      this.onActivateTreeNodeEvent(document);
+      this._bookService.getContent(document.Id).subscribe(doc => {
+        this.model.editorData = doc.Text.replace(doc.Name, '');
+        this.currentDocument = doc;
+      })
       this.model.isReadOnly = false;
+      this.currentNodeId = document.Id;
+      this.treeControl.expand(document);
     }
   }
 
@@ -146,6 +167,7 @@ export class EditorComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(newDocument => {
         if(newDocument) {
+          this.currentNodeId = newDocument.Id;
           this._bookService.saveDocument(newDocument).subscribe(res => {
             this.reloadTree();
           });
@@ -168,14 +190,14 @@ export class EditorComponent implements OnInit {
   }
 
   openRemoveDialog(document = undefined): void {
+    this.currentNodeId = document.Id;
     const dialogRef = this.dialog.open(RemoveDocumentDialogComponent, {
       data: { Id: document.Id, Name: document.Name }
     });
 
     dialogRef.afterClosed().subscribe(newDocument => {
       this._bookService.removeDocument(newDocument).subscribe(res => {
-        this.currentNodeHasChild = true;
-        this.currentNode = { Id: 0, Children: [], Name: '' };
+        this.currentNodeId = this.getParentId(this.dataSource.data, this.currentNodeId);
         this.reloadTree();
       });
     });
@@ -185,6 +207,8 @@ export class EditorComponent implements OnInit {
     var data = {};
 
     if(document && document.Id) {
+      this.currentNodeId = document.Id;
+
       data = {
         ParentId: document.Id,
         Name: ''
@@ -197,14 +221,13 @@ export class EditorComponent implements OnInit {
     dialogRef.afterClosed().subscribe(newDocument => {
       if(newDocument) {
         if(newDocument.Id == undefined || newDocument.Id == 0) {
-          newDocument.Id == 0
+          newDocument.Id = 0;
           newDocument.Text = "";
           newDocument.UserId = this.UserId;
           newDocument.SubjectId = this.SubjectId;
         }
         this._bookService.saveDocument(newDocument).subscribe(res => {
-          this.currentNodeHasChild = true;
-          this.currentNode = { Id: 0, Children: [], Name: '' };
+          this.currentNodeId = res;
           this.reloadTree();
         });;
       }
@@ -215,37 +238,16 @@ export class EditorComponent implements OnInit {
     this.isEditorModelChanged = true;
   }
 
-  collapseTree() {
-    this.treeControl.collapseAll();
-    this.isAnyNodeExpanded = false;
+  // updates linear tree nodes list
+  updateLinearTreeNodesList() {
+    this.linearTreeList = new Array<IDocumentTree>();
+    this.upd(this.dataSource.data);
   }
 
-  expandTree() {
-    this.treeControl.expandAll();
-    this.isAnyNodeExpanded = true;
-  }
-
-  onExpandOrCollapseNode(node) {
-    if(this.treeControl.isExpanded(node)) {
-      this.isAnyNodeExpanded = true;
-    }
-    else {
-      this.checkExpandedNodes(this.treeControl.dataNodes);
-    }
-  }
-
-  checkExpandedNodes(nodes : IDocumentTree[]) {
-    for(var i = 0; i < nodes.length; i++) {
-      if(this.treeControl.isExpanded(nodes[i])) {
-        this.isAnyNodeExpanded = true;
-        break;
-      }
-      else if(nodes[i].Children?.length > 0) {
-        this.checkExpandedNodes(nodes[i].Children);
-      }
-      else {
-        this.isAnyNodeExpanded = false;
-      }
-    }
+  upd(list) {
+    list.forEach(el => {
+      this.linearTreeList.push(el);
+      return this.upd(el.Children);
+    });
   }
 }

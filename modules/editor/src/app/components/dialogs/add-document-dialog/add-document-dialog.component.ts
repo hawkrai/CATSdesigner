@@ -3,6 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentPreview } from 'src/app/models/DocumentPreview';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
+import * as san from './../../../helpers/string-helper'
 
 export class DocumentErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -19,18 +21,25 @@ export class DocumentErrorStateMatcher implements ErrorStateMatcher {
 
 export class AddDocumentDialogComponent implements OnInit {
 
-  nameFormControl = new FormControl('', [
-    Validators.required
-  ]);
-
-  descriptionFormControl = new FormControl('', [
-    Validators.required
-  ]);
-
-  matcher = new DocumentErrorStateMatcher();
-
   description: string;
   isEnableToSave: boolean;
+
+  //Text editor
+  public editor = Editor;
+  isEditorModelChanged: boolean;
+  public model = {
+    editorData: '',
+    config: {
+      placeholder: 'Введите содержание здесь...',
+      toolbar: [ 'heading',
+        '|', 'bold', 'italic', 'link', 'alignment',
+        '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
+        '|', 'indent', 'outdent',
+        '|', 'blockQuote', // 'ckfinder',
+        '|', 'MathType',
+        '|', 'undo', 'redo' ],
+    }
+  }
 
   constructor(public dialogRef: MatDialogRef<AddDocumentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DocumentPreview) { }
@@ -44,25 +53,23 @@ export class AddDocumentDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onModelChanged(newLine) {
-    this.isEnableToSave = (newLine.length > 0 && newLine.length < 256) ? true : false;
+  onModelChanged(model) {
+    this.isEnableToSave =
+     (san.helper.sanitizeHtml(model.editorData).length > 0 &&
+      san.helper.sanitizeHtml(model.editorData).length < 256);
   }
 
   onYesClick() {
     if(this.isEnableToSave) {
         this.dialogRef.close({
           Id: this.data.Id,
-          Name: this.data.Name,
+          Name: this.model.editorData,
           ParentId: this.data.ParentId,
           SubjectId: this.data.SubjectId,
           ParentOrder: this.data.ParentOrder,
           Text: this.data.Text,
           UserId: this.data.UserId
         });
-    }
-    else {
-      this.nameFormControl.markAsTouched();
-      this.descriptionFormControl.markAsTouched();
     }
   }
 }

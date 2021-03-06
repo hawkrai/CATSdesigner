@@ -1,0 +1,61 @@
+<ng-container *ngIf="state$ | async as state">
+  <table mat-table [dataSource]="state.labFiles" class="job-protection-table">
+    <ng-container matColumnDef="file">
+      <th mat-header-cell *matHeaderCellDef>Файл</th>
+      <!-- <td mat-cell *matCellDef="let element"
+          [ngClass]="{'sticky': element.IsReceived, 'fix': element.IsReturned}"
+      >
+        <mat-icon class="priority-icon" *ngIf="isNewFile(element)" [color]="'primary'">priority_high</mat-icon>
+        <a mat-button color="primary"
+           *ngFor="let attachment of element.Attachments"
+           (click)="downloadFile(attachment)"
+        >
+          {{attachment.Name}}
+        </a>
+      </td> -->
+      <td mat-cell *matCellDef="let element"
+      >
+        <a mat-button color="primary"
+          *ngFor="let attachment of element.Attachments"
+          (click)="downloadFile(attachment)"
+        >
+          {{attachment.Name}}
+        </a>
+    </td>
+    </ng-container>
+
+    <ng-container matColumnDef="comments">
+      <th mat-header-cell *matHeaderCellDef>Комментарий</th>
+      <!-- <td mat-cell *matCellDef="let element"
+          [ngClass]="{'sticky': element.IsReceived, 'fix': element.IsReturned}"
+      > {{element.Comments}}</td> -->
+      <td mat-cell *matCellDef="let element"
+      > {{element.Comments}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Дата</th>
+      <!-- <td mat-cell *matCellDef="let element"
+          [ngClass]="{'sticky': element.IsReceived, 'fix': element.IsReturned}"
+      > {{element.Date}}</td> -->
+      <td mat-cell *matCellDef="let element"
+      > {{element.Date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <!-- <th mat-header-cell *matHeaderCellDef>Действие</th>
+      <td mat-cell *matCellDef="let element"
+          [ngClass]="{'sticky': element.IsReceived, 'fix': element.IsReturned}"
+      >
+      </td> -->
+      <th mat-header-cell *matHeaderCellDef>Действие</th>
+      <td mat-cell *matCellDef="let element"
+      >
+        <ng-container [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{file: element}"></ng-container>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</ng-container>

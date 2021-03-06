@@ -4,7 +4,9 @@ import {LessonService} from '../service/lesson.service';
 import {MatDialog} from '@angular/material/dialog';
 import {NewsInfoComponent} from '../modal/news-info/news-info.component';
 import {Message} from '../../../../../container/src/app/core/models/message';
-import {ModuleCommunicationComponent, ModuleCommunicationService} from 'test-mipe-bntu-schedule';
+import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
+import {AllNewsComponent} from '../modal/all-news/all-news.component';
+import {ScheduleMainComponent} from '../schedule-main/schedule-main.component';
 
 @Component({
   selector: 'app-news',
@@ -15,51 +17,37 @@ export class NewsComponent implements OnInit {
 
   user: any;
   news: any;
-  subjects: any[] = [];
-  subject: any;
   isEnableNews = true;
+  toolTip = 'Скрыть новости';
 
   constructor(private newsService: NewsService,
               private lessonservice: LessonService,
               private modulecommunicationservice: ModuleCommunicationService,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog,
+              private schedule: ScheduleMainComponent) { }
+
 
   ngOnInit() {
     // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
     this.user = JSON.parse(localStorage.getItem('currentUser'));
-    this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
-      this.subjects = subjects;
-      this.newsService.getAllNews(this.user.userName).subscribe(news => {
-        this.news = news;
-        if (news !== null && news !== undefined) {
-          if (news.length === 0) {
-            this.isEnableNews = false;
-          }
-        } else {
+    this.newsService.getAllNews(this.user.userName).subscribe(news => {
+      this.news = news;
+      if (this.news.length > 12) {
+        this.news = this.news.slice(1, 13);
+      }
+      if (news !== null && news !== undefined) {
+        if (news.length === 0) {
           this.isEnableNews = false;
         }
-      });
+      } else {
+        this.isEnableNews = false;
+      }
     });
   }
 
   public openItemInfo(item: any) {
-    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '600px', disableClose: true,
+    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '600px',
                                         position: {top: '10%'}, data: {itemNews: item}});
-  }
-
-  public getSubjectShortName(id: number) {
-    this.subject = this.subjects.find(subject => subject.Id === id);
-    if (this.subject != null) {
-      return this.subject.ShortName;
-    }
-    return '';
-  }
-
-  getToolTip(item: any): any {
-    this.subject = this.subjects.find(subject => subject.Id == item.SubjectId);
-    if (this.subject != null) {
-      return this.subject.Name;
-    }
   }
 
   public rerouteToSubject(item: any) {
@@ -69,12 +57,19 @@ export class NewsComponent implements OnInit {
     this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
-  public calcColor(item: any): any {
-    this.subject = this.subjects.find(subject => subject.Id == item.SubjectId);
-    if (this.subject != null) {
-
-      return '4px solid ' + this.subject.Color;
+  public calcColor(subject: any): any {
+    if (subject != null) {
+      return '4px solid ' + subject.Color;
     }
+  }
+
+  public openAllNews() {
+    const dialogRef = this.dialog.open(AllNewsComponent, {width: '600px', height: '550px',
+      position: {top: '1%'}, data: {news: this.news}});
+  }
+
+  public hideNews() {
+    this.schedule.hideNews();
   }
 
 }

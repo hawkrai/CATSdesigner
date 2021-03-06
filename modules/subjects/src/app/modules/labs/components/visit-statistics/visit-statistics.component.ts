@@ -1,21 +1,21 @@
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs';
 import { SubSink } from 'subsink';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import {Store } from '@ngrx/store';
 import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 
 import { StudentMark } from './../../../../models/student-mark.model';
-import { Lab, ScheduleProtectionLabs } from '../../../../models/lab.model';
+import { Lab } from '../../../../models/lab.model';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
 import { DialogService } from 'src/app/services/dialog.service';
 
-import { LabsRestService } from './../../../../services/labs/labs-rest.service';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 
 @Component({
@@ -29,7 +29,7 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
   @Input() groupId: number;
   private subs = new SubSink();
   
-  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLabs[], students: StudentMark[], userId: string }>;
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], students: StudentMark[], userId: number }>;
 
   constructor(
     private store: Store<IAppState>,
@@ -60,7 +60,7 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
   }
 
 
-  getSubGroupDisplayColumns(schedule: ScheduleProtectionLabs[]) {
+  getSubGroupDisplayColumns(schedule: ScheduleProtectionLab[]) {
     const defaultColumns = ['position', 'name'];
     return [...defaultColumns,  ...schedule.map(res => res.Date + res.ScheduleProtectionLabId)];
   }
@@ -71,8 +71,7 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
     return defaultHeaders.concat(subGroupLabs.map(l => ({head: l.LabId.toString(), text: l.ShortName, length: Math.floor(l.Duration / 2), tooltip: l.Theme })))
   }
 
-  setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionLabs, index: number) {
-    console.log(schedule.ScheduleProtectionLabId);
+  setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionLab, index: number) {
     if (this.isTeacher) {
       const visits = {
         date: schedule.Date, 

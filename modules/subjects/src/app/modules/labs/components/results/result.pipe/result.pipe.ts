@@ -6,7 +6,7 @@ import { StudentMark } from 'src/app/models/student-mark.model';
 })
 export class ResultPipe implements PipeTransform {
   transform(value: StudentMark): any {
-    return value.Marks.filter(mark => mark.Mark).length !== value.Marks.length;
+    return value.LabsMarks.filter(mark => mark.Mark).length !== value.LabsMarks.length;
   }
 
 }

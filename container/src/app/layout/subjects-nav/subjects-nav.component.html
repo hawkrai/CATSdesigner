@@ -1,16 +1,22 @@
 <mat-toolbar class="subjects-toolbar main-toolbar" color="primary">
     <button aria-haspopup="true" mat-button="" [matMenuTriggerFor]="menu" class="mat-button">
         <span class="mat-button-wrapper">
-            <h2 class="mat-h2">{{coreService.selectedSubject != null ? coreService.selectedSubject.Name : "Выберите предмет"}}</h2>        
+            <h2 class="mat-h2">{{coreService.selectedSubject != null ? coreService.selectedSubject.Name : "Выберите предмет"}}</h2>  
+            <h3 class="mat-h3">{{coreService.selectedSubject != null ? "Попова Юлия Борисовна" : " "}}</h3>      
         </span>
         <div class="mat-button-ripple mat-ripple" matripple></div>
         <div class="mat-button-focus-overlay"></div>
     </button>
     <mat-menu #menu="matMenu">
-        <a mat-menu-item *ngFor="let subject of subjects; let i = index" (click)="changeSubject(subject.Id)"> {{subject.Name}}</a>
+        <a #link mat-menu-item *ngFor="let subject of subjects; let i = index" (click)="changeSubject(subject.Id)"> 
+            <span #linkItem class="menu-link-item" 
+            matTooltipPosition="above"
+            [matTooltipDisabled]="linkItem.offsetWidth < linkItem.parentElement.offsetWidth" 
+            matTooltip={{subject.Name}} >{{subject.Name}}</span>
+        </a>
     </mat-menu>
 
     <div class="flex-spacer"></div>
-    <button *ngIf="isLector" (click)="onSubjects()" mat-raised-button color="warn">Управление предметами</button>   
+    <button *ngIf="isLector" (click)="onSubjects()" mat-raised-button color="basic" class="btn">Управление предметами</button>   
 </mat-toolbar>
 <router-outlet></router-outlet>

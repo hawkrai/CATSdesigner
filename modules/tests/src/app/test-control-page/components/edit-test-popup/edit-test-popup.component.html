@@ -1,97 +1,99 @@
 <div class="popup-container-parent" *ngIf="editingTest;else loading">
   <div class="popup-container-child">
-  <h1 mat-dialog-title class="popup-container">{{!this.newTest ? 'Редактирование теста' : 'Добавление теста'}}</h1>
-  <ng-container [formGroup]="formGroup">
-    <div mat-dialog-content>
-      <mat-form-field>
-        <input matInput formControlName="title" [placeholder]="'Название теста'"
-               [required]="true"
-               [value]="editingTest.Title ? editingTest.Title : ''"
-               (change)="writeTitle($event, 'Title')">
-        <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
-          {{"Длина превышает 255 символов"}}
-        </mat-error>
-        <mat-error *ngIf="formGroup.controls.title.hasError('required')">
-          {{"Введите название теста"}}
-        </mat-error>
-      </mat-form-field>
-    </div>
-    <div mat-dialog-content>
-      <mat-form-field class="edit-test-wrapper">
-      <textarea matInput [placeholder]="'Описание теста'"
+    <h1 mat-dialog-title class="popup-container">{{!this.newTest ? ('text.test.edit.test' | translate : 'Редактирование теста') :
+      ('text.test.adding.test' | translate : 'Добавление теста')}}</h1>
+    <ng-container [formGroup]="formGroup">
+      <div mat-dialog-content>
+        <mat-form-field>
+          <textarea matInput formControlName="title" [placeholder]="'text.test.name' | translate : 'Название теста'"
+                    [required]="true"
+                    [value]="editingTest.Title ? editingTest.Title : ''"
+                    (change)="writeTitle($event, 'Title')"></textarea>
+          <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
+            {{'text.test.error.max.length' | translate : "Длина превышает 255 символов"}}
+          </mat-error>
+          <mat-error *ngIf="formGroup.controls.title.hasError('required')">
+            {{'text.test.error.enter.name' | translate : "Введите название теста"}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div mat-dialog-content>
+        <mat-form-field class="edit-test-wrapper">
+      <textarea matInput [placeholder]="'text.test.description.test' | translate : 'Описание теста'"
                 [value]="editingTest.Description ? editingTest.Description : ''"
                 rows="3"
                 formControlName="description"
                 (change)="writeTitle($event, 'Description')"></textarea>
-        <mat-error *ngIf="formGroup.controls.description.hasError('maxlength')">
-          {{"Длина превышает 1000 символов"}}
-        </mat-error>
-      </mat-form-field>
+          <mat-error *ngIf="formGroup.controls.description.hasError('maxlength')">
+            {{'text.test.error.max.length.1000' | translate : "Длина превышает 1000 символов"}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div mat-dialog-content class="edit-test-questions">
+        <mat-form-field>
+          <input matInput type="number" [placeholder]="'text.test.count.questions' | translate : 'Количество вопросов'"
+                 [required]="true"
+                 [value]="editingTest.CountOfQuestions ? editingTest.CountOfQuestions : 5"
+                 formControlName="countOfQuestions"
+                 (change)="writeTitle($event, 'CountOfQuestions')">
+          <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('max')">
+            {{'text.test.fewer.count.questions' | translate : "Уменьшите количество вопросов"}}
+          </mat-error>
+          <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('min')">
+            {{'text.test.error.more.than.zero' | translate : "Количество вопросов должно быть больше нуля"}}
+          </mat-error>
+          <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('required')">
+            {{'text.test.error.enter.count.questions' | translate : "Введите количество вопросов"}}
+          </mat-error>
+          <mat-hint>{{'text.test.hint.questions' | translate : 'Количество вопросов в тестовом наборе для каждого обучающегося'}}
+          </mat-hint>
+        </mat-form-field>
+      </div>
+      <div mat-dialog-content class="edit-test-time">
+        <mat-form-field>
+          <input matInput type="number"
+                 [placeholder]="editingTest?.SetTimeForAllTest ? ('text.test.time.for.test' | translate : 'Время на тест (мин)') : ('text.test.time.for.question' | translate : 'Время на вопрос (сек)')"
+                 [required]="true"
+                 [value]="editingTest.TimeForCompleting ? editingTest.TimeForCompleting : 10"
+                 formControlName="timeForCompleting"
+                 (change)="writeTitle($event, 'TimeForCompleting')">
+          <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('max')">
+            {{'text.test.error.fewer.time' | translate : "Уменьшите время"}}
+          </mat-error>
+          <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('min')">
+            {{'text.test.error.time.not.zero' | translate : "Время должно быть больше нуля"}}
+          </mat-error>
+          <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('required')">
+            {{'text.test.error.enter.time' | translate : "Введите время"}}
+          </mat-error>
+        </mat-form-field>
+        <mat-checkbox class="example-margin"
+                      [checked]="!editingTest?.SetTimeForAllTest"
+                      (change)="checkBoxTrue($event)">{{'text.test.enter.time.for.one.question' | translate : 'Задать время на 1 вопрос (сек)'}}
+        </mat-checkbox>
+      </div>
+    </ng-container>
+    <div class="edit-test-type">
+      <div class="edit-test-type-block">
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          [(ngModel)]="chosenType">
+          <mat-radio-button class="example-radio-button" *ngFor="let category of CATEGORIES"
+                            [matTooltip]="category.tooltip"
+                            matTooltipClass="example-tooltip-blue" [value]="category.value">
+            {{category.name | translate: category.value}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
     </div>
-    <div mat-dialog-content class="edit-test-questions">
-      <mat-form-field>
-        <input matInput type="number" [placeholder]="'Количество вопросов'"
-               [required]="true"
-               [value]="editingTest.CountOfQuestions ? editingTest.CountOfQuestions : 5"
-               formControlName="countOfQuestions"
-               (change)="writeTitle($event, 'CountOfQuestions')">
-        <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('max')">
-          {{"Уменьшите количество вопросов"}}
-        </mat-error>
-        <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('min')">
-          {{"Количество вопросов должно быть больше нуля"}}
-        </mat-error>
-        <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('required')">
-          {{"Введите количество вопросов"}}
-        </mat-error>
-        <mat-hint>Количество вопросов в тестовом наборе для каждого обучающегося</mat-hint>
-      </mat-form-field>
-    </div>
-    <div mat-dialog-content class="edit-test-time">
-      <mat-form-field>
-        <input matInput type="number"
-               [placeholder]="'Время на тест (мин)'"
-               [required]="true"
-               [value]="editingTest.TimeForCompleting ? editingTest.TimeForCompleting : 10"
-               formControlName="timeForCompleting"
-               (change)="writeTitle($event, 'TimeForCompleting')">
-        <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('max')">
-          {{"Уменьшите время"}}
-        </mat-error>
-        <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('min')">
-          {{"Время должно быть больше нуля"}}
-        </mat-error>
-        <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('required')">
-          {{"Введите время"}}
-        </mat-error>
-      </mat-form-field>
-      <mat-checkbox class="example-margin"
-                    [checked]="!editingTest?.SetTimeForAllTest"
-                    (change)="checkBoxTrue($event)">{{'Задать время на 1 вопрос (сек)'}}
-      </mat-checkbox>
-    </div>
-  </ng-container>
-  <div class="edit-test-type">
-    <div class="edit-test-type-block">
-      <mat-radio-group
-        aria-labelledby="example-radio-group-label"
-        class="example-radio-group"
-        [(ngModel)]="chosenType">
-        <mat-radio-button class="example-radio-button" *ngFor="let category of CATEGORIES"
-                          [matTooltip]="category.tooltip"
-                          matTooltipClass="example-tooltip-blue" [value]="category.name">
-          {{category.name}}
-        </mat-radio-button>
-      </mat-radio-group>
+    <div mat-dialog-actions>
+      <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+      <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>{{'button.save' | translate :
+        'Сохранить'}}
+      </button>
     </div>
   </div>
-  <div mat-dialog-actions>
-    <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
-    <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>{{'button.save' | translate :
-      'Сохранить'}}
-    </button>
-  </div>
-</div>
 </div>
 <ng-template #loading>
   <div class="edit-test-popup-loader">

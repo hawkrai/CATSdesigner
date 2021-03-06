@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Infrastructure.GroupManagement;
+using Application.Infrastructure.KnowledgeTestsManagement;
+using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using LMPlatform.UI.Services.Modules.Practicals;
+using LMPlatform.UI.Services.Modules.Schedule;
 using Newtonsoft.Json;
 using WebMatrix.WebData;
 
@@ -19,18 +23,32 @@ namespace LMPlatform.UI.Services.Practicals
     [JwtAuth]
     public class PracticalService : IPracticalService
     {
+        private readonly LazyDependency<IPracticalManagementService> practicalManagementService = new LazyDependency<IPracticalManagementService>();
+
+        public IPracticalManagementService PracticalManagementService => practicalManagementService.Value;
+
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
 
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
+
+
+        private readonly LazyDependency<ITestsManagementService> testsMaangementService = new LazyDependency<ITestsManagementService>();
+
+        public ITestsManagementService TestsManagementService => testsMaangementService.Value;
 
 
         private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
 
         public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
+
+        private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
+
+        public ITestPassingService TestPassingService => testPassingService.Value;
+
         private const int PracticalModuleId = 13;
 
-        public PracticalsResult GetLabs(string subjectId)
+        public PracticalsResult GetPracticals(string subjectId)
         {
             try
             {
@@ -66,8 +84,17 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
-                SubjectManagementService.SavePractical(new Practical
+                PracticalManagementService.SavePractical(new Practical
                 {
                     SubjectId = subjectId,
                     Duration = duration,
@@ -97,7 +124,16 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
-                SubjectManagementService.DeletePracticals(id);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                PracticalManagementService.DeletePracticals(id);
                 return new ResultViewData
                 {
                     Message = "Практическое занятие успешно удалено",
@@ -114,69 +150,88 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public ResultViewData SaveScheduleProtectionDate(int groupId, string date, int subjectId)
+        public StudentsMarksResult GetMarks(int subjectId, int groupId)
         {
-            try
+            var subject = SubjectManagementService.GetSubject(
+                new Query<Subject>(x => x.Id == subjectId)
+                .Include(x => x.Practicals)
+                .Include(x => x.ScheduleProtectionPracticals)
+                .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents))
+                .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.ScheduleProtectionPracticalMarks)))
+                .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.StudentPracticalMarks))));
+
+            var marks = new List<StudentMark>();
+
+            var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
+
+            var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
+
+            foreach (var student in group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName))
             {
-                SubjectManagementService.SaveScheduleProtectionPracticalDate(new ScheduleProtectionPractical
+                var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionPracticals: subject.ScheduleProtectionPracticals, practicals: subject.Practicals);
+
+                marks.Add(new StudentMark
                 {
-                    GroupId = groupId,
-                    Date = DateTime.Parse(date),
-                    SubjectId = subjectId
+                    FullName = student.FullName,
+                    StudentId = student.Id,
+                    PracticalsMarkTotal = studentViewData.PracticalMarkTotal,
+                    TestMark = studentViewData.TestMark,
+                    PracticalVisitingMark = studentViewData.PracticalVisitingMark,
+                    PracticalsMarks = studentViewData.StudentPracticalMarks,
+                    AllTestsPassed = studentViewData.AllTestsPassed
                 });
-                return new ResultViewData
-                {
-                    Message = "Дата успешно добавлены",
-                    Code = "200"
-                };
             }
-            catch
+
+            return new StudentsMarksResult
             {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при добавлении даты",
-                    Code = "500"
-                };
-            }
+                Students = marks,
+                Message = "",
+                Code = "200"
+            };
         }
 
-        public List<PracticalVisitingMarkViewData> GetPracticalsVisitingData(int subjectId, int groupId)
-        {
-            var scheduleProtectionPracticals = SubjectManagementService.GetScheduleProtectionPractical(subjectId, groupId);
-            var practicalVisitingMarkViewDatas = scheduleProtectionPracticals
-                .SelectMany(s => s.ScheduleProtectionPracticalMarks)
-                .Select(s => new PracticalVisitingMarkViewData
-                {
-                    StudentId = s.StudentId,
-                    Comment = s.Comment,
-                    Mark = s.Mark,
-                    PracticalVisitingMarkId = s.Id,
-                    ScheduleProtectionPracticalId = s.ScheduleProtectionPracticalId,
-                    StudentName = s.Student.FullName,
-                    Date = s.ScheduleProtectionPractical.Date.ToShortDateString()
-                }).ToList();
-            return practicalVisitingMarkViewDatas;
-        }
-
-        public ResultViewData SavePracticalsVisitingData(List<StudentsViewData> students)
+        public ResultViewData SavePracticalsVisitingData(int dateId, List<string> marks, List<string> comments, List<int> studentsId, List<int> Id, List<StudentsViewData> students, List<bool> showForStudents, int subjectId)
         {
             try
             {
-                foreach (var studentsViewData in students)
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
                 {
-                    SubjectManagementService.SavePracticalVisitingData(studentsViewData.PracticalVisitingMark.Select(e => new ScheduleProtectionPracticalMark
+                    return new ResultViewData
                     {
-                        Comment = e.Comment,
-                        Mark = e.Mark,
-                        ScheduleProtectionPracticalId = e.ScheduleProtectionPracticalId,
-                        Id = e.PracticalVisitingMarkId,
-                        StudentId = e.StudentId
-                    }).ToList());
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                var count = studentsId.Count;
+
+                for (var i = 0; i < count; i++)
+                {
+                    var currentMark = marks[i];
+                    var currentComment = comments[i];
+                    var currentStudentId = studentsId[i];
+                    var currentId = Id[i];
+                    var showForStudent = showForStudents[i];
+
+                    foreach (var student in students)
+                    {
+                        if (student.StudentId == currentStudentId)
+                        {
+                            foreach (var practicalVisiting in student.PracticalVisitingMark)
+                            {
+                                if (practicalVisiting.ScheduleProtectionPracticalId == dateId)
+                                {
+                                    SubjectManagementService.SavePracticalVisitingData(new ScheduleProtectionPracticalMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
+                                }
+                            }
+                        }
+
+                    }
                 }
 
                 return new ResultViewData
                 {
-                    Message = "Данные успешно изменены",
+                    Message = "Данные успешно добавлены",
                     Code = "200"
                 };
             }
@@ -184,17 +239,26 @@ namespace LMPlatform.UI.Services.Practicals
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при изменении данных",
+                    Message = "Произошла ошибка при добавлении данных",
                     Code = "500"
                 };
             }
         }
         
-        public ResultViewData SaveStudentPracticalsMark(int studentId, int practicalId, string mark, string comment, string date, int id)
+        public ResultViewData SaveStudentPracticalsMark(int studentId, int practicalId, string mark, string comment, string date, int id, int subjectId)
         {
             try
             {
-                SubjectManagementService.SavePracticalMarks(new List<StudentPracticalMark>
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                PracticalManagementService.SavePracticalMarks(new List<StudentPracticalMark>
                 {
                     new StudentPracticalMark
                     {
@@ -221,45 +285,32 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public ResultViewData DeleteVisitingDate(int id)
-        {
-            try
-            {
-                SubjectManagementService.DeletePracticalsVisitingDate(id);
-
-                return new ResultViewData
-                {
-                    Message = "Дата успешно удалена",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при удалении даты",
-                    Code = "500"
-                };
-            }
-        }
-
         public ResultViewData UpdatePracticalsOrder(int subjectId, int prevIndex, int curIndex)
         {
             try
             {
-                var practicals = SubjectManagementService.GetSubjectPracticals(subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                var practicals = PracticalManagementService.GetSubjectPracticals(subjectId);
                 if (prevIndex < curIndex)
                 {
                     foreach (var entry in practicals.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(practicals[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
                     {
-                        SubjectManagementService.UpdatePracticalOrder(entry.Value, entry.Index + prevIndex);
+                        PracticalManagementService.UpdatePracticalOrder(entry.Value, entry.Index + prevIndex);
                     }
                 }
                 else
                 {
                     foreach (var entry in new List<Practical> { practicals[prevIndex] }.Concat(practicals.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
                     {
-                        SubjectManagementService.UpdatePracticalOrder(entry.Value, entry.Index + curIndex);
+                        PracticalManagementService.UpdatePracticalOrder(entry.Value, entry.Index + curIndex);
                     }
                 }
                 return new ResultViewData
@@ -274,6 +325,86 @@ namespace LMPlatform.UI.Services.Practicals
                 {
                     Code = "500",
                     Message = ex.Message
+                };
+            }
+        }
+
+        public PracticalsResult GetPracticalsV2(int subjectId, int groupId)
+        {
+            try
+            {
+                var practicals = PracticalManagementService.GetPracticals(new Query<Practical>(e => e.SubjectId == subjectId)).OrderBy(e => e.Order).ToList();
+                var groupProtectionSchedule = GroupManagementService.GetGroup(
+                    new Query<Group>(e => e.Id == groupId)
+                    .Include(x => x.ScheduleProtectionPracticals)
+                    ).ScheduleProtectionPracticals.ToList();
+
+                var practicalsViewData = practicals.Select(e => new PracticalsViewData(e) {
+                    ScheduleProtectionPracticalsRecommended = groupProtectionSchedule?.Select(x => new ScheduleProtectionLesson
+                    {
+                        ScheduleProtectionId = x.Id,
+                        Mark = string.Empty
+                    })?.ToList() ?? new List<ScheduleProtectionLesson>()
+                }).ToList();
+                var durationCount = 0;
+
+                foreach (var practical in practicalsViewData)
+                {
+                    var mark = 10;
+                    durationCount += practical.Duration / 2;
+                    for (int i = 0; i < practical.ScheduleProtectionPracticalsRecommended.Count; i++)
+                    {
+                        if (i + 1 > durationCount - (practical.Duration / 2))
+                        {
+                            practical.ScheduleProtectionPracticalsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+
+                            if (i + 1 >= durationCount)
+                            {
+                                if (mark != 1)
+                                {
+                                    mark -= 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return new PracticalsResult
+                {
+                    Practicals = practicalsViewData.ToList(),
+                    ScheduleProtectionPracticals = groupProtectionSchedule.Select(e => new ScheduleProtectionPracticalViewData(e)).ToList(),
+                    Message = "Практические работы успешно загружены",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new PracticalsResult
+                {
+                    Message = "Произошла ошибка при получении практических работ",
+                    Code = "500"
+                };
+            }
+        }
+
+        public ResultViewData SaveStudentLabsMark(int studentId, int practicalId, string mark, string comment, string date, int id, bool showForStudent)
+        {
+            try
+            {
+                PracticalManagementService.SaveStudentPracticalMark(new StudentPracticalMark(practicalId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
+
+                return new ResultViewData
+                {
+                    Message = "Данные успешно добавлены",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultViewData
+                {
+                    Message = "Произошла ошибка при добавлении данных",
+                    Code = "500"
                 };
             }
         }
