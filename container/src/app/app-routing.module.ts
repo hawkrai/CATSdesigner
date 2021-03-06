@@ -12,6 +12,7 @@ import { AboutComponent } from './about/about.component';
 import { ResetComponent } from './reset/reset.component';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 =======
 import { StatsComponent } from './searchResults/stats/stats.component';
@@ -29,6 +30,11 @@ import { ProfileComponent } from './searchResults/profile/profile.component';
 =======
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+import { StatsComponent } from './searchResults/stats/stats.component';
+import { ProfileComponent } from './searchResults/profile/profile.component';
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
 
 const routes: Routes = [
   {
@@ -62,17 +68,23 @@ const routes: Routes = [
         component: ProfileComponent
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
       },
       {
         path: 'personalAccount',
         component: ChangePersonalDataComponent
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> aa493100c (just test)
 =======
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
       }
     ]
   },

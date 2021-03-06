@@ -22,6 +22,7 @@ export class ChangePersonalDataComponent implements OnInit {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
 =======
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -29,6 +30,9 @@ export class ChangePersonalDataComponent implements OnInit {
 =======
   emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
 >>>>>>> 1d1c402e3 («search»)
+=======
+  emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
   phoneFormControl = new FormControl('', [Validators.required/*, Validators.pattern('/^\s*([+]{1}375|80)\s?-?\s?(25|29|33|44)\s?-?\s?\d{3}\s?-?\s?\d{2}\s?-?\s?\d{2}$/')*/]);
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
   Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
@@ -84,8 +88,11 @@ export class ChangePersonalDataComponent implements OnInit {
     if ((!this.phoneFormControl.invalid || this.profileData.Phone == "") && (!this.emailFormControl.invalid || this.profileData.Email == "")) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 1d1c402e3 («search»)
+=======
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
       if (confirm("Вы уверены что хотите сохранить изменения?")) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
@@ -97,6 +104,7 @@ export class ChangePersonalDataComponent implements OnInit {
           }
         });
       }
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
       this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
@@ -114,6 +122,12 @@ export class ChangePersonalDataComponent implements OnInit {
 
     else {
       alert("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или не содержат символов(необязательные поля)");
+=======
+    }
+
+    else {
+      alert("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или являются полностью пустыми (необязательные поля)");
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
     }
 
     

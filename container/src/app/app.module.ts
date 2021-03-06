@@ -34,6 +34,7 @@ import { StatsComponent } from './searchResults/stats/stats.component';
 import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-stats-subject/table-for-stats-subject.component';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
 =======
@@ -42,6 +43,10 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
+import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
 
 
 
@@ -59,6 +64,7 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     ConfirmationComponent,
     AboutComponent,
     ResetComponent,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     TranslatePipe
@@ -84,6 +90,13 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     ChangePersonalDataComponent,
     ChangePasswordDialog
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+    ProfileComponent,
+    StatsComponent,
+    TableForStatsSubjectComponent,
+    ChangePersonalDataComponent,
+    ChangePasswordDialog
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
   ],
   imports: [
     BrowserModule,
@@ -95,11 +108,14 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     MatButtonModule,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> aa493100c (just test)
 =======
 >>>>>>> f126059ef (fix phone input\profile button\add image check)
+=======
+>>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
     FormsModule,
     MatTableModule,
     MatDialogModule,
