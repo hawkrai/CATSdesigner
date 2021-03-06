@@ -1,55 +1,19 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1d1c402e3 («search»)
-=======
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
 
 <div class="buttons-row">
   <h2 class="header"> Личный кабинет пользователя</h2>
   <button mat-button class="cancel-button" (click)="this.backClicked()">Отменить изменения</button>
   <button mat-button class="edit-button" (click)="this.updatePersonalInfo()"> Сохранить изменения </button>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<div>
-  <mat-card class="header">
-    <h2>Личный кабинет пользователя</h2>
-  </mat-card>
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
->>>>>>> 1d1c402e3 («search»)
-=======
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
 </div>
 
 <div class="profile">
 
   <mat-card class="profile-card">
     <mat-card class="avatar">
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
       <img *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}" width="300px">
       <img *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}" width="300px">
 
-=======
-      <img *ngIf ="this.profileData.Avatar"src="{{this.profileData.Avatar}}" width="300px">
-      <img *ngIf ="!this.profileData.Avatar"src="{{this.defaultAvatar}}" width="300px">
-      
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
-      <img *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}" width="300px">
-      <img *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}" width="300px">
-
->>>>>>> 1d1c402e3 («search»)
-=======
-      <img *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}" width="300px">
-      <img *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}" width="300px">
-
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
     </mat-card>
     <input style="display: none"
            #fileInput
@@ -80,23 +44,9 @@
       <input matInput disabled value={{this.profileData.UserName}}>
     </mat-form-field>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     <a title="Перейдите, чтобы сменить пароль" (click)="this.openDialog()">Изменить пароль </a>
 
-=======
-    <a title= "Перейдите, чтобы сменить пароль" (click) = "this.openDialog()">Изменить пароль </a>
-  
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
-    <a title="Перейдите, чтобы сменить пароль" (click)="this.openDialog()">Изменить пароль </a>
-
->>>>>>> 1d1c402e3 («search»)
-=======
-    <a title="Перейдите, чтобы сменить пароль" (click)="this.openDialog()">Изменить пароль </a>
-
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
   </mat-card>
 
   <mat-card class="data-container">
@@ -104,19 +54,7 @@
     <mat-form-field class="example-full-width">
       <mat-label>Почта</mat-label>
       <input matInput [(ngModel)]="this.profileData.Email" [formControl]="emailFormControl" maxlength="30">
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       <mat-error *ngIf="emailFormControl.invalid">Неверный формат почты</mat-error>
-=======
-      <mat-error *ngIf="emailFormControl.invalid">Не верный формат почты</mat-error>
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
-      <mat-error *ngIf="emailFormControl.invalid">Неверный формат почты</mat-error>
->>>>>>> 1d1c402e3 («search»)
-=======
-      <mat-error *ngIf="emailFormControl.invalid">Неверный формат почты</mat-error>
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
     </mat-form-field>
 
     <mat-form-field class="example-full-width">
@@ -132,9 +70,6 @@
 
     <mat-form-field class="example-full-width">
       <mat-label>О себе</mat-label>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       <input matInput [(ngModel)]="this.profileData.About" maxlength="500">
     </mat-form-field>
 
@@ -142,25 +77,4 @@
 
 </div>
 
-=======
-      <input matInput [(ngModel)]="this.profileData.About"  maxlength="500">
-=======
-      <input matInput [(ngModel)]="this.profileData.About" maxlength="500">
->>>>>>> 1d1c402e3 («search»)
-=======
-      <input matInput [(ngModel)]="this.profileData.About" maxlength="500">
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
-    </mat-form-field>
-
-  </mat-card>
-
-</div>
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
-
->>>>>>> 1d1c402e3 («search»)
-=======
-
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
+      

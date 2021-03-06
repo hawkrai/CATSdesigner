@@ -154,11 +154,9 @@
       <Name>Application.ElasticDataModels</Name>
     </ProjectReference>
     <ProjectReference Include="..\Application.ElastickSearchEngine\Application.ElasticSearchEngine.csproj">
-<<<<<<< HEAD
-      <Project>{62ef80d1-33c9-4a78-b3e5-13b4a961fe96}</Project>
-=======
+
       <Project>{62EF80D1-33C9-4A78-B3E5-13B4A961FE96}</Project>
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
+
       <Name>Application.ElasticSearchEngine</Name>
     </ProjectReference>
   </ItemGroup>

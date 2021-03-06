@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../core/services/auth.service';
 import { ProfileData } from '../core/models/searchResults/personal-data';
@@ -20,28 +21,16 @@ export class ChangePersonalDataComponent implements OnInit {
   currentUserId!: number;
   profileData!: ProfileData;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
-=======
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
-  emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
->>>>>>> 1d1c402e3 («search»)
-=======
-  emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
   phoneFormControl = new FormControl('', [Validators.required/*, Validators.pattern('/^\s*([+]{1}375|80)\s?-?\s?(25|29|33|44)\s?-?\s?\d{3}\s?-?\s?\d{2}\s?-?\s?\d{2}$/')*/]);
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
   Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
 
   surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
 
   patronymicFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
     private profileService: ProfileService, private location: Location, public dialog: MatDialog) { }
@@ -86,13 +75,6 @@ export class ChangePersonalDataComponent implements OnInit {
 
   updatePersonalInfo() {
     if ((!this.phoneFormControl.invalid || this.profileData.Phone == "") && (!this.emailFormControl.invalid || this.profileData.Email == "")) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1d1c402e3 («search»)
-=======
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
       if (confirm("Вы уверены что хотите сохранить изменения?")) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
@@ -104,33 +86,13 @@ export class ChangePersonalDataComponent implements OnInit {
           }
         });
       }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
-        if (res) {
-          alert("Изменения сохранены");
-        }
-        else {
-          alert("Изменения не сохранены");
-        }
-      });
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
->>>>>>> 1d1c402e3 («search»)
-    }
-
-    else {
-      alert("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или не содержат символов(необязательные поля)");
-=======
     }
 
     else {
       alert("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или являются полностью пустыми (необязательные поля)");
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
     }
 
-    
+
   }
 
   openDialog(): void {

@@ -16,7 +16,7 @@ export class ChangePasswordDialog {
   Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator])
 
   newPasswordFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-    Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator])
+  Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator])
 
   newPasswordRepeatFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
   Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator])
@@ -25,7 +25,7 @@ export class ChangePasswordDialog {
   }
 
   showBadPasswordError = false;
-  
+
   hideOld = true;
   hideNew = true;
   hideNewRepeat = true;
@@ -43,13 +43,6 @@ export class ChangePasswordDialog {
   onSaveChangesClick(): void {
     this.showBadPasswordError = false;
     if (this.arePasswordsSame()) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1d1c402e3 («search»)
-=======
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
       if (confirm("Вы уверены, что хотите изменить пароль?")) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
@@ -61,22 +54,8 @@ export class ChangePasswordDialog {
           }
         });
       }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
-        if (res) {
-          alert("Пароль успешно изменен!");
-          this.dialogRef.close();
-        }
-      });
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
->>>>>>> 1d1c402e3 («search»)
-=======
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
     }
-    else { this.showBadPasswordError = true;}
+    else { this.showBadPasswordError = true; }
   }
 
   arePasswordsSame(): boolean {
@@ -86,3 +65,4 @@ export class ChangePasswordDialog {
 
 
 }
+

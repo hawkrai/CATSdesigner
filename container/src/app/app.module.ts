@@ -32,21 +32,9 @@ import { ToastModule } from './toast';
 import { ProfileComponent } from './searchResults/profile/profile.component';
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-stats-subject/table-for-stats-subject.component';
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
-=======
->>>>>>> aa493100c (just test)
-=======
-import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
-import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
-import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
-import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
 
 
 
@@ -64,39 +52,14 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     ConfirmationComponent,
     AboutComponent,
     ResetComponent,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    TranslatePipe
-=======
-    ProfileComponent,
-    StatsComponent,
-<<<<<<< HEAD
-    TableForStatsSubjectComponent
->>>>>>> 814893677 (just test)
-=======
-    TableForStatsSubjectComponent,
-    ChangePersonalDataComponent,
-    ChangePasswordDialog
->>>>>>> 94e193bfb (fix phone input\profile button\add image check)
-=======
-    ProfileComponent,
-    StatsComponent,
-<<<<<<< HEAD
-    TableForStatsSubjectComponent
->>>>>>> aa493100c (just test)
-=======
-    TableForStatsSubjectComponent,
-    ChangePersonalDataComponent,
-    ChangePasswordDialog
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
+    TranslatePipe,
     ProfileComponent,
     StatsComponent,
     TableForStatsSubjectComponent,
     ChangePersonalDataComponent,
-    ChangePasswordDialog
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
+    ChangePasswordDialog,
+    ProfileComponent,
+    StatsComponent
   ],
   imports: [
     BrowserModule,
@@ -106,16 +69,6 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     MatetialModule,
     CoreModule,
     MatButtonModule,
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> aa493100c (just test)
-=======
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
     FormsModule,
     MatTableModule,
     MatDialogModule,

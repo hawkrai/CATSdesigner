@@ -26,21 +26,6 @@ export class NavComponent implements OnInit, OnDestroy {
   public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
   public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-  public currentUserId!: number;
-  valueForSearch!: string;
-  
-  searchResults !: string[];
-
-  lecturerSearchResults!: Lecturer[];
-  studentSearchResults!: Student[];
-  groupSearchResults!: Group[];
-
->>>>>>> f126059ef (fix phone input\profile button\add image check)
 
   public currentUserId!: number;
   valueForSearch!: string;
@@ -50,6 +35,7 @@ export class NavComponent implements OnInit, OnDestroy {
   lecturerSearchResults!: Lecturer[];
   studentSearchResults!: Student[];
   groupSearchResults!: Group[];
+
 
   constructor(private layoutService: LayoutService,
               private coreService: CoreService,
@@ -61,20 +47,13 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
-=======
+
+
     this.currentUserId = this.autService.currentUserValue.id;
->>>>>>> 94e193bfb (fix phone input\profile button\add image check)
-=======
-    this.currentUserId = this.autService.currentUserValue.id;
->>>>>>> f126059ef (fix phone input\profile button\add image check)
-=======
-    this.currentUserId = this.autService.currentUserValue.id;
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
+
     this.coreService.getGroups()
       .pipe(
         tap((groups: any) => {
