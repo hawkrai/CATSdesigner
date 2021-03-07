@@ -15,9 +15,18 @@ namespace LMPlatform.Models
 
         public User User { get; set; }
 
-        public int SubjectId { get; set; }
+        public int? LecturesScheduleId { get; set; }
 
-        public Subject Subject { get; set; }
+        public LecturesScheduleVisiting LecturesSchedule { get; set; }
+
+        public int? LabsScheduleId { get; set; }
+
+        public ScheduleProtectionLabs LabsSchedule { get; set; }
+
+        public int? PracticalScheduleId { get; set; }
+
+        public ScheduleProtectionPractical PracticalSchedule { get; set; }
+
 
     }
 }

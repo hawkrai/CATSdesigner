@@ -15,6 +15,8 @@ namespace LMPlatform.Models
         public Subject Subject { get; set; }
 
 
-        public ICollection<ScheduleProtectionPracticalMark> ScheduleProtectionPracticalMarks { get; set; }     
+        public ICollection<ScheduleProtectionPracticalMark> ScheduleProtectionPracticalMarks { get; set; }   
+        
+        public ICollection<Note> Notes { get; set; } = new List<Note>();
     }
 }
