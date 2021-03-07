@@ -16,7 +16,8 @@ namespace LMPlatform.UI.ApiControllers.CP
     {
         public HttpResponseMessage Post([FromBody]/*DateTime consultationDate, int subject*/CourseProjectConsultationDateData consultationDate)
         {
-            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.SubjectId);
+            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.SubjectId, consultationDate.StartTime,
+                consultationDate.EndTime, consultationDate.Audience, consultationDate.Building);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

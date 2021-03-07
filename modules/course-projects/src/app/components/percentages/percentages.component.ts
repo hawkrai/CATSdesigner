@@ -54,7 +54,9 @@ export class PercentagesComponent implements OnInit {
   addStage() {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '600px',
-      data: { }
+      data: {
+        title: "Добавление этапа"
+       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -68,11 +70,11 @@ export class PercentagesComponent implements OnInit {
         this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('График успешно сохранен');
+            this.addFlashMessage('Этап успешно сохранен');
           });
         }
         else{
-          this.addFlashMessage('График с таким названием уже существует');
+          this.addFlashMessage('Этап с таким названием уже существует');
         } 
       }
     });
@@ -82,6 +84,7 @@ export class PercentagesComponent implements OnInit {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '600px',
       data: {
+        title: "Редактирование этапа",
         name: stage.Name,
         percentage: stage.Percentage,
         date: stage.Date
@@ -98,11 +101,11 @@ export class PercentagesComponent implements OnInit {
           this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('График успешно сохранен');
+              this.addFlashMessage('Этап успешно изменен');
           });
         }
         else{
-          this.addFlashMessage('График с таким названием уже существует');
+          this.addFlashMessage('Этап с таким названием уже существует');
         } 
       }
     });
