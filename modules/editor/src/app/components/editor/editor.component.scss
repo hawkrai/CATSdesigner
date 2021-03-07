@@ -38,6 +38,7 @@
 
     #editor {
       height: calc(100% - 46px);
+      border-top: 1px solid var(--ck-color-toolbar-border);
     }
     .btn-holder {
       padding: 1px;
@@ -53,20 +54,35 @@
   }
 }
 
-// :host ::ng-deep .ck-editor__editable_inline {
-//   height: calc(100vh - 84px);
-// }
 :host ::ng-deep ckeditor {
   height: 100%;
 
   .ck-editor {
     height: 100%;
 
+    // header
+    .ck-editor__top {
+      .ck-sticky-panel {
+        .ck-sticky-panel__content {
+          .ck-toolbar {
+            border-bottom-width: 1px;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+          }
+        }
+      }
+    }
+
+    // body
     .ck-editor__main {
       height: calc(100% - 38px);
 
       .ck-editor__editable_inline {
         height: 100%;
+        border: none;
       }
     }
   }

@@ -14,6 +14,7 @@ import { EditDocumentDialogComponent } from '../dialogs/edit-document-dialog/edi
 import { RemoveDocumentDialogComponent } from '../dialogs/remove-document-dialog/remove-document-dialog.component';
 
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
+import 'ckeditor5-custom-build/build/translations/ru';
 
 @Component({
   selector: 'app-editor',
@@ -32,7 +33,9 @@ export class EditorComponent implements OnInit {
     editorData: '',
     isReadOnly: true,
     config: {
+      language: 'ru',
       placeholder: 'Введите содержание здесь...',
+      removePlugins: '',
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
@@ -71,6 +74,13 @@ export class EditorComponent implements OnInit {
     this.UserId = currentUser ? currentUser.id : 1;
     this.isReadOnly = currentUser ? currentUser.role != "lector" : environment.production;
     this.reloadTree();
+    this.configEditor();
+  }
+
+  configEditor() {
+    if(this.isReadOnly) {
+      this.model.config.removePlugins = 'toolbar';
+    }
   }
 
   ngOnDestroy() {
@@ -117,17 +127,10 @@ export class EditorComponent implements OnInit {
     });
   }
 
-  getParentId(data: IDocumentTree[], childNodeId: Number) : Number {
-    var res: Number = 0;
-    data.forEach(node => {
-      if (node.Children && node.Children.find(c => c.Id === childNodeId)) {
-        res = node.Id;
-      }
-      else {
-        return this.getParentId(node.Children, childNodeId);
-      }
-    });
-    return res;
+  getParentId(childNodeId: Number = this.currentNodeId) : Number {
+    let node = this.linearTreeList.find(n => n.Children.find(c => c.Id == childNodeId));
+
+    return node ? node.Id : 0;
   }
 
   activateNode(documentId) {
@@ -197,7 +200,7 @@ export class EditorComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(newDocument => {
       this._bookService.removeDocument(newDocument).subscribe(res => {
-        this.currentNodeId = this.getParentId(this.dataSource.data, this.currentNodeId);
+        this.currentNodeId = this.getParentId();
         this.reloadTree();
       });
     });
