@@ -1,9 +1,5 @@
-<<<<<<< HEAD
+
 ﻿using Application.ElasticDataModels;
-=======
-﻿
-using Application.ElasticDataModels;
->>>>>>> 5a7b091c0de6aa283f370d793a9b8981718618ac
 using Application.ElasticSearchEngine.SerachMethods;
 using System;
 using System.Collections.Generic;
