@@ -89,6 +89,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
 
   viewSearchResults() {
+    this.valueForSearch = this.valueForSearch.trim();
     if (this.valueForSearch.length >= 3) {
       this.viewGroupSearchResults();
       this.viewLecturerSearchResults();

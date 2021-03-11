@@ -18,6 +18,8 @@ import { Validators, FormControl, ValidationErrors } from '@angular/forms';
 export class ChangePersonalDataComponent implements OnInit {
   isLoad = false;
   defaultAvatar!: string;
+  startImgFileStr = "data:image/";
+  imageFormats = ["png","img","jpg","gif"];
   currentUserId!: number;
   profileData!: ProfileData;
 
@@ -42,10 +44,22 @@ export class ChangePersonalDataComponent implements OnInit {
     var buffer = this;
 
     reader.onloadend = function () {
-      buffer.profileData.Avatar = reader.result.toString();
+      if (buffer.isGoodAvatarImage(reader.result.toString())) {
+        buffer.profileData.Avatar = reader.result.toString();
+      }
+      else {
+        alert("Неверный формат изображения!");
+      }
     };
 
     reader.readAsDataURL(file);
+  }
+
+  isGoodAvatarImage(imgeStr: string): boolean {
+    if (imgeStr.startsWith(this.startImgFileStr)) {
+      return true;
+    }
+    return false
   }
 
 
