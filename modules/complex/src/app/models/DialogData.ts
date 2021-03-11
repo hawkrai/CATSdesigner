@@ -27,5 +27,8 @@ export interface DialogData {
   //Adaptive Learning
   isAdaptive?: boolean;
   adaptivityType?: number;
-  adaptivity?: Adaptivity; 
+  adaptivity?: Adaptivity;
+
+  isGroup?: boolean;
+  parentId?: number;
 }

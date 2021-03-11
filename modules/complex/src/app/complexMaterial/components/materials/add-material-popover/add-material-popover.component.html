@@ -24,13 +24,13 @@
 
       <mat-form-field *ngIf="isFolder">
         <mat-label>Введите имя папки</mat-label>
-        <input name="foderName" maxlength="100" placeholder="Имя папки" matInput>
+        <input name="foderName" maxlength="100" placeholder="Имя папки" [(ngModel)]="data.name" matInput>
       </mat-form-field>
 
       <div *ngIf="isFile">
         <mat-form-field>
           <mat-label>Введите имя файла</mat-label>
-          <input name="fileName" maxlength="100" placeholder="Имя файла" matInput>
+          <input name="fileName" maxlength="100" placeholder="Имя файла" [(ngModel)]="data.name" matInput>
         </mat-form-field>
         <app-file-uploader header="Прикрепленный документ" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
       </div>
@@ -38,9 +38,9 @@
   </div>
 
   <div mat-dialog-actions>
-    <button mat-raised-button (click)="onNoClick()">Отмена</button>
+    <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
     <button mat-raised-button
-            (click)="onClose(data || data.body)"
+            (click)="onClose(files, true)"
             color="primary"
             [disabled]="!formElement.checkValidity()">
       Сохранить

@@ -16,6 +16,8 @@ using LMPlatform.UI.Services.Modules;
 using System.Configuration;
 using Application.Core.Helpers;
 using LMPlatform.UI.Attributes;
+using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
+using Newtonsoft.Json;
 
 namespace LMPlatform.UI.Services.Concept
 {
@@ -297,7 +299,7 @@ namespace LMPlatform.UI.Services.Concept
             public string Name { get; set; }
             public int Seconds { get; set; }
         }
-        
+
         public ConceptViewData GetConcept(int elementId)
         {
             var concept =  ConceptManagementService.GetById(elementId);
@@ -354,6 +356,40 @@ namespace LMPlatform.UI.Services.Concept
             return res;
         }
 
+        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId)
+        {
+            try {
+                var conceptModel = new AddOrEditConceptViewModel(userId, conceptId, parentId)
+                {
+                    IsGroup = isGroup,
+                    Name = conceptName,
+                    FileData = fileData
+                };
+
+                if (!conceptModel.IsGroup && !string.IsNullOrEmpty(conceptModel.FileData))
+                {
+                    var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(conceptModel.FileData).ToList();
+                    conceptModel.SetAttachments(attachmentsModel);
+                }
+
+                conceptModel.Save();
+
+                return new ConceptResult
+                {
+                    Message = SuccessCode,
+                    Code = ServerErrorCode
+                };
+            }            
+            catch (Exception ex)
+            {
+                return new ConceptResult
+                {
+                    Message = ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
+        }
+
         private AttachViewData GetNeighborConceptData(int neighborId)
         {
             var neighbor = ConceptManagementService.GetLiteById(neighborId);
@@ -386,5 +422,7 @@ namespace LMPlatform.UI.Services.Concept
         {
 	        return UsersManagementService.CurrentUser.Membership.Roles.Any(r => r.RoleName.Equals("lector"));
         }
+
+
     }
 }

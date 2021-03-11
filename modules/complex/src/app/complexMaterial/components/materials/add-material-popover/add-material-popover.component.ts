@@ -31,18 +31,20 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
 
 
   switchFormTo(formState: number) {
-    this.isFile = formState == 2;
-    this.isFolder = formState == 1;
+    this.isFile = formState === 2;
+    this.data.isGroup = this.isFolder = formState === 1;    
   }
+
   ngOnInit() {
     super.ngOnInit();
-    this.complexService.getConceptCascadeFoldersOnly('79').subscribe(res => {
+    const currentComplexID = localStorage.getItem('selectedComplex');
+    this.complexService.getConceptCascadeFoldersOnly(currentComplexID).subscribe(res => {
       this.navItems = res;      
     });
   }
 
   selectConcept(id: any, name: string) {
-    this.conceptId = id;
+    this.data.parentId = this.conceptId = id;     
     this.selectedConcept = this.getConceptNameById(this.navItems, id);
   }
 
@@ -61,9 +63,5 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       }
     }
     return null;
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 }
