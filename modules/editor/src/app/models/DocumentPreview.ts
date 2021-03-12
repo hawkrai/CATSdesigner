@@ -6,6 +6,7 @@ export class DocumentPreview {
   public ParentId: Number;
   public SubjectId: Number;
   public ParentOrder: Number;
+  public IsLocked: Boolean;
 
   constructor() {
   }

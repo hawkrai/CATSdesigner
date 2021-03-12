@@ -27,6 +27,7 @@ export class TreeComponent implements OnInit {
   @Output() onRemoveEvent = new EventEmitter();
   @Output() onEditContentEvent = new EventEmitter();
   @Output() onEditStructureEvent = new EventEmitter();
+  @Output() changeLockState = new EventEmitter();
 
   menuTopLeftPosition =  {x: '0', y: '0'}
 

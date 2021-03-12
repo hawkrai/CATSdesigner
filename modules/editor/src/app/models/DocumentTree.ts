@@ -1,5 +1,5 @@
 export class DocumentTree {
-  constructor(public Id: Number, public Name: string, public Children?: DocumentTree[]) {
+  constructor(public Id: Number, public Name: string, public IsLocked: Boolean, public Children?: DocumentTree[]) {
   }
 
   hasChild(): boolean {
@@ -9,5 +9,6 @@ export class DocumentTree {
 export interface IDocumentTree {
   Id: Number;
   Name: string;
+  IsLocked: Boolean;
   Children?: IDocumentTree[];
 }

@@ -91,10 +91,10 @@ export class EditorComponent implements OnInit {
 
   //TREE
   reloadTree() {
-    this._bookService.getDocumentsBySubjectId(this.SubjectId).subscribe(data => {
+    this._bookService.getDocumentsBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
       this.documents = data;
     });
-    this._bookService.getDocumentsTreeBySubjectId(this.SubjectId).subscribe(data => {
+    this._bookService.getDocumentsTreeBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
       this.dataSource.data = data;
       this.treeControl.dataNodes = this.dataSource.data;
       this.updateLinearTreeNodesList();
@@ -228,6 +228,7 @@ export class EditorComponent implements OnInit {
           newDocument.Text = "";
           newDocument.UserId = this.UserId;
           newDocument.SubjectId = this.SubjectId;
+          newDocument.IsLocked = false;
         }
         this._bookService.saveDocument(newDocument).subscribe(res => {
           this.currentNodeId = res;
@@ -252,5 +253,13 @@ export class EditorComponent implements OnInit {
       this.linearTreeList.push(el);
       return this.upd(el.Children);
     });
+  }
+
+  changeLockState(node) {
+    this.currentNodeId = node.Id;
+    node.IsLocked = !node.IsLocked;
+    this._bookService.saveDocument(node).subscribe(res => {
+      this.reloadTree();
+    });;
   }
 }

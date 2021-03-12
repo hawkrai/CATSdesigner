@@ -10,13 +10,7 @@
         (dblclick)="onEditContentEvent.emit(node)"
         [ngClass]="{highlight:currentNodeId == node.Id}"
         >{{sanitizeHtml(node.Name)}}</label>
-      <!-- <crud-document-menu *ngIf="!isReadOnly"
-          [document]="node"
-          (onAddEvent)="onAddEvent.emit(node)"
-          (onRemoveEvent)="onRemoveEvent.emit(node)"
-          (onEditContentEvent)="onEditContentEvent.emit(node)"
-          (onEditStructureEvent)="onEditStructureEvent.emit(node)"
-      ></crud-document-menu> -->
+        <mat-icon *ngIf="node.IsLocked" class="shadow" matTooltip="Этот раздел закрыт для пользователей">lock</mat-icon>
     </li>
   </mat-tree-node>
   <!-- Implementation with child nodes -->
@@ -35,13 +29,7 @@
           (dblclick)="onEditContentEvent.emit(node)"
           [ngClass]="{highlight:currentNodeId == node.Id}"
         >{{sanitizeHtml(node.Name)}}</label>
-        <!-- <crud-document-menu *ngIf="!isReadOnly"
-          [document]="node"
-          (onAddEvent)="onAddEvent.emit(node)"
-          (onRemoveEvent)="onRemoveEvent.emit(node)"
-          (onEditContentEvent)="onEditContentEvent.emit(node)"
-          (onEditStructureEvent)="onEditStructureEvent.emit(node)"
-        ></crud-document-menu> -->
+        <mat-icon *ngIf="node.IsLocked" class="shadow" matTooltip="Этот раздел закрыт для пользователей">lock</mat-icon>
       </div>
       <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
         <ng-container matTreeNodeOutlet></ng-container>
@@ -62,6 +50,6 @@
     <button mat-menu-item (click)="onEditStructureEvent.emit(item)"><mat-icon color="primary">edit</mat-icon><span>Переименовать</span></button>
     <button mat-menu-item (click)="onRemoveEvent.emit(item)"><mat-icon color="primary">delete</mat-icon><span>Удалить</span></button>
     <button mat-menu-item (click)="onAddEvent.emit(item)"><mat-icon color="primary">note_add</mat-icon><span>Добавить новую тему</span></button>
-    <!-- <button *ngIf="!item.Children.length" mat-menu-item (click)="onEditContentEvent.emit(item)"><span>Редактировать контент</span></button> -->
+    <button mat-menu-item (click)="changeLockState.emit(item)"><mat-icon color="primary">{{item.IsLocked ? 'lock_open' : 'lock'}}</mat-icon><span>{{item.IsLocked ? 'Открыть' : 'Закрыть'}}</span></button>
   </ng-template>
 </mat-menu>

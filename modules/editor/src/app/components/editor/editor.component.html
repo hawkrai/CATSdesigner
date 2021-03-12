@@ -25,9 +25,6 @@
     <div class="flex-tree-container">
       <div class="flex-search-region">
         <div class="flex-search-btn-holder">
-          <!-- <button mat-icon-button color="primary" aria-label="Search icon" matTooltip="Поиск по книжке">
-            <mat-icon>search</mat-icon>
-          </button> -->
           <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" matTooltip="Добавление нового учебника">
             <mat-icon>add_circle</mat-icon>
           </button>
@@ -46,6 +43,7 @@
           (onRemoveEvent)="openRemoveDialog($event)"
           (onEditContentEvent)="editDocument($event)"
           (onEditStructureEvent)="editStructure($event)"
+          (changeLockState)="changeLockState($event)"
         ></tree>
       </div>
     </div>

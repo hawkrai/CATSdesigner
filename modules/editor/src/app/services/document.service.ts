@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DocumentPreview } from '../models/DocumentPreview';
-import { IDocumentTree } from '../models/DocumentTree';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +14,14 @@ export class DocumentService {
 
   constructor(private http: HttpClient) { }
 
-  getDocumentsBySubjectId(subjectId): Observable<DocumentPreview[]>{
-    return this.http.get<any>(this._serviceUrl + "GetDocumentsBySubjectId?subjectid=" + subjectId).pipe(map(data=>{
+  getDocumentsBySubjectId(subjectId, userId): Observable<DocumentPreview[]>{
+    return this.http.get<any>(this._serviceUrl + "GetDocumentsBySubjectId?subjectid=" + subjectId + "&userId=" + userId).pipe(map(data=>{
       return data;
     }));
   }
 
-  getDocumentsTreeBySubjectId(subjectId): Observable<DocumentPreview[]>{
-    return this.http.get<any>(this._serviceUrl + "GetDocumentsTreeBySubjectId?subjectId=" + subjectId).pipe(map(data=>{
+  getDocumentsTreeBySubjectId(subjectId, userId): Observable<DocumentPreview[]>{
+    return this.http.get<any>(this._serviceUrl + "GetDocumentsTreeBySubjectId?subjectId=" + subjectId + "&userId=" + userId).pipe(map(data=>{
       return data;
     }));
   }
