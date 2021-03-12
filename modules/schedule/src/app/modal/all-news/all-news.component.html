@@ -1,20 +1,19 @@
-
-  <div *ngFor="let newItem of data.news" class="dialog" id="dialog"
-       [ngStyle]="{ 'border-left-color': newItem.Subject.Color}">
-    <div style="margin-left: 5px;">
-      <h4
-        style=" font-family: Roboto, Helvetica Neue, sans-serif; font-size: 24px; font-weight: 600; color: #3F51B5; ">{{newItem.Title}}</h4>
-      <div [innerHTML]="newItem.Body" class="body"
-           style="font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 20px;max-height: 35vh;overflow-y: auto;">
-      </div>
-      <div>
-        <h6 (click)="rerouteToSubject()"
-            style="font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;color: #777; ">{{newItem.Subject.Name}}</h6>
-      </div>
-      <h6
-        style="font-size: 12px;font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;color: #777; "> {{newItem.EditDate.slice(6, -2) | date:'dd.MM.yyyy' }}</h6>
+<div *ngFor="let newItem of data.news" class="dialog" id="dialog"
+     [ngStyle]="{ 'border-left-color': newItem.Subject.Color}">
+  <div style="margin-left: 5px;">
+    <h4
+      style=" font-family: Roboto, Helvetica Neue, sans-serif; font-size: 24px; font-weight: 600; color: #3F51B5; ">{{newItem.Title}}</h4>
+    <div [innerHTML]="newItem.Body" class="body"
+         style="font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 20px;max-height: 35vh;overflow-y: auto;">
     </div>
-    <p style = "margin: 30px;"></p>
+    <div>
+      <h6 (click)="rerouteToSubject()"
+          style="font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;color: #777; ">{{newItem.Subject.Name}}</h6>
+    </div>
+    <h6
+      style="font-size: 12px;font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;color: #777; "> {{newItem.EditDate.slice(6, -2) | date:'dd.MM.yyyy' }}</h6>
   </div>
+  <p style="margin: 30px;"></p>
+</div>
 
 

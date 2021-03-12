@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NewsService} from '../service/news.service';
 import {LessonService} from '../service/lesson.service';
 import {MatDialog} from '@angular/material/dialog';
@@ -24,7 +24,8 @@ export class NewsComponent implements OnInit {
               private lessonservice: LessonService,
               private modulecommunicationservice: ModuleCommunicationService,
               private dialog: MatDialog,
-              private schedule: ScheduleMainComponent) { }
+              private schedule: ScheduleMainComponent) {
+  }
 
 
   ngOnInit() {
@@ -46,8 +47,10 @@ export class NewsComponent implements OnInit {
   }
 
   public openItemInfo(item: any) {
-    const dialogRef = this.dialog.open(NewsInfoComponent, {width: '600px',
-                                        position: {top: '10%'}, data: {itemNews: item}});
+    const dialogRef = this.dialog.open(NewsInfoComponent, {
+      width: '600px',
+      position: {top: '10%'}, data: {itemNews: item}
+    });
   }
 
   public rerouteToSubject(item: any) {
@@ -64,8 +67,10 @@ export class NewsComponent implements OnInit {
   }
 
   public openAllNews() {
-    const dialogRef = this.dialog.open(AllNewsComponent, {width: '600px', height: '550px',
-      position: {top: '1%'}, data: {news: this.news}});
+    const dialogRef = this.dialog.open(AllNewsComponent, {
+      width: '600px', height: '550px',
+      position: {top: '1%'}, data: {news: this.news}
+    });
   }
 
   public hideNews() {

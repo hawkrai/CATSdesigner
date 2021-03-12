@@ -6,10 +6,10 @@
     <div class="row text-center" style="margin-right: 0px;">
       <div class="col-md-4" style="margin-top: 33px">
         <h3
-          style="font-size: 16px;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;">{{ viewDate | calendarDate:(view + 'ViewTitle'):'ru': 1 }}</h3>
+          style="font-size: 16px;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;">{{ viewDate | calendarDate:(view + 'ViewTitle'):locale: 1 }}</h3>
       </div>
       <div class="col-md-4" style="margin-top: 24px;font-family: Roboto, Helvetica Neue, sans-serif;">
-        <h6 style="color:#3F51B5;font-size: 1.5rem;">Расписание занятий</h6>
+        <h6 style="color:#3F51B5;font-size: 1.5rem;">{{'text.schedule'| translate: 'Расписание занятий'}}</h6>
       </div>
       <div class="col-md-4" style="margin-top: 17px;margin-bottom: 1%;padding-right: 0px">
         <div class="btn-group" style="line-height: 0; justify-content: space-between;">
@@ -21,6 +21,7 @@
               [view]="view"
               [(viewDate)]="viewDate"
               (viewDateChange)="closeOpenMonthViewDay()"
+              (click)="changeDate()"
             >&lt;
             </div>
             <div
@@ -29,7 +30,7 @@
               mwlCalendarToday
               [(viewDate)]="viewDate"
             >
-              Сегодня
+              {{'text.schedule.today'| translate: 'Сегодня'}}
             </div>
             <div
               style="color: #3F51B5; cursor: pointer; margin-left: -5px;"
@@ -38,12 +39,13 @@
               [view]="view"
               [(viewDate)]="viewDate"
               (viewDateChange)="closeOpenMonthViewDay()"
+              (click)="changeDate()"
             >
               >
             </div>
           </div>
           <div style="margin-right: 2%; margin-top: 18px;" class="desktopNews">
-            <p matTooltip="{{toolTip}}" matTooltipClass="example-tooltip-blue" (click)="hideNews()"
+            <p matTooltipClass="example-tooltip-blue" (click)="hideNews()"
                style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5">{{hideButton}}</p>
           </div>
         </div>
@@ -95,7 +97,7 @@
                 <h6
                   style="background: #3F51B5;-webkit-background-clip: text;-webkit-text-fill-color:
                           transparent;font-size: 12px; left: 0%; float: left;font-family: Roboto, Helvetica Neue, sans-serif">
-                          {{lessonservice.getTime(event.title)}}</h6>
+                  {{lessonservice.getTime(event.title)}}</h6>
                 <p
                   style="padding-top: 1px; margin-bottom: 10px;font-family: Roboto, Helvetica Neue, sans-serif;
                         line-height: 100%;font-size: 12px;float:right;color: #808080">{{lessonservice.getLocation(event.title)}}</p>
@@ -118,16 +120,16 @@
                   style="color: #383838; padding: 0px; outline: none; min-width: 20px; margin-top: -6px;float: right;background: white;border-width: 0px"
                   mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
                   <mat-menu #menu="matMenu">
-                    <button style="outline: none;" (click)="changeLesson(event)" mat-menu-item>Редактировать</button>
-                    <button style="outline: none;" (click)="deleteEvent(event)" mat-menu-item>Удалить</button>
+                    <button style="outline: none;" (click)="changeLesson(event)" mat-menu-item>{{'button.edit'| translate:'Редактировать'}}</button>
+                    <button style="outline: none;" (click)="deleteEvent(event)" mat-menu-item>{{'button.delete' | translate: 'Удалить'}}</button>
                   </mat-menu>
                 </button>
               </div>
             </tr>
-              <div>
-                <p style="margin-top: 3px ; font-family: Roboto, Helvetica Neue,
+            <div>
+              <p style="margin-top: 3px ; font-family: Roboto, Helvetica Neue,
                           sans-serif; font-size: 12px;color: #808080; line-height: 100%; ">{{lessonservice.getMemo(event.title)}}</p>
-              </div>
+            </div>
             </thead>
           </table>
         </div>
@@ -153,37 +155,12 @@
                   mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
           </button>
           <mat-menu #menu="matMenu">
-            <button style="outline: none;" (click)="deleteEvent(event)" mat-menu-item>Удалить</button>
-            <button style="outline: none;" (click)="changeNote(event)" mat-menu-item>Редактировать</button>
+            <button style="outline: none;" (click)="changeNote(event)" mat-menu-item>{{'button.edit'| translate:'Редактировать'}}</button>
+            <button style="outline: none;" (click)="deleteEvent(event)" mat-menu-item>{{'button.delete' | translate: 'Удалить'}}</button>
           </mat-menu>
         </div>
       </div>
     </ng-template>
-
-    <ng-template #hourSegmentTemplate let-segment="segment" let-locale="locale">
-      <div
-        class="cal-hour-segment"
-        [class.cal-hour-start]="segment.isStart"
-        [class.cal-after-hour-start]="!segment.isStart"
-        [ngClass]="segment.cssClass">
-      <span class="cal-time">
-        {{ segment.date | calendarDate:'dayViewHour':locale }}
-      </span>
-      </div>
-    </ng-template>
-
-    <ng-template #hourSegmentTemplate let-segment="segment" let-locale="locale">
-      <div
-        class="cal-hour-segment"
-        [class.cal-hour-start]="segment.isStart"
-        [class.cal-after-hour-start]="!segment.isStart"
-        [ngClass]="segment.cssClass">
-      <span class="cal-time">
-        {{ segment.date | calendarDate:'dayViewHour':locale }}
-      </span>
-      </div>
-    </ng-template>
-
     <ng-template
       #eventTemplateCustom
       let-weekEvent="weekEvent"
