@@ -8,13 +8,16 @@ import { IDocumentTree } from './../../models/DocumentTree';
 import { TreeComponent } from '../tree/tree.component';
 import { DocumentService } from './../../services/document.service';
 import { DocumentPreview } from './../../models/DocumentPreview';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 import { AddDocumentDialogComponent } from '../dialogs/add-document-dialog/add-document-dialog.component';
 import { EditDocumentDialogComponent } from '../dialogs/edit-document-dialog/edit-document-dialog.component';
 import { RemoveDocumentDialogComponent } from '../dialogs/remove-document-dialog/remove-document-dialog.component';
 
+import * as san from './../../helpers/string-helper'
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 import 'ckeditor5-custom-build/build/translations/ru';
+import 'ckeditor5-custom-build/build/translations/en-gb';
 
 @Component({
   selector: 'app-editor',
@@ -33,8 +36,8 @@ export class EditorComponent implements OnInit {
     editorData: '',
     isReadOnly: true,
     config: {
-      language: 'ru',
-      placeholder: 'Введите содержание здесь...',
+      language: san.helper.transformLanguageLine(localStorage.getItem("locale") ?? "ru"),
+      placeholder: this.translatePipe.transform('text.editor.hint.enter.content.here',"Введите содержимое здесь..."),
       removePlugins: '',
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
@@ -64,7 +67,9 @@ export class EditorComponent implements OnInit {
   currentNodeId: Number;
   currentDocument: DocumentPreview;
 
-  constructor(private _bookService: DocumentService, public dialog: MatDialog) {}
+  constructor(private _bookService: DocumentService,
+    public translatePipe: TranslatePipe,
+    public dialog: MatDialog) {}
 
   ngOnInit() {
     let currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));

@@ -7,8 +7,8 @@
             {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
           </mat-icon>
         </button>
-        <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">Отмена</button>
-        <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">Сохранить</button>
+        <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">{{'text.editor.cancel' | translate: 'Отмена'}}</button>
+        <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">{{'text.editor.save' | translate: 'Сохранить'}}</button>
       </div>
       <div class="row" id="editor">
         <ckeditor
@@ -25,7 +25,7 @@
     <div class="flex-tree-container">
       <div class="flex-search-region">
         <div class="flex-search-btn-holder">
-          <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" matTooltip="Добавление нового учебника">
+          <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
             <mat-icon>add_circle</mat-icon>
           </button>
         </div>

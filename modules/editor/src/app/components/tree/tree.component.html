@@ -10,7 +10,7 @@
         (dblclick)="onEditContentEvent.emit(node)"
         [ngClass]="{highlight:currentNodeId == node.Id}"
         >{{sanitizeHtml(node.Name)}}</label>
-        <mat-icon *ngIf="node.IsLocked" class="shadow" matTooltip="Этот раздел закрыт для пользователей">lock</mat-icon>
+        <mat-icon *ngIf="node.IsLocked" class="shadow" [matTooltip]="'text.editor.hint.closed.section' | translate: 'Этот раздел закрыт для пользователей'">lock</mat-icon>
     </li>
   </mat-tree-node>
   <!-- Implementation with child nodes -->
@@ -29,7 +29,7 @@
           (dblclick)="onEditContentEvent.emit(node)"
           [ngClass]="{highlight:currentNodeId == node.Id}"
         >{{sanitizeHtml(node.Name)}}</label>
-        <mat-icon *ngIf="node.IsLocked" class="shadow" matTooltip="Этот раздел закрыт для пользователей">lock</mat-icon>
+        <mat-icon *ngIf="node.IsLocked" class="shadow" [matTooltip]="'text.editor.hint.closed.section' | translate: 'Этот раздел закрыт для пользователей'">lock</mat-icon>
       </div>
       <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
         <ng-container matTreeNodeOutlet></ng-container>
@@ -47,9 +47,9 @@
 <!-- standard material menu -->
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button mat-menu-item (click)="onEditStructureEvent.emit(item)"><mat-icon color="primary">edit</mat-icon><span>Переименовать</span></button>
-    <button mat-menu-item (click)="onRemoveEvent.emit(item)"><mat-icon color="primary">delete</mat-icon><span>Удалить</span></button>
-    <button mat-menu-item (click)="onAddEvent.emit(item)"><mat-icon color="primary">note_add</mat-icon><span>Добавить новую тему</span></button>
-    <button mat-menu-item (click)="changeLockState.emit(item)"><mat-icon color="primary">{{item.IsLocked ? 'lock_open' : 'lock'}}</mat-icon><span>{{item.IsLocked ? 'Открыть' : 'Закрыть'}}</span></button>
+    <button mat-menu-item (click)="onEditStructureEvent.emit(item)"><mat-icon color="primary">edit</mat-icon><span>{{'text.editor.rename' | translate: 'Переименовать'}}</span></button>
+    <button mat-menu-item (click)="onRemoveEvent.emit(item)"><mat-icon color="primary">delete</mat-icon><span>{{'text.editor.remove' | translate: 'Удалить'}}</span></button>
+    <button mat-menu-item (click)="onAddEvent.emit(item)"><mat-icon color="primary">note_add</mat-icon><span>{{'text.editor.add.new.theme' | translate: 'Добавить новую тему'}}</span></button>
+    <button mat-menu-item (click)="changeLockState.emit(item)"><mat-icon color="primary">{{item.IsLocked ? 'lock_open' : 'lock'}}</mat-icon><span>{{item.IsLocked ? ('text.editor.open' | translate: 'Открыть') : ('text.editor.close' | translate: 'Закрыть')}}</span></button>
   </ng-template>
 </mat-menu>

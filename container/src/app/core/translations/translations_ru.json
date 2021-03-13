@@ -129,5 +129,25 @@
   "text.test.time.end": "Время окончания теста: ",
   "text.test.time.for.question": "Время на вопрос (сек)",
   "text.test.result.mark": "Оценка: {mark} ({percent}%)",
-  "text.test.new.questions.for.test": "Вопрос №{number}"
+  "text.test.new.questions.for.test": "Вопрос №{number}",
+
+  "text.editor.yes": "Да",
+  "text.editor.no": "Нет",
+  "text.editor.open": "Открыть",
+  "text.editor.close": "Закрыть",
+  "text.editor.cancel": "Отмена",
+  "text.editor.remove": "Удалить",
+  "text.editor.save": "Сохранить",
+  "text.editor.rename": "Переименовать",
+  "text.editor.adding": "Добавление",
+  "text.editor.new.theme": "новой темы",
+  "text.editor.new.book": "нового учебника",
+  "text.editor.add.new.theme": "Добавить новую тему",
+  "text.editor.edit.theme": "Редактирование темы",
+  "text.editor.edit.book": "Редактирование учебника",
+  "text.editor.hint.closed.section": "Этот раздел закрыт для пользователей",
+  "text.editor.hint.add.new.book": "Добавление нового учебника",
+  "text.editor.hint.enter.content.here": "Введите содержание здесь...",
+  "text.editor.confirmation": "Подтверждение",
+  "text.editor.remove.confirmation.text": "Вы уверены, что хотите удалить "
 }

@@ -150,5 +150,25 @@
   "button.delete": "Delete",
   "button.edit": "Edit",
   "button.no": "No",
-  "text.schedule.delete.event": "Delete event?"
+  "text.schedule.delete.event": "Delete event?",
+
+  "text.editor.yes": "Yes",
+  "text.editor.no": "No",
+  "text.editor.open": "Open",
+  "text.editor.close": "Close",
+  "text.editor.cancel": "Cancel",
+  "text.editor.remove": "Remove",
+  "text.editor.save": "Save",
+  "text.editor.rename": "Rename",
+  "text.editor.adding": "Adding",
+  "text.editor.new.theme": "a new theme",
+  "text.editor.new.book": "a new book",
+  "text.editor.add.new.theme": "Add new theme",
+  "text.editor.edit.theme": "Editing a theme",
+  "text.editor.edit.book": "Editing a book",
+  "text.editor.hint.closed.section": "This section is closed to users",
+  "text.editor.hint.add.new.book": "Adding a new book",
+  "text.editor.hint.enter.content.here": "Enter content here...",
+  "text.editor.confirmation": "Confirmation",
+  "text.editor.remove.confirmation.text": "Are you sure you want to remove the "
 }
