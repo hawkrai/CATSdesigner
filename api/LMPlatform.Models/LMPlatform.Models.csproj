@@ -192,6 +192,7 @@
     <Compile Include="ScheduleBase.cs" />
     <Compile Include="ScheduleProtectionLabMark.cs" />
     <Compile Include="ScheduleProtectionLabs.cs" />
+    <Compile Include="ScheduleProtectionMarkBase.cs" />
     <Compile Include="ScheduleProtectionPractical.cs" />
     <Compile Include="ScheduleProtectionPracticalMark.cs" />
     <Compile Include="TinCanObjects.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="User.cs" />
     <Compile Include="UserLabFiles.cs" />
     <Compile Include="UserMessages.cs" />
+    <Compile Include="UserNote.cs" />
     <Compile Include="WatchingTime.cs" />
   </ItemGroup>
   <ItemGroup>

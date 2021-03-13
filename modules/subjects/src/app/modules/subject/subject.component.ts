@@ -50,10 +50,11 @@ export class SubjectComponent implements OnInit, OnDestroy {
     }));
   }
 
-  lector(subjectId: string) {
+  lector(subjectId: string, subjectName: string) {
     const dialogData: DialogData = {
       title: 'Присоединение преподавателя к предмету',
-      model: {subjectId: subjectId}
+      body: { subjectName },
+      model: { subjectId }
     };
     this.dialogService.openDialog(SubjectLectorComponent, dialogData);
   }

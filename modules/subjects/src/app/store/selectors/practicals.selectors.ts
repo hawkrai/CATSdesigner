@@ -4,7 +4,17 @@ import { IPracticalsState } from '../state/practicals.state';
 
 const practicalsSelector = createFeatureSelector<IAppState, IPracticalsState>('practicals');
 
-export const getPracticals = createSelector(
+export const selectPracticals = createSelector(
   practicalsSelector,
   state => state.practicals
+);
+
+export const selectSchedule = createSelector(
+  practicalsSelector,
+  state => state.schedule
+);
+
+export const selectMarks = createSelector(
+  practicalsSelector,
+  state => state.students
 );

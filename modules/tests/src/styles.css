@@ -7,6 +7,7 @@
 
 h2, mat-label, p, div {
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: #363636;
 }
 
 .cdk-global-overlay-wrapper {
@@ -41,8 +42,7 @@ h2, mat-label, p, div {
 
 .mat-radio-label-content {
   width: 93%;
-  white-space: pre-wrap;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .mat-table {
@@ -79,19 +79,6 @@ h2, mat-label, p, div {
   width: inherit;
 }
 
-.mat-tab-label-active {
-  color: #3f51b5;
-  opacity: 1;
-}
-
-.mat-tab-label-content {
-  line-height: 2.25rem;
-  font-family: var(--mdc-typography-button-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));
-  font-size: var(--mdc-typography-button-font-size, 0.875rem);
-  letter-spacing: .0892857143em;
-  opacity: 1;
-}
-
 .mat-snack-bar-container {
   background: #3f51b5;
   top: 100%;
@@ -106,4 +93,23 @@ h2, mat-label, p, div {
 
 .mat-dialog-container {
   padding: 12px 24px 24px;
+}
+
+.mat-simple-snackbar {
+  color: white;
+  font-size: 18px;
+}
+
+.red-snack {
+  background: #FE1A00;
+}
+
+.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background{
+  background: #3f51b5;
+}
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle{
+  border-color: #3f51b5;
+}
+.mat-radio-button.mat-accent .mat-radio-inner-circle, .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple), .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple, .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple{
+  background-color: #3f51b5;
 }

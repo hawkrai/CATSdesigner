@@ -23,6 +23,8 @@ using Application.Infrastructure.DocumentsManagement;
 using Application.Infrastructure.AdaptiveLearning;
 using Application.Infrastructure.ScheduleManagement;
 using Application.Infrastructure.NoteManagement;
+using Application.Infrastructure.LabsManagement;
+using Application.Infrastructure.PracticalManagement;
 
 namespace Application.Infrastructure
 {
@@ -64,6 +66,8 @@ namespace Application.Infrastructure
             containerWrapper.Register<IAdaptiveLearningService, AdaptiveLearningService>();
             containerWrapper.Register<IScheduleManagementService, ScheduleManagementService>();
             containerWrapper.Register<INoteManagementService, NoteManagementService>();
+            containerWrapper.Register<ILabsManagementService, LabsManagementService>();
+            containerWrapper.Register<IPracticalManagementService, PracticalManagementService>();
             return containerWrapper;
         }
     }

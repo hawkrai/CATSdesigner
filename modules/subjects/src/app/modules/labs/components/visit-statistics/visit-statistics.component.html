@@ -26,7 +26,7 @@
                   class="mark-cell"
                   (dblclick)="setVisitMarks(subGroupStudents, scheduleProtectionLab, i)">
                 {{element.LabVisitingMark[i] && element.LabVisitingMark[i].Mark}}
-                <mat-icon *ngIf="element.LabVisitingMark[i] && element.LabVisitingMark[i].Comment && (isTeacher || (element.LabVisitingMark[i].ShowForStudent && element.LabVisitingMark[i].StudentId === +state.userId))" class="comment-icon" [matTooltip]="element.LabVisitingMark[i].Comment" matTooltipPosition="above">chat_bubble_outline</mat-icon>
+                <mat-icon *ngIf="element.LabVisitingMark[i] && element.LabVisitingMark[i].Comment && (isTeacher || (element.LabVisitingMark[i].ShowForStudent && element.LabVisitingMark[i].StudentId === state.userId))" class="comment-icon" [matTooltip]="element.LabVisitingMark[i].Comment" matTooltipPosition="above">chat_bubble_outline</mat-icon>
               </td>
             </ng-container>
             <ng-container *ngFor="let labName of getSubGroupHeaders(subGroupLabs)" matColumnDef="{{labName.head}}">

@@ -4,35 +4,39 @@
     <button mat-raised-button class="hide-action" (click)="disableNews(true)">Скрыть все новости</button>
     <button mat-raised-button (click)="disableNews(false)">Показать все новости</button>
   </div>
-  <ng-container *ngFor="let oneNews of state.news">
-    <div class="subject-news-component__news"  
-    *ngIf="state.isTeacher || !oneNews.Disabled"
-    [style.border-left-color]="state.color ? state.color : '#304ffe'"
-    [ngClass]="{'subject-news-component__news__disable': oneNews.Disabled && state.isTeacher }"
-    (mouseover)="onSelectNews(oneNews)"
-    (mouseleave)="onSelectNews(null)"
-      >
+  <div class="subject-news-component__list" >
+    <ng-container *ngFor="let oneNews of state.news">
 
-  <div class="subject-news-component__news-header">
-    <p class="subject-news-component__news-title">{{ oneNews.Title | firstLetterUppercase }}</p>
-    <div class="subject-news-component__news-action" [style.opacity]="state.selectedNews === oneNews ? 1 : 0"  *ngIf="state.isTeacher">
-      <button mat-icon-button color="primary" matTooltip="Редактировать новость" matTooltipPosition="above" (click)="constructorNews(oneNews)">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button color="primary" matTooltip="Удалить новость" matTooltipPosition="above" (click)="deleteNews(oneNews)">
-        <mat-icon>delete</mat-icon>
-      </button>
+      <div class="subject-news-component__news"  
+      *ngIf="state.isTeacher || !oneNews.Disabled"
+      [style.border-left-color]="state.color ? state.color : '#304ffe'"
+      [ngClass]="{'subject-news-component__news__disable': oneNews.Disabled && state.isTeacher }"
+      (mouseover)="onSelectNews(oneNews)"
+      (mouseleave)="onSelectNews(null)"
+        >
+  
+    <div class="subject-news-component__news-header">
+      <p class="subject-news-component__news-title" [style.color]="state.color ? state.color : '#304ffe'">{{ oneNews.Title | firstLetterUppercase }}</p>
+      <div class="subject-news-component__news-action" [style.opacity]="state.selectedNews === oneNews ? 1 : 0"  *ngIf="state.isTeacher">
+        <button mat-icon-button color="primary" matTooltip="Редактировать новость" matTooltipPosition="above" (click)="constructorNews(oneNews)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Удалить новость" matTooltipPosition="above" (click)="deleteNews(oneNews)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="subject-news-component__news-content" [innerHtml]="oneNews.Body"></div>
-  <div *ngIf="oneNews.Attachments.length">
-    <div class="attachments-container">
-      <a class="attachment" *ngFor="let file of oneNews.Attachments" (click)="fileDownload(file)">{{file.Name}}</a>
+    <div class="subject-news-component__news-content" [innerHtml]="oneNews.Body"></div>
+    <div *ngIf="oneNews.Attachments.length">
+      <div class="attachments-container">
+        <a class="attachment" *ngFor="let file of oneNews.Attachments" (click)="fileDownload(file)">{{file.Name}}</a>
+      </div>
     </div>
+    <p class="subject-news-component__news-date">{{oneNews.DateCreate}}</p>
+    </div>
+    </ng-container>
+
   </div>
-  <p class="subject-news-component__news-date">{{oneNews.DateCreate}}</p>
-  </div>
-  </ng-container>
 </div>
 
 <ng-template #load>

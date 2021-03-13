@@ -4,6 +4,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "skipLibCheck": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
@@ -18,6 +19,7 @@
       "es2018",
       "dom"
     ],
+    "resolveJsonModule": true,
     "paths": {
       "module-communication": [
         "dist/module-communication"

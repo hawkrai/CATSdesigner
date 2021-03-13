@@ -21,6 +21,8 @@ namespace LMPlatform.Models
 
 		public Lecturer Lecturer { get; set; }
 
+		public ICollection<UserNote> PersonalNotes { get; set; }
+
 		public ICollection<ProjectUser> ProjectUsers { get; set; }
 
 		public ICollection<ProjectComment> ProjectComments { get; set; }

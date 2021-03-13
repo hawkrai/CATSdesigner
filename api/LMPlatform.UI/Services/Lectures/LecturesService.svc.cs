@@ -201,36 +201,6 @@ namespace LMPlatform.UI.Services.Lectures
             }
         }
 
-        public ResultViewData SaveDateLectures(int subjectId, string date)
-        {
-            try
-            {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
-                if (!isUserAssigned)
-                {
-                    return new ResultViewData
-                    {
-                        Code = "500",
-                        Message = "Пользователь не присоединён к предмету"
-                    };
-                }
-                SubjectManagementService.SaveDateLectures(subjectId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
-                return new ResultViewData
-                {
-                    Message = "Дата успешно добавлена",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при добавлении даты",
-                    Code = "500"
-                };
-            }
-        }
-
         public StudentMarkForDateResult GetMarksCalendarData(int dateId, int subjectId, int groupId)
         {
             try
@@ -350,28 +320,6 @@ namespace LMPlatform.UI.Services.Lectures
 				};
 			}
 		}
-
-        public ResultViewData DeleteVisitingDate(int id)
-        {
-            try
-            {
-                SubjectManagementService.DeleteLectionVisitingDate(id);
-
-                return new ResultViewData
-                {
-                    Message = "Дата успешно удалена",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при удалении даты",
-                    Code = "500"
-                };
-            }
-        }
 
 		public ResultViewData DeleteVisitingDates(List<int> dateIds)
 		{

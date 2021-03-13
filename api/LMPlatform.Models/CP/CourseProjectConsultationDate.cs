@@ -14,17 +14,9 @@ namespace LMPlatform.Models.CP
 
         public int LecturerId { get; set; }
 
-        public int? SubjectId
-        {
-            get;
-            set;
-        }
+        public int SubjectId { get; set; }
 
-        public virtual Subject Subject
-        {
-            get;
-            set;
-        }
+        public virtual Subject Subject { get; set; }
 
         private DateTime _day;
 
@@ -42,6 +34,14 @@ namespace LMPlatform.Models.CP
                 _day = value;
             }
         }
+
+        public TimeSpan? StartTime { get; set; }
+
+        public TimeSpan? EndTime { get; set; }
+
+        public string Building { get; set; }
+
+        public string Audience { get; set; }
 
         public virtual ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
     }

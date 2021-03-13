@@ -7,12 +7,12 @@
   <div class="students-table-buttons">
     <div class="students-table-buttons-item">
       <button mat-raised-button class="students-table-buttons-item-add" (click)="changeAvailabilityForAll(true)">
-        {{'Открыть для всех'}}
+        {{'text.test.open.all' | translate : 'Открыть для всех'}}
       </button>
     </div>
     <div class="students-table-buttons-item">
       <button mat-raised-button class="students-table-buttons-item-resources" (click)="changeAvailabilityForAll(false)">
-        {{'Закрыть для всех'}}
+        {{'text.test.close.all' | translate : 'Закрыть для всех'}}
       </button>
     </div>
   </div>
@@ -20,19 +20,19 @@
     <mat-table [dataSource]="subGroup.Students" class="mat-elevation-z8 table-test-bg">
       <!-- Name Column -->
       <ng-container matColumnDef="Name">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> Имя</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> {{'text.test.student.name' | translate : 'ФИО'}}</mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Name}}</mat-cell>
       </ng-container>
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> Действие</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{'text.test.acton' | translate : 'Действие'}} </mat-header-cell>
         <mat-cell *matCellDef="let element" class="mat-header-cell-action">
           <mat-icon (click)="changeAvailability(element.Id, !element.Unlocked)" *ngIf="!element.Unlocked"
-                    matTooltip="Доступность теста" color="primary"
+                    [matTooltip]="'text.test.availability' | translate : 'Доступность теста'" color="primary"
                     matTooltipClass="example-tooltip-blue">lock
           </mat-icon>
           <mat-icon (click)="changeAvailability(element.Id, !element.Unlocked)" *ngIf="element.Unlocked"
-                    matTooltip="Доступность теста" color="primary"
+                    [matTooltip]="'text.test.availability' | translate : 'Доступность теста'" color="primary"
                     matTooltipClass="example-tooltip-blue">lock_open
           </mat-icon>
         </mat-cell>

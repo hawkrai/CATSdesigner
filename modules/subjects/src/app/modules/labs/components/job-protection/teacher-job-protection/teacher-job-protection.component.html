@@ -1,0 +1,51 @@
+<ng-container *ngIf="state$ | async as state">
+    <div *ngFor="let subGroup of state.students | unique:'SubGroup' | orderBy">
+        <span class="job-protection__subGroup-title">Подгруппа {{subGroup}}</span>
+        <div class="job-protection__accordion">
+            <mat-accordion>
+            <mat-expansion-panel *ngFor="let student of state.students| filter:'SubGroup':subGroup"
+                                    (opened)="selectedStudentId = student.StudentId"
+                                    [expanded]="selectedStudentId === student.StudentId">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <!-- <mat-icon class="priority-icon" *ngIf="hasNewLabs(student)" [color]="'primary'">priority_high</mat-icon> -->
+                        {{student.FullName}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-job-protection-item [labs]="state.labs" [userId]="student.StudentId" [actionsTemplate]="teacherActions"></app-job-protection-item>
+                <ng-template let-file="file" #teacherActions>
+                    <div *ngIf="!file.IsReturned">
+                        <button *ngIf="!file.IsReceived"
+                                mat-icon-button color="primary"
+                                matTooltip="Принять работу"
+                                (click)="receiveLab(file.Id)"
+                        >
+                          <mat-icon>thumb_up_alt</mat-icon>
+                        </button>
+                        <button *ngIf="file.IsReceived"
+                                mat-icon-button color="primary"
+                                matTooltip="Отклонить работу"
+                                (click)="cancelReceivedLab(file.Id)"
+                        >
+                          <mat-icon>thumb_down_alt</mat-icon>
+                        </button>
+                        <button *ngIf="!file.IsReceived"
+                                mat-icon-button color="primary"
+                                matTooltip="Вернуть работу"
+                                (click)="addLab(student.StudentId, file)"
+                        >
+                          <mat-icon>arrow_forward</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary"
+                                matTooltip="Проверить на плагиат"
+                                (click)="checkPlagiarism(file.Id)"
+                        >
+                          <mat-icon>visibility</mat-icon>
+                        </button>
+                      </div>
+                </ng-template>
+            </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+</ng-container>

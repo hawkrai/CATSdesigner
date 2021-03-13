@@ -24,6 +24,8 @@ namespace LMPlatform.Models.CP
 
         public string Comment { get; set; }
 
+        public bool ShowForStudent { get; set; }
+
         public string LecturerName { get; set; }
 
         public DateTime? MarkDate { get; set; }

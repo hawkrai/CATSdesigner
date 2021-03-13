@@ -8,7 +8,9 @@
   <div class="question-block">
     <div class="question-answer-block">
       <div class="question-answer-block-container">
-        <div class="question-answer-block-container-text">Ваш ответ:</div>
+        <div class="question-answer-block-container-text">
+          {{'text.test.your.answer' | translate: 'Ваш ответ:'}}
+        </div>
       </div>
       <div class="question-answers-block">
         <div class="question-answers-block-container">
@@ -33,7 +35,9 @@
             </div>
           </div>
           <ng-container *ngIf="question?.Question?.QuestionType === 2">
-            <input class="question-answers-block-container-word" matInput placeholder="Введите ответ"
+            <input class="question-answers-block-container-word"
+                   matInput
+                   [placeholder]="'text.enter.answer'| translate: 'Введите ответ'"
                    (change)="onValueChange($event)">
           </ng-container>
           <ng-container *ngIf="question?.Question?.QuestionType === 3">
@@ -51,7 +55,7 @@
         <div class="question-button-container-item">
           <button mat-raised-button color="primary" (click)="answerQuestion()">
             <mat-icon>done_outline</mat-icon>
-            Ответить
+            {{'text.test.answer'| translate:'Ответить'}}
           </button>
         </div>
       </div>
@@ -59,7 +63,7 @@
         <div class="question-button-container-item">
           <button mat-raised-button color="primary" (click)="getOnNextQuestion(false)">
             <mat-icon>arrow_forward_ios</mat-icon>
-            Пропустить
+            {{'text.test.skip'| translate:'Пропустить'}}
           </button>
         </div>
       </div>

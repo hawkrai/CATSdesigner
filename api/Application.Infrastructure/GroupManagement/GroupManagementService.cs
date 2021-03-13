@@ -200,11 +200,11 @@ namespace Application.Infrastructure.GroupManagement
             return data;
 	    }
 
-        public List<string> GetCpScheduleVisitings(int subjectId, int groupId)
+        public List<string> GetCpScheduleVisitings(int subjectId, int groupId, int lecturerId)
         {
             var data = new List<string>();
 
-            var subject = Context.CourseProjectConsultationDates.Where(x => x.SubjectId == subjectId);
+            var subject = Context.CourseProjectConsultationDates.Where(x => x.SubjectId == subjectId && x.LecturerId == lecturerId);
 
                 foreach (var cp in subject)
                 {
@@ -214,18 +214,18 @@ namespace Application.Infrastructure.GroupManagement
             return data;
         }
 
-        public List<List<string>> GetCpScheduleMarks(int subjectId, int groupId)
+        public List<List<string>> GetCpScheduleMarks(int subjectId, int groupId, int lecturerId)
         {
             var data = new List<List<string>>();
             var groups = Context.Groups.Include("Students").Single(x=>x.Id == groupId);
 
             foreach (var student in groups.Students.OrderBy(e => e.FullName))
             {
-                if (student.AssignedCourseProjects.Any(x=>x.CourseProject.SubjectId == subjectId))
+                if (student.AssignedCourseProjects.Any(x=> x.CourseProject.SubjectId == subjectId && x.CourseProject.LecturerId == lecturerId))
                 {
                     var rows = new List<string>();
                     rows.Add(student.FullName);
-                    foreach (var cpd in Context.CourseProjectConsultationDates.Include("CourseProjectConsultationMarks").Where(x => x.SubjectId == subjectId))
+                    foreach (var cpd in Context.CourseProjectConsultationDates.Include("CourseProjectConsultationMarks").Where(x => x.SubjectId == subjectId && x.LecturerId == lecturerId))
                     {
                         var cpM = cpd.CourseProjectConsultationMarks.Where(x => x.StudentId == student.Id);
                         if (cpM.Count() > 0)
@@ -243,11 +243,11 @@ namespace Application.Infrastructure.GroupManagement
             return data;
         }
 
-        public List<string> GetCpPercentage(int subjectId, int groupId)
+        public List<string> GetCpPercentage(int subjectId, int groupId, int lecturerId)
         {
             var data = new List<string>();
 
-            var subject = Context.CoursePercentagesGraphs.Where(x => x.SubjectId == subjectId);
+            var subject = Context.CoursePercentagesGraphs.Where(x => x.SubjectId == subjectId && x.LecturerId == lecturerId);
 
             foreach (var cp in subject)
             {
@@ -257,18 +257,18 @@ namespace Application.Infrastructure.GroupManagement
             return data;
         }
 
-        public List<List<string>> GetCpMarks(int subjectId, int groupId)
+        public List<List<string>> GetCpMarks(int subjectId, int groupId, int lecturerId)
         {
             var data = new List<List<string>>();
             var groups = Context.Groups.Include("Students").Single(x => x.Id == groupId);
 
             foreach (var student in groups.Students.OrderBy(e => e.FullName))
             {
-                if (student.AssignedCourseProjects.Any(x => x.CourseProject.SubjectId == subjectId))
+                if (student.AssignedCourseProjects.Any(x => x.CourseProject.SubjectId == subjectId && x.CourseProject.LecturerId == lecturerId))
                 {
                     var rows = new List<string>();
                     rows.Add(student.FullName);
-                    foreach (var cpd in Context.CoursePercentagesGraphs.Include("CoursePercentagesResults").Where(x => x.SubjectId == subjectId))
+                    foreach (var cpd in Context.CoursePercentagesGraphs.Include("CoursePercentagesResults").Where(x => x.SubjectId == subjectId && x.LecturerId == lecturerId))
                     {
                         var cpM = cpd.CoursePercentagesResults.FirstOrDefault(x => x.StudentId == student.Id);
                         if (cpM != null)

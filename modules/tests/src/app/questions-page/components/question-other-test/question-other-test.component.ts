@@ -32,10 +32,19 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
 
   ngOnInit() {
     this.testService.getTestForLector()
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((tests) => {
-        this.tests = tests;
-      });
+      .pipe(
+        tap((tests: Test[]) => {
+          tests.forEach((test) => {
+            let sliced = test.Title.slice(0, 80);
+            if (sliced.length < test.Title.length) {
+              sliced += "...";
+            }
+            test.tooltipTitle = sliced;
+          });
+          this.tests = tests;
+        }),
+        takeUntil(this.unsubscribeStream$))
+      .subscribe();
   }
 
   onNoClick(): void {

@@ -1,19 +1,23 @@
 <div *ngIf="isEnableNews">
   <div style="margin-top: 22px;">
-     <p style="margin-bottom: 12px;font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;position: relative;left: 30%;width: 70%">Новости</p>
+    <p matTooltipClass="example-tooltip-blue" (click)="hideNews()" matTooltip = "Скрыть новости"
+         style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5; width: 10px; float: left; ">></p>
+     <p style="margin-bottom: 0px;font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;margin-left: 30%">Новости</p>
   </div>
   <table style="margin-right:10%; margin-left:10%;">
     <tr *ngFor="let item of news" >
-     <div [ngStyle]="{ 'border-left':calcColor(item)}" style="margin-bottom: 25px; padding-top: 10px;" >
+     <div [ngStyle]="{ 'border-left':calcColor(item?.Subject)}" style="margin-bottom: 25px; padding-top: 10px;" >
         <div style="margin-left:6%;" >
           <h6 (click) = "openItemInfo(item)" style = "color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:14px;line-height:20px;cursor: pointer;left: 0%;font-weight: initial; ">{{item?.Title}}</h6>
         </div>
         <div style="margin-left:6%;margin-top: 20px;display: flex;justify-content: space-between;">
-          <h6 matTooltip="{{getToolTip(item)}}" matTooltipClass="example-tooltip-blue" style = "cursor: pointer;font-size:14px;line-height:16px;left: 0%;float: left; font-family: Roboto, Helvetica Neue, sans-serif;">{{getSubjectShortName(item?.SubjectId)}}</h6>
-          <h6 style = "font-size:12px;line-height:14px;margin-top: 2px;left: 0%;font-weight: initial; float: right;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:12px;">{{item.EditDate.slice(6,-2) | date:'dd.MM.yyyy' }}</h6>
+          <h6 matTooltip="{{item?.Subject?.Name}}" matTooltipClass="example-tooltip-blue" style = "cursor: pointer;font-size:14px;line-height:16px;left: 0%;float: left; font-family: Roboto, Helvetica Neue, sans-serif;">{{item?.Subject?.ShortName}}</h6>
+          <h6 style = "font-size:12px;line-height:14px;margin-top: 2px;left: 0%;font-weight: initial; float: right;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:12px;">{{item?.EditDate.slice(6,-2) | date:'dd.MM.yyyy' }}</h6>
         </div>
         <p></p>
       </div>
     </tr>
   </table>
 </div>
+
+<a style="cursor: pointer;" (click)="openAllNews()">Посмотреть все новости</a>

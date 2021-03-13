@@ -8,8 +8,8 @@
 
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Название предмета</th>
-      <td mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="navigateToSubject(element.SubjectId)">
-        {{element.DisplayName}}
+      <td mat-cell *matCellDef="let element">
+        <span class="navigation-link" (click)="navigateToSubject(element.SubjectId)">{{element.DisplayName}}</span>
       </td>
     </ng-container>
 
@@ -23,7 +23,7 @@
       <td mat-cell *matCellDef="let element">
         <button mat-icon-button color="primary"
                 matTooltip="Присоединить преподавателя"
-                (click)="lector(element.SubjectId)"
+                (click)="lector(element.SubjectId, element.DisplayName)"
         >
           <mat-icon>person_add</mat-icon>
         </button>

@@ -4,6 +4,35 @@
   .material-icons {
     color: white;
     font-size: 56px;
+    height:160px;
+  }
+
+  mat-grid-tile .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    left: 75%;
+  }
+
+  mat-grid-tile .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent black transparent transparent;
+  }
+
+  mat-grid-tile:hover .tooltiptext {
+    visibility: visible;
   }
 }
 
@@ -13,8 +42,7 @@
 
 .bottom-menu {
   position: absolute;
-  padding-top: 80px;
-  padding-left: 80px;
+  right: 0px;
 }
 
 .ripple-container {
@@ -58,7 +86,7 @@
 .main-anchor {
   font-size: 20px;
   text-decoration: underline;
-  color: blue;
+  color: #3f51b5;
 }
 
 a.main-anchor:hover {

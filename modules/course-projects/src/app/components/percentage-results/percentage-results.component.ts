@@ -120,6 +120,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         label: 'Результат процентовки',
         symbol: '%',
         comment: pr.Comment,
+        showForStudent: pr.ShowForStudent,
         expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage
       }
     });
@@ -127,16 +128,16 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.mark != null && !(result.mark === '' && pr.Id == null)) {
         if (pr.Id == null) {
-          this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment)
+          this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
               this.addFlashMessage('Процент успешно сохранен');
             });
         } else {
-          this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment)
+          this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Процент успешно сохранен');
+              this.addFlashMessage('Процент успешно изменен');
             });
         }
       }
@@ -157,7 +158,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         total: true,
         lecturer: student.LecturerName,
         date: student.MarkDate,
-        comment: student.Comment
+        comment: student.Comment,
+        showForStudent: student.ShowForStudent,
       }
     });
 
@@ -167,7 +169,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         const dateString = (date.getDay() < 10 ? '0' : '') + date.getDay() + '.' + (date.getMonth() < 10 ? '0' : '') + date.getMonth() +
           '.' + date.getFullYear();
-        this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark, student.Lecturer, result.comment, dateString)
+        this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark, student.Lecturer, result.comment, dateString, result.showForStudent)
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Оценка успешно сохранена');

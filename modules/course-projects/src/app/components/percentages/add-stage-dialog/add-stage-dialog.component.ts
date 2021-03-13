@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {FormControl, Validators} from '@angular/forms';
 
 interface DialogData {
+  title: string,
   name: string;
   percentage: number;
   date: any;

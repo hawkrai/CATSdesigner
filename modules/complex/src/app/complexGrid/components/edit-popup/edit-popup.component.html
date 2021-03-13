@@ -9,7 +9,12 @@
       <mat-label>Предмет</mat-label>
       <input name="shortName" maxlength="100" placeholder="Название предмета" matInput [(ngModel)]="data.subjectName" [disabled]=true>
     </mat-form-field>
-   <mat-checkbox name="isPublishedCheckBox" matInput [(ngModel)]="data.isPublished" *ngIf="!data.isNew">Материал опубликован</mat-checkbox>   
+   <mat-checkbox name="isPublishedCheckBox" matInput [(ngModel)]="data.isPublished">Открыть доступ</mat-checkbox>
+   <span>
+     <mat-checkbox name="includeLabs" matInput [(ngModel)]="data.includeLabs">Включить лабораторные</mat-checkbox>
+     <mat-checkbox name="includeLectures" matInput [(ngModel)]="data.includeLectures">Включить лекции</mat-checkbox>
+     <mat-checkbox name="includeTests" matInput [(ngModel)]="data.includeTests">Включить тесты</mat-checkbox>
+   </span>
   </form>
 </div>
 <div mat-dialog-actions>

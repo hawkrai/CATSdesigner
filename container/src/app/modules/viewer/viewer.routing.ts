@@ -5,6 +5,7 @@ import { ViewerComponent } from './pages/viewer/viewer.component';
 import { SubjectsNavComponent } from '../../layout/subjects-nav/subjects-nav.component';
 import { NoAuthGuard } from '../../core/no-auth.guard';
 import { SubjectsComponent } from './pages/subjects/subjects.component';
+import { UserAssignedToSubjectGuard } from 'src/app/core/guards/user-assigned-to-subject.guard';
 
 export const routes: Routes = [
   {
@@ -23,7 +24,8 @@ export const routes: Routes = [
       },
       {
         path: 'subject/:id',
-        component: SubjectComponent
+        component: SubjectComponent,
+        canActivate: [UserAssignedToSubjectGuard]
       },
       {
         path: 'subjects',

@@ -16,5 +16,17 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
 
         [DataMember]
         public int StudentPracticalMarkId { get; set; }
+
+        [DataMember]
+        public string Comment { get; set; }
+
+        [DataMember]
+        public bool ShowForStudent { get; set; }
+
+        [DataMember]
+        public string Date { get; set; }
+
+        [DataMember]
+        public int? LecturerId { get; set; }
     }
 }
