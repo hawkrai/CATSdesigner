@@ -149,5 +149,7 @@
   "text.editor.hint.add.new.book": "Добавление нового учебника",
   "text.editor.hint.enter.content.here": "Введите содержание здесь...",
   "text.editor.confirmation": "Подтверждение",
-  "text.editor.remove.confirmation.text": "Вы уверены, что хотите удалить "
+  "text.editor.remove.confirmation.text": "Вы уверены, что хотите удалить ",
+  "text.editor.hint.roll.up": "Свернуть",
+  "text.editor.hint.expand": "Развернуть"
 }

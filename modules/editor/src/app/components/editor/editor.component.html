@@ -3,7 +3,7 @@
     <div class="flex-editor-container">
       <div class="btn-holder">
         <button (click)="drawer.toggle()" mat-icon-button>
-          <mat-icon class="mat-icon-rtl-mirror" color="primary">
+          <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="drawer.opened ? ('text.editor.hint.roll.up' | translate: 'Свернуть') : ('text.editor.hint.expand' | translate: 'Развернуть')">
             {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
           </mat-icon>
         </button>
