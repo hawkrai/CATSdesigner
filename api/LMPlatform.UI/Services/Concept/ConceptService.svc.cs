@@ -32,50 +32,19 @@ namespace LMPlatform.UI.Services.Concept
         private readonly LazyDependency<IConceptManagementService> _conceptManagementService = new LazyDependency<IConceptManagementService>();
         private readonly LazyDependency<ISubjectManagementService> _subjectManagementService = new LazyDependency<ISubjectManagementService>();
         private readonly LazyDependency<IWatchingTimeService> _watchingTimeService = new LazyDependency<IWatchingTimeService>();
+        private readonly LazyDependency<IUsersManagementService> _usersManagementService = new LazyDependency<IUsersManagementService>();
+        private readonly LazyDependency<IFilesManagementService> _filesManagementService = new LazyDependency<IFilesManagementService>();
+
 
         public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
-
         public IStudentManagementService StudentManagementService => _studentManagementService.Value;
-
         public IWatchingTimeService WatchingTimeService => _watchingTimeService.Value;
-
-        private readonly LazyDependency<IUsersManagementService> _usersManagementService =
-	        new LazyDependency<IUsersManagementService>();
-
         public IUsersManagementService UsersManagementService => _usersManagementService.Value;
-
-        private readonly LazyDependency<IFilesManagementService> _filesManagementService =
-	        new LazyDependency<IFilesManagementService>();
-
         public IFilesManagementService FilesManagementService => _filesManagementService.Value;
-
         public ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
 
-        public ConceptResult AttachSiblings(int source, int left, int right)
-        {
-            try
-            {
-                var concept = ConceptManagementService.AttachSiblings(source, right, left);
-
-                return new ConceptResult
-                {
-                    Concept = new ConceptViewData(concept),
-                    Message = SuccessMessage,
-                    Code = SuccessCode,
-                    SubjectName = concept.Subject.Name
-                };
-            }
-            catch (Exception ex)
-            {
-                
-                return new ConceptResult
-                {
-                    Message = ex.Message,
-                    Code = ServerErrorCode
-                };
-            }
-        }
-
+        #region Used by complex module
+        
         public ConceptResult SaveRootConcept(string name, string container, int subjectId, bool includeLabs, bool includeLectures, bool includeTests)
         {
             try
@@ -100,7 +69,7 @@ namespace LMPlatform.UI.Services.Concept
                 };
             }
         }
-        
+
         public ConceptResult GetRootConcepts(int subjectId)
         {
             try
@@ -133,40 +102,7 @@ namespace LMPlatform.UI.Services.Concept
             }
         }
 
-		public ConceptResult GetRootConceptsMobile(int subjectId, int userId, string identityKey)
-		{
-			try
-			{
-				if (identityKey != "7e13f363-2f00-497e-828e-49e82d8b4223")
-				{
-					throw new UnauthorizedAccessException();
-				}
-                var user = UsersManagementService.GetUser(userId);
-                var concepts = user.Lecturer != null ?
-					ConceptManagementService.GetRootElements(userId) : 
-					ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
-                concepts = concepts.Where(c => c.SubjectId == subjectId);
-				var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
-                
-				return new ConceptResult
-				{
-					Concepts = concepts.Select(c => new ConceptViewData(c)).ToList(),
-					Message = SuccessMessage,
-					SubjectName = subj.Name,
-					Code = SuccessCode
-				};
-			}
-			catch (Exception ex)
-			{
-				return new ConceptResult
-				{
-					Message = ex.Message,
-					Code = ServerErrorCode
-				};
-			}
-		}
-
-		public ConceptResult GetConcepts(int parentId)
+        public ConceptResult GetConcepts(int parentId)
         {
             try
             {
@@ -222,6 +158,153 @@ namespace LMPlatform.UI.Services.Concept
             }
         }
 
+        public ConceptResult EditRootConcept(int elementId, string name, bool isPublished)
+        {
+            try
+            {
+                ConceptManagementService.UpdateRootConcept(elementId, name, isPublished);
+
+                return new ConceptResult
+                {
+                    Message = SuccessMessage,
+                    Code = SuccessCode
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ConceptResult
+                {
+                    Message = ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
+        }
+
+        public ConceptResult GetConceptCascade(int parenttId)
+        {
+            var conceptViewData = new ConceptViewData(ConceptManagementService.GetTreeConceptByElementId(parenttId), true, FilesManagementService);
+            PopulateFilePath(conceptViewData);
+
+            var res = new ConceptResult
+            {
+                Concept = conceptViewData,
+                Message = SuccessMessage,
+                Code = SuccessCode
+            };
+            return res;
+        }
+
+        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId)
+        {
+            try
+            {
+                var conceptModel = new AddOrEditConceptViewModel(userId, conceptId, parentId)
+                {
+                    IsGroup = isGroup,
+                    Name = conceptName,
+                    FileData = fileData
+                };
+
+                if (!conceptModel.IsGroup && !string.IsNullOrEmpty(conceptModel.FileData))
+                {
+                    var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(conceptModel.FileData).ToList();
+                    conceptModel.SetAttachments(attachmentsModel);
+                }
+
+                conceptModel.Save();
+
+                return new ConceptResult
+                {
+                    Message = SuccessCode,
+                    Code = ServerErrorCode
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ConceptResult
+                {
+                    Message = ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
+        }
+
+        private void PopulateFilePath(ConceptViewData children)
+        {
+            if (children.Children != null && children.Children.Any())
+            {
+                foreach (var data in children.Children)
+                {
+                    PopulateFilePath(data);
+                }
+            }
+
+            if (!children.HasData) return;
+            var attach = FilesManagementService.GetAttachments(children.Container).FirstOrDefault();
+            if (attach == null) return;
+            children.FilePath = $"{attach.PathName}//{ attach.FileName}";
+        }
+		
+        #endregion
+
+		#region Used By Mobile
+		public ConceptResult AttachSiblings(int source, int left, int right)
+        {
+            try
+            {
+                var concept = ConceptManagementService.AttachSiblings(source, right, left);
+
+                return new ConceptResult
+                {
+                    Concept = new ConceptViewData(concept),
+                    Message = SuccessMessage,
+                    Code = SuccessCode,
+                    SubjectName = concept.Subject.Name
+                };
+            }
+            catch (Exception ex)
+            {
+                
+                return new ConceptResult
+                {
+                    Message = ex.Message,
+                    Code = ServerErrorCode
+                };
+            }
+        }       
+		public ConceptResult GetRootConceptsMobile(int subjectId, int userId, string identityKey)
+		{
+			try
+			{
+				if (identityKey != "7e13f363-2f00-497e-828e-49e82d8b4223")
+				{
+					throw new UnauthorizedAccessException();
+				}
+                var user = UsersManagementService.GetUser(userId);
+                var concepts = user.Lecturer != null ?
+					ConceptManagementService.GetRootElements(userId) : 
+					ConceptManagementService.GetRootElementsBySubject(subjectId).Where(c => c.Published);
+                concepts = concepts.Where(c => c.SubjectId == subjectId);
+				var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
+                
+				return new ConceptResult
+				{
+					Concepts = concepts.Select(c => new ConceptViewData(c)).ToList(),
+					Message = SuccessMessage,
+					SubjectName = subj.Name,
+					Code = SuccessCode
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ConceptResult
+				{
+					Message = ex.Message,
+					Code = ServerErrorCode
+				};
+			}
+		}
         public ConceptViewData GetConceptTree(int elementId)
         {
             try
@@ -234,7 +317,6 @@ namespace LMPlatform.UI.Services.Concept
                 return null;
             }
         }
-
 		public ConceptViewData GetConceptTreeMobile(int elementId)
 		{
 			try
@@ -249,19 +331,16 @@ namespace LMPlatform.UI.Services.Concept
 				return null;
 			}
 		}
-
 		public AttachViewData GetNextConceptData(int elementId)
         {
             var concept = ConceptManagementService.GetByIdFixed(elementId, withPrev:false);
             return GetNeighborConceptData(concept.NextConcept.GetValueOrDefault());
         }
-
         public AttachViewData GetPrevConceptData(int elementId)
         {
             var concept = ConceptManagementService.GetByIdFixed(elementId, withNext:false);
             return GetNeighborConceptData(concept.PrevConcept.GetValueOrDefault());
         }
-
         public MonitoringData GetConceptViews(int conceptId, int groupId)
         {
             var concept = ConceptManagementService.GetLiteById(conceptId);
@@ -287,25 +366,21 @@ namespace LMPlatform.UI.Services.Concept
 	            Views = views, Estimated = estimated
             };
         }
-
         public class MonitoringData
         {
             public List<ViewsWorm> Views { get; set; }
             public int Estimated { get; set; }
         }
-
         public class ViewsWorm
         {
             public string Name { get; set; }
             public int Seconds { get; set; }
         }
-
         public ConceptViewData GetConcept(int elementId)
         {
             var concept =  ConceptManagementService.GetById(elementId);
             return new ConceptViewData(concept);
         }
-
         public ConceptPageTitleData GetConceptTitleInfo(int subjectId)
         {
 	        var query = new Query<Subject>(e => e.Id == subjectId)
@@ -318,78 +393,6 @@ namespace LMPlatform.UI.Services.Concept
                 Subject = new Modules.Parental.SubjectViewData(subject)
             };
         }
-
-        public ConceptResult EditRootConcept(int elementId, string name, bool isPublished)
-        {
-            try
-            {
-                ConceptManagementService.UpdateRootConcept(elementId, name, isPublished);
-
-                return new ConceptResult
-                {                    
-                    Message = SuccessMessage,
-                    Code = SuccessCode                    
-                };
-            }
-            catch (Exception ex)
-            {
-
-                return new ConceptResult
-                {
-                    Message = ex.Message,
-                    Code = ServerErrorCode
-                };
-            }
-        }
-
-        public ConceptResult GetConceptCascade(int parenttId)
-        {
-            var conceptViewData = new ConceptViewData(ConceptManagementService.GetTreeConceptByElementId(parenttId), true);
-            PopulateFilePath(conceptViewData);
-
-            var res = new ConceptResult
-            {
-                Concept = conceptViewData,
-                Message = SuccessMessage,
-                Code = SuccessCode
-            };
-            return res;
-        }
-
-        public ConceptResult AddOrEditConcept(int conceptId, string conceptName, int parentId, bool isGroup, string fileData, int userId)
-        {
-            try {
-                var conceptModel = new AddOrEditConceptViewModel(userId, conceptId, parentId)
-                {
-                    IsGroup = isGroup,
-                    Name = conceptName,
-                    FileData = fileData
-                };
-
-                if (!conceptModel.IsGroup && !string.IsNullOrEmpty(conceptModel.FileData))
-                {
-                    var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(conceptModel.FileData).ToList();
-                    conceptModel.SetAttachments(attachmentsModel);
-                }
-
-                conceptModel.Save();
-
-                return new ConceptResult
-                {
-                    Message = SuccessCode,
-                    Code = ServerErrorCode
-                };
-            }            
-            catch (Exception ex)
-            {
-                return new ConceptResult
-                {
-                    Message = ex.Message,
-                    Code = ServerErrorCode
-                };
-            }
-        }
-
         private AttachViewData GetNeighborConceptData(int neighborId)
         {
             var neighbor = ConceptManagementService.GetLiteById(neighborId);
@@ -401,28 +404,10 @@ namespace LMPlatform.UI.Services.Concept
             var att = FilesManagementService.GetAttachments(neighbor.Container).FirstOrDefault(); 
             return new AttachViewData(neighbor.Id, neighbor.Name, att);
         }
-
-        private void PopulateFilePath(ConceptViewData children)
-        {
-	        if (children.Children != null && children.Children.Any())
-	        {
-		        foreach (var data in children.Children)
-		        {
-			        PopulateFilePath(data);
-		        }
-	        }
-
-	        if (!children.HasData) return;
-            var attach = FilesManagementService.GetAttachments(children.Container).FirstOrDefault();
-            if (attach == null) return;
-            children.FilePath = $"{attach.PathName}//{ attach.FileName}";
-        }
-
         private bool CurrentUserIsLector()
         {
 	        return UsersManagementService.CurrentUser.Membership.Roles.Any(r => r.RoleName.Equals("lector"));
         }
-
-
-    }
+		#endregion 
+	}
 }

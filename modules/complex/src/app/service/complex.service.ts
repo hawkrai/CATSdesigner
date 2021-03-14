@@ -68,7 +68,7 @@ export class ComplexService {
     return this.http.post('/Services/Concept/ConceptService.svc/CreateRootConcept', complex);
   }
 
-  public addConcept(concept: Concept) {
+  public addOrEditConcept(concept: Concept) {
     return this.http.post('/Services/Concept/ConceptService.svc/AddConcept', concept);
   }
 

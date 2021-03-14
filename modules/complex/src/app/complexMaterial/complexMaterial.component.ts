@@ -53,7 +53,7 @@ export class ComplexMaterialComponent implements OnInit {
           userId: JSON.parse(localStorage.getItem("currentUser")).id
         };
 
-        this.complexService.addConcept(concept).subscribe(res =>
+        this.complexService.addOrEditConcept(concept).subscribe(res =>
         {
           if (res['Code'] === '200') {
             this.router.navigateByUrl('/cMaterial');

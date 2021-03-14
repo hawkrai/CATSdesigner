@@ -51,8 +51,10 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
     if (toSave) {
       this.onSave(files);
     } else {
-      files.filter(f => f.IdFile <= 0)
-        .forEach(f => this.deleteFile(f));
+      if (files) {
+        files.filter(f => f.IdFile <= 0)
+          .forEach(f => this.deleteFile(f));
+      }
       this.dialogRef.close();
     }
   }

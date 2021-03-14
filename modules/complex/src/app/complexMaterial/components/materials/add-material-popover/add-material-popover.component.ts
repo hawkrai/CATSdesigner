@@ -16,6 +16,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   navItems: ComplexCascade[] = [];
   isFile: boolean;
   isFolder: boolean;
+  editMode: boolean;
   conceptId: any;
   public selectedConcept: string;
 
@@ -39,11 +40,19 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     super.ngOnInit();
     const currentComplexID = localStorage.getItem('selectedComplex');
     this.complexService.getConceptCascadeFoldersOnly(currentComplexID).subscribe(res => {
-      this.navItems = res;      
-    });
+      this.navItems = res;
+      if (this.data) {
+        this.switchFormTo(this.data.isGroup ? 1 : 2);
+
+        if (this.data.parentId) {
+          this.selectConcept(this.data.parentId);
+        }
+      }
+      this.editMode = this.data.id && this.data.id !== '0';
+    });    
   }
 
-  selectConcept(id: any, name: string) {
+  selectConcept(id: any) {
     this.data.parentId = this.conceptId = id;     
     this.selectedConcept = this.getConceptNameById(this.navItems, id);
   }

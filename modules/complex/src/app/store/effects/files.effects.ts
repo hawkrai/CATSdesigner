@@ -24,6 +24,13 @@ export class FilesEffects {
     })
   ), { dispatch: false });
 
+  loadAttachments$ = createEffect(() => this.actions$.pipe(
+    ofType(filesActions.loadAttachments),
+    switchMap(({ values }) => this.filesService.getAttachments({ values, deleteValues: 'DELETE' }).pipe(
+      map(files => filesActions.loadAttachmentsSuccess({ files }))
+    ))
+  ));
+
   uploadFile$ = createEffect(() => this.actions$.pipe(
     ofType(filesActions.uploadFile),
     withLatestFrom(this.store.select(filesSelectors.getFiles)),
