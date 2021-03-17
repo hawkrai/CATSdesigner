@@ -11,6 +11,7 @@ import { Attachment } from '../../../models/Attachment';
 import { ConvertedAttachment } from '../../../models/ConvertedAttachment';
 import { Concept } from '../../../models/Concept';
 import { Router } from '@angular/router';
+import { Complex } from '../../../models/Complex';
 
 
 @Component({
@@ -35,6 +36,12 @@ export class MaterialComponent implements OnInit {
   constructor(public dialog: MatDialog,
     private router: Router,
     private complexService: ComplexService) {
+
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+
     const user = JSON.parse(localStorage.getItem("currentUser"));
     this.isLucturer = user.role === 'lector';
   }
@@ -104,8 +111,17 @@ export class MaterialComponent implements OnInit {
           }
         });
       }
-    })
+    })    
+  }
 
-    
-  }  
+  onDeleteClick(conceptId: number): void {
+    const complex: Complex = {
+      elementId: conceptId
+    }
+    this.complexService.deleteConcept(complex).subscribe(result => {
+      if (result['Code'] === '200') {
+        this.router.navigateByUrl('/cMaterial');
+      }
+    });
+  }
 }

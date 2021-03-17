@@ -65,7 +65,7 @@ export class GridMenuComponent {
     const complex: Complex = {
       elementId: +this.complexId     
     }
-    this.complexService.deleteRootConcept(complex).subscribe(result => {
+    this.complexService.deleteConcept(complex).subscribe(result => {
       if (result['Code'] === '200') {
         this.router.navigateByUrl('/main');
       }

@@ -72,7 +72,7 @@ export class ComplexService {
     return this.http.post('/Services/Concept/ConceptService.svc/AddConcept', concept);
   }
 
-  public deleteRootConcept(complex: Complex) {
+  public deleteConcept(complex: Complex) {
     return this.http.post('/Services/Concept/ConceptService.svc/Remove', complex);
   }
 

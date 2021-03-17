@@ -21,6 +21,11 @@ export class ComplexMaterialComponent implements OnInit {
     public dialog: MatDialog,
     private complexService: ComplexService)
   {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+
     this.complexID = this.router.getCurrentNavigation().extras.state;
     if (this.complexID) {
       localStorage.setItem('selectedComplex', this.complexID);

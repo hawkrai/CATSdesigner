@@ -217,7 +217,7 @@ namespace LMPlatform.UI.Services.Concept
                 return new ConceptResult
                 {
                     Message = SuccessCode,
-                    Code = ServerErrorCode
+                    Code = SuccessCode
                 };
             }
             catch (Exception ex)
