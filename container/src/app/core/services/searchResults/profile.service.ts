@@ -30,6 +30,10 @@ export class ProfileService {
     return this.http.get(this.apiAccount + 'GetDefaultAvatar', { responseType: 'text' });
   }
 
+  getAvatar(): Observable<string> {
+    return this.http.get(this.apiAccount + 'GetAvatar', { responseType: 'text' });
+  }
+
 
 
 }

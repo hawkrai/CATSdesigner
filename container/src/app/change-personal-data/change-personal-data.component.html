@@ -1,9 +1,7 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 
-<div class="buttons-row">
+<div class="header-row">
   <h2 class="header"> Личный кабинет пользователя</h2>
-  <button mat-button class="cancel-button" (click)="this.backClicked()">Отменить изменения</button>
-  <button mat-button class="edit-button" (click)="this.updatePersonalInfo()"> Сохранить изменения </button>
 </div>
 
 <div class="profile">
@@ -11,8 +9,8 @@
   <mat-card class="profile-card">
     <mat-card class="avatar">
 
-      <img *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}" width="300px">
-      <img *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}" width="300px">
+      <img class = "avatarImg" *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}">
+      <img class = "avatarImg" *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}">
 
     </mat-card>
     <input style="display: none"
@@ -24,22 +22,22 @@
 
   <mat-card class="data-container">
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>Фамилия</mat-label>
       <input matInput [(ngModel)]="this.profileData.Surname" [formControl]="surnameFormControl" maxlength="30">
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>Имя</mat-label>
       <input matInput [(ngModel)]="this.profileData.Name" [formControl]="nameFormControl" maxlength="30">
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>Отчество</mat-label>
       <input matInput [(ngModel)]="this.profileData.Patronymic" [formControl]="patronymicFormControl" maxlength="30">
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>Логин</mat-label>
       <input matInput disabled value={{this.profileData.UserName}}>
     </mat-form-field>
@@ -51,24 +49,24 @@
 
   <mat-card class="data-container">
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>Почта</mat-label>
       <input matInput [(ngModel)]="this.profileData.Email" [formControl]="emailFormControl" maxlength="30">
       <mat-error *ngIf="emailFormControl.invalid">Неверный формат почты</mat-error>
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>Телефон</mat-label>
-      <input matInput [(ngModel)]="this.profileData.Phone" [formControl]="phoneFormControl" maxlength="30">
+      <input matInput [(ngModel)]="this.profileData.Phone" [formControl]="phoneFormControl" maxlength="20">
       <mat-error *ngIf="phoneFormControl.hasError('pattern')">Номер не соответствует формату!</mat-error>
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>Skype</mat-label>
       <input matInput [(ngModel)]="this.profileData.SkypeContact" maxlength="30">
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="input-full-width">
       <mat-label>О себе</mat-label>
       <input matInput [(ngModel)]="this.profileData.About" maxlength="500">
     </mat-form-field>
@@ -77,4 +75,9 @@
 
 </div>
 
-      
+<div class="buttons-row">
+  <button mat-button class="cancel-button" (click)="this.backClicked()">Отменить изменения</button>
+  <button mat-button class="edit-button" (click)="this.updatePersonalInfo()"> Сохранить изменения </button>
+</div>
+
+

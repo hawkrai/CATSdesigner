@@ -24,7 +24,7 @@ export class ChangePersonalDataComponent implements OnInit {
   profileData!: ProfileData;
 
   emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
-  phoneFormControl = new FormControl('', [Validators.required/*, Validators.pattern('/^\s*([+]{1}375|80)\s?-?\s?(25|29|33|44)\s?-?\s?\d{3}\s?-?\s?\d{2}\s?-?\s?\d{2}$/')*/]);
+  phoneFormControl = new FormControl('', [Validators.required, Validators.pattern('^[0-9]{0,20}$')]);
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
   Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
 

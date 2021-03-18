@@ -6,6 +6,7 @@ import {CoreService} from "../../core/services/core.service";
 import {Subject} from "rxjs";
 import { Lecturer, Student, Group } from '../../core/models/searchResults/search-results';
 import { SearchService } from '../../core/services/searchResults/search.service';
+import { ProfileService } from '../../core/services/searchResults/profile.service';
 
 
 interface Locale {
@@ -26,6 +27,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
   public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public profileIcon!: string;
 
   public currentUserId!: number;
   valueForSearch!: string;
@@ -40,14 +42,15 @@ export class NavComponent implements OnInit, OnDestroy {
   constructor(private layoutService: LayoutService,
               private coreService: CoreService,
               private autService: AuthenticationService,
-              private searchService: SearchService
+              private searchService: SearchService,
+              private profileService: ProfileService,
               ) {
   }
 
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
-
+    this.getAvatar();
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
 
@@ -87,6 +90,12 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
 
+
+  getAvatar() {
+    this.profileService.getAvatar().subscribe(res => {
+      this.profileIcon = res;
+    });
+  }
 
   viewSearchResults() {
     this.valueForSearch = this.valueForSearch.trim();

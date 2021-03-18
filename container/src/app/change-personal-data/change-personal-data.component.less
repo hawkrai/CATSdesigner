@@ -1,19 +1,38 @@
 
 .profile-card {
   margin: 30px;
-  display: table;
+  margin-top: 10px;
+  height: 365px;
+  /*  width: 100%;*/
 }
 
 .buttons-row {
   margin-right: 20px;
   margin-left: 30px;
-  margin-top: 25px;
+  margin-top: 0px;
   display: flex;
-  /*flex-direction:row;
-  justify-content: flex-start;*/
+  flex-direction:row;
+  justify-content: flex-end;
 }
 
-.example-full-width {
+.header-row {
+  margin-right: 20px;
+  margin-left: 30px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: row;
+}
+
+.avatar{
+    object-fit:cover; 
+}
+
+.avatarImg {
+  width: 100%;
+}
+
+.input-full-width {
+  line-height:3;
   width: 100%;
   border-collapse: collapse;
 }
@@ -38,8 +57,8 @@ button {
   margin-top: 5px;
   width: 100%;
   border-radius: 5px;
-  color: black;
-  background-color: #ddd;
+  color: #3f51b5;
+  background-color: white;
   box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
 }
 
@@ -54,23 +73,26 @@ button {
   margin-right: 20px;
   margin-left: 500px;
   width: 15%;
-  background-color: transparent;
+  color: black;
+  
 }
 
 .data-container {
   overflow: auto;
   padding: 15px;
   margin: 20px;
-  margin-top: 30px;
+  margin-top: 10px;
   width: 100%;
-  height: 260px;
+  height: 365px;
 }
 
 a {
-  margin-top: 15px;
+  margin-top: 5px;
   font-size: 16px;
   color: #3f51b5;
   cursor: pointer;
+  text-decoration: underline;
+  float:right;
 }
 
 
