@@ -528,7 +528,10 @@ div.Section1
                                 <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
                             </td>
                             <td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-                                <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
+                                <p class="MsoNormal" style='line-height:normal'>
+                                    <span style='font-size:10.0pt;text-align:center;'><xsl:value-of select='string(item[@name="ShortLecturerName"])' disable-output-escaping='no'/>
+                                    </span>
+                                </p>
                             </td>
                         </tr>
                         <tr>
@@ -548,7 +551,7 @@ div.Section1
                             </td>
                             <td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
                                 <p class="MsoNormal" style='line-height:normal'>
-                                    <span style='font-size:8.0pt'>(фамилия, инициалы)</span>
+                                    <span style='font-size:8.0pt'>(инициалы, фамилия)</span>
                                 </p>
                             </td>
                         </tr>
@@ -591,7 +594,10 @@ div.Section1
                                 <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
                             </td>
                             <td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-                                <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
+                                <p class="MsoNormal" style='line-height:normal'>
+                                  <span style='font-size:10.0pt;text-align:center;'><xsl:value-of select='string(item[@name="ShortStudentName"])' disable-output-escaping='no'/>
+                                  </span>
+                            </p>
                             </td>
                         </tr>
                         <tr>
@@ -611,7 +617,7 @@ div.Section1
                             </td>
                             <td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
                                 <p class="MsoNormal" style='line-height:normal'>
-                                    <span style='font-size:8.0pt'>(фамилия, инициалы)</span>
+                                    <span style='font-size:8.0pt'>(инициалы, фамилия)</span>
                                 </p>
                             </td>
                         </tr>

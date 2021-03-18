@@ -4,14 +4,14 @@
         <table>
             <td class="col-first">
                     <div class="cat">
-                        <img id="mascot-body" src="./../../../assets/logo.png" />
-                        <img id="mascot-tail" src="./../../assets/logo.png"/>
+                        <img id="mascot-body" src="./../../../assets/images/mascot-body.svg" />
+                        <img id="mascot-tail" src="./../../../assets/images/mascot-tail.svg"/>
                     </div>
                     <br>
-                    <img class="logo" src="./logo.png"/>
+                    <img class="logo" src="./../../../assets/logo.png"/>
                     <p>Care about the students </p> 
                     <h1>Адаптивная обучающая система</h1>
-                    <a mat-fab href="#">
+                    <a mat-fab (click)="this.cancel()">
                         <mat-icon class="icon_p">play_arrow</mat-icon>
                     </a>
             </td>
@@ -83,7 +83,7 @@
                     <button mat-raised-button (click)="this.register()" class="btn">Зарегистрироваться</button>
                     <div class="sign-in">
 
-						<button mat-raised-button color="basic" routerLink="/login" href="">Отмена</button>
+						<button mat-raised-button color="basic" (click)="this.cancel()" href="">Отмена</button>
 
 					</div>
                 </form>

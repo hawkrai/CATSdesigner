@@ -9,7 +9,6 @@ import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import * as groupActions from '../../store/actions/groups.actions';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
-import * as practicalActions from '../../store/actions/practicals.actions';
 
 interface State {
   groups: Group[];
@@ -24,7 +23,7 @@ interface State {
 })
 export class PracticalComponent implements OnInit, OnDestroy {
 
-  tabs = ['Практические занятия', 'Статистика посещения', 'Результаты']
+  tabs = ['Практические занятия', 'График защиты', 'Статистика посещения', 'Результаты']
 
   state$: Observable<State>;
   public detachedGroup = false;
@@ -62,7 +61,6 @@ export class PracticalComponent implements OnInit, OnDestroy {
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
-      this.store.dispatch(practicalActions.loadPracticals());
     }
   }
 

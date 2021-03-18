@@ -11,7 +11,7 @@
 
     <ng-container matColumnDef="theme">
       <th mat-header-cell *matHeaderCellDef>Тема работы</th>
-      <td mat-cell *matCellDef="let element"> {{element.Theme}}</td>
+      <td mat-cell *matCellDef="let element"> {{element.Theme}} <a class="file-link" (click)="openFilePopup(element.Attachments)" mat-button color="primary" *ngIf="element.Attachments.length && isTeacher">({{element.Attachments.length }})</a></td>
     </ng-container>
 
     <ng-container matColumnDef="shortName">

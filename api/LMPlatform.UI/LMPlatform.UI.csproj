@@ -36,8 +36,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -308,7 +309,7 @@
     <Compile Include="ApiControllers\CP\CPTaskSheetDownloadController.cs" />
     <Compile Include="ApiControllers\CP\CpTaskSheetHtmlController.cs" />
     <Compile Include="ApiControllers\CP\CpTaskSheetTemplateController.cs" />
-    <Compile Include="ApiControllers\DocumentsController.cs" />
+    <Compile Include="ApiControllers\CP\CpStatisticController.cs" />
     <Compile Include="ApiControllers\DP\CorrelationController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectNewsController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectAssignmentController.cs" />
@@ -454,6 +455,7 @@
     <Compile Include="Services\Modules\Concept\ConceptViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupsResult.cs" />
     <Compile Include="Services\Modules\CoreModels\GroupsViewData.cs" />
+    <Compile Include="Services\Modules\CoreModels\GroupViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\StudentLabMarkViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\StudentMark.cs" />
     <Compile Include="Services\Modules\CoreModels\StudentPracticalMarkViewData.cs" />
@@ -462,12 +464,16 @@
     <Compile Include="Services\Modules\CoreModels\StudentsViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\SubGroupsViewData.cs" />
     <Compile Include="Services\Modules\Files\AttachmentResult.cs" />
+    <Compile Include="Services\Modules\Labs\HasJobProtection.cs" />
+    <Compile Include="Services\Modules\Labs\HasProtectionViewData.cs" />
     <Compile Include="Services\Modules\Labs\LabsResult.cs" />
     <Compile Include="Services\Modules\Labs\LabsViewData.cs" />
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
-    <Compile Include="Services\Modules\Labs\ScheduleProtectionLab.cs" />
+    <Compile Include="Services\Modules\Notes\UserNoteViewData.cs" />
+    <Compile Include="Services\Modules\Notes\UserNoteViewResult.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionLesson.cs" />
     <Compile Include="Services\Modules\Labs\ScheduleProtectionLabResult.cs" />
-    <Compile Include="Services\Modules\Labs\ScheduleProtectionLabsViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionLabsViewData.cs" />
     <Compile Include="Services\Modules\Labs\UserLabFilesResult.cs" />
     <Compile Include="Services\Modules\Labs\UserlabFilesViewData.cs" />
     <Compile Include="Services\Modules\LectorResult.cs" />
@@ -479,7 +485,6 @@
     <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingResult.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesMarkVisitingViewData.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesResult.cs" />
-    <Compile Include="Services\Modules\UpdateLab.cs" />
     <Compile Include="Services\Modules\Lectures\LecturesViewData.cs" />
     <Compile Include="Services\Modules\AttachmentViewData.cs" />
     <Compile Include="Services\Modules\Lectures\StudentMarkForDate.cs" />
@@ -497,6 +502,7 @@
     <Compile Include="Services\Modules\Messages\RecipientViewData.cs" />
     <Compile Include="Services\Modules\News\NewsResult.cs" />
     <Compile Include="Services\Modules\News\NewsViewData.cs" />
+    <Compile Include="Services\Modules\Notes\NoteViewResult.cs" />
     <Compile Include="Services\Modules\Parental\ParentalResult.cs" />
     <Compile Include="Services\Modules\Parental\ParentalUser.cs" />
     <Compile Include="Services\Modules\Parental\SubjectListResult.cs" />
@@ -504,14 +510,22 @@
     <Compile Include="Services\Modules\Practicals\PracticalsResult.cs" />
     <Compile Include="Services\Modules\Practicals\PracticalsViewData.cs" />
     <Compile Include="Services\Modules\Practicals\PracticalVisitingMarkViewData.cs" />
-    <Compile Include="Services\Modules\Practicals\ScheduleProtectionPracticalViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionPracticalViewData.cs" />
     <Compile Include="Services\Modules\ResultViewData.cs" />
+    <Compile Include="Services\Modules\Notes\NoteViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleViewData.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleViewResult.cs" />
+    <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />
-    <Compile Include="Services\Modules\UpdateOrder.cs" />
     <Compile Include="Services\News\INewsService.cs" />
     <Compile Include="Services\News\NewsService.svc.cs">
       <DependentUpon>NewsService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Notes\INotesService.cs" />
+    <Compile Include="Services\Notes\NotesService.svc.cs">
+      <DependentUpon>NotesService.svc</DependentUpon>
     </Compile>
     <Compile Include="Services\Parental\IParentalService.cs" />
     <Compile Include="Services\Parental\ParentalService.svc.cs">
@@ -520,6 +534,10 @@
     <Compile Include="Services\Practicals\IPracticalService.cs" />
     <Compile Include="Services\Practicals\PracticalService.svc.cs">
       <DependentUpon>PracticalService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Schedule\IScheduleService.cs" />
+    <Compile Include="Services\Schedule\ScheduleService.svc.cs">
+      <DependentUpon>ScheduleService.svc</DependentUpon>
     </Compile>
     <Compile Include="Services\Search\ISearchService.cs" />
     <Compile Include="Services\Search\SearchService.svc.cs">
@@ -645,8 +663,10 @@
     <Content Include="Services\Labs\LabsService.svc" />
     <Content Include="Services\Lectures\LecturesService.svc" />
     <Content Include="Services\News\NewsService.svc" />
+    <Content Include="Services\Notes\NotesService.svc" />
     <Content Include="Services\Parental\ParentalService.svc" />
     <Content Include="Services\Practicals\PracticalService.svc" />
+    <Content Include="Services\Schedule\ScheduleService.svc" />
     <Content Include="Services\Search\SearchService.svc" />
     <Content Include="Services\Subjects\SubjectsService.svc" />
     <Content Include="Unity.Mvc4.README.txt" />

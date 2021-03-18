@@ -4,6 +4,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "skipLibCheck": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
@@ -17,7 +18,16 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "resolveJsonModule": true,
+    "paths": {
+      "module-communication": [
+        "dist/module-communication"
+      ],
+      "module-communication/*": [
+        "dist/module-communication/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

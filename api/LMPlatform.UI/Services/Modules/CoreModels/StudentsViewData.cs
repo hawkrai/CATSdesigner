@@ -26,7 +26,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             StudentId = student.Id;
             FullName = student.FullName;
             GroupId = student.GroupId;
-            Login = student.User.UserName;
+            Login = student.User != null ? student.User.UserName : string.Empty;
             LabVisitingMark = new List<LabVisitingMarkViewData>();
             PracticalVisitingMark = new List<PracticalVisitingMarkViewData>();
             StudentLabMarks = new List<StudentLabMarkViewData>();
@@ -58,7 +58,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Comment = string.Empty,
                             Date = string.Empty,
                             StudentLabMarkId = 0,
-                            LecturerId = new int?()
+                            LecturerId = new int?(),
+                            ShowForStudent = false
                         });
                     }
                     else
@@ -71,7 +72,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Comment = model.Comment,
                             Date = model.Date,
                             StudentLabMarkId = model.Id,
-                            LecturerId = model.LecturerId.HasValue ? model.LecturerId.Value : new int?()
+                            LecturerId = model.LecturerId.HasValue ? model.LecturerId.Value : new int?(),
+                            ShowForStudent = model.ShowForStudent
                         });
                     }
                 }   
@@ -89,7 +91,11 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             PracticalId = practical.Id,
                             Mark = model.Mark,
                             StudentId = StudentId,
-                            StudentPracticalMarkId = model.Id
+                            StudentPracticalMarkId = model.Id,
+                            Comment = model.Comment,
+                            Date = model.Date,
+                            ShowForStudent = model.ShowForStudent,
+                            LecturerId = model.LecturerId
                         });
                     }
                     else
@@ -99,7 +105,11 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             PracticalId = practical.Id,
                             Mark = string.Empty,
                             StudentId = StudentId,
-                            StudentPracticalMarkId = 0
+                            StudentPracticalMarkId = 0,
+                            Comment = string.Empty,
+                            Date = string.Empty,
+                            LecturerId = new int?(),
+                            ShowForStudent = false
                         });
                     }
                 }
@@ -118,7 +128,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = model.Mark,
                             ScheduleProtectionLabId = scheduleProtectionLab.Id,
                             StudentId = student.Id,
-                            LabVisitingMarkId = model.Id
+                            LabVisitingMarkId = model.Id,
+                            ShowForStudent = model.ShowForStudent
                         });    
                     }
                     else
@@ -129,7 +140,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = string.Empty,
                             ScheduleProtectionLabId = scheduleProtectionLab.Id,
                             StudentId = this.StudentId,
-                            LabVisitingMarkId = 0
+                            LabVisitingMarkId = 0,
+                            ShowForStudent = false
                         });       
                     }
                 }
@@ -149,7 +161,8 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = model.Mark,
                             ScheduleProtectionPracticalId = scheduleProtectionPractical.Id,
                             StudentId = student.Id,
-                            PracticalVisitingMarkId = student.Id
+                            PracticalVisitingMarkId = student.Id,
+                            ShowForStudent = model.ShowForStudent
                         });
                     }
                     else
@@ -160,7 +173,9 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = string.Empty,
                             ScheduleProtectionPracticalId = scheduleProtectionPractical.Id,
                             StudentId = this.StudentId,
-                            PracticalVisitingMarkId = 0
+                            PracticalVisitingMarkId = 0,
+                            ShowForStudent = false
+
                         });
                     }
                 }

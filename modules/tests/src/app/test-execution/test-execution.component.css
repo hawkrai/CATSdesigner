@@ -10,6 +10,9 @@
 }
 
 .test-execution-block-question {
+  width: 100%;
+}
+.test-execution-block-question-spinner {
   display: flex;
   align-items: center;
   justify-content: center;

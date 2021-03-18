@@ -1,25 +1,33 @@
 .protection-schedule-component {
 
   &__subGroup-title {
-    color: black;
+    color: #363636;
     font-weight: 400;
   }
 
-  &__body {
-    padding-top: 25px;
+  &__actions {
+    padding-top: 20px;
   }
 
   &__subGroup-table {
-    margin: 30px 0;
+    margin: 20px 0;
 
     table.mat-table {
       width: 100%;
     }
 
+    .mat-column-position:first-of-type, .mat-header-cell:first-of-type {
+      max-width: 35px;
+      max-height: 55px;
+      width: 35px;;
+      height: 55px;
+      box-sizing: border-box;
+    }
+
     .mat-header-cell {
       font-family: Roboto, sans-serif;
       font-weight: 600;
-      color: black;
+      color: #363636;
       font-size: 14px;
     }
 
@@ -56,9 +64,3 @@
     }
   }
 }
-
-// &-container {
-//   display: grid;
-//   grid-auto-flow: column;
-//   gap: 0 30px;
-// }

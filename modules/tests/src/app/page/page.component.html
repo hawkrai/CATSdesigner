@@ -7,29 +7,29 @@
                  [hideSearch]="true"
                  (onValueChangeSearch)="filterTests($event)"></app-main-page>
   <mat-tab-group class="container-table-tab" (selectedTabChange)="onChange($event)">
-    <mat-tab label="Темы тестов">
+    <mat-tab [label]="'text.test.theme.test' | translate: 'Темы тестов'">
       <div class="container-table-tests" *ngIf="knowledgeControlTests?.length">
-        <app-main-table-tests [title]="'Тесты для контроля знаний'" [allowChanges]="false"
+        <app-main-table-tests [title]="'text.tests.for.control' | translate : 'Тесты для контроля знаний'" [allowChanges]="false"
                               [tests]="knowledgeControlTests"></app-main-table-tests>
       </div>
       <div class="container-table-tests" *ngIf="selfControlTests?.length">
-        <app-main-table-tests [title]="'Тесты для самоконтроля'" [allowChanges]="false"
+        <app-main-table-tests [title]="'text.tests.for.self.control' | translate : 'Тесты для самоконтроля'" [allowChanges]="false"
                               [tests]="selfControlTests"></app-main-table-tests>
       </div>
       <div class="container-table-tests" *ngIf="beforeEUMKTests?.length">
-        <app-main-table-tests [title]="'Предтест для обучения в ЭУМК'" [allowChanges]="false"
+        <app-main-table-tests [title]="'text.tests.for.pre.eumk' | translate : 'Предтест для обучения в ЭУМК'" [allowChanges]="false"
                               [tests]="beforeEUMKTests"></app-main-table-tests>
       </div>
       <div class="container-table-tests" *ngIf="forEUMKTests?.length">
-        <app-main-table-tests [title]="'Тесты для обучения в ЭУМК'" [allowChanges]="false"
+        <app-main-table-tests [title]="'text.tests.for.eumk' | translate : 'Тесты для обучения в ЭУМК'" [allowChanges]="false"
                               [tests]="forEUMKTests"></app-main-table-tests>
       </div>
       <div class="container-table-tests" *ngIf="nNTests?.length">
-        <app-main-table-tests [title]="'Тесты для обучения с искусственной нейронной сетью'" [allowChanges]="false"
+        <app-main-table-tests [title]="'text.tests.for.nn' | translate : 'Тесты для обучения с искусственной нейронной сетью'" [allowChanges]="false"
                               [tests]="nNTests"></app-main-table-tests>
       </div>
     </mat-tab>
-    <mat-tab label="Результаты тестировния">
+    <mat-tab [label]="'text.test.result.test' | translate: 'Результаты тестировния'">
       <app-result-pupil *ngIf="currentTabIndex === 1" [filterValue]="filterResult"></app-result-pupil>
     </mat-tab>
   </mat-tab-group>

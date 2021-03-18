@@ -3,13 +3,13 @@
   <div class="subject-news-component__popover">
     <form class="example-form" #formElement>
       <mat-form-field class="example-full-width">
-        <mat-label>Название Новости</mat-label>
+        <mat-label>Название новости</mat-label>
         <input name="title" maxlength="1000" required matInput placeholder="Название"
               [(ngModel)]="data.model.title"
               (paste)="onPaste($event.clipboardData)">
       </mat-form-field>
 
-      <mat-label>Текст Новости</mat-label>
+      <mat-label>Текст новости</mat-label>
       <ckeditor class="subject-news-component__news-text"
                 [(ngModel)]="data.model.body"
                 [ngModelOptions]="{standalone: true}"

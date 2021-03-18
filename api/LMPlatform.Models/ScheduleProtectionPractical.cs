@@ -4,10 +4,8 @@ using Application.Core.Data;
 
 namespace LMPlatform.Models
 {
-    public class ScheduleProtectionPractical : ModelBase
+    public class ScheduleProtectionPractical : ScheduleBase
     {
-        public DateTime Date { get; set; }
-
         public int GroupId { get; set; }
 
         public Group Group { get; set; }
@@ -16,6 +14,9 @@ namespace LMPlatform.Models
 
         public Subject Subject { get; set; }
 
-        public ICollection<ScheduleProtectionPracticalMark> ScheduleProtectionPracticalMarks { get; set; }     
+
+        public ICollection<ScheduleProtectionPracticalMark> ScheduleProtectionPracticalMarks { get; set; }   
+        
+        public ICollection<Note> Notes { get; set; } = new List<Note>();
     }
 }

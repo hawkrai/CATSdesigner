@@ -34,7 +34,7 @@
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1",
-    "@ngrx/store": "latest",
+    "@ngrx/store": "^10.1.2",
     "@ngrx/store-devtools": "latest"
   },
   "devDependencies": {

@@ -1,8 +1,6 @@
+import { DialogService } from 'src/app/services/dialog.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
-import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 
 import * as subjectActions from '../../store/actions/subject.actions';
@@ -11,7 +9,6 @@ import {Subject} from '../../models/subject.model';
 import {IAppState} from '../../store/state/app.state';
 import {DeletePopoverComponent} from '../../shared/delete-popover/delete-popover.component';
 import {SubjectLectorComponent} from './subject-lector/subject-lector.component';
-import {SubjectService} from '../../services/subject.service';
 import {SubjectManagementComponent} from './subject-managment/subject-management.component';
 import {DialogData} from '../../models/dialog-data.model';
 import {SubSink} from 'subsink';
@@ -29,8 +26,8 @@ export class SubjectComponent implements OnInit, OnDestroy {
   public displayedColumns = ['name', 'shortName', 'actions'];
 
   constructor(
-              private store: Store<IAppState>,
-              public dialog: MatDialog) { }
+    private store: Store<IAppState>,
+    private dialogService: DialogService) { }
   ngOnDestroy(): void {
     this.store.dispatch(subjectActions.resetSubjects());
   }
@@ -44,7 +41,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
     const dialogData: DialogData = {
       model: { subjectId }
     };
-    const dialogRef = this.openDialog(dialogData, SubjectManagementComponent);
+    const dialogRef = this.dialogService.openDialog(SubjectManagementComponent, dialogData);
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -53,12 +50,13 @@ export class SubjectComponent implements OnInit, OnDestroy {
     }));
   }
 
-  lector(subjectId: string) {
+  lector(subjectId: string, subjectName: string) {
     const dialogData: DialogData = {
       title: 'Присоединение преподавателя к предмету',
-      model: {subjectId: subjectId}
+      body: { subjectName },
+      model: { subjectId }
     };
-    this.openDialog(dialogData, SubjectLectorComponent);
+    this.dialogService.openDialog(SubjectLectorComponent, dialogData);
   }
 
   deleteSubject(subject : Subject) {
@@ -67,7 +65,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
       body: `предмет "${subject.DisplayName}"`,
       buttonText: 'Удалить'
     };
-    const dialogRef = this.openDialog(dialogData, DeletePopoverComponent);
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().subscribe(result => {
@@ -78,9 +76,6 @@ export class SubjectComponent implements OnInit, OnDestroy {
     );
   }
 
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, {data});
-  }
 
   navigateToSubject(subjectId: number): void {
     this.store.dispatch(catsActions.sendMessage({ message: new Message('SubjectId', subjectId.toString())}));

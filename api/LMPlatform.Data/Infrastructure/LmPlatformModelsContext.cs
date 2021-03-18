@@ -214,6 +214,10 @@ namespace LMPlatform.Data.Infrastructure
         public DbSet<DocumentSubject> DocumentSubjects { get; set; }
 
         public DbSet<AdaptiveLearningProgress> AdaptiveLearningProgress { get; set; }
+
+        public DbSet<Note> Notes { get; set; }
+
+        public DbSet<UserNote> UserNotes { get; set; }
         #endregion DataContext Members
 
         #region Protected Members
@@ -279,6 +283,12 @@ namespace LMPlatform.Data.Infrastructure
             modelBuilder.Entity<User>()
                 .HasRequired<Student>(e => e.Student)
                 .WithRequiredPrincipal(e => e.User)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<Labs>()
+                .HasMany<UserLabFiles>(e => e.UserLabFiles)
+                .WithRequired(e => e.Lab)
+                .HasForeignKey(e => e.LabId)
                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<User>()
@@ -480,6 +490,36 @@ namespace LMPlatform.Data.Infrastructure
                 .HasMany<StudentPracticalMark>(e => e.StudentPracticalMarks)
                 .WithRequired(e => e.Student)
                 .HasForeignKey(e => e.StudentId)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<User>()
+                .HasMany<Note>(e => e.Notes)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.UserId)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<User>()
+                .HasMany<UserNote>(e => e.PersonalNotes)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.UserId)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<ScheduleProtectionLabs>()
+                 .HasMany(e => e.Notes)
+                 .WithOptional(e => e.LabsSchedule)
+                 .HasForeignKey(e => e.LabsScheduleId)
+                 .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<ScheduleProtectionPractical>()
+                .HasMany(e => e.Notes)
+                .WithOptional(e => e.PracticalSchedule)
+                .HasForeignKey(e => e.PracticalScheduleId)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<LecturesScheduleVisiting>()
+                .HasMany(e => e.Notes)
+                .WithOptional(e => e.LecturesSchedule)
+                .HasForeignKey(e => e.LecturesScheduleId)
                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Practical>()

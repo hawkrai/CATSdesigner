@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using Application.Core;
 using Application.Infrastructure.SubjectManagement;
-using System.Web.Http;
 using Application.Core.Data;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Parental;
 using LMPlatform.UI.Attributes;
-using WebMatrix.WebData;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
 using System.Collections.Generic;
+using Application.Infrastructure.GroupManagement;
 using Application.Core.Helpers;
+using System;
 
 namespace LMPlatform.UI.Services.Subjects
 {
@@ -19,8 +19,11 @@ namespace LMPlatform.UI.Services.Subjects
     {
         private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
         private readonly LazyDependency<IModulesManagementService> modulesManagementService = new LazyDependency<IModulesManagementService>();
+        private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
         public IModulesManagementService ModulesManagementService => modulesManagementService.Value;
+
+        public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
         public SubjectsResult GetSubjectsBySession()
         {
@@ -36,7 +39,16 @@ namespace LMPlatform.UI.Services.Subjects
 
         public SubjectResult Update(SubjectViewData subject)
         {
-	        var query = new Query<Subject>(s => s.Id == subject.Id)
+            var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subject.Id);
+            if (!isUserAssigned)
+            {
+                return new SubjectResult
+                {
+                    Code = "500",
+                    Message = "Пользователь не присоединён к предмету"
+                };
+            }
+            var query = new Query<Subject>(s => s.Id == subject.Id)
 		        .Include(s => s.SubjectGroups)
 		        .Include(s => s.SubjectModules);
             var loadedSubject = SubjectManagementService.GetSubject(query);
@@ -55,6 +67,36 @@ namespace LMPlatform.UI.Services.Subjects
                 .Select(m => new ModulesViewModel(m, true)).ToList();
 
             return modules.OrderBy(m => m.Order);
+        }
+
+        public UserAssignedViewData UserAssigned(string subjectId)
+        {
+            return new UserAssignedViewData
+            {
+                IsAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, int.Parse(subjectId))
+            };
+        }
+
+        public LectorResult GetSubjectOwner(string subjectId)
+        {
+            try
+            {
+                var lectorOwner = SubjectManagementService.GetSubjectOwner(int.Parse(subjectId));
+                return new LectorResult
+                {
+                    Code = "200",
+                    Lector = new LectorViewData(lectorOwner, true),
+                    Message = "Владелец предмета успешно получен"
+                };
+            } catch
+            {
+                return new LectorResult
+                {
+                    Code = "500",
+                    Message = "Не удалось получить владельца предмета"
+                };
+            }
+
         }
     }
 }

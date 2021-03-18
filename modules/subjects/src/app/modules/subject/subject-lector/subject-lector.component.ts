@@ -1,10 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {select, Store} from '@ngrx/store';
+
 import {DialogData} from '../../../models/dialog-data.model';
 import {SubjectService} from '../../../services/subject.service';
-import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../../store/selectors/subject.selector';
 import {IAppState} from '../../../store/state/app.state';
+import * as catsActions from '../../../store/actions/cats.actions';
 
 @Component({
   selector: 'app-news-popover',
@@ -44,23 +46,30 @@ export class SubjectLectorComponent implements OnInit {
   }
 
   setLectors() {
-    this.subjectService.getJoinedLector(this.subjectId).subscribe(res => {
-      this.joinedLectors = res.Lectors;
+    this.subjectService.getJoinedLector(this.subjectId).subscribe(lectors => {
+      this.joinedLectors = lectors;
     });
-    this.subjectService.getNoAdjointLectors(this.subjectId).subscribe(res => {
-      this.allLectors = res.Lectors;
+    this.subjectService.getNoAdjointLectors(this.subjectId).subscribe(lectors => {
+      this.allLectors = lectors;
     })
   }
 
   joinedLector() {
-    this.subjectService.joinedLector(this.subjectId, this.selectedLector.LectorId).subscribe(res =>
-      res.Code === "200" && this.setLectors()
-    )
+    this.subjectService.joinedLector(this.subjectId, this.selectedLector.LectorId).subscribe(body => {
+      if (body.Code === "200") {
+        this.setLectors();
+        this.store.dispatch(catsActions.showMessage({ body }));
+      }
+    });
   }
 
   deletePopover(lector) {
-    this.subjectService.disjoinLector(this.subjectId, lector.LectorId).subscribe(res =>
-      res.Code === "200" && this.setLectors()
+    this.subjectService.disjoinLector(this.subjectId, lector.LectorId).subscribe(body => {
+      if (body.Code === "200") {
+        this.setLectors();
+        this.store.dispatch(catsActions.showMessage({ body }));
+      }
+    }
     )
   }
 

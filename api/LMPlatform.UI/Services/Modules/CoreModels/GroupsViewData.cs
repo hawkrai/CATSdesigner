@@ -1,13 +1,11 @@
 ﻿using LMPlatform.UI.Services.Modules.Lectures;
-using LMPlatform.UI.Services.Modules.Practicals;
 
 namespace LMPlatform.UI.Services.Modules.CoreModels
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Runtime.Serialization;
 
-    using LMPlatform.Models;
+    using LMPlatform.UI.Services.Modules.Schedule;
 
     [DataContract]
     public class GroupsViewData

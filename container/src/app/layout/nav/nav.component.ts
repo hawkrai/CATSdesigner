@@ -6,6 +6,12 @@ import {CoreService} from "../../core/services/core.service";
 import {Subject} from "rxjs";
 
 
+interface Locale {
+  name: string;
+  value: string
+}
+
+
 @Component({
   selector: "app-nav",
   templateUrl: "./nav.component.html",
@@ -15,6 +21,8 @@ export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean;
   public isAdmin: boolean;
   public unconfirmedStudents: number = 0;
+  public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
+  public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private layoutService: LayoutService,
@@ -25,6 +33,8 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
+    const local: string = localStorage.getItem("locale");
+    this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
     this.coreService.getGroups()
       .pipe(
         tap((groups: any) => {
@@ -45,6 +55,11 @@ export class NavComponent implements OnInit, OnDestroy {
   public logOut(): void {
     this.autService.logout().pipe(first()).subscribe(
       () => location.reload());
+  }
+
+  public onValueChange(value: any): void {
+    localStorage.setItem("locale", value.value.value);
+    window.location.reload()
   }
 
   public ngOnDestroy(): void {

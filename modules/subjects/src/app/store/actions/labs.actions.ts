@@ -1,9 +1,10 @@
-import { CheckPlagiarismPopoverComponent } from './../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
+import { HasJobProtection } from './../../models/has-job-protection.model';
 import { createAction, props } from '@ngrx/store';
 import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
-import {Lab, ScheduleProtectionLabs } from '../../models/lab.model';
+import {Lab } from '../../models/lab.model';
+import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 
 export const loadLabs = createAction(
   '[Labs] Load Labs'
@@ -20,7 +21,7 @@ export const loadLabsSchedule = createAction(
 
 export const laodLabsScheduleSuccess = createAction(
   '[Labs] Load Labs Schedule Success',
-  props<{ scheduleProtectionLabs: ScheduleProtectionLabs[] }>()
+  props<{ scheduleProtectionLabs: ScheduleProtectionLab[] }>()
 );
 
 export const saveLab = createAction(
@@ -43,18 +44,13 @@ export const resetLabs = createAction(
 );
 
 export const updateOrder = createAction(
-  '[Labs] Update Order',
-  props<{ prevIndex: number, currentIndex: number }>()
-);
-
-export const updateOrderSuccess = createAction(
-  '[Labs] Update Order Success',
+  '[Labs] Update Labs Order',
   props<{ prevIndex: number, currentIndex: number }>()
 );
 
 export const createDateVisit = createAction(
   '[Labs] Create Date Visit',
-  props<{ subGroupId: number, date: string }>()
+  props<{ obj: { subGroupId: number, date: string, startTime: string, endTime: string, building: string, audience: string } }>()
 );
 
 export const deleteDateVisit = createAction(
@@ -73,7 +69,7 @@ export const setLabStudents = createAction(
 
 export const setLabMark = createAction(
   '[Labs] Set Lab Mark',
-  props<{ labMark: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number } }>()
+  props<{ labMark: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } }>()
 );
 
 export const loadStudentsLabsFiles = createAction(
@@ -83,45 +79,6 @@ export const loadStudentsLabsFiles = createAction(
 export const loadStudentsLabsFilesSuccess = createAction(
   '[Labs] Load Students Labs Files Success',
   props<{ studentsLabsFiles: StudentMark[] }>()
-);
-
-export const loadUserLabsFiles = createAction(
-  '[Labs] Load User Labs Files'
-);
-
-export const updateUserLabsFiles = createAction(
-  '[Labs] Update User Labs Files',
-  props<{ subjectId: number, userId: number }>()
-);
-
-export const updateUserLabsFilesSuccess = createAction(
-  '[Labs] Update User Labs Files Success',
-  props<{ userLabsFiles: UserLabFile[], userId: number }>()
-);
-
-export const loadUserLabsFilesSuccess = createAction(
-  '[Labs] Load User Labs Files Success',
-  props<{ userLabsFiles: UserLabFile[] }>()
-);
-
-export const sendUserFile = createAction(
-  '[Labs] Send User File',
-  props<{ sendFile: { attachments: string, id: number, isCp: boolean, isRet: boolean, pathFile: string, comments: string, userId: number } }>()
-);
-
-export const receiveLabFile = createAction(
-  '[Labs] Receive Lab File',
-  props<{ userFileId: number }>()
-);
-
-export const cancelLabFile = createAction(
-  '[Labs] Cancel Lab File',
-  props<{ userFileId: number }>()
-);
-
-export const deleteUserFile = createAction(
-  '[Labs] Delete User File',
-  props<{ userFileId: number }>()
 );
 
 export const refreshJobProtection = createAction(
@@ -138,4 +95,51 @@ export const getVisitingExcel = createAction(
 
 export const getLabsAsZip = createAction(
   '[Labs] Get Labs As Zip'
+);
+
+export const setLabsVisitingDate = createAction(
+  '[Labs] Set Labs Visiting Date',
+  props<{ visiting: { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } }>()
+);
+
+export const checkJobProtections = createAction(
+  '[Labs] Check Job Protection'
+);
+
+export const setJobProtections = createAction(
+  '[Labs] Set Job Protections',
+  props<{ hasJobProtections: HasJobProtection[] }>()
+);
+export const loadUserLabFiles = createAction(
+  '[Labs] Get User Lab Files',
+  props<{ userId: number, labId: number }>()
+);
+
+export const loadUserLabFilesSuccess = createAction(
+  '[Labs] Get User Lab Files Success',
+  props<{ labFiles: UserLabFile[] }>()
+);
+
+export const resetUserLabFiles = createAction(
+  '[Labs] Reset User Lab Files'
+);
+
+export const sendUserFile = createAction(
+  '[Labs] Send User File',
+  props<{ sendFile: { attachments: string, id: number, isRet: boolean, pathFile: string, comments: string, userId: number, labId: number } }>()
+);
+
+export const receiveLabFile = createAction(
+  '[Labs] Receive Lab File',
+  props<{ userFileId: number }>()
+);
+
+export const cancelLabFile = createAction(
+  '[Labs] Cancel Lab File',
+  props<{ userFileId: number }>()
+);
+
+export const deleteUserLabFile = createAction(
+  '[Labs] Delete User Lab File',
+  props<{ userLabFileId: number, userId: number, labId: number }>()
 );

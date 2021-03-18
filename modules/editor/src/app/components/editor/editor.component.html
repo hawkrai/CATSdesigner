@@ -1,44 +1,53 @@
-<div class="flex-container">
-      <div class="flex-tree-container">
-          <div class="flex-search-region">
-              <mat-form-field class="flex-search-input">
-                <mat-label>Поиск по учебнику</mat-label>
-                <input matInput [(ngModel)]="searchField">
-              </mat-form-field>
-              <button mat-icon-button color="primary" aria-label="Search icon">
-                <mat-icon>search</mat-icon>
-              </button>
-              <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" matTooltip="Добавление нового учебника">
-                <mat-icon>add_circle</mat-icon>
-              </button>
-          </div>
-          <div class="tree-area">
-            <tree
-              [treeControl]="treeControl"
-              [dataSource]="dataSource"
-              [hasChild]="hasChild"
-              [isReadOnly]="isReadOnly"
-              (onActivateTreeNodeEvent)="onActivateTreeNodeEvent($event)"
-              (onAddEvent)="openAddDialog($event)"
-              (onRemoveEvent)="openRemoveDialog($event)"
-              (onEditContentEvent)="editDocument($event)"
-              (onEditStructureEvent)="editStructure($event)"
-            ></tree>
-          </div>
+<mat-drawer-container class="flex-container">
+  <mat-drawer-content>
+    <div class="flex-editor-container">
+      <div class="btn-holder">
+        <button (click)="drawer.toggle()" mat-icon-button>
+          <mat-icon class="mat-icon-rtl-mirror" color="primary">
+            {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">Отмена</button>
+        <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">Сохранить</button>
       </div>
-      <div class="flex-editor-container">
-          <div class="row" id="editor">
-              <ckeditor
-                  [editor]="editor"
-                  [(ngModel)]="model.editorData"
-                  (ngModelChange)="onEditorModelChanged()"
-                  [config]="model.config"
-                  [disabled]="model.isReadOnly"
-              ></ckeditor>
-          </div>
-          <div class="btn-holder" align="right">
-            <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">Отмена</button>
-            <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">Сохранить</button>
-          </div>
+      <div class="row" id="editor">
+        <ckeditor
+          [editor]="editor"
+          [(ngModel)]="model.editorData"
+          (ngModelChange)="onEditorModelChanged()"
+          [config]="model.config"
+          [disabled]="model.isReadOnly"
+      ></ckeditor>
       </div>
-</div>
+    </div>
+  </mat-drawer-content>
+  <mat-drawer #drawer opened="true" [mode]="'side'">
+    <div class="flex-tree-container">
+      <div class="flex-search-region">
+        <div class="flex-search-btn-holder">
+          <!-- <button mat-icon-button color="primary" aria-label="Search icon" matTooltip="Поиск по книжке">
+            <mat-icon>search</mat-icon>
+          </button> -->
+          <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" matTooltip="Добавление нового учебника">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="tree-area">
+        <tree
+          [treeControl]="treeControl"
+          [dataSource]="dataSource"
+          [hasChild]="hasChild"
+          [isReadOnly]="isReadOnly"
+          [currentNodeId]="currentNodeId"
+          [documentsList]="documents"
+          (onActivateTreeNodeEvent)="activateNode($event)"
+          (onAddEvent)="openAddDialog($event)"
+          (onRemoveEvent)="openRemoveDialog($event)"
+          (onEditContentEvent)="editDocument($event)"
+          (onEditStructureEvent)="editStructure($event)"
+        ></tree>
+      </div>
+    </div>
+  </mat-drawer>
+</mat-drawer-container>

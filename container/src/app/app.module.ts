@@ -9,7 +9,7 @@ import { NavComponent } from './layout/nav/nav.component';
 import { FooterComponent } from './layout/footer/footer.component';
 
 import { MatetialModule } from './shared/matetial/matetial.module';
-
+import {TranslatePipe} from "./pipe/translate.pipe";
 import { CoreModule } from './core/core.module';
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 import { LayoutService } from './layout/layout.service';
@@ -21,6 +21,7 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { AboutComponent } from './about/about.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ResetComponent } from './reset/reset.component';
+import { ToastModule } from './toast';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { ResetComponent } from './reset/reset.component';
     RegisterComponent,
     ConfirmationComponent,
     AboutComponent,
-    ResetComponent
+    ResetComponent,
+    TranslatePipe
   ],
   imports: [
     BrowserModule,
@@ -45,10 +47,12 @@ import { ResetComponent } from './reset/reset.component';
     ReactiveFormsModule,
     MatetialModule,
     CoreModule,
-    MatButtonModule
+    MatButtonModule,
+    ToastModule.forRoot()
   ],
   providers: [
-    LayoutService
+    LayoutService,
+    TranslatePipe
   ],
   bootstrap: [AppComponent]
 })

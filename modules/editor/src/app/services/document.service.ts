@@ -14,7 +14,7 @@ export class DocumentService {
   private _bookUrl = "api/Document/";
   private _serviceUrl = 'Services/Documents/DocumentService.svc/'
 
-  constructor(private http: HttpClient, private _router: Router) { }
+  constructor(private http: HttpClient) { }
 
   getDocumentsBySubjectId(subjectId): Observable<DocumentPreview[]>{
     return this.http.get<any>(this._serviceUrl + "GetDocumentsBySubjectId?subjectid=" + subjectId).pipe(map(data=>{
@@ -35,13 +35,13 @@ export class DocumentService {
   }
 
   saveDocument(document) {
-    return this.http.post<any>(this._bookUrl + "UpdateDocument", document).pipe(map(data=>{
+    return this.http.post<any>(this._serviceUrl + "UpdateDocument", {document: document}).pipe(map(data=>{
       return data;
     }));
   }
 
   removeDocument(documentId) : Observable<any> {
-    return this.http.get<any>(this._bookUrl + "RemoveDocument?documentId=" + documentId).pipe(map(data=>{
+    return this.http.get<any>(this._serviceUrl + "RemoveDocument?documentId=" + documentId).pipe(map(data=>{
       return data;
     }));
   }

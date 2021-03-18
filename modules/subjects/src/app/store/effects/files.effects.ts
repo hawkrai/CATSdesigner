@@ -9,7 +9,7 @@ import * as subjectSelectors from '../selectors/subject.selector';
 import * as groupsSelectors from '../selectors/groups.selectors';
 import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { IAppState } from '../state/app.state';
-import { LabsRestService } from 'src/app/services/labs/labs-rest.service';
+import { SubjectService } from 'src/app/services/subject.service';
 import { CoreService } from 'src/app/services/core.service';
 
 @Injectable()
@@ -18,8 +18,8 @@ export class FilesEffects {
         private actions$: Actions,
         private store: Store<IAppState>,
         private filesService: FilesService,
-        private labsService: LabsRestService,
-        private coreService: CoreService
+        private coreService: CoreService,
+        private subjectService: SubjectService
     ) {}
 
     downloadFile = createEffect(() => this.actions$.pipe(
@@ -52,7 +52,7 @@ export class FilesEffects {
     deleteFile$ = createEffect(() => this.actions$.pipe(
         ofType(filesActions.deleteFile),
         switchMap(({ file }) => this.filesService.deleteFile(file.DeleteUrl).pipe(
-            map(() => filesActions.deleteFileSuccess({ pathName: '', fileName: '' }))
+            map(() => filesActions.deleteFileSuccess({ guidFileName: file.GuidFileName }))
         ))
     ));
 
@@ -74,9 +74,21 @@ export class FilesEffects {
     downloadZip = createEffect(() => this.actions$.pipe(
         ofType(filesActions.getZipData),
         tap(({ response }) => {
-            console.log('he')
             this.coreService.downloadAsZip(response);
         })
     ), { dispatch: false });
     
+    getAttachemntsAsZip = createEffect(() => this.actions$.pipe(
+        ofType(filesActions.getAttachmentsAsZip),
+        switchMap(({ attachmentsIds }) => this.subjectService.getAttachmentsAsZip(attachmentsIds)),
+        tap((response) => {
+            this.coreService.downloadAsZip(response);
+        })
+    ), { dispatch: false });
+
+    downlaodAsZipLoadedFiles$ = createEffect(() => this.actions$.pipe(
+        ofType(filesActions.downloadAsZipLoadedFiles),
+        withLatestFrom(this.store.select(filesSelectors.getFiles)),
+        map(([_, files]) => filesActions.getAttachmentsAsZip({ attachmentsIds: files.map(f => f.IdFile )}))
+    ));
 }

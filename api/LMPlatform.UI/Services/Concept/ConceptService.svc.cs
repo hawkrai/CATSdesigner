@@ -74,12 +74,12 @@ namespace LMPlatform.UI.Services.Concept
             }
         }
 
-        public ConceptResult SaveRootConcept(string name, string container, int subjectId)
+        public ConceptResult SaveRootConcept(string name, string container, int subjectId, bool includeLabs, bool includeLectures, bool includeTests)
         {
             try
             {
                 //var authorId = UserContext.CurrentUserId;
-                var root = ConceptManagementService.CreateRootConcept(name, 2, subjectId);
+                var root = ConceptManagementService.CreateRootConcept(name, 2, subjectId, includeLabs, includeLectures, includeTests);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
                 return new ConceptResult
                 {

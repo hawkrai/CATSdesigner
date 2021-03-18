@@ -23,4 +23,5 @@ export class Test {
   public Action: any;
   public HasQuestions: boolean;
   public Number: number;
+  public tooltipTitle: string;
 }

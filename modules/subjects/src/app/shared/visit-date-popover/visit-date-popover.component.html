@@ -1,36 +1,98 @@
 <div class="visit-date__container">
-  <h2 mat-dialog-title>{{data.title}}</h2>
-  <mat-form-field>
-    <mat-label>Дата</mat-label>
-    <input matInput #dateInput [matDatepicker]="picker">
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-  <div>
-    <button mat-raised-button
-            class="visit-date__action"
-            color="primary"
-            [disabled]="!dateInput.value"
-            (click)="onCreateDate(dateInput.value)">{{data.buttonText}}</button>
+  <h2 mat-dialog-title class="visit-date__title">{{data.title}}</h2>
+  <div class="visit-date__content">
+    <form [formGroup]="dateForm" class="visit-date__form">
+      <mat-form-field>
+        <mat-label>Дата</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <div *ngIf="(dateForm.get('date').touched || dateForm.get('date').dirty) && dateForm.get('date').errors" class="visit-date__form-error">
+        <mat-error *ngIf="dateForm.get('date').hasError('required')">Поле дата обязательно</mat-error>
+      </div>
+      <div class="visit-date__form-container">
+        <div class="visit-date__form-group">
+          <mat-form-field>
+            <mat-label>Начало занятия</mat-label>
+            <input
+            matInput
+            [ngxTimepicker]="startTimepicker"
+            formControlName="startTime"
+            [format]="24"
+            />
+            <ngx-material-timepicker #startTimepicker>
+            </ngx-material-timepicker>
+          </mat-form-field>
+          <div *ngIf="(dateForm.get('startTime').touched || dateForm.get('startTime').dirty) && dateForm.get('startTime').errors" class="visit-date__form-error">
+            <mat-error *ngIf="dateForm.get('startTime').hasError('required')">Поле начало занятия обязательно</mat-error>
+          </div>
+        </div>
+
+        <div class="visit-date__form-group">
+          <mat-form-field>
+            <mat-label>Конец занятия</mat-label>
+            <input
+            matInput
+            [ngxTimepicker]="endTimepicker"
+            formControlName="endTime"
+            [format]="24"
+            />
+            <ngx-material-timepicker #endTimepicker>
+            </ngx-material-timepicker>
+          </mat-form-field>
+          <div *ngIf="(dateForm.get('endTime').touched || dateForm.get('endTime').dirty) && dateForm.get('endTime').errors" class="visit-date__form-error">
+            <mat-error *ngIf="dateForm.get('endTime').hasError('required')">Поле конец занятия обязательно</mat-error>
+          </div>
+        </div>
+    </div>
+    <div class="visit-date__form-container">
+      <div class="visit-date__form-group">
+        <mat-form-field>
+          <mat-label>Корпус</mat-label>
+          <input formControlName="building" type="text" matInput placeholder="Корпус">
+        </mat-form-field>
+        <div *ngIf="(dateForm.get('building').touched || dateForm.get('building').dirty) && dateForm.get('building').errors" class="visit-date__form-error">
+          <mat-error *ngIf="dateForm.get('building').hasError('minLength')">Минимальное количество символов: 1</mat-error>
+          <mat-error *ngIf="dateForm.get('building').hasError('maxLength')">Максимальное количество символов: 5</mat-error>
+        </div>
+      </div>
+      <div class="visit-date__form-group">
+        <mat-form-field>
+          <mat-label>Аудитория</mat-label>
+          <input formControlName="audience" type="text" matInput placeholder="Аудитория">
+        </mat-form-field>
+        <div *ngIf="(dateForm.get('audience').touched || dateForm.get('audience').dirty) && dateForm.get('audience').errors" class="visit-date__form-error">
+          <mat-error *ngIf="dateForm.get('audience').hasError('required')">Номер аудитории обязателен</mat-error>
+          <mat-error *ngIf="dateForm.get('audience').hasError('minLength')">Минимальное количество символов: 1</mat-error>
+          <mat-error *ngIf="dateForm.get('audience').hasError('maxLength')">Максимальное количество символов: 5</mat-error>
+        </div>
+      </div>
+    </div>
+      <button mat-raised-button
+      class="visit-date__action"
+      color="primary"
+      [disabled]="dateForm.invalid"
+      (click)="onCreateDate()">{{data.buttonText}}</button>
+    </form>
+    <p mat-dialog-title class="visit-date__table-title">Выбранные даты</p>
+    <div class="mdc-data-table example-container mat-elevation-z8">
+      <table class="mdc-data-table__table">
+        <tbody class="mdc-data-table__content">
+         <tr class="mdc-data-table__row" *ngFor="let day of schedule">
+          <td class="mdc-data-table__cell">{{ day.Date }} <mat-hint *ngIf="day.StartTime && day.EndTime">{{day.StartTime}}-{{day.EndTime}}</mat-hint></td>
+          <td class="mdc-data-table__cell visit-date__table-action">
+            <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(day)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <p mat-dialog-title class="visit-date__table-title">Выбранные даты</p>
-  <div class="mdc-data-table example-container mat-elevation-z8">
-    <table class="mdc-data-table__table">
-      <tbody class="mdc-data-table__content">
-       <tr class="mdc-data-table__row" *ngFor="let day of schedule">
-        <td class="mdc-data-table__cell">{{ day.Date }}</td>
-        <td class="mdc-data-table__cell visit-date__table-action">
-          <button mat-icon-button color="primary" matTooltip="Удалить дату" (click)="deletePopover(day)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <div mat-dialog-actions>
+ 
+  <div mat-dialog-actions class="visit-date__actions">
     <button mat-raised-button (click)="onClick()">Закрыть</button>
   </div>
 </div>
-
-<!-- [value]="date.value" -->

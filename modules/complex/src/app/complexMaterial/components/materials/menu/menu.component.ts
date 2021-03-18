@@ -25,7 +25,7 @@ export class MenuComponent {
   openPDF(): void {
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '800px',
-      data: { title: 'Title', animal: 'a' }
+      data: { title: 'Title' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -38,7 +38,7 @@ export class MenuComponent {
     this.adaptivityService
       .getFirstThema(adaptivityType)
       .subscribe(themaRes => {
-        const path = '/api/Upload?fileName=' + themaRes.nextMaterialPaths[0];
+        const path = '/api/Upload?fileName=' + (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0]);
         const diaogData: DialogData =
         {
           name: `${themaRes.nextThemaId}`,

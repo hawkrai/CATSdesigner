@@ -10,6 +10,7 @@ import { RegisterComponent } from './register/register.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
 import { AboutComponent } from './about/about.component';
 import { ResetComponent } from './reset/reset.component';
+import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 
 const routes: Routes = [
   {
@@ -40,10 +41,11 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'forgot', component: ResetComponent },
   { path: 'progControl', component: ProgressControlComponent },
+  { path: 'nav', component: SubjectsNavComponent },
   { 
     path: 'adminPanel', 
     component: AdminComponent,
-    canActivate: [NoAuthGuardAdmin],
+    //canActivate: [NoAuthGuardAdmin],
   },
   { path: 'about', component: AboutComponent }
 ];

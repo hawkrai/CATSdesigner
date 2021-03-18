@@ -42,7 +42,7 @@ export const deleteFile = createAction(
 
 export const deleteFileSuccess = createAction(
     '[Files] Delete File Success',
-    props<{ pathName: string, fileName: string }>()
+    props<{ guidFileName: string }>()
 );
 
 export const loadSubjectFiles = createAction(
@@ -57,4 +57,13 @@ export const getExcelData = createAction(
 export const getZipData = createAction(
     '[Files] Get Zip Data',
     props<{ response: ArrayBuffer }>()
+);
+
+export const getAttachmentsAsZip = createAction(
+    '[Files] Get Attachments As Zip',
+    props<{ attachmentsIds: number[] }>()
+);
+
+export const downloadAsZipLoadedFiles = createAction(
+    '[Files] Download As Zip Loaded Files'
 );

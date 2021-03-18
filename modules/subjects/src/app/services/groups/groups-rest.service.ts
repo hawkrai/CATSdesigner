@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Group } from "../../models/group.model";
 import { map } from "rxjs/operators";
@@ -23,4 +23,17 @@ export class GroupsRestService {
       map(res => res['Groups'])
     );
   }
+
+  public getUserSubjectGroup(subjectId: number, userId: number): Observable<Group> {
+    const params = new HttpParams()
+      .set('subjectId', subjectId.toString())
+      .set('userId', userId.toString());
+    return this.http.get('Services/CoreService.svc/GetUserSubjectGroup', { params }).pipe(
+      map(res => res['Group'])
+    );
+  }
 }
+
+
+
+

@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -113,6 +116,41 @@
             "production": {
               "devServerTarget": "schedule:serve:production"
             }
+          }
+        }
+      }
+    },
+    "moduleCommunication": {
+      "projectType": "library",
+      "root": "projects/module-communication",
+      "sourceRoot": "projects/module-communication/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/module-communication/tsconfig.lib.json",
+            "project": "projects/module-communication/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/module-communication/src/test.ts",
+            "tsConfig": "projects/module-communication/tsconfig.spec.json",
+            "karmaConfig": "projects/module-communication/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/module-communication/tsconfig.lib.json",
+              "projects/module-communication/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }

@@ -284,7 +284,8 @@ namespace Application.Infrastructure.CPManagement
                             PercentageGraphId = pr.CoursePercentagesGraphId,
                             StudentId = pr.StudentId,
                             Mark = pr.Mark,
-                            Comment = pr.Comments
+                            Comment = pr.Comments,
+                            ShowForStudent = pr.ShowForStudent,
                         }),
                         CourseProjectConsultationMarks = s.CourseProjectConsultationMarks.Select(cm => new CourseProjectConsultationMarkData
                         {
@@ -292,7 +293,7 @@ namespace Application.Infrastructure.CPManagement
                             ConsultationDateId = cm.ConsultationDateId,
                             StudentId = cm.StudentId,
                             Mark = cm.Mark,
-                            Comments = cm.Comments
+                            Comments = cm.Comments,
                         })
                     }).ApplyPaging(parms);
         }
@@ -346,6 +347,7 @@ namespace Application.Infrastructure.CPManagement
                             Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
                             Group = cp.CourseProject.Theme,
                             Comment = cp.Comment,
+                            ShowForStudent = cp.ShowForStudent,
                             LecturerName = cp.LecturerName,
                             MarkDate = cp.MarkDate,
                             PercentageResults = s.CoursePercentagesResults.Select(pr => new PercentageResultData
@@ -354,7 +356,8 @@ namespace Application.Infrastructure.CPManagement
                                 PercentageGraphId = pr.CoursePercentagesGraphId,
                                 StudentId = pr.StudentId,
                                 Mark = pr.Mark,
-                                Comment = pr.Comments
+                                Comment = pr.Comments,
+                                ShowForStudent = pr.ShowForStudent,
                             }),
                             CourseProjectConsultationMarks = s.CourseProjectConsultationMarks.Select(cm => new CourseProjectConsultationMarkData
                             {
@@ -380,6 +383,7 @@ namespace Application.Infrastructure.CPManagement
                             Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
                             Group = s.AssignedCourseProjects.FirstOrDefault().CourseProject.Theme,
                             Comment = cp.Comment,
+                            ShowForStudent = cp.ShowForStudent,
                             LecturerName = cp.LecturerName,
                             MarkDate = cp.MarkDate,
                             PercentageResults = s.CoursePercentagesResults.Select(pr => new PercentageResultData
@@ -388,7 +392,8 @@ namespace Application.Infrastructure.CPManagement
                                 PercentageGraphId = pr.CoursePercentagesGraphId,
                                 StudentId = pr.StudentId,
                                 Mark = pr.Mark,
-                                Comment = pr.Comments
+                                Comment = pr.Comments,
+                                ShowForStudent = pr.ShowForStudent,
                             }),
                             CourseProjectConsultationMarks = s.CourseProjectConsultationMarks.Select(cm => new CourseProjectConsultationMarkData
                             {
@@ -409,6 +414,7 @@ namespace Application.Infrastructure.CPManagement
             assignedCourseProject.Mark = courseStudentMarkModel.Mark;
             assignedCourseProject.MarkDate = courseStudentMarkModel.Date;
             assignedCourseProject.Comment = courseStudentMarkModel.Comment;
+            assignedCourseProject.ShowForStudent = courseStudentMarkModel.ShowForStudent;
             assignedCourseProject.LecturerName = courseStudentMarkModel.LecturerName;
             Context.SaveChanges();
         }
@@ -563,8 +569,8 @@ namespace Application.Infrastructure.CPManagement
             dp.HeadCathedra = taskSheet.HeadCathedra;
             dp.Faculty = taskSheet.Faculty;
             dp.Univer = taskSheet.Univer;
-            dp.DateStart = taskSheet.DateStart;
-            dp.DateEnd = taskSheet.DateEnd;
+            dp.DateStart = taskSheet.DateStart?.AddDays(1);
+            dp.DateEnd = taskSheet.DateEnd?.AddDays(1);
 
             Context.SaveChanges();
         }

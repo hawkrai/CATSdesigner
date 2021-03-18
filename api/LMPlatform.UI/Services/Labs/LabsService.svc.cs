@@ -26,6 +26,8 @@ using Application.Infrastructure.StudentManagement;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using WebMatrix.WebData;
+using Application.Infrastructure.LabsManagement;
+using LMPlatform.UI.Services.Modules.Schedule;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -59,6 +61,10 @@ namespace LMPlatform.UI.Services.Labs
         private readonly LazyDependency<IStudentManagementService> studentManagementService = new LazyDependency<IStudentManagementService>();
 
 		public IStudentManagementService StudentManagementService => studentManagementService.Value;
+
+		private readonly LazyDependency<ILabsManagementService> labsManagementService = new LazyDependency<ILabsManagementService>();
+
+		public ILabsManagementService LabsManagementService => labsManagementService.Value;
 
 		public LabsResult GetLabs(string subjectId)
         {
@@ -115,7 +121,7 @@ namespace LMPlatform.UI.Services.Labs
 						StudentId = e.StudentId,
 						LabsMarkTotal = e.LabsMarkTotal,
 						TestMark = e.TestMark,
-						Marks = e.StudentLabMarks
+						LabsMarks = e.StudentLabMarks
 					}).ToList(),
 					Message = "",
 					Code = "200"
@@ -135,7 +141,16 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-                var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
+				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 SubjectManagementService.SaveLabs(new Models.Labs
                 {
                     SubjectId = subjectId,
@@ -163,53 +178,41 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-        public ResultViewData Delete(int id, int subjectId)
-        {
-            try
-            {
-                SubjectManagementService.DeleteLabs(id);
-                return new ResultViewData
-                {
-                    Message = "Лабораторная работа успешно удалена",
-                    Code = "200"
-                };
-            }
-            catch (Exception e)
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при удалении лабораторной работы" + e.Message,
-                    Code = "500"
-                };
-            }
-        }
-
-        public ResultViewData SaveScheduleProtectionDate(int subGroupId, string date)
-        {
-            try
-            {
-				SubjectManagementService.SaveScheduleProtectionLabsDate(subGroupId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
-                return new ResultViewData
-                {
-                    Message = "Дата успешно добавлена",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при добавлении даты",
-                    Code = "500"
-                };
-            }
-        }
-
-		public ResultViewData SaveLabsVisitingDataSingle(int dateId, string mark, string comment, int studentsId, int id)
+		public ResultViewData Delete(int id, int subjectId)
 		{
 			try
 			{
-				SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(id, studentsId, comment, mark, dateId));
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				if (!isUserAssigned)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Пользователь не присоединён к предмету"
+					};
+				}
+				SubjectManagementService.DeleteLabs(id);
+				return new ResultViewData
+				{
+					Message = "Лабораторная работа успешно удалена",
+					Code = "200"
+				};
+			}
+			catch (Exception e)
+			{
+				return new ResultViewData
+				{
+					Message = "Произошла ошибка при удалении лабораторной работы" + e.Message,
+					Code = "500"
+				};
+			}
+		}
+
+		public ResultViewData SaveLabsVisitingDataSingle(int dateId, string mark, string comment, int studentsId, int id, bool showForStudent)
+		{
+			try
+			{
+				SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(id, studentsId, comment, mark, dateId, showForStudent));
 
 				return new ResultViewData
 				{
@@ -227,7 +230,7 @@ namespace LMPlatform.UI.Services.Labs
 			}
 		}
 
-        public ResultViewData SaveLabsVisitingData(int dateId, List<string> marks, List<string> comments, List<int> studentsId, List<int> Id, List<StudentsViewData> students)
+        public ResultViewData SaveLabsVisitingData(int dateId, List<string> marks, List<string> comments, List<int> studentsId, List<int> Id, List<StudentsViewData> students, List<bool> showForStudents)
         {
             try
             {
@@ -239,6 +242,7 @@ namespace LMPlatform.UI.Services.Labs
                     var currentComment = comments[i];
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
+					var showForStudent = showForStudents[i];
 
                     foreach (var student in students)
                     {
@@ -248,7 +252,7 @@ namespace LMPlatform.UI.Services.Labs
                             {
                                 if (labVisiting.ScheduleProtectionLabId == dateId)
                                 {
-                                    SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId));
+                                    SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
                                 }
                             }
                         }
@@ -273,11 +277,11 @@ namespace LMPlatform.UI.Services.Labs
         }
 
 
-		public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id)
+		public ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id, bool showForStudent)
         {
             try
             {
-				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id));
+				        SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
 
                 return new ResultViewData
                 {
@@ -295,32 +299,12 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public ResultViewData DeleteVisitingDate(int id)
-        {
-            try
-            {
-                SubjectManagementService.DeleteLabsVisitingDate(id);
-
-                return new ResultViewData
-                {
-                    Message = "Дата успешно удалена",
-                    Code = "200"
-                };
-            }
-            catch (Exception)
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при удалении даты",
-                    Code = "500"
-                };
-            }
-        }
 
         public UserLabFilesResult GetFilesLab(int userId, int subjectId, bool isCoursPrj = false)
         {
             try
             {
+
 	            var model = new List<UserlabFilesViewData>();
 	            var data = SubjectManagementService.GetUserLabFiles(userId, subjectId);
 	            model = data.Select(e => new UserlabFilesViewData
@@ -331,6 +315,7 @@ namespace LMPlatform.UI.Services.Labs
 					IsReceived = e.IsReceived,
 	                IsReturned = e.IsReturned,
 	                IsCoursProject = e.IsCoursProject,
+					LabId = e.LabId,
                     Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
 		            Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
 	            }).Where(x => x.IsCoursProject == isCoursPrj).ToList();
@@ -351,7 +336,41 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, bool isCp = false, bool isRet = false)
+		public UserLabFilesResult GetUserLabFiles(int userId, int labId)
+        {
+			try
+			{
+
+				var labFiles = LabsManagementService.GetUserLabFiles(userId, labId);
+				var model = labFiles.Select(e => new UserlabFilesViewData
+				{
+					Comments = e.Comments,
+					Id = e.Id,
+					PathFile = e.Attachments,
+					IsReceived = e.IsReceived,
+					IsReturned = e.IsReturned,
+					LabId = e.LabId,
+					Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+					Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
+				}).ToList();
+				return new UserLabFilesResult
+				{
+					UserLabFiles = model,
+					Message = "Данные получены",
+					Code = "200"
+				};
+			}
+			catch (Exception ex)
+			{
+				return new UserLabFilesResult
+				{
+					Message = "Произошла ошибка при получении данных",
+					Code = "500"
+				};
+			}
+		}
+
+		public ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, int? labId = null, bool isCp = false, bool isRet = false)
 		{
 			try
 			{
@@ -365,6 +384,7 @@ namespace LMPlatform.UI.Services.Labs
 					Comments = comments,
 					Attachments = pathFile,
 					Id = id,
+					LabId = labId,
 				    IsCoursProject = isCp,
 				    IsReceived = false,
 				    IsReturned = isRet
@@ -461,7 +481,7 @@ namespace LMPlatform.UI.Services.Labs
 						LabsMarkTotal = e.LabsMarkTotal,
 						TestMark = e.TestMark,
 						LabVisitingMark = e.LabVisitingMark,
-						Marks = e.StudentLabMarks,
+						LabsMarks = e.StudentLabMarks,
 					}).ToList(),
 					Message = "",
 					Code = "200"
@@ -508,7 +528,7 @@ namespace LMPlatform.UI.Services.Labs
 					LabsMarkTotal = studentViewData.LabsMarkTotal,
 					TestMark = studentViewData.TestMark,
 					LabVisitingMark = studentViewData.LabVisitingMark,
-					Marks = studentViewData.StudentLabMarks,
+					LabsMarks = studentViewData.StudentLabMarks,
 					AllTestsPassed = studentViewData.AllTestsPassed
 				}) ;
 			}
@@ -590,14 +610,14 @@ namespace LMPlatform.UI.Services.Labs
 					LabId = e.Id,
 					SubjectId = e.SubjectId,
 					SubGroup = 1,
-					ScheduleProtectionLabsRecomend = subGroups.Any() ? subGroups
+					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
 						.FirstOrDefault(x => x.Name == "first").ScheduleProtectionLabs
 						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLab
+						.Select(x => new ScheduleProtectionLesson
 						{
 							ScheduleProtectionId = x.Id,
 							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLab>()
+						}).ToList() : new List<ScheduleProtectionLesson>()
 				}).ToList();
 
 
@@ -607,11 +627,11 @@ namespace LMPlatform.UI.Services.Labs
 				{
 					var mark = 10;
 					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 					{
 						if (i + 1 > durationCount - (lab.Duration / 2))
 						{
-							lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
 							if (i + 1 >= durationCount)
 							{
@@ -633,14 +653,14 @@ namespace LMPlatform.UI.Services.Labs
 					LabId = e.Id,
 					SubjectId = e.SubjectId,
 					SubGroup = 2,
-					ScheduleProtectionLabsRecomend = subGroups.Any() ? subGroups
+					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
 						.FirstOrDefault(x => x.Name == "second").ScheduleProtectionLabs
 						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLab
+						.Select(x => new ScheduleProtectionLesson
 						{
 							ScheduleProtectionId = x.Id,
 							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLab>()
+						}).ToList() : new List<ScheduleProtectionLesson>()
 				}).ToList();
 
 				durationCount = 0;
@@ -648,11 +668,11 @@ namespace LMPlatform.UI.Services.Labs
 				{
 					var mark = 10;
 					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 					{
 						if (i + 1 > durationCount - (lab.Duration / 2))
 						{
-							lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
 							if (i + 1 >= durationCount)
 							{
@@ -674,14 +694,14 @@ namespace LMPlatform.UI.Services.Labs
 					LabId = e.Id,
 					SubjectId = e.SubjectId,
 					SubGroup = 3,
-					ScheduleProtectionLabsRecomend = subGroups.Any() ? subGroups
+					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
 						.FirstOrDefault(x => x.Name == "third").ScheduleProtectionLabs
 						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLab
+						.Select(x => new ScheduleProtectionLesson
 						{
 							ScheduleProtectionId = x.Id,
 							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLab>()
+						}).ToList() : new List<ScheduleProtectionLesson>()
 				}).ToList();
 
 				durationCount = 0;
@@ -689,11 +709,11 @@ namespace LMPlatform.UI.Services.Labs
 				{
 					var mark = 10;
 					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecomend.Count; i++)
+					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 					{
 						if (i + 1 > durationCount - (lab.Duration / 2))
 						{
-							lab.ScheduleProtectionLabsRecomend[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
 							if (i + 1 >= durationCount)
 							{
@@ -1041,17 +1061,24 @@ namespace LMPlatform.UI.Services.Labs
 			HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
 		}
 
-        public ResultViewData UpdateLabs(List<UpdateLab> labs)
+        public ResultViewData UpdateLabsOrder(int subjectId, int prevIndex, int curIndex)
         {
             try
             {
-				foreach (var lab in labs)
-				{
-					var response = Save(lab.SubjectId, lab.Id, lab.Theme, lab.Duration, lab.Order, lab.ShortName, lab.PathFile, lab.Attachments);
-					if (response.Code == "500")
+				var labs = SubjectManagementService.GetSubjectLabs(subjectId);
+				if (prevIndex < curIndex)
+                {
+					foreach(var entry in labs.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(labs[prevIndex]).Select((x, index) => new {  Value = x, Index = index}))
                     {
-						throw new Exception("Не удалось обновить лабораторные работы");
+						SubjectManagementService.UpdateLabOrder(entry.Value, entry.Index + prevIndex);
                     }
+                }
+				else
+                {
+					foreach (var entry in new List<Models.Labs> { labs[prevIndex] }.Concat(labs.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
+					{
+						SubjectManagementService.UpdateLabOrder(entry.Value, entry.Index + curIndex);
+					}
 				}
 				return new ResultViewData
 				{
@@ -1068,5 +1095,23 @@ namespace LMPlatform.UI.Services.Labs
 				};
             }
         }
+
+        public HasProtectionViewData HasJobProtections(int subjectId)
+        {
+			var subjectGroups = GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId))
+				.Include(x => x.Students));
+
+			var subjectNewFilse = SubjectManagementService.GetUserLabFiles(0, subjectId)
+				.Where(x => !x.IsReceived && !x.IsReturned && !x.IsCoursProject);
+
+			return new HasProtectionViewData
+			{
+				HasJobProtections = subjectGroups.Select(x => new HasJobProtection
+				{
+					GroupId = x.Id,
+					HasJob = x.Students.Any(student => subjectNewFilse.Any(x => x.UserId == student.Id))
+				})
+			};
+		}
     }
 }

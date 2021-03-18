@@ -12,6 +12,7 @@ import {catchError, switchMap, takeUntil, tap} from "rxjs/operators";
 import {Observable, Subject, throwError} from "rxjs";
 import {DeleteQuestionConfirmationPopupComponent} from "./components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 import {NeuralNetworkPopupComponent} from "./components/neural-network-popup/neural-network-popup.component";
+import {TranslatePipe} from "../../../../../container/src/app/pipe/translate.pipe";
 
 
 @AutoUnsubscribe
@@ -32,6 +33,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
   constructor(private testService: TestService,
               private route: ActivatedRoute,
               private router: Router,
+              private translatePipe: TranslatePipe,
               private snackBar: MatSnackBar,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
@@ -67,7 +69,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
         switchMap(() => this.loadQuestions()),
         takeUntil(this.unsubscribeStream$),
         catchError(() => {
-          this.openSnackBar("Не удалось удалить вопрос");
+          this.openSnackBar(this.translatePipe.transform('text.test.cant.delete.question',"Не удалось удалить вопрос"));
           return throwError(null);
         }))
       .subscribe();
@@ -110,7 +112,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     const title = this.test.Title;
     const dialogRef = this.dialog.open(QuestionPopupComponent, {
       width: "700px",
-      data: {event, title, test: this.testId, isEUMKTest: this.isEUMKTest},
+      data: {event, title, test: this.testId, questionLength: this.questions.length, isEUMKTest: this.isEUMKTest},
       autoFocus: false,
     });
 

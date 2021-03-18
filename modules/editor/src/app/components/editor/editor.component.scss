@@ -1,20 +1,18 @@
 .flex-container {
   background-color: #fafafa;
-  display: flex;
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
-  flex-flow: row nowrap;
-  padding: 10px;
-  justify-content: flex-start;
-  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+
+  mat-drawer {
+    box-shadow: 0px 2px 10px rgba(56, 56, 56, 0.2);
+    width: 20%;
+  }
 
   .flex-tree-container {
-    height: calc(100% - 41px);
+    height: 100%;
     background-color: white;
     flex-shrink: 1;
-    width: 25%;
-    border: 1px solid #c4c4c4;
-    border-radius: 2px;
+    z-index: 50;
 
     .tree-area {
       border-top: 1px solid #c4c4c4;
@@ -25,11 +23,11 @@
     .flex-search-region {
       display: flex;
       flex-basis: 100%;
-      align-items: center;
-      margin: 10px;
+      align-items: flex-start;
+      padding: 1px;
 
-      .flex-search-input {
-        flex-basis: 85%;
+      .flex-search-btn-holder {
+        flex-basis: 100%;
       }
     }
   }
@@ -37,12 +35,14 @@
   .flex-editor-container {
     height: 100%;
     flex-shrink: 3;
-    width: 75%;
-    padding-left: 10px;
 
+    #editor {
+      height: calc(100% - 46px);
+      border-top: 1px solid var(--ck-color-toolbar-border);
+    }
     .btn-holder {
-      padding-top: 5px;
-
+      padding: 1px;
+      height: 40px;
       button {
         margin-left: 5px;
       }
@@ -54,8 +54,38 @@
   }
 }
 
-:host ::ng-deep .ck-editor__editable_inline {
-  height: calc(100vh - 100px);
+:host ::ng-deep ckeditor {
+  height: 100%;
+
+  .ck-editor {
+    height: 100%;
+
+    // header
+    .ck-editor__top {
+      .ck-sticky-panel {
+        .ck-sticky-panel__content {
+          .ck-toolbar {
+            border-bottom-width: 1px;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+          }
+        }
+      }
+    }
+
+    // body
+    .ck-editor__main {
+      height: calc(100% - 38px);
+
+      .ck-editor__editable_inline {
+        height: 100%;
+        border: none;
+      }
+    }
+  }
 }
 
 /* width */

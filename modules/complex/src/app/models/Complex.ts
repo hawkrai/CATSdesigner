@@ -11,5 +11,10 @@ export class Complex {
   subjectId?: number;
 
   isPublished?: boolean;
+
+  includeLabs?: boolean;
+  includeLectures?: boolean;
+  includeTests?: boolean;
+
   elementId?: number; 
 }

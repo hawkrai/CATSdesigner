@@ -3,10 +3,11 @@
     <div class="result-test-table-container"
          *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
       <div class="result-test-table-subgroup">
-        {{"Группа " + group + ", Подгруппа " + (iq+1)}}
-        <mat-icon class="result-test-table-subgroup-load" color="primary" (click)="downloadExcel()"
-                  matTooltipClass="example-tooltip-blue">insert_drive_file
-        </mat-icon>
+        {{('text.test.res.group' | translate : "Группа ") + group + ('text.test.res.subgroup' | translate : ", Подгруппа ") + (iq+1)}}
+        <div class="result-test-table-subgroup-load"
+             (click)="downloadExcel()">
+        </div>
+
       </div>
       <div class="result-test-table-table">
         <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
@@ -18,23 +19,23 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="Name">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">ФИО студента</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.text.fio.student' | translate: 'ФИО студента'}}</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element[1].name}}
             </mat-cell>
           </ng-container>
 
           <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">{{"Тест " + (i+1)}}</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef  class="mat-header-cell-action">{{studentResults[0][1].test[i].testName}}</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-action"
                       (click)="openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
                       [matTooltip]="element[1].test[i].testName">
               {{element[1].test[i].points ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
-              "тест не пройден"}}
+              ('text.test.not.passed' | translate: "тест не пройден")}}
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="average">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">Средний балл</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">{{'text.test.average.score'| translate:'Средний балл'}}</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-average" [class.all]="size && element[3]"
                       [class.notAll]="size && !element[3]"> {{element[2]}}
             </mat-cell>
@@ -47,6 +48,9 @@
     </div>
   </ng-container>
   <div class="result-test-table-chart" *ngIf="showChart">
+    <div class="result-test-table-chart-name">
+      {{testName + ' ' +('text.test.res.group' | translate : "Группа ") + group}}
+    </div>
     <canvas class="result-test-table-chart-graph"
             baseChart
             [datasets]="barChartData"
@@ -58,7 +62,7 @@
     </canvas>
   </div>
   <div class="result-test-table-warning" *ngIf="!showChart">
-    {{"Нет результатов для отображения"}}
+    {{'text.test.no.results' | translate: "Нет результатов для отображения"}}
   </div>
 </ng-container>
 

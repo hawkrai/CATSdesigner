@@ -14,13 +14,15 @@ import { ComplexService } from '../../../service/complex.service';
   styleUrls: ['./materials.component.less'],
 })
 export class MaterialComponent implements OnInit {
-  @Input() complexId: string  
+  @Input() complexId: string;
+  isLucturer: boolean;
   treeControl = new NestedTreeControl<ComplexCascade>(node => node.children);
   dataSource = new MatTreeNestedDataSource<ComplexCascade>();
 
   constructor(public dialog: MatDialog,
     private complexService: ComplexService) {
-    
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    this.isLucturer = user.role === 'lector';
   }
 
   hasChild = (_: number, node: ComplexCascade) => !!node.children && node.children.length > 0;
@@ -36,7 +38,7 @@ export class MaterialComponent implements OnInit {
   openPDF(filename: string): void {
     const path = '/api/Upload?fileName=' + filename;
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-      width: '800px',
+      width: '1200px',
       data: { name: 'name', url: path }
     });
 

@@ -1,4 +1,4 @@
-import { Message } from './../../../../../../container/src/app/core/models/message';
+import { Message } from './../../models/message.model';
 import { createAction, props } from '@ngrx/store';
 
 export const sendMessage = createAction(
@@ -8,4 +8,9 @@ export const sendMessage = createAction(
 
 export const setupMessageCommunication = createAction(
     '[Cats] Setup Message Communication'
+);
+
+export const showMessage = createAction(
+    '[Cats] Show Message',
+    props<{ body: any }>()
 );

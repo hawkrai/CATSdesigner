@@ -4,4 +4,5 @@ export class LabVisitingMark {
     ScheduleProtectionLabId: number;
     StudentId: number;
     LabVisitingMarkId: number;
+    ShowForStudent: boolean;
 }

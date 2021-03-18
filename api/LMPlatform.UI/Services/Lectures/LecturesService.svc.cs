@@ -87,47 +87,46 @@ namespace LMPlatform.UI.Services.Lectures
             }
         }
 
-        public ResultViewData UpdateLecturesOrder(List<UpdateOrder> objs)
+        public ResultViewData UpdateLecturesOrder(int subjectId, int prevIndex, int curIndex)
         {
             try
             {
-                foreach(var obj in objs)
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
                 {
-                    SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                var lectures = SubjectManagementService.GetSubjectLectures(subjectId);
+                if (prevIndex < curIndex)
+                {
+                    foreach (var entry in lectures.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(lectures[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
+                    {
+                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + prevIndex);
+                    }
+                }
+                else
+                {
+                    foreach (var entry in new List<Lectures> { lectures[prevIndex] }.Concat(lectures.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
+                    {
+                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + curIndex);
+                    }
                 }
                 return new ResultViewData
                 {
-                    Message = "Лекции успешно обновлены",
-                    Code = "200"
+                    Code = "200",
+                    Message = "Лекции успешно сохранены"
                 };
             }
             catch (Exception ex)
             {
                 return new ResultViewData
                 {
-                    Message = "Произошла ошибка при обновлении лекций." + ex.Message,
-                    Code = "500"
-                };
-            }
-        }
-
-        public ResultViewData UpdateLectureOrder(UpdateOrder obj)
-        {
-            try
-            {
-                SubjectManagementService.UpdateLectureOrder(obj.Id, obj.Order);
-                return new ResultViewData
-                {
-                    Message = "Лекция успешно обновлена",
-                    Code = "200"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при обновлении лекции." + ex.Message,
-                    Code = "500"
+                    Code = "500",
+                    Message = ex.Message
                 };
             }
         }
@@ -136,6 +135,15 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 SubjectManagementService.SaveLectures(new Lectures
                 {
@@ -167,6 +175,15 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 SubjectManagementService.DeleteLection(new Lectures { Id = id });
                 return new ResultViewData
                 {
@@ -179,27 +196,6 @@ namespace LMPlatform.UI.Services.Lectures
                 return new ResultViewData
                 {
                     Message = "Произошла ошибка при удалении лекции." + e.Message,
-                    Code = "500"
-                };
-            }
-        }
-
-        public ResultViewData SaveDateLectures(int subjectId, string date)
-        {
-            try
-            {
-				SubjectManagementService.SaveDateLectures(subjectId, DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture));
-                return new ResultViewData
-                {
-                    Message = "Дата успешно добавлена",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при добавлении даты",
                     Code = "500"
                 };
             }
@@ -325,28 +321,6 @@ namespace LMPlatform.UI.Services.Lectures
 			}
 		}
 
-        public ResultViewData DeleteVisitingDate(int id)
-        {
-            try
-            {
-                SubjectManagementService.DeleteLectionVisitingDate(id);
-
-                return new ResultViewData
-                {
-                    Message = "Дата успешно удалена",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new ResultViewData
-                {
-                    Message = "Произошла ошибка при удалении даты",
-                    Code = "500"
-                };
-            }
-        }
-
 		public ResultViewData DeleteVisitingDates(List<int> dateIds)
 		{
 			try
@@ -383,7 +357,7 @@ namespace LMPlatform.UI.Services.Lectures
                 {
                     var data = new List<MarkViewData>();
 
-                    foreach (var lecturesScheduleVisiting in lecturesVisitingData.OrderBy(e => e.Date))
+                    foreach (var lecturesScheduleVisiting in lecturesVisitingData)
                     {
                         var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
 

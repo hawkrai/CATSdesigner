@@ -46,6 +46,12 @@ namespace Application.Infrastructure.SubjectManagement
 			}
 		}
 
+		public bool IsUserAssignedToSubject(int userId, int subjectId)
+        {
+			var subjects = GetUserSubjectsV2(userId);
+			return subjects.Any(subject => subject.Id == subjectId);
+        }
+
         public List<Subject> GetUserSubjectsV2(int userId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
@@ -239,30 +245,6 @@ namespace Application.Infrastructure.SubjectManagement
 			repositoriesContainer.ApplyChanges();
 		}
 
-		public void DeletePracticalsVisitingDate(int id)
-		{
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var dateModelmarks =
-				repositoriesContainer.RepositoryFor<ScheduleProtectionPracticalMark>()
-					.GetAll(new Query<ScheduleProtectionPracticalMark>(e => e.ScheduleProtectionPracticalId == id))
-					.ToList();
-
-			foreach (var practicalVisitMark in dateModelmarks)
-			{
-				repositoriesContainer.RepositoryFor<ScheduleProtectionPracticalMark>().Delete(practicalVisitMark);
-			}
-
-			repositoriesContainer.ApplyChanges();
-
-			var dateModel =
-				repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>()
-					.GetBy(new Query<ScheduleProtectionPractical>(e => e.Id == id));
-
-			repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().Delete(dateModel);
-
-			repositoriesContainer.ApplyChanges();
-		}
-
 		public void DeleteLabsVisitingDate(int id)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
@@ -320,39 +302,6 @@ namespace Application.Infrastructure.SubjectManagement
 			repositoriesContainer.ApplyChanges();
 		}
 
-		public void DeletePracticals(int id)
-		{
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var practicals =
-				repositoriesContainer.PracticalRepository.GetBy(
-					new Query<Practical>(e => e.Id == id).Include(e => e.StudentPracticalMarks));
-
-			var deleteFiles =
-				repositoriesContainer.AttachmentRepository.GetAll(
-					new Query<Attachment>(e => e.PathName == practicals.Attachments)).ToList();
-
-			var studentPracticalsMarks =
-				repositoriesContainer.RepositoryFor<StudentPracticalMark>()
-					.GetAll(new Query<StudentPracticalMark>(e => e.PracticalId == id))
-					.ToList();
-
-			foreach (var attachment in deleteFiles)
-			{
-				FilesManagementService.DeleteFileAttachment(attachment);
-			}
-
-			foreach (var mark in studentPracticalsMarks)
-			{
-				repositoriesContainer.RepositoryFor<StudentPracticalMark>().Delete(mark);
-			}
-
-			repositoriesContainer.ApplyChanges();
-
-			repositoriesContainer.PracticalRepository.Delete(practicals);
-
-			repositoriesContainer.ApplyChanges();
-		}
-
 		public bool IsWorkingSubject(int userId, int subjectId)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
@@ -392,9 +341,12 @@ namespace Application.Infrastructure.SubjectManagement
 
 				foreach (var subjectNewse in news)
 				{
+					var subject = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject;
 					subjectNewse.Subject = new Subject
 					{
-						Name = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject.Name
+						Name = subject.Name,
+						Color = subject.Color,
+						ShortName = subject.ShortName
 					};
 				}
 
@@ -419,9 +371,12 @@ namespace Application.Infrastructure.SubjectManagement
 
 				foreach (var subjectNewse in news)
 				{
+					var subject = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject;
 					subjectNewse.Subject = new Subject
 												{
-													Name = subjectsData.FirstOrDefault(e => e.SubjectId == subjectNewse.SubjectId).Subject.Name
+													Name = subject.Name,
+													Color = subject.Color,
+													ShortName = subject.ShortName
 												};
 				}
 
@@ -464,6 +419,11 @@ namespace Application.Infrastructure.SubjectManagement
 				repositoriesContainer.SubjectRepository
 					.GetBy(new Query<Subject>(e => e.Id == subjectId && e.SubjectGroups.Any(x => x.GroupId == groupId))
 						.Include(e => e.SubjectGroups.Select(x => x.SubGroups.Select(c => c.SubjectStudents.Select(t => t.Student.User)))));
+
+            if (subjectGroup?.SubjectGroups?.FirstOrDefault(e => e.GroupId == groupId)?.SubGroups == null)
+            {
+                return new List<SubGroup>();
+            }
 
 			return subjectGroup.SubjectGroups.First(e => e.GroupId == groupId).SubGroups.ToList();
 		}
@@ -600,53 +560,6 @@ namespace Application.Infrastructure.SubjectManagement
 			}
 		}
 
-		public Practical GetPractical(int id)
-		{
-			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-			{
-				return repositoriesContainer.PracticalRepository.GetBy(new Query<Practical>(e => e.Id == id).Include(e => e.Subject));
-			}
-		}
-
-		public Practical SavePractical(Practical practical, IList<Attachment> attachments, int userId)
-		{
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			if (!string.IsNullOrEmpty(practical.Attachments))
-			{
-				var deleteFiles =
-					repositoriesContainer.AttachmentRepository.GetAll(
-						new Query<Attachment>(e => e.PathName == practical.Attachments)).ToList().Where(e => attachments.All(x => x.Id != e.Id)).ToList();
-
-				foreach (var attachment in deleteFiles)
-				{
-					FilesManagementService.DeleteFileAttachment(attachment);
-				}
-			}
-			else
-			{
-				practical.Attachments = GetGuidFileName();
-			}
-
-			FilesManagementService.SaveFiles(attachments.Where(e => e.Id == 0), practical.Attachments);
-
-			foreach (var attachment in attachments)
-			{
-				if (attachment.Id == 0)
-				{
-					attachment.PathName = practical.Attachments;
-					repositoriesContainer.AttachmentRepository.Save(attachment);
-				}
-			}
-
-			repositoriesContainer.PracticalRepository.Save(practical);
-			repositoriesContainer.ApplyChanges();
-
-			if (practical.IsNew && practical.Subject.SubjectModules.Any(m => m.Module.ModuleType == ModuleType.Practical))
-				ConceptManagementService.AttachFolderToLabSection(practical.Theme, userId, practical.SubjectId);
-
-			return practical;
-		}
-
 		public void SaveDateLectures(int subjectId, DateTime date)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
@@ -657,6 +570,7 @@ namespace Application.Infrastructure.SubjectManagement
 			});
 			repositoriesContainer.ApplyChanges();
 		}
+
 
 		public List<LecturesScheduleVisiting> GetScheduleVisitings(Query<LecturesScheduleVisiting> query)
 		{
@@ -682,13 +596,6 @@ namespace Application.Infrastructure.SubjectManagement
 				Date = date,
 				Id = 0
 			});
-			repositoriesContainer.ApplyChanges();
-		}
-
-		public void SaveScheduleProtectionPracticalDate(ScheduleProtectionPractical scheduleProtectionPractical)
-		{
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().Save(scheduleProtectionPractical);
 			repositoriesContainer.ApplyChanges();
 		}
 
@@ -719,24 +626,17 @@ namespace Application.Infrastructure.SubjectManagement
 			repositoriesContainer.ApplyChanges();
 		}
 
-		public void SaveStudentLabsMark(StudentLabMark studentLabMark)
-		{
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			repositoriesContainer.RepositoryFor<StudentLabMark>().Save(studentLabMark);
-			repositoriesContainer.ApplyChanges();
-		}
-
-		public void SavePracticalVisitingData(List<ScheduleProtectionPracticalMark> protectionPracticalMarks)
+		public void SavePracticalVisitingData(ScheduleProtectionPracticalMark protectionPracticalMarks)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			repositoriesContainer.RepositoryFor<ScheduleProtectionPracticalMark>().Save(protectionPracticalMarks);
 			repositoriesContainer.ApplyChanges();
 		}
 
-		public void SavePracticalMarks(List<StudentPracticalMark> studentPracticalMarks)
+		public void SaveStudentLabsMark(StudentLabMark studentLabMark)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			repositoriesContainer.RepositoryFor<StudentPracticalMark>().Save(studentPracticalMarks);
+			repositoriesContainer.RepositoryFor<StudentLabMark>().Save(studentLabMark);
 			repositoriesContainer.ApplyChanges();
 		}
 
@@ -758,17 +658,6 @@ namespace Application.Infrastructure.SubjectManagement
 				var model = new List<string>();
 				model.AddRange(
 					repositoriesContainer.LabsRepository.GetAll(new Query<Labs>(e => e.SubjectId == subjectId)).Select(e => e.Attachments).ToList());
-				return model;
-			}
-		}
-
-		public List<string> GetPracticalsAttachments(int subjectId)
-		{
-			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-			{
-				var model = new List<string>();
-				model.AddRange(
-					repositoriesContainer.PracticalRepository.GetAll(new Query<Practical>(e => e.SubjectId == subjectId)).Select(e => e.Attachments).ToList());
 				return model;
 			}
 		}
@@ -921,10 +810,9 @@ namespace Application.Infrastructure.SubjectManagement
 			return lectures;
 		}
 
-		public Lectures UpdateLectureOrder(int id, int order)
+		public Lectures UpdateLectureOrder(Lectures lecture, int order)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var lecture = repositoriesContainer.LecturesRepository.GetBy(new Query<Lectures>(l => l.Id == id));
 			lecture.Order = order;
 			repositoriesContainer.LecturesRepository.Save(lecture);
 			repositoriesContainer.ApplyChanges();
@@ -932,20 +820,9 @@ namespace Application.Infrastructure.SubjectManagement
 
 		}
 
-		public Practical UpdatePracticalOrder(int id, int order)
+		public Labs UpdateLabOrder(Labs lab, int order)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var practical = repositoriesContainer.PracticalRepository.GetBy(new Query<Practical>(p => p.Id == id));
-			practical.Order = order;
-			repositoriesContainer.PracticalRepository.Save(practical);
-			repositoriesContainer.ApplyChanges();
-			return practical;
-		}
-
-		public Labs UpdateLabOrder(int id, int order)
-        {
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var lab = repositoriesContainer.LabsRepository.GetBy(new Query<Labs>(l => l.Id == id));
 			lab.Order = order;
 			repositoriesContainer.LabsRepository.Save(lab);
 			repositoriesContainer.ApplyChanges();
@@ -1107,19 +984,6 @@ namespace Application.Infrastructure.SubjectManagement
 
 			return model;
 		}
-
-        public List<ScheduleProtectionPractical> GetScheduleProtectionPractical(int subjectId, int groupId)
-        {
-            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-            var data = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>()
-                .GetAll(new Query<ScheduleProtectionPractical>(e =>
-                        e.GroupId == groupId && e.SubjectId == subjectId)
-                    .Include(x => x.ScheduleProtectionPracticalMarks)
-                    .Include(x => x.ScheduleProtectionPracticalMarks
-                        .Select(s => s.Student))).ToList();
-
-            return data;
-        }
 
         public List<Subject> GetSubjectsByLector(int userId)
 		{
@@ -1315,5 +1179,35 @@ namespace Application.Infrastructure.SubjectManagement
 			return count;
 		}
 
+		public IList<Labs> GetSubjectLabs(int subjectId)
+		{
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.LabsRepository.GetAll(new Query<Labs>(x => x.SubjectId == subjectId))
+				.OrderBy(x => x.Order)
+				.ToList();
+
+		}
+
+
+		public IList<Lectures> GetSubjectLectures(int subjectId)
+		{
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.LecturesRepository.GetAll(new Query<Lectures>(x => x.SubjectId == subjectId))
+				.OrderBy(x => x.Order)
+				.ToList();
+		}
+
+        public Lecturer GetSubjectOwner(int subjectId)
+        {
+			try
+            {
+				using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+				var subjectLecturer = repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(new Query<SubjectLecturer>(x => x.SubjectId == subjectId && x.Owner.HasValue)).FirstOrDefault();
+				return repositoriesContainer.LecturerRepository.GetBy(new Query<Lecturer>(x => x.Id == subjectLecturer.Owner).Include(x => x.User));
+			} catch
+            {
+				return null;
+            }
+		}
     }
 }

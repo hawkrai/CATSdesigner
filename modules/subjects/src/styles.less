@@ -12,13 +12,24 @@
 @import "~@material/drawer/dist/mdc.drawer.min.css";
 @import "~@material/list/dist/mdc.list.min.css";
 @import "~@material/theme/dist/mdc.theme.css";
-@import 'flatpickr/dist/flatpickr.css';
 
 :root {
   --mdc-theme-primary: #3f51b5;
 }
+
+body {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  color: #363636;
+  font-size: 14px;
+}
 .mdc-drawer .mdc-list-item--activated {
   color: var(--mdc-theme-primary, #3f51b5);
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .spinner {
@@ -81,3 +92,15 @@ table.mat-table {
 	border-radius: unset !important;
 }
 
+.file-link {
+  padding: 0!important;
+  min-width: auto!important;
+}
+
+.timepicker-backdrop-overlay {
+    z-index: 1001!important;
+}
+
+.timepicker-overlay {
+  z-index: 1002!important;
+}

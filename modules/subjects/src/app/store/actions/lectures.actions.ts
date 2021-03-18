@@ -51,11 +51,6 @@ export const updateOrder = createAction(
   props<{ prevIndex: number, currentIndex: number }>()
 );
 
-export const updateOrderSuccess = createAction(
-  '[Lectures] Update Order Success',
-  props<{ prevIndex: number, currentIndex: number }>()
-);
-
 export const deleteAllDate = createAction(
   '[Lectures] Delete All Date'
 );
@@ -71,7 +66,7 @@ export const resetVisiting = createAction(
 
 export const createDateVisit = createAction(
   '[Lectures] Create Date Visit',
-  props<{ date: string }>()
+  props<{ obj: { date: string, startTime: string, endTime: string, building: string, audience: string } }>()
 );
 
 export const deleteDateVisit = createAction(

@@ -75,7 +75,10 @@ export class MaterialsPopoverComponent{
     this.showMaterial = !(this.needToGetInitialTest || this.isTest || this.isEndLearning);
 
     this.toTestButtonVisible = this.showMaterial;
-    this.checkMaterialsContainerForButtonsVisibility();
+
+    if (this.materialPathes) {
+      this.checkMaterialsContainerForButtonsVisibility();
+    }
 
     if (this.shouldWaitPresettedTime) {
       this.showTimer = true;

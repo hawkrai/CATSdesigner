@@ -1,14 +1,28 @@
 import {Lesson} from '../model/lesson.model';
+import {formatDate} from '@angular/common';
+
+const format = 'dd.MM.yyyy';
+const locale = 'en-US';
 
 export const LESSONS: Lesson[] = [
-  {id: '1', start: new Date('2020-09-24 11:40'),
-    end: new Date('2020-09-24 14:05'),
-    shortname: 'ООП', name: '12312', teacher: 'Белова' ,
-    type: 'Лекция', building: '12', classroom: '104',
-    color: 'green', subjectId: '1'},
-  {id: '2', start: new Date('2020-09-15 15:50'),
-    end: new Date('2020-09-15 17:25'), shortname: 'ЯП',
-    name: '12312', teacher: 'Гурский' , type: 'Лекция',
-    building: '12', classroom: '104', color: 'red',
-    subjectId: '1'}
+  {id: '1', Date: '11/02/2021',
+    Start: '17:05',
+    End: '19:05', Name: '123',
+    ShortName: 'ООП', Teacher: 'Белова' ,
+    Type: null, Building: '12', Audience: '104',
+    Color: 'green', SubjectId: '1', Notes: {message: '2234234'}}
+];
+
+export const les: any = {
+  Labs: LESSONS
+};
+
+export const SUBJECTS: any[] = [
+  {
+    Color: '#ca0000',
+    Completing: 0,
+    Id: 1,
+    Name: 'Тестовый предмет 2',
+    ShortName: 'ТП2',
+  }
 ];

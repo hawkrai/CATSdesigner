@@ -12,11 +12,17 @@ export interface DialogData {
   subjectName?: string;
   isPublished?: boolean;
 
+  includeLabs?: boolean;
+  includeLectures?: boolean;
+  includeTests?: boolean;
+
   url?: string;
 
   isNew?: boolean;
 
   nodeId?: string;
+
+  attachments?: any[];
 
   //Adaptive Learning
   isAdaptive?: boolean;

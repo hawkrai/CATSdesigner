@@ -4,17 +4,38 @@
   display: none;
 }
 
+mat-icon {
+  font-size: 18px;
+}
+
+.mat-icon-button {
+  width: 30px;
+  height: 30px;
+
+  .mat-icon {
+    line-height: 15px;
+  }
+}
+
+.mat-menu-item {
+  .mat-icon {
+    margin-right: 0px;
+    vertical-align: sub;
+  }
+}
+
 .tree ul,
 .tree li {
   margin-top: 0;
   margin-bottom: 0;
   list-style-type: none;
+  padding-inline-start: 1px;
 }
 
 .mat-tree-node {
-
   background-color: transparent;//#fafafa
   user-select: none;
+  min-height: 30px;
   cursor: move;
   &.cdk-drag-preview { // while dragging
     @include mat-elevation(12);
@@ -24,9 +45,8 @@
   }
 
   label {
-    padding: 11px;
-    border-radius: 20px;
-    margin: 0px 1px;
+    padding: 6px;
+    margin: 0px;
   }
 
   label:hover {
@@ -36,12 +56,4 @@
   .highlight {
     background: rgba(0,0,0,.2);
   }
-}
-
-.cdk-drop-list-dragging .mat-tree-node:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-/* item being dropped */
-.cdk-drag-animating {
-  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
 }

@@ -23,6 +23,8 @@ export class ComplexGridComponent implements OnInit {
   subjectName;
   subjectId;
 
+  isLucturer: boolean;
+
   constructor(public dialog: MatDialog,
         private complexService: ComplexService,
         private store: Store<IAppState>,
@@ -31,6 +33,9 @@ export class ComplexGridComponent implements OnInit {
       return false;
     };
     this.router.onSameUrlNavigation = 'reload';
+
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    this.isLucturer = user.role === 'lector';
   }
 
   ngOnInit(): void {
@@ -51,7 +56,7 @@ export class ComplexGridComponent implements OnInit {
       width: '400px',
       title: 'Создание ЭУМК',
       name: '',
-      subjectName: this.subjectName,
+      subjectName: this.subjectName,      
       isNew: true
     };
 
@@ -61,10 +66,12 @@ export class ComplexGridComponent implements OnInit {
       const complex: Complex = {
         name: result.name,
         container: '',
-        subjectId: 3
+        subjectId: this.subjectId,
+        includeLabs: result.includeLabs,
+        includeLectures: result.includeLectures,
+        includeTests: result.includeTests
       }
       this.complexService.addRootConcept(complex).subscribe(result => {
-        debugger;
         if (result['Code'] === '200') {
           this.router.navigateByUrl('/main');
         }
@@ -86,4 +93,13 @@ export class ComplexGridComponent implements OnInit {
       console.log('The dialog was closed');
     });
   }
+
+  adjustNameLength(componentName: string): string {
+    if (componentName.length <= 9) {
+      return componentName;
+    }
+
+    return `${componentName.substring(0, 8)}...`;
+  }
+
 }
