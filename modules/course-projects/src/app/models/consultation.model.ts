@@ -3,4 +3,8 @@ export class Consultation {
   LecturerId: string;
   Day: string;
   SubjectId: string;
+  StartTime: string;
+  EndTime: string;
+  Building: string;
+  Audience: string;
 }

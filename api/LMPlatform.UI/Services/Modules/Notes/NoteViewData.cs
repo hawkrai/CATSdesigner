@@ -12,26 +12,31 @@ namespace LMPlatform.UI.Services.Modules.Notes
     {
         public NoteViewData(Note note)
         {
+            Id = note.Id;
             Text = note.Text;
-            Date = note.Date.ToString("dd/MM/yyyy");
-            Time = note.Time.ToString(@"hh\:mm");
             UserId = note.UserId;
-            SubjectId = note.SubjectId;
+            LecturesScheduleId = note.LecturesScheduleId;
+            LabsScheduleId = note.LabsScheduleId;
+            PracticalScheduleId = note.PracticalScheduleId;
         }
         [DataMember]
         public string Text { get; set; }
 
         [DataMember]
-        public string Date { get; set; }
-
-        [DataMember]
-        public string Time { get; set; }
-
-        [DataMember]
         public int UserId { get; set; }
 
         [DataMember]
-        public int SubjectId { get; set; }
+        public int? LecturesScheduleId { get; set; }
 
+        [DataMember]
+        public int? PracticalScheduleId { get; set; }
+
+        [DataMember]
+        public int? LabsScheduleId { get; set; }
+
+        [DataMember]
+        public int Id { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }

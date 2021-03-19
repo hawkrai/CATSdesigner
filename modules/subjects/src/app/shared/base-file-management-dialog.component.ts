@@ -58,5 +58,6 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
 
     deleteFile(file: AttachedFile) {
         this.store.dispatch(filesActions.deleteFile({ file }));
+
     }
 }

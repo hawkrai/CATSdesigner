@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {Lesson} from '../model/lesson.model';
-import {LESSONS} from '../mock/lesson-mock';
-import {Login} from '../../../../admin/src/app/model/login';
+import {les, SUBJECTS} from '../mock/lesson-mock';
+import {DatePipe, formatDate} from '@angular/common';
+
 
 
 @Injectable({
@@ -11,11 +11,19 @@ import {Login} from '../../../../admin/src/app/model/login';
 })
 export class LessonService {
 
-  constructor(private http: HttpClient) {
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'],
+    ['3', 'Практ.работа']];
+
+  constructor(private http: HttpClient,
+              private datePipe: DatePipe) {
   }
 
-  getLessons(): Observable<Lesson[]> {
-    return of(LESSONS);
+  getLessons(): Observable<any> {
+    return of(les);
+  }
+
+  getSubjects(): Observable<any> {
+    return of(SUBJECTS);
   }
 
 
@@ -23,7 +31,129 @@ export class LessonService {
     return this.http.post<any>('/Profile/GetProfileInfoCalendar', {userLogin: username});
   }
 
+  getLessonsByDates(start: string, end: string): Observable<any> {
+    return this.http.get<any>('/Services/Schedule/ScheduleService.svc/GetSchedule?dateStart=' + start + '&dateEnd=' + end);
+  }
+
+  saveLab(Lab: any): Observable<any>  {
+    return this.http.post<any>('/Services/Labs/ScheduleService.svc/SaveDateLab', {lab: Lab});
+  }
+
+  saveLecture(lect: any): Observable<any>  {
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures', {lecture: lect});
+  }
+
+  deleteLab(idLab: any): Observable<any>  {
+    return this.http.post<any>('/Services/Labs/LabsService.svc/Delete', {id: idLab});
+  }
+
+  getLessonsByDateAndTimes(date: string, start: string, end: string): Observable<any> {
+    return this.http.get<any>('/Services/Schedule/GetScheduleBetweenTime?date=' + date + '&startTime=' + start + '&endTime=' + end);
+
+  }
+
+  deleteLecture(lectId: any): Observable<any>  {
+    return this.http.post<any>('/Services/Lectures/LecturesService.svc/Delete', {id: lectId});
+  }
+
   getAllSubjects(username: string ): Observable<any> {
     return this.http.post<any>('/Profile/GetProfileInfoSubjects', {userLogin: username});
+  }
+
+  getSubject(title: string, subjects: any): any {
+    const splitted = title.split('|', 8);
+    return subjects.find(subject => subject.Id == splitted[7]).Id;
+  }
+
+  getType(title: string): any {
+    const splitted = title.split('|', 5);
+    return ' ' + splitted[4] + ' ';
+  }
+
+  getColor(title: string): any {
+    const splitted = title.split('|', 7);
+    return splitted[6] ;
+  }
+
+  getTeacher(title: string): any {
+    const splitted = title.split('|', 6);
+    return splitted[5] ;
+  }
+
+  getAudience(title: string): any {
+    const splitted = title.split('|', 3);
+    return  splitted[1];
+  }
+
+  getBuilding(title: string): any {
+    const splitted = title.split('|', 3);
+    return splitted[2];
+  }
+
+  getMemo(title: string): any {
+    const splitted = title.split('|', 9);
+    return splitted[8] ;
+  }
+
+  getThirdString(title: string): any {
+    const splitted = title.split('|', 6);
+    return splitted[5] ;
+  }
+
+  getColorLesson(event: any): any {
+    if (this.isLesson(event)) {
+      const splitted = event.title.split('|', 7);
+      return splitted[6] ;
+    } else {
+      return 'white';
+    }
+  }
+
+  getReferenceToSubject(title: string): any {
+    const splitted = title.split('|', 8);
+    return '/Subject?subjectId=' + splitted[7] ;
+  }
+
+  getLocation(title: string): any {
+    const splitted = title.split('|', 3);
+    return 'а.' + splitted[1] + ' к.' + splitted[2];
+  }
+
+  getName(title: string): any {
+    const splitted = title.split('|', 5);
+    return splitted[3];
+  }
+
+  getTime(title: string): any {
+    const splitted = title.split('|', 3);
+    return splitted[0];
+  }
+
+
+
+  isLesson(event): boolean {
+    return event.meta === 'lesson';
+  }
+
+  formatDate(date: Date): Date {
+    return new Date(this.datePipe.transform(date, 'MM-dd-yyyy'));
+  }
+
+  formatDate1(date: Date): Date {
+    const format = 'dd.MM.yyyy';
+    const locale = 'en-US';
+    return new Date(formatDate(this.datePipe.transform(date, 'dd-MM-yyyy'), format, locale));
+  }
+
+  formatDate2(date: Date): string {
+    return this.datePipe.transform(date, 'dd/MM/yyyy');
+  }
+
+  getLessonType(): any {
+    return this.lessonTypes;
+  }
+
+  getLessonTypeById(id: string): any {
+    return this.lessonTypes.find(type => type[0] == id)[1];
   }
 }

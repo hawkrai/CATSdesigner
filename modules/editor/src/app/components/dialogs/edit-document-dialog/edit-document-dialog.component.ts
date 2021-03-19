@@ -1,16 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentPreview } from 'src/app/models/DocumentPreview';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 
-export class DocumentErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+import 'ckeditor5-custom-build/build/translations/ru';
+
+import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
+import * as StringHelper from './../../../helpers/string-helper'
 
 @Component({
   selector: 'app-edit-document-dialog',
@@ -26,6 +21,7 @@ export class EditDocumentDialogComponent implements OnInit {
     editorData: '',
     config: {
       placeholder: 'Введите содержание здесь...',
+      language: 'ru',
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'alignment',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
@@ -52,7 +48,10 @@ export class EditDocumentDialogComponent implements OnInit {
   }
 
   onModelChanged(model) {
-    this.isEnableToSave = (model.editorData.replace(/<[^>]+>/g, '').length > 0 && model.editorData.replace(/<[^>]+>/g, '').length < 256 && this.oldName != model.editorData) ? true : false;
+    this.isEnableToSave =
+     (StringHelper.helper.sanitizeHtml(model.editorData).length > 0 &&
+      StringHelper.helper.sanitizeHtml(model.editorData).length < 256 &&
+      this.oldName != model.editorData);
   }
 
   onYesClick() {

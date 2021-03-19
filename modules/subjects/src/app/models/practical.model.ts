@@ -1,4 +1,5 @@
 import { Attachment } from './file/attachment.model';
+import { ScheduleProtectionRecommended } from './schedule-protection/schedule-protection-recommended.model';
 
 export class Practical {
     Theme: string;
@@ -9,4 +10,5 @@ export class Practical {
     PathFile: string;
     ShortName: string;
     Attachments: Attachment[]
+    ScheduleProtectionPracticalsRecommended: ScheduleProtectionRecommended[]
 }

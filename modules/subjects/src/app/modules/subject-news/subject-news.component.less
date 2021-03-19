@@ -2,6 +2,12 @@
   display: flex;
   flex-flow: column nowrap;
   margin-top: 25px;
+
+  &__list {
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+  }
   &__actions {
     button {
       margin-right: 14px;
@@ -16,7 +22,6 @@
 
   &__news {
     background-color: #f5f5f5;
-    font-family: 'Roboto', sans-serif;
     padding: 15px 20px 10px;
     border-left: 3px solid transparent;
     &__disable {
@@ -44,15 +49,10 @@
     }
 
     &-title {
-      color: #3f51b5;
-      font-size: 21px;
+      font-size: 19px;
       font-weight: 500;
       margin: 0;
       vertical-align: text-bottom;
-    }
-
-    &-content {
-      font-size: 14px;
     }
 
     &-date {

@@ -1,13 +1,17 @@
+import {Memo} from './memo.model';
+
 export class Lesson {
   id: string;
-  start: Date;
-  end: Date;
-  type: string;
-  teacher: string;
-  name: string;
-  shortname: string;
-  building: string;
-  classroom: string;
-  color: string;
-  subjectId: string;
+  Date: string;
+  Start: string;
+  End: string;
+  Type: string;
+  Teacher: any;
+  Name: string;
+  ShortName: string;
+  Building: string;
+  Audience: string;
+  Color: string;
+  SubjectId: string;
+  Notes: Memo;
 }

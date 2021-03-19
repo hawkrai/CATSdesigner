@@ -3,7 +3,9 @@
 <div class="test-execution-container">
   <div class="test-execution-block-top">
     <div class="question-title">
-      <div class="question-title-big">Вопрос №{{question?.Number}}</div>
+      <div class="question-title-big">
+        {{'text.test.question.num' | translate : ('Вопрос №' + question?.Number) : {number:question?.Number} }}
+      </div>
       <div class="question-title-small" *ngIf="test">{{test?.Title}}</div>
     </div>
     <div class="test-execution-block-time">
@@ -13,8 +15,12 @@
     </div>
   </div>
   <div class="test-execution-block-question" *ngIf="question">
-    <app-question class="test-execution-block-question" [question]="question" [questionNumber]="questionNumber"
-                  (goToNextQuestion)="nextQuestion($event)" [test]="test"></app-question>
+    <app-question class="test-execution-block-question"
+                  [question]="question"
+                  [questionNumber]="questionNumber"
+                  (goToNextQuestion)="nextQuestion($event)"
+                  [test]="test">
+    </app-question>
   </div>
   <div class="test-execution-block-question-spinner" *ngIf="!question">
     <mat-progress-spinner

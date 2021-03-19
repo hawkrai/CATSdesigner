@@ -21,7 +21,8 @@ export const filesReducer = createReducer(
         ...state, 
         files: state.files.map((f, i) => i === index ? file : f)
     })),
-    on(filesActions.deleteFileSuccess, (state, { pathName, fileName}): IFilesState => ({
+    on(filesActions.deleteFileSuccess, (state, { guidFileName }): IFilesState => ({
         ...state,
+        files: state.files.filter(file => file.GuidFileName !== guidFileName)
     }))
 );

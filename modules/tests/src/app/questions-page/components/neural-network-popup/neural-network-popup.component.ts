@@ -6,6 +6,7 @@ import * as neuralNetworkV2 from "../../../core/neuron/neuron1.js";
 import {TestPassingService} from "../../../service/test-passing.service";
 import {catchError, takeUntil, tap} from "rxjs/operators";
 import {Subject, throwError} from "rxjs";
+import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
   constructor(public dialogRef: MatDialogRef<NeuralNetworkPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private snackBar: MatSnackBar,
+              private translatePipe: TranslatePipe,
               private testPassingService: TestPassingService) {
     super();
   }
@@ -132,7 +134,7 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
     this.saveHidden = false;
     this.showThirdStep = true;
     this.disableButtons(false);
-    this.openSnackBar("Сеть обучена");
+    this.openSnackBar(this.translatePipe.transform("text.test.network.teach","Сеть обучена"));
   }
 
   public openSnackBar(message: string, action?: string) {
@@ -151,14 +153,14 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
           if (message && message.ErrorMessage) {
             this.openSnackBar(message.ErrorMessage);
           } else {
-            this.openSnackBar("Сеть сохранена");
+            this.openSnackBar(this.translatePipe.transform("text.test.network.saved","Сеть сохранена"));
           }
           this.disableButtons(false);
         }),
         takeUntil(this.unsubscribeStream$),
         catchError(() => {
           this.disableButtons(false);
-          this.openSnackBar("Произошла ошибка");
+          this.openSnackBar(this.translatePipe.transform("text.test.network.error","Произошла ошибка"));
           return throwError(null);
         }))
       .subscribe();

@@ -4,4 +4,5 @@ export class PercentageResult {
   StudentId: string;
   Mark: string;
   Comment: string;
+  ShowForStudent: boolean;
 }

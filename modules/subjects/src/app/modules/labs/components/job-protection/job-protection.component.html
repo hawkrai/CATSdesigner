@@ -1,28 +1,20 @@
-<div class="job-protection" *ngIf="state$ | async as state; else load">
+<app-student-job-protection *ngIf="!isTeacher" 
+  (onAddFile)="addLab($event)" 
+  (onDeleteFile)="deleteLab($event)">
+</app-student-job-protection>
+
+<app-teacher-job-protection *ngIf="isTeacher" 
+  (onCheckPlugiarism)="checkPlagiarism($event)" 
+  (onAddFile)="addLab($event)">
+</app-teacher-job-protection>
+
+
+<!-- <div class="job-protection" *ngIf="state$ | async as state; else load">
   <div *ngIf="isTeacher; else studentContent">
-    <div *ngFor="let subGroup of state.students | unique:'SubGroup' | orderBy">
-      <span class="job-protection__subGroup-title">Подгруппа {{subGroup}}</span>
-      <div class="job-protection__accordion">
-        <mat-accordion>
-          <mat-expansion-panel *ngFor="let student of state.students | filter:'SubGroup':subGroup"
-                               (opened)="openedPanelId = student.StudentId"
-                               [expanded]="openedPanelId === student.StudentId">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <mat-icon class="priority-icon" *ngIf="hasNewLabs(student)" [color]="'primary'">priority_high</mat-icon>
-                {{student.FullName}}
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <ng-container [ngTemplateOutlet]="table" [ngTemplateOutletContext]="{item: student.FileLabs, studentId: student.StudentId}"></ng-container>
-          </mat-expansion-panel>
-        </mat-accordion>
-      </div>
-    </div>
+
   </div>
   <ng-template #studentContent>
-    <div class="job-protection__actions">
-      <button mat-raised-button color="primary" (click)="addLab()">Добавить работу</button>
-    </div>
+
     <ng-container [ngTemplateOutlet]="table" [ngTemplateOutletContext]="{item: state.files}"></ng-container>
   </ng-template>
   <ng-template #table let-item="item" let-studentId="studentId">
@@ -128,4 +120,4 @@
   <div class="spinner">
     <mat-spinner></mat-spinner>
   </div>
-</ng-template>
+</ng-template> -->

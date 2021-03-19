@@ -28,8 +28,12 @@ import { NewsInfoComponent } from './modal/news-info/news-info.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
-import {MatTabGroup, MatTabsModule} from '@angular/material/tabs';
+import {MatTabsModule} from '@angular/material/tabs';
 import { AllNewsComponent } from './modal/all-news/all-news.component';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
+
 registerLocaleData(localeRu);
 
 class CustomDateFormatter extends CalendarNativeDateFormatter {
@@ -49,7 +53,8 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     ConfirmationComponent,
     NewsComponent,
     NewsInfoComponent,
-    AllNewsComponent
+    AllNewsComponent,
+    TranslatePipe
   ],
   imports: [
     BrowserModule,
@@ -66,6 +71,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     MatProgressSpinnerModule,
     MatFormFieldModule,
     ReactiveFormsModule,
+    NgxMaterialTimepickerModule,
     FlatpickrModule.forRoot(),
     CalendarModule.forRoot({
       provide: DateAdapter,
@@ -79,9 +85,10 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     MatSelectModule,
     MatMenuModule,
     MatRadioModule,
-    MatTabsModule
+    MatTabsModule,
+    MatDatepickerModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, MatDatepickerModule, TranslatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
   entryComponents: [AllNewsComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent]

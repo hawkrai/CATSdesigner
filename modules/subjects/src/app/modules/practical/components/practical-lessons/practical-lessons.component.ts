@@ -45,7 +45,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
   ngOnInit() {
     this.store.dispatch(practicalsActions.loadPracticals());
-    this.practicals$ = this.store.select(practicalsSelectors.getPracticals);
+    this.practicals$ = this.store.select(practicalsSelectors.selectPracticals);
   }
   
   ngOnChanges(changes: SimpleChanges): void {

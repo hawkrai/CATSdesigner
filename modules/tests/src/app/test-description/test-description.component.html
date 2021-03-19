@@ -9,7 +9,12 @@
       <div class="test-description-block">
         <div class="test-description-text">{{test.Description}}</div>
         <div class="test-description-button">
-          <button (click)="startTest()" mat-raised-button color="primary" matTooltip="Начать тест" matTooltipClass="example-tooltip-blue">Далее</button>
+          <button (click)="startTest()"
+                  mat-raised-button color="primary"
+                  [matTooltip]="'text.test.start' | translate:'Начать тест'"
+                  matTooltipClass="example-tooltip-blue">
+            {{'text.test.dalee'| translate: 'Далее'}}
+          </button>
         </div>
       </div>
     </div>

@@ -1,0 +1,16 @@
+<mat-accordion>
+    <mat-expansion-panel *ngFor="let lab of labs"
+                            (opened)="selectedLabId = lab.LabId"
+                            [expanded]="selectedLabId === lab.LabId">
+        <mat-expansion-panel-header>
+        <mat-panel-title>
+            <!-- <mat-icon class="priority-icon" *ngIf="hasNewLabs(student)" [color]="'primary'">priority_high</mat-icon> -->
+            {{lab.Theme}}
+        </mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-job-protection-content 
+        [labId]="lab.LabId" 
+        [userId]="userId" *ngIf="selectedLabId == lab.LabId" 
+        [actionsTemplate]="actionsTemplate"></app-job-protection-content>
+    </mat-expansion-panel>
+</mat-accordion>

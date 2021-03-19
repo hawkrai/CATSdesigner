@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Core.SLExcel;
 using Application.Infrastructure.GroupManagement;
 using System;
@@ -25,8 +26,8 @@ namespace LMPlatform.UI.ApiControllers.CP
         {
             var data = new SLExcelData();
 
-            var headerData = this.GroupManagementService.GetCpScheduleVisitings(subjectId, groupId);
-            var rowsData = this.GroupManagementService.GetCpScheduleMarks(subjectId, groupId);
+            var headerData = this.GroupManagementService.GetCpScheduleVisitings(subjectId, groupId, UserContext.CurrentUserId);
+            var rowsData = this.GroupManagementService.GetCpScheduleMarks(subjectId, groupId, UserContext.CurrentUserId);
 
             data.Headers.Add("Студент");
             data.Headers.AddRange(headerData);
@@ -48,8 +49,8 @@ namespace LMPlatform.UI.ApiControllers.CP
             var groupId = int.Parse(group);
             var data = new SLExcelData();
 
-            var headerData = this.GroupManagementService.GetCpPercentage(subjectId, groupId);
-            var rowsData = this.GroupManagementService.GetCpMarks(subjectId, groupId);
+            var headerData = this.GroupManagementService.GetCpPercentage(subjectId, groupId, UserContext.CurrentUserId);
+            var rowsData = this.GroupManagementService.GetCpMarks(subjectId, groupId, UserContext.CurrentUserId);
 
             data.Headers.Add("Студент");
             data.Headers.AddRange(headerData);

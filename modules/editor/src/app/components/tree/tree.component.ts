@@ -1,8 +1,9 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { IDocumentTree } from 'src/app/models/DocumentTree';
-import { CdkTreeModule } from '@angular/cdk/tree';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { IDocumentTree } from 'src/app/models/DocumentTree';4
 import { MatTreeNestedDataSource } from '@angular/material/tree';
+import * as san from './../../helpers/string-helper'
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'tree',
@@ -11,19 +12,23 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 })
 export class TreeComponent implements OnInit {
 
+  @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger;
+
   @Input() treeControl : NestedTreeControl<IDocumentTree>;
   @Input() dataSource : MatTreeNestedDataSource<IDocumentTree>;
   @Input() hasChild;
   @Input() isReadOnly;
   @Input() currentNodeId;
+  @Input() documentsList;
 
   @Output() onActivateTreeNodeEvent = new EventEmitter();
-  @Output() onExpandOrCollapseNode = new EventEmitter();
 
   @Output() onAddEvent = new EventEmitter();
   @Output() onRemoveEvent = new EventEmitter();
   @Output() onEditContentEvent = new EventEmitter();
   @Output() onEditStructureEvent = new EventEmitter();
+
+  menuTopLeftPosition =  {x: '0', y: '0'}
 
   constructor() {
   }
@@ -31,11 +36,22 @@ export class TreeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  isActive(nodeId) {
-    return this.currentNodeId == nodeId;
+  sanitizeHtml(row) {
+    return san.helper.sanitizeHtml(row);
   }
 
-  cleanFromHtml(row) {
-    return row.replace(/<[^>]+>/g, '');
+  onRightClick(ob) {
+    ob.event.preventDefault();
+
+    if(this.isReadOnly)
+      return;
+
+    // we record the mouse position in our object
+    this.menuTopLeftPosition.x = ob.event.clientX + 'px';
+    this.menuTopLeftPosition.y = ob.event.clientY + 'px';
+
+    this.matMenuTrigger.menuData = {item: this.documentsList.find(x => x.Id == ob.node.Id)};
+
+    this.matMenuTrigger.openMenu();
   }
 }

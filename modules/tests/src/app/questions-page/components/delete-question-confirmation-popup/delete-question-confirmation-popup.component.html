@@ -1,7 +1,7 @@
 <div mat-dialog-content>
-  <div class="confirmation-text">{{'Вы действительно хотите удалить вопрос?'}}</div>
+  <div class="confirmation-text">{{'text.test.want.to.delete' | translate: 'Вы действительно хотите удалить вопрос?'}}</div>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>Да</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>{{'text.test.yes' | translate : 'Да'}}</button>
 </div>

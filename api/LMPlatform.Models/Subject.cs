@@ -19,8 +19,6 @@ namespace LMPlatform.Models
 
 		public bool IsNeededCopyToBts { get; set; }
 
-		public ICollection<Note> Notes { get; set; }
-
 		public ICollection<SubjectGroup> SubjectGroups { get; set; }
 
 		public ICollection<SubjectLecturer> SubjectLecturers { get; set; }

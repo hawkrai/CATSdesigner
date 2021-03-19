@@ -27,22 +27,12 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent<AddLabPo
       super(dialogRef, store, data);
   } 
 
-  form = new FormGroup({
-    labId: new FormControl(null),
-    comment: new FormControl(this.data.model.comment),
-  });
   
   labs$: Observable<Lab[]>;
 
   ngOnInit(): void {
     this.store.dispatch(labsActions.loadLabs());
     this.labs$ = this.store.select(labsSelectors.getLabs);
-
-    if (!this.data.model.isTeacher) {
-      this.form.get('labId').setValidators(Validators.required);
-      this.form.get('comment').setValidators(Validators.required);
-    } 
-
     super.ngOnInit();
   }
 
@@ -53,10 +43,6 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent<AddLabPo
   }
 
   isValid(files: AttachedFile[]): boolean {
-    if (!this.data.model.isTeacher) {
-      return this.form.valid && files.length > 0;
-    }
-    return true;
-
+    return this.data.model.labId && files.length === 1;
   }
 }

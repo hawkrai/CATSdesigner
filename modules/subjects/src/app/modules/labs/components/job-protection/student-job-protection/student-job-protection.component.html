@@ -1,0 +1,24 @@
+<ng-container *ngIf="state$ | async as state">
+    <button mat-raised-button color="primary" (click)="addLab(state.userId)" style="margin: 20px 0;">Добавить работу</button>
+    <app-job-protection-item [labs]="state.labs" [userId]="state.userId" [actionsTemplate]="studentActions"></app-job-protection-item>
+    <ng-template let-file="file" #studentActions>
+        <!-- <div *ngIf="file.IsReceived || file.IsReturned">
+            {{(item.IsReceived ? 'Принято' : '') + (item.IsReturned ? 'Исправить' : '')}}
+          </div> -->
+        <div *ngIf="!(file.IsReceived || file.IsReturned)">
+            <button mat-icon-button color="primary"
+                    matTooltip="Редактировать лабораторную работу"
+                    (click)="addLab(state.userId, file)"
+            >
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+                    matTooltip="Удалить лабораторную работу"
+                    (click)="deleteLab(file.Id, state.userId, file.LabId)"
+            >
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </ng-template>
+</ng-container>
+

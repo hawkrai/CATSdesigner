@@ -54,18 +54,28 @@ export class PercentagesComponent implements OnInit {
   addStage() {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '600px',
-      data: { }
+      data: {
+        title: "Добавление этапа"
+       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
-        const date = new Date(result.date);
+      if (result != null && result.name != null) {
+        result.name = result.name.replace("\n","");
+        var checkTheme = this.percentages.find((i) => i.Name === result.name);
+
+        if (checkTheme == undefined) {
+          const date = new Date(result.date);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('График успешно сохранен');
+            this.addFlashMessage('Этап успешно сохранен');
           });
+        }
+        else{
+          this.addFlashMessage('Этап с таким названием уже существует');
+        } 
       }
     });
   }
@@ -74,6 +84,7 @@ export class PercentagesComponent implements OnInit {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '600px',
       data: {
+        title: "Редактирование этапа",
         name: stage.Name,
         percentage: stage.Percentage,
         date: stage.Date
@@ -81,14 +92,21 @@ export class PercentagesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
-        const date = new Date(result.date);
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)
-          .subscribe(() => {
-            this.ngOnInit();
-            this.addFlashMessage('График успешно сохранен');
+      if (result != null && result.name != null) {
+        result.name = result.name.replace("\n","");
+        var checkTheme = this.percentages.find((i) => i.Name === result.name);
+        if (checkTheme == undefined) {
+          const date = new Date(result.date);
+          date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+          this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)
+            .subscribe(() => {
+              this.ngOnInit();
+              this.addFlashMessage('Этап успешно изменен');
           });
+        }
+        else{
+          this.addFlashMessage('Этап с таким названием уже существует');
+        } 
       }
     });
   }

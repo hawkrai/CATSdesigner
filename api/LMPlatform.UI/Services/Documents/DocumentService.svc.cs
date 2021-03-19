@@ -1,17 +1,12 @@
-﻿using Application.Core;
-using Application.Infrastructure.DocumentsManagement;
-using Bootstrap;
-using LMPlatform.UI.ViewModels.DocumentsViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using System.Web;
-using LMPlatform.UI.Attributes;
+using System.Collections.Generic;
+using Application.Core;
+using Application.Infrastructure.DocumentsManagement;
+using LMPlatform.UI.ViewModels.DocumentsViewModels;
 
 namespace LMPlatform.UI.Services.Documents
 {
-    [JwtAuth]
     public class DocumentService : IDocumentService
     {
         private readonly LazyDependency<IDocumentManagementService> _documentManagementService = new LazyDependency<IDocumentManagementService>();
@@ -24,7 +19,7 @@ namespace LMPlatform.UI.Services.Documents
         {
             var content = new StringBuilder();
 
-            var document = DocumentManagementService.GetAll().FirstOrDefault(d => d.Id == documentId);
+            var document = DocumentManagementService.Find(documentId);
 
             if (document == null)
             {
@@ -83,13 +78,16 @@ namespace LMPlatform.UI.Services.Documents
             return ParseData(documents);
         }
 
-        public bool UpdateDocument(DocumentPreview document)
+        public int UpdateDocument(DocumentPreview document)
         {
+            Models.Documents entity;
+
+            var subjectId = document.SubjectId.HasValue ? document.SubjectId.Value : 0;
             var documentDTO = PreviewToDocument(document);
 
             if (documentDTO.Id == 0) //Save new document
             {
-                DocumentManagementService.UpdateDocument(documentDTO);
+                entity = DocumentManagementService.SaveDocument(documentDTO, subjectId);
             }
             else // Update existing
             {
@@ -102,10 +100,10 @@ namespace LMPlatform.UI.Services.Documents
                 existingDocument.Text = documentDTO.Text;
                 existingDocument.ParentOrder = documentDTO.ParentOrder;
 
-                DocumentManagementService.UpdateDocument(existingDocument);
+                entity = DocumentManagementService.UpdateDocument(existingDocument);
             }
 
-            return true;
+            return entity.Id;
         }
 
         public bool RemoveDocument(int documentId)
@@ -123,9 +121,9 @@ namespace LMPlatform.UI.Services.Documents
             {
                 foreach (var document in documents)
                 {
-                    if (document.Childrens.Any())
+                    if (DocumentManagementService.GetByParentId(document.Id).Any())
                     {
-                        RemoveChilds(document.Childrens);
+                        RemoveChilds(DocumentManagementService.GetByParentId(document.Id));
                     }
                     DocumentManagementService.RemoveDocument(document);
                 }

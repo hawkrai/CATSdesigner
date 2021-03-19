@@ -233,7 +233,7 @@ namespace Application.Infrastructure.Export
             {
                 dateStart = work.DateStart.HasValue ? work.DateStart.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
                 dateEnd = work.DateEnd != null && work.DateEnd.HasValue ? work.DateEnd.Value.ToString("d' 'MMMM' 'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
-                lecturer = string.Format("{0}.{1}. {2}", work.Lecturer.FirstName[0], work.Lecturer.MiddleName[0], work.Lecturer.LastName); ;
+                lecturer = string.Format("{0}.{1}. {2}", work.Lecturer.FirstName[0], work.Lecturer.MiddleName[0], work.Lecturer.LastName);
             }
             else
             {
@@ -5755,7 +5755,7 @@ namespace Application.Infrastructure.Export
             {
                 foreach (var pg in pgs)
                 {
-                    percentageGraph.AppendFormat(CultureInfo.CreateSpecificCulture("ru-RU"), "{3}. {0} \t{1}% \t{2:d MMMM yyyy} г.\n", pg.Name, pg.Percentage, pg.Date, y++);
+                    percentageGraph.AppendFormat(CultureInfo.CreateSpecificCulture("ru-RU"), "{3}. {0} — {1}% — {2:d MMMM yyyy} г.\n", pg.Name, pg.Percentage, pg.Date, y++);
                 }
             }
 
@@ -7317,7 +7317,15 @@ namespace Application.Infrastructure.Export
 
             Run run157 = new Run();
             Text text142 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            text142.Text = awork is null ? "" : string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+            if (awork.Student.MiddleName is null || awork.Student.MiddleName == "")
+            {
+                text142.Text = awork is null ? "" : string.Format("{0}. {1}", awork.Student.FirstName[0], awork.Student.LastName);
+            }
+            else
+            {
+                text142.Text = awork is null ? "" : string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+            }
+            
 
             run157.Append(text142);
             ProofError proofError25 = new ProofError() { Type = ProofingErrorValues.SpellStart };

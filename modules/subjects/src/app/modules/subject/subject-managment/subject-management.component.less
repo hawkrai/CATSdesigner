@@ -1,4 +1,5 @@
 .subject-management {
+  width: 500px;
   .example-h2 {
     margin: 10px;
   }
@@ -17,6 +18,8 @@
     grid-column-gap: 15px;
     grid-row-gap: 5px;
     margin-bottom: 21px;
+    width: 100%;
+    justify-content: space-between;
   }
 
   .example-form {
@@ -55,4 +58,24 @@
 
 ::ng-deep.mat-checkbox-disabled .mat-checkbox-label {
   color: inherit
+}
+
+::ng-deep {
+  .cdk-overlay-pane {
+    position: absolute!important;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0 7px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-between;
 }

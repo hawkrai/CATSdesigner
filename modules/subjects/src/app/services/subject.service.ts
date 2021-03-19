@@ -11,7 +11,6 @@ import { SubjectForm } from '../models/form/subject-form.model';
   providedIn: 'root'
 })
 export class SubjectService {
-  private subjectsSub = new BehaviorSubject<Subject[]>([]);
   constructor(private http: HttpClient) {
   }
 
@@ -53,8 +52,10 @@ export class SubjectService {
     );
   }
 
-  public getJoinedLector(subjectId: number): Observable<any> {
-    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId);
+  public getJoinedLector(subjectId: number): Observable<Lector[]> {
+    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId).pipe(
+      map(res => res['Lectors'])
+    );
   }
 
   public joinedLector(subjectId: number, lectorId: string): Observable<any> {
@@ -65,8 +66,10 @@ export class SubjectService {
     return this.http.post('Services/CoreService.svc/DisjoinLector', {subjectId, lectorId});
   }
 
-  public getNoAdjointLectors(subjectId: number): Observable<any> {
-    return this.http.get('Services/CoreService.svc/GetNoAdjointLectors/' + subjectId);
+  public getNoAdjointLectors(subjectId: number): Observable<Lector[]> {
+    return this.http.get('Services/CoreService.svc/GetNoAdjointLectors/' + subjectId).pipe(
+      map(res => res['Lectors'])
+    );
   }
 
   public saveSubGroup(body: any): Observable<any> {
