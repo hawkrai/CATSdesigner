@@ -32,6 +32,7 @@ export class CreateLessonComponent implements OnInit {
   subject: any;
   subjects: any[] = [];
   lessonTypes: string[][];
+  lessonTypesFull: string[][];
   dayOfLesson: Date;
   startTimeOfLesson: string;
   endTimeOfLesson: string;
@@ -59,10 +60,9 @@ export class CreateLessonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const format = 'dd.MM.yyyy';
-    const locale = 'en-US';
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.lessonTypes = this.lessonservice.getLessonType();
+    this.lessonTypesFull = this.lessonservice.getLessonTypeFull();
     this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
       this.subjects = subjects;
       if (this.data.lesson != null) {
@@ -77,6 +77,7 @@ export class CreateLessonComponent implements OnInit {
         this.lesson.SubjectId = this.lessonservice.getSubject(this.data.lesson.title);
         this.lesson.Audience = this.lessonservice.getAudience(this.data.lesson.title);
         this.lesson.Building = this.lessonservice.getBuilding(this.data.lesson.title);
+        console.log(this.lesson);
         this.memo = this.lessonservice.getMemo(this.data.lesson.title);
         this.changedType = this.lessonTypes.find(type => type[1] === this.lessonservice.getType(this.data.lesson.title).trim())[0];
         this.disableNote = true;
@@ -119,7 +120,7 @@ export class CreateLessonComponent implements OnInit {
       this.endHour = this.data.note.end.getHours() + '';
       this.endMin = this.data.note.end.getMinutes() + '';
       this.fillTimeParameters();
-      this.dayOfNote = new Date(formatDate(this.lessonservice.formatDate2(this.data.note.start), format, locale));
+      this.dayOfNote = this.data.note.start;
       this.startTimeOfNote = this.startHour + ':' + this.startMin;
       this.endTimeOfNote = this.endHour + ':' + this.endMin;
       this.note.title = this.data.note.title;
@@ -224,9 +225,20 @@ export class CreateLessonComponent implements OnInit {
     this.lessonAdd.startTime = this.startTimeOfLesson;
     this.lessonAdd.endTime = this.endTimeOfLesson;
     this.lessonAdd.building = this.lesson.Building;
-    this.lessonservice.saveLecture(this.lessonAdd).subscribe(l => {
-      console.log(l);
-    });
+    if (this.lesson.Type === 'Лекция') {
+      this.lessonservice.saveLecture(this.lessonAdd).subscribe(l => {
+        console.log(l);
+      });
+    } else if (this.lesson.Type === 'Лаб.работа') {
+      this.lessonservice.saveLab(this.lessonAdd).subscribe(l => {
+        console.log(l);
+      });
+    } else if (this.lesson.Type === 'Практ.работа') {
+      this.lessonservice.savePractical(this.lessonAdd).subscribe(l => {
+        console.log(l);
+      });
+    }
+
     this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
   }
 

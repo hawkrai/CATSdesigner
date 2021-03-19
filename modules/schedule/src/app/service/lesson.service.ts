@@ -12,6 +12,8 @@ export class LessonService {
 
   lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'], ['3', 'Практ.работа']];
 
+  lessonTypesFull: string[][] = [['1', 'Лекция'], ['2', 'Лабораторная работа'], ['3', 'Практическая работа']];
+
   constructor(private http: HttpClient,
               private datePipe: DatePipe) {
   }
@@ -156,6 +158,10 @@ export class LessonService {
 
   getLessonType(): any {
     return this.lessonTypes;
+  }
+
+  getLessonTypeFull(): any {
+    return this.lessonTypesFull;
   }
 
   getLessonTypeById(id: string): any {

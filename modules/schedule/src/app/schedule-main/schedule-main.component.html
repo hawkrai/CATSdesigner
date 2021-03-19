@@ -93,7 +93,7 @@
           <table style="margin: 0 4%">
             <thead>
             <tr>
-              <div style="display: flex;justify-content: space-between;margin-top: 17px;">
+              <div style="display: flex;justify-content: space-between;margin-top: 10px;">
                 <h6
                   style="background: #3F51B5;-webkit-background-clip: text;-webkit-text-fill-color:
                           transparent;font-size: 12px; left: 0%; float: left;font-family: Roboto, Helvetica Neue, sans-serif">
@@ -115,7 +115,7 @@
             <tr>
               <div style="display: flex;justify-content: space-between; ">
                 <p style="margin-top: 3px ; font-family: Roboto, Helvetica Neue,
-                          sans-serif; font-size: 12px;color: #808080; line-height: 100%; ">{{lessonservice.getThirdString(event.title)}}</p>
+                          sans-serif; white-space: pre-wrap; font-size: 12px;color: #808080; line-height: 100%; ">{{lessonservice.getThirdString(event.title)}}</p>
                 <button
                   style="color: #383838; padding: 0px; outline: none; min-width: 20px; margin-top: -6px;float: right;background: white;border-width: 0px"
                   mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
@@ -135,13 +135,14 @@
         </div>
       </div>
       <div *ngIf="isNote(event)">
-        <div>
+        <div matTooltip="{{event.title}}" matTooltipClass="example-tooltip-blue">
           <table>
             <thead>
             <tr>
               <div style="display: flex;justify-content: space-between;margin-top: 17px;">
                 <h6
-                  style="background: #383838;-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-size: 14px; left: 0%; float: left;font-family: Roboto, Helvetica Neue, sans-serif">{{getTimeNote(event)}}</h6>
+                  style="background: #3F51B5;-webkit-background-clip: text;-webkit-text-fill-color:
+                  transparent;font-size: 12px; left: 0%; float: left;font-family: Roboto, Helvetica Neue, sans-serif">{{getTimeNote(event)}}</h6>
               </div>
             </tr>
             <tr><p

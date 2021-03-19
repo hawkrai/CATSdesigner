@@ -7,6 +7,7 @@ import {Message} from '../../../../../container/src/app/core/models/message';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {AllNewsComponent} from '../modal/all-news/all-news.component';
 import {ScheduleMainComponent} from '../schedule-main/schedule-main.component';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-news',
@@ -43,12 +44,13 @@ export class NewsComponent implements OnInit {
       } else {
         this.isEnableNews = false;
       }
+      console.log(this.news);
     });
   }
 
   public openItemInfo(item: any) {
     const dialogRef = this.dialog.open(NewsInfoComponent, {
-      width: '600px',
+      width: '800px',
       position: {top: '10%'}, data: {itemNews: item}
     });
   }
@@ -62,14 +64,14 @@ export class NewsComponent implements OnInit {
 
   public calcColor(subject: any): any {
     if (subject != null) {
-      return '4px solid ' + subject.Color;
+      return '3px solid ' + subject.Color;
     }
   }
 
   public openAllNews() {
     const dialogRef = this.dialog.open(AllNewsComponent, {
-      width: '600px', height: '550px',
-      position: {top: '1%'}, data: {news: this.news}
+      width: '800px', height: '550px',
+      position: {top: '0%'}, data: {news: this.news}
     });
   }
 

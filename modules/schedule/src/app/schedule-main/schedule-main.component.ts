@@ -12,7 +12,6 @@ import {ConfirmationComponent} from '../modal/confirmation/confirmation.componen
 import {DatePipe} from '@angular/common';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
-import {les} from "../mock/lesson-mock";
 
 
 const colors: any = {
@@ -89,6 +88,7 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   calculateTitel(lesson: Lesson): any {
+    let teacher = '';
     let minS;
     let building = '';
     let memo = '';
@@ -109,11 +109,14 @@ export class ScheduleMainComponent implements OnInit {
     } else {
       memo = '';
     }
+    if (lesson.Teacher != undefined) {
+      teacher = lesson.Teacher.FullName;
+    }
     return lesson.Start.split(':')[0] + ':' + minS + '-'
       + lesson.End.split(':')[0] + ':' + minE
       + '|' + lesson.Audience + '|' + building
       + '|' + lesson.ShortName + '|' + lesson.Type
-      + '|' + lesson.Teacher.FullName + '|' + lesson.Color
+      + '|' + teacher + '|' + lesson.Color
       + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo;
   }
 
@@ -155,10 +158,9 @@ export class ScheduleMainComponent implements OnInit {
     const dialogRef = this.dialog.open(CreateLessonComponent,
       {
         width: '600px',
-        height: '700px',
         disableClose: true,
         data: {user: this.user, date: dateEvent},
-        position: {top: '1%'}
+        position: {top: '0%'}
       });
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
@@ -227,8 +229,8 @@ export class ScheduleMainComponent implements OnInit {
 
   changeNote(eventToChange: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent, {
-      width: '600px', height: '700px',
-      data: {note: eventToChange, user: this.user}, position: {top: '1%'}
+      width: '600px',
+      data: {note: eventToChange, user: this.user}, position: {top: '0%'}
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result.note != null) {
@@ -253,7 +255,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeLesson(lessonChanged: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '600px', height: '700px', data: {user: this.user, lesson: lessonChanged}, position: {top: '1%'}});
+      {width: '600px',  data: {user: this.user, lesson: lessonChanged}, position: {top: '0%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.lesson = result.lesson;
