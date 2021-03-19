@@ -18,6 +18,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   isFolder: boolean;
   editMode: boolean;
   conceptId: any;
+  popupTitle: string;
   public selectedConcept: string;
 
   constructor(
@@ -48,7 +49,8 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
           this.selectConcept(this.data.parentId);
         }
       }
-      this.editMode = this.data.id && this.data.id !== '0';
+      this.editMode = this.data.id !== null && this.data.id !== '0';
+      this.popupTitle = this.editMode ? 'Редактировать ЭУМК' : 'Добавить элемент ЭУМК'
     });    
   }
 

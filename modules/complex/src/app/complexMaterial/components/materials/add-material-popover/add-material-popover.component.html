@@ -1,6 +1,6 @@
 <ng-container *var="files$ | async as files">
   <button class="close" mat-button (click)="onClose(files, false)">X</button>
-  <h1 mat-dialog-title>Добавить элемент ЭУМК</h1>
+  <h1 mat-dialog-title>{{popupTitle}}</h1>
   <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
     <form class="example-form" #formElement>
       <div class="basic-container" *ngIf="navItems?.length">
@@ -32,7 +32,7 @@
           <mat-label>Введите имя файла</mat-label>
           <input name="fileName" maxlength="100" placeholder="Имя файла" [(ngModel)]="data.name" matInput>
         </mat-form-field>
-        <app-file-uploader header="Прикрепленный документ" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+        <app-file-uploader header="Прикрепленный документ" (delete)="deleteFile($event)" [files]="files" [disabled]="files.length > 0" (upload)="uploadFile($event)"></app-file-uploader>
       </div>
     </form>
   </div>

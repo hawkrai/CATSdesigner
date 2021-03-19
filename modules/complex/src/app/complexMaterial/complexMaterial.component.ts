@@ -43,14 +43,14 @@ export class ComplexMaterialComponent implements OnInit {
   openAddPopup(): void {
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',      
-      data: { id: 0, attachments: [] }
+      data: { id: '0', attachments: [] }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const concept: Concept =
         {
-          conceptId: result.id,
+          conceptId: +result.id,
           conceptName: result.name,
           parentId: result.parentId,
           isGroup: result.isGroup,
