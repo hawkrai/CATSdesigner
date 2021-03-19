@@ -38,7 +38,9 @@ namespace Application.Infrastructure.ScheduleManagement
 					.Select(LabScheduleToModel)
 					.ToList();
 
-				return !lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule).Any(x =>
+				return !lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
+					.Where(x => x.Start.HasValue && x.End.HasValue)
+					.Any(x =>
 					((x.Start <= startTime && x.End >= endTime) ||
 					(x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
 					(x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||

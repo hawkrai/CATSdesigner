@@ -76,7 +76,7 @@
       (click)="onCreateDate()">{{data.buttonText}}</button>
     </form>
     <p mat-dialog-title class="visit-date__table-title">Выбранные даты</p>
-    <div class="mdc-data-table example-container mat-elevation-z8">
+    <div class="mdc-data-table visit-date__table-container mat-elevation-z8" *ngIf="schedule && schedule.length">
       <table class="mdc-data-table__table">
         <tbody class="mdc-data-table__content">
          <tr class="mdc-data-table__row" *ngFor="let day of schedule">

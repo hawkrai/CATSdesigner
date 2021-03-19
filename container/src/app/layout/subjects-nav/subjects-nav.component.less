@@ -19,7 +19,9 @@
 }
 
 .container{
-    display: block;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
 }
 
 .flex-spacer
@@ -31,16 +33,29 @@
     margin-top: 10px;
 }
 
+.toggle-button {
+    display: none;
+    align-self: center;
+}
+
 .mat-h3{
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal;
     color: #f1f1f1;
+    line-height: 1;
+    margin-top: -5px;;
     margin-left: 16px;
     margin-bottom: 10px;
 }
 .mat-raised-button{
     font-weight: normal;
     color: #3f51b5; 
+}
+
+@media (max-width: 970px) {
+    .toggle-button {
+        display: block;
+    }
 }
 
 @media (max-width:657px){
