@@ -9,16 +9,16 @@ namespace LMPlatform.UI.Services.Documents
     public interface IDocumentService
     {
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetDocumentsBySubjectId?subjectId={subjectId}")]
-        IEnumerable<DocumentPreview> GetDocumentsBySubjectId(int subjectId);
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetDocumentsBySubjectId?subjectId={subjectId}&userId={userId}")]
+        IEnumerable<DocumentPreview> GetDocumentsBySubjectId(int subjectId, int userId);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetDocumentsTreeBySubjectId?subjectId={subjectId}")]
-        IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId);
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetDocumentsTreeBySubjectId?subjectId={subjectId}&userId={userId}")]
+        IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId, int userId);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFullContent?documentId={documentId}")]
-        DocumentPreview GetFullContent(int documentId);
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFullContent?documentId={documentId}&userId={userId}")]
+        DocumentPreview GetFullContent(int documentId, int userId);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/RemoveDocument?documentId={documentId}")]

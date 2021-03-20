@@ -15,7 +15,7 @@ namespace LMPlatform.UI.Services.Notes
     {
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/SaveNote")]
-        ResultViewData SaveNote(int id, int subjectId, string text);
+        ResultViewData SaveNote(int id, string text, int subjectId, int? lecturesScheduleId, int? labsScheduleId, int? practicalScheduleId);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/DeleteNote")]

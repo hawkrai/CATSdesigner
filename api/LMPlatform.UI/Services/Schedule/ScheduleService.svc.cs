@@ -5,11 +5,13 @@ using Application.Infrastructure.NoteManagement;
 using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.ScheduleManagement;
 using Application.Infrastructure.SubjectManagement;
+using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Notes;
 using LMPlatform.UI.Services.Modules.Schedule;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using WebMatrix.WebData;
@@ -41,14 +43,20 @@ namespace LMPlatform.UI.Services.Schedule
 
         public ScheduleViewResult GetScheduleForDate(string date)
         {
-            var dateTime = DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-            return new ScheduleViewResult
+            try
             {
-                Schedule = ScheduleManagementService.GetScheduleForDate(dateTime).Select(x => new ScheduleViewData(x))
-            };
+                var dateTime = DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                return new ScheduleViewResult
+                {
+                    Schedule = ScheduleManagementService.GetScheduleForDate(dateTime).Select(x => new ScheduleViewData(x))
+                };
+            } catch(Exception ex)
+            {
+                return new ScheduleViewResult();
+            }
         }
 
-        public ResultViewData SaveDateLectures(int subjectId, string date, string startTime, string endTime, string building, string audience)
+        public ResultViewData SaveDateLectures(int subjectId, string date, string startTime, string endTime, string building, string audience, Note note)
         {
 
             try
@@ -75,14 +83,21 @@ namespace LMPlatform.UI.Services.Schedule
                         Code = "500"
                     };
                 }
-                ScheduleManagementService.SaveDateLectures(
-                    subjectId,
-                    dateTime,
-                    start,
-                    end,
-                    building,
-                    audience
-                    );
+                var lecturesSchedule = new LecturesScheduleVisiting
+                {
+                    Audience = audience,
+                    Date = dateTime,
+                    Building = building,
+                    EndTime = end,
+                    StartTime = start,
+                    SubjectId = subjectId,
+                };
+                if (note != null)
+                {
+                    note.UserId = UserContext.CurrentUserId;
+                    lecturesSchedule.Notes.Add(note);
+                }
+                ScheduleManagementService.SaveDateLectures(lecturesSchedule);
                 return new ResultViewData
                 {
                     Message = "Дата успешно добавлена",
@@ -99,7 +114,7 @@ namespace LMPlatform.UI.Services.Schedule
             }
         }
 
-        public ResultViewData SaveDateLab(int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience)
+        public ResultViewData SaveDateLab(int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience, Note note)
 		{
             try
 			{
@@ -124,15 +139,22 @@ namespace LMPlatform.UI.Services.Schedule
                         Code = "500"
                     };
                 }
-                ScheduleManagementService.SaveScheduleProtectionLabsDate(
-					subjectId,
-					subGroupId,
-	                dateTime,
-                    start,
-                    end,
-					building,
-					audience
-					);
+                var labsSchedule = new ScheduleProtectionLabs
+                {
+                    Audience = audience,
+                    Date = dateTime,
+                    Building = building,
+                    EndTime = end,
+                    StartTime = start,
+                    SubjectId = subjectId,
+                    SuGroupId = subGroupId
+                };
+                if (note != null)
+                {
+                    note.UserId = UserContext.CurrentUserId;
+                    labsSchedule.Notes.Add(note);
+                }
+                ScheduleManagementService.SaveScheduleProtectionLabsDate(labsSchedule);
 				return new ResultViewData
 				{
 					Message = "Дата успешно добавлена",
@@ -149,7 +171,7 @@ namespace LMPlatform.UI.Services.Schedule
 			}
 		}
 
-        public ResultViewData SaveDatePractical(int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience)
+        public ResultViewData SaveDatePractical(int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note)
         {
             try {
                 var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
@@ -173,16 +195,23 @@ namespace LMPlatform.UI.Services.Schedule
                         Code = "500"
                     };
                 }
+                var practicalSchedule = new ScheduleProtectionPractical
+                {
+                    Audience = audience,
+                    Date = dateTime,
+                    Building = building,
+                    EndTime = end,
+                    StartTime = start,
+                    SubjectId = subjectId,
+                    GroupId = groupId
+                };
+                if (note != null)
+                {
+                    note.UserId = UserContext.CurrentUserId;
+                    practicalSchedule.Notes.Add(note);
+                }
+                ScheduleManagementService.SaveDatePractical(practicalSchedule);
 
-                ScheduleManagementService.SaveDatePractical(
-                    subjectId,
-                    groupId,
-                    dateTime,
-                    start,
-                    end,
-                    building,
-                    audience
-                    );
                 return new ResultViewData
                 {
                     Message = "Дата успешно добавлена",

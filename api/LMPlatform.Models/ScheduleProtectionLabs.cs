@@ -16,5 +16,7 @@ namespace LMPlatform.Models
         public SubGroup SubGroup { get; set; }
 
         public ICollection<ScheduleProtectionLabMark> ScheduleProtectionLabMarks { get; set; }
+
+        public ICollection<Note> Notes { get; set; } = new List<Note>();
     }
 }

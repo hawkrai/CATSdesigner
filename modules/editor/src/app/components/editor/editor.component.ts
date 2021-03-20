@@ -8,12 +8,16 @@ import { IDocumentTree } from './../../models/DocumentTree';
 import { TreeComponent } from '../tree/tree.component';
 import { DocumentService } from './../../services/document.service';
 import { DocumentPreview } from './../../models/DocumentPreview';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 import { AddDocumentDialogComponent } from '../dialogs/add-document-dialog/add-document-dialog.component';
 import { EditDocumentDialogComponent } from '../dialogs/edit-document-dialog/edit-document-dialog.component';
 import { RemoveDocumentDialogComponent } from '../dialogs/remove-document-dialog/remove-document-dialog.component';
 
+import * as san from './../../helpers/string-helper'
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
+import 'ckeditor5-custom-build/build/translations/ru';
+import 'ckeditor5-custom-build/build/translations/en-gb';
 
 @Component({
   selector: 'app-editor',
@@ -32,7 +36,9 @@ export class EditorComponent implements OnInit {
     editorData: '',
     isReadOnly: true,
     config: {
-      placeholder: 'Введите содержание здесь...',
+      language: san.helper.transformLanguageLine(localStorage.getItem("locale") ?? "ru"),
+      placeholder: this.translatePipe.transform('text.editor.hint.enter.content.here',"Введите содержимое здесь..."),
+      removePlugins: '',
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
@@ -61,7 +67,9 @@ export class EditorComponent implements OnInit {
   currentNodeId: Number;
   currentDocument: DocumentPreview;
 
-  constructor(private _bookService: DocumentService, public dialog: MatDialog) {}
+  constructor(private _bookService: DocumentService,
+    public translatePipe: TranslatePipe,
+    public dialog: MatDialog) {}
 
   ngOnInit() {
     let currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
@@ -71,6 +79,13 @@ export class EditorComponent implements OnInit {
     this.UserId = currentUser ? currentUser.id : 1;
     this.isReadOnly = currentUser ? currentUser.role != "lector" : environment.production;
     this.reloadTree();
+    this.configEditor();
+  }
+
+  configEditor() {
+    if(this.isReadOnly) {
+      this.model.config.removePlugins = 'toolbar';
+    }
   }
 
   ngOnDestroy() {
@@ -81,10 +96,10 @@ export class EditorComponent implements OnInit {
 
   //TREE
   reloadTree() {
-    this._bookService.getDocumentsBySubjectId(this.SubjectId).subscribe(data => {
+    this._bookService.getDocumentsBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
       this.documents = data;
     });
-    this._bookService.getDocumentsTreeBySubjectId(this.SubjectId).subscribe(data => {
+    this._bookService.getDocumentsTreeBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
       this.dataSource.data = data;
       this.treeControl.dataNodes = this.dataSource.data;
       this.updateLinearTreeNodesList();
@@ -117,17 +132,10 @@ export class EditorComponent implements OnInit {
     });
   }
 
-  getParentId(data: IDocumentTree[], childNodeId: Number) : Number {
-    var res: Number = 0;
-    data.forEach(node => {
-      if (node.Children && node.Children.find(c => c.Id === childNodeId)) {
-        res = node.Id;
-      }
-      else {
-        return this.getParentId(node.Children, childNodeId);
-      }
-    });
-    return res;
+  getParentId(childNodeId: Number = this.currentNodeId) : Number {
+    let node = this.linearTreeList.find(n => n.Children.find(c => c.Id == childNodeId));
+
+    return node ? node.Id : 0;
   }
 
   activateNode(documentId) {
@@ -197,7 +205,7 @@ export class EditorComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(newDocument => {
       this._bookService.removeDocument(newDocument).subscribe(res => {
-        this.currentNodeId = this.getParentId(this.dataSource.data, this.currentNodeId);
+        this.currentNodeId = this.getParentId();
         this.reloadTree();
       });
     });
@@ -225,6 +233,7 @@ export class EditorComponent implements OnInit {
           newDocument.Text = "";
           newDocument.UserId = this.UserId;
           newDocument.SubjectId = this.SubjectId;
+          newDocument.IsLocked = false;
         }
         this._bookService.saveDocument(newDocument).subscribe(res => {
           this.currentNodeId = res;
@@ -249,5 +258,13 @@ export class EditorComponent implements OnInit {
       this.linearTreeList.push(el);
       return this.upd(el.Children);
     });
+  }
+
+  changeLockState(node) {
+    this.currentNodeId = node.Id;
+    node.IsLocked = !node.IsLocked;
+    this._bookService.saveDocument(node).subscribe(res => {
+      this.reloadTree();
+    });;
   }
 }

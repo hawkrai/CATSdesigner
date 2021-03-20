@@ -119,6 +119,11 @@ namespace Application.Infrastructure.CPManagement
             if (user)
             {
                 projects = Context.AssignedCourseProjects.Where(x=>x.StudentId == lecturerId).Select(x=>x.CourseProject);
+                
+                if (projects.ToList().Count == 0)
+                {
+                    projects = Context.CourseProjects.Where(x => x.SubjectId == subjectId);
+                }
             }
             return projects.Select(x => new Correlation
                 {

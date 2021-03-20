@@ -84,6 +84,10 @@ element.style {
     transform: scaleY(1);
 }
 
+.active {
+    background: #394b86;
+}
+
 
 .cdk-overlay-pane {
     margin-top: 40px;
@@ -119,7 +123,7 @@ element.style {
 
     .icons{
         display: flex;
-        justify-content: end;
+        justify-content: flex-end;
     }
 
     .menu-subject{
@@ -127,7 +131,7 @@ element.style {
     }
 
     .mat-button {
-        padding: 0px 16px 0px 0px;
+        padding: 0px 16px 0px 16px;
     }
 
     .search-form {
@@ -148,6 +152,7 @@ element.style {
         display: none;
     }
     .menu-burger{
-        display: flex;
+        display: block;
+        margin-left: -8px;
     }
 }

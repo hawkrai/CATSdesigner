@@ -28,7 +28,7 @@ namespace LMPlatform.UI.Services.Notes
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
 
-        public ResultViewData SaveNote(int id, int subjectId, string text)
+        public ResultViewData SaveNote(int id, string text, int subjectId, int? lecturesScheduleId, int? labsScheduleId, int? practicalScheduleId)
         {
             try
             {
@@ -45,16 +45,18 @@ namespace LMPlatform.UI.Services.Notes
                 {
                     Id = id,
                     Text = text,
-                    SubjectId = subjectId,
+                    LecturesScheduleId = lecturesScheduleId,
+                    LabsScheduleId = labsScheduleId,
+                    PracticalScheduleId = practicalScheduleId,
                     UserId = UserContext.CurrentUserId
-                });
+            });
                 return new ResultViewData
                 {
                     Code = "200",
                     Message = "Заметка успешно сохранена"
                 };
             }
-            catch
+            catch (Exception ex)
             {
                 return new ResultViewData
                 {

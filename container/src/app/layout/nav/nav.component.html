@@ -3,8 +3,8 @@
     <img src="/assets/images/nav-logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted">
   </a>
   <span class="example-spacer"></span>
-  <div *ngIf="!isAdmin" >
-    <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
+  <div *ngIf="!isAdmin">
+    <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/viewer'">Предметы</a>
   </div>
   <a *ngIf="isLector" mat-button [routerLink]="'/emails'" >Дипломное проектирование</a>
 
@@ -88,10 +88,9 @@
     </mat-menu>
 
     <div class="icons">
-      <mat-select class="mselect">
-        <mat-option class="mopt" value="Ru">Ru
-        </mat-option>
-        <mat-option  value="eu">En
+      <mat-select class="mselect" (selectionChange)="onValueChange($event)" [value]="locale">
+        <mat-option *ngFor="let locale of locales" [value]="locale">
+          {{locale.name}}
         </mat-option>
       </mat-select>
       

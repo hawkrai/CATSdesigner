@@ -6,6 +6,7 @@ import { CoreService } from "../../core/services/core.service";
 import { Subject } from "../../core/models/subject";
 import { AuthenticationService } from './../../core/services/auth.service';
 import { switchMap } from 'rxjs/operators';
+import { MenuService } from 'src/app/core/services/menu.service';
 
 @Component({
   selector: 'app-subjects-nav',
@@ -15,12 +16,14 @@ import { switchMap } from 'rxjs/operators';
 export class SubjectsNavComponent implements OnInit, AfterViewChecked {
   opened:boolean;
   subjects: Subject[];
+  subjectId: number;
   public isLector:boolean = false;
 
   constructor(
     public coreService: CoreService,
     private router: Router,
     private cdref: ChangeDetectorRef,
+    private menuService: MenuService,
     private autService: AuthenticationService) {}
 
   ngAfterViewChecked() {
@@ -39,6 +42,7 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
         this.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
         if(this.coreService.selectedSubject) {
           console.log(subjectId);
+          this.subjectId = subjectId;
           this.setupLocalInfo(this.coreService.selectedSubject); 
         }
                
@@ -63,7 +67,8 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
     this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name, color: subject.Color });  
   }
 
-  changeSubject(id: number): void {   
+  changeSubject(id: number): void {
+    this.subjectId = id;
     this.coreService.selectedSubject = this.subjects.find(element => element.Id == id);
     this.setupLocalInfo(this.coreService.selectedSubject);
     this.redirectToSelected();  
@@ -79,4 +84,7 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
     this.router.navigateByUrl(`web/viewer/subjects`);   
   }
 
+  onToggleClick(): void {
+    this.menuService.toogleSidenav();
+  }
 }

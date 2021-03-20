@@ -1,17 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentPreview } from 'src/app/models/DocumentPreview';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
-import * as san from './../../../helpers/string-helper'
 
-export class DocumentErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+import 'ckeditor5-custom-build/build/translations/ru';
+import 'ckeditor5-custom-build/build/translations/en-gb';
+
+import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
+import * as StringHelper from './../../../helpers/string-helper'
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-edit-document-dialog',
@@ -26,7 +22,8 @@ export class EditDocumentDialogComponent implements OnInit {
   public model = {
     editorData: '',
     config: {
-      placeholder: 'Введите содержание здесь...',
+      placeholder: this.translatePipe.transform('text.editor.hint.enter.content.here',"Введите содержимое здесь..."),
+      language: StringHelper.helper.transformLanguageLine(localStorage.getItem("locale") ?? "ru"),
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'alignment',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
@@ -39,13 +36,18 @@ export class EditDocumentDialogComponent implements OnInit {
 
   isEnableToSave: boolean;
   oldName: string;
+  description: string;
 
   constructor(public dialogRef: MatDialogRef<EditDocumentDialogComponent>,
+    public translatePipe: TranslatePipe,
     @Inject(MAT_DIALOG_DATA) public data: DocumentPreview) { }
 
   ngOnInit() {
     this.isEnableToSave = false;
     this.oldName = this.model.editorData = this.data.Name;
+    this.description = this.data.ParentId && this.data.ParentId != 0 ?
+      this.translatePipe.transform('text.editor.edit.theme',"Редактирование темы") :
+      this.translatePipe.transform('text.editor.edit.book',"Редактирование учебника");
   }
 
   onNoClick(): void {
@@ -54,8 +56,8 @@ export class EditDocumentDialogComponent implements OnInit {
 
   onModelChanged(model) {
     this.isEnableToSave =
-     (san.helper.sanitizeHtml(model.editorData).length > 0 &&
-      san.helper.sanitizeHtml(model.editorData).length < 256 &&
+     (StringHelper.helper.sanitizeHtml(model.editorData).length > 0 &&
+      StringHelper.helper.sanitizeHtml(model.editorData).length < 256 &&
       this.oldName != model.editorData);
   }
 
