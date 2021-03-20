@@ -16,6 +16,7 @@ namespace LMPlatform.Models
         public int ParentOrder { get; set; }
         public int? UserId { get; set; }
         public int? ParentId { get; set; }
+        public bool IsLocked { get; set; }
         public User User { get; set; }
         public Documents Parent { get; set; }
         public ICollection<Documents> Childrens { get; set; }
