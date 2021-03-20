@@ -33,6 +33,7 @@ import { AllNewsComponent } from './modal/all-news/all-news.component';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
+import {MatIconModule} from '@angular/material/icon';
 
 registerLocaleData(localeRu);
 
@@ -56,38 +57,39 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     AllNewsComponent,
     TranslatePipe
   ],
-  imports: [
-    BrowserModule,
-    MatButtonModule,
-    NoopAnimationsModule,
-    BrowserAnimationsModule,
-    CommonModule,
-    FormsModule,
-    AppRoutingModule,
-    MatDialogModule,
-    HttpClientModule,
-    MatInputModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    NgxMaterialTimepickerModule,
-    FlatpickrModule.forRoot(),
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory
-    }, {
-      dateFormatter: {
-        provide: CalendarDateFormatter,
-        useClass: CustomDateFormatter
-      }
-    }),
-    MatSelectModule,
-    MatMenuModule,
-    MatRadioModule,
-    MatTabsModule,
-    MatDatepickerModule
-  ],
+    imports: [
+        BrowserModule,
+        MatButtonModule,
+        NoopAnimationsModule,
+        BrowserAnimationsModule,
+        CommonModule,
+        FormsModule,
+        AppRoutingModule,
+        MatDialogModule,
+        HttpClientModule,
+        MatInputModule,
+        MatTooltipModule,
+        MatProgressSpinnerModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        NgxMaterialTimepickerModule,
+        FlatpickrModule.forRoot(),
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory
+        }, {
+            dateFormatter: {
+                provide: CalendarDateFormatter,
+                useClass: CustomDateFormatter
+            }
+        }),
+        MatSelectModule,
+        MatMenuModule,
+        MatRadioModule,
+        MatTabsModule,
+        MatDatepickerModule,
+        MatIconModule
+    ],
   providers: [DatePipe, MatDatepickerModule, TranslatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
