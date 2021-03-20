@@ -29,6 +29,7 @@ export class CatsEffects {
         tap(({ body }) => {
             const message = new Message();
             message.Type = 'Toast';
+            console.log(body)
             message.Value = JSON.stringify({ text: body.Message as string, type: body.Code === '200' ? 'success' : 'warning' });
             this.catsMessageService.sendMessage(message);
         }) 

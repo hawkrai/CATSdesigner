@@ -40,7 +40,7 @@ export class LessonService {
   }
 
   saveLecture(lect: any): Observable<any>  {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures', {lecture: lect});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures', { ...lect});
   }
 
   deleteLab(idLab: any): Observable<any>  {

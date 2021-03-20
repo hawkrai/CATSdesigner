@@ -25,7 +25,6 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() groupId: number;
 
   state$: Observable<{ calendar: Calendar[], groupsVisiting: GroupsVisiting }>;
-  public displayedColumns: string[] = [];
 
   constructor(
     private store: Store<IAppState>,
@@ -44,11 +43,12 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
       this.store.select(lecturesSelectors.getCalendar),
       this.store.select(lecturesSelectors.getGroupsVisiting)
     ).pipe(
-      map(([calendar, groupsVisiting]) => ({ calendar, groupsVisiting })),
-      tap(({ calendar}) => {
-        this.displayedColumns = ['position', 'name', ...calendar.map(res => res.Date + res.Id)];
-      })
+      map(([calendar, groupsVisiting]) => ({ calendar, groupsVisiting }))
       );
+  }
+
+  getDisplayedColumns(calendar: Calendar[]): string[] {
+    return ['position', 'name', ...calendar.map(res => res.Date + res.Id)];
   }
 
   ngOnDestroy(): void {

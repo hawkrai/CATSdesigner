@@ -77,7 +77,7 @@ namespace LMPlatform.UI.Services.Lectures
                     Code = "200"
                 };
             }
-            catch
+            catch (Exception ex)
             {
                 return new CalendarResult
                 {
