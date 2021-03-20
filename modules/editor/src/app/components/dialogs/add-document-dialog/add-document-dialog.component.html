@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Добавление {{description}}</h1>
+<h1 mat-dialog-title>{{'text.editor.adding' | translate: 'Добавление'}} {{description}}</h1>
 <div mat-dialog-content>
   <ckeditor
     [editor]="editor"
@@ -8,6 +8,6 @@
 ></ckeditor>
 </div>
 <div mat-dialog-actions align="right">
-  <button mat-raised-button (click)="onNoClick()">Отмена</button>
-  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="!isEnableToSave">Сохранить</button>
+  <button mat-raised-button (click)="onNoClick()">{{'text.editor.cancel' | translate: 'Отмена'}}</button>
+  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="!isEnableToSave">{{'text.editor.save' | translate: 'Сохранить'}}</button>
 </div>

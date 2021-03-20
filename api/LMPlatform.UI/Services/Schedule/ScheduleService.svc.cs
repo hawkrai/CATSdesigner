@@ -218,7 +218,7 @@ namespace LMPlatform.UI.Services.Schedule
                     Code = "200"
                 };
             }
-            catch (Exception ex)
+            catch
             {
                 return new ResultViewData
                 {

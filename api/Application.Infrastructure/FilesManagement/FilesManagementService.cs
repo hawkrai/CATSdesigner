@@ -81,7 +81,7 @@ namespace Application.Infrastructure.FilesManagement
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
             var attachment = repositoriesContainer.AttachmentRepository.GetBy(new Query<Attachment>(x => x.PathName == pathName && x.FileName == fileName));
-            var tempFilePath = Path.Combine(_tempStorageRoot, attachment.FileName);
+            var tempFilePath = Path.Combine(_tempStorageRoot, attachment?.FileName ?? fileName);
             if (attachment != null)
             {
                 DeleteFileAttachment(attachment);

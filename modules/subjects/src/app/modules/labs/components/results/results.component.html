@@ -63,7 +63,7 @@
             <td mat-cell
                 *matCellDef="let element"
                 [ngClass]="{'not-all': element | isNotAll}">
-              <p>{{getTotal(element) | number}}</p></td>
+              <p>{{getTotal(element)}}</p></td>
           </ng-container>
   
           <tr mat-header-row *matHeaderRowDef="getSubGroupDisplayColumns(subGroupLabs)"></tr>

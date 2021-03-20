@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Application.Infrastructure.FilesManagement;
 using LMPlatform.Models;
 
 namespace LMPlatform.UI.Services.Modules.Concept
@@ -34,6 +35,15 @@ namespace LMPlatform.UI.Services.Modules.Concept
             InitTree(concept.Children);
         }
 
+        public ConceptViewData(Models.Concept concept, bool buildTree, IFilesManagementService filesManagementService)
+           : this(concept)
+        {
+            if (!buildTree) return;
+            Children = new List<ConceptViewData>();
+            Attachments = string.IsNullOrEmpty(concept.Container) ? new List<Attachment>() : filesManagementService.GetAttachments(concept.Container);
+            InitTree(concept.Children, filesManagementService);
+        }
+
         public ConceptViewData(Models.Concept concept, bool buildTree, Func<Models.Concept, bool> filterFirstLevelChildren)
             : this(concept)
         {
@@ -55,6 +65,14 @@ namespace LMPlatform.UI.Services.Modules.Concept
 	        {
                 Children = ch.Select(c => new ConceptViewData(c, true)).ToList();
 	        }
+        }
+
+        private void InitTree(ICollection<Models.Concept> ch, IFilesManagementService filesManagementService)
+        {
+            if (ch != null && ch.Any())
+            {
+                Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService)).ToList();
+            }
         }
 
         [DataMember]
@@ -101,6 +119,9 @@ namespace LMPlatform.UI.Services.Modules.Concept
             get => _childrens.SortDoubleLinkedList();
             set => _childrens = value;
         }
+
+        [DataMember]
+        public ICollection<Attachment> Attachments { get; set; }
 
         private ICollection<ConceptViewData> _childrens;
     }

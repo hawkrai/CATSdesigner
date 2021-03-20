@@ -38,9 +38,9 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
 
 
   onSave(files: AttachedFile[]): void {
-    this.data.model.attachments = files
+    this.data.attachments = files
       .map(f => ({ id: f.IdFile > 0 ? f.IdFile : 0, name: f.Name, attachmentType: f.Type, fileName: f.GuidFileName }));
-    this.dialogRef.close(this.data.model);
+    this.dialogRef.close(this.data);
   }
 
   uploadFile(file: File) {
@@ -51,8 +51,10 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
     if (toSave) {
       this.onSave(files);
     } else {
-      files.filter(f => f.IdFile <= 0)
-        .forEach(f => this.deleteFile(f));
+      if (files) {
+        files.filter(f => f.IdFile <= 0)
+          .forEach(f => this.deleteFile(f));
+      }
       this.dialogRef.close();
     }
   }

@@ -1,8 +1,8 @@
 
 
-<mat-sidenav-container class="app-sidenav-subject" *ngIf="modules$ | async as modules; else load" autosize="true">
-    <mat-sidenav opened mode="side" class="app-sidenav-menu-subject">
-        <mat-nav-list style="padding-top: 0;">
+<mat-sidenav-container class="app-sidenav-subject" autosize="true">
+    <mat-sidenav #sidenav [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'" class="app-sidenav-menu-subject" [autoFocus]="false">
+        <mat-nav-list style="padding-top: 0;" *ngIf="modules$ | async as modules; else load">
             <a mat-list-item 
             *ngFor="let module of modules" 
             [ngClass]="{active: clickedItem === getModuleItem(module.Type)}" 

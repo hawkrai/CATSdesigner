@@ -21,5 +21,7 @@ namespace LMPlatform.UI.ViewModels.DocumentsViewModels
         public int? GroupId { get; set; }
         [DataMember]
         public string Text { get; set; }
+        [DataMember]
+        public bool IsLocked { get; set; }
     }
 }

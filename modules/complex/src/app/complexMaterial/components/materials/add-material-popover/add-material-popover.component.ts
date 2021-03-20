@@ -16,7 +16,9 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   navItems: ComplexCascade[] = [];
   isFile: boolean;
   isFolder: boolean;
+  editMode: boolean;
   conceptId: any;
+  popupTitle: string;
   public selectedConcept: string;
 
   constructor(
@@ -31,18 +33,29 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
 
 
   switchFormTo(formState: number) {
-    this.isFile = formState == 2;
-    this.isFolder = formState == 1;
-  }
-  ngOnInit() {
-    super.ngOnInit();
-    this.complexService.getConceptCascadeFoldersOnly('79').subscribe(res => {
-      this.navItems = res;      
-    });
+    this.isFile = formState === 2;
+    this.data.isGroup = this.isFolder = formState === 1;    
   }
 
-  selectConcept(id: any, name: string) {
-    this.conceptId = id;
+  ngOnInit() {
+    super.ngOnInit();
+    const currentComplexID = localStorage.getItem('selectedComplex');
+    this.complexService.getConceptCascadeFoldersOnly(currentComplexID).subscribe(res => {
+      this.navItems = res;
+      if (this.data) {
+        this.switchFormTo(this.data.isGroup ? 1 : 2);
+
+        if (this.data.parentId) {
+          this.selectConcept(this.data.parentId);
+        }
+      }
+      this.editMode = this.data.id !== null && this.data.id !== '0';
+      this.popupTitle = this.editMode ? 'Редактировать ЭУМК' : 'Добавить элемент ЭУМК'
+    });    
+  }
+
+  selectConcept(id: any) {
+    this.data.parentId = this.conceptId = id;     
     this.selectedConcept = this.getConceptNameById(this.navItems, id);
   }
 
@@ -61,9 +74,5 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       }
     }
     return null;
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 }
