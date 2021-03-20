@@ -7,6 +7,7 @@ import { ComplexCascade } from '../models/ComplexCascade';
 import { ComplexTree } from '../models/ComplexTree';
 import { ConceptMonitoring } from '../models/ConceptMonitoring';
 import { Complex } from '../models/Complex';
+import { Concept } from '../models/Concept';
 import { ConverterService } from "./converter.service";
 
 @Injectable({
@@ -67,7 +68,11 @@ export class ComplexService {
     return this.http.post('/Services/Concept/ConceptService.svc/CreateRootConcept', complex);
   }
 
-  public deleteRootConcept(complex: Complex) {
+  public addOrEditConcept(concept: Concept) {
+    return this.http.post('/Services/Concept/ConceptService.svc/AddConcept', concept);
+  }
+
+  public deleteConcept(complex: Complex) {
     return this.http.post('/Services/Concept/ConceptService.svc/Remove', complex);
   }
 

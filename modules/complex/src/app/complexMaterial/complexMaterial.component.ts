@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { ComplexService } from '../service/complex.service';
 import { AddMaterialPopoverComponent } from './components/materials/add-material-popover/add-material-popover.component';
+import { Concept } from '../models/Concept';
 
 
 @Component({
@@ -20,6 +21,11 @@ export class ComplexMaterialComponent implements OnInit {
     public dialog: MatDialog,
     private complexService: ComplexService)
   {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+    this.router.onSameUrlNavigation = 'reload';
+
     this.complexID = this.router.getCurrentNavigation().extras.state;
     if (this.complexID) {
       localStorage.setItem('selectedComplex', this.complexID);
@@ -37,12 +43,28 @@ export class ComplexMaterialComponent implements OnInit {
   openAddPopup(): void {
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',      
-      data: { name: 'name', attachments: [] }
+      data: { id: '0', attachments: [] }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
-  }
-  
+      if (result) {
+        const concept: Concept =
+        {
+          conceptId: +result.id,
+          conceptName: result.name,
+          parentId: result.parentId,
+          isGroup: result.isGroup,
+          fileData: JSON.stringify(result.attachments),
+          userId: JSON.parse(localStorage.getItem("currentUser")).id
+        };
+
+        this.complexService.addOrEditConcept(concept).subscribe(res =>
+        {
+          if (res['Code'] === '200') {
+            this.router.navigateByUrl('/cMaterial');
+          }
+        });
+      }
+    })    
+  }  
 }

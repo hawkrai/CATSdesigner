@@ -12,10 +12,10 @@
         <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)">
           <mat-icon class="icon">access_time</mat-icon>
         </a>
-        <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)">
+        <a class="btn clickable" (click)="openEditPopup(node)">
           <mat-icon class="icon">edit</mat-icon>
         </a>
-        <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)">
+        <a class="btn clickable" (click)="onDeleteClick(node.Id)">
           <mat-icon class="icon">delete</mat-icon>
         </a>
       </div>
