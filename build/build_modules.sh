@@ -1,4 +1,4 @@
-export modules_path='/C/Users/bahya/CATSdesigner/modules/'
+export modules_path='/d/.temp/CATSdesigner/modules/'
 export admin_path=$modules_path'admin'
 export tests_path=$modules_path'/tests'
 export subjects_path=$modules_path'/subjects'
