@@ -1,42 +1,18 @@
 {
     "web": {
-        "path": "/.temp/apps/container",
+        "path": "d:/.temp/apps/container",
         "entryPoint": "index.html"
     },
     "subject": {
-        "path": "/.temp/apps/subject",
+        "path": "d:/.temp/apps/subject",
         "entryPoint": "index.html"
     },
     "testsModule": {
-        "path": "/.temp/apps/testsModule",
+        "path": "d:/.temp/apps/testsModule",
         "entryPoint": "index.html"
     },
     "course": {
-        "path": "/.temp/apps/course",
-        "entryPoint": "index.html"
-    },
-    "admin": {
-        "path": "/.temp/apps/admin",
-        "entryPoint": "index.html"
-    },
-    "control": {
-        "path": "/.temp/apps/admin",
-        "entryPoint": "index.html"
-    },
-    "confirmation": {
-        "path": "/.temp/apps/confirmation",
-        "entryPoint": "index.html"
-    },
-    "libBook": {
-        "path": "/.temp/apps/libBook",
-        "entryPoint": "index.html"
-    },
-    "complex": {
-        "path": "/.temp/apps/complex",
-        "entryPoint": "index.html"
-    },
-    "calendar": {
-        "path": "/.temp/apps/calendar",
+        "path": "d:/.temp/apps/course",
         "entryPoint": "index.html"
     }
 }
