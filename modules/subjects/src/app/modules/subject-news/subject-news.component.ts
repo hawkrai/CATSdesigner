@@ -16,6 +16,7 @@ import * as newsActions from '../../store/actions/news.actions';
 import * as filesActions from '../../store/actions/files.actions';
 import {SubSink} from 'subsink';
 import { attachmentConverter } from 'src/app/utils';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 interface NewsState {
   color: string
@@ -36,6 +37,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogService: DialogService,
+    private translate: TranslatePipe,
     private store: Store<IAppState>) {
   }
 
@@ -66,8 +68,8 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
   constructorNews(news: News): void {
     const newNews = this.createNews(news);
     const dialogData: DialogData = {
-      title: news ? 'Редактирование новости' : 'Добавление новости',
-      buttonText: 'Сохранить',
+      title: news ? this.translate.transform('text.subjects.news.editing', 'Редактирование новости') : this.translate.transform('text.subjects.news.adding', 'Добавление новости'),
+      buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newNews
     };
     const dialogRef = this.dialogService.openDialog(NewsPopoverComponent, dialogData);
@@ -84,9 +86,9 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   deleteNews(news: News) {
     const dialogData: DialogData = {
-      title: 'Удаление новости',
-      body: 'новость "' + news.Title + '"',
-      buttonText: 'Удалить',
+      title: this.translate.transform('text.subjects.news.deleting', 'Удаление новости'),
+      body: `${this.translate.transform('text.news.accusative', 'Новость').toLowerCase()} "` + news.Title + '"',
+      buttonText: this.translate.transform('button.delete', 'Удалить'),
       model: news.NewsId
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);

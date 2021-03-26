@@ -49,5 +49,9 @@ namespace LMPlatform.UI.Services.Lectures
         [OperationContract]
         [WebInvoke(UriTemplate = "/GetLecturesMarkVisitingV2?subjectId={subjectId}&groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
         LecturesMarkVisitingResult GetLecturesMarkVisitingV2(int subjectId, int groupId);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/GetLecturesMarkVisitingV3?subjectId={subjectId}&groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+        LecturesMarkVisitingResult GetLecturesMarkVisitingV3(int subjectId, int groupId);
     }
 }

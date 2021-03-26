@@ -4,12 +4,12 @@ import {HttpClient} from "@angular/common/http";
 import {Location} from '@angular/common';
 import * as rxjs from 'rxjs';
 import {map,} from "rxjs/operators";
-
+import { ToastrService } from 'ngx-toastr';
 import {Message} from "../models/message";
 import { Module } from "../models/module.model";
 import { Subject } from '../models/subject';
-import { ToastService } from 'src/app/toast';
 
+type Tooltip = 'success' | 'warning';
 
 @Injectable({providedIn: "root"})
 export class CoreService {
@@ -22,8 +22,8 @@ export class CoreService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private toastService: ToastService,
-    private location: Location
+    private location: Location,
+    private toastrService: ToastrService
     ) {
     this.selectedSubject = null;
   }
@@ -65,7 +65,9 @@ export class CoreService {
       }
 
       if (message.channel === 'Toast') {
-        this.toastService.show(JSON.parse(message.value));
+        console.log(message);
+        const tooltip: { text: string, type: Tooltip } = JSON.parse(message.value);
+        this.toastrService[tooltip.type](tooltip.text);
       }
     };
 

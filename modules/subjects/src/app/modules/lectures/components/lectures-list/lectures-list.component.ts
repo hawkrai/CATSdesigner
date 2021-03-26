@@ -21,6 +21,7 @@ import { attachmentConverter } from 'src/app/utils';
 import { DialogService } from './../../../../services/dialog.service';
 import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
 import * as filesActions from '../../../../store/actions/files.actions';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-lectures-list',
@@ -42,6 +43,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
+    private translate: TranslatePipe,
     private cdRef: ChangeDetectorRef) {
   }
 
@@ -67,8 +69,8 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
 
   openFilePopup(attachments: Attachment[]) {
     const dialogData: DialogData = {
-      title: 'Файлы',
-      buttonText: 'Скачать',
+      title: this.translate.transform('text.attachments.plural', 'Файлы'),
+      buttonText: this.translate.transform('text.download', 'Скачать'),
       body: attachments.map(a => attachmentConverter(a))
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
@@ -85,8 +87,10 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   constructorLecture(lecturesCount: number, lecture: Lecture) {
     const newLecture = this.getLecture(lecturesCount, lecture);
     const dialogData: DialogData = {
-      title: lecture ? 'Редактирование темы лекции' : 'Добавление темы лекции',
-      buttonText: 'Сохранить',
+      title: lecture ? 
+        this.translate.transform('text.subjects.lectures.editing', 'Редактирование темы лекции') : 
+        this.translate.transform('text.subjects.lectures.adding', 'Добавление темы лекции'),
+      buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLecture
     };
     const dialogRef = this.dialogService.openDialog(LecturePopoverComponent, dialogData);
@@ -102,9 +106,9 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
 
   deleteLectures(lecture: Lecture) {
     const dialogData: DialogData = {
-      title: 'Удаление лекции',
-      body: 'лекцию "' + lecture.Theme + '"',
-      buttonText: 'Удалить',
+      title: this.translate.transform('text.subjects.lectures.deleting', 'Удаление лекции'),
+      body: `${this.translate.transform('text.lectures.accusative', 'Лекцию').toLowerCase()} "` + lecture.Theme + '"',
+      buttonText: this.translate.transform('button.delete', 'Удалить'),
       model: lecture.LecturesId
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);

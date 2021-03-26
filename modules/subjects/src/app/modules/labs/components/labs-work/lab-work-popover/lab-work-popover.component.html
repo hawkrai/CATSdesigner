@@ -1,30 +1,34 @@
 <ng-container *var="files$ | async as files">
-  <h2 mat-dialog-title>{{data.title}}</h2>
-  <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
-    <form class="example-form" #formElement>
-      <mat-form-field class="example-full-width">
-        <mat-label>Название работы</mat-label>
-        <textarea class="lab-work-component__news-text" maxlength="256" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
-      </mat-form-field>
-      <mat-form-field class="example-full-width">
-        <mat-label>Краткое название</mat-label>
-        <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
-      </mat-form-field>
-      <mat-form-field class="example-full-width">
-        <mat-label>Количество часов(1-99)</mat-label>
-        <input name="duration" min="1" max="99" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
-      </mat-form-field>
-      <app-file-uploader header="Прикрепленный материал" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
-    </form>
-  </div>
-  <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
-    <button mat-raised-button
-            (click)="onClose(files, true)"
-            color="primary"
-            [disabled]="!formElement.checkValidity()"
-    >
-      {{data.buttonText}}
-    </button>
-  </div>
+  <app-popover>
+    <ng-container title>
+      {{data.title}}
+    </ng-container>
+    <ng-container body>
+      <form class="form" #formElement>
+        <mat-form-field class="full-width">
+          <mat-label>Название работы</mat-label>
+          <textarea maxlength="256" required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Краткое название</mat-label>
+          <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Количество часов(1-99)</mat-label>
+          <input name="duration" min="1" max="99" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
+        </mat-form-field>
+        <app-file-uploader header="Прикрепленный материал" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+      </form>
+    </ng-container>
+    <ng-container actions>
+      <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
+      <button mat-raised-button
+              (click)="onClose(files, true)"
+              color="primary"
+              [disabled]="!formElement.checkValidity()"
+      >
+        {{data.buttonText}}
+      </button>
+    </ng-container>
+  </app-popover>
 </ng-container>

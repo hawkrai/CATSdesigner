@@ -40,7 +40,7 @@
                 <div *ngIf="markProperty.recommendedMark" style="opacity: 0.3">
                   {{markProperty.recommendedMark}}
                 </div>
-                <div *ngIf="(element | checkVisit: scheduleLab.head: subGroupLabs)" [matTooltip]="getMissingTooltip(element, subGroupSchedule)" matTooltipPosition="above" class="not-visit"></div>
+                <div *ngIf="(element | checkVisit: scheduleLab.head: subGroupLabs)" [matTooltip]="getMissingTooltip(element, subGroupSchedule)" matTooltipClass="tooltip" matTooltipPosition="above" class="not-visit"></div>
               </div>
             </td>
           </ng-container>

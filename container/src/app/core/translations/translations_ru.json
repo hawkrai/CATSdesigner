@@ -2,6 +2,8 @@
   "subject": "Предметы",
   "button.save": "Сохранить",
   "button.close": "Закрыть",
+  "button.delete": "Удалить",
+  "kb": "КБ",
   "text.test.passing.now": "В данный момент тесты проходят:",
   "text.tests.for.control": "Тесты для контроля знаний",
   "text.test.for.control": "Тест для контроля знаний",
@@ -151,5 +153,50 @@
   "text.editor.confirmation": "Подтверждение",
   "text.editor.remove.confirmation.text": "Вы уверены, что хотите удалить ",
   "text.editor.hint.roll.up": "Свернуть",
-  "text.editor.hint.expand": "Развернуть"
+  "text.editor.hint.expand": "Развернуть",
+
+  "text.news": "Новость",
+  "text.news.plural": "Новости",
+  "text.news.accusative": "Новость",
+
+  "text.lectures": "Лекция",
+  "text.lectures.plural": "Лекции",
+  "text.lectures.accusative": "Лекцию",
+
+  "text.attachments": "Файл",
+  "text.attachments.plural": "Файлы",
+  "text.attachments.accusative": "Файлы",
+
+  "text.download": "Скачать",
+  "text.action": "Действие",
+  "text.number.hours": "Количество часов",
+  "text.delete.question": "Вы действительно хотите удалить",
+
+  "text.subjects.attachments.material": "Прикрепленный материал",
+  "text.subjects.attachments.add": "Добавить файл",
+  "text.subjects.attachments.attached": "Прикрепленный файл",
+  "text.subjects.attachments.loaded": "Загруженный файл",
+  "text.subjects.attachments.delete": "Удалить файл",
+
+  "text.subjects.news.add": "Добавить новость",
+  "text.subjects.news.hide.all": "Скрыть все новости",
+  "text.subjects.news.show.all": "Показать все новости",
+  "text.subjects.news.edit": "Редактировать новость",
+  "text.subjects.news.delete": "Удалить новость",
+  "text.subjects.news.editing": "Редактирование новости",
+  "text.subjects.news.adding": "Добавление новости",
+  "text.subjects.news.deleting": "Удаление новости",
+  "text.subjects.news.title": "Название новости",
+  "text.subjects.news.text": "Текст новости",
+  "text.subjects.news.date.leave": "Оставить старую дату",
+  "text.subjects.news.hide": "Скрыть новость",
+
+  "text.subjects.lectures.attending": "Посещение лекций",
+  "text.subjects.lectures.add": "Добавить лекцию",
+  "text.subjects.lectures.theme": "Тема лекции",
+  "text.subjects.lectures.edit": "Редактировать лекцию",
+  "text.subjects.lectures.delete": "Удалить лекцию",
+  "text.subjects.lectures.editing": "Редактирование темы лекции",
+  "text.subjects.lectures.deleting": "Удаление лекции",
+  "text.subjects.lectures.adding": "Добавление темы лекции"
 }
