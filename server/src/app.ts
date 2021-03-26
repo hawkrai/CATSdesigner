@@ -105,13 +105,6 @@ const proxyStatisticOptions = {
   }
 }
 
-const proxyElasticSearchOptions = { 
-  target: targetDomain, 
-  changeOrigin: true,
-  pathRewrite: {
-    '^/ElasticSearch': 'ElasticSearch', // rewrite path
-  },
-}
 
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
@@ -122,7 +115,6 @@ app.use('*/api/*', createProxyMiddleware(proxyApigOptions));
 app.use('*/Administration/*', createProxyMiddleware(proxyAdmingOptions));
 app.use('*/subject/Subject/*', createProxyMiddleware(proxySubjectOptions));
 app.use('*/subject/Statistic/*', createProxyMiddleware(proxyStatisticOptions));
-app.use('*/ElasticSearch/*', createProxyMiddleware(proxyElasticSearchOptions));
 
 
 app.get('*', (req,res) => {
