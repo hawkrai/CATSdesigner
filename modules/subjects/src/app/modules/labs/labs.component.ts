@@ -5,7 +5,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from "@angular/material/core";
 import {Store} from '@ngrx/store';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
@@ -17,6 +17,7 @@ import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-pop
 import * as labsActions from '../../store/actions/labs.actions';
 import * as labsSelectors from '../../store/selectors/labs.selectors';
 import { MatSlideToggleChange } from '@angular/material';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 interface State {
   groups: Group[];
@@ -33,13 +34,14 @@ interface State {
 })
 export class LabsComponent implements OnInit, OnDestroy {
 
-  tabs = ['Лабораторные работы', 'График защиты', 'Статистика посещения', 'Результаты', 'Защита работ'];
+  tabs: string[] = [];
   selectedTab = 0;
   public state$: Observable<State>;
   public detachedGroup = false;
 
   constructor(
     private dialogService: DialogService,
+    private translate: TranslatePipe,
     private store: Store<IAppState>) {
   }
   ngOnDestroy(): void {
@@ -47,6 +49,13 @@ export class LabsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.tabs = [
+      this.translate.transform('text.subjects.labs.plural', 'Лабораторные работы'),
+      this.translate.transform('schedule.protection', 'График защиты'),
+      this.translate.transform('visit.statistics', 'Статистика посещения'),
+      this.translate.transform('results', 'Результаты'),
+      this.translate.transform('works.protection', 'Защита работ')
+    ];
     this.state$ = combineLatest(
       this.store.select(groupsSelectors.getGroups),
       this.store.select(groupsSelectors.getCurrentGroup),

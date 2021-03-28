@@ -1,23 +1,23 @@
+import { ComponentType } from '@angular/cdk/portal';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { Store } from '@ngrx/store';
+import { DialogData } from 'src/app/models/dialog-data.model';
+import { IAppState } from 'src/app/store/state/app.state';
 import { SubSink } from 'subsink';
-import {Component, OnInit} from '@angular/core';
-import {SubgroupingComponent} from '../subgrouping/subgrouping.component';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DialogData} from '../../models/dialog-data.model';
-import {ComponentType} from '@angular/cdk/typings/portal';
-import {SubjectLectorComponent} from '../../modules/subject/subject-lector/subject-lector.component';
-import {SubjectManagementComponent} from '../../modules/subject/subject-managment/subject-management.component';
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
+import { SubjectLectorComponent } from '../subject/subject-lector/subject-lector.component';
+import { SubjectManagementComponent } from '../subject/subject-managment/subject-management.component';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import * as subjectActions from '../../store/actions/subject.actions';
-
+import { SubdivisionComponent } from './components/subdivision/subdivision.component';
 
 @Component({
-  selector: 'sub-group-page',
-  templateUrl: './sub-settings.component.html',
-  styleUrls: ['./sub-settings.component.less']
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.less']
 })
-export class SubSettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit {
+
   private subs = new SubSink();
   constructor(public dialog: MatDialog,
               private store: Store<IAppState>) {
@@ -27,7 +27,7 @@ export class SubSettingsComponent implements OnInit {
   }
 
   supgrouping() {
-    const dialogRef = this.openDialog(null, SubgroupingComponent);
+    const dialogRef = this.openDialog(null, SubdivisionComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
 
@@ -37,7 +37,7 @@ export class SubSettingsComponent implements OnInit {
 
   subjectEdit() {
     this.subs.add(
-      this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
+      this.store.select(getSubjectId).subscribe(subjectId => {
         const dialogData: DialogData = {
           model: {subjectId: subjectId}
         };

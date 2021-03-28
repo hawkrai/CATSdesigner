@@ -20,6 +20,7 @@ import { CreateLessonEntity } from './../../../../models/form/create-lesson-enti
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import { attachmentConverter } from 'src/app/utils';
 import * as filesActions from '../../../../store/actions/files.actions';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-labs-work',
@@ -32,12 +33,12 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
   public labs$: Observable<Lab[]>;
-  private prefix = 'ЛР';
 
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
     private cdRef: ChangeDetectorRef,
+    private translate: TranslatePipe
   ) { }
 
   ngOnInit() {
@@ -62,8 +63,10 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   constructorLab(labsCount: number, lab: Lab): void {
     const newLab = this.getLab(labsCount, lab);
     const dialogData: DialogData = {
-      title: lab ? 'Редактирование лабораторной работы' : 'Добавление лабораторной работы',
-      buttonText: 'Сохранить',
+      title: lab ? 
+      this.translate.transform('text.subjects.labs.editing', 'Редактирование лабораторной работы'):
+      this.translate.transform('text.subjects.labs.adding', 'Добавление лабораторной работы'),
+      buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLab
     };
     const dialogRef = this.dialogService.openDialog(LabWorkPopoverComponent, dialogData);
@@ -80,9 +83,9 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   deleteLab(lab: Lab) {
     const dialogData: DialogData = {
-      title: 'Удаление лабораторной работы',
-      body: 'лабораторную работу "' + lab.Theme + '"',
-      buttonText: 'Удалить'
+      title: this.translate.transform('text.subjects.labs.deleting', 'Удаление лабораторной работы'),
+      body: `${this.translate.transform('text.subjects.labs.dative', 'лабораторную работу').toLowerCase()} "${lab.Theme}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
@@ -97,8 +100,8 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   openFilePopup(attachments: Attachment[]) {
     const dialogData: DialogData = {
-      title: 'Файлы',
-      buttonText: 'Скачать',
+      title: this.translate.transform('text.attachments.plural', 'Файлы'),
+      buttonText: this.translate.transform('text.download', 'Скачать'),
       body: attachments.map(attachment => attachmentConverter(attachment))
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
@@ -130,7 +133,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       order: lab ? lab.Order : order,
       pathFile: lab ? lab.PathFile : '',
       attachments: lab ? lab.Attachments.map(a => attachmentConverter(a)) : [],
-      shortName: lab ? lab.ShortName : `${this.prefix}${order}`
+      shortName: `${this.translate.transform('text.subjects.labs.prefix', 'ЛР')}${order}`
     };
   }
 

@@ -18,6 +18,5 @@ export class LabWorkPopoverComponent extends BaseFileManagementComponent<LabWork
     store: Store<IAppState>,
     @Inject(MAT_DIALOG_DATA) data: DialogData) {
       super(dialogRef, store, data)
-      this.data.model.shortName = `ЛР${this.data.model.order}`;
   }
 }

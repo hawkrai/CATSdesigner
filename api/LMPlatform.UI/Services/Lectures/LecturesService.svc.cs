@@ -347,13 +347,13 @@ namespace LMPlatform.UI.Services.Lectures
         {
             try
             {
-                var groups = this.GroupManagementService.GetGroup(groupId);
+                var groups = GroupManagementService.GetGroup(groupId);
 
                 var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
 
                 var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
-
-                foreach (var student in groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName))
+                var students = groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName);
+                foreach (var student in students)
                 {
                     var data = new List<MarkViewData>();
 
@@ -389,6 +389,82 @@ namespace LMPlatform.UI.Services.Lectures
                         StudentId = student.Id,
                         StudentName = student.FullName,
                         Login = student.User.UserName,
+                        Marks = data
+                    });
+                }
+
+                var dataResulet = new List<LecturesGroupsVisitingViewData>
+                {
+                    new LecturesGroupsVisitingViewData
+                    {
+                        GroupId = groupId,
+                        LecturesMarksVisiting = lecturesVisiting
+                    }
+                };
+
+                return new LecturesMarkVisitingResult
+                {
+                    GroupsVisiting = dataResulet,
+                    Message = "",
+                    Code = "200"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new LecturesMarkVisitingResult()
+                {
+                    Message = ex.Message + "\n" + ex.StackTrace,
+                    Code = "500"
+                };
+            }
+        }
+
+        public LecturesMarkVisitingResult GetLecturesMarkVisitingV3(int subjectId, int groupId)
+        {
+            try
+            {
+                var groups = GroupManagementService.GetGroup(new Query<Group>(x => x.Id == groupId)
+                    .Include(x => x.Students.Select(s => s.LecturesVisitMarks)));
+
+                var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
+
+                var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
+                var students = groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName);
+                foreach (var student in students)
+                {
+                    var data = new List<MarkViewData>();
+
+                    foreach (var lecturesScheduleVisiting in lecturesVisitingData)
+                    {
+                        var lecturesVisitMark = student.LecturesVisitMarks.FirstOrDefault(e => e.LecturesScheduleVisitingId == lecturesScheduleVisiting.Id);
+
+                        if (lecturesVisitMark != null)
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = lecturesVisitMark.Mark,
+                                MarkId = lecturesVisitMark.Id,
+                                Comment = lecturesVisitMark.Comment
+                            });
+                        }
+                        else
+                        {
+                            data.Add(new MarkViewData
+                            {
+                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                LecturesVisitId = lecturesScheduleVisiting.Id,
+                                Mark = string.Empty,
+                                MarkId = 0
+                            });
+                        }
+                    }
+
+                    lecturesVisiting.Add(new LecturesMarkVisitingViewData
+                    {
+                        StudentId = student.Id,
+                        StudentName = student.FullName,
                         Marks = data
                     });
                 }

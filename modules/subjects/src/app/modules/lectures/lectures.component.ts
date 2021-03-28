@@ -10,6 +10,7 @@ import * as groupsActions from '../../store/actions/groups.actions';
 import * as lecturesActions from '../../store/actions/lectures.actions';
 import {IAppState} from '../../store/state/app.state';
 import { Group } from 'src/app/models/group.model';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 
 @Component({
@@ -21,9 +22,13 @@ export class LecturesComponent implements OnInit, OnDestroy {
 
   selectedTab = 0;
   state$: Observable<{ isTeacher: boolean, subjectId: number, groups: Group[], groupId: number }>;
-  tabs = ['Лекции', 'Посещение лекций'];
+  tabs: string[] = [];
 
-  constructor(private store: Store<IAppState>) {
+  constructor(
+    private store: Store<IAppState>,
+    private translate: TranslatePipe
+    ) {
+
   }
   ngOnDestroy(): void {
     this.store.dispatch(groupsActions.resetGroups());
@@ -34,6 +39,10 @@ export class LecturesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.tabs = [
+      this.translate.transform('text.lectures.plural', 'Лекции'), 
+      this.translate.transform('text.subjects.lectures.attending', 'Посещение лекций')
+    ];
     this.store.dispatch(groupsActions.loadGroups());
     const isTeacher$ = this.store.select(subjectSelectors.isTeacher);
     const subjectId$ = this.store.select(subjectSelectors.getSubjectId);

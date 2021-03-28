@@ -1,0 +1,34 @@
+<tr class="mdc-data-table__row">
+    <ng-container *ngIf="!!file; else loader">
+        <td class="mdc-data-table__cell example-content icon-cell">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true"
+                *ngIf="file.Type.toLowerCase() !== 'image'; else image">description</i>
+            <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
+        </td>
+        <td class="mdc-data-table__cell example-content">
+            <a matTooltip="{{file.Name}}" matTooltipPosition="below"
+                href="{{file.IdFile === -1 ? '#' : file.Url}}">
+                {{file.Name}}
+            </a>
+        </td>
+        <td class="mdc-data-table__cell example-content">{{file.Type}}</td>
+        <td class="mdc-data-table__cell example-content">{{(file.Size / 1024).toFixed(2)}} {{'kb' | translate:'КБ'}}</td>
+        <td class="mdc-data-table__cell" style="color: red" *ngIf="file.IdFile === -1; else attached">
+            {{'text.subjects.attachments.attached' | translate:'Загруженный файл'}}
+        </td>
+        <ng-template #attached>
+            <td class="mdc-data-table__cell" style="color: blue">{{'text.subjects.attachments.loaded' | translate:'Прикрепленный файл'}}</td>
+        </ng-template>
+        <td class="mdc-data-table__cell" style="padding-left: 0" *ngIf="canDelete">
+            <button mat-icon-button color="primary" [matTooltip]="'text.subjects.attachments.delete' | translate:'Удалить файл'" matTooltipPosition="before"
+                (click)="deleteFile.emit(file)">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+    <ng-template #loader>
+        <td class="mdc-data-table__cell" colspan="6">
+            <app-loader [diameter]="30"></app-loader>
+        </td>
+    </ng-template>
+</tr>

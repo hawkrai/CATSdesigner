@@ -21,8 +21,7 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { AboutComponent } from './about/about.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ResetComponent } from './reset/reset.component';
-import { ToastModule } from './toast';
-
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -48,7 +47,9 @@ import { ToastModule } from './toast';
     MatetialModule,
     CoreModule,
     MatButtonModule,
-    ToastModule.forRoot()
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right'
+    })
   ],
   providers: [
     LayoutService,

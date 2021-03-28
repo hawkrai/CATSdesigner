@@ -30,7 +30,7 @@
                         [checked]="detachedGroup"
                         (change)="groupStatusChange($event)"
       >
-        Открепленные группы
+        {{'text.groups.detached' | translate:'Открепленные группы'}}
       </mat-slide-toggle>
     </div>
     <app-practical-lessons *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-practical-lessons>

@@ -18,6 +18,7 @@ import * as subjectSelectors from '../../.././../store/selectors/subject.selecto
 import { attachmentConverter } from 'src/app/utils';
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-job-protection',
@@ -36,6 +37,7 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
    
   constructor(
     private store: Store<IAppState>,
+    private translate: TranslatePipe,
     public dialogService: DialogService) {
   }
 

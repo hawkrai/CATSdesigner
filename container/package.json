@@ -25,6 +25,7 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "ngx-post-message": "^1.5.3",
+    "ngx-toastr": "^13.2.1",
     "rxjs": "~6.5.4",
     "test-mipe-bntu-schedule": "0.0.3",
     "tslib": "^1.10.0",

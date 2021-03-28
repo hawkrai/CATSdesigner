@@ -18,6 +18,7 @@ import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-results',
@@ -33,6 +34,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private store: Store<IAppState>,
+    private translate: TranslatePipe,
     private dialogService: DialogService) {
   }
 
@@ -55,7 +57,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getHeaders(subGroupLabs: Lab[]): { head: string, text: string, tooltip: string }[] {
-    return subGroupLabs.map(l => ({ head: l.LabId.toString(), text: l.ShortName, tooltip: l.Theme }));
+    return subGroupLabs.map((l, index) => ({ head: l.LabId.toString(), text: `${this.translate.transform('text.subjects.labs.prefix', 'ЛР')}${index + 1}`, tooltip: l.Theme }));
   }
 
   getSubGroupDisplayColumns(subGroupLabs: Lab[]): string[] {
@@ -74,8 +76,8 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     if (mark) {
       const labsMark = this.getLabMark(mark, student.StudentId);
       const dialogData: DialogData = {
-        title: 'Выставление оценки',
-        buttonText: 'Сохранить',
+        title: this.translate.transform('text.subjects.grading', 'Выставление оценки'),
+        buttonText: this.translate.transform('button.save', 'Сохранить'),
         body: labsMark,
         model: {
           recommendedMark,
@@ -107,7 +109,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     ).map(visiting => ({ mark: visiting.Mark, date: schedule
       .find(schedule => schedule.ScheduleProtectionLabId === visiting.ScheduleProtectionLabId).Date}))
       .filter(sc => !!sc.mark);
-    return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${sc.date}`).join('\n');
+    return missingSchedule.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}.${sc.date}`).join('\n');
   }
 
   private getLabMark(mark: LabMark, studentId: number) {
