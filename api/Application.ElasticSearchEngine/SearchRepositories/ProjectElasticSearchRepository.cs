@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Application.ElasticSearchEngine.SerachMethods
+namespace Application.ElasticSearchEngine.SearchRepositories
 {
-    public class ProjectElasticSearchMethod : SearchMethods.BaseElasticSearchMethod
+    public class ProjectElasticSearchRepository : BaseElasticSearchRepository
     {
         private const string PROJECTS_INDEX_NAME = "projects";
-        public ProjectElasticSearchMethod(string elastickAddress, string userName, string password)
+        public ProjectElasticSearchRepository(string elastickAddress, string userName, string password)
             : base(elastickAddress, PROJECTS_INDEX_NAME, userName, password)
         { }
-        public ProjectElasticSearchMethod(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
+        public ProjectElasticSearchRepository(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
             : base(elastickAddress, PROJECTS_INDEX_NAME, prefixLength, fuzziness, userName, password)
         { }
         public IEnumerable<Project> Search(string requestStr)

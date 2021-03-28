@@ -1,26 +1,30 @@
-﻿using Application.ElasticSearchEngine.SerachMethods;
-using Application.ElasticDataModels;
+﻿using Application.ElasticDataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Application.ElasticSearchEngine.SearchRepositories;
+using Application.ElasticSearchEngine;
+using System.Net;
+using System.Configuration;
+using Application.Core.UI.Controllers;
 
 namespace LMPlatform.UI.Controllers
 {
-    public class ElasticSearchController : Controller
+    public class ElasticSearchController : BasicController
     {
         // GET: ElasticSearch
-        private static string ELASTIC_ADDRESS = "http://localhost:9200/";
-        private static string ELASTIC_USERNAME = "elastic";
-        private static string ELASTIC_PASSWORD = "199611";
+        public string ElasticAddress => ConfigurationManager.AppSettings["ElasticAddress"];
+        public string ElasticUsername => ConfigurationManager.AppSettings["ElasticLogin"];
+        public string ElasricPassword => ConfigurationManager.AppSettings["ElasticPAssword"];
 
         [HttpGet]
         public ActionResult GetLecturerSearchResult(string searchStr)
         {           
             try
             {
-                LecturerElasticSearchMethod searcher = new LecturerElasticSearchMethod(ELASTIC_ADDRESS, ELASTIC_USERNAME, ELASTIC_PASSWORD);
-                List<Lecturer> results = searcher.Search(searchStr).ToList<Lecturer>();
+                LecturerElasticSearchRepository searcher = new LecturerElasticSearchRepository(ElasticAddress, ElasticUsername, ElasricPassword);
+                List<ElasticLecturer> results = searcher.Search(searchStr).ToList<ElasticLecturer>();
 
                 return this.Json(results, JsonRequestBehavior.AllowGet);
             }
@@ -43,8 +47,8 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                StudentElasticSearchMethod searcher = new StudentElasticSearchMethod(ELASTIC_ADDRESS, ELASTIC_USERNAME, ELASTIC_PASSWORD);
-                List<Student> results = searcher.Search(searchStr).ToList<Student>();
+                StudentElasticSearchRepository searcher = new StudentElasticSearchRepository(ElasticAddress, ElasticUsername, ElasricPassword);
+                List<ElasticStudent> results = searcher.Search(searchStr).ToList<ElasticStudent>();
                 return this.Json(results,JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -66,8 +70,8 @@ namespace LMPlatform.UI.Controllers
         {       
             try
             {
-                GroupElasticSearchMethod searcher = new GroupElasticSearchMethod(ELASTIC_ADDRESS, ELASTIC_USERNAME, ELASTIC_PASSWORD);
-                List<Group> results = searcher.Search(searchStr).ToList<Group>();
+                GroupElasticSearchRepository searcher = new GroupElasticSearchRepository(ElasticAddress, ElasticUsername, ElasricPassword);
+                List<ElasticGroup> results = searcher.Search(searchStr).ToList<ElasticGroup>();
                 return this.Json(results, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -83,6 +87,37 @@ namespace LMPlatform.UI.Controllers
                 };
             }
 
+        }
+
+        [HttpPost]
+        public ActionResult ElasticInit()
+        {
+            try
+            {
+                ElasticStarter init = new ElasticStarter(ElasticAddress,ElasticUsername,ElasricPassword);
+                init.InitializeElastic();
+
+                return StatusCode(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ElasticClear()
+        {          
+            try
+            {
+                ElasticStarter init = new ElasticStarter(ElasticAddress, ElasticUsername, ElasricPassword);
+                init.ClearElastic();
+                return StatusCode(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(HttpStatusCode.InternalServerError, e.Message);
+            }
         }
     }
 }

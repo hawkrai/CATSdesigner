@@ -11,6 +11,7 @@ using LMPlatform.Models.KnowledgeTesting;
 
 namespace LMPlatform.Data.Infrastructure
 {
+    using Application.ElasticDataModels;
     using LMPlatform.Models;
 
     public class LmPlatformModelsContext : DbContext, IDpContext, ICpContext
@@ -73,6 +74,11 @@ namespace LMPlatform.Data.Infrastructure
                 (x.GraduationYear == nextYearStr && DateTime.Now.Month >= 9));
         }
 
+        public virtual DbSet<ElasticGroup> ElasticGroups { get; set; }
+        public virtual DbSet<ElasticLecturer> ElasticLecturers { get; set; }
+        public virtual DbSet<ElasticProject> ElasticProjects { get; set; }
+        public virtual DbSet<ElasticStudent> ElasticStudents { get; set; }
+        public virtual DbSet<ElasticUser> ElasticUsers { get; set; }
         public DbSet<Group> Groups
         {
             get;
@@ -533,6 +539,51 @@ namespace LMPlatform.Data.Infrastructure
 				.WithMany(u => u.Attachments)
 				.HasForeignKey(a => a.UserId)
 				.WillCascadeOnDelete(false);
+
+
+
+            modelBuilder.Entity<ElasticUser>().Map(m => m.ToTable("Users"))
+                .Property(m => m.Id)
+                .HasColumnName("UserId");
+            modelBuilder.Entity<ElasticStudent>().Map(m => m.ToTable("ElasticStudents"))
+                .Property(m => m.Id)
+                .HasColumnName("UserId")
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            modelBuilder.Entity<ElasticGroup>().Map(m => m.ToTable("ElasticGroups"));
+            modelBuilder.Entity<ElasticProject>().Map(m => m.ToTable("ElasticProjects"));
+
+            modelBuilder.Entity<ElasticGroup>()
+                .HasMany(e => e.Students)
+                .WithRequired(e => e.Group)
+                .HasForeignKey(e => e.GroupId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ElasticLecturer>()
+                .HasMany(e => e.Groups)
+                .WithOptional(e => e.Secretary)
+                .HasForeignKey(e => e.SecretaryId);
+
+            modelBuilder.Entity<ElasticUser>()
+                .Property(e => e.Answer)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ElasticUser>()
+                .HasOptional(e => e.Lecturer)
+                .WithRequired(e => e.User)
+                .WillCascadeOnDelete();
+
+            modelBuilder.Entity<ElasticUser>()
+                .HasMany(e => e.Projects)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.CreatorId)
+                .WillCascadeOnDelete(false);
+
+
+
+            modelBuilder.Entity<ElasticUser>()
+                .HasOptional(e => e.Student)
+                .WithRequired(e => e.User)
+                .WillCascadeOnDelete();
 
             #region Documents entity
 

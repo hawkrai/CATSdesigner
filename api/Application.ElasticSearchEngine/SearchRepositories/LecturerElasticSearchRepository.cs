@@ -5,15 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Application.ElasticSearchEngine.SerachMethods
+
+namespace Application.ElasticSearchEngine.SearchRepositories
 {
-    public class LecturerElasticSearchMethod : SearchMethods.BaseElasticSearchMethod
+    public class LecturerElasticSearchRepository : BaseElasticSearchRepository
     {
         private const string LECTURERS_INDEX_NAME = "lecturers";
-        public LecturerElasticSearchMethod(string elastickAddress, string userName, string password)
+        public LecturerElasticSearchRepository(string elastickAddress, string userName, string password)
             : base(elastickAddress, LECTURERS_INDEX_NAME, userName, password)
         { }
-        public LecturerElasticSearchMethod(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
+        public LecturerElasticSearchRepository(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
             : base(elastickAddress, LECTURERS_INDEX_NAME, prefixLength, fuzziness, userName, password)
         { }
         public IEnumerable<Lecturer> Search(string requestStr)

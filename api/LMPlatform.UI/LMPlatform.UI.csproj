@@ -827,8 +827,8 @@
       <Project>{7D6B62DE-EC81-497D-844E-5BEDFED6DE9E}</Project>
       <Name>Application.ElasticDataModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Application.ElastickSearchEngine\Application.ElasticSearchEngine.csproj">
-      <Project>{62EF80D1-33C9-4A78-B3E5-13B4A961FE96}</Project>
+    <ProjectReference Include="..\Application.ElasticSearchEngine\Application.ElasticSearchEngine.csproj">
+      <Project>{2634A34B-69D8-4DF2-9F0B-340E7092CED0}</Project>
       <Name>Application.ElasticSearchEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Application.Infrastructure\Application.Infrastructure.csproj">

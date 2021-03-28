@@ -1,15 +1,16 @@
 ﻿using Nest;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
 using Elasticsearch.Net;
 using Nest.JsonNetSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Application.ElasticDataModels;
+using System.Data.Entity;
+using System.Linq;
+using LMPlatform.Data.Infrastructure;
 
-namespace Aplication.ElasticDataInit
+namespace Application.ElasticSearchEngine
 {
     class ElasticInitializer
     {
@@ -20,7 +21,7 @@ namespace Aplication.ElasticDataInit
         public const string PROJECTS_INDEX_NAME = "projects";
         public const string GROUPS_INDEX_NAME = "groups";
         public const string STUDENTS_INDEX_NAME = "students";
-
+       
         public ElasticInitializer(string connectionString, string elsticUri, string userName, string password)
         {
             this.elasticUri = elasticUri;
@@ -49,39 +50,38 @@ namespace Aplication.ElasticDataInit
             }
         }
 
-        private List<Project> GetProjects()
+        private List<ElasticProject> GetProjects()
         {
-            using (ElasticContext context = new ElasticContext(connectionString))
+            using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
-                return context.Projects
-                    .ToList<Project>();
+                return context.ElasticProjects
+                    .ToList<ElasticProject>();
             }
         }
-        private List<Group> GetGroups()
+        private List<ElasticGroup> GetGroups()
         {
-            using (ElasticContext context = new ElasticContext(connectionString))
+            using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
-                return context.Groups
-                    .ToList<Group>();
+                return context.ElasticGroups
+                    .ToList<ElasticGroup>();
             }
         }
-        private List<Lecturer> GetLecturers() {
-            using (ElasticContext context = new ElasticContext(connectionString))
+        private List<ElasticLecturer> GetLecturers() {
+            using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
-                return context.Lecturers
+                return context.ElasticLecturers
                     .Include(l => l.User)
-                    .ToList<Lecturer>();
+                    .ToList<ElasticLecturer>();
             }
         }
-        private List<Student> GetStudents()
+        private List<ElasticStudent> GetStudents()
         {
-                using (ElasticContext context = new ElasticContext(connectionString))
+                using (LmPlatformModelsContext context = new LmPlatformModelsContext())
                 {
-                    return context.Students    
-                        
+                    return context.ElasticStudents
                         .Include(s => s.User)
                         .Include(g => g.Group)
-                        .ToList<Student>(); 
+                        .ToList<ElasticStudent>(); 
                 }
 
 
@@ -92,7 +92,7 @@ namespace Aplication.ElasticDataInit
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-                .Map<Project>(m => m
+                .Map<ElasticProject>(m => m
                     .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
@@ -115,7 +115,7 @@ namespace Aplication.ElasticDataInit
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-                .Map<Group>(m => m
+                .Map<ElasticGroup>(m => m
                     .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
@@ -138,7 +138,7 @@ namespace Aplication.ElasticDataInit
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-                .Map<Lecturer>(m => m
+                .Map<ElasticLecturer>(m => m
                     .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
@@ -152,7 +152,7 @@ namespace Aplication.ElasticDataInit
                             .Name(s => s.Skill)
                          )
                         
-                        .Object<User>(u=>u
+                        .Object<ElasticUser>(u=>u
                             .Dynamic(false)
                             .Name(n=>n.User)
                             .Properties(pr => pr
@@ -178,7 +178,7 @@ namespace Aplication.ElasticDataInit
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-                .Map<Student>(m => m
+                .Map<ElasticStudent>(m => m
                 .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
@@ -194,7 +194,7 @@ namespace Aplication.ElasticDataInit
                         .Number(s => s
                             .Name(n => n.GroupId)
                         )
-                        .Object<User>(o => o
+                        .Object<ElasticUser>(o => o
                             .Dynamic(false)
                             .Name(s => s.User)
                              .Properties(pr => pr
@@ -221,7 +221,7 @@ namespace Aplication.ElasticDataInit
         {
             string studentsIndexName = STUDENTS_INDEX_NAME;
             client.Indices.Create(GetStudentMap(studentsIndexName));
-            List<Student> students = GetStudents();
+            List<ElasticStudent> students = GetStudents();
 
             client.IndexMany(students,studentsIndexName);
 
@@ -231,7 +231,7 @@ namespace Aplication.ElasticDataInit
         {
             string lecturersIndexName = LECUTRERS_INDEX_NAME;
             client.Indices.Create(GetLecturerMap(lecturersIndexName));
-            List<Lecturer> lecturers = GetLecturers();
+            List<ElasticLecturer> lecturers = GetLecturers();
 
             client.IndexMany(lecturers, lecturersIndexName);
             return lecturers.Count;
@@ -240,7 +240,7 @@ namespace Aplication.ElasticDataInit
         {
             string groupsIndexName = GROUPS_INDEX_NAME;
             client.Indices.Create(GetGroupMap(groupsIndexName));
-            List<Group> groups = GetGroups();
+            List<ElasticGroup> groups = GetGroups();
 
             client.IndexMany(groups,groupsIndexName);
 
@@ -250,9 +250,9 @@ namespace Aplication.ElasticDataInit
         {
             string projectssIndexName = PROJECTS_INDEX_NAME;
             client.Indices.Create(GetProjectMap(projectssIndexName));
-            List<Project> projects = GetProjects();
+            List<ElasticProject> projects = GetProjects();
 
-            client.IndexMany<Project>(projects, projectssIndexName);
+            client.IndexMany<ElasticProject>(projects, projectssIndexName);
 
             return projects.Count;
         }

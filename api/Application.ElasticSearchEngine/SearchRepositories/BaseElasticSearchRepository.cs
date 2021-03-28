@@ -5,16 +5,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 
-namespace Application.ElasticSearchEngine.SearchMethods
+namespace Application.ElasticSearchEngine.SearchRepositories
 {
-    public abstract class BaseElasticSearchMethod
+    public abstract class BaseElasticSearchRepository
     {
         protected const int DEFAULT_NUM_OF_RESULTS = 7;
         private readonly ElasticClient client;
         private string indexName;
         private int searchFuzziness = 6;
         private int prefixLength = 3;
-        public BaseElasticSearchMethod(string elasticUri, string indexName,string userName, string password)
+        public BaseElasticSearchRepository(string elasticUri, string indexName,string userName, string password)
         {
             this.indexName = indexName;
             ConnectionSettings settings = new ConnectionSettings(new Uri(elasticUri))
@@ -23,7 +23,7 @@ namespace Application.ElasticSearchEngine.SearchMethods
             CheckConnection(client);
         }
 
-        public BaseElasticSearchMethod(string elasticUri, string indexName,int prefixLength,int fuzziness,
+        public BaseElasticSearchRepository(string elasticUri, string indexName,int prefixLength,int fuzziness,
             string userName, string password)
         {
             this.indexName = indexName;

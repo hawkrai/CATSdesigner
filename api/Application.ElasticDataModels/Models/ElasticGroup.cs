@@ -8,7 +8,7 @@ namespace Application.ElasticDataModels
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Group : ModelBase
+    public partial class ElasticGroup : ModelBase
     {
         public string Name { get; set; }
 
@@ -24,7 +24,7 @@ namespace Application.ElasticDataModels
         public int? SecretaryId { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Student> Students { get; set; }
+        public virtual ICollection<ElasticStudent> Students { get; set; }
 
 
 

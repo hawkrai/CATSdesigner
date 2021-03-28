@@ -1,29 +1,30 @@
-﻿using Application.ElasticDataModels;
+﻿
+using Application.ElasticDataModels;
 using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Application.ElasticSearchEngine.SerachMethods
+namespace Application.ElasticSearchEngine.SearchRepositories
 {
-    public class StudentElasticSearchMethod : SearchMethods.BaseElasticSearchMethod
+    public class StudentElasticSearchRepository : BaseElasticSearchRepository
     {
         private const string STUDENTS_INDEX_NAME = "students";
-        public StudentElasticSearchMethod(string elastickAddress, string userName, string password)
+        public StudentElasticSearchRepository(string elastickAddress, string userName, string password)
             : base(elastickAddress, STUDENTS_INDEX_NAME, userName, password)
         { }
-        public StudentElasticSearchMethod(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
+        public StudentElasticSearchRepository(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
             : base(elastickAddress, STUDENTS_INDEX_NAME, prefixLength, fuzziness, userName, password)
         { }
-        public IEnumerable<Student> Search(string requestStr)
+        public IEnumerable<ElasticStudent> Search(string requestStr)
         {
             string searchStr = "";
             if (requestStr != null)
             {
                 searchStr = requestStr.ToLower();
             }
-            var searchResponse = Client.Search<Student>(s => s
+            var searchResponse = Client.Search<ElasticStudent>(s => s
             .Size(DEFAULT_NUM_OF_RESULTS)
             .Query(q => q
                   .Match(m => m
@@ -37,12 +38,12 @@ namespace Application.ElasticSearchEngine.SerachMethods
                   .Prefix(p => p.FullName, searchStr)
                   )
             );
-            return searchResponse.Documents.ToList<Student>(); 
+            return searchResponse.Documents.ToList<ElasticStudent>(); 
         }
 
-        public IEnumerable<Student> SearchAll()
+        public IEnumerable<ElasticStudent> SearchAll()
         {
-            var searchResponse = Client.Search<Student>(s => s
+            var searchResponse = Client.Search<ElasticStudent>(s => s
             .Size(200)
             .From(0)
             .Query(q => q
@@ -51,30 +52,30 @@ namespace Application.ElasticSearchEngine.SerachMethods
                 )
             );
             Console.WriteLine("found {0} documents", searchResponse.Documents.Count);
-            return searchResponse.Documents.ToList<Student>();
+            return searchResponse.Documents.ToList<ElasticStudent>();
         }
 
-        public void AddToIndex(Student student)
+        public void AddToIndex(ElasticStudent student)
         {
-            Client.Index<Student>(student,st => st.Index(STUDENTS_INDEX_NAME));
+            Client.Index<ElasticStudent>(student,st => st.Index(STUDENTS_INDEX_NAME));
         }
 
-        public void AddToIndex(IEnumerable<Student> students)
+        public void AddToIndex(IEnumerable<ElasticStudent> students)
         {
             Client.IndexMany(students,STUDENTS_INDEX_NAME);
         }
 
-        public void AddToIndexAsync(Student student)
+        public void AddToIndexAsync(ElasticStudent student)
         {
-            Client.IndexAsync<Student>(student, st => st.Index(STUDENTS_INDEX_NAME));
+            Client.IndexAsync<ElasticStudent>(student, st => st.Index(STUDENTS_INDEX_NAME));
         }
 
-        public void AddToIndexAsync(IEnumerable<Student> students)
+        public void AddToIndexAsync(IEnumerable<ElasticStudent> students)
         {
             Client.IndexManyAsync(students, STUDENTS_INDEX_NAME);
         }
 
-        public void UpdateDocument(Student student)
+        public void UpdateDocument(ElasticStudent student)
         {
             DeleteFromIndex(student.Id);
             AddToIndex(student);
@@ -84,12 +85,12 @@ namespace Application.ElasticSearchEngine.SerachMethods
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-             .Map<Student>(m => m
+             .Map<ElasticStudent>(m => m
                .Properties(prop => prop
                  .Text(s => s
                     .Name(n => n.FullName)
                     )
-                 .Object<Group>(o => o
+                 .Object<ElasticGroup>(o => o
                     .Name(s => s.Group)
                     )
                  .Number(s => s

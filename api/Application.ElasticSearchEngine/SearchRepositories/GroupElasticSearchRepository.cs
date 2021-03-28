@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Application.ElasticSearchEngine.SerachMethods
+namespace Application.ElasticSearchEngine.SearchRepositories
 {
-    public class GroupElasticSearchMethod : SearchMethods.BaseElasticSearchMethod
+    public class GroupElasticSearchRepository : BaseElasticSearchRepository
     {
         private const string GROUPS_INDEX_NAME = "groups";
-        public GroupElasticSearchMethod(string elastickAddress,string userName, string password)
+        public GroupElasticSearchRepository(string elastickAddress,string userName, string password)
             : base(elastickAddress, GROUPS_INDEX_NAME, userName, password)
         { }
-        public GroupElasticSearchMethod(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
+        public GroupElasticSearchRepository(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
             : base(elastickAddress, GROUPS_INDEX_NAME, prefixLength, fuzziness, userName, password)
         { }
         public IEnumerable<Group> Search(string requestStr)
