@@ -4,7 +4,7 @@
   </a>
   <span class="example-spacer"></span>
   <div *ngIf="!isAdmin">
-    <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/viewer'">Предметы</a>
+    <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/viewer'">{{'subject' | translate:'Предметы'}}</a>
   </div>
   <a *ngIf="isLector" mat-button [routerLink]="'/emails'" >Дипломное проектирование</a>
 

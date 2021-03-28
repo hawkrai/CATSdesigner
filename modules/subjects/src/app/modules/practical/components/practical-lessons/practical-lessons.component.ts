@@ -20,6 +20,7 @@ import {FileDownloadPopoverComponent} from '../../../../shared/file-download-pop
 import { attachmentConverter } from 'src/app/utils';
 import { filter } from 'rxjs/operators';
 import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-practical-lessons',
@@ -32,7 +33,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   @ViewChild('table', { static: false }) table: MatTable<Practical>;
 
   public practicals$: Observable<Practical[]>;
-  private prefix = 'ПР';
+  private prefix: string;
   private subs = new SubSink();
 
   public defaultColumns = ['index', 'theme', 'shortName', 'duration'];
@@ -41,9 +42,11 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   constructor(    
     private store: Store<IAppState>,    
     private cdRef: ChangeDetectorRef,
+    private translate: TranslatePipe,
     private dialogService: DialogService) { }
 
   ngOnInit() {
+    this.prefix = this.translate.transform('text.subjects.practicals.prefix', 'ПЗ');
     this.store.dispatch(practicalsActions.loadPracticals());
     this.practicals$ = this.store.select(practicalsSelectors.selectPracticals);
   }
@@ -68,8 +71,10 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     const newLesson = this.getLesson(lessonsCount, lesson);
 
     const dialogData: DialogData = {
-      title: lesson ? 'Редактирование практического занятия' : 'Добавление практического занятия',
-      buttonText: 'Сохранить',
+      title: lesson ? 
+        this.translate.transform('text.subjects.practicals.editing', 'Редактирование практического занятия') : 
+        this.translate.transform('text.subjects.practicals.adding', 'Добавление практического занятия'),
+      buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLesson
     };
     const dialogRef = this.dialogService.openDialog(PracticalLessonPopoverComponent, dialogData);
@@ -87,9 +92,9 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
   deleteLesson(lesson: Practical) {
     const dialogData: DialogData = {
-      title: 'Удаление практического занятия',
-      body: 'практическое занятие "' + lesson.Theme + '"',
-      buttonText: 'Удалить'
+      title: this.translate.transform('text.subjects.practicals.deleting', 'Удаление практического занятия'),
+      body: `${this.translate.transform('text.subjects.practicals', 'практическое занятие').toLowerCase()} "${lesson.Theme}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
@@ -115,8 +120,8 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
 
   openFilePopup(attachments: Attachment[]) {
     const dialogData: DialogData = {
-      title: 'Файлы',
-      buttonText: 'Скачать',
+      title: this.translate.transform('text.attachments.plural', 'Файлы'),
+      buttonText: this.translate.transform('text.download', 'Скачать'),
       body: attachments.map(a => attachmentConverter(a))
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
@@ -139,7 +144,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments.map(a => attachmentConverter(a)) : [],
-      shortName: lesson ? lesson.ShortName : `${this.prefix}${order}`
+      shortName: `${this.prefix}${order}`
     };
   }
 

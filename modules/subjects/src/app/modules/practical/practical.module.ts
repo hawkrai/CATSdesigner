@@ -22,13 +22,18 @@ import { VisitPipe } from './pipes/visit.pipe';
     PracticalLessonPopoverComponent, 
     VisitStatisticComponent, 
     PracticalProtectionScheduleComponent, 
-    VisitDatePracticalsPopoverComponent, ResultsComponent, MarkPropertyPipe, ResultPipe, VisitPipe],
+    VisitDatePracticalsPopoverComponent, 
+    ResultsComponent, 
+    MarkPropertyPipe,
+    ResultPipe, 
+    VisitPipe
+  ],
   imports: [
     CommonModule,
     MatModule,
     FormsModule,
     SharedModule,
-    DragDropModule,
+    DragDropModule
   ],
   entryComponents: [
     PracticalLessonPopoverComponent,

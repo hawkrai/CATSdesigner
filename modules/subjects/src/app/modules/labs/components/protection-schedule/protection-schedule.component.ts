@@ -12,6 +12,7 @@ import { VisitDateLabsPopoverComponent } from './visit-date-labs-popover/visit-d
 import { DialogService } from 'src/app/services/dialog.service';
 import { map, tap } from 'rxjs/operators';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -27,6 +28,7 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy
   public displayedColumns: string[] = ['position', 'theme'];
   constructor(
     private store: Store<IAppState>,
+    private translate: TranslatePipe,
     private dialogService: DialogService) {
   }
   ngOnDestroy(): void {
@@ -55,8 +57,8 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy
 
   settingVisitDate(subGroup: number, subGroupId: number) {
     const dialogData: DialogData = {
-      title: 'Даты занятий',
-      buttonText: 'Добавить',
+      title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
+      buttonText: this.translate.transform('button.add', 'Добавить'),
       body: { subGroupId, subGroup },
     };
 

@@ -1,9 +1,9 @@
 <div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
   <div class="protection-schedule-component__subGroup" *ngFor="let subGroup of state.labs | unique:'SubGroup'; let idx = index">
-    <span mat-dialog-title class="protection-schedule-component__subGroup-title">Подгруппа {{idx + 1}}</span>
+    <span mat-dialog-title class="protection-schedule-component__subGroup-title">{{'subgroup' | translate:'Подгруппа'}} {{idx + 1}}</span>
     <div class="protection-schedule-component__body">
       <div class="protection-schedule-component__actions" *ngIf="isTeacher">
-        <button mat-raised-button color="primary" (click)="settingVisitDate(subGroup, state.subGroupsIds[idx])">Управление датами</button>
+        <button mat-raised-button color="primary" (click)="settingVisitDate(subGroup, state.subGroupsIds[idx])">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>
       </div>
       <div class="protection-schedule-component__subGroup-table">
         <table mat-table [dataSource]="state.labs | filter:'SubGroup':subGroup" class="mat-elevation-z14">
@@ -13,7 +13,7 @@
           </ng-container>
 
           <ng-container matColumnDef="theme">
-            <th mat-header-cell *matHeaderCellDef>Лабораторная работа</th>
+            <th mat-header-cell *matHeaderCellDef>{{'text.subjects.labs' | translate:'Лабораторная работа'}}</th>
             <td mat-cell *matCellDef="let element"> {{element.Theme}}</td>
           </ng-container>
 
@@ -39,50 +39,3 @@
     <mat-spinner></mat-spinner>
   </div>
 </ng-template>
-
-
-<!-- <div class="example-form-container">
-  <mat-form-field class="example-full-width">
-    <mat-label>Корпус</mat-label>
-    <input [(ngModel)]="data.model.buildingNumber" name="buildingNumber" required type="text" maxlength="3" matInput placeholder="Корпус">
-  </mat-form-field>
-  <mat-form-field class="example-full-width">
-    <mat-label>Аудитория</mat-label>
-    <input name="audience" required type="number" min="1" max="1000" matInput placeholder="Аудитория" [(ngModel)]="data.model.audience">
-  </mat-form-field>
-</div> -->
-
-<!-- <div class="example-form-container">
-  <mat-form-field class="example-full-width">
-    <mat-label>Начало занятия</mat-label>
-    <input
-    type="text"
-      matInput 
-      [(ngModel)]="data.model.start"
-      name="start"
-      mwlFlatpickr
-      [altInput]="true"
-      [enableTime]="true"
-      dateFormat="Y-m-dTH:i"
-      altFormat="F j, Y H:i"
-      required
-      placeholder="Начало занятия"
-    />
-  </mat-form-field>
-  <mat-form-field class="example-full-width">
-    <mat-label>Конец занятия</mat-label>
-    <input
-    type="text"
-      matInput 
-      [(ngModel)]="data.model.end"
-      name="end"
-      mwlFlatpickr
-      [altInput]="true"
-      [enableTime]="true"
-      dateFormat="Y-m-dTH:i"
-      altFormat="F j, Y H:i"
-      required
-      placeholder="Конец занятия"
-    />
-  </mat-form-field>
-</div> -->

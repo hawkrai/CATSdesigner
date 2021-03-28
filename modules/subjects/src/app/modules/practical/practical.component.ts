@@ -9,6 +9,7 @@ import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import * as groupActions from '../../store/actions/groups.actions';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 interface State {
   groups: Group[];
@@ -23,12 +24,15 @@ interface State {
 })
 export class PracticalComponent implements OnInit, OnDestroy {
 
-  tabs = ['Практические занятия', 'График защиты', 'Статистика посещения', 'Результаты']
+  tabs: string[] = []
 
   state$: Observable<State>;
   public detachedGroup = false;
 
-  constructor(private store: Store<IAppState>) { }
+  constructor(
+    private store: Store<IAppState>,
+    private translate: TranslatePipe
+    ) { }
   selectedTab = 0;
 
   
@@ -37,6 +41,12 @@ export class PracticalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.tabs = [
+      this.translate.transform('text.subjects.practicals.plural', 'Практические занятия'), 
+      this.translate.transform('schedule.protection', 'График защиты'), 
+      this.translate.transform('visit.statistics', 'Статистика посещения'),
+      this.translate.transform('results', 'Результаты')
+    ];
     this.loadGroup();
     this.state$ = combineLatest(
       this.store.select(groupSelectors.getGroups), 

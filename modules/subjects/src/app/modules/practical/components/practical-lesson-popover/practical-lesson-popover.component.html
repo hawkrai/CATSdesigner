@@ -6,22 +6,22 @@
     <ng-container body>
       <form class="form">
         <mat-form-field class="full-width">
-          <mat-label>Название практического занятия</mat-label>
+          <mat-label>{{'text.subjects.practicals.name' | translate:'Название практического занятия'}}</mat-label>
           <textarea required name="body" matInput [(ngModel)]="data.model.theme"></textarea>
         </mat-form-field>
         <mat-form-field class="full-width">
-          <mat-label>Краткое название</mat-label>
-          <input name="shortName" readonly matInput placeholder="Сокращенное название" [ngModel]="data.model.shortName">
+          <mat-label>{{'short.name' | translate:'Краткое название'}}</mat-label>
+          <input name="shortName" readonly matInput [placeholder]="'abbreviation' | translate:'Сокращенное название'" [ngModel]="data.model.shortName">
         </mat-form-field>
         <mat-form-field class="full-width">
-          <mat-label>Количество часов(1-99)</mat-label>
-          <input name="duration" required type="number" matInput placeholder="Количество часов" [(ngModel)]="data.model.duration">
+          <mat-label>{{'text.number.hours' | translate:'Количество часов'}}(1-99)</mat-label>
+          <input name="duration" min="1" max="99" required type="number" matInput [placeholder]="'text.number.hours' | translate:'Количество часов'" [(ngModel)]="data.model.duration">
         </mat-form-field>
-        <app-file-uploader header="Прикрепленный материал" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+        <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
       </form>
     </ng-container>
     <ng-container actions>
-      <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
+      <button mat-raised-button (click)="onClose(files, false)">{{'button.close' | translate:'Отмена'}}</button>
       <button mat-raised-button
               (click)="onClose(files, true)"
               color="primary"

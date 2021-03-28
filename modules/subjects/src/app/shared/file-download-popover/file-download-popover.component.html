@@ -1,14 +1,20 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
-<section class="example-section">
-  <mat-checkbox *ngFor="let attachment of data.body"
-                class="example-margin"
-                [color]="'primary'"
-                [(ngModel)]="attachment.isDownload"
-  >
-    {{attachment.name}}
-  </mat-checkbox>
-</section>
-<div mat-dialog-actions>
-  <button mat-raised-button mat-dialog-close>Отмена</button>
-  <button mat-raised-button [mat-dialog-close]="data.body | filter:'isDownload':true" color="primary">{{data.buttonText}}</button>
-</div>
+<app-popover width="200">
+  <ng-container title>
+    {{data.title}}
+  </ng-container>
+  <ng-container body>
+    <section class="example-section">
+      <mat-checkbox *ngFor="let attachment of data.body"
+                    class="example-margin"
+                    [color]="'primary'"
+                    [(ngModel)]="attachment.isDownload"
+      >
+        {{attachment.name}}
+      </mat-checkbox>
+    </section>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button mat-dialog-close>{{'button.close' | translate:'Отмена'}}</button>
+    <button mat-raised-button [mat-dialog-close]="data.body | filter:'isDownload':true" color="primary">{{data.buttonText}}</button>
+  </ng-container>
+</app-popover>

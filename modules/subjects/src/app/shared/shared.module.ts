@@ -27,6 +27,7 @@ import { SortByPipe } from './pipes/sort-by.pipe';
 import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
 import { PopoverComponent } from './popover/popover.component';
 import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
+import { FileComponent } from './components/file/file.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.p
     SortByPipe,
     MarkPopoverComponent,
     PopoverComponent,
-    TranslatePipe
+    TranslatePipe,
+    FileComponent
     ],
   imports: [
     CommonModule,
@@ -86,7 +88,8 @@ import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.p
     WidthPipe,
     SortByPipe,
     PopoverComponent,
-    TranslatePipe
+    TranslatePipe,
+    FileComponent
   ],
   providers: [TranslatePipe]
 })
