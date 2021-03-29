@@ -541,15 +541,15 @@ namespace LMPlatform.Data.Infrastructure
 
 
 
-            modelBuilder.Entity<ElasticUser>().Map(m => m.ToTable("Users"))
+            modelBuilder.Entity<ElasticUser>().Map(m => m.ToTable("ElasticUsers"))
                 .Property(m => m.Id)
                 .HasColumnName("UserId");
-            modelBuilder.Entity<ElasticStudent>().Map(m => m.ToTable("Students"))
+            modelBuilder.Entity<ElasticStudent>().Map(m => m.ToTable("ElasticStudents"))
                 .Property(m => m.Id)
                 .HasColumnName("UserId")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            modelBuilder.Entity<ElasticGroup>().Map(m => m.ToTable("Groups"));
-            modelBuilder.Entity<ElasticProject>().Map(m => m.ToTable("Projects"));
+            modelBuilder.Entity<ElasticGroup>().Map(m => m.ToTable("ElasticGroups"));
+            modelBuilder.Entity<ElasticProject>().Map(m => m.ToTable("ElasticProjects"));
 
             modelBuilder.Entity<ElasticGroup>()
                 .HasMany(e => e.Students)

@@ -17,14 +17,14 @@ namespace LMPlatform.UI.Controllers
         // GET: ElasticSearch
         public string ElasticAddress => ConfigurationManager.AppSettings["ElasticAddress"];
         public string ElasticUsername => ConfigurationManager.AppSettings["ElasticLogin"];
-        public string ElasricPassword => ConfigurationManager.AppSettings["ElasticPAssword"];
+        public string ElasticPassword => ConfigurationManager.AppSettings["ElasticPassword"];
 
         [HttpGet]
         public ActionResult GetLecturerSearchResult(string searchStr)
         {           
             try
             {
-                LecturerElasticSearchRepository searcher = new LecturerElasticSearchRepository(ElasticAddress, ElasticUsername, ElasricPassword);
+                LecturerElasticSearchRepository searcher = new LecturerElasticSearchRepository(ElasticAddress, ElasticUsername, ElasticPassword);
                 List<ElasticLecturer> results = searcher.Search(searchStr).ToList<ElasticLecturer>();
 
                 return this.Json(results, JsonRequestBehavior.AllowGet);
@@ -48,7 +48,7 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                StudentElasticSearchRepository searcher = new StudentElasticSearchRepository(ElasticAddress, ElasticUsername, ElasricPassword);
+                StudentElasticSearchRepository searcher = new StudentElasticSearchRepository(ElasticAddress, ElasticUsername, ElasticPassword);
                 List<ElasticStudent> results = searcher.Search(searchStr).ToList<ElasticStudent>();
                 return this.Json(results,JsonRequestBehavior.AllowGet);
             }
@@ -71,7 +71,7 @@ namespace LMPlatform.UI.Controllers
         {       
             try
             {
-                GroupElasticSearchRepository searcher = new GroupElasticSearchRepository(ElasticAddress, ElasticUsername, ElasricPassword);
+                GroupElasticSearchRepository searcher = new GroupElasticSearchRepository(ElasticAddress, ElasticUsername, ElasticPassword);
                 List<ElasticGroup> results = searcher.Search(searchStr).ToList<ElasticGroup>();
                 return this.Json(results, JsonRequestBehavior.AllowGet);
             }
@@ -95,7 +95,7 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                ElasticStarter init = new ElasticStarter(ElasticAddress,ElasticUsername,ElasricPassword);
+                ElasticStarter init = new ElasticStarter(ElasticAddress,ElasticUsername,ElasticPassword);
                 init.InitializeElastic();
 
                 return StatusCode(HttpStatusCode.OK);
@@ -111,7 +111,7 @@ namespace LMPlatform.UI.Controllers
         {          
             try
             {
-                ElasticStarter init = new ElasticStarter(ElasticAddress, ElasticUsername, ElasricPassword);
+                ElasticStarter init = new ElasticStarter(ElasticAddress, ElasticUsername, ElasticPassword);
                 init.ClearElastic();
                 return StatusCode(HttpStatusCode.OK);
             }
