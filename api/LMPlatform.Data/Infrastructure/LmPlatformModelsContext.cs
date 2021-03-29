@@ -1,17 +1,16 @@
-﻿using System;
+﻿using LMPlatform.Models.BTS;
+using LMPlatform.Models.CP;
+using LMPlatform.Models.DP;
+using LMPlatform.Models.KnowledgeTesting;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using LMPlatform.Models.BTS;
-using LMPlatform.Models.DP;
-using LMPlatform.Models.CP;
-using LMPlatform.Models.KnowledgeTesting;
-
 namespace LMPlatform.Data.Infrastructure
 {
-    using Application.ElasticDataModels;
+    using LMPlatform.ElasticDataModels;
     using LMPlatform.Models;
 
     public class LmPlatformModelsContext : DbContext, IDpContext, ICpContext
@@ -21,7 +20,7 @@ namespace LMPlatform.Data.Infrastructure
         public LmPlatformModelsContext()
             : base("DefaultConnection")
         {
-	        
+
         }
 
         #endregion Constructors
@@ -74,11 +73,11 @@ namespace LMPlatform.Data.Infrastructure
                 (x.GraduationYear == nextYearStr && DateTime.Now.Month >= 9));
         }
 
-        public virtual DbSet<ElasticGroup> ElasticGroups { get; set; }
-        public virtual DbSet<ElasticLecturer> ElasticLecturers { get; set; }
-        public virtual DbSet<ElasticProject> ElasticProjects { get; set; }
-        public virtual DbSet<ElasticStudent> ElasticStudents { get; set; }
-        public virtual DbSet<ElasticUser> ElasticUsers { get; set; }
+        public DbSet<ElasticGroup> ElasticGroups { get; set; }
+        public DbSet<ElasticLecturer> ElasticLecturers { get; set; }
+        public DbSet<ElasticProject> ElasticProjects { get; set; }
+        public DbSet<ElasticStudent> ElasticStudents { get; set; }
+        public DbSet<ElasticUser> ElasticUsers { get; set; }
         public DbSet<Group> Groups
         {
             get;
@@ -213,7 +212,7 @@ namespace LMPlatform.Data.Infrastructure
 
         public DbSet<UserLabFiles> UserLabFiles { get; set; }
 
-		public DbSet<AccessCode> AccessCode { get; set; }
+        public DbSet<AccessCode> AccessCode { get; set; }
 
         public DbSet<Documents> Documents { get; set; }
 
@@ -342,11 +341,11 @@ namespace LMPlatform.Data.Infrastructure
 
             modelBuilder.Entity<ConceptQuestions>().Map(m => m.ToTable("ConceptQuestions"));
 
-			modelBuilder.Entity<Question>()
-			  .HasMany<ConceptQuestions>(e => e.ConceptQuestions)
-			  .WithRequired(e => e.Question)
-			  .HasForeignKey(e => e.QuestionId)
-			  .WillCascadeOnDelete(true);
+            modelBuilder.Entity<Question>()
+              .HasMany<ConceptQuestions>(e => e.ConceptQuestions)
+              .WithRequired(e => e.Question)
+              .HasForeignKey(e => e.QuestionId)
+              .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Subject>()
                 .HasMany<Concept>(e => e.Concept)
@@ -382,7 +381,7 @@ namespace LMPlatform.Data.Infrastructure
                .HasMany<SubGroup>(e => e.SubGroups)
                .WithRequired(e => e.SubjectGroup)
                .HasForeignKey(e => e.SubjectGroupId)
-			   .WillCascadeOnDelete(true);
+               .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Student>()
                .HasMany<SubjectStudent>(e => e.SubjectStudents)
@@ -394,7 +393,7 @@ namespace LMPlatform.Data.Infrastructure
                .HasMany<SubjectStudent>(e => e.SubjectStudents)
                .WithRequired(e => e.SubjectGroup)
                .HasForeignKey(e => e.SubjectGroupId)
-			   .WillCascadeOnDelete(true);
+               .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Subject>()
                 .HasMany<Lectures>(e => e.Lectures)
@@ -418,7 +417,7 @@ namespace LMPlatform.Data.Infrastructure
                .HasMany<ScheduleProtectionLabs>(e => e.ScheduleProtectionLabs)
                .WithRequired(e => e.SubGroup)
                .HasForeignKey(e => e.SuGroupId)
-			   .WillCascadeOnDelete(true);
+               .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Subject>()
                 .HasMany<LecturesScheduleVisiting>(e => e.LecturesScheduleVisitings)
@@ -534,23 +533,23 @@ namespace LMPlatform.Data.Infrastructure
                 .HasForeignKey(e => e.PracticalId)
                 .WillCascadeOnDelete(false);
 
-			modelBuilder.Entity<Attachment>()
-				.HasOptional(a => a.Author)
-				.WithMany(u => u.Attachments)
-				.HasForeignKey(a => a.UserId)
-				.WillCascadeOnDelete(false);
+            modelBuilder.Entity<Attachment>()
+                .HasOptional(a => a.Author)
+                .WithMany(u => u.Attachments)
+                .HasForeignKey(a => a.UserId)
+                .WillCascadeOnDelete(false);
 
 
 
             modelBuilder.Entity<ElasticUser>().Map(m => m.ToTable("Users"))
                 .Property(m => m.Id)
                 .HasColumnName("UserId");
-            modelBuilder.Entity<ElasticStudent>().Map(m => m.ToTable("ElasticStudents"))
+            modelBuilder.Entity<ElasticStudent>().Map(m => m.ToTable("Students"))
                 .Property(m => m.Id)
                 .HasColumnName("UserId")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            modelBuilder.Entity<ElasticGroup>().Map(m => m.ToTable("ElasticGroups"));
-            modelBuilder.Entity<ElasticProject>().Map(m => m.ToTable("ElasticProjects"));
+            modelBuilder.Entity<ElasticGroup>().Map(m => m.ToTable("Groups"));
+            modelBuilder.Entity<ElasticProject>().Map(m => m.ToTable("Projects"));
 
             modelBuilder.Entity<ElasticGroup>()
                 .HasMany(e => e.Students)
@@ -632,12 +631,12 @@ namespace LMPlatform.Data.Infrastructure
                 .WithMany(test => test.Questions)
                 .HasForeignKey(question => question.TestId);
 
-			var answerEntity = modelBuilder.Entity<Answer>();
+            var answerEntity = modelBuilder.Entity<Answer>();
             answerEntity.Property(answer => answer.Content).IsRequired();
             answerEntity.HasRequired(answer => answer.Question)
                 .WithMany(question => question.Answers)
                 .HasForeignKey(answer => answer.QuestionId);
-			
+
 
             var testUnlockEntity = modelBuilder.Entity<TestUnlock>();
             testUnlockEntity.HasRequired(testunlock => testunlock.Test)
@@ -656,7 +655,7 @@ namespace LMPlatform.Data.Infrastructure
             studentAnswerOnTestQuestionEntity.HasRequired(answer => answer.User)
                 .WithMany(user => user.UserAnswersOnTestQuestions)
                 .HasForeignKey(answer => answer.UserId);
-		}
+        }
 
         #endregion Protected Members
 

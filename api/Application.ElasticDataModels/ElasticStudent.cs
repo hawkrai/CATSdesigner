@@ -1,4 +1,4 @@
-namespace Application.ElasticDataModels
+namespace LMPlatform.ElasticDataModels
 {
     using Application.Core.Data;
     using Newtonsoft.Json;
@@ -8,12 +8,12 @@ namespace Application.ElasticDataModels
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public class Student : ModelBase
+    public class ElasticStudent : ModelBase
     {
         [NotMapped]
         public string FullName => $"{LastName} {FirstName} {MiddleName}";
-        public User User { get; set; }
-        public Group Group { get; set; }
+        public ElasticUser User { get; set; }
+        public ElasticGroup Group { get; set; }
         public int GroupId { get; set; }
 
         [JsonIgnore]

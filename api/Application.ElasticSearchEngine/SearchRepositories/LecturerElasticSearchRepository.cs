@@ -1,4 +1,5 @@
-﻿using Application.ElasticDataModels;
+﻿
+using LMPlatform.ElasticDataModels;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -17,14 +18,14 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         public LecturerElasticSearchRepository(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
             : base(elastickAddress, LECTURERS_INDEX_NAME, prefixLength, fuzziness, userName, password)
         { }
-        public IEnumerable<Lecturer> Search(string requestStr)
+        public IEnumerable<ElasticLecturer> Search(string requestStr)
         {
             string searchStr = "";
             if (requestStr != null)
             {
                 searchStr = requestStr.ToLower();
             }
-            var searchResponse = Client.Search<Lecturer>(s => s
+            var searchResponse = Client.Search<ElasticLecturer>(s => s
             .Size(DEFAULT_NUM_OF_RESULTS)
 
             .Query(q => q
@@ -41,12 +42,12 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                   
              )   
             ); ;
-            return searchResponse.Documents.ToList<Lecturer>();
+            return searchResponse.Documents.ToList<ElasticLecturer>();
         }
 
-        public IEnumerable<Lecturer> SearchAll()
+        public IEnumerable<ElasticLecturer> SearchAll()
         {
-            var searchResponse = Client.Search<Lecturer>(s => s
+            var searchResponse = Client.Search<ElasticLecturer>(s => s
             .Size(200)
             .From(0)
             .Query(q => q
@@ -59,33 +60,33 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                 )
             );
             Console.WriteLine("found {0} documents", searchResponse.Documents.Count);
-            return searchResponse.Documents.ToList<Lecturer>();
+            return searchResponse.Documents.ToList<ElasticLecturer>();
         }
 
-        public void AddToIndex(Lecturer lecturer)
+        public void AddToIndex(ElasticLecturer lecturer)
         {
 
-                Client.Index<Lecturer>(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
+                Client.Index<ElasticLecturer>(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
 
         }
 
-        public void AddToIndex(IEnumerable<Lecturer> lecturers)
+        public void AddToIndex(IEnumerable<ElasticLecturer> lecturers)
         {
             Client.IndexMany(lecturers, LECTURERS_INDEX_NAME);
         }
 
-        public void AddToIndexAsync(Lecturer lecturer)
+        public void AddToIndexAsync(ElasticLecturer lecturer)
         {
 
-            Client.IndexAsync<Lecturer>(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
+            Client.IndexAsync<ElasticLecturer>(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
 
         }
 
-        public void AddToIndexAsync(IEnumerable<Lecturer> lecturers)
+        public void AddToIndexAsync(IEnumerable<ElasticLecturer> lecturers)
         {
             Client.IndexManyAsync(lecturers, LECTURERS_INDEX_NAME);
         }
-        public void UpdateDocument(Lecturer lecturer)
+        public void UpdateDocument(ElasticLecturer lecturer)
         {
             DeleteFromIndex(lecturer.Id);
             AddToIndex(lecturer);
@@ -95,7 +96,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-             .Map<Lecturer>(m => m
+             .Map<ElasticLecturer>(m => m
                .Properties(prop => prop
                  .Text(s => s
                     .Name(n => n.FullName)

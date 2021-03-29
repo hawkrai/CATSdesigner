@@ -1,4 +1,4 @@
-namespace Application.ElasticDataModels
+namespace LMPlatform.ElasticDataModels
 {
     using Application.Core.Data;
     using System;
@@ -7,7 +7,7 @@ namespace Application.ElasticDataModels
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Project : ModelBase
+    public partial class ElasticProject : ModelBase
     {
 
         [Required]
@@ -23,7 +23,7 @@ namespace Application.ElasticDataModels
 
         public Guid? Guid { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual ElasticUser User { get; set; }
 
     }
 }

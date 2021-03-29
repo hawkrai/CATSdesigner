@@ -1,5 +1,5 @@
 
-using Application.ElasticDataModels;
+
 using Application.ElasticSearchEngine.SearchRepositories;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Application.ElasticSearchEngine
     {
     /*    //change to current dB connection
          private static string CONNECTION_STRING_NAME = "name=ElasticContext";*/
-        private static string CONNECTION_STRING_NAME = "DefaultConnection";*/
+        private static string CONNECTION_STRING_NAME = "DefaultConnection";
 
         private string address = "";
         private string username = "";

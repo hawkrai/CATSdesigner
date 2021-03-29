@@ -1,4 +1,4 @@
-namespace Application.ElasticDataModels
+namespace LMPlatform.ElasticDataModels
 {
     using Application.Core.Data;
     using Newtonsoft.Json;
@@ -17,7 +17,7 @@ namespace Application.ElasticDataModels
         public string GraduationYear { get; set; }
 
         [JsonIgnore]
-        public Lecturer Secretary { get; set; }
+        public ElasticLecturer Secretary { get; set; }
 
         [JsonIgnore]
         [Column("Secretary_Id")]

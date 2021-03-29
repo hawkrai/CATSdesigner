@@ -823,12 +823,12 @@
       <Project>{94B7F3F9-AAD5-417F-9DAD-A0210489D875}</Project>
       <Name>Application.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Application.ElasticDataModels\Application.ElasticDataModels.csproj">
-      <Project>{7D6B62DE-EC81-497D-844E-5BEDFED6DE9E}</Project>
-      <Name>Application.ElasticDataModels</Name>
+    <ProjectReference Include="..\Application.ElasticDataModels\LMPlatform.ElasticDataModels.csproj">
+      <Project>{7d6b62de-ec81-497d-844e-5bedfed6de9e}</Project>
+      <Name>LMPlatform.ElasticDataModels</Name>
     </ProjectReference>
     <ProjectReference Include="..\Application.ElasticSearchEngine\Application.ElasticSearchEngine.csproj">
-      <Project>{2634A34B-69D8-4DF2-9F0B-340E7092CED0}</Project>
+      <Project>{2634a34b-69d8-4df2-9f0b-340e7092ced0}</Project>
       <Name>Application.ElasticSearchEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Application.Infrastructure\Application.Infrastructure.csproj">

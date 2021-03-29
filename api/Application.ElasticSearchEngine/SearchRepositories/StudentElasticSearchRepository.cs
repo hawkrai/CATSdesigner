@@ -1,5 +1,4 @@
-﻿
-using Application.ElasticDataModels;
+﻿using LMPlatform.ElasticDataModels;
 using Nest;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
-﻿using Application.ElasticDataModels;
+﻿
+using LMPlatform.ElasticDataModels;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,14 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         public ProjectElasticSearchRepository(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
             : base(elastickAddress, PROJECTS_INDEX_NAME, prefixLength, fuzziness, userName, password)
         { }
-        public IEnumerable<Project> Search(string requestStr)
+        public IEnumerable<ElasticProject> Search(string requestStr)
         {
             string searchStr = "";
             if (requestStr != null)
             {
                 searchStr = requestStr.ToLower();
             }
-            var searchResponse = Client.Search<Project>(s => s
+            var searchResponse = Client.Search<ElasticProject>(s => s
             .Size(DEFAULT_NUM_OF_RESULTS)
 
             .Query(q => q
@@ -41,12 +42,12 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                       .Prefix(p => p.Details , searchStr)
              )   
             ); ;
-            return searchResponse.Documents.ToList<Project>();
+            return searchResponse.Documents.ToList<ElasticProject>();
         }
 
-        public IEnumerable<Project> SearchAll()
+        public IEnumerable<ElasticProject> SearchAll()
         {
-            var searchResponse = Client.Search<Project>(s => s
+            var searchResponse = Client.Search<ElasticProject>(s => s
             .Size(200)
             .From(0)
             .Query(q => q
@@ -59,33 +60,33 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                 )
             );
             Console.WriteLine("found {0} documents", searchResponse.Documents.Count);
-            return searchResponse.Documents.ToList<Project>();
+            return searchResponse.Documents.ToList<ElasticProject>();
         }
 
-        public void AddToIndex(Project project)
+        public void AddToIndex(ElasticProject project)
         {
 
-                Client.Index<Project>(project, st => st.Index(PROJECTS_INDEX_NAME));
+                Client.Index<ElasticProject>(project, st => st.Index(PROJECTS_INDEX_NAME));
 
         }
 
-        public void AddToIndex(IEnumerable<Project> projects)
+        public void AddToIndex(IEnumerable<ElasticProject> projects)
         {
             Client.IndexMany(projects, PROJECTS_INDEX_NAME);
         }
 
-        public void AddToIndexAsync(Project project)
+        public void AddToIndexAsync(ElasticProject project)
         {
 
-            Client.IndexAsync<Project>(project, st => st.Index(PROJECTS_INDEX_NAME));
+            Client.IndexAsync<ElasticProject>(project, st => st.Index(PROJECTS_INDEX_NAME));
 
         }
 
-        public void AddToIndexAsync(IEnumerable<Project> projects)
+        public void AddToIndexAsync(IEnumerable<ElasticProject> projects)
         {
             Client.IndexManyAsync(projects, PROJECTS_INDEX_NAME);
         }
-        public void UpdateDocument(Project project)
+        public void UpdateDocument(ElasticProject project)
         {
             DeleteFromIndex(project.Id);
             AddToIndex(project);
@@ -95,7 +96,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-                .Map<Project>(m => m
+                .Map<ElasticProject>(m => m
                     .Properties(prop => prop
                         .Date(s => s
                             .Name(n => n.DateOfChange)

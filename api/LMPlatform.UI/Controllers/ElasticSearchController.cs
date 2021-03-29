@@ -1,4 +1,4 @@
-﻿using Application.ElasticDataModels;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,7 @@ using Application.ElasticSearchEngine;
 using System.Net;
 using System.Configuration;
 using Application.Core.UI.Controllers;
+using LMPlatform.ElasticDataModels;
 
 namespace LMPlatform.UI.Controllers
 {

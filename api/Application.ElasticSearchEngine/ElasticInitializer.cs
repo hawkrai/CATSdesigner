@@ -5,10 +5,10 @@ using Elasticsearch.Net;
 using Nest.JsonNetSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Application.ElasticDataModels;
 using System.Data.Entity;
 using System.Linq;
 using LMPlatform.Data.Infrastructure;
+using LMPlatform.ElasticDataModels;
 
 namespace Application.ElasticSearchEngine
 {
@@ -55,7 +55,7 @@ namespace Application.ElasticSearchEngine
             using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
                 return context.ElasticProjects
-                    .ToList<ElasticProject>();
+                    .ToList();
             }
         }
         private List<ElasticGroup> GetGroups()
@@ -63,7 +63,7 @@ namespace Application.ElasticSearchEngine
             using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
                 return context.ElasticGroups
-                    .ToList<ElasticGroup>();
+                    .ToList();
             }
         }
         private List<ElasticLecturer> GetLecturers() {
@@ -81,7 +81,7 @@ namespace Application.ElasticSearchEngine
                     return context.ElasticStudents
                         .Include(s => s.User)
                         .Include(g => g.Group)
-                        .ToList<ElasticStudent>(); 
+                        .ToList(); 
                 }
 
 

@@ -1,4 +1,4 @@
-namespace Application.ElasticDataModels
+namespace LMPlatform.ElasticDataModels
 {
     using Application.Core.Data;
     using Newtonsoft.Json;
@@ -8,9 +8,9 @@ namespace Application.ElasticDataModels
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Lecturer : ModelBase
+    public partial class ElasticLecturer : ModelBase
     {
-        public User User { get; set; }
+        public ElasticUser User { get; set; }
 
         public string Skill { get; set; }
 
@@ -32,7 +32,7 @@ namespace Application.ElasticDataModels
         public bool? IsActive { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Group> Groups { get; set; }
+        public virtual ICollection<ElasticGroup> Groups { get; set; }
 
         [JsonIgnore]
         public bool IsLecturerHasGraduateStudents { get; set; }

@@ -1,4 +1,5 @@
-﻿using Application.ElasticDataModels;
+﻿
+using LMPlatform.ElasticDataModels;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,14 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         public GroupElasticSearchRepository(string elastickAddress, int prefixLength, int fuzziness, string userName, string password)
             : base(elastickAddress, GROUPS_INDEX_NAME, prefixLength, fuzziness, userName, password)
         { }
-        public IEnumerable<Group> Search(string requestStr)
+        public IEnumerable<ElasticGroup> Search(string requestStr)
         {
             string searchStr = "";
             if (requestStr != null)
             {
                 searchStr = requestStr.ToLower();
             }
-            var searchResponse = Client.Search<Group>(s => s
+            var searchResponse = Client.Search<ElasticGroup>(s => s
             .Size(DEFAULT_NUM_OF_RESULTS)
 
             .Query(q => q
@@ -38,12 +39,12 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                       .Prefix(p => p.Name, searchStr)
              )   
             ); 
-            return searchResponse.Documents.ToList<Group>();
+            return searchResponse.Documents.ToList<ElasticGroup>();
         }
 
-        public IEnumerable<Group> SearchAll()
+        public IEnumerable<ElasticGroup> SearchAll()
         {
-            var searchResponse = Client.Search<Group>(s => s
+            var searchResponse = Client.Search<ElasticGroup>(s => s
             .Size(200)
             .From(0)
             .Query(q => q
@@ -56,31 +57,31 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                 )
             );
             Console.WriteLine("found {0} documents", searchResponse.Documents.Count);
-            return searchResponse.Documents.ToList<Group>();
+            return searchResponse.Documents.ToList<ElasticGroup>();
         }
 
-        public void AddToIndex(Group group)
+        public void AddToIndex(ElasticGroup group)
         {
-                Client.Index<Group>(group, st => st.Index(GROUPS_INDEX_NAME));
+                Client.Index<ElasticGroup>(group, st => st.Index(GROUPS_INDEX_NAME));
         }
 
-        public void AddToIndex(IEnumerable<Group> groups)
+        public void AddToIndex(IEnumerable<ElasticGroup> groups)
         {
             Client.IndexMany(groups, GROUPS_INDEX_NAME);
         }
 
-        public void AddToIndexAsync(Group group)
+        public void AddToIndexAsync(ElasticGroup group)
         {
 
-            Client.IndexAsync<Group>(group, st => st.Index(GROUPS_INDEX_NAME));
+            Client.IndexAsync<ElasticGroup>(group, st => st.Index(GROUPS_INDEX_NAME));
 
         }
 
-        public void AddToIndexAsync(IEnumerable<Group> groups)
+        public void AddToIndexAsync(IEnumerable<ElasticGroup> groups)
         {
             Client.IndexManyAsync(groups, GROUPS_INDEX_NAME);
         }
-        public void UpdateDocument(Group group)
+        public void UpdateDocument(ElasticGroup group)
         {
             DeleteFromIndex(group.Id);
             AddToIndex(group);
@@ -90,7 +91,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
             map.Mappings(M => M
-                .Map<Group>(m => m
+                .Map<ElasticGroup>(m => m
                     .Properties(prop => prop
                         .Number(num => num
                             .Name(n => n.Id)
@@ -98,7 +99,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                         .Number(num => num
                             .Name(n => n.SecretaryId)
                             )
-                        .Object<List<Student>>(num => num
+                        .Object<List<ElasticStudent>>(num => num
                             .Name(n => n.Students)
                             )
                         .Text(s => s

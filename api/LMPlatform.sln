@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMPlatform.PlagiarismNet", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMPlatform.AdaptiveLearningCore", "LMPlatform.AdaptiveLearningCore\LMPlatform.AdaptiveLearningCore.csproj", "{599AFB1C-9C09-4976-AD4D-B4D5A2D436CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.ElasticDataModels", "Application.ElasticDataModels\Application.ElasticDataModels.csproj", "{7D6B62DE-EC81-497D-844E-5BEDFED6DE9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMPlatform.ElasticDataModels", "Application.ElasticDataModels\LMPlatform.ElasticDataModels.csproj", "{7D6B62DE-EC81-497D-844E-5BEDFED6DE9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.ElasticSearchEngine", "Application.ElasticSearchEngine\Application.ElasticSearchEngine.csproj", "{2634A34B-69D8-4DF2-9F0B-340E7092CED0}"
 EndProject
