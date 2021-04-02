@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div class="visiting-popover__header">
+  <p>Редактируемая дата: </p>
+  <h2>{{data.body.date}}</h2>
+</div>
+<div class="visiting-popover__table" *ngIf="data.body">
+  <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="position">
+      <mat-header-cell *matHeaderCellDef> №</mat-header-cell>
+      <mat-cell *matCellDef="let i = index"> {{i + 1}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> ФИО</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="mark">
+      <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field class="example-full-width" >
+          <input name="mark" type="number" min="0" pattern="\d*" matInput [(ngModel)]="element.mark" #mark="ngModel"
+                 (change)="onMarkChange($event.target.value)">
+          <mat-error *ngIf="mark.invalid">Больше 0</mat-error>
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="comment">
+      <mat-header-cell *matHeaderCellDef> Комментарий</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field class="example-full-width">
+          <input name="comment" matInput [(ngModel)]="element.comment">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary" [disabled]="invalid">
+    {{data.buttonText}}
+  </button>
+</div>
