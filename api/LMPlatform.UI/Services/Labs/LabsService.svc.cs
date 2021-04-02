@@ -906,8 +906,10 @@ namespace LMPlatform.UI.Services.Labs
 					}
 					data.clusters[i].correctDocs = correctDocs.OrderBy(x => x.groupName).ThenBy(x => x.author).ToList();
 				}
+				Directory.Delete(this.PlagiarismTempPath + path, true);
+
 				HttpContext.Current.Session.Add(key.ToString(), data.clusters.ToList());
-				
+
 				return new ResultPSubjectViewData
 				{
 					DataD = data.clusters.ToList(),
@@ -1007,6 +1009,8 @@ namespace LMPlatform.UI.Services.Labs
 
 					data.Add(resPlag);
 				}
+
+				Directory.Delete(this.PlagiarismTempPath + path, true);
 
 				HttpContext.Current.Session.Add(key.ToString(), data.ToList());
 
