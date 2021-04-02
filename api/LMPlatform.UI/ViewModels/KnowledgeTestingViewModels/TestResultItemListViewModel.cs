@@ -24,6 +24,8 @@ namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
 
             public DateTime StartTime { get; set; }
 
+            public DateTime? EndTime { get; set; }
+
             public User User { get; set; }
 
             public string Comment { get; set; }
@@ -55,6 +57,7 @@ namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
                     Points = model.Points,
                     Percent = model.Percent,
                     StartTime = model.StartTime,
+                    EndTime = model.EndTime,
                     User = model.User,
                     Comment = model.Comment,
                     CalculationType = model.CalculationType,
