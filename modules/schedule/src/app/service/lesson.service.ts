@@ -10,7 +10,7 @@ import {DatePipe, formatDate} from '@angular/common';
 })
 export class LessonService {
 
-  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'], ['3', 'Практ.работа']];
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб. работа'], ['3', 'Практ. работа']];
 
   lessonTypesFull: string[][] = [['1', 'Лекция'], ['2', 'Лабораторная работа'], ['3', 'Практическая работа']];
 
@@ -36,15 +36,21 @@ export class LessonService {
   }
 
   saveLab(Lab: any): Observable<any> {
-    return this.http.post<any>('/Services/Labs/ScheduleService.svc/SaveDateLab', {lab: Lab});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLab',
+      {subjectId: Lab.subjectId, date: Lab.date, startTime: Lab.startTime,
+            endTime: Lab.endTime, building: Lab.building, audience: Lab.audience, subGroupId: 7871});
   }
 
   savePractical(pract: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDatePractical', {lab: pract});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDatePractical',
+      {subjectId: pract.subjectId, date: pract.date, startTime: pract.startTime,
+            endTime: pract.endTime, building: pract.building, audience: pract.audience, groupId: 3027 });
   }
 
   saveLecture(lect: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures', {lecture: lect});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures',
+      {subjectId: lect.subjectId, date: lect.date, startTime: lect.startTime,
+            endTime: lect.endTime, building: lect.building, audience: lect.audience});
   }
 
   deleteLab(idLab: any): Observable<any> {
@@ -124,7 +130,12 @@ export class LessonService {
 
   getLocation(title: string): any {
     const splitted = title.split('|', 3);
-    return 'а.' + splitted[1] + ' к.' + splitted[2];
+    let a = splitted[2];
+    if (a.length != 0) {
+      a = ' к. ' + a;
+    }
+
+    return 'а.' + splitted[1] + a;
   }
 
   getName(title: string): any {
