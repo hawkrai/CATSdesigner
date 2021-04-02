@@ -12,8 +12,8 @@ namespace LMPlatform.UI.Services.Modules.Lectures
             SubjectId = visiting.SubjectId;
             Date = visiting.Date.ToString("dd/MM/yyy");
             Id = visiting.Id;
-            StartTime = visiting.StartTime?.ToString(@"HH\:mm");
-            EndTime = visiting.EndTime?.ToString(@"HH\:mm");
+            StartTime = visiting.StartTime?.ToString(@"hh\:mm");
+            EndTime = visiting.EndTime?.ToString(@"hh\:mm");
             Building = visiting.Building;
             Audience = visiting.Audience;
         }

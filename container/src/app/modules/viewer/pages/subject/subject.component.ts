@@ -2,26 +2,37 @@ import { take, tap } from 'rxjs/operators';
 import { MenuService } from './../../../../core/services/menu.service';
 import { Module, ModuleType } from './../../../../core/models/module.model';
 import { switchMap, map } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router, ActivatedRoute, Params  } from '@angular/router';
 import { CoreService } from './../../../../core/services/core.service';
 import { AuthenticationService } from './../../../../core/services/auth.service';
 import { Message } from './../../../../core/models/message';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-subject',
   templateUrl: './subject.component.html',
   styleUrls: ['./subject.component.less']
 })
-export class SubjectComponent implements OnInit {
+export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild(MatSidenav) sideNav: MatSidenav;
   public selectedModule: SafeResourceUrl;
   public clickedItem: string;
   public isLector:boolean = false;
   private originalModule: string; 
+
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: (event: MediaQueryListEvent) => void;
+  @HostListener("window:scroll", ["$event"])
+  onWindowScroll(event:Event) {
+    event.stopPropagation();
+  }
   modules$: Observable<Module[]>;
+
   constructor(
     private sanitizer: DomSanitizer, 
     private coreService: CoreService, 
@@ -29,7 +40,17 @@ export class SubjectComponent implements OnInit {
     private location: Location, 
     private activeRouter: ActivatedRoute, 
     private autService: AuthenticationService,
-    private menuService: MenuService ) { }
+    private menuService: MenuService,
+    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher ) { 
+      this.mobileQuery = media.matchMedia('(max-width: 970px)');
+      this._mobileQueryListener = () => {
+        changeDetectorRef.detectChanges();
+      };
+      this.mobileQuery.addEventListener('change', this._mobileQueryListener);
+    }
+  ngAfterViewInit(): void {
+    this.menuService.setSideNav(this.sideNav);
+  }
 
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
@@ -46,9 +67,10 @@ export class SubjectComponent implements OnInit {
       this.initState(this.menuService.getSubjectInfo(type).fragment);
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     });
+
     this.modules$ = this.activeRouter.params.pipe(
       switchMap((params: Params) => this.coreService.getSubjectModules(+params.id))
-      ); 
+    );
   }
 
   private navigate(fragment: string) {
@@ -87,5 +109,10 @@ export class SubjectComponent implements OnInit {
 
   getModuleItem(type: ModuleType): string {
     return this.menuService.getSubjectInfo(type).item;
+  }
+
+  
+  ngOnDestroy(): void {
+    this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
   }
 }

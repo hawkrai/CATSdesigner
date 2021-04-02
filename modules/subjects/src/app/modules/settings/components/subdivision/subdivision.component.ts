@@ -1,19 +1,19 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {DialogData} from '../../models/dialog-data.model';
-import {SubjectService} from '../../services/subject.service';
+import {DialogData} from '../../../../models/dialog-data.model';
+import {SubjectService} from '../../../../services/subject.service';
 import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../store/selectors/subject.selector';
-import {IAppState} from '../../store/state/app.state';
+import {getSubjectId} from '../../../../store/selectors/subject.selector';
+import {IAppState} from '../../../../store/state/app.state';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {MatSelectionList} from '@angular/material/list';
 
 @Component({
-  selector: 'app-news-popover',
-  templateUrl: './subgrouping.component.html',
-  styleUrls: ['./subgrouping.component.less']
+  selector: 'app-subdivision',
+  templateUrl: './subdivision.component.html',
+  styleUrls: ['./subdivision.component.less']
 })
-export class SubgroupingComponent implements OnInit {
+export class SubdivisionComponent implements OnInit {
 
   public groups;
   public subjectId;
@@ -26,7 +26,7 @@ export class SubgroupingComponent implements OnInit {
   public selectedOptions: any[];
 
   constructor(
-    public dialogRef: MatDialogRef<SubgroupingComponent>,
+    public dialogRef: MatDialogRef<SubdivisionComponent>,
     public subjectService: SubjectService,
     private store: Store<IAppState>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {

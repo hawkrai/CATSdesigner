@@ -5,8 +5,8 @@ import { LecturesComponent } from './modules/lectures/lectures.component';
 import { LabsComponent } from './modules/labs/labs.component';
 import {FilesComponent} from './modules/files/files.component';
 import {PracticalComponent} from './modules/practical/practical.component';
-import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
 import {SubjectComponent} from './modules/subject/subject.component';
+import { SettingsComponent } from './modules/settings/settings.component';
 
 
 
@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'labs', component: LabsComponent},
   { path: 'practical', component: PracticalComponent},
   { path: 'files', component: FilesComponent},
-  { path: 'settings', component: SubSettingsComponent},
+  { path: 'settings', component: SettingsComponent},
   { path: 'subject', component: SubjectComponent},
   // { path: '**', component: NotFoundComponent }
 ];

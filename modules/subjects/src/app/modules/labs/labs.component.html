@@ -39,12 +39,12 @@
           [checked]="detachedGroup"
           (change)="groupStatusChange($event)"
         >
-          Открепленные группы
+          {{'text.groups.detached' | translate: 'Открепленные группы'}}
         </mat-slide-toggle>
         <button *ngIf="selectedTab === 4"
           mat-icon-button
           color="primary"
-          matTooltip="Скачать архивом"
+          [matTooltip]="'text.download.archive' | translate:'Скачать архивом'"
           (click)="downloadAll()"
         >
           <mat-icon>get_app</mat-icon>
@@ -57,7 +57,7 @@
         <button *ngIf="selectedTab === 4"
                 mat-icon-button
                 color="primary"
-                matTooltip="Проверить на плагиат всех работ"
+                [matTooltip]="'text.check.plagiarism.all' | translate:'Проверить на плагиат всех работ'"
                 (click)="checkPlagiarism(state.subjectId)"
         >
           <mat-icon>visibility</mat-icon>
@@ -65,7 +65,7 @@
         <button *ngIf="selectedTab === 4"
                 mat-icon-button
                 color="primary"
-                matTooltip="Обновить данные"
+                [matTooltip]="'text.refresh.data' | translate:'Обновить данные'"
                 (click)="refreshJobProtection()"
         >
           <mat-icon>cached</mat-icon>

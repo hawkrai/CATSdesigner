@@ -18,7 +18,6 @@ import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
   ],
   entryComponents: [
     NewsPopoverComponent
-  ],
-  exports: [SubjectNewsComponent]
+  ]
 })
 export class SubjectNewsModule { }

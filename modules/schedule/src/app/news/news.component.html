@@ -1,23 +1,27 @@
 <div *ngIf="isEnableNews">
-  <div style="margin-top: 22px;">
+  <div style="margin-top: 22px;margin-bottom: 20px;" >
     <p matTooltipClass="example-tooltip-blue" (click)="hideNews()" matTooltip = "Скрыть новости"
-         style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5; width: 10px; float: left; ">></p>
-     <p style="margin-bottom: 0px;font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;margin-left: 30%">Новости</p>
+         style="padding-left: 9%;cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5; width: 10px; float: left; ">></p>
+     <p style="font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;margin-left: 30%">{{'text.schedule.news' | translate:'Новости'}}</p>
   </div>
-  <table style="margin-right:10%; margin-left:10%;">
-    <tr *ngFor="let item of news" >
-     <div [ngStyle]="{ 'border-left':calcColor(item?.Subject)}" style="margin-bottom: 25px; padding-top: 10px;" >
-        <div style="margin-left:6%;" >
-          <h6 (click) = "openItemInfo(item)" style = "color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:14px;line-height:20px;cursor: pointer;left: 0%;font-weight: initial; ">{{item?.Title}}</h6>
+  <div *ngIf ="news.length" style="margin-right:10%; margin-left:10%;">
+    <table  >
+      <tr  *ngFor="let item of news" >
+       <div [ngStyle]="{ 'border-left':calcColor(item?.Subject)}" style="margin-bottom: 25px; padding-top: 10px;" >
+          <div style="margin-left:6%;" >
+            <h6 (click) = "openItemInfo(item)" [ngStyle]="{ 'color':item?.Subject?.Color}" style = "color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:14px;line-height:20px;cursor: pointer;left: 0%;font-weight: initial; ">{{item?.Title}}</h6>
+          </div>
+          <div style="margin-left:6%;margin-top: 20px;display: flex;justify-content: space-between;">
+            <h6 matTooltip="{{item?.Subject?.Name}}" matTooltipClass="example-tooltip-blue" style = "cursor: pointer;font-size:14px;line-height:16px;left: 0%;float: left; font-family: Roboto, Helvetica Neue, sans-serif;">{{item?.Subject?.ShortName}}</h6>
+            <h6 style = "font-size:12px;line-height:14px;margin-top: 2px;left: 0%;font-weight: initial; float: right;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:12px;">{{item?.EditDate.slice(6,-2) | date:'dd.MM.yyyy' }}</h6>
+          </div>
+          <p></p>
         </div>
-        <div style="margin-left:6%;margin-top: 20px;display: flex;justify-content: space-between;">
-          <h6 matTooltip="{{item?.Subject?.Name}}" matTooltipClass="example-tooltip-blue" style = "cursor: pointer;font-size:14px;line-height:16px;left: 0%;float: left; font-family: Roboto, Helvetica Neue, sans-serif;">{{item?.Subject?.ShortName}}</h6>
-          <h6 style = "font-size:12px;line-height:14px;margin-top: 2px;left: 0%;font-weight: initial; float: right;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:12px;">{{item?.EditDate.slice(6,-2) | date:'dd.MM.yyyy' }}</h6>
-        </div>
-        <p></p>
-      </div>
-    </tr>
-  </table>
+      </tr>
+    </table>
+  </div>
 </div>
 
-<a style="cursor: pointer;" (click)="openAllNews()">Посмотреть все новости</a>
+
+<span class = "nav" style="color: #3F51B5;padding-left: 9%;cursor: pointer;" (click)="openAllNews()">{{'text.schedule.news.all.news'| translate:'Посмотреть все новости'}}</span>
+

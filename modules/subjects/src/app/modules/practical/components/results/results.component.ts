@@ -4,7 +4,6 @@ import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@
 import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
-// import {LabsMarkPopoverComponent} from './labs-mark-popover/labs-mark-popover.component';
 import {MarkForm} from '../../../../models/mark-form.model';
 import { filter, map} from 'rxjs/operators';
 import {SubSink} from 'subsink';
@@ -19,6 +18,7 @@ import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/
 import { Practical } from 'src/app/models/practical.model';
 import { PracticalMark } from 'src/app/models/mark/practical-mark.model';
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-results',
@@ -34,6 +34,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private store: Store<IAppState>,
+    private translate: TranslatePipe,
     private dialogService: DialogService) {
   }
 
@@ -56,7 +57,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getHeaders(practicals: Practical[]): { head: string, text: string, tooltip: string }[] {
-    return practicals.map(l => ({ head: l.PracticalId.toString(), text: l.ShortName, tooltip: l.Theme }));
+    return practicals.map((l, index) => ({ head: l.PracticalId.toString(), text: this.translate.transform('text.subjects.practicals.prefix', 'ПЗ') + (index + 1), tooltip: l.Theme }));
   }
 
   getDisplayColumns(practicals: Practical[]): string[] {
@@ -75,8 +76,8 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     if (mark) {
       const practicalMark = this.getPracticalMark(mark, student.StudentId);
       const dialogData: DialogData = {
-        title: 'Выставление оценки',
-        buttonText: 'Сохранить',
+        title: this.translate.transform('text.subjects.grading', 'Выставление оценки'),
+        buttonText: this.translate.transform('button.save', 'Сохранить'),
         body: practicalMark,
         model: {
           recommendedMark,
@@ -104,11 +105,11 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   getMissingTooltip(studentMark: StudentMark, schedule: ScheduleProtectionPractical[]) {
     // const missingSchedule = studentMark.LabVisitingMark
     // .filter(visiting => schedule
-    //   .find(schedule => schedule.ScheduleProtectionLabId === visiting.ScheduleProtectionLabId)
+    //   .find(schedule => schedule.ScheduleProtectionPracticalId === visiting.ScheduleProtectionLabId)
     // ).map(visiting => ({ mark: visiting.Mark, date: schedule
-    //   .find(schedule => schedule.ScheduleProtectionLabId === visiting.ScheduleProtectionLabId).Date}))
+    //   .find(schedule => schedule.ScheduleProtectionPracticalId === visiting.ScheduleProtectionLabId).Date}))
     //   .filter(sc => !!sc.mark);
-    // return missingSchedule.map(sc => `Пропустил(a) ${sc.mark} часа(ов).${sc.date}`).join('\n');
+    // return missingSchedule.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.mark} ${this.translate.transform('text.subjects.missed.hours', 'час(ов)')}.${sc.date}`).join('\n');
   }
 
   private getPracticalMark(mark: PracticalMark, studentId: number) {
