@@ -221,8 +221,10 @@
     <Compile Include="MaterialsManagement\MaterialsManagementService.cs" />
     <Compile Include="MessageManagement\IMessageManagementService.cs" />
     <Compile Include="MessageManagement\MessageManagementService.cs" />
+    <Compile Include="Models\GroupJobProtection.cs" />
     <Compile Include="Models\ProfileCalendarModel.cs" />
     <Compile Include="Models\ScheduleModel.cs" />
+    <Compile Include="Models\StudentJobProtection.cs" />
     <Compile Include="NoteManagement\INoteManagementService.cs" />
     <Compile Include="NoteManagement\NoteManagementService.cs" />
     <Compile Include="PracticalManagement\IPracticalManagementService.cs" />
@@ -230,6 +232,8 @@
     <Compile Include="ProjectManagement\IProjectManagementService.cs" />
     <Compile Include="ProjectManagement\ProjectManagementService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtectionManagement\IProtectionManagementService.cs" />
+    <Compile Include="ProtectionManagement\ProtectionManagementService.cs" />
     <Compile Include="ScheduleManagement\IScheduleManagementService.cs" />
     <Compile Include="ScheduleManagement\ScheduleManagementService.cs" />
     <Compile Include="SubjectManagement\IModulesManagementService.cs" />

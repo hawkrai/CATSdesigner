@@ -48,5 +48,7 @@ namespace LMPlatform.Models
 		public ICollection<ScheduleProtectionPractical> ScheduleProtectionPracticals { get; set; }
 
 		public ICollection<DocumentSubject> DocumentSubjects { get; set; }
+
+		public ICollection<UserLabFiles> UserLabFiles { get; set; }
 	}
 }

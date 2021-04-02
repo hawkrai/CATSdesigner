@@ -19,5 +19,27 @@ namespace Application.Infrastructure.LabsManagement
                     new Query<UserLabFiles>(e => e.UserId == userId && e.LabId == labId)).ToList();
             }
         }
+
+        public bool HasSubjectProtection(int userId, int subjectId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var hasJobProtection = repositoriesContainer.RepositoryFor<JobProtection>().GetAll(
+                    new Query<JobProtection>(e => e.Lab.SubjectId == subjectId && e.StudentId == userId && !e.IsReceived && !e.IsReturned)).Any();
+                return hasJobProtection && repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(
+                    new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && e.LabId.HasValue)).Any();
+            }
+        }
+
+        public bool HasLabProtection(int userId, int labId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var hasJobProtection = repositoriesContainer.RepositoryFor<JobProtection>().GetAll(
+                    new Query<JobProtection>(e => e.LabId == labId && e.StudentId == userId && !e.IsReceived && !e.IsReturned)).Any();
+                return hasJobProtection && repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(
+                    new Query<UserLabFiles>(e => e.UserId == userId && e.LabId == labId)).Any();
+            }
+        }
     }
 }

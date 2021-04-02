@@ -1,4 +1,3 @@
-import { ConvertedAttachment } from './../../../../models/file/converted-attachment.model';
 import { DialogService } from './../../../../services/dialog.service';
 import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
@@ -18,7 +17,6 @@ import {FileDownloadPopoverComponent} from '../../../../shared/file-download-pop
 import * as labsActions from '../../../../store/actions/labs.actions';
 import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
-import { attachmentConverter } from 'src/app/utils';
 import * as filesActions from '../../../../store/actions/files.actions';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
@@ -102,15 +100,15 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     const dialogData: DialogData = {
       title: this.translate.transform('text.attachments.plural', 'Файлы'),
       buttonText: this.translate.transform('text.download', 'Скачать'),
-      body: attachments.map(attachment => attachmentConverter(attachment))
+      body: attachments
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      ).subscribe((result: Attachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
       })
     );
   }
@@ -132,7 +130,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       duration: lab ? lab.Duration : '',
       order: lab ? lab.Order : order,
       pathFile: lab ? lab.PathFile : '',
-      attachments: lab ? lab.Attachments.map(a => attachmentConverter(a)) : [],
+      attachments: lab ? lab.Attachments : [],
       shortName: `${this.translate.transform('text.subjects.labs.prefix', 'ЛР')}${order}`
     };
   }

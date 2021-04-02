@@ -25,7 +25,7 @@
                               name="selectList"
                               [(ngModel)]="selectedOptions"
                               [color]="'primary'">
-            <mat-list-option *ngFor="let student of studentList" [value]="student.Value">
+            <mat-list-option *ngFor="let student of studentList | sortBy:'Text'" [value]="student.Value">
               <div class="subdivision-students__body-text">
                 <div class="subdivision-students__body-sub-group">
                   {{student.subGroup}}

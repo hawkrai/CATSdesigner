@@ -23,7 +23,7 @@ export class AppComponent implements OnInit{
     const subject = JSON.parse(localStorage.getItem('currentSubject'));
     const user = JSON.parse(localStorage.getItem('currentUser')) as User;
     if (subject) {
-      this.store.dispatch(subjectActions.setSubject({ subject: { id: subject.id, color: subject.color } }));
+      this.store.dispatch(subjectActions.setSubject({ subject: { id: subject.id, color: subject.color, subjectName: subject.name } }));
     }
     this.store.dispatch(subjectActions.setUser({ user }));
 

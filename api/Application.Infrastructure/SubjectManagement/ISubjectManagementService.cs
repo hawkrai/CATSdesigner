@@ -95,6 +95,8 @@ namespace Application.Infrastructure.SubjectManagement
 
 	    List<UserLabFiles> GetUserLabFiles(int userId, int subjectId);
 
+        List<UserLabFiles> GetGroupLabFiles(int subjectId, int groupId);
+
 		UserLabFiles GetUserLabFile(int id);
 
 		void DeleteUserLabFile(int id);

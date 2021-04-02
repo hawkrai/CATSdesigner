@@ -2,13 +2,14 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Lab } from 'src/app/models/lab.model';
+import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { IAppState } from 'src/app/store/state/app.state';
 
 import * as labsActions from '../../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../../store/selectors/subject.selector';
+
 
 @Component({
   selector: 'app-student-job-protection',
@@ -17,8 +18,11 @@ import * as subjectSelectors from '../../../../../store/selectors/subject.select
 })
 export class StudentJobProtectionComponent implements OnInit {
 
+  labFiles$: Observable<UserLabFile[]>;
+  selectedLabId: number;
+
   state$: Observable<{
-    labs: Lab[],
+    studentJobProtection: StudentJobProtection,
     userId: number
   }>;
 
@@ -29,13 +33,12 @@ export class StudentJobProtectionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.store.dispatch(labsActions.loadLabs());
-
+    this.store.dispatch(labsActions.loadStudentJobProtection({}));
     this.state$ = combineLatest([
-      this.store.select(labsSelectors.getLabs),
+      this.store.select(labsSelectors.getStudentJobProtection, {}),
       this.store.select(subjectSelectors.getUserId)
     ]).pipe(
-      map(([labs, userId]) => ({ labs, userId }))
+      map(([studentJobProtection, userId]) => ({ studentJobProtection, userId }))
     );
   }
 
@@ -45,5 +48,16 @@ export class StudentJobProtectionComponent implements OnInit {
 
   deleteLab(userLabFileId: number, userId: number, labId: number): void {
     this.onDeleteFile.emit({ userLabFileId, userId, labId });
+  }
+
+  onSelectLab(labId: number, studentId: number): void {
+    if (labId) {
+      this.selectedLabId = labId;
+      this.store.dispatch(labsActions.loadStudentLabFiles({ labId, userId: studentId }));
+      this.labFiles$ = this.store.select(labsSelectors.getStudentLabFiles, { labId });
+    } else {
+      this.store.dispatch(labsActions.resetStudentLabFiles({ studentId }));
+      this.selectedLabId = 0; 
+    }
   }
 }

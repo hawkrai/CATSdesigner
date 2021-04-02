@@ -25,6 +25,7 @@ using Application.Infrastructure.ScheduleManagement;
 using Application.Infrastructure.NoteManagement;
 using Application.Infrastructure.LabsManagement;
 using Application.Infrastructure.PracticalManagement;
+using Application.Infrastructure.ProtectionManagement;
 
 namespace Application.Infrastructure
 {
@@ -68,6 +69,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<INoteManagementService, NoteManagementService>();
             containerWrapper.Register<ILabsManagementService, LabsManagementService>();
             containerWrapper.Register<IPracticalManagementService, PracticalManagementService>();
+            containerWrapper.Register<IProtectionManagementService, ProtectionManagementService>();
             return containerWrapper;
         }
     }

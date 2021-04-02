@@ -3,11 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
 using System.Web;
-using System.Web.Caching;
 using Application.Core;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.SubjectManagement;
@@ -25,9 +21,9 @@ using Application.Core.Helpers;
 using Application.Infrastructure.StudentManagement;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
-using WebMatrix.WebData;
 using Application.Infrastructure.LabsManagement;
 using LMPlatform.UI.Services.Modules.Schedule;
+using Application.Infrastructure.ProtectionManagement;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -35,6 +31,10 @@ namespace LMPlatform.UI.Services.Labs
     public class LabsService : ILabsService
     {
 		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
+
+		private readonly LazyDependency<IProtectionManagementService> protectionManagementService = new LazyDependency<IProtectionManagementService>();
+
+		public IProtectionManagementService ProtectionManagementService => protectionManagementService.Value;
 
 		public string PlagiarismTempPath => ConfigurationManager.AppSettings["PlagiarismTempPath"];
 
@@ -305,10 +305,10 @@ namespace LMPlatform.UI.Services.Labs
             try
             {
 
-	            var model = new List<UserlabFilesViewData>();
+	            var model = new List<UserLabFileViewData>();
 	            var data = SubjectManagementService.GetUserLabFiles(userId, subjectId);
-	            model = data.Select(e => new UserlabFilesViewData
-	            {
+	            model = data.Select(e => new UserLabFileViewData
+				{
 		            Comments = e.Comments,
 					Id = e.Id,
 					PathFile = e.Attachments,
@@ -316,6 +316,7 @@ namespace LMPlatform.UI.Services.Labs
 	                IsReturned = e.IsReturned,
 	                IsCoursProject = e.IsCoursProject,
 					LabId = e.LabId,
+					UserId = e.UserId,
                     Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
 		            Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
 	            }).Where(x => x.IsCoursProject == isCoursPrj).ToList();
@@ -342,7 +343,7 @@ namespace LMPlatform.UI.Services.Labs
 			{
 
 				var labFiles = LabsManagementService.GetUserLabFiles(userId, labId);
-				var model = labFiles.Select(e => new UserlabFilesViewData
+				var model = labFiles.Select(e => new UserLabFileViewData
 				{
 					Comments = e.Comments,
 					Id = e.Id,
@@ -350,6 +351,7 @@ namespace LMPlatform.UI.Services.Labs
 					IsReceived = e.IsReceived,
 					IsReturned = e.IsReturned,
 					LabId = e.LabId,
+					UserId = e.UserId,
 					Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
 					Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
 				}).ToList();
@@ -360,7 +362,7 @@ namespace LMPlatform.UI.Services.Labs
 					Code = "200"
 				};
 			}
-			catch (Exception ex)
+			catch
 			{
 				return new UserLabFilesResult
 				{
@@ -370,13 +372,13 @@ namespace LMPlatform.UI.Services.Labs
 			}
 		}
 
-		public ResultViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, int? labId = null, bool isCp = false, bool isRet = false)
+		public UserLabFileViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, int labId, bool isCp = false, bool isRet = false)
 		{
 			try
 			{
 				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
 
-				SubjectManagementService.SaveUserLabFiles(new UserLabFiles
+				var userLabFile = SubjectManagementService.SaveUserLabFiles(new UserLabFiles
 				{
 					SubjectId = subjectId,
                     Date = DateTime.Now,
@@ -390,15 +392,25 @@ namespace LMPlatform.UI.Services.Labs
 				    IsReturned = isRet
                 }, attachmentsModel);
 
-				return new ResultViewData
+				return new UserLabFileViewData()
 				{
 					Message = "Файл(ы) успешно отправлен(ы)",
-					Code = "200"
+					Code = "200",
+					Comments = userLabFile.Comments,
+					Id = userLabFile.Id,
+					PathFile = userLabFile.Attachments,
+					IsReceived = userLabFile.IsReceived,
+					IsReturned = userLabFile.IsReturned,
+					IsCoursProject = userLabFile.IsCoursProject,
+					LabId = userLabFile.LabId,
+					Date = userLabFile.Date != null ? userLabFile.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+					Attachments = FilesManagementService.GetAttachments(userLabFile.Attachments).ToList(),
+					UserId = userLabFile.UserId
 				};
 			}
 			catch
 			{
-				return new ResultViewData
+				return new UserLabFileViewData
 				{
 					Message = "Произошла ошибка",
 					Code = "500"
@@ -555,7 +567,7 @@ namespace LMPlatform.UI.Services.Labs
 					var files =
 						SubjectManagementService.GetUserLabFiles(student.Id, subjectId).Select(
 							t =>
-							new UserlabFilesViewData
+							new UserLabFileViewData
 							{
 								Comments = t.Comments,
 								Date = t.Date != null ? t.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
@@ -564,6 +576,7 @@ namespace LMPlatform.UI.Services.Labs
 								IsReceived = t.IsReceived,
 							    IsReturned = t.IsReturned,
 							    IsCoursProject = t.IsCoursProject,
+								UserId = t.UserId,
                                 Attachments = FilesManagementService.GetAttachments(t.Attachments).ToList()
 							}).Where(x => x.IsCoursProject == isCp).ToList();
 					students.Add(new StudentMark
@@ -1096,22 +1109,128 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-        public HasProtectionViewData HasJobProtections(int subjectId)
+        public HasGroupsJobProtectionViewData HasSubjectLabsJobProtections(int subjectId)
         {
-			var subjectGroups = GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId))
-				.Include(x => x.Students));
-
-			var subjectNewFilse = SubjectManagementService.GetUserLabFiles(0, subjectId)
-				.Where(x => !x.IsReceived && !x.IsReturned && !x.IsCoursProject);
-
-			return new HasProtectionViewData
+			return new HasGroupsJobProtectionViewData
 			{
-				HasJobProtections = subjectGroups.Select(x => new HasJobProtection
+				HasGroupsJobProtection = ProtectionManagementService.HasSubjectLabsJobProtection(subjectId)
+				.Select(x => new HasGroupJobProtectionViewData(x))
+			};
+        }
+
+        public HasGroupsJobProtectionViewData HasGroupsLabsJobProtections(int subjectId, IEnumerable<int> groupsIds)
+        {
+			return new HasGroupsJobProtectionViewData
+			{
+				HasGroupsJobProtection = ProtectionManagementService.HasGroupsLabsJobProtection(subjectId, groupsIds)
+				.Select(x => new HasGroupJobProtectionViewData(x))
+			};
+        }
+
+        public ResultViewData ReceiveLab(int labId, int studentId)
+        {
+            try
+            {
+				ProtectionManagementService.ReceiveLab(labId, studentId);
+				return new ResultViewData
 				{
-					GroupId = x.Id,
-					HasJob = x.Students.Any(student => subjectNewFilse.Any(x => x.UserId == student.Id))
+					Code = "200",
+					Message = "Работа принята"
+				};
+            } catch (Exception ex)
+            {
+				return new ResultViewData
+				{
+					Code = "500",
+					Message = "Не удалось принять лабораторнуб работу"
+				};
+            }
+        }
+
+        public ResultViewData CancelLab(int labId, int studentId)
+        {
+			try
+			{
+				ProtectionManagementService.CancelLab(labId, studentId);
+				return new ResultViewData
+				{
+					Code = "200",
+					Message = "Защита работы отменена"
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultViewData
+				{
+					Code = "500",
+					Message = "Не удалось отменить защиту работы"
+				};
+			}
+		}
+
+        public ResultViewData ReturnLab(int labId, int studentId)
+        {
+			try
+			{
+				ProtectionManagementService.ReturnLab(labId, studentId);
+				return new ResultViewData
+				{
+					Code = "200",
+					Message = "Работа возвращена"
+				};
+			}
+			catch (Exception ex)
+			{
+				return new ResultViewData
+				{
+					Code = "500",
+					Message = "Не удалось вернуть работу"
+				};
+			}
+		}
+
+        public GroupJobProtectionViewData GroupJobProtections(int subjectId, int groupId)
+        {
+			var jobProtection = ProtectionManagementService.GetGroupLabsJobProtection(subjectId, groupId);
+			return new GroupJobProtectionViewData
+			{
+				StudentsJobProtections = jobProtection.Select(x =>
+				{
+					var student = x.First().Student;
+					return new StudentJobProtectionViewData
+					{
+						StudentId = student.StudentId,
+						StudentName = $"{student.Student.LastName} {student.Student.FirstName}",
+						SubGroup = GetSubGroupNumber(student.SubGroup),
+						HasProtection = LabsManagementService.HasSubjectProtection(student.StudentId, subjectId),
+					};
+				}).OrderBy(x => x.StudentName)
+			};
+        }
+
+        public StudentJobProtectionViewData StudentJobProtections(int subjectId, int studentId)
+        {
+			var protection = ProtectionManagementService.GetStudentLabsJobProtection(subjectId, studentId);
+			var student = protection.First().Student;
+			return new StudentJobProtectionViewData
+			{
+				StudentName = $"{student.Student.LastName} {student.Student.FirstName}",
+				StudentId = student.StudentId,
+				JobProtections = protection.Select(jobProtection => new JobProtectionViewData
+				{
+					HasProtection = LabsManagementService.HasLabProtection(student.StudentId, (int)jobProtection.LabId),
+					IsReceived = jobProtection.IsReceived,
+					IsReturned = jobProtection.IsReturned,
+					LabId = jobProtection.Lab.Id,
+					LabName = jobProtection.Lab.Theme,
+					StudentId = jobProtection.StudentId
 				})
 			};
 		}
+
+		private int GetSubGroupNumber(SubGroup subGroup)
+        {
+			return subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : subGroup.Name == "third" ? 3 : 0;
+        }
     }
 }

@@ -6,9 +6,9 @@ using LMPlatform.UI.Services.Modules.Lectures;
 namespace LMPlatform.UI.Services.Modules.Labs
 {
     [DataContract]
-    public class UserlabFilesViewData
+    public class UserLabFileViewData : ResultViewData
     {
-		[DataMember]
+        [DataMember]
 		public int Id { get; set; }
         [DataMember]
         public string Comments { get; set; }
@@ -26,5 +26,8 @@ namespace LMPlatform.UI.Services.Modules.Labs
         public bool IsCoursProject { get; set; }
         [DataMember]
         public int? LabId { get; set; }
+
+        [DataMember]
+        public int UserId { get; set; }
     }
 }

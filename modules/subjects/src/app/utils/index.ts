@@ -1,11 +1,13 @@
-import { ConvertedAttachment } from './../models/file/converted-attachment.model';
-import { Attachment } from '../models/file/attachment.model';
+import { Attachment, AttachmentType } from '../models/file/attachment.model';
+import { AttachedFile } from '../models/file/attached-file.model';
 
 
-export const attachmentConverter = (attachment: Attachment): ConvertedAttachment => ({  
-    id: attachment.Id, 
-    name: attachment.Name, 
-    pathName: attachment.PathName, 
-    fileName: attachment.FileName, 
-    attachmentType: attachment.AttachmentType 
-});
+export const attchedFileConverter = (attachedFile: AttachedFile): Attachment => {
+    console.log(attachedFile);
+    return ({ 
+        Id: attachedFile.IdFile > 0 ? attachedFile.IdFile : 0 ,
+        Name: attachedFile.Name, 
+        AttachmentType: AttachmentType[attachedFile.Type], 
+        PathName: '',
+        FileName: attachedFile.GuidFileName});
+};

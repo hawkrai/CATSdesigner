@@ -714,6 +714,14 @@ namespace Application.Infrastructure.SubjectManagement
 			return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId)).ToList();
 		}
 
+		public List<UserLabFiles> GetGroupLabFiles(int subjectId, int groupId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.RepositoryFor<UserLabFiles>()
+				.GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.Subject.SubjectGroups.Any(x => x.GroupId == groupId))).ToList();
+
+		}
+
 		public UserLabFiles GetUserLabFile(int id)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();

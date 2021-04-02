@@ -3,6 +3,7 @@
   "button.save": "Save",
   "button.close": "Cancel",
   "button.add": "Add",
+  "button.join": "Join",
   "kb": "KB",
   "fio": "Name",
   "date": "Date",
@@ -306,6 +307,11 @@
   "text.subjects.labs.prefix": "LW",
   "text.subjects.labs.deleting": "Deleting laboratory work",
   "text.subjects.labs.name": "The name on the laboratory work",
+
+  "text.subjects.lector.joining": "Joining the lector to the subject",
+  "text.subjects.lector.choose": "Select a lector",
+  "text.subjects.lector.plural": "Lectors",
+  "text.subjects.lector.disjoin": "Disjoin the lector",
 
   "schedule.protection": "Schedule protection",
   "visit.statistics": "Visit statistics",

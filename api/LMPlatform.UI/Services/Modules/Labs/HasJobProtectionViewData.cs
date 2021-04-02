@@ -6,13 +6,11 @@ using System.Web;
 
 namespace LMPlatform.UI.Services.Modules.Labs
 {
-	[DataContract]
-	public class HasJobProtection
-	{
-		[DataMember]
-		public int GroupId { get; set; }
-
-		[DataMember]
-		public bool HasJob { get; set; }
-	}
+    [DataContract]
+    public class HasJobProtectionViewData : ResultViewData
+    {
+        [DataMember]
+        public bool HasJobProtection { get; set; }
+       
+    }
 }

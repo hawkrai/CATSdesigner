@@ -17,9 +17,7 @@ import {Attachment} from "../../../../models/file/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
 import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
-import { attachmentConverter } from 'src/app/utils';
 import { DialogService } from './../../../../services/dialog.service';
-import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
 import * as filesActions from '../../../../store/actions/files.actions';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
@@ -71,15 +69,15 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     const dialogData: DialogData = {
       title: this.translate.transform('text.attachments.plural', 'Файлы'),
       buttonText: this.translate.transform('text.download', 'Скачать'),
-      body: attachments.map(a => attachmentConverter(a))
+      body: attachments
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      ).subscribe((result: Attachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
       })
     );
   }
@@ -130,7 +128,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
       duration: lecture ? lecture.Duration : 0,
       order: lecture ? lecture.Order : lecturesCount,
       pathFile: lecture ? lecture.PathFile : '',
-      attachments: lecture ? lecture.Attachments.map(attachment => attachmentConverter(attachment)) : [],
+      attachments: lecture ? lecture.Attachments : [],
     };
   }
 

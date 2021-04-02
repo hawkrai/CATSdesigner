@@ -17,9 +17,7 @@ import {Practical} from '../../../../models/practical.model';
 import {Attachment} from '../../../../models/file/attachment.model';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
-import { attachmentConverter } from 'src/app/utils';
 import { filter } from 'rxjs/operators';
-import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
@@ -122,15 +120,15 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     const dialogData: DialogData = {
       title: this.translate.transform('text.attachments.plural', 'Файлы'),
       buttonText: this.translate.transform('text.download', 'Скачать'),
-      body: attachments.map(a => attachmentConverter(a))
+      body: attachments
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      ).subscribe((result: Attachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
       })
     );
   }
@@ -143,7 +141,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       duration: lesson ? lesson.Duration : '',
       order,
       pathFile: lesson ? lesson.PathFile : '',
-      attachments: lesson ? lesson.Attachments.map(a => attachmentConverter(a)) : [],
+      attachments: lesson ? lesson.Attachments : [],
       shortName: `${this.prefix}${order}`
     };
   }

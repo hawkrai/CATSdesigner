@@ -5,18 +5,20 @@ import {DialogData} from '../../../../models/dialog-data.model';
 import { AttachedFile } from 'src/app/models/file/attached-file.model';
 import { Store } from '@ngrx/store';
 import { IAppState } from 'src/app/store/state/app.state';
+import { FilesService } from 'src/app/services/files.service';
 
 @Component({
   selector: 'app-lecture-popover',
   templateUrl: './lecture-popover.component.html',
   styleUrls: ['./lecture-popover.component.less']
 })
-export class LecturePopoverComponent extends BaseFileManagementComponent<LecturePopoverComponent> {
+export class LecturePopoverComponent extends BaseFileManagementComponent {
 
   constructor(
-    dialogRef: MatDialogRef<LecturePopoverComponent>,
+    private dialogRef: MatDialogRef<LecturePopoverComponent>,
     store: Store<IAppState>,
+    filesService: FilesService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-      super(dialogRef, store, data);
+      super(store, filesService);
   }
 }

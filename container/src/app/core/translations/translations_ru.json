@@ -4,6 +4,7 @@
   "button.close": "Закрыть",
   "button.delete": "Удалить",
   "button.add": "Добавить",
+  "button.join": "Присоединить",
   "kb": "КБ",
   "fio": "ФИО",
   "date": "Дата",
@@ -281,6 +282,11 @@
   "text.subjects.labs.prefix": "ЛР",
   "text.subjects.labs.deleting": "Удаление лабораторной работы",
   "text.subjects.labs.name": "Название лабораторной работы",
+
+  "text.subjects.lector.joining": "Присоединение преподавателя к предмету",
+  "text.subjects.lector.choose": "Выберите преподавателя",
+  "text.subjects.lector.plural": "Преподаватели",
+  "text.subjects.lector.disjoin": "Отсоединить преподавателя",
 
   "schedule.protection": "График защиты",
   "visit.statistics": "Статистика посещения",
