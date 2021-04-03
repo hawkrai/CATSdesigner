@@ -12,7 +12,7 @@ using LMPlatform.Models.DP;
 
 namespace Application.Infrastructure.DPManagement
 {
-    public class PercentageGraphService : IPercentageGraphService
+    public class DpPercentageGraphService : IDpPercentageGraphService
     {
         private readonly LazyDependency<IDpContext> context = new LazyDependency<IDpContext>();
 
@@ -79,6 +79,19 @@ namespace Application.Infrastructure.DPManagement
                 .ToList();
         }
 
+        public List<string> GetDpPercentageDate(int userId, GetPagedListParams parms)
+        {
+            var graphData = GetPercentageGraphsForLecturerAll(userId, parms);
+            var data = new List<string>();
+
+            foreach (var dp in graphData)
+            {
+                data.Add(dp.Date.ToString("dd/MM/yyyy"));
+            }
+
+            return data;
+        }
+
         public List<DiplomProjectConsultationDateData> GetConsultationDatesForUser(int userId)
         {
             if (AuthorizationHelper.IsStudent(Context, userId))
@@ -135,10 +148,7 @@ namespace Application.Infrastructure.DPManagement
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
-            if (Context.DiplomPercentagesGraphs.Any(x => x.Name == percentageData.Name))
-            {
-                throw new ApplicationException("Этап с таким названием уже есть!");
-            }
+            
 
             DiplomPercentagesGraph percentage;
             if (percentageData.Id.HasValue)
@@ -146,9 +156,17 @@ namespace Application.Infrastructure.DPManagement
                 percentage = Context.DiplomPercentagesGraphs
                               .Include(x => x.DiplomPercentagesGraphToGroups)
                               .Single(x => x.Id == percentageData.Id);
+                if (Context.DiplomPercentagesGraphs.Any(x => x.Name == percentageData.Name))
+                {
+                    throw new ApplicationException("Этап с таким названием уже есть!");
+                }
             }
             else
             {
+                if (Context.DiplomPercentagesGraphs.Any(x => x.Name == percentageData.Name))
+                {
+                    throw new ApplicationException("Этап с таким названием уже есть!");
+                }
                 percentage = new DiplomPercentagesGraph();
                 Context.DiplomPercentagesGraphs.Add(percentage);
             }
@@ -207,11 +225,12 @@ namespace Application.Infrastructure.DPManagement
 
             diplomPercentagesResult.Mark = percentageResultData.Mark;
             diplomPercentagesResult.Comments = percentageResultData.Comment;
+            diplomPercentagesResult.ShowForStudent = percentageResultData.ShowForStudent;
 
             Context.SaveChanges();
         }
 
-        public void SaveConsultationMark(int userId, DipomProjectConsultationMarkData consultationMarkData)
+        public void SaveConsultationMark(int userId, DiplomProjectConsultationMarkData consultationMarkData)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
@@ -233,7 +252,7 @@ namespace Application.Infrastructure.DPManagement
 
             consultationMark.Mark = string.IsNullOrWhiteSpace(consultationMarkData.Mark) ? null : consultationMarkData.Mark;
 
-            //            consultationMark.Comments = consultationMarkData.Comment;
+            consultationMark.Comments = consultationMarkData.Comments;
             Context.SaveChanges();
         }
 

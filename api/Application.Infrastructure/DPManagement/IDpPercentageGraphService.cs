@@ -5,13 +5,15 @@ using Application.Infrastructure.DTO;
 
 namespace Application.Infrastructure.DPManagement
 {
-    public interface IPercentageGraphService
+    public interface IDpPercentageGraphService
     {
         PagedList<PercentageGraphData> GetPercentageGraphs(int userId, GetPagedListParams parms);
 
         PagedList<PercentageGraphData> GetPercentageGraphsForLecturer(int lecturerId, GetPagedListParams parms, int secretaryId);
 
         List<PercentageGraphData> GetPercentageGraphsForLecturerAll(int userId, GetPagedListParams parms);
+
+        List<string> GetDpPercentageDate(int userId, GetPagedListParams parms);
 
         List<DiplomProjectConsultationDateData> GetConsultationDatesForUser(int userId);
 
@@ -23,7 +25,7 @@ namespace Application.Infrastructure.DPManagement
 
         void SavePercentageResult(int userId, PercentageResultData percentageResultData);
 
-        void SaveConsultationMark(int userId, DipomProjectConsultationMarkData consultationMarkData);
+        void SaveConsultationMark(int userId, DiplomProjectConsultationMarkData consultationMarkData);
 
         void SaveConsultationDate(int userId, DateTime date);
 

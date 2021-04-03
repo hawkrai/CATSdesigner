@@ -114,6 +114,13 @@ namespace Application.Infrastructure.DPManagement
         private List<Correlation> GetDiplomProjectCorrelation(int? lecturerId)
         {
             var projects = lecturerId.HasValue ? Context.DiplomProjects.Where(x => x.LecturerId == lecturerId) : Context.DiplomProjects;
+            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == lecturerId);
+
+            if (projects.ToList().Count == 0 && user != null && user.Student != null)
+            {
+                projects = Context.DiplomProjects.Where(x => x.DiplomProjectGroups.Any(dpg => dpg.GroupId == user.Student.GroupId));
+            }
+
             return projects.Select(x => new Correlation
                 {
                     Id = x.DiplomProjectId,

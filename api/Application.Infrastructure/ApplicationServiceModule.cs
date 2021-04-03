@@ -49,7 +49,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<IDpManagementService, DpManagementService>();
             containerWrapper.Register<ICorrelationService, CorrelationService>();
             containerWrapper.Register<ICpCorrelationService, CpCorrelationService>();
-            containerWrapper.Register<IPercentageGraphService, PercentageGraphService>();
+            containerWrapper.Register<IDpPercentageGraphService, DpPercentageGraphService>();
             containerWrapper.Register<ICpPercentageGraphService, CpPercentageGraphService>();
             containerWrapper.Register<IUserService, UserService>();
             containerWrapper.Register<ICPUserService, CPUserService>();

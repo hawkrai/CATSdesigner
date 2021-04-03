@@ -10,16 +10,16 @@ using WebMatrix.WebData;
 namespace LMPlatform.UI.ApiControllers.DP
 {
     [JwtAuth]
-    public class StudentMarkController : ApiController
+    public class DiplomStudentMarkController : ApiController
     {
-        public HttpResponseMessage Post([FromBody]int[] mark)
+        public HttpResponseMessage Post([FromBody]DiplomStudentMarkModel diplomStudentMarkModel)
         {
             if (!ModelState.IsValid)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }
 
-            DpManagementService.SetStudentDiplomMark(UserContext.CurrentUserId, mark[0], mark[1]);
+            DpManagementService.SetStudentDiplomMark(UserContext.CurrentUserId, diplomStudentMarkModel);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

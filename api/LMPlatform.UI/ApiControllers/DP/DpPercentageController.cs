@@ -13,11 +13,11 @@ using WebMatrix.WebData;
 namespace LMPlatform.UI.ApiControllers.DP
 {
     [JwtAuth]
-    public class PercentageController : ApiController
+    public class DpPercentageController : ApiController
     {
-        private readonly LazyDependency<IPercentageGraphService> _percentageService = new LazyDependency<IPercentageGraphService>();
+        private readonly LazyDependency<IDpPercentageGraphService> _percentageService = new LazyDependency<IDpPercentageGraphService>();
 
-        private IPercentageGraphService PercentageService
+        private IDpPercentageGraphService PercentageService
         {
             get { return _percentageService.Value; }
         }

@@ -1,6 +1,6 @@
 ﻿namespace Application.Infrastructure.DTO
 {
-    public class DipomProjectConsultationMarkData
+    public class DiplomProjectConsultationMarkData
     {
         public int? Id { get; set; }
 

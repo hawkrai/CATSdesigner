@@ -11,7 +11,7 @@ using LMPlatform.UI.Attributes;
 namespace LMPlatform.UI.ApiControllers.DP
 {
     [JwtAuth]
-    public class StudentController : ApiController
+    public class DiplomStudentController : ApiController
     {
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly LazyDependency<IDpManagementService> dpManagementService = new LazyDependency<IDpManagementService>();

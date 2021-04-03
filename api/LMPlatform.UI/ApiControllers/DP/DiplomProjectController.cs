@@ -44,7 +44,7 @@ namespace LMPlatform.UI.ApiControllers.DP
             return SaveProject(project);
         }
 
-        public void Delete(int id)
+        public void Post(int id)
         {
             DpManagementService.DeleteProject(UserContext.CurrentUserId, id);
         }

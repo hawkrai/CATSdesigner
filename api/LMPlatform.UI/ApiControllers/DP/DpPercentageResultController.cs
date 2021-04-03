@@ -12,7 +12,7 @@ using WebMatrix.WebData;
 namespace LMPlatform.UI.ApiControllers.DP
 {
     [JwtAuth]
-    public class PercentageResultController : ApiController
+    public class DpPercentageResultController : ApiController
     {
         public object Get([System.Web.Http.ModelBinding.ModelBinder]GetPagedListParams parms)
         {
@@ -44,7 +44,7 @@ namespace LMPlatform.UI.ApiControllers.DP
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        private IPercentageGraphService PercentageService
+        private IDpPercentageGraphService PercentageService
         {
             get { return _percentageService.Value; }
         }
@@ -56,6 +56,6 @@ namespace LMPlatform.UI.ApiControllers.DP
 
         private readonly LazyDependency<IDpManagementService> _diplomProjectManagementService = new LazyDependency<IDpManagementService>();
 
-        private readonly LazyDependency<IPercentageGraphService> _percentageService = new LazyDependency<IPercentageGraphService>();
+        private readonly LazyDependency<IDpPercentageGraphService> _percentageService = new LazyDependency<IDpPercentageGraphService>();
     }
 }

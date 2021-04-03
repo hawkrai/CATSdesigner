@@ -46,7 +46,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.selectedGroup && !changes.selectedGroup.firstChange) {
       this.retrieveVisitStats();
-      console.log("sdsd")
     }
   }
 
@@ -67,6 +66,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       filter: '{"lecturerId":' + this.courseUser.UserId +'}'
     })
       .subscribe(res => {
+        console.log(res);
         this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
         this.consultations = res.DiplomProjectConsultationDates;
         this.filteredVisitStatsList = this.visitStatsList;

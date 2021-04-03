@@ -12,6 +12,7 @@ using Microsoft.Office.Interop.Word;
 using System.Collections.Generic;
 using Application.Infrastructure.FilesManagement;
 using LMPlatform.Data.Repositories;
+using Application.Infrastructure.Export;
 
 namespace Application.Infrastructure.DPManagement
 {
@@ -101,10 +102,10 @@ namespace Application.Infrastructure.DPManagement
                 throw new ApplicationException("LecturerId cant be empty!");
             }
 
-            if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme))
+            /*if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme))
             {
                 throw new ApplicationException("Тема с таким названием уже есть!");
-            }
+            }*/
 
             AuthorizationHelper.ValidateLecturerAccess(Context, projectData.LecturerId.Value);
 
@@ -114,9 +115,17 @@ namespace Application.Infrastructure.DPManagement
                 project = Context.DiplomProjects
                               .Include(x => x.DiplomProjectGroups)
                               .Single(x => x.DiplomProjectId == projectData.Id);
+                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.DiplomProjectId != projectData.Id))
+                {
+                    throw new ApplicationException("Тема с таким названием уже есть!");
+                }
             }
             else
             {
+                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme))
+                {
+                    throw new ApplicationException("Тема с таким названием уже есть!");
+                }
                 project = new DiplomProject();
                 Context.DiplomProjects.Add(project);
             }
@@ -156,7 +165,13 @@ namespace Application.Infrastructure.DPManagement
                 HeadCathedra = dp.HeadCathedra,
                 Univer = dp.Univer,
                 DateEnd = dp.DateEnd,
-                DateStart = dp.DateStart
+                DateStart = dp.DateStart,
+                ComputerConsultant = dp.ComputerConsultant,
+                HealthAndSafetyConsultant = dp.HealthAndSafetyConsultant,
+                EconimicsConsultant = dp.EconimicsConsultant,
+                NormocontrolConsultant = dp.NormocontrolConsultant,
+                DecreeNumber = dp.DecreeNumber,
+                DecreeDate = dp.DecreeDate,
             };
         }
 
@@ -175,6 +190,13 @@ namespace Application.Infrastructure.DPManagement
             dp.Univer = taskSheet.Univer;
             dp.DateStart = taskSheet.DateStart;
             dp.DateEnd = taskSheet.DateEnd;
+            dp.ComputerConsultant = taskSheet.ComputerConsultant;
+            dp.HealthAndSafetyConsultant = taskSheet.HealthAndSafetyConsultant;
+            dp.EconimicsConsultant = taskSheet.EconimicsConsultant;
+            dp.NormocontrolConsultant = taskSheet.NormocontrolConsultant;
+            dp.DecreeNumber = taskSheet.DecreeNumber;
+            dp.DecreeDate = taskSheet.DecreeDate;
+
 
             Context.SaveChanges();
         }
@@ -230,10 +252,15 @@ namespace Application.Infrastructure.DPManagement
             Context.SaveChanges();
         }
 
-        public void SetStudentDiplomMark(int lecturerId, int assignedProjectId, int mark)
+        public void SetStudentDiplomMark(int lecturerId, DiplomStudentMarkModel diplomStudentMarkModel)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, lecturerId);
-            Context.AssignedDiplomProjects.Single(x => x.Id == assignedProjectId).Mark = mark;
+            var assignedDiplomProject = Context.AssignedDiplomProjects.Single(x => x.Id == diplomStudentMarkModel.AssignedProjectId);
+            assignedDiplomProject.Mark = diplomStudentMarkModel.Mark;
+            assignedDiplomProject.MarkDate = diplomStudentMarkModel.Date;
+            assignedDiplomProject.Comment = diplomStudentMarkModel.Comment;
+            assignedDiplomProject.ShowForStudent = diplomStudentMarkModel.ShowForStudent;
+            assignedDiplomProject.LecturerName = diplomStudentMarkModel.LecturerName;
             Context.SaveChanges();
         }
 
@@ -278,6 +305,12 @@ namespace Application.Infrastructure.DPManagement
                 int.TryParse(parms.Filters["secretaryId"], out secretaryId);
             }
 
+            var searchString = "";
+            if (parms.Filters.ContainsKey("searchString"))
+            {
+                searchString = parms.Filters["searchString"];
+            }
+
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
             var isLecturerSecretary = isLecturer && Context.Lecturers.Single(x => x.Id == userId).IsSecretary;
@@ -305,23 +338,29 @@ namespace Application.Infrastructure.DPManagement
                 .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId);
             return (from s in query
                     let lecturer = s.AssignedDiplomProjects.FirstOrDefault().DiplomProject.Lecturer
+                    let dp = s.AssignedDiplomProjects.FirstOrDefault()
                     select new StudentData
                 {
                     Id = s.Id,
                     Name = s.LastName + " " + s.FirstName + " " + s.MiddleName, //todo
-                    Mark = s.AssignedDiplomProjects.FirstOrDefault().Mark,
-                    AssignedDiplomProjectId = s.AssignedDiplomProjects.FirstOrDefault().Id,
+                    Mark = dp.Mark,
+                    AssignedDiplomProjectId = dp.Id,
                     Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
                     Group = s.Group.Name,
+                    Comment = dp.Comment,
+                    ShowForStudent = dp.ShowForStudent,
+                    LecturerName = dp.LecturerName,
+                    MarkDate = dp.MarkDate,
                     PercentageResults = s.PercentagesResults.Select(pr => new PercentageResultData
                     {
                         Id = pr.Id,
                         PercentageGraphId = pr.DiplomPercentagesGraphId,
                         StudentId = pr.StudentId,
                         Mark = pr.Mark,
-                        Comment = pr.Comments
+                        Comment = pr.Comments,
+                        ShowForStudent = pr.ShowForStudent,
                     }),
-                    DipomProjectConsultationMarks = s.DiplomProjectConsultationMarks.Select(cm => new DipomProjectConsultationMarkData
+                    DipomProjectConsultationMarks = s.DiplomProjectConsultationMarks.Select(cm => new DiplomProjectConsultationMarkData
                     {
                         Id = cm.Id,
                         ConsultationDateId = cm.ConsultationDateId,
@@ -330,6 +369,49 @@ namespace Application.Infrastructure.DPManagement
                         Comments = cm.Comments
                     })
                 }).ApplyPaging(parms);
+        }
+
+        public List<List<string>> GetDpMarks(int userId, GetPagedListParams parms)
+        {
+            var group = "";
+            if (parms.Filters.ContainsKey("group"))
+            {
+                group = parms.Filters["group"];
+            }
+
+            var studentData = GetGraduateStudentsForUser(userId, parms).Items;
+
+            var data = new List<List<string>>();
+
+            foreach (var student in studentData)
+            {
+                var rows = new List<string>();
+                rows.Add(student.Name);
+
+                foreach (var dpg in student.PercentageResults)
+                {
+                    if (dpg.Mark is null)
+                    {
+                        rows.Add("-");
+                    }
+                    else
+                    {
+                        rows.Add(dpg.Mark.ToString());
+                    }
+                }
+
+                if (student.Mark != null)
+                {
+                    rows.Add("-");
+                }
+                else
+                {
+                    rows.Add(student.Mark.ToString());
+                }
+
+                data.Add(rows);
+            }
+            return data;
         }
 
         public bool ShowDpSectionForUser(int userId)
@@ -346,6 +428,13 @@ namespace Application.Infrastructure.DPManagement
         public DiplomProjectTaskSheetTemplate GetTaskSheetTemplate(int id)
         {
             return Context.DiplomProjectTaskSheetTemplates.Single(x => x.Id == id);
+        }
+
+        public PagedList<DiplomProjectTaskSheetTemplate> GetTaskSheetTemplates(GetPagedListParams parms)
+        {
+            var lecturerId = int.Parse(parms.Filters["lecturerId"]);
+            var query = Context.DiplomProjectTaskSheetTemplates.Where(x => x.LecturerId == lecturerId);
+            return query.ApplyPaging(parms);
         }
 
         public void SaveTaskSheetTemplate(DiplomProjectTaskSheetTemplate template)
@@ -365,7 +454,12 @@ namespace Application.Infrastructure.DPManagement
                 existingTemplate.Univer = template.Univer;
                 existingTemplate.DateStart = template.DateStart;
                 existingTemplate.DateEnd = template.DateEnd;
-
+                existingTemplate.ComputerConsultant = template.ComputerConsultant;
+                existingTemplate.HealthAndSafetyConsultant = template.HealthAndSafetyConsultant;
+                existingTemplate.EconimicsConsultant = template.EconimicsConsultant;
+                existingTemplate.NormocontrolConsultant = template.NormocontrolConsultant;
+                existingTemplate.DecreeNumber = template.DecreeNumber;
+                existingTemplate.DecreeDate = template.DecreeDate;
             }
             else
             {
@@ -373,6 +467,20 @@ namespace Application.Infrastructure.DPManagement
             }
 
             Context.SaveChanges();
+        }
+
+        public string GetTasksSheetHtml(int diplomProjectId)
+        {
+            //todo
+            var diplomProject =
+                new LmPlatformModelsContext().DiplomProjects
+                    .Include(x =>
+                        x.AssignedDiplomProjects.Select(y => y.Student.Group.Secretary.DiplomPercentagesGraphs))
+                    .Single(x => x.DiplomProjectId == diplomProjectId);
+
+            return diplomProject.AssignedDiplomProjects.Count == 1
+                ? Word.DiplomProjectToDocView(diplomProject.AssignedDiplomProjects.First())
+                : Word.DiplomProjectToDocView(diplomProject);
         }
 
         public List<NewsData> GetNewses(int lecturerId)

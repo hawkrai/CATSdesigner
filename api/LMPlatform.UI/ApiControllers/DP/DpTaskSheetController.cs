@@ -11,12 +11,17 @@ using WebMatrix.WebData;
 namespace LMPlatform.UI.ApiControllers.DP
 {
     [JwtAuth]
-    public class TaskSheetController : ApiController
+    public class DpTaskSheetController : ApiController
     {
         public object Get(int diplomProjectId)
         {
             return DpManagementService.GetTaskSheet(diplomProjectId);
         }
+
+        /*public List<TaskSheetData> Get([ModelBinder] GetPagedListParams parms)
+        {
+            return CpManagementService.GetTaskSheets(UserContext.CurrentUserId, parms);
+        }*/
 
         public HttpResponseMessage Post([FromBody]TaskSheetData taskSheet)
         {

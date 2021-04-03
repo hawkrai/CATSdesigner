@@ -23,7 +23,7 @@ namespace Application.Infrastructure.DPManagement
 
         void AssignProject(int userId, int projectId, int studentId);
 
-        void SetStudentDiplomMark(int lecturerId, int assignedProjectId, int mark);
+        void SetStudentDiplomMark(int lecturerId, DiplomStudentMarkModel diplomStudentMarkModel);
 
         void DeleteAssignment(int userId, int id);
 
@@ -31,11 +31,17 @@ namespace Application.Infrastructure.DPManagement
 
         PagedList<StudentData> GetGraduateStudentsForUser(int userId, GetPagedListParams parms, bool getBySecretaryForStudent = true);
 
+        List<List<string>> GetDpMarks(int userId, GetPagedListParams parms);
+
         bool ShowDpSectionForUser(int userId);
 
         DiplomProjectTaskSheetTemplate GetTaskSheetTemplate(int id);
-        
+
+        PagedList<DiplomProjectTaskSheetTemplate> GetTaskSheetTemplates(GetPagedListParams parms);
+
         void SaveTaskSheetTemplate(DiplomProjectTaskSheetTemplate template);
+
+        string GetTasksSheetHtml(int diplomProjectId);
 
         List<NewsData> GetNewses(int userId);
 

@@ -11,7 +11,7 @@ using WebMatrix.WebData;
 namespace LMPlatform.UI.ApiControllers.DP
 {
     [JwtAuth]
-    public class CorrelationController : ApiController
+    public class DpCorrelationController : ApiController
     {
         private readonly LazyDependency<ICorrelationService> correlationService = new LazyDependency<ICorrelationService>();
 
