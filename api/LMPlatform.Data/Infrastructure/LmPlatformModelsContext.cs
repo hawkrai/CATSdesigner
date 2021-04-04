@@ -8,11 +8,10 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using LMPlatform.ElasticDataModels;
+using LMPlatform.Models;
 namespace LMPlatform.Data.Infrastructure
 {
-    using LMPlatform.ElasticDataModels;
-    using LMPlatform.Models;
-
     public class LmPlatformModelsContext : DbContext, IDpContext, ICpContext
     {
         #region Constructors
