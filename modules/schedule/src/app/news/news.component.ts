@@ -44,7 +44,6 @@ export class NewsComponent implements OnInit {
       } else {
         this.isEnableNews = false;
       }
-      console.log(this.news);
     });
   }
 

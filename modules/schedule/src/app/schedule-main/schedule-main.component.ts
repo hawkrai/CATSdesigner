@@ -101,7 +101,7 @@ export class ScheduleMainComponent implements OnInit {
     if (minE.toString().length === 1) {
       minE = '0' + minE;
     }
-    if (lesson.Building !== undefined) {
+    if (lesson.Building != undefined) {
       building = lesson.Building;
     }
     if (lesson.Notes.length != 0) {
@@ -317,6 +317,7 @@ export class ScheduleMainComponent implements OnInit {
           const startT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.Start);
           const endT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.End);
           lesson.Type = this.lessonservice.getLessonTypeById(lesson.Type);
+          console.log(this.calculateTitel(lesson));
           this.events.push({
             id: lesson.id,
             start: startT,
