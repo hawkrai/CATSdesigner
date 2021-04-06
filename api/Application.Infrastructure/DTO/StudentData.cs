@@ -19,7 +19,7 @@ namespace Application.Infrastructure.DTO
 
         public IEnumerable<PercentageResultData> PercentageResults { get; set; }
 
-        public IEnumerable<DiplomProjectConsultationMarkData> DipomProjectConsultationMarks { get; set; }
+        public IEnumerable<DiplomProjectConsultationMarkData> DiplomProjectConsultationMarks { get; set; }
 
         public string Comment { get; set; }
 

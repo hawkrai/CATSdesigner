@@ -49,7 +49,6 @@ import {AssignProjectDialogComponent} from './components/projects/assign-project
 import {EditTaskSheetComponent} from './components/task-sheet/edit-task-sheet/edit-task-sheet.component';
 import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
 import {StoreModule} from '@ngrx/store';
-import {appReducers} from './store/reducers/app.reducers';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
 import { CustomDateAdapter } from './custom-date-adapter';
@@ -102,7 +101,6 @@ import { CustomDateAdapter } from './custom-date-adapter';
         MatToolbarModule,
         MatDividerModule,
         FormsModule,
-        StoreModule.forRoot(appReducers),
         StoreDevtoolsModule.instrument(),
         MatSlideToggleModule,
         MatProgressSpinnerModule,

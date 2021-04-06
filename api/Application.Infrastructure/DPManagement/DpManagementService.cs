@@ -360,7 +360,7 @@ namespace Application.Infrastructure.DPManagement
                         Comment = pr.Comments,
                         ShowForStudent = pr.ShowForStudent,
                     }),
-                    DipomProjectConsultationMarks = s.DiplomProjectConsultationMarks.Select(cm => new DiplomProjectConsultationMarkData
+                    DiplomProjectConsultationMarks = s.DiplomProjectConsultationMarks.Select(cm => new DiplomProjectConsultationMarkData
                     {
                         Id = cm.Id,
                         ConsultationDateId = cm.ConsultationDateId,

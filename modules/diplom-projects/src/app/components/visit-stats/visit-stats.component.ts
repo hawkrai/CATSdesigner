@@ -7,8 +7,6 @@ import {ConsultationMark} from '../../models/consultation-mark.model';
 import {DiplomUser} from '../../models/diplom-user.model';
 import {AddDateDialogComponent} from './add-date-dialog/add-date-dialog.component';
 import {MatDialog, MatOptionSelectionChange, MatSnackBar} from '@angular/material';
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
 import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-popover.component';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
@@ -35,8 +33,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
 
   constructor(private visitStatsService: VisitStatsService,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private store: Store<IAppState>) {
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {

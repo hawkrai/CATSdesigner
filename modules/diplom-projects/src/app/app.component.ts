@@ -1,12 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {IAppState} from './store/state/app.state';
-import {select, Store} from '@ngrx/store';
 import {MatOptionSelectionChange} from '@angular/material';
 import {DiplomUser} from './models/diplom-user.model';
 import {CourseUserService} from './services/course-user.service';
 import {GroupService} from './services/group.service';
 import {ProjectGroupService} from './services/project-group.service';
-import {Observable} from 'rxjs';
 import { CoreGroup } from './models/core-group.model';
 
 @Component({
@@ -24,8 +21,7 @@ export class AppComponent implements OnInit {
 
   constructor(private courseUserService: CourseUserService,
               private projectGroupService: ProjectGroupService,
-              private groupService: GroupService,
-              private store: Store<IAppState>) {
+              private groupService: GroupService) {
   }
 
   ngOnInit() {

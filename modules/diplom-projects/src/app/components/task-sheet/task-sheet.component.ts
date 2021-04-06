@@ -6,8 +6,6 @@ import {Subscription} from 'rxjs';
 import {DiplomUser} from '../../models/diplom-user.model';
 import {EditTaskSheetComponent} from './edit-task-sheet/edit-task-sheet.component';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { Template } from 'src/app/models/template.model';
 
@@ -32,8 +30,7 @@ export class TaskSheetComponent implements OnInit {
   constructor(private projectThemeService: ProjectThemeService,
               private taskSheetService: TaskSheetService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private store: Store<IAppState>) {
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {

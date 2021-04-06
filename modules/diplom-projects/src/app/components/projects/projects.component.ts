@@ -7,9 +7,6 @@ import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog
 import {AssignProjectDialogComponent} from './assign-project-dialog/assign-project-dialog.component';
 import {ProjectsService} from '../../services/projects.service';
 import {Project} from '../../models/project.model';
-import {select, Store} from '@ngrx/store';
-
-import {IAppState} from '../../store/state/app.state';
 import {AppComponent} from '../../app.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import {GroupService} from '../../services/group.service';
@@ -41,8 +38,7 @@ export class ProjectsComponent implements OnInit {
               private groupService: GroupService,
               private projectsService: ProjectsService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private store: Store<IAppState>) {
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {

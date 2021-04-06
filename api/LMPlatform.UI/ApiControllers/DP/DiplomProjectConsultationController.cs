@@ -25,7 +25,7 @@ namespace LMPlatform.UI.ApiControllers.DP
             return new
             {
                 Students = DpManagementService.GetGraduateStudentsForUser(lecturerId, parms, false),
-                DipomProjectConsultationDates = PercentageService.GetConsultationDatesForUser(lecturerId)
+                DiplomProjectConsultationDates = PercentageService.GetConsultationDatesForUser(lecturerId)
             };
         }
 

@@ -7,8 +7,6 @@ import {PercentageResult} from '../../models/percentage-result.model';
 import {DiplomUser} from '../../models/diplom-user.model';
 import {MatDialog, MatOptionSelectionChange, MatSnackBar} from '@angular/material';
 import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-percentage-dialog.component';
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
 import { CoreGroup } from 'src/app/models/core-group.model';
 
 @Component({
@@ -34,8 +32,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   constructor(private percentageResultsService: PercentageResultsService,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private store: Store<IAppState>) {
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
