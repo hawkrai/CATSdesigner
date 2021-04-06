@@ -167,14 +167,17 @@ export class VisitStatsComponent implements OnInit, OnChanges {
 
   addDate() {
     const dialogRef = this.dialog.open(AddDateDialogComponent, {
-      width: '400px'
+      width: '450px',
+      data: {
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
-        const date = new Date(result);
+        const date = new Date(result.date);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        this.visitStatsService.addDate(date.toISOString()).subscribe(() => {
+        this.visitStatsService.addDate(date.toISOString(), result.start, 
+        result.end, result.audience, result.building).subscribe(() => {
           this.ngOnInit();
           this.addFlashMessage('Дата консультации успешно добавлена');
         });

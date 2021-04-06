@@ -25,8 +25,9 @@ export class VisitStatsService {
       {Id: id, StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark, Comment: comment});
   }
 
-  public addDate(date: string): Observable<any> {
-    return this.http.post('api/DiplomProjectConsultationDate', {Day: date});
+  public addDate(date: string, startTime: string, endTime: string, audience: string, building: string): Observable<any> {
+    return this.http.post('api/DiplomProjectConsultationDate', {Day: date, StartTime: startTime,
+      EndTime: endTime, Building: building, Audience: audience});
   }
 
   public deleteDate(id: string): Observable<any> {

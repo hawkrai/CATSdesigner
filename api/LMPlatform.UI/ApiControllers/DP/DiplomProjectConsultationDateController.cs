@@ -16,12 +16,8 @@ namespace LMPlatform.UI.ApiControllers.DP
     {
         public HttpResponseMessage Post([FromBody] DiplomProjectConsultationDateData consultationDate)
         {
-            if (!ModelState.IsValid)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-            }
-
-            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day);
+            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.StartTime, consultationDate.EndTime,
+                consultationDate.Audience, consultationDate.Building);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

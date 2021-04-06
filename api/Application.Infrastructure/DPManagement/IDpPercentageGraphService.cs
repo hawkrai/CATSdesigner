@@ -27,7 +27,7 @@ namespace Application.Infrastructure.DPManagement
 
         void SaveConsultationMark(int userId, DiplomProjectConsultationMarkData consultationMarkData);
 
-        void SaveConsultationDate(int userId, DateTime date);
+        void SaveConsultationDate(int userId, DateTime date, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber);
 
         void DeleteConsultationDate(int userId, int id);
     }

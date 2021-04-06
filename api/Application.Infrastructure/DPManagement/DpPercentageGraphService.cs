@@ -256,14 +256,18 @@ namespace Application.Infrastructure.DPManagement
             Context.SaveChanges();
         }
 
-        public void SaveConsultationDate(int userId, DateTime date)
+        public void SaveConsultationDate(int userId, DateTime date, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
             Context.DiplomProjectConsultationDates.Add(new DiplomProjectConsultationDate
             {
                 Day = date,
-                LecturerId = userId
+                LecturerId = userId,
+                StartTime = startTime,
+                EndTime = endTime,
+                Audience = audience,
+                Building = buildingNumber
             });
 
             Context.SaveChanges();
