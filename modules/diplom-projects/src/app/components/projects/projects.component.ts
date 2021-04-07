@@ -142,6 +142,7 @@ export class ProjectsComponent implements OnInit {
   editProject(project: Project) {
     this.projectsService.getProject(project.Id).subscribe(response => {
       const dialogRef = this.dialog.open(AddProjectDialogComponent, {
+        autoFocus: false,
         width: '500px',
         height: '600px',
         data: {
@@ -198,6 +199,7 @@ export class ProjectsComponent implements OnInit {
       '&filter[diplomProjectId]=' + project.Id)
       .subscribe(response => {
         const dialogRef = this.dialog.open(AssignProjectDialogComponent, {
+          autoFocus: false,
           width: '720px',
           height: '700px',
           data: {

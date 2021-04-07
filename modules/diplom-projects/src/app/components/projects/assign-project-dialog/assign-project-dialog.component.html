@@ -1,3 +1,6 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
 <h1 mat-dialog-title>Назначение темы дипломного проекта</h1>
 <mat-form-field class="group-select">
   <mat-select [value]="groups ? groups[0] : ''">

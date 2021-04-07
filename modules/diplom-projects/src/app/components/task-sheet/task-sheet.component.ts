@@ -87,6 +87,7 @@ export class TaskSheetComponent implements OnInit {
   editTaskSheet() {
     this.taskSheetService.getTaskSheet({diplomProjectId: this.diplomProjectId}).subscribe(response => {
       const dialogRef = this.dialog.open(EditTaskSheetComponent, {
+        autoFocus: false,
         width: '700px',
         height: '750px',
         position: {

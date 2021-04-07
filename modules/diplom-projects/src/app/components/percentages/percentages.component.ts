@@ -43,6 +43,7 @@ export class PercentagesComponent implements OnInit {
 
   addStage() {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
+      autoFocus: false,
       width: '600px',
       data: {
         title: "Добавление этапа",
@@ -64,6 +65,7 @@ export class PercentagesComponent implements OnInit {
 
   editStage(stage: Percentage) {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
+      autoFocus: false,
       width: '600px',
       data: {
         title: "Редактирование этапа",

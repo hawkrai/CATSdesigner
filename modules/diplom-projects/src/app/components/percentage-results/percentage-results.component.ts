@@ -119,6 +119,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   setResult(pr: PercentageResult) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
+      autoFocus: false,
       width: '400px',
       data: {
         mark: pr.Mark !== '-' ? pr.Mark : null,
@@ -155,6 +156,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   setMark(student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
+      autoFocus: false,
       width: '400px',
       data: {
         mark: student.Mark !== '-' ? student.Mark : null,

@@ -122,6 +122,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     });
 
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
+      autoFocus: false,
       width: '700px',
       data: {
         title: 'Посещаемость студентов',
@@ -167,6 +168,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
 
   addDate() {
     const dialogRef = this.dialog.open(AddDateDialogComponent, {
+      autoFocus: false,
       width: '450px',
       data: {
       }
