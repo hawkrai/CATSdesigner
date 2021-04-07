@@ -19,7 +19,7 @@
         <td class="mdc-data-table__cell">{{ i + 1 }}</td>
         <td class="mdc-data-table__cell">{{ student.Name }}</td>
         <td class="mdc-data-table__cell">{{ student.Group }}</td>
-        <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
+        <ng-container *ngIf="percentageResultsComponent.getDiplomUser().IsStudent">
           <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">
             {{result.Mark}}
             <div class="comment" *ngIf="result && result.Comment && result.ShowForStudent">
@@ -27,8 +27,8 @@
             </div>
           </td>
         </ng-container>
-        <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsLecturer">
-          <td class="mdc-data-table__cell data-cell clickable" (click)="!percentageResultsComponent.getCourseUser().IsSecretary && percentageResultsComponent.setResult(result)"
+        <ng-container *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer">
+          <td class="mdc-data-table__cell data-cell clickable" (click)="!percentageResultsComponent.getDiplomUser().IsSecretary && percentageResultsComponent.setResult(result)"
               *ngFor="let result of student.PercentageResults">
             {{ result.Mark }}
             <div class="comment" *ngIf="result && result.Comment">
@@ -36,14 +36,14 @@
             </div>
           </td>
         </ng-container>
-        <td class="mdc-data-table__cell data-cell" *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
+        <td class="mdc-data-table__cell data-cell" *ngIf="percentageResultsComponent.getDiplomUser().IsStudent">
           {{ student.Mark }}
           <div class="comment" *ngIf="student && student.Comment && student.ShowForStudent">
             <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
           </div>
         </td>
-        <td class="mdc-data-table__cell data-cell clickable" *ngIf="percentageResultsComponent.getCourseUser().IsLecturer"
-            (click)="!percentageResultsComponent.getCourseUser().IsSecretary && percentageResultsComponent.setMark(student)">
+        <td class="mdc-data-table__cell data-cell clickable" *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer"
+            (click)="!percentageResultsComponent.getDiplomUser().IsSecretary && percentageResultsComponent.setMark(student)">
           {{ student.Mark }}
           <div class="comment" *ngIf="student && student.Comment">
             <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>

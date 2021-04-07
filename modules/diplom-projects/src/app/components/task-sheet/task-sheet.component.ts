@@ -16,7 +16,7 @@ import { Template } from 'src/app/models/template.model';
 })
 export class TaskSheetComponent implements OnInit {
 
-  @Input() courseUser: DiplomUser;
+  @Input() diplomUser: DiplomUser;
   @Input() groups: CoreGroup[];
 
   private themes: Theme[];
@@ -119,8 +119,8 @@ export class TaskSheetComponent implements OnInit {
     this.taskSheetService.getTemplates(
       'count=1000000' +
       '&page=1' +
-      '&filter={"lecturerId":"' + this.courseUser.UserId + '","searchString":"' + '' + '"}' +
-      '&filter[lecturerId]=' + this.courseUser.UserId +
+      '&filter={"lecturerId":"' + this.diplomUser.UserId + '","searchString":"' + '' + '"}' +
+      '&filter[lecturerId]=' + this.diplomUser.UserId +
       '&sorting[' + 'Id' + ']=' + 'desc'
     ).subscribe(res => this.templates = res.Items);
   }

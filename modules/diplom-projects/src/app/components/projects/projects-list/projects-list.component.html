@@ -5,33 +5,33 @@
       <tr class="mdc-data-table__header-row">
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
         <th mat-sort-header="Theme" class="mdc-data-table__header-cell" role="columnheader" scope="col">Темa дипломного проекта</th>
-        <th mat-sort-header="Lecturer" class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="courseUser.IsStudent || courseUser.IsSecretary">Руководитель</th>
+        <th mat-sort-header="Lecturer" class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="diplomUser.IsStudent || diplomUser.IsSecretary">Руководитель</th>
         <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
         <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">Группа</th>
         <th mat-sort-header="ApproveDate" class="mdc-data-table__header-cell" role="columnheader" scope="col">Дата</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="!courseUser.IsSecretary">Действие</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="!diplomUser.IsSecretary">Действие</th>
       </tr>
       </thead>
       <tbody>
       <tr class="mdc-data-table__row" *ngFor="let project of filteredProjects; index as i">
         <td class="mdc-data-table__cell">{{ i + 1 }}</td>
         <td class="mdc-data-table__cell">{{ project.Theme }}</td>
-        <td class="mdc-data-table__cell" *ngIf="courseUser.IsStudent || courseUser.IsSecretary">{{ project.Lecturer }}</td>
+        <td class="mdc-data-table__cell" *ngIf="diplomUser.IsStudent || diplomUser.IsSecretary">{{ project.Lecturer }}</td>
         <td class="mdc-data-table__cell">{{ project.Student }}</td>
         <td class="mdc-data-table__cell">{{ project.Group }}</td>
         <td class="mdc-data-table__cell">{{ project.ApproveDate | date:'dd.MM.yyyy'}}</td>
-        <td class="mdc-data-table__cell" *ngIf="courseUser.IsStudent">
+        <td class="mdc-data-table__cell" *ngIf="diplomUser.IsStudent">
           <button mat-icon-button color="primary" matTooltip="Скачать лист задания"
-                  *ngIf="project.StudentId == courseUser.UserId && project.ApproveDate != null" (click)="projectsComponent.downloadTaskSheet(project)">
+                  *ngIf="project.StudentId == diplomUser.UserId && project.ApproveDate != null" (click)="projectsComponent.downloadTaskSheet(project)">
             <mat-icon>cloud_download</mat-icon>
           </button>
           <button mat-icon-button color="primary" matTooltip="Выбрать тему"
-                  *ngIf="!(courseUser.HasAssignedDiplomProject || courseUser.HasChosenDiplomProject)
-            && project.StudentId == null" (click)="projectsComponent.chooseCourseProject(project.Id)">
+                  *ngIf="!(diplomUser.HasAssignedDiplomProject || diplomUser.HasChosenDiplomProject)
+            && project.StudentId == null" (click)="projectsComponent.chooseDiplomProject(project.Id)">
             <mat-icon>done</mat-icon>
           </button>
         </td>
-        <td class="mdc-data-table__cell" *ngIf="courseUser.IsLecturer && !courseUser.IsSecretary">
+        <td class="mdc-data-table__cell" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary">
           <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="projectsComponent.editProject(project)">
             <mat-icon>edit</mat-icon>
           </button>

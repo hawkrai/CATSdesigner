@@ -1,4 +1,4 @@
-<div *ngIf="courseUser; else load" class="task-sheet__header">
+<div *ngIf="diplomUser; else load" class="task-sheet__header">
   <mat-form-field class="task-sheet__header__theme">
     <mat-label>Выберите тему дипломного проекта</mat-label>
     <mat-select panelClass="theme-panel" [(value)]="diplomProjectId" (selectionChange)="onThemeChange($event.value)">
@@ -13,7 +13,7 @@
       <mat-icon>cloud_download</mat-icon>
     </button>
     <button mat-icon-button color="primary" matTooltip="Редактировать"
-            (click)="editTaskSheet()" *ngIf="courseUser.IsLecturer && diplomProjectId != null">
+            (click)="editTaskSheet()" *ngIf="diplomUser.IsLecturer && diplomProjectId != null">
       <mat-icon>edit</mat-icon>
     </button>
   </div>

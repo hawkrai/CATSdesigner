@@ -13,7 +13,7 @@ import {Project} from '../../../models/project.model';
 export class ProjectsListComponent implements OnInit {
 
   @Input() filteredProjects: Project[];
-  @Input() courseUser: DiplomUser;
+  @Input() diplomUser: DiplomUser;
 
   constructor(private projectsComponent: ProjectsComponent) {
   }

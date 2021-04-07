@@ -19,7 +19,7 @@ import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 })
 export class ProjectsComponent implements OnInit {
 
-  @Input() courseUser: DiplomUser;
+  @Input() diplomUser: DiplomUser;
 
   private COUNT = 1000000;
   private PAGE = 1;
@@ -42,9 +42,9 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupService.getGroupsByUser(this.courseUser.UserId).subscribe(res => this.groups = res.Groups);
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => this.groups = res.Groups);
       this.retrieveProjects();
-      console.log(this.courseUser)
+      console.log(this.diplomUser)
   }
 
   retrieveProjects() {
@@ -89,7 +89,7 @@ export class ProjectsComponent implements OnInit {
     this.retrieveProjects();
   }
 
-  chooseCourseProject(projectId: string) {
+  chooseDiplomProject(projectId: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
       width: '540px',

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material';
 import {DiplomUser} from './models/diplom-user.model';
-import {CourseUserService} from './services/course-user.service';
+import {DiplomUserService} from './services/diplom-user.service';
 import {GroupService} from './services/group.service';
 import {ProjectGroupService} from './services/project-group.service';
 import { CoreGroup } from './models/core-group.model';
@@ -17,15 +17,15 @@ export class AppComponent implements OnInit {
   public groups: CoreGroup[];
   public selectedGroup: CoreGroup;
 
-  private courseUser: DiplomUser;
+  private diplomUser: DiplomUser;
 
-  constructor(private courseUserService: CourseUserService,
+  constructor(private diplomUserService: DiplomUserService,
               private projectGroupService: ProjectGroupService,
               private groupService: GroupService) {
   }
 
   ngOnInit() {
-    this.courseUserService.getUser().subscribe(res => {this.courseUser = res; this.retrieveGroups();});
+    this.diplomUserService.getUser().subscribe(res => {this.diplomUser = res; this.retrieveGroups();});
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
   }
 
   retrieveGroups() {
-    this.groupService.getGroupsByUser(this.courseUser.UserId).subscribe(res => {
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => {
       this.processGroupsResponse(res);
     });
   }
@@ -52,8 +52,6 @@ export class AppComponent implements OnInit {
   }
 
   getExcelFile() {
-    //const url = 'http://localhost:8080/Statistic/';
-
     if (this.tab === 4) {
       location.href = location.origin + '/Statistic/GetPercentageCP?groupId=' + this.selectedGroup.GroupId;
     } else if (this.tab === 5) {

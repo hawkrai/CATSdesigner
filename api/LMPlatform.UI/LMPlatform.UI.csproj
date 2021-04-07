@@ -327,7 +327,7 @@
     <Compile Include="ApiControllers\DP\DpTaskSheetDownloadController.cs" />
     <Compile Include="ApiControllers\DP\DpTaskSheetHtmlController.cs" />
     <Compile Include="ApiControllers\DP\DpTaskSheetTemplateController.cs" />
-    <Compile Include="ApiControllers\DP\UserController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomUserController.cs" />
     <Compile Include="ApiControllers\LabsController.cs" />
     <Compile Include="ApiControllers\NewsController.cs" />
     <Compile Include="ApiControllers\UploadController.cs" />

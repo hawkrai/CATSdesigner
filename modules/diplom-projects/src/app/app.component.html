@@ -1,4 +1,4 @@
-<div class="app-component" *ngIf="courseUser">
+<div class="app-component" *ngIf="diplomUser">
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 1"
@@ -15,7 +15,7 @@
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 2"
             (click)="tab = 2"
-            *ngIf="!courseUser.IsSecretary"
+            *ngIf="!diplomUser.IsSecretary"
     >
           <span class="mdc-tab__content">
             <span class="mdc-tab__text-label">Лист задания</span>
@@ -83,10 +83,10 @@
             <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
       </div>
     </div> -->
-    <app-projects *ngIf="tab === 1" [courseUser]="courseUser"></app-projects>
-    <app-task-sheet *ngIf="tab === 2" [courseUser]="courseUser" [groups]="groups"></app-task-sheet>
-    <app-percentages *ngIf="tab === 3" [diplomUser]="courseUser"></app-percentages>
-    <app-percentage-results *ngIf="tab === 4" [diplomUser]="courseUser"></app-percentage-results>
-    <app-visit-stats *ngIf="tab === 5" [courseUser]="courseUser"></app-visit-stats>
+    <app-projects *ngIf="tab === 1" [diplomUser]="diplomUser"></app-projects>
+    <app-task-sheet *ngIf="tab === 2" [diplomUser]="diplomUser" [groups]="groups"></app-task-sheet>
+    <app-percentages *ngIf="tab === 3" [diplomUser]="diplomUser"></app-percentages>
+    <app-percentage-results *ngIf="tab === 4" [diplomUser]="diplomUser"></app-percentage-results>
+    <app-visit-stats *ngIf="tab === 5" [diplomUser]="diplomUser"></app-visit-stats>
   </div>
 </div>

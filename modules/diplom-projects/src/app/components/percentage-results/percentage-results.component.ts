@@ -88,7 +88,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     this.retrievePercentageResults();
   }
 
-  public getCourseUser() {
+  public getDiplomUser() {
     return this.diplomUser;
   }
 
