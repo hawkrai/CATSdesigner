@@ -1,6 +1,6 @@
 <div class="visit-stats-component" >
   <div class="visit-stats-component__header">
-    <mat-form-field class="visit-stats-component__group-select" *ngIf="courseUser.IsSecretary">
+    <mat-form-field class="visit-stats-component__group-select" *ngIf="diplomUser.IsSecretary">
       <mat-select [value]="groups ? groups[0] : ''">
         <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group">
           {{group}}
@@ -8,7 +8,7 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button class="addDateBtn" color="primary" *ngIf="courseUser.IsLecturer && !courseUser.IsSecretary" (click)="addDate()">Добавить дату</button>
+    <button mat-raised-button class="addDateBtn" color="primary" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary" (click)="addDate()">Добавить дату</button>
 
     <mat-form-field class="visit-stats-component__search">
       <mat-label>Поиск по теме, фамилии</mat-label>

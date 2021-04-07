@@ -5,4 +5,5 @@ export class DiplomUser {
   IsSecretary: boolean;
   HasChosenDiplomProject: boolean;
   HasAssignedDiplomProject: boolean;
+  IsLecturerHasGraduateStudents: boolean;
 }

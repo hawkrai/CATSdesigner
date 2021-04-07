@@ -5,11 +5,11 @@ import {Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CourseUserService {
+export class DiplomUserService {
 
   constructor(private http: HttpClient) { }
 
   public getUser(): Observable<any> {
-    return this.http.get('api/CourseUser');
+    return this.http.get('api/DiplomUser');
   }
 }

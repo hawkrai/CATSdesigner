@@ -17,7 +17,7 @@ import { CoreGroup } from 'src/app/models/core-group.model';
   styleUrls: ['./visit-stats.component.less']
 })
 export class VisitStatsComponent implements OnInit, OnChanges {
-  @Input() courseUser: DiplomUser;
+  @Input() diplomUser: DiplomUser;
 
   private COUNT = 1000;
   private PAGE = 1;
@@ -53,14 +53,14 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   }
 
   public getDiplomUser() {
-    return this.courseUser;
+    return this.diplomUser;
   }
 
   retrieveVisitStats() {
     this.visitStatsList = null;
     this.visitStatsSubscription = this.visitStatsService.getVisitStats({
       count: this.COUNT, page: this.PAGE,
-      filter: '{"lecturerId":' + this.courseUser.UserId +'}'
+      filter: '{"lecturerId":' + this.diplomUser.UserId +'}'
     })
       .subscribe(res => {
         console.log(res);
