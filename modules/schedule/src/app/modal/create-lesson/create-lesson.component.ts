@@ -225,15 +225,16 @@ export class CreateLessonComponent implements OnInit {
     this.lessonAdd.startTime = this.startTimeOfLesson;
     this.lessonAdd.endTime = this.endTimeOfLesson;
     this.lessonAdd.building = this.lesson.Building;
+    this.lessonAdd.audience = this.lesson.Audience;
     if (this.lesson.Type === 'Лекция') {
       this.lessonservice.saveLecture(this.lessonAdd).subscribe(l => {
         console.log(l);
       });
-    } else if (this.lesson.Type === 'Лаб.работа') {
+    } else if (this.lesson.Type === 'Лаб. работа') {
       this.lessonservice.saveLab(this.lessonAdd).subscribe(l => {
         console.log(l);
       });
-    } else if (this.lesson.Type === 'Практ.работа') {
+    } else if (this.lesson.Type === 'Практ. работа') {
       this.lessonservice.savePractical(this.lessonAdd).subscribe(l => {
         console.log(l);
       });
