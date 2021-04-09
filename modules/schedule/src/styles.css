@@ -130,3 +130,9 @@
 .mat-dialog-container {
   border-radius: 0px !important;
 }
+
+.mat-tab-label {
+  font-size: .875rem;
+  font-weight: 500;
+  width: 50%;
+}
