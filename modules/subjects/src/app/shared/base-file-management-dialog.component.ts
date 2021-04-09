@@ -5,6 +5,7 @@ import { IAppState } from '../store/state/app.state';
 import { FilesService } from '../services/files.service';
 import { take } from 'rxjs/operators';
 import { Attachment } from '../models/file/attachment.model';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 export class BaseFileManagementComponent {
     private files$ = new BehaviorSubject<AttachedFile[]>([]);
@@ -44,7 +45,6 @@ export class BaseFileManagementComponent {
         }, () => {
             this.files$.next(files.slice(0, index).concat(files.slice(index + 1)))
         });
-        // this.store.dispatch(filesActions.uploadFile({ file }));
     }
 
     deleteFile(file: AttachedFile) {
@@ -53,6 +53,18 @@ export class BaseFileManagementComponent {
         ).subscribe(() => {
             const files = this.files$.value;
             this.files$.next(files.filter(f => f.GuidFileName !== file.GuidFileName))
+        });
+    }
+
+    observeAttachments(filesArray: FormArray): void {
+        this.getFiles().subscribe(files => {
+            filesArray.clear();
+            files.forEach(file => {
+              const group =  file ? new FormGroup(
+                Object.keys(file).reduce((acc, key) => ({ ...acc, [key]: new FormControl(file[key]) }), {})
+                ) : new FormControl(null);
+              filesArray.push(group);
+            });
         });
     }
 

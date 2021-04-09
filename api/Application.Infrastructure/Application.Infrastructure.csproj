@@ -200,6 +200,7 @@
     <Compile Include="Export\GenerateCPDocument.cs" />
     <Compile Include="Export\Word.cs" />
     <Compile Include="Export\WordCourseProject.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="FilesManagement\AttachedFile.cs" />
     <Compile Include="FilesManagement\FilesManagementService.cs" />
     <Compile Include="FilesManagement\IFilesManagementService.cs" />

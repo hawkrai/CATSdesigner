@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PracticalComponent } from './practical.component';
 import {MatModule} from '../../mat.module';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../../shared/shared.module';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { PracticalLessonsComponent } from './components/practical-lessons/practical-lessons.component';
@@ -33,7 +33,8 @@ import { VisitPipe } from './pipes/visit.pipe';
     MatModule,
     FormsModule,
     SharedModule,
-    DragDropModule
+    DragDropModule,
+    ReactiveFormsModule
   ],
   entryComponents: [
     PracticalLessonPopoverComponent,

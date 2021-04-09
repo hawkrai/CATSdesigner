@@ -24,7 +24,8 @@
   "subgroup": "Подгруппа",
   "subdivision": "Разделение на подгруппы",
   "subgroup.management": "Управление подгруппами",
-
+  "subject.management": "Управление предметом",
+  "subject.choose": "Выберете предмет",
   "short.name": "Краткое название",
   "abbreviation": "Сокращенное название",
   "hours": "Часы",

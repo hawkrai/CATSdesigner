@@ -30,7 +30,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
-  public labs$: Observable<Lab[]>;
+  public labs: Lab[];
 
   constructor(
     private store: Store<IAppState>,
@@ -41,7 +41,9 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnInit() {
     this.store.dispatch(labsActions.loadLabs());
-    this.labs$ = this.store.select(labsSelectors.getLabs);
+    this.subs.add(this.store.select(labsSelectors.getLabs).subscribe(labs => {
+      this.labs = [...labs];
+    }));
   }
 
   getDisplayedColumns(): string[] {
@@ -131,7 +133,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       order: lab ? lab.Order : order,
       pathFile: lab ? lab.PathFile : '',
       attachments: lab ? lab.Attachments : [],
-      shortName: `${this.translate.transform('text.subjects.labs.prefix', 'ЛР')}${order}`
+      shortName: `ЛР${order + 1}`
     };
   }
 

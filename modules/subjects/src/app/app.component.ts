@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {IAppState} from './store/state/app.state';
 import {Store} from '@ngrx/store';
 import * as subjectActions from './store/actions/subject.actions';
@@ -10,7 +10,7 @@ import {User} from './models/user.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
   title = 'lmsNew';
 

@@ -1,16 +1,26 @@
 .labs-component {
+  &__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0 20px;
+  }
   &__select-group {
-    padding-top: 15px;
-    padding-bottom: 0;
-    display: grid;
+    display: flex;
     align-items: center;
     gap: 0 20px;
     grid-auto-flow: column;
     justify-content: flex-start;
+    margin: -.84375em 0;
   }
 
   .mdc-tab-bar {
     display: flex;
+    margin-bottom: 20px;
   }
 
   .mdc-tab {

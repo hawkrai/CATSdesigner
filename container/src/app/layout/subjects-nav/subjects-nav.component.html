@@ -3,7 +3,7 @@
         <button class="toggle-button" *ngIf="subjectId" mat-icon-button (click)="onToggleClick()"><mat-icon>menu</mat-icon></button>  
         <div >
             <button aria-haspopup="true" mat-button="" [matMenuTriggerFor]="menu" class="mat-button">
-                <h2 class="mat-h2">{{coreService.selectedSubject != null ? coreService.selectedSubject.Name : "Выберите предмет"}}</h2>
+                <h2 class="mat-h2">{{coreService.selectedSubject != null ? coreService.selectedSubject.Name : 'subject.choose' | translate:'Выберите предмет'}}</h2>
             </button>
             <mat-menu #menu="matMenu">
                 <a #link mat-menu-item *ngFor="let subject of subjects; let i = index" (click)="changeSubject(subject.Id)"> 
@@ -13,10 +13,10 @@
                     matTooltip={{subject.Name}} >{{subject.Name}}</span>
                 </a>
             </mat-menu>
-            <h3 class="mat-h3">{{coreService.selectedSubject != null ? "Попова Юлия Борисовна" : "Попова Юлия Борисовна "}}</h3>
+            <h3 class="mat-h3" *ngIf="subjectLector">{{subjectLector.FullName}}</h3>
         </div>
     </div>
     <div class="flex-spacer"></div>
-    <button style="margin-right: 27px;" mat-raised-button  *ngIf="isLector" (click)="onSubjects()" color="basic">Управление предметами</button>   
+    <button style="margin-right: 27px;" mat-raised-button  *ngIf="isLector" (click)="onSubjects()" color="basic">{{'subject.management' | translate:'Управление предметами'}}</button>   
 </mat-toolbar>
 <router-outlet></router-outlet>

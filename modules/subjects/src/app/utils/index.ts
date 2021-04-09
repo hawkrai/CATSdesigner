@@ -3,7 +3,6 @@ import { AttachedFile } from '../models/file/attached-file.model';
 
 
 export const attchedFileConverter = (attachedFile: AttachedFile): Attachment => {
-    console.log(attachedFile);
     return ({ 
         Id: attachedFile.IdFile > 0 ? attachedFile.IdFile : 0 ,
         Name: attachedFile.Name, 

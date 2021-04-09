@@ -30,7 +30,7 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
       this.setAttachments(this.data.model.attachments);
   } 
 
-  jobProtectionForm:FormGroup;
+  jobProtectionForm: FormGroup;
   labs$: Observable<Lab[]>;
 
   get filesArray(): FormArray {
@@ -48,16 +48,8 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
     this.store.dispatch(labsActions.loadLabs());
     this.labs$ = this.store.select(labsSelectors.getLabs);
     
-    this.getFiles().subscribe(files => {
-      this.filesArray.clear();
-      files.forEach(file => {
-        const group =  file ? new FormGroup(
-          Object.keys(file).reduce((acc, key) => ({ ...acc, [key]: new FormControl(file[key]) }), {})
-          ) : new FormControl(null);
-          console.log(group);
-        this.filesArray.push(group);
-      });
-    });
+
+    this.observeAttachments(this.filesArray);
   }
 
   onPaste(clipboardData: DataTransfer): void {

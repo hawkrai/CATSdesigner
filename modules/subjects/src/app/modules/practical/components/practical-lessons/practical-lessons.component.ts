@@ -30,8 +30,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Practical>;
 
-  public practicals$: Observable<Practical[]>;
-  private prefix: string;
+  public practicals: Practical[];
   private subs = new SubSink();
 
   public defaultColumns = ['index', 'theme', 'shortName', 'duration'];
@@ -44,9 +43,10 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     private dialogService: DialogService) { }
 
   ngOnInit() {
-    this.prefix = this.translate.transform('text.subjects.practicals.prefix', 'ПЗ');
     this.store.dispatch(practicalsActions.loadPracticals());
-    this.practicals$ = this.store.select(practicalsSelectors.selectPracticals);
+    this.subs.add(this.store.select(practicalsSelectors.selectPracticals).subscribe(practicals => {
+      this.practicals = [...practicals]
+    }));
   }
   
   ngOnChanges(changes: SimpleChanges): void {
@@ -142,7 +142,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],
-      shortName: `${this.prefix}${order}`
+      shortName: `ПЗ${order + 1}`
     };
   }
 

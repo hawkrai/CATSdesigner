@@ -36,7 +36,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   displayedColumns: string[] = [];
 
 
-  public lectures$: Observable<Lecture[]>;
+  public lectures: Lecture[];
 
   constructor(
     private store: Store<IAppState>,
@@ -47,7 +47,9 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
 
   ngOnInit(): void {
     this.store.dispatch(lecturesActions.loadLectures());
-    this.lectures$ = this.store.select(lecturesSelectors.getLectures);
+    this.subs.add(this.store.select(lecturesSelectors.getLectures).subscribe(lectures => {
+      this.lectures = [...lectures];
+    }));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -123,7 +125,6 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   private getLecture(lecturesCount: number, lecture: Lecture) {
     return {
       id: lecture ? lecture.LecturesId : 0,
-      subjectId: this.subjectId,
       theme: lecture ? lecture.Theme : '',
       duration: lecture ? lecture.Duration : 0,
       order: lecture ? lecture.Order : lecturesCount,

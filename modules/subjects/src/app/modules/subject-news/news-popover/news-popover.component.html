@@ -3,35 +3,23 @@
     {{data.title}}
   </ng-container>
   <ng-container body>
-    <form class="form" #formElement>
+    <form class="form" [formGroup]="newsForm">
       <mat-form-field class="full-width">
         <mat-label>{{'text.subjects.news.title' | translate:'Название новости'}}</mat-label>
-        <input name="title" maxlength="1000" required matInput placeholder="Название"
-              [(ngModel)]="data.model.title"
-              (paste)="onPaste($event.clipboardData)">
+        <input matInput placeholder="Название" formControlName="title">
       </mat-form-field>
-
       <mat-label>{{'text.subjects.news.text' | translate:'Текст новости'}}</mat-label>
-      <ckeditor
-                [(ngModel)]="data.model.body"
-                [ngModelOptions]="{standalone: true}"
-                [editor]="Editor">
-
-      </ckeditor>
+      <ckeditor formControlName="body" [editor]="Editor"></ckeditor>
 
       <div class="form-container form-container__column">
-        <mat-checkbox name="isOldDate"
-                      [(ngModel)]="data.model.isOldDate"
-                      [color]="'primary'">
+        <mat-checkbox formControlName="isOldDate" [color]="'primary'">
           {{'text.subjects.news.date.leave' | translate:'Оставить старую дату новости'}}
         </mat-checkbox>
-        <mat-checkbox name="disabled"
-                      [(ngModel)]="data.model.disabled"
-                      [color]="'primary'">
+        <mat-checkbox formControlName="disabled" [color]="'primary'">
           {{'text.subjects.news.hide' | translate:'Скрыть новость'}}
         </mat-checkbox>
       </div>
-      <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+      <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="filesArray.value" (upload)="uploadFile($event)"></app-file-uploader>
     </form>
   </ng-container>
   <ng-container actions>
@@ -39,7 +27,7 @@
     <button mat-raised-button
             (click)="onClose(files, true)"
             color="primary"
-            [disabled]="!formElement.checkValidity()"
+            [disabled]="newsForm.invalid"
     >
       {{data.buttonText}}
     </button>

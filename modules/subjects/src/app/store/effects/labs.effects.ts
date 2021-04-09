@@ -35,9 +35,10 @@ export class LabsEffects {
   updateOrder$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.updateOrder),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ prevIndex, currentIndex }, subjectId]) => 
-    this.rest.updateLabsOrder(subjectId, prevIndex, currentIndex))
-  ), { dispatch: false });
+    switchMap(([{ prevIndex, currentIndex }, subjectId]) => this.rest.updateLabsOrder(subjectId, prevIndex, currentIndex).pipe(
+      map(() => labsActions.loadLabs())
+    ))
+  ));
 
   labs$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.loadLabs),
@@ -58,7 +59,7 @@ export class LabsEffects {
   createLab$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.saveLab),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ lab }, subjectId]) => (lab.subjectId = subjectId, this.rest.saveLab(lab)).pipe(
+    switchMap(([{ lab }, subjectId]) => this.rest.saveLab({ ...lab, subjectId }).pipe(
       switchMap((body) => [catsActions.showMessage({ body }),labsActions.loadLabs()])
     ))
   ));
@@ -67,7 +68,7 @@ export class LabsEffects {
     ofType(labsActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
     switchMap(([{ obj }, subjectId]) => this.scheduleService.createLabDateVisit({ ...obj, subjectId }).pipe(
-      map(() => labsActions.loadLabsSchedule())
+      switchMap(body => [catsActions.showMessage({ body }) ,labsActions.loadLabsSchedule()])
     ))
   ));
 

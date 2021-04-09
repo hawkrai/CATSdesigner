@@ -100,21 +100,8 @@ namespace LMPlatform.UI.Services.Lectures
                         Message = "Пользователь не присоединён к предмету"
                     };
                 }
-                var lectures = SubjectManagementService.GetSubjectLectures(subjectId);
-                if (prevIndex < curIndex)
-                {
-                    foreach (var entry in lectures.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(lectures[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
-                    {
-                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + prevIndex);
-                    }
-                }
-                else
-                {
-                    foreach (var entry in new List<Lectures> { lectures[prevIndex] }.Concat(lectures.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
-                    {
-                        SubjectManagementService.UpdateLectureOrder(entry.Value, entry.Index + curIndex);
-                    }
-                }
+                SubjectManagementService.UpdateLecturesOrder(subjectId, prevIndex, curIndex);
+
                 return new ResultViewData
                 {
                     Code = "200",

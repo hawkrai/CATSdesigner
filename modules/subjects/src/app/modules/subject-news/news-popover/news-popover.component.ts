@@ -5,9 +5,10 @@ import { Store } from '@ngrx/store';
 
 import { BaseFileManagementComponent } from './../../../shared/base-file-management-dialog.component';
 import {DialogData} from '../../../models/dialog-data.model';
-import * as filesActions from '../../../store/actions/files.actions';
 import { IAppState } from 'src/app/store/state/app.state';
 import { FilesService } from 'src/app/services/files.service';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { attchedFileConverter } from 'src/app/utils';
 
 @Component({
   selector: 'app-news-popover',
@@ -23,12 +24,48 @@ export class NewsPopoverComponent extends BaseFileManagementComponent {
     filesService: FilesService,
     @Inject(MAT_DIALOG_DATA) private data: DialogData) {
     super(store, filesService);
+    this.setAttachments(this.data.model.attachments);
   }
 
-  onPaste(clipboardData: DataTransfer): void {
-    if (clipboardData.files.length > 0) {
-      this.store.dispatch(filesActions.uploadFile({ file: clipboardData.files[0] }));
+  newsForm: FormGroup;
+
+
+  get filesArray(): FormArray {
+    return this.newsForm.get('attachments') as FormArray;
+  }
+
+  ngOnInit(): void {
+    this.loadAttachments();
+    this.newsForm = new FormGroup({
+      id: new FormControl(this.data.model.id),
+      title: new FormControl(this.data.model.title, [Validators.required, Validators.maxLength(256)]),
+      body: new FormControl(this.data.model.body),
+      isOldDate: new FormControl(this.data.model.isOldDate),
+      disabled: new FormControl(this.data.model.disabled),
+      dateCreate: new FormControl(this.data.model.dateCreate),
+      pathFile: new FormControl(this.data.model.pathFile),
+      attachments: new FormArray([]),
+    });
+    this.observeAttachments(this.filesArray);
+  }
+
+  onClose(toSave: boolean): void {
+    if (toSave) {
+        this.onSave();
+    } else {
+        this.filesArray.value.filter(f => f.IdFile <= 0)
+        .forEach(f => this.deleteFile(f));
+        this.dialogRef.close();
     }
+  }
+
+  onSave(): void {
+    if (this.newsForm.invalid) {
+      return;
+    }
+    const value = this.newsForm.value;
+    value.attachments = value.attachments.map(a => attchedFileConverter(a));
+    this.dialogRef.close(value);
   }
 
 }

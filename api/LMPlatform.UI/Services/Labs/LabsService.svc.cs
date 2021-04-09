@@ -1078,21 +1078,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				var labs = SubjectManagementService.GetSubjectLabs(subjectId);
-				if (prevIndex < curIndex)
-                {
-					foreach(var entry in labs.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(labs[prevIndex]).Select((x, index) => new {  Value = x, Index = index}))
-                    {
-						SubjectManagementService.UpdateLabOrder(entry.Value, entry.Index + prevIndex);
-                    }
-                }
-				else
-                {
-					foreach (var entry in new List<Models.Labs> { labs[prevIndex] }.Concat(labs.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
-					{
-						SubjectManagementService.UpdateLabOrder(entry.Value, entry.Index + curIndex);
-					}
-				}
+				SubjectManagementService.UpdateLabsOrder(subjectId, prevIndex, curIndex);
 				return new ResultViewData
 				{
 					Code = "200",

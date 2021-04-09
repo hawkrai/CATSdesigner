@@ -51,9 +51,9 @@ namespace Application.Infrastructure.SubjectManagement
 
         Lectures SaveLectures(Lectures lectures, IList<Attachment> attachments, int userId);
 
-        Lectures UpdateLectureOrder(Lectures lectures, int order);
+        void UpdateLecturesOrder(int subjectId, int prevIndex, int currentIndex);
 
-        Labs UpdateLabOrder(Labs labs, int order);
+        void UpdateLabsOrder(int subjectId, int prevIndex, int currentIndex);
 
         IList<Labs> GetSubjectLabs(int subjectId);
         IList<Lectures> GetSubjectLectures(int subjectId);

@@ -16,7 +16,7 @@
     </button>
   </div>
   <div class="labs-component__body">
-    <div clas="labs-coponent__actions" data-item="actions" *ngIf="state.isTeacher">
+    <div class="labs-component__controls" *ngIf="state.isTeacher">
       <div class="labs-component__select-group" *ngIf="selectedTab === 1 || selectedTab === 2 || selectedTab === 3 || selectedTab === 4">
         <mat-form-field>
           <mat-select [value]="state.groups.length ? state.groups[0].GroupId : ''">
@@ -41,6 +41,8 @@
         >
           {{'text.groups.detached' | translate: 'Открепленные группы'}}
         </mat-slide-toggle>
+      </div>
+      <div class="labs-component__actions">
         <button *ngIf="selectedTab === 4"
           mat-icon-button
           color="primary"
