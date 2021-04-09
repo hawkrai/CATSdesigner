@@ -48,9 +48,7 @@ import {AddProjectDialogComponent} from './components/projects/add-project-dialo
 import {AssignProjectDialogComponent} from './components/projects/assign-project-dialog/assign-project-dialog.component';
 import {EditTaskSheetComponent} from './components/task-sheet/edit-task-sheet/edit-task-sheet.component';
 import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
-import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
 import { CustomDateAdapter } from './custom-date-adapter';
 
 @NgModule({
@@ -73,7 +71,6 @@ import { CustomDateAdapter } from './custom-date-adapter';
     AssignProjectDialogComponent,
     EditTaskSheetComponent,
     VisitingPopoverComponent,
-    CheckPlagiarismPopoverComponent,
   ],
     imports: [
         BrowserModule,
@@ -112,8 +109,7 @@ import { CustomDateAdapter } from './custom-date-adapter';
     {provide: DateAdapter, useClass: CustomDateAdapter}
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
-    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent,
-    CheckPlagiarismPopoverComponent],
+    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {
