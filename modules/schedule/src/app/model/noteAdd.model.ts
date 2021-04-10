@@ -4,4 +4,5 @@ export class NoteAdd {
   date: string;
   startTime: string;
   endTime: string;
+  note: string;
 }

@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {les, SUBJECTS} from '../mock/lesson-mock';
 import {DatePipe, formatDate} from '@angular/common';
 
 
@@ -10,25 +9,21 @@ import {DatePipe, formatDate} from '@angular/common';
 })
 export class LessonService {
 
-  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб. работа'], ['3', 'Практ. работа']];
+  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб. работа'], ['3', 'Практ. работа'],
+    ['4', 'КП'], ['5', 'ДП']];
 
-  lessonTypesFull: string[][] = [['1', 'Лекция'], ['2', 'Лабораторная работа'], ['3', 'Практическая работа']];
+  lessonTypesFull: string[][] = [['1', 'Лекция'], ['2', 'Лабораторная работа'], ['3', 'Практическая работа'],
+    ['4', 'Консультация по курсовому проекту'], ['5', 'Консультация по дипломному проекту']];
 
   constructor(private http: HttpClient,
               private datePipe: DatePipe) {
   }
-
-  getLessons(): Observable<any> {
-    return of(les);
-  }
-
-  getSubjects(): Observable<any> {
-    return of(SUBJECTS);
-  }
-
-
   getAllLessons(username: string): Observable<any> {
     return this.http.post<any>('/Profile/GetProfileInfoCalendar', {userLogin: username});
+  }
+
+  getGroupsBySubjectId(id: number): Observable<any> {
+    return this.http.get<any>('/Services/CoreService.svc/GetGroupsV2/' + id);
   }
 
   getLessonsByDates(start: string, end: string): Observable<any> {
@@ -38,13 +33,13 @@ export class LessonService {
   saveLab(Lab: any): Observable<any> {
     return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLab',
       {subjectId: Lab.subjectId, date: Lab.date, startTime: Lab.startTime,
-            endTime: Lab.endTime, building: Lab.building, audience: Lab.audience, subGroupId: 7871});
+            endTime: Lab.endTime, building: Lab.building, audience: Lab.audience, subGroupId: Lab.subGroupId});
   }
 
   savePractical(pract: any): Observable<any> {
     return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDatePractical',
       {subjectId: pract.subjectId, date: pract.date, startTime: pract.startTime,
-            endTime: pract.endTime, building: pract.building, audience: pract.audience, groupId: 3027 });
+            endTime: pract.endTime, building: pract.building, audience: pract.audience, groupId: pract.groupId });
   }
 
   saveLecture(lect: any): Observable<any> {

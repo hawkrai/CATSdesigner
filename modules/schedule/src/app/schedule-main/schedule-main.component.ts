@@ -158,6 +158,7 @@ export class ScheduleMainComponent implements OnInit {
     const dialogRef = this.dialog.open(CreateLessonComponent,
       {
         width: '600px',
+        height: '100%',
         disableClose: true,
         data: {user: this.user, date: dateEvent},
         position: {top: '0%'}
@@ -194,7 +195,7 @@ export class ScheduleMainComponent implements OnInit {
               id: result.note.id,
               start: result.note.start,
               end: result.note.end,
-              title: result.note.title,
+              title: result.note.title + '|' + result.note.note,
               color: colors.color,
               draggable: true,
               resizable: {
@@ -229,7 +230,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeNote(eventToChange: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent, {
-      width: '600px',
+      width: '600px',  height: '100%',
       data: {note: eventToChange, user: this.user}, position: {top: '0%'}
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -239,7 +240,7 @@ export class ScheduleMainComponent implements OnInit {
           id: result.note.id,
           start: result.note.start,
           end: result.note.end,
-          title: result.note.title,
+          title: result.note.title + '|' + result.note.note,
           color: colors.color,
           resizable: {
             beforeStart: true,
@@ -255,7 +256,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeLesson(lessonChanged: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '600px',  data: {user: this.user, lesson: lessonChanged}, position: {top: '0%'}});
+      {width: '600px',  height: '100%', data: {user: this.user, lesson: lessonChanged}, position: {top: '0%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.lesson = result.lesson;
