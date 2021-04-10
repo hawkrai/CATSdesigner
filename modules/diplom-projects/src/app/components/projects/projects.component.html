@@ -1,0 +1,25 @@
+<div class="projects-component" *ngIf="projects; else: load">
+  <div class="projects-component__header">
+    <mat-form-field class="visit-stats-component__group-select" *ngIf="diplomUser.IsSecretary">
+      <mat-select [value]="projectGroups ? projectGroups[0] : ''">
+        <mat-option *ngFor="let group of projectGroups" (onSelectionChange)="_selectedGroup($event)" [value]="group">
+          {{group}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary" (click)="addProject()">Добавить тему</button>
+    <mat-form-field class="projects-component__search">
+      <mat-label>Поиск темы, студента, группы</mat-label>
+      <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+  <div class="projects-component__body">
+    <app-projects-list [filteredProjects]="filteredProjects" [diplomUser]="diplomUser"></app-projects-list>
+  </div>
+</div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

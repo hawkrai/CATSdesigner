@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Web;
@@ -20,150 +23,27 @@ namespace Application.Infrastructure.Export
     {
         #region Export Word document
 
-        public static void DiplomProjectToWord(string fileName, DiplomProject work, HttpResponseBase response)
+        public static HttpResponseMessage DiplomProjectToWord(string fileName, DiplomProject work)
         {
-            response.Clear();
-            response.Charset = "ru-ru";
-            response.HeaderEncoding = Encoding.UTF8;
-            response.ContentEncoding = Encoding.UTF8;
-            response.ContentType = "application/vnd.ms-word";
-            response.AddHeader("Content-Disposition", "attachment; filename=" + fileName + ".doc");
-            CreateDoc(work, response);
-            response.Flush();
-            response.End();
+            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
+            byte[] byteArray = CreateDoc(work, cinfo);
+
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StreamContent(new MemoryStream(byteArray));
+            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+            response.Content.Headers.ContentDisposition.FileName = fileName + ".docx";
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-word");
+
+            return response;
         }
 
-        private static void CreateDoc(DiplomProject work, HttpResponseBase response)
-        {
-            Microsoft.Office.Interop.Word.Application app = null;
-            string tempfileName = null;
-            object falseValue = false;
-            var missing = Type.Missing;
-            object save = WdSaveOptions.wdSaveChanges;
-            object original = WdOriginalFormat.wdOriginalDocumentFormat;
-            try
-            {
-                var url = string.Format("{0}.Export.tasklist.doc", Assembly.GetExecutingAssembly().GetName().Name);
-                using (var templateStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(url))
-                {
-                    object tempdot = tempfileName = SaveToTemp(templateStream);
-
-                    app = new Microsoft.Office.Interop.Word.Application();
-                    var doc = app.Documents.Open(ref tempdot, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-
-                    if (doc == null)
-                    {
-                        throw new ApplicationException("Unable to open the word template! Try to add Launch and Activation permissions for Word DCOM component for current IIS user (IIS_IUSRS for example). Or set Identity to Interactive User.");
-                    }
-
-                    FillDoc(doc, work);
-                    doc.Save();
-                    doc.Close(ref save, ref original, ref falseValue);
-
-                    SaveToResponse(tempfileName, response);
-                }
-            }
-            finally
-            {
-                if (app != null)
-                {
-                    object dontSave = WdSaveOptions.wdDoNotSaveChanges;
-                    app.Quit(ref dontSave, ref original, ref falseValue);
-                }
-
-                if (tempfileName != null)
-                {
-                    try
-                    {
-                        File.Delete(tempfileName);
-                    }
-                    catch (Exception)
-                    {
-                        //todo: log
-                    }
-                }
-            }
-        }
-
-        private static void FillDoc(Document document, DiplomProject work)
+        private static byte[] CreateDoc(DiplomProject work, CultureInfo cultureInfo)
         {
             var adp = work.AssignedDiplomProjects.Count == 1 ? work.AssignedDiplomProjects.First() : null;
-            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
-            var xmlData = adp == null ? DiplomProjectToXml(work, cinfo) : DiplomProjectToXml(adp, cinfo);
-
-            var nodes = xmlData.SelectNodes("//YearlyWorks/@year");
-            foreach (XmlNode node in nodes)
-            {
-                const string Bookn = "year";
-                var value = node.InnerText;
-                ReplaceBookmarkText(document, Bookn, value);
-                break;
-            }
-
-            nodes = xmlData.SelectNodes("//YearlyWorks/item[@name]");
-            foreach (XmlNode node in nodes)
-            {
-                var name = node.Attributes["name"];
-                var line = node.Attributes["line"];
-                var bookn = line != null ? string.Format("{0}_{1}", name.Value, line.Value) : name.Value;
-                var value = node.InnerText;
-                ReplaceBookmarkText(document, bookn, value);
-            }
+            var generator = adp is null ? new GenerateDpDocument(work, cultureInfo) : new GenerateDpDocument(adp, cultureInfo);
+            var array = generator.CreatePackageAsBytes();
+            return array;
         }
-
-        private static void ReplaceBookmarkText(Document doc, string bookmarkName, string text)
-        {
-            if (doc.Bookmarks.Exists(bookmarkName))
-            {
-                object name = bookmarkName;
-                var range = doc.Bookmarks.get_Item(ref name).Range;
-
-                range.Text = text;
-                object newRange = range;
-                doc.Bookmarks.Add(bookmarkName, ref newRange);
-            }
-        }
-
-        private static string SaveToTemp(Stream stream)
-        {
-            var tmpfile = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), Path.GetTempFileName()), "doc");
-            stream.Seek(0, SeekOrigin.Begin);
-            using (var writer = File.Create(tmpfile))
-            {
-                var bt = new byte[1024];
-                var count = 0;
-                while ((count = stream.Read(bt, 0, 1024)) > 0)
-                {
-                    writer.Write(bt, 0, count);
-                }
-
-                writer.Flush();
-                writer.Close();
-            }
-
-            return tmpfile;
-        }
-
-        private static void SaveToResponse(string fileName, HttpResponseBase stream)
-        {
-            using (var reader = File.OpenRead(fileName))
-            {
-                var bt = new byte[1024];
-                var count = 0;
-                while ((count = reader.Read(bt, 0, 1024)) == 1024)
-                {
-                    stream.BinaryWrite(bt);
-                }
-
-                if (count > 0)
-                {
-                    var bt2 = new byte[count];
-                    Array.Copy(bt, bt2, count);
-                    stream.BinaryWrite(bt2);
-                }
-            }
-        }
-
         #endregion
 
         #region Export Html view
