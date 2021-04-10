@@ -158,6 +158,7 @@
     <Compile Include="DP\DiplomProjectTaskSheetTemplate.cs" />
     <Compile Include="Folders.cs" />
     <Compile Include="Group.cs" />
+    <Compile Include="JobProtection.cs" />
     <Compile Include="KnowledgeTesting\Answer.cs" />
     <Compile Include="KnowledgeTesting\NextQuestionResult.cs" />
     <Compile Include="KnowledgeTesting\PassedQuestionResult.cs" />

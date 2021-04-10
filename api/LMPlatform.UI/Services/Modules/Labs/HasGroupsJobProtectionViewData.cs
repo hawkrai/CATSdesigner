@@ -7,10 +7,9 @@ using System.Web;
 namespace LMPlatform.UI.Services.Modules.Labs
 {
     [DataContract]
-    public class HasProtectionViewData
+    public class HasGroupsJobProtectionViewData : ResultViewData
     {
         [DataMember]
-        public IEnumerable<HasJobProtection> HasJobProtections { get; set; }
-       
+        public IEnumerable<HasGroupJobProtectionViewData> HasGroupsJobProtection { get; set; }
     }
 }

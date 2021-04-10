@@ -1,4 +1,3 @@
-import { HasJobProtection } from './../../models/has-job-protection.model';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
@@ -12,6 +11,9 @@ import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { CorrectDoc } from 'src/app/models/plagiarism-result.model';
 import { PlagiarismResultSubject } from 'src/app/models/plagiarism-result-subject.model';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
+import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model';
+import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
+import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
 
 @Injectable({
   providedIn: 'root'
@@ -88,8 +90,8 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/DeleteUserFile', { id });
   }
 
-  public sendUserFile(body: { subjectId: number, userId: number, id: number, comments: string, pathFile: string, attachments: string, isRet: boolean, labId: number }): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/SendFile', body);
+  public sendUserFile(body: { subjectId: number, userId: number, id: number, comments: string, pathFile: string, attachments: string, labId: number }): Observable<UserLabFile> {
+    return this.http.post<UserLabFile>('Services/Labs/LabsService.svc/SendFile', body);
   }
 
   public getAllStudentFilesLab(subjectId: number, groupId: number): Observable<StudentMark[]> {
@@ -145,12 +147,44 @@ export class LabsRestService {
     return this.http.get('Subject/GetZipLabs', { params, responseType: 'arraybuffer' });
   }
 
-  public hasJobProtections(subjectId: number): Observable<HasJobProtection[]> {
+  public hasJobProtections(subjectId: number): Observable<HasGroupJobProtection[]> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString());
     
-    return this.http.get('Services/Labs/LabsService.svc/HasJobProtections', { params }).pipe(
-      map(response => response['HasJobProtections'])
+    return this.http.get('Services/Labs/LabsService.svc/HasSubjectLabsJobProtections', { params }).pipe(
+      map(response => response['HasGroupsJobProtection'])
     );
+  }
+
+  public hasGroupsJobProtections(subjectId: number, groupsIds: number[]): Observable<HasGroupJobProtection[]> {
+    return this.http.post('Services/Labs/LabsService.svc/HasGroupsLabsJobProtections', { subjectId, groupsIds }).pipe(
+      map(response => response['HasGroupsJobProtection'])
+    );
+  }
+
+  public receiveLab(labId: number, studentId: number): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/ReceiveLab', { labId, studentId });
+  }
+
+  public cancelLab(labId: number, studentId: number): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/CancelLab', { labId, studentId });
+  }
+
+  public returnLab(labId: number, studentId: number): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/ReturnLab', { labId, studentId });
+  }
+
+  public getGroupJobProtection(subjectId: number, groupId: number): Observable<GroupJobProtection> {
+    const params = new HttpParams()
+      .append('subjectId', subjectId.toString())
+      .append('groupId', groupId.toString());
+    return this.http.get<GroupJobProtection>('Services/Labs/LabsService.svc/GroupJobProtections', { params });
+  }
+
+  public getStudentJobProtection(subjectId: number, studentId: number): Observable<StudentJobProtection> {
+    const params = new HttpParams()
+      .append('subjectId', subjectId.toString())
+      .append('studentId', studentId.toString());
+    return this.http.get<StudentJobProtection>('Services/Labs/LabsService.svc/StudentJobProtections', { params });
   }
 }

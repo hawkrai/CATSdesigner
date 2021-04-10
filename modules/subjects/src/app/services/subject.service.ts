@@ -58,7 +58,7 @@ export class SubjectService {
     );
   }
 
-  public joinedLector(subjectId: number, lectorId: string): Observable<any> {
+  public joinedLector(subjectId: number, lectorId: number): Observable<any> {
     return this.http.post('Services/CoreService.svc/JoinLector', {subjectId, lectorId});
   }
 

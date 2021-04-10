@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import {Message} from "../models/message";
 import { Module } from "../models/module.model";
 import { Subject } from '../models/subject';
+import { Lector } from '../models/lector.model';
 
 type Tooltip = 'success' | 'warning';
 
@@ -46,6 +47,7 @@ export class CoreService {
 
   private receiveMessage(event: MessageEvent): void {
       let message: any = event.data[0];
+      event.stopImmediatePropagation();
 
       if (!message) {
           return;
@@ -65,7 +67,6 @@ export class CoreService {
       }
 
       if (message.channel === 'Toast') {
-        console.log(message);
         const tooltip: { text: string, type: Tooltip } = JSON.parse(message.value);
         this.toastrService[tooltip.type](tooltip.text);
       }
@@ -106,5 +107,11 @@ export class CoreService {
 
   public getCurrentSubject(): any {
     return JSON.parse(localStorage.getItem("currentSubject"));
+  }
+
+  public getSubjectOwner(subjectId: number): rxjs.Observable<Lector> {
+    return this.http.get(`/Services/Subjects/SubjectsService.svc/GetSubjectOwner/${subjectId}`).pipe(
+      map(response => response['Lector'])
+    );
   }
 }

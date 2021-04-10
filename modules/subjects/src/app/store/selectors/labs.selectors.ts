@@ -1,8 +1,9 @@
 import { ILabsState } from './../state/labs.state';
 import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {IAppState} from '../state/app.state';
-
+import { getUserId } from './subject.selector';
 const labsSelector = createFeatureSelector<IAppState, ILabsState>('labs');
+
 
 export const getLabs = createSelector(
   labsSelector,
@@ -19,17 +20,25 @@ export const getLabStudents = createSelector(
   state => state.students
 );
 
-export const getStudentsLabsFiles = createSelector(
+export const getStudentJobProtection = createSelector(
   labsSelector,
-  state => state.studentsLabsFiles
+  getUserId,
+  (state: ILabsState, userId: number, { studentId }: { studentId?: number }) => state.studentJobProtection ? state.studentJobProtection[studentId ? studentId : userId] : null
 );
 
-export const HasJobProtections = createSelector(
+export const hasJobProtections = createSelector(
   labsSelector,
   state => state.hasJobProtections
 );
 
-export const selectUserLabFiles = createSelector(
+export const getStudentLabFiles = createSelector(
   labsSelector,
-  state => state.userLabFiles
+  getUserId,
+  (state: ILabsState, userId: number, { studentId, labId }: { studentId?: number, labId: number }) => state.studentsLabsFiles ? state.studentsLabsFiles[`${studentId ? studentId : userId} ${labId}`] : null
+);
+
+export const getGroupJobProtection = createSelector(
+  labsSelector,
+  
+  state => state.groupJobProtection
 );

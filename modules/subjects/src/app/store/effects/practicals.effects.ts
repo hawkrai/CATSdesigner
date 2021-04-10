@@ -46,9 +46,10 @@ export class PracticalsEffects {
     updateOrder$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.updateOrder),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([{ prevIndex, currentIndex }, subjectId]) => 
-        this.rest.updatePracticalsOrder(subjectId, prevIndex, currentIndex))
-    ), { dispatch: false });
+        switchMap(([{ prevIndex, currentIndex }, subjectId]) => this.rest.updatePracticalsOrder(subjectId, prevIndex, currentIndex).pipe(
+            map(() => practicalsActions.loadPracticals())
+        ))
+    ));
 
     deletePractical$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.deletePractical),
@@ -61,7 +62,7 @@ export class PracticalsEffects {
     createPractical$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.savePractical),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([{ practical }, subjectId]) => (practical.subjectId = subjectId, this.rest.savePractical(practical)).pipe(
+        switchMap(([{ practical }, subjectId]) => this.rest.savePractical({ ...practical, subjectId}).pipe(
             switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadPracticals()])
         ))
     ));

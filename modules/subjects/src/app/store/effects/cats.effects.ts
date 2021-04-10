@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { CatsMessageService } from 'src/app/services/cats.message';
 import { Message } from '../../../../../../container/src/app/core/models/message';
 
@@ -26,12 +26,11 @@ export class CatsEffects {
 
     showMessage = createEffect(() => this.actions$.pipe(
         ofType(catsActions.showMessage),
-        tap(({ body }) => {
+        map(({ body }) => {
             const message = new Message();
             message.Type = 'Toast';
-            console.log(body)
             message.Value = JSON.stringify({ text: body.Message as string, type: body.Code === '200' ? 'success' : 'warning' });
-            this.catsMessageService.sendMessage(message);
+            return catsActions.sendMessage({ message });
         }) 
-    ), { dispatch: false })
+    ));
 }

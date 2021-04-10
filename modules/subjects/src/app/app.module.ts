@@ -48,7 +48,12 @@ import { SettingsModule } from './modules/settings/settings.module';
     PracticalModule,
     ReactiveFormsModule,
     SettingsModule,
-    StoreModule.forRoot(appReducers),
+    StoreModule.forRoot(appReducers,{
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }   
+    }),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects]),
     StoreDevtoolsModule.instrument(),
   ],

@@ -8,5 +8,6 @@ export class UserLabFile {
     IsReceived: boolean;
     IsReturned: boolean;
     Attachments: Attachment[]
-    LabId?: number
+    LabId?: number;
+    UserId: number;
 }

@@ -70,7 +70,7 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
 
   getSubGroupHeaders(subGroupLabs: Lab[]): { head: string, text: string, length: number, tooltip?: string }[] {
     const defaultHeaders = [{ head: 'emptyPosition', text: '', length: 1 }, { head: 'emptyName', text: '', length: 1 }];
-    return defaultHeaders.concat(subGroupLabs.map((l, index) => ({head: l.LabId.toString(), text: `${this.translate.transform('text.subjects.labs.prefix', 'ЛР')}${index + 1}`, length: Math.floor(l.Duration / 2), tooltip: l.Theme })))
+    return defaultHeaders.concat(subGroupLabs.map((l, index) => ({head: l.LabId.toString(), text: l.ShortName, length: Math.floor(l.Duration / 2), tooltip: l.Theme })))
   }
 
   setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionLab, index: number) {

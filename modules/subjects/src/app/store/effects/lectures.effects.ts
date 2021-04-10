@@ -48,7 +48,8 @@ export class LecturesEffects {
 
   saveLecture$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.saveLecture),
-    switchMap(({ lecture }) => this.rest.saveLecture(lecture).pipe(
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+    switchMap(([{ lecture }, subjectId]) => this.rest.saveLecture({ ...lecture, subjectId }).pipe(
       switchMap(body => [catsActions.showMessage({ body }), lecturesActions.loadLectures()])
     ))
   ));
@@ -64,9 +65,10 @@ export class LecturesEffects {
   updateOrder$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.updateOrder),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ prevIndex, currentIndex }, subjectId]) => 
-    this.rest.updateLecturesOrder(subjectId, prevIndex, currentIndex))
-  ), { dispatch: false });
+    switchMap(([{ prevIndex, currentIndex }, subjectId]) => this.rest.updateLecturesOrder(subjectId, prevIndex, currentIndex).pipe(
+      map(() => lecturesActions.loadLectures())
+    ))
+  ));
 
   deleteAllDate$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.deleteAllDate),

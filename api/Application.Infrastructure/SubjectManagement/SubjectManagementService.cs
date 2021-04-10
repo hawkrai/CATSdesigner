@@ -11,7 +11,8 @@ using Application.Infrastructure.ConceptManagement;
 
 namespace Application.Infrastructure.SubjectManagement
 {
-	using Models;
+    using Application.Infrastructure.Extensions;
+    using Models;
 
 	public class SubjectManagementService : ISubjectManagementService
 	{
@@ -714,6 +715,14 @@ namespace Application.Infrastructure.SubjectManagement
 			return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId)).ToList();
 		}
 
+		public List<UserLabFiles> GetGroupLabFiles(int subjectId, int groupId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.RepositoryFor<UserLabFiles>()
+				.GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.Subject.SubjectGroups.Any(x => x.GroupId == groupId))).ToList();
+
+		}
+
 		public UserLabFiles GetUserLabFile(int id)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
@@ -810,23 +819,37 @@ namespace Application.Infrastructure.SubjectManagement
 			return lectures;
 		}
 
-		public Lectures UpdateLectureOrder(Lectures lecture, int order)
+		public void UpdateLecturesOrder(int subjectId, int prevIndex, int curIndex)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			lecture.Order = order;
-			repositoriesContainer.LecturesRepository.Save(lecture);
+
+			var lectures = GetSubjectLectures(subjectId);
+
+			foreach (var lecture in lectures.MoveItem(prevIndex, curIndex).Select((x, index) => new { Value = x, Index = index }))
+			{
+				lecture.Value.Order = lecture.Index;
+				repositoriesContainer.LecturesRepository.Save(lecture.Value);
+			}
+
 			repositoriesContainer.ApplyChanges();
-			return lecture;
 
 		}
 
-		public Labs UpdateLabOrder(Labs lab, int order)
+		public void UpdateLabsOrder(int subjectId, int prevIndex, int curIndex)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			lab.Order = order;
-			repositoriesContainer.LabsRepository.Save(lab);
+
+			var labs = GetSubjectLabs(subjectId);
+
+			foreach(var lab in labs.MoveItem(prevIndex, curIndex).Select((x, index) => new { Value = x, Index = index }))
+            {
+				var order = lab.Index;
+				lab.Value.Order = order;
+				lab.Value.ShortName = $"ЛР{order + 1}";
+				repositoriesContainer.LabsRepository.Save(lab.Value);
+			}
+
 			repositoriesContainer.ApplyChanges();
-			return lab;
         }
 
 		private string GetGuidFileName()

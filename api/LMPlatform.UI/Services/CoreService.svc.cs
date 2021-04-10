@@ -129,7 +129,7 @@ namespace LMPlatform.UI.Services
 
 				return new ResultViewData
 				{
-					Message = "Преподаватель успешно заприсоединен к предмету",
+					Message = "Преподаватель успешно присоединен к предмету",
 					Code = "200"
 				};
 			}

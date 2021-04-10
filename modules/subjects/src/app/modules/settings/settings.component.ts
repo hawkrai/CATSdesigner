@@ -10,6 +10,7 @@ import { SubjectManagementComponent } from '../subject/subject-managment/subject
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import * as subjectActions from '../../store/actions/subject.actions';
 import { SubdivisionComponent } from './components/subdivision/subdivision.component';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-settings',
@@ -19,8 +20,10 @@ import { SubdivisionComponent } from './components/subdivision/subdivision.compo
 export class SettingsComponent implements OnInit {
 
   private subs = new SubSink();
-  constructor(public dialog: MatDialog,
-              private store: Store<IAppState>) {
+  constructor(
+    public dialog: MatDialog,
+    private store: Store<IAppState>,
+    private translate: TranslatePipe) {
   }
 
   ngOnInit(): void {
@@ -55,7 +58,7 @@ export class SettingsComponent implements OnInit {
 
   addProfes() {
     const dialogData: DialogData = {
-      title: 'Присоединение преподавателя к предмету'
+      title: this.translate.transform('text.subjects.lector.joining', 'Присоединение преподавателя к предмету') 
     };
     this.openDialog(dialogData, SubjectLectorComponent);
   }

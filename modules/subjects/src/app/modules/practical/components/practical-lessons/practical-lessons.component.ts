@@ -17,9 +17,7 @@ import {Practical} from '../../../../models/practical.model';
 import {Attachment} from '../../../../models/file/attachment.model';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
-import { attachmentConverter } from 'src/app/utils';
 import { filter } from 'rxjs/operators';
-import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
@@ -32,8 +30,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Practical>;
 
-  public practicals$: Observable<Practical[]>;
-  private prefix: string;
+  public practicals: Practical[];
   private subs = new SubSink();
 
   public defaultColumns = ['index', 'theme', 'shortName', 'duration'];
@@ -46,9 +43,10 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     private dialogService: DialogService) { }
 
   ngOnInit() {
-    this.prefix = this.translate.transform('text.subjects.practicals.prefix', 'ПЗ');
     this.store.dispatch(practicalsActions.loadPracticals());
-    this.practicals$ = this.store.select(practicalsSelectors.selectPracticals);
+    this.subs.add(this.store.select(practicalsSelectors.selectPracticals).subscribe(practicals => {
+      this.practicals = [...practicals]
+    }));
   }
   
   ngOnChanges(changes: SimpleChanges): void {
@@ -122,15 +120,15 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     const dialogData: DialogData = {
       title: this.translate.transform('text.attachments.plural', 'Файлы'),
       buttonText: this.translate.transform('text.download', 'Скачать'),
-      body: attachments.map(a => attachmentConverter(a))
+      body: attachments
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      ).subscribe((result: Attachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
       })
     );
   }
@@ -143,8 +141,8 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       duration: lesson ? lesson.Duration : '',
       order,
       pathFile: lesson ? lesson.PathFile : '',
-      attachments: lesson ? lesson.Attachments.map(a => attachmentConverter(a)) : [],
-      shortName: `${this.prefix}${order}`
+      attachments: lesson ? lesson.Attachments : [],
+      shortName: `ПЗ${order + 1}`
     };
   }
 

@@ -22,8 +22,10 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="_excel-file" (click)="getExcelFile()">
-        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      <div class="lectures-component-actions">
+        <div class="_excel-file" (click)="getExcelFile()">
+          <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+        </div>
       </div>
     </div>
     <app-lectures-list *ngIf="selectedTab === 0" [subjectId]="state.subjectId"  [isTeacher]="state.isTeacher"></app-lectures-list>
