@@ -124,7 +124,6 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
             return tests;
         }
-
         public IEnumerable<Test> GetTests()
         {
             IEnumerable<Test> tests;
@@ -198,6 +197,13 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
             answerOnTestQuestion.Time = DateTime.UtcNow;
             SaveAnswerOnTestQuestion(answerOnTestQuestion);
+        }
+
+        public (int, int) SimpleTestCloseById(int testId, int userId)
+        {
+            var testAnswers = GetAnswersForTest(testId, userId);
+            var closeRes = CloseTest(testAnswers, userId);
+            return (closeRes.Item1, closeRes.Item2);
         }
 
         private void CheckForTimeEndeed(int userId, int testId, Test test, TestPassResult testPassResult)
@@ -598,7 +604,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 return nextQuestion;
             }
 
-             Tuple<int, int> mark = CloseTest(testAnswers, userId);
+            Tuple<int, int> mark = CloseTest(testAnswers, userId);
             return new Tuple<Question, int, int>(null, mark.Item1, mark.Item2);
         }
 
@@ -639,7 +645,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             return new Tuple<int, int>(points, percent);
         }
 
-        private TestPassResult GetTestPassResult(int testId, int userId)
+        public TestPassResult GetTestPassResult(int testId, int userId)
         {
             TestPassResult result;
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
