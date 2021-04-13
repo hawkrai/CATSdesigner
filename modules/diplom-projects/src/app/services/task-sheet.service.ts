@@ -25,6 +25,10 @@ export class TaskSheetService {
     return this.http.get('api/DpTaskSheet', { params: new HttpParams({ fromString: params }) });
   }
 
+  public getStudents(params: any): Observable<any> {
+    return this.http.get('api/DiplomStudent', {params: new HttpParams({fromObject: params})});
+  }
+  
   public getTemplateList(params: any): Observable<any> {
     return this.http.get('api/DpCorrelation', {params: new HttpParams({fromObject: params})});
   }

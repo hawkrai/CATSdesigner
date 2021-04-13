@@ -20,6 +20,10 @@ namespace LMPlatform.UI.ApiControllers.DP
         {
             get { return dpManagementService.Value; }
         }
+        public PagedList<StudentData> Get(int userId, [ModelBinder] GetPagedListParams parms)
+        {
+            return DpManagementService.GetStudentsForLecturer(userId, parms);
+        }
 
         public PagedList<StudentData> Get([ModelBinder]GetPagedListParams parms)
         {
