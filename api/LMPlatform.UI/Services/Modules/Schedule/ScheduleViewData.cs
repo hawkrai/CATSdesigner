@@ -27,6 +27,10 @@ namespace LMPlatform.UI.Services.Modules.Schedule
             Teacher = schedule.Teacher == null ? null : new LectorViewData(schedule.Teacher);
             Type = schedule.Type;
             Notes = schedule.Notes?.Select(x => new NoteViewData(x)) ?? Enumerable.Empty<NoteViewData>();
+            GroupId = schedule.GroupId;
+            SubGroupName = schedule.SubGroupName;
+            GroupName = schedule.GroupName;
+            SubGroupId = schedule.SubGroupId;
         }
         [DataMember]
         public int Id { get; set; }
@@ -60,5 +64,17 @@ namespace LMPlatform.UI.Services.Modules.Schedule
 
         [DataMember]
         public IEnumerable<NoteViewData> Notes { get; set; }
+
+        [DataMember]
+        public int? GroupId { get; set; }
+
+        [DataMember]
+        public int? SubGroupId { get; set; }
+
+        [DataMember]
+        public string GroupName { get; set; }
+
+        [DataMember]
+        public string SubGroupName { get; set; }
     }
 }

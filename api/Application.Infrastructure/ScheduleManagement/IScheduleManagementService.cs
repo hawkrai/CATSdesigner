@@ -10,10 +10,10 @@ namespace Application.Infrastructure.ScheduleManagement
 {
     public interface IScheduleManagementService
     {
-        void SaveScheduleProtectionLabsDate(ScheduleProtectionLabs scheduleProtectionLabs);
+        ScheduleProtectionLabs SaveScheduleProtectionLabsDate(ScheduleProtectionLabs scheduleProtectionLabs);
 
-        void SaveDateLectures(LecturesScheduleVisiting lecturesScheduleVisiting);
-        public void SaveDatePractical(ScheduleProtectionPractical scheduleProtectionPractical);
+        LecturesScheduleVisiting SaveDateLectures(LecturesScheduleVisiting lecturesScheduleVisiting);
+        ScheduleProtectionPractical SaveDatePractical(ScheduleProtectionPractical scheduleProtectionPractical);
 
         bool CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
 
