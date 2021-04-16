@@ -56,7 +56,7 @@ namespace LMPlatform.UI.Services.Schedule
             }
         }
 
-        public ResultViewData SaveDateLectures(int subjectId, string date, string startTime, string endTime, string building, string audience, Note note)
+        public ResultViewData SaveDateLectures(int id, int subjectId, string date, string startTime, string endTime, string building, string audience, Note note)
         {
 
             try
@@ -85,6 +85,7 @@ namespace LMPlatform.UI.Services.Schedule
                 }
                 var lecturesSchedule = new LecturesScheduleVisiting
                 {
+                    Id = id,
                     Audience = audience,
                     Date = dateTime,
                     Building = building,
@@ -114,7 +115,7 @@ namespace LMPlatform.UI.Services.Schedule
             }
         }
 
-        public ResultViewData SaveDateLab(int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience, Note note)
+        public ResultViewData SaveDateLab(int id, int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience, Note note)
 		{
             try
 			{
@@ -141,6 +142,7 @@ namespace LMPlatform.UI.Services.Schedule
                 }
                 var labsSchedule = new ScheduleProtectionLabs
                 {
+                    Id = id,
                     Audience = audience,
                     Date = dateTime,
                     Building = building,
@@ -171,7 +173,7 @@ namespace LMPlatform.UI.Services.Schedule
 			}
 		}
 
-        public ResultViewData SaveDatePractical(int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note)
+        public ResultViewData SaveDatePractical(int id, int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note)
         {
             try {
                 var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
@@ -197,6 +199,7 @@ namespace LMPlatform.UI.Services.Schedule
                 }
                 var practicalSchedule = new ScheduleProtectionPractical
                 {
+                    Id = id,
                     Audience = audience,
                     Date = dateTime,
                     Building = building,
@@ -215,7 +218,7 @@ namespace LMPlatform.UI.Services.Schedule
                 return new ResultViewData
                 {
                     Message = "Дата успешно добавлена",
-                    Code = "200"
+                    Code = "200",
                 };
             }
             catch
