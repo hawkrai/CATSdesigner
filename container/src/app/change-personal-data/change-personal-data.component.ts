@@ -5,7 +5,7 @@ import { ProfileData } from '../core/models/searchResults/personal-data';
 import { ProfileService } from '../core/services/searchResults/profile.service';
 import { Location } from '@angular/common';
 import { PersonalDataService } from '../core/services/personal-data.service';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
 import { Validators, FormControl, ValidationErrors } from '@angular/forms';
 
@@ -22,6 +22,7 @@ export class ChangePersonalDataComponent implements OnInit {
   imageFormats = ["png","img","jpg","gif"];
   currentUserId!: number;
   profileData!: ProfileData;
+  dialogRef: MatDialogRef<any>;
 
   emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
   phoneFormControl = new FormControl('', [Validators.required, Validators.pattern('^[0-9]{0,20}$')]);
@@ -110,8 +111,12 @@ export class ChangePersonalDataComponent implements OnInit {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(ChangePasswordDialog, {
-      width: '330px',
+    const config = new MatDialogConfig();
+    config.width = '40%';
+    config.height = '36%';
+    this.dialogRef = this.dialog.open(ChangePasswordDialog, config);
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
     });
   }
 }

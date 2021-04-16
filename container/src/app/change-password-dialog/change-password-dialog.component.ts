@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { PersonalDataService } from '../core/services/personal-data.service';
 import { FormGroupDirective, FormControl, NgForm, Validators, ValidationErrors } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-
 
 @Component({
   selector: 'change-password',

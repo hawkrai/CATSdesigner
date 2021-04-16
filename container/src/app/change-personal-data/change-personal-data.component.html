@@ -16,7 +16,7 @@
     <input style="display: none"
            #fileInput
            type="file" (change)="onFileSelected($event)">
-    <button mat-button (click)="fileInput.click()"> Загрузить фото </button>
+    <button mat-button class="extra-button" (click)="fileInput.click()"> Загрузить фото </button>
   </mat-card>
 
 
@@ -66,9 +66,9 @@
       <input matInput [(ngModel)]="this.profileData.SkypeContact" maxlength="30">
     </mat-form-field>
 
-    <mat-form-field class="input-full-width">
+    <mat-form-field class="text-area-full-width">
       <mat-label>О себе</mat-label>
-      <input matInput [(ngModel)]="this.profileData.About" maxlength="500">
+      <textarea matInput [(ngModel)]="this.profileData.About" maxlength="500"></textarea>
     </mat-form-field>
 
   </mat-card>
@@ -76,8 +76,8 @@
 </div>
 
 <div class="buttons-row">
-  <button mat-button class="cancel-button" (click)="this.backClicked()">Отменить изменения</button>
-  <button mat-button class="edit-button" (click)="this.updatePersonalInfo()"> Сохранить изменения </button>
+  <button mat-button class="cancel-button" (click)="this.backClicked()">Отменить</button>
+  <button mat-button class="edit-button" (click)="this.updatePersonalInfo()">Сохранить</button>
 </div>
 
 
