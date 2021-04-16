@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {LecturesComponent} from './lectures.component';
 import {LecturesListComponent} from './components/lectures-list/lectures-list.component';
@@ -17,7 +17,8 @@ import { VisitDateLecturesPopoverComponent } from './components/visit-lectures/v
   imports: [
     MatModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ],
   entryComponents: [
     LecturePopoverComponent,

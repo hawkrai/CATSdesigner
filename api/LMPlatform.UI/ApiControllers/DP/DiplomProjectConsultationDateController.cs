@@ -5,6 +5,7 @@ using System.Web.Http;
 using Application.Core;
 using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
+using Application.Infrastructure.DTO;
 using LMPlatform.UI.Attributes;
 using WebMatrix.WebData;
 
@@ -13,27 +14,23 @@ namespace LMPlatform.UI.ApiControllers.DP
     [JwtAuth]
     public class DiplomProjectConsultationDateController : ApiController
     {
-        public HttpResponseMessage Post([FromBody]DateTime consultationDate)
+        public HttpResponseMessage Post([FromBody] DiplomProjectConsultationDateData consultationDate)
         {
-            if (!ModelState.IsValid)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-            }
-
-            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate);
+            PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.StartTime, consultationDate.EndTime,
+                consultationDate.Audience, consultationDate.Building);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public void Delete(int id)
+        public void Post(int id)
         {
             PercentageService.DeleteConsultationDate(UserContext.CurrentUserId, id);
         }
 
-        private IPercentageGraphService PercentageService
+        private IDpPercentageGraphService PercentageService
         {
             get { return _percentageService.Value; }
         }
 
-        private readonly LazyDependency<IPercentageGraphService> _percentageService = new LazyDependency<IPercentageGraphService>();
+        private readonly LazyDependency<IDpPercentageGraphService> _percentageService = new LazyDependency<IDpPercentageGraphService>();
     }
 }

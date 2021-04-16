@@ -6,4 +6,6 @@ export class LessonAdd {
   endTime: string;
   building: string;
   audience: string;
+  groupId: number;
+  subGroupId: number;
 }

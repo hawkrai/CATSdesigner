@@ -21,7 +21,7 @@ namespace Application.Infrastructure.DocumentsManagement
                 .Include(x => x.Childrens);
             return documents.ToList();
         }
-        public IEnumerable<Documents> GetBySubjectId(int subjectId)
+        public IEnumerable<Documents> GetBySubjectId(int subjectId, int userId)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
             var documents = repositoriesContainer.DocumentRepository.GetAll()
@@ -30,8 +30,16 @@ namespace Application.Infrastructure.DocumentsManagement
                 .Include(x => x.Parent)
                 .Include(x => x.Childrens)
                 .SelectMany(d => d.DocumentSubjects)
-                .Where(x => x.SubjectId == subjectId)
+                .Where(x => x.SubjectId == subjectId && (!x.Document.IsLocked || x.Document.UserId == userId))
                 .Select(x => x.Document);
+            return documents.ToList();
+        }
+
+        public IEnumerable<Documents> GetByParentId(int parentId, int userId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var documents = repositoriesContainer.DocumentRepository.GetAll()
+                .Where(x => x.ParentId == parentId && (!x.IsLocked || x.UserId == userId));
             return documents.ToList();
         }
 

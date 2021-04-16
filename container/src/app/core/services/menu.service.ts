@@ -1,5 +1,7 @@
 import { ModuleType } from './../models/module.model';
 import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from 'rxjs';
+import { MatSidenav } from '@angular/material/sidenav';
 
 export interface MenuConfig {
     fragment: string;
@@ -13,6 +15,12 @@ export interface MenuConfig {
 })
 
 export class MenuService {
+    private sideNav: MatSidenav;
+
+    public setSideNav(sideNav: MatSidenav): void {
+        this.sideNav = sideNav;
+    }
+
     private subjectsInfo = new Map([
         [ModuleType.News, { fragment: 'news', module: 'subject', item: 'news', icon: '../../../assets/icons/newspaper.png' }],
         [ModuleType.Lectures, { fragment: 'lectures', module: 'subject', item: 'lectures', icon: '../../../assets/icons/presentation.png' }],
@@ -54,4 +62,11 @@ export class MenuService {
     getModuleFromItem(item: string): string {
         return Array.from(this.subjectsInfo.values()).find(c => c.item === item).module;
     }
+
+    public toogleSidenav(): void {
+        if (this.sideNav) {
+            this.sideNav?.toggle();
+        }
+    }
+
 }

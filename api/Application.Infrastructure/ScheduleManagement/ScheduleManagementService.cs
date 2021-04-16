@@ -38,7 +38,9 @@ namespace Application.Infrastructure.ScheduleManagement
 					.Select(LabScheduleToModel)
 					.ToList();
 
-				return !lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule).Any(x =>
+				return !lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
+					.Where(x => x.Start.HasValue && x.End.HasValue)
+					.Any(x =>
 					((x.Start <= startTime && x.End >= endTime) ||
 					(x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
 					(x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
@@ -142,7 +144,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				End = lecturesSchedule.EndTime,
 				Start = lecturesSchedule.StartTime,
 				Name = lecturesSchedule.Subject?.Name ?? string.Empty,
-				ShortName = lecturesSchedule.Subject?.Color ?? string.Empty,
+				ShortName = lecturesSchedule.Subject?.ShortName ?? string.Empty,
 				Teacher = SubjectManagementService.GetSubjectOwner(lecturesSchedule.SubjectId),
 				SubjectId = lecturesSchedule.SubjectId,
 				Type = ClassType.Lecture,
@@ -162,7 +164,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				End = practicalSchedule.EndTime,
 				Start = practicalSchedule.StartTime,
 				Name = practicalSchedule.Subject?.Name ?? string.Empty,
-				ShortName = practicalSchedule.Subject?.Color ?? string.Empty,
+				ShortName = practicalSchedule.Subject?.ShortName ?? string.Empty,
 				Teacher = SubjectManagementService.GetSubjectOwner(practicalSchedule.SubjectId),
 				SubjectId = practicalSchedule.SubjectId,
 				Type = ClassType.Practical,
@@ -182,7 +184,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				End = labSchedule.EndTime,
 				Start = labSchedule.StartTime,
 				Name = labSchedule.Subject?.Name ?? string.Empty,
-				ShortName = labSchedule.Subject?.Color ?? string.Empty,
+				ShortName = labSchedule.Subject?.ShortName ?? string.Empty,
 				Teacher = labSchedule.SubjectId.HasValue ? SubjectManagementService.GetSubjectOwner((int)labSchedule.SubjectId) : null,
 				SubjectId = labSchedule.SubjectId,
 				Type = ClassType.Lab,

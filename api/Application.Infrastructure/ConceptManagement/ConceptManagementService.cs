@@ -374,7 +374,7 @@ namespace Application.Infrastructure.ConceptManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                //attachments = ProcessWordAttachmentsIfExist(attachments);
+                attachments = ProcessWordAttachmentsIfExist(attachments);
                 if (!string.IsNullOrEmpty(concept.Container))
                 {
                     var deleteFiles =

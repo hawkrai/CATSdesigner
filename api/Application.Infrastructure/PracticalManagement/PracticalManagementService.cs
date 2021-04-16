@@ -1,6 +1,7 @@
 ﻿using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.ConceptManagement;
+using Application.Infrastructure.Extensions;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.StudentManagement;
 using LMPlatform.Data.Repositories;
@@ -142,13 +143,20 @@ namespace Application.Infrastructure.PracticalManagement
 			}
 		}
 
-		public Practical UpdatePracticalOrder(Practical practical, int order)
+		public void UpdatePracticalsOrder(int subjectId, int prevIndex, int curIndex)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			practical.Order = order;
-			repositoriesContainer.PracticalRepository.Save(practical);
+
+			var practicals = GetSubjectPracticals(subjectId);
+
+			foreach (var practical in practicals.MoveItem(prevIndex, curIndex).Select((x, index) => new { Value = x, Index = index }))
+			{
+				practical.Value.Order = practical.Index;
+				practical.Value.ShortName = $"ПЗ{practical.Index + 1}";
+				repositoriesContainer.PracticalRepository.Save(practical.Value);
+			}
+
 			repositoriesContainer.ApplyChanges();
-			return practical;
 		}
 
 

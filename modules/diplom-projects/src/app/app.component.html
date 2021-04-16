@@ -1,0 +1,92 @@
+<div class="app-component" *ngIf="diplomUser">
+  <div class="mdc-tab-bar" role="tablist">
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
+            [class.mdc-tab--active]="tab === 1"
+            (click)="tab = 1"
+    >
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">Темы проектов</span>
+      </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
+            [class.mdc-tab--active]="tab === 2"
+            (click)="tab = 2"
+            *ngIf="!diplomUser.IsSecretary"
+    >
+          <span class="mdc-tab__content">
+            <span class="mdc-tab__text-label">Лист задания</span>
+          </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
+            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+          </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
+            [class.mdc-tab--active]="tab === 3"
+            (click)="tab = 3"
+    >
+          <span class="mdc-tab__content">
+            <span class="mdc-tab__text-label">График процентовки</span>
+          </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
+            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+          </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
+            [class.mdc-tab--active]="tab === 4"
+            (click)="tab = 4"
+    >
+          <span class="mdc-tab__content">
+            <span class="mdc-tab__text-label">Результаты процентовки</span>
+          </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 4">
+            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+          </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
+            [class.mdc-tab--active]="tab === 5"
+            (click)="tab = 5"
+    >
+          <span class="mdc-tab__content">
+            <span class="mdc-tab__text-label">Посещение консультаций</span>
+          </span>
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 5">
+            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+          </span>
+      <span class="mdc-tab__ripple"></span>
+    </button>
+  </div>
+
+  <div class="app-component__body">
+    <!-- <div [ngStyle]="{'display': (tab === 3) ? 'flex' : 'none'}" class="group-select">
+      <mat-form-field>
+        <mat-select [value]="groups ? groups[0].GroupId : ''">
+          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.GroupId">
+            {{group.GroupName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
+      </div>
+      <div class="_excel-file" matTooltip="Загрузить документ Excel"
+           *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
+      <div class="_action"  matTooltip="Скачать архивом листы задания"
+            *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
+            <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
+      </div>
+    </div> -->
+    <app-projects *ngIf="tab === 1" [diplomUser]="diplomUser"></app-projects>
+    <app-task-sheet *ngIf="tab === 2" [diplomUser]="diplomUser" [groups]="groups"></app-task-sheet>
+    <app-percentages *ngIf="tab === 3" [diplomUser]="diplomUser"></app-percentages>
+    <app-percentage-results *ngIf="tab === 4" [diplomUser]="diplomUser"></app-percentage-results>
+    <app-visit-stats *ngIf="tab === 5" [diplomUser]="diplomUser"></app-visit-stats>
+  </div>
+</div>

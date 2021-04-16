@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
 
@@ -6,30 +6,42 @@ import { CoreService } from "../../core/services/core.service";
 import { Subject } from "../../core/models/subject";
 import { AuthenticationService } from './../../core/services/auth.service';
 import { switchMap } from 'rxjs/operators';
+import { MenuService } from 'src/app/core/services/menu.service';
+import { Lector } from 'src/app/core/models/lector.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-subjects-nav',
   templateUrl: './subjects-nav.component.html',
   styleUrls: ['./subjects-nav.component.less']
 })
-export class SubjectsNavComponent implements OnInit, AfterViewChecked {
+export class SubjectsNavComponent implements OnInit, AfterViewChecked, OnDestroy {
   opened:boolean;
   subjects: Subject[];
+  subjectId: number;
   public isLector:boolean = false;
-
+  lectorSub: Subscription;
   constructor(
     public coreService: CoreService,
     private router: Router,
     private cdref: ChangeDetectorRef,
+    private menuService: MenuService,
     private autService: AuthenticationService) {}
 
   ngAfterViewChecked() {
     this.cdref.detectChanges();
   }
+
+  subjectLector: Lector;
+
+  ngOnDestroy(): void {
+    if (this.lectorSub) {
+      this.lectorSub?.unsubscribe();
+    }
+  }
   
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
-
     this.coreService.getSubjects().subscribe((subjects) => {
       this.subjects = subjects;
       if(this.subjects.length > 0) {
@@ -39,6 +51,7 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
         this.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
         if(this.coreService.selectedSubject) {
           console.log(subjectId);
+          this.subjectId = subjectId;
           this.setupLocalInfo(this.coreService.selectedSubject); 
         }
                
@@ -61,9 +74,14 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
   }
   setupLocalInfo(subject: Subject): void {
     this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name, color: subject.Color });  
+    this.lectorSub = this.coreService.getSubjectOwner(subject.Id).subscribe(lector => {
+      this.subjectLector = lector;
+    })
   }
 
-  changeSubject(id: number): void {   
+  changeSubject(id: number): void {
+
+    this.subjectId = id;
     this.coreService.selectedSubject = this.subjects.find(element => element.Id == id);
     this.setupLocalInfo(this.coreService.selectedSubject);
     this.redirectToSelected();  
@@ -79,4 +97,7 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
     this.router.navigateByUrl(`web/viewer/subjects`);   
   }
 
+  onToggleClick(): void {
+    this.menuService.toogleSidenav();
+  }
 }

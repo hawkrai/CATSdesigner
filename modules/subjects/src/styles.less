@@ -52,7 +52,6 @@ button {
 
 .content {
   padding: 0px 15px 15px;
-  overflow: auto;
 }
 
 .attachment-text {
@@ -90,6 +89,7 @@ table.mat-table {
 
 .mat-dialog-container{
 	border-radius: unset !important;
+  position: relative;
 }
 
 .file-link {
@@ -103,4 +103,36 @@ table.mat-table {
 
 .timepicker-overlay {
   z-index: 1002!important;
+}
+
+.tooltip {
+  white-space: pre-line;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  &-container {
+    width: 100%;
+    display: flex;
+    gap: 10px 10px;
+    justify-content: space-between;
+
+    &__column {
+      flex-direction: column;
+    }
+  }
+
+  &-group {
+    flex:  1;
+  }
+
+  &-error {
+    margin-bottom: 10px;
+  }
 }

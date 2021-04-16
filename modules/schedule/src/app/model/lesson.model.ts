@@ -13,5 +13,7 @@ export class Lesson {
   Audience: string;
   Color: string;
   SubjectId: string;
-  Notes: Memo;
+  Notes: Memo[];
+  groupId: number;
+  subGroupId: number;
 }

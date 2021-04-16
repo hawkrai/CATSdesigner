@@ -611,6 +611,8 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             int percent = GetPoints(testAnswers);
             testPassResult.Points = points;
             testPassResult.Percent = percent;
+            testPassResult.EndTime = DateTime.UtcNow;
+
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 foreach(var answer in testAnswers)

@@ -1,0 +1,31 @@
+<div class="percentage-results-component">
+  <div class="percentage-results-component__header">
+    <mat-form-field class="visit-stats-component__group-select" *ngIf="diplomUser.IsSecretary">
+      <mat-select [value]="groups ? groups[0] : ''">
+        <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group">
+          {{group}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+      <button mat-icon-button color="primary" matTooltip="Загрузить документ Excel"
+            *ngIf="diplomUser.IsSecretary" (click)="getExcelFile()">
+            <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+    </button>
+
+    <mat-form-field class="percentage-results-component__search">
+      <mat-label>Поиск по теме, фамилии</mat-label>
+      <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+  <div class="percentage-results-component__body">
+    <app-percentage-results-list [filteredPercentageResults]="filteredPercentageResults" [percentageGraphs]="percentageGraphs">
+    </app-percentage-results-list>
+  </div>
+</div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

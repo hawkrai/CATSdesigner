@@ -1,49 +1,55 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
-<div class="visiting-popover__header">
-  <p>Редактируемая дата:  <span style="font-weight: bold;">{{data.body.date}}</span></p>
-</div>
-<div class="visiting-popover__table" *ngIf="data.body">
-  <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
-
-    <ng-container matColumnDef="position">
-      <mat-header-cell *matHeaderCellDef> №</mat-header-cell>
-      <mat-cell *matCellDef="let i = index"> {{i + 1}} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> ФИО</mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="mark">
-      <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <mat-form-field>
-          <mat-select [(ngModel)]="+element.mark" name="mark">
-            <mat-option></mat-option>
-            <mat-option *ngFor="let mark of possibleMarks" [value]="mark">
-              {{mark}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="comment">
-      <mat-header-cell *matHeaderCellDef> Комментарий</mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <mat-form-field style="margin-right: 20px;">
-          <input name="comment" matInput [(ngModel)]="element.comment">
-        </mat-form-field>
-        <mat-checkbox matTooltip="Показать комментарий студенту" matTooltipPosition="left"  name="showForStudent" [(ngModel)]="element.showForStudent" [color]="'primary'"></mat-checkbox>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
-</div>
-<div mat-dialog-actions>
-  <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button (click)="onSave()" color="primary">{{data.buttonText}}</button>
-</div>
+<app-popover [width]="800">
+  <ng-container title>
+    {{data.title}}
+  </ng-container>
+  <ng-container body>
+    <div class="visiting-popover__header">
+      <p>{{'text.visiting.date.editing' | translate:'Редактируемая дата'}}:  <span style="font-weight: bold;">{{data.body.date}}</span></p>
+    </div>
+    <div class="visiting-popover__table" *ngIf="data.body">
+      <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
+    
+        <ng-container matColumnDef="position">
+          <mat-header-cell *matHeaderCellDef> №</mat-header-cell>
+          <mat-cell *matCellDef="let i = index"> {{i + 1}} </mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef> {{'fio' | translate:'ФИО'}} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="mark">
+          <mat-header-cell *matHeaderCellDef> {{'text.number.hours.missed' | translate:'Пропущено часов'}}</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-form-field>
+              <mat-select [(ngModel)]="+element.mark" name="mark">
+                <mat-option></mat-option>
+                <mat-option *ngFor="let mark of possibleMarks" [value]="mark">
+                  {{mark}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="comment">
+          <mat-header-cell *matHeaderCellDef> {{'comment' | translate:'Комментарий'}}</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-form-field style="margin-right: 20px;">
+              <input name="comment" matInput [(ngModel)]="element.comment">
+            </mat-form-field>
+            <mat-checkbox [matTooltip]="'comment.for.student' | translate:'Показать комментарий студенту'" matTooltipPosition="left"  name="showForStudent" [(ngModel)]="element.showForStudent" [color]="'primary'"></mat-checkbox>
+          </mat-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onClick()">{{'button.close' | translate:'Отмена'}}</button>
+    <button mat-raised-button (click)="onSave()" color="primary">{{data.buttonText}}</button>
+  </ng-container>
+</app-popover>

@@ -1,0 +1,23 @@
+.task-sheet {
+
+  &__header {
+    display: flex;
+
+    &__theme {
+      width: 100%;
+    }
+
+    &__actions {
+      padding: 10px;
+      display: flex;
+    }
+  }
+
+  &__body {
+    padding-bottom: 25px;
+  }
+}
+
+::ng-deep .mat-select-panel.theme-panel {
+  max-height: 400px;
+}

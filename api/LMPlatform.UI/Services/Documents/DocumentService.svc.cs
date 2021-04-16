@@ -15,7 +15,7 @@ namespace LMPlatform.UI.Services.Documents
 
         public DocumentService() { }
 
-        public DocumentPreview GetFullContent(int documentId)
+        public DocumentPreview GetFullContent(int documentId, int userId)
         {
             var content = new StringBuilder();
 
@@ -32,7 +32,7 @@ namespace LMPlatform.UI.Services.Documents
             {
                 foreach (var document in documents)
                 {
-                    var childrens = DocumentManagementService.GetByParentId(document.Id);
+                    var childrens = DocumentManagementService.GetByParentId(document.Id, userId);
                     if (!childrens.Any())
                     {
                         content.Append($"{document.Name}<br>{document.Text}");
@@ -50,17 +50,17 @@ namespace LMPlatform.UI.Services.Documents
             return DocumentToPreview(document);
         }
 
-        public IEnumerable<DocumentPreview> GetDocumentsBySubjectId(int subjectId) // Надо убрать
+        public IEnumerable<DocumentPreview> GetDocumentsBySubjectId(int subjectId, int userId) 
         {
-            var parentNodes = DocumentManagementService.GetBySubjectId(subjectId);
+            var parentNodes = DocumentManagementService.GetBySubjectId(subjectId, userId);
 
             foreach (var document in parentNodes)
                 yield return DocumentToPreview(document);
         }
 
-        public IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId)
+        public IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId, int userId)
         {
-            var documents = DocumentManagementService.GetBySubjectId(subjectId).Where(x => x.ParentId == null);
+            var documents = DocumentManagementService.GetBySubjectId(subjectId, userId).Where(x => x.ParentId == null);
 
             IEnumerable<DocumentsTree> ParseData(IEnumerable<Models.Documents> documents)
             {
@@ -70,7 +70,8 @@ namespace LMPlatform.UI.Services.Documents
                     {
                         Id = document.Id,
                         Name = document.Name,
-                        Children = ParseData(DocumentManagementService.GetByParentId(document.Id))
+                        IsLocked = document.IsLocked,
+                        Children = ParseData(DocumentManagementService.GetByParentId(document.Id, userId))
                     };
                 }
             }
@@ -99,6 +100,7 @@ namespace LMPlatform.UI.Services.Documents
                 existingDocument.UserId = documentDTO.UserId;
                 existingDocument.Text = documentDTO.Text;
                 existingDocument.ParentOrder = documentDTO.ParentOrder;
+                existingDocument.IsLocked = documentDTO.IsLocked;
 
                 entity = DocumentManagementService.UpdateDocument(existingDocument);
             }
@@ -139,7 +141,8 @@ namespace LMPlatform.UI.Services.Documents
             ParentId = document.ParentId,
             Name = document.Name,
             Text = document.Text,
-            ParentOrder = document.ParentOrder
+            ParentOrder = document.ParentOrder,
+            IsLocked = document.IsLocked,
         };
 
         Models.Documents PreviewToDocument(DocumentPreview document) => new Models.Documents()
@@ -149,7 +152,8 @@ namespace LMPlatform.UI.Services.Documents
             ParentId = document.ParentId,
             Name = document.Name,
             Text = document.Text,
-            ParentOrder = document.ParentOrder
+            ParentOrder = document.ParentOrder,
+            IsLocked = document.IsLocked,
         };
     }
 }

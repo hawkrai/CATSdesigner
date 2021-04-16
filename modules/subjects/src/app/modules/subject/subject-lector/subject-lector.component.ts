@@ -1,12 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 
 import {DialogData} from '../../../models/dialog-data.model';
 import {SubjectService} from '../../../services/subject.service';
-import {getSubjectId} from '../../../store/selectors/subject.selector';
+import * as subjectSelectors from '../../../store/selectors/subject.selector';
 import {IAppState} from '../../../store/state/app.state';
 import * as catsActions from '../../../store/actions/cats.actions';
+import { Lector } from 'src/app/models/lector.model';
+import { MatOptionSelectionChange } from '@angular/material';
 
 @Component({
   selector: 'app-news-popover',
@@ -15,11 +17,11 @@ import * as catsActions from '../../../store/actions/cats.actions';
 })
 export class SubjectLectorComponent implements OnInit {
 
-  public joinedLectors = [];
-  public allLectors = [];
-  public selectedLector;
+  public joinedLectors: Lector[] = [];
+  public allLectors: Lector[] = [];
+  public selectedLector: Lector;
 
-  public subjectId;
+  public subjectId: number;
 
   constructor(
     public dialogRef: MatDialogRef<SubjectLectorComponent>,
@@ -38,8 +40,9 @@ export class SubjectLectorComponent implements OnInit {
       this.subjectId = this.data.model.subjectId;
       this.setLectors();
     } else {
-      this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-        this.subjectId = subjectId;
+      this.store.select(subjectSelectors.getSelectedSubject).subscribe(subject => {
+        this.subjectId = subject.id;
+        this.data.body = subject;
         this.setLectors();
       })
     }
@@ -73,7 +76,7 @@ export class SubjectLectorComponent implements OnInit {
     )
   }
 
-  _selectedLector(event) {
+  selectLector(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.selectedLector = this.allLectors.find(res => res.LectorId === event.source.value);
     }

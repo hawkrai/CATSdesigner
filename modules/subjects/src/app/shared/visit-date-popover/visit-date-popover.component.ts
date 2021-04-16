@@ -8,8 +8,7 @@ import { DialogService } from './../../services/dialog.service';
 import { DialogData } from '../../models/dialog-data.model';
 import { DeletePopoverComponent } from '../delete-popover/delete-popover.component';
 import { timeValidator } from '../validators/time.validator';
-
-
+import { TranslatePipe } from "../../../../../../container/src/app/pipe/translate.pipe";
 
 export const MY_FORMATS = {
   parse: {
@@ -46,8 +45,12 @@ export class VisitDatePopoverComponent {
   @Output() deleteDay = new EventEmitter<any>();
   @Input() data: { title: string, buttonText: string };
   constructor(
-    protected dialogService: DialogService
-    ) {}
+    protected dialogService: DialogService,
+    private translate: TranslatePipe,
+    dateAdapter: DateAdapter<any>
+    ) {
+      dateAdapter.setLocale(localStorage.getItem("locale") || "ru");
+    }
 
   onClick(): void {
     this.close.emit();
@@ -87,9 +90,9 @@ export class VisitDatePopoverComponent {
 
   deletePopover(day: any) {
     const dialogData: DialogData = {
-      title: 'Удаление даты',
-      body: 'дату и все связанные с ней данные',
-      buttonText: 'Удалить'
+      title: this.translate.transform('date.delete', 'Удаление даты'),
+      body: this.translate.transform('text.schedule.date.and.connected.data', 'дату и все связанные с ней данные'),
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 

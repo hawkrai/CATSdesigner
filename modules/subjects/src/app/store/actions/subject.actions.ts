@@ -5,7 +5,7 @@ import {Subject} from '../../models/subject.model';
 
 export const setSubject = createAction(
   '[Subject] Set Subject',
-  props<{ subject: { id: number, color: string } }>()
+  props<{ subject: { id: number, color: string, subjectName: string } }>()
 );
 
 export const setUser = createAction(

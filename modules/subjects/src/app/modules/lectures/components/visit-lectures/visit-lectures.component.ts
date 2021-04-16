@@ -12,6 +12,7 @@ import * as lecturesSelectors from '../../../../store/selectors/lectures.selecto
 import * as  lecturesActions from '../../../../store/actions/lectures.actions';
 import { DialogService } from 'src/app/services/dialog.service';
 import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -25,12 +26,12 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() groupId: number;
 
   state$: Observable<{ calendar: Calendar[], groupsVisiting: GroupsVisiting }>;
-  public displayedColumns: string[] = [];
 
   constructor(
     private store: Store<IAppState>,
-    private dialogService: DialogService
-    ) {}
+    private dialogService: DialogService,
+    private translate: TranslatePipe
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.groupId && changes.groupId.currentValue) {
@@ -44,11 +45,12 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
       this.store.select(lecturesSelectors.getCalendar),
       this.store.select(lecturesSelectors.getGroupsVisiting)
     ).pipe(
-      map(([calendar, groupsVisiting]) => ({ calendar, groupsVisiting })),
-      tap(({ calendar}) => {
-        this.displayedColumns = ['position', 'name', ...calendar.map(res => res.Date + res.Id)];
-      })
+      map(([calendar, groupsVisiting]) => ({ calendar, groupsVisiting }))
       );
+  }
+
+  getDisplayedColumns(calendar: Calendar[]): string[] {
+    return ['position', 'name', ...calendar.map(res => res.Date + res.Id)];
   }
 
   ngOnDestroy(): void {
@@ -57,17 +59,17 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
 
   settingVisitDate() {
     const dialogData: DialogData = {
-      title: 'Даты занятий',
-      buttonText: 'Добавить'
+      title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
+      buttonText: this.translate.transform('button.add', 'Добавить')
     };
     this.dialogService.openDialog(VisitDateLecturesPopoverComponent, dialogData);
   }
 
   deletePopover() {
     const dialogData: DialogData = {
-      title: 'Удаление дат',
-      body: 'даты и все связанные с ними данные',
-      buttonText: 'Удалить'
+      title: this.translate.transform('text.schedule.management.dates.deleting', 'Удаление дат'),
+      body: this.translate.transform('text.schedule.dates.and.connected.data', 'даты и все связанные с ними данные'),
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
@@ -90,8 +92,8 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
       };
 
       const dialogData: DialogData = {
-        title: 'Посещаемость студентов',
-        buttonText: 'Сохранить',
+        title: this.translate.transform('text.subjects.attendance.students', 'Посещаемость студентов'),
+        buttonText: this.translate.transform('button.save', 'Сохранить'),
         body: visits
       };
       const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);

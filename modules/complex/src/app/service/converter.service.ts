@@ -72,7 +72,7 @@ export class ConverterService {
   }
 
   public filterNonGroupItems(conceptsCascade: ComplexCascade): ComplexCascade[] {
-    conceptsCascade.children = conceptsCascade.children.filter(x => x.children.length > 0);
+    conceptsCascade.children = conceptsCascade.children.filter(x => x.IsGroup);
     for (var concept of conceptsCascade.children) {
       this.filterNonGroupItems(concept);
     }

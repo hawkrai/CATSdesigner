@@ -1,0 +1,71 @@
+<app-popover width="600">
+  <ng-container title>
+    {{'subgroup.management' | translate:'Управление подгруппами'}}
+  </ng-container>
+  <ng-container body>
+    <form class="example-form">
+      <mat-form-field>
+        <mat-select [value]="selectedGroup ? selectedGroup : ''">
+          <mat-option *ngFor="let group of groups"
+                      (onSelectionChange)="_selectedGroup($event)"
+                      [value]="group.Value"
+          >
+            {{group.Text}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="subdivision-students">
+        <div class="subdivision-students__header">
+          <p class="mat-typography text-center">{{'subgroup' | translate:'Подгруппа'}}</p>
+          <p class="mat-typography">{{'text.student' | translate:'Студент'}}</p>
+          <p class="mat-typography">{{'text.action' | translate:'Действие'}}</p>
+        </div>
+        <div class="subdivision-students__body">
+          <mat-selection-list #students
+                              name="selectList"
+                              [(ngModel)]="selectedOptions"
+                              [color]="'primary'">
+            <mat-list-option *ngFor="let student of studentList | sortBy:'Text'" [value]="student.Value">
+              <div class="subdivision-students__body-text">
+                <div class="subdivision-students__body-sub-group">
+                  {{student.subGroup}}
+                </div>
+                <div>
+                  {{student.Text}}
+                </div>
+              </div>
+            </mat-list-option>
+          </mat-selection-list>
+        </div>
+        <div class="subdivision-students__footer">
+          <p class="mat-typography text">
+            {{'text.students.selected.genitive' | translate:'Выбранных студентов'}}: {{students.selectedOptions.selected.length}}
+          </p>
+          <div class="subdivision-students__footer-checkbox">
+            <mat-checkbox [color]="'primary'"
+                          name="allStudents"
+                          [(ngModel)]="allCheckbox"
+                          (change)="selectedAll($event, students)"></mat-checkbox>
+          </div>
+        </div>
+      </div>
+      <div class="subdivision-students__actions">
+        <mat-form-field>
+          <mat-label>{{'subgroup' | translate:'Подгруппа'}}</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let subgroup of subgroups"
+                        (onSelectionChange)="splitUp($event, students)"
+                        [value]="subgroup"
+            >
+              {{subgroup}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onClick()">{{'button.close' | translate:'Отмена'}}</button>
+    <button mat-raised-button color="primary" (click)="save()">{{'button.save' | translate:'Сохранить'}}</button>
+  </ng-container>
+</app-popover>
