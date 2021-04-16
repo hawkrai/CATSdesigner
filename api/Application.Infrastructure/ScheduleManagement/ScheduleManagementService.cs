@@ -54,8 +54,7 @@ namespace Application.Infrastructure.ScheduleManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date >= startDate && x.Date <= endDate)
-					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes))
-					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group)))
+					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes)))
 					.ToList()
 					.Select(x => LectureScheduleToModel(x))
 					.ToList();
@@ -84,8 +83,7 @@ namespace Application.Infrastructure.ScheduleManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
                 var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date)
-                    .Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes))
-					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group)))
+                    .Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes)))
                     .ToList()
                     .Select(x => LectureScheduleToModel(x))
 					.ToList();
@@ -228,8 +226,7 @@ namespace Application.Infrastructure.ScheduleManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date && x.StartTime >= startTime && x.EndTime <= endTime)
-					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes))
-					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group)))
+					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes)))
 					.ToList()
 					.Select(x => LectureScheduleToModel(x))
 					.ToList();
@@ -250,6 +247,31 @@ namespace Application.Infrastructure.ScheduleManagement
 					.ToList();
 
 				return lecturesSchedule.Concat(practicalsSchedule).Concat(labsSchedule).OrderBy(x => x.Date);
+			}
+		}
+
+        public ScheduleModel GetScheduleById(int scheduleId, ClassType classType)
+        {
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				if (classType == ClassType.Lecture)
+                {
+					return LectureScheduleToModel(repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetBy(new Query<LecturesScheduleVisiting>(x => x.Id == scheduleId)
+					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes))));
+
+				} else if (classType == ClassType.Lab)
+                {
+					return LabScheduleToModel(repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetBy(new Query<ScheduleProtectionLabs>(x => x.Id == scheduleId)
+					.Include(x => x.Subject.ScheduleProtectionLabs.Select(x => x.Notes))
+					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))
+					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups))));
+				} else if (ClassType.Practical == classType)
+                {
+					return PracticalScheduleToModel(repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetBy(new Query<ScheduleProtectionPractical>(x => x.Id == scheduleId)
+					.Include(x => x.Subject.ScheduleProtectionPracticals.Select(x => x.Notes))
+					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))));
+				}
+				return null;
 			}
 		}
     }

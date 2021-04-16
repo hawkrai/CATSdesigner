@@ -24,5 +24,8 @@ namespace Application.Infrastructure.ScheduleManagement
         IEnumerable<ScheduleModel> GetScheduleBetweenTimes(DateTime date, TimeSpan startTime, TimeSpan endTime);
 
         IEnumerable<ScheduleModel> GetUserSchedule(int userId, DateTime startDate, DateTime endDate);
+
+
+        ScheduleModel GetScheduleById(int scheduleId, ClassType classType);
     }
 }

@@ -9,7 +9,7 @@ using System.Web;
 namespace LMPlatform.UI.Services.Modules.Schedule
 {
     [DataContract]
-    public class ScheduleViewData
+    public class ScheduleViewData : ResultViewData
     {
 
         public ScheduleViewData(ScheduleModel schedule)
