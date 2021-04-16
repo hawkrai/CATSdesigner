@@ -6,7 +6,10 @@
   <div *ngIf="!isAdmin">
     <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/viewer'">{{'subject' | translate:'Предметы'}}</a>
   </div>
-  <a *ngIf="isLector" mat-button [routerLink]="'/emails'" >Дипломное проектирование</a>
+
+  <div *ngIf="isLector">
+    <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/diplom'">Дипломное проектирование</a>
+  </div>
 
   <div class="flex-spacer"></div>
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy">
@@ -74,7 +77,9 @@
       <div *ngIf="!isAdmin" >
         <a mat-button [routerLink]="'/web/viewer'" >Предметы</a>
       </div>
-      <a *ngIf="isLector" mat-button [routerLink]="'/emails'" >Дипломное проектирование</a>
+      <div *ngIf="isLector">
+        <a mat-button [routerLink]="'/web/diplom'">Дипломное проектирование</a>
+      </div>
     </div>
 
     <button mat-icon-button [matMenuTriggerFor]="menu1"  class="menu-burger icon-h">
@@ -84,7 +89,9 @@
       <div *ngIf="!isAdmin" class="dropdown">
         <a mat-button [routerLink]="'/web/viewer'" >Предметы</a>
       </div>
-      <a *ngIf="isLector" mat-button [routerLink]="'/emails'" class="dropdown">Дипломное проектирование</a>
+      <div *ngIf="isLector">
+        <a mat-button  [routerLink]="'/web/diplom'">Дипломное проектирование</a>
+      </div>
     </mat-menu>
 
     <div class="icons">
