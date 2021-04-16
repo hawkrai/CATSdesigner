@@ -1,7 +1,7 @@
 import {Memo} from './memo.model';
 
 export class Lesson {
-  id: string;
+  Id: string;
   Date: string;
   Start: string;
   End: string;
