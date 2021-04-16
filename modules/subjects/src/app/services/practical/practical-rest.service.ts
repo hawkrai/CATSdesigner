@@ -1,6 +1,6 @@
 import { Practical } from './../../models/practical.model';
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
@@ -62,4 +62,18 @@ export class PracticalRestService {
     return this.http.post('Services/Practicals/PracticalService.svc/SaveStudentPracticalMark', body);
   }
 
+  public getPracticalsMarksExcel(subjectId: number, groupId: number): Observable<Blob> {
+    const params = new HttpParams()
+      .set('subjectId', subjectId.toString())
+      .set('groupId', groupId.toString());
+      const headers = new HttpHeaders()
+    return this.http.get(`Statistic/GetPracticalsMarks`, { params, responseType: 'blob' });
+  }
+
+  public getVisitPrcaticalsExcel(subjetId: number, groupId: number): Observable<Blob> {
+    const params = new HttpParams()
+      .set('subjectId', subjetId.toString())
+      .set('groupId', groupId.toString());
+    return this.http.get('Statistic/GetVisitPracticals', { params, responseType: 'blob' });
+  }
 }
