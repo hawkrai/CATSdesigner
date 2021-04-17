@@ -15,13 +15,12 @@ export class ProfileComponent implements OnInit {
   displayedColumns = ['item'];
   displayedColumnsSecond = ['item', 'complete'];
   isLoad = false;
-  defaultAvatar!:string;
+  defaultAvatar = "/assets/images/account.png";
  
   profileInfo!: ProfileInfo;
   profileInfoSubjects!: ProfileInfoSubject[];
   profileProjects!: ProfileProject[];
 
-  
 
   constructor(private profileService: ProfileService, private route: ActivatedRoute) { }
    
@@ -32,22 +31,13 @@ export class ProfileComponent implements OnInit {
     this.getProfileInfo(profileModel.Id);
     this.getProfileInfoSubjects(profileModel.Id);
     this.getProfileProjects(profileModel.Id);
-    this.getAvatar();
   }
-
- 
 
   getProfileInfo(id: any) {
     this.profileService.getProfileInfo(id).subscribe((res) => {
       this.profileInfo = res;
       console.log(res);
     });
-  }
-
-  getAvatar() {
-    this.profileService.getDefaultAvatar().subscribe(res => {
-      this.defaultAvatar = res;
-      });
   }
 
   getProfileProjects(id: string) {

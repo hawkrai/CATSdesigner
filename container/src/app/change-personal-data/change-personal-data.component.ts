@@ -17,7 +17,7 @@ import { Validators, FormControl, ValidationErrors } from '@angular/forms';
 
 export class ChangePersonalDataComponent implements OnInit {
   isLoad = false;
-  defaultAvatar!: string;
+  defaultAvatar = "/assets/images/account.png";
   startImgFileStr = "data:image/";
   imageFormats = ["png","img","jpg","gif"];
   currentUserId!: number;
@@ -63,12 +63,9 @@ export class ChangePersonalDataComponent implements OnInit {
     return false
   }
 
-
-
   ngOnInit(): void {
     this.currentUserId = this.autService.currentUserValue.id;
     this.getProfileData();
-    this.getAvatar();
     this.isLoad = true;
   }
 
@@ -79,12 +76,6 @@ export class ChangePersonalDataComponent implements OnInit {
   getProfileData() {
     this.dataService.getProfileData().subscribe((res) => {
       this.profileData = res;
-    });
-  }
-
-  getAvatar() {
-    this.profileService.getDefaultAvatar().subscribe(res => {
-      this.defaultAvatar = res;
     });
   }
 
@@ -106,8 +97,6 @@ export class ChangePersonalDataComponent implements OnInit {
     else {
       alert("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или являются полностью пустыми (необязательные поля)");
     }
-
-
   }
 
   openDialog(): void {

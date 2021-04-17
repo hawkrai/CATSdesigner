@@ -11,7 +11,6 @@ export class ProfileService {
   api = '/Profile/';
   apiAccount = '/Account/';
 
-
   constructor(private http: HttpClient) {
   }
   getProfileProjects(Id: any): Observable<ProfileProject[]> {
@@ -24,10 +23,6 @@ export class ProfileService {
 
   getProfileInfo(Id: any): Observable<ProfileInfo> {
     return this.http.get<ProfileInfo>(this.api + 'GetProfileInfoById/' + Id);
-  }
-
-  getDefaultAvatar(): Observable<string> {
-    return this.http.get(this.apiAccount + 'GetDefaultAvatar', { responseType: 'text' });
   }
 
   getAvatar(): Observable<string> {
