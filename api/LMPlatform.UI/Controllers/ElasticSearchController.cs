@@ -9,24 +9,27 @@ using System.Net;
 using System.Configuration;
 using Application.Core.UI.Controllers;
 using LMPlatform.ElasticDataModels;
+using Application.Infrastructure.ElasticManagement;
+using Application.Core;
 
 namespace LMPlatform.UI.Controllers
 {
     public class ElasticSearchController : BasicController
     {
         // GET: ElasticSearch
-        public string ElasticAddress => ConfigurationManager.AppSettings["ElasticAddress"];
-        public string ElasticUsername => ConfigurationManager.AppSettings["ElasticLogin"];
-        public string ElasticPassword => ConfigurationManager.AppSettings["ElasticPassword"];
+        public static string ElasticAddress => ConfigurationManager.AppSettings["ElasticAddress"];
+        public static string ElasticUsername => ConfigurationManager.AppSettings["ElasticLogin"];
+        public static string ElasticPassword => ConfigurationManager.AppSettings["ElasticPassword"];
+
+        private readonly IElasticManagementService elasticManagement = 
+            new ElasticManagementService(ElasticAddress, ElasticUsername, ElasticPassword);
 
         [HttpGet]
         public ActionResult GetLecturerSearchResult(string searchStr)
         {           
             try
             {
-                LecturerElasticSearchRepository searcher = new LecturerElasticSearchRepository(ElasticAddress, ElasticUsername, ElasticPassword);
-                List<ElasticLecturer> results = searcher.Search(searchStr).ToList<ElasticLecturer>();
-
+                var results = elasticManagement.GetLecturerSearchResult(searchStr);
                 return this.Json(results, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -48,8 +51,7 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                StudentElasticSearchRepository searcher = new StudentElasticSearchRepository(ElasticAddress, ElasticUsername, ElasticPassword);
-                List<ElasticStudent> results = searcher.Search(searchStr).ToList<ElasticStudent>();
+                var results = elasticManagement.GetStudentSearchResult(searchStr);
                 return this.Json(results,JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -71,12 +73,10 @@ namespace LMPlatform.UI.Controllers
         {       
             try
             {
-                GroupElasticSearchRepository searcher = new GroupElasticSearchRepository(ElasticAddress, ElasticUsername, ElasticPassword);
-                List<ElasticGroup> results = searcher.Search(searchStr).ToList<ElasticGroup>();
+                var results = elasticManagement.GetGroupSearchResult(searchStr);
                 return this.Json(results, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
-            
             {
                 return new JsonResult
                 {
@@ -87,7 +87,6 @@ namespace LMPlatform.UI.Controllers
                     }
                 };
             }
-
         }
 
         [HttpPost]
@@ -95,9 +94,7 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                ElasticStarter init = new ElasticStarter(ElasticAddress,ElasticUsername,ElasticPassword);
-                init.InitializeElastic();
-
+                elasticManagement.InitElastic();
                 return StatusCode(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -111,8 +108,7 @@ namespace LMPlatform.UI.Controllers
         {          
             try
             {
-                ElasticStarter init = new ElasticStarter(ElasticAddress, ElasticUsername, ElasticPassword);
-                init.ClearElastic();
+                elasticManagement.ClearElastic();
                 return StatusCode(HttpStatusCode.OK);
             }
             catch (Exception e)

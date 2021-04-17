@@ -14,20 +14,17 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         private string indexName;
         private int searchFuzziness = 6;
         private int prefixLength = 3;
-        public BaseElasticSearchRepository(string elasticUri, string indexName,string userName, string password)
+
+        public BaseElasticSearchRepository(ElasticClient elasticClient, string indexName)
         {
             this.indexName = indexName;
-            ConnectionSettings settings = new ConnectionSettings(new Uri(elasticUri))
-                .DefaultIndex(indexName).BasicAuthentication(userName, password);
-            this.client = new ElasticClient(settings);
+            this.client = elasticClient;
             CheckConnection(client);
         }
-
-        public BaseElasticSearchRepository(string elasticUri, string indexName,int prefixLength,int fuzziness,
+        public BaseElasticSearchRepository(string elasticUri, string indexName, int prefixLength, int fuzziness,
             string userName, string password)
         {
             this.indexName = indexName;
-            
             this.searchFuzziness = fuzziness;
             this.prefixLength = prefixLength;
 
@@ -45,14 +42,19 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                 .DefaultIndex(indexName)
                 .BasicAuthentication(userName, password);
 
-
             this.client = new ElasticClient(connectionSettings);
             CheckConnection(client);
-
-
         }
 
-
+        protected ElasticClient Client
+        {
+            get
+            {
+                return this.client;
+            }
+        }
+        protected int SearchFuziness { get => searchFuzziness; }
+        protected int PrefixLength { get => prefixLength; }
         private void CheckConnection(ElasticClient client)
         {
             var isConnected = client.Ping();
@@ -61,16 +63,6 @@ namespace Application.ElasticSearchEngine.SearchRepositories
                 throw new Exception("Client was not connected to ElasticSearch server\n" + isConnected.OriginalException.Message);
             }
         }
-        protected ElasticClient Client
-        {
-            get {
-                return this.client;
-                }
-        }
-
-        protected int SearchFuziness { get => searchFuzziness; }
-        protected int PrefixLength { get => prefixLength;  }
-
         public bool DeleteFromIndex(int id)
         {
             try
@@ -85,7 +77,6 @@ namespace Application.ElasticSearchEngine.SearchRepositories
 
             return true;
         }
-
         public bool DeleteIndex()
         {
             try
@@ -100,8 +91,6 @@ namespace Application.ElasticSearchEngine.SearchRepositories
 
             return true;
         }
-
-
 
         enum SearchingFields
         {

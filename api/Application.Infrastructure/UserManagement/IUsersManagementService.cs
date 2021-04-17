@@ -11,7 +11,7 @@ namespace Application.Infrastructure.UserManagement
         User GetUser(string userName);
 
         User GetUser(int id);
-
+        User GetUserById(int id);
         User GetUserByName(string firstName, string lastName, string middleName);
 
         bool IsExistsUser(string userName);

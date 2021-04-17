@@ -9,19 +9,29 @@ using System.Data.Entity;
 using System.Linq;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.ElasticDataModels;
+using System.Configuration;
 
 namespace Application.ElasticSearchEngine
 {
-    class ElasticInitializer
+    public class ElasticInitializer
     {
         private string connectionString;
         private string elasticUri;
         private ElasticClient client;
-        public const string LECUTRERS_INDEX_NAME = "lecturers" ;
-        public const string PROJECTS_INDEX_NAME = "projects";
-        public const string GROUPS_INDEX_NAME = "groups";
-        public const string STUDENTS_INDEX_NAME = "students";
-       
+        /*private static string LECTURERS_INDEX_NAME => ConfigurationManager.AppSettings["LecturersIndexName"];
+        private static string PROJECTS_INDEX_NAME => ConfigurationManager.AppSettings["ProjectsIndexName"];
+        private static string GROUPS_INDEX_NAME => ConfigurationManager.AppSettings["GroupsIndexName"];
+        private static string STUDENTS_INDEX_NAME => ConfigurationManager.AppSettings["StudentsIndexName"];*/
+        private static string LECTURERS_INDEX_NAME = "lecturers";
+        private static string PROJECTS_INDEX_NAME = "projects";
+        private static string GROUPS_INDEX_NAME = "groups";
+        private static string STUDENTS_INDEX_NAME = "students";
+
+        public ElasticInitializer(ElasticClient elasticClient)
+        {
+            client = elasticClient;
+            CheckConnection(client);
+        }
         public ElasticInitializer(string connectionString, string elsticUri, string userName, string password)
         {
             this.elasticUri = elasticUri;
@@ -35,9 +45,7 @@ namespace Application.ElasticSearchEngine
                     resolver => resolver.NamingStrategy = new CamelCaseNamingStrategy()
                 ))
                 .BasicAuthentication(userName, password);
-
-            client = new ElasticClient(connectionSettings);
-            
+            client = new ElasticClient(connectionSettings);        
             CheckConnection(client);
         }
 
@@ -49,45 +57,41 @@ namespace Application.ElasticSearchEngine
                 throw new Exception("Client was not connected to ElasticSearch server\n" + isConnected.OriginalException.Message);
             }
         }
-
-        private List<ElasticProject> GetProjects()
+        private List<ElasticProject> GetProjects(int skip, int take)
         {
             using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
-                return context.ElasticProjects
+                return context.ElasticProjects.Skip(skip).Take(take)
                     .ToList();
             }
         }
-        private List<ElasticGroup> GetGroups()
+        private List<ElasticGroup> GetGroups(int skip, int take)
         {
             using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
-                return context.ElasticGroups
+                return context.ElasticGroups.Skip(skip).Take(take)
                     .ToList();
             }
         }
-        private List<ElasticLecturer> GetLecturers() {
+        private List<ElasticLecturer> GetLecturers(int skip, int take)
+        {
             using (LmPlatformModelsContext context = new LmPlatformModelsContext())
             {
-                return context.ElasticLecturers
+                return context.ElasticLecturers.Skip(skip).Take(take)
                     .Include(l => l.User)
                     .ToList<ElasticLecturer>();
             }
         }
-        private List<ElasticStudent> GetStudents()
+        private List<ElasticStudent> GetStudents(int skip, int take)
         {
                 using (LmPlatformModelsContext context = new LmPlatformModelsContext())
                 {
-                    return context.ElasticStudents
+                    return context.ElasticStudents.Skip(skip).Take(take)
                         .Include(s => s.User)
                         .Include(g => g.Group)
                         .ToList(); 
                 }
-
-
         }
-
-
         private static CreateIndexDescriptor GetProjectMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
@@ -150,8 +154,7 @@ namespace Application.ElasticSearchEngine
                         )
                         .Text(o => o
                             .Name(s => s.Skill)
-                         )
-                        
+                         )             
                         .Object<ElasticUser>(u=>u
                             .Dynamic(false)
                             .Name(n=>n.User)
@@ -169,8 +172,7 @@ namespace Application.ElasticSearchEngine
                         )
                     )
                 )
-             )
-             
+             )    
            ;
             return map;
         }
@@ -214,56 +216,69 @@ namespace Application.ElasticSearchEngine
               )
            ;
             return map;
-
         }
-
-        public int InitializeStudents()
+        public void InitializeStudents()
         {
+            int portion = 100;
             string studentsIndexName = STUDENTS_INDEX_NAME;
             client.Indices.Create(GetStudentMap(studentsIndexName));
-            List<ElasticStudent> students = GetStudents();
 
-            client.IndexMany(students,studentsIndexName);
+            IEnumerable<ElasticStudent> toIndex = GetStudents(0, portion);
 
-            return students.Count;
+            for (int i = portion; toIndex.Count() > 0; i += portion)
+            {
+                client.IndexMany(toIndex, studentsIndexName);
+                toIndex = GetStudents(i, portion);
+            }
         }
-        public int InitializeLecturers()
+        public void InitializeLecturers()
         {
-            string lecturersIndexName = LECUTRERS_INDEX_NAME;
+            int portion = 100;
+            string lecturersIndexName = LECTURERS_INDEX_NAME;
             client.Indices.Create(GetLecturerMap(lecturersIndexName));
-            List<ElasticLecturer> lecturers = GetLecturers();
+            IEnumerable<ElasticLecturer> toIndex = GetLecturers(0, portion);
 
-            client.IndexMany(lecturers, lecturersIndexName);
-            return lecturers.Count;
+            for (int i = portion; toIndex.Count() > 0; i+=portion) {
+                client.IndexMany(toIndex, lecturersIndexName);
+                toIndex = GetLecturers(i, portion);
+            }
+    
         }
-        public int InitializeGroups()
+        public void InitializeGroups()
         {
+            int portion = 100;
             string groupsIndexName = GROUPS_INDEX_NAME;
             client.Indices.Create(GetGroupMap(groupsIndexName));
-            List<ElasticGroup> groups = GetGroups();
 
-            client.IndexMany(groups,groupsIndexName);
+            IEnumerable<ElasticGroup> toIndex = GetGroups(0, portion);
 
-            return groups.Count;
+            for (int i = portion; toIndex.Count() > 0; i += portion)
+            {
+                client.IndexMany(toIndex, groupsIndexName);
+                toIndex = GetGroups(i, portion);
+            }
         }
-        public int InitializeProjects()
+        public void InitializeProjects()
         {
-            string projectssIndexName = PROJECTS_INDEX_NAME;
-            client.Indices.Create(GetProjectMap(projectssIndexName));
-            List<ElasticProject> projects = GetProjects();
+            int portion = 100;
+            string projectsIndexName = PROJECTS_INDEX_NAME;
+            client.Indices.Create(GetProjectMap(projectsIndexName));
 
-            client.IndexMany<ElasticProject>(projects, projectssIndexName);
+            IEnumerable<ElasticProject> toIndex = GetProjects(0, portion);
 
-            return projects.Count;
+            for (int i = portion; toIndex.Count() > 0; i += portion)
+            {
+                client.IndexMany(toIndex, projectsIndexName);
+                toIndex = GetProjects(i, portion);
+            }
         }
-
         public void DeleteStudents()
         {
             client.Indices.Delete(STUDENTS_INDEX_NAME);
         }
         public void DeleteLecturers()
         {
-            client.Indices.Delete(LECUTRERS_INDEX_NAME);
+            client.Indices.Delete(LECTURERS_INDEX_NAME);
         }
         public void DeleteGroups()
         {

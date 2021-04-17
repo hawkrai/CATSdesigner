@@ -35,6 +35,9 @@ namespace LMPlatform.UI.Controllers
         private readonly LazyDependency<IProjectManagementService> projectManagementService =
             new LazyDependency<IProjectManagementService>();
 
+        private readonly LazyDependency<ISubjectManagementService> subjectManagementService =
+            new LazyDependency<ISubjectManagementService>();
+        private ISubjectManagementService SubjectManagementService => this.subjectManagementService.Value;
         private ICPManagementService CpManagementService => this._cpManagementService.Value;
 
         private IDpManagementService DpManagementService => this._diplomProjectManagementService.Value;
@@ -186,19 +189,19 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public ActionResult GetProfileInfoSubjectsById(int id)
         {
-            var userService = new UsersManagementService();
-
-            var subjectService = new SubjectManagementService();
-
+            var userService = this.UsersManagementService;
+            var subjectService = this.SubjectManagementService;
             var user = userService.GetUserById(id);
-
             List<Subject> model;
 
             if (user.Lecturer == null)
+            {
                 model = subjectService.GetSubjectsByStudent(user.Id);
+            }
             else
+            {
                 model = subjectService.GetSubjectsByLector(user.Id);
-
+            }
 
             var returnModel = new List<object>();
 
@@ -220,9 +223,7 @@ namespace LMPlatform.UI.Controllers
         public ActionResult GetProfileInfoById(int id)
         {
             var model = new ProfileVewModel();
-
-            var service = new UsersManagementService();
-
+            var service = this.UsersManagementService;
             var user = service.GetUserById(id);
 
             model.UserType = user.Lecturer != null ? "1" : "2";
@@ -250,17 +251,14 @@ namespace LMPlatform.UI.Controllers
                 model.GroupId = user.Student.Group.Id;
             }
 
-
             return this.Json(model, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public ActionResult GetUserProjectsById( int id)
         {
-            var service = new UsersManagementService();
-
+            var service = this.UsersManagementService;
             var user = service.GetUserById(id);
-
             var project = this.ProjectManagementService.GetProjectsOfUser(user.Id);
 
             return this.Json(project.Select(e => new

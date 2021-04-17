@@ -25,13 +25,10 @@ namespace Application.ElasticSearchEngine
         }
 
         public bool InitializeElastic()
-        {
-            
+        {    
             try
             {
                 ElasticInitializer initializer = new ElasticInitializer(CONNECTION_STRING_NAME, address, username, password);
-
-
                 initializer.InitializeLecturers();
                 initializer.InitializeStudents();
                 initializer.InitializeGroups();
