@@ -14,5 +14,9 @@
     "course": {
         "path": "d:/.temp/apps/course",
         "entryPoint": "index.html"
+    },
+    "diplom": {
+        "path": "d:/.temp/apps/diplom",
+        "entryPoint": "index.html"
     }
 }

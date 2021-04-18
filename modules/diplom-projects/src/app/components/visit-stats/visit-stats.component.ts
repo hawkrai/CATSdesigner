@@ -63,7 +63,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       filter: '{"lecturerId":' + this.diplomUser.UserId +'}'
     })
       .subscribe(res => {
-        console.log(res);
         this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
         this.consultations = res.DiplomProjectConsultationDates;
         this.filteredVisitStatsList = this.visitStatsList;
@@ -109,7 +108,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     const visits = {date, students: []};
     this.visitStatsList.forEach(stats => {
       const mark = stats.DiplomProjectConsultationMarks.find(stat => stat.ConsultationDateId === consultationDateId);
-      console.log(mark)
       const visit = {
         name: stats.Name,
         mark: mark.Mark,

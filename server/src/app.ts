@@ -34,6 +34,7 @@ const proxyServiceOptions = {
   pathRewrite: {
     '^/subject/Services': 'Services', // rewrite path
     '^/course/Services': 'Services', // rewrite path
+    '^/diplom/Services': 'Services', // rewrite path
     '^/libBook/Services': 'Services', // rewrite path
     '^/Services': 'Services', // rewrite path
   },
@@ -68,6 +69,7 @@ const proxyApigOptions = {
   changeOrigin: true,
   pathRewrite: {
     '^/course/api': 'api', // rewrite path
+    '^/diplom/api': 'api', // rewrite path
     '^/subject/api': 'api', // rewrite path
     '^/libBook/api': 'api' // rewrite path
   }

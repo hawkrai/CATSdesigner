@@ -55,7 +55,6 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
       //  '"searchString":"' + this.searchString + '"}',
     })
       .subscribe(res => {
-        console.log(res)
         if (this.diplomUser.IsStudent) {
           var group = res.Students.Items.filter(x => x.Id == this.diplomUser.UserId)[0].Group;
           var students = res.Students.Items.filter(x => x.Group == group)

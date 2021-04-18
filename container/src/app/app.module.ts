@@ -22,6 +22,7 @@ import { AboutComponent } from './about/about.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ResetComponent } from './reset/reset.component';
 import { ToastrModule } from 'ngx-toastr';
+import { DiplomComponent } from './diplom/diplom.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ToastrModule } from 'ngx-toastr';
     ConfirmationComponent,
     AboutComponent,
     ResetComponent,
-    TranslatePipe
+    TranslatePipe,
+    DiplomComponent
   ],
   imports: [
     BrowserModule,
