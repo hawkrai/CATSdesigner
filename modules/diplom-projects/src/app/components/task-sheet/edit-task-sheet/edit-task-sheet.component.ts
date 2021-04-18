@@ -7,11 +7,11 @@ import {TaskSheetService} from '../../../services/task-sheet.service';
 import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
 import { Project } from 'src/app/models/project.model';
 import { ProjectsService } from 'src/app/services/projects.service';
-import { CoreGroup } from 'src/app/models/core-group.model';
+import { Student } from 'src/app/models/student.model';
 
 interface DialogData {
   taskSheet: TaskSheet;
-  groups: CoreGroup[];
+  students: Student[];
   taskSheetTemplate: Template;
 }
 
@@ -24,6 +24,9 @@ export class EditTaskSheetComponent implements OnInit {
 
   private COUNT = 1000000;
   private PAGE = 1;
+  private searchString = '';
+  private sorting = 'Id';
+  private direction = 'desc';
 
   private templateNameControl: FormControl = new FormControl(null,
     [Validators.maxLength(30), Validators.required]);
@@ -68,7 +71,7 @@ export class EditTaskSheetComponent implements OnInit {
   private decreeDateControl = new FormControl(this.data.taskSheet.DecreeDate != null ? new Date(this.data.taskSheet.DecreeDate) : new Date());
 
   private templates: Template[];
-  private selectedGroups: any[];
+  private selectedStudents: any[];
   private projects: Project[];
   private taskSheets: TaskSheet[];
   private selectedTemplate = "data.taskSheetTemplate";
@@ -118,10 +121,10 @@ export class EditTaskSheetComponent implements OnInit {
   }
 
   isSelectedGroupsInvalid(): boolean{
-    if(this.selectedGroups == undefined){
+    if(this.selectedStudents == undefined){
       return true
     }
-    return this.selectedGroups.length < 1;
+    return this.selectedStudents.length < 1;
   }
 
   saveTemplate() {
@@ -138,8 +141,8 @@ export class EditTaskSheetComponent implements OnInit {
 
   applyTemplate(){
     this.projects.forEach(element => {
-      if (element.Group != null){
-        if (this.selectedGroups.includes(element.Group)){
+      if (element.Id != null){
+        if (this.selectedStudents.includes(element.Student)){
           let taskSheet = this.taskSheets.find(i => i.DiplomProjectId === element.Id);
           this.populateSheet(taskSheet);
           this.taskSheetService.editTaskSheet(taskSheet).subscribe();
@@ -178,19 +181,17 @@ export class EditTaskSheetComponent implements OnInit {
     this.projectsService.getProjects(
       'count=' + this.COUNT +
       '&page=' + this.PAGE +
-      //'&filter={"subjectId":"' + this.data.subjectId + '","searchString":"' + '' + '"}' +
-      //'&filter[subjectId]=' + this.data.subjectId +
+      '&filter={"searchString":"' + this.searchString + '"}' +
       '&sorting[' + 'Id' + ']=' + 'desc'
     )
-      .subscribe(res => {this.projects = res.Items; console.log(res)});
+    .subscribe(res => this.projects = res.Items);
   }
 
   retrieveTaskSheets() {
     this.taskSheetService.getTaskSheets(
       'count=' + this.COUNT +
       '&page=' + this.PAGE +
-      //'&filter={"subjectId":"' + this.data.subjectId + '","searchString":"' + '' + '"}' +
-      //'&filter[subjectId]=' + this.data.subjectId +
+      '&filter={"searchString":"' + this.searchString + '"}' +
       '&sorting[' + 'Id' + ']=' + 'desc'
     )
       .subscribe(res => this.taskSheets = res);

@@ -14,7 +14,7 @@
     </button>
   </div>
   <div class="practical-component-body" *ngIf="state$ | async as state">
-    <div class="practical-component-controls">
+    <div class="practical-component__controls">
       <div class="practical-component__select-group" *ngIf="selectedTab !== 0">
         <mat-form-field>
           <mat-select [value]="state.group && state.group.GroupId">
@@ -34,7 +34,13 @@
           {{'text.groups.detached' | translate:'Открепленные группы'}}
         </mat-slide-toggle>
       </div>
-      <div class="practical-component-actions"></div>
+      <div class="practical-component-actions">
+        <div class="_excel-file"
+        *ngIf="(selectedTab === 2 || selectedTab === 3)" 
+        (click)="getExcelFile()">
+          <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+        </div>
+      </div>
     </div>
     <div>
       <app-practical-lessons *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-practical-lessons>

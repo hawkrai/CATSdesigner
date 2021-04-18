@@ -5,7 +5,7 @@ import * as modules from './modules.json';
 
 const app = express();
 const port = 3000;
-const targetDomain = "http://host27072020.of.by";
+const targetDomain = "https://host27072020.of.by";
 
 app.use(express.static(path.resolve('/home/educatsb/apps')));
 
@@ -34,6 +34,7 @@ const proxyServiceOptions = {
   pathRewrite: {
     '^/subject/Services': 'Services', // rewrite path
     '^/course/Services': 'Services', // rewrite path
+    '^/diplom/Services': 'Services', // rewrite path
     '^/libBook/Services': 'Services', // rewrite path
     '^/Services': 'Services', // rewrite path
   },
@@ -68,6 +69,7 @@ const proxyApigOptions = {
   changeOrigin: true,
   pathRewrite: {
     '^/course/api': 'api', // rewrite path
+    '^/diplom/api': 'api', // rewrite path
     '^/subject/api': 'api', // rewrite path
     '^/libBook/api': 'api' // rewrite path
   }

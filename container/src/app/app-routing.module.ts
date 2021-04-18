@@ -11,6 +11,7 @@ import { ProgressControlComponent } from './progress-control/progress-control.co
 import { AboutComponent } from './about/about.component';
 import { ResetComponent } from './reset/reset.component';
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
+import { DiplomComponent } from './diplom/diplom.component'
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
       { 
         path: 'confirmation', 
         component: ConfirmationComponent
+      },
+      { 
+        path: 'diplom', 
+        component: DiplomComponent
       },
     ]
   },

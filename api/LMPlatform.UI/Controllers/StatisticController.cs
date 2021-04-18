@@ -145,12 +145,58 @@ namespace LMPlatform.UI.Controllers
             this.Response.End();
         }
 
+        public void GetVisitPracticals(int subjectId, int groupId)
+        {
+            var data = new SLExcelData();
+
+            var rowsDataOne =
+                this.GroupManagementService.GetPracticalsScheduleMarks(subjectId, groupId);
+
+            data.DataRows.AddRange(rowsDataOne);
+
+            var file = new SLExcelWriter().GenerateExcel(data);
+
+            this.Response.Clear();
+            this.Response.Charset = "ru-ru";
+            this.Response.HeaderEncoding = Encoding.UTF8;
+            this.Response.ContentEncoding = Encoding.UTF8;
+            this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            this.Response.AddHeader("Content-Disposition", "attachment; filename=LabVisiting.xlsx");
+            this.Response.BinaryWrite(file);
+            this.Response.Flush();
+            this.Response.End();
+        }
+
         public void GetLabsMarks(int subjectId, int groupId)
         {
             var data = new SLExcelData();
 
             var headerData = this.GroupManagementService.GetLabsNames(subjectId, groupId);
             var rowsData = this.GroupManagementService.GetLabsMarks(subjectId, groupId);
+
+            data.Headers.Add("Студент");
+            data.Headers.AddRange(headerData);
+            data.DataRows.AddRange(rowsData);
+
+            var file = new SLExcelWriter().GenerateExcel(data);
+
+            this.Response.Clear();
+            this.Response.Charset = "ru-ru";
+            this.Response.HeaderEncoding = Encoding.UTF8;
+            this.Response.ContentEncoding = Encoding.UTF8;
+            this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            this.Response.AddHeader("Content-Disposition", "attachment; filename=LabMarks.xlsx");
+            this.Response.BinaryWrite(file);
+            this.Response.Flush();
+            this.Response.End();
+        }
+
+        public void GetPracticalsMarks(int subjectId, int groupId)
+        {
+            var data = new SLExcelData();
+
+            var headerData = this.GroupManagementService.GetPracticalsNames(subjectId, groupId);
+            var rowsData = this.GroupManagementService.GetPracticalsMarks(subjectId, groupId);
 
             data.Headers.Add("Студент");
             data.Headers.AddRange(headerData);
