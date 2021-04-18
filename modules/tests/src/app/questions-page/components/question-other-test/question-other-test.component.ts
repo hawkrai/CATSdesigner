@@ -3,10 +3,11 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {TestService} from "../../../service/test.service";
 import {Test} from "../../../models/test.model";
 import {Question} from "../../../models/question/question.model";
-import {takeUntil, tap} from "rxjs/operators";
+import {map, startWith, takeUntil, tap} from "rxjs/operators";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
+import {FormControl} from "@angular/forms";
 
 
 @AutoUnsubscribe
@@ -22,6 +23,8 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
   public filteredQuestions: Question[];
   public chosenQuestions: { [key: string]: string } = {};
   public request: Question = new Question();
+  myControl = new FormControl();
+  filteredOptions: Observable<Test[]>;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialogRef: MatDialogRef<QuestionOtherTestComponent>,
@@ -41,10 +44,22 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
             }
             test.tooltipTitle = sliced;
           });
-          this.tests = tests;
+          this.tests = tests.sort((n1, n2) => n1.Id - n2.Id);
         }),
         takeUntil(this.unsubscribeStream$))
       .subscribe();
+    this.filteredOptions = this.myControl.valueChanges
+      .pipe(
+        startWith(""),
+        map(value => typeof value === "string" ? value : value.Title),
+        map(name =>{
+    if (name) {
+      console.log(this._filter(name));
+      return this._filter(name);
+    } else {
+      return this.tests.slice();
+    }}
+  ));
   }
 
   onNoClick(): void {
@@ -66,8 +81,7 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
   }
 
   public onValueChange(event): void {
-    console.log(event);
-    this.testService.getQuestionsFromOtherTest(event.value)
+    this.testService.getQuestionsFromOtherTest(event.option.value.Id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(questions => {
         questions.forEach((question) => {
@@ -85,5 +99,15 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
 
   public filterQuestions(event): void {
     this.filteredQuestions = this.questions.filter((question) => question.Title.toLowerCase().includes(event.target.value.toLowerCase()));
+  }
+
+  displayFn(user: Test): string {
+    return user && user.Title ? user.Title : "";
+  }
+
+  private _filter(name: string): Test[] {
+    const filterValue = name.toLowerCase();
+
+    return this.tests.filter(option => option.Title.toLowerCase().indexOf(filterValue) === 0);
   }
 }
