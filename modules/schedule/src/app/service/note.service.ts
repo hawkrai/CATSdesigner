@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {Note} from '../model/note.model';
-import {NoteAdd} from '../model/noteAdd.model';
 import {HttpClient} from '@angular/common/http';
 
 
@@ -12,10 +10,10 @@ export class NoteService {
 
   constructor(private http: HttpClient) { }
 
-  savePersonalNote(noteAdd: NoteAdd): Observable<any> {
+  savePersonalNote(noteAdd: any, dateNote: string, start: string, end: string): Observable<any> {
     return this.http.post<any>('/Services/Notes/NotesService.svc/SavePersonalNote',
-      {text: noteAdd.text, date: noteAdd.date, startTime: noteAdd.startTime,
-            endTime: noteAdd.endTime, note: noteAdd.note});
+      {text: noteAdd.title, date: dateNote, startTime: start,
+            endTime: end, note: noteAdd.note});
   }
 
   deletePersonalNote(idNote: number): Observable<any> {

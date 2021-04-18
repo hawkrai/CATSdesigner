@@ -173,9 +173,8 @@ export class ScheduleMainComponent implements OnInit {
           endT.setHours(+this.lesson.End.split(':')[0], +this.lesson.End.split(':')[1]);
           this.lesson = result.lesson;
           this.lessons.push(this.lesson);
-          console.log(this.calculateTitel(this.lesson));
           this.events.push({
-            id: this.lesson.id,
+            id: this.lesson.Id,
             start: startT,
             end: endT,
             title: this.calculateTitel(this.lesson),
@@ -197,10 +196,10 @@ export class ScheduleMainComponent implements OnInit {
               end: result.note.end,
               title: result.note.title + '|' + result.note.note,
               color: colors.color,
-              draggable: true,
+              draggable: false,
               resizable: {
-                beforeStart: true,
-                afterEnd: true
+                beforeStart: false,
+                afterEnd: false
               },
               meta: 'note'
             }
@@ -213,7 +212,7 @@ export class ScheduleMainComponent implements OnInit {
 
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
-      width: '200px',
+      width: '250px',
       disableClose: true,
       height: '150px',
       data: {}
@@ -221,6 +220,24 @@ export class ScheduleMainComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (result) {
+          if (eventToDelete.meta == 'lesson') {
+            let a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
+            if (a == 'Лекция') {
+              this.lessonservice.deleteLecture(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'Лаб.работа') {
+              this.lessonservice.deleteLab(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'Практ.работа') {
+              this.lessonservice.deletePractical(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title) ).subscribe(res => {
+                console.log(res);
+              });
+            }
+          }
           this.events = this.events.filter(event => event !== eventToDelete);
           this.refresh.next();
         }
@@ -267,7 +284,7 @@ export class ScheduleMainComponent implements OnInit {
         this.events = this.events.filter(event => event !== lessonChanged);
         this.lessons.push(this.lesson);
         this.events.push({
-          id: this.lesson.id,
+          id: this.lesson.Id,
           start: startT,
           end: endT,
           title: this.calculateTitel(this.lesson),
@@ -318,9 +335,12 @@ export class ScheduleMainComponent implements OnInit {
           const startT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.Start);
           const endT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.End);
           lesson.Type = this.lessonservice.getLessonTypeById(lesson.Type);
-          console.log(this.calculateTitel(lesson));
+          //console.log(lesson.Teacher + ' ' + this.lessonservice.cutTeacherName(lesson.Teacher));
+          if (lesson.Teacher != null) {
+            lesson.Teacher.FullName = this.lessonservice.cutTeacherName(lesson.Teacher.FullName);
+          }
           this.events.push({
-            id: lesson.id,
+            id: lesson.Id,
             start: startT,
             end: endT,
             title: this.calculateTitel(lesson),
