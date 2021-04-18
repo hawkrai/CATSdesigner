@@ -16,20 +16,17 @@ namespace LMPlatform.UI.Controllers
 {
     public class ElasticSearchController : BasicController
     {
-        // GET: ElasticSearch
-        public static string ElasticAddress => ConfigurationManager.AppSettings["ElasticAddress"];
-        public static string ElasticUsername => ConfigurationManager.AppSettings["ElasticLogin"];
-        public static string ElasticPassword => ConfigurationManager.AppSettings["ElasticPassword"];
 
-        private readonly IElasticManagementService elasticManagement = 
-            new ElasticManagementService(ElasticAddress, ElasticUsername, ElasticPassword);
+        private readonly LazyDependency<IElasticManagementService> ElasticManagementServiceService =
+            new LazyDependency<IElasticManagementService>();
+        private IElasticManagementService ElasticManagementService => this.ElasticManagementServiceService.Value;
 
         [HttpGet]
         public ActionResult GetLecturerSearchResult(string searchStr)
         {           
             try
             {
-                var results = elasticManagement.GetLecturerSearchResult(searchStr);
+                var results = ElasticManagementService.GetLecturerSearchResult(searchStr);
                 return this.Json(results, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -51,7 +48,7 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                var results = elasticManagement.GetStudentSearchResult(searchStr);
+                var results = ElasticManagementService.GetStudentSearchResult(searchStr);
                 return this.Json(results,JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -73,7 +70,7 @@ namespace LMPlatform.UI.Controllers
         {       
             try
             {
-                var results = elasticManagement.GetGroupSearchResult(searchStr);
+                var results = ElasticManagementService.GetGroupSearchResult(searchStr);
                 return this.Json(results, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -94,7 +91,7 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                elasticManagement.InitElastic();
+                ElasticManagementService.InitElastic();
                 return StatusCode(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -108,7 +105,7 @@ namespace LMPlatform.UI.Controllers
         {          
             try
             {
-                elasticManagement.ClearElastic();
+                ElasticManagementService.ClearElastic();
                 return StatusCode(HttpStatusCode.OK);
             }
             catch (Exception e)

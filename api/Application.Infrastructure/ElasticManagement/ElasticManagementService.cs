@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +17,14 @@ namespace Application.Infrastructure.ElasticManagement
 {
     public class ElasticManagementService : IElasticManagementService
     {
+        public static string ElasticAddress => ConfigurationManager.AppSettings["ElasticAddress"];
+        public static string ElasticUsername => ConfigurationManager.AppSettings["ElasticLogin"];
+        public static string ElasticPassword => ConfigurationManager.AppSettings["ElasticPassword"];
+
         private readonly ElasticClient client;
-        public ElasticManagementService(string elsticUri, string userName, string password)
+        public ElasticManagementService()
         {
-            var pool = new SingleNodeConnectionPool(new Uri(elsticUri));
+            var pool = new SingleNodeConnectionPool(new Uri(ElasticAddress));
             var connectionSettings =
                 new ConnectionSettings(pool, sourceSerializer: (builtin, settings) => new JsonNetSerializer(
                     builtin, settings,
@@ -30,7 +35,7 @@ namespace Application.Infrastructure.ElasticManagement
                     },
                     resolver => resolver.NamingStrategy = new CamelCaseNamingStrategy()
                 ))
-                .BasicAuthentication(userName, password);
+                .BasicAuthentication(ElasticUsername, ElasticPassword);
 
             client = new ElasticClient(connectionSettings);
             CheckConnection(client);
