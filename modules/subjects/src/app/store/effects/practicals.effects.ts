@@ -8,6 +8,7 @@ import * as groupSelectors from '../selectors/groups.selectors';
 import * as subjectSelectors from '../selectors/subject.selector';
 import * as catsActions from '../actions/cats.actions';
 import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
+import * as filesActions from '../actions/files.actions';
 import { IAppState } from '../state/app.state';
 import { ScheduleService } from "src/app/services/schedule.service";
 
@@ -110,4 +111,23 @@ export class PracticalsEffects {
             switchMap((body) => [catsActions.showMessage({ body }), practicalsActions.loadMarks()])
         ))
     ));
+
+    practicalsVisitingExcel$ = createEffect(() => this.actions$.pipe(
+        ofType(practicalsActions.getVisitingExcel),
+        withLatestFrom(
+            this.store.select(subjectSelectors.getSubjectId), 
+            this.store.select(groupSelectors.getCurrentGroupId)
+        ), 
+        switchMap(([_, subjectId, groupId]) => this.rest.getVisitPrcaticalsExcel(subjectId, groupId).pipe(
+            map(response => filesActions.getExcelData({ response }))
+        ))
+      ));
+    
+      labsMarksExcel$ = createEffect(() => this.actions$.pipe(
+        ofType(practicalsActions.getMarksExcel),
+        withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupSelectors.getCurrentGroupId)),
+        switchMap(([_, subjectId, groupId]) => this.rest.getPracticalsMarksExcel(subjectId, groupId).pipe(
+          map(response => filesActions.getExcelData({ response }))
+        ))
+      ));
 }

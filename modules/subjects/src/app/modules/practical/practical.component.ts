@@ -10,6 +10,7 @@ import {IAppState} from '../../store/state/app.state';
 import * as groupActions from '../../store/actions/groups.actions';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import * as practicalsActions from '../../store/actions/practicals.actions';
 
 interface State {
   groups: Group[];
@@ -71,6 +72,14 @@ export class PracticalComponent implements OnInit, OnDestroy {
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
+    }
+  }
+
+  getExcelFile(): void {
+    if (this.selectedTab === 2) {
+      this.store.dispatch(practicalsActions.getVisitingExcel());
+    } else if (this.selectedTab === 3) {
+      this.store.dispatch(practicalsActions.getMarksExcel());
     }
   }
 

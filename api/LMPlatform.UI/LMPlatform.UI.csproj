@@ -523,6 +523,7 @@
     <Compile Include="Services\Modules\Schedule\ScheduleProtectionViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewResult.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleViewResultSingle.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />
