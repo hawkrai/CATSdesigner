@@ -25,9 +25,9 @@
   <div class="apply-template">
     <mat-form-field>
       <mat-label>Группы</mat-label>
-      <mat-select multiple [(value)]="selectedGroups">
-        <mat-option *ngFor="let group of data.groups" [value]="group.GroupName">
-          {{group.GroupName}}
+      <mat-select multiple [(value)]="selectedStudents">
+        <mat-option *ngFor="let student of data.students" [value]="student.Name">
+          {{student.Name}}
         </mat-option>
       </mat-select>
     </mat-form-field>

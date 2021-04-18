@@ -20,7 +20,6 @@ export class AssignProjectDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<AssignProjectDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-                console.log(data.students)
                 this.groups = data.students.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);       
   }
 

@@ -175,6 +175,69 @@ namespace Application.Infrastructure.DPManagement
             };
         }
 
+        public List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms)
+        {
+            var searchString = parms.Filters["searchString"];
+
+            var query = Context.DiplomProjects.AsNoTracking()
+                .Include(x => x.Lecturer)
+                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
+
+            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+
+            if (user != null && user.Lecturer != null)
+            {
+                query = query.Where(x => x.LecturerId == userId);
+            }
+
+            if (user != null && user.Student != null)
+            {
+                query = query.Where(x => x.DiplomProjectGroups.Any(dpg => dpg.GroupId == user.Student.GroupId));
+            }
+
+            if (searchString.Length > 0)
+            {
+                var taskSheets = from dp in query
+                                 let acp = dp.AssignedDiplomProjects.FirstOrDefault()
+                                 where acp.Student.LastName.Contains(searchString) ||
+                                        dp.Theme.Contains(searchString) ||
+                                        acp.Student.Group.Name.Contains(searchString)
+                                 select new TaskSheetData
+                                 {
+                                     DiplomProjectId = dp.DiplomProjectId,
+                                     InputData = dp.InputData,
+                                     Consultants = dp.Consultants,
+                                     DrawMaterials = dp.DrawMaterials,
+                                     RpzContent = dp.RpzContent,
+                                     Faculty = dp.Faculty,
+                                     HeadCathedra = dp.HeadCathedra,
+                                     Univer = dp.Univer,
+                                     DateEnd = dp.DateEnd,
+                                     DateStart = dp.DateStart
+                                 };
+                return taskSheets.ToList();
+            }
+            else
+            {
+                var taskSheets = from dp in query
+                                 let acp = dp.AssignedDiplomProjects.FirstOrDefault()
+                                 select new TaskSheetData
+                                 {
+                                     DiplomProjectId = dp.DiplomProjectId,
+                                     InputData = dp.InputData,
+                                     Consultants = dp.Consultants,
+                                     DrawMaterials = dp.DrawMaterials,
+                                     RpzContent = dp.RpzContent,
+                                     Faculty = dp.Faculty,
+                                     HeadCathedra = dp.HeadCathedra,
+                                     Univer = dp.Univer,
+                                     DateEnd = dp.DateEnd,
+                                     DateStart = dp.DateStart
+                                 };
+                return taskSheets.ToList();
+            }
+        }
+
         public void SaveTaskSheet(int userId, TaskSheetData taskSheet)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
@@ -369,6 +432,46 @@ namespace Application.Infrastructure.DPManagement
                         Comments = cm.Comments
                     })
                 }).ApplyPaging(parms);
+        }
+
+        public PagedList<StudentData> GetStudentsForLecturer(int userId, GetPagedListParams parms)
+        {
+            var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
+            var query = Context.GetGraduateStudents()
+                .Where(x => x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == userId));
+            return (from s in query
+                    let lecturer = s.AssignedDiplomProjects.FirstOrDefault().DiplomProject.Lecturer
+                    let dp = s.AssignedDiplomProjects.FirstOrDefault()
+                    select new StudentData
+                    {
+                        Id = s.Id,
+                        Name = s.LastName + " " + s.FirstName + " " + s.MiddleName, //todo
+                        Mark = dp.Mark,
+                        AssignedDiplomProjectId = dp.Id,
+                        Lecturer = lecturer.LastName + " " + lecturer.FirstName + " " + lecturer.MiddleName, //todo
+                        Group = s.Group.Name,
+                        Comment = dp.Comment,
+                        ShowForStudent = dp.ShowForStudent,
+                        LecturerName = dp.LecturerName,
+                        MarkDate = dp.MarkDate,
+                        PercentageResults = s.PercentagesResults.Select(pr => new PercentageResultData
+                        {
+                            Id = pr.Id,
+                            PercentageGraphId = pr.DiplomPercentagesGraphId,
+                            StudentId = pr.StudentId,
+                            Mark = pr.Mark,
+                            Comment = pr.Comments,
+                            ShowForStudent = pr.ShowForStudent,
+                        }),
+                        DiplomProjectConsultationMarks = s.DiplomProjectConsultationMarks.Select(cm => new DiplomProjectConsultationMarkData
+                        {
+                            Id = cm.Id,
+                            ConsultationDateId = cm.ConsultationDateId,
+                            StudentId = cm.StudentId,
+                            Mark = cm.Mark,
+                            Comments = cm.Comments
+                        })
+                    }).ApplyPaging(parms);
         }
 
         public List<List<string>> GetDpMarks(int userId, GetPagedListParams parms)

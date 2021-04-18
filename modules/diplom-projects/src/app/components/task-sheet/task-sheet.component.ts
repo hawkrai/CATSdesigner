@@ -6,8 +6,8 @@ import {Subscription} from 'rxjs';
 import {DiplomUser} from '../../models/diplom-user.model';
 import {EditTaskSheetComponent} from './edit-task-sheet/edit-task-sheet.component';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import { CoreGroup } from 'src/app/models/core-group.model';
 import { Template } from 'src/app/models/template.model';
+import { Student } from 'src/app/models/student.model';
 
 @Component({
   selector: 'app-task-sheet',
@@ -17,7 +17,9 @@ import { Template } from 'src/app/models/template.model';
 export class TaskSheetComponent implements OnInit {
 
   @Input() diplomUser: DiplomUser;
-  @Input() groups: CoreGroup[];
+  
+  private COUNT = 1000;
+  private PAGE = 1;
 
   private themes: Theme[];
   private taskSheetHtml: any;
@@ -26,6 +28,7 @@ export class TaskSheetComponent implements OnInit {
   private diplomProjectId: number;
   private templates: any[];
   private tepmlate: Template;
+  private students: Student[];
 
   constructor(private projectThemeService: ProjectThemeService,
               private taskSheetService: TaskSheetService,
@@ -34,6 +37,7 @@ export class TaskSheetComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getStudents()
     this.projectThemeService.getThemes({entity: 'DiplomProject'})
         .subscribe(res => {
           this.themes = res;
@@ -95,7 +99,7 @@ export class TaskSheetComponent implements OnInit {
         },
         data: {
           taskSheet: response,
-          groups: this.groups,
+          students: this.students,
           taskSheetTemplate: this.getTaskSheetTemplate(response),
         }
       });
@@ -114,6 +118,21 @@ export class TaskSheetComponent implements OnInit {
         }
       });
     });
+  }
+
+  getStudents() {
+    if (this.diplomUser.IsLecturer && this.diplomUser.IsSecretary == false) {
+      this.taskSheetService.getStudents({
+        userId: this.diplomUser.UserId,
+        count: this.COUNT,
+        page: this.PAGE,
+        filter: '{"searchString":""}',
+        // filter: '{"secretaryId":' + 6653 + ',' +
+        //  '"searchString":"' + this.searchString + '"}',
+      }).subscribe(res => {
+        this.students = res.Items
+      })
+    } 
   }
 
   retrieveTemplates() {

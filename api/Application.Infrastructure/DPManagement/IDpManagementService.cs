@@ -17,6 +17,8 @@ namespace Application.Infrastructure.DPManagement
 
         TaskSheetData GetTaskSheet(int diplomProjectId);
 
+        List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms);
+
         void SaveTaskSheet(int userId, TaskSheetData taskSheet);
 
         void DeleteProject(int userId, int id);
@@ -30,6 +32,8 @@ namespace Application.Infrastructure.DPManagement
         PagedList<StudentData> GetStudentsByDiplomProjectId(GetPagedListParams parms);
 
         PagedList<StudentData> GetGraduateStudentsForUser(int userId, GetPagedListParams parms, bool getBySecretaryForStudent = true);
+
+        PagedList<StudentData> GetStudentsForLecturer(int userId, GetPagedListParams parms);
 
         List<List<string>> GetDpMarks(int userId, GetPagedListParams parms);
 

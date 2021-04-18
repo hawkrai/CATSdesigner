@@ -63,7 +63,7 @@ export class NewsComponent implements OnInit {
 
   public calcColor(subject: any): any {
     if (subject != null) {
-      return '3px solid ' + subject.Color;
+      return '5px solid ' + subject.Color;
     }
   }
 

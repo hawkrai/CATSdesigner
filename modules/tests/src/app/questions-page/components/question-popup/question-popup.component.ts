@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, Inject, OnInit, ViewChild} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef, MatRadioChange, MatSnackBar} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef, MatRadioChange, MatSlideToggleChange, MatSnackBar} from "@angular/material";
 import {TestService} from "../../../service/test.service";
 import {Question} from "../../../models/question/question.model";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -51,6 +51,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public selectedConcept: string;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   private conceptId: any;
+  public showDescription: boolean;
 
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
@@ -394,5 +395,9 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   private getConceptName() {
     let questionConcept = this.getChildById(this.navItems, this.question.ConceptId);
     this.selectedConcept = questionConcept.Name;
+  }
+
+  public descriptionStateChange(event: MatSlideToggleChange):void {
+    this.showDescription = event.checked;
   }
 }

@@ -226,7 +226,6 @@ export class ProjectsComponent implements OnInit {
   }
 
   removeAssignment(project: Project) {
-    console.log(project)
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
       width: '540px',

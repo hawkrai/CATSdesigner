@@ -1,7 +1,7 @@
 <div>
-  <p align="center"> {{'text.schedule.delete.event' | translate:'Удалить событие?'}} </p>
+  <p align="center"> {{'text.schedule.delete.event' | translate:'Удалить занятие/событие?'}} </p>
   <div align="center">
-    <button style="outline:none;" mat-raised-button color="primary" (click)="onConfirmClick()">{{'text.test.yes'| translate:'Да'}}</button>
-    <button mat-raised-button color="basic" style="outline:none;margin-left: 20px;" (click)=onCancelClick()>{{'button.no'| translate:'Нет'}}</button>
+    <button mat-raised-button color="basic" style="outline:none;" (click)=onCancelClick()>{{'button.no'| translate:'Нет'}}</button>
+    <button style="outline:none; margin-left: 20px;" mat-raised-button color="primary" (click)="onConfirmClick()">{{'text.test.yes'| translate:'Да'}}</button>
   </div>
 </div>

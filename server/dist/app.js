@@ -69,6 +69,13 @@ const proxyApigOptions = {
         '^/course/api': 'api',
     }
 };
+const proxyApigOptions = {
+    target: targetDomain,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/diplom/api': 'api',
+    }
+};
 app.use('*/Services/*', http_proxy_middleware_1.createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', http_proxy_middleware_1.createProxyMiddleware(proxyAccountOptions));
 app.use('*/TestPassing/*', http_proxy_middleware_1.createProxyMiddleware(proxyTestPassingOptions));

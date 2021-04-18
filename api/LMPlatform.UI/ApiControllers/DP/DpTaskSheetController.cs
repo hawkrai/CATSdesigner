@@ -1,7 +1,10 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 using Application.Core;
+using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.DTO;
@@ -18,10 +21,10 @@ namespace LMPlatform.UI.ApiControllers.DP
             return DpManagementService.GetTaskSheet(diplomProjectId);
         }
 
-        /*public List<TaskSheetData> Get([ModelBinder] GetPagedListParams parms)
+        public List<TaskSheetData> Get([ModelBinder] GetPagedListParams parms)
         {
-            return CpManagementService.GetTaskSheets(UserContext.CurrentUserId, parms);
-        }*/
+            return DpManagementService.GetTaskSheets(UserContext.CurrentUserId, parms);
+        }
 
         public HttpResponseMessage Post([FromBody]TaskSheetData taskSheet)
         {
