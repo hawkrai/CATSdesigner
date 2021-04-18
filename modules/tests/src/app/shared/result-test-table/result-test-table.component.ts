@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {AnswersPopupComponent} from "./components/answers-popup/answers-popup.component";
 import * as pluginDataLabels from "chartjs-plugin-datalabels";
@@ -18,7 +18,7 @@ import {TranslatePipe} from "../../../../../../container/src/app/pipe/translate.
   templateUrl: "./result-test-table.component.html",
   styleUrls: ["./result-test-table.component.less"]
 })
-export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnInit {
+export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
 
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -57,6 +57,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public groupId: string;
   @Input()
   public forSelf: boolean = false;
+
+  @Input()
+  public showAsSubGroup: boolean;
   @Input()
   public name: string;
 
@@ -73,6 +76,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
 
   constructor(public dialog: MatDialog,
               private translatePipe: TranslatePipe,
+              private cdr: ChangeDetectorRef,
               private testPassingService: TestPassingService) {
     super();
   }
@@ -148,5 +152,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   private getShortName(pupil): string {
     const pupilName: string[] = pupil[1].name.split(" ");
     return pupilName[0] + " " + pupilName[1][0] + "." + (pupilName[2] ? (pupilName[2][0] + ".") : "");
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    this.cdr.detectChanges();
   }
 }

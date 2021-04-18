@@ -11,6 +11,7 @@ import {finalize, takeUntil} from "rxjs/operators";
 import {AutocompleteModel} from "../models/autocomplete.model";
 import {Results} from "../models/results.model";
 import {TranslatePipe} from "../../../../../container/src/app/pipe/translate.pipe";
+import {MatSlideToggleChange} from "@angular/material";
 
 
 @AutoUnsubscribe
@@ -48,6 +49,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   public user: any;
   public subject: any;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public showAsSubGroup: boolean;
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
@@ -131,8 +133,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
       results = this.resultsOriginal;
     }
     results.forEach((result: Result[]) => {
-      console.log("decompose 2");
-      this.decomposeResult(result, true);
+      this.decomposeResult(result, true, false);
     });
   }
 
@@ -171,8 +172,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
         });*/
 
         this.resultsOriginal.forEach((res) => {
-          console.log("decompose 3");
-          this.decomposeResult(res);
+          this.decomposeResult(res, false, false);
         });
         console.log("rer");
         console.log(results);
@@ -217,7 +217,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     }
   }
 
-  private decomposeResult(results: Result[], notTouchStList?: boolean): void {
+  private decomposeResult(results: Result[], notTouchStList: boolean, update: boolean): void {
     if (results) {
       results.forEach((result) => {
           if (!notTouchStList) {
@@ -258,7 +258,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
       );
       const groupName = results && results.length && results[0].groupName;
       const groupId = results && results.length && results[0].groupId;
-      if (!this.knowledgeControlTestsMass.some(test => test.group === groupName)) {
+      if (!this.knowledgeControlTestsMass.some(test => test.group === groupName) || update) {
         this.knowledgeControlTestsMass.push({res: Object.assign({}, this.knowledgeControlTests), group: groupName, groupId});
         this.selfControlTestsMass.push({res: Object.assign({}, this.selfControlTests), group: groupName, groupId});
         this.nNTestsMass.push({res: Object.assign({}, this.nNTests), group: groupName, groupId});
@@ -270,22 +270,40 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   private initTestArray(test, resultForTable, login): void {
-    if (resultForTable.subGroup === "first") {
-      test[0].set(login, JSON.parse(JSON.stringify(resultForTable)));
-    } else if (resultForTable.subGroup === "second") {
-      test[1].set(login, JSON.parse(JSON.stringify(resultForTable)));
+    if (this.showAsSubGroup) {
+      if (resultForTable.subGroup === "first") {
+        test[0].set(login, JSON.parse(JSON.stringify(resultForTable)));
+      } else if (resultForTable.subGroup === "second") {
+        test[1].set(login, JSON.parse(JSON.stringify(resultForTable)));
+      } else {
+        test[2].set(login, JSON.parse(JSON.stringify(resultForTable)));
+      }
     } else {
-      test[2].set(login, JSON.parse(JSON.stringify(resultForTable)));
+      test[0].set(login, JSON.parse(JSON.stringify(resultForTable)));
     }
   }
 
   private sortBySubGroup(result: Result, test, testRes) {
-    if (result.SubGroup === "first") {
-      test[0].get(result.Login).test.push(testRes);
-    } else if (result.SubGroup === "second") {
-      test[1].get(result.Login).test.push(testRes);
+    if (this.showAsSubGroup) {
+      if (result.SubGroup === "first") {
+        test[0].get(result.Login).test.push(testRes);
+      } else if (result.SubGroup === "second") {
+        test[1].get(result.Login).test.push(testRes);
+      } else {
+        test[2].get(result.Login).test.push(testRes);
+      }
     } else {
-      test[2].get(result.Login).test.push(testRes);
+      test[0].get(result.Login).test.push(testRes);
     }
+  }
+
+  public toggleStateChange(event: MatSlideToggleChange):void {
+    this.showAsSubGroup = event.checked;
+    this.initArrays();
+    this.initArraysMass();
+    this.resultsOriginal.forEach((res) => {
+      this.decomposeResult(res, false, true);
+    });
+    this.cdr.detectChanges();
   }
 }
