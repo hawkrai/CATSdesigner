@@ -22,8 +22,28 @@ namespace Application.Infrastructure.ElasticManagement
         public static string ElasticPassword => ConfigurationManager.AppSettings["ElasticPassword"];
 
         private readonly ElasticClient client;
+        private readonly GroupElasticSearchRepository GroupRepo;
+        private readonly StudentElasticSearchRepository StudentRepo;
+        private readonly LecturerElasticSearchRepository LecturerRepo;
+        private readonly ProjectElasticSearchRepository ProjectRepo;
         public ElasticManagementService()
         {
+            ElasticClient client = CreateClient();
+            if (CheckConnection(client))
+            {
+                StudentRepo = new StudentElasticSearchRepository(client);
+                LecturerRepo = new LecturerElasticSearchRepository(client);
+                GroupRepo = new GroupElasticSearchRepository(client);
+                ProjectRepo = new ProjectElasticSearchRepository(client);
+            }
+            else
+            {
+                throw new Exception("Client was not connected to ElasticSearch server\n");
+            }
+        }
+
+
+        private ElasticClient CreateClient() {
             var pool = new SingleNodeConnectionPool(new Uri(ElasticAddress));
             var connectionSettings =
                 new ConnectionSettings(pool, sourceSerializer: (builtin, settings) => new JsonNetSerializer(
@@ -37,33 +57,60 @@ namespace Application.Infrastructure.ElasticManagement
                 ))
                 .BasicAuthentication(ElasticUsername, ElasticPassword);
 
-            client = new ElasticClient(connectionSettings);
-            CheckConnection(client);
+            return new ElasticClient(connectionSettings);
         }
-        private void CheckConnection(ElasticClient client)
+        private bool CheckConnection(ElasticClient client)
         {
             var isConnected = client.Ping();
-            if (!isConnected.IsValid)
-            {
-                throw new Exception("Client was not connected to ElasticSearch server\n" + isConnected.OriginalException.Message);
-            }
+            return isConnected.IsValid;
         }
         public IEnumerable<ElasticGroup> GetGroupSearchResult(string searchStr) {
-            GroupElasticSearchRepository searcher = new GroupElasticSearchRepository(client);
-            return searcher.Search(searchStr).ToList<ElasticGroup>();
+            return GroupRepo.Search(searchStr).ToList<ElasticGroup>();
         }
         public IEnumerable<ElasticStudent> GetStudentSearchResult(string searchStr) {
-            StudentElasticSearchRepository searcher = new StudentElasticSearchRepository(client);
-            return searcher.Search(searchStr).ToList<ElasticStudent>();
+            return StudentRepo.Search(searchStr).ToList<ElasticStudent>();
         }
         public IEnumerable<ElasticLecturer> GetLecturerSearchResult(string searchStr) {
-            LecturerElasticSearchRepository searcher = new LecturerElasticSearchRepository(client);
-            return searcher.Search(searchStr).ToList<ElasticLecturer>();
+            return LecturerRepo.Search(searchStr).ToList<ElasticLecturer>();
         }
         public IEnumerable<ElasticProject> GetProjectSearchResult(string searchStr) {
-            ProjectElasticSearchRepository searcher = new ProjectElasticSearchRepository(client);
-            return searcher.Search(searchStr).ToList<ElasticProject>();
+            return ProjectRepo.Search(searchStr).ToList<ElasticProject>();
         }
+
+        public void AddStudent(ElasticStudent student)
+        {
+            StudentRepo.AddToIndex(student);
+        }
+        public void AddLecturer(ElasticLecturer lecturer)
+        {
+            LecturerRepo.AddToIndex(lecturer);
+        }
+        public void AddGroup(ElasticGroup group)
+        {
+            GroupRepo.AddToIndex(group);
+        }
+        public void AddProject(ElasticProject project)
+        {
+            ProjectRepo.AddToIndex(project);
+        }
+
+        public void DelecteStudent(int modelId)
+        {
+            StudentRepo.DeleteFromIndex(modelId);
+        }
+        public void DelecteLecturer(int modelId)
+        {
+            LecturerRepo.DeleteFromIndex(modelId);
+        }
+        public void DelecteGroup(int modelId)
+        {
+            GroupRepo.DeleteFromIndex(modelId);
+        }
+        public void DelecteProject(int modelId)
+        {
+            ProjectRepo.DeleteFromIndex(modelId);
+        }
+
         public void ClearElastic() {
             ElasticInitializer init = new ElasticInitializer(client);
             init.DeleteGroups();
