@@ -9,8 +9,6 @@ namespace LMPlatform.UI.Services.Modules.Labs
     [DataContract]
     public class StudentJobProtectionViewData : ResultViewData
     {
-        [DataMember]
-        public IEnumerable<JobProtectionViewData> JobProtections { get; set; }
 
         [DataMember]
         public string StudentName { get; set; }

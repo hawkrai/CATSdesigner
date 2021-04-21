@@ -111,7 +111,7 @@ namespace Application.Infrastructure.GroupManagement
             return data;
 	    }
 
-	    public List<List<string>> GetLabsScheduleMarks(int subjectId, int groupId, int subGroupOneId, int subGroupTwoId)
+	    public List<List<string>> GetLabsScheduleMarks(int subjectId, int groupId)
 	    {
 		    var data = new List<List<string>>();
 

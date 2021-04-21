@@ -67,8 +67,8 @@ namespace LMPlatform.UI.Services.Labs
         UserLabFilesResult GetFilesLab(int userId, int subjectId, bool isCoursPrj);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetUserLabFiles?userId={userId}&labId={labId}")]
-        UserLabFilesResult GetUserLabFiles(int userId, int labId);
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetUserLabFiles?userId={userId}&subjectId={subjectId}")]
+        UserLabFilesResult GetUserLabFiles(int userId, int subjectId);
 
         // OK
         [OperationContract]
@@ -84,6 +84,10 @@ namespace LMPlatform.UI.Services.Labs
 		[OperationContract]
 		[WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/ReceivedLabFile")]
 		ResultViewData ReceivedLabFile(int userFileId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/ReturnLabFile")]
+        ResultViewData ReturnLabFile(int userFileId);
 
 		// OK
         [OperationContract]
@@ -117,23 +121,8 @@ namespace LMPlatform.UI.Services.Labs
         HasGroupsJobProtectionViewData HasGroupsLabsJobProtections(int subjectId, IEnumerable<int> groupsIds);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/ReceiveLab")]
-        ResultViewData ReceiveLab(int labId, int studentId);
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GroupJobProtection?subjectId={subjectId}&groupId={groupId}")]
+        GroupJobProtectionViewData GetGroupJobProtection(int subjectId, int groupId);
 
-        [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/CancelLab")]
-        ResultViewData CancelLab(int labId, int studentId);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/ReturnLab")]
-        ResultViewData ReturnLab(int labId, int studentId);
-
-        [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GroupJobProtections?subjectId={subjectId}&groupId={groupId}")]
-        GroupJobProtectionViewData GroupJobProtections(int subjectId, int groupId);
-
-        [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/StudentJobProtections?subjectId={subjectId}&studentId={studentId}")]
-        StudentJobProtectionViewData StudentJobProtections(int subjectId, int studentId);
     }
 }

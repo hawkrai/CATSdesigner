@@ -6,7 +6,7 @@
     >
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}} 
-          <mat-icon class="priority-icon" *ngIf="state.isTeacher && idx === 4 && (state.hasJobProtections | any:'HasJob')" class="priority-icon" [color]="'primary'">priority_high</mat-icon>
+          <!-- <mat-icon class="priority-icon" *ngIf="state.isTeacher && idx === 4 && (state.hasJobProtections | any:'HasJob')" class="priority-icon" [color]="'primary'">priority_high</mat-icon> -->
         </span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="idx === selectedTab">
@@ -25,11 +25,11 @@
                         [value]="group.GroupId"
             >
               {{group.GroupName}}
-            <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" [color]="'primary'">priority_high</mat-icon>
+            <!-- <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" [color]="'primary'">priority_high</mat-icon> -->
             </mat-option>
             <mat-select-trigger>
               <span #name>{{state.group.GroupName}}</span>
-              <mat-icon data-icon="priority" [style.left.px]="name | width" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" class="priority-icon" [color]="'primary'">priority_high</mat-icon>
+              <!-- <mat-icon data-icon="priority" [style.left.px]="name | width" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" class="priority-icon" [color]="'primary'">priority_high</mat-icon> -->
             </mat-select-trigger>
           </mat-select>
         </mat-form-field>

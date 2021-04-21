@@ -11,12 +11,13 @@ namespace Application.Infrastructure.LabsManagement
 {
     public class LabsManagementService : ILabsManagementService
     {
-        public IEnumerable<UserLabFiles> GetUserLabFiles(int userId, int labId)
+        public IEnumerable<UserLabFiles> GetUserLabFiles(int userId, int subjectId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(
-                    new Query<UserLabFiles>(e => e.UserId == userId && e.LabId == labId)).ToList();
+                    new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && !e.IsCoursProject)
+                    .Include(x => x.Lab)).ToList();
             }
         }
 
@@ -24,10 +25,7 @@ namespace Application.Infrastructure.LabsManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var hasJobProtection = repositoriesContainer.RepositoryFor<JobProtection>().GetAll(
-                    new Query<JobProtection>(e => e.Lab.SubjectId == subjectId && e.StudentId == userId && !e.IsReceived && !e.IsReturned)).Any();
-                return hasJobProtection && repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(
-                    new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && e.LabId.HasValue)).Any();
+                 return false;
             }
         }
 
@@ -35,10 +33,7 @@ namespace Application.Infrastructure.LabsManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var hasJobProtection = repositoriesContainer.RepositoryFor<JobProtection>().GetAll(
-                    new Query<JobProtection>(e => e.LabId == labId && e.StudentId == userId && !e.IsReceived && !e.IsReturned)).Any();
-                return hasJobProtection && repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(
-                    new Query<UserLabFiles>(e => e.UserId == userId && e.LabId == labId)).Any();
+                return true;
             }
         }
     }

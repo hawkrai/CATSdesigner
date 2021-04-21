@@ -18,11 +18,10 @@ import * as subjectSelectors from '../../../../../store/selectors/subject.select
 })
 export class StudentJobProtectionComponent implements OnInit {
 
-  labFiles$: Observable<UserLabFile[]>;
   selectedLabId: number;
 
   state$: Observable<{
-    studentJobProtection: StudentJobProtection,
+    labFiles: UserLabFile[],
     userId: number
   }>;
 
@@ -33,12 +32,12 @@ export class StudentJobProtectionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.store.dispatch(labsActions.loadStudentJobProtection({}));
+    this.store.dispatch(labsActions.loadStudentLabFiles({ }));
     this.state$ = combineLatest([
-      this.store.select(labsSelectors.getStudentJobProtection, {}),
-      this.store.select(subjectSelectors.getUserId)
+      this.store.select(subjectSelectors.getUserId),
+      this.store.select(labsSelectors.getStudentLabFiles, {})
     ]).pipe(
-      map(([studentJobProtection, userId]) => ({ studentJobProtection, userId }))
+      map(([userId, labFiles]) => ({ labFiles, userId }))
     );
   }
 
@@ -50,14 +49,4 @@ export class StudentJobProtectionComponent implements OnInit {
     this.onDeleteFile.emit({ userLabFileId, userId, labId });
   }
 
-  onSelectLab(labId: number, studentId: number): void {
-    if (labId) {
-      this.selectedLabId = labId;
-      this.store.dispatch(labsActions.loadStudentLabFiles({ labId, userId: studentId }));
-      this.labFiles$ = this.store.select(labsSelectors.getStudentLabFiles, { labId });
-    } else {
-      this.store.dispatch(labsActions.resetStudentLabFiles({ studentId }));
-      this.selectedLabId = 0; 
-    }
-  }
 }

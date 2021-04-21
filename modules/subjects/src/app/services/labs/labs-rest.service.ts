@@ -77,10 +77,10 @@ export class LabsRestService {
       map(res => res['UserLabFiles']));
   }
 
-  public getUserLabFiles(userId: number, labId: number): Observable<UserLabFile[]> {
+  public getUserLabFiles(userId: number, subjectId: number): Observable<UserLabFile[]> {
     const params = new HttpParams()
     .append('userId', userId.toString())
-    .append('labId', labId.toString());
+    .append('subjectId', subjectId.toString());
     return this.http.get('Services/Labs/LabsService.svc/GetUserLabFiles', { params }).pipe(
       map(res => res['UserLabFiles'])
     );
@@ -110,6 +110,10 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/CancelReceivedLabFile', { userFileId });
   }
 
+  public returnLabFile(userFileId: number): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/ReturnLabFile', { userFileId });
+  }
+
   public checkPlagiarism(subjectId: number, userFileId: number ): Observable<CorrectDoc[]> {
     return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', { subjectId, userFileId }).pipe(
       map(res => res['DataD'])
@@ -131,12 +135,10 @@ export class LabsRestService {
     return this.http.get(`Statistic/GetLabsMarks`, { params, responseType: 'blob' });
   }
 
-  public getVisitLabsExcel(subjetId: number, groupId: number, subGroupOneId: number, subGroupTwoId: number): Observable<Blob> {
+  public getVisitLabsExcel(subjetId: number, groupId: number): Observable<Blob> {
     const params = new HttpParams()
       .set('subjectId', subjetId.toString())
-      .set('groupId', groupId.toString())
-      .set('subGroupOneId', subGroupOneId.toString())
-      .set('subGroupTwoId', subGroupTwoId.toString());
+      .set('groupId', groupId.toString());
     return this.http.get('Statistic/GetVisitLabs', { params, responseType: 'blob' });
   }
 
@@ -162,29 +164,12 @@ export class LabsRestService {
     );
   }
 
-  public receiveLab(labId: number, studentId: number): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/ReceiveLab', { labId, studentId });
-  }
-
-  public cancelLab(labId: number, studentId: number): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/CancelLab', { labId, studentId });
-  }
-
-  public returnLab(labId: number, studentId: number): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/ReturnLab', { labId, studentId });
-  }
 
   public getGroupJobProtection(subjectId: number, groupId: number): Observable<GroupJobProtection> {
     const params = new HttpParams()
       .append('subjectId', subjectId.toString())
       .append('groupId', groupId.toString());
-    return this.http.get<GroupJobProtection>('Services/Labs/LabsService.svc/GroupJobProtections', { params });
+    return this.http.get<GroupJobProtection>('Services/Labs/LabsService.svc/GroupJobProtection', { params });
   }
 
-  public getStudentJobProtection(subjectId: number, studentId: number): Observable<StudentJobProtection> {
-    const params = new HttpParams()
-      .append('subjectId', subjectId.toString())
-      .append('studentId', studentId.toString());
-    return this.http.get<StudentJobProtection>('Services/Labs/LabsService.svc/StudentJobProtections', { params });
-  }
 }

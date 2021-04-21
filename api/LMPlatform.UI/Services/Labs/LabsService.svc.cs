@@ -23,7 +23,6 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using Application.Infrastructure.LabsManagement;
 using LMPlatform.UI.Services.Modules.Schedule;
-using Application.Infrastructure.ProtectionManagement;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -31,10 +30,6 @@ namespace LMPlatform.UI.Services.Labs
     public class LabsService : ILabsService
     {
 		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
-
-		private readonly LazyDependency<IProtectionManagementService> protectionManagementService = new LazyDependency<IProtectionManagementService>();
-
-		public IProtectionManagementService ProtectionManagementService => protectionManagementService.Value;
 
 		public string PlagiarismTempPath => ConfigurationManager.AppSettings["PlagiarismTempPath"];
 
@@ -337,14 +332,14 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-		public UserLabFilesResult GetUserLabFiles(int userId, int labId)
+		public UserLabFilesResult GetUserLabFiles(int userId, int subjectId)
         {
 			try
 			{
-
-				var labFiles = LabsManagementService.GetUserLabFiles(userId, labId);
+				var labFiles = LabsManagementService.GetUserLabFiles(userId, subjectId);
 				var model = labFiles.Select(e => new UserLabFileViewData
 				{
+					LabShortName = e.Lab?.ShortName,
 					Comments = e.Comments,
 					Id = e.Id,
 					PathFile = e.Attachments,
@@ -403,6 +398,7 @@ namespace LMPlatform.UI.Services.Labs
 					IsReturned = userLabFile.IsReturned,
 					IsCoursProject = userLabFile.IsCoursProject,
 					LabId = userLabFile.LabId,
+					LabShortName = userLabFile?.Lab?.ShortName,
 					Date = userLabFile.Date != null ? userLabFile.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
 					Attachments = FilesManagementService.GetAttachments(userLabFile.Attachments).ToList(),
 					UserId = userLabFile.UserId
@@ -558,7 +554,7 @@ namespace LMPlatform.UI.Services.Labs
 			try
 			{
 				var group = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
-					.Include(e => e.Students.Select(x => x.User))).ToList()[0];
+					.Include(e => e.Students.Select(x => x.User))).FirstOrDefault();
 				IList<SubGroup> subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
 				var students = new List<StudentMark>();
 
@@ -577,6 +573,7 @@ namespace LMPlatform.UI.Services.Labs
 							    IsReturned = t.IsReturned,
 							    IsCoursProject = t.IsCoursProject,
 								UserId = t.UserId,
+								LabId = t.LabId,
                                 Attachments = FilesManagementService.GetAttachments(t.Attachments).ToList()
 							}).Where(x => x.IsCoursProject == isCp).ToList();
 					students.Add(new StudentMark
@@ -811,6 +808,25 @@ namespace LMPlatform.UI.Services.Labs
 				};
 			}
 		}
+
+		public ResultViewData ReturnLabFile(int userFileId)
+        {
+			try
+            {
+				SubjectManagementService.UpdateUserLabFile(userFileId, isReturned: true);
+				return new ResultViewData
+				{
+					Message = "Файл отклонен",
+					Code = "200"
+				};
+			} catch
+            {
+                return new ResultViewData { 
+					Code = "500",
+					Message = "Не удалось отклонить файл"
+				};
+            }
+        }
 
 		public ResultViewData CancelReceivedLabFile(int userFileId)
 		{
@@ -1101,126 +1117,50 @@ namespace LMPlatform.UI.Services.Labs
 
         public HasGroupsJobProtectionViewData HasSubjectLabsJobProtections(int subjectId)
         {
-			return new HasGroupsJobProtectionViewData
-			{
-				HasGroupsJobProtection = ProtectionManagementService.HasSubjectLabsJobProtection(subjectId)
-				.Select(x => new HasGroupJobProtectionViewData(x))
-			};
+            return new HasGroupsJobProtectionViewData
+            {
+ 
+            };
         }
 
         public HasGroupsJobProtectionViewData HasGroupsLabsJobProtections(int subjectId, IEnumerable<int> groupsIds)
         {
-			return new HasGroupsJobProtectionViewData
-			{
-				HasGroupsJobProtection = ProtectionManagementService.HasGroupsLabsJobProtection(subjectId, groupsIds)
-				.Select(x => new HasGroupJobProtectionViewData(x))
-			};
-        }
-
-        public ResultViewData ReceiveLab(int labId, int studentId)
-        {
-            try
+            return new HasGroupsJobProtectionViewData
             {
-				ProtectionManagementService.ReceiveLab(labId, studentId);
-				return new ResultViewData
-				{
-					Code = "200",
-					Message = "Работа принята"
-				};
-            } catch (Exception ex)
-            {
-				return new ResultViewData
-				{
-					Code = "500",
-					Message = "Не удалось принять лабораторнуб работу"
-				};
-            }
+            };
         }
 
-        public ResultViewData CancelLab(int labId, int studentId)
-        {
-			try
-			{
-				ProtectionManagementService.CancelLab(labId, studentId);
-				return new ResultViewData
-				{
-					Code = "200",
-					Message = "Защита работы отменена"
-				};
-			}
-			catch (Exception ex)
-			{
-				return new ResultViewData
-				{
-					Code = "500",
-					Message = "Не удалось отменить защиту работы"
-				};
-			}
-		}
-
-        public ResultViewData ReturnLab(int labId, int studentId)
-        {
-			try
-			{
-				ProtectionManagementService.ReturnLab(labId, studentId);
-				return new ResultViewData
-				{
-					Code = "200",
-					Message = "Работа возвращена"
-				};
-			}
-			catch (Exception ex)
-			{
-				return new ResultViewData
-				{
-					Code = "500",
-					Message = "Не удалось вернуть работу"
-				};
-			}
-		}
-
-        public GroupJobProtectionViewData GroupJobProtections(int subjectId, int groupId)
-        {
-			var jobProtection = ProtectionManagementService.GetGroupLabsJobProtection(subjectId, groupId);
-			return new GroupJobProtectionViewData
-			{
-				StudentsJobProtections = jobProtection.Select(x =>
-				{
-					var student = x.First().Student;
-					return new StudentJobProtectionViewData
-					{
-						StudentId = student.StudentId,
-						StudentName = $"{student.Student.LastName} {student.Student.FirstName}",
-						SubGroup = GetSubGroupNumber(student.SubGroup),
-						HasProtection = LabsManagementService.HasSubjectProtection(student.StudentId, subjectId),
-					};
-				}).OrderBy(x => x.StudentName)
-			};
-        }
-
-        public StudentJobProtectionViewData StudentJobProtections(int subjectId, int studentId)
-        {
-			var protection = ProtectionManagementService.GetStudentLabsJobProtection(subjectId, studentId);
-			var student = protection.First().Student;
-			return new StudentJobProtectionViewData
-			{
-				StudentName = $"{student.Student.LastName} {student.Student.FirstName}",
-				StudentId = student.StudentId,
-				JobProtections = protection.Select(jobProtection => new JobProtectionViewData
-				{
-					HasProtection = LabsManagementService.HasLabProtection(student.StudentId, (int)jobProtection.LabId),
-					IsReceived = jobProtection.IsReceived,
-					IsReturned = jobProtection.IsReturned,
-					LabId = jobProtection.Lab.Id,
-					LabName = jobProtection.Lab.Theme,
-					StudentId = jobProtection.StudentId
-				})
-			};
-		}
 
 		private int GetSubGroupNumber(SubGroup subGroup)
         {
 			return subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : subGroup.Name == "third" ? 3 : 0;
         }
-    }
+
+        public GroupJobProtectionViewData GetGroupJobProtection(int subjectId, int groupId)
+        {
+			var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
+					.Include(x => x.SubjectStudents.Select(x => x.Student))
+					.Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
+
+			var studentJobProtection = new List<StudentJobProtectionViewData>();
+			var studentsLabFiles = SubjectManagementService.GetGroupLabFiles(subjectId, groupId)
+				.Where(x => x.LabId.HasValue);
+
+			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed != null || e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
+            {
+				studentJobProtection.Add(new StudentJobProtectionViewData
+				{
+					StudentId = subjectStudent.StudentId,
+					StudentName = subjectStudent.Student.FullName,
+					SubGroup = GetSubGroupNumber(subjectStudent.SubGroup),
+					HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned)
+				});
+            }
+			return new GroupJobProtectionViewData
+			{
+				StudentsJobProtections = studentJobProtection
+			};
+		}
+
+	}
 }

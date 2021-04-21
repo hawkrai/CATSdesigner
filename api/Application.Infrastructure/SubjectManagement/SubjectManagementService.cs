@@ -546,7 +546,7 @@ namespace Application.Infrastructure.SubjectManagement
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
-
+			userLabFiles.Lab = repositoriesContainer.LabsRepository.GetBy(new Query<Labs>(x => x.Id == userLabFiles.LabId));
 			repositoriesContainer.RepositoryFor<UserLabFiles>().Save(userLabFiles);
 			repositoriesContainer.ApplyChanges();
 
@@ -719,7 +719,8 @@ namespace Application.Infrastructure.SubjectManagement
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.RepositoryFor<UserLabFiles>()
-				.GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.Subject.SubjectGroups.Any(x => x.GroupId == groupId))).ToList();
+				.GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.Subject.SubjectGroups.Any(x => x.GroupId == groupId) && !e.IsCoursProject))
+				.ToList();
 
 		}
 
@@ -945,12 +946,13 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public void UpdateUserLabFile(int userFileId, bool isReceived)
+		public void UpdateUserLabFile(int userFileId, bool isReceived = false, bool isReturned = false)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			var userFile = repositoriesContainer.RepositoryFor<UserLabFiles>()
 				.GetBy(new Query<UserLabFiles>(e => e.Id == userFileId));
 			userFile.IsReceived = isReceived;
+			userFile.IsReturned = isReturned;
 			repositoriesContainer.RepositoryFor<UserLabFiles>().Save(userFile);
 		}
 
@@ -1231,6 +1233,14 @@ namespace Application.Infrastructure.SubjectManagement
             {
 				return null;
             }
+		}
+
+        public SubjectGroup GetSubjectGroup(IQuery<SubjectGroup> query)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+			return repositoriesContainer.RepositoryFor<SubjectGroup>().GetBy(query);
+
 		}
     }
 }

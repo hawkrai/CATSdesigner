@@ -54,6 +54,5 @@ namespace LMPlatform.Models
 
         public ICollection<StudentPracticalMark> StudentPracticalMarks { get; set; } 
 
-        public ICollection<JobProtection> JobProtections { get; set; }
     }
 }

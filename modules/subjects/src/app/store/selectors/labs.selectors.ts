@@ -20,12 +20,6 @@ export const getLabStudents = createSelector(
   state => state.students
 );
 
-export const getStudentJobProtection = createSelector(
-  labsSelector,
-  getUserId,
-  (state: ILabsState, userId: number, { studentId }: { studentId?: number }) => state.studentJobProtection ? state.studentJobProtection[studentId ? studentId : userId] : null
-);
-
 export const hasJobProtections = createSelector(
   labsSelector,
   state => state.hasJobProtections
@@ -34,7 +28,7 @@ export const hasJobProtections = createSelector(
 export const getStudentLabFiles = createSelector(
   labsSelector,
   getUserId,
-  (state: ILabsState, userId: number, { studentId, labId }: { studentId?: number, labId: number }) => state.studentsLabsFiles ? state.studentsLabsFiles[`${studentId ? studentId : userId} ${labId}`] : null
+  (state: ILabsState, userId: number, { studentId }: { studentId?: number }) => state.studentsLabsFiles ? state.studentsLabsFiles[studentId ? studentId : userId] : null
 );
 
 export const getGroupJobProtection = createSelector(
