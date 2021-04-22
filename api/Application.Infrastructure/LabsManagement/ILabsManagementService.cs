@@ -13,6 +13,5 @@ namespace Application.Infrastructure.LabsManagement
 
         bool HasSubjectProtection(int userId, int subjectId);
 
-        bool HasLabProtection(int userId, int labId);
     }
 }

@@ -159,9 +159,10 @@ export class LabsEffects {
     ofType(labsActions.checkJobProtections),
     withLatestFrom(
       this.store.select(subjectSelectors.getSubjectId),
-      this.store.select(subjectSelectors.isTeacher)
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(groupsSelectors.isActiveGroup)
     ),
-    switchMap(([_, subjectId, isTeacher]) => iif(() => isTeacher, this.rest.hasJobProtections(subjectId), of([])).pipe(
+    switchMap(([_, subjectId, isTeacher, isActive]) => iif(() => isTeacher, this.rest.hasJobProtections(subjectId, isActive), of([])).pipe(
       map(hasJobProtections => labsActions.setJobProtections({ hasJobProtections }))
     ))));
 
@@ -210,7 +211,7 @@ export class LabsEffects {
 
   checkJobProptection$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.receiveLabFileSuccess, labsActions.returnLabFileSuccess, labsActions.cancelLabFileSuccess),
-    map(({ userId }) => labsActions.updateJobProtection({ userId }))
-  ))
+    switchMap(({ userId }) => [labsActions.updateJobProtection({ userId }), labsActions.checkJobProtections()])
+  ));
 }
 

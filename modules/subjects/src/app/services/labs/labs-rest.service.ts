@@ -149,11 +149,12 @@ export class LabsRestService {
     return this.http.get('Subject/GetZipLabs', { params, responseType: 'arraybuffer' });
   }
 
-  public hasJobProtections(subjectId: number): Observable<HasGroupJobProtection[]> {
+  public hasJobProtections(subjectId: number, isActive: boolean): Observable<HasGroupJobProtection[]> {
     const params = new HttpParams()
-      .set('subjectId', subjectId.toString());
+      .set('subjectId', subjectId.toString())
+      .set('isActive', String(isActive));
     
-    return this.http.get('Services/Labs/LabsService.svc/HasSubjectLabsJobProtections', { params }).pipe(
+    return this.http.get('Services/Labs/LabsService.svc/HasSubjectLabsJobProtection', { params }).pipe(
       map(response => response['HasGroupsJobProtection'])
     );
   }

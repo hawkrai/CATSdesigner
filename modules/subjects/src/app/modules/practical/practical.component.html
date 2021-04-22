@@ -28,7 +28,7 @@
         </mat-form-field>
         <mat-slide-toggle class="example-margin"
                           [color]="'primary'"
-                          [checked]="detachedGroup"
+                          [checked]="state.detachedGroup"
                           (change)="groupStatusChange($event)"
         >
           {{'text.groups.detached' | translate:'Открепленные группы'}}

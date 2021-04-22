@@ -1115,20 +1115,19 @@ namespace LMPlatform.UI.Services.Labs
             }
         }
 
-        public HasGroupsJobProtectionViewData HasSubjectLabsJobProtections(int subjectId)
+        public HasGroupsJobProtectionViewData HasSubjectLabsJobProtection(int subjectId, bool isActive)
         {
-            return new HasGroupsJobProtectionViewData
-            {
- 
+			var groups = SubjectManagementService.GetSubjectGroups(subjectId, isActive);
+			return new HasGroupsJobProtectionViewData
+			{
+				HasGroupsJobProtection = groups.Select(x => new HasGroupJobProtectionViewData
+				{
+					GroupId = x.GroupId,
+					HasJobProtection = x.SubjectStudents.Any(x => LabsManagementService.HasSubjectProtection(x.StudentId, subjectId))
+				})
             };
         }
 
-        public HasGroupsJobProtectionViewData HasGroupsLabsJobProtections(int subjectId, IEnumerable<int> groupsIds)
-        {
-            return new HasGroupsJobProtectionViewData
-            {
-            };
-        }
 
 
 		private int GetSubGroupNumber(SubGroup subGroup)
@@ -1162,5 +1161,5 @@ namespace LMPlatform.UI.Services.Labs
 			};
 		}
 
-	}
+    }
 }

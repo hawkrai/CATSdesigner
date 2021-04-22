@@ -25,15 +25,8 @@ namespace Application.Infrastructure.LabsManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                 return false;
-            }
-        }
-
-        public bool HasLabProtection(int userId, int labId)
-        {
-            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-            {
-                return true;
+                return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(x => x.UserId == userId && x.SubjectId == subjectId && !x.IsCoursProject))
+                    .Where(x => x.LabId.HasValue).Any();
             }
         }
     }

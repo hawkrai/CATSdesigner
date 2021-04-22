@@ -113,12 +113,8 @@ namespace LMPlatform.UI.Services.Labs
         StudentsMarksResult GetMarksV3(int subjectId, int groupId);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/HasSubjectLabsJobProtections?subjectId={subjectId}")]
-        HasGroupsJobProtectionViewData HasSubjectLabsJobProtections(int subjectId);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/HasGroupsLabsJobProtections")]
-        HasGroupsJobProtectionViewData HasGroupsLabsJobProtections(int subjectId, IEnumerable<int> groupsIds);
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/HasSubjectLabsJobProtection?subjectId={subjectId}&isActive={isActive}")]
+        HasGroupsJobProtectionViewData HasSubjectLabsJobProtection(int subjectId, bool isActive);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GroupJobProtection?subjectId={subjectId}&groupId={groupId}")]

@@ -150,5 +150,7 @@ namespace Application.Infrastructure.SubjectManagement
 
         SubjectGroup GetSubjectGroup(IQuery<SubjectGroup> query);
 
+        IEnumerable<SubjectGroup> GetSubjectGroups(int subjectId, bool isActive);
+
     }
 }

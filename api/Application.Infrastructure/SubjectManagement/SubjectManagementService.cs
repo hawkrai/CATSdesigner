@@ -1242,5 +1242,15 @@ namespace Application.Infrastructure.SubjectManagement
 			return repositoriesContainer.RepositoryFor<SubjectGroup>().GetBy(query);
 
 		}
-    }
+
+		public IEnumerable<SubjectGroup> GetSubjectGroups(int subjectId, bool isActive)
+		{
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+			return repositoriesContainer.RepositoryFor<SubjectGroup>().GetAll(new Query<SubjectGroup>(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup == isActive)
+				.Include(x => x.SubjectStudents))
+				.ToList();
+
+		}
+	}
 }
