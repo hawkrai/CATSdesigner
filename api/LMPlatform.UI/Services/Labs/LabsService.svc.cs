@@ -1117,13 +1117,13 @@ namespace LMPlatform.UI.Services.Labs
 
         public HasGroupsJobProtectionViewData HasSubjectLabsJobProtection(int subjectId, bool isActive)
         {
-			var groups = SubjectManagementService.GetSubjectGroups(subjectId, isActive);
+			var groups = SubjectManagementService.GetSubjectGroups(new Query<SubjectGroup>(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup == isActive));
 			return new HasGroupsJobProtectionViewData
 			{
 				HasGroupsJobProtection = groups.Select(x => new HasGroupJobProtectionViewData
 				{
 					GroupId = x.GroupId,
-					HasJobProtection = x.SubjectStudents.Any(x => LabsManagementService.HasSubjectProtection(x.StudentId, subjectId))
+					HasJobProtection = LabsManagementService.HasSubjectProtection(x.GroupId, subjectId)
 				})
             };
         }
@@ -1142,8 +1142,7 @@ namespace LMPlatform.UI.Services.Labs
 					.Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
 
 			var studentJobProtection = new List<StudentJobProtectionViewData>();
-			var studentsLabFiles = SubjectManagementService.GetGroupLabFiles(subjectId, groupId)
-				.Where(x => x.LabId.HasValue);
+			var studentsLabFiles = SubjectManagementService.GetGroupLabFiles(subjectId, groupId);
 
 			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed != null || e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
             {
@@ -1152,7 +1151,7 @@ namespace LMPlatform.UI.Services.Labs
 					StudentId = subjectStudent.StudentId,
 					StudentName = subjectStudent.Student.FullName,
 					SubGroup = GetSubGroupNumber(subjectStudent.SubGroup),
-					HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned)
+					HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
 				});
             }
 			return new GroupJobProtectionViewData

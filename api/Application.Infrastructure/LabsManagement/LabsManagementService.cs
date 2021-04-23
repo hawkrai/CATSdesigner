@@ -21,12 +21,13 @@ namespace Application.Infrastructure.LabsManagement
             }
         }
 
-        public bool HasSubjectProtection(int userId, int subjectId)
+        public bool HasSubjectProtection(int groupId, int subjectId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(x => x.UserId == userId && x.SubjectId == subjectId && !x.IsCoursProject))
-                    .Where(x => x.LabId.HasValue).Any();
+                return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(x =>
+                x.User.Student.GroupId == groupId &&
+                x.SubjectId == subjectId && !x.IsCoursProject && !x.IsReceived && !x.IsReturned && x.LabId.Value > 0)).Any();
             }
         }
     }

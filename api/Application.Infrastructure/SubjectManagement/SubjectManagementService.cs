@@ -719,7 +719,7 @@ namespace Application.Infrastructure.SubjectManagement
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.RepositoryFor<UserLabFiles>()
-				.GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.Subject.SubjectGroups.Any(x => x.GroupId == groupId) && !e.IsCoursProject))
+				.GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.User.Student.GroupId == groupId && !e.IsCoursProject && e.LabId.Value > 0))
 				.ToList();
 
 		}
@@ -1243,13 +1243,11 @@ namespace Application.Infrastructure.SubjectManagement
 
 		}
 
-		public IEnumerable<SubjectGroup> GetSubjectGroups(int subjectId, bool isActive)
+		public IEnumerable<SubjectGroup> GetSubjectGroups(IQuery<SubjectGroup> query)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 
-			return repositoriesContainer.RepositoryFor<SubjectGroup>().GetAll(new Query<SubjectGroup>(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup == isActive)
-				.Include(x => x.SubjectStudents))
-				.ToList();
+			return repositoriesContainer.RepositoryFor<SubjectGroup>().GetAll(query).ToList();
 
 		}
 	}
