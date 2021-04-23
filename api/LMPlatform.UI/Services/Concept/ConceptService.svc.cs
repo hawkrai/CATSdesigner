@@ -136,7 +136,7 @@ namespace LMPlatform.UI.Services.Concept
             {
                 var source = ConceptManagementService.GetById(conceptId);
                 var canDelete = source != null && source.Author.Id == UserContext.CurrentUserId;
-                if (canDelete || true)
+                if (canDelete)
                 {
                     ConceptManagementService.Remove(conceptId, source.IsGroup);
                 }

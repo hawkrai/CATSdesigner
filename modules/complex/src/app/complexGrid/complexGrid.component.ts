@@ -10,6 +10,7 @@ import { ComplexRulesPopoverComponent } from './components/complex-rules-popover
 import { ComplexService } from '../service/complex.service';
 import { DialogData } from '../models/DialogData';
 import { Complex } from '../models/Complex';
+import { LoaderComponent } from '../complexMaterial/components/materials/add-material-popover/components/loader/loader.component'
 
 
 @Component({
@@ -24,6 +25,7 @@ export class ComplexGridComponent implements OnInit {
   subjectId;
 
   isLucturer: boolean;
+  showLoader: boolean;
 
   constructor(public dialog: MatDialog,
         private complexService: ComplexService,
@@ -36,6 +38,7 @@ export class ComplexGridComponent implements OnInit {
 
     const user = JSON.parse(localStorage.getItem("currentUser"));
     this.isLucturer = user.role === 'lector';
+    this.showLoader = false;
   }
 
   ngOnInit(): void {
@@ -71,8 +74,10 @@ export class ComplexGridComponent implements OnInit {
         includeLectures: result.includeLectures,
         includeTests: result.includeTests
       }
+      this.showLoader = true;
       this.complexService.addRootConcept(complex).subscribe(result => {
         if (result['Code'] === '200') {
+          this.showLoader = false;
           this.router.navigateByUrl('/main');
         }
       });      

@@ -51,7 +51,7 @@ export class GridMenuComponent {
             isPublished: result.isPublished && result.isPublished === true
           }
           this.complexService.editRootConcept(complex).subscribe(result => {
-            debugger;
+            
             if (result['Code'] === '200') {
               this.router.navigateByUrl('/main');
             }
@@ -62,6 +62,7 @@ export class GridMenuComponent {
   }
 
   onDeleteClick(): void {
+    debugger;
     const complex: Complex = {
       elementId: +this.complexId     
     }
