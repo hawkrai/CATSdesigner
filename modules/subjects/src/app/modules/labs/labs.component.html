@@ -29,7 +29,7 @@
             </mat-option>
             <mat-select-trigger>
               <span #name>{{state.group.GroupName}}</span>
-              <mat-icon data-icon="priority" [style.left.px]="name | width" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, state.group)" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
+              <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, state.group)" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
             </mat-select-trigger>
           </mat-select>
         </mat-form-field>
@@ -73,6 +73,9 @@
           <mat-icon>cached</mat-icon>
         </button>
       </div>
+    </div>
+    <div class="labs-component__controls" *ngIf="!state.isTeacher">
+      {{state.group && state.group.GroupName}}
     </div>
     <app-labs-work *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-labs-work>
     <app-protection-schedule *ngIf="selectedTab === 1 && state.group" [groupId]="state.group.GroupId && state.group.GroupId" [isTeacher]="state.isTeacher"></app-protection-schedule>
