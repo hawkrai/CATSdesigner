@@ -7,7 +7,10 @@
       <b style="font-size: 30px; padding-left:800px">{{complexName}}</b>
     </tr>
     <tr>
-      <button mat-raised-button class="add-button" (click)="openAddPopup()">Добавить элемент</button>
+      <td style="display:flex">
+        <button *ngIf="isLector" mat-raised-button class="add-button" (click)="openAddPopup()">Добавить элемент</button>      
+        <button mat-raised-button class="add-button" (click)="openAdaptivePopup()">Адаптивное обучение</button>
+      </td>      
     </tr>
   </table>
   <app-material-tree class="material" [complexId]="complexID"></app-material-tree>
