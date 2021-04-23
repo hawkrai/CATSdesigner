@@ -11,7 +11,7 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     {{studentJobProtection.StudentName}}
-                    <mat-icon class="priority-icon" *ngIf="studentJobProtection.HasProtection" [color]="'primary'">priority_high</mat-icon>
+                    <mat-icon class="priority" *ngIf="studentJobProtection.HasProtection" [color]="'warn'">priority_high</mat-icon>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <app-job-protection-content 
