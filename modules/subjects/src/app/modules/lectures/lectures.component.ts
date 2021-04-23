@@ -21,7 +21,13 @@ import { TranslatePipe } from '../../../../../../container/src/app/pipe/translat
 export class LecturesComponent implements OnInit, OnDestroy {
 
   selectedTab = 0;
-  state$: Observable<{ isTeacher: boolean, subjectId: number, groups: Group[], groupId: number }>;
+  state$: Observable<{ 
+    isTeacher: boolean, 
+    subjectId: number, 
+    groups: Group[], 
+    groupId: number,
+    group: Group
+   }>;
   tabs: string[] = [];
 
   constructor(
@@ -48,8 +54,9 @@ export class LecturesComponent implements OnInit, OnDestroy {
     const subjectId$ = this.store.select(subjectSelectors.getSubjectId);
     const groups$ = this.store.select(groupsSelectors.getGroups);
     const selectedGroupId$ = this.store.select(groupsSelectors.getCurrentGroupId);
-    this.state$ = combineLatest(isTeacher$, subjectId$, groups$, selectedGroupId$).pipe(
-      map(([isTeacher, subjectId, groups, groupId]) => ({ isTeacher, subjectId, groups, groupId }))
+    const selectedGroup$ = this.store.select(groupsSelectors.getCurrentGroup);
+    this.state$ = combineLatest(isTeacher$, subjectId$, groups$, selectedGroupId$, selectedGroup$).pipe(
+      map(([isTeacher, subjectId, groups, groupId, group]) => ({ isTeacher, subjectId, groups, groupId, group }))
     );
   }
 

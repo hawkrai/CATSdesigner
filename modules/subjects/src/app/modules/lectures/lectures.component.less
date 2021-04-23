@@ -1,12 +1,16 @@
 .lectures-component {
-  &-controls {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: flex-end;
+  &__controls {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    margin: -.84375em 0;
-
   }
+  &__select-group {
+    display: flex;
+    align-items: center;
+    margin: -.84375em 0;
+    gap: 0 20px;
+  }
+
 }
 
 .mdc-tab-bar {
