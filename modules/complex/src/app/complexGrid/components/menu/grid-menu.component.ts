@@ -37,7 +37,10 @@ export class GridMenuComponent {
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,
-        isPublished: res.Published
+        isPublished: res.Published,
+        includeLabs: res.IncludeLabs,
+        includeLectures: res.IncludeLecturers,
+        includeTests: res.IncludeTests
       };
 
       const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);
@@ -62,7 +65,6 @@ export class GridMenuComponent {
   }
 
   onDeleteClick(): void {
-    debugger;
     const complex: Complex = {
       elementId: +this.complexId     
     }
