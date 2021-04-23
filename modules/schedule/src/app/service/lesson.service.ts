@@ -66,7 +66,7 @@ export class LessonService {
   }
 
   getSubjectOwner(subjId: any): Observable<any> {
-    return this.http.post<any>('/Services/Subjects/SubjectsService.svc/GetSubjectOwner', {subjectId: subjId});
+    return this.http.get<any>('/Services/Subjects/SubjectsService.svc/GetSubjectOwner/' + subjId);
   }
 
   getAllSubjects(username: string): Observable<any> {

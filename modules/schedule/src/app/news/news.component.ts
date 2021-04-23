@@ -17,7 +17,7 @@ import {Subject} from 'rxjs';
 export class NewsComponent implements OnInit {
 
   user: any;
-  news: any;
+  news: any = [];
   isEnableNews = true;
   toolTip = 'Скрыть новости';
 
