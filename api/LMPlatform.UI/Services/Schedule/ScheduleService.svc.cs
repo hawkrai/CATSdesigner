@@ -35,9 +35,12 @@ namespace LMPlatform.UI.Services.Schedule
         {
             var dateTimeStart = DateTime.ParseExact(dateStart, "dd-MM-yyyy", CultureInfo.InvariantCulture);
             var dateTimeEnd = DateTime.ParseExact(dateEnd, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+            var subjects = SubjectManagementService.GetUserSubjects(UserContext.CurrentUserId);
             return new ScheduleViewResult
             {
-                Schedule = ScheduleManagementService.GetScheduleBetweenDates(dateTimeStart, dateTimeEnd).Select(x => new ScheduleViewData(x))
+                Schedule = ScheduleManagementService.GetScheduleBetweenDates(dateTimeStart, dateTimeEnd)
+                .Where(x => subjects.Any(s => s.Id == x.SubjectId))
+                .Select(x => new ScheduleViewData(x))
             };
         }
 
