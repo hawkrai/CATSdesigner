@@ -211,6 +211,7 @@
   "text.editor.remove.confirmation.text": "Are you sure you want to remove the ",
   "text.editor.hint.roll.up": "Roll up",
   "text.editor.hint.expand": "Expand",
+  "text.editor.emptylist": "List is empty",
 
   "text.news": "News",
   "text.news.plural": "News",
