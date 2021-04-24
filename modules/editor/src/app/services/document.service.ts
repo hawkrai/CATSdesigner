@@ -26,8 +26,8 @@ export class DocumentService {
     }));
   }
 
-  getContent(documentId) : Observable<any> {
-    return this.http.get<DocumentPreview>(this._serviceUrl + "GetFullContent?documentId=" + documentId).pipe(map(data=>{
+  getContent(documentId, userId) : Observable<any> {
+    return this.http.get<DocumentPreview>(this._serviceUrl + "GetFullContent?documentId=" + documentId + "&userId=" + userId).pipe(map(data=>{
       return data;
     }));
   }
