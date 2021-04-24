@@ -118,7 +118,12 @@ namespace Application.Infrastructure.DPManagement
 
             if (projects.ToList().Count == 0 && user != null && user.Student != null)
             {
-                projects = Context.DiplomProjects.Where(x => x.DiplomProjectGroups.Any(dpg => dpg.GroupId == user.Student.GroupId));
+                projects = Context.DiplomProjects.Where(x => x.AssignedDiplomProjects.Any(q => q.StudentId == user.Student.Id));
+
+                if (projects.ToList().Count == 0)
+                {
+                    projects = Context.DiplomProjects.Where(x => x.DiplomProjectGroups.Any(dpg => dpg.GroupId == user.Student.GroupId));
+                }
             }
 
             return projects.Select(x => new Correlation
