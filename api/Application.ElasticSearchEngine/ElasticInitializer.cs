@@ -18,25 +18,21 @@ namespace Application.ElasticSearchEngine
         private string connectionString;
         private string elasticUri;
         private ElasticClient client;
-        /*private static string LECTURERS_INDEX_NAME => ConfigurationManager.AppSettings["LecturersIndexName"];
+        private static string LECTURERS_INDEX_NAME => ConfigurationManager.AppSettings["LecturersIndexName"];
         private static string PROJECTS_INDEX_NAME => ConfigurationManager.AppSettings["ProjectsIndexName"];
         private static string GROUPS_INDEX_NAME => ConfigurationManager.AppSettings["GroupsIndexName"];
-        private static string STUDENTS_INDEX_NAME => ConfigurationManager.AppSettings["StudentsIndexName"];*/
-        private static string LECTURERS_INDEX_NAME = "lecturers";
-        private static string PROJECTS_INDEX_NAME = "projects";
-        private static string GROUPS_INDEX_NAME = "groups";
-        private static string STUDENTS_INDEX_NAME = "students";
+        private static string STUDENTS_INDEX_NAME => ConfigurationManager.AppSettings["StudentsIndexName"];
 
         public ElasticInitializer(ElasticClient elasticClient)
         {
             client = elasticClient;
             CheckConnection(client);
         }
-        public ElasticInitializer(string connectionString, string elsticUri, string userName, string password)
+        public ElasticInitializer(string connectionString, string elasticUri, string userName, string password)
         {
             this.elasticUri = elasticUri;
             this.connectionString = connectionString;
-            var pool = new SingleNodeConnectionPool(new Uri(elsticUri));
+            var pool = new SingleNodeConnectionPool(new Uri(elasticUri));
             var connectionSettings =
                 new ConnectionSettings(pool, sourceSerializer: (builtin, settings) => new JsonNetSerializer(
                     builtin, settings,
@@ -95,8 +91,7 @@ namespace Application.ElasticSearchEngine
         private static CreateIndexDescriptor GetProjectMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-                .Map<ElasticProject>(m => m
+            map.Map<ElasticProject>(m => m
                     .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
@@ -105,21 +100,19 @@ namespace Application.ElasticSearchEngine
                         )
                         .Date(s=>s
                             .Name(n=>n.DateOfChange)
-                            )
+                        )
                         .Text(s => s
                             .Name(n => n.Title)
-                            )
-                    )
+                        )
+                   )
                 )
-             )
            ;
             return map;
         }
         private static CreateIndexDescriptor GetGroupMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-                .Map<ElasticGroup>(m => m
+            map.Map<ElasticGroup>(m => m
                     .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
@@ -128,30 +121,28 @@ namespace Application.ElasticSearchEngine
                         )
                         .Number(num => num
                             .Name(n => n.SecretaryId)
-                            )
+                        )
                         .Text(s => s
                             .Name(n => n.Name)
-                            )
+                        )
                     )
                 )
-             )
            ;
             return map;
         }
         private static CreateIndexDescriptor GetLecturerMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-                .Map<ElasticLecturer>(m => m
+            map.Map<ElasticLecturer>(m => m
                     .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
                             .Name(n => n.Id)
                             .Type(NumberType.Integer)
-                        )
+                         )
                         .Text(s => s
                             .Name(n => n.FullName)
-                        )
+                         )
                         .Text(o => o
                             .Name(s => s.Skill)
                          )             
@@ -161,10 +152,10 @@ namespace Application.ElasticSearchEngine
                             .Properties(pr => pr
                                 .Text(t=>t
                                     .Name(n=>n.SkypeContact)
-                                    )
+                                 )
                                 .Text(t => t
                                     .Name(n => n.Phone)
-                                    )
+                                 )
                                 .Text(t => t
                                     .Name(n => n.About)
                                 )
@@ -172,15 +163,13 @@ namespace Application.ElasticSearchEngine
                         )
                     )
                 )
-             )    
            ;
             return map;
         }
         private static CreateIndexDescriptor GetStudentMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-                .Map<ElasticStudent>(m => m
+            map.Map<ElasticStudent>(m => m
                 .Dynamic(false)
                     .Properties(prop => prop
                         .Number(s => s
@@ -202,10 +191,10 @@ namespace Application.ElasticSearchEngine
                              .Properties(pr => pr
                                 .Text(t => t
                                     .Name(n => n.SkypeContact)
-                                    )
+                                )
                                 .Text(t => t
                                     .Name(n => n.Phone)
-                                    )
+                                )
                                 .Text(t => t
                                     .Name(n => n.About)
                                 )
@@ -213,7 +202,6 @@ namespace Application.ElasticSearchEngine
                          )
                     )
                  )
-              )
            ;
             return map;
         }

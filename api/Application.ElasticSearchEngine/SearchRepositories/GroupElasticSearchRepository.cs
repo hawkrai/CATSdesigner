@@ -11,8 +11,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
 {
     public class GroupElasticSearchRepository : BaseElasticSearchRepository
     {
-        //private static string GROUPS_INDEX_NAME => ConfigurationManager.AppSettings["GroupsIndexName"];
-        private static string GROUPS_INDEX_NAME = "groups";
+        private static string GROUPS_INDEX_NAME => ConfigurationManager.AppSettings["GroupsIndexName"];
 
         public GroupElasticSearchRepository(ElasticClient client)
             : base(client, GROUPS_INDEX_NAME)

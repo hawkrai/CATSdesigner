@@ -11,8 +11,8 @@ namespace Application.ElasticSearchEngine.SearchRepositories
 {
     public class ProjectElasticSearchRepository : BaseElasticSearchRepository
     {
-        //private static string PROJECTS_INDEX_NAME => ConfigurationManager.AppSettings["ProjectsIndexName"];
-        private static string PROJECTS_INDEX_NAME => "projects";
+        private static string PROJECTS_INDEX_NAME => ConfigurationManager.AppSettings["ProjectsIndexName"];
+        //private static string PROJECTS_INDEX_NAME => "projects";
 
         public ProjectElasticSearchRepository(ElasticClient client)
             : base(client, PROJECTS_INDEX_NAME)
