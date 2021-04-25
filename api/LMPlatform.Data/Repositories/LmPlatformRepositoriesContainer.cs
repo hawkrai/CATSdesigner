@@ -14,7 +14,6 @@ namespace LMPlatform.Data.Repositories
 
             return result;
         }
-
         public IUsersRepository UsersRepository { get; set; }
 
         public IBugsRepository BugsRepository { get; set; }

@@ -17,7 +17,7 @@ import {Subject} from 'rxjs';
 export class NewsComponent implements OnInit {
 
   user: any;
-  news: any;
+  news: any = [];
   isEnableNews = true;
   toolTip = 'Скрыть новости';
 
@@ -44,7 +44,6 @@ export class NewsComponent implements OnInit {
       } else {
         this.isEnableNews = false;
       }
-      console.log(this.news);
     });
   }
 
@@ -64,7 +63,7 @@ export class NewsComponent implements OnInit {
 
   public calcColor(subject: any): any {
     if (subject != null) {
-      return '3px solid ' + subject.Color;
+      return '5px solid ' + subject.Color;
     }
   }
 

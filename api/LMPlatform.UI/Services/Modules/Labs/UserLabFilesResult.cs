@@ -9,6 +9,6 @@ namespace LMPlatform.UI.Services.Modules.Labs
     public class UserLabFilesResult : ResultViewData
     {
         [DataMember]
-        public List<UserlabFilesViewData> UserLabFiles { get; set; } 
+        public List<UserLabFileViewData> UserLabFiles { get; set; } 
     }
 }

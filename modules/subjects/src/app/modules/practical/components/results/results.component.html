@@ -7,7 +7,7 @@
                     <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
                 </ng-container>
                 <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>Студенты</th>
+                    <th mat-header-cell *matHeaderCellDef>{{'text.students' | translate:'Студенты'}}</th>
                     <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
                 </ng-container>
 
@@ -36,13 +36,18 @@
                     <div *ngIf="markProperty.recommendedMark" style="opacity: 0.3">
                         {{markProperty.recommendedMark}}
                     </div>
-                    <div *ngIf="(element | visit:schedulePractical.head:state.practicals)" [matTooltip]="getMissingTooltip(element, state.schedule)" matTooltipPosition="above" class="not-visit"></div>
+                    <ng-container *var="element | visit:schedulePractical.head:state.practicals as marks">
+                        <div *ngIf="marks.length"
+                        matTooltipClass="tooltip"
+                        [matTooltip]="getMissingTooltip(marks, state.schedule)" matTooltipPosition="above" class="not-visit"></div>
+                    </ng-container>
+
                     </div>
                 </td>
                 </ng-container>
         
                 <ng-container matColumnDef="total-practical">
-                <th mat-header-cell *matHeaderCellDef>Средний балл</th>
+                <th mat-header-cell *matHeaderCellDef>{{'text.average.mark' | translate:'Средний балл'}}</th>
                 <td mat-cell
                     *matCellDef="let element">
                     <p>{{element.PracticalsMarkTotal}}</p></td>
@@ -50,12 +55,12 @@
                 </ng-container>
         
                 <ng-container matColumnDef="total-test">
-                <th mat-header-cell *matHeaderCellDef>Средний балл за тесты</th>
+                <th mat-header-cell *matHeaderCellDef>{{'text.average.test' | translate:'Средний балл за тесты'}}</th>
                 <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed && !element.TestMark"> {{element.TestMark}}</td>
                 </ng-container>
         
                 <ng-container matColumnDef="total">
-                <th mat-header-cell *matHeaderCellDef>Рейтинговая оценка</th>
+                <th mat-header-cell *matHeaderCellDef>{{'text.rating' | translate:'Рейтинговая оценка'}}</th>
                 <td mat-cell
                 [ngClass]="{'not-all': element | isNotAll}"
                     *matCellDef="let element">

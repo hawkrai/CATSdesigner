@@ -206,19 +206,20 @@
     <Compile Include="DocumentsManagement\IDocumentManagementService.cs" />
     <Compile Include="DPManagement\AuthorizationHelper.cs" />
     <Compile Include="DPManagement\CorrelationService.cs" />
+    <Compile Include="DPManagement\DiplomStudentMarkModel.cs" />
     <Compile Include="DPManagement\DpManagementService.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="DPManagement\ICorrelationService.cs" />
     <Compile Include="DPManagement\IDpManagementService.cs" />
-    <Compile Include="DPManagement\IPercentageGraphService.cs" />
+    <Compile Include="DPManagement\IDpPercentageGraphService.cs" />
     <Compile Include="DPManagement\IUserService.cs" />
-    <Compile Include="DPManagement\PercentageGraphService.cs" />
+    <Compile Include="DPManagement\DpPercentageGraphService.cs" />
     <Compile Include="DPManagement\UserService.cs" />
     <Compile Include="DTO\Correlation.cs" />
     <Compile Include="DTO\DiplomProjectConsultationDateData.cs" />
     <Compile Include="DTO\DiplomProjectData.cs" />
-    <Compile Include="DTO\DipomProjectConsultationMarkData.cs" />
+    <Compile Include="DTO\DiplomProjectConsultationMarkData.cs" />
     <Compile Include="DTO\NewsData.cs" />
     <Compile Include="DTO\PercentageGraphData.cs" />
     <Compile Include="DTO\PercentageResultData.cs" />
@@ -228,8 +229,10 @@
     <Compile Include="ElasticManagement\ElasticManagementService.cs" />
     <Compile Include="ElasticManagement\IElasticManagementService.cs" />
     <Compile Include="Export\GenerateCPDocument.cs" />
+    <Compile Include="Export\GenerateDpDocument.cs" />
     <Compile Include="Export\Word.cs" />
     <Compile Include="Export\WordCourseProject.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="FilesManagement\AttachedFile.cs" />
     <Compile Include="FilesManagement\FilesManagementService.cs" />
     <Compile Include="FilesManagement\IFilesManagementService.cs" />
@@ -251,8 +254,10 @@
     <Compile Include="MaterialsManagement\MaterialsManagementService.cs" />
     <Compile Include="MessageManagement\IMessageManagementService.cs" />
     <Compile Include="MessageManagement\MessageManagementService.cs" />
+    <Compile Include="Models\GroupJobProtection.cs" />
     <Compile Include="Models\ProfileCalendarModel.cs" />
     <Compile Include="Models\ScheduleModel.cs" />
+    <Compile Include="Models\StudentJobProtection.cs" />
     <Compile Include="NoteManagement\INoteManagementService.cs" />
     <Compile Include="NoteManagement\NoteManagementService.cs" />
     <Compile Include="PracticalManagement\IPracticalManagementService.cs" />

@@ -35,6 +35,12 @@ namespace LMPlatform.Models.KnowledgeTesting
             set;
         }
 
+        public DateTime? EndTime
+        {
+            get;
+            set;
+        }
+
         public User User
         {
             get;

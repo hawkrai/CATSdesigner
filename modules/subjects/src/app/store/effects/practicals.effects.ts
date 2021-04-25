@@ -8,6 +8,7 @@ import * as groupSelectors from '../selectors/groups.selectors';
 import * as subjectSelectors from '../selectors/subject.selector';
 import * as catsActions from '../actions/cats.actions';
 import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
+import * as filesActions from '../actions/files.actions';
 import { IAppState } from '../state/app.state';
 import { ScheduleService } from "src/app/services/schedule.service";
 
@@ -46,9 +47,10 @@ export class PracticalsEffects {
     updateOrder$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.updateOrder),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([{ prevIndex, currentIndex }, subjectId]) => 
-        this.rest.updatePracticalsOrder(subjectId, prevIndex, currentIndex))
-    ), { dispatch: false });
+        switchMap(([{ prevIndex, currentIndex }, subjectId]) => this.rest.updatePracticalsOrder(subjectId, prevIndex, currentIndex).pipe(
+            map(() => practicalsActions.loadPracticals())
+        ))
+    ));
 
     deletePractical$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.deletePractical),
@@ -61,7 +63,7 @@ export class PracticalsEffects {
     createPractical$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.savePractical),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-        switchMap(([{ practical }, subjectId]) => (practical.subjectId = subjectId, this.rest.savePractical(practical)).pipe(
+        switchMap(([{ practical }, subjectId]) => this.rest.savePractical({ ...practical, subjectId}).pipe(
             switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadPracticals()])
         ))
     ));
@@ -109,4 +111,23 @@ export class PracticalsEffects {
             switchMap((body) => [catsActions.showMessage({ body }), practicalsActions.loadMarks()])
         ))
     ));
+
+    practicalsVisitingExcel$ = createEffect(() => this.actions$.pipe(
+        ofType(practicalsActions.getVisitingExcel),
+        withLatestFrom(
+            this.store.select(subjectSelectors.getSubjectId), 
+            this.store.select(groupSelectors.getCurrentGroupId)
+        ), 
+        switchMap(([_, subjectId, groupId]) => this.rest.getVisitPrcaticalsExcel(subjectId, groupId).pipe(
+            map(response => filesActions.getExcelData({ response }))
+        ))
+      ));
+    
+      labsMarksExcel$ = createEffect(() => this.actions$.pipe(
+        ofType(practicalsActions.getMarksExcel),
+        withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupSelectors.getCurrentGroupId)),
+        switchMap(([_, subjectId, groupId]) => this.rest.getPracticalsMarksExcel(subjectId, groupId).pipe(
+          map(response => filesActions.getExcelData({ response }))
+        ))
+      ));
 }

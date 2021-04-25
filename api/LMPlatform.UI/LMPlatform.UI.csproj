@@ -430,21 +430,24 @@
     <Compile Include="ApiControllers\CP\CpTaskSheetHtmlController.cs" />
     <Compile Include="ApiControllers\CP\CpTaskSheetTemplateController.cs" />
     <Compile Include="ApiControllers\CP\CpStatisticController.cs" />
-    <Compile Include="ApiControllers\DP\CorrelationController.cs" />
+    <Compile Include="ApiControllers\DP\DpCorrelationController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectNewsController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectAssignmentController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectConsultationDateController.cs" />
     <Compile Include="ApiControllers\DP\DiplomProjectController.cs" />
-    <Compile Include="ApiControllers\DP\DipomProjectConsultationController.cs" />
-    <Compile Include="ApiControllers\DP\PercentageController.cs" />
-    <Compile Include="ApiControllers\DP\PercentageResultController.cs" />
-    <Compile Include="ApiControllers\DP\StudentController.cs" />
-    <Compile Include="ApiControllers\DP\StudentMarkController.cs">
+    <Compile Include="ApiControllers\DP\DiplomProjectConsultationController.cs" />
+    <Compile Include="ApiControllers\DP\DpPercentageController.cs" />
+    <Compile Include="ApiControllers\DP\DpPercentageResultController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomStudentController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomStudentMarkController.cs">
       <SubType>
       </SubType>
     </Compile>
-    <Compile Include="ApiControllers\DP\TaskSheetTemplateController.cs" />
-    <Compile Include="ApiControllers\DP\UserController.cs" />
+    <Compile Include="ApiControllers\DP\DpStatisticController.cs" />
+    <Compile Include="ApiControllers\DP\DpTaskSheetDownloadController.cs" />
+    <Compile Include="ApiControllers\DP\DpTaskSheetHtmlController.cs" />
+    <Compile Include="ApiControllers\DP\DpTaskSheetTemplateController.cs" />
+    <Compile Include="ApiControllers\DP\DiplomUserController.cs" />
     <Compile Include="ApiControllers\LabsController.cs" />
     <Compile Include="ApiControllers\NewsController.cs" />
     <Compile Include="ApiControllers\UploadController.cs" />
@@ -470,7 +473,7 @@
     <Compile Include="Controllers\MaterialsController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\ParentalController.cs" />
-    <Compile Include="ApiControllers\DP\TaskSheetController.cs" />
+    <Compile Include="ApiControllers\DP\DpTaskSheetController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\TinCanModController.cs" />
     <Compile Include="Controllers\ScormModController.cs" />
@@ -585,18 +588,22 @@
     <Compile Include="Services\Modules\CoreModels\StudentsViewData.cs" />
     <Compile Include="Services\Modules\CoreModels\SubGroupsViewData.cs" />
     <Compile Include="Services\Modules\Files\AttachmentResult.cs" />
-    <Compile Include="Services\Modules\Labs\HasJobProtection.cs" />
-    <Compile Include="Services\Modules\Labs\HasProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Labs\GroupJobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Labs\HasGroupJobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Labs\HasGroupsJobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Labs\HasJobProtectionViewData.cs" />
     <Compile Include="Services\Modules\Labs\LabsResult.cs" />
     <Compile Include="Services\Modules\Labs\LabsViewData.cs" />
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
+    <Compile Include="Services\Modules\Labs\JobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Labs\StudentJobProtectionViewData.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewData.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewResult.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleProtectionLesson.cs" />
     <Compile Include="Services\Modules\Labs\ScheduleProtectionLabResult.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleProtectionLabsViewData.cs" />
     <Compile Include="Services\Modules\Labs\UserLabFilesResult.cs" />
-    <Compile Include="Services\Modules\Labs\UserlabFilesViewData.cs" />
+    <Compile Include="Services\Modules\Labs\UserLabFileViewData.cs" />
     <Compile Include="Services\Modules\LectorResult.cs" />
     <Compile Include="Services\Modules\LectorsResult.cs" />
     <Compile Include="Services\Modules\LectorViewData.cs" />
@@ -637,6 +644,7 @@
     <Compile Include="Services\Modules\Schedule\ScheduleProtectionViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewResult.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleViewResultSingle.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />

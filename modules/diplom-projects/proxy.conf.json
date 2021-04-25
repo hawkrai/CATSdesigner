@@ -1,0 +1,22 @@
+{
+  "/api/*": {
+    "target": " http://localhost:8080",
+    "secure": false
+  },
+  "/Cp/*": {
+    "target": " http://localhost:8080",
+    "secure": false
+  },
+  "/Statistic/*": {
+    "target": " http://localhost:8080",
+    "secure": false
+  },
+  "/Services/*": {
+    "target": " http://localhost:8080",
+    "secure": false
+  },
+  "/Content/*": {
+    "target": " http://localhost:8080",
+    "secure": false
+  }
+}

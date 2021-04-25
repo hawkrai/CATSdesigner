@@ -1,6 +1,6 @@
-<div class="lectures-list-component" *ngIf="lectures$ | async as lectures; else: load">
+<div class="lectures-list-component" *ngIf="lectures; else: load">
   <div class="lectures-list-component__actions" *ngIf="isTeacher">
-    <button mat-raised-button color="primary" (click)="constructorLecture(lectures.length)">Добавить лекцию</button>
+    <button mat-raised-button color="primary" (click)="constructorLecture(lectures.length)">{{'text.subjects.lectures.add' | translate:'Добавить лекцию'}}</button>
   </div>
   <table #table class="table" mat-table [dataSource]="lectures" cdkDropList
   [cdkDropListData]="lectures"
@@ -12,42 +12,41 @@
     </td>
   </ng-container>
   <ng-container matColumnDef="theme">
-    <th mat-header-cell *matHeaderCellDef> Тема лекции </th>
+    <th mat-header-cell *matHeaderCellDef> {{'text.subjects.lectures.theme' | translate:'Тема лекции'}} </th>
     <td mat-cell *matCellDef="let element">
         {{element.Theme}} <a class="file-link" (click)="openFilePopup(element.Attachments)" mat-button color="primary" *ngIf="element.Attachments.length && isTeacher">({{element.Attachments.length }})</a>
     </td>
   </ng-container>    
   <ng-container matColumnDef="duration">
-    <th mat-header-cell *matHeaderCellDef> Количество часов </th>
+    <th mat-header-cell *matHeaderCellDef>{{'text.number.hours' | translate:'Количество часов'}} </th>
     <td mat-cell *matCellDef="let element">
         {{element.Duration}}
     </td>
   </ng-container>
   <ng-container matColumnDef="files" *ngIf="!isTeacher">
-    <th mat-header-cell *matHeaderCellDef> Скачать </th>
+    <th mat-header-cell *matHeaderCellDef> {{'text.download' | translate:'Скачать'}} </th>
     <td mat-cell *matCellDef="let element">
       <button class="mdc-button" *ngIf="element.Attachments.length > 0"
         (click)="openFilePopup(element.Attachments)">
       <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
-      <span class="mdc-button__label">Файлы</span>
+      <span class="mdc-button__label">{{'text.attachments.plural' | translate:'Файлы'}}</span>
     </button>
     </td>
   </ng-container>
   <ng-container matColumnDef="actions" *ngIf="isTeacher">
-    <th mat-header-cell *matHeaderCellDef> Действие </th>
+    <th mat-header-cell *matHeaderCellDef> {{'text.action' | translate:'Действие'}} </th>
     <td mat-cell *matCellDef="let element">
       <div>
-        <button mat-icon-button color="primary" matTooltip="Редактировать лекцию"
+        <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lectures.edit' | translate:'Редактировать лекцию'"
         (click)="constructorLecture(lectures.length, element)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="primary" matTooltip="Удалить лекцию" (click)="deleteLectures(element)">
+        <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lectures.delete' | translate:'Удалить лекцию'" (click)="deleteLectures(element)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
     </td>
   </ng-container>
-
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;" [cdkDragDisabled]="!isTeacher" cdkDragLockAxis="y" cdkDrag [cdkDragData]="row"></tr>
 </table>

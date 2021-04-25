@@ -136,7 +136,7 @@ namespace LMPlatform.UI.Services.Concept
             {
                 var source = ConceptManagementService.GetById(conceptId);
                 var canDelete = source != null && source.Author.Id == UserContext.CurrentUserId;
-                if (canDelete || true)
+                if (canDelete)
                 {
                     ConceptManagementService.Remove(conceptId, source.IsGroup);
                 }
@@ -245,11 +245,23 @@ namespace LMPlatform.UI.Services.Concept
             if (attach == null) return;
             children.FilePath = $"{attach.PathName}//{ attach.FileName}";
         }
-		
+
+        public string[] GetFolderFilesPaths(int conceptId)
+        {
+            var tree = ConceptManagementService.GetElementsByParentId(conceptId);
+            return tree.Select(x => GetFilePath(x.Container)).ToArray();
+        }
+
+        private string GetFilePath(string container)
+        {
+            var attach = FilesManagementService.GetAttachments(container).FirstOrDefault();
+            if (attach == null) return string.Empty;
+            return $"{attach.PathName}//{ attach.FileName}";
+        }
         #endregion
 
-		#region Used By Mobile
-		public ConceptResult AttachSiblings(int source, int left, int right)
+        #region Used By Mobile
+        public ConceptResult AttachSiblings(int source, int left, int right)
         {
             try
             {

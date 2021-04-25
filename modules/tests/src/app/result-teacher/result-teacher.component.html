@@ -29,6 +29,14 @@
                          [placeholder]="'text.test.choose.student' | translate: 'Выберите студентов'"
                          (onSelectionChange)="studentChange($event)"
   ></app-autocomplete-form>
+  <mat-slide-toggle
+    class="result-teacher-autocomplete-item"
+    [color]="'primary'"
+    [checked]="showAsSubGroup"
+    (change)="toggleStateChange($event)"
+  >
+    {{"Показать по подгруппам"}}
+  </mat-slide-toggle>
 </div>
 <div>
   <div *ngIf="testChangeCheckBoxes.includes('0')">
@@ -44,6 +52,7 @@
                                [name]="'knowledgeControlTests'"
                                [testName]="'text.tests.for.control' | translate: 'Тесты для контроля знаний'"
                                [groupId]="test.groupId"
+                               [showAsSubGroup]="showAsSubGroup"
                                [group]="test.group"></app-result-test-table>
       </div>
     </div>
@@ -62,6 +71,7 @@
                                [groupId]="test.groupId"
                                [testName]="'text.tests.for.self.control' | translate: 'Тесты для самоконтроля'"
                                [forSelf]="true"
+                               [showAsSubGroup]="showAsSubGroup"
                                [name]="'selfControlTests'"></app-result-test-table>
       </div>
     </div>
@@ -79,6 +89,7 @@
                                [group]="test.group"
                                [testName]="'text.tests.for.pre.eumk' | translate: 'Предтест для обучения в ЭУМК'"
                                [groupId]="test.groupId"
+                               [showAsSubGroup]="showAsSubGroup"
                                [name]="'beforeEUMKTests'"></app-result-test-table>
       </div>
     </div>
@@ -96,6 +107,7 @@
                                [group]="test.group"
                                [groupId]="test.groupId"
                                [testName]="'text.tests.for.eumk' | translate: 'Тесты для обучения в ЭУМК'"
+                               [showAsSubGroup]="showAsSubGroup"
                                [name]="'forEUMKTests'"></app-result-test-table>
       </div>
     </div>
@@ -114,6 +126,7 @@
                                [testName]="'text.tests.for.nn' | translate: 'Тесты для обучения с искусственной нейронной сетью'"
                                [group]="test.group"
                                [tests]="test.res"
+                               [showAsSubGroup]="showAsSubGroup"
                                [name]="'nNTests'"></app-result-test-table>
       </div>
     </div>

@@ -34,5 +34,8 @@ namespace LMPlatform.UI.Services.Modules.Parental
 
         [DataMember]
         public string Color { get; set; }
+
+        [DataMember]
+        public LectorViewData Lector { get; set; }
     }
 }

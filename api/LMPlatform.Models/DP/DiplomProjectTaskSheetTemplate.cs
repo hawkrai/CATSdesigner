@@ -24,8 +24,20 @@ namespace LMPlatform.Models.DP
 
         public string HeadCathedra { get; set; }
 
+        public string ComputerConsultant { get; set; }
+
+        public string HealthAndSafetyConsultant { get; set; }
+
+        public string EconimicsConsultant { get; set; }
+
+        public string NormocontrolConsultant { get; set; }
+
+        public string DecreeNumber { get; set; }
+
         public DateTime? DateEnd { get; set; }
 
         public DateTime? DateStart { get; set; }
+
+        public DateTime? DecreeDate { get; set; }
     }
 }

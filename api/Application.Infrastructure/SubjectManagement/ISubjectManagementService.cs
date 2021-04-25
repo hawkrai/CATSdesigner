@@ -51,9 +51,9 @@ namespace Application.Infrastructure.SubjectManagement
 
         Lectures SaveLectures(Lectures lectures, IList<Attachment> attachments, int userId);
 
-        Lectures UpdateLectureOrder(Lectures lectures, int order);
+        void UpdateLecturesOrder(int subjectId, int prevIndex, int currentIndex);
 
-        Labs UpdateLabOrder(Labs labs, int order);
+        void UpdateLabsOrder(int subjectId, int prevIndex, int currentIndex);
 
         IList<Labs> GetSubjectLabs(int subjectId);
         IList<Lectures> GetSubjectLectures(int subjectId);
@@ -94,6 +94,8 @@ namespace Application.Infrastructure.SubjectManagement
         List<Subject> GetSubjects();
 
 	    List<UserLabFiles> GetUserLabFiles(int userId, int subjectId);
+
+        List<UserLabFiles> GetGroupLabFiles(int subjectId, int groupId);
 
 		UserLabFiles GetUserLabFile(int id);
 
@@ -138,13 +140,17 @@ namespace Application.Infrastructure.SubjectManagement
 
 		List<ProfileCalendarModel> GetGroupsLabEvents(int groupId, int userId);
 
-		void UpdateUserLabFile(int userFileId, bool isReceived);
+		void UpdateUserLabFile(int userFileId, bool isReceived = false, bool isReturned = false);
 
 		UserLabFiles GetUserLabFile(string path);
 
 		List<ProfileCalendarModel> GetLecturesEvents(int groupId, int userId);
 
         void SavePracticalVisitingData(ScheduleProtectionPracticalMark protectionPracticalMarks);
+
+        SubjectGroup GetSubjectGroup(IQuery<SubjectGroup> query);
+
+        IEnumerable<SubjectGroup> GetSubjectGroups(IQuery<SubjectGroup> query);
 
     }
 }

@@ -1,13 +1,20 @@
 .practical-component {
 
-
+  &__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   &__select-group {
     display: flex;
     align-items: center;
+    margin: -.84375em 0;
+    gap: 0 20px;
   }
 
   .mdc-tab-bar {
     display: flex;
+    margin-bottom: 20px;
   }
 
   .example-margin {
@@ -16,5 +23,12 @@
 
   .mdc-tab {
     text-transform: none;
+  }
+}
+
+
+._excel-file {
+  .iconify { 
+    color: rgb(61, 80, 182);
   }
 }

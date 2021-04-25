@@ -10,10 +10,10 @@ export class CatsMessageService {
     }
     
     public setupMessageCommunication(): void {
-        window.addEventListener("message", (event: MessageEvent) => this.receiveMessage(event), false);          
+        window.addEventListener("message", this.receiveMessage, false);          
     }
     
-    private receiveMessage(event): void {
+    private receiveMessage = (event: MessageEvent): void => {
         let message: any = event.data[0];
         if (!message) {
             return;
@@ -25,7 +25,6 @@ export class CatsMessageService {
       };
 
     public sendMessage(message: Message): void {
-        console.log(message);
         window.parent.postMessage([{channel: message.Type, value: message.Value}], '*');
     }
     

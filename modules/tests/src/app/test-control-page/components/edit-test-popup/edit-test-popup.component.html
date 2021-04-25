@@ -1,7 +1,15 @@
 <div class="popup-container-parent" *ngIf="editingTest;else loading">
   <div class="popup-container-child">
-    <h1 mat-dialog-title class="popup-container">{{!this.newTest ? ('text.test.edit.test' | translate : 'Редактирование теста') :
-      ('text.test.adding.test' | translate : 'Добавление теста')}}</h1>
+    <div class="popup-container-child-title">
+      <h1 mat-dialog-title class="popup-container">
+        {{!this.newTest ? ('text.test.edit.test' | translate :
+        'Редактирование теста') :
+        ('text.test.adding.test' | translate : 'Добавление теста')}}</h1>
+      <button mat-icon-button
+              (click)="onNoClick()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     <ng-container [formGroup]="formGroup">
       <div mat-dialog-content>
         <mat-form-field>
@@ -33,7 +41,7 @@
         <mat-form-field>
           <input matInput type="number" [placeholder]="'text.test.count.questions' | translate : 'Количество вопросов'"
                  [required]="true"
-                 [value]="editingTest.CountOfQuestions ? editingTest.CountOfQuestions : 5"
+                 [value]="editingTest.CountOfQuestions ? editingTest.CountOfQuestions : 10"
                  formControlName="countOfQuestions"
                  (change)="writeTitle($event, 'CountOfQuestions')">
           <mat-error *ngIf="formGroup.controls.countOfQuestions.hasError('max')">
@@ -89,8 +97,12 @@
     </div>
     <div mat-dialog-actions>
       <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
-      <button mat-raised-button color="primary" (click)="onYesClick()" cdkFocusInitial>{{'button.save' | translate :
-        'Сохранить'}}
+      <button mat-raised-button
+              color="primary"
+              [disabled]="!formGroup.valid"
+              (click)="onYesClick()"
+              cdkFocusInitial>
+        {{'button.save' | translate : 'Сохранить'}}
       </button>
     </div>
   </div>

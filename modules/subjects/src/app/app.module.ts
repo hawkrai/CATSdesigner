@@ -21,20 +21,17 @@ import {LecturesEffects} from './store/effects/lectures.effects';
 import {LabsEffects} from './store/effects/labs.effects';
 import {FilesModule} from './modules/files/files.module';
 import {PracticalModule} from './modules/practical/practical.module';
-import {SubgroupingComponent} from './components/subgrouping/subgrouping.component';
-import {SubSettingsComponent} from './components/sub-settings/sub-settings.component';
 import {SubjectModule} from './modules/subject/subject.module';
 import { SubjectEffect } from './store/effects/subject.effects';
 import { PracticalsEffects } from './store/effects/practicals.effects';
 import { CatsEffects } from './store/effects/cats.effects';
 import { FilesEffects } from './store/effects/files.effects';
+import { SettingsModule } from './modules/settings/settings.module';
 
 
 @NgModule({
   declarations: [
-    AppComponent,
-    SubgroupingComponent,
-    SubSettingsComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -50,12 +47,15 @@ import { FilesEffects } from './store/effects/files.effects';
     SubjectModule,
     PracticalModule,
     ReactiveFormsModule,
-    StoreModule.forRoot(appReducers),
+    SettingsModule,
+    StoreModule.forRoot(appReducers,{
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }   
+    }),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects]),
     StoreDevtoolsModule.instrument(),
-  ],
-  entryComponents: [
-    SubgroupingComponent
   ],
   providers: [
     DatePipe

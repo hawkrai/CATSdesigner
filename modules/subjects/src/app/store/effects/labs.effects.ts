@@ -1,8 +1,7 @@
-import { switchMap } from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import {Store} from '@ngrx/store';
-import {map, mergeMap, withLatestFrom} from 'rxjs/operators';
+import {map, mergeMap, withLatestFrom, switchMap, filter } from 'rxjs/operators';
 
 import {IAppState} from '../state/app.state';
 import {LabsRestService} from '../../services/labs/labs-rest.service';
@@ -28,16 +27,17 @@ export class LabsEffects {
     ofType(labsActions.loadLabsSchedule),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId),this.store.select(groupsSelectors.getCurrentGroupId)),
     switchMap(([_, subjectId, groupId]) => this.rest.getProtectionSchedule(subjectId, groupId)),
-    mergeMap(({ labs, scheduleProtectionLabs }) => [labsActions.loadLabsSuccess({ labs }), labsActions.laodLabsScheduleSuccess({ scheduleProtectionLabs })])
+    mergeMap(({ labs, scheduleProtectionLabs }) => [labsActions.loadLabsSuccess({ labs }), labsActions.loadLabsScheduleSuccess({ scheduleProtectionLabs })])
     )
   );
 
   updateOrder$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.updateOrder),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ prevIndex, currentIndex }, subjectId]) => 
-    this.rest.updateLabsOrder(subjectId, prevIndex, currentIndex))
-  ), { dispatch: false });
+    switchMap(([{ prevIndex, currentIndex }, subjectId]) => this.rest.updateLabsOrder(subjectId, prevIndex, currentIndex).pipe(
+      map(() => labsActions.loadLabs())
+    ))
+  ));
 
   labs$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.loadLabs),
@@ -51,14 +51,14 @@ export class LabsEffects {
     ofType(labsActions.deleteLab),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
     switchMap(([{ id }, subjectId]) => this.rest.deleteLab({ id, subjectId }).pipe(
-      switchMap((body) => [catsActions.showMessage({ body }),labsActions.loadLabs()])
+      switchMap((body) => [catsActions.showMessage({ body }), labsActions.loadLabs()])
     ))
   ));
 
   createLab$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.saveLab),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    switchMap(([{ lab }, subjectId]) => (lab.subjectId = subjectId, this.rest.saveLab(lab)).pipe(
+    switchMap(([{ lab }, subjectId]) => this.rest.saveLab({ ...lab, subjectId }).pipe(
       switchMap((body) => [catsActions.showMessage({ body }),labsActions.loadLabs()])
     ))
   ));
@@ -67,7 +67,7 @@ export class LabsEffects {
     ofType(labsActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
     switchMap(([{ obj }, subjectId]) => this.scheduleService.createLabDateVisit({ ...obj, subjectId }).pipe(
-      map(() => labsActions.loadLabsSchedule())
+      switchMap(body => [catsActions.showMessage({ body }) ,labsActions.loadLabsSchedule()])
     ))
   ));
 
@@ -81,7 +81,7 @@ export class LabsEffects {
   setLabsVisitingDate$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.setLabsVisitingDate),
     switchMap(({ visiting }) => this.rest.setLabsVisitingDate(visiting).pipe(
-      switchMap((body) => [catsActions.showMessage({ body}) ,labsActions.loadLabStudents()])
+      switchMap((body) => [catsActions.showMessage({ body}), labsActions.loadLabStudents()])
     ))
   ));
 
@@ -103,24 +103,12 @@ export class LabsEffects {
     ))
   ));
 
-  loadStudentsLabsFiles$ = createEffect(() => this.actions$.pipe(
-    ofType(labsActions.loadStudentsLabsFiles),
-    withLatestFrom(
-      this.store.select(subjectSelectors.getSubjectId),
-      this.store.select(groupsSelectors.getCurrentGroupId)
-    ),
-    switchMap(([_, subjectId, groupId]) => this.rest.getAllStudentFilesLab(subjectId, groupId).pipe(
-      map(studentsLabsFiles => labsActions.loadStudentsLabsFilesSuccess({ studentsLabsFiles }))
-    ))
-  ));
-
   labsVisitingExcel$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.getVisitingExcel),
     withLatestFrom(
         this.store.select(subjectSelectors.getSubjectId), 
-        this.store.select(groupsSelectors.getCurrentGroupId), 
-        this.store.select(groupsSelectors.getCurrentGroupSubGroupIds)),
-    switchMap(([_, subjectId, groupId, [subGroupOneId, subGroupTwoId]]) => this.rest.getVisitLabsExcel(subjectId, groupId, subGroupOneId, subGroupTwoId).pipe(
+        this.store.select(groupsSelectors.getCurrentGroupId)),
+    switchMap(([_, subjectId, groupId]) => this.rest.getVisitLabsExcel(subjectId, groupId).pipe(
         map(response => filesActions.getExcelData({ response }))
     ))
   ));
@@ -138,29 +126,21 @@ export class LabsEffects {
     withLatestFrom(
       this.store.select(subjectSelectors.getSubjectId),
     ),
-    switchMap(([{ sendFile }, subjectId]) => this.rest.sendUserFile({ ...sendFile, subjectId }).pipe(
-      switchMap(body => [catsActions.showMessage({ body }), labsActions.loadUserLabFiles({ labId: sendFile.labId, userId: sendFile.userId })])
+    switchMap(([{ sendFile, fileId }, subjectId]) => this.rest.sendUserFile({ ...sendFile, subjectId }).pipe(
+      switchMap(body => [catsActions.showMessage({ body }), labsActions.sendUserFileSuccess({ userLabFile: body, isReturned: sendFile.isRet, fileId })])
     ))
   ));
 
-  receiveLabFile$ = createEffect(() => this.actions$.pipe(
-    ofType(labsActions.receiveLabFile),
-    switchMap(({ userFileId }) => this.rest.receiveLabFile(userFileId).pipe(
-      switchMap(() => [labsActions.checkJobProtections(), labsActions.loadStudentsLabsFiles()])
-    ))
-  ));
-
-  cancelLabFile$ = createEffect(() => this.actions$.pipe(
-    ofType(labsActions.cancelLabFile),
-    switchMap(({ userFileId }) => this.rest.cancelLabFile(userFileId).pipe(
-      switchMap(() => [labsActions.checkJobProtections(), labsActions.loadStudentsLabsFiles()])
-    ))
+  sendUserLabFileSuccess$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.sendUserFileSuccess),
+    filter(({ isReturned }) => isReturned),
+    map(({ fileId, userLabFile }) => labsActions.returnLabFile({ userFileId: fileId, userId: userLabFile.UserId }))
   ));
 
   deleteUserLabFile$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.deleteUserLabFile),
     switchMap(({ userLabFileId, userId, labId }) => this.rest.deleteUserFile(userLabFileId).pipe(
-      map(() => labsActions.loadUserLabFiles({ userId, labId }))
+      map(() => labsActions.deleteUserLabFileSuccess({ userId, labId }))
     ))
   ))
 
@@ -179,18 +159,59 @@ export class LabsEffects {
     ofType(labsActions.checkJobProtections),
     withLatestFrom(
       this.store.select(subjectSelectors.getSubjectId),
-      this.store.select(subjectSelectors.isTeacher)
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(groupsSelectors.isActiveGroup)
     ),
-    switchMap(([_, subjectId, isTeacher]) => iif(() => isTeacher, this.rest.hasJobProtections(subjectId), of([])).pipe(
+    switchMap(([_, subjectId, isTeacher, isActive]) => iif(() => isTeacher, this.rest.hasJobProtections(subjectId, isActive), of([])).pipe(
       map(hasJobProtections => labsActions.setJobProtections({ hasJobProtections }))
     ))));
 
-  getUserLabFiles$ = createEffect(() => this.actions$.pipe(
-    ofType(labsActions.loadUserLabFiles),
-    withLatestFrom(this.store.select(subjectSelectors.getUserId)),
-    switchMap(([{ userId, labId }, currentUserId]) => this.rest.getUserLabFiles(!!userId ? userId : +currentUserId, labId).pipe(
-      map(labFiles => labsActions.loadUserLabFilesSuccess({ labFiles }))
+  loadStudentLabFiles$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.loadStudentLabFiles),
+    withLatestFrom(
+      this.store.select(subjectSelectors.getUserId),
+      this.store.select(subjectSelectors.getSubjectId)
+    ),
+    switchMap(([{ userId }, currentUserId, subjectId]) => this.rest.getUserLabFiles(!!userId ? userId : currentUserId, subjectId).pipe(
+      map(labFiles => labsActions.loadStudentLabFilesSuccess({ labFiles, studentId: !!userId ? userId : currentUserId }))
     ))
+  ));
+
+  loadGroupJobProtection$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.loadGroupJobProtection),
+    withLatestFrom(
+      this.store.select(subjectSelectors.getSubjectId),
+      this.store.select(groupsSelectors.getCurrentGroupId)
+    ),
+    switchMap(([_, subjectId, groupId]) => this.rest.getGroupJobProtection(subjectId, groupId).pipe(
+      map(groupJobProtection => labsActions.loadGroupJobProtectionSuccess({ groupJobProtection }))
+    ))
+  ));
+
+  receiveLabFile$ = createEffect(() => this.actions$. pipe(
+    ofType(labsActions.receiveLabFile),
+    switchMap(({ userId, userFileId }) => this.rest.receiveLabFile(userFileId).pipe(
+      switchMap(body => [catsActions.showMessage({ body }), labsActions.receiveLabFileSuccess({ userId, userFileId })])
+    ))
+  ));
+
+  returnLabFile$ = createEffect(() => this.actions$. pipe(
+    ofType(labsActions.returnLabFile),
+    switchMap(({ userId, userFileId }) => this.rest.returnLabFile(userFileId).pipe(
+      switchMap(body => [catsActions.showMessage({ body }), labsActions.returnLabFileSuccess({ userId, userFileId })])
+    ))
+  ));
+
+  cancelLabFile$ = createEffect(() => this.actions$. pipe(
+    ofType(labsActions.cancelLabFile),
+    switchMap(({ userId, userFileId }) => this.rest.cancelLabFile(userFileId).pipe(
+      switchMap(body => [catsActions.showMessage({ body }), labsActions.cancelLabFileSuccess({ userId, userFileId })])
+    ))
+  ));
+
+  checkJobProptection$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.receiveLabFileSuccess, labsActions.returnLabFileSuccess, labsActions.cancelLabFileSuccess),
+    switchMap(({ userId }) => [labsActions.updateJobProtection({ userId }), labsActions.checkJobProtections()])
   ));
 }
 

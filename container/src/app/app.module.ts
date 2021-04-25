@@ -27,7 +27,6 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { AboutComponent } from './about/about.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ResetComponent } from './reset/reset.component';
-import { ToastModule } from './toast';
 
 import { ProfileComponent } from './searchResults/profile/profile.component';
 import { StatsComponent } from './searchResults/stats/stats.component';
@@ -36,6 +35,8 @@ import { TableForStatsSubjectComponent } from './searchResults/stats/table-for-s
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
 import { ChangePasswordDialog } from './change-password-dialog/change-password-dialog.component';
 
+import { ToastrModule } from 'ngx-toastr';
+import { DiplomComponent } from './diplom/diplom.component';
 
 
 @NgModule({
@@ -59,7 +60,9 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     ChangePersonalDataComponent,
     ChangePasswordDialog,
     ProfileComponent,
-    StatsComponent
+    StatsComponent,
+    DiplomComponent
+
   ],
   imports: [
     BrowserModule,
@@ -74,7 +77,9 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
     MatDialogModule,
     MatInputModule,
     MatSelectModule,
-    ToastModule.forRoot()
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right'
+    })
   ],
   providers: [
     LayoutService,

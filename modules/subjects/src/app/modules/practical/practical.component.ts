@@ -1,7 +1,7 @@
 import { map } from 'rxjs/operators';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, VirtualTimeScheduler } from 'rxjs';
 import {Store} from '@ngrx/store';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 
 import {Group} from '../../models/group.model';
@@ -9,11 +9,14 @@ import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import * as groupActions from '../../store/actions/groups.actions';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import * as practicalsActions from '../../store/actions/practicals.actions';
 
 interface State {
   groups: Group[];
   group: Group;
   isTeacher: boolean;
+  detachedGroup: boolean;
 }
 
 @Component({
@@ -23,12 +26,14 @@ interface State {
 })
 export class PracticalComponent implements OnInit, OnDestroy {
 
-  tabs = ['Практические занятия', 'График защиты', 'Статистика посещения', 'Результаты']
+  tabs: string[] = []
 
   state$: Observable<State>;
-  public detachedGroup = false;
 
-  constructor(private store: Store<IAppState>) { }
+  constructor(
+    private store: Store<IAppState>,
+    private translate: TranslatePipe
+    ) { }
   selectedTab = 0;
 
   
@@ -37,30 +42,37 @@ export class PracticalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadGroup();
+    this.tabs = [
+      this.translate.transform('text.subjects.practicals.plural', 'Практические занятия'), 
+      this.translate.transform('schedule.protection', 'График защиты'), 
+      this.translate.transform('visit.statistics', 'Статистика посещения'),
+      this.translate.transform('results', 'Результаты')
+    ];
+    this.store.dispatch(groupActions.loadGroups());
     this.state$ = combineLatest(
       this.store.select(groupSelectors.getGroups), 
       this.store.select(groupSelectors.getCurrentGroup), 
-      this.store.select(subjectSelectors.isTeacher))
-    .pipe(map(([groups, group, isTeacher]) => ({ groups, group, isTeacher })));
-  }
-
-  loadGroup(): void {
-    if (this.detachedGroup) {
-      this.store.dispatch(groupActions.loadOldGroups());
-    } else {
-      this.store.dispatch(groupActions.loadGroups());
-    }
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(groupSelectors.isActiveGroup))
+    .pipe(map(([groups, group, isTeacher, isActive]) => ({ groups, group, isTeacher, detachedGroup: !isActive })));
   }
 
   groupStatusChange(event) {
-    this.detachedGroup = event.checked;
-    this.loadGroup()
+    this.store.dispatch(groupActions.setActiveState({ isActive: !event.checked }));
+
   }
 
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
+    }
+  }
+
+  getExcelFile(): void {
+    if (this.selectedTab === 2) {
+      this.store.dispatch(practicalsActions.getVisitingExcel());
+    } else if (this.selectedTab === 3) {
+      this.store.dispatch(practicalsActions.getMarksExcel());
     }
   }
 

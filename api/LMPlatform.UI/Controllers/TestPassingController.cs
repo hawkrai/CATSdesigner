@@ -124,67 +124,32 @@ namespace LMPlatform.UI.Controllers
                 {
                     this.ViewBag.Message = "Тест не содержит ни одного вопроса";
                     return StatusCode(HttpStatusCode.BadRequest);
-                }
-
-                var answers = this.TestPassingService.GetAnswersForTest(testId, UserContext.CurrentUserId);
+                }                
 
                 var nextQuestion =
                     this.TestPassingService.GetNextQuestion(testId, UserContext.CurrentUserId, questionNumber);
-                var testName = this.TestsManagementService.GetTest(testId).Title;
-                this.ViewData["testName"] = testName;
-                if (nextQuestion.Question != null) return JsonResponse(nextQuestion);
-                this.ViewBag.Mark = nextQuestion.Mark;
-                this.ViewBag.Percent = nextQuestion.Percent;
-                //foreach(var item in nextQuestion.QuestionsStatuses)
-                //{
-                //    TestQuestionPassingService.SaveTestQuestionPassResults(new TestQuestionPassResults
-                //    {
-                //        StudentId = CurrentUserId,
-                //        TestId = testId,
-                //        QuestionNumber = item.Key,
-                //        Result = (int)item.Value
-                //    });
-                //}
 
-                var questions = this.TestsManagementService.GetTest(testId, true);
-
-                var themIds = questions.Questions.OrderBy(e => e.ConceptId).ThenBy(e => e.Id)
-                    .Where(e => e.ConceptId.HasValue).Select(e => (int) e.ConceptId)
-                    .Distinct();
-
-                var thems = new List<object>();
-
-                foreach (var themId in themIds.OrderBy(e => e))
+                if (nextQuestion.Question != null)
                 {
-                    var them = this.ConceptManagementService.GetById(themId);
-                    thems.Add(new {name = them.Name, id = them.Id});
+                    return JsonResponse(nextQuestion);
                 }
 
-                var array = new List<int>();
-
-                foreach (var question in questions.Questions.OrderBy(e => e.ConceptId).ThenBy(e => e.Id))
-                {
-                    var answer = answers.FirstOrDefault(e => e.QuestionId == question.Id);
-                    var data = 0;
-
-                    if (answer != null) data = answer.Points > 0 ? 1 : 0;
-
-                    array.Add(data);
-                }
-
-                dynamic resuls = new ExpandoObject();
-                resuls.Answers = array.ToArray();
-                resuls.QuestionsStatuses = nextQuestion.QuestionsStatuses;
-                resuls.Thems = thems;
-                resuls.NeuralData = questions.Data;
-                resuls.FoNN = questions.ForNN;
-
-                return JsonResponse(resuls);
+                return GetCloseTestResult(testId, nextQuestion.Mark, nextQuestion.Percent, GetAnswersAsBinary);
+               
             }
             catch (Exception ex)
             {
                 return StatusCode(HttpStatusCode.InternalServerError);
             }
+        }
+
+        [JwtAuth]
+        [HttpGet]
+        public JsonResult CloseTestAndGetResult(int testId)
+        {
+            (int mark, int percent) = this.TestPassingService.SimpleTestCloseById(testId, UserContext.CurrentUserId);
+            var closeTestRes = GetCloseTestResult(testId, mark, percent, GetAnswersAsUserAnswer, true);
+            return JsonResponse(closeTestRes) as JsonResult;
         }
 
         [JwtAuth]
@@ -260,24 +225,12 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public JsonResult GetUserAnswers(int studentId, int testId)
         {
-            IList<UserAnswerViewModel> result = new List<UserAnswerViewModel>();
-
             var userAnswers = this.TestPassingService.GetAnswersForEndedTest(testId, studentId);
-            foreach (var answer in userAnswers)
-            {
-                var test = this.TestsManagementService.GetTest(testId, true);
-                var question = test.Questions.First(x => x.Id == answer.QuestionId);
-                result.Add(new UserAnswerViewModel
-                {
-                    Points = answer.Points,
-                    QuestionTitle = question.Title,
-                    QuestionDescription = question.Description,
-                    AnswerString = answer.AnswerString,
-                    Number = answer.Number
-                });
-            }
-
-            result = result.OrderBy(x => x.Number).ToList();
+            var test = this.TestsManagementService.GetTest(testId, true);
+            
+            dynamic result = new ExpandoObject();
+            result.TestInfo = this.TestPassingService.GetTestPassResult(testId, studentId);
+            result.UserAnswers = GetAnswersAsUserAnswer(userAnswers, test.Questions);
 
             return JsonResponse(result) as JsonResult;
         }
@@ -426,6 +379,72 @@ namespace LMPlatform.UI.Controllers
             this.Response.End();
         }
 
+        private JsonResult GetCloseTestResult(int testId, int mark, int percent, UserAnswersCallback answersCallback, bool fillTestPassResult = false)
+        {
+            var test = this.TestsManagementService.GetTest(testId, true);
+
+            var themIds = test.Questions.OrderBy(e => e.ConceptId).ThenBy(e => e.Id)
+                .Where(e => e.ConceptId.HasValue).Select(e => (int)e.ConceptId)
+                .Distinct();
+
+            var thems = new List<object>();
+
+            foreach (var themId in themIds.OrderBy(e => e))
+            {
+                var them = this.ConceptManagementService.GetById(themId);
+                thems.Add(new { name = them.Name, id = them.Id });
+            }
+
+            var answers = this.TestPassingService.GetAnswersForEndedTest(testId, UserContext.CurrentUserId);            
+
+            dynamic results = new ExpandoObject();
+            results.TestName = test.Title;
+            results.Percent = percent;
+            results.Mark = mark;
+            results.Answers = answersCallback.Invoke(answers, test.Questions);
+            results.Thems = thems;
+            results.NeuralData = test.Data;
+            results.FoNN = test.ForNN;
+
+            if (fillTestPassResult)
+            {
+                var testPassResult = this.TestPassingService.GetTestPassResult(testId, UserContext.CurrentUserId);
+                results.StartTime = testPassResult.StartTime;
+                results.EndTime = testPassResult.EndTime;
+                results.Comment = testPassResult.Comment;
+            }
+
+            return JsonResponse(results);
+        }
+
+        private IEnumerable<dynamic> GetAnswersAsBinary(List<AnswerOnTestQuestion> answers, ICollection<Question> questions)
+        {
+            return questions.OrderBy(e => e.ConceptId).ThenBy(e => e.Id).Select(x =>
+            {
+                var answer = answers.FirstOrDefault(e => e.QuestionId == x.Id);
+                return (dynamic)(x != null && answer.Points > 0 ? 1 : 0);
+            }).ToArray();
+        }
+
+        private IEnumerable<dynamic> GetAnswersAsUserAnswer(List<AnswerOnTestQuestion> answers, ICollection<Question> questions)
+        {
+            return answers.Select(x =>
+            {
+                var question = questions.FirstOrDefault(q => q.Id == x.QuestionId);
+
+                return new UserAnswerViewModel
+                {
+                    Points = x.Points,
+                    QuestionTitle = question.Title,
+                    QuestionDescription = question.Description,
+                    AnswerString = x.AnswerString,
+                    Number = x.Number
+                };
+            })
+            .OrderBy(x => x.Number)
+            .ToList();
+        }
+
         #region Dependencies
 
         public ITestPassingService TestPassingService => this.ApplicationService<ITestPassingService>();
@@ -449,6 +468,8 @@ namespace LMPlatform.UI.Controllers
 
         public IConceptManagementService ConceptManagementService =>
             this.ApplicationService<ConceptManagementService>();
+
+        private delegate IEnumerable<dynamic> UserAnswersCallback(List<AnswerOnTestQuestion> answers, ICollection<Question> questions);
 
         #endregion
     }

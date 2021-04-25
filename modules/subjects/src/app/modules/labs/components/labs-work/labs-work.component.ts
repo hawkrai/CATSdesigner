@@ -1,4 +1,3 @@
-import { ConvertedAttachment } from './../../../../models/file/converted-attachment.model';
 import { DialogService } from './../../../../services/dialog.service';
 import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
@@ -18,8 +17,8 @@ import {FileDownloadPopoverComponent} from '../../../../shared/file-download-pop
 import * as labsActions from '../../../../store/actions/labs.actions';
 import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
-import { attachmentConverter } from 'src/app/utils';
 import * as filesActions from '../../../../store/actions/files.actions';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-labs-work',
@@ -31,22 +30,24 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
-  public labs$: Observable<Lab[]>;
-  private prefix = 'ЛР';
+  public labs: Lab[];
 
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
     private cdRef: ChangeDetectorRef,
+    private translate: TranslatePipe
   ) { }
 
   ngOnInit() {
     this.store.dispatch(labsActions.loadLabs());
-    this.labs$ = this.store.select(labsSelectors.getLabs);
+    this.subs.add(this.store.select(labsSelectors.getLabs).subscribe(labs => {
+      this.labs = [...labs];
+    }));
   }
 
   getDisplayedColumns(): string[] {
-    const defaultColumns = ['position', 'theme', 'shortName', 'clock'];
+    const defaultColumns = ['position', 'theme', 'shortName', 'duration'];
     return defaultColumns.concat(this.isTeacher ? 'actions' : 'files');
   }
 
@@ -62,8 +63,10 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   constructorLab(labsCount: number, lab: Lab): void {
     const newLab = this.getLab(labsCount, lab);
     const dialogData: DialogData = {
-      title: lab ? 'Редактирование лабораторной работы' : 'Добавление лабораторной работы',
-      buttonText: 'Сохранить',
+      title: lab ? 
+      this.translate.transform('text.subjects.labs.editing', 'Редактирование лабораторной работы'):
+      this.translate.transform('text.subjects.labs.adding', 'Добавление лабораторной работы'),
+      buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLab
     };
     const dialogRef = this.dialogService.openDialog(LabWorkPopoverComponent, dialogData);
@@ -80,9 +83,9 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   deleteLab(lab: Lab) {
     const dialogData: DialogData = {
-      title: 'Удаление лабораторной работы',
-      body: 'лабораторную работу "' + lab.Theme + '"',
-      buttonText: 'Удалить'
+      title: this.translate.transform('text.subjects.labs.deleting', 'Удаление лабораторной работы'),
+      body: `${this.translate.transform('text.subjects.labs.dative', 'лабораторную работу').toLowerCase()} "${lab.Theme}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
@@ -97,17 +100,17 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   openFilePopup(attachments: Attachment[]) {
     const dialogData: DialogData = {
-      title: 'Файлы',
-      buttonText: 'Скачать',
-      body: attachments.map(attachment => attachmentConverter(attachment))
+      title: this.translate.transform('text.attachments.plural', 'Файлы'),
+      buttonText: this.translate.transform('text.download', 'Скачать'),
+      body: attachments
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      ).subscribe((result: Attachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
       })
     );
   }
@@ -129,8 +132,8 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       duration: lab ? lab.Duration : '',
       order: lab ? lab.Order : order,
       pathFile: lab ? lab.PathFile : '',
-      attachments: lab ? lab.Attachments.map(a => attachmentConverter(a)) : [],
-      shortName: lab ? lab.ShortName : `${this.prefix}${order}`
+      attachments: lab ? lab.Attachments : [],
+      shortName: `ЛР${order + 1}`
     };
   }
 

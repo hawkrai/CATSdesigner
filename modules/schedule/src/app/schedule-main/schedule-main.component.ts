@@ -101,7 +101,7 @@ export class ScheduleMainComponent implements OnInit {
     if (minE.toString().length === 1) {
       minE = '0' + minE;
     }
-    if (lesson.Building !== undefined) {
+    if (lesson.Building != undefined) {
       building = lesson.Building;
     }
     if (lesson.Notes.length != 0) {
@@ -158,6 +158,7 @@ export class ScheduleMainComponent implements OnInit {
     const dialogRef = this.dialog.open(CreateLessonComponent,
       {
         width: '600px',
+        height: '100%',
         disableClose: true,
         data: {user: this.user, date: dateEvent},
         position: {top: '0%'}
@@ -172,9 +173,8 @@ export class ScheduleMainComponent implements OnInit {
           endT.setHours(+this.lesson.End.split(':')[0], +this.lesson.End.split(':')[1]);
           this.lesson = result.lesson;
           this.lessons.push(this.lesson);
-          console.log(this.calculateTitel(this.lesson));
           this.events.push({
-            id: this.lesson.id,
+            id: this.lesson.Id,
             start: startT,
             end: endT,
             title: this.calculateTitel(this.lesson),
@@ -194,12 +194,12 @@ export class ScheduleMainComponent implements OnInit {
               id: result.note.id,
               start: result.note.start,
               end: result.note.end,
-              title: result.note.title,
+              title: result.note.title + '|' + result.note.note,
               color: colors.color,
-              draggable: true,
+              draggable: false,
               resizable: {
-                beforeStart: true,
-                afterEnd: true
+                beforeStart: false,
+                afterEnd: false
               },
               meta: 'note'
             }
@@ -212,7 +212,7 @@ export class ScheduleMainComponent implements OnInit {
 
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
-      width: '200px',
+      width: '250px',
       disableClose: true,
       height: '150px',
       data: {}
@@ -220,6 +220,24 @@ export class ScheduleMainComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         if (result) {
+          if (eventToDelete.meta == 'lesson') {
+            const a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
+            if (a == 'Лекция') {
+              this.lessonservice.deleteLecture(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'Лаб.работа') {
+              this.lessonservice.deleteLab(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'Практ.работа') {
+              this.lessonservice.deletePractical(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title) ).subscribe(res => {
+                console.log(res);
+              });
+            }
+          }
           this.events = this.events.filter(event => event !== eventToDelete);
           this.refresh.next();
         }
@@ -229,7 +247,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeNote(eventToChange: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent, {
-      width: '600px',
+      width: '600px',  height: '100%',
       data: {note: eventToChange, user: this.user}, position: {top: '0%'}
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -239,7 +257,7 @@ export class ScheduleMainComponent implements OnInit {
           id: result.note.id,
           start: result.note.start,
           end: result.note.end,
-          title: result.note.title,
+          title: result.note.title + '|' + result.note.note,
           color: colors.color,
           resizable: {
             beforeStart: true,
@@ -255,7 +273,7 @@ export class ScheduleMainComponent implements OnInit {
 
   changeLesson(lessonChanged: CalendarEvent) {
     const dialogRef = this.dialog.open(CreateLessonComponent,
-      {width: '600px',  data: {user: this.user, lesson: lessonChanged}, position: {top: '0%'}});
+      {width: '600px',  height: '100%', data: {user: this.user, lesson: lessonChanged}, position: {top: '0%'}});
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
         this.lesson = result.lesson;
@@ -266,7 +284,7 @@ export class ScheduleMainComponent implements OnInit {
         this.events = this.events.filter(event => event !== lessonChanged);
         this.lessons.push(this.lesson);
         this.events.push({
-          id: this.lesson.id,
+          id: this.lesson.Id,
           start: startT,
           end: endT,
           title: this.calculateTitel(this.lesson),
@@ -303,7 +321,12 @@ export class ScheduleMainComponent implements OnInit {
 
   public changeDate(): any {
     const a = new Date(this.viewDate);
-    a.setDate(a.getDate() + (7 - this.viewDate.getDay()));
+    let day = this.viewDate.getDay();
+    if (day == 0) {
+      day = 7;
+    }
+
+    a.setDate(a.getDate() + (7 - day));
     const endDate = this.lessonservice.formatDate3(a);
     a.setDate(a.getDate() - 6);
     const startDate = this.lessonservice.formatDate3(a);
@@ -317,8 +340,12 @@ export class ScheduleMainComponent implements OnInit {
           const startT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.Start);
           const endT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.End);
           lesson.Type = this.lessonservice.getLessonTypeById(lesson.Type);
+          // console.log(lesson.Teacher + ' ' + this.lessonservice.cutTeacherName(lesson.Teacher));
+          if (lesson.Teacher != null) {
+            lesson.Teacher.FullName = this.lessonservice.cutTeacherName(lesson.Teacher.FullName);
+          }
           this.events.push({
-            id: lesson.id,
+            id: lesson.Id,
             start: startT,
             end: endT,
             title: this.calculateTitel(lesson),

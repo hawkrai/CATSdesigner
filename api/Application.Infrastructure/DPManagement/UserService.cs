@@ -21,7 +21,8 @@ namespace Application.Infrastructure.DPManagement
                 HasChosenDiplomProject = user.Student != null 
                     && Context.AssignedDiplomProjects.Any(x => x.StudentId == user.Student.Id && !x.ApproveDate.HasValue),
                 HasAssignedDiplomProject = user.Student != null 
-                    && Context.AssignedDiplomProjects.Any(x => x.StudentId == user.Student.Id && x.ApproveDate.HasValue)
+                    && Context.AssignedDiplomProjects.Any(x => x.StudentId == user.Student.Id && x.ApproveDate.HasValue),
+                IsLecturerHasGraduateStudents = user.Lecturer != null && user.Lecturer.IsLecturerHasGraduateStudents
             };
         }
 

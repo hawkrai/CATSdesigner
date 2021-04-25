@@ -1,47 +1,35 @@
-<div class="subject-news-component" *var="files$ | async as files">
-  <h2 mat-dialog-title>{{data.title}}</h2>
-  <div class="subject-news-component__popover">
-    <form class="example-form" #formElement>
-      <mat-form-field class="example-full-width">
-        <mat-label>Название новости</mat-label>
-        <input name="title" maxlength="1000" required matInput placeholder="Название"
-              [(ngModel)]="data.model.title"
-              (paste)="onPaste($event.clipboardData)">
+<app-popover *var="files$ | async as files" width="700">
+  <ng-container title>
+    {{data.title}}
+  </ng-container>
+  <ng-container body>
+    <form class="form" [formGroup]="newsForm">
+      <mat-form-field class="full-width">
+        <mat-label>{{'text.subjects.news.title' | translate:'Название новости'}}</mat-label>
+        <input matInput placeholder="Название" formControlName="title">
       </mat-form-field>
+      <mat-label>{{'text.subjects.news.text' | translate:'Текст новости'}}</mat-label>
+      <ckeditor formControlName="body" [editor]="Editor"></ckeditor>
 
-      <mat-label>Текст новости</mat-label>
-      <ckeditor class="subject-news-component__news-text"
-                [(ngModel)]="data.model.body"
-                [ngModelOptions]="{standalone: true}"
-                [editor]="Editor">
-
-      </ckeditor>
-
-      <section class="example-section">
-        <mat-checkbox name="isOldDate"
-                      class="example-margin text"
-                      [(ngModel)]="data.model.isOldDate"
-                      [color]="'primary'">
-          Оставить старую дату новости
+      <div class="form-container form-container__column">
+        <mat-checkbox formControlName="isOldDate" [color]="'primary'">
+          {{'text.subjects.news.date.leave' | translate:'Оставить старую дату новости'}}
         </mat-checkbox>
-        <mat-checkbox name="disabled"
-                      class="example-margin text"
-                      [(ngModel)]="data.model.disabled"
-                      [color]="'primary'">
-          Скрыть новость
+        <mat-checkbox formControlName="disabled" [color]="'primary'">
+          {{'text.subjects.news.hide' | translate:'Скрыть новость'}}
         </mat-checkbox>
-      </section>
-      <app-file-uploader header="Прикрепленный материал" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+      </div>
+      <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="filesArray.value" (upload)="uploadFile($event)"></app-file-uploader>
     </form>
-  </div>
-  <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onClose(files, false)">{{'button.close' | translate:'Отмена'}}</button>
     <button mat-raised-button
             (click)="onClose(files, true)"
             color="primary"
-            [disabled]="!formElement.checkValidity()"
+            [disabled]="newsForm.invalid"
     >
       {{data.buttonText}}
     </button>
-  </div>
-</div>
+  </ng-container>
+</app-popover>

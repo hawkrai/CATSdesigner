@@ -80,4 +80,8 @@ export class ComplexService {
     const subject = JSON.parse(localStorage.getItem("currentSubject"));
     return this.http.get<any>("/Tests/GetConcepts?subjectId=" + subject.id);
   }
+
+  public getFilesForFolder(nodeId: number): Observable<string[]> {
+    return this.http.get<string[]>("/Services/Concept/ConceptService.svc/GetFolderFilesPaths?conceptId=" + nodeId);
+  }
 }

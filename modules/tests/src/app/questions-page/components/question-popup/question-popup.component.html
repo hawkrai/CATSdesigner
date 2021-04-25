@@ -1,15 +1,23 @@
 <ng-container *ngIf="!loader; else loading">
   <ng-container>
     <div class="question-popup-header">
-      <div class="question-popup-container">{{data.event ? ('text.test.questions.for.test' | translate : 'Вопрос для теста ') :
-        ('text.test.new.questions.for.test' | translate : ('Вопрос №' + data.questionLength) : {number: data.questionLength + 1})}}
+      <div class="question-popup-title">
+        <div class="question-popup-container">{{data.event ? ('text.test.questions.for.test' | translate : 'Вопрос для теста ') :
+          ('text.test.new.questions.for.test' | translate : ('Вопрос №' + data.questionLength) : {number:
+          data.questionLength + 1})}}
+        </div>
+        <button mat-icon-button
+                (click)="onNoClick()">
+          <mat-icon>close</mat-icon>
+        </button>
       </div>
       <div class="question-popup-container-small">{{data.title}}</div>
     </div>
     <div mat-dialog-content *ngIf="formGroup" [formGroup]="formGroup">
       <mat-form-field class="question-popup-full">
-        <textarea formControlName="title" matInput [placeholder]="'text.test.question.text' | translate : 'Текст вопроса'"
-               [value]="question && question.Title ? question.Title : ''"
+        <textarea formControlName="title" matInput
+                  [placeholder]="'text.test.question.text' | translate : 'Текст вопроса'"
+                  [value]="question && question.Title ? question.Title : ''"
                   (change)="writeTitle($event, 'Title')"></textarea>
         <mat-error *ngIf="formGroup.controls.title.hasError('maxlength')">
           {{'text.test.error.max.length' | translate : "Длина превышает 255 символов"}}
@@ -21,15 +29,26 @@
     </div>
 
     <div mat-dialog-content>
-      <p class="question-popup-container-sub">{{'text.test.question.description' | translate : 'Задание к вопросу'}}</p>
-      <ckeditor [(ngModel)]="question.Description"
+      <div class="question-popup-container-slider">
+        <p class="question-popup-container-sub">{{'text.test.question.description' | translate : 'Задание к вопросу'}}</p>
+        <mat-slide-toggle
+          [color]="'primary'"
+          [checked]="showDescription || question.Description"
+          (change)="descriptionStateChange($event)"
+        >
+          {{'text.test.open.window' | translate: "Открыть окно"}}
+        </mat-slide-toggle>
+      </div>
+      <ng-container *ngIf="showDescription || question.Description">
+      <ckeditor
+                [(ngModel)]="question.Description"
                 #myckeditor="ngModel"
                 name="myckeditor"
                 [config]="ckeConfig"
                 debounce="400"
                 (paste)="onPaste($event)"
                 (change)="onChange1($event)">
-      </ckeditor>
+      </ckeditor></ng-container>
     </div>
 
     <div class="basic-container" *ngIf="navItems?.length">
