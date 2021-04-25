@@ -1,7 +1,7 @@
 import { map } from 'rxjs/operators';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, VirtualTimeScheduler } from 'rxjs';
 import {Store} from '@ngrx/store';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 
 import {Group} from '../../models/group.model';
@@ -16,6 +16,7 @@ interface State {
   groups: Group[];
   group: Group;
   isTeacher: boolean;
+  detachedGroup: boolean;
 }
 
 @Component({
@@ -28,7 +29,6 @@ export class PracticalComponent implements OnInit, OnDestroy {
   tabs: string[] = []
 
   state$: Observable<State>;
-  public detachedGroup = false;
 
   constructor(
     private store: Store<IAppState>,
@@ -48,25 +48,18 @@ export class PracticalComponent implements OnInit, OnDestroy {
       this.translate.transform('visit.statistics', 'Статистика посещения'),
       this.translate.transform('results', 'Результаты')
     ];
-    this.loadGroup();
+    this.store.dispatch(groupActions.loadGroups());
     this.state$ = combineLatest(
       this.store.select(groupSelectors.getGroups), 
       this.store.select(groupSelectors.getCurrentGroup), 
-      this.store.select(subjectSelectors.isTeacher))
-    .pipe(map(([groups, group, isTeacher]) => ({ groups, group, isTeacher })));
-  }
-
-  loadGroup(): void {
-    if (this.detachedGroup) {
-      this.store.dispatch(groupActions.loadOldGroups());
-    } else {
-      this.store.dispatch(groupActions.loadGroups());
-    }
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(groupSelectors.isActiveGroup))
+    .pipe(map(([groups, group, isTeacher, isActive]) => ({ groups, group, isTeacher, detachedGroup: !isActive })));
   }
 
   groupStatusChange(event) {
-    this.detachedGroup = event.checked;
-    this.loadGroup()
+    this.store.dispatch(groupActions.setActiveState({ isActive: !event.checked }));
+
   }
 
   selectedGroup(event: MatOptionSelectionChange) {

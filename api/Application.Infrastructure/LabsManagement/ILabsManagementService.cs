@@ -10,9 +10,7 @@ namespace Application.Infrastructure.LabsManagement
     public interface ILabsManagementService
     {
         IEnumerable<UserLabFiles> GetUserLabFiles(int userId, int labId);
+        bool HasSubjectProtection(int groupId, int subjectId);
 
-        bool HasSubjectProtection(int userId, int subjectId);
-
-        bool HasLabProtection(int userId, int labId);
     }
 }

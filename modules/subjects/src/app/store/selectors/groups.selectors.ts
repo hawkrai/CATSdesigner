@@ -28,3 +28,8 @@ export const getCurrentGroupSubGroupIds = createSelector(
     state.currentGroup.SubGroupsThird ? state.currentGroup.SubGroupsThird.SubGroupId : null
   ].filter(id => id !== null) : []
 );
+
+export const isActiveGroup = createSelector(
+  groupsSelector,
+  state => state.isActive
+)

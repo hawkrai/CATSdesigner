@@ -14,33 +14,38 @@
     </button>
   </div>
   <div class="practical-component-body" *ngIf="state$ | async as state">
-    <div class="practical-component__controls">
-      <div class="practical-component__select-group" *ngIf="selectedTab !== 0">
-        <mat-form-field>
-          <mat-select [value]="state.group && state.group.GroupId">
-            <mat-option *ngFor="let group of state.groups"
-                        (onSelectionChange)="selectedGroup($event)"
-                        [value]="group.GroupId"
-            >
-              {{group.GroupName}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-slide-toggle class="example-margin"
-                          [color]="'primary'"
-                          [checked]="detachedGroup"
-                          (change)="groupStatusChange($event)"
-        >
-          {{'text.groups.detached' | translate:'Открепленные группы'}}
-        </mat-slide-toggle>
-      </div>
-      <div class="practical-component-actions">
-        <div class="_excel-file"
-        *ngIf="(selectedTab === 2 || selectedTab === 3)" 
-        (click)="getExcelFile()">
-          <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+    <div class="practical-component__controls" >
+      <ng-container *ngIf="state.isTeacher">
+        <div class="practical-component__select-group" *ngIf="selectedTab !== 0">
+          <mat-form-field>
+            <mat-select [value]="state.group && state.group.GroupId">
+              <mat-option *ngFor="let group of state.groups"
+                          (onSelectionChange)="selectedGroup($event)"
+                          [value]="group.GroupId"
+              >
+                {{group.GroupName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-slide-toggle class="example-margin"
+                            [color]="'primary'"
+                            [checked]="state.detachedGroup"
+                            (change)="groupStatusChange($event)"
+          >
+            {{'text.groups.detached' | translate:'Открепленные группы'}}
+          </mat-slide-toggle>
         </div>
-      </div>
+        <div class="practical-component-actions">
+          <div class="_excel-file"
+          *ngIf="(selectedTab === 2 || selectedTab === 3)" 
+          (click)="getExcelFile()">
+            <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!state.isTeacher">
+        {{state.group && state.group.GroupName}}
+      </ng-container>
     </div>
     <div>
       <app-practical-lessons *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-practical-lessons>

@@ -123,12 +123,12 @@ namespace LMPlatform.UI.Controllers
             this.Response.End();
         }
 
-        public void GetVisitLabs(int subjectId, int groupId, int subGroupOneId, int subGroupTwoId)
+        public void GetVisitLabs(int subjectId, int groupId)
         {
             var data = new SLExcelData();
 
             var rowsDataOne =
-                this.GroupManagementService.GetLabsScheduleMarks(subjectId, groupId, subGroupOneId, subGroupTwoId);
+                this.GroupManagementService.GetLabsScheduleMarks(subjectId, groupId);
 
             data.DataRows.AddRange(rowsDataOne);
 

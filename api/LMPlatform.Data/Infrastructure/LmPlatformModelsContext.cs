@@ -45,8 +45,6 @@ namespace LMPlatform.Data.Infrastructure
 
         public DbSet<TinCanObjects> TinCanObjects { get; set; }
 
-        public DbSet<JobProtection> JobProtections { get; set; }
-
         public IQueryable<Student> GetGraduateStudents()
         {
             return Students.Where(StudentIsGraduate);
@@ -296,17 +294,6 @@ namespace LMPlatform.Data.Infrastructure
             modelBuilder.Entity<User>()
                 .HasRequired<Lecturer>(e => e.Lecturer)
                 .WithRequiredPrincipal(e => e.User)
-                .WillCascadeOnDelete(true);
-
-            modelBuilder.Entity<Labs>()
-                .HasMany<JobProtection>(e => e.JobProtections)
-                .WithOptional(e => e.Lab)
-                .WillCascadeOnDelete(true);
-
-            modelBuilder.Entity<Student>()
-                .HasMany<JobProtection>(e => e.JobProtections)
-                .WithRequired(e => e.Student)
-                .HasForeignKey(e => e.StudentId)
                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Subject>()

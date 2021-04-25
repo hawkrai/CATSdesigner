@@ -147,7 +147,6 @@
     <Compile Include="Repositories\ProjectMatrixRequirementsRepository.cs" />
     <Compile Include="Repositories\ProjectsRepository.cs" />
     <Compile Include="Repositories\ProjectUsersRepository.cs" />
-    <Compile Include="Repositories\ProtectionRepository.cs" />
     <Compile Include="Repositories\QuestionsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IAdaptiveLearningProgressRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IAttachmentRepository.cs" />
@@ -170,7 +169,6 @@
     <Compile Include="Repositories\RepositoryContracts\IProjectMatrixRequirementsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IProjectsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IProjectUsersRepository.cs" />
-    <Compile Include="Repositories\RepositoryContracts\IProtectionRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IQuestionsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\IStudentsRepository.cs" />
     <Compile Include="Repositories\RepositoryContracts\ISubGroupRepository.cs" />

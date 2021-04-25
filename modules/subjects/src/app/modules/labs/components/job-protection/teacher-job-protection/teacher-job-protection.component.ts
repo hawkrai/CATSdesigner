@@ -18,13 +18,11 @@ import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
 export class TeacherJobProtectionComponent implements OnInit {
 
   groupJobProtection$: Observable<GroupJobProtection>;
-  studentJobProtection$: Observable<StudentJobProtection>;
   labFiles$: Observable<UserLabFile[]>;
 
   selectedStudentId: number;
-  selectedLabId: number;
 
-  @Output() onAddFile = new EventEmitter<{ userId: number, labId: number }>();
+  @Output() onAddFile = new EventEmitter<{ userId: number, labId: number, fileId: number }>();
   @Output() onReceiveLab = new EventEmitter<void>();
   @Output() onCheckPlugiarism = new EventEmitter<number>();
 
@@ -36,9 +34,8 @@ export class TeacherJobProtectionComponent implements OnInit {
     this.groupJobProtection$ = this.store.select(labsSelectors.getGroupJobProtection);
   }
 
-  addLab(event: MouseEvent, userId: number, labId: number): void {
-    event.stopImmediatePropagation();
-    this.onAddFile.emit({ userId, labId });
+  addLab(userId: number, labId: number , fileId: number): void {
+    this.onAddFile.emit({ userId, labId, fileId });
   }
 
 
@@ -46,36 +43,22 @@ export class TeacherJobProtectionComponent implements OnInit {
     this.onCheckPlugiarism.emit(userLabFileId);
   }
 
-  receiveLab(event: MouseEvent, labId: number, studentId: number): void {
-    event.stopImmediatePropagation();
-    this.store.dispatch(labsActions.receiveLab({ labId, studentId }));
+  receiveLab(userFileId: number, userId: number): void {
+    this.store.dispatch(labsActions.receiveLabFile({ userFileId, userId }));
   }
 
-  cancelLab(event: MouseEvent, labId: number, studentId: number): void {
-    event.stopImmediatePropagation();
-    this.store.dispatch(labsActions.cancelLab({ labId, studentId }));
+  cancelLab(userFileId: number, userId: number): void {
+    this.store.dispatch(labsActions.cancelLabFile({ userFileId, userId }));
     
   }
-  onSelectStudent(studentId: number): void {
-    if (studentId) {
-      this.selectedStudentId = studentId;
-      this.store.dispatch(labsActions.loadStudentJobProtection({ studentId }));
-      this.studentJobProtection$ = this.store.select(labsSelectors.getStudentJobProtection, { studentId });
+  onSelectStudent(userId: number): void {
+    if (userId) {
+      this.selectedStudentId = userId;
+      this.store.dispatch(labsActions.loadStudentLabFiles({ userId }));
+      this.labFiles$ = this.store.select(labsSelectors.getStudentLabFiles, { studentId: userId })
     } else {
       this.store.dispatch(labsActions.resetStudentJobProtection({ studentId: this.selectedStudentId }));
-      this.onSelectLab(0);
       this.selectedStudentId = 0
-    }
-  }
-
-  onSelectLab(labId: number): void {
-    if (labId) {
-      this.selectedLabId = labId;
-      this.store.dispatch(labsActions.loadStudentLabFiles({ userId: this.selectedStudentId, labId }));
-      this.labFiles$ = this.store.select(labsSelectors.getStudentLabFiles, { studentId: this.selectedStudentId, labId });
-    } else {
-      this.store.dispatch(labsActions.resetStudentLabFiles({ studentId: this.selectedStudentId }));
-      this.selectedLabId = 0; 
     }
   }
 }

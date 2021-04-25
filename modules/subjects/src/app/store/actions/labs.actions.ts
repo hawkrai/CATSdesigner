@@ -6,7 +6,6 @@ import {Lab } from '../../models/lab.model';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model';
 import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
-import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 
 export const loadLabs = createAction(
   '[Labs] Load Labs'
@@ -21,7 +20,7 @@ export const loadLabsSchedule = createAction(
   '[Labs] Load Labs Schedule'
 );
 
-export const laodLabsScheduleSuccess = createAction(
+export const loadLabsScheduleSuccess = createAction(
   '[Labs] Load Labs Schedule Success',
   props<{ scheduleProtectionLabs: ScheduleProtectionLab[] }>()
 );
@@ -74,10 +73,6 @@ export const setLabMark = createAction(
   props<{ labMark: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } }>()
 );
 
-export const loadStudentsLabsFiles = createAction(
-  '[Labs] Load Students Labs Files'
-);
-
 export const loadStudentsLabsFilesSuccess = createAction(
   '[Labs] Load Students Labs Files Success',
   props<{ studentsLabsFiles: StudentMark[] }>()
@@ -114,12 +109,12 @@ export const setJobProtections = createAction(
 );
 export const loadStudentLabFiles = createAction(
   '[Labs] Get Student Lab Files',
-  props<{ userId: number, labId: number }>()
+  props<{ userId?: number }>()
 );
 
 export const loadStudentLabFilesSuccess = createAction(
   '[Labs] Get Student Lab Files Success',
-  props<{ labFiles: UserLabFile[], studentId: number, labId: number }>()
+  props<{ labFiles: UserLabFile[], studentId: number }>()
 );
 
 export const resetStudentsLabFiles = createAction(
@@ -133,12 +128,12 @@ export const resetStudentLabFiles = createAction(
 
 export const sendUserFile = createAction(
   '[Labs] Send User File',
-  props<{ sendFile: { attachments: string, id: number, pathFile: string, comments: string, userId: number, labId: number } }>()
+  props<{ sendFile: { attachments: string, id: number, pathFile: string, comments: string, userId: number, labId: number, isRet: boolean }, fileId: number }>()
 );
 
 export const sendUserFileSuccess = createAction(
   '[Labs] Send User File Success',
-  props<{ userLabFile: UserLabFile, isReturned: boolean }>()
+  props<{ userLabFile: UserLabFile, isReturned: boolean, fileId?: number }>()
 );
 
 export const deleteUserLabFile = createAction(
@@ -146,13 +141,18 @@ export const deleteUserLabFile = createAction(
   props<{ userLabFileId: number, userId: number, labId: number }>()
 );
 
+export const deleteUserLabFileSuccess = createAction(
+  '[Labs] Delete User Lab File Success',
+  props<{ userId: number, labId: number }>()
+);
+
 export const loadGroupJobProtection = createAction(
   '[Labs] Load Group Job Protection'
 );
 
-export const loadStudentJobProtection = createAction(
-  '[Labs] Load Student Job Protection',
-  props<{ studentId?: number }>()
+export const loadGroupJobProtectionSuccess = createAction(
+  '[Labs] Load Group Job Protection Success',
+  props<{ groupJobProtection: GroupJobProtection }>()
 );
 
 export const resetStudentJobProtection = createAction(
@@ -164,42 +164,38 @@ export const resetStudentsJobProtection = createAction(
   '[Labs] Reset Students Job Protection'
 );
 
-export const loadGroupJobProtectionSuccess = createAction(
-  '[Labs] Load Group Job Protection Success',
-  props<{ groupJobProtection: GroupJobProtection }>()
+export const receiveLabFile = createAction(
+  '[Labs] Receive Lab Files',
+  props<{ userId: number, userFileId: number }>()
 );
 
-export const loadStudentJobProtectionSuccess = createAction(
-  '[Labs] Load Student Job Protection Success',
-  props<{ studentJobProtection: StudentJobProtection }>()
+export const returnLabFile = createAction(
+  '[Labs] Return Lab Files',
+  props<{ userId: number, userFileId: number }>()
 );
 
-export const cancelLab = createAction(
-  '[Labs] Cancel Lab',
-  props<{ labId: number, studentId: number }>()
+export const cancelLabFile = createAction(
+  '[Labs] Cancel Lab File',
+  props<{ userId: number, userFileId: number }>()
 );
 
-export const returnLab = createAction(
-  '[Labs] Return Lab',
-  props<{ labId: number, studentId: number }>()
+export const receiveLabFileSuccess = createAction(
+  '[Labs] Receive Lab Files Success',
+  props<{ userId: number, userFileId: number }>()
 );
 
-export const receiveLab = createAction(
-  '[Labs] Receive Lab',
-  props<{ labId: number, studentId: number }>()
+export const returnLabFileSuccess = createAction(
+  '[Labs] Return Lab Files Success',
+  props<{ userId: number, userFileId: number }>()
 );
 
-export const cancelLabSuccess = createAction(
-  '[Labs] Cancel Lab Success',
-  props<{ labId: number, studentId: number }>()
+export const cancelLabFileSuccess = createAction(
+  '[Labs] Cancel Lab File Success',
+  props<{ userId: number, userFileId: number }>()
 );
 
-export const returnLabSuccess = createAction(
-  '[Labs] Return Lab Success',
-  props<{ labId: number, studentId: number }>()
+export const updateJobProtection = createAction(
+  '[Labs] Update Job Protection',
+  props<{ userId: number }>()
 );
 
-export const receiveLabSuccess = createAction(
-  '[Labs] Receive Lab Success',
-  props<{ labId: number, studentId: number }>()
-);

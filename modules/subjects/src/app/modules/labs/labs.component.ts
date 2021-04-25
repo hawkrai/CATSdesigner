@@ -25,7 +25,8 @@ interface State {
   group: Group;
   isTeacher: boolean;
   subjectId: number;
-  hasJobProtections: HasJobProtection[]
+  hasJobProtections: HasJobProtection[];
+  detachedGroup: boolean;
 }
 
 @Component({
@@ -38,7 +39,6 @@ export class LabsComponent implements OnInit, OnDestroy {
   tabs: string[] = [];
   selectedTab = 0;
   public state$: Observable<State>;
-  public detachedGroup = false;
 
   constructor(
     private dialogService: DialogService,
@@ -62,9 +62,10 @@ export class LabsComponent implements OnInit, OnDestroy {
       this.store.select(groupsSelectors.getCurrentGroup),
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(subjectSelectors.getSubjectId),
-      this.store.select(labsSelectors.hasJobProtections)
+      this.store.select(labsSelectors.hasJobProtections),
+      this.store.select(groupsSelectors.isActiveGroup)
       ).pipe(
-        map(([groups, group, isTeacher, subjectId, hasJobProtections]) => ({ groups, group, isTeacher, subjectId, hasJobProtections })),
+        map(([groups, group, isTeacher, subjectId, hasJobProtections, isActive]) => ({ groups, group, isTeacher, subjectId, hasJobProtections, detachedGroup: !isActive })),
       );
 
   
@@ -72,7 +73,7 @@ export class LabsComponent implements OnInit, OnDestroy {
       first()
     ).subscribe(isTeacher => {
       if (isTeacher) {
-        this.loadGroup();
+        this.store.dispatch(groupsActions.loadGroups());
         this.store.dispatch(labsActions.checkJobProtections());
       } else {
         this.store.dispatch(groupsActions.loadStudentGroup());
@@ -83,20 +84,11 @@ export class LabsComponent implements OnInit, OnDestroy {
 
   groupHasJobProtection(hasGroupJobProtection: HasGroupJobProtection[], group: Group): boolean {
     const hasJobProtection = hasGroupJobProtection.find(x => group &&  x.GroupId === group.GroupId);
-    return hasJobProtection ? hasJobProtection.HasJob : false;
-  }
-
-  loadGroup(): void {
-    if (this.detachedGroup) {
-      this.store.dispatch(groupsActions.loadOldGroups());
-    } else {
-      this.store.dispatch(groupsActions.loadGroups());
-    }
+    return hasJobProtection ? hasJobProtection.HasJobProtection : false;
   }
 
   groupStatusChange(event: MatSlideToggleChange): void {
-    this.detachedGroup = event.checked;
-    this.loadGroup()
+    this.store.dispatch(groupsActions.setActiveState({ isActive: !event.checked }))
   }
 
   selectedGroup(event: MatOptionSelectionChange) {

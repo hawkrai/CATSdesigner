@@ -47,7 +47,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   getDisplayedColumns(): string[] {
-    const defaultColumns = ['position', 'theme', 'shortName', 'clock'];
+    const defaultColumns = ['position', 'theme', 'shortName', 'duration'];
     return defaultColumns.concat(this.isTeacher ? 'actions' : 'files');
   }
 

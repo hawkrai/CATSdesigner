@@ -51,19 +51,6 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
   ngOnInit(): void {
   }
 
-
-  // isLabReturned = (labId: number, studentId: number): boolean => {
-  //   return this.jobProtection.some(x => x.LabId === labId && x.StudentId === studentId && x.IsReturned);
-  // }
-
-  // isLabReceived = (labId: number, studentId: number): boolean => {
-  //   return this.jobProtection.some(x => x.LabId === labId && x.StudentId === studentId && x.IsReceived);
-  // }
-
-  // isLabNew = (labId: number, studentId: number): boolean => {
-  //   return this.jobProtection.som
-  // }
-
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
@@ -77,7 +64,7 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
     return  (this.isTeacher && !file.IsReturned && !file.IsReceived) || (!this.isTeacher && file.IsReturned);
   }
 
-  addLab({ userId, file, labId }: { userId: number, file: UserLabFile, labId?: number }): void {
+  addLab({ userId, file, labId, fileId }: { userId: number, file: UserLabFile, labId?: number, fileId?: number }): void {
     const dialogData: DialogData = {
       title: this.isTeacher ? 'Загрузить исправленный вариант работы' : 'На защиту лабораторной работы',
       buttonText: 'Отправить работу',
@@ -97,7 +84,7 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
         map(([data, currentUserId]: [{ comments: string, attachments: Attachment[], labId: number }, number]) => this.getSendFile(file, data, userId ? userId : currentUserId, !!labId))
       ).subscribe(sendFile => {
 
-        this.store.dispatch(labsActions.sendUserFile({ sendFile }));
+        this.store.dispatch(labsActions.sendUserFile({ sendFile, fileId  }));
       })
     );
   }
@@ -135,7 +122,7 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
       userId,
       labId: data.labId,
       id: isReturn ? 0 : file ? file.Id : 0,
-      isReceived: isReturn,
+      isRet: isReturn,
       pathFile: file ? file.PathFile : ''
     }
   }

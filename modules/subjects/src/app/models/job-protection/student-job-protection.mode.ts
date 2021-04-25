@@ -4,6 +4,5 @@ export class StudentJobProtection {
     StudentName: string;
     StudentId: number;
     SubGroup: number;
-    JobProtections: JobProtection[];
     HasProtection: boolean;
 }

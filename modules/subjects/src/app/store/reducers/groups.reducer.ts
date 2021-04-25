@@ -21,5 +21,9 @@ export const groupsReducer = createReducer(
     ...state,
     currentGroup: null,
     groups: []
+  })),
+  on(groupActions.setActiveState, (state, { isActive }): IGroupsState => ({
+    ...state,
+    isActive
   }))
 );
