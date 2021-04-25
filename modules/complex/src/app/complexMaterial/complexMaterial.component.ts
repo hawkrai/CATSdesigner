@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { ComplexService } from '../service/complex.service';
 import { AddMaterialPopoverComponent } from './components/materials/add-material-popover/add-material-popover.component';
+import { AdaptivePopupComponent } from './components/materials/adaptiveLearningPopup/adaptivePopup.component';
 import { Concept } from '../models/Concept';
 
 
@@ -16,6 +17,7 @@ export class ComplexMaterialComponent implements OnInit {
   public tab = 1;
   public complexID;
   public complexName: string;
+  isLector: boolean;
 
   constructor(private router: Router,
     public dialog: MatDialog,
@@ -34,10 +36,23 @@ export class ComplexMaterialComponent implements OnInit {
       this.complexID = localStorage.getItem('selectedComplex');
     }   
     this.complexService.getConceptNameById(this.complexID).subscribe(name => this.complexName = name);
+
+    this.isLector = JSON.parse(localStorage.getItem("currentUser")).role === 'lector';
   }
 
   ngOnInit() {
     
+  }
+
+  openAdaptivePopup(): void {
+    const dialogRef = this.dialog.open(AdaptivePopupComponent, {
+      width: '600px',
+      data: { }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   openAddPopup(): void {

@@ -1,4 +1,4 @@
-<mat-grid-list cols="3" rowHeight="1:1" class="sub-settings">
+<mat-grid-list cols="3" *ngIf="!showLoader; else loader" rowHeight="1:1" class="sub-settings">
   <a class="main-anchor" (click)="openPDF()">Положение об ЭУМК</a>
   <div *ngFor="let complex of complexes">
     <mat-grid-tile>
@@ -8,7 +8,7 @@
             <div class="tooltip material-icons mdc-list-item__graphic" aria-hidden="true">{{adjustNameLength(complex.name)}}</div>
           </a>
         </div>
-        <grid-menu-icon class="bottom-menu" complexId={{complex.id}} *ngIf="isLucturer"></grid-menu-icon>        
+        <grid-menu-icon class="bottom-menu" complexId={{complex.id}} *ngIf="isLucturer"></grid-menu-icon>
       </div>
       <span class="tooltiptext">{{complex.fullname}}</span>
     </mat-grid-tile>
@@ -19,5 +19,10 @@
         <i class="material-icons" aria-hidden="true">+</i>
       </div>
     </div>
-  </mat-grid-tile>
+  </mat-grid-tile>  
 </mat-grid-list>
+<ng-template #loader>
+  <td class="mdc-data-table__cell" colspan="6">
+    <main-app-loader [diameter]="300"></main-app-loader>
+  </td>
+</ng-template>

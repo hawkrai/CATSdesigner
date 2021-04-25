@@ -7,7 +7,10 @@ export class ComplexCascade{
   SubjectName: string;
   FilePath: string;
   IsGroup: boolean;
-  ParentId: number; 
+  ParentId: number;
+  IncludeLabs?: boolean;
+  IncludeLecturers?: boolean;
+  IncludeTests?: boolean;
   Attachments: Attachment[];
   children?: ComplexCascade[];
 }

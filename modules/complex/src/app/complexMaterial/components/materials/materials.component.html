@@ -32,7 +32,9 @@
             folder
           </mat-icon>
         </button>
-        {{node.Name}}<menu-icon nodeId={{node.Id}} nodeFilePath={{node.FilePath}}></menu-icon>
+        <a class="btn clickable" (click)="openFolderPDF(node.Id)">
+          {{node.Name}}
+        </a>
       </div>
       <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)" class="contents">
         <ng-container matTreeNodeOutlet></ng-container>
