@@ -44,7 +44,7 @@ export class NewsEffects {
   saveNews$ = createEffect(() => this.actions$.pipe(
     ofType(newsActions.saveNews),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
-    mergeMap(([{ news }, subjectId]) => (news.subjectId = subjectId, this.rest.saveNews(news)).pipe(
+    mergeMap(([{ news }, subjectId]) => this.rest.saveNews({ ...news, subjectId }).pipe(
       map(() => newsActions.loadNews())
     ))
   ));

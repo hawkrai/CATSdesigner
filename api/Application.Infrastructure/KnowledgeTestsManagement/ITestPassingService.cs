@@ -25,11 +25,15 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
         List<AnswerOnTestQuestion> GetAnswersForTest(int testId, int userId);
 
+        TestPassResult GetTestPassResult(int testId, int userId);
+
         List<AnswerOnTestQuestion> GetAnswersForEndedTest(int testId, int userId);
 
         bool CheckForSubjectAvailableForStudent(int studentId, int subjectId);
 
         int? GetPointsForQuestion(int userId, int questionId);
+
+        (int, int) SimpleTestCloseById(int testId, int userId);
         /// <summary>
         /// Returns set of students and average marks for subject
         /// </summary>

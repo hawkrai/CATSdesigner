@@ -24,7 +24,7 @@ namespace LMPlatform.UI.ApiControllers.DP
             DpManagementService.AssignProject(UserContext.CurrentUserId, updateModel.ProjectId, updateModel.StudentId);
         }
 
-        public void Delete(int id)
+        public void Post(int id)
         {
             DpManagementService.DeleteAssignment(UserContext.CurrentUserId, id);
         }

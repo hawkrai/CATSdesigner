@@ -11,6 +11,8 @@ namespace Application.Infrastructure.DocumentsManagement
 {
     public class DocumentManagementService : IDocumentManagementService
     {
+        private static readonly string[] AllowedRolesToModify = new string[] { "admin", "lecturer" };
+
         public IEnumerable<Documents> GetAll()
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
@@ -24,13 +26,14 @@ namespace Application.Infrastructure.DocumentsManagement
         public IEnumerable<Documents> GetBySubjectId(int subjectId, int userId)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var isUserHasPermissions = IsUserCanModifyDocuments(userId);
             var documents = repositoriesContainer.DocumentRepository.GetAll()
                 .Include(x => x.DocumentSubjects)
                 .Include(x => x.User)
                 .Include(x => x.Parent)
                 .Include(x => x.Childrens)
                 .SelectMany(d => d.DocumentSubjects)
-                .Where(x => x.SubjectId == subjectId && (!x.Document.IsLocked || x.Document.UserId == userId))
+                .Where(x => x.SubjectId == subjectId && (!x.Document.IsLocked || x.Document.UserId == userId || isUserHasPermissions))
                 .Select(x => x.Document);
             return documents.ToList();
         }
@@ -38,8 +41,9 @@ namespace Application.Infrastructure.DocumentsManagement
         public IEnumerable<Documents> GetByParentId(int parentId, int userId)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var isUserHasPermissions = IsUserCanModifyDocuments(userId);
             var documents = repositoriesContainer.DocumentRepository.GetAll()
-                .Where(x => x.ParentId == parentId && (!x.IsLocked || x.UserId == userId));
+                .Where(x => x.ParentId == parentId && (!x.IsLocked || x.UserId == userId || isUserHasPermissions));
             return documents.ToList();
         }
 
@@ -95,6 +99,16 @@ namespace Application.Infrastructure.DocumentsManagement
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
             return repositoriesContainer.DocumentRepository.GetBy(new Query<Documents>(d => d.Id == id));
+        }
+
+        private bool IsUserCanModifyDocuments(int userId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var user = repositoriesContainer.UsersRepository
+                .GetBy(new Query<User>(u => u.Id == userId)
+                .Include(u => u.Membership.Roles));
+
+            return user.Membership.Roles.Any(r => AllowedRolesToModify.Contains(r.RoleName));
         }
     }
 }

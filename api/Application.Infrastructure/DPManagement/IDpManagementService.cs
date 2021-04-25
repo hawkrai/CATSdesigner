@@ -17,13 +17,15 @@ namespace Application.Infrastructure.DPManagement
 
         TaskSheetData GetTaskSheet(int diplomProjectId);
 
+        List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms);
+
         void SaveTaskSheet(int userId, TaskSheetData taskSheet);
 
         void DeleteProject(int userId, int id);
 
         void AssignProject(int userId, int projectId, int studentId);
 
-        void SetStudentDiplomMark(int lecturerId, int assignedProjectId, int mark);
+        void SetStudentDiplomMark(int lecturerId, DiplomStudentMarkModel diplomStudentMarkModel);
 
         void DeleteAssignment(int userId, int id);
 
@@ -31,11 +33,19 @@ namespace Application.Infrastructure.DPManagement
 
         PagedList<StudentData> GetGraduateStudentsForUser(int userId, GetPagedListParams parms, bool getBySecretaryForStudent = true);
 
+        PagedList<StudentData> GetStudentsForLecturer(int userId, GetPagedListParams parms);
+
+        List<List<string>> GetDpMarks(int userId, GetPagedListParams parms);
+
         bool ShowDpSectionForUser(int userId);
 
         DiplomProjectTaskSheetTemplate GetTaskSheetTemplate(int id);
-        
+
+        PagedList<DiplomProjectTaskSheetTemplate> GetTaskSheetTemplates(GetPagedListParams parms);
+
         void SaveTaskSheetTemplate(DiplomProjectTaskSheetTemplate template);
+
+        string GetTasksSheetHtml(int diplomProjectId);
 
         List<NewsData> GetNewses(int userId);
 

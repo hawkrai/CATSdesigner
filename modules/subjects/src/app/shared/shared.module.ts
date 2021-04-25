@@ -25,6 +25,9 @@ import { FileDownloadPopoverComponent } from './file-download-popover/file-downl
 import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/check-plagiarism-popover.component';
 import { SortByPipe } from './pipes/sort-by.pipe';
 import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
+import { PopoverComponent } from './popover/popover.component';
+import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
+import { FileComponent } from './components/file/file.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,10 @@ import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
     AnyPipe,
     WidthPipe,
     SortByPipe,
-    MarkPopoverComponent
+    MarkPopoverComponent,
+    PopoverComponent,
+    TranslatePipe,
+    FileComponent
     ],
   imports: [
     CommonModule,
@@ -80,8 +86,11 @@ import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
     FindPipe,
     AnyPipe,
     WidthPipe,
-    SortByPipe
+    SortByPipe,
+    PopoverComponent,
+    TranslatePipe,
+    FileComponent
   ],
-
+  providers: [TranslatePipe]
 })
 export class SharedModule { }

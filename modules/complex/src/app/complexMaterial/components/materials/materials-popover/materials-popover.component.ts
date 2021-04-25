@@ -52,11 +52,18 @@ export class MaterialsPopoverComponent{
 
     this.path = data.url;    
     this.isAdaptive = data.isAdaptive;
+    this.materialPathes
 
     if (this.isAdaptive) {
       this.adaptivityType = data.adaptivityType;
       this.initFieldsByAdaptivity(data.adaptivity);
       this.countWatchTime()
+    }
+    else if (data.documents) {
+      this.currentPathIndex = 0;
+      this.materialPathes = data.documents;
+      this.showMaterial = true;
+      this.checkMaterialsContainerForButtonsVisibility();
     }
     else {
       this.showMaterial = true;
@@ -165,7 +172,7 @@ export class MaterialsPopoverComponent{
   checkMaterialsContainerForButtonsVisibility() {
     this.prevButtonVisible = this.currentPathIndex != 0;
     this.nextButtonVisible = this.currentPathIndex < this.materialPathes.length - 1;
-    this.toTestButtonVisible = !this.nextButtonVisible;
+    this.toTestButtonVisible = this.isAdaptive && !this.nextButtonVisible;
   }
 
   countDown() {

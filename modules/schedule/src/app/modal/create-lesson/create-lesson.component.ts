@@ -3,12 +3,9 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Lesson} from '../../model/lesson.model';
 import {LessonService} from '../../service/lesson.service';
-import {LessonAdd} from '../../model/lessonAdd.model';
-import {formatDate} from '@angular/common';
 import {Note} from '../../model/note.model';
 import flatpickr from 'flatpickr';
 import {Russian} from 'flatpickr/dist/l10n/ru';
-import {NoteAdd} from '../../model/noteAdd.model';
 import {NoteService} from '../../service/note.service';
 
 export function flatpickrFactory() {
@@ -24,8 +21,6 @@ export function flatpickrFactory() {
 })
 export class CreateLessonComponent implements OnInit {
 
-  lessonAdd: LessonAdd = new LessonAdd();
-  noteAdd: NoteAdd = new NoteAdd();
   changedType: string;
   formGroup: any;
   lesson: Lesson = new Lesson();
@@ -41,6 +36,9 @@ export class CreateLessonComponent implements OnInit {
   endHour: string;
   endMin: string;
   memo: string;
+  date: string;
+  groups: any[] = [];
+  currentGroup: any;
 
   formGroupNote: any;
   note: Note = new Note();
@@ -50,8 +48,12 @@ export class CreateLessonComponent implements OnInit {
   selectedIndex = 0;
   disableLesson = false;
   disableNote = false;
+  disableGroup = true;
+  disableSubGroup = true;
   user: any;
-  teacherSubject = 'Попова Ю.Б.';
+  teacherSubject = '';
+  stageValue = '';
+  stageValueSub = '';
 
   constructor(public dialogRef: MatDialogRef<CreateLessonComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any,
@@ -65,6 +67,7 @@ export class CreateLessonComponent implements OnInit {
     this.lessonTypesFull = this.lessonservice.getLessonTypeFull();
     this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
       this.subjects = subjects;
+      this.subjects.sort((a, b) => a.Name.localeCompare(b.Name));
       if (this.data.lesson != null) {
         this.startHour = this.data.lesson.start.getHours().toString();
         this.startMin = this.data.lesson.start.getMinutes().toString();
@@ -74,10 +77,10 @@ export class CreateLessonComponent implements OnInit {
         this.dayOfLesson = this.data.lesson.start;
         this.startTimeOfLesson = this.startHour + ':' + this.startMin;
         this.endTimeOfLesson = this.endHour + ':' + this.endMin;
+        this.lesson.Id = this.data.lesson.id;
         this.lesson.SubjectId = this.lessonservice.getSubject(this.data.lesson.title);
         this.lesson.Audience = this.lessonservice.getAudience(this.data.lesson.title);
         this.lesson.Building = this.lessonservice.getBuilding(this.data.lesson.title);
-        console.log(this.lesson);
         this.memo = this.lessonservice.getMemo(this.data.lesson.title);
         this.changedType = this.lessonTypes.find(type => type[1] === this.lessonservice.getType(this.data.lesson.title).trim())[0];
         this.disableNote = true;
@@ -86,20 +89,23 @@ export class CreateLessonComponent implements OnInit {
     this.formGroup = new FormGroup({
       subjectF: new FormControl('', [Validators.required]),
       dayEvent: new FormControl('', [Validators.required]),
-      startEvent: new FormControl('', [Validators.required]),
-      endEvent: new FormControl('', [Validators.required]),
+      startEvent: new FormControl('', [Validators.required, Validators.min(8)]),
+      endEvent: new FormControl('', [Validators.required, Validators.min(8)]),
       type: new FormControl('', [Validators.required]),
       teacher: new FormControl('', [Validators.required]),
       building: new FormControl('', [Validators.maxLength(3)]),
       audience: new FormControl('', [Validators.required, Validators.maxLength(5)]),
       memo: new FormControl('', ),
+      group: new FormControl('', ),
+      subGroup: new FormControl('', )
     });
 
     this.formGroupNote = new FormGroup({
       title: new FormControl('', [Validators.required]),
-      dayNote: new FormControl('', [Validators.required]),
-      startNote: new FormControl('', [Validators.required]),
+      dayNote: new FormControl('', [Validators.required, Validators.min(8)]),
+      startNote: new FormControl('', [Validators.required, Validators.min(8)]),
       endNote: new FormControl('', [Validators.required]),
+      note: new FormControl('', )
     });
     if (this.data.date != null) {
       this.startHour = this.data.date.getHours() + '';
@@ -113,6 +119,7 @@ export class CreateLessonComponent implements OnInit {
       this.endTimeOfLesson = this.endHour + ':' + this.endMin;
       this.dayOfNote = this.data.date;
       this.dayOfLesson = this.data.date;
+      this.date = this.lessonservice.formatDate4(this.data.date);
     }
     if (this.data.note != null) {
       this.startHour = this.data.note.start.getHours() + '';
@@ -123,7 +130,8 @@ export class CreateLessonComponent implements OnInit {
       this.dayOfNote = this.data.note.start;
       this.startTimeOfNote = this.startHour + ':' + this.startMin;
       this.endTimeOfNote = this.endHour + ':' + this.endMin;
-      this.note.title = this.data.note.title;
+      this.note.title = this.noteService.getTitle(this.data.note.title);
+      this.note.note = this.noteService.getNote(this.data.note.title);
       this.selectedIndex = 1;
       this.disableLesson = true;
     }
@@ -200,6 +208,14 @@ export class CreateLessonComponent implements OnInit {
     return this.formGroup.get('audience') as FormControl;
   }
 
+  get group(): FormControl {
+    return this.formGroup.get('group') as FormControl;
+  }
+
+  get subGroup(): FormControl {
+    return this.formGroup.get('subGroup') as FormControl;
+  }
+
   addLesson() {
     this.subject = this.subjects.find(subject => subject.Id == this.lesson.SubjectId);
     this.lesson.ShortName = this.subject.ShortName;
@@ -220,21 +236,18 @@ export class CreateLessonComponent implements OnInit {
       this.lesson.Notes = [];
     }
     this.lesson.Teacher = {FullName: this.teacherSubject};
-    this.lessonAdd.subjectId = this.subject.Id;
-    this.lessonAdd.date = this.lessonservice.formatDate2(this.dayOfLesson);
-    this.lessonAdd.startTime = this.startTimeOfLesson;
-    this.lessonAdd.endTime = this.endTimeOfLesson;
-    this.lessonAdd.building = this.lesson.Building;
+    this.lesson.groupId = this.formGroup.controls.group.value;
+    this.lesson.subGroupId = this.formGroup.controls.subGroup.value;
     if (this.lesson.Type === 'Лекция') {
-      this.lessonservice.saveLecture(this.lessonAdd).subscribe(l => {
+      this.lessonservice.saveLecture(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
         console.log(l);
       });
-    } else if (this.lesson.Type === 'Лаб.работа') {
-      this.lessonservice.saveLab(this.lessonAdd).subscribe(l => {
+    } else if (this.lesson.Type === 'Лаб. работа') {
+      this.lessonservice.saveLab(this.lesson,  this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
         console.log(l);
       });
-    } else if (this.lesson.Type === 'Практ.работа') {
-      this.lessonservice.savePractical(this.lessonAdd).subscribe(l => {
+    } else if (this.lesson.Type === 'Практ. работа') {
+      this.lessonservice.savePractical(this.lesson,  this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
         console.log(l);
       });
     }
@@ -253,11 +266,8 @@ export class CreateLessonComponent implements OnInit {
     }
     this.note.start.setHours(+this.startTimeOfNote.split(':')[0], +this.startTimeOfNote.split(':')[1]);
     this.note.end.setHours(+this.endTimeOfNote.split(':')[0], +this.endTimeOfNote.split(':')[1]);
-    this.noteAdd.text = this.note.title;
-    this.noteAdd.startTime = this.startTimeOfNote;
-    this.noteAdd.endTime = this.endTimeOfNote;
-    this.noteAdd.date = this.lessonservice.formatDate2(this.dayOfNote);
-    this.noteService.savePersonalNote(this.noteAdd).subscribe(l => {
+    this.noteService.savePersonalNote(this.note, this.lessonservice.formatDate2(this.dayOfNote),
+                                      this.startTimeOfNote, this.endTimeOfNote).subscribe(l => {
       console.log(l);
     });
     this.dialogRef.close({note: this.note, type: 'note'});
@@ -266,6 +276,49 @@ export class CreateLessonComponent implements OnInit {
   // tslint:disable-next-line:typedef
   onCancelClick() {
     this.dialogRef.close(null);
+  }
+
+  subjectChange(event): void {
+    this.lessonservice.getGroupsBySubjectId(event.value).subscribe(re => {
+      this.groups = re.Groups;
+    });
+    this.lessonservice.getSubjectOwner(+event.value).subscribe(teacher => {
+      if (teacher.FullName != undefined) {
+        this.teacherSubject = this.lessonservice.cutTeacherName(teacher.FullName);
+      }
+    });
+  }
+
+  groupChange(event): void {
+    this.currentGroup = this.groups.find(group => group.GroupId == +event.value);
+  }
+
+  typeChange(event): void {
+    this.changedType = null;
+    if (event.value == '0' || event.value == '4' ) {
+      this.disableGroup = true;
+      this.disableSubGroup = true;
+      this.stageValue = '';
+      this.stageValueSub = '';
+      this.formGroup.controls.group.setValidators([]);
+      this.formGroup.controls.subGroup.setValidators([]);
+    }
+    if (event.value == '1' || event.value == '2' ) {
+      this.disableGroup = false;
+      this.disableSubGroup = false;
+      this.changedType = '2';
+      this.formGroup.controls.group.setValidators([Validators.required]);
+      this.formGroup.controls.subGroup.setValidators([Validators.required]);
+    }
+    if ( event.value == '3' ) {
+      this.stageValueSub = '';
+      this.disableGroup = false;
+      this.disableSubGroup = true;
+      this.formGroup.controls.group.setValidators([Validators.required]);
+      this.formGroup.controls.subGroup.setValidators([]);
+    }
+    this.formGroup.controls.group.updateValueAndValidity();
+    this.formGroup.controls.subGroup.updateValueAndValidity();
   }
 
 }

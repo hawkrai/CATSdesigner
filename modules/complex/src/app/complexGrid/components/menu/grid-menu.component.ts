@@ -37,7 +37,10 @@ export class GridMenuComponent {
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,
-        isPublished: res.Published
+        isPublished: res.Published,
+        includeLabs: res.IncludeLabs,
+        includeLectures: res.IncludeLecturers,
+        includeTests: res.IncludeTests
       };
 
       const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent);
@@ -51,7 +54,7 @@ export class GridMenuComponent {
             isPublished: result.isPublished && result.isPublished === true
           }
           this.complexService.editRootConcept(complex).subscribe(result => {
-            debugger;
+            
             if (result['Code'] === '200') {
               this.router.navigateByUrl('/main');
             }

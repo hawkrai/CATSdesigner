@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Application.Infrastructure.DTO
 {
@@ -18,6 +19,14 @@ namespace Application.Infrastructure.DTO
 
         public IEnumerable<PercentageResultData> PercentageResults { get; set; }
 
-        public IEnumerable<DipomProjectConsultationMarkData> DipomProjectConsultationMarks { get; set; } 
+        public IEnumerable<DiplomProjectConsultationMarkData> DiplomProjectConsultationMarks { get; set; }
+
+        public string Comment { get; set; }
+
+        public bool? ShowForStudent { get; set; }
+
+        public string LecturerName { get; set; }
+
+        public DateTime? MarkDate { get; set; }
     }
 }

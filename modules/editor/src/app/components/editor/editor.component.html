@@ -31,6 +31,9 @@
         </div>
       </div>
       <div class="tree-area">
+        <div *ngIf="!linearTreeList.length" class="empty">
+          <label>Список пуст</label>
+        </div>
         <tree
           [treeControl]="treeControl"
           [dataSource]="dataSource"

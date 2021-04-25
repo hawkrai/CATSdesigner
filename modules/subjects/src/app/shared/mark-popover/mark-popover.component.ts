@@ -36,6 +36,7 @@ export const MY_FORMATS = {
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
+    {provide: MAT_DATE_LOCALE, useValue: 'ru'},
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
@@ -54,9 +55,10 @@ export class MarkPopoverComponent implements OnInit {
     public dialogRef: MatDialogRef<MarkPopoverComponent>,
     private subjectService: SubjectService,
     private store: Store<IAppState>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    dateAdapter: DateAdapter<any>
     ) {
-
+    dateAdapter.setLocale(localStorage.getItem("locale") || "ru");
     this.dialogRef.disableClose = true;
   }
 
@@ -79,7 +81,6 @@ export class MarkPopoverComponent implements OnInit {
     if (this.markForm.invalid) {
       return;
     }
-    console.log(this.markForm.value);
     this.dialogRef.close(this.markForm.value);
   }
 }

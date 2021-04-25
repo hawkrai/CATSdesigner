@@ -35,9 +35,12 @@ namespace LMPlatform.UI.Services.Schedule
         {
             var dateTimeStart = DateTime.ParseExact(dateStart, "dd-MM-yyyy", CultureInfo.InvariantCulture);
             var dateTimeEnd = DateTime.ParseExact(dateEnd, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+            var subjects = SubjectManagementService.GetUserSubjects(UserContext.CurrentUserId);
             return new ScheduleViewResult
             {
-                Schedule = ScheduleManagementService.GetScheduleBetweenDates(dateTimeStart, dateTimeEnd).Select(x => new ScheduleViewData(x))
+                Schedule = ScheduleManagementService.GetScheduleBetweenDates(dateTimeStart, dateTimeEnd)
+                .Where(x => subjects.Any(s => s.Id == x.SubjectId))
+                .Select(x => new ScheduleViewData(x))
             };
         }
 
@@ -56,7 +59,7 @@ namespace LMPlatform.UI.Services.Schedule
             }
         }
 
-        public ResultViewData SaveDateLectures(int subjectId, string date, string startTime, string endTime, string building, string audience, Note note)
+        public ScheduleViewResultSingle SaveDateLectures(int id, int subjectId, string date, string startTime, string endTime, string building, string audience, Note note)
         {
 
             try
@@ -64,7 +67,7 @@ namespace LMPlatform.UI.Services.Schedule
                 var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
-                    return new ResultViewData
+                    return new ScheduleViewResultSingle
                     {
                         Message = "Пользователь не добавлен к предмету",
                         Code = "500"
@@ -77,7 +80,7 @@ namespace LMPlatform.UI.Services.Schedule
                 var canAdd = ScheduleManagementService.CheckIfAllowed(dateTime, start, end, building, audience);
                 if (!canAdd)
                 {
-                    return new ResultViewData
+                    return new ScheduleViewResultSingle
                     {
                         Message = "Время либо место занято",
                         Code = "500"
@@ -85,6 +88,7 @@ namespace LMPlatform.UI.Services.Schedule
                 }
                 var lecturesSchedule = new LecturesScheduleVisiting
                 {
+                    Id = id,
                     Audience = audience,
                     Date = dateTime,
                     Building = building,
@@ -97,16 +101,17 @@ namespace LMPlatform.UI.Services.Schedule
                     note.UserId = UserContext.CurrentUserId;
                     lecturesSchedule.Notes.Add(note);
                 }
-                ScheduleManagementService.SaveDateLectures(lecturesSchedule);
-                return new ResultViewData
+                var schedule = ScheduleManagementService.SaveDateLectures(lecturesSchedule);
+                return new ScheduleViewResultSingle
                 {
                     Message = "Дата успешно добавлена",
-                    Code = "200"
+                    Code = "200",
+                    Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lecture))
                 };
             }
             catch
             {
-                return new ResultViewData
+                return new ScheduleViewResultSingle
                 {
                     Message = "Произошла ошибка при добавлении даты",
                     Code = "500"
@@ -114,14 +119,14 @@ namespace LMPlatform.UI.Services.Schedule
             }
         }
 
-        public ResultViewData SaveDateLab(int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience, Note note)
+        public ScheduleViewResultSingle SaveDateLab(int id, int subjectId, int subGroupId, string date, string startTime, string endTime, string building, string audience, Note note)
 		{
             try
 			{
                 var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
-                    return new ResultViewData
+                    return new ScheduleViewResultSingle
                     {
                         Message = "Пользователь не добавлен к предмету",
                         Code = "500"
@@ -133,7 +138,7 @@ namespace LMPlatform.UI.Services.Schedule
                 var canAdd = ScheduleManagementService.CheckIfAllowed(dateTime, start, end, building, audience);
                 if (!canAdd)
                 {
-                    return new ResultViewData
+                    return new ScheduleViewResultSingle
                     {
                         Message = "Время и место занято",
                         Code = "500"
@@ -141,6 +146,7 @@ namespace LMPlatform.UI.Services.Schedule
                 }
                 var labsSchedule = new ScheduleProtectionLabs
                 {
+                    Id = id,
                     Audience = audience,
                     Date = dateTime,
                     Building = building,
@@ -154,30 +160,32 @@ namespace LMPlatform.UI.Services.Schedule
                     note.UserId = UserContext.CurrentUserId;
                     labsSchedule.Notes.Add(note);
                 }
-                ScheduleManagementService.SaveScheduleProtectionLabsDate(labsSchedule);
-				return new ResultViewData
+                var schedule = ScheduleManagementService.SaveScheduleProtectionLabsDate(labsSchedule);
+				return new ScheduleViewResultSingle
 				{
 					Message = "Дата успешно добавлена",
-					Code = "200"
-				};
+					Code = "200",
+                    Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lab))
+
+                };
 			}
             catch
             {
-				return new ResultViewData
-				{
+				return new ScheduleViewResultSingle
+                {
 					Message = "Произошла ошибка при добавлении даты",
 					Code = "500"
 				};
 			}
 		}
 
-        public ResultViewData SaveDatePractical(int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note)
+        public ScheduleViewResultSingle SaveDatePractical(int id, int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note)
         {
             try {
                 var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
-                    return new ResultViewData
+                    return new ScheduleViewResultSingle
                     {
                         Message = "Пользователь не добавлен к предмету",
                         Code = "500"
@@ -189,7 +197,7 @@ namespace LMPlatform.UI.Services.Schedule
                 var canAdd = ScheduleManagementService.CheckIfAllowed(dateTime, start, end, building, audience);
                 if (!canAdd)
                 {
-                    return new ResultViewData
+                    return new ScheduleViewResultSingle
                     {
                         Message = "Время и место занято",
                         Code = "500"
@@ -197,6 +205,7 @@ namespace LMPlatform.UI.Services.Schedule
                 }
                 var practicalSchedule = new ScheduleProtectionPractical
                 {
+                    Id = id,
                     Audience = audience,
                     Date = dateTime,
                     Building = building,
@@ -210,17 +219,18 @@ namespace LMPlatform.UI.Services.Schedule
                     note.UserId = UserContext.CurrentUserId;
                     practicalSchedule.Notes.Add(note);
                 }
-                ScheduleManagementService.SaveDatePractical(practicalSchedule);
+                var schedule = ScheduleManagementService.SaveDatePractical(practicalSchedule);
 
-                return new ResultViewData
+                return new ScheduleViewResultSingle
                 {
                     Message = "Дата успешно добавлена",
-                    Code = "200"
+                    Code = "200",
+                    Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Practical))
                 };
             }
             catch
             {
-                return new ResultViewData
+                return new ScheduleViewResultSingle
                 {
                     Message = "Произошла ошибка при добавлении даты",
                     Code = "500"

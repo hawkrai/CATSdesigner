@@ -71,3 +71,11 @@ export const setPracticalMark = createAction(
     '[Practicals] Set Practical Mark',
     props<{ body: { studentId: number, practicalId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } }>()
 );
+
+export const getMarksExcel = createAction(
+    '[Practicals] Get Marks Excel'
+  );
+  
+  export const getVisitingExcel = createAction(
+    '[Practicals] Get Visiting Excel'
+  );

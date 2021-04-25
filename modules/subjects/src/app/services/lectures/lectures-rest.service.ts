@@ -44,7 +44,7 @@ export class LecturesRestService {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId.toString());
-    return this.http.get('Services/Lectures/LecturesService.svc/GetLecturesMarkVisitingV2', {params}).pipe(
+    return this.http.get('Services/Lectures/LecturesService.svc/GetLecturesMarkVisitingV3', {params}).pipe(
       map(res => res['GroupsVisiting'] ? res['GroupsVisiting'][0] : null)
     )
   }

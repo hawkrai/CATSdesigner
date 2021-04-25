@@ -2,14 +2,13 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Lab } from 'src/app/models/lab.model';
-import { StudentMark } from 'src/app/models/student-mark.model';
+import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
+import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { IAppState } from 'src/app/store/state/app.state';
 
 import * as labsActions from '../../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
-import * as subjectSelectors from '../../../../../store/selectors/subject.selector';
 
 @Component({
   selector: 'app-teacher-job-protection',
@@ -18,50 +17,48 @@ import * as subjectSelectors from '../../../../../store/selectors/subject.select
 })
 export class TeacherJobProtectionComponent implements OnInit {
 
-  state$: Observable<{
-    students: StudentMark[],
-    labs: Lab[],
-  }>;
+  groupJobProtection$: Observable<GroupJobProtection>;
+  labFiles$: Observable<UserLabFile[]>;
 
   selectedStudentId: number;
 
-  @Output() onAddFile = new EventEmitter<{ userId: number, file: UserLabFile }>();
+  @Output() onAddFile = new EventEmitter<{ userId: number, labId: number, fileId: number }>();
   @Output() onReceiveLab = new EventEmitter<void>();
-  @Output() onDeleteFile = new EventEmitter<{ userId: number, labId: number, userLabFileId: number }>();
   @Output() onCheckPlugiarism = new EventEmitter<number>();
 
   constructor(
-    private store: Store<IAppState>
+    private store: Store<IAppState>,
   ) { }
 
   ngOnInit() {
-    this.store.dispatch(labsActions.loadLabs());
-
-    this.state$ = combineLatest([
-      this.store.select(labsSelectors.getStudentsLabsFiles),
-      this.store.select(labsSelectors.getLabs),
-    ]).pipe(
-      map(([students, labs]) => ({ students, labs }))
-    );
+    this.groupJobProtection$ = this.store.select(labsSelectors.getGroupJobProtection);
   }
 
-  addLab(userId: number, file: UserLabFile): void {
-    this.onAddFile.emit({ userId, file });
+  addLab(userId: number, labId: number , fileId: number): void {
+    this.onAddFile.emit({ userId, labId, fileId });
   }
 
-  deleteLab(userLabFileId: number, userId: number, labId: number): void {
-    this.onDeleteFile.emit({ userLabFileId, userId, labId });
-  }
 
   checkPlagiarism(userLabFileId: number){
     this.onCheckPlugiarism.emit(userLabFileId);
   }
 
-  receiveLab(): void {
-
+  receiveLab(userFileId: number, userId: number): void {
+    this.store.dispatch(labsActions.receiveLabFile({ userFileId, userId }));
   }
 
-  cancelReceivedLab(): void {
+  cancelLab(userFileId: number, userId: number): void {
+    this.store.dispatch(labsActions.cancelLabFile({ userFileId, userId }));
     
+  }
+  onSelectStudent(userId: number): void {
+    if (userId) {
+      this.selectedStudentId = userId;
+      this.store.dispatch(labsActions.loadStudentLabFiles({ userId }));
+      this.labFiles$ = this.store.select(labsSelectors.getStudentLabFiles, { studentId: userId })
+    } else {
+      this.store.dispatch(labsActions.resetStudentJobProtection({ studentId: this.selectedStudentId }));
+      this.selectedStudentId = 0
+    }
   }
 }

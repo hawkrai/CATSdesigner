@@ -3,4 +3,5 @@ export class Note {
   start: Date;
   end: Date;
   title: string;
+  note: string;
 }

@@ -165,10 +165,11 @@ namespace LMPlatform.UI.Services.Practicals
             var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
 
             var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
-
+            var scheduleProtectionPracticalMarksGroup = subject.ScheduleProtectionPracticals.Where(x => x.GroupId == groupId);
             foreach (var student in group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName))
             {
-                var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionPracticals: subject.ScheduleProtectionPracticals, practicals: subject.Practicals);
+               
+                var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionPracticals: scheduleProtectionPracticalMarksGroup, practicals: subject.Practicals);
 
                 marks.Add(new StudentMark
                 {
@@ -298,21 +299,8 @@ namespace LMPlatform.UI.Services.Practicals
                         Message = "Пользователь не присоединён к предмету"
                     };
                 }
-                var practicals = PracticalManagementService.GetSubjectPracticals(subjectId);
-                if (prevIndex < curIndex)
-                {
-                    foreach (var entry in practicals.Skip(prevIndex + 1).Take(curIndex - prevIndex).Append(practicals[prevIndex]).Select((x, index) => new { Value = x, Index = index }))
-                    {
-                        PracticalManagementService.UpdatePracticalOrder(entry.Value, entry.Index + prevIndex);
-                    }
-                }
-                else
-                {
-                    foreach (var entry in new List<Practical> { practicals[prevIndex] }.Concat(practicals.Skip(curIndex).Take(prevIndex - curIndex)).Select((x, index) => new { Value = x, Index = index }))
-                    {
-                        PracticalManagementService.UpdatePracticalOrder(entry.Value, entry.Index + curIndex);
-                    }
-                }
+                PracticalManagementService.UpdatePracticalsOrder(subjectId, prevIndex, curIndex);
+
                 return new ResultViewData
                 {
                     Code = "200",

@@ -10,10 +10,10 @@ import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/
 import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
 import * as practicalsActions from '../../../../store/actions/practicals.actions';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
-import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import { VisitingPopoverComponent } from 'src/app/shared/visiting-popover/visiting-popover.component';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-visit-statistic',
@@ -39,7 +39,8 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
 
   constructor(
     private dialogService: DialogService,
-    private store: Store<IAppState>
+    private store: Store<IAppState>,
+    private translate: TranslatePipe
   ) { }
 
   ngOnInit() {
@@ -61,7 +62,7 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
 
   getHeaders(practicals: Practical[]): { head: string, text: string, length: number, tooltip?: string }[] {
     const defaultHeaders = [{ head: 'emptyPosition', text: '', length: 1 }, { head: 'emptyName', text: '', length: 1 }];
-    return defaultHeaders.concat(practicals.map(p => ({head: p.PracticalId.toString(), text: p.ShortName, length: Math.floor(p.Duration / 2), tooltip: p.Theme })))
+    return defaultHeaders.concat(practicals.map((p, index) => ({head: p.PracticalId.toString(), text: p.ShortName, length: Math.floor(p.Duration / 2), tooltip: p.Theme })))
   }
 
   setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionPractical, index: number) {
@@ -76,8 +77,8 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
         }))
       };
       const dialogData: DialogData = {
-        title: 'Посещаемость занятий',
-        buttonText: 'Сохранить',
+        title: this.translate.transform('text.subjects.attendance.lesson', 'Посещаемость занятий'),
+        buttonText: this.translate.transform('button.save', 'Сохранить'),
         body: visits
       };
       const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);

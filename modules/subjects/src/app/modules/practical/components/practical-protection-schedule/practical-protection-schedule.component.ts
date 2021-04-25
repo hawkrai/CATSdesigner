@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { DialogService } from 'src/app/services/dialog.service';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import { VisitDatePracticalsPopoverComponent } from './visit-date-practicals-popover/visit-date-practicals-popover.component';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-practical-protection-schedule',
@@ -25,7 +26,8 @@ export class PracticalProtectionScheduleComponent implements OnInit, OnChanges {
 
   constructor(
     private store: Store<IAppState>,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private translate: TranslatePipe
   ) { }
 
   state$: Observable<{
@@ -54,8 +56,8 @@ export class PracticalProtectionScheduleComponent implements OnInit, OnChanges {
 
   settingVisitDate() {
     const dialogData: DialogData = {
-      title: 'Даты занятий',
-      buttonText: 'Добавить'
+      title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
+      buttonText: this.translate.transform('button.add', 'Добавить')
     };
 
     this.dialogService.openDialog(VisitDatePracticalsPopoverComponent, dialogData);

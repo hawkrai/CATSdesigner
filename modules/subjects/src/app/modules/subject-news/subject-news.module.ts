@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {SubjectNewsComponent} from './subject-news.component';
 import {MatModule} from "../../mat.module";
 import {NewsPopoverComponent} from './news-popover/news-popover.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
@@ -14,11 +14,11 @@ import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
     MatModule,
     FormsModule,
     CKEditorModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ],
   entryComponents: [
     NewsPopoverComponent
-  ],
-  exports: [SubjectNewsComponent]
+  ]
 })
 export class SubjectNewsModule { }

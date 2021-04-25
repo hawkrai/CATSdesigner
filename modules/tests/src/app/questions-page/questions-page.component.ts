@@ -130,7 +130,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
   public addQuestionFromOtherTest(event): void {
     const dialogRef = this.dialog.open(QuestionOtherTestComponent, {
       width: "700px",
-      data: {event, test: this.testId},
+      data: {event, test: this.testId, name: this.test.Title},
       autoFocus: false,
     });
 

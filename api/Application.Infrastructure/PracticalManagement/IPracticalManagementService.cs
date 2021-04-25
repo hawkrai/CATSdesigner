@@ -22,7 +22,7 @@ namespace Application.Infrastructure.PracticalManagement
 
         void SaveScheduleProtectionPracticalDate(ScheduleProtectionPractical scheduleProtectionPractical);
         Practical GetPractical(int id);
-        Practical UpdatePracticalOrder(Practical practical, int order);
+        void UpdatePracticalsOrder(int subjectId, int prevIndex, int currentIndex);
         IList<Practical> GetSubjectPracticals(int subjectId);
         Practical SavePractical(Practical practical, IList<Attachment> attachments, int userId);
 

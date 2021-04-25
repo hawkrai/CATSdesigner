@@ -1,6 +1,9 @@
-<h2 mat-dialog-title>{{data.title}}</h2>
-<p class="mat-typography text">Вы действительно хотите удалить {{data.body}}?</p>
-<div mat-dialog-actions>
-  <button mat-raised-button mat-dialog-close>Отмена</button>
-  <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
-</div>
+<app-popover>
+  <ng-container title>
+    <p class="mat-typography text">{{'text.delete.question' | translate:'Вы действительно хотите удалить'}} {{data.body}}?</p>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button mat-dialog-close>{{'button.close' | translate:'Отмена'}}</button>
+    <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+  </ng-container>
+</app-popover>

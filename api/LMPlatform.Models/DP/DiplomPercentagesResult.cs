@@ -15,6 +15,8 @@ namespace LMPlatform.Models.DP
         [StringLength(50)]
         public string Comments { get; set; }
 
+        public bool ShowForStudent { get; set; }
+
         public virtual DiplomPercentagesGraph DiplomPercentagesGraph { get; set; }
 
         public virtual Student Student { get; set; }
