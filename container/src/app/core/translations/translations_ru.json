@@ -182,6 +182,7 @@
   "text.editor.remove.confirmation.text": "Вы уверены, что хотите удалить ",
   "text.editor.hint.roll.up": "Свернуть",
   "text.editor.hint.expand": "Развернуть",
+  "text.editor.emptylist": "Список пуст",
 
   "text.news": "Новость",
   "text.news.plural": "Новости",
