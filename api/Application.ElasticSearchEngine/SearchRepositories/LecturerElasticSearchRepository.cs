@@ -13,7 +13,6 @@ namespace Application.ElasticSearchEngine.SearchRepositories
     public class LecturerElasticSearchRepository : BaseElasticSearchRepository
     {
         private static string LECTURERS_INDEX_NAME => ConfigurationManager.AppSettings["LecturersIndexName"];
-        //private static string LECTURERS_INDEX_NAME ="lecturers";
 
         public LecturerElasticSearchRepository(ElasticClient client)
             : base(client, LECTURERS_INDEX_NAME)

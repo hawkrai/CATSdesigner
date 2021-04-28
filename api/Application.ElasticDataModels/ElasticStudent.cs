@@ -27,9 +27,6 @@ namespace LMPlatform.ElasticDataModels
 
         [JsonIgnore]
         public bool? Confirmed { get; set; }
-
-
-
  
     }
 }

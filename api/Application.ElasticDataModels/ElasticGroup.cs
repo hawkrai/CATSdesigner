@@ -27,7 +27,5 @@ namespace LMPlatform.ElasticDataModels
         [JsonIgnore]
         public virtual ICollection<ElasticStudent> Students { get; set; }
 
-
-
     }
 }

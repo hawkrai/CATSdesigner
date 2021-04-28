@@ -8,11 +8,9 @@ using System.Data.Entity.Spatial;
 
 namespace LMPlatform.ElasticDataModels
 {
-
-
     public partial class ElasticUser : ModelBase
     {
- 
+
         public string UserName { get; set; }
 
         public string SkypeContact { get; set; }

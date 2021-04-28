@@ -11,7 +11,6 @@ namespace Application.ElasticSearchEngine.SearchRepositories
     public class StudentElasticSearchRepository : BaseElasticSearchRepository
     {
        private static string STUDENTS_INDEX_NAME => ConfigurationManager.AppSettings["StudentsIndexName"];
-        //private static string STUDENTS_INDEX_NAME = "students";
 
         public StudentElasticSearchRepository(ElasticClient client)
              : base(client, STUDENTS_INDEX_NAME)

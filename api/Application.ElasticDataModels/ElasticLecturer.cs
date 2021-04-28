@@ -18,7 +18,6 @@ namespace LMPlatform.ElasticDataModels
         [NotMapped]
         public string FullName => $"{LastName} {FirstName} {MiddleName}";
 
-       
         public string FirstName { get; set; }
        
         public string LastName { get; set; }
@@ -27,7 +26,6 @@ namespace LMPlatform.ElasticDataModels
 
         [JsonIgnore]
         public bool IsSecretary { get; set; }
-
        
         [JsonIgnore]
         public bool? IsActive { get; set; }
@@ -37,9 +35,6 @@ namespace LMPlatform.ElasticDataModels
 
         [JsonIgnore]
         public bool IsLecturerHasGraduateStudents { get; set; }
-
-
-
 
     }
 }
