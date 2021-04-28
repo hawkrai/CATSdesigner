@@ -266,7 +266,8 @@ export class CreateLessonComponent implements OnInit {
     }
     this.note.start.setHours(+this.startTimeOfNote.split(':')[0], +this.startTimeOfNote.split(':')[1]);
     this.note.end.setHours(+this.endTimeOfNote.split(':')[0], +this.endTimeOfNote.split(':')[1]);
-    this.noteService.savePersonalNote(this.note, this.lessonservice.formatDate2(this.dayOfNote), this.startTimeOfNote, this.endTimeOfNote).subscribe(l => {
+    this.noteService.savePersonalNote(this.note, this.lessonservice.formatDate2(this.dayOfNote),
+                                      this.startTimeOfNote, this.endTimeOfNote).subscribe(l => {
       console.log(l);
     });
     this.dialogRef.close({note: this.note, type: 'note'});
@@ -282,7 +283,9 @@ export class CreateLessonComponent implements OnInit {
       this.groups = re.Groups;
     });
     this.lessonservice.getSubjectOwner(+event.value).subscribe(teacher => {
-      this.teacherSubject = this.lessonservice.cutTeacherName(teacher.FullName);
+      if (teacher.FullName != undefined) {
+        this.teacherSubject = this.lessonservice.cutTeacherName(teacher.FullName);
+      }
     });
   }
 

@@ -10,9 +10,6 @@ export interface ILabsState {
   labs: Lab[];
   schedule: ScheduleProtectionLab[];
   students: StudentMark[];
-  studentJobProtection: {
-    [key: string]: StudentJobProtection
-  },
   hasJobProtections: HasJobProtection[],
   groupJobProtection: GroupJobProtection,
   studentsLabsFiles: {
@@ -24,7 +21,6 @@ export const initialLabsState: ILabsState = {
   labs: [],
   schedule: [],
   students: [],
-  studentJobProtection: {},
   groupJobProtection: null,
   hasJobProtections: [],
   studentsLabsFiles: {}

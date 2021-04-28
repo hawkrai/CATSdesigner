@@ -55,7 +55,25 @@ export class MaterialComponent implements OnInit {
       this.treeControl.expandAll();
     });  
   }
-  
+
+  openFolderPDF(nodeId: number): void {
+
+    this.complexService.getFilesForFolder(nodeId).subscribe(result => {
+      if (result) {
+        const path = '/api/Upload?fileName=' + (result && result[0]);
+        const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
+          width: '1200px',
+          data: { name: 'name', documents: result, url: path }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      }
+    });
+    
+  };
+
   openPDF(filename: string): void {
     const path = '/api/Upload?fileName=' + filename;
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {

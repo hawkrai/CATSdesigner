@@ -23,6 +23,7 @@ export interface DialogData {
   nodeId?: string;
 
   attachments?: any[];
+  documents?: string[];
 
   //Adaptive Learning
   isAdaptive?: boolean;

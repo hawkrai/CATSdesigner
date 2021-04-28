@@ -52,6 +52,5 @@
 
         public ICollection<UserLabFiles> UserLabFiles { get; set; }
 
-        public ICollection<JobProtection> JobProtections { get; set; }
     }
 }

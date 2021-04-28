@@ -14,8 +14,6 @@ namespace LMPlatform.Data.Repositories
 
             return result;
         }
-
-        public IProtectionRepository ProtectionRepository { get; set; }
         public IUsersRepository UsersRepository { get; set; }
 
         public IBugsRepository BugsRepository { get; set; }
@@ -120,7 +118,6 @@ namespace LMPlatform.Data.Repositories
             NewsRepository = new NewsRepository(_dataContext);
             AdaptiveLearningProgressRepository = new AdaptiveLearningProgressRepository(_dataContext);
             NotesRepository = new NotesRepository(_dataContext);
-            ProtectionRepository = new ProtectionRepository(_dataContext);
         }
     }
 }

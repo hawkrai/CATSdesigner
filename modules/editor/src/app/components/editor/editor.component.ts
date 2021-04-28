@@ -143,7 +143,7 @@ export class EditorComponent implements OnInit {
       this.saveDocument(undefined);
     }
 
-    this._bookService.getContent(documentId).subscribe(doc => {
+    this._bookService.getContent(documentId, this.UserId).subscribe(doc => {
       this.model.editorData = doc.Text;
       this.currentDocument = doc;
     })
@@ -156,7 +156,7 @@ export class EditorComponent implements OnInit {
   // DOCUMENT
   editDocument(document) {
     if(document.Children.length == 0 && document.Id != 0){
-      this._bookService.getContent(document.Id).subscribe(doc => {
+      this._bookService.getContent(document.Id, this.UserId).subscribe(doc => {
         this.model.editorData = doc.Text.replace(doc.Name, '');
         this.currentDocument = doc;
       })

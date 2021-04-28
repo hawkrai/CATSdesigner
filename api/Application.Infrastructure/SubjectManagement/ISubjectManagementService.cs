@@ -140,13 +140,17 @@ namespace Application.Infrastructure.SubjectManagement
 
 		List<ProfileCalendarModel> GetGroupsLabEvents(int groupId, int userId);
 
-		void UpdateUserLabFile(int userFileId, bool isReceived);
+		void UpdateUserLabFile(int userFileId, bool isReceived = false, bool isReturned = false);
 
 		UserLabFiles GetUserLabFile(string path);
 
 		List<ProfileCalendarModel> GetLecturesEvents(int groupId, int userId);
 
         void SavePracticalVisitingData(ScheduleProtectionPracticalMark protectionPracticalMarks);
+
+        SubjectGroup GetSubjectGroup(IQuery<SubjectGroup> query);
+
+        IEnumerable<SubjectGroup> GetSubjectGroups(IQuery<SubjectGroup> query);
 
     }
 }

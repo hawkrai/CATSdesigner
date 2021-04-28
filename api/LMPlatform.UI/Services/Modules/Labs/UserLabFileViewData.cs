@@ -29,5 +29,8 @@ namespace LMPlatform.UI.Services.Modules.Labs
 
         [DataMember]
         public int UserId { get; set; }
+
+        [DataMember]
+        public string LabShortName { get; set; }
     }
 }

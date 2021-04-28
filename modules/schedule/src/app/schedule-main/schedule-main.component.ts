@@ -221,7 +221,7 @@ export class ScheduleMainComponent implements OnInit {
       if (result != null) {
         if (result) {
           if (eventToDelete.meta == 'lesson') {
-            let a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
+            const a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
             if (a == 'Лекция') {
               this.lessonservice.deleteLecture(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
                 console.log(res);
@@ -321,7 +321,12 @@ export class ScheduleMainComponent implements OnInit {
 
   public changeDate(): any {
     const a = new Date(this.viewDate);
-    a.setDate(a.getDate() + (7 - this.viewDate.getDay()));
+    let day = this.viewDate.getDay();
+    if (day == 0) {
+      day = 7;
+    }
+
+    a.setDate(a.getDate() + (7 - day));
     const endDate = this.lessonservice.formatDate3(a);
     a.setDate(a.getDate() - 6);
     const startDate = this.lessonservice.formatDate3(a);
@@ -335,7 +340,7 @@ export class ScheduleMainComponent implements OnInit {
           const startT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.Start);
           const endT = new Date(dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0] + 'T' + lesson.End);
           lesson.Type = this.lessonservice.getLessonTypeById(lesson.Type);
-          //console.log(lesson.Teacher + ' ' + this.lessonservice.cutTeacherName(lesson.Teacher));
+          // console.log(lesson.Teacher + ' ' + this.lessonservice.cutTeacherName(lesson.Teacher));
           if (lesson.Teacher != null) {
             lesson.Teacher.FullName = this.lessonservice.cutTeacherName(lesson.Teacher.FullName);
           }

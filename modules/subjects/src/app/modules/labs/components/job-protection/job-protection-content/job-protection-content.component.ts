@@ -25,7 +25,7 @@ export class JobProtectionContentComponent implements OnInit {
   constructor(
     private store: Store<IAppState>
   ) { }
-  public displayedColumns = ['file', 'comments', 'date', 'action'];
+  public displayedColumns = ['lab', 'file', 'comments', 'date', 'action'];
 
   ngOnInit(): void {
 

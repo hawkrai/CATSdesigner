@@ -133,6 +133,14 @@
 
 .mat-tab-label {
   font-size: .875rem;
-  font-weight: 500;
+  font-weight: 600;
   width: 50%;
+}
+
+.mat-tab-label.mat-tab-label-active{
+  color: indigo;
+}
+
+.remove-border-bottom .mat-tab-header {
+  border-bottom: none;
 }
