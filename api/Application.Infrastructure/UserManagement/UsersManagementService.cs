@@ -120,6 +120,37 @@ namespace Application.Infrastructure.UserManagement
             return null;
         }
 
+        public User GetUserById(int id)
+        {
+            try
+            {
+                return UsersRepository.GetBy(new Query<User>(u => u.Id == id)
+                .Include(u => u.Student).Include(e => e.Student.Group).Include(u => u.Lecturer).Include(u => u.Membership.Roles));
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Exception exSub in ex.LoaderExceptions)
+                {
+                    sb.AppendLine(exSub.Message);
+                    FileNotFoundException exFileNotFound = exSub as FileNotFoundException;
+                    if (exFileNotFound != null)
+                    {
+                        if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
+                        {
+                            sb.AppendLine("Fusion Log:");
+                            sb.AppendLine(exFileNotFound.FusionLog);
+                        }
+                    }
+                    sb.AppendLine();
+                }
+                string errorMessage = sb.ToString();
+                throw new Exception(errorMessage);
+            }
+
+
+        }
+
         public User GetUserByName(string firstName, string lastName, string middleName)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

@@ -31,9 +31,14 @@ namespace LMPlatform.UI
 			}
 
 			routes.MapRoute(
-				"Default",
-				"{controller}/{action}/{id}",
-				new {controller = "Home", action = "Index", id = UrlParameter.Optional});
+					"Search",
+					"ElasticSearch/{action}/{searchStr}",
+					new { controller = "ElasticSearch"});
+
+			routes.MapRoute(
+					"Default",
+					"{controller}/{action}/{id}",
+					new {controller = "Home", action = "Index", id = UrlParameter.Optional});
 		}
 	}
 }

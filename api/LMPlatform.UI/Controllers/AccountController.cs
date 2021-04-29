@@ -62,6 +62,7 @@ namespace LMPlatform.UI.Controllers
             return StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
         }
 
+        
         [HttpGet]
         public JsonResult UserSessionCheck()
         {
@@ -138,6 +139,16 @@ namespace LMPlatform.UI.Controllers
 
             return JsonResponse(model);
         }
+
+        [JwtAuth]
+        [HttpGet]
+        public ActionResult GetCurrentPersonalData()
+        {
+            var model = new PersonalDataViewModel();
+            return JsonResponse(model);
+        }
+
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -296,6 +307,8 @@ namespace LMPlatform.UI.Controllers
             var model = new PersonalDataViewModel();
 
             return $"{model.Surname} {model.Name} {model.Patronymic}";
+
+
         }
 
         private bool IsLecturerActive(string userName)
