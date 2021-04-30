@@ -17,7 +17,7 @@ export class ComplexRulesPopoverComponent {
 
   public files = [];
   page: number = 1
-  pdfSrc: string = '../../../../../assets/Polozhenie.pdf';
+  pdfSrc: string = '../complex/assets/Polozhenie_New.pdf';
 
   constructor(
     public dialogRef: MatDialogRef<ComplexRulesPopoverComponent>,
