@@ -46,7 +46,7 @@ export class MaterialComponent implements OnInit {
     this.isLucturer = user.role === 'lector';
   }
 
-  hasChild = (_: number, node: ComplexCascade) => !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: ComplexCascade) => node.IsGroup || (!!node.children && node.children.length > 0);
 
   ngOnInit() {
     this.complexService.getConceptCascade(this.complexId).subscribe(res => {
