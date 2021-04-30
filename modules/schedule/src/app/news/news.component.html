@@ -4,7 +4,7 @@
          style="padding-left: 9%;cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5; width: 10px; float: left; ">></p>
      <p style="font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;margin-left: 30%">{{'text.schedule.news' | translate:'Новости'}}</p>
   </div>
-  <div *ngIf ="news.length" style="margin-right:10%; margin-left:10%;">
+  <div *ngIf ="news.length != 0" style="margin-right:10%; margin-left:10%;">
     <table  >
       <tr  *ngFor="let item of news" >
        <div [ngStyle]="{ 'border-left':calcColor(item?.Subject)}" style="margin-bottom: 25px; padding-top: 10px;" >

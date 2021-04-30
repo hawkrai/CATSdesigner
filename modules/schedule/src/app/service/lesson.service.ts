@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import {les, SUBJECTS} from '../mock/lesson-mock';
-import {DatePipe, formatDate} from '@angular/common';
+import {Observable} from 'rxjs';
+import {DatePipe} from '@angular/common';
 
 
 @Injectable({
@@ -10,49 +9,55 @@ import {DatePipe, formatDate} from '@angular/common';
 })
 export class LessonService {
 
-  lessonTypes: string[][] = [['1', 'Лекция'], ['2', 'Лаб.работа'], ['3', 'Практ.работа']];
+  lessonTypes: string[][] = [['0', 'Лекция'], ['1', 'Практ. зан.'], ['2', 'Лаб. работа'],
+    ['3', 'КП'], ['4', 'ДП']];
 
-  lessonTypesFull: string[][] = [['1', 'Лекция'], ['2', 'Лабораторная работа'], ['3', 'Практическая работа']];
+  lessonTypesFull: string[][] = [['0', 'Лекция'], ['1', 'Практическое занятие'], ['2', 'Лабораторная работа'],
+    ['3', 'Консультация по курсовому проектированию'], ['4', 'Консультация по дипломному проектуированию']];
 
   constructor(private http: HttpClient,
               private datePipe: DatePipe) {
   }
-
-  getLessons(): Observable<any> {
-    return of(les);
-  }
-
-  getSubjects(): Observable<any> {
-    return of(SUBJECTS);
-  }
-
-
   getAllLessons(username: string): Observable<any> {
     return this.http.post<any>('/Profile/GetProfileInfoCalendar', {userLogin: username});
+  }
+
+  getGroupsBySubjectId(id: number): Observable<any> {
+    return this.http.get<any>('/Services/CoreService.svc/GetGroupsV2/' + id);
   }
 
   getLessonsByDates(start: string, end: string): Observable<any> {
     return this.http.get<any>('/Services/Schedule/ScheduleService.svc/GetSchedule?dateStart=' + start + '&dateEnd=' + end);
   }
 
-  saveLab(Lab: any): Observable<any> {
-    return this.http.post<any>('/Services/Labs/ScheduleService.svc/SaveDateLab', {lab: Lab});
+  saveLab(Lab: any, dateLab: string): Observable<any> {
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLab',
+      {id: Lab.Id, subjectId: Lab.SubjectId, date: dateLab, startTime: Lab.Start,
+            endTime: Lab.End, building: Lab.Building, audience: Lab.Audience, subGroupId: Lab.subGroupId});
   }
 
-  savePractical(pract: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDatePractical', {lab: pract});
+  deleteLab(idLab: any, subjId: any): Observable<any> {
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeleteLabScheduleDate', {id: idLab, subjectId: subjId});
   }
 
-  saveLecture(lect: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures', {lecture: lect});
+  savePractical(pract: any, datePr: string): Observable<any> {
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDatePractical',
+      {id: pract.Id, subjectId: pract.SubjectId, date: datePr, startTime: pract.Start,
+            endTime: pract.End, building: pract.Building, audience: pract.Audience,  groupId: pract.groupId });
   }
 
-  deleteLab(idLab: any): Observable<any> {
-    return this.http.post<any>('/Services/Labs/LabsService.svc/Delete', {id: idLab});
+  deletePractical(idPract: any, subjId: any): Observable<any> {
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeleteLabScheduleDate', {id: idPract, subjectId: subjId});
   }
 
-  deletePractical(idPract: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeletePracticalScheduleDate', {id: idPract});
+  saveLecture(lect: any, dateLes: string): Observable<any> {
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLectures',
+      {id: lect.Id, subjectId: lect.SubjectId, date: dateLes, startTime: lect.Start,
+        endTime: lect.End, building: lect.Building, audience: lect.Audience});
+  }
+
+  deleteLecture(lectId: any, subjId: any): Observable<any> {
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeleteLectureScheduleDate', {id: lectId, subjectId: subjId});
   }
 
   getLessonsByDateAndTimes(date: string, start: string, end: string): Observable<any> {
@@ -60,8 +65,8 @@ export class LessonService {
 
   }
 
-  deleteLecture(lectId: any): Observable<any> {
-    return this.http.post<any>('/Services/Lectures/LecturesService.svc/Delete', {id: lectId});
+  getSubjectOwner(subjId: any): Observable<any> {
+    return this.http.get<any>('/Services/Subjects/SubjectsService.svc/GetSubjectOwner/' + subjId);
   }
 
   getAllSubjects(username: string): Observable<any> {
@@ -124,7 +129,12 @@ export class LessonService {
 
   getLocation(title: string): any {
     const splitted = title.split('|', 3);
-    return 'а.' + splitted[1] + ' к.' + splitted[2];
+    let a = splitted[2];
+    if (a.length != 0) {
+      a = ' к. ' + a;
+    }
+
+    return 'а.' + splitted[1] + a;
   }
 
   getName(title: string): any {
@@ -142,8 +152,6 @@ export class LessonService {
     return event.meta === 'lesson';
   }
 
-
-
   formatDate1(date: Date): string {
     return this.datePipe.transform(date, 'MM/dd/yyyy');
   }
@@ -156,6 +164,10 @@ export class LessonService {
     return this.datePipe.transform(date, 'dd-MM-yyyy');
   }
 
+  formatDate4(date: Date): string {
+    return this.datePipe.transform(date, 'dd.MM.yyyy');
+  }
+
   getLessonType(): any {
     return this.lessonTypes;
   }
@@ -166,5 +178,16 @@ export class LessonService {
 
   getLessonTypeById(id: string): any {
     return this.lessonTypes.find(type => type[0] == id)[1];
+  }
+
+  cutTeacherName(name: string): string {
+    if (name != null) {
+      const splitted = name.split(' ', 3);
+      const a = ' ' + splitted[1][0] + '. ';
+      const b = splitted[2][0] + '. ';
+
+      return splitted[0] + a + b;
+    }
+    return name;
   }
 }

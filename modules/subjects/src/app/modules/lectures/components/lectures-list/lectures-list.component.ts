@@ -17,9 +17,7 @@ import {Attachment} from "../../../../models/file/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
 import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
-import { attachmentConverter } from 'src/app/utils';
 import { DialogService } from './../../../../services/dialog.service';
-import { ConvertedAttachment } from 'src/app/models/file/converted-attachment.model';
 import * as filesActions from '../../../../store/actions/files.actions';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
@@ -38,7 +36,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   displayedColumns: string[] = [];
 
 
-  public lectures$: Observable<Lecture[]>;
+  public lectures: Lecture[];
 
   constructor(
     private store: Store<IAppState>,
@@ -49,7 +47,9 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
 
   ngOnInit(): void {
     this.store.dispatch(lecturesActions.loadLectures());
-    this.lectures$ = this.store.select(lecturesSelectors.getLectures);
+    this.subs.add(this.store.select(lecturesSelectors.getLectures).subscribe(lectures => {
+      this.lectures = [...lectures];
+    }));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -71,15 +71,15 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     const dialogData: DialogData = {
       title: this.translate.transform('text.attachments.plural', 'Файлы'),
       buttonText: this.translate.transform('text.download', 'Скачать'),
-      body: attachments.map(a => attachmentConverter(a))
+      body: attachments
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      ).subscribe((result: Attachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
       })
     );
   }
@@ -125,12 +125,11 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   private getLecture(lecturesCount: number, lecture: Lecture) {
     return {
       id: lecture ? lecture.LecturesId : 0,
-      subjectId: this.subjectId,
       theme: lecture ? lecture.Theme : '',
       duration: lecture ? lecture.Duration : 0,
       order: lecture ? lecture.Order : lecturesCount,
       pathFile: lecture ? lecture.PathFile : '',
-      attachments: lecture ? lecture.Attachments.map(attachment => attachmentConverter(attachment)) : [],
+      attachments: lecture ? lecture.Attachments : [],
     };
   }
 

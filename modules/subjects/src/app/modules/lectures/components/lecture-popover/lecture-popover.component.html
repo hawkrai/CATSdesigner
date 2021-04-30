@@ -3,24 +3,24 @@
     {{data.title}}
   </ng-container>
   <ng-container body>
-    <form class="form" #formElement>
+    <form class="form" [formGroup]="lectureForm">
       <mat-form-field class="full-width">
         <mat-label>{{'text.subjects.lectures.theme' | translate:'Тема лекции'}}</mat-label>
-        <textarea required maxlength="256" name="body" matInput [(ngModel)]="data.model.theme"></textarea>
+        <textarea formControlName="theme" matInput></textarea>
       </mat-form-field>
       <mat-form-field class="full-width">
-        <mat-label>{{'text.number.hours' | translate:'Количество часов'}}(1-99)</mat-label>
-        <input name="duration" min="1" max="99" required type="number" matInput [placeholder]="'text.number.hours' | translate:'Количество часов'" [(ngModel)]="data.model.duration">
+        <mat-label>{{'text.number.hours' | translate:'Количество часов'}}(1-5)</mat-label>
+        <input  type="number" matInput [placeholder]="'text.number.hours' | translate:'Количество часов'" formControlName="duration">
       </mat-form-field>
-      <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="files" (upload)="uploadFile($event)"></app-file-uploader>
+      <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="filesArray.value" (upload)="uploadFile($event)"></app-file-uploader>
     </form>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClose(files, false)">{{'button.close' | translate:'Отмена'}}</button>
+    <button mat-raised-button (click)="onClose(false)">{{'button.close' | translate:'Отмена'}}</button>
     <button mat-raised-button
-            (click)="onClose(files, true)"
+            (click)="onSave()"
             color="primary"
-            [disabled]="!formElement.checkValidity()"
+            [disabled]="lectureForm.invalid"
     >{{data.buttonText}}</button>
   </ng-container>
 </app-popover>

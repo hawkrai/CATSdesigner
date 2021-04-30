@@ -20,6 +20,16 @@ namespace Application.Infrastructure.DTO
 
         public string Univer { get; set; }
 
+        public string ComputerConsultant { get; set; }
+
+        public string HealthAndSafetyConsultant { get; set; }
+
+        public string EconimicsConsultant { get; set; }
+
+        public string NormocontrolConsultant { get; set; }
+
+        public string DecreeNumber { get; set; }
+
         public DateTime? DateEnd { get; set; }
 
         public string DateEndString
@@ -38,6 +48,16 @@ namespace Application.Infrastructure.DTO
             get
             {
                 return DateStart.HasValue ? DateStart.Value.ToString("dd-MM-yyyy") : null;
+            }
+        }
+
+        public DateTime? DecreeDate { get; set; }
+
+        public string DecreeDateString
+        {
+            get
+            {
+                return DecreeDate.HasValue ? DecreeDate.Value.ToString("dd-MM-yyyy") : null;
             }
         }
     }

@@ -2,13 +2,14 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Lab } from 'src/app/models/lab.model';
+import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { IAppState } from 'src/app/store/state/app.state';
 
 import * as labsActions from '../../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../../store/selectors/subject.selector';
+
 
 @Component({
   selector: 'app-student-job-protection',
@@ -17,8 +18,10 @@ import * as subjectSelectors from '../../../../../store/selectors/subject.select
 })
 export class StudentJobProtectionComponent implements OnInit {
 
+  selectedLabId: number;
+
   state$: Observable<{
-    labs: Lab[],
+    labFiles: UserLabFile[],
     userId: number
   }>;
 
@@ -29,13 +32,12 @@ export class StudentJobProtectionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.store.dispatch(labsActions.loadLabs());
-
+    this.store.dispatch(labsActions.loadStudentLabFiles({ }));
     this.state$ = combineLatest([
-      this.store.select(labsSelectors.getLabs),
-      this.store.select(subjectSelectors.getUserId)
+      this.store.select(subjectSelectors.getUserId),
+      this.store.select(labsSelectors.getStudentLabFiles, {})
     ]).pipe(
-      map(([labs, userId]) => ({ labs, userId }))
+      map(([userId, labFiles]) => ({ labFiles, userId }))
     );
   }
 
@@ -46,4 +48,5 @@ export class StudentJobProtectionComponent implements OnInit {
   deleteLab(userLabFileId: number, userId: number, labId: number): void {
     this.onDeleteFile.emit({ userLabFileId, userId, labId });
   }
+
 }

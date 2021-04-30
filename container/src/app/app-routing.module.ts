@@ -12,6 +12,12 @@ import { AboutComponent } from './about/about.component';
 import { ResetComponent } from './reset/reset.component';
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 
+import { StatsComponent } from './searchResults/stats/stats.component';
+import { ProfileComponent } from './searchResults/profile/profile.component';
+import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
+import { DiplomComponent } from './diplom/diplom.component'
+
+
 const routes: Routes = [
   {
     path: '',
@@ -35,6 +41,25 @@ const routes: Routes = [
         path: 'confirmation', 
         component: ConfirmationComponent
       },
+
+      {
+        path: 'group/:groupName',
+        component: StatsComponent
+      },
+      {
+        path: 'profile/:id',
+        component: ProfileComponent
+      },
+      {
+        path: 'personalAccount',
+        component: ChangePersonalDataComponent
+      },
+
+      { 
+        path: 'diplom', 
+        component: DiplomComponent
+      }
+
     ]
   },
   { path: 'login', component: LoginComponent },

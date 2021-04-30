@@ -18,6 +18,11 @@
       border-top: 1px solid #c4c4c4;
       height: calc(100% - 86px);
       overflow: auto;
+
+      .empty {
+        color: rgba(0,0,0,.3);
+        margin: 5px;
+      }
     }
 
     .flex-search-region {

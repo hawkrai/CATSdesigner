@@ -24,10 +24,23 @@ export const loadOldGroups = createAction(
   '[Groups] Load Old Groups'
 );
 
+export const loadActiveGroups = createAction(
+  '[Groups] Load Active Groups'
+);
+
 export const resetGroups = createAction(
   '[Groups] Reset Groups'
 );
 
 export const loadStudentGroup = createAction(
   '[Groups] Load Student Group'
+);
+
+export const triggerGroupActiveState = createAction(
+  '[Groups] Trigger Group Active State',
+);
+
+export const setActiveState = createAction(
+  '[Groups] Set Group Active State',
+  props<{ isActive: boolean }>()
 );

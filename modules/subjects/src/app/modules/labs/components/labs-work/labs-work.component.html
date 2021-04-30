@@ -1,4 +1,4 @@
-<div class="labs-work-component" *ngIf="labs$ | async as labs; else: load">
+<div class="labs-work-component" *ngIf="labs; else: load">
   <div class="labs-work-component__actions" *ngIf="isTeacher">
     <button mat-raised-button color="primary" (click)="constructorLab(labs.length)">{{'text.subjects.labs.add' | translate:'Добавить работу'}}</button>
   </div>
@@ -16,10 +16,10 @@
 
     <ng-container matColumnDef="shortName">
       <th mat-header-cell *matHeaderCellDef>{{'short.name' |translate:'Краткое название'}}</th>
-      <td mat-cell *matCellDef="let element; let idx = index">{{'text.subjects.labs.prefix' | translate:'ЛР'}}{{idx + 1}}</td>
+      <td mat-cell *matCellDef="let element; let idx = index">{{element.ShortName}}</td>
     </ng-container>
 
-    <ng-container matColumnDef="clock">
+    <ng-container matColumnDef="duration">
       <th mat-header-cell *matHeaderCellDef>{{'hours' | translate:'Часы'}}</th>
       <td mat-cell *matCellDef="let element"> {{element.Duration}}</td>
     </ng-container>

@@ -198,6 +198,10 @@
       <Project>{94B7F3F9-AAD5-417F-9DAD-A0210489D875}</Project>
       <Name>Application.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Application.ElasticDataModels\LMPlatform.ElasticDataModels.csproj">
+      <Project>{7D6B62DE-EC81-497D-844E-5BEDFED6DE9E}</Project>
+      <Name>LMPlatform.ElasticDataModels</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LMPlatform.Models\LMPlatform.Models.csproj">
       <Project>{498FCA3E-909B-4830-9B55-0A8847E38B7A}</Project>
       <Name>LMPlatform.Models</Name>

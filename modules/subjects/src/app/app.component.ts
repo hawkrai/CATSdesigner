@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {IAppState} from './store/state/app.state';
 import {Store} from '@ngrx/store';
 import * as subjectActions from './store/actions/subject.actions';
@@ -10,7 +10,7 @@ import {User} from './models/user.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
   title = 'lmsNew';
 
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit{
     const subject = JSON.parse(localStorage.getItem('currentSubject'));
     const user = JSON.parse(localStorage.getItem('currentUser')) as User;
     if (subject) {
-      this.store.dispatch(subjectActions.setSubject({ subject: { id: subject.id, color: subject.color } }));
+      this.store.dispatch(subjectActions.setSubject({ subject: { id: subject.id, color: subject.color, subjectName: subject.name } }));
     }
     this.store.dispatch(subjectActions.setUser({ user }));
 

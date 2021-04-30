@@ -6,7 +6,7 @@
     >
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}} 
-          <mat-icon class="priority-icon" *ngIf="state.isTeacher && idx === 4 && (state.hasJobProtections | any:'HasJob')" class="priority-icon" [color]="'primary'">priority_high</mat-icon>
+          <mat-icon class="priority-icon" *ngIf="state.isTeacher && idx === 4 && (state.hasJobProtections | any:'HasJobProtection')" class="priority" [color]="'warn'">priority_high</mat-icon>
         </span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="idx === selectedTab">
@@ -16,7 +16,7 @@
     </button>
   </div>
   <div class="labs-component__body">
-    <div clas="labs-coponent__actions" data-item="actions" *ngIf="state.isTeacher">
+    <div class="labs-component__controls" *ngIf="state.isTeacher">
       <div class="labs-component__select-group" *ngIf="selectedTab === 1 || selectedTab === 2 || selectedTab === 3 || selectedTab === 4">
         <mat-form-field>
           <mat-select [value]="state.groups.length ? state.groups[0].GroupId : ''">
@@ -25,22 +25,24 @@
                         [value]="group.GroupId"
             >
               {{group.GroupName}}
-            <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && (state.hasJobProtections | find:'GroupId':group.GroupId).HasJob" [color]="'primary'">priority_high</mat-icon>
+            <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" [color]="'warn'">priority_high</mat-icon>
             </mat-option>
             <mat-select-trigger>
               <span #name>{{state.group.GroupName}}</span>
-              <mat-icon data-icon="priority" [style.left.px]="name | width" *ngIf="selectedTab === 4 && (state.hasJobProtections | find:'GroupId':state.group.GroupId).HasJob" class="priority-icon" [color]="'primary'">priority_high</mat-icon>
+              <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, state.group)" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
             </mat-select-trigger>
           </mat-select>
         </mat-form-field>
         <mat-slide-toggle
         *ngIf="selectedTab !== 1"
           [color]="'primary'"
-          [checked]="detachedGroup"
+          [checked]="state.detachedGroup"
           (change)="groupStatusChange($event)"
         >
           {{'text.groups.detached' | translate: 'Открепленные группы'}}
         </mat-slide-toggle>
+      </div>
+      <div class="labs-component__actions">
         <button *ngIf="selectedTab === 4"
           mat-icon-button
           color="primary"
@@ -71,6 +73,9 @@
           <mat-icon>cached</mat-icon>
         </button>
       </div>
+    </div>
+    <div class="labs-component__controls" *ngIf="!state.isTeacher">
+      {{state.group && state.group.GroupName}}
     </div>
     <app-labs-work *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-labs-work>
     <app-protection-schedule *ngIf="selectedTab === 1 && state.group" [groupId]="state.group.GroupId && state.group.GroupId" [isTeacher]="state.isTeacher"></app-protection-schedule>

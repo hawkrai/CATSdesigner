@@ -25,6 +25,7 @@ using Application.Infrastructure.ScheduleManagement;
 using Application.Infrastructure.NoteManagement;
 using Application.Infrastructure.LabsManagement;
 using Application.Infrastructure.PracticalManagement;
+using Application.Infrastructure.ElasticManagement;
 
 namespace Application.Infrastructure
 {
@@ -49,7 +50,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<IDpManagementService, DpManagementService>();
             containerWrapper.Register<ICorrelationService, CorrelationService>();
             containerWrapper.Register<ICpCorrelationService, CpCorrelationService>();
-            containerWrapper.Register<IPercentageGraphService, PercentageGraphService>();
+            containerWrapper.Register<IDpPercentageGraphService, DpPercentageGraphService>();
             containerWrapper.Register<ICpPercentageGraphService, CpPercentageGraphService>();
             containerWrapper.Register<IUserService, UserService>();
             containerWrapper.Register<ICPUserService, CPUserService>();
@@ -68,6 +69,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<INoteManagementService, NoteManagementService>();
             containerWrapper.Register<ILabsManagementService, LabsManagementService>();
             containerWrapper.Register<IPracticalManagementService, PracticalManagementService>();
+            containerWrapper.Register<IElasticManagementService, ElasticManagementService>();
             return containerWrapper;
         }
     }

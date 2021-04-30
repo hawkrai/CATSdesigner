@@ -36,7 +36,12 @@
                     <div *ngIf="markProperty.recommendedMark" style="opacity: 0.3">
                         {{markProperty.recommendedMark}}
                     </div>
-                    <div *ngIf="(element | visit:schedulePractical.head:state.practicals)" [matTooltip]="getMissingTooltip(element, state.schedule)" matTooltipPosition="above" class="not-visit"></div>
+                    <ng-container *var="element | visit:schedulePractical.head:state.practicals as marks">
+                        <div *ngIf="marks.length"
+                        matTooltipClass="tooltip"
+                        [matTooltip]="getMissingTooltip(marks, state.schedule)" matTooltipPosition="above" class="not-visit"></div>
+                    </ng-container>
+
                     </div>
                 </td>
                 </ng-container>

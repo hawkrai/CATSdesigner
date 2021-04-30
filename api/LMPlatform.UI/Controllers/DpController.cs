@@ -108,7 +108,7 @@ namespace LMPlatform.UI.Controllers
                 docName = $"{diplomProject.Theme}";
             }
 
-            Word.DiplomProjectToWord(docName, diplomProject, this.Response);
+            //Word.DiplomProjectToWord(docName, diplomProject, this.Response);
         }
 
         public string GetTasksSheetHtml(int diplomProjectId)

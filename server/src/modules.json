@@ -15,6 +15,10 @@
         "path": "/home/educatsb/apps/course",
         "entryPoint": "index.html"
     },
+    "diplom": {
+        "path": "/home/educatsb/apps/diplom",
+        "entryPoint": "index.html"
+    },
     "admin": {
         "path": "/home/educatsb/apps/admin",
         "entryPoint": "index.html"

@@ -19,6 +19,7 @@ import { Practical } from 'src/app/models/practical.model';
 import { PracticalMark } from 'src/app/models/mark/practical-mark.model';
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
 
 @Component({
   selector: 'app-results',
@@ -57,7 +58,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getHeaders(practicals: Practical[]): { head: string, text: string, tooltip: string }[] {
-    return practicals.map((l, index) => ({ head: l.PracticalId.toString(), text: this.translate.transform('text.subjects.practicals.prefix', 'ПЗ') + (index + 1), tooltip: l.Theme }));
+    return practicals.map((p, index) => ({ head: p.PracticalId.toString(), text: p.ShortName, tooltip: p.Theme }));
   }
 
   getDisplayColumns(practicals: Practical[]): string[] {
@@ -102,14 +103,9 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getMissingTooltip(studentMark: StudentMark, schedule: ScheduleProtectionPractical[]) {
-    // const missingSchedule = studentMark.LabVisitingMark
-    // .filter(visiting => schedule
-    //   .find(schedule => schedule.ScheduleProtectionPracticalId === visiting.ScheduleProtectionLabId)
-    // ).map(visiting => ({ mark: visiting.Mark, date: schedule
-    //   .find(schedule => schedule.ScheduleProtectionPracticalId === visiting.ScheduleProtectionLabId).Date}))
-    //   .filter(sc => !!sc.mark);
-    // return missingSchedule.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.mark} ${this.translate.transform('text.subjects.missed.hours', 'час(ов)')}.${sc.date}`).join('\n');
+  getMissingTooltip(marks: PracticalVisitingMark[], schedule: ScheduleProtectionPractical[]) {
+    return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}.${schedule.find(s => s.ScheduleProtectionPracticalId === sc.ScheduleProtectionPracticalId).Date}`).join('\n');
+
   }
 
   private getPracticalMark(mark: PracticalMark, studentId: number) {

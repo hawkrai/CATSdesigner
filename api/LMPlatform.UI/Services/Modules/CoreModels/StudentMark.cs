@@ -31,7 +31,7 @@
 		public List<PracticalVisitingMarkViewData> PracticalVisitingMark { get; set; }
 
 		[DataMember]
-        public List<UserlabFilesViewData> FileLabs { get; set; }
+        public List<UserLabFileViewData> FileLabs { get; set; }
 
 		[DataMember]
 		public string LabsMarkTotal { get; set; }

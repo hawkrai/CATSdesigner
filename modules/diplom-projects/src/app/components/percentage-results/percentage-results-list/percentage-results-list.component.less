@@ -1,0 +1,50 @@
+.percentage-results-list-component {
+  display: block;
+
+  .mdc-data-table {
+    width: 100%;
+
+    &__header-cell {
+      font-weight: 600;
+      height: 90px;
+    }
+
+    &__header-cell--numeric {
+      width: 20px;
+    }
+
+    .header-date {
+      transform: rotate(270deg);
+      font-size: 12px;
+    }
+
+    .data-cell {
+      text-align: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    td, th {
+      border-right: 1px solid rgba(0,0,0,.12);
+    }
+
+    td:last-of-type, th:last-of-type {
+      border-right: 0;
+    }
+
+    .comment {
+      position: relative;
+  
+      &-icon {
+        position: absolute;
+        font-size: 10px;
+        bottom: 0px;
+        right: 1px;
+      }
+    }
+  }
+}
+
+.clickable {
+  cursor: pointer;
+}

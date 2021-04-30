@@ -31,6 +31,14 @@ namespace Application.Infrastructure.Models
 
         public IEnumerable<Note> Notes { get; set; }
 
+        public string GroupName { get; set; }
+
+        public int? GroupId { get; set; }
+
+        public int? SubGroupId { get; set; }
+
+        public string SubGroupName { get; set; }
+
     }
 
     public enum ClassType

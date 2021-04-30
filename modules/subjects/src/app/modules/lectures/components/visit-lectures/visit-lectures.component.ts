@@ -31,7 +31,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
     private store: Store<IAppState>,
     private dialogService: DialogService,
     private translate: TranslatePipe
-    ) {}
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.groupId && changes.groupId.currentValue) {

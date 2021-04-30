@@ -1,4 +1,4 @@
-<div class="lectures-list-component" *ngIf="lectures$ | async as lectures; else: load">
+<div class="lectures-list-component" *ngIf="lectures; else: load">
   <div class="lectures-list-component__actions" *ngIf="isTeacher">
     <button mat-raised-button color="primary" (click)="constructorLecture(lectures.length)">{{'text.subjects.lectures.add' | translate:'Добавить лекцию'}}</button>
   </div>

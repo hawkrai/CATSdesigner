@@ -81,7 +81,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
         description: new FormControl("", Validators.compose([
           Validators.maxLength(1000)
         ])),
-        countOfQuestions: new FormControl(5, Validators.compose([
+        countOfQuestions: new FormControl(10, Validators.compose([
           Validators.max(200),
           Validators.min(1),
           Validators.required
@@ -93,7 +93,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
         ]))
       });
       this.editingTest = new Test();
-      this.editingTest.CountOfQuestions = 5;
+      this.editingTest.CountOfQuestions = 10;
       this.editingTest.TimeForCompleting = 10;
       this.editingTest.SetTimeForAllTest = true;
     }

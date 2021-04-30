@@ -15,7 +15,6 @@ import * as newsSelectors from '../../store/selectors/news.selectors';
 import * as newsActions from '../../store/actions/news.actions';
 import * as filesActions from '../../store/actions/files.actions';
 import {SubSink} from 'subsink';
-import { attachmentConverter } from 'src/app/utils';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 interface NewsState {
@@ -116,7 +115,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
       isOldDate: false,
       dateCreate: news ? news.DateCreate : nowDate,
       pathFile: news ? news.PathFile : '',
-      attachments: news ? news.Attachments.map(attachment => attachmentConverter(attachment)) : []
+      attachments: news ? news.Attachments : []
     };
     return newNews;
   }

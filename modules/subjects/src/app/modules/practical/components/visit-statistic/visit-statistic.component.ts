@@ -62,7 +62,7 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
 
   getHeaders(practicals: Practical[]): { head: string, text: string, length: number, tooltip?: string }[] {
     const defaultHeaders = [{ head: 'emptyPosition', text: '', length: 1 }, { head: 'emptyName', text: '', length: 1 }];
-    return defaultHeaders.concat(practicals.map((p, index) => ({head: p.PracticalId.toString(), text: this.translate.transform('text.subjects.practicals.prefix', 'ПЗ') + (index + 1), length: Math.floor(p.Duration / 2), tooltip: p.Theme })))
+    return defaultHeaders.concat(practicals.map((p, index) => ({head: p.PracticalId.toString(), text: p.ShortName, length: Math.floor(p.Duration / 2), tooltip: p.Theme })))
   }
 
   setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionPractical, index: number) {

@@ -21,7 +21,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
         {
         }
 
-        public StudentsViewData(List<TestPassResult> test, Student student, IEnumerable<ScheduleProtectionLabs> scheduleProtectionLabs = null, IEnumerable<ScheduleProtectionPractical> scheduleProtectionPracticals = null, IEnumerable<Labs> labs = null, IEnumerable<Practical> practicals = null, List<UserlabFilesViewData> userLabsFile = null)
+        public StudentsViewData(List<TestPassResult> test, Student student, IEnumerable<ScheduleProtectionLabs> scheduleProtectionLabs = null, IEnumerable<ScheduleProtectionPractical> scheduleProtectionPracticals = null, IEnumerable<Labs> labs = null, IEnumerable<Practical> practicals = null, List<UserLabFileViewData> userLabsFile = null)
         {
             StudentId = student.Id;
             FullName = student.FullName;
@@ -83,7 +83,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             {
                 foreach (var practical in practicals)
                 {
-                    var model = student.StudentPracticalMarks.FirstOrDefault(e => e.PracticalId == practical.Id);
+                    var model = student.StudentPracticalMarks.FirstOrDefault(e => e.PracticalId == practical.Id && e.StudentId == student.Id);
                     if (model != null)
                     {
                         StudentPracticalMarks.Add(new StudentPracticalMarkViewData
@@ -96,6 +96,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Date = model.Date,
                             ShowForStudent = model.ShowForStudent,
                             LecturerId = model.LecturerId
+                            
                         });
                     }
                     else
@@ -161,8 +162,9 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
                             Mark = model.Mark,
                             ScheduleProtectionPracticalId = scheduleProtectionPractical.Id,
                             StudentId = student.Id,
-                            PracticalVisitingMarkId = student.Id,
+                            PracticalVisitingMarkId = model.Id,
                             ShowForStudent = model.ShowForStudent
+                            
                         });
                     }
                     else
@@ -239,7 +241,7 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
         public List<StudentPracticalMarkViewData> StudentPracticalMarks { get; set; }
 
         [DataMember]
-        public List<UserlabFilesViewData> FileLabs { get; set; }
+        public List<UserLabFileViewData> FileLabs { get; set; }
 
 		public ITestPassingService TestPassingService
 		{

@@ -31,6 +31,14 @@ namespace LMPlatform.Models.DP
             }
         }
 
+        public TimeSpan? StartTime { get; set; }
+
+        public TimeSpan? EndTime { get; set; }
+
+        public string Building { get; set; }
+
+        public string Audience { get; set; }
+
         public virtual ICollection<DiplomProjectConsultationMark> DiplomProjectConsultationMarks { get; set; }
     }
 }

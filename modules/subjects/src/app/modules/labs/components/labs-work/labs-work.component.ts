@@ -1,4 +1,3 @@
-import { ConvertedAttachment } from './../../../../models/file/converted-attachment.model';
 import { DialogService } from './../../../../services/dialog.service';
 import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
@@ -18,7 +17,6 @@ import {FileDownloadPopoverComponent} from '../../../../shared/file-download-pop
 import * as labsActions from '../../../../store/actions/labs.actions';
 import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
-import { attachmentConverter } from 'src/app/utils';
 import * as filesActions from '../../../../store/actions/files.actions';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
@@ -32,7 +30,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
-  public labs$: Observable<Lab[]>;
+  public labs: Lab[];
 
   constructor(
     private store: Store<IAppState>,
@@ -43,11 +41,13 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnInit() {
     this.store.dispatch(labsActions.loadLabs());
-    this.labs$ = this.store.select(labsSelectors.getLabs);
+    this.subs.add(this.store.select(labsSelectors.getLabs).subscribe(labs => {
+      this.labs = [...labs];
+    }));
   }
 
   getDisplayedColumns(): string[] {
-    const defaultColumns = ['position', 'theme', 'shortName', 'clock'];
+    const defaultColumns = ['position', 'theme', 'shortName', 'duration'];
     return defaultColumns.concat(this.isTeacher ? 'actions' : 'files');
   }
 
@@ -102,15 +102,15 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     const dialogData: DialogData = {
       title: this.translate.transform('text.attachments.plural', 'Файлы'),
       buttonText: this.translate.transform('text.download', 'Скачать'),
-      body: attachments.map(attachment => attachmentConverter(attachment))
+      body: attachments
     };
     const dialogRef = this.dialogService.openDialog(FileDownloadPopoverComponent, dialogData);
 
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
-      ).subscribe((result: ConvertedAttachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.id) }));
+      ).subscribe((result: Attachment[]) => {
+        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
       })
     );
   }
@@ -132,8 +132,8 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       duration: lab ? lab.Duration : '',
       order: lab ? lab.Order : order,
       pathFile: lab ? lab.PathFile : '',
-      attachments: lab ? lab.Attachments.map(a => attachmentConverter(a)) : [],
-      shortName: `${this.translate.transform('text.subjects.labs.prefix', 'ЛР')}${order}`
+      attachments: lab ? lab.Attachments : [],
+      shortName: `ЛР${order + 1}`
     };
   }
 
