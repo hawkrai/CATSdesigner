@@ -252,6 +252,11 @@ namespace LMPlatform.UI.Services.Concept
             return tree.Select(x => GetFilePath(x.Container)).ToArray();
         }
 
+        public void SaveMonitoringResult(int userId, int conceptId, int timeInSeconds)
+        {
+            WatchingTimeService.SaveWatchingTime(new WatchingTime(userId, conceptId, timeInSeconds));
+        }
+
         private string GetFilePath(string container)
         {
             var attach = FilesManagementService.GetAttachments(container).FirstOrDefault();

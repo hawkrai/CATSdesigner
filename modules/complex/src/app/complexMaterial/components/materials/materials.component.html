@@ -5,7 +5,7 @@
       <!-- use a disabled button to provide padding for tree leaf -->
       <button class="invisible" mat-icon-button></button>
       <mat-icon class="expandable-external folder_file_icons"> insert_drive_file</mat-icon>
-      <a class="btn clickable" (click)="openPDF(node.FilePath)">
+      <a class="btn clickable" (click)="openPDF(node.Id, node.FilePath)">
         {{node.Name}}
       </a>
       <div class="work-icons" *ngIf="isLucturer">
