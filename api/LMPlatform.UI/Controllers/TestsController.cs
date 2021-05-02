@@ -96,9 +96,9 @@ namespace LMPlatform.UI.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public int GetEUMKTestIdForSubject(int subjectId)
+        public int GetEUMKPredTestIdForSubject(int subjectId)
         {
-            return this.TestsManagementService.GetTestsForSubject(subjectId).FirstOrDefault(x => x.ForEUMK)?.Id ?? -1;
+            return this.TestsManagementService.GetTestsForSubject(subjectId).FirstOrDefault(x => x.BeforeEUMK)?.Id ?? -1;
         }
 
         public JsonResult GetRecomendations(int subjectId)

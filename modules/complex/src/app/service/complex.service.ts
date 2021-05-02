@@ -84,4 +84,14 @@ export class ComplexService {
   public getFilesForFolder(nodeId: number): Observable<string[]> {
     return this.http.get<string[]>("/Services/Concept/ConceptService.svc/GetFolderFilesPaths?conceptId=" + nodeId);
   }
+
+  public saveWatchingTime(conceptId: number, time: number) {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    return this.http.post('/Services/Concept/ConceptService.svc/SaveMonitoringResult',
+      {
+        userId: user.id,
+        conceptId: conceptId,
+        timeInSeconds: time
+      });    
+  }
 }

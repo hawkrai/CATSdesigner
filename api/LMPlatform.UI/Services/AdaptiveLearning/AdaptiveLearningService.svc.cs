@@ -18,6 +18,7 @@ using System.Text;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using LMPlatform.UI.Attributes;
+using Application.Infrastructure.UserManagement;
 
 namespace LMPlatform.UI.Services.AdaptiveLearning
 {
@@ -34,6 +35,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
 		private readonly LazyDependency<IConceptManagementService> _conceptManagementService = new LazyDependency<IConceptManagementService>(); 
 		private readonly LazyDependency<IWatchingTimeService> _watchingTimeService = new LazyDependency<IWatchingTimeService>();
+		private readonly LazyDependency<IUsersManagementService> _usersManagementService = new LazyDependency<IUsersManagementService>();
 		private readonly LazyDependency<IFilesManagementService> _filesManagementService =
 			 new LazyDependency<IFilesManagementService>();
 
@@ -44,6 +46,7 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 		public ITestPassingService TestPassingService => testPassingService.Value;
 		public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
 		public IWatchingTimeService WatchingTimeService => _watchingTimeService.Value;
+		public IUsersManagementService UsersManagementService => _usersManagementService.Value;
 
 		public AdaptivityViewResult GetNextThema(int userId, int subjectId, int testId, int currentThemaId, int adaptivityType)
 		{
@@ -71,6 +74,18 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 			if (currentRes.NextStepSolution == ThemaSolutions.END_PROCCESS)
 			{
+				if (CurrentUserIsLector())
+				{
+					AdaptiveLearningManagementService.ClearAllEducationData(userId);
+					return new AdaptivityViewResult
+					{
+						NextThemaId = null,
+						NextMaterialPath = null,
+						NeedToDoPredTest = true,
+						Code = "500"
+					};
+				}
+
 				return new AdaptivityViewResult
 				{
 					NextThemaId = null,
@@ -123,6 +138,14 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 
 		public int GetDynamicTestIdForThema(int userId, int subjectId, int complexId, int monitoringRes, int adaptivityType)
 		{
+			if (adaptivityType == (int)AdaptivityType.SIMPLE)
+			{ 
+				return this.TestsManagementService
+					.GetTestsForSubject(subjectId)
+					.Where(x => x.ForEUMK)
+					.FirstOrDefault(x => x.Questions.All(q => q.ConceptId == complexId))
+					?.Id ?? -1;
+			}
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			var allQuestions = QuestionsManagementService
 				.GetQuestionsByConceptId(complexId)
@@ -222,6 +245,11 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 			}
 			generalTime = WatchingTimeService.GetEstimatedTime(concept.Container);
 			return new List<string> { GetFilePath(concept.Container) };
+		}
+
+		private bool CurrentUserIsLector()
+		{
+			return UsersManagementService.CurrentUser.Membership.Roles.Any(r => r.RoleName.Equals("lector"));
 		}
 
 	}
