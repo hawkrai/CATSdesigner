@@ -10,17 +10,7 @@
 
 
 
-.input-full-width {
-  line-height:3;
-  width: 100%;
-  border-collapse: collapse;
-}
 
-.text-area-full-width {
-  line-height: 20px;
-  width: 100%;
-  border-collapse: collapse;
-}
 
 .header {
   color: #3f51b5;
@@ -34,7 +24,7 @@
 
 
 button {
-  font-size: 2vh;
+ // font-size: 2vw;
   width: 100%;
   border-radius: 5px;
   color: #3f51b5;
@@ -42,24 +32,7 @@ button {
   box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
 }
 
-.extra-button {
-  margin-top: 2%;
-  height: 10%;
-}
-.edit-button {
-  float: right;
-  width: 15%;
-  color: white;
-  background-color: #3f51b5;
-}
 
-.cancel-button {
-  margin-right: 20px;
-  margin-left: 500px;
-  width: 15%;
-  color: black;
-  
-}
 
 
 a {
@@ -76,7 +49,7 @@ a {
   .profile {
     margin-top: 10px;
     display: flex;
-    height: 65%;
+    height: 80%;
     position: relative;
     z-index: 2;
   }
@@ -101,6 +74,18 @@ a {
     min-width: 200px;
   }
 
+  .input-full-width {
+    line-height: 4;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .text-area-full-width {
+    line-height: 2;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
   .avatar {
     object-fit: cover;
     height: 80%;
@@ -115,11 +100,30 @@ a {
   .buttons-row {
     margin-right: 20px;
     margin-left: 30px;
-    margin-top: 1%;
+    margin-top: 2%;
     display: flex;
-    height: 6%;
+    height: 7%;
     flex-direction: row;
     justify-content: flex-end;
+  }
+
+  .extra-button {
+    margin-top: 2%;
+    height: 10%;
+  }
+
+  .edit-button {
+    float: right;
+    width: 15%;
+    color: white;
+    background-color: #3f51b5;
+  }
+
+  .cancel-button {
+    margin-right: 20px;
+    margin-left: 500px;
+    width: 15%;
+    color: black;
   }
 
   .data-header {
@@ -128,6 +132,8 @@ a {
     padding: 0px;
     background-color: cornflowerblue;
   }
+
+
 }
 
 @media (max-width:970px) {
@@ -140,39 +146,59 @@ a {
 
 
   .profile-card {
-    margin: 30px;
-    margin-left: 10px;
-    margin-top: 10px;
-    height: 30%;
-    /*  width: 100%;*/
-  }
-
-  .data-container {
-    overflow: auto;
-    margin-left: 10px;
     margin: 20px;
     margin-top: 10px;
   }
 
+  .data-container {
+    overflow: auto;
+    margin: 20px;
+    margin-top: 10px;
+  }
+
+  .input-full-width {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .text-area-full-width {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
   .avatar {
-    object-fit: cover;
-    height: 80%;
+    margin-bottom:3%;
   }
 
   .avatarImg {
-    max-width: 400px;
-
-    height: 100%;
+    max-width: 100%;
+    max-height: 40vh;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .buttons-row {
     margin-right: 20px;
-    margin-left: 30px;
-    margin-top: 1%;
+    margin-left: 20px;
     display: flex;
-    height: 6%;
     flex-direction: row;
     justify-content: flex-end;
+  }
+
+  .extra-button {
+    height: 7vh;
+  }
+
+  .edit-button {
+    float: right;
+    color: white;
+    background-color: #3f51b5;
+  }
+
+  .cancel-button {
+    margin-right: 20px;
+    color: black;
   }
 
   .data-header {

@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
 import { PersonalDataService } from '../core/services/personal-data.service';
 import { FormGroupDirective, FormControl, NgForm, Validators, ValidationErrors } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'change-password',
@@ -33,7 +34,7 @@ export class ChangePasswordDialog {
   newPasswordRepeat = "";
 
   constructor(
-    public dialogRef: MatDialogRef<ChangePasswordDialog>, private dataService: PersonalDataService) { }
+    public dialogRef: MatDialogRef<ChangePasswordDialog>, private dataService: PersonalDataService, private snackBar: MatSnackBar) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -42,17 +43,15 @@ export class ChangePasswordDialog {
   onSaveChangesClick(): void {
     this.showBadPasswordError = false;
     if (this.arePasswordsSame()) {
-      if (confirm("Вы уверены, что хотите изменить пароль?")) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
-            alert("Пароль успешно изменен!");
+            this.addFlashMessage("Пароль успешно изменен!");
             this.dialogRef.close();
           }
           else {
-            alert("Произошел сбой, пароль не был изменен!");
+            this.addFlashMessage("Произошел сбой, пароль не был изменен!");
           }
-        });
-      }
+        });   
     }
     else { this.showBadPasswordError = true; }
   }
@@ -61,6 +60,11 @@ export class ChangePasswordDialog {
     return this.newPasswordRepeat === this.newPassword;
   }
 
+  addFlashMessage(msg: string) {
+    this.snackBar.open(msg, null, {
+      duration: 2000
+    });
+  }
 
 
 }
