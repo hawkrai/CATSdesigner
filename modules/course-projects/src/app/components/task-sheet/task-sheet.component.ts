@@ -43,12 +43,14 @@ export class TaskSheetComponent implements OnInit {
       this.subjectId = subjectId;
       this.projectThemeService.getThemes({entity: 'CourseProject', subjectId: this.subjectId})
         .subscribe(res => {
-          this.themes = res;
-          if (this.courseProjectId == null) {
-            this.courseProjectId = res[0].Id;
+          if (res.length > 0) {
+            this.themes = res;
+            if (this.courseProjectId == null) {
+              this.courseProjectId = res[0].Id;
+            }
+            this.retrieveTaskSheetHtml();
+            this.retrieveTemplates();
           }
-          this.retrieveTaskSheetHtml();
-          this.retrieveTemplates();
         });
     });
   }
@@ -65,9 +67,11 @@ export class TaskSheetComponent implements OnInit {
     this.taskSheetHtml = null;
     this.taskSheetSubscription = this.taskSheetService.getTaskSheetHtml({courseProjectId: this.courseProjectId})
       .subscribe(res => {
-        this.taskSheetHtml = res;
+        if (res != null) {
+          this.taskSheetHtml = res;
         const div = document.getElementById('task-sheet');
         div.innerHTML = res;
+        }
       });
   }
 
