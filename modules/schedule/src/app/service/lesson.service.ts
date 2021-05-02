@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {DatePipe} from '@angular/common';
+import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
 
 
 @Injectable({
@@ -9,14 +10,21 @@ import {DatePipe} from '@angular/common';
 })
 export class LessonService {
 
-  lessonTypes: string[][] = [['0', 'Лекция'], ['1', 'Практ. зан.'], ['2', 'Лаб. работа'],
-    ['3', 'КП'], ['4', 'ДП']];
+  lessonTypes: string[][] = [['0',  this.translate.transform('text.schedule.lecture.cut', 'Лекция')],
+    ['1', this.translate.transform('text.schedule.workshop.cut', 'Практ. зан.') ],
+    ['2', this.translate.transform('text.schedule.lab.cut', 'Лаб. работа')],
+    ['3', this.translate.transform('text.schedule.course.project.cut', 'КП')],
+    ['4', this.translate.transform('text.schedule.graduation.project.cut', 'ДП')]];
 
-  lessonTypesFull: string[][] = [['0', 'Лекция'], ['1', 'Практическое занятие'], ['2', 'Лабораторная работа'],
-    ['3', 'Консультация по курсовому проектированию'], ['4', 'Консультация по дипломному проектуированию']];
+  lessonTypesFull: string[][] = [['0', this.translate.transform('text.schedule.lecture', 'Лекция')],
+    ['1', this.translate.transform('text.schedule.workshop', 'Практическое занятие') ],
+    ['2', this.translate.transform('text.schedule.lab', 'Лабораторная работа') ],
+    ['3', this.translate.transform('text.schedule.course.project', 'Консультация по курсовому проектированию') ],
+    ['4', this.translate.transform('text.schedule.graduation.project', 'Консультация по дипломному проектированию')]];
 
   constructor(private http: HttpClient,
-              private datePipe: DatePipe) {
+              private datePipe: DatePipe,
+              private translate: TranslatePipe) {
   }
   getAllLessons(username: string): Observable<any> {
     return this.http.post<any>('/Profile/GetProfileInfoCalendar', {userLogin: username});
@@ -33,7 +41,7 @@ export class LessonService {
   saveLab(Lab: any, dateLab: string): Observable<any> {
     return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDateLab',
       {id: Lab.Id, subjectId: Lab.SubjectId, date: dateLab, startTime: Lab.Start,
-            endTime: Lab.End, building: Lab.Building, audience: Lab.Audience, subGroupId: Lab.subGroupId});
+            endTime: Lab.End, building: Lab.Building, audience: Lab.Audience, subGroupId: Lab.SubGroupId});
   }
 
   deleteLab(idLab: any, subjId: any): Observable<any> {
@@ -43,7 +51,7 @@ export class LessonService {
   savePractical(pract: any, datePr: string): Observable<any> {
     return this.http.post<any>('/Services/Schedule/ScheduleService.svc/SaveDatePractical',
       {id: pract.Id, subjectId: pract.SubjectId, date: datePr, startTime: pract.Start,
-            endTime: pract.End, building: pract.Building, audience: pract.Audience,  groupId: pract.groupId });
+            endTime: pract.End, building: pract.Building, audience: pract.Audience,  groupId: pract.GroupId });
   }
 
   deletePractical(idPract: any, subjId: any): Observable<any> {
@@ -71,6 +79,10 @@ export class LessonService {
 
   getAllSubjects(username: string): Observable<any> {
     return this.http.post<any>('/Profile/GetProfileInfoSubjects', {userLogin: username});
+  }
+
+  saveLessonNote(lessonId: number, message: string): Observable<any> {
+    return this.http.post<any>('/Services/Notes/NotesService.svc/SaveNote', {subjectId: lessonId, text: message});
   }
 
   getSubject(title: string): any {
@@ -147,6 +159,15 @@ export class LessonService {
     return splitted[0];
   }
 
+  getGroupId(title: string): any {
+    const splitted = title.split('|', 11);
+    return +splitted[10];
+  }
+
+  getSubGroupId(title: string): any {
+    const splitted = title.split('|', 12);
+    return +splitted[12];
+  }
 
   isLesson(event): boolean {
     return event.meta === 'lesson';

@@ -117,7 +117,7 @@ export class ScheduleMainComponent implements OnInit {
       + '|' + lesson.Audience + '|' + building
       + '|' + lesson.ShortName + '|' + lesson.Type
       + '|' + teacher + '|' + lesson.Color
-      + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo;
+      + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo + '|' + lesson.GroupId + '|' + lesson.SubGroupId;
   }
 
   getToolTip(title: string): any {
@@ -222,17 +222,17 @@ export class ScheduleMainComponent implements OnInit {
         if (result) {
           if (eventToDelete.meta == 'lesson') {
             const a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
-            if (a == 'Лекция') {
+            if (a == 'Лекция' || a == 'Lect.') {
               this.lessonservice.deleteLecture(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
                 console.log(res);
               });
             }
-            if (a == 'Лаб.работа') {
+            if (a == 'Лаб.работа' || a == 'Lab') {
               this.lessonservice.deleteLab(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
                 console.log(res);
               });
             }
-            if (a == 'Практ.работа') {
+            if (a == 'Практ.работа' || a == 'WS') {
               this.lessonservice.deletePractical(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title) ).subscribe(res => {
                 console.log(res);
               });
