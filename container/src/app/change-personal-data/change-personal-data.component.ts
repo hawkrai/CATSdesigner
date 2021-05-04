@@ -9,6 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angu
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
 import { Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslatePipe } from '../pipe/translate.pipe';
 
 @Component({
   selector: 'app-change-personal-data',
@@ -25,21 +26,20 @@ export class ChangePersonalDataComponent implements OnInit {
   profileData!: ProfileData;
   dialogRef: MatDialogRef<any>;
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
-  phoneFormControl = new FormControl('', [Validators.required, Validators.pattern('^[0-9]{0,20}$')]);
+  emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30})?$')]);
+  phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})?$')]);
+
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  Validators.pattern('^[А-Яа-яA-Za-z]{3,30}$')])
 
   surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  Validators.pattern('^[А-Яа-яA-Za-z]{3,30}$')])
 
   patronymicFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  Validators.pattern('^[А-Яа-яA-Za-z]{3,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
-    private profileService: ProfileService, private location: Location, public dialog: MatDialog, private snackBar: MatSnackBar,) { }
-
-
+    private profileService: ProfileService, private location: Location, public dialog: MatDialog, private snackBar: MatSnackBar, private translatePipe: TranslatePipe) { }
 
   onFileSelected(event) {
     var file = event.target.files[0];
@@ -51,7 +51,7 @@ export class ChangePersonalDataComponent implements OnInit {
         buffer.profileData.Avatar = reader.result.toString();
       }
       else {
-        buffer.addFlashMessage("Неверный формат изображения!");
+        buffer.addFlashMessage(buffer.translatePipe.transform('text.personalAccount.wrongImage', "Неверный формат изображения!"));
       }
     };
 
@@ -82,22 +82,23 @@ export class ChangePersonalDataComponent implements OnInit {
   }
 
   updatePersonalInfo() {
-    if ((!this.phoneFormControl.invalid || this.profileData.Phone == "") && (!this.emailFormControl.invalid || this.profileData.Email == "")) {
+    if ((!this.patronymicFormControl.invalid) && (!this.surnameFormControl.invalid) && (!this.nameFormControl.invalid) &&
+      (!this.phoneFormControl.invalid) && (!this.emailFormControl.invalid)) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
-            this.addFlashMessage("Изменения сохранены");
+            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.changesSaved', "Изменения успешно сохранены =)"));
           }
 
           else {
-            this.addFlashMessage("Изменения не сохранены");
+            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.changesNotSaved', "Изменения не были сохранены =("));
           }
         });
     }
 
     else {
-      this.addFlashMessage("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или являются полностью пустыми (необязательные поля)", 5000);
+      this.addFlashMessage(this.translatePipe.transform('text.personalAccount.wrongData', "Некоторые поля не соответствуют формату!"), 5000);
     }
-  }
+  } 
 
   openDialog(): void {
     const config = new MatDialogConfig();

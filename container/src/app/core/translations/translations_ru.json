@@ -298,5 +298,37 @@
   "works.protection": "Защита работ",
   "text.check.plagiarism": "",
   "text.check.plagiarism.all": "Проверить на плагиат всех работ",
-  "text.refresh.data": "Обновить данные"
+  "text.refresh.data": "Обновить данные",
+
+  "text.personalAccount.personalAccount": "Личный кабинет пользователя",
+  "text.personalAccount.loadPhoto": "Загрузить изображение",
+  "text.personalAccount.save": "Сохранить",
+  "text.personalAccount.firstName": "Имя",
+  "text.personalAccount.middleName": "Отчество",
+  "text.personalAccount.lastName": "Фамилия",
+  "text.personalAccount.login": "Логин",
+  "text.personalAccount.changePassword": "Изменить пароль",
+  "text.personalAccount.followToChangePassword": "Перейдите, чтобы сменить пароль",
+  "text.personalAccount.about": "О себе",
+  "text.personalAccount.skype": "Скайп",
+  "text.personalAccount.email": "Почта",
+  "text.personalAccount.phoneNumber": "Телефон",
+  "text.personalAccount.changesSaved": "Изменения успешно сохранены =)",
+  "text.personalAccount.changesNotSaved": "Изменения не были сохранены =(",
+  "text.personalAccount.wrongEmail": "Неверный формат почты!",
+  "text.personalAccount.wrongNumber": "Неверный формат телефона!",
+  "text.personalAccount.wrongName": "Поле должно иметь длинну от 3 до 30 символов!",
+  "text.personalAccount.wrongImage": "Недопустимый формат изображения!",
+  "text.personalAccount.wrongData": "Некоторые поля не соответствуют формату!",
+
+  "text.personalAccount.changePassword.passwordChanged": "Пароль успешно изменен =)",
+  "text.personalAccount.changePassword.passwordNotChanged": "Пароль не был изменен =(",
+  "text.personalAccount.changePassword.putOldPassword": "Введите старый пароль",
+  "text.personalAccount.changePassword.putNewPassword": "Введите новый пароль",
+  "text.personalAccount.changePassword.repeatPassword": "Повторите пароль",
+  "text.personalAccount.changePassword.change": "Изменить",
+  "text.personalAccount.changePassword.passwordsNotMatch": "Пароли не совпадают!",
+  "text.personalAccount.changePassword.invalidPassword": "Некорректный формат пароля!",
+  "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!"
+
 }
