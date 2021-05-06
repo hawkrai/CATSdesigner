@@ -16,6 +16,7 @@ import * as newsActions from '../../store/actions/news.actions';
 import * as filesActions from '../../store/actions/files.actions';
 import {SubSink} from 'subsink';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
 
 interface NewsState {
   color: string
@@ -119,4 +120,9 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     };
     return newNews;
   }
+
+  help: Help = {
+    message: 'Чтобы скрыть или показать все новости нажмите одноимённую кнопку. Для редактирования или удаления новости наведите курсор на нужную новость и нажмите на нужную иконку.',
+    action: 'Понятно'
+  };
 }

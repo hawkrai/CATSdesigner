@@ -1,8 +1,11 @@
 <div class="subject-news-component content" *ngIf="state$ | async as state; else: load">
   <div class="subject-news-component__actions" *ngIf="state.isTeacher">
-    <button mat-raised-button color="primary" (click)="constructorNews()">{{'text.subjects.news.add' | translate:'Добавить новость'}}</button>
-    <button mat-raised-button class="hide-action" (click)="disableNews(true)">{{'text.subjects.news.hide.all' | translate:'Скрыть все новости'}}</button>
-    <button mat-raised-button (click)="disableNews(false)">{{'text.subjects.news.show.all' | translate:'Показать все новости'}}</button>
+    <div class="actions-group">
+      <button mat-raised-button color="primary" (click)="constructorNews()">{{'text.subjects.news.add' | translate:'Добавить новость'}}</button>
+      <button mat-raised-button class="hide-action" (click)="disableNews(true)">{{'text.subjects.news.hide.all' | translate:'Скрыть все новости'}}</button>
+      <button mat-raised-button (click)="disableNews(false)">{{'text.subjects.news.show.all' | translate:'Показать все новости'}}</button>
+    </div>
+    <app-help [message]="help.message" [action]="help.action"></app-help>
   </div>
   <div class="subject-news-component__list" >
     <ng-container *ngFor="let oneNews of state.news">
