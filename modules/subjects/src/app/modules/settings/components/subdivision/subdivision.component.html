@@ -4,16 +4,19 @@
   </ng-container>
   <ng-container body>
     <form class="example-form">
-      <mat-form-field>
-        <mat-select [value]="selectedGroup ? selectedGroup : ''">
-          <mat-option *ngFor="let group of groups"
-                      (onSelectionChange)="_selectedGroup($event)"
-                      [value]="group.Value"
-          >
-            {{group.Text}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="form-container form-container__space-between">
+        <mat-form-field>
+          <mat-select [value]="selectedGroup ? selectedGroup : ''">
+            <mat-option *ngFor="let group of groups"
+                        (onSelectionChange)="_selectedGroup($event)"
+                        [value]="group.Value"
+            >
+              {{group.Text}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-help [action]="help.action" [message]="help.message"></app-help>
+      </div>
       <div class="subdivision-students">
         <div class="subdivision-students__header">
           <p class="mat-typography text-center">{{'subgroup' | translate:'Подгруппа'}}</p>
