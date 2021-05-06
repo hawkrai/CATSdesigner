@@ -3,6 +3,7 @@
     <ng-container *ngIf="(state.students | filter:'SubGroup': subGroup).length">
       <ng-container *var="state.labs | filter:'SubGroup':subGroup as subGroupLabs">
         <span class="protection-schedule-component__subGroups-title">{{'subgroup' | translate:'Подгруппа'}} {{idx + 1}}</span>
+        <app-help [message]="help.message" [action]="help.action"></app-help>
         <div class="protection-schedule-component__subGroups-table" *var="state.scheduleProtectionLabs | filter:'SubGroup':subGroup as subGroupProtectionSchedule">
           <table *var="state.students | filter:'SubGroup': subGroup as subGroupStudents" mat-table [dataSource]="subGroupStudents" class="mat-elevation-z14">
             <ng-container matColumnDef="position">
