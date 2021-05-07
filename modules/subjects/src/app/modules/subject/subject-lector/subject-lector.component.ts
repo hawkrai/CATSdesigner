@@ -9,6 +9,8 @@ import {IAppState} from '../../../store/state/app.state';
 import * as catsActions from '../../../store/actions/cats.actions';
 import { Lector } from 'src/app/models/lector.model';
 import { MatOptionSelectionChange } from '@angular/material';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-news-popover',
@@ -17,9 +19,9 @@ import { MatOptionSelectionChange } from '@angular/material';
 })
 export class SubjectLectorComponent implements OnInit {
 
-  public joinedLectors: Lector[] = [];
-  public allLectors: Lector[] = [];
   public selectedLector: Lector;
+  joinedLectors: Lector[] = [];
+  allLectors: Lector[] = [];
 
   public subjectId: number;
 
@@ -54,7 +56,7 @@ export class SubjectLectorComponent implements OnInit {
     });
     this.subjectService.getNoAdjointLectors(this.subjectId).subscribe(lectors => {
       this.allLectors = lectors;
-    })
+    });
   }
 
   joinedLector() {
@@ -76,10 +78,8 @@ export class SubjectLectorComponent implements OnInit {
     )
   }
 
-  selectLector(event: MatOptionSelectionChange) {
-    if (event.isUserInput) {
-      this.selectedLector = this.allLectors.find(res => res.LectorId === event.source.value);
-    }
+  selectLector(lector: Lector) {
+    this.selectedLector = lector;
   }
 
 }

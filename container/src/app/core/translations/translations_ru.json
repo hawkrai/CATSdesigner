@@ -291,6 +291,7 @@
   "text.subjects.lector.choose": "Выберите преподавателя",
   "text.subjects.lector.plural": "Преподаватели",
   "text.subjects.lector.disjoin": "Отсоединить преподавателя",
+  "text.subjects.lector.joined": "Присоединенные преподаватели",
 
   "schedule.protection": "График защиты",
   "visit.statistics": "Статистика посещения",

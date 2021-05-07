@@ -330,6 +330,7 @@
   "text.subjects.lector.joining": "Joining the lector to the subject",
   "text.subjects.lector.choose": "Select a lector",
   "text.subjects.lector.plural": "Lectors",
+  "text.subjects.lector.joined": "Joined lectors",
   "text.subjects.lector.disjoin": "Disjoin the lector",
 
   "schedule.protection": "Schedule protection",
