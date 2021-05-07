@@ -29,6 +29,7 @@ export class ProjectsComponent implements OnInit {
   private projectsSubscription: Subscription;
   private projectGroups: String[];
   private filteredProjects: Project[];
+  private isLecturer = false;
 
   private searchString = '';
   private sorting = 'Id';
@@ -42,16 +43,16 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => this.groups = res.Groups);
-      this.retrieveProjects();
-      console.log(this.diplomUser)
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => {this.groups = res.Groups; console.log(this.groups)});
+    this.retrieveProjects();
+    console.log(this.diplomUser)
   }
 
   retrieveProjects() {
     this.projectsSubscription = this.projectsService.getProjects(
       'count=' + this.COUNT +
       '&page=' + this.PAGE +
-      '&filter={"searchString":"' + this.searchString + '"}' +
+      '&filter={"isSecretary":"' + !this.isLecturer + '","searchString":"' + this.searchString + '"}' +
       '&sorting[' + this.sorting + ']=' + this.direction
     )
       .subscribe(res => {
@@ -73,6 +74,12 @@ export class ProjectsComponent implements OnInit {
     if (event.isUserInput) {
       this.filteredProjects = this.projects.filter(x => x.Group == event.source.value)
     }
+  }
+
+  lecturerStatusChange(event) {
+    this.isLecturer = event.checked;
+    this.diplomUser.IsSecretary = !event.checked
+    this.retrieveProjects()
   }
 
   sort(field: string, direction: string) {

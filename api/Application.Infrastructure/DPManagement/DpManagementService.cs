@@ -21,11 +21,14 @@ namespace Application.Infrastructure.DPManagement
         public PagedList<DiplomProjectData> GetProjects(int userId, GetPagedListParams parms)
         {
             var searchString = parms.Filters["searchString"];
+            var isSecretary = Convert.ToBoolean(parms.Filters["isSecretary"]);
+
             var query = Context.DiplomProjects.AsNoTracking()
                 .Include(x => x.Lecturer)
                 .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
 
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+            user.Lecturer.IsSecretary = isSecretary;
 
             if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
             {
@@ -34,7 +37,7 @@ namespace Application.Infrastructure.DPManagement
 
             if (user != null && user.Lecturer != null && user.Lecturer.IsSecretary)
             {
-                query = query.Where(x => x.AssignedDiplomProjects.Any());
+                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x=> x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021");
             }
 
             if (user != null && user.Student != null)
@@ -721,5 +724,13 @@ namespace Application.Infrastructure.DPManagement
         {
             get { return _filesManagementService.Value; }
         }
+
+        private readonly DateTime _currentAcademicYearStartDate = DateTime.Now.Month < 9
+            ? new DateTime(DateTime.Now.Year - 1, 9, 1)
+            : new DateTime(DateTime.Now.Year, 9, 1);
+
+        private readonly DateTime _currentAcademicYearEndDate = DateTime.Now.Month < 9
+            ? new DateTime(DateTime.Now.Year, 9, 1)
+            : new DateTime(DateTime.Now.Year + 1, 9, 1);
     }
 }
