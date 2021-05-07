@@ -117,7 +117,7 @@ namespace Application.Infrastructure.AdaptiveLearning
 		{
 			var test =  new Test
 			{
-				Title = "DynamicTest",
+				Title = AdaptiveConst.AdaptiveTestName,
 				Description = "Dynamicly created test for adaptive learning",
 				TimeForCompleting = 45,
 				SetTimeForAllTest = false,
