@@ -23,7 +23,7 @@ import { Message } from 'src/app/models/message.model';
 export class SubjectComponent implements OnInit, OnDestroy {
   subjects$: Observable<Subject[]>;
   private subs = new SubSink();
-  public displayedColumns = ['name', 'shortName', 'actions'];
+  public displayedColumns = ['name', 'shortName', 'groups', 'students', 'actions'];
 
   constructor(
     private store: Store<IAppState>,

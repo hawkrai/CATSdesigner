@@ -1,4 +1,5 @@
 ﻿using LMPlatform.Models;
+using System.Linq;
 
 namespace LMPlatform.UI.ViewModels.SubjectViewModels
 {
@@ -13,6 +14,8 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             SubjectId = model.Id;
             DisplayName = model.Name;
             Name = model.ShortName;
+            Groups = model.SubjectGroups.Count;
+            Students = model.SubjectGroups.Sum(x => x.SubjectStudents.Count);
         }
 
         public int SubjectId
@@ -32,5 +35,9 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             get; 
             set;
         }
+
+        public int Groups { get; set; }
+
+        public int Students { get; set; }
     }
 }

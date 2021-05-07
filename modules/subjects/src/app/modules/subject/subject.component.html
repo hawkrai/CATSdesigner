@@ -18,6 +18,16 @@
       <td mat-cell *matCellDef="let element"> {{element.Name}}</td>
     </ng-container>
 
+    <ng-container matColumnDef="groups">
+      <th mat-header-cell *matHeaderCellDef>Группы</th>
+      <td mat-cell *matCellDef="let element"> {{element.Groups}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="students">
+      <th mat-header-cell *matHeaderCellDef>Студенты</th>
+      <td mat-cell *matCellDef="let element"> {{element.Students}}</td>
+    </ng-container>
+
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Действие</th>
       <td mat-cell *matCellDef="let element">
