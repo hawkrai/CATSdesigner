@@ -8,6 +8,7 @@ import { PersonalDataService } from '../core/services/personal-data.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
 import { Validators, FormControl, ValidationErrors } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-change-personal-data',
@@ -36,7 +37,8 @@ export class ChangePersonalDataComponent implements OnInit {
   Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
-    private profileService: ProfileService, private location: Location, public dialog: MatDialog) { }
+    private profileService: ProfileService, private location: Location, public dialog: MatDialog, private snackBar: MatSnackBar,) { }
+
 
 
   onFileSelected(event) {
@@ -49,7 +51,7 @@ export class ChangePersonalDataComponent implements OnInit {
         buffer.profileData.Avatar = reader.result.toString();
       }
       else {
-        alert("Неверный формат изображения!");
+        buffer.addFlashMessage("Неверный формат изображения!");
       }
     };
 
@@ -81,31 +83,42 @@ export class ChangePersonalDataComponent implements OnInit {
 
   updatePersonalInfo() {
     if ((!this.phoneFormControl.invalid || this.profileData.Phone == "") && (!this.emailFormControl.invalid || this.profileData.Email == "")) {
-      if (confirm("Вы уверены что хотите сохранить изменения?")) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
-            alert("Изменения сохранены");
+            this.addFlashMessage("Изменения сохранены");
           }
 
           else {
-            alert("Изменения не сохранены");
+            this.addFlashMessage("Изменения не сохранены");
           }
         });
-      }
     }
 
     else {
-      alert("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или являются полностью пустыми (необязательные поля)");
+      this.addFlashMessage("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или являются полностью пустыми (необязательные поля)", 5000);
     }
   }
 
   openDialog(): void {
     const config = new MatDialogConfig();
-    config.width = '40%';
-    config.height = '36%';
+    if ((window.screen.width) <= 970) {
+      config.width = '70%';
+    }
+    else {
+      config.width = '40%';
+    }
+    config.height = 'auto';
     this.dialogRef = this.dialog.open(ChangePasswordDialog, config);
     this.dialogRef.afterClosed().subscribe(result => {
       this.dialogRef = null;
     });
   }
+
+
+  addFlashMessage(msg: string, time = 2000) {
+    this.snackBar.open(msg, null, {
+      duration: time
+    });
+  }
+
 }

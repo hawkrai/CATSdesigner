@@ -63,13 +63,13 @@ export class NewsComponent implements OnInit {
 
   public calcColor(subject: any): any {
     if (subject != null) {
-      return '5px solid ' + subject.Color;
+      return '3px solid ' + subject.Color;
     }
   }
 
   public openAllNews() {
     const dialogRef = this.dialog.open(AllNewsComponent, {
-      width: '800px', height: '550px',
+      width: '800px', height: '99%',
       position: {top: '0%'}, data: {news: this.news}
     });
   }

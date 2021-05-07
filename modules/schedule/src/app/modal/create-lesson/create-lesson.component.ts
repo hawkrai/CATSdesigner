@@ -51,7 +51,6 @@ export class CreateLessonComponent implements OnInit {
   disableGroup = true;
   disableSubGroup = true;
   user: any;
-  teacherSubject = '';
   stageValue = '';
   stageValueSub = '';
 
@@ -81,7 +80,17 @@ export class CreateLessonComponent implements OnInit {
         this.lesson.SubjectId = this.lessonservice.getSubject(this.data.lesson.title);
         this.lesson.Audience = this.lessonservice.getAudience(this.data.lesson.title);
         this.lesson.Building = this.lessonservice.getBuilding(this.data.lesson.title);
+        this.lesson.GroupId = this.lessonservice.getGroupId(this.data.lesson.title);
+        this.lesson.SubGroupId = this.lessonservice.getSubGroupId(this.data.lesson.title);
         this.memo = this.lessonservice.getMemo(this.data.lesson.title);
+        this.lessonservice.getGroupsBySubjectId(+this.lesson.SubjectId).subscribe(res => {
+          this.disableGroup = false;
+          this.disableSubGroup = false;
+          this.groups = res.Groups;
+          this.currentGroup = this.groups.find(group => group.GroupId == this.lesson.GroupId);
+          this.stageValue = this.lesson.GroupId + '';
+          this.stageValueSub = this.lesson.SubGroupId + '';
+        });
         this.changedType = this.lessonTypes.find(type => type[1] === this.lessonservice.getType(this.data.lesson.title).trim())[0];
         this.disableNote = true;
       }
@@ -235,24 +244,54 @@ export class CreateLessonComponent implements OnInit {
     } else {
       this.lesson.Notes = [];
     }
-    this.lesson.Teacher = {FullName: this.teacherSubject};
-    this.lesson.groupId = this.formGroup.controls.group.value;
-    this.lesson.subGroupId = this.formGroup.controls.subGroup.value;
-    if (this.lesson.Type === 'Лекция') {
+    this.lesson.GroupId = this.formGroup.controls.group.value;
+    this.lesson.SubGroupId = this.formGroup.controls.subGroup.value;
+    if (this.formGroup.controls.type.value === '0') {
       this.lessonservice.saveLecture(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-        console.log(l);
+        if (l.Code == '200') {
+          this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res =>{
+            console.log(res);
+          });
+          this.lesson.Id = l.Schedule.Id;
+          if (l.Schedule.Teacher != undefined) {
+            this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+          }
+          this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
+        } else {
+          this.dialogRef.close();
+        }
       });
-    } else if (this.lesson.Type === 'Лаб. работа') {
+    } else if (this.formGroup.controls.type.value === '1') {
       this.lessonservice.saveLab(this.lesson,  this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-        console.log(l);
+        if (l.Code == '200') {
+          this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res =>{
+            console.log(res);
+          });
+          this.lesson.Id = l.Schedule.Id;
+          if (l.Schedule.Teacher != undefined) {
+            this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+          }
+          this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
+        } else {
+          this.dialogRef.close();
+        }
       });
-    } else if (this.lesson.Type === 'Практ. работа') {
+    } else if (this.formGroup.controls.type.value === '2') {
       this.lessonservice.savePractical(this.lesson,  this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-        console.log(l);
+        if (l.Code == '200') {
+          this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res =>{
+            console.log(res);
+          });
+          this.lesson.Id = l.Schedule.Id;
+          if (l.Schedule.Teacher != undefined) {
+            this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+          }
+          this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
+        } else {
+          this.dialogRef.close();
+        }
       });
     }
-
-    this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
   }
 
   addNote() {
@@ -281,11 +320,6 @@ export class CreateLessonComponent implements OnInit {
   subjectChange(event): void {
     this.lessonservice.getGroupsBySubjectId(event.value).subscribe(re => {
       this.groups = re.Groups;
-    });
-    this.lessonservice.getSubjectOwner(+event.value).subscribe(teacher => {
-      if (teacher.FullName != undefined) {
-        this.teacherSubject = this.lessonservice.cutTeacherName(teacher.FullName);
-      }
     });
   }
 
