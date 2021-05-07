@@ -1,4 +1,4 @@
-<app-popover>
+<app-popover-dialog>
   <ng-container title>
     <p class="mat-typography text">{{'text.delete.question' | translate:'Вы действительно хотите удалить'}} {{data.body}}?</p>
   </ng-container>
@@ -6,4 +6,4 @@
     <button mat-raised-button mat-dialog-close>{{'button.close' | translate:'Отмена'}}</button>
     <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
   </ng-container>
-</app-popover>
+</app-popover-dialog>

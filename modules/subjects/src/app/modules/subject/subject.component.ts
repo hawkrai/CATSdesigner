@@ -1,5 +1,5 @@
 import { DialogService } from 'src/app/services/dialog.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 
@@ -14,6 +14,9 @@ import {DialogData} from '../../models/dialog-data.model';
 import {SubSink} from 'subsink';
 import * as catsActions from '../../store/actions/cats.actions';
 import { Message } from 'src/app/models/message.model';
+import { GroupsRestService } from 'src/app/services/groups/groups-rest.service';
+import { Group } from 'src/app/models/group.model';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-subject',
@@ -35,6 +38,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.dispatch(subjectActions.loadSubjects());
     this.subjects$ = this.store.select(subjectSelectors.getSubjects);
+
   }
 
   constructorSubject(subjectId?) {
@@ -76,8 +80,13 @@ export class SubjectComponent implements OnInit, OnDestroy {
     );
   }
 
-
   navigateToSubject(subjectId: number): void {
     this.store.dispatch(catsActions.sendMessage({ message: new Message('SubjectId', subjectId.toString())}));
   }
+
+
+  getSubjectGroupsTooltip(groups: Group[]): string {
+    return groups.map(x => x.GroupName).join('\n');
+  }
+
 }

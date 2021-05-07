@@ -47,7 +47,7 @@
                 <ng-container *var="(element | checkVisit: scheduleLab.head: subGroupLabs) as marks">
                   <div *ngIf="marks.length"
                     matTooltipClass="tooltip"
-                   [matTooltip]="getMissingTooltip(marks, subGroupSchedule)" matTooltipClass="tooltip" matTooltipPosition="above" class="not-visit">
+                   [matTooltip]="getMissingTooltip(marks, subGroupSchedule)" matTooltipPosition="above" class="not-visit">
                   </div>
                 </ng-container>
 

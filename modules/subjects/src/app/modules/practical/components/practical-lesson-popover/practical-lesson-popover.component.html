@@ -1,5 +1,5 @@
 <ng-container >
-  <app-popover *var="files$ | async as files">
+  <app-popover-dialog *var="files$ | async as files">
     <ng-container title>
       {{data.title}}
     </ng-container>
@@ -29,5 +29,5 @@
       >
         {{data.buttonText}}</button>
     </ng-container>
-  </app-popover>
+  </app-popover-dialog>
 </ng-container>
