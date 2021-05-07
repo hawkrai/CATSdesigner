@@ -85,34 +85,10 @@ export class LessonService {
     return this.http.post<any>('/Services/Notes/NotesService.svc/SaveNote', {subjectId: lessonId, text: message});
   }
 
-  getSubject(title: string): any {
-    const splitted = title.split('|', 9);
-    return splitted[8];
-  }
 
   getType(title: string): any {
     const splitted = title.split('|', 5);
     return ' ' + splitted[4] + ' ';
-  }
-
-  getColor(title: string): any {
-    const splitted = title.split('|', 7);
-    return splitted[6];
-  }
-
-  getTeacher(title: string): any {
-    const splitted = title.split('|', 6);
-    return splitted[5];
-  }
-
-  getAudience(title: string): any {
-    const splitted = title.split('|', 3);
-    return splitted[1];
-  }
-
-  getBuilding(title: string): any {
-    const splitted = title.split('|', 3);
-    return splitted[2];
   }
 
   getMemo(title: string): any {
@@ -120,10 +96,6 @@ export class LessonService {
     return splitted[9];
   }
 
-  getThirdString(title: string): any {
-    const splitted = title.split('|', 6);
-    return splitted[5];
-  }
 
   getColorLesson(event: any): any {
     if (this.isLesson(event)) {
@@ -145,28 +117,13 @@ export class LessonService {
     if (a.length != 0) {
       a = ' к. ' + a;
     }
-
     return 'а.' + splitted[1] + a;
   }
 
-  getName(title: string): any {
-    const splitted = title.split('|', 5);
-    return splitted[3];
-  }
 
-  getTime(title: string): any {
-    const splitted = title.split('|', 3);
-    return splitted[0];
-  }
-
-  getGroupId(title: string): any {
-    const splitted = title.split('|', 11);
-    return +splitted[10];
-  }
-
-  getSubGroupId(title: string): any {
-    const splitted = title.split('|', 12);
-    return +splitted[12];
+  getTitelPart(title: string, i: number): any {
+    const splitted = title.split('|', 14);
+    return splitted[i];
   }
 
   isLesson(event): boolean {
