@@ -8,9 +8,6 @@ import * as subjectSelectors from '../../../store/selectors/subject.selector';
 import {IAppState} from '../../../store/state/app.state';
 import * as catsActions from '../../../store/actions/cats.actions';
 import { Lector } from 'src/app/models/lector.model';
-import { MatOptionSelectionChange } from '@angular/material';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-news-popover',

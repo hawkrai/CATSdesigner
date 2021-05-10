@@ -14,9 +14,8 @@ import {DialogData} from '../../models/dialog-data.model';
 import {SubSink} from 'subsink';
 import * as catsActions from '../../store/actions/cats.actions';
 import { Message } from 'src/app/models/message.model';
-import { GroupsRestService } from 'src/app/services/groups/groups-rest.service';
 import { Group } from 'src/app/models/group.model';
-import { map } from 'rxjs/operators';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-subject',
@@ -30,7 +29,8 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<IAppState>,
-    private dialogService: DialogService) { }
+    private dialogService: DialogService,
+    private translate: TranslatePipe) { }
   ngOnDestroy(): void {
     this.store.dispatch(subjectActions.resetSubjects());
   }
@@ -56,7 +56,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   lector(subjectId: string, subjectName: string) {
     const dialogData: DialogData = {
-      title: 'Присоединение преподавателя к предмету',
+      title: this.translate.transform('text.subjects.lector.joining', 'Присоединение преподавателя к предмету'),
       body: { subjectName },
       model: { subjectId }
     };
@@ -65,9 +65,9 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   deleteSubject(subject : Subject) {
     const dialogData: DialogData = {
-      title: 'Удаление предмета',
-      body: `предмет "${subject.DisplayName}"`,
-      buttonText: 'Удалить'
+      title: this.translate.transform('subject.deleting', 'Удаление предмета'),
+      body: `${this.translate.transform('subject.singular', 'предмет').toLowerCase()} "${subject.DisplayName}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
