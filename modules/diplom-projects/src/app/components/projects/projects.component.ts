@@ -78,7 +78,7 @@ export class ProjectsComponent implements OnInit {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.checked;
-    this.diplomUser.IsSecretary = !event.checked
+    // this.diplomUser.IsSecretary = !event.checked
     this.retrieveProjects()
   }
 
