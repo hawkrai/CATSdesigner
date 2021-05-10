@@ -16,6 +16,8 @@
     <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer" 
       (click)="addProject()">Добавить тему</button>
     
+    <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary" 
+    (click)="addProject()">Добавить тему</button>
       <mat-slide-toggle class="detached-toggle-lecturer" *ngIf="isLecturer"
                         [color]="'primary'"
                         [checked]="isLecturer"

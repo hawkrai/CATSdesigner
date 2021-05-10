@@ -377,9 +377,16 @@ namespace Application.Infrastructure.DPManagement
                 searchString = parms.Filters["searchString"];
             }
 
+            var isSecretary = false;
+            if (parms.Filters.ContainsKey("isSecretary"))
+            {
+                isSecretary = bool.Parse(parms.Filters["isSecretary"]);
+            }
+
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
             var isLecturerSecretary = isLecturer && Context.Lecturers.Single(x => x.Id == userId).IsSecretary;
+            isLecturerSecretary = isSecretary;
             secretaryId = isLecturerSecretary ? userId : secretaryId;
             if (isStudent)
             {

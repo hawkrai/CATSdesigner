@@ -45,7 +45,6 @@ export class ProjectsComponent implements OnInit {
   ngOnInit() {
     this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => {this.groups = res.Groups; console.log(this.groups)});
     this.retrieveProjects();
-    console.log(this.diplomUser)
   }
 
   retrieveProjects() {
@@ -78,7 +77,6 @@ export class ProjectsComponent implements OnInit {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.checked;
-    // this.diplomUser.IsSecretary = !event.checked
     this.retrieveProjects()
   }
 
