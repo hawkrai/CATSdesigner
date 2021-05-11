@@ -61,6 +61,8 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
 
 		public bool IsLecturerHasGraduateStudents { get; set; }
 
+        public string GroupName { get; set; }
+
         public PersonalDataViewModel()
         {
             if (LecturerManagementService.GetLecturer(UserContext.CurrentUserId) != null)
@@ -92,6 +94,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
 				SkypeContact = user.User.SkypeContact;
 				Phone = user.User.Phone;
 				Email = user.User.Email;
+                GroupName = user.Group.Name;
             }
         }
     }

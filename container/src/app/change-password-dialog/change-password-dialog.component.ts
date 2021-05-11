@@ -46,7 +46,7 @@ export class ChangePasswordDialog {
     if (this.arePasswordsSame()) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
-            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.passwordChanged', "Password was't changed successfully =)"));
+            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.passwordChanged', "Пароль успешно изменен =)"));
             this.dialogRef.close();
           }
           else {

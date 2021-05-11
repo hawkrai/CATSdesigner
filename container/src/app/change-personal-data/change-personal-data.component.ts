@@ -104,11 +104,12 @@ export class ChangePersonalDataComponent implements OnInit {
     const config = new MatDialogConfig();
     if ((window.screen.width) <= 970) {
       config.width = '70%';
+      config.height = 'auto';
     }
     else {
       config.width = '40%';
+      config.height = '100%';
     }
-    config.height = 'auto';
     this.dialogRef = this.dialog.open(ChangePasswordDialog, config);
     this.dialogRef.afterClosed().subscribe(result => {
       this.dialogRef = null;

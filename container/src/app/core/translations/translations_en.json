@@ -351,7 +351,7 @@
   "text.personalAccount.wrongImage": "Wrong image format!",
   "text.personalAccount.wrongData": "Some fields are invalid!",
 
-  "text.personalAccount.changePassword.passwordChanged": "Password was't changed successfully =)",
+  "text.personalAccount.changePassword.passwordChanged": "Password was changed successfully =)",
   "text.personalAccount.changePassword.passwordNotChanged": "Password was't changed successfully =(",
   "text.personalAccount.changePassword.putOldPassword": "Put old password",
   "text.personalAccount.changePassword.putNewPassword": "Put new password",
@@ -359,6 +359,7 @@
   "text.personalAccount.changePassword.change": "Change",
   "text.personalAccount.changePassword.passwordsNotMatch": "Passwords don't match!",
   "text.personalAccount.changePassword.invalidPassword": "Password has wrong format!",
-  "text.personalAccount.changePassword.wrongPassword": "Wrong password!"
+  "text.personalAccount.changePassword.wrongPassword": "Wrong password!",
+  "text.personalAccount.GroupName": "Group"
 
 }

@@ -24,19 +24,19 @@
 
     <mat-form-field class="input-full-width">
       <mat-label>{{'text.personalAccount.lastName' | translate : ("Фамилия")}}</mat-label>
-      <input matInput id = "surnameInput" [(ngModel)]="this.profileData.Surname" [formControl]="surnameFormControl" maxlength="30">
+      <input matInput id="surnameInput" [(ngModel)]="this.profileData.Surname" [formControl]="surnameFormControl" maxlength="30">
       <mat-error *ngIf="surnameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 3 до 30 символов")}}</mat-error>
     </mat-form-field>
 
     <mat-form-field class="input-full-width">
       <mat-label>{{'text.personalAccount.firstName' | translate : ("Имя")}}</mat-label>
-      <input matInput id = "nameInput" [(ngModel)]="this.profileData.Name" [formControl]="nameFormControl" maxlength="30">
+      <input matInput id="nameInput" [(ngModel)]="this.profileData.Name" [formControl]="nameFormControl" maxlength="30">
       <mat-error *ngIf="nameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 3 до 30 символов")}}</mat-error>
     </mat-form-field>
 
     <mat-form-field class="input-full-width">
       <mat-label>{{'text.personalAccount.middleName' | translate : ("Отчество")}}</mat-label>
-      <input matInput id = "patronymicInput" [(ngModel)]="this.profileData.Patronymic" [formControl]="patronymicFormControl" maxlength="30">
+      <input matInput id="patronymicInput" [(ngModel)]="this.profileData.Patronymic" [formControl]="patronymicFormControl" maxlength="30">
       <mat-error *ngIf="patronymicFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 3 до 30 символов")}}</mat-error>
     </mat-form-field>
 
@@ -45,8 +45,13 @@
       <input matInput disabled value={{this.profileData.UserName}}>
     </mat-form-field>
 
+    <mat-form-field class="input-full-width" *ngIf="this.profileData.GroupName">
+      <mat-label>{{'text.personalAccount.GroupName' | translate : ("Группа")}}</mat-label>
+      <input matInput disabled value={{this.profileData.GroupName}}>
+    </mat-form-field>
 
-    <a [title] = "'text.personalAccount.followToChangePassword' | translate : 'Перейдите, чтобы сменить пароль'" (click)="this.openDialog()">{{'text.personalAccount.changePassword' | translate : ("Изменить пароль")}}</a>
+
+    <a [title]="'text.personalAccount.followToChangePassword' | translate : 'Перейдите, чтобы сменить пароль'" (click)="this.openDialog()">{{'text.personalAccount.changePassword' | translate : ("Изменить пароль")}}</a>
 
   </mat-card>
 
