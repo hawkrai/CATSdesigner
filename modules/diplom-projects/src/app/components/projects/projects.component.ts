@@ -29,7 +29,7 @@ export class ProjectsComponent implements OnInit {
   private projectsSubscription: Subscription;
   private projectGroups: String[];
   private filteredProjects: Project[];
-  private isLecturer = false;
+  public isLecturer = false;
 
   private searchString = '';
   private sorting = 'Id';
