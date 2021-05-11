@@ -21,6 +21,10 @@ export class MenuService {
         this.sideNav = sideNav;
     }
 
+    public getSideNavWidth(): number {
+        return this.sideNav ? this.sideNav._width : null;
+    }
+
     private subjectsInfo = new Map([
         [ModuleType.News, { fragment: 'news', module: 'subject', item: 'news', icon: '../../../assets/icons/newspaper.png' }],
         [ModuleType.Lectures, { fragment: 'lectures', module: 'subject', item: 'lectures', icon: '../../../assets/icons/presentation.png' }],

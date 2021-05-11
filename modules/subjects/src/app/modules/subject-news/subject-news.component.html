@@ -19,7 +19,7 @@
         >
   
     <div class="subject-news-component__news-header">
-      <p class="subject-news-component__news-title" [style.color]="state.color ? state.color : '#304ffe'">{{ oneNews.Title | firstLetterUppercase }}</p>
+      <p class="subject-news-component__news-title">{{ oneNews.Title | firstLetterUppercase }}</p>
       <div class="subject-news-component__news-action" [style.opacity]="state.selectedNews === oneNews ? 1 : 0"  *ngIf="state.isTeacher">
         <button mat-icon-button color="primary" [matTooltip]="'text.subjects.news.edit' | translate:'Редактировать новость'" matTooltipPosition="above" (click)="constructorNews(oneNews)">
           <mat-icon>edit</mat-icon>
