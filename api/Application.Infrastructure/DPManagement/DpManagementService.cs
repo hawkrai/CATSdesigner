@@ -28,7 +28,14 @@ namespace Application.Infrastructure.DPManagement
                 .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
 
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
-            user.Lecturer.IsSecretary = isSecretary;
+            
+            if (!user.Lecturer.IsSecretary)
+            {
+                user.Lecturer.IsSecretary = !isSecretary;
+            } else
+            {
+                user.Lecturer.IsSecretary = isSecretary;
+            }
 
             if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
             {
