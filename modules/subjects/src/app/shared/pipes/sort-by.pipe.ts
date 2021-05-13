@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from "@angular/core";
 export class SortByPipe implements PipeTransform {
 
     transform(values: any[], field: string): any[] {
-        return values.sort((a, b) => a[field] < b[field] ? -1 : 1);
+        return values ? values.sort((a, b) => a[field] < b[field] ? -1 : 1) : [];
     }
 
 }

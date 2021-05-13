@@ -25,9 +25,10 @@ import { FileDownloadPopoverComponent } from './file-download-popover/file-downl
 import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/check-plagiarism-popover.component';
 import { SortByPipe } from './pipes/sort-by.pipe';
 import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
-import { PopoverComponent } from './popover/popover.component';
+import { PopoverDialogComponent } from './popover-dialog/popover-dialog.component';
 import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
 import { FileComponent } from './components/file/file.component';
+import { HelpComponent } from './components/help/help.component';
 
 @NgModule({
   declarations: [
@@ -52,9 +53,10 @@ import { FileComponent } from './components/file/file.component';
     WidthPipe,
     SortByPipe,
     MarkPopoverComponent,
-    PopoverComponent,
+    PopoverDialogComponent,
     TranslatePipe,
-    FileComponent
+    FileComponent,
+    HelpComponent
     ],
   imports: [
     CommonModule,
@@ -87,9 +89,10 @@ import { FileComponent } from './components/file/file.component';
     AnyPipe,
     WidthPipe,
     SortByPipe,
-    PopoverComponent,
+    PopoverDialogComponent,
     TranslatePipe,
-    FileComponent
+    FileComponent,
+    HelpComponent
   ],
   providers: [TranslatePipe]
 })

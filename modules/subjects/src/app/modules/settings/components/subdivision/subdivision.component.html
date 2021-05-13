@@ -1,19 +1,22 @@
-<app-popover width="600">
+<app-popover-dialog width="600">
   <ng-container title>
     {{'subgroup.management' | translate:'Управление подгруппами'}}
   </ng-container>
   <ng-container body>
     <form class="example-form">
-      <mat-form-field>
-        <mat-select [value]="selectedGroup ? selectedGroup : ''">
-          <mat-option *ngFor="let group of groups"
-                      (onSelectionChange)="_selectedGroup($event)"
-                      [value]="group.Value"
-          >
-            {{group.Text}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="form-container form-container__space-between">
+        <mat-form-field>
+          <mat-select [value]="selectedGroup ? selectedGroup : ''">
+            <mat-option *ngFor="let group of groups"
+                        (onSelectionChange)="_selectedGroup($event)"
+                        [value]="group.Value"
+            >
+              {{group.Text}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-help [action]="help.action" [message]="help.message"></app-help>
+      </div>
       <div class="subdivision-students">
         <div class="subdivision-students__header">
           <p class="mat-typography text-center">{{'subgroup' | translate:'Подгруппа'}}</p>
@@ -65,7 +68,7 @@
     </form>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClick()">{{'button.close' | translate:'Отмена'}}</button>
+    <button mat-raised-button (click)="onClick()">{{'button.cancel' | translate:'Отмена'}}</button>
     <button mat-raised-button color="primary" (click)="save()">{{'button.save' | translate:'Сохранить'}}</button>
   </ng-container>
-</app-popover>
+</app-popover-dialog>

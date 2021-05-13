@@ -1,4 +1,4 @@
-<app-popover *var="files$ | async as files" width="700">
+<app-popover-dialog *var="files$ | async as files" width="700">
   <ng-container title>
     {{data.title}}
   </ng-container>
@@ -23,7 +23,7 @@
     </form>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClose(files, false)">{{'button.close' | translate:'Отмена'}}</button>
+    <button mat-raised-button (click)="onClose(files, false)">{{'button.cancel' | translate:'Отмена'}}</button>
     <button mat-raised-button
             (click)="onClose(files, true)"
             color="primary"
@@ -32,4 +32,4 @@
       {{data.buttonText}}
     </button>
   </ng-container>
-</app-popover>
+</app-popover-dialog>

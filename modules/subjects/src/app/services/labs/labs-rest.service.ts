@@ -120,8 +120,7 @@ export class LabsRestService {
     );
   }
 
-  public checkPlagiarismSubjects(body: { subjectId: number, type: string, threshold: string, isCp: false }): Observable<PlagiarismResultSubject[]> {
-   console.log(body)
+  public checkPlagiarismSubjects(body: { subjectId: number, type: string, threshold: string, isCp?: boolean }): Observable<PlagiarismResultSubject[]> {
     return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
       map(res => res['DataD'])
     );
