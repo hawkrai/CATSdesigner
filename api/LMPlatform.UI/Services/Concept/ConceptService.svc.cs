@@ -248,7 +248,8 @@ namespace LMPlatform.UI.Services.Concept
 
         public string[] GetFolderFilesPaths(int conceptId)
         {
-            var tree = ConceptManagementService.GetElementsByParentId(conceptId);
+            var tree = GetConceptTreeCascade(conceptId);
+
             return tree.Select(x => GetFilePath(x.Container)).ToArray();
         }
 
@@ -262,6 +263,18 @@ namespace LMPlatform.UI.Services.Concept
             var attach = FilesManagementService.GetAttachments(container).FirstOrDefault();
             if (attach == null) return string.Empty;
             return $"{attach.PathName}//{ attach.FileName}";
+        }
+
+        private IEnumerable<Models.Concept> GetConceptTreeCascade(int conceptId)
+        {
+            var tree = ConceptManagementService.GetElementsByParentId(conceptId); ;
+
+            foreach (var childFolder in tree.Where(x => x.IsGroup))
+            {
+                tree.Union(GetConceptTreeCascade(childFolder.Id));
+            }
+
+            return tree;
         }
         #endregion
 
