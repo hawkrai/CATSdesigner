@@ -21,11 +21,21 @@ namespace Application.Infrastructure.DPManagement
         public PagedList<DiplomProjectData> GetProjects(int userId, GetPagedListParams parms)
         {
             var searchString = parms.Filters["searchString"];
+            var isSecretary = Convert.ToBoolean(parms.Filters["isSecretary"]);
+
             var query = Context.DiplomProjects.AsNoTracking()
                 .Include(x => x.Lecturer)
                 .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
 
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+            
+            if (!user.Lecturer.IsSecretary)
+            {
+                user.Lecturer.IsSecretary = !isSecretary;
+            } else
+            {
+                user.Lecturer.IsSecretary = isSecretary;
+            }
 
             if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
             {
@@ -34,7 +44,7 @@ namespace Application.Infrastructure.DPManagement
 
             if (user != null && user.Lecturer != null && user.Lecturer.IsSecretary)
             {
-                query = query.Where(x => x.AssignedDiplomProjects.Any());
+                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x=> x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021");
             }
 
             if (user != null && user.Student != null)
@@ -374,9 +384,16 @@ namespace Application.Infrastructure.DPManagement
                 searchString = parms.Filters["searchString"];
             }
 
+            var isSecretary = false;
+            if (parms.Filters.ContainsKey("isSecretary"))
+            {
+                isSecretary = bool.Parse(parms.Filters["isSecretary"]);
+            }
+
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
             var isLecturerSecretary = isLecturer && Context.Lecturers.Single(x => x.Id == userId).IsSecretary;
+            isLecturerSecretary = isSecretary;
             secretaryId = isLecturerSecretary ? userId : secretaryId;
             if (isStudent)
             {
@@ -721,5 +738,13 @@ namespace Application.Infrastructure.DPManagement
         {
             get { return _filesManagementService.Value; }
         }
+
+        private readonly DateTime _currentAcademicYearStartDate = DateTime.Now.Month < 9
+            ? new DateTime(DateTime.Now.Year - 1, 9, 1)
+            : new DateTime(DateTime.Now.Year, 9, 1);
+
+        private readonly DateTime _currentAcademicYearEndDate = DateTime.Now.Month < 9
+            ? new DateTime(DateTime.Now.Year, 9, 1)
+            : new DateTime(DateTime.Now.Year + 1, 9, 1);
     }
 }
