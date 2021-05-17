@@ -21,11 +21,14 @@ namespace LMPlatform.UI.Services.Modules
 
         public LectorViewData(Lecturer lecturer, bool withUsername = false)
         {
-            LectorId = lecturer.Id;
-            FullName = lecturer.FullName;
-            if (withUsername)
+            if (lecturer != null)
             {
-                UserName = lecturer.User.UserName;
+                LectorId = lecturer.Id;
+                FullName = lecturer.FullName;
+                if (withUsername)
+                {
+                    UserName = lecturer.User.UserName;
+                }
             }
         }
     }

@@ -20,7 +20,6 @@ import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/chec
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { LabsRestService } from 'src/app/services/labs/labs-rest.service';
-import { JobProtection } from 'src/app/models/job-protection/job-protection.model';
 
 @Component({
   selector: 'app-job-protection',
@@ -45,7 +44,8 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
     private store: Store<IAppState>,
     private translate: TranslatePipe,
     private labsService: LabsRestService,
-    public dialogService: DialogService) {
+    public dialogService: DialogService,
+    ) {
   }
 
   ngOnInit(): void {

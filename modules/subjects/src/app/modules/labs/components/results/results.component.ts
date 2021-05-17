@@ -12,6 +12,7 @@ import { StudentMark } from 'src/app/models/student-mark.model';
 import { DatePipe } from '@angular/common';
 import { Observable, combineLatest } from 'rxjs';
 import * as moment from 'moment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
@@ -20,6 +21,7 @@ import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedu
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { LabVisitingMark } from 'src/app/models/visiting-mark/lab-visiting-mark.model';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-results',
@@ -36,7 +38,8 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
-    private dialogService: DialogService) {
+    private dialogService: DialogService,
+    private snackBar: MatSnackBar) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -123,5 +126,10 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
     this.store.dispatch(labsActions.resetLabs());
+  }
+
+  help: Help = {
+    message: 'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы выставить оценку и оставить комментарии.',
+    action: 'Понятно'
   }
 }

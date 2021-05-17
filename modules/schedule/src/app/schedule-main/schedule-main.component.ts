@@ -117,7 +117,8 @@ export class ScheduleMainComponent implements OnInit {
       + '|' + lesson.Audience + '|' + building
       + '|' + lesson.ShortName + '|' + lesson.Type
       + '|' + teacher + '|' + lesson.Color
-      + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo + '|' + lesson.GroupId + '|' + lesson.SubGroupId;
+      + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo + '|' + lesson.GroupId + '|' + lesson.SubGroupId
+      + '|' + lesson.GroupName + '|' + lesson.SubGroupName;
   }
 
   getToolTip(title: string): any {
@@ -210,6 +211,7 @@ export class ScheduleMainComponent implements OnInit {
     });
   }
 
+
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
       width: '250px',
@@ -223,17 +225,20 @@ export class ScheduleMainComponent implements OnInit {
           if (eventToDelete.meta == 'lesson') {
             const a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
             if (a == 'Лекция' || a == 'Lect.') {
-              this.lessonservice.deleteLecture(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+              this.lessonservice.deleteLecture(eventToDelete.id,
+                + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
                 console.log(res);
               });
             }
             if (a == 'Лаб.работа' || a == 'Lab') {
-              this.lessonservice.deleteLab(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+              this.lessonservice.deleteLab(eventToDelete.id,
+                + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
                 console.log(res);
               });
             }
             if (a == 'Практ.работа' || a == 'WS') {
-              this.lessonservice.deletePractical(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title) ).subscribe(res => {
+              this.lessonservice.deletePractical(eventToDelete.id,
+                + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
                 console.log(res);
               });
             }

@@ -10,10 +10,10 @@ export class OrderByPipe implements PipeTransform {
             if (arr.length && !Object.keys(arr[0]).includes(field)) {
                 throw new Error();
             }
-            const sort = arr.sort((a, b) => a[field] > b[field] ? 1 : -1);
+            const sort = [...arr].sort((a, b) => a[field] > b[field] ? 1 : -1);
             return desc ? sort.reverse() : sort;
         }
-        const sort = arr.sort((a, b) => a > b ? 1 : -1);
+        const sort = [...arr].sort((a, b) => a > b ? 1 : -1);
         return  desc ? sort.reverse() : sort;
     }
 

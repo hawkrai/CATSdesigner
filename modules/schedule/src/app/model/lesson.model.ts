@@ -16,4 +16,6 @@ export class Lesson {
   Notes: Memo[];
   GroupId: number;
   SubGroupId: number;
+  GroupName: string;
+  SubGroupName: string;
 }

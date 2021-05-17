@@ -5,6 +5,7 @@ export class ProfileData {
   Surname!: string;
 
   Patronymic!: string;
+
   UserName!: string;
 
   Avatar!: string;
@@ -24,4 +25,6 @@ export class ProfileData {
   IsActive!: boolean;
 
   IsLecturerHasGraduateStudents!: boolean;
+
+  GroupName!: string;
 }
