@@ -43,7 +43,7 @@ export class EditorComponent implements OnInit {
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
         '|', 'indent', 'outdent',
-        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'exportPdf',// 'ckfinder',
+        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'exportPdf', // 'ckfinder',
         '|', 'MathType',
         '|', 'undo', 'redo' ],
     }
