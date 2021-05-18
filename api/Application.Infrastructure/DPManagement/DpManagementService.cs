@@ -44,7 +44,7 @@ namespace Application.Infrastructure.DPManagement
 
             if (user != null && user.Lecturer != null && user.Lecturer.IsSecretary)
             {
-                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x=> x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021");
+                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x=> x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == _currentAcademicYearEndDate.Year.ToString());
             }
 
             if (user != null && user.Student != null)
@@ -385,10 +385,10 @@ namespace Application.Infrastructure.DPManagement
             }
 
             var isSecretary = false;
-            if (parms.Filters.ContainsKey("isSecretary"))
+            /*if (parms.Filters.ContainsKey("isSecretary"))
             {
                 isSecretary = bool.Parse(parms.Filters["isSecretary"]);
-            }
+            }*/
 
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
