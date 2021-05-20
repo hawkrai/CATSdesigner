@@ -11,8 +11,8 @@ export class PercentageResultsService {
   constructor(private http: HttpClient) {
   }
 
-  public getPercentageResults(params: any): Observable<any> {
-    return this.http.get('api/DpPercentageResult', {params: new HttpParams({fromObject: params})});
+  public getPercentageResults(params: string): Observable<any> {
+    return this.http.get('api/DpPercentageResult', { params: new HttpParams({ fromString: params }) });
   }
 
   public setPercentage(studentId: string, percentageGraphId: string, mark: string, comment: string, showForStudent: boolean): Observable<any> {

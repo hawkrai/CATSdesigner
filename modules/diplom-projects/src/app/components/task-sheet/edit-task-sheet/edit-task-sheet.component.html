@@ -24,7 +24,7 @@
 
   <div class="apply-template">
     <mat-form-field>
-      <mat-label>Группы</mat-label>
+      <mat-label>Студенты</mat-label>
       <mat-select multiple [(value)]="selectedStudents">
         <mat-option *ngFor="let student of data.students" [value]="student.Name">
           {{student.Name}}

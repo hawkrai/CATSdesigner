@@ -1,6 +1,6 @@
 <div class="visit-stats-component" >
   <div class="visit-stats-component__header">
-    <mat-form-field class="visit-stats-component__group-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
+    <mat-form-field class="visit-stats-component__lecturer-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
       <mat-select [value]="lecturers ? lecturers[0] : ''" [(ngModel)]="lecturer" (valueChange)="selectedLecturer($event)" >
         <mat-option *ngFor="let lecturer of lecturers" [value]="lecturer">
           {{lecturer.Name}}
