@@ -11,7 +11,6 @@ import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-p
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { Lecturer } from 'src/app/models/lecturer.model';
-// import { Console } from 'console';
 
 @Component({
   selector: 'app-visit-stats',
@@ -55,7 +54,7 @@ export class VisitStatsComponent implements OnInit {
   }
 
   retrieveVisitStats() {
-    if (this.diplomUser.IsSecretary) {
+    if (this.diplomUser.IsSecretary && !this.isLecturer) {
       console.log("this.diplomUser.IsSecretary")
       this.visitStatsService.getLecturerDiplomGroups({entity: 'LecturerForSecretary', id: this.diplomUser.UserId})
       .subscribe(res => {
@@ -64,10 +63,9 @@ export class VisitStatsComponent implements OnInit {
         this.visitStatsList = null;
     this.visitStatsSubscription = this.visitStatsService.getVisitStats({
       count: this.COUNT, page: this.PAGE,
-      filter: '{"isSecretary":"' + !this.isLecturer + '","lecturerId":"' + this.lecturers[this.index].Id + '"}'
+      filter: '{"isSecretary":"' + this.isLecturer + '","lecturerId":"' + this.lecturers[this.index].Id + '"}'
     })
       .subscribe(res => {
-        console.log("ZXC")
         this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
         this.consultations = res.DiplomProjectConsultationDates;
         this.filteredVisitStatsList = this.visitStatsList;
@@ -78,7 +76,7 @@ export class VisitStatsComponent implements OnInit {
       this.visitStatsList = null;
     this.visitStatsSubscription = this.visitStatsService.getVisitStats({
       count: this.COUNT, page: this.PAGE,
-      filter: '{"isSecretary":"' + !this.isLecturer + '"}'
+      filter: '{"isSecretary":"' + false + '"}'
     })
       .subscribe(res => {
         this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
@@ -95,15 +93,13 @@ export class VisitStatsComponent implements OnInit {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.checked;
-    console.log("QWQEQWEQWEQWEQQQQQQQQQQQQQQ")
-    // this.retrieveVisitStats()
+    this.retrieveVisitStats()
   }
 
   updateStats() {
     if (this.visitStatsSubscription) {
       this.visitStatsSubscription.unsubscribe();
     }
-    console.log("UPDATE_STATS")
     this.retrieveVisitStats();
   }
 

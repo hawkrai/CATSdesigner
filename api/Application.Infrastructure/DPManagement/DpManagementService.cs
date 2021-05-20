@@ -29,12 +29,16 @@ namespace Application.Infrastructure.DPManagement
 
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
             
-            if (!user.Lecturer.IsSecretary)
+            if (user.Lecturer != null)
             {
-                user.Lecturer.IsSecretary = !isSecretary;
-            } else
-            {
-                user.Lecturer.IsSecretary = isSecretary;
+                if (!user.Lecturer.IsSecretary)
+                {
+                    user.Lecturer.IsSecretary = !isSecretary;
+                }
+                else
+                {
+                    user.Lecturer.IsSecretary = isSecretary;
+                }
             }
 
             if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
@@ -385,10 +389,10 @@ namespace Application.Infrastructure.DPManagement
             }
 
             var isSecretary = false;
-            /*if (parms.Filters.ContainsKey("isSecretary"))
+            if (parms.Filters.ContainsKey("isSecretary"))
             {
                 isSecretary = bool.Parse(parms.Filters["isSecretary"]);
-            }*/
+            }
 
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
