@@ -28,6 +28,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   private filteredVisitStatsList: VisitStats[];
   private consultations: Consultation[];
   private groups: String[];
+  public isLecturer = false;
 
   private searchString = '';
 
@@ -72,6 +73,11 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   onSearchChange(searchText: string) {
     this.searchString = searchText;
     this.updateStats();
+  }
+
+  lecturerStatusChange(event) {
+    this.isLecturer = event.checked;
+    this.retrieveVisitStats()
   }
 
   updateStats() {

@@ -54,7 +54,7 @@ namespace LMPlatform.Data.Repositories
                 var subjectGroup = context.Set<SubjectGroup>()
                     .Include(e => e.Subject)
                     .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup && !e.Subject.IsArchive).ToList();
-                return subjectGroup.Select(e => e.Subject).ToList();
+                return subjectGroup.Select(e => e.Subject).GroupBy(x => x.Id).Select(x => x.First()).ToList();
             }
 
             var subjectLecturer =
@@ -68,7 +68,7 @@ namespace LMPlatform.Data.Repositories
 		{
 			using var context = new LmPlatformModelsContext();
 			var subjectGroup = context.Set<SubjectGroup>().Where(sg => !groupId.HasValue || sg.GroupId == groupId.Value);
-			return subjectGroup.Select(sg => sg.Subject).ToList();
+			return subjectGroup.Select(sg => sg.Subject).GroupBy(x => x.Id).Select(x => x.First()).ToList();
 		}
 
 		public bool IsSubjectName(string name, string id, int userId)

@@ -1,6 +1,7 @@
-<div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
-    <div class="protection-schedule-component__body">
-        <div class="protection-schedule-component__table">
+<div class="results-component" *ngIf="state$ | async as state; else: load">
+    <app-help [message]="help.message" [action]="help.action" class="help"></app-help>
+    <div class="results-component__body">
+        <div class="results-component__table">
             <table mat-table [dataSource]="state.students" class="mat-elevation-z14">
                 <ng-container matColumnDef="position">
                     <th mat-header-cell *matHeaderCellDef>№</th>

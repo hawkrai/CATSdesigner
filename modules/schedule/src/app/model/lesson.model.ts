@@ -14,6 +14,8 @@ export class Lesson {
   Color: string;
   SubjectId: string;
   Notes: Memo[];
-  groupId: number;
-  subGroupId: number;
+  GroupId: number;
+  SubGroupId: number;
+  GroupName: string;
+  SubGroupName: string;
 }

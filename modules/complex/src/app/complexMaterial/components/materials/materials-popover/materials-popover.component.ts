@@ -53,11 +53,11 @@ export class MaterialsPopoverComponent{
     this.path = data.url;    
     this.isAdaptive = data.isAdaptive;
     this.materialPathes
+    this.countWatchTime();
 
     if (this.isAdaptive) {
       this.adaptivityType = data.adaptivityType;
-      this.initFieldsByAdaptivity(data.adaptivity);
-      this.countWatchTime()
+      this.initFieldsByAdaptivity(data.adaptivity);      
     }
     else if (data.documents) {
       this.currentPathIndex = 0;
@@ -208,6 +208,6 @@ export class MaterialsPopoverComponent{
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(this.studentSeconds);
   }
 }

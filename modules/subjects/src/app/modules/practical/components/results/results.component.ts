@@ -20,6 +20,7 @@ import { PracticalMark } from 'src/app/models/mark/practical-mark.model';
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-results',
@@ -125,4 +126,9 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     this.subs.unsubscribe();
     this.store.dispatch(practicalsActions.resetPracticals());
   }
+
+  help: Help = {
+    message: 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.', 
+    action: 'Понятно'
+  };
 }

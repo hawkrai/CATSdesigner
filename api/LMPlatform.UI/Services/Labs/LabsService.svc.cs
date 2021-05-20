@@ -11,7 +11,6 @@ using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Labs;
 using LMPlatform.PlagiarismNet.Controllers;
-using Newtonsoft.Json;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using System.Globalization;
@@ -23,6 +22,7 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using Application.Infrastructure.LabsManagement;
 using LMPlatform.UI.Services.Modules.Schedule;
+using Newtonsoft.Json;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -851,11 +851,11 @@ namespace LMPlatform.UI.Services.Labs
 
 		public ResultPSubjectViewData CheckPlagiarismSubjects(string subjectId, int type, int threshold, bool isCp = false) 
 		{
+			var path = Guid.NewGuid().ToString("N");
+
 			try
 			{
 				ClearCache();
-
-				var path = Guid.NewGuid().ToString("N");
 
 				var subjectName = this.SubjectManagementService.GetSubject(int.Parse(subjectId)).ShortName;
 
@@ -954,15 +954,22 @@ namespace LMPlatform.UI.Services.Labs
 					Code = "500"
 				};
 			}
+			finally
+			{
+				var fullPath = this.PlagiarismTempPath + path;
+				if (Directory.Exists(fullPath))
+				{
+					Directory.Delete(fullPath, true);
+				}
+			}
 		}
 
 		public ResultViewData CheckPlagiarism(int userFileId, int subjectId, bool isCp = false)
 		{
+			var path = Guid.NewGuid().ToString("N");
 			try
 			{
-				ClearCache();
-
-				var path = Guid.NewGuid().ToString("N");
+				ClearCache();			
 
 				var subjectName = this.SubjectManagementService.GetSubject(new Query<Subject>(e => e.Id == subjectId)).ShortName;
 
@@ -977,7 +984,7 @@ namespace LMPlatform.UI.Services.Labs
 
 				var filesPaths = usersFiles.Select(e => e.Attachments);
 
-				if (filesPaths.Count() == 0) 
+				if (filesPaths.Count() == 0)
 				{
 					return new ResultViewData
 					{
@@ -1039,8 +1046,6 @@ namespace LMPlatform.UI.Services.Labs
 					data.Add(resPlag);
 				}
 
-				Directory.Delete(this.PlagiarismTempPath + path, true);
-
 				HttpContext.Current.Session.Add(key.ToString(), data.ToList());
 
 				return new ResultViewData
@@ -1057,6 +1062,14 @@ namespace LMPlatform.UI.Services.Labs
 					Message = e.Message + "   " + e,
 					Code = "500"
 				};
+			}
+			finally 
+			{
+				var fullPath = this.PlagiarismTempPath + path;
+				if (Directory.Exists(fullPath))
+				{
+					Directory.Delete(fullPath, true);
+				}
 			}
 		}
 

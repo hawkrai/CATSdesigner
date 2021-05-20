@@ -46,7 +46,7 @@ export class MaterialComponent implements OnInit {
     this.isLucturer = user.role === 'lector';
   }
 
-  hasChild = (_: number, node: ComplexCascade) => !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: ComplexCascade) => node.IsGroup || (!!node.children && node.children.length > 0);
 
   ngOnInit() {
     this.complexService.getConceptCascade(this.complexId).subscribe(res => {
@@ -74,7 +74,7 @@ export class MaterialComponent implements OnInit {
     
   };
 
-  openPDF(filename: string): void {
+  openPDF(nodeId: number, filename: string): void {
     const path = '/api/Upload?fileName=' + filename;
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '1200px',
@@ -82,6 +82,7 @@ export class MaterialComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.complexService.saveWatchingTime(nodeId, result).subscribe();
       console.log('The dialog was closed');
     });
   };

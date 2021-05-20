@@ -14,6 +14,7 @@ import { StudentMark } from 'src/app/models/student-mark.model';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import { VisitingPopoverComponent } from 'src/app/shared/visiting-popover/visiting-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-visit-statistic',
@@ -108,4 +109,8 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
     return visitsModel
   }
 
+  help: Help = {
+    message: 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии. ', 
+    action: 'Понятно'
+  };
 }

@@ -1,0 +1,34 @@
+:host {
+    height: 100%;
+}
+.popover {
+    min-height: 100%;
+    width: 100%;
+    height: 100%;
+    &-container {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 12px;
+        height: 100%;
+    }
+
+    &-title {
+        margin-bottom: 0;
+    }
+
+    &-close {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: gray;
+    }
+}
+
+.mat-dialog-actions {
+    justify-content: flex-end;
+}
+
+.mat-dialog-content {
+    max-height: none;
+    // overflow: hidden;
+}

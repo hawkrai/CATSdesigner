@@ -1,4 +1,4 @@
-<app-popover>
+<app-popover-dialog>
   <ng-container title>
     {{data.title}}
   </ng-container>
@@ -96,6 +96,6 @@
     </div>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClick()">{{'button.close' | translate:'Закрыть'}}</button>
+    <button mat-raised-button (click)="onClick()">{{'button.cancel' | translate:'Закрыть'}}</button>
   </ng-container>
-</app-popover>
+</app-popover-dialog>

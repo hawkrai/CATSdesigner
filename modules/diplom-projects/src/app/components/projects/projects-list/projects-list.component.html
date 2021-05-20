@@ -10,6 +10,7 @@
         <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">Группа</th>
         <th mat-sort-header="ApproveDate" class="mdc-data-table__header-cell" role="columnheader" scope="col">Дата</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="!diplomUser.IsSecretary">Действие</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && this.component.isLecturer">Действие</th>
       </tr>
       </thead>
       <tbody>
@@ -32,6 +33,30 @@
           </button>
         </td>
         <td class="mdc-data-table__cell" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary">
+          <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="projectsComponent.editProject(project)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Назначить" (click)="projectsComponent.assignProject(project)"
+                  *ngIf="project.StudentId == null">
+            <mat-icon>assignment</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Отменить назначение" (click)="projectsComponent.removeAssignment(project)"
+                  *ngIf="project.StudentId != null">
+            <mat-icon>remove_circle_outline</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Скачать лист задания" (click)="projectsComponent.downloadTaskSheet(project)"
+                  *ngIf="project.StudentId != null">
+            <mat-icon>cloud_download</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Удалить" (click)="projectsComponent.deleteProject(project)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Подтвердить выбранную тему" (click)="projectsComponent.approveChoice(project)"
+                  *ngIf="project.StudentId && !project.ApproveDate">
+            <mat-icon>done</mat-icon>
+          </button>
+        </td>
+        <td class="mdc-data-table__cell" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && this.component.isLecturer">
           <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="projectsComponent.editProject(project)">
             <mat-icon>edit</mat-icon>
           </button>

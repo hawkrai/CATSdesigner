@@ -57,10 +57,7 @@ export class CoreService {
         this.router.navigateByUrl(`/${message.value}`);
       }      
       if (message.channel === 'SubjectId') {
-        const currentSubject = this.getCurrentSubject();
-        if (!currentSubject || currentSubject.id !== +message.value) {
-          this.subjectIdSub.next(+message.value);
-        }
+        this.subjectIdSub.next(+message.value);
       }  
       if (message.channel === 'UpdateSubjects') {
         this.updateSubjectSub.next();
