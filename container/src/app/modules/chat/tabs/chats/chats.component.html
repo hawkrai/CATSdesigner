@@ -1,0 +1,62 @@
+ <!-- Start chats content -->
+ <div>
+   <div class="px-4 pt-4">
+     <h4 class="mb-4">Чаты</h4>
+     <div class="search-box chat-search-box">
+       <div class="input-group mb-3 bg-light  input-group-lg rounded-lg">
+         <div class="input-group-prepend">
+           <button class="btn btn-link text-muted pr-1 text-decoration-none" type="button">
+             <i class="ri-search-line search-icon font-size-18"></i>
+           </button>
+         </div>
+         <input type="text" class="form-control bg-light"
+           placeholder="Название чата">
+       </div>
+     </div> <!-- Search Box--> 
+   </div> <!-- .p-4 -->
+
+
+   <!-- Start chat-message-list -->
+   <div class="px-2">
+     <perfect-scrollbar class="chat-message-list" style="height: 90%;">
+
+       <ul class="list-unstyled chat-list chat-user-list">
+         <li *ngFor="let user of chat" [ngClass]="{'typing': user.isTyping, 'active': user.isActive}">
+           <a (click)="showChat(user.id)">
+             <div class="media">
+
+               <div class="chat-user-img align-self-center mr-3" [ngClass]="{'online': user.status === 'online',
+               'away': user.status === 'away'}">
+                 <img *ngIf="user.profile" src="{{user.profile}}" class="rounded-circle avatar-xs" alt="">
+                 <div class="avatar-xs" *ngIf="!user.profile">
+                   <span class="avatar-title rounded-circle bg-soft-primary text-primary">
+                     {{(user.name).charAt(0)}}
+                   </span>
+                 </div>
+                 <span *ngIf="user.status" class="user-status"></span>
+               </div>
+
+               <div class="media-body overflow-hidden">
+                 <h5 class="text-truncate font-size-15 mb-1">{{user.name}}</h5>
+                 <p *ngIf="user.isTyping" class="chat-user-message text-truncate mb-0">typing<span
+                     class="animate-typing">
+                     <span class="dot ml-1"></span>
+                     <span class="dot ml-1"></span>
+                     <span class="dot ml-1"></span>
+                   </span></p>
+                 <p class="chat-user-message text-truncate mb-0">{{user.lastMessage}}</p>
+               </div>
+               <div class="font-size-11">{{user.time}}</div>
+               <div class="unread-message">
+                 <span class="badge badge-soft-danger badge-pill">{{user.unRead}}</span>
+               </div>
+             </div>
+           </a>
+         </li>
+       </ul>
+     </perfect-scrollbar>
+
+   </div>
+   <!-- End chat-message-list -->
+ </div>
+ <!-- Start chats content -->

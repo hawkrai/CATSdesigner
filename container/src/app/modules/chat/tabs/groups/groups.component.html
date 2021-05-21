@@ -1,0 +1,302 @@
+ <!-- Start Groups content -->
+ <div>
+   <div class="p-4">
+     <div class="user-chat-nav float-right">
+       <div ngbTooltip="Create group">
+         <!-- Button trigger modal -->
+         <button type="button" class="btn btn-link text-decoration-none text-muted font-size-18 py-0"
+           data-toggle="modal" data-target="#addgroup-exampleModal" (click)="openGroupModal(content)">
+           <i class="ri-group-line mr-1"></i>
+         </button>
+       </div>
+
+     </div>
+     <h4 class="mb-4">Группы</h4>
+
+     <!-- Start add group Modal -->
+     <ng-template #content let-modal>
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title font-size-16" id="addgroup-exampleModalLabel">
+             {{'chat.tabs.groups.modal.title'}}</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+             (click)="modal.dismiss('Cross click')">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body p-4">
+           <form>
+             <div class="form-group mb-4">
+               <label for="addgroupname-input">{{'chat.tabs.groups.modal.form.name.label'}}</label>
+               <input type="text" class="form-control" id="addgroupname-input"
+                 placeholder="{{'chat.tabs.groups.modal.form.name.placeholder'}}">
+             </div>
+             <div class="form-group mb-4">
+               <label>{{'chat.tabs.groups.modal.form.members.label'}}</label>
+               <div class="mb-3">
+                 <button class="btn btn-light btn-sm" type="button" data-toggle="collapse"
+                   (click)="isCollapsed = !isCollapsed" data-target="#groupmembercollapse" aria-expanded="false"
+                   aria-controls="groupmembercollapse">
+                   {{'chat.tabs.groups.modal.form.members.button.text'}}
+                 </button>
+               </div>
+
+               <div class="collapse" id="groupmembercollapse" [ngbCollapse]="isCollapsed">
+                 <div class="card border">
+                   <div class="card-header">
+                     <h5 class="font-size-15 mb-0">{{'chat.tabs.contacts.title'}}</h5>
+                   </div>
+                   <div class="card-body p-2">
+                     <perfect-scrollbar data-simplebar style="height: 150px;">
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.A.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck1" checked>
+                               <label class="custom-control-label"
+                                 for="memberCheck1">{{'chat.tabs.contacts.list.A.name'}}</label>
+                             </div>
+                           </li>
+
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck2">
+                               <label class="custom-control-label"
+                                 for="memberCheck2">{{'chat.tabs.contacts.list.A.name2'}}</label>
+                             </div>
+                           </li>
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.C.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck3">
+                               <label class="custom-control-label" for="memberCheck3">
+                                 {{'chat.tabs.contacts.list.C.name'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.D.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck4">
+                               <label class="custom-control-label" for="memberCheck4">
+                                 {{'chat.tabs.contacts.list.D.name'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.I.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck5">
+                               <label class="custom-control-label" for="memberCheck5">
+                                 {{'chat.tabs.contacts.list.I.name'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.J.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck6">
+                               <label class="custom-control-label"
+                                 for="memberCheck6">{{'chat.tabs.contacts.list.J.name'}}</label>
+                             </div>
+                           </li>
+
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck7">
+                               <label class="custom-control-label"
+                                 for="memberCheck7">{{'chat.tabs.contacts.list.J.name2'}}</label>
+                             </div>
+                           </li>
+
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck8">
+                               <label class="custom-control-label"
+                                 for="memberCheck8">{{'chat.tabs.contacts.list.J.name3'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.M.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck9">
+                               <label class="custom-control-label"
+                                 for="memberCheck9">{{'chat.tabs.contacts.list.M.name'}}</label>
+                             </div>
+                           </li>
+
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck10">
+                               <label class="custom-control-label"
+                                 for="memberCheck10">{{'chat.tabs.contacts.list.M.name2'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.P.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck11">
+                               <label class="custom-control-label" for="memberCheck11">
+                                 {{'chat.tabs.contacts.list.P.name'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.R.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck12">
+                               <label class="custom-control-label" for="memberCheck12">
+                                 {{'chat.tabs.contacts.list.R.name'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+
+                       <div>
+                         <div class="p-3 font-weight-bold text-primary">
+                           {{'chat.tabs.contacts.list.S.text'}}
+                         </div>
+
+                         <ul class="list-unstyled contact-list">
+                           <li>
+                             <div class="custom-control custom-checkbox">
+                               <input type="checkbox" class="custom-control-input" id="memberCheck13">
+                               <label class="custom-control-label"
+                                 for="memberCheck13">{{'chat.tabs.contacts.list.S.name'}}</label>
+                             </div>
+                           </li>
+
+                         </ul>
+                       </div>
+                     </perfect-scrollbar>
+                   </div>
+
+                 </div>
+               </div>
+             </div>
+             <div class="form-group">
+               <label
+                 for="addgroupdescription-input">{{'chat.tabs.groups.modal.form.description.label'}}</label>
+               <textarea class="form-control" id="addgroupdescription-input" rows="3"
+                 placeholder="{{'chat.tabs.groups.modal.form.description.placeholder'}}"></textarea>
+             </div>
+           </form>
+         </div>
+         <div class="modal-footer">
+           <button type="button" class="btn btn-link" data-dismiss="modal"
+             (click)="modal.dismiss('Cross click')">{{'chat.tabs.groups.modal.form.button.close'}}</button>
+           <button type="button"
+             class="btn btn-primary">{{'chat.tabs.groups.modal.form.button.create'}}</button>
+         </div>
+       </div>
+     </ng-template>
+     <!-- End add group Modal -->
+
+     <div class="search-box chat-search-box">
+       <div class="input-group bg-light  input-group-lg rounded-lg">
+         <div class="input-group-prepend">
+           <button class="btn btn-link text-decoration-none text-muted pr-1" type="button">
+             <i class="ri-search-line search-icon font-size-18"></i>
+           </button>
+         </div>
+         <input type="text" class="form-control bg-light"
+           placeholder="Название группы">
+       </div>
+     </div>
+     <!-- end search-box -->
+   </div>
+
+   <!-- Start chat-group-list -->
+   <perfect-scrollbar class="p-4 chat-message-list chat-group-list" style="height: 655px;" data-simplebar>
+
+     <ul class="list-unstyled chat-list">
+       <li *ngFor="let subject of groups">
+         <a (click)="showChat(subject.id)">
+           <div class="media align-items-center">
+             <div class="media-body overflow-hidden">
+               <h5 class="text-truncate font-size-14 mb-0">{{subject.name}}
+                 <span class="badge badge-soft-danger badge-pill float-right">{{subject.unread}}</span>
+               </h5>
+             </div>
+           </div>
+         </a>
+         <div *ngFor="let group of subject.groups">
+          <a (click)="showChat(group.id)">
+            <div class="media align-items-center">
+              <div class="media-body overflow-hidden">
+                <h5 class="text-truncate font-size-14 mb-0">{{group.name}}
+                  <span class="badge badge-soft-danger badge-pill float-right">{{group.unread}}</span>
+                </h5>
+              </div>
+            </div>
+          </a>
+          </div>
+       </li>
+     </ul>
+   </perfect-scrollbar>
+   <!-- End chat-group-list -->
+ </div>
+ <!-- End Groups content -->

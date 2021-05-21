@@ -30,6 +30,10 @@ const routes: Routes = [
     canActivate: [NoAuthGuard],
     children: [  
       {
+        path: 'chat',
+        loadChildren: () => import("./modules/chat/chat.module").then(m => m.ChatModule)
+      },
+      {
         path: '',
         loadChildren: () => import("./modules/main/main.module").then(m => m.MainModule)
       },    
