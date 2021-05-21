@@ -64,7 +64,7 @@ namespace LMPlatform.UI.Services.Schedule
 
             try
             {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ScheduleViewResultSingle
@@ -123,7 +123,7 @@ namespace LMPlatform.UI.Services.Schedule
 		{
             try
 			{
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ScheduleViewResultSingle
@@ -182,7 +182,7 @@ namespace LMPlatform.UI.Services.Schedule
         public ScheduleViewResultSingle SaveDatePractical(int id, int subjectId, int groupId, string date, string startTime, string endTime, string building, string audience, Note note)
         {
             try {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ScheduleViewResultSingle

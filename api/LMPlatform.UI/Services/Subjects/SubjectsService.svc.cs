@@ -39,7 +39,7 @@ namespace LMPlatform.UI.Services.Subjects
 
         public SubjectResult Update(SubjectViewData subject)
         {
-            var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subject.Id);
+            var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subject.Id);
             if (!isUserAssigned)
             {
                 return new SubjectResult
@@ -73,7 +73,7 @@ namespace LMPlatform.UI.Services.Subjects
         {
             return new UserAssignedViewData
             {
-                IsAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, int.Parse(subjectId))
+                IsAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, int.Parse(subjectId))
             };
         }
 
