@@ -98,5 +98,23 @@ namespace LMPlatform.UI.Services.Subjects
             }
 
         }
+
+        public SubjectsResult GetUserSubjects(string userId)
+        {
+            var subjects = SubjectManagementService.GetUserSubjectsV2(int.Parse(userId));
+            var subjectsResponse = new List<SubjectViewData>();
+            foreach(var subject in subjects)
+            {
+                var subjectViewData = new SubjectViewData(subject);
+                subjectViewData.Lector = new LectorViewData(SubjectManagementService.GetSubjectOwner(subject.Id));
+                subjectsResponse.Add(subjectViewData);
+            }
+            var result = new SubjectsResult
+            {
+                Subjects = subjectsResponse
+            };
+
+            return result;
+        }
     }
 }
