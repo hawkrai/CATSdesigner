@@ -54,6 +54,7 @@ export class ScheduleMainComponent implements OnInit {
   format = 'dd.MM.yyyy';
   localeD = 'en-US';
   teacher = 'Попова Ю.Б.';
+  isStudent: boolean;
 
   refresh: Subject<any> = new Subject();
 
@@ -79,6 +80,12 @@ export class ScheduleMainComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.changeDate();
     this.isLoadActive = false;
+
+    if (this.user.role === 'student') {
+      this.isStudent = false;
+    }
+    else this.isStudent = true;
+
   }
 
   // tslint:disable-next-line:typedef
