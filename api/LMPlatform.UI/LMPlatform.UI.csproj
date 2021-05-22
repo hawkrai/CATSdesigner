@@ -676,6 +676,10 @@
       <DependentUpon>SubjectsService.svc</DependentUpon>
     </Compile>
     <Compile Include="Services\Subjects\ISubjectsService.cs" />
+    <Compile Include="Services\TelegramBot\ITelegramBotService.cs" />
+    <Compile Include="Services\TelegramBot\TelegramBotService.svc.cs">
+      <DependentUpon>TelegramBotService.svc</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AccountViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\AccountViewModels\PersonalDataViewModel.cs" />
     <Compile Include="ViewModels\AccountViewModels\RegisterViewModel.cs" />
@@ -798,6 +802,7 @@
     <Content Include="Services\Schedule\ScheduleService.svc" />
     <Content Include="Services\Search\SearchService.svc" />
     <Content Include="Services\Subjects\SubjectsService.svc" />
+    <Content Include="Services\TelegramBot\TelegramBotService.svc" />
     <Content Include="Unity.Mvc4.README.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
