@@ -18,6 +18,7 @@ import { TranslatePipe } from '../pipe/translate.pipe';
 })
 
 export class ChangePersonalDataComponent implements OnInit {
+  MAX_IMAGE_LEN = 700000;
   isLoad = false;
   defaultAvatar = "/assets/images/account.png";
   startImgFileStr = "data:image/";
@@ -25,30 +26,38 @@ export class ChangePersonalDataComponent implements OnInit {
   currentUserId!: number;
   profileData!: ProfileData;
   dialogRef: MatDialogRef<any>;
+  textArea = document.getElementById('aboutInput');
 
   emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30})?$')]);
   phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})?$')]);
 
-  nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{3,30}$')])
+  nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
-  surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{3,30}$')])
+  surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
-  patronymicFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{3,30}$')])
+  patronymicFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
-    private profileService: ProfileService, private location: Location, public dialog: MatDialog, private snackBar: MatSnackBar, private translatePipe: TranslatePipe) { }
+    private profileService: ProfileService, private location: Location, public dialog: MatDialog,
+    private snackBar: MatSnackBar, private translatePipe: TranslatePipe) { }
 
   onFileSelected(event) {
     var file = event.target.files[0];
     var reader = new FileReader();
     var buffer = this;
+    
 
     reader.onloadend = function () {
       if (buffer.isGoodAvatarImage(reader.result.toString())) {
-        buffer.profileData.Avatar = reader.result.toString();
+        if (reader.result.toString().length < buffer.MAX_IMAGE_LEN) {
+          buffer.profileData.Avatar = reader.result.toString();
+        }
+        else {
+          buffer.addFlashMessage(buffer.translatePipe.transform('text.personalAccount.tooBigImage', "Размер изображения слишком велик!"));
+        }
       }
       else {
         buffer.addFlashMessage(buffer.translatePipe.transform('text.personalAccount.wrongImage', "Неверный формат изображения!"));
@@ -63,6 +72,10 @@ export class ChangePersonalDataComponent implements OnInit {
       return true;
     }
     return false
+  }
+
+  setDefaultAvatar(): void {
+    this.profileData.Avatar = null;
   }
 
   ngOnInit(): void {
@@ -109,6 +122,7 @@ export class ChangePersonalDataComponent implements OnInit {
     else {
       config.width = '40%';
       config.height = '100%';
+      config.panelClass = "app-password-dialog";
     }
     this.dialogRef = this.dialog.open(ChangePasswordDialog, config);
     this.dialogRef.afterClosed().subscribe(result => {
@@ -123,4 +137,9 @@ export class ChangePersonalDataComponent implements OnInit {
     });
   }
 
+  deleteEmptyRows() {
+    this.textArea.nodeValue.replace(/\n+/g, '\n')
+  }
+
 }
+

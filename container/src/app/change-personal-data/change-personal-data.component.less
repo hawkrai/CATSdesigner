@@ -8,7 +8,6 @@
   flex-direction: row;
 }
 
-
 .header {
   color: #3f51b5;
   font-family: Roboto, Helvetica Neue, sans-serif;
@@ -20,18 +19,22 @@
 
 
 
-button {
- // font-size: 2vw;
-  width: 100%;
-  border-radius: 5px;
-  color: #3f51b5;
-  background-color: white;
-  max-height: 42px;
-  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+  button {
+    // font-size: 2vw;
+    width: 100%;
+    border-radius: 5px;
+    color: #3f51b5;
+    background-color: white;
+    max-height: 42px;
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+  }
+
+
+.icon-close {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  width: 35%;
 }
-
-
-
 
 a {
   margin-top: 5px;
@@ -39,173 +42,208 @@ a {
   color: #3f51b5;
   cursor: pointer;
   text-decoration: underline;
-  float:right;
+  float: right;
 }
 
-
-@media (min-width:971px) {
-  .profile {
-    margin-top: 10px;
-    display: flex;
-    height: 85%;
-    position: relative;
-    z-index: 2;
-  }
-
-
-  .profile-card {
-    margin: 30px;
-    margin-top: 10px;
-    height: 90%;
-    /*  width: 100%;*/
-  }
-
-
-
-  .data-container {
-    overflow: auto;
-    padding: 15px;
-    margin: 20px;
-    margin-top: 10px;
-    width: 100%;
-    height: 90%;
-    min-width: 200px;
-  }
-
-  .input-full-width {
-    line-height: 3;
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .text-area-full-width {
-    line-height: 2;
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .avatar {
-    object-fit: cover;
-    height: 80%;
-  }
-
-  .avatarImg {
-    max-width: 400px;
-    min-width: 150px;
-    height: 100%;
-  }
-
-  .buttons-row {
-    margin-right: 20px;
-    margin-left: 30px;
-    margin-top: 1.3%;
-    display: flex;
-    height: 7%;
-    flex-direction: row;
-    justify-content: flex-end;
-  }
-
-  .extra-button {
-    margin-top: 2%;
-    height: 10%;
-  }
-
-  .edit-button {
-    float: right;
-    width: 15%;
-    color: white;
-    background-color: #3f51b5;
-  }
-
-  .cancel-button {
-    margin-right: 20px;
-    margin-left: 500px;
-    width: 15%;
-    color: black;
-  }
-
-  .data-header {
-    margin: 0px;
-    margin-bottom: 10px;
-    padding: 0px;
-    background-color: cornflowerblue;
-  }
-
-
+textarea.mat-input-element {
+  resize: none;
+  overflow: auto;
 }
 
-@media (max-width:970px) {
-  .profile {
-    margin-top: 10px;
-    display: grid;
-    position: relative;
-    z-index: 2;
-  }
+  @media (min-width:971px) {
+    .profile {
+      margin-top: 10px;
+      display: flex;
+      height: 85%;
+      position: relative;
+      z-index: 2;
+    }
 
 
-  .profile-card {
-    margin: 20px;
-    margin-top: 10px;
+    .profile-card {
+      margin: 30px;
+      margin-bottom: 20px;
+      margin-top: 10px;
+      max-height: 59vh;
+      /*    height: 90%;*/
+      /*  width: 100%;*/
+    }
+
+
+
+    .data-container {
+      overflow: auto;
+      margin: 20px;
+      margin-top: 10px;
+      width: 100%;
+      max-height: 59vh;
+      min-width: 200px;
+    }
+
+    .input-full-width {
+      line-height: 4.25;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .input-full-width-short {
+      line-height: 3;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    
+
+    .text-area-full-width {
+      line-height: 2.7vh;
+      width: 100%;
+      border-collapse: collapse;
+      resize: none;
+    }
+
+    .avatar {
+      object-fit: cover;
+      height: 80%;
+    }
+
+    .avatarImg {
+      width: 48vh;
+      height: 48vh;
+    }
+
+    .buttons-row {
+      margin-right: 20px;
+      margin-left: 30px;
+      margin-top: 1.3%;
+      display: flex;
+      height: 7%;
+      flex-direction: row;
+      justify-content: flex-end;
+      min-width: 974.4px;
+    }
+
+    .profile-buttons-row {
+      margin-top: 2%;
+      display: flex;
+      height: 15%;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
+    .extra-button {
+      margin: 2px;
+    }
+
+    .edit-button {
+      float: right;
+      width: 15%;
+      color: white;
+      background-color: #3f51b5;
+    }
+
+    .cancel-button {
+      margin-right: 20px;
+      margin-left: 500px;
+      width: 15%;
+      color: black;
+    }
+
+    .data-header {
+      margin: 0px;
+      margin-bottom: 10px;
+      padding: 0px;
+      background-color: cornflowerblue;
+    }
   }
 
-  .data-container {
-    overflow: auto;
-    margin: 20px;
-    margin-top: 10px;
-  }
+  @media (max-width:970px) {
+    .profile {
+      margin-top: 10px;
+      display: grid;
+      position: relative;
+      z-index: 2;
+    }
 
-  .input-full-width {
-    width: 100%;
-    border-collapse: collapse;
-  }
 
-  .text-area-full-width {
-    width: 100%;
-    border-collapse: collapse;
-  }
+    .profile-card {
+      margin: 20px;
+      margin-top: 10px;
+    }
 
-  .avatar {
-    margin-bottom:3%;
-  }
+    .data-container {
+      overflow: auto;
+      margin: 20px;
+      margin-top: 10px;
+    }
 
-  .avatarImg {
-    max-width: 100%;
-    max-height: 40vh;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
+    .input-full-width {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-  .buttons-row {
-    margin-right: 20px;
-    margin-left: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-  }
+    .input-full-width-short {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-  .extra-button {
-    height: 7vh;
-  }
 
-  .edit-button {
-    float: right;
-    color: white;
-    background-color: #3f51b5;
-  }
+    .text-area-full-width {
+      width: 100%;
+      border-collapse: collapse;
+      line-height: 2.7vh;
+      resize: none;
+    }
 
-  .cancel-button {
-    margin-right: 20px;
-    color: black;
-  }
+    .avatar {
+      margin-bottom: 3%;
+    }
 
-  .data-header {
-    margin: 0px;
-    margin-bottom: 10px;
-    padding: 0px;
-    background-color: cornflowerblue;
+    .avatarImg {
+      max-width: 100%;
+      max-height: 37vh;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .buttons-row {
+      margin-right: 20px;
+      margin-left: 20px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
+    .profile-buttons-row {
+      margin-top: 2%;
+      display: flex;
+      height: 6vh;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
+    .extra-button {
+    }
+
+
+    .edit-button {
+      float: right;
+      color: white;
+      background-color: #3f51b5;
+    }
+
+    .cancel-button {
+      margin-right: 20px;
+      color: black;
+    }
+
+    .data-header {
+      margin: 0px;
+      margin-bottom: 10px;
+      padding: 0px;
+      background-color: cornflowerblue;
+    }
   }
- }
 
 
 

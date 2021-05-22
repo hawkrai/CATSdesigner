@@ -17,17 +17,17 @@
   <div class="flex-spacer"></div>
 
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
-<!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" (input)="viewSearchResults()"  maxlength="30">-->
-    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" maxlength="30">
+    <!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">-->
+    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" maxlength="30">
     <mat-selection-list [multiple]="false">
-      <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['profile',result.Id]">Студент  |
-        {{result.FullName}}
+      <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+        {{'student' | translate:'Студент'}}  | {{result.FullName}}
       </mat-list-option>
-      <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['profile',result.Id]">Преподаватель |  
-        {{result.FullName}}
+      <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+        {{'lecturer' | translate:'Преподаватель'}} | {{result.FullName}}
       </mat-list-option>
-      <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result" (click) = "this.cleanSearchResults()" [routerLink]="['group',result.Name]">Группа  |
-        {{result.Name}}
+      <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
+        {{'group' | translate:'Группа'}} | {{result.Name}}
       </mat-list-option>
     </mat-selection-list>
     <mat-icon matSuffix>search</mat-icon>
@@ -88,20 +88,17 @@
       <img src="/assets/images/logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted logo">
     </a>
     <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
-      <!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" (input)="viewSearchResults()"  maxlength="30">-->
-      <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="Поиск" maxlength="30">
+      <!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">-->
+      <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" maxlength="30">
       <mat-selection-list [multiple]="false">
         <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
-          Студент  |
-          {{result.FullName}}
+          {{'student' | translate:'Студент'}}  | {{result.FullName}}
         </mat-list-option>
         <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
-          Преподаватель |
-          {{result.FullName}}
+          {{'lecturer' | translate:'Преподаватель'}} | {{result.FullName}}
         </mat-list-option>
         <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
-          Группа  |
-          {{result.Name}}
+          {{'group' | translate:'Группа'}} |  {{result.Name}}
         </mat-list-option>
       </mat-selection-list>
       <mat-icon matSuffix>search</mat-icon>
