@@ -8,13 +8,13 @@
               {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
             </mat-icon>
           </button>
-        </div>
-        <div class="right-half">
-          <button *ngIf="!model.isReadOnly" (click)="openTestAddingModal($event)" mat-icon-button>
-            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.test.add.test' | translate: 'Добавить тест'">
+          <button *ngIf="selfStudyTests.length" (click)="openTestAddingModal($event)" mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.test.pass.test' | translate: 'Пройти тест'">
               fact_check
             </mat-icon>
           </button>
+        </div>
+        <div class="right-half">
           <button *ngIf="!model.isReadOnly" (click)="saveDocument($event)" mat-icon-button [disabled]="!isEditorModelChanged">
             <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.save' | translate: 'Сохранить'">
               save
@@ -85,7 +85,7 @@
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="items">
     <label class="select-test-label">{{'text.editor.selecttest' | translate: 'Выберите тест:'}}</label>
-    <button *ngFor="let item of selfStudyTests" mat-menu-item (click)="appendTestButtonToCurrentTextPosition(item)">
+    <button *ngFor="let item of selfStudyTests" mat-menu-item (click)="openTestModal(item.Id)">
       {{item.Title}}
     </button>
   </ng-template>

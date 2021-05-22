@@ -47,9 +47,20 @@ export class EditorComponent implements OnInit {
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
         '|', 'indent', 'outdent',
-        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'exportPdf', // 'ckfinder',
+        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'exportPdf', 'htmlEmbed', // 'ckfinder',
         '|', 'MathType',
         '|', 'undo', 'redo' ],
+      htmlEmbed: {
+        showPreviews: true,
+            sanitizeHtml: ( inputHtml ) => {
+              const outputHtml = inputHtml;
+
+                return {
+                    html: outputHtml,
+                    hasChanged: true
+            }
+          }
+      }
     }
   }
 
@@ -285,7 +296,11 @@ export class EditorComponent implements OnInit {
     });
   }
 
+
+  // tests
+
   updateSelfStudyTests() {
+    this.selfStudyTests = [];
     return new Promise(resolve => {
       this._testService.getAllTestBySubjectId(this.SubjectId.toString()).subscribe(response => {
         this.selfStudyTests = response.filter(test => test.ForSelfStudy);
@@ -294,7 +309,12 @@ export class EditorComponent implements OnInit {
   }
 
   appendTestButtonToCurrentTextPosition(test) {
+    this.editor.execute("updateHtmlEmbed", "<button (click)='openTest()'>Test</button><br><label class='select-test-label'>Else test<label>");
     let testPrivate = test;
+  }
+
+  openTest() {
+    let test = 0;
   }
 
   openTestAddingModal(event) {
