@@ -1,9 +1,9 @@
-<div class="content subjects-component">
+<div class="content subjects-component" *var="subjects$ | async as subjects">
   <div class="subjects-component__actions">
-    <button mat-raised-button color="primary" (click)="constructorSubject()">{{'subject.add' | translate:'Добавить предмет'}}</button>
+    <button mat-raised-button color="primary" (click)="constructorSubject(subjects)">{{'subject.add' | translate:'Добавить предмет'}}</button>
   </div>
   <table mat-table
-         [dataSource]="subjects$ | async | orderBy:'Name'"
+         [dataSource]="subjects | orderBy:'Name'"
          class="mat-elevation-z14 example-list">
 
     <ng-container matColumnDef="name">
@@ -43,7 +43,7 @@
         </button>
         <button mat-icon-button color="primary"
                 [matTooltip]="'subject.edit' | translate:'Редактировать предмет'"
-                (click)="constructorSubject(element.SubjectId)"
+                (click)="constructorSubject(subjects, element.SubjectId)"
         >
           <mat-icon>edit</mat-icon>
         </button>

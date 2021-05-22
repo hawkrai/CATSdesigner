@@ -41,9 +41,10 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   }
 
-  constructorSubject(subjectId?) {
+  constructorSubject(subjects: Subject[], subjectId?: number) {
     const dialogData: DialogData = {
-      model: { subjectId }
+      model: { subjectId },
+      body: subjects
     };
     const dialogRef = this.dialogService.openDialog(SubjectManagementComponent, dialogData);
     this.subs.add(
