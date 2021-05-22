@@ -7,6 +7,7 @@ import {Subject} from "rxjs";
 import { Lecturer, Student, Group } from '../../core/models/searchResults/search-results';
 import { SearchService } from '../../core/services/searchResults/search.service';
 import { ProfileService } from '../../core/services/searchResults/profile.service';
+import { MenuService } from "src/app/core/services/menu.service";
 
 
 interface Locale {
@@ -44,7 +45,13 @@ export class NavComponent implements OnInit, OnDestroy {
               private autService: AuthenticationService,
               private searchService: SearchService,
               private profileService: ProfileService,
+              private menuService: MenuService
               ) {
+  }
+
+  get logoWidth(): string {
+    const width = this.menuService.getSideNavWidth();
+    return width ? `${width - 16}px` : 'auto';
   }
 
   public ngOnInit(): void {

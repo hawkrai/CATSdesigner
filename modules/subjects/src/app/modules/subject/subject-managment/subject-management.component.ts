@@ -14,7 +14,7 @@ interface Group {
 };
 
 @Component({
-  selector: 'app-news-popover',
+  selector: 'app-subject-management',
   templateUrl: './subject-management.component.html',
   styleUrls: ['./subject-management.component.less']
 })

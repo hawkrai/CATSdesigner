@@ -26,7 +26,7 @@ export class ProjectsComponent implements OnInit {
   private COUNT = 1000000;
   private PAGE = 1;
 
-  private groups: CoreGroup[];
+  private groups: CoreGroup[] = [];
   private projects: Project[];
   private projectsSubscription: Subscription;
 

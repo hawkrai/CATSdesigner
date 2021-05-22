@@ -50,7 +50,6 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked, OnDestroy
         subjectId = + urls[urls.length - 1].split("#")[0];           
         this.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
         if(this.coreService.selectedSubject) {
-          console.log(subjectId);
           this.subjectId = subjectId;
           this.setupLocalInfo(this.coreService.selectedSubject); 
         }

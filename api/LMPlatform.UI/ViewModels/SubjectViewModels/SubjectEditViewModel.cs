@@ -239,7 +239,8 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             subject.SubjectLecturers.Add(new SubjectLecturer
             {
                 SubjectId = SubjectId,
-                LecturerId = userId
+                LecturerId = userId,
+                Owner = SubjectId == 0 ? userId : SubjectManagementService.GetSubjectOwner(SubjectId)?.Id ?? userId
             });
 
 			var selectedGroupdsOld = new List<SubjectGroup>();

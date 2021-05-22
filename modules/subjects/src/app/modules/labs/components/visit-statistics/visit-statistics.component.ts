@@ -17,6 +17,7 @@ import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
 
 
 @Component({
@@ -116,4 +117,9 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
     });
     return visitsModel
   }
+
+  help: Help = {
+    message: 'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.',
+    action: 'Понятно'
+  };
 }

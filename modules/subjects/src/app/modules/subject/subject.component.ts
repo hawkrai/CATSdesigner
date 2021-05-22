@@ -1,5 +1,5 @@
 import { DialogService } from 'src/app/services/dialog.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 
@@ -14,6 +14,8 @@ import {DialogData} from '../../models/dialog-data.model';
 import {SubSink} from 'subsink';
 import * as catsActions from '../../store/actions/cats.actions';
 import { Message } from 'src/app/models/message.model';
+import { Group } from 'src/app/models/group.model';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-subject',
@@ -23,11 +25,12 @@ import { Message } from 'src/app/models/message.model';
 export class SubjectComponent implements OnInit, OnDestroy {
   subjects$: Observable<Subject[]>;
   private subs = new SubSink();
-  public displayedColumns = ['name', 'shortName', 'actions'];
+  public displayedColumns = ['name', 'shortName', 'groups', 'students', 'actions'];
 
   constructor(
     private store: Store<IAppState>,
-    private dialogService: DialogService) { }
+    private dialogService: DialogService,
+    private translate: TranslatePipe) { }
   ngOnDestroy(): void {
     this.store.dispatch(subjectActions.resetSubjects());
   }
@@ -35,6 +38,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.dispatch(subjectActions.loadSubjects());
     this.subjects$ = this.store.select(subjectSelectors.getSubjects);
+
   }
 
   constructorSubject(subjectId?) {
@@ -52,7 +56,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   lector(subjectId: string, subjectName: string) {
     const dialogData: DialogData = {
-      title: 'Присоединение преподавателя к предмету',
+      title: this.translate.transform('text.subjects.lector.joining', 'Присоединение преподавателя к предмету'),
       body: { subjectName },
       model: { subjectId }
     };
@@ -61,9 +65,9 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   deleteSubject(subject : Subject) {
     const dialogData: DialogData = {
-      title: 'Удаление предмета',
-      body: `предмет "${subject.DisplayName}"`,
-      buttonText: 'Удалить'
+      title: this.translate.transform('subject.deleting', 'Удаление предмета'),
+      body: `${this.translate.transform('subject.singular', 'предмет').toLowerCase()} "${subject.DisplayName}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 
@@ -76,8 +80,13 @@ export class SubjectComponent implements OnInit, OnDestroy {
     );
   }
 
-
   navigateToSubject(subjectId: number): void {
     this.store.dispatch(catsActions.sendMessage({ message: new Message('SubjectId', subjectId.toString())}));
   }
+
+
+  getSubjectGroupsTooltip(groups: Group[]): string {
+    return groups.map(x => x.GroupName).join('\n');
+  }
+
 }

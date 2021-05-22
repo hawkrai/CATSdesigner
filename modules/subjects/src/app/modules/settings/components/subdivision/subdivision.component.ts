@@ -7,6 +7,7 @@ import {getSubjectId} from '../../../../store/selectors/subject.selector';
 import {IAppState} from '../../../../store/state/app.state';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {MatSelectionList} from '@angular/material/list';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-subdivision',
@@ -112,4 +113,8 @@ export class SubdivisionComponent implements OnInit {
     })
   }
 
+  help: Help = {
+    message: 'Выберите группу, отметьте нужных студентов и выберите подгруппу, в которую необходимо их отнести',
+    action: 'Понятно'
+  };
 }

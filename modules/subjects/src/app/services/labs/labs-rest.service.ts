@@ -115,14 +115,13 @@ export class LabsRestService {
   }
 
   public checkPlagiarism(subjectId: number, userFileId: number ): Observable<CorrectDoc[]> {
-    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', { subjectId, userFileId }).pipe(
+    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', { userFileId, subjectId, isCp: false }).pipe(
       map(res => res['DataD'])
     );
   }
 
-  public checkPlagiarismSubjects(body: {subjectId: number, threshold: string, type: string}): Observable<PlagiarismResultSubject[]> {
-   console.log(body)
-    return this.http.post('api/Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
+  public checkPlagiarismSubjects(body: { subjectId: number, type: string, threshold: string, isCp?: boolean }): Observable<PlagiarismResultSubject[]> {
+    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
       map(res => res['DataD'])
     );
   }
