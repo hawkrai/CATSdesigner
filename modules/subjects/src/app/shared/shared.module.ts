@@ -29,6 +29,7 @@ import { PopoverDialogComponent } from './popover-dialog/popover-dialog.componen
 import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
 import { FileComponent } from './components/file/file.component';
 import { HelpComponent } from './components/help/help.component';
+import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { HelpComponent } from './components/help/help.component';
     PopoverDialogComponent,
     TranslatePipe,
     FileComponent,
-    HelpComponent
+    HelpComponent,
+    HelpPopoverComponent
     ],
   imports: [
     CommonModule,
@@ -70,7 +72,8 @@ import { HelpComponent } from './components/help/help.component';
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
-    MarkPopoverComponent
+    MarkPopoverComponent,
+    HelpPopoverComponent
   ],
   exports: [
     FilterPipe,

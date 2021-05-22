@@ -5,13 +5,14 @@ import {Lesson} from '../model/lesson.model';
 import {LessonService} from '../service/lesson.service';
 import {Note} from '../model/note.model';
 import {NoteService} from '../service/note.service';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {Message} from '../../../../../container/src/app/core/models/message';
 import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.component';
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 import {DatePipe} from '@angular/common';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
+import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component';
 
 
 const colors: any = {
@@ -59,6 +60,9 @@ export class ScheduleMainComponent implements OnInit {
   events: CalendarEvent[] = [];
 
   activeDayIsOpen = true;
+
+  message = 'Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите 2 раза на нужную ячейку. Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, Лекции в определенном предмете.';
+  action = 'Понятно';
 
   public isMobile(): boolean {
     return window.matchMedia('screen and (max-width: 550px)').matches
@@ -367,5 +371,24 @@ export class ScheduleMainComponent implements OnInit {
       }
     );
   }
+
+  showHelp(): void{
+
+    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent, 
+      {
+      width: '370px',
+      height: '185px',
+      data: {message: this.message, action: this.action},
+      position: {top: '2vh', left: '23vw'},
+      disableClose: true,
+      hasBackdrop: true,
+      backdropClass: 'backdrop-help'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+
+}
+
 }
 

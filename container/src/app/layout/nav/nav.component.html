@@ -68,7 +68,7 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item>
+    <button mat-menu-item (click)="routeToAboutPopover()">
       <mat-icon>info</mat-icon>
       <span>О системе</span>
     </button>
@@ -163,7 +163,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item class="dropdown">
+        <button mat-menu-item class="dropdown" (click)="routeToAboutPopover()">
           <mat-icon> info</mat-icon>
           <span> О системе</span>
         </button>

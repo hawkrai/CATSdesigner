@@ -144,3 +144,7 @@
 .remove-border-bottom .mat-tab-header {
   border-bottom: none;
 }
+
+.backdrop-help {
+    background-color: transparent;
+}
