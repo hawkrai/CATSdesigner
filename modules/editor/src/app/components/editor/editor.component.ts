@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { IDocumentTree } from './../../models/DocumentTree';
 import { TreeComponent } from '../tree/tree.component';
 import { DocumentService } from './../../services/document.service';
+import { TestService } from './../../services/tests.service';
 import { DocumentPreview } from './../../models/DocumentPreview';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
@@ -18,6 +19,8 @@ import * as san from './../../helpers/string-helper'
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 import 'ckeditor5-custom-build/build/translations/ru';
 import 'ckeditor5-custom-build/build/translations/en-gb';
+import { Test } from 'src/app/models/tests/Test';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-editor',
@@ -28,6 +31,7 @@ import 'ckeditor5-custom-build/build/translations/en-gb';
 export class EditorComponent implements OnInit {
 
   @ViewChild(TreeComponent) treeChild : TreeComponent;
+  @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger;
 
   // text editor & config
   editor = Editor;
@@ -58,6 +62,7 @@ export class EditorComponent implements OnInit {
   isReadOnly: Boolean;
 
   // tree
+  showSpinner: Boolean;
   treeControl = new NestedTreeControl<IDocumentTree>(node => node.Children);
   dataSource = new MatTreeNestedDataSource<IDocumentTree>();
   linearTreeList = new Array<IDocumentTree>();
@@ -67,19 +72,26 @@ export class EditorComponent implements OnInit {
   currentNodeId: Number;
   currentDocument: DocumentPreview;
 
+  // tests
+  selfStudyTests: Test[];
+  menuTopLeftPosition =  {x: '0', y: '0'}
+
   constructor(private _bookService: DocumentService,
+    private _testService: TestService,
     public translatePipe: TranslatePipe,
     public dialog: MatDialog) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     let currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
     let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
     this.SubjectId = currentSubject ? currentSubject.id : 1;
     this.UserId = currentUser ? currentUser.id : 1;
     this.isReadOnly = currentUser ? currentUser.role != "lector" : environment.production;
+    this.showSpinner = true;
     this.reloadTree();
     this.configEditor();
+    await this.updateSelfStudyTests();
   }
 
   configEditor() {
@@ -96,10 +108,15 @@ export class EditorComponent implements OnInit {
 
   //TREE
   reloadTree() {
+    this.treeControl.dataNodes = [];
+    this.dataSource.data = [];
+    this.showSpinner = true;
+
     this._bookService.getDocumentsBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
       this.documents = data;
     });
     this._bookService.getDocumentsTreeBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
+      this.showSpinner = false;
       this.dataSource.data = data;
       this.treeControl.dataNodes = this.dataSource.data;
       this.updateLinearTreeNodesList();
@@ -265,6 +282,32 @@ export class EditorComponent implements OnInit {
     node.IsLocked = !node.IsLocked;
     this._bookService.saveDocument(node).subscribe(res => {
       this.reloadTree();
-    });;
+    });
+  }
+
+  updateSelfStudyTests() {
+    return new Promise(resolve => {
+      this._testService.getAllTestBySubjectId(this.SubjectId.toString()).subscribe(response => {
+        this.selfStudyTests = response.filter(test => test.ForSelfStudy);
+      });
+    });
+  }
+
+  appendTestButtonToCurrentTextPosition(test) {
+    let testPrivate = test;
+  }
+
+  openTestAddingModal(event) {
+    event.preventDefault();
+
+    if(this.isReadOnly) return;
+
+    // we record the mouse position in our object
+    this.menuTopLeftPosition.x = event.clientX + 'px';
+    this.menuTopLeftPosition.y = event.clientY + 'px';
+
+    this.matMenuTrigger.menuData = {items: this.selfStudyTests};
+
+    this.matMenuTrigger.openMenu();
   }
 }
