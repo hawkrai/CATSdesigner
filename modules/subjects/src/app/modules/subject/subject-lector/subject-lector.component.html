@@ -30,7 +30,9 @@
             <td class="mdc-data-table__cell">{{ joinedLector.FullName }}</td>
             <td class="mdc-data-table__cell subject-lector__table-action">
               <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lector.disjoin' | translate: 'Открепить преподавателя'" (click)="deletePopover(joinedLector)">
-                <mat-icon>close</mat-icon>
+                <span class="material-icons">
+                  keyboard_tab
+                  </span>
               </button>
             </td>
           </tr>
