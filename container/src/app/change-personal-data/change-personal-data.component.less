@@ -36,14 +36,7 @@
   width: 35%;
 }
 
-a {
-  margin-top: 5px;
-  font-size: 16px;
-  color: #3f51b5;
-  cursor: pointer;
-  text-decoration: underline;
-  float: right;
-}
+
 
 textarea.mat-input-element {
   resize: none;
@@ -59,6 +52,16 @@ textarea.mat-input-element {
       z-index: 2;
     }
 
+    a {
+      position: absolute;
+      bottom: 5%;
+      right: 5%;
+      font-size: 16px;
+      color: #3f51b5;
+      cursor: pointer;
+      text-decoration: underline;
+      float: right;
+    }
 
     .profile-card {
       margin: 30px;
@@ -81,7 +84,7 @@ textarea.mat-input-element {
     }
 
     .input-full-width {
-      line-height: 4.25;
+      line-height: 2.7;
       width: 100%;
       border-collapse: collapse;
     }
@@ -109,6 +112,7 @@ textarea.mat-input-element {
     .avatarImg {
       width: 48vh;
       height: 48vh;
+      max-height:100%;
     }
 
     .buttons-row {
@@ -123,7 +127,7 @@ textarea.mat-input-element {
     }
 
     .profile-buttons-row {
-      margin-top: 2%;
+      align-items:center;
       display: flex;
       height: 15%;
       flex-direction: row;
@@ -157,6 +161,17 @@ textarea.mat-input-element {
   }
 
   @media (max-width:970px) {
+
+
+    a {
+      margin-top: 5px;
+      font-size: 16px;
+      color: #3f51b5;
+      cursor: pointer;
+      text-decoration: underline;
+      float: right;
+    }
+
     .profile {
       margin-top: 10px;
       display: grid;
@@ -215,7 +230,7 @@ textarea.mat-input-element {
     }
 
     .profile-buttons-row {
-      margin-top: 2%;
+      align-items: center;
       display: flex;
       height: 6vh;
       flex-direction: row;

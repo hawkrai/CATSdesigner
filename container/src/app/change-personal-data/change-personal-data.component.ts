@@ -8,8 +8,8 @@ import { PersonalDataService } from '../core/services/personal-data.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
 import { Validators, FormControl, ValidationErrors } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslatePipe } from '../pipe/translate.pipe';
+import { AppToastrService } from '../core/services/toastr.service';
 
 @Component({
   selector: 'app-change-personal-data',
@@ -42,7 +42,7 @@ export class ChangePersonalDataComponent implements OnInit {
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
     private profileService: ProfileService, private location: Location, public dialog: MatDialog,
-    private snackBar: MatSnackBar, private translatePipe: TranslatePipe) { }
+    private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
 
   onFileSelected(event) {
     var file = event.target.files[0];
@@ -56,11 +56,11 @@ export class ChangePersonalDataComponent implements OnInit {
           buffer.profileData.Avatar = reader.result.toString();
         }
         else {
-          buffer.addFlashMessage(buffer.translatePipe.transform('text.personalAccount.tooBigImage', "Размер изображения слишком велик!"));
+          buffer.toastr.addWarningFlashMessage(buffer.translatePipe.transform('text.personalAccount.tooBigImage', "Размер изображения слишком велик!"));
         }
       }
       else {
-        buffer.addFlashMessage(buffer.translatePipe.transform('text.personalAccount.wrongImage', "Неверный формат изображения!"));
+        buffer.toastr.addWarningFlashMessage(buffer.translatePipe.transform('text.personalAccount.wrongImage', "Неверный формат изображения!"));
       }
     };
 
@@ -99,17 +99,17 @@ export class ChangePersonalDataComponent implements OnInit {
       (!this.phoneFormControl.invalid) && (!this.emailFormControl.invalid)) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
-            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.changesSaved', "Изменения успешно сохранены =)"));
+            this.toastr.addSuccessFlashMessage(this.translatePipe.transform('text.personalAccount.changesSaved', "Изменения успешно сохранены!"));
           }
 
           else {
-            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.changesNotSaved', "Изменения не были сохранены =("));
+            this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.personalAccount.changesNotSaved', "Изменения не были сохранены!"));
           }
         });
     }
 
     else {
-      this.addFlashMessage(this.translatePipe.transform('text.personalAccount.wrongData', "Некоторые поля не соответствуют формату!"), 5000);
+      this.toastr.addWarningFlashMessage(this.translatePipe.transform('text.personalAccount.wrongData', "Некоторые поля не соответствуют формату!"));
     }
   } 
 
@@ -131,11 +131,7 @@ export class ChangePersonalDataComponent implements OnInit {
   }
 
 
-  addFlashMessage(msg: string, time = 2000) {
-    this.snackBar.open(msg, null, {
-      duration: time
-    });
-  }
+
 
   deleteEmptyRows() {
     this.textArea.nodeValue.replace(/\n+/g, '\n')
