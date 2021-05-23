@@ -3,7 +3,6 @@ import {MatOptionSelectionChange} from '@angular/material';
 import {DiplomUser} from './models/diplom-user.model';
 import {DiplomUserService} from './services/diplom-user.service';
 import {GroupService} from './services/group.service';
-import {ProjectGroupService} from './services/project-group.service';
 import { CoreGroup } from './models/core-group.model';
 
 @Component({
@@ -20,7 +19,6 @@ export class AppComponent implements OnInit {
   private diplomUser: DiplomUser;
 
   constructor(private diplomUserService: DiplomUserService,
-              private projectGroupService: ProjectGroupService,
               private groupService: GroupService) {
   }
 

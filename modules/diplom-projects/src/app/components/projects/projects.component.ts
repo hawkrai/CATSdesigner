@@ -28,7 +28,7 @@ export class ProjectsComponent implements OnInit {
   private projects: Project[];
   private projectsSubscription: Subscription;
   private projectGroups: String[];
-  private filteredProjects: Project[];
+  private filteredProjects: Project[] = [];
   public isLecturer = false;
 
   private searchString = '';
