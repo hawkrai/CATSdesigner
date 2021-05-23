@@ -258,6 +258,8 @@
     <Compile Include="Models\ProfileCalendarModel.cs" />
     <Compile Include="Models\ScheduleModel.cs" />
     <Compile Include="Models\StudentJobProtection.cs" />
+    <Compile Include="NewsManagement\INewsManagementService.cs" />
+    <Compile Include="NewsManagement\NewsManagementService.cs" />
     <Compile Include="NoteManagement\INoteManagementService.cs" />
     <Compile Include="NoteManagement\NoteManagementService.cs" />
     <Compile Include="PracticalManagement\IPracticalManagementService.cs" />

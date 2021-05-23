@@ -30,6 +30,8 @@ import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.p
 import { FileComponent } from './components/file/file.component';
 import { HelpComponent } from './components/help/help.component';
 import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
+import { SubjectNameFreeDirective } from './validators/subject-name-free.validator';
+import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { HelpPopoverComponent } from './components/help/help-popover/help-popove
     TranslatePipe,
     FileComponent,
     HelpComponent,
-    HelpPopoverComponent
+    HelpPopoverComponent,
+    SubjectNameFreeDirective,
+    SubjectAbbreviationFreeDirective
     ],
   imports: [
     CommonModule,
@@ -95,7 +99,9 @@ import { HelpPopoverComponent } from './components/help/help-popover/help-popove
     PopoverDialogComponent,
     TranslatePipe,
     FileComponent,
-    HelpComponent
+    HelpComponent,
+    SubjectNameFreeDirective,
+    SubjectAbbreviationFreeDirective
   ],
   providers: [TranslatePipe]
 })

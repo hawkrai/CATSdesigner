@@ -26,6 +26,7 @@ using Application.Infrastructure.NoteManagement;
 using Application.Infrastructure.LabsManagement;
 using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.ElasticManagement;
+using Application.Infrastructure.NewsManagement;
 
 namespace Application.Infrastructure
 {
@@ -70,6 +71,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<ILabsManagementService, LabsManagementService>();
             containerWrapper.Register<IPracticalManagementService, PracticalManagementService>();
             containerWrapper.Register<IElasticManagementService, ElasticManagementService>();
+            containerWrapper.Register<INewsManagementService, NewsManagementService>();
             return containerWrapper;
         }
     }

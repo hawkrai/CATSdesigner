@@ -4,7 +4,7 @@
       {{ data.model && data.model.subjectId ? ('subject.creation' | translate:'Создание предмета') : ('subject.editing' | translate:'Редактирование предмета') }}
     </ng-container>
     <ng-container body>
-      <form class="example-form" #formElement>
+      <form class="example-form" #formElement="ngForm">
         <mat-form-field class="example-full-width">
           <mat-label>{{'subject.name' | translate:'Название предмета'}}</mat-label>
           <input
@@ -12,9 +12,16 @@
             name="name"
             maxlength="256"
             matInput
+            [subjectNameFree]="data.body"
+            #name="ngModel"
+            [subjectId]="subject.SubjectId"
             [(ngModel)]="subject.DisplayName"
           />
         </mat-form-field>
+        <mat-error *ngIf="name.errors?.subjectNameFree && (formElement.touched || formElement.dirty)">
+          Предмет с таким названием уже существует
+        </mat-error>
+
         <mat-form-field class="example-full-width">
           <mat-label>{{'subject.abbreviation' | translate:'Аббревиатура'}}</mat-label>
           <input
@@ -22,9 +29,15 @@
             maxlength="10"
             name="abbreviation"
             matInput
+            #shortName="ngModel"
+            [subjectAbbreviationFree]="data.body"
             [(ngModel)]="subject.ShortName"
+            [subjectId]="subject.SubjectId"
           />
         </mat-form-field>
+        <mat-error *ngIf="shortName.errors?.subjectAbbreviationFree && (formElement.touched || formElement.dirty)">
+          Предмет с такой аббревиатурой уже существует
+        </mat-error>
       </form>
   
       <h3 mat-dialog-title class="mat-typography title"></h3>
@@ -83,7 +96,7 @@
       mat-raised-button
       color="primary"
       (click)="save()"
-      [disabled]="!formElement.checkValidity()"
+      [disabled]="!formElement.valid"
     >
       {{'button.save' | translate:'Сохранить'}}
     </button>
