@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Question} from "../models/tests/Question";
 import {Test} from "../models/tests/Test";
+import {TestQuestion} from "../models/tests/TestQuestion";
 
 
 @Injectable({
@@ -17,6 +18,15 @@ export class TestService {
     return this.http.get<Test[]>("/Tests/GetTests?subjectId=" + subjectId);
   }
 
+  getAllTestLiteBySubjectId(subjectId: string): Observable<Test[]> {
+    return this.http.get<Test[]>("/Tests/GetTestsLite?subjectId=" + subjectId);
+  }
+
+  getPredTest(): Observable<number> {
+    const subject = JSON.parse(localStorage.getItem("currentSubject"));
+    return this.http.get<number>("/Tests/GetEUMKPredTestIdForSubject?subjectId=" + subject.id);
+  }
+
   getQuestionsByTest(testId: string): Observable<Question[]> {
     return this.http.get<Question[]>("/Tests/GetQuestions?testId=" + testId);
   }
@@ -29,4 +39,17 @@ export class TestService {
     return this.http.get<Test>("/Tests/GetTest?id=" + id);
   }
 
+  getNextQuestion(testId: string, questionNumber: string, excludeCorrectnessIndicator = true): Observable<TestQuestion> {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    return this.http.get<TestQuestion>("/TestPassing/GetNextQuestionJson?testId=" + testId + "&questionNumber=" + questionNumber + "&excludeCorrectnessIndicator=" + excludeCorrectnessIndicator + "&userId=" + user.id);
+  }
+
+  getStudentResults(subjectId: string): Observable<Test[]> {
+    return this.http.get<Test[]>("/TestPassing/GetStudentResults?subjectId=" + subjectId);
+  }
+
+  answerQuestionAndGetNext(answer: any): Observable<any> {
+    return this.http.post<any>("/TestPassing/AnswerQuestionAndGetNextMobile", answer);
+  }
 }
+

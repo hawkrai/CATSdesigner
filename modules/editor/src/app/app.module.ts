@@ -16,6 +16,9 @@ import { TreeComponent } from './components/tree/tree.component';
 import { RemoveDocumentDialogComponent } from './components/dialogs/remove-document-dialog/remove-document-dialog.component';
 import { AddDocumentDialogComponent } from './components/dialogs/add-document-dialog/add-document-dialog.component';
 import { EditDocumentDialogComponent } from './components/dialogs/edit-document-dialog/edit-document-dialog.component';
+import { TestDialogComponent } from './components/dialogs/test-dialog/test-dialog.component';
+import { TestExecutionComponent } from './components/adaptiveLearningTests/adaptive-learning-test.component';
+import { QuestionComponent } from './components/adaptiveLearningTests/components/question/question.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { EditDocumentDialogComponent } from './components/dialogs/edit-document-
     RemoveDocumentDialogComponent,
     AddDocumentDialogComponent,
     EditDocumentDialogComponent,
-    TranslatePipe
+    TestDialogComponent,
+    TranslatePipe,
+    TestExecutionComponent,
+    QuestionComponent,
   ],
   imports: [
     BrowserModule,

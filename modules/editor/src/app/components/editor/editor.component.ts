@@ -21,6 +21,7 @@ import 'ckeditor5-custom-build/build/translations/ru';
 import 'ckeditor5-custom-build/build/translations/en-gb';
 import { Test } from 'src/app/models/tests/Test';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { TestDialogComponent } from '../dialogs/test-dialog/test-dialog.component';
 
 @Component({
   selector: 'app-editor',
@@ -93,6 +94,7 @@ export class EditorComponent implements OnInit {
     public dialog: MatDialog) {}
 
   async ngOnInit() {
+    localStorage.setItem("currentUser", "{\"id\":\"1\",\"userName\":\"kostya\",\"role\":\"lector\"}");
     let currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
     let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
@@ -198,7 +200,8 @@ export class EditorComponent implements OnInit {
     var document = this.documents.find(x => x.Id == node.Id);
     if(document) {
       const dialogRef = this.dialog.open(EditDocumentDialogComponent, {
-        data: document
+        data: document,
+        width: '30vw'
       });
 
       dialogRef.afterClosed().subscribe(newDocument => {
@@ -228,7 +231,8 @@ export class EditorComponent implements OnInit {
   openRemoveDialog(document = undefined): void {
     this.currentNodeId = document.Id;
     const dialogRef = this.dialog.open(RemoveDocumentDialogComponent, {
-      data: { Id: document.Id, Name: document.Name }
+      data: { Id: document.Id, Name: document.Name },
+      width: '30vw'
     });
 
     dialogRef.afterClosed().subscribe(newDocument => {
@@ -251,7 +255,8 @@ export class EditorComponent implements OnInit {
       };
     }
     const dialogRef = this.dialog.open(AddDocumentDialogComponent, {
-      data: data
+      data: data,
+      width: '30vw'
     });
 
     dialogRef.afterClosed().subscribe(newDocument => {
@@ -302,19 +307,21 @@ export class EditorComponent implements OnInit {
   updateSelfStudyTests() {
     this.selfStudyTests = [];
     return new Promise(resolve => {
-      this._testService.getAllTestBySubjectId(this.SubjectId.toString()).subscribe(response => {
+      this._testService.getAllTestLiteBySubjectId(this.SubjectId.toString()).subscribe(response => {
         this.selfStudyTests = response.filter(test => test.ForSelfStudy);
       });
     });
   }
 
   appendTestButtonToCurrentTextPosition(test) {
-    this.editor.execute("updateHtmlEmbed", "<button (click)='openTest()'>Test</button><br><label class='select-test-label'>Else test<label>");
-    let testPrivate = test;
+
   }
 
-  openTest() {
-    let test = 0;
+  openTestModal(test) {
+    const dialogRef = this.dialog.open(TestDialogComponent, {
+      data: test,
+      width: '100vw',
+    });
   }
 
   openTestAddingModal(event) {

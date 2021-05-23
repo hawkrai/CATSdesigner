@@ -136,3 +136,9 @@
 ::ng-deep ::-webkit-scrollbar-thumb:hover {
   background: #3f51b5;
 }
+
+.full-width {
+  .mat-dialog-container {
+    width: 100vw !important;
+  }
+}

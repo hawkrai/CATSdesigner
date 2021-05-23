@@ -40,9 +40,9 @@
   </mat-drawer-content>
   <mat-drawer #drawer opened="true" [mode]="'side'">
     <div class="flex-tree-container">
-      <div class="flex-search-region">
+      <div *ngIf="!isReadOnly" class="flex-search-region">
         <div class="flex-search-btn-holder">
-          <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
+          <button mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
             <mat-icon>add_circle</mat-icon>
           </button>
         </div>
@@ -85,7 +85,7 @@
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="items">
     <label class="select-test-label">{{'text.editor.selecttest' | translate: 'Выберите тест:'}}</label>
-    <button *ngFor="let item of selfStudyTests" mat-menu-item (click)="openTestModal(item.Id)">
+    <button *ngFor="let item of selfStudyTests" mat-menu-item (click)="openTestModal(item)">
       {{item.Title}}
     </button>
   </ng-template>
