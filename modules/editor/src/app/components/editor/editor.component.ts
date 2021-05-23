@@ -94,7 +94,6 @@ export class EditorComponent implements OnInit {
     public dialog: MatDialog) {}
 
   async ngOnInit() {
-    localStorage.setItem("currentUser", "{\"id\":\"1\",\"userName\":\"kostya\",\"role\":\"lector\"}");
     let currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
     let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
