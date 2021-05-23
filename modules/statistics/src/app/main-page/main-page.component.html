@@ -1,0 +1,70 @@
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<div class="diagram">
+  <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
+  margin-left: 12%; margin-top: 10px; text-align: center">
+    Надежность программного обеспечения</h6>
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [xaxis]="chartOptions.xaxis"
+    [legend] = "chartOptions.legend"
+    [fill] = "chartOptions.fill"
+    [colors] = "chartOptions.colors"
+    [markers] = "chartOptions.markers"
+    [stroke]= "chartOptions.stroke"
+  ></apx-chart>
+
+  <table>
+    <tr *ngFor="let i of [0,1,2,3,4]">
+      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{categories[i][1]}}</td>
+      <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{categories[i][2]}}</td>
+    </tr>
+  </table>
+</div>
+
+<div class="diagram">
+  <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
+  margin-left: 12%; margin-top: 10px; text-align: center">
+    Надежность программного обеспечения</h6>
+  <apx-chart
+    [series]="chartOptions1.series"
+    [chart]="chartOptions1.chart"
+    [xaxis]="chartOptions1.xaxis"
+    [colors]="chartOptions1.colors"
+    [legend] = "chartOptions1.legend"
+    [fill] = "chartOptions1.fill"
+    [markers] = "chartOptions1.markers"
+    [stroke]= "chartOptions1.stroke"
+  ></apx-chart>
+
+  <table>
+    <tr *ngFor="let i of [0,1,2,3]">
+      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{categories[i][1]}}</td>
+      <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{categories[i][2]}}</td>
+    </tr>
+  </table>
+</div>
+
+
+<div class="diagram">
+  <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
+  margin-left: 12%; margin-top: 10px; text-align: center">
+    Надежность программного обеспечения</h6>
+  <apx-chart
+    [series]="chartOptions2.series"
+    [chart]="chartOptions2.chart"
+    [xaxis]="chartOptions2.xaxis"
+    [colors]="chartOptions2.colors"
+    [legend] = "chartOptions2.legend"
+    [fill] = "chartOptions2.fill"
+    [markers] = "chartOptions2.markers"
+    [stroke]= "chartOptions2.stroke"
+  ></apx-chart>
+
+  <table>
+    <tr *ngFor="let i of [0,1,2]">
+      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{categories[i][1]}}</td>
+      <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{categories[i][2]}}</td>
+    </tr>
+  </table>
+</div>
