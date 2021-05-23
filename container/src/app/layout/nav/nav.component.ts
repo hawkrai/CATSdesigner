@@ -28,7 +28,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
   public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-  public profileIcon!: string;
+  public profileIcon = "/assets/images/account.png";;
 
   public currentUserId!: number;
   valueForSearch!: string;
