@@ -31,5 +31,8 @@ namespace LMPlatform.UI.Services.Subjects
         [WebInvoke(Method = "GET", UriTemplate = "/GetSubjectOwner/{subjectId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         LectorResult GetSubjectOwner(string subjectId);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/GetUserSubjects/{userId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        SubjectsResult GetUserSubjects(string userId);
     }
 }

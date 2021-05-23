@@ -37,7 +37,7 @@ export class TaskSheetService {
     return this.http.get('api/DpTaskSheetTemplate', {params: new HttpParams({fromObject: params})});
   }
 
-  public getTemplates(params: string): Observable<any> {
+  public getTemplates(params: any): Observable<any> {
     return this.http.get('api/DpTaskSheetTemplate', { params: new HttpParams({ fromString: params })});
   }
 

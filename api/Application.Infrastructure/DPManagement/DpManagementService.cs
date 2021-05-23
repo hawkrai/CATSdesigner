@@ -29,12 +29,16 @@ namespace Application.Infrastructure.DPManagement
 
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
             
-            if (!user.Lecturer.IsSecretary)
+            if (user.Lecturer != null)
             {
-                user.Lecturer.IsSecretary = !isSecretary;
-            } else
-            {
-                user.Lecturer.IsSecretary = isSecretary;
+                if (!user.Lecturer.IsSecretary)
+                {
+                    user.Lecturer.IsSecretary = !isSecretary;
+                }
+                else
+                {
+                    user.Lecturer.IsSecretary = isSecretary;
+                }
             }
 
             if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)

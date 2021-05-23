@@ -1,6 +1,6 @@
 <div class="projects-component" *ngIf="projects; else: load">
   <div class="projects-component__header">
-    <mat-form-field class="visit-stats-component__group-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
+    <mat-form-field class="projects-component__group-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
       <mat-select [value]="projectGroups ? projectGroups[0] : ''">
         <mat-option *ngFor="let group of projectGroups" (onSelectionChange)="_selectedGroup($event)" [value]="group">
           {{group}}

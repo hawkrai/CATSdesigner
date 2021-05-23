@@ -20,6 +20,9 @@ export class TaskSheetComponent implements OnInit {
   
   private COUNT = 1000;
   private PAGE = 1;
+  private searchString = '';
+  private sorting = 'Id';
+  private direction = 'desc';
 
   private themes: Theme[];
   private taskSheetHtml: any;
@@ -98,6 +101,7 @@ export class TaskSheetComponent implements OnInit {
           top: "0px"
         },
         data: {
+          isSecretary: this.diplomUser.IsSecretary,
           taskSheet: response,
           students: this.students,
           taskSheetTemplate: this.getTaskSheetTemplate(response),
@@ -137,11 +141,9 @@ export class TaskSheetComponent implements OnInit {
 
   retrieveTemplates() {
     this.taskSheetService.getTemplates(
-      'count=1000000' +
-      '&page=1' +
-      '&filter={"lecturerId":"' + this.diplomUser.UserId + '","searchString":"' + '' + '"}' +
-      '&filter[lecturerId]=' + this.diplomUser.UserId +
-      '&sorting[' + 'Id' + ']=' + 'desc'
+      'count=' + this.COUNT +
+      '&page=' + this.PAGE +
+      '&filter={"lecturerId":"' + this.diplomUser.UserId + '","searchString":"' + this.searchString + '"}'
     ).subscribe(res => this.templates = res.Items);
   }
 
