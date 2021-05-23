@@ -1,12 +1,12 @@
 <div>
-  <mat-icon class = "icon" (click)="onCancelClick()" style="cursor: pointer;position: relative; margin-left: 95%">close</mat-icon>
+  <mat-icon class = "icon" (click)="onCancelClick()" style="cursor: pointer;position: relative; margin-left: 98%">close</mat-icon>
 </div>
 
 
 <div *ngFor="let newItem of data.news" class="dialog" id="dialog"
      [ngStyle]="{ 'border-left-color': newItem.Subject.Color}">
   <div style="margin-left: 5px;">
-    <h4 [ngStyle] ="{ 'color': newItem.Subject.Color}" style=" font-family: Roboto, Helvetica Neue, sans-serif; font-size: 19px; font-weight: 500;margin: 0; ">{{newItem.Title}}</h4>
+    <h4 style=" font-family: Roboto, Helvetica Neue, sans-serif; font-size: 19px; font-weight: 500;margin: 0; ">{{newItem.Title}}</h4>
     <div [innerHTML]="newItem.Body" class="body"
          style="font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 1em;  margin-bottom: 0em;max-height: 35vh;overflow-y: auto;">
     </div>

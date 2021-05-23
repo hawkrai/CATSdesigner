@@ -75,5 +75,9 @@ namespace LMPlatform.UI.Services.Concept
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetFolderFilesPaths?conceptId={conceptId}")]
         string[] GetFolderFilesPaths(int conceptId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveMonitoringResult")]
+        void SaveMonitoringResult(int userId, int conceptId, int timeInSeconds);
     }
 }

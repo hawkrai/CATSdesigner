@@ -20,5 +20,6 @@ namespace Application.Infrastructure.AdaptiveLearning
 		void SaveThemaResult(ThemaResults themaSolutions, ThemaSolutions nextStepSolution, int themaId, int adaptivityId, int userId);
 
 		void ClearDynamicTestData(int testId);
+		void ClearAllEducationData(int userId);
 	}
 }

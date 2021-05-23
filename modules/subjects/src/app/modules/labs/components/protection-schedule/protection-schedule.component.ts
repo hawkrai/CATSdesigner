@@ -1,8 +1,9 @@
 import { combineLatest } from 'rxjs';
 import { Observable } from 'rxjs';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
-import { Lab } from "../../../../models/lab.model";
 import {Store} from '@ngrx/store';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+
+import { Lab } from "../../../../models/lab.model";
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
 import * as groupSelectors from '../../../../store/selectors/groups.selectors';
@@ -13,6 +14,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { map, tap } from 'rxjs/operators';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -63,6 +65,11 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy
     };
 
     this.dialogService.openDialog(VisitDateLabsPopoverComponent, dialogData);
+  }
+ 
+  help: Help = {
+    message: 'Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты лабораторных занятий.',
+    action: 'Понятно'
   }
 
 }

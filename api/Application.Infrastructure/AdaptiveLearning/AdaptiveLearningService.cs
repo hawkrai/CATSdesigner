@@ -117,14 +117,14 @@ namespace Application.Infrastructure.AdaptiveLearning
 		{
 			var test =  new Test
 			{
-				Title = "DynamicTest",
+				Title = AdaptiveConst.AdaptiveTestName,
 				Description = "Dynamicly created test for adaptive learning",
 				TimeForCompleting = 45,
 				SetTimeForAllTest = false,
 				SubjectId = subjectId,
 				CountOfQuestions = questionsCount,
 				ForSelfStudy = false,
-				ForEUMK = false,
+				ForEUMK = true,
 				BeforeEUMK = false,
 				ForNN = false,
 				IsNecessary = false
@@ -171,6 +171,18 @@ namespace Application.Infrastructure.AdaptiveLearning
 				var testsForDelete = repositoriesContainer.TestsRepository.GetAll().Where(x => x.Id == testId);
 				repositoriesContainer.TestsRepository.Delete(testsForDelete);
 				
+			}
+		}
+
+		public void ClearAllEducationData(int userId)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var dataToDelete = repositoriesContainer.AdaptiveLearningProgressRepository
+					.GetAll()
+					.Where(x => x.UserId == userId);
+
+				repositoriesContainer.AdaptiveLearningProgressRepository.Delete(dataToDelete);
 			}
 		}
 	}

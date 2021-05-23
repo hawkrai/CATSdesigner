@@ -13,6 +13,7 @@ import * as  lecturesActions from '../../../../store/actions/lectures.actions';
 import { DialogService } from 'src/app/services/dialog.service';
 import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -113,4 +114,8 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
     return lecturesMarksVisiting;
   }
 
+  help: Help = {
+    message: 'Для добавления или удаления дат лекций нажмите на кнопку "Управление расписанием". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.',
+    action: 'Понятно'
+  };
 }

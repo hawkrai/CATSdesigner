@@ -1,7 +1,11 @@
 <div class="visit-lectures-component" *ngIf="state$ | async as state; else: load">
   <div class="visit-lectures-component-actions" *ngIf="isTeacher">
-    <button mat-raised-button color="primary" (click)="settingVisitDate()">{{'text.schedule.management' | translate:'Управление расписанием'}}</button>
-    <button mat-raised-button color="warn" (click)="deletePopover()">{{'text.schedule.management.delete.all' | translate:'Удалить все даты'}}</button>
+    <div class="actions-group">
+      <button mat-raised-button color="primary" (click)="settingVisitDate()">{{'text.schedule.management' | translate:'Управление расписанием'}}</button>
+      <button mat-raised-button color="warn" (click)="deletePopover()">{{'text.schedule.management.delete.all' | translate:'Удалить все даты'}}</button>
+    </div>
+    <app-help [message]="help.message" [action]="help.action"></app-help>
+
   </div>
   <div class="visit-lectures-component__table-lecture-visiting" *ngIf="state.groupsVisiting">
     <table mat-table [dataSource]="state.groupsVisiting.LecturesMarksVisiting" class="mat-elevation-z14">

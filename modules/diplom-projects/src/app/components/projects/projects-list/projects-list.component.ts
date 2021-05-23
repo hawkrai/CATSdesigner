@@ -14,8 +14,10 @@ export class ProjectsListComponent implements OnInit {
 
   @Input() filteredProjects: Project[];
   @Input() diplomUser: DiplomUser;
+  private component: ProjectsComponent
 
   constructor(private projectsComponent: ProjectsComponent) {
+    this.component = projectsComponent
   }
 
   ngOnInit(): void {
