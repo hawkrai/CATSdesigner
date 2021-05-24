@@ -29,6 +29,7 @@ import { FilesEffects } from './store/effects/files.effects';
 import { SettingsModule } from './modules/settings/settings.module';
 
 
+
 @NgModule({
   declarations: [
     AppComponent

@@ -38,6 +38,16 @@ pre {
   width: 100%;
 }
 
+
+.mat-icon-button-help {
+  color: #757575;
+}
+
+.mat-icon-button-help:active,
+.mat-icon-button-help:focus {
+    outline: none !important;
+}
+
 @media (max-width:768px){
   .mobileNews{
     display: block;

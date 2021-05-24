@@ -29,6 +29,7 @@ import { PopoverDialogComponent } from './popover-dialog/popover-dialog.componen
 import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
 import { FileComponent } from './components/file/file.component';
 import { HelpComponent } from './components/help/help.component';
+import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
 import { SubjectNameFreeDirective } from './validators/subject-name-free.validator';
 import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
 
@@ -59,6 +60,7 @@ import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviat
     TranslatePipe,
     FileComponent,
     HelpComponent,
+    HelpPopoverComponent,
     SubjectNameFreeDirective,
     SubjectAbbreviationFreeDirective
     ],
@@ -74,7 +76,8 @@ import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviat
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
-    MarkPopoverComponent
+    MarkPopoverComponent,
+    HelpPopoverComponent
   ],
   exports: [
     FilterPipe,
