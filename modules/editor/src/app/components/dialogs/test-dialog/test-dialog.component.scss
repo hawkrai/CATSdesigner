@@ -1,0 +1,10 @@
+.mat-dialog-content {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.full-width {
+  .mat-dialog-container {
+    width: 100vw !important;
+  }
+}
