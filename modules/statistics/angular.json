@@ -13,8 +13,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/statistics",
+            "outputPath": "d:/.temp/apps/statistics",
             "index": "src/index.html",
+            "baseHref": "/statistics/",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
