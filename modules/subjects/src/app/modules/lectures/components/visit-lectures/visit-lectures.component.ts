@@ -100,7 +100,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
       const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs(lecturesMarksVisiting, index, result.students) }));
+          this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs([...lecturesMarksVisiting.map(x => ({ ...x, Marks: [...x.Marks.map(m => ({ ...m }))] }))], index, result.students) }));
         }
       });
     }
