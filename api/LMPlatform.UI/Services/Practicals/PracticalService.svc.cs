@@ -84,7 +84,7 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ResultViewData
@@ -124,7 +124,7 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ResultViewData
@@ -195,7 +195,7 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ResultViewData
@@ -250,7 +250,7 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ResultViewData
@@ -290,7 +290,7 @@ namespace LMPlatform.UI.Services.Practicals
         {
             try
             {
-                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
                 if (!isUserAssigned)
                 {
                     return new ResultViewData

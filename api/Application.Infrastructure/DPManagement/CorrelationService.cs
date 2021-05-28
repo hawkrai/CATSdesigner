@@ -19,6 +19,7 @@ namespace Application.Infrastructure.DPManagement
                 { "DiplomLecturer", GetDiplomLecturerCorrelation },
                 { "LecturerDiplomGroup", GetLecturerDiplomGroupsCorrelation },
                 { "DiplomProjectTaskSheetTemplate", GetDiplomProjectTaskSheetTemplateCorrelation },
+                { "LecturerForSecretary", GetLecturerForSecretary},
             };
         }
 
@@ -97,6 +98,27 @@ namespace Application.Infrastructure.DPManagement
                         Id = x.Id,
                         Name = x.FullName
                     }).ToList() : new List<Correlation>();
+        }
+
+        public List<Correlation> GetLecturerForSecretary(int? id)
+        {
+            if (!id.HasValue)
+            {
+                throw new ApplicationException("userId cant be null!");
+            }
+
+            return Context.DiplomProjects.AsNoTracking()
+                .Include(x => x.Lecturer)
+                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group))
+                .Where(x => x.AssignedDiplomProjects.Any())
+                .Where(x => x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021"
+                && x.AssignedDiplomProjects.FirstOrDefault().Student.Group.SecretaryId == id)
+                .Select(x => x.Lecturer).Distinct().ToList()
+                .Select(x => new Correlation
+                 {
+                     Id = x.Id,
+                     Name = x.FullName
+                 }).ToList();
         }
 
         private List<Correlation> GetDiplomProjectTaskSheetTemplateCorrelation(int? id)
