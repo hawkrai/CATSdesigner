@@ -314,7 +314,7 @@ namespace Application.Infrastructure.GroupManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>().AddFilterClause(g => g.Name == groupName));
+                var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>(g => g.Name == groupName));
 
                 return group;
             }
