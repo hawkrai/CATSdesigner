@@ -346,6 +346,7 @@
   "text.personalAccount.deletePhoto": "Удалить фото",
   "text.personalAccount.tooBigImage": "Размер изображения слишком велик!",
 
+  "text.personalAccount.changingPassword": "Изменение пароля",
   "text.personalAccount.changePassword.passwordChanged": "Пароль успешно изменен!",
   "text.personalAccount.changePassword.passwordNotChanged": "Пароль не был изменен!",
   "text.personalAccount.changePassword.putOldPassword": "Введите старый пароль",
