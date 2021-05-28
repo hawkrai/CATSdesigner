@@ -1,9 +1,14 @@
 .diagram {
   float: left;
-  height: 550px;
+  height: 400px;
+  width: 400px;
   margin-left: 2%;
   margin-top: 2%;
   box-shadow: 5px 5px 5px rgba(187,187,187,0.25);
   border: 1px solid aliceblue;
+}
+.radar {
+  width: 50%;
+  margin-left: 20%;
 }
 

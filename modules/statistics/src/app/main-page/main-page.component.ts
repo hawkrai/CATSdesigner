@@ -15,11 +15,11 @@ export class MainPageComponent implements OnInit {
   public chartOptions2: any;
   public radarChartType = 'radar';
 
-  public categories: string[][]  = [['1', '4,1', 'Средняя оценка за лабораторную работу'],
-                                  ['2', '3,4', 'Средняя оценка за тесты'],
-                                  ['3', '4,5', 'Рейтинговая оценка'],
-                                  ['4', '4,3',  'Средняя оценка за практические работы'],
-                                  ['5', '3,8', 'Оценка за курсовой проект']];
+  public categories: string[][]  = [['1', '4.1', 'Средняя оценка за лабораторную работу'],
+                                  ['2', '3.4', 'Средняя оценка за тесты'],
+                                  ['3', '4.5', 'Рейтинговая оценка'],
+                                  ['4', '4.3',  'Средняя оценка за практические работы'],
+                                  ['5', '3.8', 'Оценка за курсовой проект']];
 
   colors: string [] = ['red', 'blue', 'yellow', 'purple' , 'green'];
 
@@ -27,13 +27,14 @@ export class MainPageComponent implements OnInit {
     this.chartOptions = {
       series: [
         {
-          name: 'Series 1',
+          name: 'Средняя оценка',
           data: [4.1, 3.4, 4.5, 4.3, 3.8]
         }
       ],
       chart: {
-        height: 350,
-        type: 'radar'
+        height: 200,
+        type: 'radar',
+        width: 200
       },
       title: {
         text: ''
@@ -98,13 +99,14 @@ export class MainPageComponent implements OnInit {
     this.chartOptions1 = {
       series: [
         {
-          name: 'Series 1',
+          name: 'Средняя оценка',
           data: [4.1, 3.4, 4.5, 4.3]
         }
       ],
       chart: {
-        height: 350,
-        type: 'radar'
+        height: 200,
+        type: 'radar',
+        width: 200
       },
       title: {
         text: ''
@@ -163,13 +165,14 @@ export class MainPageComponent implements OnInit {
     this.chartOptions2 = {
       series: [
         {
-          name: 'Series 1',
+          name: 'Средняя оценка',
           data: [4.1, 3.4, 4.5]
         }
       ],
       chart: {
-        height: 350,
-        type: 'radar'
+        height: 200,
+        type: 'radar',
+        width: 200
       },
       title: {
         text: ''
