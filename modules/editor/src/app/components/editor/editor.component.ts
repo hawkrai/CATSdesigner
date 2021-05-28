@@ -22,6 +22,7 @@ import 'ckeditor5-custom-build/build/translations/en-gb';
 import { Test } from 'src/app/models/tests/Test';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { TestDialogComponent } from '../dialogs/test-dialog/test-dialog.component';
+import { CopyToOtherSubjectDialogComponent } from '../dialogs/copy-to-other-subject-dialog/copy-to-other-subject-dialog.component';
 
 @Component({
   selector: 'app-editor',
@@ -312,10 +313,6 @@ export class EditorComponent implements OnInit {
     });
   }
 
-  appendTestButtonToCurrentTextPosition(test) {
-
-  }
-
   openTestModal(test) {
     const dialogRef = this.dialog.open(TestDialogComponent, {
       data: test,
@@ -335,5 +332,23 @@ export class EditorComponent implements OnInit {
     this.matMenuTrigger.menuData = {items: this.selfStudyTests};
 
     this.matMenuTrigger.openMenu();
+  }
+
+  openCopyToOtherSubjectDialog(document) {
+
+    const dialogRef = this.dialog.open(CopyToOtherSubjectDialogComponent, {
+      data: document,
+      width: '50vw'
+    });
+
+    dialogRef.afterClosed().subscribe(documentSubject => {
+      if(documentSubject) {
+        this._bookService.copyDocumentToSubject(documentSubject.documentId, documentSubject.subjectId).subscribe(res => {
+          if(res){
+            //show success result
+          }
+        });;
+      }
+    });
   }
 }

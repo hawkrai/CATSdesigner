@@ -11,6 +11,7 @@ export class DocumentService {
 
   private _bookUrl = "api/Document/";
   private _serviceUrl = 'Services/Documents/DocumentService.svc/'
+  private _subjectServiceUrl = 'Services/Subjects/SubjectsService.svc/'
 
   constructor(private http: HttpClient) { }
 
@@ -40,6 +41,18 @@ export class DocumentService {
 
   removeDocument(documentId) : Observable<any> {
     return this.http.get<any>(this._serviceUrl + "RemoveDocument?documentId=" + documentId).pipe(map(data=>{
+      return data;
+    }));
+  }
+
+  copyDocumentToSubject(documentId, subjectId) : Observable<any> {
+    return this.http.get<any>(this._serviceUrl + "CopyDocumentToSubject?documentId=" + documentId + "&subjectId=" + subjectId).pipe(map(data=>{
+      return data;
+    }));
+  }
+
+  getUserSubjects(userId) {
+    return this.http.get<any>(this._subjectServiceUrl + "GetUserSubjects/" + userId).pipe(map(data=>{
       return data;
     }));
   }

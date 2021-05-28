@@ -243,6 +243,9 @@
   "text.editor.hint.expand": "Expand",
   "text.editor.emptylist": "List is empty",
   "text.editor.selecttest": "Select test:",
+  "text.editor.copy.to.subject": "Copy to other subject",
+  "text.editor.copy": "Copy",
+  "text.editor.choose.subject": "Choose subject",
 
   "text.news": "News",
   "text.news.plural": "News",

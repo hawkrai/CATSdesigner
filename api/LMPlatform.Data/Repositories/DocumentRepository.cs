@@ -2,12 +2,8 @@
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Data.Repositories.RepositoryContracts;
 using LMPlatform.Models;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LMPlatform.Data.Repositories
 {
@@ -30,6 +26,15 @@ namespace LMPlatform.Data.Repositories
             {
                 DataContext.Set<Documents>().AddOrUpdate(document);
             }
+
+            DataContext.SaveChanges();
+
+            return !(result == null);
+        }
+
+        public bool CopyDocumentToSubject(int documentId, int subjectId)
+        {
+            var result = DataContext.Set<DocumentSubject>().Add(new DocumentSubject() { DocumentId = documentId, SubjectId = subjectId });
 
             DataContext.SaveChanges();
 

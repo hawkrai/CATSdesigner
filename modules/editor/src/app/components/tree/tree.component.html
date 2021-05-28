@@ -51,5 +51,6 @@
     <button mat-menu-item (click)="onRemoveEvent.emit(item)"><mat-icon color="primary">delete</mat-icon><span>{{'text.editor.remove' | translate: 'Удалить'}}</span></button>
     <button mat-menu-item (click)="onAddEvent.emit(item)"><mat-icon color="primary">note_add</mat-icon><span>{{'text.editor.add.new.theme' | translate: 'Добавить новую тему'}}</span></button>
     <button mat-menu-item (click)="changeLockState.emit(item)"><mat-icon color="primary">{{item.IsLocked ? 'lock_open' : 'lock'}}</mat-icon><span>{{item.IsLocked ? ('text.editor.open' | translate: 'Открыть') : ('text.editor.close' | translate: 'Закрыть')}}</span></button>
+    <button mat-menu-item (click)="copyToOtherSubject.emit(item)"><mat-icon color="primary">copy_all</mat-icon><span>{{'text.editor.copy.to.subject' | translate: 'Копировать в другой предмет'}}</span></button>
   </ng-template>
 </mat-menu>

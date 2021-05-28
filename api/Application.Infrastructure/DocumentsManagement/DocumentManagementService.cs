@@ -79,6 +79,16 @@ namespace Application.Infrastructure.DocumentsManagement
             }
             return document;
         }
+        public bool CopyDocumentToSubject(int documentId, int subjectId)
+        {
+            bool result = false;
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                result = repositoriesContainer.DocumentRepository.CopyDocumentToSubject(documentId, subjectId);
+                repositoriesContainer.ApplyChanges();
+            }
+            return result;
+        }
         public bool RemoveDocument(Documents document)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();

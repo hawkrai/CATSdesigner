@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>{{'text.editor.copy' | translate: 'Копирование'}}</h1>
+<div mat-dialog-content>
+  <mat-label>{{'text.editor.choose.subject' | translate: 'Выберите предмет'}}</mat-label>
+  <mat-select [(ngModel)]="selectedSubjectId" name="subject">
+    <mat-option *ngFor="let subject of subjects" [value]="subject.Id">
+      {{subject.Name}}
+    </mat-option>
+  </mat-select>
+</div>
+<div mat-dialog-actions align="right">
+  <button mat-raised-button (click)="onNoClick()">{{'text.editor.cancel' | translate: 'Отмена'}}</button>
+  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="selectedSubjectId == 0">{{'text.editor.save' | translate: 'Сохранить'}}</button>
+</div>

@@ -134,6 +134,32 @@ namespace LMPlatform.UI.Services.Documents
             return true;
         }
 
+        public bool CopyDocumentToSubject(int documentId, int subjectId)
+        {
+            var document = DocumentManagementService.Find(documentId);
+
+            if (document == null)
+            {
+                return false;
+            }
+
+            CopyChilds(new List<Models.Documents>() { document });
+
+            void CopyChilds(IEnumerable<Models.Documents> documents)
+            {
+                foreach (var document in documents)
+                {
+                    if (DocumentManagementService.GetByParentId(document.Id).Any())
+                    {
+                        CopyChilds(DocumentManagementService.GetByParentId(document.Id));
+                    }
+                    DocumentManagementService.CopyDocumentToSubject(document.Id, subjectId);
+                }
+            }
+
+            return true;
+        }
+
         DocumentPreview DocumentToPreview(Models.Documents document) => new DocumentPreview()
         {
             Id = document.Id,

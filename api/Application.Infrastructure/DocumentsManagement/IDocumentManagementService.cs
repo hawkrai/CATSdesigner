@@ -17,6 +17,7 @@ namespace Application.Infrastructure.DocumentsManagement
         Documents Find(int id);
         Documents UpdateDocument(Documents document);
         Documents SaveDocument(Documents document, int subjectId);
+        bool CopyDocumentToSubject(int documentId, int subjectId);
         bool RemoveDocument(Documents document);
     }
 }
