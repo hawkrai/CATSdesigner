@@ -43,6 +43,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.diplomUser)
     this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => {this.groups = res.Groups; console.log(this.groups)});
     this.retrieveProjects();
   }
