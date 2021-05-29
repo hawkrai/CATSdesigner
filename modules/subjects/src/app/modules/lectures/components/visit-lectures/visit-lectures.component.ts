@@ -14,6 +14,8 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { Help } from 'src/app/models/help.model';
+import { Message } from 'src/app/models/message.model';
+import * as catsActions from '../../../../store/actions/cats.actions';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -118,4 +120,8 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
     message: 'Для добавления или удаления дат лекций нажмите на кнопку "Управление расписанием". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.',
     action: 'Понятно'
   };
+
+  navigateToProfile(lecturesMarksVisiting: LecturesMarksVisiting): void {
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${lecturesMarksVisiting.StudentId}`) }));
+  }
 }

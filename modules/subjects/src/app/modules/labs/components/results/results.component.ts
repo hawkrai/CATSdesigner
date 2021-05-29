@@ -14,6 +14,7 @@ import { Observable, combineLatest } from 'rxjs';
 import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+import * as catsActions from '../../../../store/actions/cats.actions';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
@@ -22,6 +23,7 @@ import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.c
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { LabVisitingMark } from 'src/app/models/visiting-mark/lab-visiting-mark.model';
 import { Help } from 'src/app/models/help.model';
+import { Message } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-results',
@@ -106,8 +108,12 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  navigateToProfile(student: StudentMark): void {
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${student.StudentId}`) }));
+  }
+
   getMissingTooltip(marks: LabVisitingMark[], schedule: ScheduleProtectionLab[]) {
-    return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}.${schedule.find(s => s.ScheduleProtectionLabId === sc.ScheduleProtectionLabId).Date}`).join('\n');
+    return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}: ${schedule.find(s => s.ScheduleProtectionLabId === sc.ScheduleProtectionLabId).Date}`).join('\n');
   }
 
   private getLabMark(mark: LabMark, studentId: number) {
