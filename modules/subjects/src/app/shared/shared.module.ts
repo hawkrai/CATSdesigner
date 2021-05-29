@@ -6,7 +6,6 @@ import { UniquePipe } from './pipes/unique.pipe';
 import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {FilterPipe} from './pipes/filter.pipe';
@@ -68,8 +67,7 @@ import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviat
     CommonModule,
     FormsModule,
     MatModule,
-    ReactiveFormsModule,
-    NgxMaterialTimepickerModule
+    ReactiveFormsModule
   ],
   entryComponents: [
     DeletePopoverComponent,

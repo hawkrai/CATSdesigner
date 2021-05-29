@@ -75,14 +75,14 @@ export class PracticalsEffects {
             this.store.select(groupSelectors.getCurrentGroupId)
             ),
         switchMap(([{ obj }, subjectId, groupId]) => this.scheduleService.createPracticalDateVisit({ ...obj, subjectId, groupId }).pipe(
-          map(() => practicalsActions.loadSchedule())
+          switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadSchedule()])
         ))
       ));
     
     deleteDateVisit$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.deleteDateVisit),
         switchMap(({ id }) => this.scheduleService.deletePracticalDateVisit(id).pipe(
-            map(() => practicalsActions.loadSchedule())
+            switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadSchedule()])
         ))
     ));
 
