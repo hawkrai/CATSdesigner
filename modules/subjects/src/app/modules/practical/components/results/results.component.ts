@@ -128,7 +128,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   help: Help = {
-    message: 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.', 
-    action: 'Понятно'
+    message: this.translate.transform ('text.help.results','Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'), 
+    action: this.translate.transform ('button.understand','Понятно')
   };
 }
