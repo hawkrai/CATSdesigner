@@ -70,8 +70,12 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     return ['position', 'name', ...subGroupLabs.map(l => l.LabId.toString()), 'total-lab', 'total-test', 'total'];
   }
 
-  getTotal(student): number {
-    return ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2);
+  getTotal(student: StudentMark): number {
+    if (student.TestMark === null || student.TestMark === '') {
+      return +student.LabsMarkTotal;
+    }
+    const mark = ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2)
+    return Math.round(mark * 10) / 10;
   }
 
   setMark(student: StudentMark, labId: string, recommendedMark: string) {

@@ -69,7 +69,11 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getTotal(student: StudentMark): number {
-    return ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2);
+    if (student.TestMark === null || student.TestMark === '') {
+      return +student.PracticalsMarkTotal;
+    }
+    const mark = ((Number(student.PracticalsMarkTotal) + Number(student.TestMark)) / 2)
+    return Math.round(mark * 10) / 10;
   }
 
   setMark(student: StudentMark, practicalId: number, recommendedMark: string) {
