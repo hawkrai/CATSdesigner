@@ -408,13 +408,13 @@
     "text.start.btnForgot":"Forgot password?",
     "text.start.helpEnter":"Click to login",
     "text.start.signIn": "Sign in",
-    "text.start.helpControl": "Click to view student progress",
+    "text.start.helpControl": "Click to view student's learning statistics",
     "text.start.btnControl": "Learning statistics",
     "text.start.newUser": "New user?",
-    "text.start.helpRegister": "Go to register",
+    "text.start.helpRegister": "Let’s go sign up",
     "text.start.register": "Sign up",
-    "text.start.helpGoogle": "Go to download the app on google play",
+    "text.start.helpGoogle": "Go to download the App on Google Play",
     "text.start.google": "Get it on Google Play",
-    "text.start.helpApp": "Go to download the app from the Apple store",
+    "text.start.helpApp": "Go to download the App from the Apple Store",
     "text.start.AppStore": "Available on the App Store"
 }
