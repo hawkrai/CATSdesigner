@@ -8,8 +8,11 @@
         <h3
           style="font-size: 16px;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;">{{ viewDate | calendarDate:(view + 'ViewTitle'):locale: 1 }}</h3>
       </div>
-      <div class="col-md-4" style="margin-top: 24px;font-family: Roboto, Helvetica Neue, sans-serif;">
-        <h6 style="color:#3F51B5;font-size: 1.5rem;">{{'text.schedule'| translate: 'Расписание занятий'}}</h6>
+      <div class="col-md-4" style="margin-top: 24px;font-family: Roboto, Helvetica Neue, sans-serif; align-items: center;">
+        <div style="display:inline-block"><h6 style="color:#3F51B5;font-size: 1.5rem;">{{'text.schedule'| translate: 'Расписание занятий'}}</h6></div>
+        <div *ngIf="isStudent" style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" matTooltip="Помощь" matTooltipPosition="right" (click)="showHelp()">
+          <mat-icon>help_outline</mat-icon>
+          </button></div>
       </div>
       <div class="col-md-4" style="margin-top: 17px;margin-bottom: 1%;padding-right: 0px">
         <div class="btn-group" style="line-height: 0; justify-content: space-between;">

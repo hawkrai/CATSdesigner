@@ -15,12 +15,11 @@ import { Subscription } from 'rxjs';
   templateUrl: './subjects-nav.component.html',
   styleUrls: ['./subjects-nav.component.less']
 })
-export class SubjectsNavComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class SubjectsNavComponent implements OnInit, AfterViewChecked {
   opened:boolean;
   subjects: Subject[];
   subjectId: number;
   public isLector:boolean = false;
-  lectorSub: Subscription;
   constructor(
     public coreService: CoreService,
     private router: Router,
@@ -31,18 +30,10 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked, OnDestroy
   ngAfterViewChecked() {
     this.cdref.detectChanges();
   }
-
-  subjectLector: Lector;
-
-  ngOnDestroy(): void {
-    if (this.lectorSub) {
-      this.lectorSub?.unsubscribe();
-    }
-  }
   
   ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
-    this.coreService.getSubjects().subscribe((subjects) => {
+    this.coreService.getUserSubjects().subscribe((subjects) => {
       this.subjects = subjects;
       if(this.subjects.length > 0) {
         let urls = this.router.url.split('/');
@@ -62,7 +53,7 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked, OnDestroy
     });
 
     this.coreService.onUpdateSubjects().pipe(
-      switchMap(() => this.coreService.getSubjects())
+      switchMap(() => this.coreService.getUserSubjects())
     ).subscribe(subjects => {
       this.subjects = subjects;
       if (this.coreService.selectedSubject) {
@@ -73,9 +64,6 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked, OnDestroy
   }
   setupLocalInfo(subject: Subject): void {
     this.coreService.setCurrentSubject({ id: subject.Id, Name: subject.Name, color: subject.Color });  
-    this.lectorSub = this.coreService.getSubjectOwner(subject.Id).subscribe(lector => {
-      this.subjectLector = lector;
-    })
   }
 
   changeSubject(id: number): void {
@@ -98,5 +86,10 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked, OnDestroy
 
   onToggleClick(): void {
     this.menuService.toogleSidenav();
+  }
+
+  getSubjectTooltip(subject: Subject): string {
+    const hasDuplicateNames = this.subjects.some(x => x.Name.toLowerCase() === subject.Name.toLowerCase() && x.Id !== subject.Id);
+    return hasDuplicateNames ? `${subject.Name}\n${subject.Lector?.FullName}` : subject.Name;
   }
 }

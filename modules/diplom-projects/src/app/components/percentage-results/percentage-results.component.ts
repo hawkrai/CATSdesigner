@@ -28,6 +28,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private percentageResultsSubscription: Subscription;
 
   private searchString = '';
+  private sorting = 'Id';
+  private direction = 'desc';
   private selectedGroup: String;
   private isLecturer = false
 
@@ -59,7 +61,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     this.percentageResultsSubscription = this.percentageResultsService.getPercentageResults(
       'count=' + this.COUNT +
       '&page=' + this.PAGE +
-      '&filter={"isSecretary":"' + !this.isLecturer + '","searchString":"' + this.searchString + '"}'
+      '&filter={"isSecretary":"' + !this.isLecturer + '","searchString":"' + this.searchString + '"}' +
+      '&sorting[' + this.sorting + ']=' + this.direction
     )
       .subscribe(res => {
         if (this.diplomUser.IsStudent) {

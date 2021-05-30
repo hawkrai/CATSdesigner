@@ -53,7 +53,25 @@ namespace Application.Infrastructure.SubjectManagement
 			return subjects.Any(subject => subject.Id == subjectId);
         }
 
-        public List<Subject> GetUserSubjectsV2(int userId)
+		public bool IsUserAssignedToSubjectAndLector(int userId, int subjectId)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.Id == userId)
+					.Include(e => e.Lecturer)
+					.Include(e => e.Student));
+				if (user.Student != null)
+				{
+					return false;
+				}
+				else
+				{
+					return repositoriesContainer.SubjectRepository.GetBy(new Query<Subject>(x => x.Id == subjectId)) != null;
+				}
+			}
+		}
+
+		public List<Subject> GetUserSubjectsV2(int userId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {

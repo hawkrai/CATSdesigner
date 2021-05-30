@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { PersonalDataService } from '../core/services/personal-data.service';
-import { FormGroupDirective, FormControl, NgForm, Validators, ValidationErrors } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl, Validators, ValidationErrors } from '@angular/forms';
 import { TranslatePipe } from '../pipe/translate.pipe';
+import { AppToastrService } from '../core/services/toastr.service';
 
 @Component({
   selector: 'change-password',
@@ -35,7 +34,7 @@ export class ChangePasswordDialog {
   newPasswordRepeat = "";
 
   constructor(
-    public dialogRef: MatDialogRef<ChangePasswordDialog>, private dataService: PersonalDataService, private snackBar: MatSnackBar, private translatePipe: TranslatePipe) { }
+    public dialogRef: MatDialogRef<ChangePasswordDialog>, private dataService: PersonalDataService, private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -46,11 +45,11 @@ export class ChangePasswordDialog {
     if (this.arePasswordsSame()) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
-            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.passwordChanged', "Пароль успешно изменен =)"));
+            this.toastr.addSuccessFlashMessage(this.translatePipe.transform('text.personalAccount.passwordChanged', "Пароль успешно изменен!"));
             this.dialogRef.close();
           }
           else {
-            this.addFlashMessage(this.translatePipe.transform('text.personalAccount.passwordNotChanged', "Пароль не был изменен =("));
+            this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.personalAccount.passwordNotChanged', "Пароль не был изменен!"));
             this.showBadPasswordError = true;
           }
         });   
@@ -59,12 +58,6 @@ export class ChangePasswordDialog {
 
   arePasswordsSame(): boolean {
     return this.newPasswordRepeat === this.newPassword;
-  }
-
-  addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
   }
 
 

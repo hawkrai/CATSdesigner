@@ -8,6 +8,8 @@ import { Lecturer, Student, Group } from '../../core/models/searchResults/search
 import { SearchService } from '../../core/services/searchResults/search.service';
 import { ProfileService } from '../../core/services/searchResults/profile.service';
 import { MenuService } from "src/app/core/services/menu.service";
+import { MatDialog } from "@angular/material/dialog";
+import {AboutSystemPopoverComponent} from '../../about-system/about-popover/about-popover.component';
 
 
 interface Locale {
@@ -28,7 +30,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
   public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-  public profileIcon!: string;
+  public profileIcon = "/assets/images/account.png";;
 
   public currentUserId!: number;
   valueForSearch!: string;
@@ -45,7 +47,8 @@ export class NavComponent implements OnInit, OnDestroy {
               private autService: AuthenticationService,
               private searchService: SearchService,
               private profileService: ProfileService,
-              private menuService: MenuService
+              private menuService: MenuService,
+              public dialog: MatDialog
               ) {
   }
 
@@ -139,5 +142,21 @@ export class NavComponent implements OnInit, OnDestroy {
       this.groupSearchResults = res;
     });
   }
+
+  public routeToAboutPopover() {
+
+    const dialogRef = this.dialog.open(AboutSystemPopoverComponent, {
+      width: '600px',
+      height: '60%', 
+      position: {top: '128px'}
+    }); 
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != null) {
+      }
+})
+
+    
+}
 
 }
