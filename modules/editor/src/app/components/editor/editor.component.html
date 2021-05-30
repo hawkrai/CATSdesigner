@@ -13,8 +13,6 @@
               fact_check
             </mat-icon>
           </button>
-        </div>
-        <div class="right-half">
           <button *ngIf="!model.isReadOnly" (click)="saveDocument($event)" mat-icon-button [disabled]="!isEditorModelChanged">
             <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.save' | translate: 'Сохранить'">
               save
@@ -25,6 +23,9 @@
               close
             </mat-icon>
           </button>
+        </div>
+        <div class="right-half">
+
         </div>
       </div>
       <div class="row" id="editor">
@@ -43,7 +44,10 @@
       <div *ngIf="!isReadOnly" class="flex-search-region">
         <div class="flex-search-btn-holder">
           <button mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
-            <mat-icon>add_circle</mat-icon>
+            <mat-icon>add_box</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" aria-label="Add icon" (click)="openCopyFromOtherSubjectDialog()" [matTooltip]="'text.editor.hint.copy.book.from.other.subject' | translate: 'Копирование учебника из другого предмета'">
+            <mat-icon>library_add</mat-icon>
           </button>
         </div>
       </div>
@@ -54,7 +58,7 @@
           mode="indeterminate">
         </mat-spinner>
         <div *ngIf="!linearTreeList.length && !showSpinner" class="empty">
-          <label>Список пуст</label>
+          <label>{{'text.editor.list.is.empty' | translate: 'Список пуст'}}</label>
         </div>
         <tree
           [treeControl]="treeControl"

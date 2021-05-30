@@ -11,7 +11,8 @@ namespace Application.Infrastructure.DocumentsManagement
 {
     public class DocumentManagementService : IDocumentManagementService
     {
-        private static readonly string[] AllowedRolesToModify = new string[] { "admin", "lecturer" };
+        private static readonly string[] AllowedRolesToModify = new string[] { "admin", "lector" };
+        private static readonly string[] AdminRoles = new string[] { "admin" };
 
         public IEnumerable<Documents> GetAll()
         {
@@ -109,6 +110,35 @@ namespace Application.Infrastructure.DocumentsManagement
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
             return repositoriesContainer.DocumentRepository.GetBy(new Query<Documents>(d => d.Id == id));
+        }
+
+        public IEnumerable<Documents> GetEnabledByUserId(int userId, int currentSubjectId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(u => u.Id == userId).Include(u => u.Membership.Roles));
+
+            if (user.Membership.Roles.Any(r => AllowedRolesToModify.Contains(r.RoleName))) {
+                var parentNodes = repositoriesContainer.DocumentRepository
+                    .GetAll(new Query<Documents>(x => x.Parent == null)
+                    .Include(x => x.DocumentSubjects)).ToArray();
+
+                var userSubjectIds = repositoriesContainer.SubjectRepository
+                    .GetAll(new Query<Subject>(s => s.SubjectLecturers.Any(sl => sl.Lecturer.User.Id == userId)))
+                    .Select(s => s.Id)
+                    .Where(s => s != currentSubjectId).ToArray();
+
+                var currentSubjectBooks = parentNodes
+                    .Where(x => x.DocumentSubjects.Any(x => x.SubjectId == currentSubjectId));
+
+                return parentNodes
+                    .Where(d => d.DocumentSubjects.Any(ds => userSubjectIds.Contains(ds.SubjectId)))
+                    .Except(currentSubjectBooks)
+                    .ToList();
+            }
+            else
+            {
+                return new List<Documents>();
+            }
         }
 
         private bool IsUserCanModifyDocuments(int userId)

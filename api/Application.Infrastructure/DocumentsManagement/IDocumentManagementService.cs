@@ -14,6 +14,7 @@ namespace Application.Infrastructure.DocumentsManagement
         IEnumerable<Documents> GetByParentId(int parentId, int userId);
         IEnumerable<Documents> GetByParentId(int parentId);
         IEnumerable<Documents> GetByUserId(int userId);
+        IEnumerable<Documents> GetEnabledByUserId(int userId, int currentSubjectId);
         Documents Find(int id);
         Documents UpdateDocument(Documents document);
         Documents SaveDocument(Documents document, int subjectId);

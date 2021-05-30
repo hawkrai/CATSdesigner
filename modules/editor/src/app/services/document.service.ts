@@ -21,6 +21,12 @@ export class DocumentService {
     }));
   }
 
+  getAllUserMainDocuments(userId, currentSubjectId): Observable<DocumentPreview[]> {
+    return this.http.get<any>(this._serviceUrl + "GetAllUserMainDocuments?userId=" + userId + "&currentSubjectId=" + currentSubjectId).pipe(map(data=>{
+      return data;
+    }));
+  }
+
   getDocumentsTreeBySubjectId(subjectId, userId): Observable<DocumentPreview[]>{
     return this.http.get<any>(this._serviceUrl + "GetDocumentsTreeBySubjectId?subjectId=" + subjectId + "&userId=" + userId).pipe(map(data=>{
       return data;

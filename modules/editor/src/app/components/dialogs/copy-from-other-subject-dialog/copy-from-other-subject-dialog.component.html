@@ -5,22 +5,22 @@
   </button>
 </div>
 <div mat-dialog-content>
-  <mat-label>{{'text.editor.choose.subject' | translate: 'Выберите предмет'}}</mat-label>
+  <mat-label>{{'text.editor.choose.document' | translate: 'Выберите документ'}}</mat-label>
   <mat-spinner
     *ngIf="showSpinner"
     style="margin:0 auto;"
     mode="indeterminate">
   </mat-spinner>
-  <div *ngIf="subjects && !subjects.length && !showSpinner" class="empty">
+  <div *ngIf="documents && !documents.length && !showSpinner" class="empty">
     <label>{{'text.editor.list.is.empty' | translate: 'Список пуст'}}</label>
   </div>
-  <mat-select *ngIf="subjects && subjects.length" [(ngModel)]="selectedSubjectId" name="subject">
-    <mat-option *ngFor="let subject of subjects" [value]="subject.Id">
-      {{subject.Name}}
+  <mat-select *ngIf="documents && documents.length" [(ngModel)]="selectedDocumentId" name="subject">
+    <mat-option *ngFor="let document of documents" [value]="document.Id">
+      {{StringHelper.helper.sanitizeHtml(document.Name)}}
     </mat-option>
   </mat-select>
 </div>
-<div mat-dialog-actions align="right">
+<div mat-dialog-footer mat-dialog-actions align="right">
   <button mat-raised-button (click)="onNoClick()">{{'text.editor.cancel' | translate: 'Отмена'}}</button>
-  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="selectedSubjectId == 0">{{'text.editor.save' | translate: 'Сохранить'}}</button>
+  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="selectedDocumentId == 0">{{'text.editor.save' | translate: 'Сохранить'}}</button>
 </div>

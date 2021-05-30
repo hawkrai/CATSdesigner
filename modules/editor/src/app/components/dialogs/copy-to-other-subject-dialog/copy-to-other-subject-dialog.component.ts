@@ -13,6 +13,7 @@ export class CopyToOtherSubjectDialogComponent implements OnInit {
 
   selectedSubjectId: 0;
   subjects: [];
+  showSpinner: boolean;
 
   constructor(public dialogRef: MatDialogRef<CopyToOtherSubjectDialogComponent>,
     public translatePipe: TranslatePipe,
@@ -21,9 +22,10 @@ export class CopyToOtherSubjectDialogComponent implements OnInit {
 
   ngOnInit() {
     let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
+    this.showSpinner = true;
     this._bookService.getUserSubjects(currentUser ? currentUser.id : 1).subscribe(data => {
       this.subjects = data.Subjects;
+      this.showSpinner = false;
     });
   }
 

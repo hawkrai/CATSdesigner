@@ -13,6 +13,10 @@ namespace LMPlatform.UI.Services.Documents
         IEnumerable<DocumentPreview> GetDocumentsBySubjectId(int subjectId, int userId);
 
         [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetAllUserMainDocuments?userId={userId}&currentSubjectId={currentSubjectId}")]
+        IEnumerable<DocumentPreview> GetAllUserMainDocuments(int userId, int currentSubjectId);
+
+        [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetDocumentsTreeBySubjectId?subjectId={subjectId}&userId={userId}")]
         IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId, int userId);
 

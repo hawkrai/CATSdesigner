@@ -58,6 +58,14 @@ namespace LMPlatform.UI.Services.Documents
                 yield return DocumentToPreview(document);
         }
 
+        public IEnumerable<DocumentPreview> GetAllUserMainDocuments(int userId, int currentSubjectId)
+        {
+            var parentNodes = DocumentManagementService.GetEnabledByUserId(userId, currentSubjectId).Where(d => d.Parent == null);
+
+            foreach (var document in parentNodes)
+                yield return DocumentToPreview(document);
+        }
+
         public IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId, int userId)
         {
             var documents = DocumentManagementService.GetBySubjectId(subjectId, userId).Where(x => x.ParentId == null);
