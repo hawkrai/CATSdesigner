@@ -214,6 +214,8 @@
   "text.editor.hint.copy.book.from.other.subject": "Копировать учебник из другого предмета",
   "text.editor.choose.document": "Выберите документ",
   "text.editor.list.is.empty": "Список пуст",
+  "text.editor.edit.content": "Редактировать содержимое",
+  "text.editor.hint.search": "Для поиска по книге нажмите Ctrl + F",
 
   "text.news": "Новость",
   "text.news.plural": "Новости",

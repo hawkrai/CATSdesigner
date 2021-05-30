@@ -26,7 +26,6 @@
           (click)="onActivateTreeNodeEvent.emit(node.Id)"
           (contextmenu)="onRightClick({ event: $event, node: node })"
           matRipple
-          (dblclick)="onEditContentEvent.emit(node)"
           [ngClass]="{highlight:currentNodeId == node.Id}"
         >{{sanitizeHtml(node.Name)}}</label>
         <mat-icon *ngIf="node.IsLocked" class="shadow" [matTooltip]="'text.editor.hint.closed.section' | translate: 'Этот раздел закрыт для пользователей'">lock</mat-icon>

@@ -8,9 +8,19 @@
               {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
             </mat-icon>
           </button>
+          <button mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.hint.search' | translate: 'Для поиска по книге нажмите Ctrl + F'">
+              search
+            </mat-icon>
+          </button>
           <button *ngIf="selfStudyTests.length" (click)="openTestAddingModal($event)" mat-icon-button>
             <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.test.pass.test' | translate: 'Пройти тест'">
               fact_check
+            </mat-icon>
+          </button>
+          <button *ngIf="isCanNowEdit() && !isReadOnly" (click)="editDocument(currentDocument)" mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.edit.content' | translate: 'Редактировать содержимое'">
+              edit_note
             </mat-icon>
           </button>
           <button *ngIf="!model.isReadOnly" (click)="saveDocument($event)" mat-icon-button [disabled]="!isEditorModelChanged">
@@ -48,6 +58,11 @@
           </button>
           <button mat-icon-button color="primary" aria-label="Add icon" (click)="openCopyFromOtherSubjectDialog()" [matTooltip]="'text.editor.hint.copy.book.from.other.subject' | translate: 'Копирование учебника из другого предмета'">
             <mat-icon>library_add</mat-icon>
+          </button>
+          <button *ngIf="isSmallDevice()" (click)="drawer.toggle()" mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="drawer.opened ? ('text.editor.hint.roll.up' | translate: 'Свернуть') : ('text.editor.hint.expand' | translate: 'Развернуть')">
+              {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
+            </mat-icon>
           </button>
         </div>
       </div>

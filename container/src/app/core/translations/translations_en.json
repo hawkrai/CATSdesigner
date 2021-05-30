@@ -252,6 +252,8 @@
   "text.editor.hint.copy.book.from.other.subject": "Copy book from other subject",
   "text.editor.choose.document": "Choose document",
   "text.editor.list.is.empty": "The list is empty",
+  "text.editor.edit.content": "Edit content",
+  "text.editor.hint.search": "To search in the book press Ctrl + F",
 
   "text.news": "News",
   "text.news.plural": "News",

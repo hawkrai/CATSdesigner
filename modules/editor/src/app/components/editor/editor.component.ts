@@ -103,7 +103,7 @@ export class EditorComponent implements OnInit {
     this.UserId = currentUser ? currentUser.id : 1;
     this.isReadOnly = currentUser ? currentUser.role != "lector" : environment.production;
     this.showSpinner = true;
-    this.reloadTree();
+    this.reloadTree(true);
     this.configEditor();
     await this.updateSelfStudyTests();
   }
@@ -120,8 +120,12 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  isCanNowEdit() {
+    return this.documents && this.documents.filter(d => d.ParentId == this.currentNodeId).length == 0;
+  }
+
   //TREE
-  reloadTree() {
+  reloadTree(selectFirst = false) {
     this.treeControl.dataNodes = [];
     this.dataSource.data = [];
     this.showSpinner = true;
@@ -134,6 +138,14 @@ export class EditorComponent implements OnInit {
       this.dataSource.data = data;
       this.treeControl.dataNodes = this.dataSource.data;
       this.updateLinearTreeNodesList();
+
+      if(selectFirst) {
+        this.treeControl.expandAll();
+
+        if(data.length) {
+          this.activateNode(data[0].Id)
+        }
+      }
 
       if(this.currentNodeId && this.currentNodeId != 0) {
         this.activateNode(this.currentNodeId);
@@ -186,7 +198,7 @@ export class EditorComponent implements OnInit {
 
   // DOCUMENT
   editDocument(document) {
-    if(document.Children.length == 0 && document.Id != 0){
+    if(document.Children && document.Children.length == 0 && document.Id != 0){//
       this._bookService.getContent(document.Id, this.UserId).subscribe(doc => {
         this.model.editorData = doc.Text.replace(doc.Name, '');
         this.currentDocument = doc;
@@ -194,6 +206,14 @@ export class EditorComponent implements OnInit {
       this.model.isReadOnly = false;
       this.currentNodeId = document.Id;
       this.treeControl.expand(document);
+    }
+    else if (document.Id != 0) {
+      this._bookService.getContent(document.Id, this.UserId).subscribe(doc => {
+        this.model.editorData = doc.Text.replace(doc.Name, '');
+        this.currentDocument = doc;
+      })
+      this.model.isReadOnly = false;
+      this.currentNodeId = document.Id;
     }
   }
 
@@ -372,5 +392,9 @@ export class EditorComponent implements OnInit {
         });;
       }
     });
+  }
+
+  isSmallDevice() {
+    return window.innerWidth <= 768;
   }
 }
