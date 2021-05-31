@@ -26,7 +26,6 @@
           (click)="onActivateTreeNodeEvent.emit(node.Id)"
           (contextmenu)="onRightClick({ event: $event, node: node })"
           matRipple
-          (dblclick)="onEditContentEvent.emit(node)"
           [ngClass]="{highlight:currentNodeId == node.Id}"
         >{{sanitizeHtml(node.Name)}}</label>
         <mat-icon *ngIf="node.IsLocked" class="shadow" [matTooltip]="'text.editor.hint.closed.section' | translate: 'Этот раздел закрыт для пользователей'">lock</mat-icon>
@@ -47,9 +46,10 @@
 <!-- standard material menu -->
 <mat-menu #rightMenu="matMenu">
   <ng-template matMenuContent let-item="item">
-    <button mat-menu-item (click)="onEditStructureEvent.emit(item)"><mat-icon color="primary">edit</mat-icon><span>{{'text.editor.rename' | translate: 'Переименовать'}}</span></button>
-    <button mat-menu-item (click)="onRemoveEvent.emit(item)"><mat-icon color="primary">delete</mat-icon><span>{{'text.editor.remove' | translate: 'Удалить'}}</span></button>
-    <button mat-menu-item (click)="onAddEvent.emit(item)"><mat-icon color="primary">note_add</mat-icon><span>{{'text.editor.add.new.theme' | translate: 'Добавить новую тему'}}</span></button>
-    <button mat-menu-item (click)="changeLockState.emit(item)"><mat-icon color="primary">{{item.IsLocked ? 'lock_open' : 'lock'}}</mat-icon><span>{{item.IsLocked ? ('text.editor.open' | translate: 'Открыть') : ('text.editor.close' | translate: 'Закрыть')}}</span></button>
+    <button mat-menu-item (click)="onEditStructureEvent.emit(item)"><mat-icon>edit</mat-icon><span>{{'text.editor.rename' | translate: 'Переименовать'}}</span></button>
+    <button mat-menu-item (click)="onRemoveEvent.emit(item)"><mat-icon>delete</mat-icon><span>{{'text.editor.remove' | translate: 'Удалить'}}</span></button>
+    <button mat-menu-item (click)="onAddEvent.emit(item)"><mat-icon>note_add</mat-icon><span>{{'text.editor.add.new.theme' | translate: 'Добавить новую тему'}}</span></button>
+    <button mat-menu-item (click)="changeLockState.emit(item)"><mat-icon>{{item.IsLocked ? 'lock_open' : 'lock'}}</mat-icon><span>{{item.IsLocked ? ('text.editor.open.access' | translate: 'Открыть доступ') : ('text.editor.close.access' | translate: 'Закрыть доступ')}}</span></button>
+    <button mat-menu-item (click)="copyToOtherSubject.emit(item)"><mat-icon>copy_all</mat-icon><span>{{'text.editor.copy.to.subject' | translate: 'Копировать в другой предмет'}}</span></button>
   </ng-template>
 </mat-menu>

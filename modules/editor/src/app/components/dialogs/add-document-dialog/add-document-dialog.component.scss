@@ -7,6 +7,11 @@
   width: 100%;
 }
 
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 .mat-dialog-actions {
   &[align='right'] {
     justify-content: flex-end;

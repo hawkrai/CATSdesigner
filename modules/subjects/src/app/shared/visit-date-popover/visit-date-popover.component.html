@@ -19,12 +19,9 @@
             <mat-label>{{'lesson.start' | translate:'Начало занятия'}}</mat-label>
             <input
             matInput
-            [ngxTimepicker]="startTimepicker"
             formControlName="startTime"
-            [format]="24"
+            type="time"
             />
-            <ngx-material-timepicker #startTimepicker>
-            </ngx-material-timepicker>
           </mat-form-field>
           <div *ngIf="(dateForm.get('startTime').touched || dateForm.get('startTime').dirty) && dateForm.get('startTime').errors" class="form-error">
             <mat-error *ngIf="dateForm.get('startTime').hasError('required')">{{'lesson.start.required' | translate:'Начало занятия обязательно'}}</mat-error>
@@ -36,12 +33,9 @@
             <mat-label>{{'lesson.end' | translate:'Конец занятия'}}</mat-label>
             <input
             matInput
-            [ngxTimepicker]="endTimepicker"
+            type="time"
             formControlName="endTime"
-            [format]="24"
             />
-            <ngx-material-timepicker #endTimepicker>
-            </ngx-material-timepicker>
           </mat-form-field>
           <div *ngIf="(dateForm.get('endTime').touched || dateForm.get('endTime').dirty) && dateForm.get('endTime').errors" class="form-error">
             <mat-error *ngIf="dateForm.get('endTime').hasError('required')">{{'lesson.end.required' | translate:'Конец занятия обязательно'}}</mat-error>
@@ -96,6 +90,6 @@
     </div>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClick()">{{'button.cancel' | translate:'Закрыть'}}</button>
+    <button mat-raised-button (click)="onClick()">{{'button.close' | translate:'Закрыть'}}</button>
   </ng-container>
 </app-popover-dialog>

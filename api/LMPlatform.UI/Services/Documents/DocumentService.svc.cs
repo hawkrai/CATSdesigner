@@ -58,6 +58,14 @@ namespace LMPlatform.UI.Services.Documents
                 yield return DocumentToPreview(document);
         }
 
+        public IEnumerable<DocumentPreview> GetAllUserMainDocuments(int userId, int currentSubjectId)
+        {
+            var parentNodes = DocumentManagementService.GetEnabledByUserId(userId, currentSubjectId).Where(d => d.Parent == null);
+
+            foreach (var document in parentNodes)
+                yield return DocumentToPreview(document);
+        }
+
         public IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId, int userId)
         {
             var documents = DocumentManagementService.GetBySubjectId(subjectId, userId).Where(x => x.ParentId == null);
@@ -128,6 +136,32 @@ namespace LMPlatform.UI.Services.Documents
                         RemoveChilds(DocumentManagementService.GetByParentId(document.Id));
                     }
                     DocumentManagementService.RemoveDocument(document);
+                }
+            }
+
+            return true;
+        }
+
+        public bool CopyDocumentToSubject(int documentId, int subjectId)
+        {
+            var document = DocumentManagementService.Find(documentId);
+
+            if (document == null)
+            {
+                return false;
+            }
+
+            CopyChilds(new List<Models.Documents>() { document });
+
+            void CopyChilds(IEnumerable<Models.Documents> documents)
+            {
+                foreach (var document in documents)
+                {
+                    if (DocumentManagementService.GetByParentId(document.Id).Any())
+                    {
+                        CopyChilds(DocumentManagementService.GetByParentId(document.Id));
+                    }
+                    DocumentManagementService.CopyDocumentToSubject(document.Id, subjectId);
                 }
             }
 

@@ -104,7 +104,7 @@ export class LecturesEffects {
     ofType(lecturesActions.getVisitingExcel),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
     switchMap(([_, subjectId, groupId]) => this.rest.getVisitingExcel(subjectId, groupId).pipe(
-      map((response) => filesActions.getExcelData({ response }))
+      map((response) => filesActions.exportFile({ response }))
     ))
   ));
 }

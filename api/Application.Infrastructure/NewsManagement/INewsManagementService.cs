@@ -10,5 +10,7 @@ namespace Application.Infrastructure.NewsManagement
     public interface INewsManagementService
     {
         IEnumerable<SubjectNews> GetUserNewsByFIO(string fio);
+
+        IEnumerable<SubjectNews> GetNewsByGroupName(string groupName);
     }
 }

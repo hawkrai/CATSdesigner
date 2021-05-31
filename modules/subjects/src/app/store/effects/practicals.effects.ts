@@ -75,14 +75,14 @@ export class PracticalsEffects {
             this.store.select(groupSelectors.getCurrentGroupId)
             ),
         switchMap(([{ obj }, subjectId, groupId]) => this.scheduleService.createPracticalDateVisit({ ...obj, subjectId, groupId }).pipe(
-          map(() => practicalsActions.loadSchedule())
+          switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadSchedule()])
         ))
       ));
     
     deleteDateVisit$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.deleteDateVisit),
         switchMap(({ id }) => this.scheduleService.deletePracticalDateVisit(id).pipe(
-            map(() => practicalsActions.loadSchedule())
+            switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadSchedule()])
         ))
     ));
 
@@ -119,15 +119,15 @@ export class PracticalsEffects {
             this.store.select(groupSelectors.getCurrentGroupId)
         ), 
         switchMap(([_, subjectId, groupId]) => this.rest.getVisitPrcaticalsExcel(subjectId, groupId).pipe(
-            map(response => filesActions.getExcelData({ response }))
+            map(response => filesActions.exportFile({ response }))
         ))
       ));
     
-      labsMarksExcel$ = createEffect(() => this.actions$.pipe(
+      practicalsMarksExcel$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.getMarksExcel),
         withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupSelectors.getCurrentGroupId)),
         switchMap(([_, subjectId, groupId]) => this.rest.getPracticalsMarksExcel(subjectId, groupId).pipe(
-          map(response => filesActions.getExcelData({ response }))
+          map(response => filesActions.exportFile({ response }))
         ))
       ));
 }

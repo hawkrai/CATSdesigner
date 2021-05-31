@@ -11,7 +11,7 @@
                         [color]="'primary'"
                         [checked]="isLecturer"
                         (change)="lecturerStatusChange($event)"
-      >Преподаватель</mat-slide-toggle>
+      >Руководитель</mat-slide-toggle>
 
     <button mat-raised-button class="addDateBtn" color="primary" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary" (click)="addDate()">Добавить дату</button>
     <button mat-raised-button class="addDateBtn" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer" (click)="addDate()">Добавить дату</button>
@@ -19,7 +19,7 @@
                         [color]="'primary'"
                         [checked]="isLecturer"
                         (change)="lecturerStatusChange($event)"
-      >Преподаватель</mat-slide-toggle>
+      >Руководитель</mat-slide-toggle>
     <mat-form-field class="visit-stats-component__search">
       <mat-label>Поиск по теме, фамилии</mat-label>
       <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">

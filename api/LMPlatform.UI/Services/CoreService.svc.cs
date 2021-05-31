@@ -58,13 +58,13 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
-				if (!isUserAssigned)
+				var isSubjectOwner = SubjectManagementService.IsUserSubjectOwner(UserContext.CurrentUserId, subjectId);
+				if (!isSubjectOwner)
 				{
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Пользователь не присоединён к предмету"
+						Message = "Нет прав на отсоединение преподавателя с предмета"
 					};
 				}
 				this.LecturerManagementService.DisjoinLector(subjectId, lectorId, CurrentUserId);
@@ -116,13 +116,13 @@ namespace LMPlatform.UI.Services
 
 			try
 			{
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
-				if (!isUserAssigned)
+				var isSubjectOwner = SubjectManagementService.IsUserSubjectOwner(UserContext.CurrentUserId, subjectId);
+				if (!isSubjectOwner)
 				{
 					return new ResultViewData
 					{
 						Code = "500",
-						Message = "Пользователь не присоединён к предмету"
+						Message = "Нет прав на присоединение преподавателя к предмету"
 					};
 				}
 				this.LecturerManagementService.Join(subjectId, lectorId, CurrentUserId);

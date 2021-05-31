@@ -39,8 +39,9 @@
 
 
 textarea.mat-input-element {
-  resize: none;
   overflow: auto;
+  max-height: 14vh;
+  min-height:5.2vh;
 }
 
   @media (min-width:971px) {
@@ -75,33 +76,23 @@ textarea.mat-input-element {
 
 
     .data-container {
-      overflow: auto;
       margin: 20px;
       margin-top: 10px;
       width: 100%;
-      max-height: 59vh;
       min-width: 200px;
+      max-height:59vh;
     }
 
     .input-full-width {
-      line-height: 2.7;
+      line-height: 5.3vh;
       width: 100%;
       border-collapse: collapse;
     }
-
-    .input-full-width-short {
-      line-height: 3;
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    
 
     .text-area-full-width {
       line-height: 2.7vh;
       width: 100%;
       border-collapse: collapse;
-      resize: none;
     }
 
     .avatar {
@@ -196,17 +187,11 @@ textarea.mat-input-element {
       border-collapse: collapse;
     }
 
-    .input-full-width-short {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
 
     .text-area-full-width {
       width: 100%;
       border-collapse: collapse;
       line-height: 2.7vh;
-      resize: none;
     }
 
     .avatar {

@@ -32,8 +32,23 @@
       padding-right: 0;
     }
 
-    td.mat-cell:first-of-type, th.mat-header-cell:first-of-type {
+    .mat-column-position:first-of-type, .mat-header-cell:first-of-type {
+      max-width: 35px;
+      max-height: 55px;
+      width: 35px;;
+      height: 55px;
+      box-sizing: border-box;
+    }
+
+    th.mat-header-cell:first-of-type {
+      padding-right: 0;
       padding-left: 0;
+      text-align: center;
+    }
+      
+    td.mat-cell:first-of-type {
+      padding-left: 0;
+      padding-right: 0;
       text-align: center;
     }
 

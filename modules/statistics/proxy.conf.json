@@ -1,0 +1,11 @@
+{
+  "/api/*": {
+    "target": "http://educats.by",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/*": ""
+    }
+  }
+}

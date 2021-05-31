@@ -1,0 +1,581 @@
+{
+    "login": {
+        "title": "Registrarse",
+        "message": "Inicie sesión para continuar a Chatvia.",
+        "form": {
+            "email": {
+                "label": "Email",
+                "placeholder": "Introduce tu correo electrónico",
+                "validation": {
+                    "required": "El correo electrónico es obligatorio.",
+                    "invalid": "El correo electrónico es invalido. Proporcione un correo electrónico válido."
+                }
+            },
+            "password": {
+                "label": "Contraseña",
+                "placeholder": "Ingresa tu contraseña",
+                "validation": {
+                    "required": "La contraseña es obligatoria."
+                }
+            },
+            "remebertext": "Recuérdame",
+            "button": {
+                "text": "Registrarse"
+            },
+            "forgotlink": "¿Olvidaste tu contraseña?"
+        },
+        "signuptext": "¿No tienes una cuenta?",
+        "signuplink": "Regístrate ahora"
+    },
+    "signup": {
+        "title": "Regístrate",
+        "message": "Obtenga su cuenta de Chatvia ahora.",
+        "form": {
+            "username": {
+                "label": "Nombre de usuario",
+                "placeholder": "Introduzca su nombre de usuario",
+                "validation": {
+                    "required": "El nombre de usuario es obligatorio."
+                }
+            },
+            "email": {
+                "label": "Email",
+                "placeholder": "Enter your email",
+                "validation": {
+                    "required": "El correo electrónico es obligatorio.",
+                    "invalid": "El correo electrónico es invalido. Proporcione un correo electrónico válido."
+                }
+            },
+            "password": {
+                "label": "Contraseña",
+                "placeholder": "Ingresa tu contraseña",
+                "validation": {
+                    "required": "La contraseña es obligatoria."
+                }
+            },
+            "button": {
+                "text": "Regístrate"
+            },
+            "notice": "Al registrarse acepta la Chatvia.",
+            "term-text": "Terms of Use"
+        },
+        "signintext": "Ya tienes una cuenta ?",
+        "signinlink": "Registrarse"
+    },
+    "resetpassword": {
+        "title": "Restablecer la contraseña",
+        "message": "Restablecer contraseña con Chatvia.",
+        "form": {
+            "email": {
+                "label": "Email",
+                "placeholder": "Introduce tu correo electrónico",
+                "validation": {
+                    "required": "El correo electrónico es obligatorio.",
+                    "invalid": "El correo electrónico es invalido. Proporcione un correo electrónico válido."
+                }
+            },
+            "button": {
+                "text": "Reiniciar"
+            }
+        },
+        "signintext": " Recuerdalo ?",
+        "signinlink": "Registrarse"
+    },
+    "lockscreen": {
+        "title": "Bloquear pantalla",
+        "message": "¡Ingrese su contraseña para desbloquear la pantalla!",
+        "name": "Patricia Smith",
+        "form": {
+            "password": {
+                "label": "Contraseña",
+                "placeholder": "Introducir la contraseña",
+                "validation": {
+                    "required": "La contraseña es obligatoria."
+                }
+            },
+            "button": {
+                "text": "desbloquear"
+            }
+        },
+        "signintext": "No tú ? regreso",
+        "signinlink": "Registrarse"
+    },
+    "chat": {
+        "tabs": {
+            "profile": {
+                "title": "Mi perfil",
+                "dropdown": {
+                    "edit": "Editar",
+                    "action": "Acción",
+                    "another": "Otra accion"
+                },
+                "user": "Patricia Smith",
+                "status": "Activa",
+                "message": "Si se fusionan varios idiomas, la gramática del idioma resultante es más simple y regular que la del individuo.",
+                "about": {
+                    "text": "Texto",
+                    "name": {
+                        "text": "Nombre",
+                        "value": "Patricia Smith"
+                    },
+                    "email": {
+                        "text": "Email",
+                        "value": "abc@123.com"
+                    },
+                    "time": {
+                        "text": "Hora",
+                        "value": "11:40 a. M."
+                    },
+                    "location": {
+                        "text": "Ubicación",
+                        "value": "California, EE.UU"
+                    }
+                },
+                "attachedfile": {
+                    "text": "Archivos adjuntos",
+                    "file1": {
+                        "name": "Admin-A.zip",
+                        "size": "12,5 MB"
+                    },
+                    "file2": {
+                        "name": "Image-1.jpg",
+                        "size": "4,2 MB"
+                    },
+                    "file3": {
+                        "name": "Image-2.jpg",
+                        "size": "3,1 MB"
+                    },
+                    "file4": {
+                        "name": "Landing-A.zip",
+                        "size": "6,7 MB"
+                    },
+                    "dropdown": {
+                        "action": "Acción",
+                        "another": "Otra accion",
+                        "delete": "Eliminar"
+                    }
+                }
+            },
+            "chats": {
+                "title": "Chats",
+                "search": {
+                    "placeholder": "Buscar mensajes o usuarias"
+                },
+                "users": {
+                    "1": "Patrick",
+                    "2": "Doris",
+                    "3": "Emily",
+                    "4": "Steve",
+                    "5": "Teresa"
+                },
+                "recent": {
+                    "title": "Reciente",
+                    "userslist": {
+                        "user1": {
+                            "name": "Patrick Hendricks",
+                            "message": "¡Oye! ahí estoy disponible",
+                            "time": "05 min"
+                        },
+                        "user2": {
+                            "name": "Mark Messer",
+                            "message": "Images",
+                            "time": "12 min"
+                        },
+                        "user3": {
+                            "name": "General",
+                            "message": "¡Este tema es asombroso!",
+                            "time": "20 min"
+                        },
+                        "user4": {
+                            "name": "Doris Brown",
+                            "message": "Encantada de conocerte",
+                            "time": "10:12 AM"
+                        },
+                        "user5": {
+                            "name": "Designer",
+                            "message": "Próxima reunión mañana a las 10:00 a. M.",
+                            "time": "12:01 PM"
+                        },
+                        "user6": {
+                            "name": "Steve Walker",
+                            "message": "Admin-A.zip",
+                            "time": "03:20 PM"
+                        },
+                        "user7": {
+                            "name": "Albert Rodarte",
+                            "message": "mecanografía...",
+                            "time": "04:56 PM"
+                        },
+                        "user8": {
+                            "name": "Mirta George",
+                            "message": "Si todo esta bien",
+                            "time": "12/07"
+                        },
+                        "user9": {
+                            "name": "Paul Haynes",
+                            "message": "Buenos días",
+                            "time": "12/07"
+                        },
+                        "user10": {
+                            "name": "Jonathan Miller",
+                            "message": "¿Hola! Cómo estás?",
+                            "time": "12/07"
+                        },
+                        "user11": {
+                            "name": "Ossie Wilson",
+                            "message": "¡Lo he terminado! Te veo asi",
+                            "time": "11/07"
+                        },
+                        "user12": {
+                            "name": "Sara Muller",
+                            "message": "Wow eso es genial",
+                            "time": "11/07"
+                        }
+                    }
+                },
+                "modal": {
+                    "title": "Añadir miembro",
+                    "form": {
+                        "name": {
+                            "label": "Nombre",
+                            "placeholder": "Ingrese su nombre",
+                            "validation": {
+                                "required": "El nombre es obligatorio."
+                            }
+                        },
+                        "buttons": {
+                            "close": "Cerca",
+                            "save": "Salvar"
+                        }
+                    }
+                }
+            },
+            "groups": {
+                "title": "Grupos",
+                "search": {
+                    "placeholder": "Grupos de búsqueda..."
+                },
+                "list": {
+                    "general": "General",
+                    "reporting": "Reportando",
+                    "designers": "Diseñadoras",
+                    "developer": "Desarrolladoras",
+                    "projectalpha": "Proyecto-alfa",
+                    "snacks": "Aperitivos"
+                },
+                "modal": {
+                    "title": "Crear nuevo grupo",
+                    "form": {
+                        "name": {
+                            "label": "Nombre del grupo",
+                            "placeholder": "Ingrese el nombre del grupo",
+                            "validaion": {
+                                "required": "El nombre del grupo es mendatorio."
+                            }
+                        },
+                        "members": {
+                            "label": "Miembros del grupo",
+                            "button": {
+                                "text": "Seleccionar miembros"
+                            }
+                        },
+                        "description": {
+                            "label": "Descripción",
+                            "placeholder": "Ingrese descripción"
+                        },
+                        "button": {
+                            "close": "Cerca",
+                            "create": "Crear grupos"
+                        }
+                    }
+                }
+            },
+            "contacts": {
+                "title": "Contactos",
+                "search": {
+                    "placeholder": "Buscar usuarias ..."
+                },
+                "list": {
+                    "A": {
+                        "text": "A",
+                        "name": "Albert Rodarte",
+                        "name2": "Allison Etter"
+                    },
+                    "C": {
+                        "text": "C",
+                        "name": "Craig Smiley"
+                    },
+                    "D": {
+                        "text": "D",
+                        "name": "Daniel Clay",
+                        "name2": "Doris Brown"
+                    },
+                    "H": {
+                        "text": "H",
+                        "name": "Hanah Mile"
+                    },
+                    "I": {
+                        "text": "I",
+                        "name": "Iris Wells"
+                    },
+                    "J": {
+                        "text": "J",
+                        "name": "Juan Flakes",
+                        "name2": "John Hall",
+                        "name3": "Joy Southern"
+                    },
+                    "M": {
+                        "text": "M",
+                        "name": "Mary Farmer",
+                        "name2": "Mark Messer",
+                        "name3": "Michael Hinton"
+                    },
+                    "O": {
+                        "text": "O",
+                        "name": "Ossie Wilson"
+                    },
+                    "P": {
+                        "text": "P",
+                        "name": "Phillis Griffin",
+                        "name2": "Paul Haynes"
+                    },
+                    "R": {
+                        "text": "R",
+                        "name": "Rocky Jackson"
+                    },
+                    "S": {
+                        "text": "S",
+                        "name": "Sara Muller",
+                        "name2": "Simon Velez",
+                        "name3": "Steve Walker"
+                    },
+                    "dropdown": {
+                        "item1": "Compartir",
+                        "item2": "Bloquear",
+                        "item3": "Eliminar"
+                    }
+                },
+                "modal": {
+                    "title": "Agregar contacto",
+                    "form": {
+                        "email": {
+                            "label": "Email",
+                            "placeholder": "Ingrese correo electrónico"
+                        },
+                        "message": {
+                            "label": "Mensaje de invasión",
+                            "placeholder": "Ingrese mensaje"
+                        },
+                        "button": {
+                            "close": "Cerca",
+                            "contact": "Invitar contacto"
+                        }
+                    }
+                }
+            },
+            "settings": {
+                "title": "Configuraciones",
+                "name": "Patrick Smith",
+                "status": {
+                    "text": "Disponible",
+                    "dropdown": {
+                        "available": "Disponible",
+                        "busy": "Ocupada"
+                    }
+                },
+                "info": {
+                    "title": "Información personal",
+                    "name": {
+                        "text": "Nombre",
+                        "value": "Patricia Smith"
+                    },
+                    "email": {
+                        "text": "Email",
+                        "value": "abc@123.com"
+                    },
+                    "time": {
+                        "text": "Hora",
+                        "value": "11:40 AM"
+                    },
+                    "location": {
+                        "text": "Ubicación",
+                        "value": "California, USA"
+                    },
+                    "edit": "Editar"
+                },
+                "privacy": {
+                    "title": "Intimidad",
+                    "photo": "Foto de perfil",
+                    "dropdowntext": "Todas",
+                    "dropdown": {
+                        "everyone": "Todas",
+                        "selected": "Seleccionada",
+                        "nobody": "Nadie"
+                    },
+                    "seen": "Ultima vez visto",
+                    "status": "Estado",
+                    "receipt": "Leer recibos",
+                    "groups": "Grupos"
+                },
+                "security": {
+                    "title": "Seguridad",
+                    "text": "Mostrar notificación de seguridad"
+                },
+                "help": {
+                    "title": "Ayuda",
+                    "faqs": "Preguntas frecuentes",
+                    "contact": "Contacto",
+                    "policy": "Condiciones y política de privacidad"
+                },
+                "modal": {
+                    "title": "Cambiar el perfil",
+                    "form": {
+                        "profile": {
+                            "label": "Perfil"
+                        },
+                        "name": {
+                            "label": "Nombre",
+                            "placeholder": "Ingrese su nombre",
+                            "validation": {
+                                "required": "El nombre es mendatorio."
+                            }
+                        },
+                        "email": {
+                            "label": "Email",
+                            "placeholder": "Ingrese correo electrónico",
+                            "validation": {
+                                "required": "El correo electrónico es obligatorio.",
+                                "invalid": "El correo electrónico es invalido. Proporcione un correo electrónico válido."
+                            }
+                        },
+                        "location": {
+                            "label": "Ubicación",
+                            "placeholder": "Ingrese la ubicación",
+                            "validation": {
+                                "required": "La ubicación es mendatoria."
+                            }
+                        },
+                        "button": {
+                            "close": "Cerca",
+                            "save": "Salvar"
+                        }
+                    }
+                }
+            }
+        },
+        "profiledropdown": {
+            "profile": "Perfil",
+            "setting": "Ajuste",
+            "logout": "Cerrar sesión"
+        },
+        "chatpanelheader": {
+            "name": "Doris Brown",
+            "search": {
+                "placeholder": "Buscar.."
+            },
+            "dropdown": {
+                "viewprofile": "Ver perfil",
+                "archive": "Archivo",
+                "muted": "Apagada",
+                "delete": "Eliminar"
+            }
+        },
+        "messages": {
+            "1": {
+                "name": "Dorsin Brown",
+                "message": "Buenos días",
+                "time": "10:00"
+            },
+            "2": {
+                "name": "Patricia Smith",
+                "message": "¿Buenos días cómo estás? ¿Y nuestra próxima reunión?",
+                "time": "10:02"
+            },
+            "3": {
+                "name": "Doris Brown",
+                "message": "Si todo esta bien",
+                "message2": "& Próxima reunión mañana 10.00 a. M.",
+                "time": "10:05"
+            },
+            "4": {
+                "name": "Patricia Smith",
+                "message": "Wow eso es genial",
+                "time": "10:06"
+            },
+            "5": {
+                "name": "Doris Brown",
+                "time": "10:09"
+            },
+            "6": {
+                "name": "Patricia Smith",
+                "time": "10:16"
+            },
+            "7": {
+                "name": "Doris Brown",
+                "message": "mecanografía"
+            },
+            "dropdown": {
+                "copy": "Copiar",
+                "save": "Salvar",
+                "forward": "Adelante",
+                "delete": "Eliminar"
+            },
+            "filedropdown": {
+                "share": "Compartir",
+                "delete": "Eliminar"
+            }
+        },
+        "rightpanel": {
+            "name": "Dorsin Brown",
+            "status": "Activa",
+            "message": "Si se fusionan varios idiomas, la gramática del idioma resultante es más simple y regular que la del individuo.",
+            "about": {
+                "text": "Texto",
+                "name": {
+                    "text": "Nombre",
+                    "value": "Dorsin Brown"
+                },
+                "email": {
+                    "text": "Email",
+                    "value": "abc@123.com"
+                },
+                "time": {
+                    "text": "Hora",
+                    "value": "11:40 AM"
+                },
+                "location": {
+                    "text": "Ubicación",
+                    "value": "California, USA"
+                }
+            },
+            "attachedfile": {
+                "text": "Archivos adjuntos",
+                "file1": {
+                    "name": "admin_v1.0.zip",
+                    "size": "12.5 MB"
+                },
+                "file2": {
+                    "name": "Image-1.jpg",
+                    "size": "4.2 MB"
+                },
+                "file3": {
+                    "name": "Image-2.jpg",
+                    "size": "3.1 MB"
+                },
+                "file4": {
+                    "name": "Landing-A.zip",
+                    "size": "6.7 MB"
+                },
+                "dropdown": {
+                    "action": "Acción",
+                    "another": "Otra accion",
+                    "delete": "Eliminar"
+                }
+            }
+        }
+    },
+    "footer": {
+        "name": "Chatvia. Elaborado con ",
+        "text": " por Themesbrand"
+    }
+}

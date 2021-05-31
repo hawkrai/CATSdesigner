@@ -31,7 +31,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private sorting = 'Id';
   private direction = 'desc';
   private selectedGroup: String;
-  private isLecturer = false
+  public isLecturer = false
 
   constructor(private percentageResultsService: PercentageResultsService,
               public dialog: MatDialog,
