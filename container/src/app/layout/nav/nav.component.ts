@@ -58,7 +58,9 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
-    localStorage.setItem("theme", "white");
+    if (!localStorage.getItem("theme")) {
+      localStorage.setItem("theme", "white");
+    }
     this.getAvatar();
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: DropDownValue) => locale.value === local) : this.locales[0];
