@@ -6,6 +6,7 @@ import { SubjectsNavComponent } from '../../layout/subjects-nav/subjects-nav.com
 import { NoAuthGuard } from '../../core/no-auth.guard';
 import { SubjectsComponent } from './pages/subjects/subjects.component';
 import { UserAssignedToSubjectGuard } from 'src/app/core/guards/user-assigned-to-subject.guard';
+import { UserLecturerGuard } from 'src/app/core/guards/user-lecturer.guard';
 
 export const routes: Routes = [
   {
@@ -29,7 +30,8 @@ export const routes: Routes = [
       },
       {
         path: 'subjects',
-        component: SubjectsComponent
+        component: SubjectsComponent,
+        canActivate: [UserLecturerGuard]
       }
     ]
   },

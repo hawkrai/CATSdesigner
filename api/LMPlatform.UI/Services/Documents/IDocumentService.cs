@@ -13,6 +13,10 @@ namespace LMPlatform.UI.Services.Documents
         IEnumerable<DocumentPreview> GetDocumentsBySubjectId(int subjectId, int userId);
 
         [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetAllUserMainDocuments?userId={userId}&currentSubjectId={currentSubjectId}")]
+        IEnumerable<DocumentPreview> GetAllUserMainDocuments(int userId, int currentSubjectId);
+
+        [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetDocumentsTreeBySubjectId?subjectId={subjectId}&userId={userId}")]
         IEnumerable<DocumentsTree> GetDocumentsTreeBySubjectId(int subjectId, int userId);
 
@@ -23,6 +27,10 @@ namespace LMPlatform.UI.Services.Documents
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/RemoveDocument?documentId={documentId}")]
         bool RemoveDocument(int documentId);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/CopyDocumentToSubject?documentId={documentId}&subjectId={subjectId}")]
+        bool CopyDocumentToSubject(int documentId, int subjectId);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/UpdateDocument")]

@@ -26,9 +26,8 @@ export class ChangePersonalDataComponent implements OnInit {
   currentUserId!: number;
   profileData!: ProfileData;
   dialogRef: MatDialogRef<any>;
-  textArea = document.getElementById('aboutInput');
 
-  emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30})?$')]);
+  emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})?$')]);
   phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})?$')]);
 
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
@@ -37,7 +36,7 @@ export class ChangePersonalDataComponent implements OnInit {
   surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
     Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
-  patronymicFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+  patronymicFormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(30),
     Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
@@ -95,6 +94,7 @@ export class ChangePersonalDataComponent implements OnInit {
   }
 
   updatePersonalInfo() {
+    this.trimFields();
     if ((!this.patronymicFormControl.invalid) && (!this.surnameFormControl.invalid) && (!this.nameFormControl.invalid) &&
       (!this.phoneFormControl.invalid) && (!this.emailFormControl.invalid)) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
@@ -131,10 +131,10 @@ export class ChangePersonalDataComponent implements OnInit {
   }
 
 
-
-
-  deleteEmptyRows() {
-    this.textArea.nodeValue.replace(/\n+/g, '\n')
+  trimFields() {
+    this.profileData.Name = this.profileData.Name.trim();
+    this.profileData.Surname = this.profileData.Surname.trim();
+    this.profileData.Patronymic = this.profileData.Patronymic.trim();
   }
 
 }

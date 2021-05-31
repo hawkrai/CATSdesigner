@@ -1,0 +1,581 @@
+{
+    "login": {
+        "title": "Sign in",
+        "message": "Sign in to continue to Chatvia.",
+        "form": {
+            "email": {
+                "label": "Email",
+                "placeholder": "Enter your email",
+                "validation": {
+                    "required": "Email is mandatory.",
+                    "invalid": "Email is invalid. Please provide valid email."
+                }
+            },
+            "password": {
+                "label": "Password",
+                "placeholder": "Enter your password",
+                "validation": {
+                    "required": "Password is mandatory."
+                }
+            },
+            "remebertext": "Remember me",
+            "button": {
+                "text": "Sign In"
+            },
+            "forgotlink": "Forgot your password?"
+        },
+        "signuptext": "Don't have an account ?",
+        "signuplink": "Signup now"
+    },
+    "signup": {
+        "title": "Sign up",
+        "message": "Get your Chatvia account now.",
+        "form": {
+            "username": {
+                "label": "Username",
+                "placeholder": "Enter username",
+                "validation": {
+                    "required": "Username is mandatory."
+                }
+            },
+            "email": {
+                "label": "Email",
+                "placeholder": "Enter your email",
+                "validation": {
+                    "required": "Email is mandatory.",
+                    "invalid": "Email is invalid. Please provide valid email."
+                }
+            },
+            "password": {
+                "label": "Password",
+                "placeholder": "Enter your password",
+                "validation": {
+                    "required": "Password is mandatory."
+                }
+            },
+            "button": {
+                "text": "Sign Up"
+            },
+            "notice": "By registering you agree to the Chatvia",
+            "term-text": "Terms of Use"
+        },
+        "signintext": "Already have an account ?",
+        "signinlink": "Signin"
+    },
+    "resetpassword": {
+        "title": "Reset Password",
+        "message": "Reset Password With Chatvia.",
+        "form": {
+            "email": {
+                "label": "Email",
+                "placeholder": "Enter your email",
+                "validation": {
+                    "required": "Email is mandatory.",
+                    "invalid": "Email is invalid. Please provide valid email."
+                }
+            },
+            "button": {
+                "text": "Reset"
+            }
+        },
+        "signintext": " Remember It ?",
+        "signinlink": "Signin"
+    },
+    "lockscreen": {
+        "title": "Lock screen",
+        "message": "Enter your password to unlock the screen!",
+        "name": "Patricia Smith",
+        "form": {
+            "password": {
+                "label": "Password",
+                "placeholder": "Enter password",
+                "validation": {
+                    "required": "Password is mandatory."
+                }
+            },
+            "button": {
+                "text": "Unlock"
+            }
+        },
+        "signintext": "Not you ? return",
+        "signinlink": "Signin"
+    },
+    "chat": {
+        "tabs": {
+            "profile": {
+                "title": "My Profile",
+                "dropdown": {
+                    "edit": "Edit",
+                    "action": "Action",
+                    "another": "Another action"
+                },
+                "user": "Patricia Smith",
+                "status": "Active",
+                "message": "If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual.",
+                "about": {
+                    "text": "Text",
+                    "name": {
+                        "text": "Name",
+                        "value": "Patricia Smith"
+                    },
+                    "email": {
+                        "text": "Email",
+                        "value": "abc@123.com"
+                    },
+                    "time": {
+                        "text": "Time",
+                        "value": "11:40 AM"
+                    },
+                    "location": {
+                        "text": "Location",
+                        "value": "California, USA"
+                    }
+                },
+                "attachedfile": {
+                    "text": "Attached Files",
+                    "file1": {
+                        "name": "Admin-A.zip",
+                        "size": "12.5 MB"
+                    },
+                    "file2": {
+                        "name": "Image-1.jpg",
+                        "size": "4.2 MB"
+                    },
+                    "file3": {
+                        "name": "Image-2.jpg",
+                        "size": "3.1 MB"
+                    },
+                    "file4": {
+                        "name": "Landing-A.zip",
+                        "size": "6.7 MB"
+                    },
+                    "dropdown": {
+                        "action": "Action",
+                        "another": "Another action",
+                        "delete": "Delete"
+                    }
+                }
+            },
+            "chats": {
+                "title": "Chats",
+                "search": {
+                    "placeholder": "Search messages or users"
+                },
+                "users": {
+                    "1": "Patrick",
+                    "2": "Doris",
+                    "3": "Emily",
+                    "4": "Steve",
+                    "5": "Teresa"
+                },
+                "recent": {
+                    "title": "Recent",
+                    "userslist": {
+                        "user1": {
+                            "name": "Patrick Hendricks",
+                            "message": "Hey! there I'm available",
+                            "time": "05 min"
+                        },
+                        "user2": {
+                            "name": "Mark Messer",
+                            "message": "Images",
+                            "time": "12 min"
+                        },
+                        "user3": {
+                            "name": "General",
+                            "message": "This theme is awesome!",
+                            "time": "20 min"
+                        },
+                        "user4": {
+                            "name": "Doris Brown",
+                            "message": "Nice to meet you",
+                            "time": "10:12 AM"
+                        },
+                        "user5": {
+                            "name": "Designer",
+                            "message": "Next meeting tomorrow 10:00AM",
+                            "time": "12:01 PM"
+                        },
+                        "user6": {
+                            "name": "Steve Walker",
+                            "message": "Admin-A.zip",
+                            "time": "03:20 PM"
+                        },
+                        "user7": {
+                            "name": "Albert Rodarte",
+                            "message": "typing...",
+                            "time": "04:56 PM"
+                        },
+                        "user8": {
+                            "name": "Mirta George",
+                            "message": "Yeah everything is fine",
+                            "time": "12/07"
+                        },
+                        "user9": {
+                            "name": "Paul Haynes",
+                            "message": "Good morning",
+                            "time": "12/07"
+                        },
+                        "user10": {
+                            "name": "Jonathan Miller",
+                            "message": "Hi, How are you?",
+                            "time": "12/07"
+                        },
+                        "user11": {
+                            "name": "Ossie Wilson",
+                            "message": "I've finished it! See you so",
+                            "time": "11/07"
+                        },
+                        "user12": {
+                            "name": "Sara Muller",
+                            "message": "Wow that's great",
+                            "time": "11/07"
+                        }
+                    }
+                },
+                "modal": {
+                    "title": "Add Member",
+                    "form": {
+                        "name": {
+                            "label": "Name",
+                            "placeholder": "Enter name",
+                            "validation": {
+                                "required": "Name is mandatory."
+                            }
+                        },
+                        "buttons": {
+                            "close": "Close",
+                            "save": "Save"
+                        }
+                    }
+                }
+            },
+            "groups": {
+                "title": "Groups",
+                "search": {
+                    "placeholder": "Search groups..."
+                },
+                "list": {
+                    "general": "General",
+                    "reporting": "Reporting",
+                    "designers": "Designers",
+                    "developer": "Developers",
+                    "projectalpha": "Project-alpha",
+                    "snacks": "Snacks"
+                },
+                "modal": {
+                    "title": "Create New Group",
+                    "form": {
+                        "name": {
+                            "label": "Group Name",
+                            "placeholder": "Enter Group Name",
+                            "validaion": {
+                                "required": "Group name is mendatory."
+                            }
+                        },
+                        "members": {
+                            "label": "Group Members",
+                            "button": {
+                                "text": "Select Members"
+                            }
+                        },
+                        "description": {
+                            "label": "Description",
+                            "placeholder": "Enter description"
+                        },
+                        "button": {
+                            "close": "Close",
+                            "create": "Create Groups"
+                        }
+                    }
+                }
+            },
+            "contacts": {
+                "title": "Contacts",
+                "search": {
+                    "placeholder": "Search users..."
+                },
+                "list": {
+                    "A": {
+                        "text": "A",
+                        "name": "Albert Rodarte",
+                        "name2": "Allison Etter"
+                    },
+                    "C": {
+                        "text": "C",
+                        "name": "Craig Smiley"
+                    },
+                    "D": {
+                        "text": "D",
+                        "name": "Daniel Clay",
+                        "name2": "Doris Brown"
+                    },
+                    "H": {
+                        "text": "H",
+                        "name": "Hanah Mile"
+                    },
+                    "I": {
+                        "text": "I",
+                        "name": "Iris Wells"
+                    },
+                    "J": {
+                        "text": "J",
+                        "name": "Juan Flakes",
+                        "name2": "John Hall",
+                        "name3": "Joy Southern"
+                    },
+                    "M": {
+                        "text": "M",
+                        "name": "Mary Farmer",
+                        "name2": "Mark Messer",
+                        "name3": "Michael Hinton"
+                    },
+                    "O": {
+                        "text": "O",
+                        "name": "Ossie Wilson"
+                    },
+                    "P": {
+                        "text": "P",
+                        "name": "Phillis Griffin",
+                        "name2": "Paul Haynes"
+                    },
+                    "R": {
+                        "text": "R",
+                        "name": "Rocky Jackson"
+                    },
+                    "S": {
+                        "text": "S",
+                        "name": "Sara Muller",
+                        "name2": "Simon Velez",
+                        "name3": "Steve Walker"
+                    },
+                    "dropdown": {
+                        "item1": "Share",
+                        "item2": "Block",
+                        "item3": "Remove"
+                    }
+                },
+                "modal": {
+                    "title": "Add Contact",
+                    "form": {
+                        "email": {
+                            "label": "Email",
+                            "placeholder": "Enter Email"
+                        },
+                        "message": {
+                            "label": "Invatation Message",
+                            "placeholder": "Enter Message"
+                        },
+                        "button": {
+                            "close": "Close",
+                            "contact": "Invite Contact"
+                        }
+                    }
+                }
+            },
+            "settings": {
+                "title": "Settings",
+                "name": "Patrick Smith",
+                "status": {
+                    "text": "Available",
+                    "dropdown": {
+                        "available": "Available",
+                        "busy": "Busy"
+                    }
+                },
+                "info": {
+                    "title": "Personal Info",
+                    "name": {
+                        "text": "Name",
+                        "value": "Patricia Smith"
+                    },
+                    "email": {
+                        "text": "Email",
+                        "value": "abc@123.com"
+                    },
+                    "time": {
+                        "text": "Time",
+                        "value": "11:40 AM"
+                    },
+                    "location": {
+                        "text": "Location",
+                        "value": "California, USA"
+                    },
+                    "edit": "Edit"
+                },
+                "privacy": {
+                    "title": "Privacy",
+                    "photo": "Profile photo",
+                    "dropdowntext": "Everyone",
+                    "dropdown": {
+                        "everyone": "Everyone",
+                        "selected": "Selected",
+                        "nobody": "Nobody"
+                    },
+                    "seen": "Last seen",
+                    "status": "Status",
+                    "receipt": "Read receipts",
+                    "groups": "Groups"
+                },
+                "security": {
+                    "title": "Security",
+                    "text": "Show security notification"
+                },
+                "help": {
+                    "title": "Help",
+                    "faqs": "FAQs",
+                    "contact": "Contact",
+                    "policy": "Terms & Privacy policy"
+                },
+                "modal": {
+                    "title": "Change Profile",
+                    "form": {
+                        "profile": {
+                            "label": "Profile"
+                        },
+                        "name": {
+                            "label": "Name",
+                            "placeholder": "Enter name",
+                            "validation": {
+                                "required": "Name is mendatory."
+                            }
+                        },
+                        "email": {
+                            "label": "Email",
+                            "placeholder": "Enter email",
+                            "validation": {
+                                "required": "Email is mandatory.",
+                                "invalid": "Email is invalid. Please provide valid email."
+                            }
+                        },
+                        "location": {
+                            "label": "Location",
+                            "placeholder": "Enter location",
+                            "validation": {
+                                "required": "Location is mendatory."
+                            }
+                        },
+                        "button": {
+                            "close": "Close",
+                            "save": "Save"
+                        }
+                    }
+                }
+            }
+        },
+        "profiledropdown": {
+            "profile": "Profile",
+            "setting": "Setting",
+            "logout": "Log out"
+        },
+        "chatpanelheader": {
+            "name": "Doris Brown",
+            "search": {
+                "placeholder": "Search.."
+            },
+            "dropdown": {
+                "viewprofile": "View Profile",
+                "archive": "Archive",
+                "muted": "Muted",
+                "delete": "Delete"
+            }
+        },
+        "messages": {
+            "1": {
+                "name": "Dorsin Brown",
+                "message": "Good Morning",
+                "time": "10:00"
+            },
+            "2": {
+                "name": "Patricia Smith",
+                "message": "Good morning, How are you? What about our next meeting?",
+                "time": "10:02"
+            },
+            "3": {
+                "name": "Doris Brown",
+                "message": "Yeah everything is fine",
+                "message2": "& Next meeting tomorrow 10.00AM",
+                "time": "10:05"
+            },
+            "4": {
+                "name": "Patricia Smith",
+                "message": "Wow that's great",
+                "time": "10:06"
+            },
+            "5": {
+                "name": "Doris Brown",
+                "time": "10:09"
+            },
+            "6": {
+                "name": "Patricia Smith",
+                "time": "10:16"
+            },
+            "7": {
+                "name": "Doris Brown",
+                "message": "typing"
+            },
+            "dropdown": {
+                "copy": "Copy",
+                "save": "Save",
+                "forward": "Forward",
+                "delete": "Delete"
+            },
+            "filedropdown": {
+                "share": "Share",
+                "delete": "Delete"
+            }
+        },
+        "rightpanel": {
+            "name": "Dorsin Brown",
+            "status": "Active",
+            "message": "If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual.",
+            "about": {
+                "text": "Text",
+                "name": {
+                    "text": "Name",
+                    "value": "Dorsin Brown"
+                },
+                "email": {
+                    "text": "Email",
+                    "value": "abc@123.com"
+                },
+                "time": {
+                    "text": "Time",
+                    "value": "11:40 AM"
+                },
+                "location": {
+                    "text": "Location",
+                    "value": "California, USA"
+                }
+            },
+            "attachedfile": {
+                "text": "Attached Files",
+                "file1": {
+                    "name": "admin_v1.0.zip",
+                    "size": "12.5 MB"
+                },
+                "file2": {
+                    "name": "Image-1.jpg",
+                    "size": "4.2 MB"
+                },
+                "file3": {
+                    "name": "Image-2.jpg",
+                    "size": "3.1 MB"
+                },
+                "file4": {
+                    "name": "Landing-A.zip",
+                    "size": "6.7 MB"
+                },
+                "dropdown": {
+                    "action": "Action",
+                    "another": "Another action",
+                    "delete": "Delete"
+                }
+            }
+        }
+    },
+    "footer": {
+        "name": "Chatvia. Crafted with ",
+        "text": " by Themesbrand"
+    }
+}

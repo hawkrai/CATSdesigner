@@ -69,8 +69,8 @@ namespace LMPlatform.Data.Repositories
         public List<Subject> GetSubjectsLite(int? groupId = null)
 		{
 			using var context = new LmPlatformModelsContext();
-			var subjectGroup = context.Set<SubjectGroup>().Where(sg => !groupId.HasValue || sg.GroupId == groupId.Value);
-			return subjectGroup.Select(sg => sg.Subject).GroupBy(x => x.Id).Select(x => x.First()).ToList();
+			var subjectGroup = context.Set<SubjectGroup>().Where(sg => !groupId.HasValue || (sg.GroupId == groupId.Value && sg.IsActiveOnCurrentGroup));
+			return subjectGroup.Select(sg => sg.Subject).DistinctBy(x => x.Id).ToList();
 		}
 
 		public bool IsSubjectName(string name, string id, int userId)

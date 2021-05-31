@@ -16,7 +16,10 @@
                *ngIf="visitStatsComponent.isLecturer">
               {{consultation.Day | date:'dd.MM.yyyy'}}
             </a>
-            <p *ngIf="visitStatsComponent.getDiplomUser().IsStudent || !visitStatsComponent.isLecturer">
+            <p *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
+              {{consultation.Day | date:'dd.MM.yyyy'}}
+            </p>
+            <p *ngIf="!visitStatsComponent.isLecturer && visitStatsComponent.getDiplomUser().IsSecretary">
               {{consultation.Day | date:'dd.MM.yyyy'}}
             </p>
           </div>
@@ -28,7 +31,12 @@
         <td class="mdc-data-table__cell">{{ i + 1 }}</td>
         <td class="mdc-data-table__cell">{{ stats.Name }}</td>
         <td class="mdc-data-table__cell">{{ stats.Group }}</td>
-        <ng-container *ngIf="visitStatsComponent.getDiplomUser().IsStudent|| !visitStatsComponent.isLecturer">
+        <ng-container *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
+          <td class="mdc-data-table__cell data-cell" *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks">
+            {{consultationMark.Mark}}
+          </td>
+        </ng-container>
+        <ng-container *ngIf="!visitStatsComponent.isLecturer && visitStatsComponent.getDiplomUser().IsSecretary">
           <td class="mdc-data-table__cell data-cell" *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks">
             {{consultationMark.Mark}}
           </td>

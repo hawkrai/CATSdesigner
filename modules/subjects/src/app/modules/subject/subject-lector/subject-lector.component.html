@@ -1,5 +1,5 @@
 <ng-container >
-  <app-popover-dialog [width]="600">
+  <app-popover-dialog>
     <ng-container title>
       {{data.title}}
     </ng-container>
@@ -20,7 +20,7 @@
                 class="subject-lector__action"
                 color="primary"
                 [disabled]="!selectedLector"
-                (click)="joinedLector()">{{'button.join' | translate:'Присоединить'}}</button>
+                (click)="joinLector()">{{'button.join' | translate:'Присоединить'}}</button>
       </div>
       <p mat-dialog-title class="subject-lector__table-title" *ngIf="joinedLectors?.length">{{'text.subjects.lector.joined' | translate:'Присоединенные преподаватели'}}</p>
       <div class="mdc-data-table example-container mat-elevation-z8">
@@ -29,7 +29,7 @@
           <tr class="mdc-data-table__row" *ngFor="let joinedLector of joinedLectors | sortBy:'FullName'">
             <td class="mdc-data-table__cell">{{ joinedLector.FullName }}</td>
             <td class="mdc-data-table__cell subject-lector__table-action">
-              <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lector.disjoin' | translate: 'Открепить преподавателя'" (click)="deletePopover(joinedLector)">
+              <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lector.disjoin' | translate: 'Открепить преподавателя'" (click)="disjoinLector(joinedLector)">
                 <span class="material-icons">
                   keyboard_tab
                   </span>

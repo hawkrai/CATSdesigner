@@ -56,21 +56,21 @@ export class SubjectLectorComponent implements OnInit {
     });
   }
 
-  joinedLector() {
+  joinLector() {
     this.subjectService.joinedLector(this.subjectId, this.selectedLector.LectorId).subscribe(body => {
       if (body.Code === "200") {
         this.setLectors();
-        this.store.dispatch(catsActions.showMessage({ body }));
       }
+      this.store.dispatch(catsActions.showMessage({ body }));
     });
   }
 
-  deletePopover(lector) {
+  disjoinLector(lector) {
     this.subjectService.disjoinLector(this.subjectId, lector.LectorId).subscribe(body => {
       if (body.Code === "200") {
         this.setLectors();
-        this.store.dispatch(catsActions.showMessage({ body }));
       }
+      this.store.dispatch(catsActions.showMessage({ body }));
     }
     )
   }
