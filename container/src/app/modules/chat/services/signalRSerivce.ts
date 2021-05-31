@@ -68,8 +68,11 @@ export class SignalRService {
   }
 
   public remove(id: any) {
-    return this.hubConnection.invoke("DeleteGroupMsg", id.toString(), this.dataService.activChatId.toString());
-  }
+    if (this.dataService.isActivGroup)
+      return this.hubConnection.invoke("DeleteGroupMsg", id.toString(), this.dataService.activChatId.toString());
+    else
+      return this.hubConnection.invoke("DeleteChatMsg", id.toString(), this.dataService.activChatId.toString());    
+    }
 
   public join(userId: number, role: string) {
     return this.hubConnection.invoke("Join", userId, role);
