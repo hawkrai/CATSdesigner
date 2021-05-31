@@ -22,7 +22,7 @@ export class EditDocumentDialogComponent implements OnInit {
   public model = {
     editorData: '',
     config: {
-      placeholder: this.translatePipe.transform('text.editor.hint.enter.content.here',"Введите содержимое здесь..."),
+      placeholder: this.translatePipe.transform('text.editor.hint.enter.name.here',"Введите наименование здесь..."),
       language: StringHelper.helper.transformLanguageLine(localStorage.getItem("locale") ?? "ru"),
       toolbar: [ 'heading',
         '|', 'bold', 'italic', 'link', 'alignment',
@@ -40,25 +40,27 @@ export class EditDocumentDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<EditDocumentDialogComponent>,
     public translatePipe: TranslatePipe,
-    @Inject(MAT_DIALOG_DATA) public data: DocumentPreview) { }
+    @Inject(MAT_DIALOG_DATA) public data: DocumentPreview) {
+    }
 
   ngOnInit() {
     this.isEnableToSave = false;
-    this.oldName = this.model.editorData = this.data.Name;
+    this.model.editorData = this.data.Name;
+    this.oldName = StringHelper.helper.sanitizeHtml(this.data.Name);
     this.description = this.data.ParentId && this.data.ParentId != 0 ?
-      this.translatePipe.transform('text.editor.edit.theme',"Редактирование темы") :
-      this.translatePipe.transform('text.editor.edit.book',"Редактирование учебника");
+      this.translatePipe.transform('text.editor.edit.theme',"Переименование темы") :
+      this.translatePipe.transform('text.editor.edit.book',"Переименование учебника");
   }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  onModelChanged(model) {
+  onModelChanged() {
     this.isEnableToSave =
-     (StringHelper.helper.sanitizeHtml(model.editorData).length > 0 &&
-      StringHelper.helper.sanitizeHtml(model.editorData).length < 256 &&
-      this.oldName != model.editorData);
+     (StringHelper.helper.sanitizeHtml(this.model.editorData).length > 0 &&
+      StringHelper.helper.sanitizeHtml(this.model.editorData).length < 256 &&
+      this.oldName != this.model.editorData);
   }
 
   onYesClick() {

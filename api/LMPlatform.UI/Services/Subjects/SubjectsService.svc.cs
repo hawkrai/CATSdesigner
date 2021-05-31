@@ -73,7 +73,7 @@ namespace LMPlatform.UI.Services.Subjects
         {
             return new UserAssignedViewData
             {
-                IsAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, int.Parse(subjectId))
+                IsAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, int.Parse(subjectId))
             };
         }
 

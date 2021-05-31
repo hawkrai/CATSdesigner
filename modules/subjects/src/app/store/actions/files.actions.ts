@@ -1,5 +1,6 @@
 import { AttachedFile } from './../../models/file/attached-file.model';
 import { createAction, props } from '@ngrx/store';
+import { HttpResponse } from '@angular/common/http';
 
 export const downloadFile = createAction(
     '[Files] Download Files',
@@ -49,14 +50,9 @@ export const loadSubjectFiles = createAction(
     '[Files] Load Subject Files'
 );
 
-export const getExcelData = createAction(
-    '[Files] Get Excel Data',
-    props<{ response: Blob }>()
-);
-
-export const getZipData = createAction(
-    '[Files] Get Zip Data',
-    props<{ response: ArrayBuffer }>()
+export const exportFile = createAction(
+    '[Files] Export File',
+    props<{ response: HttpResponse<Blob> | HttpResponse<ArrayBuffer> }>()
 );
 
 export const getAttachmentsAsZip = createAction(

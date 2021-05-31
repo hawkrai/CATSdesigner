@@ -11,6 +11,7 @@ import { StudentMark } from 'src/app/models/student-mark.model';
 import { Observable, combineLatest } from 'rxjs';
 import * as moment from 'moment';
 
+import * as catsActions from '../../../../store/actions/cats.actions';
 import * as practicalsActions from '../../../../store/actions/practicals.actions';
 import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
@@ -21,6 +22,7 @@ import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.c
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
 import { Help } from 'src/app/models/help.model';
+import { Message } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-results',
@@ -67,7 +69,11 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getTotal(student: StudentMark): number {
-    return ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2);
+    if (student.TestMark === null || student.TestMark === '') {
+      return +student.PracticalsMarkTotal;
+    }
+    const mark = ((Number(student.PracticalsMarkTotal) + Number(student.TestMark)) / 2)
+    return Math.round(mark * 10) / 10;
   }
 
   setMark(student: StudentMark, practicalId: number, recommendedMark: string) {
@@ -105,8 +111,12 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getMissingTooltip(marks: PracticalVisitingMark[], schedule: ScheduleProtectionPractical[]) {
-    return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}.${schedule.find(s => s.ScheduleProtectionPracticalId === sc.ScheduleProtectionPracticalId).Date}`).join('\n');
+    return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}: ${schedule.find(s => s.ScheduleProtectionPracticalId === sc.ScheduleProtectionPracticalId).Date}`).join('\n');
 
+  }
+
+  navigateToProfile(student: StudentMark): void {
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${student.StudentId}`) }));
   }
 
   private getPracticalMark(mark: PracticalMark, studentId: number) {

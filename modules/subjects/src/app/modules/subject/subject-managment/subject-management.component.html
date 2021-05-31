@@ -1,7 +1,7 @@
 <ng-container *ngIf="subject">
   <app-popover-dialog class="subject-management">
     <ng-container title>
-      {{ data.model && data.model.subjectId ? ('subject.creation' | translate:'Создание предмета') : ('subject.editing' | translate:'Редактирование предмета') }}
+      {{ data.model && !data.model.subjectId ? ('subject.creation' | translate:'Создание предмета') : ('subject.editing' | translate:'Редактирование предмета') }}
     </ng-container>
     <ng-container body>
       <form class="example-form" #formElement="ngForm">
@@ -91,7 +91,7 @@
       </div>
     </ng-container>
     <ng-container actions>
-      <button mat-raised-button (click)="onClose(files, false)">{{'button.cancel' | translate:'Отмена'}}</button>
+      <button mat-raised-button (click)="onCancel()">{{'button.cancel' | translate:'Отмена'}}</button>
       <button
       mat-raised-button
       color="primary"

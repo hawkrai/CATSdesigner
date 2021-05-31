@@ -4,6 +4,7 @@ import { NoAuthGuard } from './no-auth.guard'
 import { NoAuthGuardAdmin } from './no-auth-admin.guard'
 import { HttpClientModule } from '@angular/common/http';
 import { UserAssignedToSubjectGuard } from './guards/user-assigned-to-subject.guard';
+import { UserLecturerGuard } from './guards/user-lecturer.guard';
 
 @NgModule({
   declarations: [],
@@ -15,7 +16,8 @@ import { UserAssignedToSubjectGuard } from './guards/user-assigned-to-subject.gu
   providers:[
     NoAuthGuard,
     NoAuthGuardAdmin,
-    UserAssignedToSubjectGuard
+    UserAssignedToSubjectGuard,
+    UserLecturerGuard
   ]
 })
 export class CoreModule { }

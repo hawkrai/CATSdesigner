@@ -1,4 +1,5 @@
-﻿using LMPlatform.Models;
+﻿using Application.Core.Helpers;
+using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,11 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
                 GroupId = x.GroupId,
                 GroupName = x.Group.Name,
             });
+            var owner = model.SubjectLecturers.FirstOrDefault(x => x.Owner.HasValue)?.Owner;
+            Owner =  owner is null ? model.SubjectLecturers.FirstOrDefault(x => !x.Owner.HasValue).LecturerId : owner;
         }
+
+        public int? Owner { get; set; }
 
         public int SubjectId
         {

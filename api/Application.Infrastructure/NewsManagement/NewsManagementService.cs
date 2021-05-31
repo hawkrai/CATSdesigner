@@ -11,6 +11,12 @@ namespace Application.Infrastructure.NewsManagement
 {
     public class NewsManagementService : INewsManagementService
     {
+        public IEnumerable<SubjectNews> GetNewsByGroupName(string groupName)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.NewsRepository.GetAll(new Query<SubjectNews>(x => x.Subject.SubjectGroups.Any(x => x.Group.Name == groupName))).ToList();
+        }
+
         public IEnumerable<SubjectNews> GetUserNewsByFIO(string fio)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
