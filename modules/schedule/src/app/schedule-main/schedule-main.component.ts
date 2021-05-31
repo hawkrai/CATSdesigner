@@ -133,8 +133,20 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   getToolTip(title: string): any {
-    const splitted = title.split('|', 8);
-    return splitted[7];
+    let group = this.lessonservice.getTitelPart(title, 12);
+    let subGroup = this.lessonservice.getTitelPart(title, 13);
+    if (group != 'null') {
+      group += ' \n';
+    } else {
+      group = '';
+    }
+
+    if (subGroup != 'null') {
+      subGroup += ' \n';
+    } else {
+      subGroup = '';
+    }
+    return this.lessonservice.getTitelPart(title, 7) + group + subGroup;
   }
 
   isNote(event): boolean {
