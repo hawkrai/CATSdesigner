@@ -19,6 +19,8 @@ import { EditDocumentDialogComponent } from './components/dialogs/edit-document-
 import { TestDialogComponent } from './components/dialogs/test-dialog/test-dialog.component';
 import { TestExecutionComponent } from './components/adaptiveLearningTests/adaptive-learning-test.component';
 import { QuestionComponent } from './components/adaptiveLearningTests/components/question/question.component';
+import { CopyToOtherSubjectDialogComponent } from './components/dialogs/copy-to-other-subject-dialog/copy-to-other-subject-dialog.component';
+import { CopyFromOtherSubjectDialogComponent } from './components/dialogs/copy-from-other-subject-dialog/copy-from-other-subject-dialog.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { QuestionComponent } from './components/adaptiveLearningTests/components
     TranslatePipe,
     TestExecutionComponent,
     QuestionComponent,
+    CopyToOtherSubjectDialogComponent,
+    CopyFromOtherSubjectDialogComponent
   ],
   imports: [
     BrowserModule,
