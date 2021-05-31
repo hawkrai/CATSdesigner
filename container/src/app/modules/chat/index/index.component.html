@@ -1,3 +1,5 @@
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 <div class="layout-wrapper d-lg-flex" style="height: 90%;padding-top: 10px">
   <!-- start chat-leftsidebar -->
@@ -96,9 +98,9 @@
         <!-- end chat user head -->
 
         <!-- start chat conversation -->
-        <perfect-scrollbar class="chat-conversation p-3 p-lg-4" style="height: 90%;">
+        <perfect-scrollbar id="scroll" class="chat-conversation p-3 p-lg-4" style="height: 90%;">
           <ul class="list-unstyled mb-0" style="height: 90%;">
-            <li *ngFor="let data of Messages" [ngClass]="{'right': data.align === 'right'}" style="height: 90%;">
+            <li *ngFor="let data of messages" [ngClass]="{'right': data.align === 'right'}" style="height: 90%;">
               <div class="conversation-list" *ngIf="!data.isToday">
                 <div class="chat-avatar">
                   <img src="{{data.profile}}" alt="">
@@ -106,7 +108,7 @@
 
                 <div class="user-chat-content">
                   <div class="ctext-wrap">
-                    <div class="ctext-wrap-content">
+                    <div style="width: -webkit-fill-available;" class="ctext-wrap-content">
                       <p class="mb-0">
                         {{data.text}}
                         <span class="animate-typing" *ngIf="data.istyping">
@@ -115,11 +117,13 @@
                           <span class="dot ml-1"></span>
                         </span>
                       </p>
-
+                      <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span
+                        class="align-middle">{{data.time}}</span></p>
+                
                       <ul class="list-inline message-img mb-0" *ngIf="data.isimage">
                         <div>
                             <a class="popup-img d-inline-block m-1" href="#" title="Project 1">
-                              <img :src="http://localhost:4200/catService/file/Download?chatId={{dataService.activChat.id}}&file={{data.fileContent}}" alt="" class="rounded border">
+                              <img :src="http://localhost:4200/catService/file/Download?chatId={{dataService.activChatId}}&file={{data.fileContent}}" alt="" class="rounded border">
                             </a>
                           </div>
                           <div class="message-img-link">
@@ -169,7 +173,7 @@
                     </div>
                   </div>
                   <div class="ctext-wrap" *ngIf="data.message2">
-                    <div class="ctext-wrap-content">
+                    <div style="width: -webkit-fill-available;" class="ctext-wrap-content">
                       <p class="mb-0">
                         {{data.message2}}
                       </p>
@@ -192,7 +196,6 @@
                   <div class="conversation-name">{{data.name}}</div>
                 </div>
               </div>
-
               <div class="chat-day-title" *ngIf="data.isToday">
                 <span class="title">Today</span>
               </div>
@@ -220,7 +223,8 @@
                     </button>
                   </li>
                   <li class="list-inline-item">
-                    <button type="button" (click)="openDialog()" class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
+                    <input #fileInput hidden="true" type="file" (change)="uploadFiles($event.target)" />
+                    <button type="button" (click)="fileInput.click()"  class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
                       data-toggle="tooltip" data-placement="top" ngbTooltip="Attached File">
                       <i class="ri-attachment-line"></i>
                     </button>

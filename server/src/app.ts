@@ -112,7 +112,8 @@ const proxyElasticSearchOptions = {
   changeOrigin: true,
   pathRewrite: {
     '^/ElasticSearch': 'ElasticSearch', // rewrite path
-  },
+  }
+}
 
 const proxyChatOptions = { 
   target: "http://178.124.197.115:3000/", 

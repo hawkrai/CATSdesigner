@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
 
 import { chat } from './data';
-import { Chats } from './chats.model';
+import { Chat } from './chats.model';
 import { DataService } from '../../services/dataService';
+import { Subscription } from 'rxjs';
+import { ContactService } from '../../services/contactService';
 
 @Component({
   selector: 'app-chats',
@@ -13,11 +15,12 @@ import { DataService } from '../../services/dataService';
 /**
  * Tab-chat component
  */
-export class ChatsComponent implements OnInit {
+export class ChatsComponent implements OnInit,OnDestroy {
 
-  chat: Chats[];
-
-  constructor(public dataService:DataService) { }
+  filterValue:string;
+  chats: Chat[];
+  subscription: Subscription;
+  constructor(private cdr: ChangeDetectorRef,public dataService:DataService,private contactService: ContactService) { }
 
   customOptions: OwlOptions = {
     loop: true,
@@ -30,18 +33,42 @@ export class ChatsComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    if (!this.dataService.isLoaded)
-      this.dataService.load();
-    this.chat = this.dataService.chats;
+    this.subscription=this.dataService.chats.subscribe(chats=>
+      {
+        this.chats=chats;
+        this.cdr.detectChanges();
+      });
+    this.dataService.LoadChats();
   }
 
-  /**
-   * Show user chat
-   */
-  // tslint:disable-next-line: typedef
-  async showChat(id:number) {
-    this.dataService.LoadMsg(id);
-    console.log(id);
-    document.getElementById('chat-room').classList.add('user-chat-show');
+  filter(): void {
+    this.contactService.loadContacts(this.filterValue);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  async showChat(chat:Chat) {
+    if (!chat.id)
+    {
+      this.contactService.CreateChat(chat.userId)
+      .subscribe(res=>{
+        chat.id=res;
+        this.dataService.activChat=chat;
+        this.dataService.activChatId=chat.id;
+        this.dataService.isGroupChat=false;
+        this.dataService.LoadChatMsg();
+        document.getElementById('chat-room').classList.add('user-chat-show');    
+      })      
+    }
+    else
+    {
+      this.dataService.activChat=chat;
+      this.dataService.activChatId=chat.id;
+      this.dataService.isGroupChat=false;
+      this.dataService.LoadChatMsg();
+      document.getElementById('chat-room').classList.add('user-chat-show');  
+    }
   }
 }

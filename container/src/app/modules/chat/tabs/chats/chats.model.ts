@@ -1,6 +1,6 @@
 import { Groups } from '../groups/groups.model';
-export class Chats {
-    id: number;
+export class Chat {
+    id?: number;
     name: string;
     profilePicture?: string;
     status?: string;
@@ -10,8 +10,5 @@ export class Chats {
     isActive?: boolean;
     isTyping?: boolean;
     isGroup?:boolean;
-    constructor()
-    {
-
-    }
+    userId?:number;
 }

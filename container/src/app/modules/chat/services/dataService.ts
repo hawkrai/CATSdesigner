@@ -1,121 +1,174 @@
 import { Injectable } from '@angular/core';
-import { Chats } from '../tabs/chats/chats.model';
+import { Chat } from '../tabs/chats/chats.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Message } from '../index/chat.model';
 import { SubjectGroups } from '../tabs/groups/subject.groups.model';
 import { MessageCto } from '../Dto/messageCto';
+import { MsgService } from './msgService';
+import { BehaviorSubject } from 'rxjs';
+import { ChatService } from './chatService';
+import { Groups } from '../tabs/groups/groups.model';
+import { exit } from 'process';
+import { element } from 'protractor';
 @Injectable({
     providedIn: 'root',
 })
 export class DataService {
-    public chats: Chats[] = new Array<Chats>();
-    public files: any[]=[];
-    public groups: SubjectGroups[] = new Array<SubjectGroups>();
-    public msg: Message[] = new Array<Message>();
-    public isLoaded = false;
-    public activChat: Chats;
-    public isActivGroup:boolean;
-    public user = JSON.parse(localStorage.getItem('currentUser'));
-    public isLecturer:boolean;
-    private fileUrl:string;
-    constructor(private http: HttpClient) { }
+    public files: any[] = [];
 
-    public load(): void {
-        this.isLoaded = true;
-        this.isLecturer=this.user.role=="lector";
-        this.http.get<Chats[]>('catService/chat/GetAllChats?userId=' + this.user.id)
-            .subscribe(chats => {
-                        chats.forEach(x=>{
-                            this.chats.push(x);
-                        })
-                        
-                        console.log(this.chats)
-            });
+    public activChat: any;
+    public activChatId: number;
+    public activGroup:Groups;
+    public activeSubject:SubjectGroups;
+    public chats: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([]);
+    public groups: BehaviorSubject<SubjectGroups[]> = new BehaviorSubject<Array<SubjectGroups>>([]);
+    public messages: BehaviorSubject<Message[]> = new BehaviorSubject<Array<Message>>([]);
+    public isGroupChat: boolean = false;
 
-            this.http.get<SubjectGroups[]>('catService/chat/GetAllGroups?userId=' + this.user.id+"&role="+this.user.role)
-            .subscribe(groups => {
-                        groups.forEach(x=>{
-                            this.groups.push(x);
-                        })
-                        
-                        console.log(this.groups)
-            });
-        // this.http.get<Contacts[]>('https://localhost:44306/api/Chat/GetContacts?id=' + this.user.id+"&role="+this.user.role)
-        //     .subscribe(contacts => {
-        //         this.contacts.length=0;
-        //         contacts.forEach(x=>
-        //         this.contacts.push(x));
-        //     });        
+    public isActivGroup: boolean;
+    public user: any;
+    public isLecturer: boolean;
+    private fileUrl: string;
+    constructor(private http: HttpClient, private msgService: MsgService, private chatGroupService: ChatService) {
+        this.user = JSON.parse(localStorage.getItem('currentUser'));
+        this.isLecturer = this.user.role == "lector";
     }
 
-    public LoadGroupMsg(chatId: number) {
-        this.msg.length = 0;
-        this.isActivGroup=true;
-        this.activChat = new Chats();;
-        this.groups.forEach(x => {
-            if (x.id == chatId) {
-                this.activChat.id=x.id;
-                this.activChat.name=x.name;
-                x.unread=0;
+    public LoadContacts()
+    {
+
+    }
+
+    public LoadChats(): void {
+        this.chatGroupService.loadChats().subscribe((result: Chat[]) =>
+            this.chats.next(result)
+        )
+    }
+
+    public LoadGroup(): void
+    {
+        this.chatGroupService.loadGroups().subscribe((result: SubjectGroups[]) =>
+            this.groups.next(result)
+        )
+    }
+
+    public LoadGroupMsg() {
+        if (this.activChatId)
+        {
+            var subjectNum=this.getNumSubjectById(this.activChatId);
+            if (subjectNum>-1)
+            {
+                var subjects=this.groups.getValue();
+                subjects[subjectNum].unread=0;
+                this.groups.next(subjects);
             }
             else
             {
-                x.groups.forEach(y=>
-                    {
-                        if (y.id == chatId) {
-                            this.activChat.id=y.id;
-                            this.activChat.name=y.name;
-                            y.unread=0;
-                        }           
-                    })
-            }
-        })
-
-        this.http.get<Message[]>('catService/chat/GetGroupMsg?userId=' + this.user.id+'&chatId=' + chatId)
-            .subscribe(msgs => {            
-                msgs.forEach(x => {
-                    this.msg.push(x)
-                })
-                console.log(this.msg);
-            });
-
-    }
-
-    public LoadMsg(chatId: number) {
-        this.msg.length = 0;
-        this.isActivGroup=false;
-        this.activChat = null;
-        this.chats.forEach(x => {
-            if (x.id == chatId) {
-                this.activChat = x as Chats;
-            }
-        })
-
-        this.http.get<Message[]>('catService/chat/GetChatMsg?userId=' + this.user.id+'&chatId=' + chatId)
-            .subscribe(msgs => {            
-                msgs.forEach(x => {
-                    this.msg.push(x)
-                })
-                console.log(this.msg);
+                var groupNum;
+                [subjectNum,groupNum]=this.getNumGroupById(this.activChatId);
+                var subjects=this.groups.getValue();
+                subjects[subjectNum].groups[groupNum].unread=0;
+                this.groups.next(subjects);                    
+            }    
+        }
+        
+        this.msgService.load(this.activChatId, true)
+            .subscribe((msgs: Message[]) => {
+                this.messages.next(msgs);
             });
     }
 
-    public downloadFile(filename:string)
-    {
-        this.http.get('catService/file/Download?chatId='+this.activChat.id+'&file='+filename,{responseType: "blob"}).subscribe(
-            blob => {
-                const a = document.createElement('a')
-                const objectUrl = URL.createObjectURL(blob)
-                a.href = objectUrl
-                a.download = filename;
-                a.click();
-                URL.revokeObjectURL(objectUrl);
-              }
-        );
+    public LoadChatMsg() {
+        this.msgService.load(this.activChatId, false)
+            .subscribe((msgs: Message[]) => {
+                this.messages.next(msgs);
+            });
     }
 
-    public SendImg(formData: FormData)
+    public AddMsg(msg:Message)
     {
-        this.http.post('catService/file/UploadFile',formData).subscribe(x=>{console.log(x)});
+        if(msg.chatId==this.activChatId)  
+        {
+            this.messages.next(this.messages.getValue().concat(msg))
+        }
+        else
+        {
+            var chatNum=this.getNumChatById(msg.chatId);
+            if (chatNum>-1)
+            {
+                var chats=this.chats.getValue();
+                chats[chatNum].unread++;
+                this.chats.next(chats);
+            }
+            else
+            {
+                var subjectNum=this.getNumSubjectById(msg.chatId);
+                if (subjectNum>-1)
+                {
+                    var subjects=this.groups.getValue();
+                    subjects[subjectNum].unread++;
+                    this.groups.next(subjects);
+                }
+                else
+                {
+                    var groupNum;
+                    [subjectNum,groupNum]=this.getNumGroupById(msg.chatId);
+                    var subjects=this.groups.getValue();
+                    subjects[subjectNum].groups[groupNum].unread++;
+                    this.groups.next(subjects);                    
+                }
+    
+            }
+        }
+    }
+
+    public RemoveMsg(chatId: any, msgId: any)
+    {
+        if (chatId==this.activChatId)
+        {
+            var num=this.getNumMsgById(msgId);
+            var msg=this.messages.getValue();
+            msg.splice(num,1);
+            this.messages.next(msg);
+        }
+    }
+
+    public SendImg(formData: FormData) {
+        return this.http.post('catService/file/UploadFile', formData);
+    }
+
+    private getNumChatById(id:number):number
+    {
+        return this.chats.getValue().findIndex(x=>x.id==id);
+    }
+
+    private getNumSubjectById(id:number):number
+    {
+        return this.groups.getValue().findIndex(x=>x.id==id);
+    }
+
+    private getNumGroupById(id:number):[number,number]
+    {
+        var sub=this.groups.getValue();
+        var num=-1;
+        var subNum=-1;
+        var element;
+        for(var i=0;i<sub.length;i++)
+        {
+            element=sub[i]
+            subNum++;
+            num=element.groups.findIndex(x=>x.id==id)
+            if (num>-1)
+            {
+                    return[subNum,num]
+            }
+        };
+        return [-1,-1]
+    }
+
+
+    private getNumMsgById(id:number):number
+    {
+        return this.messages.getValue().findIndex(x=>x.id==id);
     }
 }

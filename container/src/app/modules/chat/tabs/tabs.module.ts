@@ -8,20 +8,24 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { ChatsComponent } from './chats/chats.component';
 import { GroupsComponent } from './groups/groups.component';
-import { SettingsComponent } from './settings/settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { UploadComponent } from './upload/upload.component';
-import { DndDirective } from './upload/dnd.directive';
-import { ProgressComponent } from './progress/progress.component';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { LoaderComponent } from './loader/loader.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
 };
 
 @NgModule({
-  declarations: [DndDirective,ProgressComponent,UploadComponent, ChatsComponent,  GroupsComponent, SettingsComponent],
-  imports: [    
+  declarations: [LoaderComponent, ChatsComponent,  GroupsComponent],
+  imports: [
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatIconModule,    
     MatDialogModule,
     CarouselModule,
     CommonModule,
@@ -31,9 +35,10 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbTooltipModule,
     NgbModalModule,
     NgbCollapseModule,
-    TranslateModule
+    TranslateModule,
+    FormsModule
   ],
-  exports: [UploadComponent, ChatsComponent,  GroupsComponent, SettingsComponent],
+  exports: [ ChatsComponent,  GroupsComponent],
   providers: [
     {
       provide: PERFECT_SCROLLBAR_CONFIG,

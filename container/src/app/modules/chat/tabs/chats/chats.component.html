@@ -5,12 +5,12 @@
      <div class="search-box chat-search-box">
        <div class="input-group mb-3 bg-light  input-group-lg rounded-lg">
          <div class="input-group-prepend">
-           <button class="btn btn-link text-muted pr-1 text-decoration-none" type="button">
+           <button class="btn btn-link text-muted pr-1 text-decoration-none" (click)="filter()" type="button">
              <i class="ri-search-line search-icon font-size-18"></i>
            </button>
          </div>
-         <input type="text" class="form-control bg-light"
-           placeholder="Название чата">
+         <input type="text" [(ngModel)]="filterValue" class="form-control bg-light"
+           placeholder="ФИО">
        </div>
      </div> <!-- Search Box--> 
    </div> <!-- .p-4 -->
@@ -21,8 +21,8 @@
      <perfect-scrollbar class="chat-message-list" style="height: 90%;">
 
        <ul class="list-unstyled chat-list chat-user-list">
-         <li *ngFor="let user of chat" [ngClass]="{'typing': user.isTyping, 'active': user.isActive}">
-           <a (click)="showChat(user.id)">
+         <li *ngFor="let user of chats" [ngClass]="{'typing': user.isTyping, 'active': user.isActive}">
+           <a (click)="showChat(user)">
              <div class="media">
 
                <div class="chat-user-img align-self-center mr-3" [ngClass]="{'online': user.status === 'online',

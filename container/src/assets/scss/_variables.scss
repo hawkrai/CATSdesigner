@@ -7,7 +7,7 @@
 // Vertical Sidebar - Default Light
 $sidebar-bg: #ffffff;
 $sidebar-menu-item-color: #878a92;
-$sidebar-menu-item-active-color: #7269ef;
+$sidebar-menu-item-active-color: #3f51b5;
 $sidebar-menu-item-active-bg: #f7f7ff;
 $sidebar-sub-bg:  #f5f7fb;
 
@@ -23,7 +23,7 @@ $font-weight-semibold: 500;
 $font-family-secondary: Roboto, "Helvetica Neue", sans-serif;
 
 // Chat
-$chat-primary-bg:     #7269ef;
+$chat-primary-bg:     #3f51b5;
 $chat-secondary-bg:     #f5f7fb;
 
 
@@ -67,7 +67,7 @@ $grays: map-merge(
   $grays
 );
 
-$blue:    #7269ef;
+$blue:    #3f51b5;
 $indigo:  #564ab1;
 $purple:  #8e4aec;
 $pink:    #e83e8c;
