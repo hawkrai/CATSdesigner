@@ -11,7 +11,7 @@
                 {{file.Name}}
             </a>
         </td>
-        <td class="mdc-data-table__cell example-content">{{file.Type}}</td>
+        <td class="mdc-data-table__cell example-content">{{file.CreationDate | date:'dd.MM.yyyy'}}</td>
         <td class="mdc-data-table__cell example-content">{{(file.Size / 1024).toFixed(2)}} {{'kb' | translate:'КБ'}}</td>
         <td class="mdc-data-table__cell" style="color: #f44336" *ngIf="file.IdFile === -1; else attached">
             {{'text.subjects.attachments.attached' | translate:'Загруженный файл'}}

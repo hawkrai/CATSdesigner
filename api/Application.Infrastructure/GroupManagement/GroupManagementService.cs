@@ -314,7 +314,7 @@ namespace Application.Infrastructure.GroupManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>().AddFilterClause(g => g.Name == groupName));
+                var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>(g => g.Name == groupName));
 
                 return group;
             }
@@ -339,8 +339,9 @@ namespace Application.Infrastructure.GroupManagement
                 foreach (var labs in subject.Labs)
                 {
                     data.Add(labs.Theme);
-                    data.Add("Коментарий");
+                    data.Add("Комментарий");
                     data.Add("Дата выставления");
+                    data.Add("Выставил");
                 }
             }
 
@@ -358,8 +359,10 @@ namespace Application.Infrastructure.GroupManagement
                 foreach (var practical in subject.Practicals)
                 {
                     data.Add(practical.Theme);
-                    data.Add("Коментарий");
+                    data.Add("Комментарий");
                     data.Add("Дата выставления");
+                    data.Add("Выставил");
+
                 }
             }
 
@@ -374,7 +377,7 @@ namespace Application.Infrastructure.GroupManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>(e => e.Id == groupId).Include(x => x.Students
-                    .Select(t => t.StudentLabMarks)));
+                    .Select(t => t.StudentLabMarks.Select(x => x.Lecturer))));
 
                 foreach (var student in group.Students.OrderBy(e => e.FullName))
                 {
@@ -385,7 +388,7 @@ namespace Application.Infrastructure.GroupManagement
 
                     var subject = repositoriesContainer.SubjectRepository.GetBy(new PageableQuery<Subject>(e => e.Id == subjectId).Include(x => x.Labs));
                     var labMark = new List<string>();
-                    string mark = "", comment = "", date = "";
+                    string mark = "", comment = "", date = "", setBy = "";
 
 
                     foreach (var lab in subject.Labs)
@@ -399,6 +402,7 @@ namespace Application.Infrastructure.GroupManagement
                                     mark = labToLabMark.Mark;
                                     comment = labToLabMark.Comment;
                                     date = labToLabMark.Date;
+                                    setBy = labToLabMark.Lecturer != null ? labToLabMark.Lecturer.FullName : string.Empty;
                                     break;
                                 }
                                 else
@@ -406,6 +410,7 @@ namespace Application.Infrastructure.GroupManagement
                                     mark = "";
                                     comment = "";
                                     date = "";
+                                    setBy = "";
                                 }
                             }
                         }
@@ -413,6 +418,7 @@ namespace Application.Infrastructure.GroupManagement
                         labMark.Add(mark);
                         labMark.Add(comment);
                         labMark.Add(date);
+                        labMark.Add(setBy);
                     }
 
                     rows.AddRange(labMark);
@@ -472,7 +478,7 @@ namespace Application.Infrastructure.GroupManagement
             {
                 var subject = repositoriesContainer.SubjectRepository.GetBy(new Query<Subject>(e => e.Id == subjectId && e.SubjectGroups.Any(sg => sg.GroupId == groupId))
                     .Include(x => x.Practicals)
-                    .Include(x => x.SubjectGroups.Select(sg => sg.Group.Students.Select(x => x.StudentPracticalMarks))));
+                    .Include(x => x.SubjectGroups.Select(sg => sg.Group.Students.Select(x => x.StudentPracticalMarks.Select(x => x.Lecturer)))));
 
                 var practicals = subject.Practicals.OrderBy(x => x.Order);
 
@@ -484,7 +490,7 @@ namespace Application.Infrastructure.GroupManagement
                     rows.Add(student.FullName);
 
                     var prcaticalMark = new List<string>();
-                    string mark = "", comment = "", date = "";
+                    string mark = "", comment = "", date = "", setBy = ""; ;
 
                     foreach (var practical in practicals)
                     {
@@ -497,6 +503,7 @@ namespace Application.Infrastructure.GroupManagement
                                     mark = practicalToPracticalMark.Mark;
                                     comment = practicalToPracticalMark.Comment;
                                     date = practicalToPracticalMark.Date;
+                                    setBy = practicalToPracticalMark.Lecturer != null ? practicalToPracticalMark.Lecturer.FullName : string.Empty;
                                     break;
                                 }
                                 else
@@ -504,6 +511,7 @@ namespace Application.Infrastructure.GroupManagement
                                     mark = "";
                                     comment = "";
                                     date = "";
+                                    setBy = "";
                                 }
                             }
                         }
@@ -511,6 +519,7 @@ namespace Application.Infrastructure.GroupManagement
                         prcaticalMark.Add(mark);
                         prcaticalMark.Add(comment);
                         prcaticalMark.Add(date);
+                        prcaticalMark.Add(setBy);
                     }
 
                     rows.AddRange(prcaticalMark);

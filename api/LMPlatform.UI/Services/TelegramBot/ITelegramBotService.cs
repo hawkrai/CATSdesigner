@@ -16,5 +16,9 @@ namespace LMPlatform.UI.Services.TelegramBot
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "/GetUserNews?fio={fio}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         NewsResult GetUserNewsByFIO(string fio);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/GetNewsByGroupName/{groupName}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        NewsResult GetNewsByGroupName(string groupName);
     }
 }

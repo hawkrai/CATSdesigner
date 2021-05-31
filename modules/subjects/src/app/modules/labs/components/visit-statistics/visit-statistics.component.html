@@ -15,7 +15,9 @@
     
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef>{{'text.students' | translate:'Студенты'}}</th>
-              <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
+              <td mat-cell *matCellDef="let element"> 
+                <span class="navigation-link" (click)="navigateToProfile(element)">{{element.FullName}}</span>
+              </td>
             </ng-container>
     
             <ng-container *ngFor="let scheduleProtectionLab of subGroupProtectionSchedule; let i = index"
