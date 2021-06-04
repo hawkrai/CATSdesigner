@@ -45,6 +45,8 @@
   "subject.creation": "Создание предмета",
   "subject.editing": "Редактирование предмета",
   "subject.students.count": "Количество студентов на предмете",
+  "subject.name.not.free": "Предмет с таким названием уже существует",
+  "subject.abbreviation.not.free": "Предмет с такой аббревиатурой уже существует",
   "hours": "Часы",
   "search": "Поиск",
   "group": "Группа",
@@ -369,6 +371,7 @@
   "text.personalAccount.changePassword.passwordsNotMatch": "Пароли не совпадают!",
   "text.personalAccount.changePassword.invalidPassword": "Некорректный формат пароля!",
   "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!",
-  "text.personalAccount.GroupName": "Группа"
+  "text.personalAccount.GroupName": "Группа",
 
+  "validation.whitespace": "Поле не может содержать пустых пробелов"
 }

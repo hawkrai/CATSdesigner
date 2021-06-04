@@ -37,6 +37,8 @@
   "subject.creation": "Subject creation",
   "subject.editing": "Subject editing",
   "subject.students.count": "Number of students per subject",
+  "subject.name.not.free": "Subject with the same name already exists",
+  "subject.abbreviation.not.free": "Subject with this abbreviation already exists",
   "hours": "Hours",
   "mark": "Mark",
   "subgroup": "Subgroup",
@@ -47,7 +49,7 @@
   "group": "Group",
   "lecturer": "Lecturer",
   "student": "Student",
-
+  
   "subject.abbreviation": "Abbreviation",
   "symbols.min.length": "Minimum number of characters",
   "symbols.max.length": "Maximum number of characters",
@@ -408,6 +410,7 @@
   "text.personalAccount.changePassword.passwordsNotMatch": "Passwords don't match!",
   "text.personalAccount.changePassword.invalidPassword": "Password has wrong format!",
   "text.personalAccount.changePassword.wrongPassword": "Wrong password!",
-  "text.personalAccount.GroupName": "Group"
+  "text.personalAccount.GroupName": "Group",
 
+  "validation.whitespace": "The field can't contain empty spaces"
 }

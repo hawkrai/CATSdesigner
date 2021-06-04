@@ -31,6 +31,7 @@ import { HelpComponent } from './components/help/help.component';
 import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
 import { SubjectNameFreeDirective } from './validators/subject-name-free.validator';
 import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
+import { WhitespaceDirective } from './validators/whitespace.validator';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviat
     HelpComponent,
     HelpPopoverComponent,
     SubjectNameFreeDirective,
-    SubjectAbbreviationFreeDirective
+    SubjectAbbreviationFreeDirective,
+    WhitespaceDirective
     ],
   imports: [
     CommonModule,
@@ -99,7 +101,8 @@ import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviat
     FileComponent,
     HelpComponent,
     SubjectNameFreeDirective,
-    SubjectAbbreviationFreeDirective
+    SubjectAbbreviationFreeDirective,
+    WhitespaceDirective
   ],
   providers: [TranslatePipe]
 })
