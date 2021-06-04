@@ -33,7 +33,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   public practicals: Practical[];
   private subs = new SubSink();
 
-  public defaultColumns = ['index', 'theme', 'shortName', 'duration'];
+  public defaultColumns = ['index', 'theme', 'shortName', 'duration', 'files'];
   public displayedColumns: string[] = this.defaultColumns;
 
   constructor(    
@@ -51,8 +51,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isTeacher) {
-      const column = this.isTeacher ? 'actions' : 'files';
-      this.displayedColumns = [...this.defaultColumns, column];
+      this.displayedColumns = [...this.defaultColumns, 'actions'];
     }
   }
 
