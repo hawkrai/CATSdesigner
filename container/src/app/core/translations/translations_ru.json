@@ -44,6 +44,7 @@
   "abbreviation": "Сокращенное название",
   "subject.creation": "Создание предмета",
   "subject.editing": "Редактирование предмета",
+  "subject.students.count": "Количество студентов на предмете",
   "hours": "Часы",
   "search": "Поиск",
   "group": "Группа",
