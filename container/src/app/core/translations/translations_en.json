@@ -1,5 +1,6 @@
 {
-  "subject": "Subjects",
+  "subject": "Courses",
+  "graduation.project": "Graduation project",
   "other": "Other",
   "others": "Others",
   "group.plural": "Groups",
@@ -26,7 +27,7 @@
   "short.name": "Short name",
   "subject.choose": "Choose subject",
   "subject.deleting": "Deleting a subject",
-  "subject.singular": "Subject",
+  "subject.singular": "Course",
   "subject.add": "Add subject",
   "subject.name": "Subject name",
   "subject.color": "Subject color",
@@ -285,8 +286,9 @@
 
   "text.visiting.date.editing": "Editable date",
 
-  "text.average.mark": "Average mark",
-  "text.average.test": "Average tests mark",
+  "text.average.labs.mark": "Average labs mark",
+  "text.average.workshops.mark": "Average workshops mark",
+  "text.average.test": "Average test results",
   "text.rating": "Rating",
   "text.subjects.grading": "Grading",
   "text.subjects.missed": "missed",
@@ -412,5 +414,11 @@
   "text.personalAccount.changePassword.wrongPassword": "Wrong password!",
   "text.personalAccount.GroupName": "Group",
 
-  "validation.whitespace": "The field can't contain empty spaces"
+  "validation.whitespace": "The field can't contain empty spaces",
+  "text.menu.workshops": "Workshops",
+  "text.menu.tests": "Tests",
+  "text.menu.course": "Course Project",
+  "text.menu.interactice.book": "Interactive Tutorial",
+  "text.menu.cm": "Educational Complex"
+
 }

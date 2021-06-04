@@ -43,6 +43,7 @@ import { MenuService } from './core/services/menu.service';
 import { HelpPopoverProgressControlComponent } from './progress-control/help-popover-progress-control/help-popover-progress-control.component';
 import { AboutSystemComponent } from './about-system/about-system.component';
 import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -59,7 +60,6 @@ import { LectorManualComponent } from './about-system/lector-manual/lector-manua
     ConfirmationComponent,
     AboutComponent,
     ResetComponent,
-    TranslatePipe,
     ProfileComponent,
     StatsComponent,
     TableForStatsSubjectComponent,
@@ -84,6 +84,7 @@ import { LectorManualComponent } from './about-system/lector-manual/lector-manua
     CoreModule,
     MatButtonModule,
     FormsModule,
+    SharedModule,
     MatTableModule,
     MatDialogModule,
     MatInputModule,
@@ -94,7 +95,6 @@ import { LectorManualComponent } from './about-system/lector-manual/lector-manua
   ],
   providers: [
     LayoutService,
-    TranslatePipe,
     MenuService
   ],
   bootstrap: [AppComponent]

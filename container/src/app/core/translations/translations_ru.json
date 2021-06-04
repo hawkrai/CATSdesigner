@@ -1,5 +1,6 @@
 {
   "subject": "Предметы",
+  "graduation.project": "Дипломное проектирование",
   "other": "Другой",
   "others": "Другие",
   "group.plural": "Группы",
@@ -373,5 +374,10 @@
   "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!",
   "text.personalAccount.GroupName": "Группа",
 
-  "validation.whitespace": "Поле не может содержать пустых пробелов"
+  "validation.whitespace": "Поле не может содержать пустых пробелов",
+  "text.menu.workshops": "Практические занятия",
+  "text.menu.tests": "Тестирование знаний",
+  "text.menu.course": "Курсовое проектирование",
+  "text.menu.interactice.book": "Интерактивный учебник",
+  "text.menu.cm": "ЭУМК"
 }
