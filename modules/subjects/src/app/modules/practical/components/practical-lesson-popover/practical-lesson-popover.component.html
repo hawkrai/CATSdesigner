@@ -9,7 +9,7 @@
           <mat-label>{{'text.subjects.practicals.name' | translate:'Название практического занятия'}}</mat-label>
           <textarea matInput formControlName="theme"></textarea>
         </mat-form-field>
-        <mat-form-field class="full-width">
+        <mat-form-field class="full-width" [matTooltip]="'text.generated automatically' | translate:'Генерируется автоматически'" matTooltipPosition="above">
           <mat-label>{{'short.name' | translate:'Краткое название'}}</mat-label>
           <input  matInput [placeholder]="'abbreviation' | translate:'Сокращенное название'" formControlName="shortName" readonly>
         </mat-form-field>

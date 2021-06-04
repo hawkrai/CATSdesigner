@@ -141,7 +141,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],
-      shortName: `ПЗ${order + 1}`
+      shortName: `ПЗ${order}`
     };
   }
 
