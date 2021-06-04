@@ -20,6 +20,10 @@
                         [checked]="isLecturer"
                         (change)="lecturerStatusChange($event)"
       >Руководитель</mat-slide-toggle>
+    <mat-icon class="help" color="primary" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents"
+      matTooltip="Для выбора другой роли нажмите на переключатель">
+      help_outline
+    </mat-icon>
     <mat-form-field class="visit-stats-component__search">
       <mat-label>Поиск по теме, фамилии</mat-label>
       <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
