@@ -117,8 +117,8 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   help: Help = {
-    message: 'Для добавления или удаления дат лекций нажмите на кнопку "Управление расписанием". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.',
-    action: 'Понятно'
+    message: this.translate.transform('text.help.lectures','Для добавления или удаления дат лекций нажмите на кнопку "Управление расписанием". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.'),
+    action: this.translate.transform ('button.understand','Понятно')
   };
 
   navigateToProfile(lecturesMarksVisiting: LecturesMarksVisiting): void {

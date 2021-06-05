@@ -68,8 +68,8 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy
   }
  
   help: Help = {
-    message: 'Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты лабораторных занятий.',
-    action: 'Понятно'
+    message: this.translate.transform ('text.help.labs.protection.schedule','Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты лабораторных занятий.'),
+    action: this.translate.transform ('button.understand','Понятно')
   }
 
 }
