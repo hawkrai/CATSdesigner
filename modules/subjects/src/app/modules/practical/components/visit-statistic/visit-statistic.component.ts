@@ -116,7 +116,7 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
   }
 
   help: Help = {
-    message: 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии. ', 
-    action: 'Понятно'
+    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
+    action: this.translate.transform('button.understand','Понятно')
   };
 }
