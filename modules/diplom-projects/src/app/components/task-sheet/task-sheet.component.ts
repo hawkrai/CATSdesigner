@@ -150,4 +150,8 @@ export class TaskSheetComponent implements OnInit {
   downloadTaskSheet() {
     location.href = location.origin + '/api/DpTaskSheetDownload?diplomProjectId=' + this.diplomProjectId;
   }
+
+  downloadArchive() {
+    location.href = location.origin + '/api/DpTaskSheetDownload';
+  }
 }
