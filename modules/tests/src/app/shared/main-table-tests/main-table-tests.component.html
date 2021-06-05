@@ -1,9 +1,14 @@
-<div class="main-table-title" *ngIf="title">
+<div class="main-table-title"
+     [class.blackTitle]="black"
+     *ngIf="title">
   {{title}}
 </div>
 <ng-container *ngIf="tests; else loading">
   <div>
-    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg" cdkDropList #table
+    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg"
+               [class.black]="black"
+               [class.white]="white"
+               cdkDropList #table
                [cdkDropListData]="tests"
                (cdkDropListDropped)="dropTable($event)" >
 
