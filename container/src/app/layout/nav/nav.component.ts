@@ -28,9 +28,9 @@ export class NavComponent implements OnInit, OnDestroy {
   public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
   public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-  public profileIcon = "/assets/images/account.png";;
+  public profileIcon = "/assets/images/account.png";
+  public userFullName;
 
-  public currentUserId!: number;
   valueForSearch!: string;
   
   searchResults !: string[];
@@ -57,13 +57,9 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
-    this.getAvatar();
+    this.getUserInfo();
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
-
-
-    this.currentUserId = this.autService.currentUserValue.id;
-
     this.coreService.getGroups()
       .pipe(
         tap((groups: any) => {
@@ -98,9 +94,10 @@ export class NavComponent implements OnInit, OnDestroy {
 
 
 
-  getAvatar() {
-    this.profileService.getAvatar().subscribe(res => {
-      this.profileIcon = res;
+  getUserInfo() {
+    this.profileService.getProfileInfo(this.autService.currentUserValue.id).subscribe(res => {
+      this.profileIcon = res.Avatar;
+      this.userFullName = res.Name;
     });
   }
 
