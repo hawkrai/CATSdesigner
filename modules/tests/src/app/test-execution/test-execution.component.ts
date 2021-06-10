@@ -51,13 +51,12 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
         tap((question: TestQuestion) => {
           this.question = question;
           if (!this.question.Seconds && this.question.Seconds === 0) {
-            //this.router.navigate(["/test-result"]);
+            this.router.navigate(["/test-result"], {queryParams: {testId: this.test.Id}});
           }
           this.questionNumber = question && question.Number.toString();
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers;
           this.counter$ = timer(0, 1000).pipe(
             map(() => {
-              console.log("1" + this.question.Seconds);
               if (this.question.Seconds && this.question.Seconds != 0) {
                 --this.question.Seconds;
                 const hour: number = Math.floor(this.question.Seconds / 3600);
@@ -65,12 +64,11 @@ export class TestExecutionComponent extends AutoUnsubscribeBase implements OnIni
                 const minute: number = Math.floor(restTime / 60);
                 restTime = restTime - 60 * minute;
                 if (hour === 0 && minute === 0 && restTime === 0) {
-                  //this.router.navigate(["/test-result"]);
+                  this.router.navigate(["/test-result"], {queryParams: {testId: this.test.Id}});
                 }
                 return (hour >= 10 ? hour.toString() : "0" + hour.toString()) + ":" + (minute >= 10 ? minute.toString() : "0" + minute.toString()) + ":" + (restTime >= 10 ? restTime.toString() : "0" + restTime.toString());
               }
               else {
-                console.log("2" + this.question.Seconds);
                 return "00:00:00";
               }
             })

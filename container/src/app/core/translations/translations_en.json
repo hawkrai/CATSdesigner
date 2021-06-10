@@ -417,4 +417,21 @@
     "text.start.google": "Get it on Google Play",
     "text.start.helpApp": "Go to download the app from the Apple store",
     "text.start.AppStore": "Available on the App Store"
+
+  "button.understand": "Clear",
+  "text.help.lectures": "To add or remove lecture dates, click on the 'Schedule management' button. Double click on the cell with the required date to mark the attendance and leave comments.",
+  "text.help.news": "To hide or show all news, press the button with the same name. To edit or delete a news, move the cursor over the required news and click on the required icon.",
+  "text.help.practical.protection.schedule": "To add or remove dates for practical classes, click on the button 'Dates management'",
+  "text.help.visit.statistic": "Double click on the cell opposite any student on the required date to mark attendance and leave comments.",
+  "text.help.results": "Double click on the cell opposite any student on the required date to set the grade.",
+  "text.help.labs.protection.schedule":"Click on the 'Dates management' button to add or remove lab dates.",
+  "text.help.settings": "Select a group, mark the required students and select a subgroup to which you want to assign them.",
+  "text.help.schedule": "To add a lab, practice or lecture, click on the desired cell. You can also add dates of classes using subsections Practical classes, Laboratory work, Lectures in a specific subject.",
+  "text.help.popover.header": "About system",
+  "text.help.popover.content.first": "The CATS training system is designed to improve the quality of training for full-time and part-time specialists, as well as for independent work. In terms of functionality, it supports 4 roles: administrator, teacher, student, and observer.",
+  "text.help.popover.content.second": "The first 3 roles are subject to authentication.",
+  "text.help.popover.content.third": "Project manager: candidate of technical sciences, associate professor, доцент Popova Y.B.",
+  "text.help.popover.content.fourth": "BNTU-2021",
+  "text.help.popover.route.manual":"Go to user manual",
+  "text.help.popover.close":"Close"
 }

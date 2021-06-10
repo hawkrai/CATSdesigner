@@ -11,6 +11,8 @@ import {Results} from "../models/results.model";
 import {catchError, map, publishLast, refCount, tap} from "rxjs/operators";
 import {CustomEncoder} from "../core/encoder/custom-encoder";
 import {FileUtils} from "../utils/file.utils";
+import {ClosedTestResult} from "../models/closed-test-result.model";
+import {DataValues} from "../models/data-values.model";
 
 
 class Headers {
@@ -64,8 +66,12 @@ export class TestPassingService {
     return this.http.post<Results[]>("/TestPassing/GetResults", {groupsIds, subjectId});
   }
 
-  getAnswersByStudentAndTest(studentId: string, testId: string = "3"): Observable<UserAnswers[]> {
-    return this.http.get<UserAnswers[]>("/TestPassing/GetUserAnswers?studentId=" + studentId + "&testId=" + testId);
+  getAnswersByStudentAndTest(studentId: string, testId: string): Observable<DataValues[]> {
+    return this.http.get<DataValues[]>("/TestPassing/GetUserAnswers?studentId=" + studentId + "&testId=" + testId);
+  }
+
+  CloseTestAndGetResult(testId): Observable<ClosedTestResult> {
+    return this.http.get<ClosedTestResult>("/TestPassing/CloseTestAndGetResult?testId=" + testId);
   }
 
   getControlItems(subjectId: string): Observable<ControlItems[]> {

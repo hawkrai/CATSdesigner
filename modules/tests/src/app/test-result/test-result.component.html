@@ -5,8 +5,8 @@
   <div class="test-result__backlink" (click)="navigate()">
     {{'text.test.back.to.test' | translate: "< К тестам"}}
   </div>
-  <div class="test-result__title" *ngIf="test">
-    {{'text.test.theme.finished' | translate : ("Тест на тему «" + test.Title + "» завершен") : {title: test.Title} }}
+  <div class="test-result__title" *ngIf="testName">
+    {{'text.test.theme.finished' | translate : ("Тест на тему «" + testName + "» завершен") : {title: testName} }}
   </div>
 
   <div class="test-result__mark">

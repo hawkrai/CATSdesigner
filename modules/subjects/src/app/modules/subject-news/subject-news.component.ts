@@ -122,7 +122,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
   }
 
   help: Help = {
-    message: 'Чтобы скрыть или показать все новости нажмите одноимённую кнопку. Для редактирования или удаления новости наведите курсор на нужную новость и нажмите на нужную иконку.',
-    action: 'Понятно'
+    message: this.translate.transform('text.help.news','Чтобы скрыть или показать все новости нажмите одноимённую кнопку. Для редактирования или удаления новости наведите курсор на нужную новость и нажмите на нужную иконку.'),
+    action: this.translate.transform('button.understand','Понятно')
   };
 }
