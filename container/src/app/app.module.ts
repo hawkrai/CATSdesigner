@@ -37,6 +37,12 @@ import { ChangePasswordDialog } from './change-password-dialog/change-password-d
 
 import { ToastrModule } from 'ngx-toastr';
 import { DiplomComponent } from './diplom/diplom.component';
+import { AboutSystemPopoverComponent } from './about-system/about-popover/about-popover.component';
+import { StudentManualComponent } from './about-system/student-manual/student-manual.component';
+import { MenuService } from './core/services/menu.service';
+import { HelpPopoverProgressControlComponent } from './progress-control/help-popover-progress-control/help-popover-progress-control.component';
+import { AboutSystemComponent } from './about-system/about-system.component';
+import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component';
 
 
 @NgModule({
@@ -61,7 +67,12 @@ import { DiplomComponent } from './diplom/diplom.component';
     ChangePasswordDialog,
     ProfileComponent,
     StatsComponent,
-    DiplomComponent
+    DiplomComponent,
+    AboutSystemPopoverComponent,
+    AboutSystemComponent,
+    LectorManualComponent,
+    StudentManualComponent,
+    HelpPopoverProgressControlComponent
 
   ],
   imports: [
@@ -83,7 +94,8 @@ import { DiplomComponent } from './diplom/diplom.component';
   ],
   providers: [
     LayoutService,
-    TranslatePipe
+    TranslatePipe,
+    MenuService
   ],
   bootstrap: [AppComponent]
 })

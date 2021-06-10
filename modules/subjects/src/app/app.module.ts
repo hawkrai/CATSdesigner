@@ -29,6 +29,7 @@ import { FilesEffects } from './store/effects/files.effects';
 import { SettingsModule } from './modules/settings/settings.module';
 
 
+
 @NgModule({
   declarations: [
     AppComponent
@@ -50,8 +51,8 @@ import { SettingsModule } from './modules/settings/settings.module';
     SettingsModule,
     StoreModule.forRoot(appReducers,{
       runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true
+        strictStateImmutability: false,
+        strictActionImmutability: false
       }   
     }),
     EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects]),

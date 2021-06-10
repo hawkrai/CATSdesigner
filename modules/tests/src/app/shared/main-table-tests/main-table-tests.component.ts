@@ -47,6 +47,8 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
   @ViewChild('table', {static: false})
   table: MatTable<any>;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public white: boolean;
+  public black: boolean;
 
   constructor(private testPassingService: TestPassingService,
               private testService: TestService,
@@ -56,6 +58,11 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
   }
 
   ngOnInit() {
+    if (localStorage.getItem("theme") === "white") {
+      this.white = true;
+    } else {
+      this.black = true;
+    }
   }
 
   public navigateToTest(Id: number): void {

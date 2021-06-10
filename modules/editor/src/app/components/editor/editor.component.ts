@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { IDocumentTree } from './../../models/DocumentTree';
 import { TreeComponent } from '../tree/tree.component';
 import { DocumentService } from './../../services/document.service';
+import { TestService } from './../../services/tests.service';
 import { DocumentPreview } from './../../models/DocumentPreview';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
@@ -18,6 +19,11 @@ import * as san from './../../helpers/string-helper'
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 import 'ckeditor5-custom-build/build/translations/ru';
 import 'ckeditor5-custom-build/build/translations/en-gb';
+import { Test } from 'src/app/models/tests/Test';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { TestDialogComponent } from '../dialogs/test-dialog/test-dialog.component';
+import { CopyToOtherSubjectDialogComponent } from '../dialogs/copy-to-other-subject-dialog/copy-to-other-subject-dialog.component';
+import { CopyFromOtherSubjectDialogComponent } from '../dialogs/copy-from-other-subject-dialog/copy-from-other-subject-dialog.component';
 
 @Component({
   selector: 'app-editor',
@@ -28,6 +34,7 @@ import 'ckeditor5-custom-build/build/translations/en-gb';
 export class EditorComponent implements OnInit {
 
   @ViewChild(TreeComponent) treeChild : TreeComponent;
+  @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger;
 
   // text editor & config
   editor = Editor;
@@ -43,9 +50,20 @@ export class EditorComponent implements OnInit {
         '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'alignment', 'horizontalLine',
         '|', 'fontBackgroundColor', 'fontColor', 'fontSize', 'fontFamily',
         '|', 'indent', 'outdent',
-        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'exportPdf',// 'ckfinder',
+        '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'exportPdf', 'htmlEmbed', // 'ckfinder',
         '|', 'MathType',
         '|', 'undo', 'redo' ],
+      htmlEmbed: {
+        showPreviews: true,
+            sanitizeHtml: ( inputHtml ) => {
+              const outputHtml = inputHtml;
+
+                return {
+                    html: outputHtml,
+                    hasChanged: true
+            }
+          }
+      }
     }
   }
 
@@ -58,6 +76,7 @@ export class EditorComponent implements OnInit {
   isReadOnly: Boolean;
 
   // tree
+  showSpinner: Boolean;
   treeControl = new NestedTreeControl<IDocumentTree>(node => node.Children);
   dataSource = new MatTreeNestedDataSource<IDocumentTree>();
   linearTreeList = new Array<IDocumentTree>();
@@ -67,19 +86,26 @@ export class EditorComponent implements OnInit {
   currentNodeId: Number;
   currentDocument: DocumentPreview;
 
+  // tests
+  selfStudyTests: Test[];
+  menuTopLeftPosition =  {x: '0', y: '0'}
+
   constructor(private _bookService: DocumentService,
+    private _testService: TestService,
     public translatePipe: TranslatePipe,
     public dialog: MatDialog) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     let currentSubject =  JSON.parse(localStorage.getItem("currentSubject"));
     let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
     this.SubjectId = currentSubject ? currentSubject.id : 1;
     this.UserId = currentUser ? currentUser.id : 1;
     this.isReadOnly = currentUser ? currentUser.role != "lector" : environment.production;
-    this.reloadTree();
+    this.showSpinner = true;
+    this.reloadTree(true);
     this.configEditor();
+    await this.updateSelfStudyTests();
   }
 
   configEditor() {
@@ -94,15 +120,32 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  isCanNowEdit() {
+    return this.documents && this.documents.filter(d => d.ParentId == this.currentNodeId).length == 0;
+  }
+
   //TREE
-  reloadTree() {
+  reloadTree(selectFirst = false) {
+    this.treeControl.dataNodes = [];
+    this.dataSource.data = [];
+    this.showSpinner = true;
+
     this._bookService.getDocumentsBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
       this.documents = data;
     });
     this._bookService.getDocumentsTreeBySubjectId(this.SubjectId, this.UserId).subscribe(data => {
+      this.showSpinner = false;
       this.dataSource.data = data;
       this.treeControl.dataNodes = this.dataSource.data;
       this.updateLinearTreeNodesList();
+
+      if(selectFirst) {
+        this.treeControl.expandAll();
+
+        if(data.length) {
+          this.activateNode(data[0].Id)
+        }
+      }
 
       if(this.currentNodeId && this.currentNodeId != 0) {
         this.activateNode(this.currentNodeId);
@@ -155,7 +198,7 @@ export class EditorComponent implements OnInit {
 
   // DOCUMENT
   editDocument(document) {
-    if(document.Children.length == 0 && document.Id != 0){
+    if(document.Children && document.Children.length == 0 && document.Id != 0){//
       this._bookService.getContent(document.Id, this.UserId).subscribe(doc => {
         this.model.editorData = doc.Text.replace(doc.Name, '');
         this.currentDocument = doc;
@@ -164,13 +207,22 @@ export class EditorComponent implements OnInit {
       this.currentNodeId = document.Id;
       this.treeControl.expand(document);
     }
+    else if (document.Id != 0) {
+      this._bookService.getContent(document.Id, this.UserId).subscribe(doc => {
+        this.model.editorData = doc.Text.replace(doc.Name, '');
+        this.currentDocument = doc;
+      })
+      this.model.isReadOnly = false;
+      this.currentNodeId = document.Id;
+    }
   }
 
   editStructure(node) {
     var document = this.documents.find(x => x.Id == node.Id);
     if(document) {
       const dialogRef = this.dialog.open(EditDocumentDialogComponent, {
-        data: document
+        data: document,
+        width: '30vw'
       });
 
       dialogRef.afterClosed().subscribe(newDocument => {
@@ -200,7 +252,8 @@ export class EditorComponent implements OnInit {
   openRemoveDialog(document = undefined): void {
     this.currentNodeId = document.Id;
     const dialogRef = this.dialog.open(RemoveDocumentDialogComponent, {
-      data: { Id: document.Id, Name: document.Name }
+      data: { Id: document.Id, Name: document.Name },
+      width: '30vw'
     });
 
     dialogRef.afterClosed().subscribe(newDocument => {
@@ -223,7 +276,8 @@ export class EditorComponent implements OnInit {
       };
     }
     const dialogRef = this.dialog.open(AddDocumentDialogComponent, {
-      data: data
+      data: data,
+      width: '30vw'
     });
 
     dialogRef.afterClosed().subscribe(newDocument => {
@@ -265,6 +319,82 @@ export class EditorComponent implements OnInit {
     node.IsLocked = !node.IsLocked;
     this._bookService.saveDocument(node).subscribe(res => {
       this.reloadTree();
-    });;
+    });
+  }
+
+
+  // tests
+
+  updateSelfStudyTests() {
+    this.selfStudyTests = [];
+    return new Promise(resolve => {
+      this._testService.getAllTestLiteBySubjectId(this.SubjectId.toString()).subscribe(response => {
+        this.selfStudyTests = response.filter(test => test.ForSelfStudy);
+      });
+    });
+  }
+
+  openTestModal(test) {
+    const dialogRef = this.dialog.open(TestDialogComponent, {
+      data: test,
+      width: '100vw',
+    });
+  }
+
+  openTestAddingModal(event) {
+    event.preventDefault();
+
+    if(this.isReadOnly) return;
+
+    // we record the mouse position in our object
+    this.menuTopLeftPosition.x = event.clientX + 'px';
+    this.menuTopLeftPosition.y = event.clientY + 'px';
+
+    this.matMenuTrigger.menuData = {items: this.selfStudyTests};
+
+    this.matMenuTrigger.openMenu();
+  }
+
+  openCopyToOtherSubjectDialog(document) {
+
+    const dialogRef = this.dialog.open(CopyToOtherSubjectDialogComponent, {
+      data: document,
+      width: '50vw'
+    });
+
+    dialogRef.afterClosed().subscribe(documentSubject => {
+      if(documentSubject) {
+        this._bookService.copyDocumentToSubject(documentSubject.documentId, documentSubject.subjectId).subscribe(res => {
+          if(res){
+            //show success result
+          }
+        });;
+      }
+    });
+  }
+
+  openCopyFromOtherSubjectDialog() {
+
+    const dialogRef = this.dialog.open(CopyFromOtherSubjectDialogComponent, {
+      data: {
+        subjectId: this.SubjectId
+      },
+      width: '50vw'
+    });
+
+    dialogRef.afterClosed().subscribe(documentSubject => {
+      if(documentSubject) {
+        this._bookService.copyDocumentToSubject(documentSubject.documentId, documentSubject.subjectId).subscribe(res => {
+          if(res){
+            //show success result
+            this.reloadTree();
+          }
+        });;
+      }
+    });
+  }
+
+  isSmallDevice() {
+    return window.innerWidth <= 768;
   }
 }

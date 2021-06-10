@@ -2,7 +2,15 @@
   <div class="answers-popup-general">
     <div class="answers-popup-general-test">{{data.testName}}</div>
     <div class="answers-popup-general-name">{{data.name}}</div>
-    <div class="answers-popup-general-mark">{{'text.test.result.mark' | translate : ('Оценка: ' + mark + ' (' + percent + '%)') : {mark:mark, percent: percent} }}</div>
+    <div class="answers-popup-general-mark">
+      {{'text.test.result.mark' | translate : ('Оценка: ' + mark + ' (' + percent + '%)') : {mark:mark, percent: percent} }}
+    </div>
+    <div class="answers-popup-general-mark">
+      {{('text.test.date.completing' | translate : "Дата прохождения теста :") + startDate }}
+    </div>
+    <div class="answers-popup-general-mark">
+      {{('text.test.time.start' | translate : "Время начала теста :") + startTime }}
+    </div>
   </div>
   <div class="answers-popup-content" *ngFor="let answer of answers, let i = index">
     <div>{{('text.test.popup.question' | translate: "Вопрос ") + (i+1) + ": " + answer.QuestionTitle}}</div>

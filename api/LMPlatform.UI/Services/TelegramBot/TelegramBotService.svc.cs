@@ -16,6 +16,18 @@ namespace LMPlatform.UI.Services.TelegramBot
     {
         private readonly LazyDependency<INewsManagementService> newsManagementService = new LazyDependency<INewsManagementService>();
         public INewsManagementService NewsManagementService => newsManagementService.Value;
+
+        public NewsResult GetNewsByGroupName(string groupName)
+        {
+            var groupNews = NewsManagementService.GetNewsByGroupName(groupName);
+            return new NewsResult
+            {
+                News = groupNews.Select(x => new NewsViewData(x)).ToList(),
+                Message = "Новости успешно загружены",
+                Code = "200"
+            };
+        }
+
         public NewsResult GetUserNewsByFIO(string fio)
         {
             var userNews = NewsManagementService.GetUserNewsByFIO(fio);

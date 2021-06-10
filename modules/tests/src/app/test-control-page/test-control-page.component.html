@@ -1,7 +1,8 @@
 <div *ngIf="!loading">
   <!--<app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>-->
-  <mat-tab-group class="container-table" (selectedTabChange)="onChange($event)">
+  <mat-tab-group class="container-table"
+                 [class.black]="black" (selectedTabChange)="onChange($event)">
     <mat-tab [label]="'text.test.theme.test' | translate: 'Темы тестов'">
       <ng-container *ngIf="currentTabIndex === 0">
         <app-main-page [allowChanges]="allowChanges"
@@ -49,13 +50,14 @@
                                 (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
         </div>
         <div class="container-table-tests">
-          <app-main-table-tests [title]="'text.tests.for.nn' | translate: 'Тесты для обучения с искусственной нейронной сетью'"
-                                [allowChanges]="true"
-                                [tests]="nNTests"
-                                (onOpenEditPopup)="openDialog($event)"
-                                (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
-                                (onNavigateQuestions)="navigateToQuestions($event)"
-                                (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
+          <app-main-table-tests
+            [title]="'text.tests.for.nn' | translate: 'Тесты для обучения с искусственной нейронной сетью'"
+            [allowChanges]="true"
+            [tests]="nNTests"
+            (onOpenEditPopup)="openDialog($event)"
+            (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+            (onNavigateQuestions)="navigateToQuestions($event)"
+            (onDeleteTest)="openConfirmationDialog($event)"></app-main-table-tests>
         </div>
       </ng-container>
     </mat-tab>

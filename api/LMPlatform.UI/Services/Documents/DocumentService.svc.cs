@@ -35,11 +35,11 @@ namespace LMPlatform.UI.Services.Documents
                     var childrens = DocumentManagementService.GetByParentId(document.Id, userId);
                     if (!childrens.Any())
                     {
-                        content.Append($"{document.Name}<br>{document.Text}");
+                        content.Append($"{document.Name}{document.Text}");
                     }
                     else
                     {
-                        content.Append($"{document.Name}<br>");
+                        content.Append($"{document.Name}");
                         ParseData(childrens, ref content);
                     }
                 }
@@ -53,6 +53,14 @@ namespace LMPlatform.UI.Services.Documents
         public IEnumerable<DocumentPreview> GetDocumentsBySubjectId(int subjectId, int userId) 
         {
             var parentNodes = DocumentManagementService.GetBySubjectId(subjectId, userId);
+
+            foreach (var document in parentNodes)
+                yield return DocumentToPreview(document);
+        }
+
+        public IEnumerable<DocumentPreview> GetAllUserMainDocuments(int userId, int currentSubjectId)
+        {
+            var parentNodes = DocumentManagementService.GetEnabledByUserId(userId, currentSubjectId).Where(d => d.Parent == null);
 
             foreach (var document in parentNodes)
                 yield return DocumentToPreview(document);
@@ -128,6 +136,32 @@ namespace LMPlatform.UI.Services.Documents
                         RemoveChilds(DocumentManagementService.GetByParentId(document.Id));
                     }
                     DocumentManagementService.RemoveDocument(document);
+                }
+            }
+
+            return true;
+        }
+
+        public bool CopyDocumentToSubject(int documentId, int subjectId)
+        {
+            var document = DocumentManagementService.Find(documentId);
+
+            if (document == null)
+            {
+                return false;
+            }
+
+            CopyChilds(new List<Models.Documents>() { document });
+
+            void CopyChilds(IEnumerable<Models.Documents> documents)
+            {
+                foreach (var document in documents)
+                {
+                    if (DocumentManagementService.GetByParentId(document.Id).Any())
+                    {
+                        CopyChilds(DocumentManagementService.GetByParentId(document.Id));
+                    }
+                    DocumentManagementService.CopyDocumentToSubject(document.Id, subjectId);
                 }
             }
 
