@@ -143,12 +143,15 @@ namespace LMPlatform.UI.Services.AdaptiveLearning
 				return this.TestsManagementService
 					.GetTestsForSubject(subjectId)
 					.Where(x => x.ForEUMK)
+					.Where(x => x.Title != AdaptiveConst.AdaptiveTestName)
 					.FirstOrDefault(x => x.Questions.All(q => q.ConceptId == complexId))
 					?.Id ?? -1;
 			}
 			var adaptivityProcessor = GetLearningProcessor(adaptivityType);
 			var allQuestions = QuestionsManagementService
 				.GetQuestionsByConceptId(complexId)
+				.Where(x => x.Test.ForEUMK)
+				.Where(x => x.Test.Title != AdaptiveConst.AdaptiveTestName)
 				.GroupBy(x => x.Title)
 				.Select(x => new { x.First().Id, x.First().ComlexityLevel });// This workaround is necessary because of wrong table behaviour
 				

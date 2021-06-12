@@ -16,6 +16,7 @@ using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
+using LMPlatform.Models.AdaptivityLearning;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.Concept;
 using LMPlatform.UI.ViewModels.KnowledgeTestingViewModels;
@@ -89,11 +90,20 @@ namespace LMPlatform.UI.Controllers
 
         public JsonResult GetTests(int? subjectId)
         {
-            var tests = this.TestsManagementService.GetTestsForSubject(subjectId);
+            var tests = this.TestsManagementService.GetTestsForSubject(subjectId).Where(x => x.Title != AdaptiveConst.AdaptiveTestName);
             var testViewModels = tests.Select(TestItemListViewModel.FromTest).OrderBy(x => x.TestNumber);
 
             return this.Json(testViewModels, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetTestsLite(int? subjectId)
+        {
+            var tests = this.TestsManagementService.GetTestsForSubject(subjectId, true).Where(x => x.Title != AdaptiveConst.AdaptiveTestName);
+            var testViewModels = tests.Select(TestItemListViewModel.FromTest).OrderBy(x => x.TestNumber);
+
+            return this.Json(testViewModels, JsonRequestBehavior.AllowGet);
+        }
+
 
         [System.Web.Http.HttpGet]
         public int GetEUMKPredTestIdForSubject(int subjectId)

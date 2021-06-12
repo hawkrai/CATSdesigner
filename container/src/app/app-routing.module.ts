@@ -15,7 +15,10 @@ import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.compone
 import { StatsComponent } from './searchResults/stats/stats.component';
 import { ProfileComponent } from './searchResults/profile/profile.component';
 import { ChangePersonalDataComponent } from './change-personal-data/change-personal-data.component';
-import { DiplomComponent } from './diplom/diplom.component'
+import { DiplomComponent } from './diplom/diplom.component';
+import { StudentManualComponent } from './about-system/student-manual/student-manual.component';
+import { AboutSystemComponent } from './about-system/about-system.component';
+import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component';
 
 
 const routes: Routes = [
@@ -62,7 +65,10 @@ const routes: Routes = [
       { 
         path: 'diplom', 
         component: DiplomComponent
-      }
+      },
+
+      { path: 'about-system',
+       component: AboutSystemComponent }
 
     ]
   },
@@ -76,7 +82,9 @@ const routes: Routes = [
     component: AdminComponent,
     //canActivate: [NoAuthGuardAdmin],
   },
-  { path: 'about', component: AboutComponent }
+  { path: 'about', component: AboutComponent },
+  { path: 'lector-manual', component: LectorManualComponent },
+  { path: 'student-manual', component: StudentManualComponent }
 ];
 
 @NgModule({

@@ -38,5 +38,9 @@
     "calendar": {
         "path": "/.temp/apps/calendar",
         "entryPoint": "index.html"
+    },
+    "statistics": {
+        "path": "/home/educatsb/apps/statistics",
+        "entryPoint": "index.html"
     }
 }

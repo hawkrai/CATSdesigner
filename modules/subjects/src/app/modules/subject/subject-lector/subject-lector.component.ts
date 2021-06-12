@@ -8,7 +8,6 @@ import * as subjectSelectors from '../../../store/selectors/subject.selector';
 import {IAppState} from '../../../store/state/app.state';
 import * as catsActions from '../../../store/actions/cats.actions';
 import { Lector } from 'src/app/models/lector.model';
-import { MatOptionSelectionChange } from '@angular/material';
 
 @Component({
   selector: 'app-news-popover',
@@ -17,9 +16,9 @@ import { MatOptionSelectionChange } from '@angular/material';
 })
 export class SubjectLectorComponent implements OnInit {
 
-  public joinedLectors: Lector[] = [];
-  public allLectors: Lector[] = [];
   public selectedLector: Lector;
+  joinedLectors: Lector[] = [];
+  allLectors: Lector[] = [];
 
   public subjectId: number;
 
@@ -54,32 +53,30 @@ export class SubjectLectorComponent implements OnInit {
     });
     this.subjectService.getNoAdjointLectors(this.subjectId).subscribe(lectors => {
       this.allLectors = lectors;
-    })
-  }
-
-  joinedLector() {
-    this.subjectService.joinedLector(this.subjectId, this.selectedLector.LectorId).subscribe(body => {
-      if (body.Code === "200") {
-        this.setLectors();
-        this.store.dispatch(catsActions.showMessage({ body }));
-      }
     });
   }
 
-  deletePopover(lector) {
+  joinLector() {
+    this.subjectService.joinedLector(this.subjectId, this.selectedLector.LectorId).subscribe(body => {
+      if (body.Code === "200") {
+        this.setLectors();
+      }
+      this.store.dispatch(catsActions.showMessage({ body }));
+    });
+  }
+
+  disjoinLector(lector) {
     this.subjectService.disjoinLector(this.subjectId, lector.LectorId).subscribe(body => {
       if (body.Code === "200") {
         this.setLectors();
-        this.store.dispatch(catsActions.showMessage({ body }));
       }
+      this.store.dispatch(catsActions.showMessage({ body }));
     }
     )
   }
 
-  selectLector(event: MatOptionSelectionChange) {
-    if (event.isUserInput) {
-      this.selectedLector = this.allLectors.find(res => res.LectorId === event.source.value);
-    }
+  selectLector(lector: Lector) {
+    this.selectedLector = lector;
   }
 
 }

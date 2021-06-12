@@ -28,7 +28,10 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private percentageResultsSubscription: Subscription;
 
   private searchString = '';
+  private sorting = 'Id';
+  private direction = 'desc';
   private selectedGroup: String;
+  public isLecturer = false
 
   constructor(private percentageResultsService: PercentageResultsService,
               public dialog: MatDialog,
@@ -36,6 +39,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    if (this.diplomUser.IsSecretary == false) {
+      this.isLecturer = true
+    }
     this.retrievePercentageResults();
   }
 
@@ -45,15 +51,19 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     }
   }
 
+  lecturerStatusChange(event) {
+    this.isLecturer = event.checked;
+    this.retrievePercentageResults();
+  }
+
   retrievePercentageResults() {
     this.percentageResults = null;
-    this.percentageResultsSubscription = this.percentageResultsService.getPercentageResults({
-      count: this.COUNT,
-      page: this.PAGE,
-      filter: '{"searchString":"' + this.searchString + '"}',
-      // filter: '{"secretaryId":' + 6653 + ',' +
-      //  '"searchString":"' + this.searchString + '"}',
-    })
+    this.percentageResultsSubscription = this.percentageResultsService.getPercentageResults(
+      'count=' + this.COUNT +
+      '&page=' + this.PAGE +
+      '&filter={"isSecretary":"' + !this.isLecturer + '","searchString":"' + this.searchString + '"}' +
+      '&sorting[' + this.sorting + ']=' + this.direction
+    )
       .subscribe(res => {
         if (this.diplomUser.IsStudent) {
           var group = res.Students.Items.filter(x => x.Id == this.diplomUser.UserId)[0].Group;

@@ -12,11 +12,14 @@ import {DialogData} from '../../../../models/dialog-data.model';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
 import { DialogService } from 'src/app/services/dialog.service';
 
+import * as catsActions from '../../../../store/actions/cats.actions';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
+import { Message } from 'src/app/models/message.model';
 
 
 @Component({
@@ -116,4 +119,13 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
     });
     return visitsModel
   }
+
+  navigateToProfile(student: StudentMark): void {
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${student.StudentId}`) }));
+  }
+
+  help: Help = {
+    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
+    action: this.translate.transform('button.understand','Понятно')
+  };
 }

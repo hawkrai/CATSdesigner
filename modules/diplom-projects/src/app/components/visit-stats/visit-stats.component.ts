@@ -10,13 +10,14 @@ import {MatDialog, MatOptionSelectionChange, MatSnackBar} from '@angular/materia
 import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-popover.component';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
+import { Lecturer } from 'src/app/models/lecturer.model';
 
 @Component({
   selector: 'app-visit-stats',
   templateUrl: './visit-stats.component.html',
   styleUrls: ['./visit-stats.component.less']
 })
-export class VisitStatsComponent implements OnInit, OnChanges {
+export class VisitStatsComponent implements OnInit {
   @Input() diplomUser: DiplomUser;
 
   private COUNT = 1000;
@@ -27,7 +28,10 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   private visitStatsList: VisitStats[];
   private filteredVisitStatsList: VisitStats[];
   private consultations: Consultation[];
-  private groups: String[];
+  private lecturers: Lecturer[];
+  private index = 0;
+  private lecturer: Lecturer;
+  public isLecturer = false;
 
   private searchString = '';
 
@@ -40,16 +44,9 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     this.retrieveVisitStats();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedGroup && !changes.selectedGroup.firstChange) {
-      this.retrieveVisitStats();
-    }
-  }
-
-  _selectedGroup(event: MatOptionSelectionChange) {
-    if (event.isUserInput) {
-      this.filteredVisitStatsList = this.visitStatsList.filter(x => x.Group == event.source.value)
-    }
+  selectedLecturer(event: any) {
+    this.index = this.lecturers.map(function(e) { return e.Id; }).indexOf(event.Id);
+    this.retrieveVisitStats()
   }
 
   public getDiplomUser() {
@@ -57,21 +54,46 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   }
 
   retrieveVisitStats() {
-    this.visitStatsList = null;
+    if (this.diplomUser.IsSecretary && !this.isLecturer) {
+      console.log("this.diplomUser.IsSecretary")
+      this.visitStatsService.getLecturerDiplomGroups({entity: 'LecturerForSecretary', id: this.diplomUser.UserId})
+      .subscribe(res => {
+        this.lecturers = res
+        this.lecturer = res[this.index]
+        this.visitStatsList = null;
     this.visitStatsSubscription = this.visitStatsService.getVisitStats({
       count: this.COUNT, page: this.PAGE,
-      filter: '{"lecturerId":' + this.diplomUser.UserId +'}'
+      filter: '{"isSecretary":"' + this.isLecturer + '","lecturerId":"' + this.lecturers[this.index].Id + '"}'
     })
       .subscribe(res => {
         this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
         this.consultations = res.DiplomProjectConsultationDates;
         this.filteredVisitStatsList = this.visitStatsList;
       });
+      });
+    }
+    else {
+      this.visitStatsList = null;
+    this.visitStatsSubscription = this.visitStatsService.getVisitStats({
+      count: this.COUNT, page: this.PAGE,
+      filter: '{"isSecretary":"' + false + '"}'
+    })
+      .subscribe(res => {
+        this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
+        this.consultations = res.DiplomProjectConsultationDates;
+        this.filteredVisitStatsList = this.visitStatsList;
+      });
+    }
   }
 
   onSearchChange(searchText: string) {
     this.searchString = searchText;
     this.updateStats();
+  }
+
+  lecturerStatusChange(event) {
+    this.isLecturer = event.checked;
+    this.retrieveVisitStats()
   }
 
   updateStats() {
@@ -82,7 +104,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   }
 
   assignResults(visitStats: VisitStats[], consultations: Consultation[]): VisitStats[] {
-    this.groups = visitStats.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);
+    // this.groups = visitStats.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);
     for (const student of visitStats) {
       const results: ConsultationMark[] = [];
       for (const consultation of consultations) {

@@ -5,13 +5,14 @@ import {Lesson} from '../model/lesson.model';
 import {LessonService} from '../service/lesson.service';
 import {Note} from '../model/note.model';
 import {NoteService} from '../service/note.service';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {Message} from '../../../../../container/src/app/core/models/message';
 import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.component';
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 import {DatePipe} from '@angular/common';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
+import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component';
 
 
 const colors: any = {
@@ -53,12 +54,16 @@ export class ScheduleMainComponent implements OnInit {
   format = 'dd.MM.yyyy';
   localeD = 'en-US';
   teacher = 'Попова Ю.Б.';
+  isStudent: boolean;
 
   refresh: Subject<any> = new Subject();
 
   events: CalendarEvent[] = [];
 
   activeDayIsOpen = true;
+
+  message = 'Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите на нужную ячейку. Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, Лекции в определенном предмете.';
+  action = 'Понятно';
 
   public isMobile(): boolean {
     return window.matchMedia('screen and (max-width: 550px)').matches
@@ -75,6 +80,12 @@ export class ScheduleMainComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.changeDate();
     this.isLoadActive = false;
+
+    if (this.user.role === 'student') {
+      this.isStudent = false;
+    }
+    else this.isStudent = true;
+
   }
 
   // tslint:disable-next-line:typedef
@@ -117,12 +128,25 @@ export class ScheduleMainComponent implements OnInit {
       + '|' + lesson.Audience + '|' + building
       + '|' + lesson.ShortName + '|' + lesson.Type
       + '|' + teacher + '|' + lesson.Color
-      + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo + '|' + lesson.GroupId + '|' + lesson.SubGroupId;
+      + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo + '|' + lesson.GroupId + '|' + lesson.SubGroupId
+      + '|' + lesson.GroupName + '|' + lesson.SubGroupName;
   }
 
   getToolTip(title: string): any {
-    const splitted = title.split('|', 8);
-    return splitted[7];
+    let group = this.lessonservice.getTitelPart(title, 12);
+    let subGroup = this.lessonservice.getTitelPart(title, 13);
+    if (group != 'null') {
+      group += ' \n';
+    } else {
+      group = '';
+    }
+
+    if (subGroup != 'null') {
+      subGroup += ' \n';
+    } else {
+      subGroup = '';
+    }
+    return this.lessonservice.getTitelPart(title, 7) + group + subGroup;
   }
 
   isNote(event): boolean {
@@ -210,6 +234,7 @@ export class ScheduleMainComponent implements OnInit {
     });
   }
 
+
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
       width: '250px',
@@ -223,17 +248,20 @@ export class ScheduleMainComponent implements OnInit {
           if (eventToDelete.meta == 'lesson') {
             const a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
             if (a == 'Лекция' || a == 'Lect.') {
-              this.lessonservice.deleteLecture(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+              this.lessonservice.deleteLecture(eventToDelete.id,
+                + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
                 console.log(res);
               });
             }
             if (a == 'Лаб.работа' || a == 'Lab') {
-              this.lessonservice.deleteLab(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title)).subscribe(res => {
+              this.lessonservice.deleteLab(eventToDelete.id,
+                + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
                 console.log(res);
               });
             }
             if (a == 'Практ.работа' || a == 'WS') {
-              this.lessonservice.deletePractical(eventToDelete.id, +this.lessonservice.getSubject(eventToDelete.title) ).subscribe(res => {
+              this.lessonservice.deletePractical(eventToDelete.id,
+                + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
                 console.log(res);
               });
             }
@@ -362,5 +390,25 @@ export class ScheduleMainComponent implements OnInit {
       }
     );
   }
+
+  showHelp(): void{
+
+    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent, 
+      {
+      //width: '370px',
+      //height: '185px',
+      data: {message: this.translatePipe.transform ('text.help.schedule',this.message), action: this.translatePipe.transform ('button.understand', this.action)},
+      //position: {top: '2vh', left: '23vw'},
+      disableClose: true,
+      hasBackdrop: true,
+      backdropClass: 'backdrop-help',
+      panelClass: 'help-popover'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+
+}
+
 }
 

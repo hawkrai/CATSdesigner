@@ -4,6 +4,7 @@
     <div class="protection-schedule-component__body">
       <div class="protection-schedule-component__actions" *ngIf="isTeacher">
         <button mat-raised-button color="primary" (click)="settingVisitDate(subGroup, state.subGroupsIds[idx])">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>
+        <app-help [message]="help.message" [action]="help.action"></app-help>
       </div>
       <div class="protection-schedule-component__subGroup-table">
         <table mat-table [dataSource]="state.labs | filter:'SubGroup':subGroup" class="mat-elevation-z14">

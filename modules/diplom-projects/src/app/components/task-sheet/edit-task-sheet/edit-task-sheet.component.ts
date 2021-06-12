@@ -10,6 +10,7 @@ import { ProjectsService } from 'src/app/services/projects.service';
 import { Student } from 'src/app/models/student.model';
 
 interface DialogData {
+  isSecretary: boolean;
   taskSheet: TaskSheet;
   students: Student[];
   taskSheetTemplate: Template;
@@ -181,8 +182,8 @@ export class EditTaskSheetComponent implements OnInit {
     this.projectsService.getProjects(
       'count=' + this.COUNT +
       '&page=' + this.PAGE +
-      '&filter={"searchString":"' + this.searchString + '"}' +
-      '&sorting[' + 'Id' + ']=' + 'desc'
+      '&filter={"isSecretary":"' + this.data.isSecretary + '","searchString":"' + this.searchString + '"}' +
+      '&sorting[' + this.sorting + ']=' + this.direction
     )
     .subscribe(res => this.projects = res.Items);
   }

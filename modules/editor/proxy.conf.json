@@ -1,4 +1,12 @@
 {
+  "/Tests/*": {
+    "target": "http://localhost:6478",
+    "secure": false
+  },
+  "/TestPassing/*": {
+    "target": "http://localhost:6478",
+    "secure": false
+  },
   "/libBook/api/*": {
     "target": "http://localhost:6478",
     "secure": false,

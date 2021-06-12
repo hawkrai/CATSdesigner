@@ -15,6 +15,10 @@ export class VisitStatsService {
     return this.http.get('api/DiplomProjectConsultation', {params: new HttpParams({fromObject: params})});
   }
 
+  public getLecturerDiplomGroups(params: any): Observable<any> {
+    return this.http.get('api/DpCorrelation', {params: new HttpParams({fromObject: params})});
+  }
+
   public setMark(studentId: string, consultationDateId: string, mark: string, comment: string): Observable<any> {
     return this.http.post('api/DiplomProjectConsultation',
       {StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark, Comment: comment});

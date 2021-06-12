@@ -12,6 +12,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import { VisitDatePracticalsPopoverComponent } from './visit-date-practicals-popover/visit-date-practicals-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-practical-protection-schedule',
@@ -63,4 +64,8 @@ export class PracticalProtectionScheduleComponent implements OnInit, OnChanges {
     this.dialogService.openDialog(VisitDatePracticalsPopoverComponent, dialogData);
   }
 
+  help: Help = {
+    message: this.translate.transform('text.help.practical.protection.schedule','Для добавления или удаления дат практических занятий нажмите на кнопку "Управление датами"'),
+    action: this.translate.transform('button.understand','Понятно')
+  };
 }

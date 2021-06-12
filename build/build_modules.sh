@@ -8,6 +8,7 @@ export confirmation_path=$modules_path'/confirmation'
 export editor_path=$modules_path'/editor'
 export complex_path=$modules_path'/complex'
 export schedule_path=$modules_path'/schedule'
+export statistics_path=$modules_path'/statistics'
 
 cd $admin_path
 npm i
@@ -42,5 +43,9 @@ npm i
 npm run build
 
 cd $schedule_path
+npm i
+npm run build
+
+cd $statistics_path
 npm i
 npm run build

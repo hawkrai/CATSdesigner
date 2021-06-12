@@ -3,6 +3,7 @@ import { filter, map, take } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
+import * as catsActions from '../../../../store/actions/cats.actions';
 import {IAppState} from '../../../../store/state/app.state';
 import { DialogService } from 'src/app/services/dialog.service';
 import { Practical } from 'src/app/models/practical.model';
@@ -14,6 +15,8 @@ import { StudentMark } from 'src/app/models/student-mark.model';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import { VisitingPopoverComponent } from 'src/app/shared/visiting-popover/visiting-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { Help } from 'src/app/models/help.model';
+import { Message } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-visit-statistic',
@@ -108,4 +111,12 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
     return visitsModel
   }
 
+  navigateToProfile(student: StudentMark): void {
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${student.StudentId}`) }));
+  }
+
+  help: Help = {
+    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
+    action: this.translate.transform('button.understand','Понятно')
+  };
 }

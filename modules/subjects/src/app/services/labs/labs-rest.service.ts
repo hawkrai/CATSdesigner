@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from "rxjs/operators";
 
@@ -120,33 +120,32 @@ export class LabsRestService {
     );
   }
 
-  public checkPlagiarismSubjects(body: { subjectId: number, type: string, threshold: string, isCp: false }): Observable<PlagiarismResultSubject[]> {
-   console.log(body)
+  public checkPlagiarismSubjects(body: { subjectId: number, type: string, threshold: string, isCp?: boolean }): Observable<PlagiarismResultSubject[]> {
     return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
       map(res => res['DataD'])
     );
   }
 
-  public getLabsMarksExcel(subjectId: number, groupId: number): Observable<Blob> {
+  public getLabsMarksExcel(subjectId: number, groupId: number): Observable<HttpResponse<Blob>> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId.toString());
       const headers = new HttpHeaders()
-    return this.http.get(`Statistic/GetLabsMarks`, { params, responseType: 'blob' });
+    return this.http.get(`Statistic/GetLabsMarks`, { params, responseType: 'blob', observe: 'response' });
   }
 
-  public getVisitLabsExcel(subjetId: number, groupId: number): Observable<Blob> {
+  public getVisitLabsExcel(subjetId: number, groupId: number): Observable<HttpResponse<Blob>> {
     const params = new HttpParams()
       .set('subjectId', subjetId.toString())
       .set('groupId', groupId.toString());
-    return this.http.get('Statistic/GetVisitLabs', { params, responseType: 'blob' });
+    return this.http.get('Statistic/GetVisitLabs', { params, responseType: 'blob', observe: 'response' });
   }
 
-  public getLabsZip(subjectId: number, groupId: number): Observable<ArrayBuffer> {
+  public getLabsZip(subjectId: number, groupId: number): Observable<HttpResponse<ArrayBuffer>> {
     const params = new HttpParams()
       .set('id', groupId.toString())
       .set('subjectId', subjectId.toString());
-    return this.http.get('Subject/GetZipLabs', { params, responseType: 'arraybuffer' });
+    return this.http.get('Subject/GetZipLabs', { params, responseType: 'arraybuffer', observe: 'response' });
   }
 
   public hasJobProtections(subjectId: number, isActive: boolean): Observable<HasGroupJobProtection[]> {

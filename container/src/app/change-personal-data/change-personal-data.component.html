@@ -1,83 +1,97 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<div *ngIf="this.profileData">
+  <div class="header-row">
+    <h2 class="header">{{'text.personalAccount.personalAccount' | translate : ("Личный кабинет пользователя")}}</h2>
+  </div>
 
-<div class="header-row">
-  <h2 class="header"> Личный кабинет пользователя</h2>
-</div>
+  <div class="profile">
 
-<div class="profile">
+    <mat-card class="profile-card">
+      <mat-card class="avatar">
 
-  <mat-card class="profile-card">
-    <mat-card class="avatar">
+        <img class="avatarImg" *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}">
+        <img class="avatarImg" *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}">
 
-      <img class = "avatarImg" *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}">
-      <img class = "avatarImg" *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}">
+      </mat-card>
+      <input style="display: none"
+             #fileInput
+             type="file" (change)="onFileSelected($event)">
+
+      <div class="profile-buttons-row">
+        <button mat-button (click)="setDefaultAvatar()" class="icon-close" [title]="'text.personalAccount.deletePhoto' | translate : 'Удалить фото'">
+          <mat-icon aria-hidden="false">close</mat-icon>
+        </button>
+        <button mat-button class="extra-button" (click)="fileInput.click()">{{'text.personalAccount.loadPhoto' | translate : ("Загрузить фото")}}</button>
+      </div>
+    </mat-card>
+
+
+    <mat-card class="data-container">
+
+      <mat-form-field class="input-full-width">
+        <mat-label>{{'text.personalAccount.lastName' | translate : ("Фамилия")}}</mat-label>
+        <input matInput id="surnameInput" [(ngModel)]="this.profileData.Surname" [formControl]="surnameFormControl" maxlength="30">
+        <mat-error *ngIf="surnameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="input-full-width">
+        <mat-label>{{'text.personalAccount.firstName' | translate : ("Имя")}}</mat-label>
+        <input matInput id="nameInput" [(ngModel)]="this.profileData.Name" [formControl]="nameFormControl" maxlength="30">
+        <mat-error *ngIf="nameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="input-full-width">
+        <mat-label>{{'text.personalAccount.middleName' | translate : ("Отчество")}}</mat-label>
+        <input matInput id="patronymicInput" [(ngModel)]="this.profileData.Patronymic" [formControl]="patronymicFormControl" maxlength="30">
+        <mat-error *ngIf="patronymicFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="input-full-width">
+        <mat-label>{{'text.personalAccount.login' | translate : ("Логин")}}</mat-label>
+        <input matInput disabled value={{this.profileData.UserName}}>
+      </mat-form-field>
+
+      <mat-form-field class="input-full-width" *ngIf="this.profileData.GroupName">
+        <mat-label>{{'text.personalAccount.GroupName' | translate : ("Группа")}}</mat-label>
+        <input matInput disabled value={{this.profileData.GroupName}}>
+      </mat-form-field>
+
+
+      <a [title]="'text.personalAccount.followToChangePassword' | translate : 'Перейдите, чтобы сменить пароль'" (click)="this.openDialog()">{{'text.personalAccount.changePassword' | translate : ("Изменить пароль")}}</a>
 
     </mat-card>
-    <input style="display: none"
-           #fileInput
-           type="file" (change)="onFileSelected($event)">
-    <button mat-button class="extra-button" (click)="fileInput.click()"> Загрузить фото </button>
-  </mat-card>
 
+    <mat-card class="data-container">
 
-  <mat-card class="data-container">
+      <mat-form-field class="input-full-width">
+        <mat-label>{{'text.personalAccount.email' | translate : ("Почта")}}</mat-label>
+        <input matInput id="emailInput" [(ngModel)]="this.profileData.Email" [formControl]="emailFormControl" maxlength="50">
+        <mat-error *ngIf="emailFormControl.invalid">{{'text.personalAccount.wrongEmail' | translate : ("Почта не соответствует формату!")}}</mat-error>
+      </mat-form-field>
 
-    <mat-form-field class="input-full-width">
-      <mat-label>Фамилия</mat-label>
-      <input matInput [(ngModel)]="this.profileData.Surname" [formControl]="surnameFormControl" maxlength="30">
-    </mat-form-field>
+      <mat-form-field class="input-full-width">
+        <mat-label>{{'text.personalAccount.phoneNumber' | translate : ("Телефон")}}</mat-label>
+        <input matInput id="phoneInput" [(ngModel)]="this.profileData.Phone" [formControl]="phoneFormControl" maxlength="20">
+        <mat-error *ngIf="phoneFormControl.hasError('pattern')">{{'text.personalAccount.phoneNumber' | translate : ("Номер не соответствует формату!")}}</mat-error>
+      </mat-form-field>
 
-    <mat-form-field class="input-full-width">
-      <mat-label>Имя</mat-label>
-      <input matInput [(ngModel)]="this.profileData.Name" [formControl]="nameFormControl" maxlength="30">
-    </mat-form-field>
+      <mat-form-field class="text-area-full-width">
+        <mat-label>{{'text.personalAccount.messenger' | translate : ("Skype, Viber, Telegram и др.")}}</mat-label>
+        <textarea matInput id="skypeInput" [(ngModel)]="this.profileData.SkypeContact" rows="2" maxlength="255"></textarea>
+      </mat-form-field>
 
-    <mat-form-field class="input-full-width">
-      <mat-label>Отчество</mat-label>
-      <input matInput [(ngModel)]="this.profileData.Patronymic" [formControl]="patronymicFormControl" maxlength="30">
-    </mat-form-field>
+      <mat-form-field class="text-area-full-width">
+        <mat-label>{{'text.personalAccount.about' | translate : ("О себе")}}</mat-label>
+        <textarea matInput id="aboutInput" [(ngModel)]="this.profileData.About"  rows="2" maxlength="1024"></textarea>
+      </mat-form-field>
 
-    <mat-form-field class="input-full-width">
-      <mat-label>Логин</mat-label>
-      <input matInput disabled value={{this.profileData.UserName}}>
-    </mat-form-field>
+    </mat-card>
 
+  </div>
 
-    <a title="Перейдите, чтобы сменить пароль" (click)="this.openDialog()">Изменить пароль </a>
-
-  </mat-card>
-
-  <mat-card class="data-container">
-
-    <mat-form-field class="input-full-width">
-      <mat-label>Почта</mat-label>
-      <input matInput [(ngModel)]="this.profileData.Email" [formControl]="emailFormControl" maxlength="30">
-      <mat-error *ngIf="emailFormControl.invalid">Неверный формат почты</mat-error>
-    </mat-form-field>
-
-    <mat-form-field class="input-full-width">
-      <mat-label>Телефон</mat-label>
-      <input matInput [(ngModel)]="this.profileData.Phone" [formControl]="phoneFormControl" maxlength="20">
-      <mat-error *ngIf="phoneFormControl.hasError('pattern')">Номер не соответствует формату!</mat-error>
-    </mat-form-field>
-
-    <mat-form-field class="input-full-width">
-      <mat-label>Skype</mat-label>
-      <input matInput [(ngModel)]="this.profileData.SkypeContact" maxlength="30">
-    </mat-form-field>
-
-    <mat-form-field class="text-area-full-width">
-      <mat-label>О себе</mat-label>
-      <textarea matInput [(ngModel)]="this.profileData.About" maxlength="500"></textarea>
-    </mat-form-field>
-
-  </mat-card>
+  <div class="buttons-row">
+    <button mat-button class="cancel-button" (click)="this.backClicked()">{{'button.cancel' | translate : ("Отмена")}}</button>
+    <button mat-button class="edit-button" (click)="this.updatePersonalInfo()">{{'text.personalAccount.save' | translate : ("Сохранить")}}</button>
+  </div>
 
 </div>
-
-<div class="buttons-row">
-  <button mat-button class="cancel-button" (click)="this.backClicked()">Отменить</button>
-  <button mat-button class="edit-button" (click)="this.updatePersonalInfo()">Сохранить</button>
-</div>
-
-

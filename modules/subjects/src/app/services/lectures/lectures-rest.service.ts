@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from "rxjs/operators";
 
@@ -57,11 +57,11 @@ export class LecturesRestService {
     return this.http.post('Services/Lectures/LecturesService.svc/SaveMarksCalendarData', body);
   }
 
-  public getVisitingExcel(subjectId: number, groupId: number): Observable<Blob> {
+  public getVisitingExcel(subjectId: number, groupId: number): Observable<HttpResponse<Blob>> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId.toString());
 
-    return this.http.get('Statistic/GetVisitLecture', { params, responseType: 'blob' });
+    return this.http.get('Statistic/GetVisitLecture', { params, responseType: 'blob', observe: 'response' });
   }
 }

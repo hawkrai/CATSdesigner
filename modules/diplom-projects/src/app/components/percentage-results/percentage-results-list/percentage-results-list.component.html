@@ -27,6 +27,7 @@
             </div>
           </td>
         </ng-container>
+        <!-- !visitStatsComponent.isLecturer && visitStatsComponent.getDiplomUser().IsSecretary -->
         <ng-container *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer">
           <td class="mdc-data-table__cell data-cell clickable" (click)="!percentageResultsComponent.getDiplomUser().IsSecretary && percentageResultsComponent.setResult(result)"
               *ngFor="let result of student.PercentageResults">

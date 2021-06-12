@@ -125,6 +125,7 @@ namespace LMPlatform.UI.ApiControllers
 		{
 			var values = JsonConvert.DeserializeObject<List<string>>(filesPath);
 			var files = new List<AttachedFile>();
+
 			foreach (var split in values.Select(value => value.Split(new[] { '/' })))
             {
 				var filePath = _storageRoot + split[2] + "//" + split[3];

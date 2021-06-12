@@ -8,7 +8,8 @@ import { PersonalDataService } from '../core/services/personal-data.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
 import { Validators, FormControl, ValidationErrors } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslatePipe } from '../pipe/translate.pipe';
+import { AppToastrService } from '../core/services/toastr.service';
 
 @Component({
   selector: 'app-change-personal-data',
@@ -17,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 
 export class ChangePersonalDataComponent implements OnInit {
+  MAX_IMAGE_LEN = 700000;
   isLoad = false;
   defaultAvatar = "/assets/images/account.png";
   startImgFileStr = "data:image/";
@@ -25,33 +27,39 @@ export class ChangePersonalDataComponent implements OnInit {
   profileData!: ProfileData;
   dialogRef: MatDialogRef<any>;
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-]{3,30}@[a-z]{3,30}[.]{1}[a-z]{2,30}$')]);
-  phoneFormControl = new FormControl('', [Validators.required, Validators.pattern('^[0-9]{0,20}$')]);
-  nameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})?$')]);
+  phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})?$')]);
 
-  surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
-  patronymicFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[А-Яа-яA-Za-z]{6,30}$')])
+  surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
+
+  patronymicFormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(30),
+    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
-    private profileService: ProfileService, private location: Location, public dialog: MatDialog, private snackBar: MatSnackBar,) { }
-
-
+    private profileService: ProfileService, private location: Location, public dialog: MatDialog,
+    private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
 
   onFileSelected(event) {
     var file = event.target.files[0];
     var reader = new FileReader();
     var buffer = this;
+    
 
     reader.onloadend = function () {
       if (buffer.isGoodAvatarImage(reader.result.toString())) {
-        buffer.profileData.Avatar = reader.result.toString();
+        if (reader.result.toString().length < buffer.MAX_IMAGE_LEN) {
+          buffer.profileData.Avatar = reader.result.toString();
+        }
+        else {
+          buffer.toastr.addWarningFlashMessage(buffer.translatePipe.transform('text.personalAccount.tooBigImage', "Размер изображения слишком велик!"));
+        }
       }
       else {
-        buffer.addFlashMessage("Неверный формат изображения!");
+        buffer.toastr.addWarningFlashMessage(buffer.translatePipe.transform('text.personalAccount.wrongImage', "Неверный формат изображения!"));
       }
     };
 
@@ -63,6 +71,10 @@ export class ChangePersonalDataComponent implements OnInit {
       return true;
     }
     return false
+  }
+
+  setDefaultAvatar(): void {
+    this.profileData.Avatar = null;
   }
 
   ngOnInit(): void {
@@ -82,32 +94,36 @@ export class ChangePersonalDataComponent implements OnInit {
   }
 
   updatePersonalInfo() {
-    if ((!this.phoneFormControl.invalid || this.profileData.Phone == "") && (!this.emailFormControl.invalid || this.profileData.Email == "")) {
+    this.trimFields();
+    if ((!this.patronymicFormControl.invalid) && (!this.surnameFormControl.invalid) && (!this.nameFormControl.invalid) &&
+      (!this.phoneFormControl.invalid) && (!this.emailFormControl.invalid)) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
-            this.addFlashMessage("Изменения сохранены");
+            this.toastr.addSuccessFlashMessage(this.translatePipe.transform('text.personalAccount.changesSaved', "Изменения успешно сохранены!"));
           }
 
           else {
-            this.addFlashMessage("Изменения не сохранены");
+            this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.personalAccount.changesNotSaved', "Изменения не были сохранены!"));
           }
         });
     }
 
     else {
-      this.addFlashMessage("Некоторые поля заполнены некорректно, убедитесь что поля запонены верно или являются полностью пустыми (необязательные поля)", 5000);
+      this.toastr.addWarningFlashMessage(this.translatePipe.transform('text.personalAccount.wrongData', "Некоторые поля не соответствуют формату!"));
     }
-  }
+  } 
 
   openDialog(): void {
     const config = new MatDialogConfig();
     if ((window.screen.width) <= 970) {
       config.width = '70%';
+      config.height = 'auto';
     }
     else {
       config.width = '40%';
+      config.height = '100%';
+      config.panelClass = "app-password-dialog";
     }
-    config.height = 'auto';
     this.dialogRef = this.dialog.open(ChangePasswordDialog, config);
     this.dialogRef.afterClosed().subscribe(result => {
       this.dialogRef = null;
@@ -115,10 +131,11 @@ export class ChangePersonalDataComponent implements OnInit {
   }
 
 
-  addFlashMessage(msg: string, time = 2000) {
-    this.snackBar.open(msg, null, {
-      duration: time
-    });
+  trimFields() {
+    this.profileData.Name = this.profileData.Name.trim();
+    this.profileData.Surname = this.profileData.Surname.trim();
+    this.profileData.Patronymic = this.profileData.Patronymic.trim();
   }
 
 }
+

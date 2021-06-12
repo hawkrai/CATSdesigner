@@ -63,9 +63,16 @@ namespace Application.Infrastructure.DPManagement
                 int.TryParse(parms.Filters["secretaryId"], out secretaryId);
             }
 
+            var isSecretary = false;
+            if (parms.Filters.ContainsKey("isSecretary"))
+            {
+                isSecretary = bool.Parse(parms.Filters["isSecretary"]);
+            }
+
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
             var isLecturerSecretary = isLecturer && Context.Lecturers.Single(x => x.Id == userId).IsSecretary;
+            isLecturerSecretary = isSecretary;
             secretaryId = isLecturerSecretary ? userId : secretaryId;
 
             if (isStudent)
@@ -115,7 +122,11 @@ namespace Application.Infrastructure.DPManagement
                 {
                     Day = x.Day,
                     LecturerId = x.LecturerId,
-                    Id = x.Id
+                    Id = x.Id,
+                    Audience = x.Audience,
+                    Building = x.Building,
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime
                 })
                 .ToList();
         }

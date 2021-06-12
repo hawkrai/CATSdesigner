@@ -109,7 +109,7 @@ export class LabsEffects {
         this.store.select(subjectSelectors.getSubjectId), 
         this.store.select(groupsSelectors.getCurrentGroupId)),
     switchMap(([_, subjectId, groupId]) => this.rest.getVisitLabsExcel(subjectId, groupId).pipe(
-        map(response => filesActions.getExcelData({ response }))
+        map(response => filesActions.exportFile({ response }))
     ))
   ));
 
@@ -117,7 +117,7 @@ export class LabsEffects {
     ofType(labsActions.getMarksExcel),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
     switchMap(([_, subjectId, groupId]) => this.rest.getLabsMarksExcel(subjectId, groupId).pipe(
-      map(response => filesActions.getExcelData({ response }))
+      map(response => filesActions.exportFile({ response }))
     ))
   ));
 
@@ -151,7 +151,7 @@ export class LabsEffects {
       this.store.select(subjectSelectors.getSubjectId)
     ),
     switchMap(([_, groupId, subjectId]) => this.rest.getLabsZip(subjectId, groupId).pipe(
-      map(response => filesActions.getZipData({ response }))
+      map(response => filesActions.exportFile({ response }))
     ))
   ));
 

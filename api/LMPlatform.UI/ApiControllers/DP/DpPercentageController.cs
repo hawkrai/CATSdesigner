@@ -42,7 +42,7 @@ namespace LMPlatform.UI.ApiControllers.DP
             return SavePercentage(percentage);
         }
 
-        public void Delete(int id)
+        public void Post(int id)
         {
             PercentageService.DeletePercentage(UserContext.CurrentUserId, id);
         }

@@ -64,37 +64,6 @@ export class CreateLessonComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.lessonTypes = this.lessonservice.getLessonType();
     this.lessonTypesFull = this.lessonservice.getLessonTypeFull();
-    this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
-      this.subjects = subjects;
-      this.subjects.sort((a, b) => a.Name.localeCompare(b.Name));
-      if (this.data.lesson != null) {
-        this.startHour = this.data.lesson.start.getHours().toString();
-        this.startMin = this.data.lesson.start.getMinutes().toString();
-        this.endHour = this.data.lesson.end.getHours().toString();
-        this.endMin = this.data.lesson.end.getMinutes().toString();
-        this.fillTimeParameters();
-        this.dayOfLesson = this.data.lesson.start;
-        this.startTimeOfLesson = this.startHour + ':' + this.startMin;
-        this.endTimeOfLesson = this.endHour + ':' + this.endMin;
-        this.lesson.Id = this.data.lesson.id;
-        this.lesson.SubjectId = this.lessonservice.getSubject(this.data.lesson.title);
-        this.lesson.Audience = this.lessonservice.getAudience(this.data.lesson.title);
-        this.lesson.Building = this.lessonservice.getBuilding(this.data.lesson.title);
-        this.lesson.GroupId = this.lessonservice.getGroupId(this.data.lesson.title);
-        this.lesson.SubGroupId = this.lessonservice.getSubGroupId(this.data.lesson.title);
-        this.memo = this.lessonservice.getMemo(this.data.lesson.title);
-        this.lessonservice.getGroupsBySubjectId(+this.lesson.SubjectId).subscribe(res => {
-          this.disableGroup = false;
-          this.disableSubGroup = false;
-          this.groups = res.Groups;
-          this.currentGroup = this.groups.find(group => group.GroupId == this.lesson.GroupId);
-          this.stageValue = this.lesson.GroupId + '';
-          this.stageValueSub = this.lesson.SubGroupId + '';
-        });
-        this.changedType = this.lessonTypes.find(type => type[1] === this.lessonservice.getType(this.data.lesson.title).trim())[0];
-        this.disableNote = true;
-      }
-    });
     this.formGroup = new FormGroup({
       subjectF: new FormControl('', [Validators.required]),
       dayEvent: new FormControl('', [Validators.required]),
@@ -108,7 +77,46 @@ export class CreateLessonComponent implements OnInit {
       group: new FormControl('', ),
       subGroup: new FormControl('', )
     });
+    this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
+      this.subjects = subjects;
+      this.subjects.sort((a, b) => a.Name.localeCompare(b.Name));
+      if (this.data.lesson != null) {
+        this.startHour = this.data.lesson.start.getHours().toString();
+        this.startMin = this.data.lesson.start.getMinutes().toString();
+        this.endHour = this.data.lesson.end.getHours().toString();
+        this.endMin = this.data.lesson.end.getMinutes().toString();
+        this.fillTimeParameters();
+        this.dayOfLesson = this.data.lesson.start;
+        this.startTimeOfLesson = this.startHour + ':' + this.startMin;
+        this.endTimeOfLesson = this.endHour + ':' + this.endMin;
+        this.lesson.Id = this.data.lesson.id;
+        this.lesson.SubjectId = this.lessonservice.getTitelPart(this.data.lesson.title, 8);
+        this.lesson.Audience = this.lessonservice.getTitelPart(this.data.lesson.title, 1);
+        this.lesson.Building = this.lessonservice.getTitelPart(this.data.lesson.title, 2);
+        this.lesson.GroupId = +this.lessonservice.getTitelPart(this.data.lesson.title, 10);
+        this.lesson.SubGroupId = +this.lessonservice.getTitelPart(this.data.lesson.title, 11);
+        this.memo = this.lessonservice.getMemo(this.data.lesson.title);
+        console.log(this.lesson.GroupId);
 
+        if (!isNaN(this.lesson.GroupId)) {
+          this.lessonservice.getGroupsBySubjectId(+this.lesson.SubjectId).subscribe(res => {
+            this.disableGroup = false;
+            this.disableSubGroup = false;
+            this.groups = res.Groups;
+            this.currentGroup = this.groups.find(group => group.GroupId == this.lesson.GroupId);
+            console.log(this.currentGroup);
+            console.log(+this.lesson.SubGroupId);
+            this.formGroup.get('group').setValue(this.lesson.GroupId);
+            this.formGroup.get('subGroup').setValue(this.lesson.SubGroupId);
+          });
+        }
+        this.changedType = this.lessonTypes.find(type => type[1] === this.lessonservice.getType(this.data.lesson.title).trim())[0];
+        this.disableNote = true;
+
+        this.formGroup.get('subjectF').setValue(+this.lesson.SubjectId);
+
+      }
+    });
     this.formGroupNote = new FormGroup({
       title: new FormControl('', [Validators.required]),
       dayNote: new FormControl('', [Validators.required, Validators.min(8)]),
@@ -318,6 +326,9 @@ export class CreateLessonComponent implements OnInit {
   }
 
   subjectChange(event): void {
+    if (event.value == 0) {
+      this.changedType = '4';
+    }
     this.lessonservice.getGroupsBySubjectId(event.value).subscribe(re => {
       this.groups = re.Groups;
     });

@@ -12,6 +12,9 @@ namespace Application.Infrastructure.SubjectManagement
         List<Subject> GetUserSubjects(int userId);
 
         bool IsUserAssignedToSubject(int useId, int subjectId);
+        bool IsUserAssignedToSubjectAndLector(int useId, int subjectId);
+
+        bool IsUserSubjectOwner(int userId, int subjectId);
 
         List<Subject> GetUserSubjectsV2(int userId);
 

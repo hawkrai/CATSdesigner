@@ -11,7 +11,6 @@ using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Labs;
 using LMPlatform.PlagiarismNet.Controllers;
-using Newtonsoft.Json;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using System.Globalization;
@@ -23,6 +22,7 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using Application.Infrastructure.LabsManagement;
 using LMPlatform.UI.Services.Modules.Schedule;
+using Newtonsoft.Json;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -136,7 +136,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
 				if (!isUserAssigned)
 				{
 					return new ResultViewData
@@ -177,7 +177,7 @@ namespace LMPlatform.UI.Services.Labs
 		{
 			try
 			{
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
 				if (!isUserAssigned)
 				{
 					return new ResultViewData

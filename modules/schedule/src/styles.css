@@ -144,3 +144,25 @@
 .remove-border-bottom .mat-tab-header {
   border-bottom: none;
 }
+
+.backdrop-help {
+    background-color: transparent;
+}
+
+.help-popover .mat-dialog-container{
+  width: 370px;
+  height: 185px;
+  position: fixed !important;
+  top: 2%;
+  left: 23%;
+
+}
+
+@media (max-width: 657px){
+  .help-popover .mat-dialog-container{
+  position: fixed !important;
+  top: 2%;
+  left: 0%;
+  width: 100%; 
+  }
+}

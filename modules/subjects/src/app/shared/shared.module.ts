@@ -6,7 +6,6 @@ import { UniquePipe } from './pipes/unique.pipe';
 import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {FilterPipe} from './pipes/filter.pipe';
@@ -25,9 +24,13 @@ import { FileDownloadPopoverComponent } from './file-download-popover/file-downl
 import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/check-plagiarism-popover.component';
 import { SortByPipe } from './pipes/sort-by.pipe';
 import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
-import { PopoverComponent } from './popover/popover.component';
+import { PopoverDialogComponent } from './popover-dialog/popover-dialog.component';
 import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
 import { FileComponent } from './components/file/file.component';
+import { HelpComponent } from './components/help/help.component';
+import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
+import { SubjectNameFreeDirective } from './validators/subject-name-free.validator';
+import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
 
 @NgModule({
   declarations: [
@@ -52,23 +55,27 @@ import { FileComponent } from './components/file/file.component';
     WidthPipe,
     SortByPipe,
     MarkPopoverComponent,
-    PopoverComponent,
+    PopoverDialogComponent,
     TranslatePipe,
-    FileComponent
+    FileComponent,
+    HelpComponent,
+    HelpPopoverComponent,
+    SubjectNameFreeDirective,
+    SubjectAbbreviationFreeDirective
     ],
   imports: [
     CommonModule,
     FormsModule,
     MatModule,
-    ReactiveFormsModule,
-    NgxMaterialTimepickerModule
+    ReactiveFormsModule
   ],
   entryComponents: [
     DeletePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
-    MarkPopoverComponent
+    MarkPopoverComponent,
+    HelpPopoverComponent
   ],
   exports: [
     FilterPipe,
@@ -87,9 +94,12 @@ import { FileComponent } from './components/file/file.component';
     AnyPipe,
     WidthPipe,
     SortByPipe,
-    PopoverComponent,
+    PopoverDialogComponent,
     TranslatePipe,
-    FileComponent
+    FileComponent,
+    HelpComponent,
+    SubjectNameFreeDirective,
+    SubjectAbbreviationFreeDirective
   ],
   providers: [TranslatePipe]
 })
