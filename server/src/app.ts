@@ -4,7 +4,7 @@ import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-pro
 import * as modules from './modules.json';
 
 const app = express();
-const port = 3000;
+const port = 4200;
 const targetDomain = "https://host27072020.of.by";
 
 app.use(express.static(path.resolve('/home/educatsb/apps')));
@@ -116,7 +116,7 @@ const proxyElasticSearchOptions = {
 }
 
 const proxyChatOptions = { 
-  target: "http://178.124.197.115:3000/", 
+  target: "http://localhost:61945/", 
   changeOrigin: true,
   pathRewrite: {
     '^/catService': '/ChatApi', // rewrite path

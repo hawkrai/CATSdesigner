@@ -1,46 +1,42 @@
 {
     "web": {
-        "path": "/home/educatsb/apps/container",
+        "path": "/.temp/apps/container",
         "entryPoint": "index.html"
     },
     "subject": {
-        "path": "/home/educatsb/apps/subject",
+        "path": "/.temp/apps/subject",
         "entryPoint": "index.html"
     },
     "testsModule": {
-        "path": "/home/educatsb/apps/testsModule",
+        "path": "/.temp/apps/testsModule",
         "entryPoint": "index.html"
     },
     "course": {
-        "path": "/home/educatsb/apps/course",
-        "entryPoint": "index.html"
-    },
-    "diplom": {
-        "path": "/home/educatsb/apps/diplom",
+        "path": "/.temp/apps/course",
         "entryPoint": "index.html"
     },
     "admin": {
-        "path": "/home/educatsb/apps/admin",
+        "path": "/.temp/apps/admin",
         "entryPoint": "index.html"
     },    
     "control": {
-        "path": "/home/educatsb/apps/admin",
+        "path": "/.temp/apps/admin",
         "entryPoint": "index.html"
     },
     "confirmation": {
-        "path": "/home/educatsb/apps/confirmation",
+        "path": "/.temp/apps/confirmation",
         "entryPoint": "index.html"
     },
     "libBook": {
-        "path": "/home/educatsb/apps/libBook",
+        "path": "/.temp/apps/libBook",
         "entryPoint": "index.html"
     },
     "complex": {
-        "path": "/home/educatsb/apps/complex",
+        "path": "/.temp/apps/complex",
         "entryPoint": "index.html"
     },    
     "calendar": {
-        "path": "/home/educatsb/apps/calendar",
+        "path": "/.temp/apps/calendar",
         "entryPoint": "index.html"
     }
 }

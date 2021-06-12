@@ -11,9 +11,13 @@ import { ChatRoutingModule } from './chat-routing.module';
 import { IndexComponent } from './index/index.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { ClipboardModule } from 'ngx-clipboard';
 @NgModule({
   declarations: [IndexComponent],
   imports: [
+    ClipboardModule,
+    MatIconModule,
     PerfectScrollbarModule,
     NgbAccordionModule,
     CommonModule,

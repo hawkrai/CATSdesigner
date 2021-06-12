@@ -3,4 +3,5 @@ export class User {
     groupId:number;
     fullName:string;
     profile:string;
+    isOnline:boolean;
 }

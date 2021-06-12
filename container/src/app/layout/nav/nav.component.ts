@@ -1,12 +1,14 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {LayoutService} from "../layout.service";
-import {AuthenticationService} from "../../core/services/auth.service";
-import {first, takeUntil, tap} from "rxjs/operators";
-import {CoreService} from "../../core/services/core.service";
-import {Subject} from "rxjs";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { LayoutService } from "../layout.service";
+import { AuthenticationService } from "../../core/services/auth.service";
+import { first, takeUntil, tap } from "rxjs/operators";
+import { CoreService } from "../../core/services/core.service";
+import { Subject } from "rxjs";
 import { Lecturer, Student, Group } from '../../core/models/searchResults/search-results';
 import { SearchService } from '../../core/services/searchResults/search.service';
 import { ProfileService } from '../../core/services/searchResults/profile.service';
+import { DataService } from '../../modules/chat/services/dataService';
+import { ChatService } from "src/app/modules/chat/services/chatService";
 
 
 interface Locale {
@@ -23,15 +25,16 @@ interface Locale {
 export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean;
   public isAdmin: boolean;
+  public unRead: number = 0;
   public unconfirmedStudents: number = 0;
-  public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
+  public locales: Locale[] = [{ name: "Ru", value: "ru" }, { name: "En", value: "en" }];
   public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   public profileIcon!: string;
 
   public currentUserId!: number;
   valueForSearch!: string;
-  
+
   searchResults !: string[];
 
   lecturerSearchResults!: Lecturer[];
@@ -40,11 +43,13 @@ export class NavComponent implements OnInit, OnDestroy {
 
 
   constructor(private layoutService: LayoutService,
-              private coreService: CoreService,
-              private autService: AuthenticationService,
-              private searchService: SearchService,
-              private profileService: ProfileService,
-              ) {
+    private coreService: CoreService,
+    private chatService: ChatService,
+    private dataService:DataService,
+    private autService: AuthenticationService,
+    private searchService: SearchService,
+    private profileService: ProfileService,
+  ) {
   }
 
   public ngOnInit(): void {
@@ -54,8 +59,22 @@ export class NavComponent implements OnInit, OnDestroy {
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
 
+    this.dataService.readMessageCount.subscribe(
+      count=>{
+        this.unRead-=count
+      })
 
     this.currentUserId = this.autService.currentUserValue.id;
+    this.chatService.loadChats().subscribe(chats =>
+      chats.forEach(chat => {
+        this.unRead += chat.unread;
+      }));
+
+    this.chatService.loadGroups().subscribe(groups =>
+      groups.forEach(subjectGroup => {
+        this.unRead += subjectGroup.unread;
+        subjectGroup.groups.forEach(group=>this.unRead+=group.unread)
+      }));
 
     this.coreService.getGroups()
       .pipe(
@@ -117,7 +136,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   viewLecturerSearchResults() {
     this.searchService.getLecturerSearchResults(this.valueForSearch).subscribe(res => {
-       this.lecturerSearchResults = res;
+      this.lecturerSearchResults = res;
     });
   }
 
