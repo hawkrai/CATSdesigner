@@ -5,6 +5,7 @@ import { SubjectComponent } from './pages/subject/subject.component';
 import { ViewerRoutingModule } from './viewer.routing';
 import { MatetialModule } from '../../shared/matetial/matetial.module';
 import { SubjectsComponent } from './pages/subjects/subjects.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -16,8 +17,9 @@ import { SubjectsComponent } from './pages/subjects/subjects.component';
   ,
   imports: [
     CommonModule,
+    SharedModule,
     ViewerRoutingModule,
-    MatetialModule
+    MatetialModule,
   ]
 })
 export class ViewerModule { }

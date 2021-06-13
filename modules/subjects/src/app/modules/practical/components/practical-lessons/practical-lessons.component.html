@@ -13,7 +13,7 @@
   <ng-container matColumnDef="theme">
     <th mat-header-cell *matHeaderCellDef> {{'text.subjects.practicals.theme' | translate: 'Тема занятия'}} </th>
     <td mat-cell *matCellDef="let element">
-        {{element.Theme}} <a class="file-link" (click)="openFilePopup(element.Attachments)" mat-button color="primary" *ngIf="element.Attachments.length && isTeacher">({{element.Attachments.length }})</a>
+        {{element.Theme}}
     </td>
   </ng-container>
   <ng-container matColumnDef="shortName">
@@ -28,13 +28,18 @@
         {{element.Duration}}
     </td>
   </ng-container>
-  <ng-container matColumnDef="files" *ngIf="!isTeacher">
+  <ng-container matColumnDef="files">
     <th mat-header-cell *matHeaderCellDef> {{'text.attachments.plural' | translate:'Файлы'}} </th>
     <td mat-cell *matCellDef="let element">
       <button class="mdc-button" *ngIf="element.Attachments.length > 0"
         (click)="openFilePopup(element.Attachments)">
-        <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
-        <span class="mdc-button__label">{{'text.attachments.plural' | translate:'Файлы'}}</span>
+        <ng-container *ngIf="!isTeacher">
+          <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
+          <span class="mdc-button__label">{{'text.attachments.plural' | translate:'Файлы'}}</span>
+        </ng-container>
+        <ng-container *ngIf="isTeacher">
+          <span class="mdc-button__label">{{element.Attachments.length}}</span>
+        </ng-container>
       </button>
     </td>
   </ng-container>

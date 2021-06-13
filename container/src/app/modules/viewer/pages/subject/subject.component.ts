@@ -111,6 +111,10 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.menuService.getSubjectInfo(type).item;
   }
 
+  getModuleTranslate(type: ModuleType): string {
+    return this.menuService.getSubjectInfo(type).translate;
+  }
+
   
   ngOnDestroy(): void {
     this.mobileQuery.removeEventListener('change', this._mobileQueryListener);

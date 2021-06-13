@@ -177,6 +177,10 @@ namespace LMPlatform.UI.Controllers
                     Code = "500"
                 });
             }
+            if (string.IsNullOrWhiteSpace(model.DisplayName) || string.IsNullOrWhiteSpace(model.ShortName))
+            {
+                return Json(new { Message = "Поля заполнены некорректно", Code  = "500" });
+            }
             var color = model.Color;
             var isNew = model.SubjectId == 0;
             if (color == "#ffffff")
