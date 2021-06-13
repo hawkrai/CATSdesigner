@@ -151,7 +151,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(AboutSystemPopoverComponent, {
       width: "600px",
-      height: "60%",
+      height: "350px",
       position: {top: "128px"}
     });
 
