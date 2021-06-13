@@ -48,7 +48,10 @@ namespace Application.Infrastructure.DPManagement
 
             if (user != null && user.Lecturer != null && user.Lecturer.IsSecretary)
             {
-                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x=> x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021");
+                var currentYear = _currentAcademicYearEndDate.Year.ToString();
+                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x => x.AssignedDiplomProjects
+                .FirstOrDefault().Student.Group.GraduationYear == currentYear).Where(x => x.AssignedDiplomProjects
+                .FirstOrDefault().Student.Group.SecretaryId == userId);
             }
 
             if (user != null && user.Student != null)

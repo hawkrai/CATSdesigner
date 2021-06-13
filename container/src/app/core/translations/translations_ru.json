@@ -49,8 +49,6 @@
   "group": "Группа",
   "lecturer": "Преподаватель",
   "student": "Студент",
-
-
   "text.test.passing.now": "В данный момент тесты проходят:",
   "text.tests.for.control": "Тесты для контроля знаний",
   "text.test.for.control": "Тест для контроля знаний",
@@ -181,7 +179,6 @@
   "text.test.time.for.question": "Время на вопрос (сек)",
   "text.test.result.mark": "Оценка: {mark} ({percent}%)",
   "text.test.new.questions.for.test": "Вопрос №{number}",
-
   "text.editor.yes": "Да",
   "text.editor.no": "Нет",
   "text.editor.open": "Открыть",
@@ -194,8 +191,8 @@
   "text.editor.new.theme": "новой темы",
   "text.editor.new.book": "нового учебника",
   "text.editor.add.new.theme": "Добавить новую тему",
-  "text.editor.edit.theme": "Переименование темы",
-  "text.editor.edit.book": "Переименование учебника",
+  "text.editor.edit.theme": "Редактирование темы",
+  "text.editor.edit.book": "Редактирование учебника",
   "text.editor.hint.closed.section": "Этот раздел закрыт для пользователей",
   "text.editor.hint.add.new.book": "Добавление нового учебника",
   "text.editor.hint.enter.content.here": "Введите содержание здесь...",
@@ -205,34 +202,17 @@
   "text.editor.hint.expand": "Развернуть",
   "text.editor.emptylist": "Список пуст",
   "text.editor.selecttest": "Выберите тест:",
-  "text.editor.copy.to.subject": "Копировать в другой предмет",
-  "text.editor.copy": "Копирование",
-  "text.editor.choose.subject": "Выберите предмет",
-  "text.editor.open.access": "Открыть доступ",
-  "text.editor.close.access": "Закрыть доступ",
-  "text.editor.hint.enter.name.here": "Введите наименование здесь...",
-  "text.editor.hint.copy.book.from.other.subject": "Копировать учебник из другого предмета",
-  "text.editor.choose.document": "Выберите документ",
-  "text.editor.list.is.empty": "Список пуст",
-  "text.editor.edit.content": "Редактировать содержимое",
-  "text.editor.hint.search": "Для поиска по книге нажмите Ctrl + F",
-
   "text.news": "Новость",
   "text.news.plural": "Новости",
-
   "text.student": "Студент",
   "text.students": "Студенты",
   "text.students.selected.genitive": "Выбранных студентов",
-
   "text.lectures": "Лекция",
   "text.lectures.plural": "Лекции",
-
   "text.attachments": "Файл",
   "text.attachments.plural": "Файлы",
-
   "text.subjects.attendance.students": "Посещаемость студентов",
   "text.subjects.attendance.lesson": "Посещаемость занятий",
-
   "text.schedule.management": "Управление расписанием",
   "text.schedule.management.dates": "Управление датами",
   "text.schedule.management.delete.all": "Удалить все даты",
@@ -240,9 +220,7 @@
   "text.schedule.dates": "Даты занятий",
   "text.schedule.dates.deleting": "Удаление дат",
   "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
-
   "text.visiting.date.editing": "Редактируемая дата",
-
   "text.average.mark": "Средняя оценка",
   "text.average.test": "Средняя оценка за тесты",
   "text.rating": "Рейтинговая оценка",
@@ -251,26 +229,22 @@
   "text.subjects.missed.hours": "часа(ов)",
   "text.subjects.editing": "Редактирование предмета",
   "text.subjects.lector.appending": "Присоединение преподавателя к предмету",
-
   "text.subjects.mark.insert": "Поставьте оценку (от 0 до 10)",
   "text.subjects.mark.recommended": "Рекомендуемая оценка",
   "text.subjects.mark.date": "Дата выставления",
   "text.subjects.mark.by": "Оценку поставил(а)",
-
   "text.download": "Скачать",
   "text.download.archive": "Скачать архивом",
   "text.action": "Действие",
   "text.number.hours": "Количество часов",
   "text.number.hours.missed": "Пропущено часов",
   "text.delete.question": "Вы действительно хотите удалить",
-
   "text.subjects.attachments.material": "Прикрепленный материал",
   "text.subjects.attachments.add": "Добавить файл",
   "text.subjects.attachments.attached": "Прикрепленный файл",
   "text.subjects.attachments.loaded": "Загруженный файл",
   "text.subjects.attachments.delete": "Удалить файл",
   "text.subjects.attachments.files": "Предметные файлы",
-
   "text.subjects.news.add": "Добавить новость",
   "text.subjects.news.hide.all": "Скрыть все новости",
   "text.subjects.news.show.all": "Показать все новости",
@@ -283,7 +257,6 @@
   "text.subjects.news.text": "Текст новости",
   "text.subjects.news.date.leave": "Оставить старую дату",
   "text.subjects.news.hide": "Скрыть новость",
-
   "text.subjects.lectures.attending": "Посещение лекций",
   "text.subjects.lectures.add": "Добавить лекцию",
   "text.subjects.lectures.theme": "Тема лекции",
@@ -292,9 +265,7 @@
   "text.subjects.lectures.editing": "Редактирование темы лекции",
   "text.subjects.lectures.deleting": "Удаление лекции",
   "text.subjects.lectures.adding": "Добавление темы лекции",
-
   "text.groups.detached": "Откреплённые группы",
-
   "text.subjects.practicals": "Практическое занятие",
   "text.subjects.practicals.plural": "Практические занятия",
   "text.subjects.practicals.theme": "Тема занятия",
@@ -306,7 +277,6 @@
   "text.subjects.practicals.prefix": "ПЗ",
   "text.subjects.practicals.deleting": "Удаление практического занятия",
   "text.subjects.practicals.name": "Название практического занятия",
-
   "text.subjects.labs": "Лабораторная работа",
   "text.subjects.labs.plural": "Лабораторные работы",
   "text.subjects.labs.dative": "Лабораторную работу",
@@ -319,13 +289,11 @@
   "text.subjects.labs.prefix": "ЛР",
   "text.subjects.labs.deleting": "Удаление лабораторной работы",
   "text.subjects.labs.name": "Название лабораторной работы",
-
   "text.subjects.lector.joining": "Присоединение преподавателя к предмету",
   "text.subjects.lector.choose": "Выберите преподавателя",
   "text.subjects.lector.plural": "Преподаватели",
   "text.subjects.lector.disjoin": "Отсоединить преподавателя",
   "text.subjects.lector.joined": "Присоединенные преподаватели",
-
   "schedule.protection": "График защиты",
   "visit.statistics": "Статистика посещения",
   "results": "Результаты",
@@ -333,7 +301,6 @@
   "text.check.plagiarism": "",
   "text.check.plagiarism.all": "Проверить на плагиат всех работ",
   "text.refresh.data": "Обновить данные",
-
   "text.personalAccount.personalAccount": "Личный кабинет пользователя",
   "text.personalAccount.loadPhoto": "Загрузить изображение",
   "text.personalAccount.save": "Сохранить",
@@ -357,8 +324,6 @@
   "text.personalAccount.wrongData": "Некоторые поля не соответствуют формату!",
   "text.personalAccount.deletePhoto": "Удалить фото",
   "text.personalAccount.tooBigImage": "Размер изображения слишком велик!",
-
-  "text.personalAccount.changingPassword": "Изменение пароля",
   "text.personalAccount.changePassword.passwordChanged": "Пароль успешно изменен!",
   "text.personalAccount.changePassword.passwordNotChanged": "Пароль не был изменен!",
   "text.personalAccount.changePassword.putOldPassword": "Введите старый пароль",
@@ -369,14 +334,32 @@
   "text.personalAccount.changePassword.invalidPassword": "Некорректный формат пароля!",
   "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!",
   "text.personalAccount.GroupName": "Группа",
-
+  "text.start.title": "Адаптивная обучающая система",
+  "text.start.helpAbout": "Что из себя представляет система CATS?",
+  "text.start.helpPlay": "Просмотреть ролик о системе CATS",
+  "text.start.welcome": "Добро пожаловать!",
+  "text.start.login": "Имя пользователя",
+  "text.start.password": "Пароль",
+  "text.start.forgot": "Перейдите, чтобы восстановить пароль",
+  "text.start.btnForgot": "Забыли пароль?",
+  "text.start.helpEnter": "Нажмите, чтобы войти в систему",
+  "text.start.signIn": "Войти в систему",
+  "text.start.helpControl": "Нажмите, чтобы просмотреть успеваемость студентов",
+  "text.start.btnControl": "Контроль успеваемости",
+  "text.start.newUser": "Новый пользователь?",
+  "text.start.helpRegister": "Перейдите, чтобы зарегистрироваться",
+  "text.start.register": "Регистрация",
+  "text.start.helpGoogle": "Перейдите,чтобы загрузить приложение в Google play",
+  "text.start.google": "Доступно в Google Play",
+  "text.start.helpApp": "Перейдите,чтобы загрузить приложение в Apple store",
+  "text.start.AppStore": "Загрузите в App Store",
   "button.understand": "Понятно",
   "text.help.lectures": "Для добавления или удаления дат лекций нажмите на кнопку 'Управление расписанием'. Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.",
   "text.help.news": "Чтобы скрыть или показать все новости нажмите одноимённую кнопку. Для редактирования или удаления новости наведите курсор на нужную новость и нажмите на нужную иконку.",
-  "text.help.practical.protection.schedule":"Для добавления или удаления дат практических занятий нажмите на кнопку 'Управление датами'",
-  "text.help.visit.statistic":"Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.",
-  "text.help.results":"Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.",
-  "text.help.labs.protection.schedule":"Нажмите на кнопку 'Управление датами', чтобы добавить или удалить даты лабораторных занятий.",
+  "text.help.practical.protection.schedule": "Для добавления или удаления дат практических занятий нажмите на кнопку 'Управление датами'",
+  "text.help.visit.statistic": "Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.",
+  "text.help.results": "Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.",
+  "text.help.labs.protection.schedule": "Нажмите на кнопку 'Управление датами', чтобы добавить или удалить даты лабораторных занятий.",
   "text.help.settings": "Выберите группу, отметьте нужных студентов и выберите подгруппу, в которую необходимо их отнести",
   "text.help.schedule": "Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите на нужную ячейку. Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, Лекции в определенном предмете.",
   "text.help.popover.header": "О системе",
@@ -384,6 +367,6 @@
   "text.help.popover.content.second": "Первые 3 роли подлежат аутентификации.",
   "text.help.popover.content.third": "Руководитель проекта: к.т.н., доцент Попова Ю.Б.",
   "text.help.popover.content.fourth": "БНТУ-2021",
-  "text.help.popover.route.manual":"Перейти к руководству пользователя",
-  "text.help.popover.close":"Закрыть"
+  "text.help.popover.route.manual": "Перейти к руководству пользователя",
+  "text.help.popover.close": "Закрыть"
 }

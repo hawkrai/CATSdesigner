@@ -4,7 +4,7 @@ import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-pro
 import * as modules from './modules.json';
 
 const app = express();
-const port = 4200;
+const port = 3000;
 const targetDomain = "https://host27072020.of.by";
 
 app.use(express.static(path.resolve('/home/educatsb/apps')));

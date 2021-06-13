@@ -12,6 +12,10 @@
             *ngIf="diplomProjectId != null" (click)="downloadTaskSheet()">
       <mat-icon>cloud_download</mat-icon>
     </button>
+    <button mat-icon-button color="primary" matTooltip="Скачать листы задания архивом"
+            *ngIf="diplomProjectId != null" (click)="downloadArchive()">
+            <mat-icon>get_app</mat-icon>
+    </button>
     <button mat-icon-button color="primary" matTooltip="Редактировать"
             (click)="editTaskSheet()" *ngIf="diplomUser.IsLecturer && diplomProjectId != null">
       <mat-icon>edit</mat-icon>

@@ -75,7 +75,10 @@
 
 
   <button mat-icon-button class="end icon-h" [routerLink]="['personalAccount']">
-    <img src="{{this.profileIcon}}" class="account"/>
+    <img *ngIf="this.profileIcon" src="{{this.profileIcon}}" class="account" />
+    <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
+    {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
+    </span>
   </button>
 
   <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h">
@@ -180,7 +183,10 @@
       </button>
 
       <button mat-icon-button [routerLink]="['personalAccount']" class="end icon-h">
-        <img src="{{this.profileIcon}}" class="account"/>
+        <img *ngIf="this.profileIcon" t src="{{this.profileIcon}}" class="account" />
+        <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
+          {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
+        </span>
       </button>
 
       <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h points">
