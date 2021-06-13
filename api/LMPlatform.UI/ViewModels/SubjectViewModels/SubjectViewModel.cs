@@ -24,7 +24,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             {
                 GroupId = x.GroupId,
                 GroupName = x.Group.Name,
-            });
+            }).OrderBy(x => x.GroupName);
             var owner = model.SubjectLecturers.FirstOrDefault(x => x.Owner.HasValue)?.Owner;
             Owner =  owner is null ? model.SubjectLecturers.FirstOrDefault(x => !x.Owner.HasValue).LecturerId : owner;
         }

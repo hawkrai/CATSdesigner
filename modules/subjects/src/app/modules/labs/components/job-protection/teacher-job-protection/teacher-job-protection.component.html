@@ -9,7 +9,7 @@
                                     [expanded]="selectedStudentId === studentJobProtection.StudentId"
                                     (closed)="onSelectStudent(0)">
                 <mat-expansion-panel-header>
-                  <mat-panel-title>
+                  <mat-panel-title style="display: flex; align-items: flex-end;">
                     {{studentJobProtection.StudentName}}
                     <mat-icon class="priority" *ngIf="studentJobProtection.HasProtection" [color]="'warn'">priority_high</mat-icon>
                   </mat-panel-title>

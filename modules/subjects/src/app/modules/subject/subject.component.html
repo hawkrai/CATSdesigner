@@ -28,7 +28,7 @@
     </ng-container>
 
     <ng-container matColumnDef="students">
-      <th mat-header-cell *matHeaderCellDef>{{'text.students' | translate:'Студенты'}}</th>
+      <th mat-header-cell *matHeaderCellDef [matTooltip]="'subject.students.count' | translate: 'Количество студентов на предмете'" matTooltipPosition="above">{{'text.students' | translate:'Студенты'}}</th>
       <td mat-cell *matCellDef="let element"> {{element.StudentsCount}}</td>
     </ng-container>
 
