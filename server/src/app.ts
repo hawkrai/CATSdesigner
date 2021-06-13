@@ -116,11 +116,12 @@ const proxyElasticSearchOptions = {
 }
 
 const proxyChatOptions = { 
-  target: "http://178.124.197.115:3000/", 
+  target: "https://chateduc.w12.hoster.by/", 
   changeOrigin: true,
   pathRewrite: {
     '^/catService': '/ChatApi', // rewrite path
-  }
+  },
+  secure: false
 }
 
 app.use('*/catService/*', createProxyMiddleware(proxyChatOptions));

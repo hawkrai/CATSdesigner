@@ -1,12 +1,14 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {LayoutService} from "../layout.service";
-import {AuthenticationService} from "../../core/services/auth.service";
-import {first, takeUntil, tap} from "rxjs/operators";
-import {CoreService} from "../../core/services/core.service";
-import {Subject} from "rxjs";
-import {Group, Lecturer, Student} from "../../core/models/searchResults/search-results";
-import {SearchService} from "../../core/services/searchResults/search.service";
-import {ProfileService} from "../../core/services/searchResults/profile.service";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { LayoutService } from "../layout.service";
+import { AuthenticationService } from "../../core/services/auth.service";
+import { first, takeUntil, tap } from "rxjs/operators";
+import { CoreService } from "../../core/services/core.service";
+import { Subject } from "rxjs";
+import { Lecturer, Student, Group } from '../../core/models/searchResults/search-results';
+import { SearchService } from '../../core/services/searchResults/search.service';
+import { ProfileService } from '../../core/services/searchResults/profile.service';
+import { DataService } from '../../modules/chat/services/dataService';
+import { ChatService } from "src/app/modules/chat/services/chatService";
 import {MenuService} from "src/app/core/services/menu.service";
 import {MatDialog} from "@angular/material/dialog";
 import {AboutSystemPopoverComponent} from "../../about-system/about-popover/about-popover.component";
@@ -26,7 +28,9 @@ interface DropDownValue {
 export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean;
   public isAdmin: boolean;
+  public unRead: number = 0;
   public unconfirmedStudents: number = 0;
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
   public locales: DropDownValue[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
   public locale: DropDownValue;
   public profileIcon = "/assets/images/account.png";
@@ -35,20 +39,22 @@ export class NavComponent implements OnInit, OnDestroy {
   public theme: DropDownValue;
 
   valueForSearch!: string;
+
   searchResults !: string[];
   lecturerSearchResults!: Lecturer[];
   studentSearchResults!: Student[];
   groupSearchResults!: Group[];
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
-
+ 
   constructor(private layoutService: LayoutService,
-              private coreService: CoreService,
-              private autService: AuthenticationService,
-              private searchService: SearchService,
-              private profileService: ProfileService,
-              private menuService: MenuService,
-              public dialog: MatDialog
-  ) {
+    private coreService: CoreService,
+    private chatService: ChatService,
+    private dataService:DataService,
+    private autService: AuthenticationService,
+    private searchService: SearchService,
+    private profileService: ProfileService,
+    private menuService: MenuService,
+    public dialog: MatDialog)
+  {
   }
 
   get logoWidth(): string {
@@ -66,6 +72,22 @@ export class NavComponent implements OnInit, OnDestroy {
     }
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: DropDownValue) => locale.value === local) : this.locales[0];
+
+    this.dataService.readMessageCount.subscribe(
+      count=>{
+        this.unRead-=count
+      })
+
+    this.chatService.loadChats().subscribe(chats =>
+      chats.forEach(chat => {
+        this.unRead += chat.unread;
+      }));
+
+    this.chatService.loadGroups().subscribe(groups =>
+      groups.forEach(subjectGroup => {
+        this.unRead += subjectGroup.unread;
+        subjectGroup.groups.forEach(group=>this.unRead+=group.unread)
+      }));
 
     this.coreService.getGroups()
       .pipe(
@@ -159,8 +181,5 @@ export class NavComponent implements OnInit, OnDestroy {
       if (result != null) {
       }
     });
-
-
   }
-
 }

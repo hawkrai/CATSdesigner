@@ -15,6 +15,17 @@ export class ChatService {
         this.user=JSON.parse(localStorage.getItem('currentUser'));
      }
 
+    public updateRead(chatId:number)
+    {
+        return this.http.get<Chat[]>('catService/chat/UpdateReadChat?userId=' + this.user.id+"&chatId="+chatId);
+    }
+
+    public updateGroupRead(chatId:number)
+    {
+        return this.http.get<Chat[]>('catService/chat/UpdateReadGroupChat?userId=' + this.user.id+"&chatId="+chatId);
+    }
+
+
     public loadChats(): Observable<Chat[]> {
         return this.http.get<Chat[]>('catService/chat/GetAllChats?userId=' + this.user.id);
     }
