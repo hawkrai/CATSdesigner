@@ -6,6 +6,9 @@ table{
   border-spacing: 0px;
 }
 
+.mat-select-value-text, .mat-select-arrow {
+  color: #fff !important;
+}
 .col-second{
   height: 100vh;
   vertical-align: middle;
@@ -18,6 +21,11 @@ table{
   vertical-align: middle;
   padding: 0px;
   background-image: linear-gradient(-135deg, #3597ffcc,  #FF7C8Dcc);
+
+  .mselect{
+    width: 40px;
+    margin-left: 40px;
+  }
 
   .cat {
     width: 18vw;
@@ -144,7 +152,6 @@ form {
       >p {
         color: #2e2e2e;
         margin-right: 10px;
-        min-width: 170px;
         font-size: 16px;
       }
     }
@@ -185,7 +192,7 @@ form {
 
     a{
       margin-top: 2vh;
-      min-width: 132px;
+      width: 142px;
       display: flex;
       text-decoration-line: none;
     }
@@ -243,6 +250,11 @@ form {
   @media (max-width:1024px){
     .col-first{
       width: 50vw;
+
+      .mselect{
+        margin-bottom: 30px;
+        margin-left: 20px;
+      }
 
       >h1{
         font-size: 2.7vw;
@@ -307,7 +319,7 @@ form {
 
     .col-first{
       width: 100vw;
-      height: 250px;
+      height: 300px;
 
       >.cat {
         display: none;

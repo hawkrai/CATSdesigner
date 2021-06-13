@@ -373,6 +373,25 @@
   "text.personalAccount.changePassword.invalidPassword": "Некорректный формат пароля!",
   "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!",
   "text.personalAccount.GroupName": "Группа",
+  "text.start.title":"Адаптивная обучающая система",
+  "text.start.helpAbout":"Что из себя представляет система CATS?",
+  "text.start.helpPlay":"Просмотреть ролик о системе CATS",
+  "text.start.welcome":"Добро пожаловать!",
+  "text.start.login":"Имя пользователя",
+  "text.start.password":"Пароль",
+  "text.start.forgot":"Перейдите, чтобы восстановить пароль",
+  "text.start.btnForgot":"Забыли пароль?",
+  "text.start.helpEnter":"Нажмите, чтобы войти в систему",
+  "text.start.signIn": "Войти в систему",
+  "text.start.helpControl": "Нажмите, чтобы просмотреть успеваемость студентов",
+  "text.start.btnControl": "Контроль успеваемости",
+  "text.start.newUser": "Новый пользователь?",
+  "text.start.helpRegister": "Перейдите, чтобы зарегистрироваться",
+  "text.start.register": "Регистрация",
+  "text.start.helpGoogle": "Перейдите,чтобы загрузить приложение в Google play",
+  "text.start.google": "Доступно в Google Play",
+  "text.start.helpApp": "Перейдите,чтобы загрузить приложение в Apple store",
+  "text.start.AppStore": "Загрузите в App Store",
 
   "validation.whitespace": "Поле не может содержать пустых пробелов",
   "text.menu.workshops": "Практические занятия",
@@ -396,4 +415,5 @@
   "text.help.popover.content.fourth": "БНТУ-2021",
   "text.help.popover.route.manual":"Перейти к руководству пользователя",
   "text.help.popover.close":"Закрыть"
+
 }

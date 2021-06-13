@@ -11,7 +11,10 @@
                         [color]="'primary'"
                         [checked]="isLecturer"
                         (change)="lecturerStatusChange($event)"
+                        matTooltip="Нажмите для выбора другой роли"
       >Руководитель</mat-slide-toggle>
+    
+
     
     <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer" 
       (click)="addProject()">Добавить тему</button>
@@ -22,6 +25,7 @@
                         [color]="'primary'"
                         [checked]="isLecturer"
                         (change)="lecturerStatusChange($event)"
+                        matTooltip="Нажмите для выбора другой роли"
       >Руководитель</mat-slide-toggle>
     <mat-form-field class="projects-component__search">
       <mat-label>Поиск темы, студента, группы</mat-label>

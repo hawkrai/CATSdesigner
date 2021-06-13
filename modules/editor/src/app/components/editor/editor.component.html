@@ -53,17 +53,21 @@
     <div class="flex-tree-container">
       <div *ngIf="!isReadOnly" class="flex-search-region">
         <div class="flex-search-btn-holder">
-          <button mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
-            <mat-icon>add_box</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" aria-label="Add icon" (click)="openCopyFromOtherSubjectDialog()" [matTooltip]="'text.editor.hint.copy.book.from.other.subject' | translate: 'Копирование учебника из другого предмета'">
-            <mat-icon>library_add</mat-icon>
-          </button>
-          <button *ngIf="isSmallDevice()" (click)="drawer.toggle()" mat-icon-button>
-            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="drawer.opened ? ('text.editor.hint.roll.up' | translate: 'Свернуть') : ('text.editor.hint.expand' | translate: 'Развернуть')">
-              {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
-            </mat-icon>
-          </button>
+          <div class="left-half">
+            <button mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
+              <mat-icon>add_box</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" aria-label="Add icon" (click)="openCopyFromOtherSubjectDialog()" [matTooltip]="'text.editor.hint.copy.book.from.other.subject' | translate: 'Копирование учебника из другого предмета'">
+              <mat-icon>library_add</mat-icon>
+            </button>
+          </div>
+          <div class="right-half">
+            <button *ngIf="isSmallDevice()" (click)="drawer.toggle()" mat-icon-button >
+              <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="drawer.opened ? ('text.editor.hint.roll.up' | translate: 'Свернуть') : ('text.editor.hint.expand' | translate: 'Развернуть')">
+                {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
+              </mat-icon>
+            </button>
+          </div>
         </div>
       </div>
       <div class="tree-area">

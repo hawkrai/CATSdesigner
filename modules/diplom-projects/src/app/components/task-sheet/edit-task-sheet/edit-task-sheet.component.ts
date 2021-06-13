@@ -182,7 +182,7 @@ export class EditTaskSheetComponent implements OnInit {
     this.projectsService.getProjects(
       'count=' + this.COUNT +
       '&page=' + this.PAGE +
-      '&filter={"isSecretary":"' + this.data.isSecretary + '","searchString":"' + this.searchString + '"}' +
+      '&filter={"isSecretary":"' + "true" + '","searchString":"' + this.searchString + '"}' +
       '&sorting[' + this.sorting + ']=' + this.direction
     )
     .subscribe(res => this.projects = res.Items);
