@@ -30,9 +30,10 @@ export class NavComponent implements OnInit, OnDestroy {
   public locales: DropDownValue[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
   public locale: DropDownValue;
   public profileIcon = "/assets/images/account.png";
-  public currentUserId!: number;
+  public userFullName;
   public themes: DropDownValue[] = [{name: "White", value: "white"}, {name: "Dark", value: "dark"}];
   public theme: DropDownValue;
+
   valueForSearch!: string;
   searchResults !: string[];
   lecturerSearchResults!: Lecturer[];
@@ -58,15 +59,13 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
+    this.getUserInfo();
+
     if (!localStorage.getItem("theme")) {
       localStorage.setItem("theme", "white");
     }
-    this.getAvatar();
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: DropDownValue) => locale.value === local) : this.locales[0];
-
-
-    this.currentUserId = this.autService.currentUserValue.id;
 
     this.coreService.getGroups()
       .pipe(
@@ -105,10 +104,10 @@ export class NavComponent implements OnInit, OnDestroy {
     this.unsubscribeStream$.complete();
   }
 
-
-  getAvatar() {
-    this.profileService.getAvatar().subscribe(res => {
-      this.profileIcon = res;
+  getUserInfo() {
+    this.profileService.getProfileInfo(this.autService.currentUserValue.id).subscribe(res => {
+      this.profileIcon = res.Avatar;
+      this.userFullName = res.Name;
     });
   }
 

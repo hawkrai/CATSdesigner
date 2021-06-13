@@ -10,7 +10,9 @@
       <mat-card class="avatar">
 
         <img class="avatarImg" *ngIf="this.profileData.Avatar" src="{{this.profileData.Avatar}}">
-        <img class="avatarImg" *ngIf="!this.profileData.Avatar" src="{{this.defaultAvatar}}">
+        <span *ngIf="!this.profileData.Avatar" class="avatar-title rounded-circle bg-soft-primary text-primary">
+          {{this.profileData.Surname.charAt(0) + this.profileData.Name.charAt(0)}}
+        </span>
 
       </mat-card>
       <input style="display: none"
