@@ -1,6 +1,6 @@
 {
     "web": {
-        "path": "/home/educatsb/apps/container",
+        "path": "D:/.temp/apps/container",
         "entryPoint": "index.html"
     },
     "subject": {

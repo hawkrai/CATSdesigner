@@ -1,4 +1,3 @@
-import { Groups } from '../groups/groups.model';
 export class Chat {
     id?: number;
     userId?: number;

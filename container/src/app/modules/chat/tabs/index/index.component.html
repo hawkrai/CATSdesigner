@@ -1,22 +1,19 @@
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 <div class="layout-wrapper d-lg-flex">
   <!-- start chat-leftsidebar -->
   <div class="chat-leftsidebar mr-lg-1">
     <!-- Start side-menu nav -->
     <div class="flex-lg-column my-auto" style="height: 64px;">
       <ul class="nav nav-pills side-menu-nav justify-content-center" role="tablist">
-        <li class="nav-item" ngbTooltip="Чаты">
+        <li class="nav-item" matTooltip="{{'chat.chats'| translate: 'Чаты'}}">
           <a class="nav-link active" id="pills-chat-tab" (click)="activetab=2" href="javascript: void(0);"
             [ngClass]="{'active': activetab === 2}">
-            <i class="ri-message-3-line"></i>
+            <mat-icon> chat</mat-icon>
           </a>
         </li>
-        <li class="nav-item" ngbTooltip="Группы">
+        <li class="nav-item" matTooltip="{{'chat.groups'| translate: 'Группы'}}">
           <a class="nav-link" id="pills-groups-tab" (click)="activetab=3" href="javascript: void(0);"
             [ngClass]="{'active': activetab === 3}">
-            <i class="ri-group-line"></i>
+            <mat-icon>group</mat-icon>
           </a>
         </li>
       </ul>
@@ -51,9 +48,28 @@
               <div *ngIf="dataService.activChat" class="media align-items-center" style="width: min-content;">
                 <div class="d-block d-lg-none mr-2">
                   <a href="javascript: void(0);" class="user-chat-remove text-muted font-size-16 p-2"
-                    (click)="closeUserChat()"><i class="ri-arrow-left-s-line"></i></a>
+                    (click)="closeUserChat()">
+                    <mat-icon>keyboard_arrow_left</mat-icon>
+                  </a>
                 </div>
-                <div class="media-body overflow-hidden">
+                <div *ngIf="!dataService.isGroupChat && dataService.activChatId" class="media"
+                  style="align-items: center;">
+                  <div class="chat-user-img align-self-center mr-3">
+                    <img *ngIf="dataService.activChat.img" src="{{dataService.activChat.img}}"
+                      class="rounded-circle avatar-xs" alt="">
+                    <div class="avatar-xs" *ngIf="!dataService.activChat.img">
+                      <span class="avatar-title rounded-circle bg-soft-primary text-primary">
+                        {{dataService.activChat.name.split(' ')[0].charAt(0)+dataService.activChat.name.split('
+                        ')[1].charAt(0)}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="media-body overflow-hidden">
+                    <h5 class="text-truncate font-size-15 mb-1">{{dataService.activChat.name}}</h5>
+                    <p class="chat-user-message text-truncate mb-0">{{dataService.activChat.lastMessage}}</p>
+                  </div>
+                </div>
+                <div *ngIf="dataService.isGroupChat && dataService.activChatId" class="media-body overflow-hidden">
                   <h5 class="font-size-16 mb-0 text-truncate"><a (click)="openStudentsList()"
                       class="text-reset user-profile-show">{{dataService.activChat.name}}</a></h5>
                 </div>
@@ -64,13 +80,14 @@
                 <li class="list-inline-item">
                   <div class="dropdown" ngbDropdown>
                     <button class="btn nav-btn dropdown-toggle" ngbDropdownToggle type="button" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false" (click)="openFilter()" >
-                      <i class="ri-search-line"></i>
+                      aria-haspopup="true" aria-expanded="false" (click)="openFilter()">
+                      <mat-icon>search</mat-icon>
                     </button>
                     <div class="dropdown-menu p-0 dropdown-menu-right dropdown-menu-md" ngbDropdownMenu>
                       <div class="search-box p-2">
                         <input type="text" class="form-control bg-light border-0"
-                          placeholder="Сообщение" [(ngModel)]="filterValue" (ngModelChange)="filter()">
+                          placeholder="{{'chat.enterMsg'| translate: 'Введите сообщение'}}" [(ngModel)]="filterValue"
+                          (ngModelChange)="filter()">
                       </div>
                     </div>
                   </div>
@@ -102,14 +119,17 @@
                         </span>
                       </p>
                       <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span
-                        class="align-middle">{{data.time}}</span></p>
-                
+                          class="align-middle">{{data.time}}</span></p>
+
                       <ul class="list-inline message-img mb-0" *ngIf="data.isimage">
                         <div>
-                            <a class="popup-img d-inline-block m-1" (click)="download(data.fileContent)" title="Project 1">
-                              <img :src="catService/file/Download?chatId={{dataService.activChatId}}&file={{data.fileContent}}" alt="" class="rounded border">
-                            </a>
-                          </div>
+                          <a class="popup-img d-inline-block m-1" (click)="download(data.fileContent)"
+                            title="Project 1">
+                            <img
+                              :src="catService/file/Download?chatId={{dataService.activChatId}}&file={{data.fileContent}}"
+                              alt="" class="rounded border">
+                          </a>
+                        </div>
                       </ul>
 
                       <div class="card p-2 mb-2" *ngIf="data.isfile">
@@ -125,7 +145,7 @@
                             <ul class="list-inline mb-0 font-size-20">
                               <li class="list-inline-item">
                                 <a (click)="download(data.fileContent)" class="text-muted">
-                                  <i class="ri-download-2-line"></i>
+                                  <mat-icon>cloud_download</mat-icon>
                                 </a>
                               </li>
                             </ul>
@@ -137,18 +157,18 @@
                     <div class="dropdown align-self-start" ngbDropdown>
                       <a class="dropdown-toggle" role="button" ngbDropdownToggle data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <i class="ri-more-2-fill"></i>
+                        <mat-icon>more_vert</mat-icon>
                       </a>
                       <div class="dropdown-menu" ngbDropdownMenu>
                         <a class="dropdown-item" style="width: min-content;" (click)="copyText(data.text)">
-                          <mat-icon>file_copy</mat-icon> Копировать
+                          <mat-icon>file_copy</mat-icon>{{'chat.copy'| translate: 'Копировать'}}
                         </a>
                         <a *ngIf="data.align" class="dropdown-item" (click)="edit(data)">
-                          <mat-icon>edit</mat-icon> Редактировать
+                          <mat-icon>edit</mat-icon> {{'chat.edit'| translate: 'Изменить'}}
                         </a>
                         <a *ngIf="dataService.user.role=='lector'" class="dropdown-item" (click)="remove(data.id)">
-                          <mat-icon>delete_forever</mat-icon> Удалить
-                        </a>  
+                          <mat-icon>delete_forever</mat-icon> {{'chat.delete'| translate: 'Удалить'}}
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -163,16 +183,16 @@
                     <div class="dropdown align-self-start" ngbDropdown>
                       <a class="dropdown-toggle" href="#" role="button" ngbDropdownToggle data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <i class="ri-more-2-fill"></i>
+                        <mat-icon>more_vert</mat-icon>
                       </a>
                       <div class="dropdown-menu" ngbDropdownMenu>
                         <a class="dropdown-item" (click)="copyText(data.text)">
-                          <mat-icon>file_copy</mat-icon>Копировать
+                          <mat-icon>file_copy</mat-icon>{{'chat.copy'| translate: 'Копировать'}}
                         </a>
                         <a *ngIf="dataService.user.role=='lector'" class="dropdown-item" (click)="remove(data.id)">
-                          <mat-icon>delete_forever</mat-icon> Удалить
-                        </a>  
-                      </div>                    
+                          <mat-icon>delete_forever</mat-icon> {{'chat.delete'| translate: 'Удалить'}}
+                        </a>
+                      </div>
                     </div>
                   </div>
                   <div class="conversation-name">{{data.name}}</div>
@@ -187,33 +207,38 @@
         <!-- end chat conversation end -->
 
         <!-- start chat input section -->
-        <div class="p-3 p-lg-4 mb-0" style="padding-left: 0px !important;padding-right: 0px !important;padding-top: 1.5rem !important; padding-bottom: 0px !important;">
+        <div class="p-3 p-lg-4 mb-0"
+          style="padding-left: 0px !important;padding-right: 0px !important;padding-top: 1rem !important; padding-bottom: 0px !important;">
           <div class="row no-gutters">
             <div class="col">
               <div>
-                <input type="text" [(ngModel)]="currentMsg.text" (keyup.enter)="sendMsg()" class="form-control form-control-lg bg-light border-light"
-                  placeholder="Введите сообщение">
+                <input type="text" [(ngModel)]="currentMsg.text" (keyup.enter)="sendMsg()"
+                  class="form-control form-control-lg bg-light border-light"
+                  placeholder="{{'chat.enterMsg'| translate: 'Введите сообщение'}}">
               </div>
             </div>
             <div class="col-auto">
               <div class="chat-input-links ml-md-2">
                 <ul class="list-inline mb-0">
                   <li *ngIf="isEdit" class="list-inline-item">
-                    <button type="button" (click)="stopEdit()"  class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
-                      data-toggle="tooltip" data-placement="top" ngbTooltip="Закрытть">
+                    <button type="button" (click)="stopEdit()"
+                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
+                      matTooltip="{{'chat.cancle'| translate: 'Отменить'}}">
                       <mat-icon> cancel</mat-icon>
                     </button>
                   </li>
                   <li *ngIf="!isEdit" class="list-inline-item">
                     <input #fileInput hidden="true" type="file" (change)="uploadFiles($event.target)" />
-                    <button type="button" (click)="fileInput.click()"  class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
-                      data-toggle="tooltip" data-placement="top" ngbTooltip="Прикрепить файл">
+                    <button type="button" (click)="fileInput.click()"
+                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
+                       matTooltip="{{ 'chat.attachFile' | translate: 'Прикрепить файл'}}" ng-reflect-tooltip-class="tooltip">
                       <mat-icon> attach_file</mat-icon>
                     </button>
                   </li>
                   <li class="list-inline-item">
                     <button type="submit" (click)="sendMsg()"
-                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light">
+                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
+                      matTooltip="{{'chat.send'| translate: 'Отправить'}}">
                       <mat-icon>send</mat-icon>
                     </button>
                   </li>

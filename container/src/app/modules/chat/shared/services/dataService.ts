@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Chat } from '../tabs/chats/chats.model';
+import { Chat } from '../models/entities/chats.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Message } from '../index/chat.model';
-import { SubjectGroups } from '../tabs/groups/subject.groups.model';
-import { MessageCto } from '../Dto/messageCto';
+import { Message } from '../models/entities/message.model';
 import { MsgService } from './msgService';
 import { BehaviorSubject } from 'rxjs';
 import { ChatService } from './chatService';
-import { Groups } from '../tabs/groups/groups.model';
+import { Groups } from '../models/entities/groups.model';
 import { exit } from 'process';
 import { element } from 'protractor';
 import { ContactService } from './contactService';
 import { filter } from 'rxjs/operators';
+import { SubjectGroups } from '../models/entities/subject.groups.model';
 @Injectable({
     providedIn: 'root',
 })

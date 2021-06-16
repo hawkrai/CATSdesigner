@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { MessageCto } from '../Dto/messageCto';
 import { DataService } from './dataService';
 import { SignalRService } from './signalRSerivce';
+import { MessageCto } from '../models/dto/messageCto';
 
 
 @Injectable({ providedIn: 'root' })

@@ -15,7 +15,7 @@ const path_1 = __importDefault(require("path"));
 const http_proxy_middleware_1 = require("http-proxy-middleware");
 const modules = __importStar(require("./modules.json"));
 const app = express_1.default();
-const port = 4200;
+const port = 3000;
 const targetDomain = "https://host27072020.of.by";
 app.use(express_1.default.static(path_1.default.resolve('/home/educatsb/apps')));
 const allowedExt = [

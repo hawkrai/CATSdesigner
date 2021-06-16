@@ -1,9 +1,15 @@
 //@import '~bootstrap/scss/bootstrap';
-@import '../../../../assets/scss/app.scss';
+@import '../../../../../assets/scss/app.scss';
 
 .mat-typography
 {
     background: white;
+}
+
+.list-inline-item
+{
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
 
 .app-wrapper

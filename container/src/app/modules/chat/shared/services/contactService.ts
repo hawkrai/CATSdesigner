@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Chat } from '../tabs/chats/chats.model';
+import { Chat } from '../models/entities/chats.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Message } from '../index/chat.model';
-import { SubjectGroups } from '../tabs/groups/subject.groups.model';
-import { MessageCto } from '../Dto/messageCto';
+import { Message } from '../models/entities/message.model';
 import { MsgService } from './msgService';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from '../Dto/user';
 import { DataService } from './dataService';
-import { ChatCto } from '../Dto/chatCto';
+import { ChatCto } from '../models/dto/chatCto';
+import { User } from '../models/dto/user';
+import { SubjectGroups } from '../models/entities/subject.groups.model';
 @Injectable({
     providedIn: 'root',
 })
@@ -16,10 +15,16 @@ export class ContactService {
     public user: any;
     public isLecturer: boolean;
     public contacts: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([]);
+    public openChatComand: BehaviorSubject<Chat> = new BehaviorSubject<Chat>(null);
 
     constructor(private http: HttpClient, private dataService: DataService) {
         this.user = JSON.parse(localStorage.getItem('currentUser'));
         this.isLecturer = this.user.role == "lector";
+    }
+
+    public openCaht(chat:Chat)
+    {
+        this.openChatComand.next(chat);
     }
 
     public CreateChat(userId: number) {

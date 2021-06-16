@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Chat } from '../tabs/chats/chats.model';
+import { Chat } from '../models/entities/chats.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Message } from '../index/chat.model';
-import { SubjectGroups } from '../tabs/groups/subject.groups.model';
-import { MessageCto } from '../Dto/messageCto';
+import { Message } from '../models/entities/message.model';
 import { MsgService } from './msgService';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { SubjectGroups } from '../models/entities/subject.groups.model';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -24,7 +24,6 @@ export class ChatService {
     {
         return this.http.get<Chat[]>('catService/chat/UpdateReadGroupChat?userId=' + this.user.id+"&chatId="+chatId);
     }
-
 
     public loadChats(): Observable<Chat[]> {
         return this.http.get<Chat[]>('catService/chat/GetAllChats?userId=' + this.user.id);
