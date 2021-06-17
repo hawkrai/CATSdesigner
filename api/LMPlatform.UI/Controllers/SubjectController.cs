@@ -152,6 +152,35 @@ namespace LMPlatform.UI.Controllers
         [HttpPost]
         public ActionResult SaveSubject(SubjectEditViewModel model)
         {
+            if (UserContext.Role != "lector")
+            {
+                return Json(new
+                {
+                    Message = "Нет доступа для создания предмета",
+                    Code = "500"
+                });
+            }
+            var userSubjects = SubjectManagementService.GetUserSubjectsV2(UserContext.CurrentUserId);
+            if (userSubjects.Any(x => x.Name == model.DisplayName && x.Id != model.SubjectId))
+            {
+                return Json(new
+                {
+                    Message = "Предмет с таким именем уже существует",
+                    Code = "500"
+                });
+            }
+            if (userSubjects.Any(x => x.ShortName == model.ShortName && x.Id != model.SubjectId))
+            {
+                return Json(new
+                {
+                    Message = "Предмет с такой аббревиатурой уже существует",
+                    Code = "500"
+                });
+            }
+            if (string.IsNullOrWhiteSpace(model.DisplayName) || string.IsNullOrWhiteSpace(model.ShortName))
+            {
+                return Json(new { Message = "Поля заполнены некорректно", Code  = "500" });
+            }
             var color = model.Color;
             var isNew = model.SubjectId == 0;
             if (color == "#ffffff")

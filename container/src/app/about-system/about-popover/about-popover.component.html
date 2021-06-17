@@ -1,0 +1,16 @@
+<div class="popover">
+<h1 mat-dialog-title>{{'text.help.popover.header' | translate:'О системе'}}</h1>
+<div mat-dialog-content>
+  <p>{{'text.help.popover.content.first' | translate:'Обучающая система CATS предназначена для повышения качества подготовки 
+    специалистов дневной и заочной форм обучения, а также для самостоятельной работы.
+    С точки зрения функциональных возможностей поддерживается работа в 4 ролях: администратор,
+    преподаватель, студент и наблюдатель.'}}</p>
+  <p>{{'text.help.popover.content.second' | translate:'Первые 3 роли подлежат аутентификации.'}}</p>
+  <p><a routerLink="/web/about-system" mat-dialog-close>{{'text.help.popover.route.manual' | translate:'Перейти к руководству пользователя'}}</a></p>
+  <p> {{'text.help.popover.content.fourth' | translate: 'БНТУ - 2021'}}</p>
+  <p>{{'text.help.popover.content.third' | translate:'Руководитель проекта: к.т.н., доцент Попова Ю.Б.'}}</p>
+</div>
+<div mat-dialog-actions align="right">
+  <button mat-raised-button color="primary" (click)="onClose()">{{'text.help.popover.close' | translate:'Закрыть'}}</button>
+</div>
+</div>

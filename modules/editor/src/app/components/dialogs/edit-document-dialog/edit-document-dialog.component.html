@@ -1,9 +1,14 @@
-<h1 mat-dialog-title>{{description}}</h1>
+<div class="modal-header">
+  <h1 mat-dialog-title>{{description}}</h1>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon class="mat-icon-rtl-mirror" color="basic" [matTooltip]="'text.editor.close' | translate: 'Закрыть'">close</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
   <ckeditor
     [editor]="editor"
     [(ngModel)]="model.editorData"
-    (ngModelChange)="onModelChanged(model)"
+    (ngModelChange)="onModelChanged()"
     [config]="model.config"
 ></ckeditor>
 </div>

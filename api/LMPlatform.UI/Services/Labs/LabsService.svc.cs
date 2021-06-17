@@ -136,7 +136,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
 				if (!isUserAssigned)
 				{
 					return new ResultViewData
@@ -177,7 +177,7 @@ namespace LMPlatform.UI.Services.Labs
 		{
 			try
 			{
-				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubject(UserContext.CurrentUserId, subjectId);
+				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
 				if (!isUserAssigned)
 				{
 					return new ResultViewData

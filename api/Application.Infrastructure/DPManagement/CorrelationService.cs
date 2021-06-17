@@ -19,6 +19,7 @@ namespace Application.Infrastructure.DPManagement
                 { "DiplomLecturer", GetDiplomLecturerCorrelation },
                 { "LecturerDiplomGroup", GetLecturerDiplomGroupsCorrelation },
                 { "DiplomProjectTaskSheetTemplate", GetDiplomProjectTaskSheetTemplateCorrelation },
+                { "LecturerForSecretary", GetLecturerForSecretary},
             };
         }
 
@@ -99,6 +100,29 @@ namespace Application.Infrastructure.DPManagement
                     }).ToList() : new List<Correlation>();
         }
 
+        public List<Correlation> GetLecturerForSecretary(int? id)
+        {
+            if (!id.HasValue)
+            {
+                throw new ApplicationException("userId cant be null!");
+            }
+
+            var currentYear = _currentAcademicYearEndDate.Year.ToString();
+
+            return Context.DiplomProjects.AsNoTracking()
+                .Include(x => x.Lecturer)
+                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group))
+                .Where(x => x.AssignedDiplomProjects.Any())
+                .Where(x => x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == currentYear
+                && x.AssignedDiplomProjects.FirstOrDefault().Student.Group.SecretaryId == id)
+                .Select(x => x.Lecturer).Distinct().ToList()
+                .Select(x => new Correlation
+                 {
+                     Id = x.Id,
+                     Name = x.FullName
+                 }).ToList();
+        }
+
         private List<Correlation> GetDiplomProjectTaskSheetTemplateCorrelation(int? id)
         {
             return Context.DiplomProjectTaskSheetTemplates
@@ -144,5 +168,13 @@ namespace Application.Infrastructure.DPManagement
                     Name = x.FullName
                 }).OrderBy(x => x.Name).ToList();
         }
+
+        private readonly DateTime _currentAcademicYearStartDate = DateTime.Now.Month < 9
+            ? new DateTime(DateTime.Now.Year - 1, 9, 1)
+            : new DateTime(DateTime.Now.Year, 9, 1);
+
+        private readonly DateTime _currentAcademicYearEndDate = DateTime.Now.Month < 9
+            ? new DateTime(DateTime.Now.Year, 9, 1)
+            : new DateTime(DateTime.Now.Year + 1, 9, 1);
     }
 }

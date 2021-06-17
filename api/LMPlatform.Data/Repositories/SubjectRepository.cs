@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using Application.Core.Data;
+using Application.Core.Extensions;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Data.Repositories.RepositoryContracts;
 using LMPlatform.Models;
@@ -31,7 +32,7 @@ namespace LMPlatform.Data.Repositories
 					.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
 					.Include(e => e.Subject.LecturesScheduleVisitings)
 					.Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup).ToList();
-				return subjectGroup.Select(e => e.Subject).ToList();
+				return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
 			}
 
 			var subjectLecturer =
@@ -43,7 +44,7 @@ namespace LMPlatform.Data.Repositories
 					.Include(e=>e.Subject.SubjectGroups.Select(x => x.Group.Students))
 					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(t => t.ScheduleProtectionLabs)))
 					.Where(e => e.LecturerId == lecturerId).ToList();
-			return subjectLecturer.Select(e => e.Subject).ToList();
+			return subjectLecturer.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
 		}
 
         public List<Subject> GetSubjectsV2(int groupId = 0, int lecturerId = 0)
@@ -54,21 +55,22 @@ namespace LMPlatform.Data.Repositories
                 var subjectGroup = context.Set<SubjectGroup>()
                     .Include(e => e.Subject)
                     .Where(e => e.GroupId == groupId && e.IsActiveOnCurrentGroup && !e.Subject.IsArchive).ToList();
-                return subjectGroup.Select(e => e.Subject).GroupBy(x => x.Id).Select(x => x.First()).ToList();
+                return subjectGroup.Select(e => e.Subject).GroupBy(x => x.Id).Select(x => x.First())
+					.DistinctBy(x => x.Id).ToList();
             }
 
             var subjectLecturer =
                 context.Set<SubjectLecturer>()
                     .Include(e => e.Subject)
                     .Where(e => e.LecturerId == lecturerId && !e.Subject.IsArchive).ToList();
-            return subjectLecturer.Select(e => e.Subject).ToList();
+            return subjectLecturer.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
         }
 
         public List<Subject> GetSubjectsLite(int? groupId = null)
 		{
 			using var context = new LmPlatformModelsContext();
-			var subjectGroup = context.Set<SubjectGroup>().Where(sg => !groupId.HasValue || sg.GroupId == groupId.Value);
-			return subjectGroup.Select(sg => sg.Subject).GroupBy(x => x.Id).Select(x => x.First()).ToList();
+			var subjectGroup = context.Set<SubjectGroup>().Where(sg => !groupId.HasValue || (sg.GroupId == groupId.Value && sg.IsActiveOnCurrentGroup));
+			return subjectGroup.Select(sg => sg.Subject).DistinctBy(x => x.Id).ToList();
 		}
 
 		public bool IsSubjectName(string name, string id, int userId)

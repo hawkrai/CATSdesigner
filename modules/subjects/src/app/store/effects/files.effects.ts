@@ -64,17 +64,10 @@ export class FilesEffects {
         map(values => filesActions.loadAttachments({ values }))
     ));
 
-    downloadExcel = createEffect(() => this.actions$.pipe(
-        ofType(filesActions.getExcelData),
+    exportFile$ = createEffect(() => this.actions$.pipe(
+        ofType(filesActions.exportFile),
         tap(({ response }) => {
-            this.coreService.downloadAsExcel(response);
-        })
-    ), { dispatch: false });
-
-    downloadZip = createEffect(() => this.actions$.pipe(
-        ofType(filesActions.getZipData),
-        tap(({ response }) => {
-            this.coreService.downloadAsZip(response);
+            this.coreService.download(response);
         })
     ), { dispatch: false });
     
@@ -82,7 +75,7 @@ export class FilesEffects {
         ofType(filesActions.getAttachmentsAsZip),
         switchMap(({ attachmentsIds }) => this.subjectService.getAttachmentsAsZip(attachmentsIds)),
         tap((response) => {
-            this.coreService.downloadAsZip(response);
+            this.coreService.download(response);
         })
     ), { dispatch: false });
 

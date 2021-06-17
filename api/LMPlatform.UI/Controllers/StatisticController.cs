@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Core.SLExcel;
 using Application.Infrastructure.FilesManagement;
@@ -11,6 +12,7 @@ using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.Infrastructure.SubjectManagement;
+using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 
@@ -133,13 +135,13 @@ namespace LMPlatform.UI.Controllers
             data.DataRows.AddRange(rowsDataOne);
 
             var file = new SLExcelWriter().GenerateExcel(data);
-
+            var group = GroupManagementService.GetGroup(new Query<Group>(x => x.Id == groupId));
             this.Response.Clear();
             this.Response.Charset = "ru-ru";
             this.Response.HeaderEncoding = Encoding.UTF8;
             this.Response.ContentEncoding = Encoding.UTF8;
             this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            this.Response.AddHeader("Content-Disposition", "attachment; filename=LabVisiting.xlsx");
+            this.Response.AddHeader("Content-Disposition", $"attachment; filename=LabVisiting{group.Name}.xlsx");
             this.Response.BinaryWrite(file);
             this.Response.Flush();
             this.Response.End();
@@ -153,6 +155,7 @@ namespace LMPlatform.UI.Controllers
                 this.GroupManagementService.GetPracticalsScheduleMarks(subjectId, groupId);
 
             data.DataRows.AddRange(rowsDataOne);
+            var group = GroupManagementService.GetGroup(new Query<Group>(x => x.Id == groupId));
 
             var file = new SLExcelWriter().GenerateExcel(data);
 
@@ -161,7 +164,7 @@ namespace LMPlatform.UI.Controllers
             this.Response.HeaderEncoding = Encoding.UTF8;
             this.Response.ContentEncoding = Encoding.UTF8;
             this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            this.Response.AddHeader("Content-Disposition", "attachment; filename=LabVisiting.xlsx");
+            this.Response.AddHeader("Content-Disposition", $"attachment; filename=PracticalVisiting{group.Name}.xlsx");
             this.Response.BinaryWrite(file);
             this.Response.Flush();
             this.Response.End();
@@ -179,13 +182,14 @@ namespace LMPlatform.UI.Controllers
             data.DataRows.AddRange(rowsData);
 
             var file = new SLExcelWriter().GenerateExcel(data);
+            var group = GroupManagementService.GetGroup(new Query<Group>(x => x.Id == groupId));
 
             this.Response.Clear();
             this.Response.Charset = "ru-ru";
             this.Response.HeaderEncoding = Encoding.UTF8;
             this.Response.ContentEncoding = Encoding.UTF8;
             this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            this.Response.AddHeader("Content-Disposition", "attachment; filename=LabMarks.xlsx");
+            this.Response.AddHeader("Content-Disposition", $"attachment; filename=LabMarks{group.Name}.xlsx");
             this.Response.BinaryWrite(file);
             this.Response.Flush();
             this.Response.End();
@@ -201,6 +205,7 @@ namespace LMPlatform.UI.Controllers
             data.Headers.Add("Студент");
             data.Headers.AddRange(headerData);
             data.DataRows.AddRange(rowsData);
+            var group = GroupManagementService.GetGroup(new Query<Group>(x => x.Id == groupId));
 
             var file = new SLExcelWriter().GenerateExcel(data);
 
@@ -209,7 +214,7 @@ namespace LMPlatform.UI.Controllers
             this.Response.HeaderEncoding = Encoding.UTF8;
             this.Response.ContentEncoding = Encoding.UTF8;
             this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            this.Response.AddHeader("Content-Disposition", "attachment; filename=LabMarks.xlsx");
+            this.Response.AddHeader("Content-Disposition", $"attachment; filename=PracticalMarks{group.Name}.xlsx");
             this.Response.BinaryWrite(file);
             this.Response.Flush();
             this.Response.End();

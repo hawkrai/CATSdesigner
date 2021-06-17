@@ -53,7 +53,31 @@ namespace Application.Infrastructure.SubjectManagement
 			return subjects.Any(subject => subject.Id == subjectId);
         }
 
-        public List<Subject> GetUserSubjectsV2(int userId)
+		public bool IsUserSubjectOwner(int userId, int subjectId)
+        {
+			var subjectOwner = GetSubjectOwner(subjectId);
+			return subjectOwner != null && subjectOwner.User != null && subjectOwner.User.Id == userId;
+        }
+
+		public bool IsUserAssignedToSubjectAndLector(int userId, int subjectId)
+		{
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.Id == userId)
+					.Include(e => e.Lecturer)
+					.Include(e => e.Student));
+				if (user.Student != null)
+				{
+					return false;
+				}
+				else
+				{
+					return repositoriesContainer.SubjectRepository.GetBy(new Query<Subject>(x => x.Id == subjectId)) != null;
+				}
+			}
+		}
+
+		public List<Subject> GetUserSubjectsV2(int userId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
@@ -1227,8 +1251,12 @@ namespace Application.Infrastructure.SubjectManagement
 			try
             {
 				using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-				var subjectLecturer = repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(new Query<SubjectLecturer>(x => x.SubjectId == subjectId && x.Owner.HasValue)).FirstOrDefault();
-				return repositoriesContainer.LecturerRepository.GetBy(new Query<Lecturer>(x => x.Id == subjectLecturer.Owner).Include(x => x.User));
+
+				var subjectLecturers = repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(new Query<SubjectLecturer>
+					(x => x.SubjectId == subjectId)).ToList();
+				var owner = subjectLecturers.FirstOrDefault(x => x.Owner.HasValue);
+				var subjectLecturerId = owner == null ? subjectLecturers.FirstOrDefault(x => !x.Owner.HasValue)?.LecturerId : owner.Owner;
+				return repositoriesContainer.RepositoryFor<Lecturer>().GetBy(new Query<Lecturer>(x => x.Id == subjectLecturerId).Include(x => x.User));
 			} catch
             {
 				return null;

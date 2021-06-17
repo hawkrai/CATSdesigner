@@ -2,13 +2,41 @@
   <mat-drawer-content>
     <div class="flex-editor-container">
       <div class="btn-holder">
-        <button (click)="drawer.toggle()" mat-icon-button>
-          <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="drawer.opened ? ('text.editor.hint.roll.up' | translate: 'Свернуть') : ('text.editor.hint.expand' | translate: 'Развернуть')">
-            {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
-          </mat-icon>
-        </button>
-        <button *ngIf="!model.isReadOnly" mat-raised-button (click)="undoEditing()">{{'text.editor.cancel' | translate: 'Отмена'}}</button>
-        <button *ngIf="!model.isReadOnly" mat-raised-button color="primary" (click)="saveDocument($event)" [disabled]="!isEditorModelChanged">{{'text.editor.save' | translate: 'Сохранить'}}</button>
+        <div class="left-half">
+          <button (click)="drawer.toggle()" mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="drawer.opened ? ('text.editor.hint.roll.up' | translate: 'Свернуть') : ('text.editor.hint.expand' | translate: 'Развернуть')">
+              {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.hint.search' | translate: 'Для поиска по книге нажмите Ctrl + F'">
+              search
+            </mat-icon>
+          </button>
+          <button *ngIf="selfStudyTests.length" (click)="openTestAddingModal($event)" mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.test.pass.test' | translate: 'Пройти тест'">
+              fact_check
+            </mat-icon>
+          </button>
+          <button *ngIf="isCanNowEdit() && !isReadOnly" (click)="editDocument(currentDocument)" mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.edit.content' | translate: 'Редактировать содержимое'">
+              edit_note
+            </mat-icon>
+          </button>
+          <button *ngIf="!model.isReadOnly" (click)="saveDocument($event)" mat-icon-button [disabled]="!isEditorModelChanged">
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.save' | translate: 'Сохранить'">
+              save
+            </mat-icon>
+          </button>
+          <button *ngIf="!model.isReadOnly" (click)="undoEditing()" mat-icon-button>
+            <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="'text.editor.cancel' | translate: 'Отмена'">
+              close
+            </mat-icon>
+          </button>
+        </div>
+        <div class="right-half">
+
+        </div>
       </div>
       <div class="row" id="editor">
         <ckeditor
@@ -23,16 +51,33 @@
   </mat-drawer-content>
   <mat-drawer #drawer opened="true" [mode]="'side'">
     <div class="flex-tree-container">
-      <div class="flex-search-region">
+      <div *ngIf="!isReadOnly" class="flex-search-region">
         <div class="flex-search-btn-holder">
-          <button *ngIf="!isReadOnly" mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
-            <mat-icon>add_circle</mat-icon>
-          </button>
+          <div class="left-half">
+            <button mat-icon-button color="primary" aria-label="Add icon" (click)="openAddDialog($event)" [matTooltip]="'text.editor.hint.add.new.book' | translate: 'Добавление нового учебника'">
+              <mat-icon>add_box</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" aria-label="Add icon" (click)="openCopyFromOtherSubjectDialog()" [matTooltip]="'text.editor.hint.copy.book.from.other.subject' | translate: 'Копирование учебника из другого предмета'">
+              <mat-icon>library_add</mat-icon>
+            </button>
+          </div>
+          <div class="right-half">
+            <button *ngIf="isSmallDevice()" (click)="drawer.toggle()" mat-icon-button >
+              <mat-icon class="mat-icon-rtl-mirror" color="primary" [matTooltip]="drawer.opened ? ('text.editor.hint.roll.up' | translate: 'Свернуть') : ('text.editor.hint.expand' | translate: 'Развернуть')">
+                {{drawer.opened ? 'chevron_left' : 'chevron_right'}}
+              </mat-icon>
+            </button>
+          </div>
         </div>
       </div>
       <div class="tree-area">
-        <div *ngIf="!linearTreeList.length" class="empty">
-          <label>Список пуст</label>
+        <mat-spinner
+          *ngIf="showSpinner"
+          style="margin:0 auto;"
+          mode="indeterminate">
+        </mat-spinner>
+        <div *ngIf="!linearTreeList.length && !showSpinner" class="empty">
+          <label>{{'text.editor.list.is.empty' | translate: 'Список пуст'}}</label>
         </div>
         <tree
           [treeControl]="treeControl"
@@ -47,8 +92,25 @@
           (onEditContentEvent)="editDocument($event)"
           (onEditStructureEvent)="editStructure($event)"
           (changeLockState)="changeLockState($event)"
+          (copyToOtherSubject)="openCopyToOtherSubjectDialog($event)"
         ></tree>
       </div>
     </div>
   </mat-drawer>
 </mat-drawer-container>
+
+<!-- an hidden div is created to set the position of appearance of the menu-->
+<div style="visibility: hidden; position: fixed;"
+[style.left]="menuTopLeftPosition.x"
+[style.top]="menuTopLeftPosition.y"
+[matMenuTriggerFor]="rightMenu"></div>
+
+<!-- standard material menu -->
+<mat-menu #rightMenu="matMenu">
+  <ng-template matMenuContent let-item="items">
+    <label class="select-test-label">{{'text.editor.selecttest' | translate: 'Выберите тест:'}}</label>
+    <button *ngFor="let item of selfStudyTests" mat-menu-item (click)="openTestModal(item)">
+      {{item.Title}}
+    </button>
+  </ng-template>
+</mat-menu>

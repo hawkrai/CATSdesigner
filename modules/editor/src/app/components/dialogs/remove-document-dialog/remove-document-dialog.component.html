@@ -1,4 +1,9 @@
-<h1 mat-dialog-title>{{'text.editor.confirmation' | translate: 'Подтверждение'}}</h1>
+<div class="modal-header">
+  <h1 mat-dialog-title>{{'text.editor.confirmation' | translate: 'Подтверждение'}}</h1>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon class="mat-icon-rtl-mirror" color="basic" [matTooltip]="'text.editor.close' | translate: 'Закрыть'">close</mat-icon>
+  </button>
+</div>
 <div mat-dialog-content>
   <p>{{'text.editor.remove.confirmation.text' | translate: 'Вы уверены, что хотите удалить'}} "{{sanitizeHtml(data.Name)}}"?</p>
 </div>

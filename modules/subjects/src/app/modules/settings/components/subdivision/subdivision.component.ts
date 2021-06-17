@@ -8,6 +8,7 @@ import {IAppState} from '../../../../store/state/app.state';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {MatSelectionList} from '@angular/material/list';
 import { Help } from 'src/app/models/help.model';
+import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-subdivision',
@@ -30,7 +31,8 @@ export class SubdivisionComponent implements OnInit {
     public dialogRef: MatDialogRef<SubdivisionComponent>,
     public subjectService: SubjectService,
     private store: Store<IAppState>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private translate: TranslatePipe) {
     this.dialogRef.disableClose = true;
   }
 
@@ -114,7 +116,7 @@ export class SubdivisionComponent implements OnInit {
   }
 
   help: Help = {
-    message: 'Выберите группу, отметьте нужных студентов и выберите подгруппу, в которую необходимо их отнести',
-    action: 'Понятно'
+    message: this.translate.transform ('text.help.settings','Выберите группу, отметьте нужных студентов и выберите подгруппу, в которую необходимо их отнести'),
+    action: this.translate.transform ('button.understand','Понятно')
   };
 }

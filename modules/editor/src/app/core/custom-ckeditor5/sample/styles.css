@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2014-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2014-2021, CKSource - Frederico Knabben. All rights reserved.
  * This file is licensed under the terms of the MIT License (see LICENSE.md).
  */
 
@@ -11,6 +11,7 @@
 	--ck-sample-container-width: 1285px;
 	--ck-sample-sidebar-width: 350px;
 	--ck-sample-editor-min-height: 400px;
+	--ck-sample-editor-z-index: 10;
 }
 
 /* --------- EDITOR STYLES  ---------------------------------------------------------------------------------------- */
@@ -46,7 +47,7 @@ main .ck-editor[role='application'] .ck.ck-content,
 /* Because of sidebar `position: relative`, Edge is overriding the outline of a focused editor. */
 .ck.ck-editor__editable {
 	position: relative;
-	z-index: 10;
+	z-index: var(--ck-sample-editor-z-index);
 }
 
 /* --------- DECOUPLED (DOCUMENT) BUILD. ---------------------------------------------*/
@@ -301,6 +302,14 @@ body[ data-editor='InlineEditor'] .collaboration-demo__row {
 .collaboration-demo--ready .presence,
 .collaboration-demo--ready .collaboration-demo__row {
 	opacity: 1;
+}
+
+/* --------- PAGINATION FEATURE ------------------------------------------------------------------------------------ */
+
+/* Pagination view line must be stacked at least at the same level as the editor,
+   otherwise it will be hidden underneath. */
+.ck.ck-pagination-view-line {
+	z-index: var(--ck-sample-editor-z-index);
 }
 
 /* --------- SAMPLE GENERIC STYLES (not related to CKEditor) ------------------------------------------------------- */

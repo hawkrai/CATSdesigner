@@ -14,6 +14,7 @@ import { Observable, combineLatest } from 'rxjs';
 import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+import * as catsActions from '../../../../store/actions/cats.actions';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
@@ -22,6 +23,7 @@ import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.c
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { LabVisitingMark } from 'src/app/models/visiting-mark/lab-visiting-mark.model';
 import { Help } from 'src/app/models/help.model';
+import { Message } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-results',
@@ -68,8 +70,12 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     return ['position', 'name', ...subGroupLabs.map(l => l.LabId.toString()), 'total-lab', 'total-test', 'total'];
   }
 
-  getTotal(student): number {
-    return ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2);
+  getTotal(student: StudentMark): number {
+    if (student.TestMark === null || student.TestMark === '') {
+      return +student.LabsMarkTotal;
+    }
+    const mark = ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2)
+    return Math.round(mark * 10) / 10;
   }
 
   setMark(student: StudentMark, labId: string, recommendedMark: string) {
@@ -106,8 +112,12 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  navigateToProfile(student: StudentMark): void {
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${student.StudentId}`) }));
+  }
+
   getMissingTooltip(marks: LabVisitingMark[], schedule: ScheduleProtectionLab[]) {
-    return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}.${schedule.find(s => s.ScheduleProtectionLabId === sc.ScheduleProtectionLabId).Date}`).join('\n');
+    return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}: ${schedule.find(s => s.ScheduleProtectionLabId === sc.ScheduleProtectionLabId).Date}`).join('\n');
   }
 
   private getLabMark(mark: LabMark, studentId: number) {
@@ -129,7 +139,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   help: Help = {
-    message: 'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы выставить оценку и оставить комментарии.',
-    action: 'Понятно'
+    message: this.translate.transform ('text.help.results','Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'), 
+    action: this.translate.transform ('button.understand','Понятно')
   }
 }

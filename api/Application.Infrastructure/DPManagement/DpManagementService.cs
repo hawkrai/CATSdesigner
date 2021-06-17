@@ -29,12 +29,16 @@ namespace Application.Infrastructure.DPManagement
 
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
             
-            if (!user.Lecturer.IsSecretary)
+            if (user.Lecturer != null)
             {
-                user.Lecturer.IsSecretary = !isSecretary;
-            } else
-            {
-                user.Lecturer.IsSecretary = isSecretary;
+                if (!user.Lecturer.IsSecretary)
+                {
+                    user.Lecturer.IsSecretary = !isSecretary;
+                }
+                else
+                {
+                    user.Lecturer.IsSecretary = isSecretary;
+                }
             }
 
             if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
@@ -44,7 +48,10 @@ namespace Application.Infrastructure.DPManagement
 
             if (user != null && user.Lecturer != null && user.Lecturer.IsSecretary)
             {
-                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x=> x.AssignedDiplomProjects.FirstOrDefault().Student.Group.GraduationYear == "2021");
+                var currentYear = _currentAcademicYearEndDate.Year.ToString();
+                query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x => x.AssignedDiplomProjects
+                .FirstOrDefault().Student.Group.GraduationYear == currentYear).Where(x => x.AssignedDiplomProjects
+                .FirstOrDefault().Student.Group.SecretaryId == userId);
             }
 
             if (user != null && user.Student != null)

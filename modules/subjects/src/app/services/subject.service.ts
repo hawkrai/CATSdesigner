@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -42,8 +42,8 @@ export class SubjectService {
     return this.http.get<SubjectForm>('Subject/Create');
   }
 
-  public getAttachmentsAsZip(attachmentsIds: number[]): Observable<ArrayBuffer> {
-    return this.http.post('Subject/GetAttachmentsAsZip', { attachmentsIds }, { responseType: 'arraybuffer' });
+  public getAttachmentsAsZip(attachmentsIds: number[]): Observable<HttpResponse<ArrayBuffer>> {
+    return this.http.post('Subject/GetAttachmentsAsZip', { attachmentsIds }, { responseType: 'arraybuffer', observe: 'response' });
   }
 
   public getLector(id: number): Observable<Lector> {
@@ -62,7 +62,7 @@ export class SubjectService {
     return this.http.post('Services/CoreService.svc/JoinLector', {subjectId, lectorId});
   }
 
-  public disjoinLector(subjectId: number, lectorId: string): Observable<any> {
+  public disjoinLector(subjectId: number, lectorId: number): Observable<any> {
     return this.http.post('Services/CoreService.svc/DisjoinLector', {subjectId, lectorId});
   }
 

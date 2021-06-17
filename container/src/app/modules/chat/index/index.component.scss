@@ -1,0 +1,59 @@
+//@import '~bootstrap/scss/bootstrap';
+@import '../../../../assets/scss/app.scss';
+
+.mat-typography
+{
+    background: white;
+}
+
+.app-wrapper
+{
+    height: -webkit-fill-available;
+}
+
+@media (max-width: 991.98px)
+{
+    .ng-star-inserted
+    {
+        height: 100%;
+    }
+}
+
+.layout-wrapper
+{
+    height: inherit;
+    padding: 10px;
+    background-color: white;
+}
+
+.d-lg-flex
+{
+    height: 100%;
+}
+
+.user-chat
+{
+    height: initial;
+}
+
+.chat-leftsidebar
+{
+    height: inherit;
+}
+
+.w-100
+{
+    height: inherit;
+}
+
+.p-lg-4
+{
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.p-3
+{
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}

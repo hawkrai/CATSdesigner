@@ -28,7 +28,7 @@ export class ProjectsComponent implements OnInit {
   private projects: Project[];
   private projectsSubscription: Subscription;
   private projectGroups: String[];
-  private filteredProjects: Project[];
+  private filteredProjects: Project[] = [];
   public isLecturer = false;
 
   private searchString = '';
@@ -43,6 +43,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.diplomUser)
     this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => {this.groups = res.Groups; console.log(this.groups)});
     this.retrieveProjects();
   }

@@ -38,8 +38,11 @@ export const MY_FORMATS = {
 })
 export class VisitDatePopoverComponent {
 
-  @Input() schedule: { Date: string,   StartTime: string;
-    EndTime: string; }[];
+  @Input() schedule: { Date: string,   
+    StartTime: string;
+    EndTime: string; 
+    Audience: string;
+  }[];
   @Output() createDate = new EventEmitter<string>();
   @Output() close = new EventEmitter<void>();
   @Output() deleteDay = new EventEmitter<any>();
@@ -68,13 +71,22 @@ export class VisitDatePopoverComponent {
     audience: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)])
   });
 
-  ngOnInit(): void {
 
+  ngOnInit(): void {
+    if (this.schedule && this.schedule.length) {
+      const lastDay = this.schedule[this.schedule.length - 1];
+      const now = moment().format('yyyy-MM-DD');
+
+      this.dateForm.patchValue({
+        startTime: moment(`${now} ${lastDay.StartTime}`).format('HH:mm'),
+        endTime: moment(`${now} ${lastDay.EndTime}`).format('HH:mm'),
+        audience: lastDay.Audience
+      });
+    }
   }
 
   onCreateDate(): void {
     if (this.dateForm.invalid) {
-      console.log(this.dateForm);
       return;
     }
     this.createDate.emit({ 

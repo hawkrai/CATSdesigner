@@ -6,7 +6,6 @@ import { UniquePipe } from './pipes/unique.pipe';
 import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {FilterPipe} from './pipes/filter.pipe';
@@ -29,6 +28,10 @@ import { PopoverDialogComponent } from './popover-dialog/popover-dialog.componen
 import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
 import { FileComponent } from './components/file/file.component';
 import { HelpComponent } from './components/help/help.component';
+import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
+import { SubjectNameFreeDirective } from './validators/subject-name-free.validator';
+import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
+import { WhitespaceDirective } from './validators/whitespace.validator';
 
 @NgModule({
   declarations: [
@@ -56,21 +59,25 @@ import { HelpComponent } from './components/help/help.component';
     PopoverDialogComponent,
     TranslatePipe,
     FileComponent,
-    HelpComponent
+    HelpComponent,
+    HelpPopoverComponent,
+    SubjectNameFreeDirective,
+    SubjectAbbreviationFreeDirective,
+    WhitespaceDirective
     ],
   imports: [
     CommonModule,
     FormsModule,
     MatModule,
-    ReactiveFormsModule,
-    NgxMaterialTimepickerModule
+    ReactiveFormsModule
   ],
   entryComponents: [
     DeletePopoverComponent,
     VisitingPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
-    MarkPopoverComponent
+    MarkPopoverComponent,
+    HelpPopoverComponent
   ],
   exports: [
     FilterPipe,
@@ -92,7 +99,10 @@ import { HelpComponent } from './components/help/help.component';
     PopoverDialogComponent,
     TranslatePipe,
     FileComponent,
-    HelpComponent
+    HelpComponent,
+    SubjectNameFreeDirective,
+    SubjectAbbreviationFreeDirective,
+    WhitespaceDirective
   ],
   providers: [TranslatePipe]
 })

@@ -122,7 +122,11 @@ namespace Application.Infrastructure.DPManagement
                 {
                     Day = x.Day,
                     LecturerId = x.LecturerId,
-                    Id = x.Id
+                    Id = x.Id,
+                    Audience = x.Audience,
+                    Building = x.Building,
+                    StartTime = x.StartTime,
+                    EndTime = x.EndTime
                 })
                 .ToList();
         }
