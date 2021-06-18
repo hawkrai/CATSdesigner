@@ -12,5 +12,7 @@ namespace Application.Infrastructure.NewsManagement
         IEnumerable<SubjectNews> GetUserNewsByFIO(string fio);
 
         IEnumerable<SubjectNews> GetNewsByGroupName(string groupName);
+
+        IEnumerable<SubjectNews> GetNewsForTelgeramByGroupName(string groupName);
     }
 }
