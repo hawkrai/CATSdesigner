@@ -15,6 +15,7 @@ import { ChatCto } from '../Dto/chatCto';
 export class ContactService {
     public user: any;
     public isLecturer: boolean;
+    public contacts: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([]);
 
     constructor(private http: HttpClient, private dataService: DataService) {
         this.user = JSON.parse(localStorage.getItem('currentUser'));
@@ -26,22 +27,34 @@ export class ContactService {
         return this.http.post<number>('catService/chat/CreateChat', chatCto);
     }
 
+    public updateChats(fUserId, sUserId, chatId) {
+        if (this.dataService.user.id == sUserId) {
+            var contact = this.contacts.getValue().find(x => x.userId == fUserId);
+            contact.id = chatId;
+            this.dataService.updateChats(contact, chatId);
+        }
+    }
+
+    public SetStatus(id: number, isOnline: boolean): void {
+        var contacts = this.contacts.getValue();
+        var contactNum = contacts.findIndex(x => x.userId == id);
+        if (contactNum>-1) {
+            contacts[contactNum].isOnline = isOnline;
+            this.contacts.next(contacts);
+        }
+    }
+
     public loadContacts(filter: string) {
         var contacts = new Array<Chat>();
         var chats = this.dataService.chats.getValue();
         this.http.get<Array<User>>('catService/chat/GetAllLecturers?filter=' + filter).subscribe(res => {
             res.forEach(element => {
                 if (element.userId != this.user.id) {
-                    var chatExist = chats.find(x => x.name == element.fullName)
-                    if (chatExist)
-                        contacts.push(chatExist)
-                    else {
-                        var chat = new Chat();
-                        chat.name = element.fullName;
-                        chat.profilePicture = element.profile
-                        chat.userId = element.userId;
-                        contacts.push(chat)
-                    }
+                    var chat = new Chat();
+                    chat.name = element.fullName;
+                    chat.profilePicture = element.profile
+                    chat.userId = element.userId;
+                    contacts.push(chat)
                 }
             })
             if (this.isLecturer) {
@@ -50,16 +63,17 @@ export class ContactService {
                         if (element.userId != this.user.id) {
                             var chat = new Chat();
                             chat.name = element.fullName;
+                            chat.groupId = element.groupId;
                             chat.profilePicture = element.profile
                             chat.userId = element.userId;
                             contacts.push(chat)
                         }
                     })
-                    this.dataService.chats.next(contacts);
+                    this.contacts.next(contacts);
                 });
             }
             else {
-                this.dataService.chats.next(contacts);
+                this.contacts.next(contacts);
             }
         });
 

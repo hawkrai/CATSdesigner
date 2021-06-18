@@ -3,16 +3,24 @@ import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Message } from '../index/chat.model';
 import { DataService } from './dataService';
 import { MessageCto } from '../Dto/messageCto';
+import { ContactService } from './contactService';
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private hubConnection: HubConnection
   public user: any;
-  constructor(private dataService: DataService) {
+  constructor(
+    private dataService: DataService,
+    private contactService: ContactService) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
+    this.connect();
+  }
+
+  public connect()
+  {
     this.hubConnection = new HubConnectionBuilder()
-                            .withUrl('http://178.124.197.115:3000/chat')
+                            .withUrl('https://chateduc.w12.hoster.by/chat')
                             .withAutomaticReconnect()
                             .build();
     this.hubConnection
@@ -23,7 +31,6 @@ export class SignalRService {
         this.addChatListener();
       })
       .catch(err => console.log('Error while starting connection: ' + err))
-
   }
 
   public addChatListener() {
@@ -31,17 +38,47 @@ export class SignalRService {
       this.dataService.AddMsg(message);
     });
 
+    this.hubConnection.on('Status', (userId: number, status: boolean) => {
+      this.dataService.SetStatus(userId,status);
+      this.contactService.SetStatus(userId,status);
+    });
+
     this.hubConnection.on('RemovedMessage', (chatId: any, msgId: any) => {
       this.dataService.RemoveMsg(chatId, msgId);
     })
+
+    this.hubConnection.on('EditedMessage',(chatId: any, msgId: any,text:any)=>{
+      this.dataService.updateMsg(chatId,msgId,text);
+    })
+
+    this.hubConnection.on('NewChat',(firstId: any, secondId: any,chatId:any)=>{
+      this.contactService.updateChats(firstId,secondId,chatId);
+    }) 
   }
 
-  public sendMessage(msg: MessageCto) {
-    this.hubConnection.invoke("SendMessage", this.user.id, JSON.stringify(msg))
+  public addChat(firstId: number, secondId: number, chatId:number)
+  {
+    return this.hubConnection.invoke("AddChat", firstId, secondId,chatId);
+  }
+
+
+  public updateGroupMessage(id:number,text:string,chatId:number)
+  {
+    return this.hubConnection.invoke("UpdateGroupMessage", id, text,chatId);
+  }
+
+
+  public updateChatMessage(id:number,text:string,chatId:number)
+  {
+    return this.hubConnection.invoke("UpdateChatMessage", id, text,chatId);
+  }
+
+  public sendMessage(msg: MessageCto)  {
+    return this.hubConnection.invoke("SendMessage", this.user.id, JSON.stringify(msg))
   }
 
   public sendGroupMessage(msg: MessageCto) {
-    this.hubConnection.invoke("SendGroupMessage", this.user.id, this.user.role, JSON.stringify(msg))
+    return this.hubConnection.invoke("SendGroupMessage", this.user.id, this.user.role, JSON.stringify(msg))
   }
 
   public SendGroupFiles(files) {
@@ -68,7 +105,7 @@ export class SignalRService {
   }
 
   public remove(id: any) {
-    if (this.dataService.isActivGroup)
+    if (this.dataService.isGroupChat)
       return this.hubConnection.invoke("DeleteGroupMsg", id.toString(), this.dataService.activChatId.toString());
     else
       return this.hubConnection.invoke("DeleteChatMsg", id.toString(), this.dataService.activChatId.toString());    

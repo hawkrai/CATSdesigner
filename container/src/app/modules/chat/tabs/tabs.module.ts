@@ -15,14 +15,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LoaderComponent } from './loader/loader.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { GroupListComponent } from './GroupList/groupList.component';
+import { TranslatePipe } from 'src/app/pipe/translate.pipe';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
 };
 
 @NgModule({
-  declarations: [LoaderComponent, ChatsComponent,  GroupsComponent],
+  declarations: [LoaderComponent,GroupListComponent, ChatsComponent,  GroupsComponent],
   imports: [
+    TranslateModule.forRoot(),
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatIconModule,    
@@ -39,7 +42,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FormsModule
   ],
   exports: [ ChatsComponent,  GroupsComponent],
-  providers: [
+  providers: [TranslatePipe,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG

@@ -1,0 +1,25 @@
+<div class="px-2">
+  <perfect-scrollbar class="chat-message-list" style="height: 90%;">
+    <ul class="list-unstyled chat-list chat-user-list" style="max-height: 60vh;">
+      <li *ngFor="let user of users" [ngClass]="{'typing': user.isTyping, 'active': user.isActive}">
+        <a>
+          <div class="media" style="align-items: center;">
+            <div class="chat-user-img align-self-center mr-3" [ngClass]="{'online': user.status === 'online',
+               'away': user.status === 'away'}">
+              <img *ngIf="user.img" src="{{user.img}}" class="rounded-circle avatar-xs" alt="">
+              <div class="avatar-xs" *ngIf="!user.img">
+                <span class="avatar-title rounded-circle bg-soft-primary text-primary">
+                  {{user.name.split(' ')[0].charAt(0)+user.name.split(' ')[1].charAt(0)}}
+                </span>
+              </div>
+              <span *ngIf="user.status" class="user-status"></span>
+            </div>
+            <div class="media-body overflow-hidden">
+              <h5 class="text-truncate font-size-15 mb-1">{{user.name}}</h5>
+            </div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </perfect-scrollbar>
+</div>

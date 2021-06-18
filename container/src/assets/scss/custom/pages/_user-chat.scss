@@ -219,10 +219,7 @@
 }
 
 .chat-conversation {
-    height: calc(100vh - 184px);
-    @media (max-width: 991.98px) {
-        height: calc(100vh - 152px);
-    }
+    height: calc(100% - 130px) !important;
 }
 
 .chat-input-links{
