@@ -1,5 +1,17 @@
   
 {
+  "chat.chats":"Chats",
+  "chat.groups":"Groups",
+  "chat.fio":"Name",
+  "chat.groupName":"Group Name",
+  "chat.enterMsg":"Enter message",
+  "chat.copy":"Copy",
+  "chat.edit":"Edit",
+  "chat.delete":"Delete",
+  "chat.attachFile":"Attach file",
+  "chat.send":"Send",
+  "chat.cancle" :"Cancle",
+  "chat.listStudent":"Student list",
   "subject": "Courses",
   "graduation.project": "Graduation project",
   "other": "Other",

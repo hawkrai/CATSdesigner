@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Chat } from '../tabs/chats/chats.model';
+import { Chat } from '../models/entities/chats.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Message } from '../index/chat.model';
-import { SubjectGroups } from '../tabs/groups/subject.groups.model';
-import { MessageCto } from '../Dto/messageCto';
+import { Message } from '../models/entities/message.model';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root',

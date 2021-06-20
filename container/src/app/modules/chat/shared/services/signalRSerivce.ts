@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
-import { Message } from '../index/chat.model';
+import { Message } from '../models/entities/message.model';
 import { DataService } from './dataService';
-import { MessageCto } from '../Dto/messageCto';
 import { ContactService } from './contactService';
+import { MessageCto } from '../models/dto/messageCto';
 @Injectable({
   providedIn: 'root'
 })

@@ -1,1 +1,6 @@
-@import '../../../../../assets/scss/app.scss'
+@import '../../../../../assets/scss/app.scss';
+
+.cdk-global-overlay-wrapper
+{
+    align-items: inherit !important;
+}

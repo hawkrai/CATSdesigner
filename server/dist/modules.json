@@ -1,6 +1,6 @@
 {
     "web": {
-        "path": "/home/educatsb/apps/container",
+        "path": "D:/.temp/apps/container",
         "entryPoint": "index.html"
     },
     "subject": {
@@ -22,7 +22,7 @@
     "admin": {
         "path": "/home/educatsb/apps/admin",
         "entryPoint": "index.html"
-    },    
+    },
     "control": {
         "path": "/home/educatsb/apps/admin",
         "entryPoint": "index.html"
@@ -38,7 +38,7 @@
     "complex": {
         "path": "/home/educatsb/apps/complex",
         "entryPoint": "index.html"
-    },    
+    },
     "calendar": {
         "path": "/home/educatsb/apps/calendar",
         "entryPoint": "index.html"

@@ -1,18 +1,19 @@
 import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Message } from './chat.model';
+import { Message } from '../../shared/models/entities/message.model';
 
-import { DataService } from '../services/dataService';
-import { Chat } from '../tabs/chats/chats.model';
-import { SignalRService } from '../services/signalRSerivce';
-import { MessageCto } from '../Dto/messageCto';
+import { Chat } from '../../shared/models/entities/chats.model';
+import { SignalRService } from '../../shared/services/signalRSerivce';
 import { PerfectScrollbarComponent, PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
-import { FileService } from '../services/files.service';
-import { ContactService } from '../services/contactService';
-import { GroupListComponent } from '../tabs/GroupList/groupList.component';
+import { FileService } from '../../shared/services/files.service';
+import { ContactService } from '../../shared/services/contactService';
+import { GroupListComponent } from '../GroupList/groupList.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClipboardService } from 'ngx-clipboard';
+import { TranslatePipe } from 'src/app/pipe/translate.pipe';
+import { MessageCto } from '../../shared/models/dto/messageCto';
+import { DataService } from '../../shared/services/dataService';
 
 @Component({
   selector: 'app-index',
@@ -20,7 +21,6 @@ import { ClipboardService } from 'ngx-clipboard';
   styleUrls: ['./index.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
-
 })
 
 export class IndexComponent implements OnInit {

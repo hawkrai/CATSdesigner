@@ -1,8 +1,9 @@
-<div class="px-2">
+<div class="px-2" style="height: 100%;">
+  <h2 style="text-align: center;">{{'chat.listStudent'| translate: 'Список студентов'}}</h2>
   <perfect-scrollbar class="chat-message-list" style="height: 90%;">
     <ul class="list-unstyled chat-list chat-user-list" style="max-height: 60vh;">
       <li *ngFor="let user of users" [ngClass]="{'typing': user.isTyping, 'active': user.isActive}">
-        <a>
+        <a (click)="openChat(user)">
           <div class="media" style="align-items: center;">
             <div class="chat-user-img align-self-center mr-3" [ngClass]="{'online': user.status === 'online',
                'away': user.status === 'away'}">
@@ -22,4 +23,7 @@
       </li>
     </ul>
   </perfect-scrollbar>
+  <div style="text-align: center;">
+    <button (click)="onCloseClick()" class="mat-raised-button" style="font-size: 14px;">{{'chat.cancle'| translate: 'Отмена'}}</button>
+  </div>
 </div>
