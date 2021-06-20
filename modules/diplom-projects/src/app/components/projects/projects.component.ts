@@ -10,6 +10,7 @@ import {Project} from '../../models/project.model';
 import {AppComponent} from '../../app.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import {GroupService} from '../../services/group.service';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 
 @Component({
@@ -39,7 +40,8 @@ export class ProjectsComponent implements OnInit {
               private groupService: GroupService,
               private projectsService: ProjectsService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
@@ -100,9 +102,9 @@ export class ProjectsComponent implements OnInit {
       autoFocus: false,
       width: '540px',
       data: {
-        label: 'Выбор темы дипломного проекта',
-        message: 'Вы действительно хотите выбрать данную тему дипломного проекта?',
-        actionName: 'Выбрать',
+        label: this.translatePipe.transform('text.editor.edit.chooseTheme',"Выбор темы дипломного проекта"),
+        message: this.translatePipe.transform('text.editor.edit.check',"Вы действительно хотите выбрать данную тему дипломного проекта?"),
+        actionName: this.translatePipe.transform('text.editor.edit.choose',"Выбрать"),
         color: 'primary'
       }
     });
@@ -111,7 +113,7 @@ export class ProjectsComponent implements OnInit {
       if (result != null && result) {
         this.projectsService.chooseProject(projectId).subscribe(() => {
           this.appComponent.ngOnInit();
-          this.addFlashMessage('Тема успешно выбрана');
+          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.response',"Тема успешно выбрана"));
         });
       }
     });
@@ -135,11 +137,11 @@ export class ProjectsComponent implements OnInit {
           this.projectsService.editProject(null, result.name, result.selectedGroups.map(group => group.GroupId))
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('Тема успешно сохранена');
+            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseSave',"Тема успешно сохранена"));
           });
         }
         else{
-          this.addFlashMessage('Такая тема уже существует');
+          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseError',"Такая тема уже существует"));
         } 
       }
     });
@@ -164,7 +166,7 @@ export class ProjectsComponent implements OnInit {
           this.projectsService.editProject(project.Id, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Тема успешно сохранена');
+              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseSave',"Тема успешно сохранена"));
             });
         }
       });
@@ -177,9 +179,9 @@ export class ProjectsComponent implements OnInit {
         autoFocus: false,
         width: '500px',
         data: {
-          label: 'Удаление темы дипломного проекта',
-          message: 'Вы действительно хотите удалить тему дипломного проекта?',
-          actionName: 'Удалить',
+          label: this.translatePipe.transform('text.editor.edit.removeTheme',"Удаление темы дипломного проекта"),
+          message: this.translatePipe.transform('text.editor.edit.removeThemeQuestion',"Вы действительно хотите удалить тему дипломного проекта?"),
+          actionName: this.translatePipe.transform('text.editor.edit.remove',"Удалить"),
           color: 'primary'
         }
       });
@@ -188,13 +190,13 @@ export class ProjectsComponent implements OnInit {
         if (result != null && result) {
           this.projectsService.deleteProject(project.Id).subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('Тема успешно удалена');
+            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseSave',"Тема успешно сохранена"));
           });
         }
       });
     }
     else{
-      this.addFlashMessage('Отмените назначение темы');
+      this.addFlashMessage(this.translatePipe.transform('text.editor.edit.cancelTheme',"Отмените назначение темы"));
     }
     
   }
@@ -217,7 +219,7 @@ export class ProjectsComponent implements OnInit {
           if (result != null && result) {
             this.projectsService.assignProject(project.Id, result).subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Тема успешно назначена студенту');
+              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.assignThemeForStudent',"Тема успешно назначена студенту"));
             });
           }
         });
@@ -227,7 +229,7 @@ export class ProjectsComponent implements OnInit {
   approveChoice(project: Project) {
     this.projectsService.approveChoice(project.Id).subscribe(() => {
       this.ngOnInit();
-      this.addFlashMessage('Тема успешно подтверждена');
+      this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseAssign',"Тема успешно подтверждена"));
     });
   }
 
@@ -236,9 +238,9 @@ export class ProjectsComponent implements OnInit {
       autoFocus: false,
       width: '540px',
       data: {
-        label: 'Отменить назначение темы дипломного проекта',
-        message: 'Вы действительно хотите отменить назначение темы дипломного проекта?',
-        actionName: 'Убрать назначение',
+        label: this.translatePipe.transform('text.editor.edit.cancelAssignTheme',"Отменить назначение темы дипломного проекта"),
+        message: this.translatePipe.transform('text.editor.edit.cancelAssignQuestion',"Вы действительно хотите отменить назначение темы дипломного проекта?"),
+        actionName: this.translatePipe.transform('text.editor.edit.removeAssign',"Убрать назначение"),
         color: 'primary'
       }
     });
@@ -247,7 +249,7 @@ export class ProjectsComponent implements OnInit {
       if (result != null && result) {
         this.projectsService.removeAssignment(project.Id).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage('Назначение успешно отменено');
+          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseRemove',"Назначение успешно отменено"));
         });
       }
     });

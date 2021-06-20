@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Percentage} from '../../../models/percentage.model';
 import {PercentagesComponent} from '../percentages.component';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-percentages-list',
@@ -11,7 +12,7 @@ export class PercentagesListComponent implements OnInit {
 
   @Input() percentages: Percentage[];
 
-  constructor(private percentagesComponent: PercentagesComponent) { }
+  constructor(private percentagesComponent: PercentagesComponent, public translatePipe: TranslatePipe) { }
 
   ngOnInit() {
   }

@@ -4,13 +4,13 @@
       <thead>
       <tr class="mdc-data-table__header-row">
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
-        <th mat-sort-header="Theme" class="mdc-data-table__header-cell" role="columnheader" scope="col">Темa дипломного проекта</th>
-        <th mat-sort-header="Lecturer" class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="diplomUser.IsStudent || diplomUser.IsSecretary">Руководитель</th>
-        <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
-        <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">Группа</th>
-        <th mat-sort-header="ApproveDate" class="mdc-data-table__header-cell" role="columnheader" scope="col">Дата</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="!diplomUser.IsSecretary">Действие</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && this.component.isLecturer">Действие</th>
+        <th mat-sort-header="Theme" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.theme' | translate: 'Темa дипломного проекта'}}</th>
+        <th mat-sort-header="Lecturer" class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="diplomUser.IsStudent || diplomUser.IsSecretary">{{'text.diplomProject.head' | translate: 'Руководитель'}}</th>
+        <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.student' | translate: 'Студент'}}</th>
+        <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.group' | translate: 'Группа'}}</th>
+        <th mat-sort-header="ApproveDate" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.date' | translate: 'Дата'}}</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="!diplomUser.IsSecretary">{{'text.diplomProject.action' | translate: 'Действие'}}</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && this.component.isLecturer">{{'text.diplomProject.action' | translate: 'Действие'}}</th>
       </tr>
       </thead>
       <tbody>
@@ -22,60 +22,60 @@
         <td class="mdc-data-table__cell">{{ project.Group }}</td>
         <td class="mdc-data-table__cell">{{ project.ApproveDate | date:'dd.MM.yyyy'}}</td>
         <td class="mdc-data-table__cell" *ngIf="diplomUser.IsStudent">
-          <button mat-icon-button color="primary" matTooltip="Скачать лист задания"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'"
                   *ngIf="project.StudentId == diplomUser.UserId && project.ApproveDate != null" (click)="projectsComponent.downloadTaskSheet(project)">
             <mat-icon>cloud_download</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Выбрать тему"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.chooseTopic' | translate: 'Выбрать тему'"
                   *ngIf="!(diplomUser.HasAssignedDiplomProject || diplomUser.HasChosenDiplomProject)
             && project.StudentId == null" (click)="projectsComponent.chooseDiplomProject(project.Id)">
             <mat-icon>done</mat-icon>
           </button>
         </td>
         <td class="mdc-data-table__cell" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary">
-          <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="projectsComponent.editProject(project)">
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.edit' | translate: 'Редактировать'" (click)="projectsComponent.editProject(project)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Назначить" (click)="projectsComponent.assignProject(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.assign' | translate: 'Назначить'" (click)="projectsComponent.assignProject(project)"
                   *ngIf="project.StudentId == null">
             <mat-icon>assignment</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Отменить назначение" (click)="projectsComponent.removeAssignment(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.chooseTopic' | translate: 'Отменить назначение'" (click)="projectsComponent.removeAssignment(project)"
                   *ngIf="project.StudentId != null">
             <mat-icon>remove_circle_outline</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Скачать лист задания" (click)="projectsComponent.downloadTaskSheet(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'" (click)="projectsComponent.downloadTaskSheet(project)"
                   *ngIf="project.StudentId != null">
             <mat-icon>cloud_download</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Удалить" (click)="projectsComponent.deleteProject(project)">
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.remove' | translate: 'Удалить'" (click)="projectsComponent.deleteProject(project)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Подтвердить выбранную тему" (click)="projectsComponent.approveChoice(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.confirm' | translate: 'Подтвердить выбранную тему'" (click)="projectsComponent.approveChoice(project)"
                   *ngIf="project.StudentId && !project.ApproveDate">
             <mat-icon>done</mat-icon>
           </button>
         </td>
         <td class="mdc-data-table__cell" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && this.component.isLecturer">
-          <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="projectsComponent.editProject(project)">
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.edit' | translate: 'Редактировать'" (click)="projectsComponent.editProject(project)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Назначить" (click)="projectsComponent.assignProject(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.assign' | translate: 'Назначить'" (click)="projectsComponent.assignProject(project)"
                   *ngIf="project.StudentId == null">
             <mat-icon>assignment</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Отменить назначение" (click)="projectsComponent.removeAssignment(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.chooseTopic' | translate: 'Отменить назначение'" (click)="projectsComponent.removeAssignment(project)"
                   *ngIf="project.StudentId != null">
             <mat-icon>remove_circle_outline</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Скачать лист задания" (click)="projectsComponent.downloadTaskSheet(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'" (click)="projectsComponent.downloadTaskSheet(project)"
                   *ngIf="project.StudentId != null">
             <mat-icon>cloud_download</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Удалить" (click)="projectsComponent.deleteProject(project)">
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.remove' | translate: 'Удалить'" (click)="projectsComponent.deleteProject(project)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Подтвердить выбранную тему" (click)="projectsComponent.approveChoice(project)"
+          <button mat-icon-button color="primary" matTooltip="'text.diplomProject.confirm' | translate: 'Подтвердить выбранную тему'" (click)="projectsComponent.approveChoice(project)"
                   *ngIf="project.StudentId && !project.ApproveDate">
             <mat-icon>done</mat-icon>
           </button>
