@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DataService } from '../../services/dataService';
-
-import { Groups } from './groups.model';
-import { SubjectGroups } from './subject.groups.model';
+import { DataService } from '../../shared/services/dataService';
+import { Groups } from '../../shared/models/entities/groups.model';
 import { Subscription } from 'rxjs';
+import { SubjectGroups } from '../../shared/models/entities/subject.groups.model';
 
 @Component({
   selector: 'app-groups',
@@ -41,28 +40,22 @@ export class GroupsComponent implements OnInit,OnDestroy {
   {
     var groups=new Array<SubjectGroups>();
     this.oldGroups.forEach(element => {
-      
-        var child=element.groups.filter(x=>x.name.includes(this.searchGroup))
+        var subjectGroup=Object.create(element);
+        var child=subjectGroup.groups.filter(x=>x.name.includes(this.searchGroup))
         if (child.length!=0)
           {
-            element.groups=child;
-            groups.push(element);
+            subjectGroup.groups=child;
+            groups.push(subjectGroup);
           }
-      
     });
-    this.groups= groups;
-  }
-
-  clear()
-  {
-    this.searchGroup="";
-    this.groups=this.oldGroups;
+    this.groups = groups;
   }
 
   async showChat(value:any) {
     this.dataService.activChat=value;
     this.dataService.activChatId=value.id;
     this.dataService.isGroupChat=true;
+    this.dataService.groupRead();
     this.dataService.LoadGroupMsg();
     document.getElementById('chat-room').classList.add('user-chat-show');
   }

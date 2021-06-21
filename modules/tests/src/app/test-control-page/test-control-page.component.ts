@@ -44,6 +44,8 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public knowledgeControlTestsSize: number;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   private filterTestsString: string = "";
+  public white: boolean;
+  public black: boolean;
 
   constructor(private testService: TestService,
               private router: Router,
@@ -55,12 +57,11 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   ngOnInit() {
-    /*this.testService.getFiles().subscribe((fda)=>{
-      console.log(fda);
-    })*/
-    /*localStorage.setItem("currentUser",JSON.stringify({id:10031,role:"ds", userName:"popova"}));
-    localStorage.setItem("currentSubject",JSON.stringify({id: "3", Name:"Тестирование ПО"}));
-    localStorage.setItem("locale","rus");*/
+    if (localStorage.getItem("theme") === "white") {
+      this.white = true;
+    } else {
+      this.black = true;
+    }
     this.user = JSON.parse(localStorage.getItem("currentUser"));
     this.subject = JSON.parse(localStorage.getItem("currentSubject"));
     this.getTests(this.subject.id);

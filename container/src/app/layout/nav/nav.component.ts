@@ -1,18 +1,20 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
-import {LayoutService} from "../layout.service";
-import {AuthenticationService} from "../../core/services/auth.service";
-import {first, takeUntil, tap} from "rxjs/operators";
-import {CoreService} from "../../core/services/core.service";
-import {Subject} from "rxjs";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { LayoutService } from "../layout.service";
+import { AuthenticationService } from "../../core/services/auth.service";
+import { first, takeUntil, tap } from "rxjs/operators";
+import { CoreService } from "../../core/services/core.service";
+import { Subject } from "rxjs";
 import { Lecturer, Student, Group } from '../../core/models/searchResults/search-results';
 import { SearchService } from '../../core/services/searchResults/search.service';
 import { ProfileService } from '../../core/services/searchResults/profile.service';
-import { MenuService } from "src/app/core/services/menu.service";
-import { MatDialog } from "@angular/material/dialog";
-import {AboutSystemPopoverComponent} from '../../about-system/about-popover/about-popover.component';
+import { DataService } from '../../modules/chat/shared/services/dataService';
+import { ChatService } from "src/app/modules/chat/shared/services/chatService";
+import {MenuService} from "src/app/core/services/menu.service";
+import {MatDialog} from "@angular/material/dialog";
+import {AboutSystemPopoverComponent} from "../../about-system/about-popover/about-popover.component";
 
 
-interface Locale {
+interface DropDownValue {
   name: string;
   value: string
 }
@@ -26,46 +28,66 @@ interface Locale {
 export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean;
   public isAdmin: boolean;
+  public unRead: number = 0;
   public unconfirmedStudents: number = 0;
-  public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
-  public locale: Locale;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-  public profileIcon = "/assets/images/account.png";;
+  public locales: DropDownValue[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
+  public locale: DropDownValue;
+  public profileIcon = "/assets/images/account.png";
+  public userFullName;
+  public themes: DropDownValue[] = [{name: "White", value: "white"}, {name: "Dark", value: "dark"}];
+  public theme: DropDownValue;
 
-  public currentUserId!: number;
   valueForSearch!: string;
-  
-  searchResults !: string[];
 
+  searchResults !: string[];
   lecturerSearchResults!: Lecturer[];
   studentSearchResults!: Student[];
   groupSearchResults!: Group[];
-
-
+ 
   constructor(private layoutService: LayoutService,
-              private coreService: CoreService,
-              private autService: AuthenticationService,
-              private searchService: SearchService,
-              private profileService: ProfileService,
-              private menuService: MenuService,
-              public dialog: MatDialog
-              ) {
+    private coreService: CoreService,
+    private chatService: ChatService,
+    private dataService:DataService,
+    private autService: AuthenticationService,
+    private searchService: SearchService,
+    private profileService: ProfileService,
+    private menuService: MenuService,
+    public dialog: MatDialog)
+  {
   }
 
   get logoWidth(): string {
     const width = this.menuService.getSideNavWidth();
-    return width ? `${width - 16}px` : 'auto';
+    return width ? `${width - 16}px` : "auto";
   }
 
   public ngOnInit(): void {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
-    this.getAvatar();
+    this.getUserInfo();
+
+    if (!localStorage.getItem("theme")) {
+      localStorage.setItem("theme", "white");
+    }
     const local: string = localStorage.getItem("locale");
-    this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
+    this.locale = local ? this.locales.find((locale: DropDownValue) => locale.value === local) : this.locales[0];
 
+    this.dataService.readMessageCount.subscribe(
+      count=>{
+        this.unRead-=count
+      })
 
-    this.currentUserId = this.autService.currentUserValue.id;
+    this.chatService.loadChats().subscribe(chats =>
+      chats.forEach(chat => {
+        this.unRead += chat.unread;
+      }));
+
+    this.chatService.loadGroups().subscribe(groups =>
+      groups.forEach(subjectGroup => {
+        this.unRead += subjectGroup.unread;
+        subjectGroup.groups.forEach(group=>this.unRead+=group.unread)
+      }));
 
     this.coreService.getGroups()
       .pipe(
@@ -91,6 +113,11 @@ export class NavComponent implements OnInit, OnDestroy {
 
   public onValueChange(value: any): void {
     localStorage.setItem("locale", value.value.value);
+    window.location.reload();
+  }
+
+  public themeChange(value: any): void {
+    localStorage.setItem("theme", value.value.value);
     window.location.reload()
   }
 
@@ -99,11 +126,10 @@ export class NavComponent implements OnInit, OnDestroy {
     this.unsubscribeStream$.complete();
   }
 
-
-
-  getAvatar() {
-    this.profileService.getAvatar().subscribe(res => {
-      this.profileIcon = res;
+  getUserInfo() {
+    this.profileService.getProfileInfo(this.autService.currentUserValue.id).subscribe(res => {
+      this.profileIcon = res.Avatar;
+      this.userFullName = res.Name;
     });
   }
 
@@ -127,7 +153,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   viewLecturerSearchResults() {
     this.searchService.getLecturerSearchResults(this.valueForSearch).subscribe(res => {
-       this.lecturerSearchResults = res;
+      this.lecturerSearchResults = res;
     });
   }
 
@@ -146,17 +172,14 @@ export class NavComponent implements OnInit, OnDestroy {
   public routeToAboutPopover() {
 
     const dialogRef = this.dialog.open(AboutSystemPopoverComponent, {
-      width: '600px',
-      height: '60%', 
-      position: {top: '128px'}
-    }); 
+      width: "600px",
+      height: "350px",
+      position: {top: "128px"}
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
       }
-})
-
-    
-}
-
+    });
+  }
 }

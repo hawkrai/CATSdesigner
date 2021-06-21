@@ -395,13 +395,11 @@ export class ScheduleMainComponent implements OnInit {
 
     const dialogRef = this.dialog.open(HelpPopoverScheduleComponent, 
       {
-      width: '370px',
-      height: '185px',
-      data: {message: this.message, action: this.action},
-      position: {top: '2vh', left: '23vw'},
+      data: {message: this.translatePipe.transform ('text.help.schedule',this.message), action: this.translatePipe.transform ('button.understand', this.action)},
       disableClose: true,
       hasBackdrop: true,
-      backdropClass: 'backdrop-help'
+      backdropClass: 'backdrop-help',
+      panelClass: 'help-popover'
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -10,7 +10,7 @@
                 <div mat-line style="display: flex; justify-content: center;">
                     <img [src]="getModuleIcon(module.Type)" alt="Icon" class="icon">
                 </div>                
-                <div mat-line>{{module.Name}}</div>
+                <div mat-line>{{getModuleTranslate(module.Type) | translate:module.Name}}</div>
             </a> 
             <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 
                 <div mat-line>

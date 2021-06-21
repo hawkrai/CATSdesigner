@@ -8,23 +8,28 @@
   </div>
 
   <div *ngIf="isLector">
-    <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/diplom'">Дипломное проектирование</a>
+    <a mat-button [routerLinkActive]="'active'" [routerLink]="'/web/diplom'">{{'graduation.project' | translate:'Дипломное проектирование'}}</a>
   </div>
 
 
   <div class="flex-spacer"></div>
 
-  <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
+  <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()"
+                  (blur)="this.cleanSearchResults()">
     <!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">-->
-    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" maxlength="30">
+    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}"
+           maxlength="30">
     <mat-selection-list [multiple]="false">
-      <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
-        {{'student' | translate:'Студент'}}  | {{result.FullName}}
+      <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result"
+                       (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+        {{'student' | translate:'Студент'}} | {{result.FullName}}
       </mat-list-option>
-      <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+      <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result"
+                       (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
         {{'lecturer' | translate:'Преподаватель'}} | {{result.FullName}}
       </mat-list-option>
-      <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
+      <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result"
+                       (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
         {{'group' | translate:'Группа'}} | {{result.Name}}
       </mat-list-option>
     </mat-selection-list>
@@ -32,6 +37,11 @@
   </mat-form-field>
 
 
+  <mat-select class="mselect" (selectionChange)="themeChange($event)" [value]="theme">
+    <mat-option *ngFor="let theme of themes" [value]="theme">
+      {{theme.name}}
+    </mat-option>
+  </mat-select>
 
   <mat-select class="mselect" (selectionChange)="onValueChange($event)" [value]="locale">
     <mat-option *ngFor="let locale of locales" [value]="locale">
@@ -39,29 +49,36 @@
     </mat-option>
   </mat-select>
 
-  <div *ngIf="isLector" >
-    <button  mat-icon-button  class="icon-h">
-       <mat-icon [matBadge]="unconfirmedStudents"
-       matBadgeOverlap="true"
-       matBadgePosition="above"
-       matBadgeColor="warn"
-       matBadgeSize="small"
-       [routerLink]="'/web/confirmation'" >
-       person_add_alt_1</mat-icon>
+  <div *ngIf="isLector">
+    <button mat-icon-button class="icon-h">
+      <mat-icon [matBadge]="unconfirmedStudents"
+                matBadgeOverlap="true"
+                matBadgePosition="above"
+                matBadgeColor="warn"
+                matBadgeSize="small"
+                [routerLink]="'/web/confirmation'">
+        person_add_alt_1
+      </mat-icon>
     </button>
   </div>
   <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h">
-    <mat-icon matBadge="15"
+    <mat-icon matBadge={{unRead}}
+    [matBadgeHidden]="unRead==0"
     matBadgeOverlap="true"
     matBadgePosition="above"
     matBadgeColor="warn"
     matBadgeSize="small"
-    [routerLink]="'/web/chat'">mail</mat-icon>
+    [routerLink]="'/web/chat'">
+      mail
+    </mat-icon>
   </button>
 
 
   <button mat-icon-button class="end icon-h" [routerLink]="['personalAccount']">
-    <img src="{{this.profileIcon}}" class="account" />
+    <img *ngIf="this.profileIcon" src="{{this.profileIcon}}" class="account" />
+    <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
+    {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
+    </span>
   </button>
 
   <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h">
@@ -85,18 +102,23 @@
     <a href="/" class="nav-link home">
       <img src="/assets/images/logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted logo">
     </a>
-    <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
+    <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy"
+                    (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
       <!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">-->
-      <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" maxlength="30">
+      <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}"
+             maxlength="30">
       <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
-          {{'student' | translate:'Студент'}}  | {{result.FullName}}
+        <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result"
+                         (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+          {{'student' | translate:'Студент'}} | {{result.FullName}}
         </mat-list-option>
-        <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+        <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result"
+                         (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
           {{'lecturer' | translate:'Преподаватель'}} | {{result.FullName}}
         </mat-list-option>
-        <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
-          {{'group' | translate:'Группа'}} |  {{result.Name}}
+        <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result"
+                         (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
+          {{'group' | translate:'Группа'}} | {{result.Name}}
         </mat-list-option>
       </mat-selection-list>
       <mat-icon matSuffix>search</mat-icon>
@@ -104,59 +126,70 @@
   </div>
   <div class="second-line">
     <div class="menu-subject">
-      <div *ngIf="!isAdmin" >
-        <a mat-button [routerLink]="'/web/viewer'" >Предметы</a>
+      <div *ngIf="!isAdmin">
+        <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
       </div>
       <div *ngIf="isLector">
         <a mat-button [routerLink]="'/web/diplom'">Дипломное проектирование</a>
       </div>
     </div>
 
-    <button mat-icon-button [matMenuTriggerFor]="menu1"  class="menu-burger icon-h">
+    <button mat-icon-button [matMenuTriggerFor]="menu1" class="menu-burger icon-h">
       <mat-icon>menu</mat-icon>
     </button>
     <mat-menu #menu1="matMenu">
       <div *ngIf="!isAdmin" class="dropdown">
-        <a mat-button [routerLink]="'/web/viewer'" >Предметы</a>
+        <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
       </div>
       <div *ngIf="isLector">
-        <a mat-button  [routerLink]="'/web/diplom'">Дипломное проектирование</a>
+        <a mat-button [routerLink]="'/web/diplom'">Дипломное проектирование</a>
       </div>
     </mat-menu>
 
     <div class="icons">
+      <mat-select class="mselect" (selectionChange)="themeChange($event)" [value]="theme">
+        <mat-option *ngFor="let theme of themes" [value]="theme">
+          {{theme.name}}
+        </mat-option>
+      </mat-select>
+
       <mat-select class="mselect" (selectionChange)="onValueChange($event)" [value]="locale">
         <mat-option *ngFor="let locale of locales" [value]="locale">
           {{locale.name}}
         </mat-option>
       </mat-select>
-      
-      <div *ngIf="isLector" >
-        <button  mat-icon-button  class="icon-h">
+
+      <div *ngIf="isLector">
+        <button mat-icon-button class="icon-h">
           <mat-icon [matBadge]="unconfirmedStudents"
-          matBadgeOverlap="true"
-          matBadgePosition="above"
-          matBadgeColor="warn"
-          matBadgeSize="small"
-          [routerLink]="'/web/confirmation'" >
-          person_add_alt_1</mat-icon>
+                    matBadgeOverlap="true"
+                    matBadgePosition="above"
+                    matBadgeColor="warn"
+                    matBadgeSize="small"
+                    [routerLink]="'/web/confirmation'">
+            person_add_alt_1
+          </mat-icon>
         </button>
       </div>
 
-      <button mat-icon-button [routerLink]="'/emails'"  class="icon-h">
-        <mat-icon matBadge="15"
+      <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h">
+        <mat-icon matBadge={{unRead}}
+        [matBadgeHidden]="unRead==0"
         matBadgeOverlap="true"
         matBadgePosition="above"
         matBadgeColor="warn"
         matBadgeSize="small"
-        [routerLink]="'/web/confirmation'">mail</mat-icon>
+        [routerLink]="'/web/chat'">mail</mat-icon>
       </button>
 
-      <button mat-icon-button  [routerLink]="['personalAccount']" class="end icon-h">
-        <img src="{{this.profileIcon}}" class="account" />
+      <button mat-icon-button [routerLink]="['personalAccount']" class="end icon-h">
+        <img *ngIf="this.profileIcon" t src="{{this.profileIcon}}" class="account" />
+        <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
+          {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
+        </span>
       </button>
 
-      <button mat-icon-button [matMenuTriggerFor]="menu"  class="icon-h points">
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h points">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">

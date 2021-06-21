@@ -62,7 +62,7 @@ export class SubjectService {
     return this.http.post('Services/CoreService.svc/JoinLector', {subjectId, lectorId});
   }
 
-  public disjoinLector(subjectId: number, lectorId: string): Observable<any> {
+  public disjoinLector(subjectId: number, lectorId: number): Observable<any> {
     return this.http.post('Services/CoreService.svc/DisjoinLector', {subjectId, lectorId});
   }
 

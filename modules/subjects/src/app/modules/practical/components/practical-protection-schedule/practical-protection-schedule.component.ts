@@ -65,7 +65,7 @@ export class PracticalProtectionScheduleComponent implements OnInit, OnChanges {
   }
 
   help: Help = {
-    message: 'Для добавления или удаления дат практических занятий нажмите на кнопку "Управление датами" ',
-    action: 'Понятно'
+    message: this.translate.transform('text.help.practical.protection.schedule','Для добавления или удаления дат практических занятий нажмите на кнопку "Управление датами"'),
+    action: this.translate.transform('button.understand','Понятно')
   };
 }

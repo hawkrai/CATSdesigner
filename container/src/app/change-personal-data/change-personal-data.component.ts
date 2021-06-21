@@ -40,7 +40,7 @@ export class ChangePersonalDataComponent implements OnInit {
     Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
-    private profileService: ProfileService, private location: Location, public dialog: MatDialog,
+    private location: Location, public dialog: MatDialog,
     private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
 
   onFileSelected(event) {

@@ -21,13 +21,11 @@ export class HelpComponent implements OnInit {
   showHelp(): void{
 
       const dialogRef = this.dialog.open(HelpPopoverComponent, {
-        width: '350px',
-        height: '175px',
-        position: {top: '35px', left: '765px'},
         data: {message: this.message, action: this.action},
         hasBackdrop: true,
         disableClose: true,
-        backdropClass: 'backdrop-help'
+        backdropClass: 'backdrop-help',
+        panelClass: 'help-popover'
       });
   
       dialogRef.afterClosed().subscribe(result => {
