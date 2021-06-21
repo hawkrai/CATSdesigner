@@ -30,7 +30,7 @@ pipeline {
         steps {
             dir('./build') {
                 sh "chmod +x -R ${env.WORKSPACE}"
-                sh './build_modules.sh'
+                sh './jenkins_build_modules.sh'
             }
         }
     }
