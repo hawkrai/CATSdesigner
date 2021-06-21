@@ -4,6 +4,7 @@ import {ProjectsComponent} from '../projects.component';
 import { MatTable } from '@angular/material';
 import {DiplomUser} from '../../../models/diplom-user.model';
 import {Project} from '../../../models/project.model';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-projects-list',
@@ -16,7 +17,7 @@ export class ProjectsListComponent implements OnInit {
   @Input() diplomUser: DiplomUser;
   private component: ProjectsComponent
 
-  constructor(private projectsComponent: ProjectsComponent) {
+  constructor(private projectsComponent: ProjectsComponent, public translatePipe: TranslatePipe) {
     this.component = projectsComponent
   }
 

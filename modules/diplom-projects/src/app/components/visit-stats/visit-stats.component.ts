@@ -11,6 +11,7 @@ import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-p
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { Lecturer } from 'src/app/models/lecturer.model';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-visit-stats',
@@ -37,7 +38,8 @@ export class VisitStatsComponent implements OnInit {
 
   constructor(private visitStatsService: VisitStatsService,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
@@ -145,8 +147,8 @@ export class VisitStatsComponent implements OnInit {
       autoFocus: false,
       width: '700px',
       data: {
-        title: 'Посещаемость студентов',
-        buttonText: 'Сохранить',
+        title: this.translatePipe.transform('text.editor.edit.studentAttendance',"Посещаемость студентов"),
+        buttonText: this.translatePipe.transform('text.editor.edit.save',"Сохранить"),
         body: visits
       }
     });
@@ -182,7 +184,7 @@ export class VisitStatsComponent implements OnInit {
       }
     } else if (hasChanges) {
       this.ngOnInit();
-      this.addFlashMessage('Посещаемость успешно обновлена');
+      this.addFlashMessage(this.translatePipe.transform('text.editor.edit.attendanceAlert',"Посещаемость успешно обновлена"));
     }
   }
 
@@ -201,7 +203,7 @@ export class VisitStatsComponent implements OnInit {
         this.visitStatsService.addDate(date.toISOString(), result.start, 
         result.end, result.audience, result.building).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage('Дата консультации успешно добавлена');
+          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.consultationDateAlert',"Дата консультации успешно добавлена"));
         });
       }
     });
@@ -212,9 +214,9 @@ export class VisitStatsComponent implements OnInit {
       autoFocus: false,
       width: '400px',
       data: {
-        label: 'Удаление даты консультации',
-        message: 'Вы действительно хотите удалить дату консультации?',
-        actionName: 'Удалить',
+        label: this.translatePipe.transform('text.editor.edit.consultaionDateDelete',"Удаление даты консультации"),
+        message: this.translatePipe.transform('text.editor.edit.consultaionDateDeleteQuestion',"Вы действительно хотите удалить дату консультации?"),
+        actionName: this.translatePipe.transform('text.editor.edit.remove',"Удалить"),
         color: 'primary'
       }
     });
@@ -223,7 +225,7 @@ export class VisitStatsComponent implements OnInit {
       if (result != null && result) {
         this.visitStatsService.deleteDate(consultation.Id).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage('Дата успешно удалена');
+          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.dateRemoveAlert',"Дата успешно удалена"));
         });
       }
     });

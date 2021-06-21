@@ -50,6 +50,7 @@ import {EditTaskSheetComponent} from './components/task-sheet/edit-task-sheet/ed
 import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import { CustomDateAdapter } from './custom-date-adapter';
+import {TranslatePipe} from "../../../../container/src/app/pipe/translate.pipe";
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { CustomDateAdapter } from './custom-date-adapter';
     ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},
-    {provide: DateAdapter, useClass: CustomDateAdapter}
+    {provide: DateAdapter, useClass: CustomDateAdapter},
+    TranslatePipe
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
     AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent],

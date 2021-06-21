@@ -4,15 +4,15 @@
       <thead>
       <tr class="mdc-data-table__header-row">
         <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">№</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Группа</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.student' | translate: 'Студент'}}</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.group' | translate: 'Группа'}}</th>
         <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let consultation of consultations">
           <div class="header-date">
-            <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)"  matTooltip="Удалить дату"
+            <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)"  matTooltip="'text.diplomProject.dateRemove' | translate: 'Удалить дату'"
                *ngIf="visitStatsComponent.getDiplomUser().IsLecturer && !visitStatsComponent.getDiplomUser().IsSecretary">
               {{consultation.Day | date:'dd.MM.yyyy'}}
             </a>
-            <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)"  matTooltip="Удалить дату"
+            <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)"  matTooltip="'text.diplomProject.dateRemove' | translate: 'Удалить дату'"
                *ngIf="visitStatsComponent.isLecturer">
               {{consultation.Day | date:'dd.MM.yyyy'}}
             </a>

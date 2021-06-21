@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {StudentPercentageResults} from '../../../models/student-percentage-results.model';
 import {PercentageGraph} from '../../../models/percentage-graph.model';
 import {PercentageResultsComponent} from '../percentage-results.component';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-percentage-results-list',
@@ -13,7 +14,7 @@ export class PercentageResultsListComponent implements OnInit {
   @Input() filteredPercentageResults: StudentPercentageResults[];
   @Input() percentageGraphs: PercentageGraph[];
 
-  constructor(private percentageResultsComponent: PercentageResultsComponent) { }
+  constructor(private percentageResultsComponent: PercentageResultsComponent, public translatePipe: TranslatePipe) { }
 
   ngOnInit() {
   }

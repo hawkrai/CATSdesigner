@@ -1,6 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef, MatOptionSelectionChange} from '@angular/material';
 import {Student} from '../../../models/student.model';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 interface DialogData {
   students: Student[];
@@ -19,7 +20,8 @@ export class AssignProjectDialogComponent {
   private selectedGroup: String;
 
   constructor(public dialogRef: MatDialogRef<AssignProjectDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              public translatePipe: TranslatePipe) {
                 this.groups = data.students.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);       
   }
 

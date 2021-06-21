@@ -1,6 +1,6 @@
 <div *ngIf="diplomUser; else load" class="task-sheet__header">
   <mat-form-field class="task-sheet__header__theme">
-    <mat-label>Выберите тему дипломного проекта</mat-label>
+    <mat-label>{{'text.diplomProject.chooseThemeDP' | translate: 'Выберите тему дипломного проекта'}}</mat-label>
     <mat-select panelClass="theme-panel" [(value)]="diplomProjectId" (selectionChange)="onThemeChange($event.value)">
       <mat-option *ngFor="let theme of themes" [value]="theme.Id">
         {{theme.Name}}
@@ -8,15 +8,15 @@
     </mat-select>
   </mat-form-field>
   <div class="task-sheet__header__actions">
-    <button mat-icon-button color="primary" matTooltip="Скачать лист задания"
+    <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'"
             *ngIf="diplomProjectId != null" (click)="downloadTaskSheet()">
       <mat-icon>cloud_download</mat-icon>
     </button>
-    <button mat-icon-button color="primary" matTooltip="Скачать листы задания архивом"
+    <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadArchieveTaskSheet' | translate: 'Скачать листы задания архивом'"
             *ngIf="diplomProjectId != null" (click)="downloadArchive()">
             <mat-icon>get_app</mat-icon>
     </button>
-    <button mat-icon-button color="primary" matTooltip="Редактировать"
+    <button mat-icon-button color="primary" matTooltip="'text.diplomProject.edit' | translate: 'Редактировать'"
             (click)="editTaskSheet()" *ngIf="diplomUser.IsLecturer && diplomProjectId != null">
       <mat-icon>edit</mat-icon>
     </button>
