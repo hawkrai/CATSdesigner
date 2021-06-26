@@ -14,6 +14,7 @@ namespace Application.Infrastructure.FilesManagement
 
 		public AttachedFile(string dipslayName, string guid, FileInfo fileInfo, int id, string deleteType)
 		{
+		
 			SetValues(dipslayName, guid, fileInfo, (int)fileInfo.Length, fileInfo.FullName, id, deleteType);
 		}
 
@@ -97,6 +98,8 @@ namespace Application.Infrastructure.FilesManagement
 			get;
 			set;
 		}
+
+		public DateTime CreationDate { get; set; }
 
 		#endregion FilesStatus Members
 
@@ -190,6 +193,7 @@ namespace Application.Infrastructure.FilesManagement
 			var serverFilePath = Path.GetFileName(fileName.FullName);
             Url = HandlerPath + "api/Upload?filename=" + fileName.Directory.Name + "//" + serverFilePath;
             DeleteUrl = HandlerPath + "api/Upload?filename=" + fileName.Directory.Name + "//" + serverFilePath;
+			CreationDate = fileName.CreationTime;
 		}
 
 		#endregion Private Members

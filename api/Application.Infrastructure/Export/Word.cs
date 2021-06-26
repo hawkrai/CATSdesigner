@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,6 +14,7 @@ using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+using LMPlatform.Models;
 using LMPlatform.Models.DP;
 using Microsoft.Office.Interop.Word;
 using Font = System.Drawing.Font;
@@ -43,6 +45,58 @@ namespace Application.Infrastructure.Export
             var generator = adp is null ? new GenerateDpDocument(work, cultureInfo) : new GenerateDpDocument(adp, cultureInfo);
             var array = generator.CreatePackageAsBytes();
             return array;
+        }
+
+        public static HttpResponseMessage DiplomProjectsToArchive(string fileName, IList<DiplomProject> diplomProjects)
+        {
+            IDictionary<string, byte[]> bytelist = CreateDocs(diplomProjects);
+
+            var pushStreamContent = new PushStreamContent((stream, content, context) =>
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (var zipArchive = new ZipArchive(ms, ZipArchiveMode.Create, true))
+                    {
+                        foreach (var attachment in bytelist)
+                        {
+                            var entry = zipArchive.CreateEntry(attachment.Key);
+
+                            using MemoryStream originalFile = new MemoryStream(attachment.Value);
+                            using var zipEntryStream = entry.Open();
+                            originalFile.CopyTo(zipEntryStream);
+                        }
+                    }
+
+                    ms.Seek(0, SeekOrigin.Begin);
+                    ms.WriteTo(stream);
+                }
+                stream.Close();
+            }, "application/zip");
+
+            pushStreamContent.Headers.Add("Content-Disposition", "attachment; filename=" + fileName);
+
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = pushStreamContent };
+        }
+
+        private static IDictionary<string, byte[]> CreateDocs(IList<DiplomProject> diplomProjects)
+        {
+            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
+            IDictionary<string, byte[]> byteList = new Dictionary<string, byte[]>(diplomProjects.Count());
+            Student student = null;
+            string docName = null;
+
+            foreach (var item in diplomProjects)
+            {
+                var adp = item.AssignedDiplomProjects.Count == 1 ? item.AssignedDiplomProjects.First() : null;
+                var generator = adp is null ? new GenerateDpDocument(item, cinfo) : new GenerateDpDocument(adp, cinfo);
+                byte[] byteArray = generator.CreatePackageAsBytes();
+
+                student = item.AssignedDiplomProjects.FirstOrDefault().Student;
+                docName = $"{student.LastName}_{student.FirstName}.doc";
+
+                byteList.Add(docName, byteArray);
+            }
+            return byteList;
         }
         #endregion
 

@@ -1,4 +1,4 @@
-<app-popover-dialog *var="files$ | async as files" width="700">
+<app-popover-dialog *var="files$ | async as files">
   <ng-container title>
     {{data.title}}
   </ng-container>
@@ -9,7 +9,7 @@
         <input matInput placeholder="Название" formControlName="title">
       </mat-form-field>
       <mat-label>{{'text.subjects.news.text' | translate:'Текст новости'}}</mat-label>
-      <ckeditor formControlName="body" [editor]="Editor"></ckeditor>
+      <ckeditor formControlName="body" [editor]="Editor" style="overflow: hidden;"></ckeditor>
 
       <div class="form-container form-container__column">
         <mat-checkbox formControlName="isOldDate" [color]="'primary'">
@@ -23,9 +23,9 @@
     </form>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClose(files, false)">{{'button.cancel' | translate:'Отмена'}}</button>
+    <button mat-raised-button (click)="onClose(false)">{{'button.cancel' | translate:'Отмена'}}</button>
     <button mat-raised-button
-            (click)="onClose(files, true)"
+            (click)="onSave()"
             color="primary"
             [disabled]="newsForm.invalid"
     >

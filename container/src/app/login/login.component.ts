@@ -3,10 +3,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from '../core/services/auth.service';
+import {TranslatePipe} from '../pipe/translate.pipe';
+import {MatDialog} from '@angular/material/dialog';
+import {VideoComponent} from './modal/video.component';
+import { ViewEncapsulation } from '@angular/core';
+
+interface Locale {
+  name: string;
+  value: string
+}
 
 @Component({
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.less']
+  styleUrls: ['./login.component.less'],
+  encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
@@ -14,12 +24,16 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   hide=true;
+  public locales: Locale[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
+  public locale: Locale;
 
   constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private authenticationService: AuthenticationService
+        private dialog: MatDialog,
+        private authenticationService: AuthenticationService,
+        private translatePipe: TranslatePipe
     ) {
         
         if (this.authenticationService.currentUserValue) {
@@ -34,6 +48,8 @@ export class LoginComponent implements OnInit {
         password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
           Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator]),
     });    
+    const local: string = localStorage.getItem("locale");
+    this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
@@ -71,4 +87,14 @@ export class LoginComponent implements OnInit {
     const control = this.loginForm.controls[controlName];
     return control.invalid && control.touched;
   }
+
+  public onValueChange(value: any): void {
+    localStorage.setItem("locale", value.value.value);
+    window.location.reload()
+  }
+
+  public open() {
+    const dialogRef = this.dialog.open(VideoComponent);
+  }
+
 }

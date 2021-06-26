@@ -5,8 +5,9 @@
             (click)="selectedTab = idx"
     >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}} 
-          <mat-icon class="priority-icon" *ngIf="state.isTeacher && idx === 4 && (state.hasJobProtections | any:'HasJobProtection')" class="priority" [color]="'warn'">priority_high</mat-icon>
+        <span class="mdc-tab__text-label"> 
+          <span>{{tab | firstLetterUppercase}} </span>
+          <mat-icon class="priority-icon" style="margin-top: -5px;" *ngIf="state.isTeacher && idx === 4 && (state.hasJobProtections | any:'HasJobProtection')" class="priority" [color]="'warn'">priority_high</mat-icon>
         </span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="idx === selectedTab">
@@ -24,12 +25,16 @@
                         (onSelectionChange)="selectedGroup($event)"
                         [value]="group.GroupId"
             >
+            <span class="icon-container">
               {{group.GroupName}}
-            <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" [color]="'warn'">priority_high</mat-icon>
+              <mat-icon  data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" [color]="'warn'">priority_high</mat-icon>
+            </span>
             </mat-option>
-            <mat-select-trigger>
-              <span #name>{{state.group.GroupName}}</span>
-              <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, state.group)" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
+            <mat-select-trigger >
+              <span #name class="icon-container">
+                {{state.group.GroupName}}
+                <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, state.group)" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
+              </span>
             </mat-select-trigger>
           </mat-select>
         </mat-form-field>

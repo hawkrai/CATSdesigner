@@ -7,4 +7,5 @@ export class Subject {
   GroupsCount: number;
   StudentsCount: number;
   Groups: Group[];
+  Owner: number;
 }

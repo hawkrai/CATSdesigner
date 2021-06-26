@@ -8,6 +8,7 @@ export interface MenuConfig {
     module: string;
     item: string;
     icon: string;
+    translate?: string;
 }
 
 @Injectable({
@@ -26,21 +27,21 @@ export class MenuService {
     }
 
     private subjectsInfo = new Map([
-        [ModuleType.News, { fragment: 'news', module: 'subject', item: 'news', icon: '../../../assets/icons/newspaper.png' }],
-        [ModuleType.Lectures, { fragment: 'lectures', module: 'subject', item: 'lectures', icon: '../../../assets/icons/presentation.png' }],
-        [ModuleType.Practical, { fragment: 'practical', module: 'subject', item: 'practical', icon: '../../../assets/icons/contract.png',  }],
-        [ModuleType.Labs, { fragment: 'labs', module: 'subject', item: 'labs', icon: '../../../assets/icons/chemistry-lab-instrument.png' }],
-        [ModuleType.SmartTest, { fragment: 'page', module: 'testsModule', item: 'testsModule', icon: '../../../assets/icons/test.png' }],
-        [ModuleType.YeManagment, { fragment: '', module: 'course', item: 'course', icon: '../../../assets/icons/graduation-hat.png' }],
-        [ModuleType.ComplexMaterial, { fragment: '', module: 'complex', item: 'complex', icon: '../../../assets/icons/information.png' }],
+        [ModuleType.News, { fragment: 'news', module: 'subject', item: 'news', icon: '../../../assets/icons/newspaper.png', translate: 'text.news.plural' }],
+        [ModuleType.Lectures, { fragment: 'lectures', module: 'subject', item: 'lectures', icon: '../../../assets/icons/presentation.png', translate: 'text.lectures.plural' }],
+        [ModuleType.Practical, { fragment: 'practical', module: 'subject', item: 'practical', icon: '../../../assets/icons/contract.png', translate: 'text.menu.workshops'  }],
+        [ModuleType.Labs, { fragment: 'labs', module: 'subject', item: 'labs', icon: '../../../assets/icons/chemistry-lab-instrument.png',  translate: 'text.subjects.labs.plural' }],
+        [ModuleType.SmartTest, { fragment: 'page', module: 'testsModule', item: 'testsModule', icon: '../../../assets/icons/test.png',  translate: 'text.menu.tests' }],
+        [ModuleType.YeManagment, { fragment: '', module: 'course', item: 'course', icon: '../../../assets/icons/graduation-hat.png',  translate: 'text.menu.course' }],
+        [ModuleType.ComplexMaterial, { fragment: '', module: 'complex', item: 'complex', icon: '../../../assets/icons/information.png',  translate: 'text.menu.cm' }],
         [ModuleType.Dsm, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.LabAttachments, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.Projects, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.Results, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.ScheduleProtection, { fragment: '', module: '', item: '', icon: '' }],
         [ModuleType.StatisticsVisits, { fragment: '', module: '', item: '', icon: '' }],
-        [ModuleType.SubjectAttachments, { fragment: 'files', module: 'subject', item: 'files', icon: '../../../assets/icons/folder.png' }],
-        [ModuleType.InteractiveTutorial, { fragment: '', module: 'libBook', item: 'libBook', icon: '../../../assets/icons/notebook.png' }]
+        [ModuleType.SubjectAttachments, { fragment: 'files', module: 'subject', item: 'files', icon: '../../../assets/icons/folder.png',  translate: 'text.attachments.plural' }],
+        [ModuleType.InteractiveTutorial, { fragment: '', module: 'libBook', item: 'libBook', icon: '../../../assets/icons/notebook.png',  translate: 'text.menu.interactive.book' }]
     ]);
 
     getSubjectInfo(type: ModuleType): MenuConfig {

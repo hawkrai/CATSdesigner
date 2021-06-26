@@ -34,6 +34,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
 import {MatIconModule} from '@angular/material/icon';
+import { HelpPopoverScheduleComponent } from './schedule-main/help-popover/help-popover-schedule.component';
 
 registerLocaleData(localeRu);
 
@@ -55,7 +56,8 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     NewsComponent,
     NewsInfoComponent,
     AllNewsComponent,
-    TranslatePipe
+    TranslatePipe,
+    HelpPopoverScheduleComponent
   ],
     imports: [
         BrowserModule,
@@ -93,7 +95,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
   providers: [DatePipe, MatDatepickerModule, TranslatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
-  entryComponents: [AllNewsComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent]
+  entryComponents: [AllNewsComponent, CreateLessonComponent, ConfirmationComponent, NewsInfoComponent, HelpPopoverScheduleComponent]
 })
 export class AppModule {
 

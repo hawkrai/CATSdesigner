@@ -112,9 +112,19 @@ const proxyElasticSearchOptions = {
   changeOrigin: true,
   pathRewrite: {
     '^/ElasticSearch': 'ElasticSearch', // rewrite path
-  },
+  }
 }
 
+const proxyChatOptions = { 
+  target: "https://chateduc.w12.hoster.by/", 
+  changeOrigin: true,
+  pathRewrite: {
+    '^/catService': '/ChatApi', // rewrite path
+  },
+  secure: false
+}
+
+app.use('*/catService/*', createProxyMiddleware(proxyChatOptions));
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
 app.use('*/Profile/*', createProxyMiddleware(proxyProfileOptions));

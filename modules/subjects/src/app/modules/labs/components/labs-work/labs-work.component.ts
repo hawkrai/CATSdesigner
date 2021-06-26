@@ -47,8 +47,11 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   getDisplayedColumns(): string[] {
-    const defaultColumns = ['position', 'theme', 'shortName', 'duration'];
-    return defaultColumns.concat(this.isTeacher ? 'actions' : 'files');
+    const defaultColumns = ['position', 'theme', 'shortName', 'duration', 'files'];
+    if (this.isTeacher) {
+      return defaultColumns.concat('actions');
+    }
+    return defaultColumns;
   }
 
   ngAfterViewChecked(): void {
@@ -133,7 +136,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       order: lab ? lab.Order : order,
       pathFile: lab ? lab.PathFile : '',
       attachments: lab ? lab.Attachments : [],
-      shortName: `ЛР${order + 1}`
+      shortName: `ЛР${order}`
     };
   }
 

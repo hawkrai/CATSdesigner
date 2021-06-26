@@ -1,7 +1,7 @@
 <ng-container *ngIf="subject">
   <app-popover-dialog class="subject-management">
     <ng-container title>
-      {{ data.model && data.model.subjectId ? ('subject.creation' | translate:'Создание предмета') : ('subject.editing' | translate:'Редактирование предмета') }}
+      {{ data.model && !data.model.subjectId ? ('subject.creation' | translate:'Создание предмета') : ('subject.editing' | translate:'Редактирование предмета') }}
     </ng-container>
     <ng-container body>
       <form class="example-form" #formElement="ngForm">
@@ -16,12 +16,17 @@
             #name="ngModel"
             [subjectId]="subject.SubjectId"
             [(ngModel)]="subject.DisplayName"
+            whitespace
           />
         </mat-form-field>
-        <mat-error *ngIf="name.errors?.subjectNameFree && (formElement.touched || formElement.dirty)">
-          Предмет с таким названием уже существует
-        </mat-error>
-
+        <ng-container *ngIf="name.touched || name.dirty">
+          <mat-error *ngIf="name.errors?.subjectNameFree">
+            {{'subject.abbreviation.not.free' | translate:'Предмет с таким названием уже существует'}}
+          </mat-error>
+          <mat-error *ngIf="name.errors?.whitespace">
+            {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+          </mat-error>
+        </ng-container>
         <mat-form-field class="example-full-width">
           <mat-label>{{'subject.abbreviation' | translate:'Аббревиатура'}}</mat-label>
           <input
@@ -33,11 +38,17 @@
             [subjectAbbreviationFree]="data.body"
             [(ngModel)]="subject.ShortName"
             [subjectId]="subject.SubjectId"
+            whitespace
           />
         </mat-form-field>
-        <mat-error *ngIf="shortName.errors?.subjectAbbreviationFree && (formElement.touched || formElement.dirty)">
-          Предмет с такой аббревиатурой уже существует
-        </mat-error>
+        <ng-container *ngIf="shortName.touched || shortName.dirty">
+          <mat-error *ngIf="shortName.errors?.subjectAbbreviationFree">
+            {{'subject.name.not.free' | translate:'Предмет с такой аббревиатурой уже существует'}}
+          </mat-error>
+          <mat-error *ngIf="shortName.errors?.whitespace">
+            {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+          </mat-error>
+        </ng-container>
       </form>
   
       <h3 mat-dialog-title class="mat-typography title"></h3>
@@ -91,7 +102,7 @@
       </div>
     </ng-container>
     <ng-container actions>
-      <button mat-raised-button (click)="onClose(files, false)">{{'button.cancel' | translate:'Отмена'}}</button>
+      <button mat-raised-button (click)="onCancel()">{{'button.cancel' | translate:'Отмена'}}</button>
       <button
       mat-raised-button
       color="primary"

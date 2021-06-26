@@ -14,6 +14,8 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { Help } from 'src/app/models/help.model';
+import { Message } from 'src/app/models/message.model';
+import * as catsActions from '../../../../store/actions/cats.actions';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -100,7 +102,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
       const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-          this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs(lecturesMarksVisiting, index, result.students) }));
+          this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs([...lecturesMarksVisiting.map(x => ({ ...x, Marks: [...x.Marks.map(m => ({ ...m }))] }))], index, result.students) }));
         }
       });
     }
@@ -115,7 +117,11 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   help: Help = {
-    message: 'Для добавления или удаления дат лекций нажмите на кнопку "Управление расписанием". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.',
-    action: 'Понятно'
+    message: this.translate.transform('text.help.lectures','Для добавления или удаления дат лекций нажмите на кнопку "Управление расписанием". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии.'),
+    action: this.translate.transform ('button.understand','Понятно')
   };
+
+  navigateToProfile(lecturesMarksVisiting: LecturesMarksVisiting): void {
+    this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${lecturesMarksVisiting.StudentId}`) }));
+  }
 }

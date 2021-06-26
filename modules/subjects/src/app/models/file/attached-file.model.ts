@@ -11,4 +11,5 @@ export class AttachedFile {
     Type: string;
     Url: string;
     GuidFileName: string;
+    CreationDate: Date;
 }

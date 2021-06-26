@@ -32,7 +32,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   private subs = new SubSink();
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
 
-  defaultColumns = ['index', 'theme', 'duration'];
+  defaultColumns = ['index', 'theme', 'duration', 'files'];
   displayedColumns: string[] = [];
 
 
@@ -54,7 +54,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isTeacher) {
-      this.displayedColumns = [...this.defaultColumns, this.isTeacher ? 'actions' : 'files'];
+      this.displayedColumns = [...this.defaultColumns, 'actions' ];
     }
   }
 

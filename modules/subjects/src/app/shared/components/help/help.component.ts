@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { HelpPopoverComponent} from './help-popover/help-popover.component';
 
 @Component({
   selector: 'app-help',
@@ -11,16 +12,25 @@ export class HelpComponent implements OnInit {
   @Input() message: string;
   @Input() action: string;
   constructor(
-    private snackBar: MatSnackBar
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
   }
 
-  showHelp(): void {
-    this.snackBar.open(this.message, this.action, {
-      duration: 10000,
-      panelClass: ['help-snackbar']
-    })
-  }
+  showHelp(): void{
+
+      const dialogRef = this.dialog.open(HelpPopoverComponent, {
+        data: {message: this.message, action: this.action},
+        hasBackdrop: true,
+        disableClose: true,
+        backdropClass: 'backdrop-help',
+        panelClass: 'help-popover'
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+      });
+
+}
+
 }
