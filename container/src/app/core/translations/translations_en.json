@@ -393,7 +393,7 @@
   "text.personalAccount.changePassword.repeatPassword": "Repeat Password",
   "text.personalAccount.changePassword.change": "Change",
   "text.personalAccount.changePassword.passwordsNotMatch": "Passwords don't match!",
-  "text.personalAccount.changePassword.invalidPassword": "Password has wrong format!",
+  "text.personalAccount.changePassword.invalidPassword": "Password has wrong format! Allowed symbols - (А-Яа-яA-Za-z0-9 _-) Length from 6 to 30 symbolsв!",
   "text.personalAccount.changePassword.wrongPassword": "Wrong password!",
   "text.personalAccount.GroupName": "Group"
 

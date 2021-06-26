@@ -26,6 +26,7 @@ namespace Application.Infrastructure.ElasticManagement
         private readonly StudentElasticSearchRepository StudentRepo;
         private readonly LecturerElasticSearchRepository LecturerRepo;
         private readonly ProjectElasticSearchRepository ProjectRepo;
+        private readonly ElasticInitializer Initializer;
         public ElasticManagementService()
         {
             ElasticClient client = CreateClient();
@@ -35,6 +36,7 @@ namespace Application.Infrastructure.ElasticManagement
                 LecturerRepo = new LecturerElasticSearchRepository(client);
                 GroupRepo = new GroupElasticSearchRepository(client);
                 ProjectRepo = new ProjectElasticSearchRepository(client);
+                Initializer = new ElasticInitializer(client);
             }
             else
             {
@@ -112,18 +114,16 @@ namespace Application.Infrastructure.ElasticManagement
         }
 
         public void ClearElastic() {
-            ElasticInitializer init = new ElasticInitializer(client);
-            init.DeleteGroups();
-            init.DeleteLecturers();
-            init.DeleteStudents();
-            init.DeleteProjects();
+            Initializer.DeleteGroups();
+            Initializer.DeleteLecturers();
+            Initializer.DeleteStudents();
+            Initializer.DeleteProjects();
         }
         public void InitElastic() {
-            ElasticInitializer init = new ElasticInitializer(client);
-            init.InitializeGroups();
-            init.InitializeLecturers();
-            init.InitializeStudents();
-            init.InitializeProjects();
+            Initializer.InitializeGroups();
+            Initializer.InitializeLecturers();
+            Initializer.InitializeStudents();
+            Initializer.InitializeProjects();
         }
 
     }

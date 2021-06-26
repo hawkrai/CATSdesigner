@@ -42,14 +42,14 @@ export class ChangePasswordDialog {
 
   onSaveChangesClick(): void {
     this.showBadPasswordError = false;
-    if (this.arePasswordsSame()) {
+    if (this.newPasswordFormControl.valid && this.arePasswordsSame()) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
             this.toastr.addSuccessFlashMessage(this.translatePipe.transform('text.personalAccount.passwordChanged', "Пароль успешно изменен!"));
             this.dialogRef.close();
           }
           else {
-            this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.personalAccount.passwordNotChanged', "Пароль не был изменен!"));
+            this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.personalAccount.passwordNotChanged', "Указан Пароль не был изменен!"));
             this.showBadPasswordError = true;
           }
         });   

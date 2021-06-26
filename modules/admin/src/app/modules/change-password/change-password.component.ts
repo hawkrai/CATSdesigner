@@ -26,9 +26,11 @@ export class ChangePasswordComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      Username: new FormControl('', [Validators.required]),
+      Username: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-@]{3,30}$'), 
+      Validators.minLength(3), Validators.maxLength(30)]),
       SecretQuestion: new FormControl(''),
-      SecretAnswer: new FormControl('', [Validators.required]),
+      SecretAnswer: new FormControl('', [Validators.required,Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$'), 
+      Validators.minLength(1), Validators.maxLength(30)])
     });
   }
 
