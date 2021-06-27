@@ -1,0 +1,24 @@
+pipeline {
+    agent {
+        node {
+            label 'windows'
+        }
+    }
+    stages {
+         stage('Restore nuget') {
+            steps {
+                dir('./api') {
+                    bat 'nuget restore LMPlatform.sln'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('./api') {
+                    bat "\"${tool 'MSBuild'}\" LMPlatform.sln /p:Configuration=Release"
+                }
+            }
+        }
+        
+    }
+}
