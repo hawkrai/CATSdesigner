@@ -14,11 +14,8 @@
 
   <div class="flex-spacer"></div>
 
-  <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()"
-                  (blur)="this.cleanSearchResults()">
-    <!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">-->
-    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}"
-           maxlength="30">
+  <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
+    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()" maxlength="30">
     <mat-selection-list [multiple]="false">
       <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result"
                        (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
@@ -43,11 +40,12 @@
     </mat-option>
   </mat-select>
 
-  <mat-select class="mselect" (selectionChange)="onValueChange($event)" [value]="locale">
-    <mat-option *ngFor="let locale of locales" [value]="locale">
-      {{locale.name}}
-    </mat-option>
-  </mat-select>
+    <mat-select class="mselect" (selectionChange)="onValueChange($event)" [value]="locale">
+      <mat-option *ngFor="let locale of locales" [value]="locale">
+        {{locale.name}}
+      </mat-option>
+    </mat-select>
+
 
   <div *ngIf="isLector">
     <button mat-icon-button class="icon-h">
@@ -98,31 +96,25 @@
 
 
 <mat-toolbar class="mat-elevation-z6 main-toolbar second" color="primary">
-  <div class="first-line">
-    <a href="/" class="nav-link home">
-      <img src="/assets/images/logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted logo">
-    </a>
-    <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy"
-                    (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
-      <!--    <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">-->
-      <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}"
-             maxlength="30">
-      <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result"
-                         (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
-          {{'student' | translate:'Студент'}} | {{result.FullName}}
-        </mat-list-option>
-        <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result"
-                         (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
-          {{'lecturer' | translate:'Преподаватель'}} | {{result.FullName}}
-        </mat-list-option>
-        <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result"
-                         (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
-          {{'group' | translate:'Группа'}} | {{result.Name}}
-        </mat-list-option>
-      </mat-selection-list>
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div class="first-line">
+      <a href="/" class="nav-link home">
+        <img src="/assets/images/logo.png" width="150" height="40" title="Home" alt="Home" class="ng-star-inserted logo">
+      </a>
+      <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
+        <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">
+        <mat-selection-list [multiple]="false">
+          <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+            {{'student' | translate:'Студент'}}  | {{result.FullName}}
+          </mat-list-option>
+          <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+            {{'lecturer' | translate:'Преподаватель'}} | {{result.FullName}}
+          </mat-list-option>
+          <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result" (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
+            {{'group' | translate:'Группа'}} |  {{result.Name}}
+          </mat-list-option>
+        </mat-selection-list>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
   </div>
   <div class="second-line">
     <div class="menu-subject">

@@ -1,5 +1,6 @@
 ﻿
 using LMPlatform.ElasticDataModels;
+using LMPlatform.Models;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -86,24 +87,24 @@ namespace Application.ElasticSearchEngine.SearchRepositories
             AddToIndex(project);
         }
 
-        private static CreateIndexDescriptor GetProjectMap(string indexName)
+        internal static CreateIndexDescriptor GetProjectMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-                .Map<ElasticProject>(m => m
+            map.Map<ElasticProject>(m => m
+                    .Dynamic(false)
                     .Properties(prop => prop
+                        .Number(s => s
+                            .Name(n => n.Id)
+                            .Type(NumberType.Integer)
+                        )
                         .Date(s => s
                             .Name(n => n.DateOfChange)
-                            )
-                        .Number(num => num
-                            .Name(n => n.Id)
-                            )
+                        )
                         .Text(s => s
                             .Name(n => n.Title)
-                            )
-                    )
+                        )
+                   )
                 )
-             )
            ;
             return map;
         }

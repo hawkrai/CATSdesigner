@@ -14,12 +14,15 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
     using System.Linq;
 
     using Application.Core.UI.HtmlHelpers;
+    using Application.Infrastructure.ElasticManagement;
 
     public class GroupViewModel : BaseNumberedGridItem
     {
         private readonly LazyDependency<IGroupManagementService> _groupManagementService = new LazyDependency<IGroupManagementService>();
+        private readonly LazyDependency<IElasticManagementService> _elasticManagementService = new LazyDependency<IElasticManagementService>();
 
         private IGroupManagementService GroupManagementService => _groupManagementService.Value;
+        private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
 
         [DisplayName("Номер")]
         [MaxLength(10, ErrorMessage = "Длина поля Номер группы не должна превышать 10 символов")]
@@ -87,18 +90,23 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         public void AddGroup()
         {
-            GroupManagementService.AddGroup(GetGroupFromViewModel());
+            Group group = GetGroupFromViewModel();
+            GroupManagementService.AddGroup(group);
+            ElasticManagementService.AddGroup(group);
         }
 
         public void ModifyGroup()
         {
-            GroupManagementService.UpdateGroup(new Group()
+            Group group = new Group()
             {
                 Id = Id,
                 Name = Name,
                 GraduationYear = GraduationYear,
                 StartYear = StartYear
-            });
+            };
+
+            GroupManagementService.UpdateGroup(group);
+            ElasticManagementService.ModifyGroup(group);
         }
 
         public bool CheckGroupName()

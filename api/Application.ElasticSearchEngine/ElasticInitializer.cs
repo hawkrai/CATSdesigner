@@ -10,6 +10,9 @@ using System.Linq;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.ElasticDataModels;
 using System.Configuration;
+using LMPlatform.Models;
+using LMPlatform.Data.Repositories;
+using Application.ElasticSearchEngine.SearchRepositories;
 
 namespace Application.ElasticSearchEngine
 {
@@ -36,12 +39,15 @@ namespace Application.ElasticSearchEngine
             var connectionSettings =
                 new ConnectionSettings(pool, sourceSerializer: (builtin, settings) => new JsonNetSerializer(
                     builtin, settings,
-                    () => new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include,
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore},
+                    () => new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Include,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    },
                     resolver => resolver.NamingStrategy = new CamelCaseNamingStrategy()
                 ))
                 .BasicAuthentication(userName, password);
-            client = new ElasticClient(connectionSettings);        
+            client = new ElasticClient(connectionSettings);
             CheckConnection(client);
         }
 
@@ -53,213 +59,219 @@ namespace Application.ElasticSearchEngine
                 throw new Exception("Client was not connected to ElasticSearch server\n" + isConnected.OriginalException.Message);
             }
         }
-        private List<ElasticProject> GetProjects(int skip, int take)
+
+        public ElasticUser ConvertUser(User user)
         {
-            using (LmPlatformModelsContext context = new LmPlatformModelsContext())
+            ElasticUser elUser = new ElasticUser();
+
+            elUser.Id = user.Id;
+            elUser.UserName = user.UserName;
+            elUser.SkypeContact = user.SkypeContact;
+            elUser.Phone = user.Phone;
+            elUser.Email = user.Email;
+            elUser.About = user.About;
+
+            return elUser;
+        }
+        public ElasticGroup ConvertGroup(Group group) {
+            ElasticGroup elGroup = new ElasticGroup();
+            elGroup.Id = group.Id;
+            elGroup.GraduationYear = group.GraduationYear;
+            elGroup.Name = group.Name;
+            elGroup.SecretaryId = group.SecretaryId;
+            elGroup.StartYear = group.StartYear;
+            return elGroup;
+        }
+        public ElasticLecturer ConvertLecturer(Lecturer  lecturer)
+        {
+            ElasticLecturer elLecturer = new ElasticLecturer();
+
+            elLecturer.Id = lecturer.Id;
+            elLecturer.FirstName = lecturer.FirstName;
+            elLecturer.LastName = lecturer.LastName;
+            elLecturer.MiddleName = lecturer.MiddleName;
+            elLecturer.Skill = lecturer.Skill;
+            elLecturer.User = ConvertUser(lecturer.User);
+         
+            return elLecturer;
+        }
+        public ElasticStudent ConvertStudent(Student student)
+        {
+            ElasticStudent elStudent = new ElasticStudent();
+
+            elStudent.Id = student.Id;
+            elStudent.FirstName = student.FirstName;
+            elStudent.LastName = student.LastName;
+            elStudent.MiddleName = student.MiddleName;
+            elStudent.GroupId = student.GroupId;
+            elStudent.Group = ConvertGroup(student.Group);
+            elStudent.User = ConvertUser(student.User);
+
+            return elStudent;
+        }
+        public ElasticProject ConvertProject(Project project)
+        {
+            ElasticProject elProject = new ElasticProject();
+
+            elProject.Id = project.Id;
+            elProject.Title = project.Title;
+            elProject.CreatorId = project.CreatorId;
+            elProject.Attachments = project.Attachments;
+
+            return elProject;
+        }
+
+        private List<Project> GetProjects(int skip, int take)
+        {
+            using (var context = new LmPlatformModelsContext())
             {
-                return context.ElasticProjects.Skip(skip).Take(take)
-                    .ToList();
+                return context.Projects
+                    .OrderBy(u => u.Id)
+                    .Skip(skip)
+                    .Take(take).ToList();
             }
         }
-        private List<ElasticGroup> GetGroups(int skip, int take)
+        private List<Group> GetGroups(int skip, int take)
         {
-            using (LmPlatformModelsContext context = new LmPlatformModelsContext())
+            using (var context = new LmPlatformModelsContext())
             {
-                return context.ElasticGroups.Skip(skip).Take(take)
-                    .ToList();
+                return context.Groups
+                    .OrderBy(u => u.Id)
+                    .Skip(skip)
+                    .Take(take).ToList();
             }
         }
-        private List<ElasticLecturer> GetLecturers(int skip, int take)
+        private List<Student> GetStudents(int skip, int take)
         {
-            using (LmPlatformModelsContext context = new LmPlatformModelsContext())
+            using (var context = new LmPlatformModelsContext())
             {
-                return context.ElasticLecturers.Skip(skip).Take(take)
-                    .Include(l => l.User)
-                    .ToList<ElasticLecturer>();
+                return context.Students
+                    .Include(s => s.User)
+                    .Include(s => s.Group)
+                    .OrderBy(s => s.Id)
+                    .Skip(skip)
+                    .Take(take).ToList();
             }
         }
-        private List<ElasticStudent> GetStudents(int skip, int take)
+        private List<Lecturer> GetLecturers(int skip, int take)
         {
-                using (LmPlatformModelsContext context = new LmPlatformModelsContext())
-                {
-                    return context.ElasticStudents.Skip(skip).Take(take)
-                        .Include(s => s.User)
-                        .Include(g => g.Group)
-                        .ToList(); 
-                }
+            using (var context = new LmPlatformModelsContext())
+            {
+                return context.Lecturers
+                    .Include(s => s.User)
+                    .OrderBy(u => u.Id)
+                    .Skip(skip)
+                    .Take(take).ToList();
+            }
         }
-        private static CreateIndexDescriptor GetProjectMap(string indexName)
+
+        private List<ElasticProject> GetElasticProjects(int skip, int take)
         {
-            CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Map<ElasticProject>(m => m
-                    .Dynamic(false)
-                    .Properties(prop => prop
-                        .Number(s => s
-                            .Name(n => n.Id)
-                            .Type(NumberType.Integer)
-                        )
-                        .Date(s=>s
-                            .Name(n=>n.DateOfChange)
-                        )
-                        .Text(s => s
-                            .Name(n => n.Title)
-                        )
-                   )
-                )
-           ;
-            return map;
+            List<Project> oldProjects = GetProjects(skip, take);
+            List<ElasticProject> elProjects = new List<ElasticProject>();
+
+            foreach (Project gr in oldProjects)
+            {
+                elProjects.Add(ConvertProject(gr));
+            }
+
+            return elProjects;
         }
-        private static CreateIndexDescriptor GetGroupMap(string indexName)
+        private List<ElasticGroup> GetElasticGroups(int skip, int take)
         {
-            CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Map<ElasticGroup>(m => m
-                    .Dynamic(false)
-                    .Properties(prop => prop
-                        .Number(s => s
-                            .Name(n => n.Id)
-                            .Type(NumberType.Integer)
-                        )
-                        .Number(num => num
-                            .Name(n => n.SecretaryId)
-                        )
-                        .Text(s => s
-                            .Name(n => n.Name)
-                        )
-                    )
-                )
-           ;
-            return map;
+            List<Group> oldGroups = GetGroups(skip, take);
+            List<ElasticGroup> elGroups = new List<ElasticGroup>();
+
+            foreach (Group gr in oldGroups)
+            {
+                elGroups.Add(ConvertGroup(gr));
+            }
+
+            return elGroups;
+
         }
-        private static CreateIndexDescriptor GetLecturerMap(string indexName)
+        private List<ElasticLecturer> GetElasticLecturers(int skip, int take)
         {
-            CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Map<ElasticLecturer>(m => m
-                    .Dynamic(false)
-                    .Properties(prop => prop
-                        .Number(s => s
-                            .Name(n => n.Id)
-                            .Type(NumberType.Integer)
-                         )
-                        .Text(s => s
-                            .Name(n => n.FullName)
-                         )
-                        .Text(o => o
-                            .Name(s => s.Skill)
-                         )             
-                        .Object<ElasticUser>(u=>u
-                            .Dynamic(false)
-                            .Name(n=>n.User)
-                            .Properties(pr => pr
-                                .Text(t=>t
-                                    .Name(n=>n.SkypeContact)
-                                 )
-                                .Text(t => t
-                                    .Name(n => n.Phone)
-                                 )
-                                .Text(t => t
-                                    .Name(n => n.About)
-                                )
-                            )
-                        )
-                    )
-                )
-           ;
-            return map;
+            List<Lecturer> oldLecturers = GetLecturers(skip, take);
+            List<ElasticLecturer> elLecturers = new List<ElasticLecturer>();
+
+            foreach (Lecturer gr in oldLecturers)
+            {
+                elLecturers.Add(ConvertLecturer(gr));
+            }
+
+            return elLecturers;
         }
-        private static CreateIndexDescriptor GetStudentMap(string indexName)
+        private List<ElasticStudent> GetElasticStudents(int skip, int take)
         {
-            CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Map<ElasticStudent>(m => m
-                .Dynamic(false)
-                    .Properties(prop => prop
-                        .Number(s => s
-                            .Name(n => n.Id)
-                            .Type(NumberType.Integer)
-                        )
-                        .Text(s => s
-                            .Name(n => n.FullName)
-                        )
-                        .Text(s => s
-                            .Name(n => n.Email)
-                        )
-                        .Number(s => s
-                            .Name(n => n.GroupId)
-                        )
-                        .Object<ElasticUser>(o => o
-                            .Dynamic(false)
-                            .Name(s => s.User)
-                             .Properties(pr => pr
-                                .Text(t => t
-                                    .Name(n => n.SkypeContact)
-                                )
-                                .Text(t => t
-                                    .Name(n => n.Phone)
-                                )
-                                .Text(t => t
-                                    .Name(n => n.About)
-                                )
-                            )
-                         )
-                    )
-                 )
-           ;
-            return map;
+            List<Student> oldStudents = GetStudents(skip, take);
+            List<ElasticStudent> elStudents = new List<ElasticStudent>();
+
+            foreach (Student gr in oldStudents)
+            {
+                elStudents.Add(ConvertStudent(gr));
+            }
+
+            return elStudents;
         }
+
         public void InitializeStudents()
         {
             int portion = 100;
             string studentsIndexName = STUDENTS_INDEX_NAME;
-            client.Indices.Create(GetStudentMap(studentsIndexName));
+            client.Indices.Create(StudentElasticSearchRepository.GetStudentMap(studentsIndexName));
 
-            IEnumerable<ElasticStudent> toIndex = GetStudents(0, portion);
+           List<ElasticStudent> toIndex = GetElasticStudents(0, portion);
 
             for (int i = portion; toIndex.Count() > 0; i += portion)
             {
                 client.IndexMany(toIndex, studentsIndexName);
-                toIndex = GetStudents(i, portion);
+                toIndex = GetElasticStudents(i, portion);
             }
         }
         public void InitializeLecturers()
         {
             int portion = 100;
             string lecturersIndexName = LECTURERS_INDEX_NAME;
-            client.Indices.Create(GetLecturerMap(lecturersIndexName));
-            IEnumerable<ElasticLecturer> toIndex = GetLecturers(0, portion);
+            client.Indices.Create(LecturerElasticSearchRepository.GetLecturerMap(lecturersIndexName));
+            List<ElasticLecturer> toIndex = GetElasticLecturers(0, portion);
 
-            for (int i = portion; toIndex.Count() > 0; i+=portion) {
+            for (int i = portion; toIndex.Count() > 0; i += portion)
+            {
                 client.IndexMany(toIndex, lecturersIndexName);
-                toIndex = GetLecturers(i, portion);
+                toIndex = GetElasticLecturers(i, portion);
             }
-    
+
         }
         public void InitializeGroups()
         {
             int portion = 100;
             string groupsIndexName = GROUPS_INDEX_NAME;
-            client.Indices.Create(GetGroupMap(groupsIndexName));
+            client.Indices.Create(GroupElasticSearchRepository.GetaGroupMap(groupsIndexName));
 
-            IEnumerable<ElasticGroup> toIndex = GetGroups(0, portion);
+            List<ElasticGroup> toIndex = GetElasticGroups(0, portion);
 
             for (int i = portion; toIndex.Count() > 0; i += portion)
             {
                 client.IndexMany(toIndex, groupsIndexName);
-                toIndex = GetGroups(i, portion);
+                toIndex = GetElasticGroups(i, portion);
             }
         }
         public void InitializeProjects()
         {
             int portion = 100;
             string projectsIndexName = PROJECTS_INDEX_NAME;
-            client.Indices.Create(GetProjectMap(projectsIndexName));
+            client.Indices.Create(ProjectElasticSearchRepository.GetProjectMap(projectsIndexName));
 
-            IEnumerable<ElasticProject> toIndex = GetProjects(0, portion);
+            List<ElasticProject> toIndex = GetElasticProjects(0, portion);
 
             for (int i = portion; toIndex.Count() > 0; i += portion)
             {
                 client.IndexMany(toIndex, projectsIndexName);
-                toIndex = GetProjects(i, portion);
+                toIndex = GetElasticProjects(i, portion);
             }
         }
+
         public void DeleteStudents()
         {
             client.Indices.Delete(STUDENTS_INDEX_NAME);
@@ -276,6 +288,8 @@ namespace Application.ElasticSearchEngine
         {
             client.Indices.Delete(PROJECTS_INDEX_NAME);
         }
-    }  
+    }
 }
+
+
 

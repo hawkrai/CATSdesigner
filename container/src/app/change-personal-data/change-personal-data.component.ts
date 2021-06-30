@@ -31,13 +31,13 @@ export class ChangePersonalDataComponent implements OnInit {
   phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})?$')]);
 
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
+    Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')])
 
   surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
+    Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')])
 
   patronymicFormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
+    Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
     private location: Location, public dialog: MatDialog,
@@ -135,6 +135,27 @@ export class ChangePersonalDataComponent implements OnInit {
     this.profileData.Name = this.profileData.Name.trim();
     this.profileData.Surname = this.profileData.Surname.trim();
     this.profileData.Patronymic = this.profileData.Patronymic.trim();
+    this.profileData.Email = this.profileData.Email.trim();
+    this.profileData.Phone = this.profileData.Phone.trim();
+  }
+
+  deleteSpaces() {
+    this.profileData.About = this.delEmptyRows(this.profileData.About);
+    this.profileData.SkypeContact = this.delEmptyRows(this.profileData.SkypeContact);
+  }
+
+  delEmptyRows(data: string) {
+    var stringArray = data.split('\n');
+    var temp = new Array<string>();
+    var x = 0;
+    for (var i = 0; i < stringArray.length; i++) {
+      if (stringArray[i].trim() != "") {
+        temp[x] = stringArray[i];
+        x++;
+      }
+    }
+    
+    return temp.join('\n');
   }
 
 }

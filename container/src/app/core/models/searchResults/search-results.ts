@@ -14,7 +14,6 @@ export class User{
   Phone!: string;
   About!: string;
   Id!: number;
-  IsNew!: boolean;
 }
 
 export class Student {
@@ -26,7 +25,6 @@ export class Student {
   Group!: Group;
   GroupId!: number;
   Id!: number;
-  IsNew!: boolean;
 }
 
 export class Lecturer {

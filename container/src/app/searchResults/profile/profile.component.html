@@ -9,7 +9,8 @@
     <mat-card-content>
       <p>{{ this.profileInfo.Name}}</p>
       <p *ngIf="this.profileInfo.Group">Группа: {{ this.profileInfo.Group}}</p>
-      <p *ngIf="this.profileInfo.Skill">Должность: {{ this.profileInfo.Skill}}</p>
+      <p *ngIf="!this.isStudent() && this.profileInfo.Skill">Должность: {{ this.profileInfo.Skill}}</p>
+      <p *ngIf="this.isStudent() && this.profileInfo.LastLogitData">Последний визит: {{ this.profileInfo.LastLogitData}}</p>
       <p *ngIf="this.profileInfo.SkypeContact">Skype: {{ this.profileInfo.SkypeContact}}</p>
       <p *ngIf="this.profileInfo.Email">Email: {{ this.profileInfo.Email}}</p>
       <p *ngIf="this.profileInfo.Phone">Телефон: {{ this.profileInfo.Phone}}</p>

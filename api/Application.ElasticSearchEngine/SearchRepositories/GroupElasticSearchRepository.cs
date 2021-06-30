@@ -83,27 +83,24 @@ namespace Application.ElasticSearchEngine.SearchRepositories
             AddToIndex(group);
         }
         
-        private static CreateIndexDescriptor GetaGroupMap(string indexName)
+        internal static CreateIndexDescriptor GetaGroupMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-                .Map<ElasticGroup>(m => m
+            map.Map<ElasticGroup>(m => m
+                    .Dynamic(false)
                     .Properties(prop => prop
-                        .Number(num => num
+                        .Number(s => s
                             .Name(n => n.Id)
-                            )
+                            .Type(NumberType.Integer)
+                        )
                         .Number(num => num
                             .Name(n => n.SecretaryId)
-                            )
-                        .Object<List<ElasticStudent>>(num => num
-                            .Name(n => n.Students)
-                            )
+                        )
                         .Text(s => s
                             .Name(n => n.Name)
-                            )
+                        )
                     )
                 )
-             )
            ;
             return map;
         }

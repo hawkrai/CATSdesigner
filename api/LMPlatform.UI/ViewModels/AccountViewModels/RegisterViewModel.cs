@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Application.Core;
 using Application.Infrastructure.AccountManagement;
+using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.StudentManagement;
@@ -35,7 +36,11 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
 		private readonly LazyDependency<IUsersManagementService> _usersManagementService =
 			new LazyDependency<IUsersManagementService>();
 
-		private IStudentsRepository StudentsRepository => _studentsRepository.Value;
+        private readonly LazyDependency<IElasticManagementService> _elasticManagementService =
+    new LazyDependency<IElasticManagementService>();
+
+        private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
+        private IStudentsRepository StudentsRepository => _studentsRepository.Value;
 
 		private IStudentManagementService StudentManagementService => _studentManagementService.Value;
 
@@ -49,19 +54,19 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
 
         #region Properties
 
-        [StringLength(50, ErrorMessage = "Имя не может иметь размер больше 50 символов")]
+        [StringLength(30, ErrorMessage = "Имя не может иметь размер больше 30 символов")]
         [DataType(DataType.Text)]
         [Display(Name = "Имя")]
         [Required(ErrorMessage = "Поле Имя обязательно для заполнения")]
         public string Name { get; set; }
 
-        [StringLength(50, ErrorMessage = "Фамилия не может иметь размер больше 50 символов")]
+        [StringLength(30, ErrorMessage = "Фамилия не может иметь размер больше 30 символов")]
         [DataType(DataType.Text)]
         [Display(Name = "Фамилия")]
         [Required(ErrorMessage = "Поле Фамилия обязательно для заполнения")]
         public string Surname { get; set; }
 
-        [StringLength(50, ErrorMessage = "Отчество не может иметь размер больше 50 символов")]
+        [StringLength(30, ErrorMessage = "Отчество не может иметь размер больше 30 символов")]
         [DataType(DataType.Text)]
         [Display(Name = "Отчество")]
         public string Patronymic { get; set; }
@@ -72,12 +77,13 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         [Display(Name = "Руководитель дипломных проектов")]
         public bool IsLecturerHasGraduateStudents { get; set; }
 
+        [StringLength(30, ErrorMessage = "Логин не может иметь размер больше 30 символов", MinimumLength = 3)]
         [Required(ErrorMessage = "Поле Логин обязательно для заполнения")]
         [Display(Name = "Логин")]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "Поле Пароль обязательно для заполнения")]
-        [StringLength(100, ErrorMessage = "{0} должно быть не менее {2} символов.", MinimumLength = 6)]
+        [StringLength(30, ErrorMessage = "{0} должно быть не менее {2} символов.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
         public string Password { get; set; }
@@ -93,6 +99,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         public string Group { get; set; }
 
         [Display(Name = "Ответ")]
+        [StringLength(30, ErrorMessage = "{0} должно быть не менее {2} символов.", MinimumLength = 1)]
         public string Answer
         {
             get;
@@ -179,6 +186,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             student.Group = GroupManagementService.GetGroup(student.GroupId);
             UsersManagementService.UpdateUser(user);
             new StudentSearchMethod().AddToIndex(student);
+            ElasticManagementService.AddStudent(student);
         }
         
         private void SaveLecturer()
@@ -196,6 +204,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             });
             lecturer.User = user;
             new LecturerSearchMethod().AddToIndex(lecturer);
+            ElasticManagementService.AddLecturer(lecturer);
         }
 	}
 }

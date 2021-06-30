@@ -6,6 +6,7 @@ using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.DTO;
+using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.SubjectManagement;
@@ -19,6 +20,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         private readonly LazyDependency<ILecturerManagementService> _lecturerManagementService = new LazyDependency<ILecturerManagementService>();
         private readonly LazyDependency<IGroupManagementService> _groupManagementService = new LazyDependency<IGroupManagementService>();
         private readonly LazyDependency<ICorrelationService> _correlationService = new LazyDependency<ICorrelationService>();
+        private readonly LazyDependency<IElasticManagementService> _elasticManagementService = new LazyDependency<IElasticManagementService>();
+        private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
 
         private ILecturerManagementService LecturerManagementService => _lecturerManagementService.Value;
 
@@ -143,28 +146,31 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 }
             }
 
-            LecturerManagementService.UpdateLecturer(new Lecturer
+            Lecturer lecturer = new Lecturer
             {
                 Id = LecturerId,
                 FirstName = Name,
                 LastName = Surname,
-				Skill = Skill,
+                Skill = Skill,
                 MiddleName = Patronymic,
                 IsSecretary = IsSecretary,
                 IsLecturerHasGraduateStudents = IsLecturerHasGraduateStudents,
                 SecretaryGroups = selectedGroups,
-				IsActive = IsActive,
-				User = new User()
-				{
-					Id = LecturerId,
-					Avatar = Avatar,
-					UserName = UserName,
-					About = About,
-					SkypeContact = SkypeContact,
-					Phone = Phone,
-					Email = Email,
-				}
-            });
+                IsActive = IsActive,
+                User = new User()
+                {
+                    Id = LecturerId,
+                    Avatar = Avatar,
+                    UserName = UserName,
+                    About = About,
+                    SkypeContact = SkypeContact,
+                    Phone = Phone,
+                    Email = Email,
+                }
+            };
+
+            LecturerManagementService.UpdateLecturer(lecturer);
+            ElasticManagementService.ModifyLecturer(lecturer);
         }
     }
 }
