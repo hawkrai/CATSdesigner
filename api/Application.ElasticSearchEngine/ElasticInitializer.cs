@@ -60,7 +60,7 @@ namespace Application.ElasticSearchEngine
             }
         }
 
-        private ElasticUser ConvertUser(User user)
+        public ElasticUser ConvertUser(User user)
         {
             ElasticUser elUser = new ElasticUser();
 
@@ -73,7 +73,7 @@ namespace Application.ElasticSearchEngine
 
             return elUser;
         }
-        private ElasticGroup ConvertGroup(Group group) {
+        public ElasticGroup ConvertGroup(Group group) {
             ElasticGroup elGroup = new ElasticGroup();
             elGroup.Id = group.Id;
             elGroup.GraduationYear = group.GraduationYear;
@@ -82,7 +82,7 @@ namespace Application.ElasticSearchEngine
             elGroup.StartYear = group.StartYear;
             return elGroup;
         }
-        private ElasticLecturer ConvertLecturer(Lecturer  lecturer)
+        public ElasticLecturer ConvertLecturer(Lecturer  lecturer)
         {
             ElasticLecturer elLecturer = new ElasticLecturer();
 
@@ -95,7 +95,7 @@ namespace Application.ElasticSearchEngine
          
             return elLecturer;
         }
-        private ElasticStudent ConvertStudent(Student student)
+        public ElasticStudent ConvertStudent(Student student)
         {
             ElasticStudent elStudent = new ElasticStudent();
 
@@ -109,7 +109,7 @@ namespace Application.ElasticSearchEngine
 
             return elStudent;
         }
-        private ElasticProject ConvertProject(Project project)
+        public ElasticProject ConvertProject(Project project)
         {
             ElasticProject elProject = new ElasticProject();
 
