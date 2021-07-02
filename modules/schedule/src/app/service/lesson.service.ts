@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {DatePipe} from '@angular/common';
 import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
@@ -167,5 +167,22 @@ export class LessonService {
       return splitted[0] + a + b;
     }
     return name;
+  }
+
+  getConsultations(params: any): Observable<any> {
+    return this.http.get<any>('/api/DiplomProjectConsultation', {params: new HttpParams({fromObject: params})});
+  }
+
+  getUserStatus(): Observable<any> {
+    return this.http.get<any>('/api/DiplomUser');
+  }
+
+  public addDiplomConsultation(date: string, startTime: string, endTime: string, audience: string, building: string): Observable<any> {
+    return this.http.post('api/DiplomProjectConsultationDate', {Day: date, StartTime: startTime,
+      EndTime: endTime, Building: building, Audience: audience});
+  }
+
+  public deleteDiplomConsultation(id: any): Observable<any> {
+    return this.http.post('api/DiplomProjectConsultationDate/' + id, null);
   }
 }
