@@ -28,6 +28,7 @@ pipeline {
     stages {  
         stage("Build modules") {
           steps {
+            sh 'npm config ls'
             dir('./container') {
                 sh 'npm install --force'
                 sh 'npm run build'
