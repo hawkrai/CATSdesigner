@@ -19,6 +19,7 @@ properties(
 currentBuild.displayName = params.branch
 
 pipeline {
+  tools {nodejs "node"}
     agent {
         node {
             label 'windows'
@@ -45,13 +46,20 @@ pipeline {
             }
           }
         }
+      stage('Deploy') {
+            steps {
+                dir('./api') {
+                    bat "\"${tool 'MSBuild'}\" LMPlatform.sln /p:Configuration=Release /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl=/deploy/LMPlatform.UI"
+                }
+            }
+        }
         stage("Run server") {
           steps { 
             dir('./server') {
               sh 'npm install --force'
             }
           }
-        }             
+        }
         // stage('Clean-up') {
         //     steps {
         //         sh  """#!/bin/bash
