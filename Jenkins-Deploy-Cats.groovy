@@ -28,14 +28,14 @@ pipeline {
     stages {  
         stage("Build modules") {
           steps {
-            sh 'npm config ls'
+            bat  'npm config ls'
             dir('./container') {
-                sh 'npm install --force'
-                sh 'npm run build'
+                bat  'npm install --force'
+                bat  'npm run build'
             }
             dir('./build') {
-                sh "chmod +x -R ${env.WORKSPACE}"
-                sh './jenkins_build_modules.sh' 
+                bat  "chmod +x -R ${env.WORKSPACE}"
+                bat  './jenkins_build_modules.sh' 
             }
           }
         } 
@@ -57,7 +57,7 @@ pipeline {
         stage("Run server") {
           steps { 
             dir('./server') {
-              sh 'npm install --force'
+              bat 'npm install --force'
             }
           }
         }
