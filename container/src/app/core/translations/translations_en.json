@@ -427,6 +427,8 @@
   "text.personalAccount.changePassword.wrongPassword": "Wrong password!",
   "text.personalAccount.GroupName": "Group",
 
+  "text.login.WrongData": "Wrong login and(or) password!",
+
   "text.start.title":"Adaptive learning management system",  
   "text.start.helpAbout":"What is the CATS system?", 
   "text.start.helpPlay":"Watch the CATS video", 

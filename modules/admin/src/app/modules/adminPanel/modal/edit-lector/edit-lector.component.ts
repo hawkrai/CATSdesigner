@@ -27,9 +27,12 @@ export class EditLectorComponent implements OnInit {
     this.loadGroup();
 
     this.form = this.formBuilder.group({
-      Name: new FormControl(professor.FirstName, [Validators.required, Validators.maxLength(50)]),
-      Surname: new FormControl(professor.LastName, [Validators.required, Validators.maxLength(50)]),
-      Patronymic: new FormControl(professor.MiddleName, [Validators.maxLength(50)]),
+      Name: new FormControl(professor.FirstName, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
+      Surname: new FormControl(professor.LastName, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
+      Patronymic: new FormControl(professor.MiddleName, [Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
       Email: new FormControl(professor.Email || '',
 [Validators.pattern('^[a-z0-9_.@-]{3,30}$'), Validators.maxLength(30)]),
       SkypeContact: new FormControl(professor.SkypeContact || '', [Validators.maxLength(50)]),

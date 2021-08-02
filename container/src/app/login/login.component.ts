@@ -7,6 +7,7 @@ import {TranslatePipe} from '../pipe/translate.pipe';
 import {MatDialog} from '@angular/material/dialog';
 import {VideoComponent} from './modal/video.component';
 import { ViewEncapsulation } from '@angular/core';
+import { AppToastrService } from '../core/services/toastr.service';
 
 interface Locale {
   name: string;
@@ -33,7 +34,8 @@ export class LoginComponent implements OnInit {
         private router: Router,
         private dialog: MatDialog,
         private authenticationService: AuthenticationService,
-        private translatePipe: TranslatePipe
+        private toastr: AppToastrService,
+         private translatePipe: TranslatePipe
     ) {
         
         if (this.authenticationService.currentUserValue) {
@@ -67,11 +69,13 @@ export class LoginComponent implements OnInit {
     this.authenticationService.login(this.f.userName.value, this.f.password.value)
         .pipe(first())
         .subscribe(
-            data => {
+            (data) => {
                 this.router.navigate([this.returnUrl]);
             },
-            error => {                
+            (error) => {                
                 this.loading = false;
+                this.submitted = false;
+                this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.login.WrongData', "Неверный логин и(или) пароль!"))
             });
   }
 

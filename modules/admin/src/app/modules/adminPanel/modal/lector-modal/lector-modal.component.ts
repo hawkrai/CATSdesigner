@@ -33,14 +33,17 @@ export class LectorModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       Username: new FormControl( professor.Username,
         [Validators.required, Validators.minLength(3),
-          Validators.pattern('^[A-Za-z0-9_.-]{3,30}$')], ValidateEmailNotTaken.createValidator(this.accountService)),
+          Validators.pattern('^[A-Za-z0-9_.-@]*$')], ValidateEmailNotTaken.createValidator(this.accountService)),
       Password: new FormControl( professor.Password,
-        [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z0-9]{6,30}$'),
+        [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z0-9_]*$'),
         Validators.maxLength(30), this.passwordValidator]),
       ConfirmPassword: new FormControl(professor.ConfirmPassword),
-      Surname: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-      Name: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-      Patronymic: new FormControl('', [Validators.maxLength(50)]),
+      Surname: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$')]),
+      Name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$')]),
+      Patronymic: new FormControl('', [Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$')]),
       IsSecretary: new FormControl(false),
       IsLecturerHasGraduateStudents: new FormControl(false)
     }, {

@@ -385,6 +385,9 @@
   "text.personalAccount.changePassword.invalidPassword": "Неверный формат пароля! Допустимые символы - (А-Яа-яA-Za-z0-9 _-) Длинна от 6 и до 30 символов!",
   "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!",
   "text.personalAccount.GroupName": "Группа",
+
+  "text.login.WrongData": "Неверный логин и(или) пароль!",
+
   "text.start.title":"Адаптивная обучающая система",
   "text.start.helpAbout":"Что из себя представляет система CATS?",
   "text.start.helpPlay":"Просмотреть ролик о системе CATS",

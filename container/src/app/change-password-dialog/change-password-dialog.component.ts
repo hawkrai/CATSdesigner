@@ -49,7 +49,7 @@ export class ChangePasswordDialog {
             this.dialogRef.close();
           }
           else {
-            this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.personalAccount.passwordNotChanged', "Указан Пароль не был изменен!"));
+            this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.personalAccount.passwordNotChanged', "Пароль не был изменен!"));
             this.showBadPasswordError = true;
           }
         });   

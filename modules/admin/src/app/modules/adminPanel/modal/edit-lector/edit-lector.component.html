@@ -5,17 +5,20 @@
       <mat-dialog-content>
           <h2>{{ this.data.FullName + '(' + this.data.Login + ')' }}</h2>
           <mat-form-field>
-              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="50">
+              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="30">
               <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
+              <mat-error *ngIf="hasError('Surname', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Name" placeholder="Имя" maxlength="50">
+              <input matInput formControlName="Name" placeholder="Имя" maxlength="30">
               <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
+              <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="50">
+              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="30">
+              <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
           <div class="checkbox">
               <mat-checkbox formControlName="IsSecretary">Секретарь ГЭК</mat-checkbox>
