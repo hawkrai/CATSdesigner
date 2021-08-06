@@ -146,6 +146,10 @@ export class LessonService {
     return this.datePipe.transform(date, 'dd.MM.yyyy');
   }
 
+  formatDate5(date: Date): string {
+    return this.datePipe.transform(date, 'yyyy-MM-dd');
+  }
+
   getLessonType(): any {
     return this.lessonTypes;
   }
@@ -178,11 +182,11 @@ export class LessonService {
   }
 
   public addDiplomConsultation(date: string, startTime: string, endTime: string, audience: string, building: string): Observable<any> {
-    return this.http.post('api/DiplomProjectConsultationDate', {Day: date, StartTime: startTime,
+    return this.http.post('/api/DiplomProjectConsultationDate', {Day: date, StartTime: startTime,
       EndTime: endTime, Building: building, Audience: audience});
   }
 
   public deleteDiplomConsultation(id: any): Observable<any> {
-    return this.http.post('api/DiplomProjectConsultationDate/' + id, null);
+    return this.http.post('/api/DiplomProjectConsultationDate/' + id, null);
   }
 }

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import { NgApexchartsModule } from 'ng-apexcharts';
+
+import {StatisitcsServiceService} from '../service/statisitcs-service.service';
 
 @Component({
   selector: 'app-main-page',
@@ -15,6 +16,13 @@ export class MainPageComponent implements OnInit {
   public chartOptions2: any;
   public radarChartType = 'radar';
 
+  public listChartOptions: any[] = [];
+  user: any;
+  testSum = 0;
+  practSum = 0;
+  labSum = 0;
+  ratingAvg = 0;
+
   public categories: string[][]  = [['1', '4.1', 'Средняя оценка за лабораторную работу'],
                                   ['2', '3.4', 'Средняя оценка за тесты'],
                                   ['3', '4.5', 'Рейтинговая оценка'],
@@ -23,204 +31,114 @@ export class MainPageComponent implements OnInit {
 
   colors: string [] = ['red', 'blue', 'yellow', 'purple' , 'green'];
 
-  constructor() {
-    this.chartOptions = {
-      series: [
-        {
-          name: 'Средняя оценка',
-          data: [4.1, 3.4, 4.5, 4.3, 3.8]
-        }
-      ],
-      chart: {
-        height: 200,
-        type: 'radar',
-        width: 200
-      },
-      title: {
-        text: ''
-      },
-      xaxis: {
-        categories: ['', '', '', '', '']
-      },
-      fill: {
-        type: 'solid',
-        opacity: 0,
-      },
-      markers: {
-        discrete: [{
-          seriesIndex: 0,
-          dataPointIndex: 0,
-          fillColor: this.colors[0],
-          strokeColor: '#fff',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 1,
-          fillColor: this.colors[1],
-          strokeColor: '#eee',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 2,
-          fillColor: this.colors[2],
-          strokeColor: '#eee',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 3,
-          fillColor: this.colors[3],
-          strokeColor: '#eee',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 4,
-          fillColor: this.colors[4],
-          strokeColor: '#eee',
-          size: 5
-        }]
-      },
-      stroke: {
-        show: true,
-        width: 0.3,
-        colors: ['black'],
-        dashArray: 0
-      },
-      legend: {
-        show: 'true',
-        position: 'bottom',
-        horizontalAlign: 'center',
-        floating: false,
-        fontSize: '14px',
-        fontFamily: 'Helvetica, Arial',
-        fontWeight: 400,
-      }
-    };
+  constructor(private serviceService: StatisitcsServiceService) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
+    if (this.user.role == 'student') {
+      this.serviceService.getUserInfo(this.user.id).subscribe(res => {
+        this.serviceService.getAllSubjects(this.user.userName).subscribe(subjects => {
+          subjects.forEach(subject => {
+            this.serviceService.getLabsStastics(subject.Id, res.GroupId).subscribe(result => {
+              if (result.Message.length == 0) {
+                this.testSum = 0;
+                this.practSum = 0;
+                this.labSum = 0;
+                result.Students.forEach(student => {
+                  if (student.StudentId == this.user.id) {
+                    this.testSum += student.TestMark;
+                    this.practSum += student.PracticalsMarkTotal;
+                    this.labSum += student.LabsMarkTotal;
+                  }
+                });
+                if (this.practSum == 0) {
+                  this.ratingAvg = (this.testSum + this.labSum) / 2;
+                } else {
+                  this.ratingAvg = (this.testSum + this.labSum + this.practSum) / 3;
+                }
+                this.addChart(this.labSum, this.testSum, this.ratingAvg, this.practSum, subject.Name);
+              }
+            });
+          });
+        });
+      });
+    } else {
+      this.addChart(7, 6, 9, 5, 'Test');
+    }
+  }
 
-    this.chartOptions1 = {
-      series: [
-        {
-          name: 'Средняя оценка',
-          data: [4.1, 3.4, 4.5, 4.3]
+  addChart(lab: number, test: number, rating: number, pract: number, name: string) {
+    this.listChartOptions.push(
+      this.chartOptions = {
+        series: [
+          {
+            name: 'Средняя оценка',
+            data: [lab, test, rating, pract, 3.8]
+          }
+        ],
+        chart: {
+          height: 200,
+          type: 'radar',
+          width: 200
+        },
+        title: {
+          text: name
+        },
+        xaxis: {
+          categories: ['', '', '', '', '']
+        },
+        fill: {
+          type: 'solid',
+          opacity: 0,
+        },
+        markers: {
+          discrete: [{
+            seriesIndex: 0,
+            dataPointIndex: 0,
+            fillColor: this.colors[0],
+            strokeColor: '#fff',
+            size: 5
+          }, {
+            seriesIndex: 0,
+            dataPointIndex: 1,
+            fillColor: this.colors[1],
+            strokeColor: '#eee',
+            size: 5
+          }, {
+            seriesIndex: 0,
+            dataPointIndex: 2,
+            fillColor: this.colors[2],
+            strokeColor: '#eee',
+            size: 5
+          }, {
+            seriesIndex: 0,
+            dataPointIndex: 3,
+            fillColor: this.colors[3],
+            strokeColor: '#eee',
+            size: 5
+          }, {
+            seriesIndex: 0,
+            dataPointIndex: 4,
+            fillColor: this.colors[4],
+            strokeColor: '#eee',
+            size: 5
+          }]
+        },
+        stroke: {
+          show: true,
+          width: 0.3,
+          colors: ['black'],
+          dashArray: 0
+        },
+        legend: {
+          show: 'true',
+          position: 'bottom',
+          horizontalAlign: 'center',
+          floating: false,
+          fontSize: '14px',
+          fontFamily: 'Helvetica, Arial',
+          fontWeight: 400,
         }
-      ],
-      chart: {
-        height: 200,
-        type: 'radar',
-        width: 200
-      },
-      title: {
-        text: ''
-      },
-      xaxis: {
-        categories: ['', '', '', '']
-      },
-      fill: {
-        type: 'solid',
-        opacity: 0,
-      },
-      markers: {
-        discrete: [{
-          seriesIndex: 0,
-          dataPointIndex: 0,
-          fillColor: this.colors[0],
-          strokeColor: '#fff',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 1,
-          fillColor: this.colors[1],
-          strokeColor: '#eee',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 2,
-          fillColor: this.colors[2],
-          strokeColor: '#eee',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 3,
-          fillColor: this.colors[3],
-          strokeColor: '#eee',
-          size: 5
-        }]
-      },
-      stroke: {
-        show: true,
-        width: 0.3,
-        colors: ['black'],
-        dashArray: 0
-      },
-      legend: {
-        show: 'true',
-        position: 'bottom',
-        horizontalAlign: 'center',
-        floating: false,
-        fontSize: '14px',
-        fontFamily: 'Helvetica, Arial',
-        fontWeight: 400,
       }
-    };
-
-    this.chartOptions2 = {
-      series: [
-        {
-          name: 'Средняя оценка',
-          data: [4.1, 3.4, 4.5]
-        }
-      ],
-      chart: {
-        height: 200,
-        type: 'radar',
-        width: 200
-      },
-      title: {
-        text: ''
-      },
-      xaxis: {
-        categories: ['', '', '', '']
-      },
-      fill: {
-        type: 'solid',
-        opacity: 0,
-      },
-      markers: {
-        discrete: [{
-          seriesIndex: 0,
-          dataPointIndex: 0,
-          fillColor: this.colors[0],
-          strokeColor: '#fff',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 1,
-          fillColor: this.colors[1],
-          strokeColor: '#eee',
-          size: 5
-        }, {
-          seriesIndex: 0,
-          dataPointIndex: 2,
-          fillColor: this.colors[2],
-          strokeColor: '#eee',
-          size: 5
-        }]
-      },
-      stroke: {
-        show: true,
-        width: 0.3,
-        colors: ['black'],
-        dashArray: 0
-      },
-      legend: {
-        show: 'true',
-        position: 'bottom',
-        horizontalAlign: 'center',
-        floating: false,
-        fontSize: '14px',
-        fontFamily: 'Helvetica, Arial',
-        fontWeight: 400,
-      }
-    };
+    );
   }
 
   ngOnInit() {

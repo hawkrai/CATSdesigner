@@ -67,6 +67,8 @@ export class CreateLessonComponent implements OnInit {
 
     this.lessonservice.getUserStatus().subscribe(res => {
       this.isDiplomAvailable = res.HasChosenDiplomProject;
+
+      this.isDiplomAvailable = true;
       if (this.isDiplomAvailable) {
         this.lessonTypesFull = this.lessonservice.getLessonTypeFull();
       } else {
@@ -88,6 +90,7 @@ export class CreateLessonComponent implements OnInit {
     });
     this.lessonservice.getAllSubjects(this.user.userName).subscribe(subjects => {
       this.subjects = subjects;
+      console.log(subjects);
       this.subjects.sort((a, b) => a.Name.localeCompare(b.Name));
       if (this.data.lesson != null) {
         this.startHour = this.data.lesson.start.getHours().toString();
@@ -307,7 +310,8 @@ export class CreateLessonComponent implements OnInit {
       });
     } else if (this.formGroup.controls.type.value === '4') {
       this.dialogRef.close({lesson: this.lesson, type: 'diplom'});
-      this.lessonservice.addDiplomConsultation(this.lessonservice.formatDate2(this.dayOfLesson), this.lesson.Start, this.lesson.End,
+      this.lessonservice.addDiplomConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
+        this.lesson.Start + ':00', this.lesson.End + ':00',
         this.lesson.Building, this.lesson.Audience).subscribe( r => {
           console.log(r);
       });
