@@ -55,14 +55,18 @@ export class ScheduleMainComponent implements OnInit {
   localeD = 'en-US';
   teacher = 'Попова Ю.Б.';
   isStudent: boolean;
+  diplomCon: any[] = [];
 
   refresh: Subject<any> = new Subject();
 
   events: CalendarEvent[] = [];
+  eventsCon: CalendarEvent[] = [];
 
   activeDayIsOpen = true;
 
-  message = 'Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите на нужную ячейку. Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, Лекции в определенном предмете.';
+  message = 'Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите на нужную ячейку. ' +
+    'Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, ' +
+    'Лекции в определенном предмете.';
   action = 'Понятно';
 
   public isMobile(): boolean {
@@ -80,11 +84,31 @@ export class ScheduleMainComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.changeDate();
     this.isLoadActive = false;
-
+    this.lessonservice.getConsultations({
+      count: 1000, page: 1}).subscribe(result => {
+        result.DiplomProjectConsultationDates.forEach(consultation => {
+          const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
+          const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
+          this.eventsCon.push({
+            id: consultation.Id,
+            start: startT,
+            end: endT,
+            title: this.getTitelConsultation(consultation),
+            color: colors.color,
+            resizable: {
+              beforeStart: false,
+              afterEnd: false,
+            },
+            draggable: false,
+            meta: 'lesson'
+          });
+        });
+    });
     if (this.user.role === 'student') {
       this.isStudent = false;
+    } else {
+      this.isStudent = true;
     }
-    else this.isStudent = true;
 
   }
 
@@ -130,6 +154,13 @@ export class ScheduleMainComponent implements OnInit {
       + '|' + teacher + '|' + lesson.Color
       + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo + '|' + lesson.GroupId + '|' + lesson.SubGroupId
       + '|' + lesson.GroupName + '|' + lesson.SubGroupName;
+  }
+
+  getTitelConsultation(consultation: any) {
+    return consultation.StartTime.split(':')[0] + ':' +  consultation.StartTime.split(':')[1] +  '-'
+           + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|' +
+           + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
+      + '|' + '|' + '|' + '|';
   }
 
   getToolTip(title: string): any {
@@ -228,6 +259,28 @@ export class ScheduleMainComponent implements OnInit {
               meta: 'note'
             }
           ];
+        } else if (result.type === 'diplom') {
+          result.lesson.StartTime =  result.lesson.Start;
+          result.lesson.EndTime =  result.lesson.End;
+          const startT = new Date(result.lesson.Date);
+          const endT = new Date(result.lesson.Date);
+          startT.setHours(+result.lesson.Start.split(':')[0], +result.lesson.Start.split(':')[1]);
+          endT.setHours(+result.lesson.End.split(':')[0], +result.lesson.End.split(':')[1]);
+          this.lesson = result.lesson;
+          this.lessons.push(result.lesson);
+          this.events.push({
+            id: result.lesson.Id,
+            start: startT,
+            end: endT,
+            title: this.getTitelConsultation(result.lesson),
+            color: colors.color,
+            resizable: {
+              beforeStart: false,
+              afterEnd: false,
+            },
+            draggable: false,
+            meta: 'lesson'
+          });
         }
         this.refresh.next();
       }
@@ -262,6 +315,11 @@ export class ScheduleMainComponent implements OnInit {
             if (a == 'Практ.работа' || a == 'WS') {
               this.lessonservice.deletePractical(eventToDelete.id,
                 + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'ДП' || a == 'GP') {
+              this.lessonservice.deleteDiplomConsultation(eventToDelete.id).subscribe(res => {
                 console.log(res);
               });
             }
@@ -361,7 +419,7 @@ export class ScheduleMainComponent implements OnInit {
     this.lessonservice.getLessonsByDates(startDate, endDate).subscribe(
       l => {
         this.lessons = l.Schedule;
-        this.events = [];
+        this.events = this.eventsCon;
         this.lessons.forEach(lesson => {
           let dateArray: any;
           dateArray = lesson.Date.split('.');
@@ -391,11 +449,10 @@ export class ScheduleMainComponent implements OnInit {
     );
   }
 
-  showHelp(): void{
-
-    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent, 
-      {
-      data: {message: this.translatePipe.transform ('text.help.schedule',this.message), action: this.translatePipe.transform ('button.understand', this.action)},
+  showHelp(): void {
+    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent,
+      {data: {message: this.translatePipe.transform ('text.help.schedule', this.message),
+          action: this.translatePipe.transform ('button.understand', this.action)},
       disableClose: true,
       hasBackdrop: true,
       backdropClass: 'backdrop-help',
