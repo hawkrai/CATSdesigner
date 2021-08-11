@@ -1,6 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {FormControl, Validators} from '@angular/forms';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 interface DialogData {
   title: string,
@@ -25,7 +26,8 @@ export class AddStageDialogComponent {
   private dateControl = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
 
   constructor(public dialogRef: MatDialogRef<AddStageDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              public translatePipe: TranslatePipe) {
     this.data.date = this.dateControl.value;
   }
 

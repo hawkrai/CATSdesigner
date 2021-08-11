@@ -7,7 +7,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-icon-button color="primary" matTooltip="Загрузить документ Excel"
+    <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadExcel' | translate: 'Загрузить документ Excel'"
         *ngIf="diplomUser.IsSecretary && !isLecturer" (click)="getExcelFile()">
         <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
     </button>
@@ -15,11 +15,11 @@
     [color]="'primary'"
     [checked]="isLecturer"
     (change)="lecturerStatusChange($event)"
-    matTooltip="Нажмите для выбора другой роли"
-    >Руководитель</mat-slide-toggle>
+    matTooltip="'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'"
+    >{{'text.diplomProject.head' | translate: 'Руководитель'}}</mat-slide-toggle>
 
     <mat-form-field class="percentage-results-component__search">
-      <mat-label>Поиск по теме, фамилии</mat-label>
+      <mat-label>{{'text.diplomProject.searchThemeAndName' | translate: 'Поиск по теме, фамилии'}}</mat-label>
       <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>

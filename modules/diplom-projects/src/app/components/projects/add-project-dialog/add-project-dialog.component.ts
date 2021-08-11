@@ -2,6 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import { CoreGroup } from 'src/app/models/core-group.model';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 interface DialogData {
   name: string;
@@ -23,7 +24,8 @@ export class AddProjectDialogComponent {
   private groups: CoreGroup[];
 
   constructor(public dialogRef: MatDialogRef<AddProjectDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              public translatePipe: TranslatePipe) {
     this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId));
   }
 
