@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, throwError, Observable, of } from 'rxjs';
 import { map, catchError, } from 'rxjs/operators';
 
 import { User } from './../models/user';
@@ -30,10 +30,16 @@ export class AuthenticationService {
                 userName: username,
                 password: password
             })
-            .pipe(map(user => {
+            .pipe(
+                map(user => {
                 this.setCurrentUserValue(user);
                 return user;
-            }));
+            }),
+            catchError((error) => {
+              console.log(error)
+              return throwError(error);
+            })
+            );
     }
 
     check() {

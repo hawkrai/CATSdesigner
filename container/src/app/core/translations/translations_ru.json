@@ -382,9 +382,12 @@
   "text.personalAccount.changePassword.repeatPassword": "Повторите пароль",
   "text.personalAccount.changePassword.change": "Изменить",
   "text.personalAccount.changePassword.passwordsNotMatch": "Пароли не совпадают!",
-  "text.personalAccount.changePassword.invalidPassword": "Некорректный формат пароля!",
+  "text.personalAccount.changePassword.invalidPassword": "Неверный формат пароля! Допустимые символы - (А-Яа-яA-Za-z0-9 _-) Длинна от 6 и до 30 символов!",
   "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!",
   "text.personalAccount.GroupName": "Группа",
+
+
+  "text.login.WrongData": "Неверный логин и(или) пароль!",
 
   "text.diplomProject.addTheme" : "Добавить тему",
   "text.diplomProject.head" : "Руководитель",

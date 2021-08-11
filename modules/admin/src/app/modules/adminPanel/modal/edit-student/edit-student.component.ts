@@ -27,9 +27,12 @@ export class EditStudentComponent implements OnInit {
     this.loadGroup();
     this.form = this.formBuilder.group({
       Id: new FormControl(student.Id),
-      Surname: new FormControl(student.Surname, [Validators.required, Validators.maxLength(100)]),
-      Name: new FormControl(student.Name, [Validators.required, Validators.maxLength(100)]),
-      Patronymic: new FormControl(student.Patronymic, [Validators.maxLength(100)]),
+      Surname: new FormControl(student.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
+      Name: new FormControl(student.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
+      Patronymic: new FormControl(student.Patronymic, [Validators.maxLength(30),
+        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
       Group: new FormControl(student.Group),
     });
   }

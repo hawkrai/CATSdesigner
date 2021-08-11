@@ -33,6 +33,9 @@ export class ProfileComponent implements OnInit {
     this.getProfileProjects(profileModel.Id);
   }
 
+  isStudent() {
+    return this.profileInfo.UserType == "2";
+  }
   getProfileInfo(id: any) {
     this.profileService.getProfileInfo(id).subscribe((res) => {
       this.profileInfo = res;
