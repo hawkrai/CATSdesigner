@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import {ChartsModule, ThemeService} from 'ng2-charts';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import {HttpClientModule} from '@angular/common/http';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     BrowserModule,
     AppRoutingModule,
     ChartsModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    HttpClientModule
   ],
   providers: [ThemeService],
   bootstrap: [AppComponent]

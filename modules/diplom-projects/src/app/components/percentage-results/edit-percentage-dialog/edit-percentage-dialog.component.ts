@@ -1,6 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {FormControl, Validators} from '@angular/forms';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 interface DialogData {
   mark: number;
@@ -31,7 +32,8 @@ export class EditPercentageDialogComponent {
   private date = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
 
   constructor(public dialogRef: MatDialogRef<EditPercentageDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              public translatePipe: TranslatePipe) {
     const validators = [];
     if (this.data.min != null) { validators.push(Validators.min(this.data.min)); }
     if (this.data.max != null) { validators.push(Validators.max(this.data.max)); }

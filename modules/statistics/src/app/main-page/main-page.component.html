@@ -1,30 +1,30 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<div class="diagram">
+<div *ngFor="let chart of this.listChartOptions"  class="diagram">
   <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
   margin-left: 12%; margin-top: 10px; text-align: center">
-    Надежность программного обеспечения</h6>
+    {{chart.title.text}}</h6>
   <div class = "radar">
   <apx-chart
-    [series]="chartOptions.series"
-    [chart]="chartOptions.chart"
-    [xaxis]="chartOptions.xaxis"
-    [legend] = "chartOptions.legend"
-    [fill] = "chartOptions.fill"
-    [colors] = "chartOptions.colors"
-    [markers] = "chartOptions.markers"
-    [stroke]= "chartOptions.stroke"
+    [series]="chart.series"
+    [chart]="chart.chart"
+    [xaxis]="chart.xaxis"
+    [legend] = "chart.legend"
+    [fill] = "chart.fill"
+    [colors] = "chart.colors"
+    [markers] = "chart.markers"
+    [stroke]= "chart.stroke"
   ></apx-chart>
   </div>
 
   <table style = "margin-top: -10%;margin-left: 10%">
     <tr *ngFor="let i of [0,1,2,3,4]">
-      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{categories[i][1]}}</td>
+      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{chart.series[0].data[i]}}</td>
       <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{categories[i][2]}}</td>
     </tr>
   </table>
 </div>
 
-<div class="diagram">
+<!--div class="diagram">
   <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
   margin-left: 12%; margin-top: 10px; text-align: center">
     Надежность программного обеспечения</h6>
@@ -71,4 +71,4 @@
       <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{categories[i][2]}}</td>
     </tr>
   </table>
-</div>
+</div-->

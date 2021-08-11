@@ -17,11 +17,21 @@ namespace Application.Infrastructure.NewsManagement
             return repositoriesContainer.NewsRepository.GetAll(new Query<SubjectNews>(x => x.Subject.SubjectGroups.Any(x => x.Group.Name == groupName))).ToList();
         }
 
+        public IEnumerable<SubjectNews> GetNewsForTelgeramByGroupName(string groupName)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            if (repositoriesContainer.GroupsRepository.GetBy(new Query<Group>(x => x.Name == groupName)) == null)
+            {
+                throw new ArgumentException();
+            }
+            return repositoriesContainer.NewsRepository.GetAll(new Query<SubjectNews>(x => x.Subject.SubjectGroups.Any(x => x.Group.Name == groupName)).Include(x => x.Subject)).ToList();
+        }
+
         public IEnumerable<SubjectNews> GetUserNewsByFIO(string fio)
         {
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
             return repositoriesContainer.NewsRepository.GetAll(new Query<SubjectNews>(x => x.Subject.SubjectGroups.Any(x => 
-            x.SubjectStudents.Any(s => s.Student.LastName + " " + s.Student.FirstName + " " + s.Student.MiddleName == fio))))
+            x.SubjectStudents.Any(s => s.Student.LastName + " " + s.Student.FirstName + " " + s.Student.MiddleName == fio))).Include(x => x.Subject))
               .ToList();
         }
     }

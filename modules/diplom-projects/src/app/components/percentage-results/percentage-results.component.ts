@@ -7,6 +7,7 @@ import {PercentageResult} from '../../models/percentage-result.model';
 import {DiplomUser} from '../../models/diplom-user.model';
 import {MatDialog, MatOptionSelectionChange, MatSnackBar} from '@angular/material';
 import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-percentage-dialog.component';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { CoreGroup } from 'src/app/models/core-group.model';
 
 @Component({
@@ -35,7 +36,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   constructor(private percentageResultsService: PercentageResultsService,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
@@ -135,8 +137,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 0,
         max: 100,
         regex: '^[0-9]*$',
-        errorMsg: 'Введите число от 0 до 100',
-        label: 'Результат процентовки',
+        errorMsg: this.translatePipe.transform('text.editor.edit.percentageControl',"Введите число от 0 до 100"),
+        label: this.translatePipe.transform('text.editor.edit.percentageResult',"Результат процентовки"),
         symbol: '%',
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
@@ -150,13 +152,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Процент успешно сохранен');
+              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesAlert',"Процент успешно сохранен"));
             });
         } else {
           this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Процент успешно изменен');
+              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesEditAlert',"Процент успешно изменен"));
             });
         }
       }
@@ -172,8 +174,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 1,
         max: 10,
         regex: '^[0-9]*$',
-        errorMsg: 'Введите число от 1 до 10',
-        label: 'Оценка',
+        errorMsg: this.translatePipe.transform('text.editor.edit.estimationControl',"Введите число от 0 до 10"),
+        label: this.translatePipe.transform('text.editor.edit.estimation',"Оценка"),
         notEmpty: true,
         total: true,
         lecturer: student.LecturerName,
@@ -192,7 +194,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         this.percentageResultsService.setMark(student.AssignedDiplomProjectId, result.mark, student.Lecturer, result.comment, dateString, result.showForStudent)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('Оценка успешно сохранена');
+            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.estimationAlert',"Оценка успешно сохранена"));
           });
       }
     });

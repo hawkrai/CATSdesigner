@@ -1,19 +1,19 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
   <mat-icon class="close-icon" color="warn">close</mat-icon>
 </button>
-<h1 mat-dialog-title *ngIf="data.edit">Редактирование темы дипломного проекта</h1>
-<h1 mat-dialog-title *ngIf="!data.edit">Добавление темы дипломного проекта</h1>
+<h1 mat-dialog-title *ngIf="data.edit">{{'text.diplomProject.editTheme' | translate: 'Редактирование темы дипломного проекта'}}</h1>
+<h1 mat-dialog-title *ngIf="!data.edit">{{'text.diplomProject.addProjectTheme' | translate: 'Добавление темы дипломного проекта'}}</h1>
 <div mat-dialog-content>
   <mat-form-field class="form-field">
-    <mat-label>Тема дипломного проекта</mat-label>
+    <mat-label>{{'text.diplomProject.themeDP' | translate: 'Тема дипломного проекта'}}</mat-label>
     <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
-    <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
+    <mat-error *ngIf="nameControl.invalid">{{'text.diplomProject.nameControl' | translate: 'От 3 до 255 символов'}}</mat-error>
   </mat-form-field>
-  <mat-label style="font-size: 14px">Доступные группы:</mat-label>
-  <mat-label style="font-size: 14px" class="group-label">Выбранные группы:</mat-label>
+  <mat-label style="font-size: 14px">{{'text.diplomProject.availableGroups' | translate: 'Доступные группы:'}}</mat-label>
+  <mat-label style="font-size: 14px" class="group-label">{{'text.diplomProject.choiceGroups' | translate: 'Выбранные группы:'}}</mat-label>
   <div class="group-picker">
     <div class="group-container">
-      <button mat-raised-button (click)="includeAll()" matTooltip="Добавить все группы">>></button>
+      <button mat-raised-button (click)="includeAll()" matTooltip="'text.diplomProject.assign' | translate: 'Добавить все группы'">>></button>
       <mat-list>
         <mat-list-item matRipple class="mat-list-option" *ngFor="let group of groups; index as i; trackBy: trackByFn"
                        (click)="move(i, groups, data.selectedGroups)">
@@ -22,7 +22,7 @@
       </mat-list>
     </div>
     <div class="group-container">
-      <button mat-raised-button (click)="includeNone()" matTooltip="Удалить все группы"><<</button>
+      <button mat-raised-button (click)="includeNone()" matTooltip="'text.diplomProject.assign' | translate: 'Удалить все группы'"><<</button>
       <mat-list>
         <mat-list-item matRipple class="mat-list-option" *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
                        (click)="move(i, data.selectedGroups, groups)">
@@ -33,9 +33,9 @@
   </div>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.diplomProject.cancel' | translate: 'Отмена'}}</button>
   <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data"
           [disabled]="nameControl.invalid">
-    Сохранить
+          {{'text.diplomProject.save' | translate: 'Сохранить'}}
   </button>
 </div>
