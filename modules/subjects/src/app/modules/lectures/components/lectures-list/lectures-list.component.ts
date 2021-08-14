@@ -26,15 +26,11 @@ import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/tr
   templateUrl: './lectures-list.component.html',
   styleUrls: ['./lectures-list.component.less']
 })
-export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
+export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() isTeacher: boolean;
   @Input() subjectId: number;
   private subs = new SubSink();
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
-
-  defaultColumns = ['index', 'theme', 'duration', 'files'];
-  displayedColumns: string[] = [];
-
 
   public lectures: Lecture[];
 
@@ -52,10 +48,12 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     }));
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.isTeacher) {
-      this.displayedColumns = [...this.defaultColumns, 'actions' ];
+  getDisplayedColumns(): string[] {
+    const defaultColumns = ['index', 'theme', 'duration', 'files'];
+    if (this.isTeacher) {
+      return defaultColumns.concat('actions');
     }
+    return defaultColumns;
   }
 
   ngAfterViewChecked(): void {

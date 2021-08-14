@@ -2,7 +2,7 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
 import { filter, map, take } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-
+import * as moment from 'moment';
 import * as catsActions from '../../../../store/actions/cats.actions';
 import {IAppState} from '../../../../store/state/app.state';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -71,7 +71,7 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
   setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionPractical, index: number) {
     if (this.isTeacher) {
       const visits = {
-        date: schedule.Date, 
+        date: moment(schedule.Date, 'DD.MM.YYYY'), 
         students: students.map(s => ({ 
           name: s.FullName, 
           mark: s.PracticalVisitingMark[index].Mark, 
@@ -115,8 +115,4 @@ export class VisitStatisticComponent implements OnInit, OnChanges {
     this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${student.StudentId}`) }));
   }
 
-  help: Help = {
-    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
-    action: this.translate.transform('button.understand','Понятно')
-  };
 }

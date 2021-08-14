@@ -1,7 +1,7 @@
 <ng-container *ngIf="groupJobProtection$ | async as groupJobProtection">
   <ng-container *ngIf="groupJobProtection">
       <div *ngFor="let subGroup of groupJobProtection.StudentsJobProtections | unique:'SubGroup'">
-        <span mat-dialog-title class="job-protection__subGroup-title">Подгруппа {{subGroup}}</span>
+        <span mat-dialog-title class="job-protection__subGroup-title">{{'subgroup' | translate:'Подгруппа'}} {{subGroup}}</span>
         <div class="job-protection__accordion">
             <mat-accordion>
               <mat-expansion-panel *ngFor="let studentJobProtection of groupJobProtection.StudentsJobProtections| filter:'SubGroup':subGroup"

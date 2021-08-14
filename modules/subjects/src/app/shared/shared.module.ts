@@ -32,6 +32,7 @@ import { HelpPopoverComponent } from './components/help/help-popover/help-popove
 import { SubjectNameFreeDirective } from './validators/subject-name-free.validator';
 import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
 import { WhitespaceDirective } from './validators/whitespace.validator';
+import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { WhitespaceDirective } from './validators/whitespace.validator';
     HelpPopoverComponent,
     SubjectNameFreeDirective,
     SubjectAbbreviationFreeDirective,
-    WhitespaceDirective
+    WhitespaceDirective,
+    FileViewerComponent
     ],
   imports: [
     CommonModule,

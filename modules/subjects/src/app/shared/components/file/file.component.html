@@ -1,8 +1,9 @@
 <tr class="mdc-data-table__row">
     <ng-container *ngIf="!!file; else loader">
         <td class="mdc-data-table__cell example-content icon-cell">
-            <i class="material-icons mdc-list-item__graphic" aria-hidden="true"
-                *ngIf="file.Type.toLowerCase() !== 'image'; else image">description</i>
+            <div class="mdc-list-item__graphic" *ngIf="file.Type.toLowerCase() !== 'image'; else image">
+                <app-file-viewer [extension]="getFileExtension(file.Name)"></app-file-viewer>
+            </div>
             <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
         </td>
         <td class="mdc-data-table__cell example-content">

@@ -56,11 +56,21 @@
         >
           <mat-icon>get_app</mat-icon>
         </button>
-        <div class="_excel-file"
-        *ngIf="(selectedTab === 2 || selectedTab === 3)" 
-        (click)="getExcelFile()">
-          <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+        <div class="actions-group" *ngIf="selectedTab === 2">
+          <app-help [message]="visitingHelp.message" [action]="visitingHelp.action"></app-help>
+          <div class="_excel-file"
+          (click)="getVisitingExcelFile()">
+            <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+          </div>
         </div>
+        <div class="actions-group" *ngIf="selectedTab === 3">
+        <app-help [message]="resultsHelp.message" [action]="resultsHelp.action"></app-help>
+          <div class="_excel-file"
+          (click)="getResultsExcelFile()">
+            <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+          </div>
+        </div>
+ 
         <button *ngIf="selectedTab === 4"
                 mat-icon-button
                 color="primary"
@@ -77,10 +87,12 @@
         >
           <mat-icon>cached</mat-icon>
         </button>
+        <app-help *ngIf="selectedTab === 1" [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
+
       </div>
     </div>
-    <div class="labs-component__controls" *ngIf="!state.isTeacher">
-      {{state.group && state.group.GroupName}}
+    <div class="labs-component__controls" *ngIf="!state.isTeacher && selectedTab !== 0">
+      {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
     </div>
     <app-labs-work *ngIf="selectedTab === 0" [isTeacher]="state.isTeacher"></app-labs-work>
     <app-protection-schedule *ngIf="selectedTab === 1 && state.group" [groupId]="state.group.GroupId && state.group.GroupId" [isTeacher]="state.isTeacher"></app-protection-schedule>

@@ -2,9 +2,9 @@
   <app-popover-dialog>
     <ng-container title>
       {{data.title}}
+      <span class="title-subject">{{data.body.subjectName}}</span>
     </ng-container>
     <ng-container body>
-      <mat-hint>{{data.body.subjectName}}</mat-hint>
       <mat-form-field class="subject-lector__body">
         <mat-select [value]="selectedLector ? selectedLector.LectorId : ''" [placeholder]="'text.subjects.lector.choose' | translate:'Выберите преподавателя'">
           <mat-option *ngFor="let lector of allLectors | sortBy:'FullName'"

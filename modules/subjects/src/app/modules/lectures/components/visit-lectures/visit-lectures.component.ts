@@ -16,6 +16,7 @@ import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/tr
 import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
 import * as catsActions from '../../../../store/actions/cats.actions';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -86,7 +87,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   setVisitMarks(date: Calendar, lecturesMarksVisiting: LecturesMarksVisiting[], index: number): void {
     if (this.isTeacher) {
       const visits = {
-        date: date.Date,
+        date: moment(date.Date, 'DD.MM.YYYY'),
         students: lecturesMarksVisiting.map(student => ({
           name: student.StudentName,
           mark: student.Marks[index].Mark,
@@ -123,5 +124,9 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
 
   navigateToProfile(lecturesMarksVisiting: LecturesMarksVisiting): void {
     this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${lecturesMarksVisiting.StudentId}`) }));
+  }
+
+  getExcelFile() {
+    this.store.dispatch(lecturesActions.getVisitingExcel());
   }
 }
