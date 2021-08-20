@@ -27,13 +27,15 @@
             >
             <span class="icon-container">
               {{group.GroupName}}
-              <mat-icon  data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" [color]="'warn'">priority_high</mat-icon>
+              <mat-icon  
+              style="font-size: 17px;height: 17px;"
+              data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, group)" [color]="'warn'">priority_high</mat-icon>
             </span>
             </mat-option>
             <mat-select-trigger >
               <span #name class="icon-container">
                 {{state.group.GroupName}}
-                <mat-icon data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, state.group)" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
+                <mat-icon   style="font-size: 17px;height: 17px;" data-icon="priority" *ngIf="selectedTab === 4 && groupHasJobProtection(state.hasJobProtections, state.group)" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
               </span>
             </mat-select-trigger>
           </mat-select>

@@ -11,4 +11,5 @@ export class UserLabFile {
     LabId?: number;
     UserId: number;
     LabShortName: string;
+    Order?: number;
 }
