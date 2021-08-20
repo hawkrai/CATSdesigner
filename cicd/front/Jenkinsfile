@@ -21,7 +21,7 @@ pipeline {
     stage('Build container') {
       steps { 
             dir('./container') {
-               sh 'node_modules/.bin/ng build' 
+               sh 'npm run build:prod' 
             }
         }
     }

@@ -12,40 +12,40 @@ export statistics_path=$modules_path'/statistics'
 
 cd $admin_path
 npm i
-npm run build
+npm run build:qa
 
 cd $tests_path
 npm i
-npm run build
+npm run build:qa
 
 cd $subjects_path
 npm i
-npm run build
+npm run build:qa
 
 cd $cp_path
 npm i
-npm run build
+npm run build:qa
 
 cd $dp_path
 npm i
-npm run build
+npm run build:qa
 
 cd $confirmation_path
 npm i
-npm run build
+npm run build:qa
 
 cd $complex_path
 npm i
-npm run build
+npm run build:qa
 
 cd $editor_path
 npm i
-npm run build
+npm run build:qa
 
 cd $schedule_path
 npm i
-npm run build
+npm run build:qa
 
 cd $statistics_path
 npm i
-npm run build
+npm run build:qa
