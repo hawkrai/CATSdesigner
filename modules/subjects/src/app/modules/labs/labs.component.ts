@@ -20,6 +20,7 @@ import { TranslatePipe } from '../../../../../../container/src/app/pipe/translat
 import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model';
 import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model';
 import { Help } from 'src/app/models/help.model';
+import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
 
 interface State {
   groups: Group[];
@@ -131,5 +132,9 @@ export class LabsComponent implements OnInit, OnDestroy {
   protectionScheduleHelp: Help = {
     message: this.translate.transform ('text.help.labs.protection.schedule','Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты лабораторных занятий.'),
     action: this.translate.transform ('button.understand','Понятно')
+  }
+
+  subdivision() {
+    this.dialogService.openDialog(SubdivisionComponent);
   }
 }

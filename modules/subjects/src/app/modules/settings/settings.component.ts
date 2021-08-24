@@ -9,7 +9,7 @@ import { SubjectLectorComponent } from '../subject/subject-lector/subject-lector
 import { SubjectManagementComponent } from '../subject/subject-managment/subject-management.component';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import * as subjectActions from '../../store/actions/subject.actions';
-import { SubdivisionComponent } from './components/subdivision/subdivision.component';
+import { SubdivisionComponent } from '../../shared/subdivision/subdivision.component';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
