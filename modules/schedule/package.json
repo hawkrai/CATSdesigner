@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build:qa": "ng build --output-path d:/.temp/apps/calendar",
-    "build:prod": "ng build --output-path d:/test/apps/calendar"
+    "build:prod": "ng build --output-path d:/CatsProject/apps/calendar"
   },
   "private": true,
   "dependencies": {

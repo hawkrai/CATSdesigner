@@ -30,11 +30,6 @@ npm i --force
 npm run build:prod
 cd '..'
 
-cd $dp_path
-npm i --force
-npm run build:prod
-cd '..'
-
 cd $confirmation_path
 npm i --force
 npm run build:prod
