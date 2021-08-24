@@ -201,5 +201,22 @@ namespace Application.Infrastructure.LecturerManagement
 		    }
 	    }
 
+        public bool IsLectorJoined(int subjectId, int lectorId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(
+				new Query<SubjectLecturer>(e => e.SubjectId == subjectId && e.LecturerId == lectorId)).Any();
+		}
+
+        public List<Lecturer> GetNoAdjointLectorers(int subjectId, int owner)
+		{
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+			var lecturers = repositoriesContainer.LecturerRepository.GetAll().ToList();
+			var joinedLectures = GetJoinedLector(subjectId, owner);
+
+			return lecturers.Where(x => !joinedLectures.Any(jl => jl.Id == x.Id)).ToList();
+            
+		}
     }
 }

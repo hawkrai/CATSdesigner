@@ -9,7 +9,6 @@ import {MarkForm} from '../../../../models/mark-form.model';
 import {filter, map} from 'rxjs/operators';
 import {SubSink} from 'subsink';
 import { StudentMark } from 'src/app/models/student-mark.model';
-import { DatePipe } from '@angular/common';
 import { Observable, combineLatest } from 'rxjs';
 import * as moment from 'moment';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,7 +21,6 @@ import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedu
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
 import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { LabVisitingMark } from 'src/app/models/visiting-mark/lab-visiting-mark.model';
-import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
 
 @Component({
@@ -136,10 +134,5 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
     this.store.dispatch(labsActions.resetLabs());
-  }
-
-  help: Help = {
-    message: this.translate.transform ('text.help.results','Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'), 
-    action: this.translate.transform ('button.understand','Понятно')
   }
 }

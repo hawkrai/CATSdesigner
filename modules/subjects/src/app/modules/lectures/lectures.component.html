@@ -23,14 +23,9 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <div class="lectures-component-actions" *ngIf="selectedTab !== 0">
-          <div class="_excel-file" (click)="getExcelFile()">
-            <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
-          </div>
-        </div>
       </div>
-      <ng-container *ngIf="!state.isTeacher">
-        {{state.group && state.group.GroupName}}
+      <ng-container *ngIf="!state.isTeacher && selectedTab !== 0">
+        {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
       </ng-container>
     </div>
     <app-lectures-list *ngIf="selectedTab === 0" [subjectId]="state.subjectId"  [isTeacher]="state.isTeacher"></app-lectures-list>

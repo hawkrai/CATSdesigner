@@ -33,5 +33,8 @@ namespace Application.Infrastructure.LecturerManagement
 	    void DisjoinLector(int subjectId, int lectorId, int? owner);
 
 	    void DisjoinOwnerLector(int subjectId, int lectorId);
+
+        bool IsLectorJoined(int subjectId, int lectorId);
+        List<Lecturer> GetNoAdjointLectorers(int subjectId, int owner);
     }
 }

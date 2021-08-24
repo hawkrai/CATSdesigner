@@ -1,5 +1,4 @@
 <div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
-  <app-help [message]="help.message" [action]="help.action" class="help"></app-help>
     <div class="protection-schedule-component-table" *ngIf="state.students.length">
       <table mat-table [dataSource]="state.students" class="mat-elevation-z14">
         <ng-container matColumnDef="position">

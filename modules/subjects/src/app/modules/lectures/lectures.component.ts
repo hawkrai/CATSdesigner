@@ -66,7 +66,4 @@ export class LecturesComponent implements OnInit, OnDestroy {
     }
   }
 
-  getExcelFile() {
-    this.store.dispatch(lecturesActions.getVisitingExcel());
-  }
 }

@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build:qa": "ng build --output-path d:/.temp/apps/complex",
+    "build:prod": "ng build --output-path d:/test/apps/complex"
   },
   "dependencies": {
     "@angular/animations": "^8.1.0",

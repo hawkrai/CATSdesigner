@@ -26,7 +26,7 @@ namespace LMPlatform.Data.Repositories
 					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubjectStudents))
 					.Include(e => e.Subject.Labs)
 					.Include(e => e.Subject.SubjectGroups.Select(x => x.Group))
-					.Include(e => e.Subject.SubjectLecturers)
+					.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
 					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(t => t.ScheduleProtectionLabs)))
 					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(v => v.SubjectStudents)))
 					.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))

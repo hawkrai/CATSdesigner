@@ -64,9 +64,15 @@ namespace LMPlatform.UI.Services.Subjects
         {
             var modules = ModulesManagementService.GetModules(int.Parse(subjectId))
                 .Where(e => e.Visible)
-                .Select(m => new ModulesViewModel(m, true)).ToList();
-
-            return modules.OrderBy(m => m.Order);
+                .ToList();
+            var subjectAttachmentsModule = modules.FirstOrDefault(x => x.ModuleType == ModuleType.SubjectAttachments);
+            if (subjectAttachmentsModule != null && 
+                !modules.Any(x => x.ModuleType == ModuleType.Labs || x.ModuleType == ModuleType.Lectures || x.ModuleType == ModuleType.Practical))
+            {
+                modules.Remove(subjectAttachmentsModule);
+            }
+            var modulesViewModel = modules.Select(m => new ModulesViewModel(m, true));
+            return modulesViewModel.OrderBy(m => m.Order);
         }
 
         public UserAssignedViewData UserAssigned(string subjectId)
@@ -111,7 +117,7 @@ namespace LMPlatform.UI.Services.Subjects
             }
             var result = new SubjectsResult
             {
-                Subjects = subjectsResponse
+                Subjects = subjectsResponse.OrderBy(x => x.Name).ToList()
             };
 
             return result;

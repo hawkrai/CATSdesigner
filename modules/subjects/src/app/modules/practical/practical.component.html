@@ -36,15 +36,24 @@
           </mat-slide-toggle>
         </div>
         <div class="practical-component-actions">
-          <div class="_excel-file"
-          *ngIf="(selectedTab === 2 || selectedTab === 3)" 
-          (click)="getExcelFile()">
-            <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+          <div class="actions-group" *ngIf="selectedTab === 2">
+            <app-help [message]="visitingHelp.message" [action]="visitingHelp.action" class="help"></app-help>
+            <div class="_excel-file"
+            (click)="getVisitingExcelFile()">
+              <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+            </div>
+          </div>
+          <div class="actions-group" *ngIf="selectedTab === 3">
+            <app-help [message]="resultsHelp.message" [action]="resultsHelp.action" class="help"></app-help>
+            <div class="_excel-file"
+            (click)="getResultsExcelFile()">
+              <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+            </div>
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="!state.isTeacher">
-        {{state.group && state.group.GroupName}}
+      <ng-container *ngIf="!state.isTeacher && selectedTab !== 0">
+        {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
       </ng-container>
     </div>
     <div>

@@ -1,11 +1,11 @@
 <ng-container *ngIf="subject">
   <app-popover-dialog class="subject-management">
     <ng-container title>
-      {{ data.model && !data.model.subjectId ? ('subject.creation' | translate:'Создание предмета') : ('subject.editing' | translate:'Редактирование предмета') }}
+      {{ data.model && !data.model.subjectId ? ('subject.creation' | translate:'Добавление предмета') : ('subject.editing' | translate:'Редактирование предмета') }}
     </ng-container>
     <ng-container body>
       <form class="example-form" #formElement="ngForm">
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width" [style.padding-bottom]="subject.CreatedBy ? '1.25em' : 0">
           <mat-label>{{'subject.name' | translate:'Название предмета'}}</mat-label>
           <input
             required
@@ -18,15 +18,18 @@
             [(ngModel)]="subject.DisplayName"
             whitespace
           />
+          <ng-container *ngIf="name.touched || name.dirty">
+            <mat-error *ngIf="name.errors?.subjectNameFree">
+              {{'subject.name.not.free' | translate:'Предмет с таким названием уже существует'}}
+            </mat-error>
+            <mat-error *ngIf="name.errors?.whitespace">
+              {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+            </mat-error>
+          </ng-container>
+          <mat-hint *ngIf="subject.CreatedBy" style="padding-bottom: 1.25em;">
+            {{'text.subject.createdBy' | translate:'Предмет создал(а)'}} {{subject.CreatedBy | initials}}
+          </mat-hint>
         </mat-form-field>
-        <ng-container *ngIf="name.touched || name.dirty">
-          <mat-error *ngIf="name.errors?.subjectNameFree">
-            {{'subject.abbreviation.not.free' | translate:'Предмет с таким названием уже существует'}}
-          </mat-error>
-          <mat-error *ngIf="name.errors?.whitespace">
-            {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
-          </mat-error>
-        </ng-container>
         <mat-form-field class="example-full-width">
           <mat-label>{{'subject.abbreviation' | translate:'Аббревиатура'}}</mat-label>
           <input
@@ -43,7 +46,7 @@
         </mat-form-field>
         <ng-container *ngIf="shortName.touched || shortName.dirty">
           <mat-error *ngIf="shortName.errors?.subjectAbbreviationFree">
-            {{'subject.name.not.free' | translate:'Предмет с такой аббревиатурой уже существует'}}
+            {{'subject.abbreviation.not.free' | translate:'Предмет с такой аббревиатурой уже существует'}}
           </mat-error>
           <mat-error *ngIf="shortName.errors?.whitespace">
             {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
