@@ -10,18 +10,13 @@ pipeline {
 
   stages {
 
-    stage('Install container') {
-      steps { 
-            dir('./container') {
-               sh 'npm install --force' 
-            }
-        }
-    }
-
     stage('Build container') {
       steps { 
             dir('./container') {
-               sh 'npm run build:prod' 
+               sh '''
+			          npm install --force
+                npm run build:prod
+		          '''
             }
         }
     }
@@ -29,8 +24,10 @@ pipeline {
     stage('Build modules') {
         steps {
             dir('./build') {
-                sh "chmod +x -R ${env.WORKSPACE}"
-                sh './jenkins_build_modules.sh'
+                sh '''
+                  chmod +x -R ${env.WORKSPACE}
+                  ./jenkins_build_modules.sh
+                '''
             }
         }
     }
@@ -38,7 +35,10 @@ pipeline {
     stage('Install server') {
       steps { 
             dir('./server') {
-               sh 'npm install --force' 
+              sh '''
+                ls -ls
+                cp * d:/CatsProject/server
+              '''
             }
         }
     }
