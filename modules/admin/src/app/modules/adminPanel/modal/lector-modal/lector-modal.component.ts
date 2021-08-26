@@ -29,7 +29,7 @@ export class LectorModalComponent implements OnInit {
 
   ngOnInit(): void {
     const professor = this.data;
-
+    var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
       Username: new FormControl( professor.Username,
         [Validators.required, Validators.minLength(3),
@@ -39,11 +39,11 @@ export class LectorModalComponent implements OnInit {
         Validators.maxLength(30), this.passwordValidator]),
       ConfirmPassword: new FormControl(professor.ConfirmPassword),
       Surname: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$')]),
+        Validators.pattern(nameRegExp)]),
       Name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$')]),
+        Validators.pattern(nameRegExp)]),
       Patronymic: new FormControl('', [Validators.maxLength(30),
-        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$')]),
+        Validators.pattern(nameRegExp)]),
       IsSecretary: new FormControl(false),
       IsLecturerHasGraduateStudents: new FormControl(false)
     }, {

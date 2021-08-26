@@ -26,18 +26,18 @@ export class ChangePersonalDataComponent implements OnInit {
   currentUserId!: number;
   profileData!: ProfileData;
   dialogRef: MatDialogRef<any>;
-
+  nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
   emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})?$')]);
   phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})?$')]);
 
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')])
+    Validators.pattern(this.nameRegExp)])
 
   surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')])
+    Validators.pattern(this.nameRegExp)])
 
   patronymicFormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')])
+    Validators.pattern(this.nameRegExp)])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
     private location: Location, public dialog: MatDialog,
