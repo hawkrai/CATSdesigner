@@ -186,7 +186,8 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             student.Group = GroupManagementService.GetGroup(student.GroupId);
             UsersManagementService.UpdateUser(user);
             new StudentSearchMethod().AddToIndex(student);
-            ElasticManagementService.AddStudent(student);
+            //uncomment when elastic server become able
+            //ElasticManagementService.AddStudent(student);
         }
         
         private void SaveLecturer()
@@ -204,7 +205,8 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             });
             lecturer.User = user;
             new LecturerSearchMethod().AddToIndex(lecturer);
-            ElasticManagementService.AddLecturer(lecturer);
+            //uncomment when elastic server become able
+            //ElasticManagementService.AddLecturer(lecturer);
         }
 	}
 }

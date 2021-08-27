@@ -130,7 +130,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 			};
 
 			this.StudentManagementService.UpdateStudent(student);
-			this.ElasticManagementService.ModifyStudent(student);
+			//uncomment when elastic server become able
+			//this.ElasticManagementService.ModifyStudent(student);
 		}
 	}
 }

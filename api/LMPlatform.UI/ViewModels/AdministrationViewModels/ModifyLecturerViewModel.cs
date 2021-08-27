@@ -170,7 +170,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             };
 
             LecturerManagementService.UpdateLecturer(lecturer);
-            ElasticManagementService.ModifyLecturer(lecturer);
+            //uncomment when elastic server become able
+            //ElasticManagementService.ModifyLecturer(lecturer);
         }
     }
 }
