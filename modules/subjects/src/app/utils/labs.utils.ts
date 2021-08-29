@@ -8,9 +8,9 @@ export const sendUserLabFileSuccess = (userLabFiles: UserLabFile[], userLabFile:
     const index = userLabFiles.findIndex(x => x.Id === userLabFile.Id);
 
     if (index >= 0) {
-        return sortFiles(userLabFiles.slice(0, index).concat(userLabFile, userLabFiles.slice(index + 1)));
+        return userLabFiles.slice(0, index).concat(userLabFile, userLabFiles.slice(index + 1));
     }
-    return sortFiles([...userLabFiles, userLabFile]);
+    return [...userLabFiles, userLabFile];
 }
 
 const sortFiles = (files: UserLabFile[]): UserLabFile[] => {
