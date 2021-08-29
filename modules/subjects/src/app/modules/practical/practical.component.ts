@@ -12,6 +12,8 @@ import * as groupSelectors from '../../store/selectors/groups.selectors';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import * as practicalsActions from '../../store/actions/practicals.actions';
 import { Help } from 'src/app/models/help.model';
+import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
+import { DialogService } from 'src/app/services/dialog.service';
 
 interface State {
   groups: Group[];
@@ -33,7 +35,8 @@ export class PracticalComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<IAppState>,
-    private translate: TranslatePipe
+    private translate: TranslatePipe,
+    private dialogService: DialogService
     ) { }
   selectedTab = 0;
 
@@ -83,8 +86,16 @@ export class PracticalComponent implements OnInit, OnDestroy {
     action: this.translate.transform ('button.understand','Понятно')
   };
 
+  protectionScheduleHelp: Help = {
+    message: this.translate.transform ('text.help.practicals.protection.schedule','Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты практических занятий.'),
+    action: this.translate.transform ('button.understand','Понятно')
+  }
+
   getResultsExcelFile(): void {
     this.store.dispatch(practicalsActions.getMarksExcel());
   }
   
+  subdivision() {
+    this.dialogService.openDialog(SubdivisionComponent);
+  }
 }

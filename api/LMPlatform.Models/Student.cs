@@ -26,7 +26,7 @@ namespace LMPlatform.Models
 	    public Group Group { get; set; }
 
         [NotMapped]
-        public string FullName => $"{LastName} {FirstName} {MiddleName}";
+        public string FullName => $"{LastName?.Trim()} {FirstName?.Trim()} {MiddleName?.Trim()}";
 
         public ICollection<SubjectStudent> SubjectStudents { get; set; }
 

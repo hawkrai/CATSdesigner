@@ -33,6 +33,8 @@ import { SubjectNameFreeDirective } from './validators/subject-name-free.validat
 import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
 import { WhitespaceDirective } from './validators/whitespace.validator';
 import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
+import { SubdivisionComponent } from './subdivision/subdivision.component';
+import {PopoverModule} from "ngx-smart-popover";
 
 @NgModule({
   declarations: [
@@ -65,13 +67,15 @@ import { FileViewerComponent } from './components/file-viewer/file-viewer.compon
     SubjectNameFreeDirective,
     SubjectAbbreviationFreeDirective,
     WhitespaceDirective,
-    FileViewerComponent
+    FileViewerComponent,
+    SubdivisionComponent
     ],
   imports: [
     CommonModule,
     FormsModule,
     MatModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PopoverModule
   ],
   entryComponents: [
     DeletePopoverComponent,
@@ -79,7 +83,8 @@ import { FileViewerComponent } from './components/file-viewer/file-viewer.compon
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
     MarkPopoverComponent,
-    HelpPopoverComponent
+    HelpPopoverComponent,
+    SubdivisionComponent
   ],
   exports: [
     FilterPipe,
@@ -104,7 +109,8 @@ import { FileViewerComponent } from './components/file-viewer/file-viewer.compon
     HelpComponent,
     SubjectNameFreeDirective,
     SubjectAbbreviationFreeDirective,
-    WhitespaceDirective
+    WhitespaceDirective,
+    PopoverModule
   ],
   providers: [TranslatePipe]
 })
