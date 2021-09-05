@@ -1,16 +1,13 @@
-import { Component, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import * as _ from 'lodash';
+import * as moment from 'moment';
 
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { IAppState } from 'src/app/store/state/app.state';
 
-import * as labsActions from '../../../../../store/actions/labs.actions';
-import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
 import * as filesActions from '../../../../../store/actions/files.actions';
 import { Attachment } from 'src/app/models/file/attachment.model';
-import { JobProtection } from 'src/app/models/job-protection/job-protection.model';
 
 @Component({
   selector: 'app-job-protection-content',
@@ -34,5 +31,4 @@ export class JobProtectionContentComponent implements OnInit {
   downloadFile(attachment : Attachment): void {
     this.store.dispatch(filesActions.downloadFile({ pathName: attachment.PathName, fileName: attachment.FileName }));
   }
-
 }

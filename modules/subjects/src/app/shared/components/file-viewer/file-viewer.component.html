@@ -1,0 +1,10 @@
+<ng-container [ngSwitch]="extension">
+    <img src="../subject/assets/images/excel.png" alt="Excel" *ngSwitchCase="fileExtensions.Excel" class="image">
+    <img src="../subject/assets/images/excel.png" alt="Excel" *ngSwitchCase="fileExtensions.ExcelX" class="image">
+    <img src="../subject/assets/images/doc.png" alt="Doc" *ngSwitchCase="fileExtensions.Doc" class="image">
+    <img src="../subject/assets/images/doc.png" alt="DocX" *ngSwitchCase="fileExtensions.DocX" class="image">
+    <img src="../subject/assets/images/pdf.png" alt="Pdf" *ngSwitchCase="fileExtensions.Pdf" class="image">
+    <img src="../subject/assets/images/folder.png" alt="Zip" *ngSwitchCase="fileExtensions.Zip" class="image">
+    <img src="../subject/assets/images/folder.png" alt="Rar" *ngSwitchCase="fileExtensions.Rar" class="image">
+    <i class="material-icons" aria-hidden="true" *ngSwitchDefault>description</i>
+</ng-container>

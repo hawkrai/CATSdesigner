@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "../../../lmsNew/node_modules/.bin/ng lint",
-    "e2e": "../../../lmsNew/node_modules/.bin/ng e2e"
+    "e2e": "../../../lmsNew/node_modules/.bin/ng e2e",
+    "build:qa": "ng build --output-path d:/.temp/apps/diplom",
+    "build:prod": "ng build --output-path d:/CatsProject/apps/diplom"
   },
   "private": true,
   "dependencies": {

@@ -597,6 +597,8 @@
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
     <Compile Include="Services\Modules\Labs\JobProtectionViewData.cs" />
     <Compile Include="Services\Modules\Labs\StudentJobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\News\TelegramNewsResult.cs" />
+    <Compile Include="Services\Modules\News\TelegramNewsViewModel.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewData.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewResult.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleProtectionLesson.cs" />

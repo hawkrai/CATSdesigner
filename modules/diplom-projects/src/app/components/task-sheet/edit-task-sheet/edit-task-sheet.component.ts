@@ -8,6 +8,7 @@ import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
 import { Project } from 'src/app/models/project.model';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { Student } from 'src/app/models/student.model';
+import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
 
 interface DialogData {
   isSecretary: boolean;
@@ -81,6 +82,7 @@ export class EditTaskSheetComponent implements OnInit {
               private snackBar: MatSnackBar,
               public dialogRef: MatDialogRef<EditTaskSheetComponent>,
               private projectsService: ProjectsService,
+              public translatePipe: TranslatePipe,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
@@ -134,7 +136,7 @@ export class EditTaskSheetComponent implements OnInit {
     this.populateSheet(template);
     this.taskSheetService.editTemplate(template).subscribe(() => {
       this.ngOnInit();
-      this.snackBar.open('Шаблон успешно сохранен', null, {
+      this.snackBar.open(this.translatePipe.transform('text.editor.edit.patternSave',"Шаблон успешно сохранен"), null, {
         duration: 2000
       });
     });
@@ -150,7 +152,7 @@ export class EditTaskSheetComponent implements OnInit {
         }
       }
 
-      this.snackBar.open('Шаблон успешно применен', null, {
+      this.snackBar.open(this.translatePipe.transform('text.editor.edit.patternApply',"Шаблон успешно применен"), null, {
         duration: 2000
       });
     });

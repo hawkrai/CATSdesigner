@@ -12,12 +12,12 @@
                 </div>                
                 <div mat-line>{{getModuleTranslate(module.Type) | translate:module.Name}}</div>
             </a> 
-            <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 
+            <!-- <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')"> 
                 <div mat-line>
                     <mat-icon class="white-icon">settings</mat-icon>
                 </div>                
                 <div mat-line>Настройки</div>
-                </a>
+                </a> -->
               </mat-nav-list>
         </mat-sidenav>
         <mat-sidenav-content>

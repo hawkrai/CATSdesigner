@@ -23,8 +23,8 @@ export class ResetPasswordModalComponent implements OnInit {
   ngOnInit() {
     console.log(this.data);
     this.form = this.formBuilder.group({
-        password: new FormControl('', [Validators.required, Validators.minLength(6),
-          Validators.maxLength(30), this.passwordValidator]),
+        password: new FormControl('' , [Validators.required, Validators.pattern('^[A-Za-z0-9_]*$'),
+         Validators.minLength(6), Validators.maxLength(30)]),
         confirmPassword: new FormControl(''),
     }, {
       validator: MustMatch('password', 'confirmPassword')

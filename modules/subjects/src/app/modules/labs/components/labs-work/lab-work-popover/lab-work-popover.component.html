@@ -5,15 +5,15 @@
   <ng-container body>
     <form class="form" [formGroup]="labForm">
       <mat-form-field class="full-width">
-        <mat-label>{{'text.subjects.practicals.name' | translate:'Название практического занятия'}}</mat-label>
+        <mat-label>{{'text.subjects.labs.name' | translate:'Название практического занятия'}}</mat-label>
         <textarea  matInput formControlName="theme"></textarea>
       </mat-form-field>
-      <mat-form-field class="full-width" [matTooltip]="'text.generated automatically' | translate:'Генерируется автоматически'" matTooltipPosition="above">
-        <mat-label>{{'short.name' | translate:'Краткое название'}}</mat-label>
+      <mat-form-field class="full-width">
+        <mat-label>{{'short.name' | translate:'Краткое название'}} ({{'text.generated automatically' | translate:'создаётся автоматически'}})</mat-label>
         <input matInput [placeholder]="'abbreviation' | translate:'Сокращенное название'" formControlName="shortName" readonly>
       </mat-form-field>
       <mat-form-field class="full-width">
-        <mat-label>{{'text.number.hours' | translate:'Количество часов'}}(1-5)</mat-label>
+        <mat-label>{{'text.number.hours' | translate:'Количество часов'}} (1-5)</mat-label>
         <input formControlName="duration" type="number" matInput [placeholder]="'text.number.hours' | translate:'Количество часов'">
       </mat-form-field>
       <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="filesArray.value" (upload)="uploadFile($event)"></app-file-uploader>

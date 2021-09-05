@@ -92,7 +92,8 @@ namespace LMPlatform.UI.Services
 			try
 			{
 				var id = int.Parse(subjectId);
-				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId);
+				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId)
+					.GroupBy(x => x.Id).Select(x => x.First()).ToList();
 
 				return new LectorsResult
 				{
@@ -125,6 +126,14 @@ namespace LMPlatform.UI.Services
 						Message = "Нет прав на присоединение преподавателя к предмету"
 					};
 				}
+				if (LecturerManagementService.IsLectorJoined(subjectId, lectorId))
+                {
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Преподаватель уже присоединен к предмету"
+					};
+				}
 				this.LecturerManagementService.Join(subjectId, lectorId, CurrentUserId);
 
 				return new ResultViewData
@@ -147,10 +156,7 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var lectors = this.LecturerManagementService.GetLecturers()
-					.Where(e => e.Id != this.CurrentUserId && !e.SubjectLecturers
-						            .Any(x => x.SubjectId == int.Parse(subjectId) && x.Owner == this.CurrentUserId));
-
+				var lectors = LecturerManagementService.GetNoAdjointLectorers(int.Parse(subjectId), CurrentUserId);
 				return new LectorsResult
 				{
 					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),

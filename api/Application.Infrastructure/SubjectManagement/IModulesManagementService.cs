@@ -9,5 +9,7 @@ namespace Application.Infrastructure.SubjectManagement
     {
         ICollection<Module> GetModules();
         IEnumerable<Module> GetModules(Int32 subjectId);
+
+        Module GetModule(Query<Module> query);
     }
 }

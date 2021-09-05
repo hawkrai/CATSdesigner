@@ -11,6 +11,9 @@ import * as groupActions from '../../store/actions/groups.actions';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import * as practicalsActions from '../../store/actions/practicals.actions';
+import { Help } from 'src/app/models/help.model';
+import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
+import { DialogService } from 'src/app/services/dialog.service';
 
 interface State {
   groups: Group[];
@@ -32,7 +35,8 @@ export class PracticalComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<IAppState>,
-    private translate: TranslatePipe
+    private translate: TranslatePipe,
+    private dialogService: DialogService
     ) { }
   selectedTab = 0;
 
@@ -68,12 +72,30 @@ export class PracticalComponent implements OnInit, OnDestroy {
     }
   }
 
-  getExcelFile(): void {
-    if (this.selectedTab === 2) {
-      this.store.dispatch(practicalsActions.getVisitingExcel());
-    } else if (this.selectedTab === 3) {
-      this.store.dispatch(practicalsActions.getMarksExcel());
-    }
+  visitingHelp: Help = {
+    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
+    action: this.translate.transform('button.understand','Понятно')
+  };
+
+  getVisitingExcelFile(): void {
+    this.store.dispatch(practicalsActions.getVisitingExcel());
   }
 
+  resultsHelp: Help = {
+    message: this.translate.transform ('text.help.results','Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'), 
+    action: this.translate.transform ('button.understand','Понятно')
+  };
+
+  protectionScheduleHelp: Help = {
+    message: this.translate.transform ('text.help.practicals.protection.schedule','Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты практических занятий.'),
+    action: this.translate.transform ('button.understand','Понятно')
+  }
+
+  getResultsExcelFile(): void {
+    this.store.dispatch(practicalsActions.getMarksExcel());
+  }
+  
+  subdivision() {
+    this.dialogService.openDialog(SubdivisionComponent);
+  }
 }

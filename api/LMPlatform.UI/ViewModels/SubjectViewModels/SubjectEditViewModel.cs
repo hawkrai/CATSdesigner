@@ -131,6 +131,8 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             set;
         }
 
+        public string CreatedBy { get; set; }
+
 		public string Color { get; set; }
 
 		public List<int> SelectedGroups
@@ -148,9 +150,10 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
         {
             SubjectId = subjectId;
 			this.Color = "#ffffff";
+            CreatedBy = SubjectManagementService.GetSubjectOwner(subjectId)?.FullName;
             Title = SubjectId == 0 ? "Создание предмета" : "Редактирование предмета";
             Modules = ModulesManagementService
-                .GetModules().Where(e => e.Visible).Select(e => new ModulesViewModel(e, e.Required))
+                .GetModules().Where(e => e.Visible && e.ModuleType != ModuleType.SubjectAttachments).Select(e => new ModulesViewModel(e, e.Required))
                 .OrderBy(x => x.Order)
                 .ToList();
 	        FillSubjectGroups();
@@ -234,6 +237,18 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
                         SubjectId = SubjectId
                     });
                 }
+            }
+
+            var attachmentsModule = ModulesManagementService.GetModule(new Query<Module>(x => x.ModuleType == ModuleType.SubjectAttachments));
+
+            if (!subject.SubjectModules.Any(x => x.ModuleId == attachmentsModule.Id) && Modules.Where(x => x.Checked)
+                .Any(x => x.Type == ModuleType.Labs || x.Type == ModuleType.Practical || x.Type == ModuleType.Lectures))
+            {
+                subject.SubjectModules.Add(new SubjectModule
+                {
+                    ModuleId = attachmentsModule.Id,
+                    SubjectId = SubjectId
+                });
             }
 
             subject.SubjectLecturers.Add(new SubjectLecturer

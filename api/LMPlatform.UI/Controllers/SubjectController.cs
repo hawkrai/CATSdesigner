@@ -312,7 +312,7 @@ namespace LMPlatform.UI.Controllers
         public ActionResult Subjects()
         {
             var model = new SubjectManagementViewModel(UserContext.CurrentUserId.ToString(CultureInfo.InvariantCulture));
-            var subjects = model.Subjects;
+            var subjects = model.Subjects.OrderBy(x => x.DisplayName);
             return JsonResponse(subjects);
         }
 

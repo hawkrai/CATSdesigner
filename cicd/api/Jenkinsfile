@@ -1,0 +1,34 @@
+pipeline {
+    agent {
+        node {
+            label 'windows'
+        }
+    }
+    stages {
+         stage('Restore nuget') {
+            steps {
+                dir('./api') {
+                    bat 'nuget restore LMPlatform.sln'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('./api') {
+                    bat "\"${tool 'MSBuild'}\" LMPlatform.sln /p:Configuration=Release"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                dir('./api') {
+                    bat "\"${tool 'MSBuild'}\" LMPlatform.sln /p:Configuration=Release /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl=d:/CatsProject/api"
+                    sh '''
+                    cd /
+                    '''
+                }
+            }
+        }
+    }
+} 

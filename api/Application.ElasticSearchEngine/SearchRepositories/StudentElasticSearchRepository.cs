@@ -79,25 +79,42 @@ namespace Application.ElasticSearchEngine.SearchRepositories
             AddToIndex(student);
         }
 
-        private static CreateIndexDescriptor GetStudentMap(string indexName)
+        internal static CreateIndexDescriptor GetStudentMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-             .Map<ElasticStudent>(m => m
-               .Properties(prop => prop
-                 .Text(s => s
-                    .Name(n => n.FullName)
-                    )
-                 .Object<ElasticGroup>(o => o
-                    .Name(s => s.Group)
-                    )
-                 .Number(s => s
-                    .Name(n => n.User.Id)
-                    .Type(NumberType.Integer)
+            map.Map<ElasticStudent>(m => m
+                .Dynamic(false)
+                    .Properties(prop => prop
+                        .Number(s => s
+                            .Name(n => n.Id)
+                            .Type(NumberType.Integer)
+                        )
+                        .Text(s => s
+                            .Name(n => n.FullName)
+                        )
+                        .Text(s => s
+                            .Name(n => n.Email)
+                        )
+                        .Number(s => s
+                            .Name(n => n.GroupId)
+                        )
+                        .Object<ElasticUser>(o => o
+                            .Dynamic(false)
+                            .Name(s => s.User)
+                             .Properties(pr => pr
+                                .Text(t => t
+                                    .Name(n => n.SkypeContact)
+                                )
+                                .Text(t => t
+                                    .Name(n => n.Phone)
+                                )
+                                .Text(t => t
+                                    .Name(n => n.About)
+                                )
+                            )
+                         )
                     )
                  )
-               )
-             )
            ;
             return map;
         }
