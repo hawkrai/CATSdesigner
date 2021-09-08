@@ -4,7 +4,7 @@
             <div class="mdc-list-item__graphic" *ngIf="file.Type.toLowerCase() !== 'image'; else image">
                 <app-file-viewer [extension]="getFileExtension(file.Name)"></app-file-viewer>
             </div>
-            <ng-template #image><img [src]="file.ThumbnailUrl"></ng-template>
+            <ng-template #image><img [src]="file.ThumbnailUrl" class="img"></ng-template>
         </td>
         <td class="mdc-data-table__cell example-content">
             <a matTooltip="{{file.Name}}" matTooltipPosition="below" style="color: #3f51b5;"
