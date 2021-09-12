@@ -64,8 +64,8 @@ export class LectorsComponent implements OnInit {
     this.editLector(newProfessorObject);
   }
 
-  navigateToProfile(login) {
-    this.router.navigate(['profile', login]);
+  navigateToProfile(id) {
+    this.router.navigate(['profile', id]);
   }
 
   deleteProfessor(id) {

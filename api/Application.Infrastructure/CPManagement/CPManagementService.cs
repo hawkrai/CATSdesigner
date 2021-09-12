@@ -77,6 +77,42 @@ namespace Application.Infrastructure.CPManagement
             }   
         }
 
+        public List<CourseProjectData> GetProjectsByUserId(int userId)
+        {
+            var query = Context.CourseProjects.AsNoTracking()
+                .Include(x => x.Lecturer)
+                .Include(x => x.AssignedCourseProjects.Select(asp => asp.Student.Group))
+                .Include(x => x.Subject);
+
+            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+
+            if(user != null) {
+                if (user.Lecturer != null)
+                {
+                    query = query.Where(x => x.LecturerId == userId);
+                }
+
+                else
+                {
+                    query = query.Where(x => x.AssignedCourseProjects.Any(dpg => dpg.StudentId == user.Student.Id));
+                }
+            }
+           
+           var buf = from cp in query
+                                     let acp = cp.AssignedCourseProjects.FirstOrDefault()
+                                     select new CourseProjectData
+                                     {
+                                         Id = cp.CourseProjectId,
+                                         Theme = cp.Theme,
+                                         Subject = cp.Subject.ShortName
+
+                                     };
+
+            List<CourseProjectData> courseProjects = buf.ToList<CourseProjectData>();
+
+            return courseProjects;
+            
+        }
         public CourseProjectData GetProject(int id)
         {
             var cp = Context.CourseProjects

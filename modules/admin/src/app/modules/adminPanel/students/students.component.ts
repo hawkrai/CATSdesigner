@@ -36,8 +36,8 @@ export class StudentsComponent implements OnInit {
     this.loadStudent();
   }
 
-  navigateToProfile(login) {
-    this.router.navigate(['profile', login]);
+  navigateToProfile(id) {
+    this.router.navigate(['profile', id]);
   }
 
   loadStudent() {

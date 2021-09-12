@@ -1046,6 +1046,18 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
+		public List<Subject> GetAllSubjectsByLector(int userId)
+		{
+			List<Subject> model;
+
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				model = repositoriesContainer.SubjectRepository.GetSubjects(lecturerId: userId).ToList();
+			}
+
+			return model;
+		}
+
 		public List<Subject> GetSubjectsByLectorOwner(int userId, bool lite = false)
 		{
 			IQuery<SubjectLecturer> query = new Query<SubjectLecturer>(e => e.LecturerId == userId && e.Owner == null);
@@ -1076,6 +1088,19 @@ namespace Application.Infrastructure.SubjectManagement
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
 				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).Where(e => !e.IsArchive).ToList();
+			}
+
+			return model;
+		}
+
+		public List<Subject> GetAllSubjectsByStudent(int userId)
+		{
+			List<Subject> model;
+
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
+				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).ToList();
 			}
 
 			return model;

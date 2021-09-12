@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -130,8 +131,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 			};
 
 			this.StudentManagementService.UpdateStudent(student);
-			//uncomment when elastic server become able
-			//this.ElasticManagementService.ModifyStudent(student);
+			this.ElasticManagementService.ModifyStudent(student);
 		}
 	}
 }

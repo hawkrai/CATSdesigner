@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'resetPassword/lector/:lectorId', component: ResetThePasswordComponent },
   { path: 'register', component: SignupComponent },
   { path: 'forgot', component: ChangePasswordComponent },
-  { path: 'profile/:login', component: ProfileComponent },
+  { path: 'profile/:id', component: ProfileComponent },
   {
     path: 'admin', component: AdminGenerateComponent, children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },

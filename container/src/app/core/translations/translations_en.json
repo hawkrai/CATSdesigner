@@ -427,6 +427,14 @@
   "text.personalAccount.changePassword.wrongPassword": "Wrong password!",
   "text.personalAccount.GroupName": "Group",
 
+  "text.profile.group": "Group",
+  "text.profile.skill": "Skill",
+  "text.profile.lastLogin": "Last login",
+  "text.profile.currentSubjects": "Current subjects",
+  "text.profile.complitedSubjects": "Complited subjects",
+  "text.profile.cp": "Course projects",
+  "text.profile.dp": "Graduation projects",
+
   "text.login.WrongData": "Wrong login and(or) password!",
 
   "text.diplomProject.addTheme" : "Add theme",

@@ -13,6 +13,7 @@ namespace Application.Infrastructure.CPManagement
     public interface ICPManagementService
     {
         PagedList<CourseProjectData> GetProjects(int userId, GetPagedListParams parms);
+        List<CourseProjectData> GetProjectsByUserId(int userId);
 
         CourseProjectData GetProject(int id);
 

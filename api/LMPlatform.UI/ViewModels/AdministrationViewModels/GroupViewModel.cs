@@ -92,8 +92,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         {
             Group group = GetGroupFromViewModel();
             GroupManagementService.AddGroup(group);
-            //uncomment when elastic server become able
-            //ElasticManagementService.AddGroup(group);
+            ElasticManagementService.AddGroup(group);
         }
 
         public void ModifyGroup()
@@ -107,8 +106,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             };
 
             GroupManagementService.UpdateGroup(group);
-            //uncomment when elastic server become able
-            //ElasticManagementService.ModifyGroup(group);
+            ElasticManagementService.ModifyGroup(group);            
         }
 
         public bool CheckGroupName()

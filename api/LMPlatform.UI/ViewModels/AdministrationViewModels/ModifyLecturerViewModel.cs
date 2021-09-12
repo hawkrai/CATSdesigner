@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
@@ -170,8 +171,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             };
 
             LecturerManagementService.UpdateLecturer(lecturer);
-            //uncomment when elastic server become able
-            //ElasticManagementService.ModifyLecturer(lecturer);
+            ElasticManagementService.ModifyLecturer(lecturer);
         }
     }
 }
