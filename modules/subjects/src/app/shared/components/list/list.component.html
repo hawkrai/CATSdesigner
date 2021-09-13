@@ -1,0 +1,6 @@
+<ul class="list"  [ngStyle]="{ 'grid-template-columns': 'repeat(' + columns + ', 1fr)' }" [style.gap]="gap">
+    <li *ngFor="let item of items"> 
+        <app-list-item [item]="item" [headerTemplate]="itemHeaderTemplateRef" [contentTemplate]="itemBodyTemplateRef"
+            [actionsTemplate]="itemActionsTemplateRef"></app-list-item>
+    </li>
+</ul>

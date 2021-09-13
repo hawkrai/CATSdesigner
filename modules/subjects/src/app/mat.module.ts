@@ -22,6 +22,9 @@ import {MatRadioModule} from '@angular/material/radio';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatCardModule} from '@angular/material/card';
+
 
 @NgModule({
   exports: [
@@ -48,7 +51,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatRadioModule,
     DragDropModule,
     MatTabsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatMenuModule,
+    MatCardModule
   ]
 })
 export class MatModule { }
