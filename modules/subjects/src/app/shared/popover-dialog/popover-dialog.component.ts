@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
@@ -9,6 +9,7 @@ import { MatDialogRef } from '@angular/material';
 export class PopoverDialogComponent implements OnInit {
 
   @Input() width: number = 500;
+
   constructor(
     private dialogRef: MatDialogRef<PopoverDialogComponent>
   ) { }
