@@ -11,6 +11,7 @@ import * as lecturesActions from '../../store/actions/lectures.actions';
 import {IAppState} from '../../store/state/app.state';
 import { Group } from 'src/app/models/group.model';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 
 @Component({
@@ -29,15 +30,18 @@ export class LecturesComponent implements OnInit, OnDestroy {
     group: Group
    }>;
   tabs: string[] = [];
+  public mobileMatcher: MediaQueryList;
 
   constructor(
     private store: Store<IAppState>,
-    private translate: TranslatePipe
+    private translate: TranslatePipe,
+    private mediaMatcher: MediaMatcher
     ) {
 
   }
   ngOnDestroy(): void {
     this.store.dispatch(groupsActions.resetGroups());
+    this.mobileMatcher.removeEventListener('change', this.emptyListener);
   }
 
   selectTab(tab: number): void {
@@ -58,7 +62,12 @@ export class LecturesComponent implements OnInit, OnDestroy {
     this.state$ = combineLatest(isTeacher$, subjectId$, groups$, selectedGroupId$, selectedGroup$).pipe(
       map(([isTeacher, subjectId, groups, groupId, group]) => ({ isTeacher, subjectId, groups, groupId, group }))
     );
+    this.mobileMatcher = this.mediaMatcher.matchMedia('(max-width: 400px)');
+    this.mobileMatcher.addEventListener('change', this.emptyListener);
+
   }
+
+  private emptyListener() {}
 
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
