@@ -35,6 +35,11 @@ import { WhitespaceDirective } from './validators/whitespace.validator';
 import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 import { SubdivisionComponent } from './subdivision/subdivision.component';
 import {PopoverModule} from "ngx-smart-popover";
+import { ListComponent } from './components/list/list.component';
+import { ListItemComponent } from './components/list/list-item/list-item.component';
+import { ListItemHeaderDirective } from './components/list/directives/list-item-header.directive';
+import { ListItemBodyDirective } from './components/list/directives/list-item-body.directive';
+import { ListItemActionsDirective } from './components/list/directives/list-item-actions.directive';
 
 @NgModule({
   declarations: [
@@ -68,7 +73,12 @@ import {PopoverModule} from "ngx-smart-popover";
     SubjectAbbreviationFreeDirective,
     WhitespaceDirective,
     FileViewerComponent,
-    SubdivisionComponent
+    SubdivisionComponent,
+    ListComponent,
+    ListItemComponent,
+    ListItemHeaderDirective,
+    ListItemBodyDirective,
+    ListItemActionsDirective
     ],
   imports: [
     CommonModule,
@@ -110,7 +120,11 @@ import {PopoverModule} from "ngx-smart-popover";
     SubjectNameFreeDirective,
     SubjectAbbreviationFreeDirective,
     WhitespaceDirective,
-    PopoverModule
+    PopoverModule,
+    ListComponent,
+    ListItemHeaderDirective,
+    ListItemBodyDirective,
+    ListItemActionsDirective
   ],
   providers: [TranslatePipe]
 })

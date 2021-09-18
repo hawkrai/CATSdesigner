@@ -26,6 +26,10 @@ export class MenuService {
         return this.sideNav ? this.sideNav._width : null;
     }
 
+    isSideNavOpened(): boolean {
+        return this.sideNav && this.sideNav.opened;
+    }
+
     private subjectsInfo = new Map([
         [ModuleType.News, { fragment: 'news', module: 'subject', item: 'news', icon: '../../../assets/icons/newspaper.png', translate: 'text.news.plural' }],
         [ModuleType.Lectures, { fragment: 'lectures', module: 'subject', item: 'lectures', icon: '../../../assets/icons/presentation.png', translate: 'text.lectures.plural' }],

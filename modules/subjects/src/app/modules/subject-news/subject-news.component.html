@@ -1,10 +1,26 @@
 <div class="subject-news-component content" *ngIf="state$ | async as state; else: load">
   <div class="subject-news-component__actions" *ngIf="state.isTeacher">
-    <div class="actions-group">
+    <div class="actions-group" *ngIf="!tabletMatcher.matches; else appsDropdown">
       <button mat-raised-button color="primary" (click)="constructorNews()">{{'text.subjects.news.add' | translate:'Добавить новость'}}</button>
       <button mat-raised-button class="hide-action" (click)="disableNews(true)">{{'text.subjects.news.hide.all' | translate:'Скрыть все новости'}}</button>
       <button mat-raised-button (click)="disableNews(false)">{{'text.subjects.news.show.all' | translate:'Показать все новости'}}</button>
     </div>
+    <ng-template #appsDropdown>
+      <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+        <mat-icon class="mat-icon-button-app">apps</mat-icon>
+      </button>
+      <mat-menu #actionsMenu="matMenu">
+        <button mat-menu-item (click)="constructorNews()">
+          {{'text.subjects.news.add' | translate:'Добавить новость'}}
+        </button>
+        <button mat-menu-item (click)="disableNews(true)" class="hide-action">
+          {{'text.subjects.news.hide.all' | translate:'Скрыть все новости'}}
+        </button>
+        <button mat-menu-item (click)="disableNews(false)">
+          {{'text.subjects.news.show.all' | translate:'Показать все новости'}}
+        </button>
+      </mat-menu>
+    </ng-template>
     <app-help [message]="help.message" [action]="help.action"></app-help>
   </div>
   <div class="subject-news-component__list" >

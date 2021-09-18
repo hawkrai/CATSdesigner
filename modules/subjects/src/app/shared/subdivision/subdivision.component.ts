@@ -120,7 +120,6 @@ export class SubdivisionComponent implements OnInit {
         this.studentList.push({...students, subGroup: index + 1});
       })
     });
-    console.log(this.studentList)
   }
 
   help: Help = {

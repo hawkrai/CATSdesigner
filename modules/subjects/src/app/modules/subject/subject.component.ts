@@ -18,6 +18,8 @@ import { Group } from 'src/app/models/group.model';
 import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { User } from 'src/app/models/user.model';
 import { map } from 'rxjs/operators';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
 
 @Component({
   selector: 'app-subject',
@@ -30,19 +32,29 @@ export class SubjectComponent implements OnInit, OnDestroy {
     subjects: Subject[],
     user: User
   }>;
+
+  searchValue: string = '';
+  filterOps = FilterOp;
   private subs = new SubSink();
+  actionsMatcher: MediaQueryList;
+  listViewMatcher: MediaQueryList;
+  mobileViewMatcher: MediaQueryList;
+
   
   public displayedColumns = ['name', 'shortName', 'groups', 'students', 'actions'];
 
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
-    private translate: TranslatePipe) { }
+    private translate: TranslatePipe,
+    public mediaMatcher: MediaMatcher) { }
   ngOnDestroy(): void {
     this.store.dispatch(subjectActions.resetSubjects());
+    this.cleanMediaMatchers();
   }
 
   ngOnInit() {
+    this.addMediaMatchers();
     this.store.dispatch(subjectActions.loadSubjects());
     this.state$ = combineLatest([
       this.store.select(subjectSelectors.getSubjects),
@@ -51,6 +63,25 @@ export class SubjectComponent implements OnInit, OnDestroy {
       map(([subjects, user]) => ({ subjects, user}))
     ));
   }
+
+  private matcherListener(event: MediaQueryListEvent): void {
+  }
+
+  private addMediaMatchers(): void {
+    this.actionsMatcher = this.mediaMatcher.matchMedia('(max-width: 832px)');
+    this.listViewMatcher = this.mediaMatcher.matchMedia('(max-width: 680px)');
+    this.mobileViewMatcher = this.mediaMatcher.matchMedia('(max-width: 540px)');
+    this.actionsMatcher.addEventListener('change', this.matcherListener);
+    this.listViewMatcher.addEventListener('change', this.matcherListener);
+    this.mobileViewMatcher.addEventListener('change', this.matcherListener);
+  }
+
+  private cleanMediaMatchers(): void {
+    this.actionsMatcher.removeEventListener('change', this.matcherListener);
+    this.listViewMatcher.removeEventListener('change', this.matcherListener);
+    this.mobileViewMatcher.removeEventListener('change', this.matcherListener);
+  }
+
 
   constructorSubject(subjects: Subject[], subjectId?: number) {
     const dialogData: DialogData = {
