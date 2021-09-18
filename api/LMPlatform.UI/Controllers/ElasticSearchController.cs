@@ -31,14 +31,16 @@ namespace LMPlatform.UI.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult
+                return
+                this.Json(new JsonResult
                 {
                     Data = new
                     {
                         Message = "Произошла ошибка поиска",
                         Error = e.Message
                     }
-                };
+                },
+                JsonRequestBehavior.AllowGet);
             }
 
         }
@@ -53,14 +55,16 @@ namespace LMPlatform.UI.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult
+                return
+                this.Json(new JsonResult
                 {
                     Data = new
                     {
                         Message = "Произошла ошибка поиска",
                         Error = e.Message
                     }
-                };
+                },
+                JsonRequestBehavior.AllowGet);
             }
 
         }
@@ -75,14 +79,16 @@ namespace LMPlatform.UI.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult
+                return
+                this.Json(new JsonResult
                 {
                     Data = new
                     {
                         Message = "Произошла ошибка поиска",
                         Error = e.Message
                     }
-                };
+                },
+                JsonRequestBehavior.AllowGet);
             }
         }
 

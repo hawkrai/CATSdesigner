@@ -29,18 +29,19 @@ export class SignupComponent implements OnInit {
               private route: Router) { }
 
   ngOnInit() {
+    var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
         Username: new FormControl('', [Validators.required, Validators.minLength(3),Validators.maxLength(30),
           Validators.pattern('^[A-Za-z0-9_.-@]*$')], ValidateEmailNotTaken.createValidator(this.accountService)),
         Password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
           Validators.pattern('^[A-Za-z0-9_]*$'), this.passwordValidator], ValidateEmailNotTaken.createValidator(this.accountService) ),
         ConfirmPassword: new FormControl(''),
-        Surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$'), Validators.maxLength(30)]),
-        Name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$'), Validators.maxLength(30)]),
-        Patronymic: new FormControl('', [ Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$'), Validators.maxLength(30)]),
+        Surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(nameRegExp), Validators.maxLength(30)]),
+        Name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(nameRegExp), Validators.maxLength(30)]),
+        Patronymic: new FormControl('', [ Validators.pattern(nameRegExp), Validators.maxLength(30)]),
         GroupId: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]),
         SecretId: new FormControl(1),
-        SecretAnswer: new FormControl('', [Validators.required,Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]*$'), Validators.minLength(1), Validators.maxLength(30)])
+        SecretAnswer: new FormControl('', [Validators.required,Validators.pattern(nameRegExp), Validators.minLength(1), Validators.maxLength(30)])
       }, {
         validator: MustMatch('Password', 'ConfirmPassword')
       });

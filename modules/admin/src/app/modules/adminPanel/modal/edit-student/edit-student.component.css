@@ -29,3 +29,7 @@ mat-dialog-actions {
   float: right;
   margin-top: 0;
 }
+
+.close-icon {
+  float: right;
+}

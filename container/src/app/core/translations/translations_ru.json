@@ -397,6 +397,13 @@
   "text.personalAccount.changePassword.wrongPassword": "Неверный пароль!",
   "text.personalAccount.GroupName": "Группа",
 
+  "text.profile.group": "Группа",
+  "text.profile.skill": "Должность",
+  "text.profile.lastLogin": "Последний визит",
+  "text.profile.currentSubjects": "Текущие предметы",
+  "text.profile.complitedSubjects": "Завершенные предметы",
+  "text.profile.cp": "Курсовые проекты",
+  "text.profile.dp": "Дипломные проекты",
 
   "text.login.WrongData": "Неверный логин и(или) пароль!",
 
@@ -558,4 +565,6 @@
   "text.help.popover.content.fourth": "БНТУ-2021",
   "text.help.popover.route.manual": "Перейти к руководству пользователя",
   "text.help.popover.close": "Закрыть"
+
+  
 }

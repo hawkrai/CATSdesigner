@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -186,7 +187,15 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             student.Group = GroupManagementService.GetGroup(student.GroupId);
             UsersManagementService.UpdateUser(user);
             new StudentSearchMethod().AddToIndex(student);
-            ElasticManagementService.AddStudent(student);
+            try 
+            {
+                ElasticManagementService.AddStudent(student);
+            }
+            catch (Exception)
+            {
+
+            }
+            
         }
         
         private void SaveLecturer()
@@ -204,7 +213,14 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             });
             lecturer.User = user;
             new LecturerSearchMethod().AddToIndex(lecturer);
-            ElasticManagementService.AddLecturer(lecturer);
+            try
+            {
+                ElasticManagementService.AddLecturer(lecturer);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 	}
 }
