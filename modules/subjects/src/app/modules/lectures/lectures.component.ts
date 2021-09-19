@@ -7,11 +7,10 @@ import {Store} from '@ngrx/store';
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import * as groupsSelectors from '../../store/selectors/groups.selectors';
 import * as groupsActions from '../../store/actions/groups.actions';
-import * as lecturesActions from '../../store/actions/lectures.actions';
 import {IAppState} from '../../store/state/app.state';
 import { Group } from 'src/app/models/group.model';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { TranslatePipe } from 'educats-translate';
 
 
 @Component({

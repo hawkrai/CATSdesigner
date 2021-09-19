@@ -10,7 +10,7 @@ import { SubjectManagementComponent } from '../subject/subject-managment/subject
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import * as subjectActions from '../../store/actions/subject.actions';
 import { SubdivisionComponent } from '../../shared/subdivision/subdivision.component';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-settings',

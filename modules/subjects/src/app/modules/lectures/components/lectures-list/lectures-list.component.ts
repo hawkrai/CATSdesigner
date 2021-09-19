@@ -19,9 +19,9 @@ import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
 import { DialogService } from './../../../../services/dialog.service';
 import * as filesActions from '../../../../store/actions/files.actions';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-lectures-list',

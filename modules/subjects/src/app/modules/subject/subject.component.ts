@@ -15,11 +15,11 @@ import {SubSink} from 'subsink';
 import * as catsActions from '../../store/actions/cats.actions';
 import { Message } from 'src/app/models/message.model';
 import { Group } from 'src/app/models/group.model';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { User } from 'src/app/models/user.model';
 import { map } from 'rxjs/operators';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-subject',
