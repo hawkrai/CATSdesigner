@@ -18,7 +18,7 @@ namespace LMPlatform.UI.Services.Modules.News
             NewsId = news.Id;
             Title = news.Title;
             SubjectId = news.SubjectId;
-            DateCreate = news.EditDate.ToShortDateString();
+            DateCreate = news.EditDate.ToString("dd.MM.yyyy");
             Disabled = news.Disabled;
             SubjectName = news.Subject.Name;
         }
