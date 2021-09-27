@@ -25,14 +25,15 @@ export class EditStudentComponent implements OnInit {
   ngOnInit() {
     const student = this.data;
     this.loadGroup();
+    var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
       Id: new FormControl(student.Id),
       Surname: new FormControl(student.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
+        Validators.pattern(nameRegExp)]),
       Name: new FormControl(student.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
+        Validators.pattern(nameRegExp)]),
       Patronymic: new FormControl(student.Patronymic, [Validators.maxLength(30),
-        Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$')]),
+        Validators.pattern(nameRegExp)]),
       Group: new FormControl(student.Group),
     });
   }

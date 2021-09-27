@@ -39,10 +39,6 @@ namespace Application.Infrastructure.ElasticManagement
                 ProjectRepo = new ProjectElasticSearchRepository(client);
                 Initializer = new ElasticInitializer(client);
             }
-            else
-            {
-                throw new Exception("Client was not connected to ElasticSearch server\n");
-            }
         }
 
 
@@ -68,66 +64,66 @@ namespace Application.Infrastructure.ElasticManagement
             return isConnected.IsValid;
         }
         public IEnumerable<ElasticGroup> GetGroupSearchResult(string searchStr) {
-            return GroupRepo.Search(searchStr).ToList<ElasticGroup>();
+            return GroupRepo != null ? GroupRepo.Search(searchStr).ToList<ElasticGroup>() : null;
         }
         public IEnumerable<ElasticStudent> GetStudentSearchResult(string searchStr) {
-            return StudentRepo.Search(searchStr).ToList<ElasticStudent>();
+            return StudentRepo != null ? StudentRepo.Search(searchStr).ToList<ElasticStudent>() : null;
         }
         public IEnumerable<ElasticLecturer> GetLecturerSearchResult(string searchStr) {
-            return LecturerRepo.Search(searchStr).ToList<ElasticLecturer>();
+            return LecturerRepo != null ? LecturerRepo.Search(searchStr).ToList<ElasticLecturer>() : null;
         }
         public IEnumerable<ElasticProject> GetProjectSearchResult(string searchStr) {
-            return ProjectRepo.Search(searchStr).ToList<ElasticProject>();
+            return ProjectRepo != null ? ProjectRepo.Search(searchStr).ToList<ElasticProject>() : null;
         }
 
         public void AddStudent(ElasticStudent student)
         {
-            StudentRepo.AddToIndex(student);
+            if(StudentRepo != null) StudentRepo.AddToIndex(student);
         }
         public void AddStudent(Student student)
         {
-            StudentRepo.AddToIndex(Initializer.ConvertStudent(student));
+            if(StudentRepo != null)  StudentRepo.AddToIndex(Initializer.ConvertStudent(student));
         }
         public void AddProject(ElasticProject project)
         {
-            ProjectRepo.AddToIndex(project);
+           if(ProjectRepo != null) ProjectRepo.AddToIndex(project);
         }
         public void AddProject(Project project)
         {
-            ProjectRepo.AddToIndex(Initializer.ConvertProject(project));
+           if(ProjectRepo != null) ProjectRepo.AddToIndex(Initializer.ConvertProject(project));
         }
         public void AddLecturer(ElasticLecturer lecturer)
         {
-            LecturerRepo.AddToIndex(lecturer);
+           if(LecturerRepo != null) LecturerRepo.AddToIndex(lecturer);
         }
         public void AddLecturer(Lecturer lecturer)
         {
-            LecturerRepo.AddToIndex(Initializer.ConvertLecturer(lecturer));
+           if(LecturerRepo != null) LecturerRepo.AddToIndex(Initializer.ConvertLecturer(lecturer));
         }
         public void AddGroup(ElasticGroup group)
         {
-            GroupRepo.AddToIndex(group);
+           if(GroupRepo != null) GroupRepo.AddToIndex(group);
         }
         public void AddGroup(Group group)
         {
-            GroupRepo.AddToIndex(Initializer.ConvertGroup(group));
+           if(GroupRepo != null) GroupRepo.AddToIndex(Initializer.ConvertGroup(group));
         }
 
         public void DeleteStudent(int modelId)
         {
-            StudentRepo.DeleteFromIndex(modelId);
+            if(StudentRepo != null)  StudentRepo.DeleteFromIndex(modelId);
         }
         public void DeleteLecturer(int modelId)
         {
-            LecturerRepo.DeleteFromIndex(modelId);
+           if(LecturerRepo != null) LecturerRepo.DeleteFromIndex(modelId);
         }
         public void DeleteGroup(int modelId)
         {
-            GroupRepo.DeleteFromIndex(modelId);
+           if(GroupRepo != null) GroupRepo.DeleteFromIndex(modelId);
         }
         public void DeleteProject(int modelId)
         {
-            ProjectRepo.DeleteFromIndex(modelId);
+           if(ProjectRepo != null) ProjectRepo.DeleteFromIndex(modelId);
         }
 
         public void ModifyStudent(ElasticStudent student)

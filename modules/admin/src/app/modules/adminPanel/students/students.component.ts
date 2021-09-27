@@ -11,6 +11,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatDialog} from '@angular/material/dialog';
+//import { AppToastrService } from 'src/app/service/toastr.service';
 
 @Component({
   selector: 'app-students',
@@ -27,7 +28,7 @@ export class StudentsComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   isDelete = false;
 
-  constructor(private dialog: MatDialog, private studentService: StudentService, private router: Router) { }
+  constructor(private dialog: MatDialog, /*private toastr: AppToastrService,*/ private studentService: StudentService, private router: Router) { }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
@@ -35,8 +36,8 @@ export class StudentsComponent implements OnInit {
     this.loadStudent();
   }
 
-  navigateToProfile(login) {
-    this.router.navigate(['profile', login]);
+  navigateToProfile(id) {
+    this.router.navigate(['profile', id]);
   }
 
   loadStudent() {
@@ -56,6 +57,7 @@ export class StudentsComponent implements OnInit {
           right: '0px'
         }
       });
+     // this.toastr.addSuccessFlashMessage('Студент успешно изменен.');
       this.loadStudent();
     }, err => {
       if ( err.status === 500) {

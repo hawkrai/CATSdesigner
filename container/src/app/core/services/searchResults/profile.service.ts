@@ -17,7 +17,15 @@ export class ProfileService {
     return this.http.get<ProfileProject[]>(this.api + 'GetUserProjectsById/' + Id);
   }
 
-  getProfileInfoSubjects(Id: any): Observable<ProfileInfoSubject[]> {
+  getDpProfileProjects(Id: any): Observable<ProfileProject[]> {
+    return this.http.get<ProfileProject[]>(this.api + 'GetDpUserProjectsById/' + Id);
+  }
+
+  getCpProfileProjects(Id: any): Observable<ProfileProject[]> {
+    return this.http.get<ProfileProject[]>(this.api + 'GetCpUserProjectsById/' + Id);
+  }
+
+  getProfileInfoSubjectsById(Id: any): Observable<ProfileInfoSubject[]> {
     return this.http.get<ProfileInfoSubject[]>(this.api + 'GetProfileInfoSubjectsById/' + Id);
   }
 

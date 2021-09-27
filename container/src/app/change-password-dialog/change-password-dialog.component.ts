@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { PersonalDataService } from '../core/services/personal-data.service';
-import { FormControl, Validators, ValidationErrors } from '@angular/forms';
+import { FormControl, Validators, ValidationErrors, FormGroup, FormBuilder } from '@angular/forms';
 import { TranslatePipe } from '../pipe/translate.pipe';
 import { AppToastrService } from '../core/services/toastr.service';
 
@@ -10,19 +10,12 @@ import { AppToastrService } from '../core/services/toastr.service';
   templateUrl: './change-password-dialog.html',
   styleUrls: ['./change-password-dialog.less']
 })
-export class ChangePasswordDialog {
+export class ChangePasswordDialog implements OnInit {
 
-  passwordFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator])
+  form: FormGroup;
+  
 
-  newPasswordFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator])
-
-  newPasswordRepeatFormControl = new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-  Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator])
-  private passwordValidator(control: FormControl): ValidationErrors {
-    return null;
-  }
+  
 
   showBadPasswordError = false;
 
@@ -34,15 +27,39 @@ export class ChangePasswordDialog {
   newPasswordRepeat = "";
 
   constructor(
-    public dialogRef: MatDialogRef<ChangePasswordDialog>, private dataService: PersonalDataService, private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
+    public dialogRef: MatDialogRef<ChangePasswordDialog>,private formBuilder: FormBuilder, private dataService: PersonalDataService, private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
 
+
+    ngOnInit(){
+      this.form = this.formBuilder.group({
+        passwordFormControl: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+          Validators.pattern('^[A-Za-z0-9_]*$')]),
+        
+          newPasswordFormControl: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+          Validators.pattern('^[A-Za-z0-9_]*$'), this.passwordValidator]),
+        
+          newPasswordRepeatFormControl: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+          Validators.pattern('^[A-Za-z0-9_]*$')])
+       }
+    );
+    }
+  
+    isControlInvalid(controlName: string): boolean {
+      const control = this.form.controls[controlName];
+      return control.invalid && control.touched;
+    }
+    
   onNoClick(): void {
     this.dialogRef.close();
   }
 
+  hasError = (controlName: string, errorName: string) => {
+    return this.form.controls[controlName].hasError(errorName);
+  }
+
   onSaveChangesClick(): void {
     this.showBadPasswordError = false;
-    if (this.newPasswordFormControl.valid && this.arePasswordsSame()) {
+    if (this.form.valid && this.arePasswordsSame()) {
         this.dataService.changePassword(this.oldPassword, this.newPassword).subscribe((res) => {
           if (res) {
             this.toastr.addSuccessFlashMessage(this.translatePipe.transform('text.personalAccount.passwordChanged', "Пароль успешно изменен!"));
@@ -60,6 +77,18 @@ export class ChangePasswordDialog {
     return this.newPasswordRepeat === this.newPassword;
   }
 
+  private passwordValidator(control: FormControl): ValidationErrors {
+    const value = control.value;
+    const hasNumber = /[0-9]/.test(value);
+    const hasCapitalLetter = /[A-Z]/.test(value);
+    const hasLowercaseLetter = /[a-z]/.test(value);
+    const passwordValid = hasNumber && hasCapitalLetter && hasLowercaseLetter;
+    if (!passwordValid) {
+     return {invalid: 'Password unvalid'};
+    }
+    return null;
+  }
 
 }
+
 

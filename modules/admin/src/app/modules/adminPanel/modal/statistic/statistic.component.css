@@ -6,3 +6,7 @@
 .mat-progress-spinner {
   position: initial;
 }
+
+.close-icon {
+  float: right;
+}

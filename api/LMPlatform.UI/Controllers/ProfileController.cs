@@ -220,6 +220,40 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
+        public ActionResult GetAllProfileInfoSubjectsById(int id)
+        {
+            var userService = this.UsersManagementService;
+            var subjectService = this.SubjectManagementService;
+            var user = userService.GetUserById(id);
+            List<Subject> model;
+
+            if (user.Lecturer == null)
+            {
+                model = subjectService.GetAllSubjectsByStudent(user.Id);
+            }
+            else
+            {
+                model = subjectService.GetAllSubjectsByLector(user.Id);
+            }
+
+            var returnModel = new List<object>();
+
+            foreach (var subject in model)
+                returnModel.Add(new
+                {
+                    subject.Name,
+                    subject.Id,
+                    subject.ShortName,
+                    subject.Color,
+                    Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
+                        user.Student),
+                    subject.IsArchive
+                });
+
+            return this.Json(returnModel, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
         public ActionResult GetProfileInfoById(int id)
         {
             var model = new ProfileVewModel();
@@ -233,7 +267,7 @@ namespace LMPlatform.UI.Controllers
             model.Phone = user.Phone;
             model.About = user.About;
             model.Id = user.Id;
-            model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy hh:mm:ss");
+            model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy HH:mm:ss");
             if (user.Lecturer != null)
             {
                 model.Name = user.Lecturer.LastName + " " + user.Lecturer.FirstName + " " + user.Lecturer.MiddleName;
@@ -255,7 +289,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetUserProjectsById( int id)
+        public ActionResult GetUserProjectsById(int id)
         {
             var service = this.UsersManagementService;
             var user = service.GetUserById(id);
@@ -264,6 +298,30 @@ namespace LMPlatform.UI.Controllers
             return this.Json(project.Select(e => new
             {
                 Name = e.Project.Title
+            }), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetDpUserProjectsById(int id)
+        {
+            var dpProject = this.DpManagementService.GetProjectsByUserId(id);
+
+            return this.Json(dpProject.Select(e => new
+            {
+                Name = e.Theme
+            }), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetCpUserProjectsById(int id)
+        {
+            var cpProject = this.CpManagementService.GetProjectsByUserId(id);
+
+            return this.Json(cpProject.Select(e => new
+            {
+
+                Name = e.Theme,
+                SubjectName = e.Subject
             }), JsonRequestBehavior.AllowGet);
         }
 
@@ -283,7 +341,7 @@ namespace LMPlatform.UI.Controllers
             model.Phone = user.Phone;
             model.About = user.About;
             model.Id = user.Id;
-            model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy hh:mm:ss");
+            model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy HH:mm:ss");
             if (user.Lecturer != null)
             {
                 model.Name = user.Lecturer.LastName + " " + user.Lecturer.FirstName + " " + user.Lecturer.MiddleName;

@@ -13,6 +13,8 @@ namespace Application.Infrastructure.DPManagement
 
         DiplomProjectData GetProject(int id);
 
+        List<DiplomProjectData> GetProjectsByUserId(int userId);
+
         void SaveProject(DiplomProjectData projectData);
 
         TaskSheetData GetTaskSheet(int diplomProjectId);

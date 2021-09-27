@@ -106,7 +106,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             };
 
             GroupManagementService.UpdateGroup(group);
-            ElasticManagementService.ModifyGroup(group);
+            ElasticManagementService.ModifyGroup(group);            
         }
 
         public bool CheckGroupName()
