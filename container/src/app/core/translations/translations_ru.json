@@ -11,6 +11,7 @@
   "chat.send":"Отправить", 
   "chat.cancle" :"Отмена",
   "chat.listStudent":"Список студентов",
+  "chat.filter":"Поиск сообщений",
   "subject": "Предметы",
   "graduation.project": "Дипломное проектирование",
   "other": "Другой",

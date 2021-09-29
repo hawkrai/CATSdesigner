@@ -16,10 +16,11 @@ import { SubjectGroups } from '../models/entities/subject.groups.model';
 })
 export class DataService {
     public files: any[] = [];
-
     public activChat: any;
     public activChatId: number;
+    public readMessageGroupCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     public readMessageCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    public readMessageChatCount: BehaviorSubject<number> = new BehaviorSubject<number>(0);
     public activGroup: Groups;
     public activeSubject: SubjectGroups;
     public chats: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([]);
@@ -31,22 +32,39 @@ export class DataService {
     public isLecturer: boolean;
     private fileUrl: string;
     constructor(private http: HttpClient,
-         private msgService: MsgService,
-          private chatGroupService: ChatService) {
+        private msgService: MsgService,
+        private chatGroupService: ChatService) {
         this.user = JSON.parse(localStorage.getItem('currentUser'));
         this.isLecturer = this.user.role == "lector";
     }
 
     public LoadChats(): void {
-        this.chatGroupService.loadChats().subscribe((result: Chat[]) =>
-            this.chats.next(result)
+        this.chatGroupService.loadChats().subscribe((result: Chat[]) => {
+            var unread = 0;
+            result.forEach(elem => {
+                if (elem.unread)
+                    unread += elem.unread;
+            });
+            this.readMessageChatCount.next(unread);
+            this.chats.next(result);
+        }
         )
     }
 
     public LoadGroup(): void {
-        this.chatGroupService.loadGroups().subscribe((result: SubjectGroups[]) =>
+        this.chatGroupService.loadGroups().subscribe((result: SubjectGroups[]) => {
+            var unread = 0;
+            result.forEach(elem => {
+                if (elem.unread)
+                    unread += elem.unread;
+                elem.groups.forEach(element => {
+                    if (elem.unread)
+                        unread+=element.unread;
+                });
+            });
+            this.readMessageGroupCount.next(unread);
             this.groups.next(result)
-        )
+        })
     }
 
     public updateRead() {
@@ -61,7 +79,7 @@ export class DataService {
     public SetStatus(id: number, isOnline: boolean): void {
         var chats = this.chats.getValue();
         var chatNum = chats.findIndex(x => x.userId == id);
-        if (chatNum>-1) {
+        if (chatNum > -1) {
             chats[chatNum].isOnline = isOnline;
             this.chats.next(chats);
         }
@@ -73,6 +91,7 @@ export class DataService {
             if (subjectNum > -1) {
                 var subjects = this.groups.getValue();
                 this.readMessageCount.next(subjects[subjectNum].unread);
+                this.readMessageGroupCount.next(this.readMessageGroupCount.getValue() - subjects[subjectNum].unread);
                 subjects[subjectNum].unread = 0;
                 this.groups.next(subjects);
             }
@@ -81,6 +100,7 @@ export class DataService {
                 [subjectNum, groupNum] = this.getNumGroupById(this.activChatId);
                 var subjects = this.groups.getValue();
                 this.readMessageCount.next(subjects[subjectNum].groups[groupNum].unread);
+                this.readMessageGroupCount.next(this.readMessageGroupCount.getValue() - subjects[subjectNum].groups[groupNum].unread);
                 subjects[subjectNum].groups[groupNum].unread = 0;
                 this.groups.next(subjects);
             }
@@ -118,15 +138,17 @@ export class DataService {
             this.messages.next(this.messages.getValue().concat(msg))
         }
         else {
-            this.readMessageCount.next(-1);
             var chatNum = this.getNumChatById(msg.chatId);
+            this.readMessageCount.next(-1);
             if (chatNum > -1) {
                 var chats = this.chats.getValue();
                 chats[chatNum].unread++;
                 this.chats.next(chats);
+                this.readMessageChatCount.next(this.readMessageChatCount.getValue()+1);
             }
             else {
                 var subjectNum = this.getNumSubjectById(msg.chatId);
+                this.readMessageGroupCount.next(this.readMessageGroupCount.getValue()+1);
                 if (subjectNum > -1) {
                     var subjects = this.groups.getValue();
                     subjects[subjectNum].unread++;

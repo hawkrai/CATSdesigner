@@ -3,6 +3,9 @@ import path from 'path';
 import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware';
 import * as modules from './modules.json';
 
+var https = require('https');
+var http = require('http');
+
 const app = express();
 const port = 3000;
 const targetDomain = "https://host27072020.of.by";
@@ -116,7 +119,7 @@ const proxyElasticSearchOptions = {
 }
 
 const proxyChatOptions = { 
-  target: "https://chateduc.w12.hoster.by/", 
+  target: "https://localhost:4200/", 
   changeOrigin: true,
   pathRewrite: {
     '^/catService': '/ChatApi', // rewrite path
@@ -124,6 +127,15 @@ const proxyChatOptions = {
   secure: false
 }
 
+const proxySignalROptions = { 
+  target: "https://localhost:4200/", 
+  pathRewrite: {
+    '^/chatSignalR':'/chat'
+  },
+  secure: false
+}
+
+app.use('*/chatSignalR/*', createProxyMiddleware(proxySignalROptions));
 app.use('*/catService/*', createProxyMiddleware(proxyChatOptions));
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
@@ -152,9 +164,3 @@ app.get('*', (req,res) => {
    }    
  });
 
-app.listen(port, err => {
-  if (err) {
-    return console.error(err);
-  }
-  return console.log(`server is listening on ${port}`);
-});

@@ -4,12 +4,14 @@ import { Message } from '../models/entities/message.model';
 import { DataService } from './dataService';
 import { ContactService } from './contactService';
 import { MessageCto } from '../models/dto/messageCto';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class SignalRService {
   private hubConnection: HubConnection
   public user: any;
+
   constructor(
     private dataService: DataService,
     private contactService: ContactService) {
@@ -20,7 +22,7 @@ export class SignalRService {
   public connect()
   {
     this.hubConnection = new HubConnectionBuilder()
-                            .withUrl('https://chateduc.w12.hoster.by/chat')
+                            .withUrl('/chatSignalR')
                             .withAutomaticReconnect()
                             .build();
     this.hubConnection

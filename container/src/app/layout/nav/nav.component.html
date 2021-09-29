@@ -63,7 +63,7 @@
   </div>
   <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h">
     <mat-icon matBadge={{unRead}}
-    [matBadgeHidden]="unRead==0"
+    [matBadgeHidden]="unRead<1"
     matBadgeOverlap="true"
     matBadgePosition="above"
     matBadgeColor="warn"
@@ -174,7 +174,7 @@
 
       <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h">
         <mat-icon matBadge={{unRead}}
-        [matBadgeHidden]="unRead==0"
+        [matBadgeHidden]="unRead<1"
         matBadgeOverlap="true"
         matBadgePosition="above"
         matBadgeColor="warn"
