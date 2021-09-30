@@ -3,9 +3,6 @@ import path from 'path';
 import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware';
 import * as modules from './modules.json';
 
-var https = require('https');
-var http = require('http');
-
 const app = express();
 const port = 3000;
 const targetDomain = "https://host27072020.of.by";
@@ -164,3 +161,9 @@ app.get('*', (req,res) => {
    }    
  });
 
+app.listen(port, err => {
+  if (err) {
+    return console.error(err);
+  }
+  return console.log(`server is listening on ${port}`);
+});
