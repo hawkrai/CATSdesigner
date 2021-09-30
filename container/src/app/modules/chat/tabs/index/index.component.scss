@@ -1,6 +1,12 @@
 //@import '~bootstrap/scss/bootstrap';
 @import '../../../../../assets/scss/app.scss';
 
+.form-control
+{
+    border-radius: 0px !important;
+    border: none;
+}
+
 .mat-typography
 {
     background: white;
@@ -25,6 +31,25 @@
     }
 }
 
+.groupName
+{
+        max-width: calc(100vw - 160px) !important;
+}
+
+.msgs
+{
+    @media (max-width: 991.98px)
+    {
+        height: calc(100% - 130px) !important;
+    }
+    @media (max-width: 3000px)
+    {   
+        height: calc(100% - 70px)
+    }
+}
+.form-control-lg {
+    height: calc(1.5em + 1rem + 13px) !important;
+}
 .layout-wrapper
 {
     height: inherit;
