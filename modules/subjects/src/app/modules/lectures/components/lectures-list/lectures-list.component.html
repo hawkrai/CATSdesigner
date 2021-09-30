@@ -2,7 +2,7 @@
   <div class="lectures-list-component__actions" *ngIf="isTeacher">
     <button mat-raised-button color="primary" (click)="constructorLecture(lectures.length)">{{'text.subjects.lectures.add' | translate:'Добавить лекцию'}}</button>
   </div>
-  <table #table class="table" mat-table [dataSource]="lectures" cdkDropList
+  <table *ngIf="!tabletMatcher.matches; else listView" #table class="table" mat-table [dataSource]="lectures" cdkDropList
   [cdkDropListData]="lectures"
   (cdkDropListDropped)="drop($event)">
   <ng-container matColumnDef="index">
@@ -50,6 +50,53 @@
   <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
   <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();" [cdkDragDisabled]="!isTeacher" cdkDragLockAxis="y" cdkDrag [cdkDragData]="row"></tr>
 </table>
+<ng-template #listView>
+  <mat-form-field style="width: 100%;">
+    <mat-label>{{'search' | translate:'Поиск'}}</mat-label>
+    <input matInput type="text" [(ngModel)]="searchValue">
+    <button *ngIf="value" matSuffix mat-icon-button (click)="searchValue = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <app-list [items]="lectures | filter:'Theme':searchValue:filterOps.Contains" [gap]="'10px'" [columns]="1">
+    <ng-template appListItemHeader let-item>
+      <div>
+        <h3>{{'text.subjects.lectures.theme' | translate:'Тема лекции'}}</h3>
+        <span class="navigation-link" (click)="navigateToSubject(item.SubjectId)">{{item.Theme}}</span>
+      </div>
+    </ng-template>
+    <ng-template appListItemBody let-item>
+      <div class="body-container">
+        <div>
+          <h4 >{{'text.number.hours' | translate:'Количество часов'}}</h4>
+          {{item.Duration}}
+        </div>
+        <div >
+          <h4>{{'text..attachments.plural' | translate:'Файлы'}}</h4>
+          <button class="mdc-button" *ngIf="item.Attachments.length > 0"
+            (click)="openFilePopup(item.Attachments)">
+            <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
+            <sub class="mdc-button__label">({{item.Attachments.length}})</sub>
+          </button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template appListItemActions let-item>
+      <ng-container *ngIf="isTeacher">
+        <h3>{{'text.action' | translate:'Действие'}}</h3>
+      </ng-container>
+      <div style="display: flex; justify-content: flex-end;" *ngIf="isTeacher">
+        <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lectures.edit' | translate:'Редактировать лекцию'"
+        (click)="constructorLecture(lectures.length, item)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lectures.delete' | translate:'Удалить лекцию'" (click)="deleteLectures(item)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+  </app-list>
+</ng-template>
 </div>
 <ng-template #load>
   <div class="spinner">

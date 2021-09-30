@@ -19,7 +19,9 @@ import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
 import { DialogService } from './../../../../services/dialog.service';
 import * as filesActions from '../../../../store/actions/files.actions';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-lectures-list',
@@ -32,13 +34,17 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   private subs = new SubSink();
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
 
+  public tabletMatcher: MediaQueryList;
   public lectures: Lecture[];
+  searchValue: string = '';
+  filterOps = FilterOp;
 
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
     private translate: TranslatePipe,
-    private cdRef: ChangeDetectorRef) {
+    private cdRef: ChangeDetectorRef,
+    private mediaMatcher: MediaMatcher) {
   }
 
   ngOnInit(): void {
@@ -46,7 +52,21 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     this.subs.add(this.store.select(lecturesSelectors.getLectures).subscribe(lectures => {
       this.lectures = [...lectures];
     }));
+    this.addMediaMatchers();
   }
+
+  private addMediaMatchers(): void {
+    this.tabletMatcher = this.mediaMatcher.matchMedia('(max-width: 500px)');
+    this.tabletMatcher.addEventListener('change', this.emptyListner);
+
+  }
+
+  private cleanMediaMatchers(): void {
+    this.tabletMatcher.removeEventListener('change', this.emptyListner);
+
+  }
+
+  private emptyListner() {}
 
   getDisplayedColumns(): string[] {
     const defaultColumns = ['index', 'theme', 'duration', 'files'];
@@ -61,6 +81,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   }
 
   ngOnDestroy(): void {
+    this.cleanMediaMatchers();
     this.subs.unsubscribe();
     this.store.dispatch(lecturesActions.resetLectures());
   }

@@ -12,11 +12,11 @@ import * as lecturesSelectors from '../../../../store/selectors/lectures.selecto
 import * as  lecturesActions from '../../../../store/actions/lectures.actions';
 import { DialogService } from 'src/app/services/dialog.service';
 import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
 import * as catsActions from '../../../../store/actions/cats.actions';
 import * as moment from 'moment';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-visit-lectures',
