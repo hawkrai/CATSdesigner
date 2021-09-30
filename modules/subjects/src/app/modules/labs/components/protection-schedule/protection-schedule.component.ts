@@ -13,7 +13,7 @@ import { VisitDateLabsPopoverComponent } from './visit-date-labs-popover/visit-d
 import { DialogService } from 'src/app/services/dialog.service';
 import { map, tap } from 'rxjs/operators';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-protection-schedule',

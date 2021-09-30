@@ -14,9 +14,8 @@ import * as subjectSelectors from '../../../../store/selectors/subject.selector'
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import { VisitingPopoverComponent } from 'src/app/shared/visiting-popover/visiting-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
-import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-visit-statistic',

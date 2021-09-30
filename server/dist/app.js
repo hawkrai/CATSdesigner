@@ -14,6 +14,8 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const http_proxy_middleware_1 = require("http-proxy-middleware");
 const modules = __importStar(require("./modules.json"));
+var https = require('https');
+var http = require('http');
 const app = express_1.default();
 const port = 3000;
 const targetDomain = "https://host27072020.of.by";
@@ -112,13 +114,21 @@ const proxyElasticSearchOptions = {
     }
 };
 const proxyChatOptions = {
-    target: "https://chateduc.w12.hoster.by/",
+    target: "https://localhost:4200/",
     changeOrigin: true,
     pathRewrite: {
         '^/catService': '/ChatApi',
     },
     secure: false
 };
+const proxySignalROptions = {
+    target: "https://localhost:4200/",
+    pathRewrite: {
+        '^/chatSignalR': '/chat'
+    },
+    secure: false
+};
+app.use('*/chatSignalR/*', http_proxy_middleware_1.createProxyMiddleware(proxySignalROptions));
 app.use('*/catService/*', http_proxy_middleware_1.createProxyMiddleware(proxyChatOptions));
 app.use('*/Services/*', http_proxy_middleware_1.createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', http_proxy_middleware_1.createProxyMiddleware(proxyAccountOptions));
@@ -143,11 +153,5 @@ app.get('*', (req, res) => {
     else {
         res.sendFile(path_1.default.resolve(`${modulePath}/${entryPoint}`));
     }
-});
-app.listen(port, err => {
-    if (err) {
-        return console.error(err);
-    }
-    return console.log(`server is listening on ${port}`);
 });
 //# sourceMappingURL=app.js.map

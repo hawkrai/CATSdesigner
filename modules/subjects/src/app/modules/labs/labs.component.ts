@@ -16,11 +16,11 @@ import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-pop
 import * as labsActions from '../../store/actions/labs.actions';
 import * as labsSelectors from '../../store/selectors/labs.selectors';
 import { MatSlideToggleChange } from '@angular/material';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model';
 import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model';
 import { Help } from 'src/app/models/help.model';
 import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
+import { TranslatePipe } from 'educats-translate';
 
 interface State {
   groups: Group[];

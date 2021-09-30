@@ -8,7 +8,7 @@ import { DialogService } from './../../services/dialog.service';
 import { DialogData } from '../../models/dialog-data.model';
 import { DeletePopoverComponent } from '../delete-popover/delete-popover.component';
 import { timeValidator } from '../validators/time.validator';
-import { TranslatePipe } from "../../../../../../container/src/app/pipe/translate.pipe";
+import { TranslatePipe } from "educats-translate";
 
 export const MY_FORMATS = {
   parse: {

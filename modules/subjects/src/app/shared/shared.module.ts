@@ -7,6 +7,7 @@ import { VarDirective } from './directives/var.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { TranslateModule, TranslatePipe } from 'educats-translate';
 
 import {FilterPipe} from './pipes/filter.pipe';
 import { PluralPipe } from './pipes/plural.pipe';
@@ -25,7 +26,6 @@ import { CheckPlagiarismPopoverComponent } from './check-plagiarism-popover/chec
 import { SortByPipe } from './pipes/sort-by.pipe';
 import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
 import { PopoverDialogComponent } from './popover-dialog/popover-dialog.component';
-import { TranslatePipe } from '../../../../../container/src/app/pipe/translate.pipe';
 import { FileComponent } from './components/file/file.component';
 import { HelpComponent } from './components/help/help.component';
 import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
@@ -40,6 +40,8 @@ import { ListItemComponent } from './components/list/list-item/list-item.compone
 import { ListItemHeaderDirective } from './components/list/directives/list-item-header.directive';
 import { ListItemBodyDirective } from './components/list/directives/list-item-body.directive';
 import { ListItemActionsDirective } from './components/list/directives/list-item-actions.directive';
+import * as dataEn from '../core/translation/translations_en.json';
+import * as dataRu from '../core/translation/translations_ru.json';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,6 @@ import { ListItemActionsDirective } from './components/list/directives/list-item
     SortByPipe,
     MarkPopoverComponent,
     PopoverDialogComponent,
-    TranslatePipe,
     FileComponent,
     HelpComponent,
     HelpPopoverComponent,
@@ -85,7 +86,13 @@ import { ListItemActionsDirective } from './components/list/directives/list-item
     FormsModule,
     MatModule,
     ReactiveFormsModule,
-    PopoverModule
+    PopoverModule,
+    TranslateModule.forRoot({
+      localizationMap: {
+        'ru': dataRu,
+        'en': dataEn
+      }
+    })
   ],
   entryComponents: [
     DeletePopoverComponent,

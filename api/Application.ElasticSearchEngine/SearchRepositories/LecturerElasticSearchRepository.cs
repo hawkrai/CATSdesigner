@@ -13,7 +13,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
 {
     public class LecturerElasticSearchRepository : BaseElasticSearchRepository
     {
-        private static string LECTURERS_INDEX_NAME => ConfigurationManager.AppSettings["ElasticLecturersIndexName"];
+        private static string LECTURERS_INDEX_NAME => ConfigurationManager.AppSettings["LecturersIndexName"];
 
         public LecturerElasticSearchRepository(ElasticClient client)
             : base(client, LECTURERS_INDEX_NAME)
@@ -66,7 +66,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         }
         public void AddToIndex(ElasticLecturer lecturer)
         {
-                Client.Index<ElasticLecturer>(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
+                Client.Index(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
         }
         public void AddToIndex(IEnumerable<ElasticLecturer> lecturers)
         {
