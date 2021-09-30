@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "../../../lmsNew/node_modules/.bin/ng lint",
     "e2e": "../../../lmsNew/node_modules/.bin/ng e2e",
-    "build:qa": "ng build --output-path d:/.temp/apps/course",
+    "build:qa": "ng build --output-path c:/.temp/apps/course",
     "build:prod": "ng build --output-path d:/CatsProject/apps/course"
   },
   "private": true,

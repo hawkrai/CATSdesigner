@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "start:custom": "ng serve -o --port 8989 --host 192.168.50.33",
-    "build:qa": "ng build --output-path d:/.temp/apps/container",
+    "build:qa": "ng build --output-path c:/.temp/apps/container",
     "build:prod": "ng build --output-path d:/CatsProject/apps/container"
   },
   "private": true,

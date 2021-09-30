@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:qa": "ng build --output-path d:/.temp/apps/complex",
+    "build:qa": "ng build --output-path c:/.temp/apps/complex",
     "build:prod": "ng build --output-path d:/CatsProject/apps/complex"
   },
   "dependencies": {
