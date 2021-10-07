@@ -7,7 +7,7 @@ import 'ckeditor5-custom-build/build/translations/en-gb';
 
 import * as Editor from 'ckeditor5-custom-build/build/ckeditor';
 import * as StringHelper from './../../../helpers/string-helper'
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-edit-document-dialog',

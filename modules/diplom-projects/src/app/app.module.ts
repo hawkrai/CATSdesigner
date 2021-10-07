@@ -50,7 +50,9 @@ import {EditTaskSheetComponent} from './components/task-sheet/edit-task-sheet/ed
 import {VisitingPopoverComponent} from './shared/visiting-popover/visiting-popover.component';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import { CustomDateAdapter } from './custom-date-adapter';
-import {TranslatePipe} from "../../../../container/src/app/pipe/translate.pipe";
+import { TranslateModule, TranslatePipe } from 'educats-translate';
+import * as dataEn from './data/translations_en.json';
+import * as dataRu from './data/translations_ru.json';
 
 @NgModule({
   declarations: [
@@ -103,7 +105,13 @@ import {TranslatePipe} from "../../../../container/src/app/pipe/translate.pipe";
         MatSlideToggleModule,
         MatProgressSpinnerModule,
         MatRadioModule,
-        MatRippleModule
+        MatRippleModule,
+        TranslateModule.forRoot({
+          localizationMap: {
+            en: dataEn,
+            ru: dataRu
+          }
+        })
     ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},

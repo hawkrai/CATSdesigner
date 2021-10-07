@@ -1,8 +1,5 @@
-import {Component, Inject, OnInit } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog'
-import { TranslatePipe } from 'src/app/pipe/translate.pipe';
+import {Component } from '@angular/core';
+import {MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'about-popover',
@@ -12,8 +9,8 @@ import { TranslatePipe } from 'src/app/pipe/translate.pipe';
 export class AboutSystemPopoverComponent{
 
   constructor (
-    private dialogRef: MatDialogRef<AboutSystemPopoverComponent>,
-    private translate: TranslatePipe) {
+    private dialogRef: MatDialogRef<AboutSystemPopoverComponent>
+    ) {
       dialogRef.disableClose = true;
     }
 

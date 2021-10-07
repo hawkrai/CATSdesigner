@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from '../core/services/auth.service';
-import {TranslatePipe} from '../pipe/translate.pipe';
+import {TranslatePipe} from 'educats-translate';
 import {MatDialog} from '@angular/material/dialog';
 import {VideoComponent} from './modal/video.component';
 import { ViewEncapsulation } from '@angular/core';

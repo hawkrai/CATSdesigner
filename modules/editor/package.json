@@ -26,6 +26,7 @@
     "@ckeditor/ckeditor5-angular": "^1.2.3",
     "ckeditor5-custom-build": "file:src/app/core/custom-ckeditor5",
     "educats-common": "^2.0.0",
+    "educats-translate": "^1.0.0",
     "hammerjs": "^2.0.8",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",

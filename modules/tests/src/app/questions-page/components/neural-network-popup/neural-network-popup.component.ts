@@ -6,7 +6,7 @@ import * as neuralNetworkV2 from "../../../core/neuron/neuron1.js";
 import {TestPassingService} from "../../../service/test-passing.service";
 import {catchError, takeUntil, tap} from "rxjs/operators";
 import {Subject, throwError} from "rxjs";
-import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
+import {TranslatePipe} from "educats-translate";
 
 
 @Component({

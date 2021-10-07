@@ -9,7 +9,7 @@ import { TreeComponent } from '../tree/tree.component';
 import { DocumentService } from './../../services/document.service';
 import { TestService } from './../../services/tests.service';
 import { DocumentPreview } from './../../models/DocumentPreview';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 import { AddDocumentDialogComponent } from '../dialogs/add-document-dialog/add-document-dialog.component';
 import { EditDocumentDialogComponent } from '../dialogs/edit-document-dialog/edit-document-dialog.component';

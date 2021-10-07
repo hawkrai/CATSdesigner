@@ -11,7 +11,7 @@ import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.compon
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 import {DatePipe} from '@angular/common';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
-import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
+import {TranslatePipe} from 'educats-translate';
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component';
 
 
