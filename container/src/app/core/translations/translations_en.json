@@ -63,6 +63,9 @@
   "group": "Group",
   "lecturer": "Lecturer",
   "student": "Student",
+  "groups": "Groups",
+  "lecturers": "Lecturers",
+  "students": "Students",
   
   "subject.abbreviation": "Abbreviation",
   "symbols.min.length": "Minimum number of characters",

@@ -27,7 +27,7 @@
     .profile-card {
       margin: 30px;
       margin-top: 10px;
-      max-height: 59vh;
+      /* max-height: 59vh; */
       /*    height: 90%;*/
       /*  width: 100%;*/
     }

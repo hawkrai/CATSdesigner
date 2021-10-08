@@ -5,7 +5,6 @@
       display: flex;
       height: 85%;
       position: relative;
-      z-index: 2;
     }
 
     .project-table{
@@ -124,7 +123,6 @@
       margin-top: 10px;
       display: grid;
       position: relative;
-      z-index: 2;
     }
 
 

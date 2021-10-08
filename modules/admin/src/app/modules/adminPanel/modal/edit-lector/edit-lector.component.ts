@@ -47,7 +47,7 @@ export class EditLectorComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
-  }
+  }z
 
   onYesClick(): void {
     this.dialogRef.close({data: this.sendData()});
