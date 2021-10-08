@@ -44,6 +44,7 @@ import { HelpPopoverProgressControlComponent } from './progress-control/help-pop
 import { AboutSystemComponent } from './about-system/about-system.component';
 import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component';
 import { SharedModule } from './shared/shared.module';
+import { VideoComponent } from './login/modal/video.component';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import { SharedModule } from './shared/shared.module';
     AboutSystemComponent,
     LectorManualComponent,
     StudentManualComponent,
-    HelpPopoverProgressControlComponent
+    HelpPopoverProgressControlComponent,
+    VideoComponent
 
   ],
   imports: [
