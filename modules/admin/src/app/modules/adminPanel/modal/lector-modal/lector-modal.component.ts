@@ -35,7 +35,7 @@ export class LectorModalComponent implements OnInit {
         [Validators.required, Validators.minLength(3),
           Validators.pattern('^[A-Za-z0-9_.-@]*$')], ValidateEmailNotTaken.createValidator(this.accountService)),
       Password: new FormControl( professor.Password,
-        [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z0-9_]*$'),
+        [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z0-9_-]*$'),
         Validators.maxLength(30), this.passwordValidator]),
       ConfirmPassword: new FormControl(professor.ConfirmPassword),
       Surname: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),

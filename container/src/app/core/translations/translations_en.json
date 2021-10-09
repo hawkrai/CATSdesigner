@@ -67,9 +67,15 @@
   "group": "Group",
   "lecturer": "Lecturer",
   "student": "Student",
+
+  "groups": "Groups",
+  "lecturers": "Lecturers",
+  "students": "Students",
+  
   "text.thirdsubgroup.add": "Add third subgroup",
   "text.thirdsubgroup.remove": "Remove third subgroup",
   "subject.abbreviation": "Subject abbreviation",
+
   "symbols.min.length": "Minimum number of characters",
   "symbols.max.length": "Maximum number of characters",
   "comment.for.student": "Show comment for student",

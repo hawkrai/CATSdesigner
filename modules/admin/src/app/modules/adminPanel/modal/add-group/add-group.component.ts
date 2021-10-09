@@ -35,30 +35,11 @@ export class AddGroupComponent implements OnInit {
     this.dialogRef.close({data: this.sendData()});
   }
 
-  yearOfReceipt() {
-    const yearArr = new Array();
-    let currentYear = new Date().getFullYear();
-    for (let i = 0; i < 20; i++) {
-      yearArr.push(currentYear);
-      currentYear--;
-    }
-    currentYear = new Date().getFullYear()
-    for (let i = 0; i < 20; i++) {
-      yearArr.push(currentYear);
-      currentYear++;
-    }
-    return yearArr;
-  }
-
   yearOfIssue() {
+    var range = 40;
     const yearArr = new Array();
-    let currentYear = new Date().getFullYear();
-    for (let i = 0; i < 20; i++) {
-      yearArr.push(currentYear);
-      currentYear--;
-    }
-    currentYear = new Date().getFullYear()
-    for (let i = 0; i < 20; i++) {
+    let currentYear = new Date().getFullYear() - range/2;
+    for (let i = 0; i < range; i++) {
       yearArr.push(currentYear);
       currentYear++;
     }

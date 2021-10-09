@@ -31,13 +31,13 @@ export class ProfileComponent implements OnInit {
   constructor(private profileService: ProfileService, private route: ActivatedRoute, private translatePipe: TranslatePipe) { }
    
   ngOnInit(): void {
-    const Id = this.route.snapshot.params.id;
-    const profileModel = new ProfileModel();
-    profileModel.Id = Id;
-    this.getProfileInfo(profileModel.Id);
-    this.getProfileInfoSubjects(profileModel.Id);
-    this.getCpProfileProjects(profileModel.Id);
-    this.getDpProfileProjects(profileModel.Id);
+    this.route.params.subscribe(params =>{
+      this.getProfileInfo(params['id']);
+      this.getProfileInfoSubjects(params['id']);
+      this.getCpProfileProjects(params['id']);
+      this.getDpProfileProjects(params['id']);
+      }
+    )
   }
 
   isStudent() {
