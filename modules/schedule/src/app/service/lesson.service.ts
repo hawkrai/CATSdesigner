@@ -189,4 +189,18 @@ export class LessonService {
   public deleteDiplomConsultation(id: any): Observable<any> {
     return this.http.post('/api/DiplomProjectConsultationDate/' + id, null);
   }
+
+  public getCourseConsultations(params: any): Observable<any> {
+    return this.http.get('/api/CourseProjectConsultation', {params: new HttpParams({fromObject: params})});
+  }
+
+  public addCourseConsultation(date: string, subjectId: string, startTime: string, endTime: string,
+                               audience: string, building: string): Observable<any> {
+    return this.http.post('/api/CourseProjectConsultationDate', {Day: date, SubjectId: subjectId, StartTime: startTime,
+      EndTime: endTime, Building: building, Audience: audience});
+  }
+
+  public deleteCourseConsultation(id: any): Observable<any> {
+    return this.http.post('/api/CourseProjectConsultationDate/' + id, null);
+  }
 }

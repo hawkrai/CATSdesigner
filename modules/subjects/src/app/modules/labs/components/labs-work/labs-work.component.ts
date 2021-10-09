@@ -18,7 +18,7 @@ import * as labsActions from '../../../../store/actions/labs.actions';
 import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as filesActions from '../../../../store/actions/files.actions';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-labs-work',

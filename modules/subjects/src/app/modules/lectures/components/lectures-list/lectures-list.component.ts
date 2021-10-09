@@ -19,30 +19,32 @@ import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
 import { DialogService } from './../../../../services/dialog.service';
 import * as filesActions from '../../../../store/actions/files.actions';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-lectures-list',
   templateUrl: './lectures-list.component.html',
   styleUrls: ['./lectures-list.component.less']
 })
-export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
+export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() isTeacher: boolean;
   @Input() subjectId: number;
   private subs = new SubSink();
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
 
-  defaultColumns = ['index', 'theme', 'duration', 'files'];
-  displayedColumns: string[] = [];
-
-
+  public tabletMatcher: MediaQueryList;
   public lectures: Lecture[];
+  searchValue: string = '';
+  filterOps = FilterOp;
 
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
     private translate: TranslatePipe,
-    private cdRef: ChangeDetectorRef) {
+    private cdRef: ChangeDetectorRef,
+    private mediaMatcher: MediaMatcher) {
   }
 
   ngOnInit(): void {
@@ -50,12 +52,28 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     this.subs.add(this.store.select(lecturesSelectors.getLectures).subscribe(lectures => {
       this.lectures = [...lectures];
     }));
+    this.addMediaMatchers();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.isTeacher) {
-      this.displayedColumns = [...this.defaultColumns, 'actions' ];
+  private addMediaMatchers(): void {
+    this.tabletMatcher = this.mediaMatcher.matchMedia('(max-width: 500px)');
+    this.tabletMatcher.addEventListener('change', this.emptyListner);
+
+  }
+
+  private cleanMediaMatchers(): void {
+    this.tabletMatcher.removeEventListener('change', this.emptyListner);
+
+  }
+
+  private emptyListner() {}
+
+  getDisplayedColumns(): string[] {
+    const defaultColumns = ['index', 'theme', 'duration', 'files'];
+    if (this.isTeacher) {
+      return defaultColumns.concat('actions');
     }
+    return defaultColumns;
   }
 
   ngAfterViewChecked(): void {
@@ -63,6 +81,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
   }
 
   ngOnDestroy(): void {
+    this.cleanMediaMatchers();
     this.subs.unsubscribe();
     this.store.dispatch(lecturesActions.resetLectures());
   }

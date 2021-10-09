@@ -5,9 +5,9 @@ import * as modules from './modules.json';
 
 const app = express();
 const port = 3000;
-const targetDomain = "https://host27072020.of.by";
+const targetDomain = "http://localhost:2021";
 
-app.use(express.static(path.resolve('/home/educatsb/apps')));
+app.use(express.static(path.resolve('d:/CatsProject/apps')));
 
 const allowedExt = [
   '.js',
@@ -116,7 +116,7 @@ const proxyElasticSearchOptions = {
 }
 
 const proxyChatOptions = { 
-  target: "https://chateduc.w12.hoster.by/", 
+  target: "https://localhost:4200/", 
   changeOrigin: true,
   pathRewrite: {
     '^/catService': '/ChatApi', // rewrite path
@@ -124,6 +124,15 @@ const proxyChatOptions = {
   secure: false
 }
 
+const proxySignalROptions = { 
+  target: "https://localhost:4200/", 
+  pathRewrite: {
+    '^/chatSignalR':'/chat'
+  },
+  secure: false
+}
+
+app.use('*/chatSignalR/*', createProxyMiddleware(proxySignalROptions));
 app.use('*/catService/*', createProxyMiddleware(proxyChatOptions));
 app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
 app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));

@@ -12,50 +12,45 @@ export statistics_path=$modules_path'/statistics'
 
 cd $admin_path
 npm i --force
-node_modules/.bin/ng build
+npm run build:prod
 cd '..'
 
 cd $tests_path
 npm i --force
-node_modules/.bin/ng build
+npm run build:prod
 cd '..'
 
 cd $subjects_path
 npm i --force
-node_modules/.bin/ng build
+npm run build:prod
 cd '..'
 
 cd $cp_path
 npm i --force
-node_modules/.bin/ng build
-cd '..'
-
-cd $dp_path
-npm i --force
-node_modules/.bin/ng build
+npm run build:prod
 cd '..'
 
 cd $confirmation_path
 npm i --force
-node_modules/.bin/ng build
+npm run build:prod
 cd '..'
 
 cd $complex_path
 npm i --force
-node_modules/.bin/ng build 
+npm run build:prod
 cd '..' 
 
 cd $editor_path
 npm i --force
-node_modules/.bin/ng build 
+npm run build:prod
 cd '..'
 
 cd $schedule_path
 npm i --force
-node_modules/.bin/ng build
+npm run build:prod
 cd '..'
 
 cd $statistics_path
 npm i --force
-node_modules/.bin/ng build 
+npm run build:prod
 cd '..'

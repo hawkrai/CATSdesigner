@@ -10,7 +10,7 @@ namespace LMPlatform.UI.Services.Modules.Lectures
         public CalendarViewData(LecturesScheduleVisiting visiting)
         {
             SubjectId = visiting.SubjectId;
-            Date = visiting.Date.ToString("dd/MM/yyy");
+            Date = visiting.Date.ToString("dd.MM.yyy");
             Id = visiting.Id;
             StartTime = visiting.StartTime?.ToString(@"hh\:mm");
             EndTime = visiting.EndTime?.ToString(@"hh\:mm");

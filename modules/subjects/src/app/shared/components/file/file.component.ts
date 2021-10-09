@@ -15,5 +15,9 @@ export class FileComponent implements OnInit {
 
   ngOnInit() {
   }
+  
+  getFileExtension(filename: string): string {
+    return filename.split('.').pop();
+  }
 
 }

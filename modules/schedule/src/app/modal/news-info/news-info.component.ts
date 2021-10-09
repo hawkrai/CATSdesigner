@@ -31,4 +31,8 @@ export class NewsInfoComponent implements OnInit {
 
   fileDownload(attachment: Attachment) {
   }
+
+  onCancelClick() {
+    this.dialogRef.close(null);
+  }
 }

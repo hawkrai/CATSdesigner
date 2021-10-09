@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~educats-common/index.css";
 @import "~@material/button/dist/mdc.button.min.css";
 @import "~material-design-icons/iconfont/material-icons.css";
 @import "~@material/data-table/dist/mdc.data-table.min.css";
@@ -141,6 +142,10 @@ table.mat-table {
   display: flex;
   gap: 0 14px;
   align-items: center;
+
+  &__space-between {
+    justify-content: space-between;
+  }
 }
 
 .form {
@@ -184,4 +189,21 @@ table.mat-table {
   &:hover {
     color: #3F51B5
   }
+}
+
+.mat-icon-button-app {
+  &:hover,
+  &:active {
+    color: #3f51b5;
+  }
+
+  color: #757575;
+}
+
+.cdk-overlay-pane {
+  max-width: 100vw!important;
+}
+
+td.mat-cell:last-of-type {
+  padding-right: 0!important;
 }

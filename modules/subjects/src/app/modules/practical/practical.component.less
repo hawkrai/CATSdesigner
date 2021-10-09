@@ -23,12 +23,29 @@
 
   .mdc-tab {
     text-transform: none;
+
+    &__text-label {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 
 
 ._excel-file {
+  margin-left: 0;
+  font-size: 28px;
+  height: 28px;
   .iconify { 
     color: rgb(61, 80, 182);
   }
+}
+
+.mat-icon-button-groups {
+  &:hover,
+  &:active {
+    color: #3f51b5;
+  }
+
+  color: #757575;
 }

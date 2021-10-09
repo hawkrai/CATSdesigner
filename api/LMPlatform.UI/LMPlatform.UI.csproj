@@ -647,6 +647,8 @@
     <Compile Include="Services\Modules\Schedule\ScheduleViewData.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewResult.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleViewResultSingle.cs" />
+    <Compile Include="Services\Modules\Statistics\SubjectStatisticsViewResult.cs" />
+    <Compile Include="Services\Modules\Statistics\TeacherStatisticsViewData.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />
@@ -673,6 +675,10 @@
     <Compile Include="Services\Search\ISearchService.cs" />
     <Compile Include="Services\Search\SearchService.svc.cs">
       <DependentUpon>SearchService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Statistics\IStatisticsService.cs" />
+    <Compile Include="Services\Statistics\StatisticsService.svc.cs">
+      <DependentUpon>StatisticsService.svc</DependentUpon>
     </Compile>
     <Compile Include="Services\Subjects\SubjectsService.svc.cs">
       <DependentUpon>SubjectsService.svc</DependentUpon>
@@ -803,6 +809,7 @@
     <Content Include="Services\Practicals\PracticalService.svc" />
     <Content Include="Services\Schedule\ScheduleService.svc" />
     <Content Include="Services\Search\SearchService.svc" />
+    <Content Include="Services\Statistics\StatisticsService.svc" />
     <Content Include="Services\Subjects\SubjectsService.svc" />
     <Content Include="Services\TelegramBot\TelegramBotService.svc" />
     <Content Include="Unity.Mvc4.README.txt" />

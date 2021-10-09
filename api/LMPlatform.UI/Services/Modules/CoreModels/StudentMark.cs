@@ -48,5 +48,8 @@
 		[DataMember]
 		public bool AllTestsPassed { get; set; }
 
+		[DataMember]
+		public string CourseProjectMark { get; set; }
+
 	}
 }

@@ -33,14 +33,21 @@ export class IndexComponent implements OnInit {
   messagesAll: Message[];
   isEdit: boolean;
   editedMsg: Message;
-
+  unreadChat:number=0;
+  unreadGroup:number=0;
+  
   constructor(private cdr: ChangeDetectorRef, private clipboardApi: ClipboardService, private snackBar: MatSnackBar, private contactService: ContactService, private router: Router, public dialog: MatDialog, public signalRService: SignalRService, public dataService: DataService, public fileService: FileService) { }
 
   @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent;
   @ViewChild(PerfectScrollbarDirective) directiveRef?: PerfectScrollbarDirective;
 
   ngOnInit(): void {
+    this.contactService.openChatComand.subscribe(x=>this.activetab=2);
     this.contactService.loadContacts('*');
+    this.dataService.readMessageChatCount.subscribe(x=>{ this.unreadChat=x; this.cdr.detectChanges();});
+    this.dataService.readMessageGroupCount.subscribe(x=>{ this.unreadGroup=x; this.cdr.detectChanges();});
+    this.dataService.LoadGroup();
+    this.dataService.LoadChats();
     this.dataService.messages.subscribe((msgs: Message[]) => {
       this.messages = msgs;
       this.messagesAll = msgs;
@@ -148,7 +155,6 @@ export class IndexComponent implements OnInit {
             res => {
               this.currentMsg.text = "";
               this.cdr.detectChanges();
-              this.openSnackBar("Сообщение отправлено");
             },
             err => {
               this.openSnackBar("Ошибка отправки");
@@ -161,7 +167,6 @@ export class IndexComponent implements OnInit {
             res => {
               this.currentMsg.text = "";
               this.cdr.detectChanges();
-              this.openSnackBar("Сообщение отправлено");
             },
             err => {
               this.openSnackBar("Ошибка отправки");

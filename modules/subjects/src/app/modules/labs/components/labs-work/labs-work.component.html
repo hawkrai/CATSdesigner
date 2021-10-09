@@ -29,13 +29,8 @@
       <td mat-cell *matCellDef="let element">
         <button class="mdc-button" *ngIf="element.Attachments.length > 0"
           (click)="openFilePopup(element.Attachments)">
-          <ng-container *ngIf="!isTeacher">
-            <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
-            <span class="mdc-button__label">{{'text.attachments.plural' | translate:'Файлы'}}</span>
-          </ng-container>
-          <ng-container *ngIf="isTeacher">
-            <span class="mdc-button__label">{{element.Attachments.length}}</span>
-          </ng-container>
+          <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
+          <sub class="mdc-button__label">({{element.Attachments.length}})</sub>
         </button>
       </td>
     </ng-container>

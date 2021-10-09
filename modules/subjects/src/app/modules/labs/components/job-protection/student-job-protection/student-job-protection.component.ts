@@ -2,7 +2,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { IAppState } from 'src/app/store/state/app.state';
 

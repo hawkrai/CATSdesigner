@@ -24,7 +24,7 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
     public coreService: CoreService,
     private router: Router,
     private cdref: ChangeDetectorRef,
-    private menuService: MenuService,
+    public menuService: MenuService,
     private autService: AuthenticationService) {}
 
   ngAfterViewChecked() {

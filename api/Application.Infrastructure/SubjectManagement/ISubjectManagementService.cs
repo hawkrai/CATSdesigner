@@ -24,6 +24,8 @@ namespace Application.Infrastructure.SubjectManagement
 
         Subject GetSubject(int id);
 
+        List<Subject> GetSubjects(IQuery<Subject> query);
+
         IPageableList<Subject> GetSubjectsLecturer(int lecturerId, string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null);
 
         Subject SaveSubject(Subject subject);

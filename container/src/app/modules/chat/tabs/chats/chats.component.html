@@ -15,8 +15,7 @@
     <perfect-scrollbar class="chat-message-list">
       <ul class="list-unstyled chat-list chat-user-list" style="max-height: 60vh;">
         <li *ngFor="let user of chats">
-          <a [ngStyle]="{'background-color': dataService.activChatId==user.id ? '#f5f7fb':''}"
-            (click)="showChat(user)">
+          <a [ngStyle]="{'background-color': dataService.activChatId==user.id ? '#f5f7fb':''}" (click)="showChat(user)">
             <div class="media" style="align-items: center;">
               <div class="chat-user-img align-self-center mr-3" [ngClass]="{'online': user.isOnline,
                'away': !user.isOnline }">
@@ -28,10 +27,8 @@
                 </div>
                 <span class="user-status"></span>
               </div>
-
-              <div class="media-body overflow-hidden">
+              <div class="media-body overflow-hidden" [ngClass]="{'shortName': user.unread>0}">
                 <h5 class="text-truncate font-size-15 mb-1">{{user.name}}</h5>
-                <p class="chat-user-message text-truncate mb-0">{{user.lastMessage}}</p>
               </div>
               <div class="font-size-11">{{user.time}}</div>
               <div class="unread-message" style="top: calc(50% - 16px);">
