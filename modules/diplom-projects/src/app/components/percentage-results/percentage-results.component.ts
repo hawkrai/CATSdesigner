@@ -7,7 +7,7 @@ import {PercentageResult} from '../../models/percentage-result.model';
 import {DiplomUser} from '../../models/diplom-user.model';
 import {MatDialog, MatOptionSelectionChange, MatSnackBar} from '@angular/material';
 import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-percentage-dialog.component';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 import { CoreGroup } from 'src/app/models/core-group.model';
 
 @Component({

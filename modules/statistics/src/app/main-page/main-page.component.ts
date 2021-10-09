@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import {StatisitcsServiceService} from '../service/statisitcs-service.service';
-import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
+import {TranslatePipe} from 'educats-translate';
 
 
 @Component({

@@ -8,7 +8,7 @@ import { PersonalDataService } from '../core/services/personal-data.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
 import { Validators, FormControl, ValidationErrors } from '@angular/forms';
-import { TranslatePipe } from '../pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 import { AppToastrService } from '../core/services/toastr.service';
 
 @Component({

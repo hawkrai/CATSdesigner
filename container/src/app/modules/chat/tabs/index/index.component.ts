@@ -11,7 +11,6 @@ import { ContactService } from '../../shared/services/contactService';
 import { GroupListComponent } from '../GroupList/groupList.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClipboardService } from 'ngx-clipboard';
-import { TranslatePipe } from 'src/app/pipe/translate.pipe';
 import { MessageCto } from '../../shared/models/dto/messageCto';
 import { DataService } from '../../shared/services/dataService';
 

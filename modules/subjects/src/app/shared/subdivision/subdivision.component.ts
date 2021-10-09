@@ -8,7 +8,7 @@ import {IAppState} from '../../store/state/app.state';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {MatSelectionList} from '@angular/material/list';
 import { Help } from 'src/app/models/help.model';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({

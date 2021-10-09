@@ -12,7 +12,7 @@ import {catchError, switchMap, takeUntil, tap} from "rxjs/operators";
 import {Observable, Subject, throwError} from "rxjs";
 import {DeleteQuestionConfirmationPopupComponent} from "./components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 import {NeuralNetworkPopupComponent} from "./components/neural-network-popup/neural-network-popup.component";
-import {TranslatePipe} from "../../../../../container/src/app/pipe/translate.pipe";
+import {TranslatePipe} from "educats-translate";
 
 
 @AutoUnsubscribe

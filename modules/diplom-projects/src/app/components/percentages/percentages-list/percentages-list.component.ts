@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Percentage} from '../../../models/percentage.model';
 import {PercentagesComponent} from '../percentages.component';
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-percentages-list',

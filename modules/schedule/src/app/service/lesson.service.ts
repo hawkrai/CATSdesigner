@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {DatePipe} from '@angular/common';
-import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
+import {TranslatePipe} from 'educats-translate';
 
 
 @Injectable({

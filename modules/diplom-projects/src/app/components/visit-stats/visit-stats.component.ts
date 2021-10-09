@@ -11,7 +11,7 @@ import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-p
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { Lecturer } from 'src/app/models/lecturer.model';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-visit-stats',

@@ -1,13 +1,19 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { TranslatePipe } from "../pipe/translate.pipe";
+import { TranslateModule, TranslatePipe } from "educats-translate";
+import * as dataEn from '../core/translations/translations_en.json';
+import * as dataRu from '../core/translations/translations_en.json';
+
 
 @NgModule({
-    declarations: [
-        TranslatePipe
-    ],
     imports: [
-        CommonModule
+        CommonModule,
+        TranslateModule.forRoot({
+            localizationMap: {
+                en: dataEn,
+                ru: dataRu
+            }
+        })
     ],
     exports: [
         TranslatePipe

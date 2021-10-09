@@ -10,7 +10,7 @@
   </div>
 
   <div class="test-result__mark">
-    {{'text.test.your.mark' | translate: ("Ваша оценка - " + mark + "(" + percent + ")") : {mark: mark, percent: percent} }}
+    {{'text.test.your.mark' | translate: ("Ваша оценка - " + mark + "(" + percent + ")") : {mark: mark + '', percent: percent + ''} }}
   </div>
   <div class="test-result__date">
     {{('text.test.date.completing' | translate : "Дата прохождения теста :") + endDate }}
