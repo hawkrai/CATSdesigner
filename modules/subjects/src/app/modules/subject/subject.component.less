@@ -13,6 +13,7 @@
     font-weight: 600;
     color: #363636;
     font-size: 14px;
+    padding-right: 7px;
   }
 
   .mat-icon-button {
@@ -24,12 +25,17 @@
   }
 
   .mat-column-shortName {
-    width: 20% !important;
+    width: 25% !important;
   }
 
   .mat-column-actions {
     width: 12% !important;
+    @media (max-width: 832px) {
+      width: 10% !important;
+
+    }
   }
+
 }
 
 table.mat-table {
@@ -47,5 +53,15 @@ th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:la
     position: absolute!important;
     left: 50%;
     transform: translateX(-50%);
+
+    @media (max-width: 600px) {
+      max-width: 100vw!important;
+    }
   }
+}
+
+
+.body-container {
+  display: flex;
+  justify-content: space-between;
 }

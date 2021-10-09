@@ -8,7 +8,7 @@ import {Subject} from "rxjs";
 import {takeUntil, tap} from "rxjs/operators";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormUtils} from "../../../utils/form.utils";
-import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
+import {TranslatePipe} from "educats-translate";
 
 
 @AutoUnsubscribe

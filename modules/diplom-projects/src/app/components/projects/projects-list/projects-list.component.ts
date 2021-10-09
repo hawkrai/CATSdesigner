@@ -4,7 +4,7 @@ import {ProjectsComponent} from '../projects.component';
 import { MatTable } from '@angular/material';
 import {DiplomUser} from '../../../models/diplom-user.model';
 import {Project} from '../../../models/project.model';
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-projects-list',

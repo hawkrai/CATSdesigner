@@ -6,7 +6,7 @@ import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
 import {AutocompleteModel} from "../models/autocomplete.model";
-import {TranslatePipe} from "../../../../../container/src/app/pipe/translate.pipe";
+import {TranslatePipe} from "educats-translate";
 
 
 @AutoUnsubscribe

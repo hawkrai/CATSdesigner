@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProfileService } from '../../core/services/searchResults/profile.service';
 import { ProfileModel, ProfileInfo, ProfileInfoSubject, ProfileProject } from '../../core/models/searchResults/profile';
 import { ActivatedRoute } from '@angular/router';
-import { TranslatePipe } from '../../pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-profile',

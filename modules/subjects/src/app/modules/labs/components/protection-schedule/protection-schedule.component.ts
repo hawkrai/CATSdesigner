@@ -13,8 +13,7 @@ import { VisitDateLabsPopoverComponent } from './visit-date-labs-popover/visit-d
 import { DialogService } from 'src/app/services/dialog.service';
 import { map, tap } from 'rxjs/operators';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
-import { Help } from 'src/app/models/help.model';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -65,11 +64,6 @@ export class ProtectionScheduleComponent implements OnInit, OnChanges, OnDestroy
     };
 
     this.dialogService.openDialog(VisitDateLabsPopoverComponent, dialogData);
-  }
- 
-  help: Help = {
-    message: this.translate.transform ('text.help.labs.protection.schedule','Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты лабораторных занятий.'),
-    action: this.translate.transform ('button.understand','Понятно')
   }
 
 }

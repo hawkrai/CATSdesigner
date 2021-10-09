@@ -5,15 +5,15 @@
     <div class="flex-lg-column my-auto" style="height: 64px;">
       <ul class="nav nav-pills side-menu-nav justify-content-center" role="tablist">
         <li class="nav-item" matTooltip="{{'chat.chats'| translate: 'Чаты'}}">
-          <a class="nav-link active" id="pills-chat-tab" (click)="activetab=2" href="javascript: void(0);"
-            [ngClass]="{'active': activetab === 2}">
-            <mat-icon> chat</mat-icon>
+          <a class="nav-link active" id="pills-chat-tab" (click)="activetab=2" [ngClass]="{'active': activetab === 2}">
+            <mat-icon matBadge={{unreadChat}} [matBadgeHidden]="unreadChat<1" matBadgeOverlap="true"
+              matBadgePosition="above" matBadgeColor="warn" matBadgeSize="small"> chat</mat-icon>
           </a>
         </li>
         <li class="nav-item" matTooltip="{{'chat.groups'| translate: 'Группы'}}">
-          <a class="nav-link" id="pills-groups-tab" (click)="activetab=3" href="javascript: void(0);"
-            [ngClass]="{'active': activetab === 3}">
-            <mat-icon>group</mat-icon>
+          <a class="nav-link" id="pills-groups-tab" (click)="activetab=3" [ngClass]="{'active': activetab === 3}">
+            <mat-icon matBadge={{unreadGroup}} [matBadgeHidden]="unreadGroup<1" matBadgeOverlap="true"
+              matBadgePosition="above" matBadgeColor="warn" matBadgeSize="small">group</mat-icon>
           </a>
         </li>
       </ul>
@@ -55,33 +55,39 @@
                 <div *ngIf="!dataService.isGroupChat && dataService.activChatId" class="media"
                   style="align-items: center;">
                   <div class="chat-user-img align-self-center mr-3">
-                    <img *ngIf="dataService.activChat.img" src="{{dataService.activChat.img}}"
-                      class="rounded-circle avatar-xs" alt="">
+                    <img style="height: 36px !important;" *ngIf="dataService.activChat.img"
+                      src="{{dataService.activChat.img}}" class="rounded-circle avatar-xs" alt="">
                     <div class="avatar-xs" *ngIf="!dataService.activChat.img">
-                      <span class="avatar-title rounded-circle bg-soft-primary text-primary">
+                      <span style="height: 36px !important;"
+                        class="avatar-title rounded-circle bg-soft-primary text-primary">
                         {{dataService.activChat.name.split(' ')[0].charAt(0)+dataService.activChat.name.split('
                         ')[1].charAt(0)}}
                       </span>
                     </div>
                   </div>
-                  <div class="media-body overflow-hidden">
+                  <div class="groupName media-body overflow-hidden" matTooltip={{dataService.activChat.name}}>
                     <h5 class="text-truncate font-size-15 mb-1">{{dataService.activChat.name}}</h5>
                     <p class="chat-user-message text-truncate mb-0">{{dataService.activChat.lastMessage}}</p>
                   </div>
                 </div>
-                <div *ngIf="dataService.isGroupChat && dataService.activChatId" class="media-body overflow-hidden">
-                  <h5 class="font-size-16 mb-0 text-truncate"><a (click)="openStudentsList()"
-                      class="text-reset user-profile-show">{{dataService.activChat.name}}</a></h5>
+                <div *ngIf="dataService.isGroupChat && dataService.activChatId"
+                  matTooltip={{dataService.activChat.name}} class="groupName media-body overflow-hidden">
+                  <h5 class="font-size-16 mb-0 text-truncate">
+                    <a class="text-reset user-profile-show">{{dataService.activChat.name}}</a>
+                  </h5>
                 </div>
               </div>
             </div>
             <div class="col-sm-8 col-4">
               <ul class="list-inline user-chat-nav text-right mb-0">
-                <li class="list-inline-item">
+                <li class="liųt-inline-item">
                   <div class="dropdown" ngbDropdown>
+                    <button *ngIf="dataService.isLecturer && dataService.isGroupChat" class="btn nav-btn dropdown-toggle" (click)="openStudentsList()">
+                      <mat-icon matTooltip="{{'chat.listStudent'| translate: 'Список студентов'}}">list_alt</mat-icon>
+                    </button>
                     <button class="btn nav-btn dropdown-toggle" ngbDropdownToggle type="button" data-toggle="dropdown"
                       aria-haspopup="true" aria-expanded="false" (click)="openFilter()">
-                      <mat-icon>search</mat-icon>
+                      <mat-icon matTooltip="{{'chat.filter'| translate: 'Поиск сообщений'}}">search</mat-icon>
                     </button>
                     <div class="dropdown-menu p-0 dropdown-menu-right dropdown-menu-md" ngbDropdownMenu>
                       <div class="search-box p-2">
@@ -99,7 +105,7 @@
         <!-- end chat user head -->
 
         <!-- start chat conversation -->
-        <perfect-scrollbar id="scroll" class="chat-conversation p-3 p-lg-4">
+        <perfect-scrollbar id="scroll" class="msgs chat-conversation p-3 p-lg-4">
           <ul class="list-unstyled mb-0" style="height: 90% !important;">
             <li *ngFor="let data of messages" [ngClass]="{'right': data.align === 'right'}" style="height: 90%;">
               <div class="conversation-list" *ngIf="!data.isToday">
@@ -161,13 +167,16 @@
                       </a>
                       <div class="dropdown-menu" ngbDropdownMenu>
                         <a class="dropdown-item" style="width: min-content;" (click)="copyText(data.text)">
-                          <mat-icon>file_copy</mat-icon>{{'chat.copy'| translate: 'Копировать'}}
+                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">file_copy</mat-icon>{{'chat.copy'|
+                          translate: 'Копировать'}}
                         </a>
                         <a *ngIf="data.align" class="dropdown-item" (click)="edit(data)">
-                          <mat-icon>edit</mat-icon> {{'chat.edit'| translate: 'Изменить'}}
+                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">edit</mat-icon> {{'chat.edit'|
+                          translate: 'Изменить'}}
                         </a>
                         <a *ngIf="dataService.user.role=='lector'" class="dropdown-item" (click)="remove(data.id)">
-                          <mat-icon>delete_forever</mat-icon> {{'chat.delete'| translate: 'Удалить'}}
+                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">delete_forever</mat-icon>
+                          {{'chat.delete'| translate: 'Удалить'}}
                         </a>
                       </div>
                     </div>
@@ -187,10 +196,12 @@
                       </a>
                       <div class="dropdown-menu" ngbDropdownMenu>
                         <a class="dropdown-item" (click)="copyText(data.text)">
-                          <mat-icon>file_copy</mat-icon>{{'chat.copy'| translate: 'Копировать'}}
+                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">file_copy</mat-icon>{{'chat.copy'|
+                          translate: 'Копировать'}}
                         </a>
                         <a *ngIf="dataService.user.role=='lector'" class="dropdown-item" (click)="remove(data.id)">
-                          <mat-icon>delete_forever</mat-icon> {{'chat.delete'| translate: 'Удалить'}}
+                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">delete_forever</mat-icon>
+                          {{'chat.delete'| translate: 'Удалить'}}
                         </a>
                       </div>
                     </div>
@@ -231,7 +242,8 @@
                     <input #fileInput hidden="true" type="file" (change)="uploadFiles($event.target)" />
                     <button type="button" (click)="fileInput.click()"
                       class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
-                       matTooltip="{{ 'chat.attachFile' | translate: 'Прикрепить файл'}}" ng-reflect-tooltip-class="tooltip">
+                      matTooltip="{{ 'chat.attachFile' | translate: 'Прикрепить файл'}}"
+                      ng-reflect-tooltip-class="tooltip">
                       <mat-icon> attach_file</mat-icon>
                     </button>
                   </li>

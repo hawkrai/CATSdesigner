@@ -227,7 +227,7 @@ namespace LMPlatform.UI.Services.Lectures
                 return new StudentMarkForDateResult
                 {
                     DateId = dateId,
-                    Date = visitingDate.Date.ToShortDateString(),
+                    Date = visitingDate.Date.ToString("dd.MM.yyyy"),
                     StudentMarkForDate = model,
                     Message = "Данные успешно загружены",
                     Code = "200"
@@ -352,7 +352,7 @@ namespace LMPlatform.UI.Services.Lectures
                         {
                             data.Add(new MarkViewData
                             {
-                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                Date = lecturesScheduleVisiting.Date.ToString("dd.MM.yyyy"),
                                 LecturesVisitId = lecturesScheduleVisiting.Id,
                                 Mark = lecturesVisitMark.Mark,
                                 MarkId = lecturesVisitMark.Id,
@@ -363,7 +363,7 @@ namespace LMPlatform.UI.Services.Lectures
                         {
                             data.Add(new MarkViewData
                             {
-                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                Date = lecturesScheduleVisiting.Date.ToString("dd.MM.yyyy"),
                                 LecturesVisitId = lecturesScheduleVisiting.Id,
                                 Mark = string.Empty,
                                 MarkId = 0
@@ -429,7 +429,7 @@ namespace LMPlatform.UI.Services.Lectures
                         {
                             data.Add(new MarkViewData
                             {
-                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                Date = lecturesScheduleVisiting.Date.ToString("dd.MM.yyyy"),
                                 LecturesVisitId = lecturesScheduleVisiting.Id,
                                 Mark = lecturesVisitMark.Mark,
                                 MarkId = lecturesVisitMark.Id,
@@ -440,7 +440,7 @@ namespace LMPlatform.UI.Services.Lectures
                         {
                             data.Add(new MarkViewData
                             {
-                                Date = lecturesScheduleVisiting.Date.ToShortDateString(),
+                                Date = lecturesScheduleVisiting.Date.ToString("dd.MM.yyyy"),
                                 LecturesVisitId = lecturesScheduleVisiting.Id,
                                 Mark = string.Empty,
                                 MarkId = 0

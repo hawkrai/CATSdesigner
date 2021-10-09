@@ -25,7 +25,7 @@
           </mat-form-field>
 
           <mat-form-field style="width: 48%;">
-            <mat-select formControlName="group" (selectionChange)="groupChange($event)" [disabled]="disableGroup"  [(ngModel)]="stageValue"
+            <mat-select formControlName="group" (selectionChange)="groupChange($event)"  [(ngModel)]="stageValue"
                         [placeholder]="'text.schedule.select.group' | translate: 'Выберите группу'">
               <mat-option *ngFor="let group of groups" [value]="group.GroupId">{{group.GroupName}}</mat-option>
             </mat-select>
@@ -33,7 +33,7 @@
           </mat-form-field>
 
           <mat-form-field style="width: 48%; margin-left: 4%;">
-            <mat-select formControlName="subGroup" [(ngModel)]="stageValueSub" [placeholder]="'text.schedule.select.subgroup' | translate: 'Выберите подгруппу'" [disabled]="disableSubGroup">
+            <mat-select formControlName="subGroup" [(ngModel)]="stageValueSub" [placeholder]="'text.schedule.select.subgroup' | translate: 'Выберите подгруппу'">
               <mat-option [value]="currentGroup?.SubGroupsOne?.SubGroupId">{{currentGroup?.SubGroupsOne?.Name}}</mat-option>
               <mat-option [value]="currentGroup?.SubGroupsTwo?.SubGroupId">{{currentGroup?.SubGroupsTwo?.Name}}</mat-option>
               <mat-option [value]="currentGroup?.SubGroupsThird?.SubGroupId">{{currentGroup?.SubGroupsThird?.Name}}</mat-option>
@@ -80,14 +80,15 @@
             <input type="text" [ngModel]="lesson.Building" [(ngModel)]="lesson.Building" id="building"
                    formControlName="building"
                    matInput [placeholder]="'text.schedule.lesson.building' | translate:'Корпус'">
-            <mat-error *ngIf="building.hasError('maxlength')">{{'text.schedule.building.length' | translate: 'Поле не может быть пустым'}}</mat-error>
+            <mat-error *ngIf="building.hasError('maxlength')">{{'text.schedule.building.length' | translate: 'Номер корпуса должен быть мньше 4 символов'}}</mat-error>
+            <mat-error *ngIf="building.hasError('required')"> {{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
           </mat-form-field>
 
           <mat-form-field style="width: 48%;margin-left: 4%">
             <input type="text" [ngModel]="lesson.Audience" [(ngModel)]="lesson.Audience" id="audience"
                    formControlName="audience"
                    matInput [placeholder]="'text.schedule.lesson.audience' | translate: 'Аудитория'">
-            <mat-error *ngIf="audience.hasError('maxlength')">{{'text.schedule.audience.length' | translate: 'Номер аудитории обязателен'}}</mat-error>
+            <mat-error *ngIf="audience.hasError('maxlength')">{{'text.schedule.audience.length' | translate: 'Номер аудитории должен быть мньше 6 символов'}}</mat-error>
             <mat-error *ngIf="audience.hasError('required')"> {{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
           </mat-form-field>
           <mat-form-field>

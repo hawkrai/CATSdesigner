@@ -42,7 +42,7 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
     this.jobProtectionForm = new FormGroup({
       labId: new FormControl(this.data.model.labId, [Validators.required]),
       comments: new FormControl(this.data.model.comments),
-      attachments: new FormArray([], [Validators.required]),
+      attachments: new FormArray([]),
     });
 
     this.store.dispatch(labsActions.loadLabs());
@@ -58,8 +58,8 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
     }
   }
 
-  isValid(files: AttachedFile[]): boolean {
-    return this.data.model.labId && files.length === 1;
+  isValid(): boolean {
+    return this.filesArray.length > 0 || (this.data.model.isTeacher && !!this.jobProtectionForm.get('comments').value);
   }
 
   onClose(toSave: boolean): void {
@@ -73,7 +73,7 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
   }
 
   onSave(): void {
-    if (this.jobProtectionForm.invalid) {
+    if (this.jobProtectionForm.invalid || !this.isValid()) {
       return;
     }
     const value = this.jobProtectionForm.value;

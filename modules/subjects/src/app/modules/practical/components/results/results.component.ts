@@ -1,4 +1,3 @@
-import { LabMark } from './../../../../models/mark/lab-mark.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import {Store} from '@ngrx/store';
@@ -19,10 +18,9 @@ import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/
 import { Practical } from 'src/app/models/practical.model';
 import { PracticalMark } from 'src/app/models/mark/practical-mark.model';
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
-import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-results',
@@ -136,9 +134,4 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     this.subs.unsubscribe();
     this.store.dispatch(practicalsActions.resetPracticals());
   }
-
-  help: Help = {
-    message: this.translate.transform ('text.help.results','Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'), 
-    action: this.translate.transform ('button.understand','Понятно')
-  };
 }

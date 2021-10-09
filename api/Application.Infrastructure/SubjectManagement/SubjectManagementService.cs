@@ -1303,5 +1303,11 @@ namespace Application.Infrastructure.SubjectManagement
 			return repositoriesContainer.RepositoryFor<SubjectGroup>().GetAll(query).ToList();
 
 		}
-	}
+
+        public List<Subject> GetSubjects(IQuery<Subject> query)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			return repositoriesContainer.SubjectRepository.GetAll(query).ToList();
+		}
+    }
 }

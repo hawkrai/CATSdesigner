@@ -11,7 +11,7 @@ import {CreateLessonComponent} from '../modal/create-lesson/create-lesson.compon
 import {ConfirmationComponent} from '../modal/confirmation/confirmation.component';
 import {DatePipe} from '@angular/common';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
-import {TranslatePipe} from '../../../../../container/src/app/pipe/translate.pipe';
+import {TranslatePipe} from 'educats-translate';
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component';
 
 
@@ -56,11 +56,8 @@ export class ScheduleMainComponent implements OnInit {
   teacher = 'Попова Ю.Б.';
   isStudent: boolean;
   diplomCon: any[] = [];
-
   refresh: Subject<any> = new Subject();
-
   events: CalendarEvent[] = [];
-  eventsCon: CalendarEvent[] = [];
 
   activeDayIsOpen = true;
 
@@ -84,26 +81,8 @@ export class ScheduleMainComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.changeDate();
     this.isLoadActive = false;
-    this.lessonservice.getConsultations({
-      count: 1000, page: 1}).subscribe(result => {
-        result.DiplomProjectConsultationDates.forEach(consultation => {
-          const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
-          const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
-          this.eventsCon.push({
-            id: consultation.Id,
-            start: startT,
-            end: endT,
-            title: this.getTitelConsultation(consultation),
-            color: colors.color,
-            resizable: {
-              beforeStart: false,
-              afterEnd: false,
-            },
-            draggable: false,
-            meta: 'lesson'
-          });
-        });
-    });
+
+
     if (this.user.role === 'student') {
       this.isStudent = false;
     } else {
@@ -160,6 +139,13 @@ export class ScheduleMainComponent implements OnInit {
     return consultation.StartTime.split(':')[0] + ':' +  consultation.StartTime.split(':')[1] +  '-'
            + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|' +
            + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
+      + '|' + '|' + '|' + '|';
+  }
+
+  getTitelDiplomConsultation(consultation: any) {
+    return consultation.Start.split(':')[0] + ':' +  consultation.Start.split(':')[1] +  '-'
+      + consultation.End.split(':')[0] + ':' +  consultation.End.split(':')[1] +  '|' +
+      + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
       + '|' + '|' + '|' + '|';
   }
 
@@ -259,7 +245,13 @@ export class ScheduleMainComponent implements OnInit {
               meta: 'note'
             }
           ];
-        } else if (result.type === 'diplom') {
+        } else if (result.type === 'diplom' || result.type === 'course') {
+          let titleCon = '';
+          if (result.type === 'course') {
+            titleCon = this.calculateTitel(result.lesson);
+          } else {
+            titleCon = this.getTitelDiplomConsultation(result.lesson);
+          }
           result.lesson.StartTime =  result.lesson.Start;
           result.lesson.EndTime =  result.lesson.End;
           const startT = new Date(result.lesson.Date);
@@ -272,7 +264,7 @@ export class ScheduleMainComponent implements OnInit {
             id: result.lesson.Id,
             start: startT,
             end: endT,
-            title: this.getTitelConsultation(result.lesson),
+            title: titleCon,
             color: colors.color,
             resizable: {
               beforeStart: false,
@@ -300,6 +292,7 @@ export class ScheduleMainComponent implements OnInit {
         if (result) {
           if (eventToDelete.meta == 'lesson') {
             const a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
+            console.log(a);
             if (a == 'Лекция' || a == 'Lect.') {
               this.lessonservice.deleteLecture(eventToDelete.id,
                 + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
@@ -312,7 +305,7 @@ export class ScheduleMainComponent implements OnInit {
                 console.log(res);
               });
             }
-            if (a == 'Практ.работа' || a == 'WS') {
+            if (a == 'Практ.зан.' || a == 'WS') {
               this.lessonservice.deletePractical(eventToDelete.id,
                 + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
                 console.log(res);
@@ -320,6 +313,11 @@ export class ScheduleMainComponent implements OnInit {
             }
             if (a == 'ДП' || a == 'GP') {
               this.lessonservice.deleteDiplomConsultation(eventToDelete.id).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'КП' || a == 'CP') {
+              this.lessonservice.deleteCourseConsultation(eventToDelete.id).subscribe(res => {
                 console.log(res);
               });
             }
@@ -369,11 +367,15 @@ export class ScheduleMainComponent implements OnInit {
         endT.setHours(+this.lesson.End.split(':')[0], +this.lesson.End.split(':')[1]);
         this.events = this.events.filter(event => event !== lessonChanged);
         this.lessons.push(this.lesson);
+        let titleLesson = this.calculateTitel(this.lesson);
+        if (result.type == 'diplom') {
+          titleLesson = this.getTitelDiplomConsultation(this.lesson);
+        }
         this.events.push({
           id: this.lesson.Id,
           start: startT,
           end: endT,
-          title: this.calculateTitel(this.lesson),
+          title: titleLesson,
           color: colors.color,
           resizable: {
             beforeStart: false,
@@ -411,15 +413,54 @@ export class ScheduleMainComponent implements OnInit {
     if (day == 0) {
       day = 7;
     }
-
     a.setDate(a.getDate() + (7 - day));
     const endDate = this.lessonservice.formatDate3(a);
     a.setDate(a.getDate() - 6);
     const startDate = this.lessonservice.formatDate3(a);
+    this.events = [];
+    this.lessonservice.getConsultations({
+      count: 1000, page: 1}).subscribe(result => {
+      result.DiplomProjectConsultationDates.forEach(consultation => {
+        const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
+        const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
+        this.events.push({
+          id: consultation.Id,
+          start: startT,
+          end: endT,
+          title: this.getTitelConsultation(consultation),
+          color: colors.color,
+          resizable: {
+            beforeStart: false,
+            afterEnd: false,
+          },
+          draggable: false,
+          meta: 'lesson'
+        });
+      });
+    });
+    this.lessonservice.getCourseConsultations({
+      count: 1000, page: 1}).subscribe(result => {
+      result.CourseProjectConsultationDates.forEach(consultation => {
+        const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
+        const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
+        this.events.push({
+          id: consultation.Id,
+          start: startT,
+          end: endT,
+          title: this.getTitelConsultation(consultation),
+          color: colors.color,
+          resizable: {
+            beforeStart: false,
+            afterEnd: false,
+          },
+          draggable: false,
+          meta: 'lesson'
+        });
+      });
+    });
     this.lessonservice.getLessonsByDates(startDate, endDate).subscribe(
       l => {
         this.lessons = l.Schedule;
-        this.events = this.eventsCon;
         this.lessons.forEach(lesson => {
           let dateArray: any;
           dateArray = lesson.Date.split('.');

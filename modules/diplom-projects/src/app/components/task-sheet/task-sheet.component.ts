@@ -8,7 +8,7 @@ import {EditTaskSheetComponent} from './edit-task-sheet/edit-task-sheet.componen
 import {MatDialog, MatSnackBar} from '@angular/material';
 import { Template } from 'src/app/models/template.model';
 import { Student } from 'src/app/models/student.model';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-task-sheet',

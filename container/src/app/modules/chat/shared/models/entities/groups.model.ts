@@ -1,7 +1,7 @@
-export interface Groups {
+export class Groups {
     id: number;
     name: string;
     shortName:string;
     groupId:number;
-    unread: number;
+    unread: number=0;
 }

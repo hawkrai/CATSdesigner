@@ -23,7 +23,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 dir('./api') {
-                    bat "\"${tool 'MSBuild'}\" LMPlatform.sln /p:Configuration=Release /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl=/deploy/LMPlatform.UI"
+                    bat "\"${tool 'MSBuild'}\" LMPlatform.sln /p:Configuration=Release /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:publishUrl=d:/CatsProject/api"
+                    sh '''
+                    cd /
+                    '''
                 }
             }
         }

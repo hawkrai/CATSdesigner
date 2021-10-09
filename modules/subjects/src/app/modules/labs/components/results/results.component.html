@@ -3,9 +3,7 @@
     <ng-container *ngIf="(state.students | filter:'SubGroup': subGroup).length">
       <div class="results-component__subGroup-title">
         <span mat-dialog-title class="results-component__subGroup-title-text">{{'subgroup' | translate:'Подгруппа'}} {{subGroup}}</span>
-        <app-help [message]="help.message" [action]="help.action"></app-help>
       </div>
-
       <div class="results-component__subGroup-table" *var="state.labs | filter:'SubGroup':subGroup as subGroupLabs">
         <table mat-table [dataSource]="state.students | filter:'SubGroup': subGroup" class="mat-elevation-z14" 
         *var="state.schedule | filter:'SubGroup':subGroup as subGroupSchedule">

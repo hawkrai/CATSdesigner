@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Test } from 'src/app/models/tests/Test';
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-test-dialog',

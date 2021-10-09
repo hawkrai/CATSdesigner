@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef, MatOptionSelectionChange} from '@angular/material';
 import {Student} from '../../../models/student.model';
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 interface DialogData {
   students: Student[];

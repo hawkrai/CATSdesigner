@@ -15,8 +15,9 @@ import * as newsSelectors from '../../store/selectors/news.selectors';
 import * as newsActions from '../../store/actions/news.actions';
 import * as filesActions from '../../store/actions/files.actions';
 import {SubSink} from 'subsink';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { Help } from 'src/app/models/help.model';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { TranslatePipe } from 'educats-translate';
 
 interface NewsState {
   color: string
@@ -33,15 +34,19 @@ interface NewsState {
 export class SubjectNewsComponent implements OnInit, OnDestroy {
 
   state$: Observable<NewsState>;
-  private subs = new SubSink()
+  private subs = new SubSink();
+  tabletMatcher: MediaQueryList;
 
   constructor(
     private dialogService: DialogService,
     private translate: TranslatePipe,
-    private store: Store<IAppState>) {
+    private store: Store<IAppState>,
+    private mediaMatcher: MediaMatcher) {
   }
 
   ngOnInit() {
+    this.tabletMatcher = this.mediaMatcher.matchMedia('(max-width: 650px)');
+    this.tabletMatcher.addEventListener('change', this.emptyListener);
     this.store.dispatch(newsActions.loadNews());
     this.state$ = combineLatest(
       this.store.select(subjectSelectors.getSubjectColor),
@@ -52,9 +57,12 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     );
   }
 
+  private emptyListener() {}
+
   ngOnDestroy(): void {
     this.subs.unsubscribe();
     this.store.dispatch(newsActions.resetNews());
+    this.tabletMatcher.removeEventListener('change', this.emptyListener);
   }
 
   disableNews(disable: boolean): void {

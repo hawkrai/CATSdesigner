@@ -31,7 +31,7 @@ pipeline {
             bat  'npm config ls'
             dir('./container') {
                 bat  'npm install --force'
-                bat  'npm run build'
+                bat  'npm run build:prod'
             }
             dir('./build') {
                 bat  "chmod +x -R ${env.WORKSPACE}"

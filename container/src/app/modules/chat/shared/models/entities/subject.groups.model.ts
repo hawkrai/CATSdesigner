@@ -3,6 +3,8 @@ import { Chat } from './chats.model';
 export class SubjectGroups {
     id: number;
     name: string;
-    unread: number;
+    shortName:string;
+    color:string;
+    unread: number=0;
     groups?: Chat[];
 }

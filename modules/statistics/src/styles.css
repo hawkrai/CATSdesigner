@@ -1,2 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~educats-common/assets/styles/bootstrap.min.css';
+@import '~educats-common/assets/styles/fontawesome.css';
+@import '~educats-common/assets/styles/angular-calendar.css';
+@import '~educats-common/assets/styles/flatpickr.css';
+@import '~educats-common/index.css';
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";

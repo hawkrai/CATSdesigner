@@ -15,7 +15,6 @@ import { NavComponent } from './layout/nav/nav.component';
 import { FooterComponent } from './layout/footer/footer.component';
 
 import { MatetialModule } from './shared/matetial/matetial.module';
-import {TranslatePipe} from "./pipe/translate.pipe";
 import { CoreModule } from './core/core.module';
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 import { LayoutService } from './layout/layout.service';
@@ -44,8 +43,7 @@ import { HelpPopoverProgressControlComponent } from './progress-control/help-pop
 import { AboutSystemComponent } from './about-system/about-system.component';
 import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component';
 import { SharedModule } from './shared/shared.module';
-import { VideoComponent } from './login/modal/video.component';
-
+import { OrderByPipe } from './pipe/order-by.pipe';
 
 @NgModule({
   declarations: [
@@ -74,8 +72,7 @@ import { VideoComponent } from './login/modal/video.component';
     LectorManualComponent,
     StudentManualComponent,
     HelpPopoverProgressControlComponent,
-    VideoComponent
-
+    OrderByPipe
   ],
   imports: [
     BrowserModule,

@@ -23,6 +23,11 @@ export class GroupsComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
+    this.dataService.messages.next([]);
+    this.dataService.activChat=null;
+    this.dataService.activChatId=0;
+    this.dataService.activGroup=null;
+    this.dataService.isGroupChat=false;
     this.subscription=this.dataService.groups.subscribe(groups=>
       {
          this.groups=groups; 

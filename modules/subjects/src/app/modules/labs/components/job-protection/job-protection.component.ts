@@ -1,25 +1,20 @@
 import { DialogService } from 'src/app/services/dialog.service';
 import { SubSink } from 'subsink';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import {Store} from '@ngrx/store';
-import { Observable, combineLatest } from 'rxjs';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {AddLabPopoverComponent} from './add-lab-popover/add-lab-popover.component';
-import {filter, map, switchMap, take, withLatestFrom} from 'rxjs/operators';
+import {filter, map, withLatestFrom} from 'rxjs/operators';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { Attachment } from 'src/app/models/file/attachment.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 
 import * as labsActions from '../../../../store/actions/labs.actions';
-import * as labsSelectors from '../../../../store/selectors/labs.selectors';
-import * as filesActions from '../../../../store/actions/files.actions';
-import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
 import * as subjectSelectors from '../../.././../store/selectors/subject.selector';
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
-import { LabsRestService } from 'src/app/services/labs/labs-rest.service';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-job-protection',
@@ -43,7 +38,6 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
-    private labsService: LabsRestService,
     public dialogService: DialogService,
     ) {
   }
@@ -66,13 +60,14 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
 
   addLab({ userId, file, labId, fileId }: { userId: number, file: UserLabFile, labId?: number, fileId?: number }): void {
     const dialogData: DialogData = {
-      title: this.isTeacher ? 'Загрузить исправленный вариант работы' : 'На защиту лабораторной работы',
-      buttonText: 'Отправить работу',
+      title: this.isTeacher ? this.translate.transform('text.subjects.labs.for.revision', 'На доработку') : this.translate.transform('text.subjects.labs.to.protect', 'На защиту лабораторной работы'),
+      buttonText: this.translate.transform('button.send', 'Отправить'),
       body: { isTeacher : this.isTeacher },
       model: { 
         comments: file ? file.Comments : '', 
         attachments: file ? file.Attachments : [], 
         labId: labId ? labId : file ? file.LabId : 0,
+        isTeacher: this.isTeacher
       }
     };
     const dialogRef = this.dialogService.openDialog(AddLabPopoverComponent, dialogData);
@@ -98,9 +93,9 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
 
   deleteLab(deleteRequest: { userLabFileId: number, userId: number, labId: number }): void {
     const dialogData: DialogData = {
-      title: 'Удаление работы',
-      body: 'работу',
-      buttonText: 'Удалить'
+      title: this.translate.transform('text.subject.labs.work.deleting','Удаление работы'),
+      body: this.translate.transform('work.accusative', 'работу'),
+      buttonText: this.translate.transform('button.delete', 'Удалить')
     };
     const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
 

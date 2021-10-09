@@ -10,7 +10,7 @@ import {Subject} from "rxjs";
 import {finalize, takeUntil} from "rxjs/operators";
 import {AutocompleteModel} from "../models/autocomplete.model";
 import {Results} from "../models/results.model";
-import {TranslatePipe} from "../../../../../container/src/app/pipe/translate.pipe";
+import {TranslatePipe} from "educats-translate";
 import {MatSlideToggleChange} from "@angular/material";
 
 
