@@ -12,63 +12,63 @@ export statistics_path=$modules_path'/statistics'
 
 cd $admin_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
 
 cd $tests_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
 
 cd $subjects_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
 
 cd $cp_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
 
 cd $confirmation_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
 
 cd $complex_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..' 
 
 cd $editor_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
 
 cd $schedule_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
 
 cd $statistics_path
 npx rimraf ./node_modules
-npm rimraf ./package-lock.json
+npx rimraf ./package-lock.json
 npm i --force
 npm run build:prod
 cd '..'
