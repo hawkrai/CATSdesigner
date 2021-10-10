@@ -10,7 +10,7 @@ export complex_path=$modules_path'/complex'
 export schedule_path=$modules_path'/schedule'
 export statistics_path=$modules_path'/statistics'
 
-cd $admin_pathz
+cd $admin_path
 npx rimraf ./node_modules
 npm rimraf ./package-lock.json
 npm i
