@@ -11,41 +11,61 @@ export schedule_path=$modules_path'/schedule'
 export statistics_path=$modules_path'/statistics'
 
 cd $admin_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $tests_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $subjects_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $cp_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $dp_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $confirmation_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $complex_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $editor_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $schedule_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
 
 cd $statistics_path
+npx rimraf ./node_modules
+npx rimraf ./package-lock.json
 npm i
 npm run build:qa
