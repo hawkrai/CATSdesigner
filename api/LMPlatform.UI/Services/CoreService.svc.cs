@@ -332,7 +332,7 @@ namespace LMPlatform.UI.Services
 					{
 						CountUnconfirmedStudents = students,
 						GroupId = @group.Id,
-						GroupName = students > 0 ? @group.Name + " - (" + students + ")" : @group.Name
+						GroupName = @group.Name
 					});
 				}
 

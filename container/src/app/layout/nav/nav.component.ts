@@ -3,7 +3,7 @@ import { LayoutService } from "../layout.service";
 import { AuthenticationService } from "../../core/services/auth.service";
 import { first, takeUntil, tap } from "rxjs/operators";
 import { CoreService } from "../../core/services/core.service";
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { Lecturer, Student, Group } from '../../core/models/searchResults/search-results';
 import { SearchService } from '../../core/services/searchResults/search.service';
 import { ProfileService } from '../../core/services/searchResults/profile.service';
@@ -13,6 +13,7 @@ import {MenuService} from "src/app/core/services/menu.service";
 import {MatDialog} from "@angular/material/dialog";
 import {AboutSystemPopoverComponent} from "../../about-system/about-popover/about-popover.component";
 import { Router } from "@angular/router";
+import { ConfirmationService } from "src/app/core/services/confirmation.service";
 
 
 interface DropDownValue {
@@ -55,7 +56,8 @@ export class NavComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private profileService: ProfileService,
     private menuService: MenuService,
-    public dialog: MatDialog)
+    public dialog: MatDialog,
+    private confirmationService: ConfirmationService)
   {
   }
 
@@ -68,7 +70,13 @@ export class NavComponent implements OnInit, OnDestroy {
     this.isLector = this.autService.currentUserValue.role == "lector";
     this.isAdmin = this.autService.currentUserValue.role == "admin";
     this.getUserInfo();
-
+    this.confirmationService.confirmationSubject
+    .pipe(
+      takeUntil(this.unsubscribeStream$)
+    )
+    .subscribe(value => {
+      this.unconfirmedStudents += value;
+    })
     if (!localStorage.getItem("theme")) {
       localStorage.setItem("theme", "white");
     }
@@ -95,9 +103,7 @@ export class NavComponent implements OnInit, OnDestroy {
       .pipe(
         tap((groups: any) => {
           if (groups && groups.Groups) {
-            groups.Groups.forEach((group: any) => {
-              this.unconfirmedStudents += group.CountUnconfirmedStudents;
-            });
+            this.unconfirmedStudents = groups.Groups.reduce((acc, group) => acc + group.CountUnconfirmedStudents, 0);
           }
         }),
         takeUntil(this.unsubscribeStream$)
@@ -133,6 +139,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.unsubscribeStream$.next(null);
     this.unsubscribeStream$.complete();
+
   }
 
   getUserInfo() {
