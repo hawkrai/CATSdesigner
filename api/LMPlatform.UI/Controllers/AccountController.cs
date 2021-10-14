@@ -85,6 +85,11 @@ namespace LMPlatform.UI.Controllers
                     return StatusCode(HttpStatusCode.BadRequest,
                         "Данныe имя пользователя и пароль больше не действительны");
 
+                if (role.RoleName == "student" &&  (!user.Student.Confirmed.HasValue || !user.Student.Confirmed.Value))
+                {
+                    return StatusCode(HttpStatusCode.BadRequest, "Пользователь ещё не подтверждён");
+                }
+
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
