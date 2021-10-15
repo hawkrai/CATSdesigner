@@ -185,17 +185,10 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             });
             student.User = user;
             student.Group = GroupManagementService.GetGroup(student.GroupId);
+            ElasticManagementService.AddStudent(student);
             UsersManagementService.UpdateUser(user);
-            new StudentSearchMethod().AddToIndex(student);
-            try 
-            {
-                ElasticManagementService.AddStudent(student);
-            }
-            catch (Exception)
-            {
-
-            }
-            
+            new StudentSearchMethod().AddToIndex(student); 
+                
         }
         
         private void SaveLecturer()
@@ -212,15 +205,8 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
 				IsActive = true
             });
             lecturer.User = user;
-            new LecturerSearchMethod().AddToIndex(lecturer);
-            try
-            {
-                ElasticManagementService.AddLecturer(lecturer);
-            }
-            catch (Exception)
-            {
-
-            }
+            new LecturerSearchMethod().AddToIndex(lecturer);          
+            ElasticManagementService.AddLecturer(lecturer);
         }
 	}
 }

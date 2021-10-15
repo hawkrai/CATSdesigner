@@ -11,7 +11,7 @@ import { map } from 'rxjs/operators';
 import { DialogService } from 'src/app/services/dialog.service';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import { VisitDatePracticalsPopoverComponent } from './visit-date-practicals-popover/visit-date-practicals-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-practical-protection-schedule',

@@ -7,7 +7,7 @@ export class Chat {
     lastMessage?: string;
     groupId:number;
     time: string;
-    unread: number;
+    unread: number=0;
     isOnline?: boolean;
     isTyping?: boolean;
     isGroup?:boolean;

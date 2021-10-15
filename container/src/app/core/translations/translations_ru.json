@@ -11,6 +11,7 @@
   "chat.send":"Отправить", 
   "chat.cancle" :"Отмена",
   "chat.listStudent":"Список студентов",
+  "chat.filter":"Поиск сообщений",
   "subject": "Предметы",
   "graduation.project": "Дипломное проектирование",
   "other": "Другой",
@@ -68,6 +69,12 @@
   "group": "Группа",
   "lecturer": "Преподаватель",
   "student": "Студент",
+  "groups": "Группы",
+  "lecturers": "Преподаватели",
+  "students": "Студенты",
+
+
+
   "text.thirdsubgroup.add": "Добавить третью подгруппу",
   "text.thirdsubgroup.remove": "Убрать третью подгруппу",
   "text.test.passing.now": "В данный момент тесты проходят:",

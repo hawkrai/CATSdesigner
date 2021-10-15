@@ -12,7 +12,7 @@ import {catchError, takeUntil, tap} from "rxjs/operators";
 import {Base64UploaderPlugin} from "../../../core/Base64Upload";
 import {FormUtils} from "../../../utils/form.utils";
 import {NavItem} from "../../../models/nav-item";
-import {TranslatePipe} from "../../../../../../../container/src/app/pipe/translate.pipe";
+import {TranslatePipe} from "educats-translate";
 
 
 @AutoUnsubscribe

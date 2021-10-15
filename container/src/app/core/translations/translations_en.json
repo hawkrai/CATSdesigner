@@ -10,8 +10,9 @@
   "chat.delete":"Delete",
   "chat.attachFile":"Attach file",
   "chat.send":"Send",
-  "chat.cancle" :"Cancle",
+  "chat.cancle" :"Cancel",
   "chat.listStudent":"Student list",
+  "chat.filter":"Filter messages",
   "subject": "Courses",
   "graduation.project": "Graduation project",
   "other": "Other",
@@ -66,9 +67,15 @@
   "group": "Group",
   "lecturer": "Lecturer",
   "student": "Student",
+
+  "groups": "Groups",
+  "lecturers": "Lecturers",
+  "students": "Students",
+  
   "text.thirdsubgroup.add": "Add third subgroup",
   "text.thirdsubgroup.remove": "Remove third subgroup",
   "subject.abbreviation": "Subject abbreviation",
+
   "symbols.min.length": "Minimum number of characters",
   "symbols.max.length": "Maximum number of characters",
   "comment.for.student": "Show comment for student",

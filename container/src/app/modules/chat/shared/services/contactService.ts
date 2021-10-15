@@ -16,7 +16,7 @@ export class ContactService {
     public isLecturer: boolean;
     public contacts: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([]);
     public openChatComand: BehaviorSubject<Chat> = new BehaviorSubject<Chat>(null);
-
+    public isChatOpen:boolean;
     constructor(private http: HttpClient, private dataService: DataService) {
         this.user = JSON.parse(localStorage.getItem('currentUser'));
         this.isLecturer = this.user.role == "lector";
@@ -24,6 +24,7 @@ export class ContactService {
 
     public openCaht(chat:Chat)
     {
+        this.isChatOpen=true;
         this.openChatComand.next(chat);
     }
 

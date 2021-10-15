@@ -19,9 +19,9 @@ import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { LabVisitingMark } from 'src/app/models/visiting-mark/lab-visiting-mark.model';
 import { Message } from 'src/app/models/message.model';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-results',

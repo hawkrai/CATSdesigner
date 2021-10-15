@@ -30,6 +30,8 @@ pipeline {
           steps {
             bat  'npm config ls'
             dir('./container') {
+				bat  'npx rimraf ./node_modules'
+                bat  'npx rimraf ./package-lock.json'
                 bat  'npm install --force'
                 bat  'npm run build:prod'
             }

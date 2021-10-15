@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:qa": "ng build --output-path d:/.temp/apps/libBook",
+    "build:qa": "ng build --output-path c:/.temp/apps/libBook",
     "build:prod": "ng build --output-path d:/CatsProject/apps/libBook"
   },
   "private": true,
@@ -25,6 +25,8 @@
     "@angular/router": "~9.1.9",
     "@ckeditor/ckeditor5-angular": "^1.2.3",
     "ckeditor5-custom-build": "file:src/app/core/custom-ckeditor5",
+    "educats-common": "^2.0.0",
+    "educats-translate": "^1.0.0",
     "hammerjs": "^2.0.8",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",

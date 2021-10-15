@@ -12,7 +12,7 @@
                 <mat-label>Год поступления</mat-label>
                 <mat-select formControlName="StartYear">
                     <mat-optgroup [label]="this.form.controls.StartYear.value">
-                        <mat-option *ngFor="let group of this.yearOfReceipt()" [value]="group">
+                        <mat-option *ngFor="let group of this.yearOfIssue()" [value]="group">
                             <p>{{group}}</p>
                         </mat-option>
                     </mat-optgroup>

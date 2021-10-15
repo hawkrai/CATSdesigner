@@ -17,8 +17,8 @@ import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { Message } from 'src/app/models/message.model';
+import { TranslatePipe } from 'educats-translate';
 
 
 @Component({

@@ -32,10 +32,12 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { AllNewsComponent } from './modal/all-news/all-news.component';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
+import {TranslateModule, TranslatePipe} from 'educats-translate';
 import {MatIconModule} from '@angular/material/icon';
 import { HelpPopoverScheduleComponent } from './schedule-main/help-popover/help-popover-schedule.component';
 import {MatDividerModule} from '@angular/material/divider';
+import * as dataRu from './core/translate/translations_ru.json';
+import * as dataEn from './core/translate/translations_en.json';
 
 registerLocaleData(localeRu);
 
@@ -57,43 +59,48 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     NewsComponent,
     NewsInfoComponent,
     AllNewsComponent,
-    TranslatePipe,
     HelpPopoverScheduleComponent
   ],
-  imports: [
-    BrowserModule,
-    MatButtonModule,
-    NoopAnimationsModule,
-    BrowserAnimationsModule,
-    CommonModule,
-    FormsModule,
-    AppRoutingModule,
-    MatDialogModule,
-    HttpClientModule,
-    MatInputModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    NgxMaterialTimepickerModule,
-    FlatpickrModule.forRoot(),
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory
-    }, {
-      dateFormatter: {
-        provide: CalendarDateFormatter,
-        useClass: CustomDateFormatter
-      }
-    }),
-    MatSelectModule,
-    MatMenuModule,
-    MatRadioModule,
-    MatTabsModule,
-    MatDatepickerModule,
-    MatIconModule,
-    MatDividerModule
-  ],
+    imports: [
+        BrowserModule,
+        MatButtonModule,
+        NoopAnimationsModule,
+        BrowserAnimationsModule,
+        CommonModule,
+        FormsModule,
+        AppRoutingModule,
+        MatDialogModule,
+        HttpClientModule,
+        MatInputModule,
+        MatTooltipModule,
+        MatProgressSpinnerModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        NgxMaterialTimepickerModule,
+        FlatpickrModule.forRoot(),
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory
+        }, {
+            dateFormatter: {
+                provide: CalendarDateFormatter,
+                useClass: CustomDateFormatter
+            }
+        }),
+        MatSelectModule,
+        MatMenuModule,
+        MatRadioModule,
+        MatTabsModule,
+        MatDatepickerModule,
+        MatIconModule,
+        MatDividerModule,
+        TranslateModule.forRoot({
+          localizationMap: {
+            ru: dataRu,
+            en: dataEn
+          }
+        })
+    ],
   providers: [DatePipe, MatDatepickerModule, TranslatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],

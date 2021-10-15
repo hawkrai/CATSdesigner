@@ -5,7 +5,7 @@ import {DiplomUser} from '../../models/diplom-user.model';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import {AddStageDialogComponent} from './add-stage-dialog/add-stage-dialog.component';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-percentages',

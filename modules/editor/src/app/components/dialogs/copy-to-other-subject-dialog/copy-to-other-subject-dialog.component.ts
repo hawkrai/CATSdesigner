@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentPreview } from 'src/app/models/DocumentPreview';
 import { DocumentService } from 'src/app/services/document.service';
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-copy-to-other-subject-dialog',

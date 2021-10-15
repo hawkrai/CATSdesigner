@@ -7,14 +7,14 @@ import { MainPageComponent } from './main-page/main-page.component';
 import {ChartsModule, ThemeService} from 'ng2-charts';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import {HttpClientModule} from '@angular/common/http';
-import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
-
+import { TranslateModule, TranslatePipe } from 'educats-translate';
+import * as dataRu from './core/translate/translations_ru.json';
+import * as dataEn from './core/translate/translations_en.json';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainPageComponent,
-    TranslatePipe
+    MainPageComponent
   ],
   imports: [
     BrowserModule,
@@ -22,6 +22,12 @@ import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
     ChartsModule,
     NgApexchartsModule,
     HttpClientModule,
+    TranslateModule.forRoot({
+      localizationMap: {
+        ru: dataRu,
+        en: dataEn
+      }
+    })
   ],
   providers: [ThemeService, TranslatePipe],
   bootstrap: [AppComponent]
