@@ -45,19 +45,20 @@ export class MainPageComponent implements OnInit {
       this.serviceService.getUserInfo(this.user.id).subscribe(res => {
         this.serviceService.getAllSubjects(this.user.userName).subscribe(subjects => {
           subjects.forEach(subject => {
-            this.serviceService.getLabsStastics(subject.Id, res.GroupId).subscribe(result => {
+            this.serviceService.getLabsStastics(res.GroupId).subscribe(result => {
               this.categoriesTemp = [];
               this.temp = [];
               this.tempAvg = 0;
-              if (result.Message.length == 0) {
+              console.log(result);
+              if (result.Message == 'Ok') {
                 this.testSum = 0;
                 this.practSum = 0;
                 this.labSum = 0;
                 result.Students.forEach(student => {
-                  if (student.StudentId == this.user.id) {
-                    this.testSum = +student.TestMark;
-                    this.practSum = +student.PracticalsMarkTotal;
-                    this.labSum = +student.LabsMarkTotal;
+                  if (student.Id == this.user.id) {
+                    this.testSum = +student.UserAvgTestMarks.find(({Key}) => Key === subject.Id)!.Value;
+                    this.practSum = 0;
+                    this.labSum = +student.UserAvgLabMarks.find(({Key}) => Key === subject.Id)!.Value;
                   }
                 });
                 this.temp.push(this.courseMark);
@@ -70,8 +71,6 @@ export class MainPageComponent implements OnInit {
                   this.temp.push(this.labSum);
                   this.categoriesTemp.push(this.categoriesConst[0]);
                 }
-                this.temp.push(8);
-                this.categoriesTemp.push(this.categoriesConst[0]);
                 if (this.practSum != 0) {
                   this.temp.push(this.practSum);
                   this.categoriesTemp.push(this.categoriesConst[3]);
@@ -79,7 +78,7 @@ export class MainPageComponent implements OnInit {
                 this.temp.forEach(el => {
                   this.tempAvg += el;
                 });
-                this.temp.push(this.tempAvg / this.temp.length);
+                this.temp.push(Math.round(this.tempAvg / this.temp.length * 100) / 100);
                 this.categoriesTemp.push(this.categoriesConst[2]);
                 this.addChart(this.temp, subject.Name, this.categoriesTemp);
               }
@@ -88,6 +87,9 @@ export class MainPageComponent implements OnInit {
         });
       });
     } else {
+      this.serviceService.getTeacherStatistics().subscribe(res => {
+        console.log(res);
+      });
       this.addChart([7, 6, 9, 5, 7], 'Test', this.categoriesConst);
     }
   }

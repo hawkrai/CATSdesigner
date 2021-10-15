@@ -35,6 +35,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {TranslatePipe} from '../../../../container/src/app/pipe/translate.pipe';
 import {MatIconModule} from '@angular/material/icon';
 import { HelpPopoverScheduleComponent } from './schedule-main/help-popover/help-popover-schedule.component';
+import {MatDividerModule} from '@angular/material/divider';
 
 registerLocaleData(localeRu);
 
@@ -59,39 +60,40 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     TranslatePipe,
     HelpPopoverScheduleComponent
   ],
-    imports: [
-        BrowserModule,
-        MatButtonModule,
-        NoopAnimationsModule,
-        BrowserAnimationsModule,
-        CommonModule,
-        FormsModule,
-        AppRoutingModule,
-        MatDialogModule,
-        HttpClientModule,
-        MatInputModule,
-        MatTooltipModule,
-        MatProgressSpinnerModule,
-        MatFormFieldModule,
-        ReactiveFormsModule,
-        NgxMaterialTimepickerModule,
-        FlatpickrModule.forRoot(),
-        CalendarModule.forRoot({
-            provide: DateAdapter,
-            useFactory: adapterFactory
-        }, {
-            dateFormatter: {
-                provide: CalendarDateFormatter,
-                useClass: CustomDateFormatter
-            }
-        }),
-        MatSelectModule,
-        MatMenuModule,
-        MatRadioModule,
-        MatTabsModule,
-        MatDatepickerModule,
-        MatIconModule
-    ],
+  imports: [
+    BrowserModule,
+    MatButtonModule,
+    NoopAnimationsModule,
+    BrowserAnimationsModule,
+    CommonModule,
+    FormsModule,
+    AppRoutingModule,
+    MatDialogModule,
+    HttpClientModule,
+    MatInputModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    NgxMaterialTimepickerModule,
+    FlatpickrModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    }, {
+      dateFormatter: {
+        provide: CalendarDateFormatter,
+        useClass: CustomDateFormatter
+      }
+    }),
+    MatSelectModule,
+    MatMenuModule,
+    MatRadioModule,
+    MatTabsModule,
+    MatDatepickerModule,
+    MatIconModule,
+    MatDividerModule
+  ],
   providers: [DatePipe, MatDatepickerModule, TranslatePipe],
   exports: [AppComponent, MatTooltipModule],
   bootstrap: [AppComponent],
