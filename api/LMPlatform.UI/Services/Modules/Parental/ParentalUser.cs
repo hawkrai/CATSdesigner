@@ -24,15 +24,21 @@ namespace LMPlatform.UI.Services.Modules.Parental
 
         [DataMember]
         public Dictionary<int, int> UserLabPass { get; set; }
+        [DataMember]
+        public Dictionary<int, int> UserPracticalPass { get; set; }
 
         [DataMember]
         public Dictionary<int, double> UserAvgLabMarks { get; set; }
+        [DataMember]
+        public Dictionary<int, double> UserAvgPracticalMarks { get; set; }
 
         [DataMember]
         public Dictionary<int, double> UserAvgTestMarks { get; set; }
 
         [DataMember]
         public Dictionary<int, int> UserLabCount { get; set; }
+        [DataMember]
+        public Dictionary<int, int> UserPracticalCount { get; set; }
 
         [DataMember]
         public Dictionary<int, int> UserTestCount { get; set; }
@@ -64,6 +70,9 @@ namespace LMPlatform.UI.Services.Modules.Parental
             this.UserAvgTestMarks = new Dictionary<int, double>();
             this.UserLabCount = new Dictionary<int, int>();
             this.UserTestCount = new Dictionary<int, int>();
+            this.UserPracticalPass = new Dictionary<int, int>();
+            this.UserPracticalCount = new Dictionary<int, int>();
+            this.UserAvgPracticalMarks = new Dictionary<int, double>();
             this.Subjects = subjects;
 
             foreach (var subject in subjects)
@@ -74,10 +83,15 @@ namespace LMPlatform.UI.Services.Modules.Parental
                 this.UserLabCount.Add(subject.Id, 0);
                 this.UserAvgTestMarks.Add(subject.Id, 0);
                 this.UserTestCount.Add(subject.Id, 0);
+                this.UserPracticalPass.Add(subject.Id, 0);
+                this.UserAvgPracticalMarks.Add(subject.Id, 0);
+                this.UserPracticalCount.Add(subject.Id, 0);
             }
             InitLecturePass(student);
             InitLabPass(student);
             InitAvgLabMarks(student);
+            InitPracticalPass(student);
+            InitAvgPracticalMarks(student);
             InitAvgTestMarks(student);
             foreach (var subject in subjects)
             {
@@ -85,6 +99,9 @@ namespace LMPlatform.UI.Services.Modules.Parental
                     this.UserAvgLabMarks[subject.Id] /= this.UserLabCount[subject.Id];
                 if (this.UserTestCount[subject.Id] != 0)
                     this.UserAvgTestMarks[subject.Id] /= this.UserTestCount[subject.Id];
+                if (this.UserPracticalCount[subject.Id] != 0)
+                    this.UserAvgPracticalMarks[subject.Id] /= this.UserPracticalCount[subject.Id];
+
             }
             #endregion
         }
@@ -132,6 +149,27 @@ namespace LMPlatform.UI.Services.Modules.Parental
             }
         }
 
+        private void InitPracticalPass(Student student)
+        {
+            if (student.ScheduleProtectionPracticalMarks != null)
+            {
+                foreach (var practical in student.ScheduleProtectionPracticalMarks)
+                {
+
+                    if (practical != null && practical.ScheduleProtectionPractical != null)
+                    {
+                        int pass;
+                        Int32.TryParse(practical.Mark, out pass);
+                        if (UserPracticalPass.ContainsKey(practical.ScheduleProtectionPractical.SubjectId))
+                        {
+                            this.UserPracticalPass[practical.ScheduleProtectionPractical.SubjectId] += pass;
+                        }
+
+                    }
+                }
+            }
+        }
+
         private void InitAvgLabMarks(Student student)
         {
             if (student.StudentLabMarks != null)
@@ -148,6 +186,27 @@ namespace LMPlatform.UI.Services.Modules.Parental
                     if (this.UserLabCount.ContainsKey(lab.Lab.SubjectId))
                     {
                         this.UserLabCount[lab.Lab.SubjectId]++;
+                    }
+                }
+            }
+        }
+
+        private void InitAvgPracticalMarks(Student student)
+        {
+            if (student.StudentPracticalMarks != null)
+            {
+                foreach (var practical in student.StudentPracticalMarks)
+                {
+                    double mark;
+                    double.TryParse(practical.Mark, out mark);
+                    if (this.UserAvgPracticalMarks.ContainsKey(practical.Practical.SubjectId))
+                    {
+                        this.UserAvgPracticalMarks[practical.Practical.SubjectId] += mark;
+                    }
+
+                    if (this.UserPracticalCount.ContainsKey(practical.Practical.SubjectId))
+                    {
+                        this.UserPracticalCount[practical.Practical.SubjectId]++;
                     }
                 }
             }
