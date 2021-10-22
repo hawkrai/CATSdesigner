@@ -2,6 +2,7 @@
 using Application.ElasticSearchEngine.SearchRepositories;
 using Elasticsearch.Net;
 using LMPlatform.ElasticDataModels;
+using LMPlatform.Models;
 using Nest;
 using Nest.JsonNetSerializer;
 using Newtonsoft.Json;
@@ -26,19 +27,17 @@ namespace Application.Infrastructure.ElasticManagement
         private readonly StudentElasticSearchRepository StudentRepo;
         private readonly LecturerElasticSearchRepository LecturerRepo;
         private readonly ProjectElasticSearchRepository ProjectRepo;
+        private readonly ElasticInitializer Initializer;
         public ElasticManagementService()
         {
-            ElasticClient client = CreateClient();
+            client = CreateClient();
             if (CheckConnection(client))
             {
                 StudentRepo = new StudentElasticSearchRepository(client);
                 LecturerRepo = new LecturerElasticSearchRepository(client);
                 GroupRepo = new GroupElasticSearchRepository(client);
                 ProjectRepo = new ProjectElasticSearchRepository(client);
-            }
-            else
-            {
-                throw new Exception("Client was not connected to ElasticSearch server\n");
+                Initializer = new ElasticInitializer(client);
             }
         }
 
@@ -65,65 +64,126 @@ namespace Application.Infrastructure.ElasticManagement
             return isConnected.IsValid;
         }
         public IEnumerable<ElasticGroup> GetGroupSearchResult(string searchStr) {
-            return GroupRepo.Search(searchStr).ToList<ElasticGroup>();
+            return GroupRepo != null ? GroupRepo.Search(searchStr).ToList<ElasticGroup>() : null;
         }
         public IEnumerable<ElasticStudent> GetStudentSearchResult(string searchStr) {
-            return StudentRepo.Search(searchStr).ToList<ElasticStudent>();
+            return StudentRepo != null ? StudentRepo.Search(searchStr).ToList<ElasticStudent>() : null;
         }
         public IEnumerable<ElasticLecturer> GetLecturerSearchResult(string searchStr) {
-            return LecturerRepo.Search(searchStr).ToList<ElasticLecturer>();
+            return LecturerRepo != null ? LecturerRepo.Search(searchStr).ToList<ElasticLecturer>() : null;
         }
         public IEnumerable<ElasticProject> GetProjectSearchResult(string searchStr) {
-            return ProjectRepo.Search(searchStr).ToList<ElasticProject>();
+            return ProjectRepo != null ? ProjectRepo.Search(searchStr).ToList<ElasticProject>() : null;
         }
 
         public void AddStudent(ElasticStudent student)
         {
-            StudentRepo.AddToIndex(student);
+            if(StudentRepo != null) StudentRepo.AddToIndex(student);
         }
-        public void AddLecturer(ElasticLecturer lecturer)
+        public void AddStudent(Student student)
         {
-            LecturerRepo.AddToIndex(lecturer);
-        }
-        public void AddGroup(ElasticGroup group)
-        {
-            GroupRepo.AddToIndex(group);
+            if(StudentRepo != null)  StudentRepo.AddToIndex(Initializer.ConvertStudent(student));
         }
         public void AddProject(ElasticProject project)
         {
-            ProjectRepo.AddToIndex(project);
+           if(ProjectRepo != null) ProjectRepo.AddToIndex(project);
+        }
+        public void AddProject(Project project)
+        {
+           if(ProjectRepo != null) ProjectRepo.AddToIndex(Initializer.ConvertProject(project));
+        }
+        public void AddLecturer(ElasticLecturer lecturer)
+        {
+           if(LecturerRepo != null) LecturerRepo.AddToIndex(lecturer);
+        }
+        public void AddLecturer(Lecturer lecturer)
+        {
+           if(LecturerRepo != null) LecturerRepo.AddToIndex(Initializer.ConvertLecturer(lecturer));
+        }
+        public void AddGroup(ElasticGroup group)
+        {
+           if(GroupRepo != null) GroupRepo.AddToIndex(group);
+        }
+        public void AddGroup(Group group)
+        {
+           if(GroupRepo != null) GroupRepo.AddToIndex(Initializer.ConvertGroup(group));
         }
 
-        public void DelecteStudent(int modelId)
+        public void DeleteStudent(int modelId)
         {
-            StudentRepo.DeleteFromIndex(modelId);
+            if(StudentRepo != null)  StudentRepo.DeleteFromIndex(modelId);
         }
-        public void DelecteLecturer(int modelId)
+        public void DeleteLecturer(int modelId)
         {
-            LecturerRepo.DeleteFromIndex(modelId);
+           if(LecturerRepo != null) LecturerRepo.DeleteFromIndex(modelId);
         }
-        public void DelecteGroup(int modelId)
+        public void DeleteGroup(int modelId)
         {
-            GroupRepo.DeleteFromIndex(modelId);
+           if(GroupRepo != null) GroupRepo.DeleteFromIndex(modelId);
         }
-        public void DelecteProject(int modelId)
+        public void DeleteProject(int modelId)
         {
-            ProjectRepo.DeleteFromIndex(modelId);
+           if(ProjectRepo != null) ProjectRepo.DeleteFromIndex(modelId);
+        }
+
+        public void ModifyStudent(ElasticStudent student)
+        {
+            DeleteStudent(student.Id);
+            AddStudent(student);
+        }
+        public void ModifyStudent(Student student)
+        {
+            DeleteStudent(student.Id);
+            AddStudent(student);
+        }
+        public void ModifyLecturer(ElasticLecturer lecturer)
+        {
+            DeleteLecturer(lecturer.Id);
+            AddLecturer(lecturer);
+        }
+        public void ModifyLecturer(Lecturer lecturer)
+        {
+            DeleteLecturer(lecturer.Id);
+            AddLecturer(lecturer);
+        }
+        public void ModifyGroup(ElasticGroup group)
+        {
+            DeleteGroup(group.Id);
+            AddGroup(group);
+        }
+        public void ModifyGroup(Group group)
+        {
+            DeleteGroup(group.Id);
+            AddGroup(group);
+        }
+        public void ModifyProject(ElasticProject project)
+        {
+            DeleteProject(project.Id);
+            AddProject(project);
+        }
+        public void ModifyProject(Project project)
+        {
+            DeleteProject(project.Id);
+            AddProject(project);
         }
 
         public void ClearElastic() {
-            ElasticInitializer init = new ElasticInitializer(client);
-            init.DeleteGroups();
-            init.DeleteLecturers();
-            init.DeleteStudents();
-            init.DeleteProjects();
+            if (Initializer != null)
+            {
+                Initializer.DeleteGroups();
+                Initializer.DeleteLecturers();
+                Initializer.DeleteStudents();
+                Initializer.DeleteProjects();
+            }
         }
         public void InitElastic() {
-            ElasticInitializer init = new ElasticInitializer(client);
-            init.InitializeGroups();
-            init.InitializeLecturers();
-            init.InitializeStudents();
-            init.InitializeProjects();
+            if (Initializer != null)
+            {
+                Initializer.InitializeGroups();
+                Initializer.InitializeLecturers();
+                Initializer.InitializeStudents();
+                Initializer.InitializeProjects();
+            }
         }
 
     }

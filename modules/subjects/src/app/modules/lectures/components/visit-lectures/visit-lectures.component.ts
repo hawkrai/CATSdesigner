@@ -12,10 +12,11 @@ import * as lecturesSelectors from '../../../../store/selectors/lectures.selecto
 import * as  lecturesActions from '../../../../store/actions/lectures.actions';
 import { DialogService } from 'src/app/services/dialog.service';
 import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
 import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
 import * as catsActions from '../../../../store/actions/cats.actions';
+import * as moment from 'moment';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -86,7 +87,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   setVisitMarks(date: Calendar, lecturesMarksVisiting: LecturesMarksVisiting[], index: number): void {
     if (this.isTeacher) {
       const visits = {
-        date: date.Date,
+        date: moment(date.Date, 'DD.MM.YYYY'),
         students: lecturesMarksVisiting.map(student => ({
           name: student.StudentName,
           mark: student.Marks[index].Mark,
@@ -123,5 +124,9 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
 
   navigateToProfile(lecturesMarksVisiting: LecturesMarksVisiting): void {
     this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${lecturesMarksVisiting.StudentId}`) }));
+  }
+
+  getExcelFile() {
+    this.store.dispatch(lecturesActions.getVisitingExcel());
   }
 }

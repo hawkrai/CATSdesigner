@@ -1,11 +1,13 @@
-<div class="practical-component content">
+<div class="practical-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" *ngFor="let tab of tabs; let idx = index" [tabindex]="idx"
             [class.mdc-tab--active]="selectedTab === idx"
             (click)="selectedTab = idx"
     >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}}</span>
+        <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}}
+          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && idx === 1">groups</mat-icon>
+        </span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="selectedTab === idx">
         <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -13,7 +15,7 @@
       <span class="mdc-tab__ripple"></span>
     </button>
   </div>
-  <div class="practical-component-body" *ngIf="state$ | async as state">
+  <div class="practical-component-body">
     <div class="practical-component__controls" >
       <ng-container *ngIf="state.isTeacher">
         <div class="practical-component__select-group" *ngIf="selectedTab !== 0">
@@ -36,15 +38,32 @@
           </mat-slide-toggle>
         </div>
         <div class="practical-component-actions">
-          <div class="_excel-file"
-          *ngIf="(selectedTab === 2 || selectedTab === 3)" 
-          (click)="getExcelFile()">
-            <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+          <div class="actions-group">
+            <ng-container *ngIf="selectedTab === 1">
+              <app-help  [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
+              <button class="mat-icon-button-groups" mat-icon-button [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="left" (click)="subdivision()">
+                <mat-icon>groups</mat-icon>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="selectedTab === 2">
+              <app-help [message]="visitingHelp.message" [action]="visitingHelp.action" class="help"></app-help>
+              <div class="_excel-file"
+              (click)="getVisitingExcelFile()">
+                <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="selectedTab === 3">
+              <app-help [message]="resultsHelp.message" [action]="resultsHelp.action" class="help"></app-help>
+              <div class="_excel-file"
+              (click)="getResultsExcelFile()">
+                <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+              </div>
+            </ng-container>
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="!state.isTeacher">
-        {{state.group && state.group.GroupName}}
+      <ng-container *ngIf="!state.isTeacher && selectedTab !== 0">
+        {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
       </ng-container>
     </div>
     <div>
@@ -52,7 +71,6 @@
       <app-practical-protection-schedule *ngIf="selectedTab === 1 && state.group" [groupId]="state.group.GroupId" [isTeacher]="state.isTeacher"></app-practical-protection-schedule>
       <app-visit-statistic *ngIf="selectedTab === 2 && state.group" [groupId]="state.group.GroupId" [isTeacher]="state.isTeacher"></app-visit-statistic>
       <app-results *ngIf="selectedTab === 3 && state.group" [isTeacher]="state.isTeacher" [groupId]="state.group.GroupId"></app-results>
-      <!--    <app-job-protection *ngIf="tab === 5" [teacher]="teacher"></app-job-protection>-->
     </div>
   </div>
 </div>

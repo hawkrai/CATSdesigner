@@ -24,6 +24,8 @@ namespace Application.Infrastructure.SubjectManagement
 
         Subject GetSubject(int id);
 
+        List<Subject> GetSubjects(IQuery<Subject> query);
+
         IPageableList<Subject> GetSubjectsLecturer(int lecturerId, string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null);
 
         Subject SaveSubject(Subject subject);
@@ -115,8 +117,10 @@ namespace Application.Infrastructure.SubjectManagement
         List<ProfileCalendarModel> GetLecturesEvents(int userId);
 
         List<Subject> GetSubjectsByLector(int userId);
+        List<Subject> GetAllSubjectsByLector(int userId);
 
         List<Subject> GetSubjectsByStudent(int userId);
+        List<Subject> GetAllSubjectsByStudent(int userId);
 
 		decimal GetSubjectCompleting(int subjectId, string user, Student student);
 

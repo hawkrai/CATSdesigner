@@ -337,9 +337,14 @@ namespace LMPlatform.UI.Services.Labs
 			try
 			{
 				var labFiles = LabsManagementService.GetUserLabFiles(userId, subjectId);
-				var model = labFiles.Select(e => new UserLabFileViewData
+				var model = labFiles
+					.GroupBy(x => x.Lab?.Order)
+					.OrderBy(x => x.Key)
+					.SelectMany(x => x.OrderBy(x => x.Date))
+					.Select(e => new UserLabFileViewData
 				{
 					LabShortName = e.Lab?.ShortName,
+					Order = e.Lab?.Order,
 					Comments = e.Comments,
 					Id = e.Id,
 					PathFile = e.Attachments,
@@ -398,10 +403,11 @@ namespace LMPlatform.UI.Services.Labs
 					IsReturned = userLabFile.IsReturned,
 					IsCoursProject = userLabFile.IsCoursProject,
 					LabId = userLabFile.LabId,
-					LabShortName = userLabFile?.Lab?.ShortName,
+					LabShortName = userLabFile.Lab?.ShortName,
 					Date = userLabFile.Date != null ? userLabFile.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
 					Attachments = FilesManagementService.GetAttachments(userLabFile.Attachments).ToList(),
-					UserId = userLabFile.UserId
+					UserId = userLabFile.UserId,
+					Order = userLabFile.Lab?.Order
 				};
 			}
 			catch
@@ -816,14 +822,14 @@ namespace LMPlatform.UI.Services.Labs
 				SubjectManagementService.UpdateUserLabFile(userFileId, isReturned: true);
 				return new ResultViewData
 				{
-					Message = "Файл отклонен",
+					Message = "Файл отправлен на доработку",
 					Code = "200"
 				};
 			} catch
             {
                 return new ResultViewData { 
 					Code = "500",
-					Message = "Не удалось отклонить файл"
+					Message = "Не удалось отправить файл на доработку"
 				};
             }
         }

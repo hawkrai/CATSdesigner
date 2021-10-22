@@ -1,47 +1,87 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
-<div *ngIf="this.isLoad" class="profile">
-    <mat-card class="profile-card">
-        <mat-card class="avatar">
-            <img *ngIf="this.profileInfo.Avatar" src="{{this.profileInfo.Avatar}}" width="300px ">
-            <img *ngIf="!this.profileInfo.Avatar" src="{{this.defaultAvatar}}" width="300px ">
-        </mat-card>
-        <mat-card-content *ngIf="this.profileInfo.Group">
-            <p>{{ this.profileInfo.Name}}</p>
-            <p *ngIf="this.profileInfo.LastLogitData">Последний визит: {{ this.profileInfo.LastLogitData}}</p>
-            <p>Группа: {{ this.profileInfo.Group}}</p>
-        </mat-card-content>
-        <mat-card-content *ngIf="!this.profileInfo.Group">
-          <p *ngIf="this.profileInfo.LastLogitData">Последний визит: {{ this.profileInfo.LastLogitData}}</p>
-          <p *ngIf="this.profileInfo.SkypeContact">Skype: {{ this.profileInfo.SkypeContact}}</p>
-          <p *ngIf="this.profileInfo.Email">Email: {{ this.profileInfo.Email}}</p>
-          <p *ngIf="this.profileInfo.Phone">Телефон: {{ this.profileInfo.Phone}}</p>
-        </mat-card-content>
-    </mat-card>
-    <mat-card class="project-container">
-        <table mat-table [dataSource]="this.profileInfoSubjects">
-            <ng-container matColumnDef="item">
-                <th mat-header-cell *matHeaderCellDef> Текущие предметы пользователя </th>
-                <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
-            </ng-container>
+<mat-spinner mode="indeterminate" *ngIf="!profileInfo" class="spinner" color="primary"></mat-spinner>
+<div *ngIf="this.profileInfo">
+<div class="profile" >
 
-            <ng-container matColumnDef="complete">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let element "> {{element.Completing}} %</td>
-            </ng-container>
+  <mat-card class="profile-card">
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsSecond"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsSecond; "></tr>
-        </table>
+    <mat-card class="avatar">
+    <img class="avatarImg" *ngIf="this.profileInfo.Avatar" src="{{this.profileInfo.Avatar}}">
+        <span *ngIf="!this.profileInfo.Avatar" class="avatar-title rounded-circle bg-soft-primary text-primary">
+          {{this.Surname.charAt(0) + this.Name.charAt(0)}}
+        </span>
     </mat-card>
-    <mat-card class="project-container">
-        <table mat-table [dataSource]="this.profileProjects">
-            <ng-container matColumnDef="item">
-                <th mat-header-cell *matHeaderCellDef> Текущие проекты пользователя </th>
-                <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
-            </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
-        </table>
-    </mat-card>
+    <mat-card-content>
+      <p>{{ this.profileInfo.Name}}</p>
+      <p *ngIf="this.profileInfo.Group">Группа: {{ this.profileInfo.Group}}</p>
+      <p *ngIf="!this.isStudent() && this.profileInfo.Skill">Должность: {{ this.profileInfo.Skill}}</p>
+      <p *ngIf="this.isStudent() && this.profileInfo.LastLogitData">Последний визит: {{ this.profileInfo.LastLogitData}}</p>
+      <p *ngIf="this.profileInfo.SkypeContact">Skype: {{ this.profileInfo.SkypeContact}}</p>
+      <p *ngIf="this.profileInfo.Email">Email: {{ this.profileInfo.Email}}</p>
+      <p *ngIf="this.profileInfo.Phone">Телефон: {{ this.profileInfo.Phone}}</p>
+    </mat-card-content>
+    
+  </mat-card>
+
+
+  <mat-card class="data-container">
+    <div class = "project-table">
+    <table mat-table [dataSource]="this.currentSubjects">
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> Текущие предметы пользователя </th>
+        <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="complete">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element "> {{element.Completing}}% </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsSecond"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsSecond; "></tr>
+    </table>
+    </div>
+    <div class = "project-table">
+    <table mat-table [dataSource]="this.archivedSubjects">
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> Завершенные предметы пользователя </th>
+        <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="complete">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element "> 100% </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsSecond"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsSecond; "></tr>
+    </table>
+    </div>
+
+  </mat-card>
+
+  <mat-card class="data-container">
+    <div class = "project-table">
+    <table mat-table [dataSource]="this.cpProfileProjects">
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> Текущие курсовые проекты пользователя </th>
+        <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+    </table>
+    </div>
+    <div class = "project-table">
+    <table mat-table [dataSource]="this.dpProfileProjects">
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> Текущие дипломные проекты пользователя </th>
+        <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+    </table>
+  </div>
+  </mat-card>
 </div>

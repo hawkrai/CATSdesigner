@@ -4,8 +4,12 @@
       <button mat-raised-button color="primary" (click)="settingVisitDate()">{{'text.schedule.management' | translate:'Управление расписанием'}}</button>
       <button mat-raised-button color="warn" (click)="deletePopover()">{{'text.schedule.management.delete.all' | translate:'Удалить все даты'}}</button>
     </div>
-    <app-help [message]="help.message" [action]="help.action"></app-help>
-
+    <div class="actions-group">
+      <app-help [message]="help.message" [action]="help.action"></app-help>
+      <div class="_excel-file" (click)="getExcelFile()" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="above">
+        <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+      </div>
+    </div>
   </div>
   <div class="visit-lectures-component__table-lecture-visiting" *ngIf="state.groupsVisiting">
     <table mat-table [dataSource]="state.groupsVisiting.LecturesMarksVisiting" class="mat-elevation-z14">

@@ -38,7 +38,7 @@
         <button mat-button matTooltip="Редактировать студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Edit " (click)="openDialogEdit(element) ">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-button matTooltip="Профиль студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Profile" (click)="this.navigateToProfile(element.UserName)">
+        <button mat-button matTooltip="Профиль студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Profile" (click)="this.navigateToProfile(element.Id)">
           <mat-icon>account_circle</mat-icon>
         </button>
         <button mat-button matTooltip="Удалить студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete" (click)="openDialogDelete(element.Id)">

@@ -46,7 +46,9 @@ namespace Application.Infrastructure.FilesManagement
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 	        return string.IsNullOrEmpty(path) ? repositoriesContainer.AttachmentRepository.GetAll().ToList() 
-		        : repositoriesContainer.AttachmentRepository.GetAll(new Query<Attachment>(e => e.PathName == path)).ToList();
+		        : repositoriesContainer.AttachmentRepository.GetAll(new Query<Attachment>(e => e.PathName == path)).ToList()
+                .Where(attachemnt =>  File.Exists(_storageRoot + $"{attachemnt.PathName}//{attachemnt.FileName}"))
+                .ToList();
         }
 
         public IList<Attachment> GetAttachments(string filter, int filesPerPage, int page)

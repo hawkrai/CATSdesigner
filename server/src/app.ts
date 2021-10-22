@@ -5,9 +5,9 @@ import * as modules from './modules.json';
 
 const app = express();
 const port = 3000;
-const targetDomain = "https://host27072020.of.by";
+const targetDomain = "http://localhost:2021";
 
-app.use(express.static(path.resolve('/home/educatsb/apps')));
+app.use(express.static(path.resolve('d:/CatsProject/apps')));
 
 const allowedExt = [
   '.js',

@@ -20,7 +20,7 @@
              type="file" (change)="onFileSelected($event)">
 
       <div class="profile-buttons-row">
-        <button mat-button (click)="setDefaultAvatar()" class="icon-close" [title]="'text.personalAccount.deletePhoto' | translate : 'Удалить фото'">
+        <button mat-button (click)="setDefaultAvatar()" class="icon-close" [matTooltip]="'text.personalAccount.deletePhoto' | translate : 'Удалить фото'">
           <mat-icon aria-hidden="false">close</mat-icon>
         </button>
         <button mat-button class="extra-button" (click)="fileInput.click()">{{'text.personalAccount.loadPhoto' | translate : ("Загрузить фото")}}</button>
@@ -32,19 +32,19 @@
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.lastName' | translate : ("Фамилия")}}</mat-label>
-        <input matInput id="surnameInput" [(ngModel)]="this.profileData.Surname" [formControl]="surnameFormControl" maxlength="30">
+        <input matInput id="surnameInput" [(ngModel)]="this.profileData.Surname" (blur)="this.trimFields()" [formControl]="surnameFormControl" maxlength="30">
         <mat-error *ngIf="surnameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.firstName' | translate : ("Имя")}}</mat-label>
-        <input matInput id="nameInput" [(ngModel)]="this.profileData.Name" [formControl]="nameFormControl" maxlength="30">
+        <input matInput id="nameInput" [(ngModel)]="this.profileData.Name" (blur)="this.trimFields()" [formControl]="nameFormControl" maxlength="30">
         <mat-error *ngIf="nameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.middleName' | translate : ("Отчество")}}</mat-label>
-        <input matInput id="patronymicInput" [(ngModel)]="this.profileData.Patronymic" [formControl]="patronymicFormControl" maxlength="30">
+        <input matInput id="patronymicInput" [(ngModel)]="this.profileData.Patronymic" (blur)="this.trimFields()" [formControl]="patronymicFormControl" maxlength="30">
         <mat-error *ngIf="patronymicFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
       </mat-form-field>
 
@@ -59,7 +59,7 @@
       </mat-form-field>
 
 
-      <a [title]="'text.personalAccount.followToChangePassword' | translate : 'Перейдите, чтобы сменить пароль'" (click)="this.openDialog()">{{'text.personalAccount.changePassword' | translate : ("Изменить пароль")}}</a>
+      <a [matTooltip]="'text.personalAccount.followToChangePassword' | translate : 'Перейдите, чтобы сменить пароль'" (click)="this.openDialog()">{{'text.personalAccount.changePassword' | translate : ("Изменить пароль")}}</a>
 
     </mat-card>
 
@@ -67,24 +67,24 @@
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.email' | translate : ("Почта")}}</mat-label>
-        <input matInput id="emailInput" [(ngModel)]="this.profileData.Email" [formControl]="emailFormControl" maxlength="50">
+        <input matInput id="emailInput" [(ngModel)]="this.profileData.Email" (blur)="this.trimFields()" [formControl]="emailFormControl" maxlength="50">
         <mat-error *ngIf="emailFormControl.invalid">{{'text.personalAccount.wrongEmail' | translate : ("Почта не соответствует формату!")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.phoneNumber' | translate : ("Телефон")}}</mat-label>
-        <input matInput id="phoneInput" [(ngModel)]="this.profileData.Phone" [formControl]="phoneFormControl" maxlength="20">
+        <input matInput id="phoneInput" [(ngModel)]="this.profileData.Phone" (blur)="this.trimFields()" [formControl]="phoneFormControl" maxlength="20">
         <mat-error *ngIf="phoneFormControl.hasError('pattern')">{{'text.personalAccount.phoneNumber' | translate : ("Номер не соответствует формату!")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="text-area-full-width">
         <mat-label>{{'text.personalAccount.messenger' | translate : ("Skype, Viber, Telegram и др.")}}</mat-label>
-        <textarea matInput id="skypeInput" [(ngModel)]="this.profileData.SkypeContact" rows="2" maxlength="255"></textarea>
+        <textarea matInput id="skypeInput" [(ngModel)]="this.profileData.SkypeContact" (blur)="this.deleteSpaces()" rows="2" maxlength="255"></textarea>
       </mat-form-field>
 
       <mat-form-field class="text-area-full-width">
         <mat-label>{{'text.personalAccount.about' | translate : ("О себе")}}</mat-label>
-        <textarea matInput id="aboutInput" [(ngModel)]="this.profileData.About"  rows="2" maxlength="1024"></textarea>
+        <textarea matInput id="aboutInput" [(ngModel)]="this.profileData.About" (blur)="this.deleteSpaces()" rows="2" maxlength="1024"></textarea>
       </mat-form-field>
 
     </mat-card>

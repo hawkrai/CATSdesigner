@@ -330,6 +330,13 @@ namespace LMPlatform.Data.Infrastructure
                 .HasForeignKey(e => e.SubjectId)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Lecturer>()
+                .HasMany(x => x.SubjectLecturers)
+                .WithOptional(x => x.OwnerLecturer)
+                .HasForeignKey(x => x.Owner)
+                .WillCascadeOnDelete(false);
+
+
             modelBuilder.Entity<Concept>().Map(m => m.ToTable("Concept"));
             modelBuilder.Entity<Concept>().HasMany<Concept>(d => d.Children);
             modelBuilder.Entity<Concept>().HasMany<ConceptQuestions>(d => d.ConceptQuestions);

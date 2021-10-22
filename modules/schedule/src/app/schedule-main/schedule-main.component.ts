@@ -55,14 +55,15 @@ export class ScheduleMainComponent implements OnInit {
   localeD = 'en-US';
   teacher = 'Попова Ю.Б.';
   isStudent: boolean;
-
+  diplomCon: any[] = [];
   refresh: Subject<any> = new Subject();
-
   events: CalendarEvent[] = [];
 
   activeDayIsOpen = true;
 
-  message = 'Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите на нужную ячейку. Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, Лекции в определенном предмете.';
+  message = 'Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите на нужную ячейку. ' +
+    'Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, ' +
+    'Лекции в определенном предмете.';
   action = 'Понятно';
 
   public isMobile(): boolean {
@@ -81,10 +82,12 @@ export class ScheduleMainComponent implements OnInit {
     this.changeDate();
     this.isLoadActive = false;
 
+
     if (this.user.role === 'student') {
       this.isStudent = false;
+    } else {
+      this.isStudent = true;
     }
-    else this.isStudent = true;
 
   }
 
@@ -130,6 +133,20 @@ export class ScheduleMainComponent implements OnInit {
       + '|' + teacher + '|' + lesson.Color
       + '|' + lesson.Name + '|' + lesson.SubjectId + '|' + memo + '|' + lesson.GroupId + '|' + lesson.SubGroupId
       + '|' + lesson.GroupName + '|' + lesson.SubGroupName;
+  }
+
+  getTitelConsultation(consultation: any) {
+    return consultation.StartTime.split(':')[0] + ':' +  consultation.StartTime.split(':')[1] +  '-'
+           + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|' +
+           + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
+      + '|' + '|' + '|' + '|';
+  }
+
+  getTitelDiplomConsultation(consultation: any) {
+    return consultation.Start.split(':')[0] + ':' +  consultation.Start.split(':')[1] +  '-'
+      + consultation.End.split(':')[0] + ':' +  consultation.End.split(':')[1] +  '|' +
+      + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
+      + '|' + '|' + '|' + '|';
   }
 
   getToolTip(title: string): any {
@@ -228,6 +245,34 @@ export class ScheduleMainComponent implements OnInit {
               meta: 'note'
             }
           ];
+        } else if (result.type === 'diplom' || result.type === 'course') {
+          let titleCon = '';
+          if (result.type === 'course') {
+            titleCon = this.calculateTitel(result.lesson);
+          } else {
+            titleCon = this.getTitelDiplomConsultation(result.lesson);
+          }
+          result.lesson.StartTime =  result.lesson.Start;
+          result.lesson.EndTime =  result.lesson.End;
+          const startT = new Date(result.lesson.Date);
+          const endT = new Date(result.lesson.Date);
+          startT.setHours(+result.lesson.Start.split(':')[0], +result.lesson.Start.split(':')[1]);
+          endT.setHours(+result.lesson.End.split(':')[0], +result.lesson.End.split(':')[1]);
+          this.lesson = result.lesson;
+          this.lessons.push(result.lesson);
+          this.events.push({
+            id: result.lesson.Id,
+            start: startT,
+            end: endT,
+            title: titleCon,
+            color: colors.color,
+            resizable: {
+              beforeStart: false,
+              afterEnd: false,
+            },
+            draggable: false,
+            meta: 'lesson'
+          });
         }
         this.refresh.next();
       }
@@ -247,6 +292,7 @@ export class ScheduleMainComponent implements OnInit {
         if (result) {
           if (eventToDelete.meta == 'lesson') {
             const a = this.lessonservice.getType(eventToDelete.title).replaceAll(' ', '');
+            console.log(a);
             if (a == 'Лекция' || a == 'Lect.') {
               this.lessonservice.deleteLecture(eventToDelete.id,
                 + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
@@ -259,9 +305,19 @@ export class ScheduleMainComponent implements OnInit {
                 console.log(res);
               });
             }
-            if (a == 'Практ.работа' || a == 'WS') {
+            if (a == 'Практ.зан.' || a == 'WS') {
               this.lessonservice.deletePractical(eventToDelete.id,
                 + this.lessonservice.getTitelPart(eventToDelete.title, 8)).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'ДП' || a == 'GP') {
+              this.lessonservice.deleteDiplomConsultation(eventToDelete.id).subscribe(res => {
+                console.log(res);
+              });
+            }
+            if (a == 'КП' || a == 'CP') {
+              this.lessonservice.deleteCourseConsultation(eventToDelete.id).subscribe(res => {
                 console.log(res);
               });
             }
@@ -311,11 +367,15 @@ export class ScheduleMainComponent implements OnInit {
         endT.setHours(+this.lesson.End.split(':')[0], +this.lesson.End.split(':')[1]);
         this.events = this.events.filter(event => event !== lessonChanged);
         this.lessons.push(this.lesson);
+        let titleLesson = this.calculateTitel(this.lesson);
+        if (result.type == 'diplom') {
+          titleLesson = this.getTitelDiplomConsultation(this.lesson);
+        }
         this.events.push({
           id: this.lesson.Id,
           start: startT,
           end: endT,
-          title: this.calculateTitel(this.lesson),
+          title: titleLesson,
           color: colors.color,
           resizable: {
             beforeStart: false,
@@ -353,15 +413,54 @@ export class ScheduleMainComponent implements OnInit {
     if (day == 0) {
       day = 7;
     }
-
     a.setDate(a.getDate() + (7 - day));
     const endDate = this.lessonservice.formatDate3(a);
     a.setDate(a.getDate() - 6);
     const startDate = this.lessonservice.formatDate3(a);
+    this.events = [];
+    this.lessonservice.getConsultations({
+      count: 1000, page: 1}).subscribe(result => {
+      result.DiplomProjectConsultationDates.forEach(consultation => {
+        const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
+        const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
+        this.events.push({
+          id: consultation.Id,
+          start: startT,
+          end: endT,
+          title: this.getTitelConsultation(consultation),
+          color: colors.color,
+          resizable: {
+            beforeStart: false,
+            afterEnd: false,
+          },
+          draggable: false,
+          meta: 'lesson'
+        });
+      });
+    });
+    this.lessonservice.getCourseConsultations({
+      count: 1000, page: 1}).subscribe(result => {
+      result.CourseProjectConsultationDates.forEach(consultation => {
+        const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
+        const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
+        this.events.push({
+          id: consultation.Id,
+          start: startT,
+          end: endT,
+          title: this.getTitelConsultation(consultation),
+          color: colors.color,
+          resizable: {
+            beforeStart: false,
+            afterEnd: false,
+          },
+          draggable: false,
+          meta: 'lesson'
+        });
+      });
+    });
     this.lessonservice.getLessonsByDates(startDate, endDate).subscribe(
       l => {
         this.lessons = l.Schedule;
-        this.events = [];
         this.lessons.forEach(lesson => {
           let dateArray: any;
           dateArray = lesson.Date.split('.');
@@ -391,11 +490,10 @@ export class ScheduleMainComponent implements OnInit {
     );
   }
 
-  showHelp(): void{
-
-    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent, 
-      {
-      data: {message: this.translatePipe.transform ('text.help.schedule',this.message), action: this.translatePipe.transform ('button.understand', this.action)},
+  showHelp(): void {
+    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent,
+      {data: {message: this.translatePipe.transform ('text.help.schedule', this.message),
+          action: this.translatePipe.transform ('button.understand', this.action)},
       disableClose: true,
       hasBackdrop: true,
       backdropClass: 'backdrop-help',

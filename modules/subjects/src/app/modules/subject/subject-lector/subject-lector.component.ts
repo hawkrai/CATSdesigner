@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Store} from '@ngrx/store';
 
@@ -26,7 +26,8 @@ export class SubjectLectorComponent implements OnInit {
     public dialogRef: MatDialogRef<SubjectLectorComponent>,
     public subjectService: SubjectService,
     private store: Store<IAppState>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private changeDetectorRef: ChangeDetectorRef) {
     this.dialogRef.disableClose = true;
   }
 
@@ -49,17 +50,20 @@ export class SubjectLectorComponent implements OnInit {
 
   setLectors() {
     this.subjectService.getJoinedLector(this.subjectId).subscribe(lectors => {
-      this.joinedLectors = lectors;
+      this.joinedLectors = this.sortLectors(lectors);
     });
     this.subjectService.getNoAdjointLectors(this.subjectId).subscribe(lectors => {
-      this.allLectors = lectors;
+      this.allLectors = this.sortLectors(lectors);
     });
   }
 
   joinLector() {
     this.subjectService.joinedLector(this.subjectId, this.selectedLector.LectorId).subscribe(body => {
       if (body.Code === "200") {
-        this.setLectors();
+        this.joinedLectors = this.sortLectors([...this.joinedLectors, this.selectedLector]);
+        this.allLectors = this.sortLectors(this.allLectors.filter(x => x.LectorId !== this.selectedLector.LectorId));
+        this.selectedLector = null;
+        this.changeDetectorRef.detectChanges();
       }
       this.store.dispatch(catsActions.showMessage({ body }));
     });
@@ -68,15 +72,19 @@ export class SubjectLectorComponent implements OnInit {
   disjoinLector(lector) {
     this.subjectService.disjoinLector(this.subjectId, lector.LectorId).subscribe(body => {
       if (body.Code === "200") {
-        this.setLectors();
+        this.joinedLectors = this.sortLectors(this.joinedLectors.filter(x => x.LectorId !== lector.LectorId));
+        this.allLectors = this.sortLectors([...this.allLectors, lector]);
       }
       this.store.dispatch(catsActions.showMessage({ body }));
     }
-    )
+    );
   }
 
   selectLector(lector: Lector) {
     this.selectedLector = lector;
   }
 
+  private sortLectors(lectors: Lector[]): Lector[] {
+    return lectors.sort((a, b) => a.FullName < b.FullName ? -1: 1);
+  }
 }

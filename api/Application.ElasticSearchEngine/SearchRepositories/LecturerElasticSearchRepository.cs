@@ -1,5 +1,6 @@
 ﻿
 using LMPlatform.ElasticDataModels;
+using LMPlatform.Models;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,7 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         }
         public void AddToIndex(ElasticLecturer lecturer)
         {
-                Client.Index<ElasticLecturer>(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
+                Client.Index(lecturer, st => st.Index(LECTURERS_INDEX_NAME));
         }
         public void AddToIndex(IEnumerable<ElasticLecturer> lecturers)
         {
@@ -85,35 +86,41 @@ namespace Application.ElasticSearchEngine.SearchRepositories
             AddToIndex(lecturer);
         }
     
-        private static CreateIndexDescriptor GetLecturerMap(string indexName)
+        internal static CreateIndexDescriptor GetLecturerMap(string indexName)
         {
             CreateIndexDescriptor map = new CreateIndexDescriptor(indexName);
-            map.Mappings(M => M
-             .Map<ElasticLecturer>(m => m
-               .Properties(prop => prop
-                 .Text(s => s
-                    .Name(n => n.FullName)
+            map.Map<ElasticLecturer>(m => m
+                    .Dynamic(false)
+                    .Properties(prop => prop
+                        .Number(s => s
+                            .Name(n => n.Id)
+                            .Type(NumberType.Integer)
+                         )
+                        .Text(s => s
+                            .Name(n => n.FullName)
+                         )
+                        .Text(o => o
+                            .Name(s => s.Skill)
+                         )
+                        .Object<User>(u => u
+                            .Dynamic(false)
+                            .Name(n => n.User)
+                            .Properties(pr => pr
+                                .Text(t => t
+                                    .Name(n => n.SkypeContact)
+                                 )
+                                .Text(t => t
+                                    .Name(n => n.Phone)
+                                 )
+                                .Text(t => t
+                                    .Name(n => n.About)
+                                )
+                            )
+                        )
                     )
-                 .Boolean(o => o
-                    .Name(s => s.IsActive)
-                    )
-                 .Number(s => s
-                    .Name(n => n.User.Id)
-                    .Type(NumberType.Integer)
-                    )
-                 .Text(s => s
-                    .Name(n => n.User.Phone)
-                    )
-                 .Date(d => d
-                    .Name(n => n.User.LastLogin)
-                 )
-                 )
-                .AutoMap()
-               )
-             )
+                )
            ;
             return map;
-
         }
     }
 }

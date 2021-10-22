@@ -30,7 +30,7 @@ namespace LMPlatform.UI.Services.Modules.News
             NewsId = news.Id;
             Title = news.Title;
             SubjectId = news.SubjectId;
-            DateCreate = news.EditDate.ToShortDateString();
+            DateCreate = news.EditDate.ToString("dd.MM.yyyy");
 	        Disabled = news.Disabled;
             PathFile = news.Attachments;
             Attachments = string.IsNullOrEmpty(news.Attachments) ? new List<Attachment>() : FilesManagementService.GetAttachments(news.Attachments);

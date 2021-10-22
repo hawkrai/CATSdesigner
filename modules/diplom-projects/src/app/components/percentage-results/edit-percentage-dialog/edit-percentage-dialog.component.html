@@ -4,7 +4,7 @@
 <h1 mat-dialog-title>{{data.label}}</h1>
 <div mat-dialog-content class="dialog-content">
   <mat-form-field class="form-field">
-    <mat-label *ngIf="data.total">Оценка (от 1 до 10)</mat-label>
+    <mat-label *ngIf="data.total">{{'text.diplomProject.estimationData' | translate: 'Оценка (от 1 до 10)'}}</mat-label>
     <input matInput [formControl]="percentageControl" [(ngModel)]="data.mark"
            type="number" min="{{data.min}}" max="{{data.max}}" step="{{data.max > 10 ? 5 : 1}}">
     <span matSuffix>{{data.symbol}}</span>
@@ -12,26 +12,26 @@
     <mat-error *ngIf="percentageControl.invalid">{{data.errorMsg}}</mat-error>
   </mat-form-field>
   <mat-form-field *ngIf="data.total">
-    <mat-label>Дата выставления</mat-label>
+    <mat-label>{{'text.diplomProject.invoiceDate' | translate: 'Дата выставления'}}</mat-label>
     <input matInput [matDatepicker]="dp" [formControl]="date" (dateChange)="onDateChange()">
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
-    <mat-error *ngIf="date.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
+    <mat-error *ngIf="date.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>Комментарий</mat-label>
-    <mat-checkbox class="checkbox" matTooltip="Показать комментарий студенту" matTooltipPosition="left" class="checkbox" (change)="showForStudentChange($event.checked)" [checked]="data.showForStudent" [color]="'primary'"></mat-checkbox>
+    <mat-label>{{'text.diplomProject.comment' | translate: 'Комментарий'}}</mat-label>
+    <mat-checkbox class="checkbox" matTooltip="'text.diplomProject.showComment' | translate: 'Показать комментарий студенту'" matTooltipPosition="left" class="checkbox" (change)="showForStudentChange($event.checked)" [checked]="data.showForStudent" [color]="'primary'"></mat-checkbox>
     <textarea class="commentInput" matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
-    <mat-error *ngIf="commentControl.invalid">До 255 символов</mat-error>
+    <mat-error *ngIf="commentControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
     <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
-    Отмена
+    {{'text.diplomProject.cancel' | translate: 'Отмена'}}
   </button>
   <button mat-flat-button class="dialog-button" color="primary" [disabled]="isFormInvalid()"
           [mat-dialog-close]="data">
-    Сохранить
+          {{'text.diplomProject.save' | translate: 'Сохранить'}}
   </button>
 </div>

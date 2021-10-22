@@ -12,6 +12,7 @@ import { ChatService } from "src/app/modules/chat/shared/services/chatService";
 import {MenuService} from "src/app/core/services/menu.service";
 import {MatDialog} from "@angular/material/dialog";
 import {AboutSystemPopoverComponent} from "../../about-system/about-popover/about-popover.component";
+import { Router } from "@angular/router";
 
 
 interface DropDownValue {
@@ -46,6 +47,7 @@ export class NavComponent implements OnInit, OnDestroy {
   groupSearchResults!: Group[];
  
   constructor(private layoutService: LayoutService,
+    private router: Router ,
     private coreService: CoreService,
     private chatService: ChatService,
     private dataService:DataService,
@@ -108,7 +110,8 @@ export class NavComponent implements OnInit, OnDestroy {
 
   public logOut(): void {
     this.autService.logout().pipe(first()).subscribe(
-      () => location.reload());
+    () => location.reload());
+    this.router.navigate(['/login']);
   }
 
   public onValueChange(value: any): void {

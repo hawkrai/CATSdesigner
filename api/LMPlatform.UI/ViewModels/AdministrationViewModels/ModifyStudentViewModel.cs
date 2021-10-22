@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.StudentManagement;
 using LMPlatform.Models;
@@ -21,6 +23,9 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 		private IStudentManagementService StudentManagementService => this._studentManagementService.Value;
 
 		private IGroupManagementService GroupManagementService => this._groupManagementService.Value;
+
+		private readonly LazyDependency<IElasticManagementService> _elasticManagementService = new LazyDependency<IElasticManagementService>();
+		private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
 
 		public ModifyStudentViewModel() { }
 
@@ -103,28 +108,30 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
 		public void ModifyStudent()
 		{
-			this.StudentManagementService.UpdateStudent(
-				new Student
+			Student student = new Student
+			{
+				Id = this.Id,
+				FirstName = this.Name,
+				LastName = this.Surname,
+				MiddleName = this.Patronymic,
+				Email = this.Email,
+				Confirmed = true,
+				GroupId = this.Group,
+				Group = this.GroupManagementService.GetGroup(this.Group),
+				User = new User
 				{
-					Id = this.Id,
-					FirstName = this.Name,
-					LastName = this.Surname,
-					MiddleName = this.Patronymic,
+					Avatar = this.Avatar,
+					UserName = this.UserName,
+					About = this.About,
+					SkypeContact = this.SkypeContact,
+					Phone = this.Phone,
 					Email = this.Email,
-					Confirmed = true,
-					GroupId = this.Group,
-					Group = this.GroupManagementService.GetGroup(this.Group),
-					User = new User
-					{
-						Avatar = this.Avatar,
-						UserName = this.UserName,
-						About = this.About,
-						SkypeContact = this.SkypeContact,
-						Phone = this.Phone,
-						Email = this.Email,
-						Id = this.Id
-					}
-				});
+					Id = this.Id
+				}
+			};
+
+			this.StudentManagementService.UpdateStudent(student);
+			this.ElasticManagementService.ModifyStudent(student);
 		}
 	}
 }

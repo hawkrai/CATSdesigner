@@ -4,7 +4,7 @@ import { SubSink } from 'subsink';
 import { filter, map } from 'rxjs/operators';
 import {Store } from '@ngrx/store';
 import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-
+import * as moment from 'moment';
 import { StudentMark } from './../../../../models/student-mark.model';
 import { Lab } from '../../../../models/lab.model';
 import {IAppState} from '../../../../store/state/app.state';
@@ -17,9 +17,8 @@ import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
-import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
+import { TranslatePipe } from 'educats-translate';
 
 
 @Component({
@@ -79,7 +78,7 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
   setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionLab, index: number) {
     if (this.isTeacher) {
       const visits = {
-        date: schedule.Date, 
+        date: moment(schedule.Date, 'DD.MM.YYYY'), 
         students: students.map(s => ({ 
           name: s.FullName, 
           mark: s.LabVisitingMark[index].Mark, 
@@ -123,9 +122,4 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
   navigateToProfile(student: StudentMark): void {
     this.store.dispatch(catsActions.sendMessage({ message: new Message('Route', `web/profile/${student.StudentId}`) }));
   }
-
-  help: Help = {
-    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
-    action: this.translate.transform('button.understand','Понятно')
-  };
 }

@@ -30,9 +30,9 @@ namespace LMPlatform.Data.Repositories
                             e => e.SubjectStudents.Select(x => x.Student)));
 
 				var modelThirdSubGroup =
-					GetBy(
+					GetAll(
 						new Query<SubGroup>(e => e.SubjectGroupId == subjectGroupId && e.Name == "third").Include(
-							e => e.SubjectStudents.Select(x => x.Student)));
+							e => e.SubjectStudents.Select(x => x.Student))).FirstOrDefault();
 
                 var firstSubGorupStudent = modelFirstSubGroup.SubjectStudents.ToList();
                 var secondSubGorupStudent = modelSecondSubGroup.SubjectStudents.ToList();

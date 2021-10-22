@@ -127,7 +127,7 @@ export class LabsEffects {
       this.store.select(subjectSelectors.getSubjectId),
     ),
     switchMap(([{ sendFile, fileId }, subjectId]) => this.rest.sendUserFile({ ...sendFile, subjectId }).pipe(
-      switchMap(body => [catsActions.showMessage({ body }), labsActions.sendUserFileSuccess({ userLabFile: body, isReturned: sendFile.isRet, fileId })])
+      switchMap(body =>  [...(!body.IsReturned ? [catsActions.showMessage({ body })] : []), labsActions.sendUserFileSuccess({ userLabFile: body, isReturned: sendFile.isRet, fileId })])
     ))
   ));
 
@@ -136,6 +136,8 @@ export class LabsEffects {
     filter(({ isReturned }) => isReturned),
     map(({ fileId, userLabFile }) => labsActions.returnLabFile({ userFileId: fileId, userId: userLabFile.UserId }))
   ));
+
+
 
   deleteUserLabFile$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.deleteUserLabFile),

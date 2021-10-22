@@ -12,7 +12,7 @@ export class StatisticComponent implements OnInit {
   title = '';
   type = 'LineChart';
   data = [];
-  columnNames = ['Data', 'Count'];
+  columnNames = ['Data', 'Кол-во: '];
   options = {
       chartArea: {
         width: '80%',

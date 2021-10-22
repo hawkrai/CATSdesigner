@@ -12,7 +12,12 @@
 }
 
 .mdc-data-table__row {
-    display: flex;
+    display: grid;
     align-items: center;
-    justify-content: space-between;
+    grid-template-columns: auto 2fr 0.5fr 0.5fr 0.5fr auto;
+}
+
+.img {
+    max-width: 52px;
+    max-height: 52px;
 }

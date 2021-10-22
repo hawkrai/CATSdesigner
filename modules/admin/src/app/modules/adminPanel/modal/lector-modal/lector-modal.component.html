@@ -8,12 +8,16 @@
               <mat-hint *ngIf="this.isControlInvalid('Username')">Логин должен содержать не меньше 3 символов, только латинские буквы и цифры.</mat-hint>
               <mat-error *ngIf="hasError('Username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
               <mat-error *ngIf="hasError('Username', 'userExist')">Такой пользователь уже существует в системе.</mat-error>
+              <mat-error *ngIf="hasError('Username', 'pattern')">Допустимые символы: "A(a)-Z(z)", "0-9", "-", "@", "_", "."</mat-error>
           </mat-form-field>
 
           <mat-form-field class="example-full-width">
-              <input type="password" matInput formControlName="Password" placeholder="Пароль">
-              <mat-hint *ngIf="this.isControlInvalid('Password')" align="end">Пароль должен содержать не меньше 6 и не больше 30 символов, хотя бы 1 маленькую и большую букву.</mat-hint>
-              <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
+            <input type="password" matInput formControlName="Password" placeholder="Пароль">
+            <mat-hint *ngIf="this.isControlInvalid('Password') && !hasError('Password', 'minlength') && !hasError('Password', 'required') && !hasError('Password', 'pattern')">Пароль должен содержать хотя бы 1 маленькую и большую букву и 1 цифру</mat-hint>
+            <mat-error *ngIf="hasError('Password', 'required')">Поле не может быть пустым</mat-error>
+            <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
+            <mat-error *ngIf="hasError('Password', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
+            <mat-error *ngIf="hasError('Password', 'pattern')">Допустимые символы: "A(a)-Z(z)", "0-9", "_"</mat-error>    
           </mat-form-field>
 
           <mat-form-field class="example-full-width">
@@ -22,17 +26,20 @@
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="50">
+              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="30">
               <mat-error *ngIf="hasError('Surname', 'minlength')">Поле не может быть пустым.</mat-error>
+              <mat-error *ngIf="hasError('Surname', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Name" placeholder="Имя" maxlength="50">
+              <input matInput formControlName="Name" placeholder="Имя" maxlength="30">
               <mat-error *ngIf="hasError('Name', 'minlength')">Поле не может быть пустым.</mat-error>
+              <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="50">
+              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="30">
+              <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
           
           <div class="checkbox">

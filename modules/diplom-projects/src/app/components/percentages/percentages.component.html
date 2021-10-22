@@ -1,5 +1,5 @@
 <div class="percentages-component" *ngIf="percentages; else load">
-  <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsSecretary" (click)="addStage()">Добавить этап</button>
+  <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsSecretary" (click)="addStage()">{{'text.diplomProject.addStage' | translate: 'Добавить этап'}}</button>
   <div class="percentages-component__body">
     <app-percentages-list [percentages]="percentages"></app-percentages-list>
   </div>

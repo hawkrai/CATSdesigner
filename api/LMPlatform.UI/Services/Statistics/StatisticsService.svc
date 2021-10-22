@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="LMPlatform.UI.Services.Statistics.StatisticsService" CodeBehind="StatisticsService.svc.cs" %>

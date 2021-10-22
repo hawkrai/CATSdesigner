@@ -8,6 +8,7 @@ import {EditTaskSheetComponent} from './edit-task-sheet/edit-task-sheet.componen
 import {MatDialog, MatSnackBar} from '@angular/material';
 import { Template } from 'src/app/models/template.model';
 import { Student } from 'src/app/models/student.model';
+import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 
 @Component({
   selector: 'app-task-sheet',
@@ -36,7 +37,8 @@ export class TaskSheetComponent implements OnInit {
   constructor(private projectThemeService: ProjectThemeService,
               private taskSheetService: TaskSheetService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
@@ -112,7 +114,7 @@ export class TaskSheetComponent implements OnInit {
         if (result != null) {
           this.taskSheetService.editTaskSheet(result).subscribe(() => {
             this.ngOnInit();
-            this.snackBar.open('Лист задания успешно сохранен', null, {
+            this.snackBar.open(this.translatePipe.transform('text.editor.edit.saveTaskSheet',"Лист задания успешно сохранен"), null, {
               duration: 2000
             });
           });

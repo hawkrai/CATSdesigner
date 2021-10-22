@@ -18,7 +18,7 @@ import {Attachment} from '../../../../models/file/attachment.model';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
 import { filter } from 'rxjs/operators';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-practical-lessons',
@@ -33,9 +33,6 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   public practicals: Practical[];
   private subs = new SubSink();
 
-  public defaultColumns = ['index', 'theme', 'shortName', 'duration', 'files'];
-  public displayedColumns: string[] = this.defaultColumns;
-
   constructor(    
     private store: Store<IAppState>,    
     private cdRef: ChangeDetectorRef,
@@ -49,10 +46,13 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     }));
   }
   
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.isTeacher) {
-      this.displayedColumns = [...this.defaultColumns, 'actions'];
+
+  getDisplayedColumns(): string[] {
+    const defaultColumns = ['index', 'theme', 'shortName', 'duration', 'files'];;
+    if (this.isTeacher) {
+      return defaultColumns.concat('actions');
     }
+    return defaultColumns;
   }
 
   ngOnDestroy(): void {

@@ -16,9 +16,11 @@ import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-pop
 import * as labsActions from '../../store/actions/labs.actions';
 import * as labsSelectors from '../../store/selectors/labs.selectors';
 import { MatSlideToggleChange } from '@angular/material';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model';
 import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model';
+import { Help } from 'src/app/models/help.model';
+import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
+import { TranslatePipe } from 'educats-translate';
 
 interface State {
   groups: Group[];
@@ -101,12 +103,12 @@ export class LabsComponent implements OnInit, OnDestroy {
     this.store.dispatch(labsActions.getLabsAsZip());
   }
 
-  getExcelFile(): void {
-    if (this.selectedTab === 2) {
-      this.store.dispatch(labsActions.getVisitingExcel());
-    } else if (this.selectedTab === 3) {
-      this.store.dispatch(labsActions.getMarksExcel());
-    }
+  getVisitingExcelFile(): void {
+    this.store.dispatch(labsActions.getVisitingExcel());
+  }
+
+  getResultsExcelFile(): void {
+    this.store.dispatch(labsActions.getMarksExcel());
   }
 
   refreshJobProtection() {
@@ -117,4 +119,22 @@ export class LabsComponent implements OnInit, OnDestroy {
     this.dialogService.openDialog(CheckPlagiarismPopoverComponent);
   }
 
+  visitingHelp: Help = {
+    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
+    action: this.translate.transform('button.understand','Понятно')
+  };
+
+  resultsHelp: Help = {
+    message: this.translate.transform ('text.help.results','Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'), 
+    action: this.translate.transform ('button.understand','Понятно')
+  }
+
+  protectionScheduleHelp: Help = {
+    message: this.translate.transform ('text.help.labs.protection.schedule','Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты лабораторных занятий.'),
+    action: this.translate.transform ('button.understand','Понятно')
+  }
+
+  subdivision() {
+    this.dialogService.openDialog(SubdivisionComponent);
+  }
 }

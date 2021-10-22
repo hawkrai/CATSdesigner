@@ -28,4 +28,5 @@ export class ProfileInfo {
 
 export class ProfileModel {
     userLogin: string;
+    Id: number;
 }

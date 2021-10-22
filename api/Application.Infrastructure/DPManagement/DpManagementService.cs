@@ -98,6 +98,46 @@ namespace Application.Infrastructure.DPManagement
             }
         }
 
+        public List<DiplomProjectData> GetProjectsByUserId(int userId)
+        {
+            var query = Context.DiplomProjects.AsNoTracking()
+                .Include(x => x.Lecturer)
+                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
+
+            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+
+            if (user != null)
+            {
+                query = query.Where(x => x.LecturerId == userId);
+
+                if (user.Lecturer != null && user.Lecturer.IsSecretary)
+                {
+                    var currentYear = _currentAcademicYearEndDate.Year.ToString();
+                    query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x => x.AssignedDiplomProjects
+                    .FirstOrDefault().Student.Group.GraduationYear == currentYear).Where(x => x.AssignedDiplomProjects
+                    .FirstOrDefault().Student.Group.SecretaryId == userId);
+                }
+
+                else
+                {
+                    query = query.Where(x => x.AssignedDiplomProjects.Any(dpg => dpg.StudentId == user.Student.Id));
+                }
+
+            }
+            
+             var buf = from dp in query
+                                     let adp = dp.AssignedDiplomProjects.FirstOrDefault()
+                                     select new DiplomProjectData
+                                     {
+                                         Id = dp.DiplomProjectId,
+                                         Theme = dp.Theme,
+                                     } ;
+
+            List<DiplomProjectData> diplomProjects = buf.ToList<DiplomProjectData>();
+
+            return diplomProjects;
+            
+        }
         public DiplomProjectData GetProject(int id)
         {
             var dp = Context.DiplomProjects

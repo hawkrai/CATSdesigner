@@ -1,12 +1,16 @@
+<div>
+  <mat-icon class = "icon" (click)="onCancelClick()" style="cursor: pointer;position: relative; margin-left: 98%; margin-top: -24px; margin-bottom:16px">close</mat-icon>
+</div>
+
 <div class="dialog" id="dialog" [ngStyle]="{ 'border-left-color': data.itemNews.Subject.Color}">
   <div style="margin-left: 5px">
-    <h4  style="font-family: Roboto, Helvetica Neue, sans-serif; color: #808080; font-size: 19px;font-weight: 500;">{{data.itemNews.Title}}</h4>
+    <h4  style="font-family: Roboto, Helvetica Neue, sans-serif; color: #363636; font-size: 19px;font-weight: 500;">{{data.itemNews.Title}}</h4>
     <div [innerHTML]="data.itemNews.Body" class="body"
          style="font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 20px;max-height: 35vh;overflow-y: auto;">
     </div>
     <div>
       <h6 (click)="rerouteToSubject()"
-          style="font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;color: #777; ">{{data.itemNews.Subject.Name}}</h6>
+          style="font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;">{{data.itemNews.Subject.Name}}</h6>
     </div>
     <h6
       style="font-size: 12px;font-family: Roboto, Helvetica Neue, sans-serif; font-weight: initial;color: #999999;; "> {{data.itemNews.EditDate.slice(6, -2) | date:'dd.MM.yyyy' }}</h6>

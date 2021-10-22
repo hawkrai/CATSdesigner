@@ -1,5 +1,7 @@
 export class ProfileProject {
     Name?: string;
+    SubjectName?: string;
+    IsArchived?;
 }
 
 export class ProfileInfoSubject {
@@ -8,6 +10,7 @@ export class ProfileInfoSubject {
   ShortName?: string;
   Color?: string;
   Completing?: number;
+  IsArchive?: boolean;
 }
 
 export class ProfileInfo {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules.Lectures;
@@ -32,5 +33,8 @@ namespace LMPlatform.UI.Services.Modules.Labs
 
         [DataMember]
         public string LabShortName { get; set; }
+
+        [DataMember]
+        public int? Order { get; set; }
     }
 }

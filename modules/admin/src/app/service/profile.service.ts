@@ -9,6 +9,7 @@ import { ProfileProject, ProfileInfoSubject, ProfileInfo } from '../model/profil
 export class ProfileService {
 
     api = '/Profile/';
+    apiAccount = '/Account/';
 
     constructor(private http: HttpClient) {
     }
@@ -24,4 +25,28 @@ export class ProfileService {
     getProfileInfo(login: any): Observable<ProfileInfo> {
         return this.http.post<ProfileInfo>(this.api + 'GetProfileInfo', login);
     }
+	
+	getProfileProjectsById(Id: any): Observable<ProfileProject[]> {
+    return this.http.get<ProfileProject[]>(this.api + 'GetUserProjectsById/' + Id);
+  }
+
+  getDpProfileProjects(Id: any): Observable<ProfileProject[]> {
+    return this.http.get<ProfileProject[]>(this.api + 'GetDpUserProjectsById/' + Id);
+  }
+
+  getCpProfileProjects(Id: any): Observable<ProfileProject[]> {
+    return this.http.get<ProfileProject[]>(this.api + 'GetCpUserProjectsById/' + Id);
+  }
+
+  getProfileInfoSubjectsById(Id: any): Observable<ProfileInfoSubject[]> {
+    return this.http.get<ProfileInfoSubject[]>(this.api + 'GetProfileInfoSubjectsById/' + Id);
+  }
+
+  getProfileInfoById(Id: any): Observable<ProfileInfo> {
+    return this.http.get<ProfileInfo>(this.api + 'GetProfileInfoById/' + Id);
+  }
+
+  getAvatar(): Observable<string> {
+    return this.http.get(this.apiAccount + 'GetAvatar', { responseType: 'text' });
+  }
 }

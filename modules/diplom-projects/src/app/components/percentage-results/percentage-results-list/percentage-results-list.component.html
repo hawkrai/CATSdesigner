@@ -4,14 +4,14 @@
       <thead>
       <tr class="mdc-data-table__header-row">
         <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">№</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Группа</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.student' | translate: 'Студент'}}</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.group' | translate: 'Группа'}}</th>
         <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let graph of percentageGraphs">
           <div class="header-date">
             {{ graph.Date | date:'dd.MM.yyyy' }}
           </div>
         </th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Оценка</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.estimation' | translate: 'Оценка'}}</th>
       </tr>
       </thead>
       <tbody *ngIf="filteredPercentageResults; else load">

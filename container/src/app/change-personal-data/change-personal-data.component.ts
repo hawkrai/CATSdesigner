@@ -26,18 +26,18 @@ export class ChangePersonalDataComponent implements OnInit {
   currentUserId!: number;
   profileData!: ProfileData;
   dialogRef: MatDialogRef<any>;
-
-  emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})?$')]);
-  phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})?$')]);
+  nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
+  emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})$')]);
+  phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})$')]);
 
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
+    Validators.pattern(this.nameRegExp)])
 
   surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
+    Validators.pattern(this.nameRegExp)])
 
   patronymicFormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern('^[А-Яа-яA-Za-z0-9 _-]{1,30}$')])
+    Validators.pattern(this.nameRegExp)])
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
     private location: Location, public dialog: MatDialog,
@@ -132,9 +132,37 @@ export class ChangePersonalDataComponent implements OnInit {
 
 
   trimFields() {
-    this.profileData.Name = this.profileData.Name.trim();
+    if(this.profileData.Name != null)
+      this.profileData.Name = this.profileData.Name.trim();
+    if(this.profileData.Surname != null)
     this.profileData.Surname = this.profileData.Surname.trim();
+    if(this.profileData.Patronymic != null)
     this.profileData.Patronymic = this.profileData.Patronymic.trim();
+    if(this.profileData.Email != null)
+    this.profileData.Email = this.profileData.Email.trim();
+    if(this.profileData.Phone != null)
+    this.profileData.Phone = this.profileData.Phone.trim();
+  }
+
+  deleteSpaces() {
+    if(this.profileData.About != null)
+    this.profileData.About = this.delEmptyRows(this.profileData.About);
+    if(this.profileData.SkypeContact != null)
+    this.profileData.SkypeContact = this.delEmptyRows(this.profileData.SkypeContact);
+  }
+
+  delEmptyRows(data: string) {
+    var stringArray = data.split('\n');
+    var temp = new Array<string>();
+    var x = 0;
+    for (var i = 0; i < stringArray.length; i++) {
+      if (stringArray[i].trim() != "") {
+        temp[x] = stringArray[i];
+        x++;
+      }
+    }
+    
+    return temp.join('\n');
   }
 
 }
