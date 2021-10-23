@@ -31,11 +31,11 @@ export class MainPageComponent implements OnInit {
   categories: string[][] = [[]];
   categoriesTemp: string[] = [];
 
-  public categoriesConst: string[]  = [this.translatePipe.transform('text.statistics.avg.test', 'Средняя оценка за лабораторные работу') ,
+  public categoriesConst: string[]  = [this.translatePipe.transform('text.statistics.avg.pract', 'Средняя оценка за практические занятия'),
+                                      this.translatePipe.transform('text.statistics.avg.test', 'Средняя оценка за лабораторные работу') ,
                                    this.translatePipe.transform('text.statistics.avg.test', 'Средняя оценка за тесты'),
-                                  this.translatePipe.transform('text.statistics.avg.rating', 'Рейтинговая оценка'),
-                                  this.translatePipe.transform('text.statistics.avg.pract', 'Средняя оценка за практические занятия'),
-                                  this.translatePipe.transform('text.statistics.avg.course', 'Оценка за курсовой проект') ];
+                                  this.translatePipe.transform('text.statistics.avg.course', 'Оценка за курсовой проект'),
+                                  this.translatePipe.transform('text.statistics.avg.rating', 'Рейтинговая оценка')];
 
   colors: string [] = ['red', 'blue', 'orange', 'purple' , 'green'];
 
@@ -61,25 +61,32 @@ export class MainPageComponent implements OnInit {
                     this.labSum = +student.UserAvgLabMarks.find(({Key}) => Key === subject.Id)!.Value;
                   }
                 });
-                this.temp.push(this.courseMark);
-                this.categoriesTemp.push(this.categoriesConst[4]);
-                if (this.testSum != 0) {
-                  this.temp.push(this.testSum);
-                  this.categoriesTemp.push(this.categoriesConst[1]);
-                }
-                if (this.labSum != 0) {
-                  this.temp.push(this.labSum);
-                  this.categoriesTemp.push(this.categoriesConst[0]);
-                }
+                this.temp.push(this.practSum);
                 if (this.practSum != 0) {
-                  this.temp.push(this.practSum);
-                  this.categoriesTemp.push(this.categoriesConst[3]);
+                  this.categoriesTemp.push(this.categoriesConst[0]);
+                } else {
+                  this.categoriesTemp.push('');
                 }
+                this.temp.push(this.labSum);
+                if (this.labSum != 0) {
+                  this.categoriesTemp.push(this.categoriesConst[1]);
+                } else {
+                  this.categoriesTemp.push('');
+                }
+                this.temp.push(this.testSum);
+                if (this.testSum != 0) {
+                  this.categoriesTemp.push(this.categoriesConst[2]);
+                } else {
+                  this.categoriesTemp.push('');
+                }
+
+                this.temp.push(this.courseMark);
+                this.categoriesTemp.push(this.categoriesConst[3]);
                 this.temp.forEach(el => {
                   this.tempAvg += el;
                 });
                 this.temp.push(Math.round(this.tempAvg / this.temp.length * 100) / 100);
-                this.categoriesTemp.push(this.categoriesConst[2]);
+                this.categoriesTemp.push(this.categoriesConst[4]);
                 this.addChart(this.temp, subject.Name, this.categoriesTemp);
               }
             });
@@ -117,8 +124,6 @@ export class MainPageComponent implements OnInit {
 
         },
         yaxis: {
-          min: 0,
-          max: 10
         },
         fill: {
           type: 'solid',

@@ -23,13 +23,15 @@ export class StatsComponent implements OnInit {
   tableStats: any;
   groupName: string;
   studentStatistic: GroupStatsStudent[];
+  surname: string;
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.groupName = this.route.snapshot.params.groupName;
-    this.initData(this.groupName);    
+    this.surname = this.route.snapshot.params.surname;
+    this.initData(this.groupName);
   }
 
   getStatistic(groupId) {
@@ -47,12 +49,14 @@ export class StatsComponent implements OnInit {
     const groupName = this.groupName;
     if (id && id !== -1) {
       const subject = this.subjects.find(({Id}) => Id === id);
-      
       this.tableStats = this.studentStatistic.map((item) => {
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
         const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         return {
           GroupName: groupName,
           FIO: item.FIO,
@@ -78,6 +82,9 @@ export class StatsComponent implements OnInit {
           avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
         });
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         return {
           GroupName: groupName,
           FIO: item.FIO,
@@ -91,8 +98,19 @@ export class StatsComponent implements OnInit {
         };
       });
     }
+    while (true) {
+      if(this.tableStats.indexOf(undefined) == -1) {
+        break;
+      }
+      this.remove(undefined);
+    }
   }
 
+  remove(value: any) {
+    this.tableStats.forEach((element, index) => {
+      if (element == value) { this.tableStats.splice(index, 1); }
+    });
+  }
   initData(groupName) {
     this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjects = subjectResponse.Subjects;

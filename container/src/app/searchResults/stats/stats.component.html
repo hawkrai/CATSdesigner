@@ -10,8 +10,8 @@
     </mat-form-field>
 </div>
 <div class="export-button">
-  <button mat-icon-button (click)="this.captureScreen()"><mat-icon>print</mat-icon></button>
-  <button mat-icon-button (click)="this.exportExcel()"><i class="fa fa-download"></i><mat-icon>get_app</mat-icon></button>
+  <button class="btn" (click)="this.captureScreen()">Печать</button>
+  <button class="btn" (click)="this.exportExcel()"><i class="fa fa-download"></i>Excel</button>
 </div>
 <div *ngIf="this.selectedItem">
     <app-table-for-stats-subject [data]="this.tableStats"></app-table-for-stats-subject>

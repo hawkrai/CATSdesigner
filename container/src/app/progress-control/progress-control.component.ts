@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class ProgressControlComponent implements OnInit {
   controlForm: FormGroup;
   selectedGroup: SafeResourceUrl;
+  surname: SafeResourceUrl;
   isLoad: boolean = false;
 
   constructor(private coreService: CoreService,  private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
@@ -22,20 +23,21 @@ export class ProgressControlComponent implements OnInit {
   ngOnInit(): void {
     this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/0`);
     this.controlForm = this.formBuilder.group({
-      groupName: ['', Validators.  required]
-    }); 
+      groupName: ['', Validators.  required],
+      surname: ['']
+    });
   }
 
   get f() { return this.controlForm.controls; }
-  
+
   enterGroup(): void {
-    this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/${this.f.groupName.value}`);
+    this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/${this.f.groupName.value}/${this.f.surname.value}`);
     this.isLoad = true;
   }
 
   showHelp(): void{
 
-    const dialogRef = this.dialog.open(HelpPopoverProgressControlComponent, 
+    const dialogRef = this.dialog.open(HelpPopoverProgressControlComponent,
       {
       width: '370px',
       height: '320px',
