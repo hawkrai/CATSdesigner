@@ -20,6 +20,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
   filterValue: string;
   chats: Chat[];
   subscription: Subscription;
+  subscriptionContact: Subscription;
   constructor(private cdr: ChangeDetectorRef, private signalRService: SignalRService, public dataService: DataService, private contactService: ContactService) { }
 
   customOptions: OwlOptions = {
@@ -33,7 +34,12 @@ export class ChatsComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    this.contactService.openChatComand.subscribe(x=>this.showChat(x));
+    this.dataService.messages.next([]);
+    this.dataService.activChat=null;
+    this.dataService.activChatId=0;
+    this.dataService.activGroup=null;
+    this.dataService.isGroupChat=false;
+    this.subscriptionContact=this.contactService.openChatComand.subscribe(x=>this.showChat(x));
     this.subscription = this.dataService.chats.subscribe(chats => {
       if (chats) {
         this.chats = chats;
@@ -49,7 +55,10 @@ export class ChatsComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       }
     });
-    this.dataService.LoadChats();
+    if (!this.contactService.isChatOpen)
+      this.dataService.LoadChats();
+    else
+      this.contactService.isChatOpen=false;
   }
 
   filter(): void {
@@ -60,6 +69,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subscriptionContact.unsubscribe();
     this.subscription.unsubscribe();
   }
 
@@ -80,6 +90,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
           })
       }
       else {
+        this.dataService.readMessageChatCount.next(this.dataService.readMessageChatCount.getValue()-chat.unread);
         this.dataService.readMessageCount.next(chat.unread);
         chat.unread = 0;
         this.dataService.activChat = chat;

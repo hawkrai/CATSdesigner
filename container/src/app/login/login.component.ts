@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from '../core/services/auth.service';
-import {TranslatePipe} from '../pipe/translate.pipe';
+import {TranslatePipe} from 'educats-translate';
 import {MatDialog} from '@angular/material/dialog';
 import {VideoComponent} from './modal/video.component';
 import { ViewEncapsulation } from '@angular/core';
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
         userName: new FormControl('', [Validators.required, Validators.minLength(3),Validators.maxLength(30),
           Validators.pattern('^[A-Za-z0-9_.-@]{3,30}$')]),
         password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-          Validators.pattern('^[A-Za-z0-9_]{6,30}$'), this.passwordValidator]),
+          Validators.pattern('^[A-Za-z0-9_-]{6,30}$'), this.passwordValidator]),
     });    
     const local: string = localStorage.getItem("locale");
     this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];

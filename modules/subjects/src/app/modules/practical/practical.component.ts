@@ -9,11 +9,11 @@ import * as subjectSelectors from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import * as groupActions from '../../store/actions/groups.actions';
 import * as groupSelectors from '../../store/selectors/groups.selectors';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import * as practicalsActions from '../../store/actions/practicals.actions';
 import { Help } from 'src/app/models/help.model';
 import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
 import { DialogService } from 'src/app/services/dialog.service';
+import { TranslatePipe } from 'educats-translate';
 
 interface State {
   groups: Group[];

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { PersonalDataService } from '../core/services/personal-data.service';
 import { FormControl, Validators, ValidationErrors, FormGroup, FormBuilder } from '@angular/forms';
-import { TranslatePipe } from '../pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 import { AppToastrService } from '../core/services/toastr.service';
 
 @Component({

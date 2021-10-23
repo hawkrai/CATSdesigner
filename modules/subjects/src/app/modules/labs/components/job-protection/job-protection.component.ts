@@ -14,7 +14,7 @@ import * as labsActions from '../../../../store/actions/labs.actions';
 import * as subjectSelectors from '../../.././../store/selectors/subject.selector';
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
-import { TranslatePipe } from '../../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-job-protection',

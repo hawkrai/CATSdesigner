@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:qa": "ng build --output-path d:/.temp/apps/calendar",
+    "build:qa": "ng build --output-path c:/.temp/apps/calendar",
     "build:prod": "ng build --output-path d:/CatsProject/apps/calendar"
   },
   "private": true,
@@ -25,6 +25,8 @@
     "@angular/router": "~8.1.0",
     "@babel/compat-data": "^7.8.0",
     "date-fns": "^2.16.0",
+    "educats-common": "^2.0.0",
+    "educats-translate": "^1.0.0",
     "flatpickr": "^4.6.6",
     "rxjs": "~6.4.0",
     "test-mipe-bntu-schedule": "0.0.3",

@@ -82,7 +82,7 @@
     </table>
     <ng-template #listView>
       <mat-form-field style="width: 100%;">
-        <mat-label>Search</mat-label>
+        <mat-label>{{'search' | translate:'Поиск'}}</mat-label>
         <input matInput type="text" [(ngModel)]="searchValue">
         <button *ngIf="value" matSuffix mat-icon-button (click)="searchValue = ''">
           <mat-icon>close</mat-icon>

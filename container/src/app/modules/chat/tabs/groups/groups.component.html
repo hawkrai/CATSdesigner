@@ -1,46 +1,58 @@
- <!-- Start Groups content -->
- <div>
-   <div class="p-4" style="padding-top: 1.5rem !important;">
+<!-- Start Groups content -->
+<div>
+  <div class="p-4" style="padding-top: 1.5rem !important;">
     <h4 class="mb-4">{{'chat.groups'| translate: 'Группы'}}</h4>
-     <div class="search-box chat-search-box">
-       <div class="input-group bg-light  input-group-lg rounded-lg">
-         <div class="input-group-prepend">
+    <div class="search-box chat-search-box">
+      <div class="input-group bg-light  input-group-lg rounded-lg">
+        <div class="input-group-prepend">
+        </div>
+        <input type="text" [(ngModel)]="searchGroup" (ngModelChange)="filter()" class="form-control bg-light"
+          placeholder="{{'chat.groupName'| translate: 'Название группы'}}">
+      </div>
+    </div>
+    <!-- end search-box -->
+  </div>
+
+  <!-- Start chat-group-list -->
+  <perfect-scrollbar class="p-4 chat-message-list chat-group-list"
+    style="background: white;height: calc(100vh - 280px) !important;" data-simplebar>
+    <ul class="list-unstyled chat-list" style="max-height: 60vh;">
+      <li *ngFor="let subject of groups">
+        <a data-container="body" data-placement="top" matTooltip={{subject.name}}
+          [ngStyle]="{'background-color': dataService.activChatId==subject.id ? '#f5f7fb':''}"
+          (click)="showChat(subject)">
+          <div class="media" style="align-items: center;">
+            <div class="chat-user-img align-self-center mr-3" style="margin-right: 0.5rem !important;">
+              <div class="avatar-xs">
+                <div class="avatar-title rounded-circle"
+                  [style.background-color]="subject.color">
+               </div>
+              </div>
+            </div>
+            <div class="media-body overflow-hidden">
+              <h5 class="text-truncate font-size-14 mb-0">{{subject.shortName}}
+                <span style="top: calc(50% - 16px);" *ngIf="subject.unread!=0"
+                  class="badge badge-soft-danger badge-pill float-right">{{subject.unread}}</span>
+              </h5>
+            </div>
           </div>
-         <input type="text" [(ngModel)]="searchGroup" (ngModelChange)="filter()" class="form-control bg-light"
-           placeholder="{{'chat.groupName'| translate: 'Название группы'}}">         
-       </div>
-     </div>
-     <!-- end search-box -->
-   </div>
-
-   <!-- Start chat-group-list -->
-   <perfect-scrollbar class="p-4 chat-message-list chat-group-list" style="background: white;height: calc(100vh - 280px) !important;" data-simplebar>
-
-     <ul class="list-unstyled chat-list"  style="max-height: 60vh;">
-       <li *ngFor="let subject of groups">
-         <a data-container="body" data-placement="top"  matTooltip={{subject.name}}  [ngStyle]="{'background-color': dataService.activChatId==subject.id ? '#f5f7fb':''}" (click)="showChat(subject)">
-           <div class="media align-items-center">
-             <div class="media-body overflow-hidden">
-               <h5 class="text-truncate font-size-14 mb-0">{{subject.shortName}}
-                 <span style="top: calc(50% - 16px);" *ngIf="subject.unread!=0" class="badge badge-soft-danger badge-pill float-right">{{subject.unread}}</span>
-               </h5>
-             </div>
-           </div>
-         </a>
-         <div *ngFor="let group of subject.groups">
-          <a [ngStyle]="{'background-color': dataService.activChatId==group.id ? '#f5f7fb':''}" (click)="showChat(group)">
-            <div class="media align-items-center">
+        </a>
+        <div *ngFor="let group of subject.groups">
+          <a [ngStyle]="{'background-color': dataService.activChatId==group.id ? '#f5f7fb':''}"
+            (click)="showChat(group)">
+            <div style="padding-left: 2.5rem;" class="media align-items-center">
               <div class="media-body overflow-hidden">
                 <h5 class="text-truncate font-size-14 mb-0">{{group.name}}
-                  <span style="top: calc(50% - 16px);" *ngIf="group.unread>0" class="badge badge-soft-danger badge-pill float-right">{{group.unread}}</span>
+                  <span style="top: calc(50% - 16px);" *ngIf="group.unread>0"
+                    class="badge badge-soft-danger badge-pill float-right">{{group.unread}}</span>
                 </h5>
               </div>
             </div>
           </a>
-          </div>
-       </li>
-     </ul>
-   </perfect-scrollbar>
-   <!-- End chat-group-list -->
- </div>
- <!-- End Groups content -->
+        </div>
+      </li>
+    </ul>
+  </perfect-scrollbar>
+  <!-- End chat-group-list -->
+</div>
+<!-- End Groups content -->

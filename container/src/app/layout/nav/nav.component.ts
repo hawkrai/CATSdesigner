@@ -119,6 +119,12 @@ export class NavComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
+  public routeToSearchResult(url: string): void {
+    this.router.navigate([url]);
+    window.location.reload();
+  }
+
+
   public themeChange(value: any): void {
     localStorage.setItem("theme", value.value.value);
     window.location.reload()
@@ -156,19 +162,22 @@ export class NavComponent implements OnInit, OnDestroy {
 
   viewLecturerSearchResults() {
     this.searchService.getLecturerSearchResults(this.valueForSearch).subscribe(res => {
-      this.lecturerSearchResults = res;
+      if(res.length > 0)
+        this.lecturerSearchResults = res;
     });
   }
 
   viewStudentSearchResults() {
     this.searchService.getStudentSearchResults(this.valueForSearch).subscribe(res => {
-      this.studentSearchResults = res;
+      if(res.length > 0)
+        this.studentSearchResults = res;
     });
   }
 
   viewGroupSearchResults() {
     this.searchService.getGroupSearchResults(this.valueForSearch).subscribe(res => {
-      this.groupSearchResults = res;
+      if(res.length > 0)
+        this.groupSearchResults = res;
     });
   }
 

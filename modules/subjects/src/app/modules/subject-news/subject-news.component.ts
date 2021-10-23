@@ -15,9 +15,9 @@ import * as newsSelectors from '../../store/selectors/news.selectors';
 import * as newsActions from '../../store/actions/news.actions';
 import * as filesActions from '../../store/actions/files.actions';
 import {SubSink} from 'subsink';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
 import { Help } from 'src/app/models/help.model';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { TranslatePipe } from 'educats-translate';
 
 interface NewsState {
   color: string

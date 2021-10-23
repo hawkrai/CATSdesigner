@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {VisitStats} from '../../../models/visit-stats.model';
 import {Consultation} from '../../../models/consultation.model';
 import {VisitStatsComponent} from '../visit-stats.component';
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-visit-stats-list',

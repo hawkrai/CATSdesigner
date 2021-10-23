@@ -31,7 +31,9 @@
             "styles": [
               "src/styles.less"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/educats-common/scripts/iconify.min.js"
+            ]
           },
           "configurations": {
             "production": {

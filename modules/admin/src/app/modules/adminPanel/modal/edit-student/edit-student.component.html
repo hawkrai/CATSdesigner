@@ -5,7 +5,7 @@
 <h1 mat-dialog-title>Редактирование студента</h1>
 <form [formGroup]="this.form" (ngSubmit)="submit()">
     <mat-dialog-content>
-        <h2>{{ this.data.FullName}} <br> (this.data.Login}})</h2>
+        <h2>{{ this.data.FullName}} <br> ({{this.data.Login}})</h2>
         <div>
             <mat-form-field>
                 <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="30">

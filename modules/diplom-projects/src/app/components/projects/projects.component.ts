@@ -10,8 +10,7 @@ import {Project} from '../../models/project.model';
 import {AppComponent} from '../../app.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import {GroupService} from '../../services/group.service';
-import { TranslatePipe } from '../../../../../../container/src/app/pipe/translate.pipe';
-import { dashCaseToCamelCase } from '@angular/compiler/src/util';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-projects',

@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import { EditorComponent } from './components/editor/editor.component';
-import {TranslatePipe} from "../../../../container/src/app/pipe/translate.pipe";
 
 import { ModalService } from './services/modal.service';
 import { TreeComponent } from './components/tree/tree.component';
@@ -21,6 +20,9 @@ import { TestExecutionComponent } from './components/adaptiveLearningTests/adapt
 import { QuestionComponent } from './components/adaptiveLearningTests/components/question/question.component';
 import { CopyToOtherSubjectDialogComponent } from './components/dialogs/copy-to-other-subject-dialog/copy-to-other-subject-dialog.component';
 import { CopyFromOtherSubjectDialogComponent } from './components/dialogs/copy-from-other-subject-dialog/copy-from-other-subject-dialog.component';
+import { TranslateModule, TranslatePipe } from 'educats-translate';
+import * as dataRu from './core/translate/translations_ru.json';
+import * as dataEn from './core/translate/translations_en.json';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,6 @@ import { CopyFromOtherSubjectDialogComponent } from './components/dialogs/copy-f
     AddDocumentDialogComponent,
     EditDocumentDialogComponent,
     TestDialogComponent,
-    TranslatePipe,
     TestExecutionComponent,
     QuestionComponent,
     CopyToOtherSubjectDialogComponent,
@@ -45,7 +46,13 @@ import { CopyFromOtherSubjectDialogComponent } from './components/dialogs/copy-f
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    CKEditorModule
+    CKEditorModule,
+    TranslateModule.forRoot({
+      localizationMap: {
+        en: dataEn,
+        ru: dataRu
+      }
+    })
   ],
   providers: [
     ModalService,

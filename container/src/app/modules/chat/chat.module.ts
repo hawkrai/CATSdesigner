@@ -15,6 +15,7 @@ import { GroupsComponent } from './tabs/groups/groups.component';
 import { LoaderComponent } from './tabs/loader/loader.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ChatRoutingModule } from './chat-routing.module';
+import { MatBadgeModule } from '@angular/material/badge';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -28,6 +29,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatIconModule,
+    MatBadgeModule,
     MatDialogModule,
     CarouselModule,
     CommonModule,

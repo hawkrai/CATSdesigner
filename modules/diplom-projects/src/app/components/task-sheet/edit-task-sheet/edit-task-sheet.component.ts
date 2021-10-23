@@ -8,7 +8,7 @@ import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
 import { Project } from 'src/app/models/project.model';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { Student } from 'src/app/models/student.model';
-import { TranslatePipe } from '../../../../../../../container/src/app/pipe/translate.pipe';
+import { TranslatePipe } from 'educats-translate';
 
 interface DialogData {
   isSecretary: boolean;

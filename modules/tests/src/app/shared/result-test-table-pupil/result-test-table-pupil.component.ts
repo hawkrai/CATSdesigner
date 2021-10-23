@@ -3,7 +3,7 @@ import {Test} from "../../models/test.model";
 import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
 import {Label} from "ng2-charts";
 import * as pluginDataLabels from "chartjs-plugin-datalabels";
-import {TranslatePipe} from "../../../../../../container/src/app/pipe/translate.pipe";
+import {TranslatePipe} from "educats-translate";
 
 
 @Component({
