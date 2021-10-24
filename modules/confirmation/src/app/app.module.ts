@@ -4,11 +4,17 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
-import {ConfirmationService} from "./service/confirmation.service";
+import {ConfirmationService} from "./services/confirmation.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientModule} from "@angular/common/http";
 import {DemoMaterialModule} from "./material-module";
+import { TranslateModule } from 'educats-translate';
+import * as dataEn from './core/translate/translate_en.json';
+import * as dataRu from './core/translate/translate_ru.json';
+import { SharedModule } from './shared/shared.module';
+import { CatsMessageService } from './services/cats-message.service';
+
 
 @NgModule({
   declarations: [
@@ -22,9 +28,15 @@ import {DemoMaterialModule} from "./material-module";
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    DemoMaterialModule
+    DemoMaterialModule,
+    TranslateModule.forRoot({
+      localizationMap: {
+        ru: dataRu,
+        en: dataEn
+      }
+    }),
+    SharedModule
   ],
-  providers: [ConfirmationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
