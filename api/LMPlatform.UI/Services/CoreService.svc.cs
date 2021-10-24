@@ -24,6 +24,7 @@ using LMPlatform.UI.Services.Modules.Parental;
 using LMPlatform.UI.Services.Modules.Practicals;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.Schedule;
+using Application.Infrastructure.SubjectLecturersManagement;
 
 namespace LMPlatform.UI.Services
 {
@@ -53,6 +54,10 @@ namespace LMPlatform.UI.Services
 		private readonly LazyDependency<ILecturerManagementService> lecturerManagementService = new LazyDependency<ILecturerManagementService>();
 
 		public ILecturerManagementService LecturerManagementService => lecturerManagementService.Value;
+
+		private readonly LazyDependency<ISubjectLecturersManagementService> subjectLecturersManagementService = new LazyDependency<ISubjectLecturersManagementService>();
+
+		public ISubjectLecturersManagementService SubjectLecturersManagementService => subjectLecturersManagementService.Value;
 
 		public ResultViewData DisjoinLector(int subjectId, int lectorId)
 		{
@@ -203,9 +208,18 @@ namespace LMPlatform.UI.Services
 
 		public StudentsResult СonfirmationStudent(string studentId)
 		{
+
 			try
 			{
 				var id = int.Parse(studentId);
+				if (!(UserContext.Role == "lector") || !SubjectLecturersManagementService.HasStudent(UserContext.CurrentUserId, id))
+				{
+					return new StudentsResult
+					{
+						Message = "Нет прав для подтверждения",
+						Code = "403"
+					};
+				}
 				this.StudentManagementService.СonfirmationStudent(id);
 
 				return new StudentsResult
@@ -229,6 +243,15 @@ namespace LMPlatform.UI.Services
 			try
 			{
 				var id = int.Parse(studentId);
+
+				if (!(UserContext.Role == "lector") || !SubjectLecturersManagementService.HasStudent(UserContext.CurrentUserId, id))
+                {
+					return new StudentsResult
+					{
+						Message = "Нет прав для отмены",
+						Code = "403"
+					};
+				}
 				this.StudentManagementService.UnConfirmationStudent(id);
 
 				return new StudentsResult
@@ -332,7 +355,7 @@ namespace LMPlatform.UI.Services
 					{
 						CountUnconfirmedStudents = students,
 						GroupId = @group.Id,
-						GroupName = students > 0 ? @group.Name + " - (" + students + ")" : @group.Name
+						GroupName = @group.Name
 					});
 				}
 

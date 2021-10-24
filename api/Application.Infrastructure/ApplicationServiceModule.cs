@@ -27,6 +27,7 @@ using Application.Infrastructure.LabsManagement;
 using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.NewsManagement;
+using Application.Infrastructure.SubjectLecturersManagement;
 
 namespace Application.Infrastructure
 {
@@ -72,6 +73,7 @@ namespace Application.Infrastructure
             containerWrapper.Register<IPracticalManagementService, PracticalManagementService>();
             containerWrapper.Register<IElasticManagementService, ElasticManagementService>();
             containerWrapper.Register<INewsManagementService, NewsManagementService>();
+            containerWrapper.Register<ISubjectLecturersManagementService, SubjectLecturersManagementService>();
             return containerWrapper;
         }
     }

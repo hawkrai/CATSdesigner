@@ -10,7 +10,6 @@ using LMPlatform.UI.ViewModels.SubjectViewModels;
 using System.Collections.Generic;
 using Application.Infrastructure.GroupManagement;
 using Application.Core.Helpers;
-using System;
 
 namespace LMPlatform.UI.Services.Subjects
 {

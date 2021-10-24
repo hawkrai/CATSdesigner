@@ -1,21 +1,41 @@
 <div class="container">
     <div class="h1-container">
         <span class="h1">Контроль успеваемости</span>
-        <div style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" matTooltip="Помощь" matTooltipPosition="right" (click)="showHelp()">
+        <!--div style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" matTooltip="Помощь" matTooltipPosition="right" (click)="showHelp()">
             <mat-icon>help_outline</mat-icon>
-        </button></div>
+        </button></div-->
     </div>
-    
+
     <div class="inline"></div>
     <form [formGroup]="controlForm">
         <mat-form-field class="default" color="primary">
-            <input matInput color="primary" formControlName="groupName" placeholder="Номер группы" type="text">
-        </mat-form-field>        
+            <input matInput color="primary" formControlName="groupName" placeholder="Введите номер группы" type="text">
+        </mat-form-field>
+      <mat-form-field class="default" color="primary">
+        <input matInput color="primary" formControlName="surname" placeholder="Введите фамилию студента" type="text">
+      </mat-form-field>
         <a mat-flat-button color="primary" (click)="enterGroup()">Найти</a>
-        <a mat-flat-button color="primary" href="/login">Выйти</a>
-        
+        <!--a mat-flat-button color="primary" href="/login">Выйти</a-->
+
     </form>
-    <div class="inline"></div>
+
+  <div style="font-size: 14px;color: #000000;font-family: Roboto, Helvetica Neue, sans-serif;">
+
+    <!--p>Модуль "Контроль успеваемости" позволяет:</p>
+    <ol>
+      <li> получить информацию об усвоении учебной программы группы в целом</li>
+      <li> узнать подробную информацию по каждому предмету</li>
+      <li> посмотреть учебный план по каждому предмету</li>
+    </ol-->
+
+    <p>Чтобы просмотреть контроль успеваемости:</p>
+    <ol>
+      <li>Введите номер группы и фамилию студента при необходимости и нажмите на кнопку [Найти].</li>
+      <li>Выберите нужный предмет.</li>
+      <li>Будет отображена статистика по выбранному предмету.
+        Нажмите на [Печать] для печати или на [Excel] для экспорта в MS Excel</li>
+    </ol>
+  </div>
 
 </div>
 <iframe *ngIf="isLoad" [src]="selectedGroup"></iframe>

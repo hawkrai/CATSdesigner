@@ -60,7 +60,9 @@ namespace LMPlatform.UI.Services.Parental
                     var group = repositoriesContainer.GroupsRepository.GetBy(new Query<Group>(e => e.Id == id)
                         .Include(e => e.Students.Select(x => x.LecturesVisitMarks.Select(t => t.LecturesScheduleVisiting)))
                         .Include(e => e.Students.Select(x => x.ScheduleProtectionLabMarks.Select(t => t.ScheduleProtectionLab).Select(f => f.SubGroup).Select(s => s.SubjectGroup)))
-                        .Include(e => e.Students.Select(x => x.StudentLabMarks.Select(t => t.Lab))));
+                        .Include(e => e.Students.Select(x => x.StudentLabMarks.Select(t => t.Lab)))
+                        .Include(e => e.Students.Select(x => x.ScheduleProtectionPracticalMarks.Select(t => t.ScheduleProtectionPractical).Select(s => s.Group).Select(s => s.SubjectGroups)))
+                        .Include(e => e.Students.Select(x => x.StudentPracticalMarks.Select(x => x.Practical))));
                     var subjects = SubjectManagementService.GetGroupSubjects(id);
                     var students = group.Students.ToList();
                     students.Sort((arg1, arg2) => { return string.Compare(arg1.FullName, arg2.FullName); });
