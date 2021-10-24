@@ -35,6 +35,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {TranslateModule, TranslatePipe} from 'educats-translate';
 import {MatIconModule} from '@angular/material/icon';
 import { HelpPopoverScheduleComponent } from './schedule-main/help-popover/help-popover-schedule.component';
+import {MatDividerModule} from '@angular/material/divider';
 import * as dataRu from './core/translate/translations_ru.json';
 import * as dataEn from './core/translate/translations_en.json';
 
@@ -92,6 +93,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
         MatTabsModule,
         MatDatepickerModule,
         MatIconModule,
+        MatDividerModule,
         TranslateModule.forRoot({
           localizationMap: {
             ru: dataRu,

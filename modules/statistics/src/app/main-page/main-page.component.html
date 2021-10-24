@@ -19,8 +19,8 @@
 
   <table style = "margin-top: -10%;margin-left: 10%">
     <tr *ngFor="let i of [0,1,2,3,4]">
-      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{chart.series[0].data[i]}}</td>
-      <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{chart.categories[i]}}</td>
+      <td *ngIf="chart.series[0].data[i] != 0" [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{chart.series[0].data[i]}}</td>
+      <td *ngIf="chart.categories[i] != '0'" style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{chart.categories[i]}}</td>
     </tr>
   </table>
 </div>
