@@ -1,10 +1,34 @@
 
+
+
+
+.header-row {
+  margin-right: 20px;
+  margin-left: 30px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: row;
+}
+
+.header {
+  color: #3f51b5;
+  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-size: 36px !important;
+  font-weight: 500;
+  font-size: 24px !important;
+  width: 40%;
+}
+
   @media (min-width:971px) {
     .profile {
       margin-top: 10px;
       display: flex;
       height: 85%;
       position: relative;
+    }
+
+    .under-avatar{
+      display: block !important;
     }
 
     .project-table{
@@ -27,6 +51,8 @@
       margin: 30px;
       margin-top: 10px;
       max-height: 59vh;
+      display: block !important;
+      
       /*    height: 90%;*/
       /*  width: 100%;*/
     }
