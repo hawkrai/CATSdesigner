@@ -108,7 +108,7 @@ export class SignupComponent implements OnInit {
             right: '0px'
           }
         });
-        this.route.navigate(['/login']);
+        window.parent.location.href = "/login";
       }, () => {
         this.dialog.open(MessageComponent, {
           data: 'Пользователь успешно зарегистрирован.',
