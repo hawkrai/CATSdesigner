@@ -26,11 +26,12 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.dataSource = this.data;
-    this.addChart(this.dataSource.marks, 'Test', this.categoriesConst);
+    this.addChart(this.dataSource.marks, this.dataSource[0].Subject, this.categoriesConst);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.dataSource = changes.data.currentValue;
+    this.addChart(this.dataSource.marks, this.dataSource[0].Subject, this.categoriesConst);
   }
 
   addChart(marks: any, name: string, cat: any) {

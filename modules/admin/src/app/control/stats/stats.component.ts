@@ -61,8 +61,8 @@ export class StatsComponent implements OnInit {
         const userPracticalPass = 2;
         const userPracticalMarks = 5;
         labMarks += userAvgLabMarks;
-        practMarks += userAvgLabMarks;
-        testMarks += userAvgLabMarks;
+        practMarks += userPracticalMarks;
+        testMarks += userAvgTestMarks;
 
         if (this.surname != undefined && !item.FIO.includes(this.surname)) {
           return ;
