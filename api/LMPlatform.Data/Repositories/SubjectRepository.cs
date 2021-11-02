@@ -17,6 +17,36 @@ namespace LMPlatform.Data.Repositories
 		{
 		}
 
+		public List<Subject> GetAllSubjects(int groupId = 0, int lecturerId = 0)
+		{
+			using var context = new LmPlatformModelsContext();
+			if (groupId != 0)
+			{
+				var subjectGroup = context.Set<SubjectGroup>()
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubjectStudents))
+					.Include(e => e.Subject.Labs)
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.Group))
+					.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(t => t.ScheduleProtectionLabs)))
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(v => v.SubjectStudents)))
+					.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
+					.Include(e => e.Subject.LecturesScheduleVisitings)
+					.Where(e => e.GroupId == groupId).ToList();
+				return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
+			}
+
+			var subjectLecturer =
+				context.Set<SubjectLecturer>()
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubjectStudents))
+					.Include(e => e.Subject.Labs)
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.Group))
+					.Include(e => e.Subject.LecturesScheduleVisitings)
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.Group.Students))
+					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(t => t.ScheduleProtectionLabs)))
+					.Where(e => e.LecturerId == lecturerId).ToList();
+			return subjectLecturer.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
+		}
+
 		public List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0)
 		{
 			using var context = new LmPlatformModelsContext();

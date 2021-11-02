@@ -87,7 +87,7 @@ namespace LMPlatform.UI.Controllers
 
                 if (role.RoleName == "student" &&  (!user.Student.Confirmed.HasValue || !user.Student.Confirmed.Value))
                 {
-                    return StatusCode(HttpStatusCode.BadRequest, "Пользователь ещё не подтверждён");
+                    return StatusCode(HttpStatusCode.BadRequest, "User hasn't verified yet!");
                 }
 
                 var claims = new List<Claim>

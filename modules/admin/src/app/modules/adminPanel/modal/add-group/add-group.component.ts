@@ -44,6 +44,20 @@ export class AddGroupComponent implements OnInit {
       currentYear++;
     }
     return yearArr;
+  } 
+
+  yearOfGraduation() {
+    const yearArr = new Array();
+    if(this.form.controls.StartYear.value){
+      var range = 10;
+    let currentYear = this.form.controls.StartYear.value;
+    for (let i = 0; i < range; i++) {
+      yearArr.push(currentYear);
+      currentYear++;
+    }
+    }
+    
+    return yearArr;
   }
 
   submit() {
