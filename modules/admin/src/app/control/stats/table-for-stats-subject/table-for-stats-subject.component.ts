@@ -17,21 +17,34 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
     'Средняя оценка за тесты',
     'Рейтинговая оценка'];
 
+  public surnames: string [] = [];
+  public marksChart: any[] = [];
+  public passes: any[] = [];
+  public marks: any;
+
   colors: string [] = [ 'orange', 'red', 'blue', 'green'];
   dataSource;
   public chartOptions: any;
+  public chartOptions1: any;
   @Input() data: any;
 
   constructor() {}
 
   ngOnInit() {
     this.dataSource = this.data;
-    this.addChart(this.dataSource.marks, this.dataSource[0].Subject, this.categoriesConst);
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.dataSource = changes.data.currentValue;
-    this.addChart(this.dataSource.marks, this.dataSource[0].Subject, this.categoriesConst);
+    this.marks = JSON.parse(JSON.stringify(this.dataSource.marks));
+    this.addChart(this.marks, this.dataSource[0].Subject, this.categoriesConst);
+    delete this.dataSource.marks;
+    this.dataSource.forEach(student => {
+      this.surnames.push(student.FIO.split(' ')[0]);
+      this.passes.push(student.AllPass);
+      this.marksChart.push(+student.Rating);
+    });
+    this.addPassAndMarksChart(this.marksChart, this.passes, this.surnames);
   }
 
   addChart(marks: any, name: string, cat: any) {
@@ -110,5 +123,62 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
           fontWeight: 400,
         }
       };
+  }
+
+  addPassAndMarksChart(marks: any, passes: any, surnames: any ) {
+    this.chartOptions1 = {
+      series: [
+        {
+          name: 'Пропуски',
+          data: passes
+        },
+        {
+          name: 'Оценки',
+          data: marks
+        }
+      ],
+      chart: {
+        type: 'bar',
+        height: 350
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '55%',
+          endingShape: 'rounded'
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        show: true,
+        width: 2,
+        colors: ['transparent']
+      },
+      xaxis: {
+        categories: surnames
+      },
+      yaxis: {
+        title: {
+          text: ''
+        }
+      },
+      fill: {
+        opacity: 1
+      },
+      tooltip: {
+        y: {
+          formatter(val) {
+            return val;
+          }
+        },
+        x: {
+          formatter(val) {
+            return val;
+          }
+        }
+      }
+    };
   }
 }

@@ -93,11 +93,14 @@ export class StatsComponent implements OnInit {
         item.UserLabPass.map( ( statsItem, index) => {
           labPassTotal += statsItem.Value;
           lecturePassTotal += item.UserLecturePass[index].Value;
-          practicalPassTotal = 2;
+          practicalPassTotal = 3;
           avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
-          avgPracticalMarksTotal = 5;
+          avgPracticalMarksTotal += 5;
         });
+        avgLabMarksTotal = avgLabMarksTotal / item.UserLabPass.length;
+        avgTestMarksTotal = avgTestMarksTotal / item.UserLabPass.length;
+        avgPracticalMarksTotal = avgPracticalMarksTotal / item.UserLabPass.length;
         labMarks += avgLabMarksTotal;
         practMarks += avgPracticalMarksTotal;
         testMarks += avgTestMarksTotal;

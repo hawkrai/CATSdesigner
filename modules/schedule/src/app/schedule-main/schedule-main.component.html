@@ -47,6 +47,7 @@
               >
             </div>
           </div>
+          <button mat-icon-button (click)="this.openStatisitcs()"><mat-icon>pie_chart</mat-icon></button>
           <div *ngIf="hideButton.length != 0" style="margin-left: 5%; margin-top: 18px; display: flex" class="desktopNews">
             <p matTooltipClass="example-tooltip-blue" (click)="hideNews()"
                style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5">{{hideButton}}</p>
