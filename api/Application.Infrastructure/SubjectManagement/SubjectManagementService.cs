@@ -1052,7 +1052,7 @@ namespace Application.Infrastructure.SubjectManagement
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				model = repositoriesContainer.SubjectRepository.GetSubjects(lecturerId: userId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetAllSubjects(lecturerId: userId).ToList();
 			}
 
 			return model;
@@ -1100,7 +1100,7 @@ namespace Application.Infrastructure.SubjectManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetAllSubjects(groupId: student.GroupId).ToList();
 			}
 
 			return model;

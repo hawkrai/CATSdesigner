@@ -26,8 +26,8 @@ export class ActiveStatsComponent implements OnInit {
 
   loadActivity() {
     this.userService.getUserActivity().subscribe(result => {
-      this.users = this.convertJsonToArray(['Сервисные аккаунты', 'Аккаунты преподавателей', 'Аккаунты студентов'],
-      [result.ServiceAccountsCount, result.TotalLecturersCount, result.TotalStudentsCount]);
+      this.users = this.convertJsonToArray(['Аккаунты студентов', 'Аккаунты преподавателей', 'Сервисные аккаунты',],
+      [result.TotalStudentsCount, result.TotalLecturersCount, result.ServiceAccountsCount]);
       this.userActivity = result;
       const obj = JSON.parse(result.UserActivityJson);
       this.times = this.convertJsonToArray(Object.keys(obj), Object.values(obj));

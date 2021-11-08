@@ -68,6 +68,7 @@ export class ResetPasswordModalComponent implements OnInit {
         }
       });
       this.dialogRef.close();
+      window.parent.location.href = "/login";
     });
   }
 

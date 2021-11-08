@@ -74,7 +74,7 @@
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.phoneNumber' | translate : ("Телефон")}}</mat-label>
         <input matInput id="phoneInput" [(ngModel)]="this.profileData.Phone" (blur)="this.trimFields()" [formControl]="phoneFormControl" maxlength="20">
-        <mat-error *ngIf="phoneFormControl.hasError('pattern')">{{'text.personalAccount.phoneNumber' | translate : ("Номер не соответствует формату!")}}</mat-error>
+        <mat-error *ngIf="phoneFormControl.hasError('pattern')">{{'text.personalAccount.wrongNumber' | translate : ("Номер не соответствует формату!")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="text-area-full-width">
