@@ -557,5 +557,8 @@
   "text.help.popover.content.third": "Руководитель проекта: к.т.н., доцент Попова Ю.Б.",
   "text.help.popover.content.fourth": "БНТУ-2021",
   "text.help.popover.route.manual": "Перейти к руководству пользователя",
-  "text.help.popover.close": "Закрыть"
+  "text.help.popover.close": "Закрыть",
+  "text.help.popover.subject": "Предмет",
+  "text.help.popover.files": "Файлы",
+  "attached.files.tooltip": "Прикреплённые файлы"
 }

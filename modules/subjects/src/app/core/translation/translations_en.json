@@ -599,5 +599,8 @@
   "text.help.popover.content.third": "Project manager: candidate of technical sciences, associate professor Popova Y.B.",
   "text.help.popover.content.fourth": "BNTU-2021",
   "text.help.popover.route.manual":"Go to user manual",
-  "text.help.popover.close":"Close"
+  "text.help.popover.close":"Close",
+  "text.help.popover.subject": "Course",
+  "text.help.popover.files": "Files",
+  "attached.files.tooltip": "Attached files"
 }
