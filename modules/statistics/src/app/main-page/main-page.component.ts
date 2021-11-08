@@ -31,26 +31,27 @@ export class MainPageComponent implements OnInit {
   categories: string[][] = [[]];
   categoriesTemp: string[] = [];
 
-  public categoriesConst: string[]  = [this.translatePipe.transform('text.statistics.avg.pract', 'Средняя оценка за практические занятия'),
-                                      this.translatePipe.transform('text.statistics.avg.test', 'Средняя оценка за лабораторные работу') ,
+  public categoriesConst: string[]  = [this.translatePipe.transform('text.statistics.avg.pract', 'Средний балл за практические занятия'),
+                                      this.translatePipe.transform('text.statistics.avg.test', 'Средний балл за лабораторные работы') ,
                                    this.translatePipe.transform('text.statistics.avg.test', 'Средняя оценка за тесты'),
                                   this.translatePipe.transform('text.statistics.avg.course', 'Оценка за курсовой проект'),
                                   this.translatePipe.transform('text.statistics.avg.rating', 'Рейтинговая оценка')];
 
-  colors: string [] = ['red', 'blue', 'orange', 'purple' , 'green'];
+  colors: string [] = [ 'orange', 'red', 'blue', 'purple' , 'green'];
 
   constructor(private serviceService: StatisitcsServiceService, private translatePipe: TranslatePipe ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     if (this.user.role == 'student') {
       this.serviceService.getUserInfo(this.user.id).subscribe(res => {
-        this.serviceService.getAllSubjects(this.user.userName).subscribe(subjects => {
-          subjects.forEach(subject => {
-            this.serviceService.getLabsStastics(res.GroupId).subscribe(result => {
-              this.categoriesTemp = [];
-              this.temp = [];
-              this.tempAvg = 0;
-              console.log(result);
-              if (result.Message == 'Ok') {
+        this.serviceService.getLabsStastics(res.GroupId).subscribe(result => {
+          if (result.Message == 'Ok') {
+            this.serviceService.getAllSubjects(this.user.userName).subscribe(subjects => {
+              subjects.sort((a, b) => a.Name.localeCompare(b.Name));
+              subjects.forEach(subject => {
+                this.categoriesTemp = [];
+                this.temp = [];
+                this.tempAvg = 0;
+
                 this.testSum = 0;
                 this.practSum = 0;
                 this.labSum = 0;
@@ -61,20 +62,21 @@ export class MainPageComponent implements OnInit {
                     this.labSum = +student.UserAvgLabMarks.find(({Key}) => Key === subject.Id)!.Value;
                   }
                 });
-                this.temp.push(this.practSum);
-                if (this.practSum != 0) {
+
+                if (this.practSum != null && this.practSum != undefined) {
+                  this.temp.push(this.practSum);
                   this.categoriesTemp.push(this.categoriesConst[0]);
                 } else {
                   this.categoriesTemp.push('');
                 }
-                this.temp.push(this.labSum);
-                if (this.labSum != 0) {
+                if (this.labSum != null && this.labSum != undefined) {
                   this.categoriesTemp.push(this.categoriesConst[1]);
+                  this.temp.push(this.labSum);
                 } else {
                   this.categoriesTemp.push('');
                 }
-                this.temp.push(this.testSum);
-                if (this.testSum != 0) {
+                if (this.testSum != null && this.testSum != undefined) {
+                  this.temp.push(this.testSum);
                   this.categoriesTemp.push(this.categoriesConst[2]);
                 } else {
                   this.categoriesTemp.push('');
@@ -88,9 +90,10 @@ export class MainPageComponent implements OnInit {
                 this.temp.push(Math.round(this.tempAvg / this.temp.length * 100) / 100);
                 this.categoriesTemp.push(this.categoriesConst[4]);
                 this.addChart(this.temp, subject.Name, this.categoriesTemp);
-              }
+
+              });
             });
-          });
+          }
         });
       });
     } else {

@@ -13,6 +13,7 @@ import {DatePipe} from '@angular/common';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {TranslatePipe} from 'educats-translate';
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component';
+import {ScheduleStatisticsComponent} from '../schedule-statistics/schedule-statistics.component';
 
 
 const colors: any = {
@@ -502,8 +503,11 @@ export class ScheduleMainComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
     });
+  }
 
-}
-
+  openStatisitcs(): void {
+    const dialogRef = this.dialog.open(ScheduleStatisticsComponent,
+      {width: '1000px',  height: '96%', data: {schedule: this.events}, position: {top: '1%'}});
+  }
 }
 
