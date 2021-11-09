@@ -128,15 +128,15 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private getLab(labsCount: number, lab: Lab) {
-    const order = lab ? lab.Order : labsCount + 1;
+    const order = lab ? lab.Order : labsCount;
     return {
       id: lab ? lab.LabId : 0,
       theme: lab ? lab.Theme : '',
       duration: lab ? lab.Duration : 1,
-      order: lab ? lab.Order : order,
+      order,
       pathFile: lab ? lab.PathFile : '',
       attachments: lab ? lab.Attachments : [],
-      shortName: `ЛР${order}`
+      shortName: `ЛР№${order + 1}`
     };
   }
 
