@@ -105,8 +105,8 @@
         <div class="actions-group">
           <ng-container *ngIf="selectedTab === 1">
             <app-help  [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
-            <button class="mat-icon-button-groups " mat-icon-button [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="left" (click)="subdivision()">
-              <mat-icon>groups</mat-icon>
+            <button class="mat-icon-button-groups " mat-icon-button [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below" (click)="subdivision()">
+              <mat-icon color="primary">groups</mat-icon>
             </button>
           </ng-container>
           <ng-container *ngIf="selectedTab === 2">
@@ -114,7 +114,7 @@
               [message]="visitingHelp.message"
               [action]="visitingHelp.action"
             ></app-help>
-            <div class="_excel-file" (click)="getVisitingExcelFile()">
+            <div class="_excel-file" (click)="getVisitingExcelFile()" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
               <span
                 class="iconify"
                 data-icon="mdi-file-excel"
@@ -127,7 +127,7 @@
               [message]="resultsHelp.message"
               [action]="resultsHelp.action"
             ></app-help>
-            <div class="_excel-file" (click)="getResultsExcelFile()">
+            <div class="_excel-file" (click)="getResultsExcelFile()" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
               <span
                 class="iconify"
                 data-icon="mdi-file-excel"
@@ -142,6 +142,7 @@
               [matTooltip]="
                 'text.download.archive' | translate: 'Скачать архивом'
               "
+              matTooltipPosition="below"
               (click)="downloadAll()"
             >
               <mat-icon>get_app</mat-icon>
@@ -153,6 +154,7 @@
                 'text.check.plagiarism.all'
                   | translate: 'Проверить на плагиат всех работ'
               "
+              matTooltipPosition="below"
               (click)="checkPlagiarism(state.subjectId)"
             >
               <mat-icon>visibility</mat-icon>
@@ -162,6 +164,7 @@
               color="primary"
               [matTooltip]="'text.refresh.data' | translate: 'Обновить данные'"
               (click)="refreshJobProtection()"
+              matTooltipPosition="below"
             >
               <mat-icon>cached</mat-icon>
             </button>

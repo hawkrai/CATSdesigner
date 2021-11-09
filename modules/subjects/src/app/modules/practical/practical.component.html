@@ -41,13 +41,14 @@
           <div class="actions-group">
             <ng-container *ngIf="selectedTab === 1">
               <app-help  [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
-              <button class="mat-icon-button-groups" mat-icon-button [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="left" (click)="subdivision()">
-                <mat-icon>groups</mat-icon>
+              <button class="mat-icon-button-groups" mat-icon-button [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below" (click)="subdivision()">
+                <mat-icon color="primary">groups</mat-icon>
               </button>
             </ng-container>
             <ng-container *ngIf="selectedTab === 2">
               <app-help [message]="visitingHelp.message" [action]="visitingHelp.action" class="help"></app-help>
               <div class="_excel-file"
+              [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below"
               (click)="getVisitingExcelFile()">
                 <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
               </div>
@@ -55,6 +56,7 @@
             <ng-container *ngIf="selectedTab === 3">
               <app-help [message]="resultsHelp.message" [action]="resultsHelp.action" class="help"></app-help>
               <div class="_excel-file"
+              [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below"
               (click)="getResultsExcelFile()">
                 <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
               </div>
