@@ -137,7 +137,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     return {
       id: lesson ? lesson.PracticalId : 0,
       theme: lesson ? lesson.Theme : '',
-      duration: lesson ? lesson.Duration : '',
+      duration: lesson ? lesson.Duration : 1,
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],

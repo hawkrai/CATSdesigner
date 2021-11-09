@@ -132,7 +132,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
     return {
       id: lab ? lab.LabId : 0,
       theme: lab ? lab.Theme : '',
-      duration: lab ? lab.Duration : '',
+      duration: lab ? lab.Duration : 1,
       order: lab ? lab.Order : order,
       pathFile: lab ? lab.PathFile : '',
       attachments: lab ? lab.Attachments : [],

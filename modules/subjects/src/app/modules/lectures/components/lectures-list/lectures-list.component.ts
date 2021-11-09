@@ -145,7 +145,7 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     return {
       id: lecture ? lecture.LecturesId : 0,
       theme: lecture ? lecture.Theme : '',
-      duration: lecture ? lecture.Duration : 0,
+      duration: lecture ? lecture.Duration : 1,
       order: lecture ? lecture.Order : lecturesCount,
       pathFile: lecture ? lecture.PathFile : '',
       attachments: lecture ? lecture.Attachments : [],

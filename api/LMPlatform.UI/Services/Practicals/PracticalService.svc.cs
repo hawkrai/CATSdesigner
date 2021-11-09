@@ -93,6 +93,23 @@ namespace LMPlatform.UI.Services.Practicals
                         Message = "Пользователь не присоединён к предмету"
                     };
                 }
+                var normalizedTheme = theme?.Trim();
+                if (string.IsNullOrWhiteSpace(normalizedTheme) || normalizedTheme.Length > 256)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Ошибка вылидации"
+                    };
+                }
+                if (duration < 1 || duration > 36)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Ошибка вылидации"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 PracticalManagementService.SavePractical(new Practical
                 {

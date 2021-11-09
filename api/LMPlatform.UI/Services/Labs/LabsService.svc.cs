@@ -146,7 +146,9 @@ namespace LMPlatform.UI.Services.Labs
 					};
 				}
 				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
-				if (string.IsNullOrWhiteSpace(theme?.Trim()) || theme.Length > 256)
+				var normalizedTheme = theme?.Trim();
+
+				if (string.IsNullOrWhiteSpace(normalizedTheme) || normalizedTheme.Length > 256)
 				{
 					return new ResultViewData
 					{
