@@ -1,4 +1,4 @@
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { Observable, combineLatest, VirtualTimeScheduler } from 'rxjs';
 import {Store} from '@ngrx/store';
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
@@ -52,13 +52,22 @@ export class PracticalComponent implements OnInit, OnDestroy {
       this.translate.transform('visit.statistics', 'Статистика посещения'),
       this.translate.transform('results', 'Результаты')
     ];
-    this.store.dispatch(groupActions.loadGroups());
     this.state$ = combineLatest(
       this.store.select(groupSelectors.getGroups), 
       this.store.select(groupSelectors.getCurrentGroup), 
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(groupSelectors.isActiveGroup))
     .pipe(map(([groups, group, isTeacher, isActive]) => ({ groups, group, isTeacher, detachedGroup: !isActive })));
+
+    this.store.select(subjectSelectors.isTeacher).pipe(
+      first()
+    ).subscribe(isTeacher => {
+      if (isTeacher) {
+        this.store.dispatch(groupActions.loadGroups());
+      } else {
+        this.store.dispatch(groupActions.loadStudentGroup());
+      }
+    });
   }
 
   groupStatusChange(event) {

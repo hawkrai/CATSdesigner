@@ -1,5 +1,5 @@
 import { MatOptionSelectionChange } from '@angular/material';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { Observable, combineLatest } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Store} from '@ngrx/store';
@@ -52,7 +52,6 @@ export class LecturesComponent implements OnInit, OnDestroy {
       this.translate.transform('text.lectures.plural', 'Лекции'), 
       this.translate.transform('text.subjects.lectures.attending', 'Посещение лекций')
     ];
-    this.store.dispatch(groupsActions.loadGroups());
     const isTeacher$ = this.store.select(subjectSelectors.isTeacher);
     const subjectId$ = this.store.select(subjectSelectors.getSubjectId);
     const groups$ = this.store.select(groupsSelectors.getGroups);
@@ -64,6 +63,15 @@ export class LecturesComponent implements OnInit, OnDestroy {
     this.mobileMatcher = this.mediaMatcher.matchMedia('(max-width: 400px)');
     this.mobileMatcher.addEventListener('change', this.emptyListener);
 
+    this.store.select(subjectSelectors.isTeacher).pipe(
+      first()
+    ).subscribe(isTeacher => {
+      if (isTeacher) {
+        this.store.dispatch(groupsActions.loadGroups());
+      } else {
+        this.store.dispatch(groupsActions.loadStudentGroup());
+      }
+    });
   }
 
   private emptyListener() {}
