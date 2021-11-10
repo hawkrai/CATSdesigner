@@ -123,7 +123,7 @@ export class SubdivisionComponent implements OnInit {
   }
 
   help: Help = {
-    message: this.translate.transform ('text.help.settings','Выберите группу, отметьте нужных студентов и выберите подгруппу, в которую необходимо их отнести'),
+    message: this.translate.transform ('text.help.settings','Выберите группу, отметьте студентов и переместите их в нужную подгруппу.'),
     action: this.translate.transform ('button.understand','Понятно')
   };
 
