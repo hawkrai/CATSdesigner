@@ -100,6 +100,11 @@ namespace ChatServer.Hubs
             await Clients.GroupExcept(message.ChatId.ToString(), Context.ConnectionId).SendAsync("GetMessage", msg);
         }
 
+        public async Task SendCallRequest(int userId, int chatId)
+        {
+             
+        }
+
         public async Task DeleteChatMsg(string msgId, string chatId)
         {
             var id = int.Parse(msgId);
