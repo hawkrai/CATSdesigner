@@ -9,12 +9,12 @@
     <ng-container matColumnDef="file">
       <th mat-header-cell *matHeaderCellDef>{{'text.attachments' | translate:'Файл'}}</th>
       <td mat-cell *matCellDef="let element">
-        <a mat-button color="primary" style="font-weight: normal;"
+        <button class="link"
            *ngFor="let attachment of element.Attachments"
            (click)="downloadFile(attachment)"
         >
           {{attachment.Name}}
-        </a>
+        </button>
       </td>
     </ng-container>
 
