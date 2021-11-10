@@ -5,7 +5,7 @@ import * as modules from './modules.json';
 
 const app = express();
 const port = 3000;
-const targetDomain = "http://localhost:2021";
+const targetDomain = "https://educats.by";
 
 app.use(express.static(path.resolve('d:/CatsProject/apps')));
 
@@ -116,7 +116,7 @@ const proxyElasticSearchOptions = {
 }
 
 const proxyChatOptions = { 
-  target: "https://localhost:4200/", 
+  target: "https://localhost:44303/", 
   changeOrigin: true,
   pathRewrite: {
     '^/catService': '/ChatApi', // rewrite path
