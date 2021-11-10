@@ -5,6 +5,9 @@ import { DataService } from './dataService';
 import { ContactService } from './contactService';
 import { MessageCto } from '../models/dto/messageCto';
 import { environment } from 'src/environments/environment';
+
+const SendCallRequest = "SendCallRequest";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +25,7 @@ export class SignalRService {
   public connect()
   {
     this.hubConnection = new HubConnectionBuilder()
-                            .withUrl('/chatSignalR')
+                            .withUrl('https://localhost:44303/chat/')
                             .withAutomaticReconnect()
                             .build();
     this.hubConnection
@@ -55,7 +58,7 @@ export class SignalRService {
 
     this.hubConnection.on('NewChat',(firstId: any, secondId: any,chatId:any)=>{
       this.contactService.updateChats(firstId,secondId,chatId);
-    }) 
+    })
   }
 
   public addChat(firstId: number, secondId: number, chatId:number)
@@ -81,6 +84,10 @@ export class SignalRService {
 
   public sendGroupMessage(msg: MessageCto) {
     return this.hubConnection.invoke("SendGroupMessage", this.user.id, this.user.role, JSON.stringify(msg))
+  }
+
+  public sendCallRequest(chatId: number){
+    return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
 
   public SendGroupFiles(files) {
@@ -110,7 +117,7 @@ export class SignalRService {
     if (this.dataService.isGroupChat)
       return this.hubConnection.invoke("DeleteGroupMsg", id.toString(), this.dataService.activChatId.toString());
     else
-      return this.hubConnection.invoke("DeleteChatMsg", id.toString(), this.dataService.activChatId.toString());    
+      return this.hubConnection.invoke("DeleteChatMsg", id.toString(), this.dataService.activChatId.toString());
     }
 
   public join(userId: number, role: string) {
