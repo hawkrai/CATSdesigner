@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AttachedFile } from '../models/file/attached-file.model';
 import { IAppState } from '../store/state/app.state';
@@ -8,7 +8,7 @@ import { Attachment } from '../models/file/attachment.model';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 export class BaseFileManagementComponent {
-    private files$ = new BehaviorSubject<AttachedFile[]>([]);
+    protected files$ = new BehaviorSubject<AttachedFile[]>([]);
     public attachments: Attachment[] = [];
     constructor(
         protected store: Store<IAppState>,
@@ -17,6 +17,7 @@ export class BaseFileManagementComponent {
 
     }
 
+    initAttachments: AttachedFile[] = [];
     setAttachments(attachments: Attachment[]): void {
         this.attachments = attachments;
     }
@@ -30,6 +31,7 @@ export class BaseFileManagementComponent {
                 take(1)
             ).subscribe(files => {
                 this.files$.next(files);
+                this.initAttachments = files;
             });
         }
     }
@@ -48,13 +50,13 @@ export class BaseFileManagementComponent {
     }
 
     deleteFile(file: AttachedFile) {
-        this.filesService.deleteFile(file.DeleteUrl).pipe(
-            take(1)
-        ).subscribe(() => {
-            const files = this.files$.value;
-            this.files$.next(files.filter(f => f.GuidFileName !== file.GuidFileName))
-        });
+        this.deletedFiles.push(file);
+        const files = this.files$.value;
+        this.files$.next(files.filter(f => f.GuidFileName !== file.GuidFileName))
     }
+
+
+    private deletedFiles: AttachedFile[] = [];
 
     observeAttachments(filesArray: FormArray): void {
         this.getFiles().subscribe(files => {
@@ -75,4 +77,13 @@ export class BaseFileManagementComponent {
     setFiles(files: AttachedFile[]): void {
         this.files$.next(files);
     }
+
+    removeFiles(files: AttachedFile[]): Observable<any> {
+       return from(files.map(file => this.filesService.deleteFile(file.DeleteUrl)));
+    }
+
+    removeDeletedFiles() {
+        return this.removeFiles(this.deletedFiles);
+    }
+
 }
