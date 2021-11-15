@@ -18,6 +18,7 @@ import { MatetialModule } from './shared/matetial/matetial.module';
 import { CoreModule } from './core/core.module';
 import { SubjectsNavComponent } from './layout/subjects-nav/subjects-nav.component';
 import { LayoutService } from './layout/layout.service';
+import { VideoChatModule } from 'src/app/modules/video-chat/video-chat.module';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { ProgressControlComponent } from './progress-control/progress-control.component';
@@ -75,7 +76,7 @@ import { OrderByPipe } from './pipe/order-by.pipe';
     OrderByPipe
   ],
   imports: [
-    BrowserModule,
+  BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
@@ -84,6 +85,7 @@ import { OrderByPipe } from './pipe/order-by.pipe';
     MatButtonModule,
     FormsModule,
     SharedModule,
+    VideoChatModule,
     MatTableModule,
     MatDialogModule,
     MatInputModule,
