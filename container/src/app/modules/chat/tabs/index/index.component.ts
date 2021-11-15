@@ -34,7 +34,7 @@ export class IndexComponent implements OnInit {
   editedMsg: Message;
   unreadChat:number=0;
   unreadGroup:number=0;
-  
+
   constructor(private cdr: ChangeDetectorRef, private clipboardApi: ClipboardService, private snackBar: MatSnackBar, private contactService: ContactService, private router: Router, public dialog: MatDialog, public signalRService: SignalRService, public dataService: DataService, public fileService: FileService) { }
 
   @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent;
@@ -181,6 +181,9 @@ export class IndexComponent implements OnInit {
     document.getElementById('chat-room').classList.remove('user-chat-show');
   }
 
+  startCall() {
+    this.signalRService.sendCallRequest(this.dataService.activChatId)
+  }
   public openSnackBar(message: string, action?: string) {
     this.snackBar.open(message, action, {
       duration: 2000,

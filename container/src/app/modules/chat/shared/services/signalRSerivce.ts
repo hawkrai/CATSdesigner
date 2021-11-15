@@ -6,7 +6,11 @@ import { ContactService } from './contactService';
 import { MessageCto } from '../models/dto/messageCto';
 import { environment } from 'src/environments/environment';
 
+//api methods
 const SendCallRequest = "SendCallRequest";
+
+//handlers
+const IncomeCall = "HandleIncomeCall";
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +62,10 @@ export class SignalRService {
 
     this.hubConnection.on('NewChat',(firstId: any, secondId: any,chatId:any)=>{
       this.contactService.updateChats(firstId,secondId,chatId);
+    })
+
+    this.hubConnection.on(IncomeCall, (chatId:any) => {
+      console.log("icomming call from chat")
     })
   }
 
