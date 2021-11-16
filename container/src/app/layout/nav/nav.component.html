@@ -1,5 +1,4 @@
 <mat-toolbar class="mat-elevation-z6 main-toolbar first" color="primary">
-  <app-video-handler></app-video-handler>
   <a href="/" class="nav-link home" [matTooltip]="'Care about the students'" [ngStyle]="{ 'width': logoWidth }">
     <img src="/assets/images/nav-logo.png" width="150" height="40" class="ng-star-inserted">
   </a>
@@ -143,6 +142,7 @@
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
   </div>
+  <app-video-handler style="position: absolute;"></app-video-handler>
   <div class="second-line">
     <div class="menu-subject">
       <div *ngIf="!isAdmin">
