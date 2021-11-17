@@ -1,1 +1,3 @@
-<div ngDraggable ngResizable [rzHandles]="'n,e,s,w,se,sw,ne,nw'">Drag me!</div>
+<div ngDraggable ngResizable [rzHandles]="'n,e,s,w,se,sw,ne,nw'" zIndex="'100000'">
+  <div *ngIf="IsIncomingCall">incoming Call</div>
+</div>

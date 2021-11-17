@@ -8,12 +8,12 @@ import { AngularDraggableModule } from 'ngx-draggable-resize';
 @NgModule({
   declarations: [VideoHandlerComponent],
   imports: [
-  CommonModule,
+CommonModule,
   ChatModule,
   AngularDraggableModule
   ],
   exports: [
-    VideoHandlerComponent,
+    VideoHandlerComponent
   ]
 })
 export class VideoChatModule { }

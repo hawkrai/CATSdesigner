@@ -5,6 +5,7 @@ import { DataService } from './dataService';
 import { ContactService } from './contactService';
 import { MessageCto } from '../models/dto/messageCto';
 import { environment } from 'src/environments/environment';
+import { VideoChatService } from './../../../video-chat/services/video-chat.service';
 
 //api methods
 const SendCallRequest = "SendCallRequest";
@@ -21,6 +22,7 @@ export class SignalRService {
 
   constructor(
     private dataService: DataService,
+    private videoChatService: VideoChatService,
     private contactService: ContactService) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.connect();
@@ -65,6 +67,7 @@ export class SignalRService {
     })
 
     this.hubConnection.on(IncomeCall, (chatId:any) => {
+      this.videoChatService.NotifyIncomeCall(chatId);
       console.log("icomming call from chat")
     })
   }
