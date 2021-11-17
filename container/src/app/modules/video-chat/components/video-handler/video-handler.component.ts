@@ -10,11 +10,14 @@ import { VideoChatService } from './../../services/video-chat.service';
 export class VideoHandlerComponent implements OnInit {
 
   public IsIncomingCall: boolean = false;
+  public IsActiveCall: boolean = false;
+  public IsMicroActive: boolean = false;
+  public isVideoActive: boolean = false;
 
   constructor(private videoChatService:VideoChatService) {
     this.videoChatService.isActiveCall.subscribe(
-      () => {
-
+      (value: boolean) => {
+        this.IsActiveCall = value;
       }
     );
     this.videoChatService.isIncomingCall.subscribe(
@@ -27,4 +30,22 @@ export class VideoHandlerComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  answerCall(){
+    console.log("The call was answered");
+    this.IsIncomingCall = false;
+    this.IsActiveCall = true;
+  }
+
+  endCall(){
+    console.log("The call was ended");
+    this.IsActiveCall = false;
+    this.IsIncomingCall = false;
+  }
+
+  switchMicro(){
+  }
+
+  switchVideo(){
+
+  }
 }

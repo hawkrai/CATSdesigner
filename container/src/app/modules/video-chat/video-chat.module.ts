@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChatModule } from './../chat/chat.module';
 import { VideoHandlerComponent } from './components/video-handler/video-handler.component';
 import { AngularDraggableModule } from 'ngx-draggable-resize';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -10,10 +11,11 @@ import { AngularDraggableModule } from 'ngx-draggable-resize';
   imports: [
 CommonModule,
   ChatModule,
-  AngularDraggableModule
+  AngularDraggableModule,
+  MatIconModule,
   ],
   exports: [
-    VideoHandlerComponent
+    VideoHandlerComponent,
   ]
 })
 export class VideoChatModule { }
