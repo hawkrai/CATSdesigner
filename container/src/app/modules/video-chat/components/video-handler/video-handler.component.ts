@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SignalRService } from './../../../chat/shared/services/signalRSerivce';
 
 @Component({
   selector: 'app-video-handler',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class VideoHandlerComponent implements OnInit {
 
-  constructor() { }
+  constructor(signalService:SignalRService) { }
 
   ngOnInit(): void {
   }
