@@ -20,10 +20,13 @@ export class VideoChatService {
       return;
     }
     this.isIncomingCall.next(true);
-    this.toastrService.addWarningFlashMessage("asdfasdfasd");
   }
 
   public EndCallNotification(chatId: any){
     this.isIncomingCall.next(true);
+  }
+
+  public SetActiveCall(chatId: any){
+    this.isActiveCall.next(true);
   }
 }

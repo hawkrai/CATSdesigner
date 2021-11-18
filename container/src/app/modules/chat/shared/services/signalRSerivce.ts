@@ -98,6 +98,7 @@ export class SignalRService {
   }
 
   public sendCallRequest(chatId: number){
+    this.videoChatService.SetActiveCall(chatId)
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
 

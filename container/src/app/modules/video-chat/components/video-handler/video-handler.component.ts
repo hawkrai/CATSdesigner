@@ -32,14 +32,14 @@ export class VideoHandlerComponent implements OnInit {
 
   answerCall(){
     console.log("The call was answered");
-    this.IsIncomingCall = false;
-    this.IsActiveCall = true;
+    this.videoChatService.isActiveCall.next(true);
+    this.videoChatService.isIncomingCall.next(false);
   }
 
   endCall(){
     console.log("The call was ended");
-    this.IsActiveCall = false;
-    this.IsIncomingCall = false;
+    this.videoChatService.isActiveCall.next(false);
+    this.videoChatService.isIncomingCall.next(false);
   }
 
   switchMicro(){
