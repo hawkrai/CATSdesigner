@@ -9,7 +9,7 @@ import { VideoChatService } from './../../../video-chat/services/video-chat.serv
 
 //api methods
 const SendCallRequest = "SendCallRequest";
-
+const DisconnectFromChat = "DisconnectFromChat"
 //handlers
 const IncomeCall = "HandleIncomeCall";
 
@@ -102,6 +102,10 @@ export class SignalRService {
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
 
+  public disconnectFromChat(chatId: any,){
+
+    return this.hubConnection.invoke(DisconnectFromChat, chatId, this.user.id);
+  }
   public SendGroupFiles(files) {
     const k = 1024;
     const dm = 2;
