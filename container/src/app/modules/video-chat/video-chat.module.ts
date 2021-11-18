@@ -4,10 +4,11 @@ import { ChatModule } from './../chat/chat.module';
 import { VideoHandlerComponent } from './components/video-handler/video-handler.component';
 import { AngularDraggableModule } from 'ngx-draggable-resize';
 import { MatIconModule } from '@angular/material/icon';
+import { StreamHandlerComponent } from './components/stream-handler/stream-handler.component';
 
 
 @NgModule({
-  declarations: [VideoHandlerComponent],
+  declarations: [VideoHandlerComponent, StreamHandlerComponent],
   imports: [
 CommonModule,
   ChatModule,

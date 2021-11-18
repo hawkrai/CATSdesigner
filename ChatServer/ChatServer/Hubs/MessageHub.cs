@@ -39,7 +39,9 @@ namespace ChatServer.Hubs
         private readonly IUserChatMessageRepository _userChatMessageRepository;
         private readonly IChatMessageService _chatMessageService;
 
-        public MessageHub(ChatService сhannelService, IChatMessageService chatMessageService, IGroupMessageService groupMessageService, IRepositoryManager repository, IUserService userService, IMessagesService messagesService, IMapper mapper) : base()
+        public MessageHub(ChatService сhannelService, IChatMessageService chatMessageService,
+            IGroupMessageService groupMessageService, IRepositoryManager repository, IUserService userService,
+            IMessagesService messagesService, IMapper mapper) : base()
         {
             _chatMessageService = chatMessageService;
             _userService = userService;
@@ -81,8 +83,8 @@ namespace ChatServer.Hubs
                         await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString() + "G");
                     }
                 }
-
             }
+
             foreach (var item in channels)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, item.Id.ToString());
@@ -98,12 +100,6 @@ namespace ChatServer.Hubs
 
             msg.Align = null;
             await Clients.GroupExcept(message.ChatId.ToString(), Context.ConnectionId).SendAsync("GetMessage", msg);
-        }
-
-        public async Task SendCallRequest(string userId, int chatId)
-        {
-            await Clients.GroupExcept(chatId.ToString(), Context.ConnectionId)
-                .SendAsync("HandleIncomeCall", chatId);
         }
 
         public async Task DeleteChatMsg(string msgId, string chatId)
@@ -143,7 +139,8 @@ namespace ChatServer.Hubs
             {
                 await Clients.Caller.SendAsync("GetMessage", msg);
                 msg.Align = null;
-                await Clients.GroupExcept(messageCto.ChatId.ToString() + "G", Context.ConnectionId).SendAsync("GetMessage", msg);
+                await Clients.GroupExcept(messageCto.ChatId.ToString() + "G", Context.ConnectionId)
+                    .SendAsync("GetMessage", msg);
             }
             catch
             {
@@ -187,7 +184,72 @@ namespace ChatServer.Hubs
             return base.OnConnectedAsync();
         }
 
+        #region  video chat methods 
+
+        public async Task SendCallRequest(string userId, int chatId)
+        {
+            await Clients.GroupExcept(chatId.ToString(), Context.ConnectionId)
+                .SendAsync("HandleIncomeCall", chatId);
+        }
+
+        public async Task DisconnectFromChat(string userId, int chatId)
+        {
+            await Clients.GroupExcept(chatId.ToString(), Context.ConnectionId)
+                .SendAsync("HandleDisconnection", chatId, userId);
+        }
+
+        public async Task SetVoiceChatConnection(int chatId, string userId, object details)
+        {
+            await Clients
+                .GroupExcept(
+                    chatId.ToString(),
+                    Context.ConnectionId
+                )
+                .SendAsync(
+                    "AddNewcomer",
+                    Context.ConnectionId);
+        }
+
+        public async Task SendOffer(object offer, string chatId, string userId)
+        {
+            await Clients
+                .GroupExcept(
+                    chatId.ToString(),
+                    Context.ConnectionId
+                ).SendAsync(
+                    "RegisterOffer",
+                    offer,
+                    userId
+                );
+        }
+
+        public async Task SendAnswer(object answer, string chatId, string userId)
+        {
+            await Clients.GroupExcept(
+                    chatId.ToString(),
+                    Context.ConnectionId
+                )
+                .SendAsync(
+                    "RegisterAnswer",
+                    answer,
+                    userId
+                );
+        }
+
+        public async Task FireCandidate(object candidate, string chatId, string userId)
+        {
+            await Clients.GroupExcept(
+                    chatId.ToString(),
+                    Context.ConnectionId
+                )
+                .SendAsync(
+                    "HandleNewCandidate",
+                    candidate,
+                    userId
+                );
+        }
+
+        #endregion
+
     }
-
-
 }
