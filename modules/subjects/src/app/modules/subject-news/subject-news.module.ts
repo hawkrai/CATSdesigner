@@ -6,6 +6,7 @@ import {MatModule} from "../../mat.module";
 import {NewsPopoverComponent} from './news-popover/news-popover.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
+import { SubjectNewsRoutingModule } from './subject-news-routing.module';
 
 @NgModule({
   declarations: [SubjectNewsComponent, NewsPopoverComponent],
@@ -15,7 +16,8 @@ import {CKEditorModule} from '@ckeditor/ckeditor5-angular';
     FormsModule,
     CKEditorModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SubjectNewsRoutingModule
   ],
   entryComponents: [
     NewsPopoverComponent

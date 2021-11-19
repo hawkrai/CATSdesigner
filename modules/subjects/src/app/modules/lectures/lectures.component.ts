@@ -11,6 +11,7 @@ import {IAppState} from '../../store/state/app.state';
 import { Group } from 'src/app/models/group.model';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { TranslatePipe } from 'educats-translate';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -20,7 +21,6 @@ import { TranslatePipe } from 'educats-translate';
 })
 export class LecturesComponent implements OnInit, OnDestroy {
 
-  selectedTab = 0;
   state$: Observable<{ 
     isTeacher: boolean, 
     subjectId: number, 
@@ -28,30 +28,29 @@ export class LecturesComponent implements OnInit, OnDestroy {
     groupId: number,
     group: Group
    }>;
-  tabs: string[] = [];
-  public mobileMatcher: MediaQueryList;
+
+   tabs: { tab: string, route: string }[] = [];
+   public mobileMatcher: MediaQueryList;
 
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
-    private mediaMatcher: MediaMatcher
+    private mediaMatcher: MediaMatcher,
+    private router: Router,
+    private route: ActivatedRoute
     ) {
 
   }
   ngOnDestroy(): void {
-    this.store.dispatch(groupsActions.resetGroups());
     this.mobileMatcher.removeEventListener('change', this.emptyListener);
-  }
-
-  selectTab(tab: number): void {
-    this.selectedTab = tab;
   }
 
   ngOnInit() {
     this.tabs = [
-      this.translate.transform('text.lectures.plural', 'Лекции'), 
-      this.translate.transform('text.subjects.lectures.attending', 'Посещение лекций')
+      { tab: this.translate.transform('text.lectures.plural', 'Лекции'), route: 'list' },
+      { tab: this.translate.transform('text.subjects.lectures.attending', 'Посещение лекций'), route: 'visit-statistics' },
     ];
+
     const isTeacher$ = this.store.select(subjectSelectors.isTeacher);
     const subjectId$ = this.store.select(subjectSelectors.getSubjectId);
     const groups$ = this.store.select(groupsSelectors.getGroups);
@@ -62,23 +61,13 @@ export class LecturesComponent implements OnInit, OnDestroy {
     );
     this.mobileMatcher = this.mediaMatcher.matchMedia('(max-width: 400px)');
     this.mobileMatcher.addEventListener('change', this.emptyListener);
-
-    this.store.select(subjectSelectors.isTeacher).pipe(
-      first()
-    ).subscribe(isTeacher => {
-      if (isTeacher) {
-        this.store.dispatch(groupsActions.loadGroups());
-      } else {
-        this.store.dispatch(groupsActions.loadStudentGroup());
-      }
-    });
   }
 
   private emptyListener() {}
 
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
-      this.store.dispatch(groupsActions.setCurrentGroupById({ id: event.source.value }));
+      this.router.navigate([], { relativeTo: this.route, queryParams: { groupId: event.source.value }, queryParamsHandling: 'merge' });
     }
   }
 

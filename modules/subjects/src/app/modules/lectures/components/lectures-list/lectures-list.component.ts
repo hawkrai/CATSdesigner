@@ -1,8 +1,7 @@
-import { Observable } from 'rxjs';
 import { AfterViewChecked } from '@angular/core';
 import { SubSink } from 'subsink';
 import { MatTable } from '@angular/material';
-import { ChangeDetectorRef, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, OnDestroy, ViewChild } from '@angular/core';
 import {Component, Input, OnInit} from '@angular/core';
 import { Store } from '@ngrx/store';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -17,6 +16,7 @@ import {Attachment} from "../../../../models/file/attachment.model";
 import {DialogData} from '../../../../models/dialog-data.model';
 import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import * as lecturesSelectors from '../../.././../store/selectors/lectures.selectors';
+import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { DialogService } from './../../../../services/dialog.service';
 import * as filesActions from '../../../../store/actions/files.actions';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -29,11 +29,9 @@ import { TranslatePipe } from 'educats-translate';
   styleUrls: ['./lectures-list.component.less']
 })
 export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecked {
-  @Input() isTeacher: boolean;
-  @Input() subjectId: number;
   private subs = new SubSink();
   @ViewChild('table', { static: false }) table: MatTable<Lecture>;
-
+  isTeacher: boolean;
   public tabletMatcher: MediaQueryList;
   public lectures: Lecture[];
   searchValue: string = '';
@@ -51,7 +49,11 @@ export class LecturesListComponent implements OnInit, OnDestroy, AfterViewChecke
     this.store.dispatch(lecturesActions.loadLectures());
     this.subs.add(this.store.select(lecturesSelectors.getLectures).subscribe(lectures => {
       this.lectures = [...lectures];
-    }));
+    }),
+      this.store.select(subjectSelectors.isTeacher).subscribe(isTeacher => {
+        this.isTeacher = isTeacher;
+      })
+    );
     this.addMediaMatchers();
   }
 

@@ -1,8 +1,6 @@
-import { first } from 'rxjs/operators';
 import { DialogService } from './../../services/dialog.service';
 import { Observable, combineLatest } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {MatOptionSelectionChange} from "@angular/material/core";
+import { Component, OnInit } from '@angular/core';
 import {Store} from '@ngrx/store';
 import { map } from 'rxjs/operators';
 
@@ -15,20 +13,21 @@ import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-pop
 
 import * as labsActions from '../../store/actions/labs.actions';
 import * as labsSelectors from '../../store/selectors/labs.selectors';
-import { MatSlideToggleChange } from '@angular/material';
+import { MatOptionSelectionChange, MatSlideToggleChange } from '@angular/material';
 import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model';
 import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model';
 import { Help } from 'src/app/models/help.model';
 import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
 import { TranslatePipe } from 'educats-translate';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface State {
   groups: Group[];
-  group: Group;
-  isTeacher: boolean;
   subjectId: number;
   hasJobProtections: HasJobProtection[];
   detachedGroup: boolean;
+  isTeacher: boolean;
+  group: Group;
 }
 
 @Component({
@@ -36,51 +35,37 @@ interface State {
   templateUrl: './labs.component.html',
   styleUrls: ['./labs.component.less']
 })
-export class LabsComponent implements OnInit, OnDestroy {
+export class LabsComponent implements OnInit {
 
-  tabs: string[] = [];
-  selectedTab = 0;
+  tabs: { tab: string, route: string }[] = [];
   public state$: Observable<State>;
 
   constructor(
     private dialogService: DialogService,
     private translate: TranslatePipe,
-    private store: Store<IAppState>) {
-  }
-  ngOnDestroy(): void {
-    this.store.dispatch(groupsActions.resetGroups());
-  }
+    private store: Store<IAppState>,
+    public router: Router,
+    private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.tabs = [
-      this.translate.transform('text.subjects.labs.plural', 'Лабораторные работы'),
-      this.translate.transform('schedule.protection', 'График защиты'),
-      this.translate.transform('visit.statistics', 'Статистика посещения'),
-      this.translate.transform('results', 'Результаты'),
-      this.translate.transform('works.protection', 'Защита работ')
+      { tab: this.translate.transform('text.subjects.labs.plural', 'Лабораторные работы'), route: 'list' },
+      { tab: this.translate.transform('schedule.protection', 'График защиты'), route: 'schedule' },
+      { tab: this.translate.transform('visit.statistics', 'Статистика посещения'), route: 'visit-statistics' },
+      { tab: this.translate.transform('results', 'Результаты'), route: 'results' },
+      { tab: this.translate.transform('works.protection', 'Защита работ'), route: 'job-protection' }
     ];
+
     this.state$ = combineLatest(
       this.store.select(groupsSelectors.getGroups),
-      this.store.select(groupsSelectors.getCurrentGroup),
-      this.store.select(subjectSelectors.isTeacher),
       this.store.select(subjectSelectors.getSubjectId),
       this.store.select(labsSelectors.hasJobProtections),
-      this.store.select(groupsSelectors.isActiveGroup)
+      this.store.select(groupsSelectors.isActiveGroup),
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(groupsSelectors.getCurrentGroup)
       ).pipe(
-        map(([groups, group, isTeacher, subjectId, hasJobProtections, isActive]) => ({ groups, group, isTeacher, subjectId, hasJobProtections, detachedGroup: !isActive })),
+        map(([groups, subjectId, hasJobProtections, isActive, isTeacher, group]) => ({ groups, subjectId, hasJobProtections, detachedGroup: !isActive, isTeacher, group })),
       );
-
-  
-    this.store.select(subjectSelectors.isTeacher).pipe(
-      first()
-    ).subscribe(isTeacher => {
-      if (isTeacher) {
-        this.store.dispatch(groupsActions.loadGroups());
-        this.store.dispatch(labsActions.checkJobProtections());
-      } else {
-        this.store.dispatch(groupsActions.loadStudentGroup());
-      }
-    });
 
   }
 
@@ -95,9 +80,10 @@ export class LabsComponent implements OnInit, OnDestroy {
 
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
-      this.store.dispatch(groupsActions.setCurrentGroupById({ id: event.source.value }));
+      this.router.navigate([], { relativeTo: this.route, queryParams: { groupId: event.source.value }, queryParamsHandling: 'merge' });
     }
   }
+
 
   downloadAll() {
     this.store.dispatch(labsActions.getLabsAsZip());

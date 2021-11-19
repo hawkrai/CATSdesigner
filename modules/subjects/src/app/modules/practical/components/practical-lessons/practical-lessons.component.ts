@@ -1,8 +1,7 @@
 import { DialogService } from './../../../../services/dialog.service';
-import { Component, Input, OnInit, OnDestroy, SimpleChanges, AfterViewChecked, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, ChangeDetectorRef, ViewChild } from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Store} from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
 import { SubSink } from 'subsink';
 
@@ -10,6 +9,7 @@ import * as practicalsActions from '../../../../store/actions/practicals.actions
 import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
 import * as filesActions from '../../../../store/actions/files.actions';
 import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
+import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import {IAppState} from '../../../../store/state/app.state';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {PracticalLessonPopoverComponent} from '../practical-lesson-popover/practical-lesson-popover.component';
@@ -27,9 +27,8 @@ import { TranslatePipe } from 'educats-translate';
 })
 export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
-  @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Practical>;
-
+  isTeacher: boolean;
   public practicals: Practical[];
   private subs = new SubSink();
 
@@ -43,7 +42,11 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     this.store.dispatch(practicalsActions.loadPracticals());
     this.subs.add(this.store.select(practicalsSelectors.selectPracticals).subscribe(practicals => {
       this.practicals = [...practicals]
-    }));
+    }),
+      this.store.select(subjectSelectors.isTeacher).subscribe(isTeacher => {
+        this.isTeacher = isTeacher;
+      })
+    );
   }
   
 

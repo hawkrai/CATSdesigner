@@ -1,23 +1,23 @@
 import { DialogService } from './../../../../services/dialog.service';
-import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
-import {Store} from '@ngrx/store';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { Store } from '@ngrx/store';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SubSink } from 'subsink';
-import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, AfterViewChecked, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, AfterViewChecked, ViewChild } from '@angular/core';
 import { filter } from 'rxjs/operators';
 
-import {Lab} from "../../../../models/lab.model";
-import {IAppState} from '../../../../store/state/app.state';
-import {DialogData} from '../../../../models/dialog-data.model';
-import {LabWorkPopoverComponent} from './lab-work-popover/lab-work-popover.component';
-import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
-import {Attachment} from '../../../../models/file/attachment.model';
-import {FileDownloadPopoverComponent} from '../../../../shared/file-download-popover/file-download-popover.component';
+import { Lab } from "../../../../models/lab.model";
+import { IAppState } from '../../../../store/state/app.state';
+import { DialogData } from '../../../../models/dialog-data.model';
+import { LabWorkPopoverComponent } from './lab-work-popover/lab-work-popover.component';
+import { DeletePopoverComponent } from '../../../../shared/delete-popover/delete-popover.component';
+import { Attachment } from '../../../../models/file/attachment.model';
+import { FileDownloadPopoverComponent } from '../../../../shared/file-download-popover/file-download-popover.component';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import { CreateLessonEntity } from './../../../../models/form/create-lesson-entity.model';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as filesActions from '../../../../store/actions/files.actions';
+import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { TranslatePipe } from 'educats-translate';
 
 @Component({
@@ -27,7 +27,7 @@ import { TranslatePipe } from 'educats-translate';
 })
 export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
-  @Input() isTeacher: boolean;
+  isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Lab>;
   private subs = new SubSink();
   public labs: Lab[];
@@ -41,9 +41,14 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   ngOnInit() {
     this.store.dispatch(labsActions.loadLabs());
-    this.subs.add(this.store.select(labsSelectors.getLabs).subscribe(labs => {
-      this.labs = [...labs];
-    }));
+    this.subs.add(
+      this.store.select(labsSelectors.getLabs).subscribe(labs => {
+        this.labs = [...labs];
+      }),
+      this.store.select(subjectSelectors.isTeacher).subscribe(isTeacher => {
+        this.isTeacher = isTeacher
+      })
+    );
   }
 
   getDisplayedColumns(): string[] {
@@ -66,9 +71,9 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   constructorLab(labsCount: number, lab: Lab): void {
     const newLab = this.getLab(labsCount, lab);
     const dialogData: DialogData = {
-      title: lab ? 
-      this.translate.transform('text.subjects.labs.editing', 'Редактирование лабораторной работы'):
-      this.translate.transform('text.subjects.labs.adding', 'Добавление лабораторной работы'),
+      title: lab ?
+        this.translate.transform('text.subjects.labs.editing', 'Редактирование лабораторной работы') :
+        this.translate.transform('text.subjects.labs.adding', 'Добавление лабораторной работы'),
       buttonText: this.translate.transform('button.save', 'Сохранить'),
       model: newLab
     };

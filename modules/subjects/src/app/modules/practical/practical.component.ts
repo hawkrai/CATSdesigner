@@ -1,7 +1,7 @@
-import { first, map } from 'rxjs/operators';
-import { Observable, combineLatest, VirtualTimeScheduler } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
 import {Store} from '@ngrx/store';
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 
 import {Group} from '../../models/group.model';
@@ -14,6 +14,7 @@ import { Help } from 'src/app/models/help.model';
 import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
 import { DialogService } from 'src/app/services/dialog.service';
 import { TranslatePipe } from 'educats-translate';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface State {
   groups: Group[];
@@ -27,57 +28,44 @@ interface State {
   templateUrl: './practical.component.html',
   styleUrls: ['./practical.component.less']
 })
-export class PracticalComponent implements OnInit, OnDestroy {
+export class PracticalComponent implements OnInit {
 
-  tabs: string[] = []
+  tabs: { tab: string, route: string }[] = [];
 
   state$: Observable<State>;
 
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    public router: Router,
+    private route: ActivatedRoute
     ) { }
-  selectedTab = 0;
-
-  
-  ngOnDestroy(): void {
-    this.store.dispatch(groupActions.resetGroups());
-  }
 
   ngOnInit(): void {
+
     this.tabs = [
-      this.translate.transform('text.subjects.practicals.plural', 'Практические занятия'), 
-      this.translate.transform('schedule.protection', 'График защиты'), 
-      this.translate.transform('visit.statistics', 'Статистика посещения'),
-      this.translate.transform('results', 'Результаты')
+      { tab: this.translate.transform('text.subjects.practicals.plural', 'Практические занятия'), route: 'list' },
+      { tab: this.translate.transform('schedule.protection', 'График защиты'), route: 'schedule' },
+      { tab: this.translate.transform('visit.statistics', 'Статистика посещения'), route: 'visit-statistics' },
+      { tab: this.translate.transform('results', 'Результаты'), route: 'results' }
     ];
+
     this.state$ = combineLatest(
       this.store.select(groupSelectors.getGroups), 
       this.store.select(groupSelectors.getCurrentGroup), 
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(groupSelectors.isActiveGroup))
     .pipe(map(([groups, group, isTeacher, isActive]) => ({ groups, group, isTeacher, detachedGroup: !isActive })));
-
-    this.store.select(subjectSelectors.isTeacher).pipe(
-      first()
-    ).subscribe(isTeacher => {
-      if (isTeacher) {
-        this.store.dispatch(groupActions.loadGroups());
-      } else {
-        this.store.dispatch(groupActions.loadStudentGroup());
-      }
-    });
   }
 
   groupStatusChange(event) {
     this.store.dispatch(groupActions.setActiveState({ isActive: !event.checked }));
-
   }
 
   selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
-      this.store.dispatch(groupActions.setCurrentGroupById({ id: event.source.value }));
+      this.router.navigate([], { relativeTo: this.route, queryParams: { groupId: event.source.value }, queryParamsHandling: 'merge' });
     }
   }
 

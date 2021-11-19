@@ -1,6 +1,6 @@
 <div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
     <div class="protection-schedule-component__body">
-      <div class="protection-schedule-component__actions" *ngIf="isTeacher">
+      <div class="protection-schedule-component__actions" *ngIf="state.isTeacher">
         <button mat-raised-button color="primary" (click)="settingVisitDate()">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>
       </div>
       <div class="protection-schedule-component-table">

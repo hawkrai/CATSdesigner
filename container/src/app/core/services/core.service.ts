@@ -64,6 +64,10 @@ export class CoreService {
         this.confirmationService.confirmationSubject.next(+message.value);
       }
 
+      if (message.channel === 'Location') {
+        this.location.go(message.value);
+      }
+
       if (message.channel === 'SubjectId') {
         this.subjectIdSub.next(+message.value);
       }  

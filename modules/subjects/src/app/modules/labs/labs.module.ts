@@ -20,6 +20,7 @@ import { VisitDateLabsPopoverComponent } from './components/protection-schedule/
 import { StudentJobProtectionComponent } from './components/job-protection/student-job-protection/student-job-protection.component';
 import { TeacherJobProtectionComponent } from './components/job-protection/teacher-job-protection/teacher-job-protection.component';
 import { JobProtectionContentComponent } from './components/job-protection/job-protection-content/job-protection-content.component';
+import { LabsRoutingModule } from './labs-routing.module';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { JobProtectionContentComponent } from './components/job-protection/job-p
     ReactiveFormsModule,
     FormsModule,
     SharedModule,
-    DragDropModule
+    DragDropModule,
+    LabsRoutingModule
   ],
 })
 export class LabsModule { }

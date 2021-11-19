@@ -57,14 +57,15 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.activeRouter.fragment.subscribe((fragment: string) => {
       let type = this.menuService.getModuleTypeByItem(fragment);
-      if(type){
+      if (type){
         this.clickedItem = fragment
       } else {
         type = this.menuService.getFirstModuleType();
         this.clickedItem = this.menuService.getSubjectInfo(type).item;
+        fragment = this.clickedItem;
       }
       this.navigate(this.clickedItem);
-      this.initState(this.menuService.getSubjectInfo(type).fragment);
+      this.initState(fragment);
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     });
 

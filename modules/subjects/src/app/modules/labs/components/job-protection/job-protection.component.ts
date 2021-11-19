@@ -1,6 +1,6 @@
 import { DialogService } from 'src/app/services/dialog.service';
 import { SubSink } from 'subsink';
-import { Component, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
@@ -12,29 +12,22 @@ import { UserLabFile } from 'src/app/models/user-lab-file.model';
 
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as subjectSelectors from '../../.././../store/selectors/subject.selector';
+import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
 import { TranslatePipe } from 'educats-translate';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-job-protection',
   templateUrl: './job-protection.component.html',
   styleUrls: ['./job-protection.component.less']
 })
-export class JobProtectionComponent implements OnChanges, OnDestroy {
-
-  @Input() isTeacher: boolean;
-  @Input() groupId: number;
+export class JobProtectionComponent implements OnDestroy {
 
   private subs = new SubSink();
+  isTeacher: boolean;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.groupId && changes.groupId.currentValue) {
-      if (this.isTeacher) {
-        this.store.dispatch(labsActions.loadGroupJobProtection());
-      }
-    }
-  }
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
@@ -43,12 +36,22 @@ export class JobProtectionComponent implements OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.subs.add(
+      combineLatest([
+        this.store.select(groupsSelectors.getCurrentGroup),
+        this.store.select(subjectSelectors.isTeacher)
+      ]).subscribe(([group, isTeacher]) => {
+        this.isTeacher = isTeacher;
+        if (group && isTeacher) {
+          this.store.dispatch(labsActions.loadGroupJobProtection());
+        }
+      }
+    ));
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
-
 
   hasNewLabs(student: StudentMark): boolean {
     return student.FileLabs.some(this.isNewFile);
