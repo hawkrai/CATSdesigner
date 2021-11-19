@@ -1,6 +1,6 @@
 <app-popover-dialog [width]="thirdSubGroupVisible ? 600 : 500">
   <ng-container title>
-    {{ "subgroup.management" | translate: "Управление подгруппами" }}
+    {{ 'subdivision' | translate:'Разделение на подгруппы' }}
   </ng-container>
   <ng-container body>
     <form class="example-form">
@@ -29,7 +29,7 @@
                 : ('text.thirdsubgroup.remove'
                   | translate: 'Убрать третью подгруппу')
             "
-            matTooltipPosition="left"
+            matTooltipPosition="below"
             (click)="triggerThirdSubGroupVisible()"
           >
             <mat-icon>{{ thirdSubGroupVisible ? "remove" : "add" }}</mat-icon>
@@ -51,6 +51,8 @@
                   [popover]="subGroupsPopover"
                   popoverPlacement="auto"
                   [popoverOnHover]="false"
+                  matTooltipPosition="below"
+                  [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
                 >
                   arrow_forward
                 </mat-icon>
@@ -118,6 +120,8 @@
                   [popover]="subGroupsPopover"
                   popoverPlacement="auto"
                   [popoverOnHover]="false"
+                  matTooltipPosition="below"
+                  [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
                 >
                   arrow_forward
                 </mat-icon>
@@ -186,6 +190,8 @@
                     [popover]="subGroupsPopover"
                     popoverPlacement="auto"
                     [popoverOnHover]="false"
+                    [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
+                    matTooltipPosition="below"
                   >
                     arrow_forward
                   </mat-icon>
