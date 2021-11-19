@@ -1,24 +1,37 @@
-<div ngDraggable [ngResizable]="IsActiveCall" [rzHandles]="'n,e,s,w,se,sw,ne,nw'" zIndex="'100000'">
-  <div *ngIf="IsActiveCall" class="video-call">
+<div
+  style="position: absolute; z-index: 100000"
+  *ngIf="IsActiveCall || IsIncomingCall"
+>
+  <div
+    ngDraggable
+    [ngResizable]="IsActiveCall"
+    [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+    zIndex="'100000'"
+  >
+    <div *ngIf="IsActiveCall" class="video-call">
+      <div class="video-call__videos"></div>
 
-    <div class="video-call__videos">
-
+      <div class="video-call_controls">
+        <mat-icon *ngIf="isVideoActive">videocam</mat-icon>
+        <mat-icon *ngIf="!isVideoActive">videocam_off</mat-icon>
+        <mat-icon *ngIf="IsMicroActive">mic</mat-icon>
+        <mat-icon *ngIf="!IsMicroActive">mic_off</mat-icon>
+        <mat-icon (click)="endCall()" [ngStyle]="{ color: 'red' }">
+          call_end</mat-icon
+        >
+      </div>
     </div>
-
-    <div class="video-call_controls">
-      <mat-icon *ngIf="isVideoActive">videocam</mat-icon>
-      <mat-icon *ngIf="!isVideoActive">videocam_off</mat-icon>
-      <mat-icon *ngIf="IsMicroActive">mic</mat-icon>
-      <mat-icon *ngIf="!IsMicroActive">mic_off</mat-icon>
-      <mat-icon (click)="endCall()" [ngStyle]="{'color':'red'}"> call_end</mat-icon>
+    <div *ngIf="IsIncomingCall">
+      <div class="caller-information">
+        some information about the caller
+        <!-- todo -->
+      </div>
+      <mat-icon (click)="answerCall()" [ngStyle]="{ color: 'green' }">
+        call</mat-icon
+      >
+      <mat-icon (click)="endCall()" [ngStyle]="{ color: 'red' }">
+        call_end</mat-icon
+      >
     </div>
-  </div>
-  <div *ngIf="IsIncomingCall">
-    <div class="caller-information">
-      some information about the caller
-      <!-- todo -->
-    </div>
-    <mat-icon (click)="answerCall()" [ngStyle]="{'color':'green'}"> call</mat-icon>
-    <mat-icon (click)="endCall()" [ngStyle]="{'color':'red'}"> call_end</mat-icon>
   </div>
 </div>

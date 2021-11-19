@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataService } from 'src/app/modules/chat/shared/services/dataService';
 import { SignalRService } from './../../../chat/shared/services/signalRSerivce';
 import { VideoChatService } from './../../services/video-chat.service';
 
@@ -8,6 +9,7 @@ import { VideoChatService } from './../../services/video-chat.service';
   styleUrls: ['./video-handler.component.less'],
 })
 export class VideoHandlerComponent implements OnInit {
+
   public IsIncomingCall: boolean = false;
   public IsActiveCall: boolean = false;
   public IsMicroActive: boolean = false;
@@ -15,7 +17,8 @@ export class VideoHandlerComponent implements OnInit {
 
   constructor(
     private videoChatService: VideoChatService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    public dataService: DataService
   ) {
     this.videoChatService.isActiveCall.subscribe((value: boolean) => {
       this.IsActiveCall = value;
@@ -34,7 +37,7 @@ export class VideoHandlerComponent implements OnInit {
   }
 
   endCall() {
-    console.log('The call was ended');
+    this.signalRService.disconnectFromChat(this.videoChatService.currentChatId);
     this.videoChatService.isActiveCall.next(false);
     this.videoChatService.isIncomingCall.next(false);
   }

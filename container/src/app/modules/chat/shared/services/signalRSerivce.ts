@@ -12,6 +12,7 @@ const SendCallRequest = "SendCallRequest";
 const DisconnectFromChat = "DisconnectFromChat"
 //handlers
 const IncomeCall = "HandleIncomeCall";
+const DisconnectUser = "HandleDisconnection";
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +69,12 @@ export class SignalRService {
 
     this.hubConnection.on(IncomeCall, (chatId:any) => {
       this.videoChatService.NotifyIncomeCall(chatId);
-      console.log("icomming call from chat")
+
+    })
+
+    this.hubConnection.on(DisconnectUser, (chatId:any, userId:any) => {
+      console.log("disconnect user request", chatId, userId);
+      this.videoChatService.DisconnectUser(chatId, userId);
     })
   }
 
@@ -102,10 +108,10 @@ export class SignalRService {
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
 
-  public disconnectFromChat(chatId: any,){
-
-    return this.hubConnection.invoke(DisconnectFromChat, chatId, this.user.id);
+  public disconnectFromChat(chatId: any){
+    return this.hubConnection.invoke(DisconnectFromChat, this.user.id, chatId );
   }
+
   public SendGroupFiles(files) {
     const k = 1024;
     const dm = 2;
