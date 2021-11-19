@@ -176,5 +176,12 @@
   "text.help.popover.close": "Закрыть",
   "text.help.popover.subject": "Предмет",
   "text.help.popover.files": "Файлы",
-  "attached.files.tooltip": "Прикреплённые файлы"
+  "attached.files.tooltip": "Прикреплённые файлы",
+  "text.schedule.management": "Управление расписанием",
+  "text.schedule.management.dates": "Управление датами",
+  "text.schedule.management.delete.all": "Удалить все даты",
+  "text.schedule.dates.and.connected.data": "даты и все связанные с ними данные",
+  "text.schedule.dates": "Даты занятий",
+  "text.schedule.dates.deleting": "Удаление дат",
+  "text.schedule.date.and.connected.data": "дату и все связанные с ней данные"
 }

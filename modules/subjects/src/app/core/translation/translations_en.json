@@ -193,5 +193,12 @@
   "text.help.popover.close":"Close",
   "text.help.popover.subject": "Course",
   "text.help.popover.files": "Files",
-  "attached.files.tooltip": "Attached files"
+  "attached.files.tooltip": "Attached files",
+  "text.schedule.management": "Schedule management",
+  "text.schedule.management.dates": "Dates management",
+  "text.schedule.management.delete.all": "Delete all dates",
+  "text.schedule.dates.and.connected.data": "dates and all related data",
+  "text.schedule.dates": "Dates of classes",
+  "text.schedule.management.dates.deleting": "Deleting dates",
+  "text.schedule.date.and.connected.data": "date and all related data"
 }
