@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/modules/chat/shared/services/dataService';
+import { StreamHandlerComponent } from '../stream-handler/stream-handler.component';
 import { SignalRService } from './../../../chat/shared/services/signalRSerivce';
 import { VideoChatService } from './../../services/video-chat.service';
 
@@ -9,6 +10,8 @@ import { VideoChatService } from './../../services/video-chat.service';
   styleUrls: ['./video-handler.component.less'],
 })
 export class VideoHandlerComponent implements OnInit {
+
+  @ViewChild('child') child:StreamHandlerComponent
 
   public IsIncomingCall: boolean = false;
   public IsActiveCall: boolean = false;
@@ -42,7 +45,13 @@ export class VideoHandlerComponent implements OnInit {
     this.videoChatService.disconnectFromCall();
   }
 
-  switchMicro() {}
+  switchMicro() {
+    this.IsMicroActive = !this.IsMicroActive
+    this.child.changeMicroStatus(this.IsMicroActive);
+  }
 
-  switchVideo() {}
+  switchVideo() {
+    this.isVideoActive = !this.isVideoActive;
+    this.child.changeVideoStatus(this.isVideoActive);
+  }
 }

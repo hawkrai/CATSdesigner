@@ -10,14 +10,19 @@
   >
     <div *ngIf="IsActiveCall" class="video-call">
       <div class="video-call__videos">
-        <app-stream-handler></app-stream-handler>
+        <app-stream-handler #child></app-stream-handler>
       </div>
 
       <div class="video-call_controls">
-        <mat-icon *ngIf="isVideoActive">videocam</mat-icon>
-        <mat-icon *ngIf="!isVideoActive">videocam_off</mat-icon>
-        <mat-icon *ngIf="IsMicroActive">mic</mat-icon>
-        <mat-icon *ngIf="!IsMicroActive">mic_off</mat-icon>
+        <div class="video-call_audio-control" (click)="this.switchMicro()">
+          <mat-icon *ngIf="IsMicroActive">mic</mat-icon>
+          <mat-icon *ngIf="!IsMicroActive">mic_off</mat-icon>
+        </div>
+        <div class="video-call_video-control" (click)="this.switchVideo()">
+          <mat-icon *ngIf="isVideoActive">videocam</mat-icon>
+          <mat-icon *ngIf="!isVideoActive">videocam_off</mat-icon>
+        </div>
+
         <mat-icon (click)="endCall()" [ngStyle]="{ color: 'red' }">
           call_end</mat-icon
         >

@@ -5,7 +5,7 @@ import { OnDestroy } from '@angular/core';
 const configuration = {
   configuration: {
     offerToReceiveAudio: true,
-    offerToReceiveVideo: true
+    offerToReceiveVideo: true,
   },
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
 };
@@ -18,7 +18,7 @@ const options = {
 @Component({
   selector: 'app-stream-handler',
   templateUrl: './stream-handler.component.html',
-  styleUrls: ['./stream-handler.component.less']
+  styleUrls: ['./stream-handler.component.less'],
 })
 export class StreamHandlerComponent implements OnInit, OnDestroy {
   private _linkedPeerConnections: Map<string, RTCPeerConnection> = new Map();
@@ -34,10 +34,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
 
   public stream: any;
 
-  constructor(private signalRService: SignalRService) {
-
-
-  }
+  constructor(private signalRService: SignalRService) {}
   ngOnDestroy(): void {
     this.endChat();
   }
@@ -47,20 +44,23 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
       'AddNewcomer',
       async (newcomerConnectionId: string, chatId: any) => {
         console.log('add newcomer');
-        console.log("from connection Id ",newcomerConnectionId);
-        console.log("from chat id", chatId);
+        console.log('from connection Id ', newcomerConnectionId);
+        console.log('from chat id', chatId);
         console.log('------------------');
         await this.createRTCPeerConnection(newcomerConnectionId);
       }
     );
 
-    this.signalRService.hubConnection.on('RegisterOffer', async (offer, fromClientHubId) => {
-      console.log('RegisterOffer');
-      console.log(fromClientHubId);
-      console.log(offer);
-      console.log('------------------');
-      this.createRTCPeerConnection(fromClientHubId, offer);
-    });
+    this.signalRService.hubConnection.on(
+      'RegisterOffer',
+      async (offer, fromClientHubId) => {
+        console.log('RegisterOffer');
+        console.log(fromClientHubId);
+        console.log(offer);
+        console.log('------------------');
+        this.createRTCPeerConnection(fromClientHubId, offer);
+      }
+    );
 
     this.signalRService.hubConnection.on(
       'RegisterAnswer',
@@ -132,7 +132,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
 
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
-    this.signalRService.hubConnection.invoke('SendAnswer', answer, FromClientHubId);
+    this.signalRService.hubConnection.invoke(
+      'SendAnswer',
+      answer,
+      FromClientHubId
+    );
   }
 
   async createNewRTCPeerConnection(
@@ -143,8 +147,12 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
     await peerConnection.setLocalDescription(offer);
     console.log('offer');
     console.log(offer);
-    console.log("FromClientHubId", FromClientHubId)
-    this.signalRService.hubConnection?.invoke('SendOffer', offer, FromClientHubId);
+    console.log('FromClientHubId', FromClientHubId);
+    this.signalRService.hubConnection?.invoke(
+      'SendOffer',
+      offer,
+      FromClientHubId
+    );
   }
 
   async createMediaController(peerConnection: RTCPeerConnection | any) {
@@ -157,23 +165,21 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
       audioStream
         .getVideoTracks()
         .forEach((track: any) => (track.enabled = !track.enabled));
-      audioStream
-        ?.getTracks()
-        ?.forEach((track: any) => {
-          track.enabled = false;
-          return peerConnection.addTrack(track, audioStream);
-        });
+      audioStream?.getTracks()?.forEach((track: any) => {
+        track.enabled = false;
+        return peerConnection.addTrack(track, audioStream);
+      });
     } else {
       audioStream = await navigator.mediaDevices.getUserMedia(
         this.mediaConstraints
       );
-      audioStream
-      ?.getTracks()
-      ?.forEach((track: any) => {peerConnection.addTrack(track, audioStream); console.log("track",track);});
+      audioStream?.getTracks()?.forEach((track: any) => {
+        peerConnection.addTrack(track, audioStream);
+        console.log('track', track);
+      });
     }
 
     this.stream = audioStream;
-
 
     peerConnection.ontrack = (event: any) => {
       this.remoteAudio = event.streams[0];
@@ -185,13 +191,17 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
     //if (peerConnection.connectionState === 'connected') {
     console.log('onConnectionStateChange');
     console.log(event);
-    console.log(`event?.currentTarget?.connectionState`, event?.currentTarget?.connectionState)
-    console.log(`event?.target?.connectionState`, event?.target?.connectionState)
-    if(event?.currentTarget?.connectionState == "disconnected"){
+    console.log(
+      `event?.currentTarget?.connectionState`,
+      event?.currentTarget?.connectionState
+    );
+    console.log(
+      `event?.target?.connectionState`,
+      event?.target?.connectionState
+    );
+    if (event?.currentTarget?.connectionState == 'disconnected') {
       //this.endChat();
-      this.stream
-      ?.getTracks()
-      ?.forEach((t:any) => t.stop())
+      this.stream?.getTracks()?.forEach((t: any) => t.stop());
     }
     //}
   };
@@ -228,17 +238,22 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
     await peerConnection.setRemoteDescription(remoteDesc);
   }
 
-  endChat(){
-    this._linkedPeerConnections.forEach(e => {
+  endChat() {
+    this._linkedPeerConnections.forEach((e) => {
       e.close();
-    })
-    this.stream
-    ?.getTracks()
-    ?.forEach((t:any) => t.stop())
+    });
+    this.stream?.getTracks()?.forEach((t: any) => t.stop());
   }
-  changeMicroStatus(){
-    this.stream
-    ?.getTracks()
-    ?.forEach((t:any) => t.enabled = !t.enabled)
+
+  changeMicroStatus(isEnabled: boolean) {
+    this.stream?.getTracks()?.forEach((t: any) => {
+      if (t.kind == 'audio') t.enabled = isEnabled;
+    });
+  }
+
+  changeVideoStatus(isEnabled: boolean) {
+    this.stream?.getTracks()?.forEach((t: any) => {
+      if (t.kind == 'video') t.enabled = isEnabled;
+    });
   }
 }
