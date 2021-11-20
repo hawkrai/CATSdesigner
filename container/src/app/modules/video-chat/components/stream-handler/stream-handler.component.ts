@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { SignalRService } from 'src/app/modules/chat/shared/services/signalRSerivce';
+import { OnDestroy } from '@angular/core';
 
 const configuration = {
   configuration: {
     offerToReceiveAudio: true,
+    offerToReceiveVideo: true
   },
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
 };
@@ -17,7 +20,7 @@ const options = {
   templateUrl: './stream-handler.component.html',
   styleUrls: ['./stream-handler.component.less']
 })
-export class StreamHandlerComponent implements OnInit {
+export class StreamHandlerComponent implements OnInit, OnDestroy {
   private _linkedPeerConnections: Map<string, RTCPeerConnection> = new Map();
   private _hubConnection?: any;
 
@@ -31,39 +34,27 @@ export class StreamHandlerComponent implements OnInit {
 
   public stream: any;
 
-  constructor() {}
+  constructor(private signalRService: SignalRService) {
+
+
+  }
+  ngOnDestroy(): void {
+    this.endChat();
+  }
 
   ngOnInit(): void {
-    this._hubConnection
-      .start()
-      .then(() => {
-        console.log('connection started');
-      })
-      .catch((err) => console.log(err));
-
-    this._hubConnection.onclose(() => {
-      setTimeout(() => {
-        this._hubConnection
-          ?.start()
-          .then(() => {
-            console.log('connection started');
-          })
-          .catch((err) => console.log(err));
-      }, 5000);
-    });
-
-    this._hubConnection.on(
+    this.signalRService.hubConnection.on(
       'AddNewcomer',
-      async (newcomerConnectionId: string, userName: string) => {
+      async (newcomerConnectionId: string, chatId: any) => {
         console.log('add newcomer');
-        console.log(newcomerConnectionId);
-        console.log(userName);
+        console.log("from connection Id ",newcomerConnectionId);
+        console.log("from chat id", chatId);
         console.log('------------------');
         await this.createRTCPeerConnection(newcomerConnectionId);
       }
     );
 
-    this._hubConnection.on('RegisterOffer', async (offer, fromClientHubId) => {
+    this.signalRService.hubConnection.on('RegisterOffer', async (offer, fromClientHubId) => {
       console.log('RegisterOffer');
       console.log(fromClientHubId);
       console.log(offer);
@@ -71,7 +62,7 @@ export class StreamHandlerComponent implements OnInit {
       this.createRTCPeerConnection(fromClientHubId, offer);
     });
 
-    this._hubConnection?.on(
+    this.signalRService.hubConnection.on(
       'RegisterAnswer',
       async (answer, userConnectionId) => {
         console.log('RegisterAnswer');
@@ -86,7 +77,7 @@ export class StreamHandlerComponent implements OnInit {
       }
     );
 
-    this._hubConnection?.on(
+    this.signalRService.hubConnection.on(
       'HandleNewCandidate',
       async (candidate, userConnectionId) => {
         let cand = new RTCIceCandidate(candidate);
@@ -103,7 +94,7 @@ export class StreamHandlerComponent implements OnInit {
     console.log('clicked');
     let user = prompt('enter the userName');
     console.log(user);
-    this._hubConnection?.send('SetVoiceChatConnection', 1, user, {});
+    this.signalRService.hubConnection.invoke('SetVoiceChatConnection', 1, user);
   }
 
   async createRTCPeerConnection(fromClientConnectionId: string, offer = null) {
@@ -141,7 +132,7 @@ export class StreamHandlerComponent implements OnInit {
 
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
-    await this._hubConnection?.send('SendAnswer', answer, FromClientHubId);
+    this.signalRService.hubConnection.invoke('SendAnswer', answer, FromClientHubId);
   }
 
   async createNewRTCPeerConnection(
@@ -152,7 +143,8 @@ export class StreamHandlerComponent implements OnInit {
     await peerConnection.setLocalDescription(offer);
     console.log('offer');
     console.log(offer);
-    this._hubConnection?.send('SendOffer', offer, FromClientHubId);
+    console.log("FromClientHubId", FromClientHubId)
+    this.signalRService.hubConnection?.invoke('SendOffer', offer, FromClientHubId);
   }
 
   async createMediaController(peerConnection: RTCPeerConnection | any) {
@@ -220,7 +212,7 @@ export class StreamHandlerComponent implements OnInit {
     console.log(event);
     event.currentTarget;
     if (event.candidate) {
-      this._hubConnection?.send(
+      this.signalRService.hubConnection?.invoke(
         'fireCandidate',
         event.candidate,
         fromClientHubId

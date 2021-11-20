@@ -9,7 +9,9 @@
     zIndex="'100000'"
   >
     <div *ngIf="IsActiveCall" class="video-call">
-      <div class="video-call__videos"></div>
+      <div class="video-call__videos">
+        <app-stream-handler></app-stream-handler>
+      </div>
 
       <div class="video-call_controls">
         <mat-icon *ngIf="isVideoActive">videocam</mat-icon>

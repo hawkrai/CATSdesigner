@@ -18,7 +18,7 @@ const DisconnectUser = "HandleDisconnection";
   providedIn: 'root'
 })
 export class SignalRService {
-  private hubConnection: HubConnection
+  public hubConnection: HubConnection
   public user: any;
 
   constructor(
@@ -71,7 +71,6 @@ export class SignalRService {
       this.videoChatService.NotifyIncomeCall(chatId);
 
     })
-
     this.hubConnection.on(DisconnectUser, (chatId:any, userId:any) => {
       console.log("disconnect user request", chatId, userId);
       this.videoChatService.DisconnectUser(chatId, userId);
@@ -108,10 +107,13 @@ export class SignalRService {
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
 
-  public disconnectFromChat(chatId: any){
+  public disconnectFromCall(chatId: any){
     return this.hubConnection.invoke(DisconnectFromChat, this.user.id, chatId );
   }
 
+  public SetVoiceChatConnection(chatId: any){
+    return this.hubConnection.invoke("SetVoiceChatConnection", chatId, this.user.id);
+  }
   public SendGroupFiles(files) {
     const k = 1024;
     const dm = 2;

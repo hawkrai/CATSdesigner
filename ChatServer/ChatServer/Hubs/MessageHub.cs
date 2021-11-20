@@ -184,7 +184,7 @@ namespace ChatServer.Hubs
             return base.OnConnectedAsync();
         }
 
-        #region  video chat methods 
+        #region video chat methods
 
         public async Task SendCallRequest(string userId, int chatId)
         {
@@ -198,7 +198,7 @@ namespace ChatServer.Hubs
                 .SendAsync("HandleDisconnection", chatId, userId);
         }
 
-        public async Task SetVoiceChatConnection(int chatId, string userId, object details)
+        public async Task SetVoiceChatConnection(int chatId, string userId)
         {
             await Clients
                 .GroupExcept(
@@ -207,49 +207,46 @@ namespace ChatServer.Hubs
                 )
                 .SendAsync(
                     "AddNewcomer",
-                    Context.ConnectionId);
+                    Context.ConnectionId,
+                    chatId);
         }
 
-        public async Task SendOffer(object offer, string chatId, string userId)
+        public async Task SendOffer(object offer, string fromConnectionId)
         {
-            await Clients
-                .GroupExcept(
-                    chatId.ToString(),
-                    Context.ConnectionId
-                ).SendAsync(
+            await Clients.Client(
+                    fromConnectionId
+                )
+                .SendAsync(
                     "RegisterOffer",
                     offer,
-                    userId
+                    Context.ConnectionId
                 );
         }
 
-        public async Task SendAnswer(object answer, string chatId, string userId)
+        public async Task SendAnswer(object answer, string fromConnectionId)
         {
-            await Clients.GroupExcept(
-                    chatId.ToString(),
-                    Context.ConnectionId
+            await Clients.Client(
+                    fromConnectionId
                 )
                 .SendAsync(
                     "RegisterAnswer",
                     answer,
-                    userId
+                    Context.ConnectionId
                 );
         }
 
-        public async Task FireCandidate(object candidate, string chatId, string userId)
+        public async Task FireCandidate(object candidate, string connectionId)
         {
-            await Clients.GroupExcept(
-                    chatId.ToString(),
-                    Context.ConnectionId
+            await Clients.Client(
+                    connectionId
                 )
                 .SendAsync(
                     "HandleNewCandidate",
                     candidate,
-                    userId
+                    Context.ConnectionId
                 );
         }
 
         #endregion
-
     }
 }
