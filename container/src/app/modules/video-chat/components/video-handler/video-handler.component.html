@@ -10,7 +10,7 @@
   >
     <div *ngIf="IsActiveCall" class="video-call">
       <div class="video-call__videos">
-        <app-stream-handler #child></app-stream-handler>
+        <app-stream-handler #child [isMicroActive]="this.IsMicroActive" [isVideoActive]="this.isVideoActive"></app-stream-handler>
       </div>
 
       <div class="video-call_controls">

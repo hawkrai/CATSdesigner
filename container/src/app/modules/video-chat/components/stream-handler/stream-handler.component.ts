@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, OnDestroy } from '@angular/core';
 import { SignalRService } from 'src/app/modules/chat/shared/services/signalRSerivce';
-import { OnDestroy } from '@angular/core';
 
 const configuration = {
   configuration: {
@@ -20,7 +19,11 @@ const options = {
   templateUrl: './stream-handler.component.html',
   styleUrls: ['./stream-handler.component.less'],
 })
-export class StreamHandlerComponent implements OnInit, OnDestroy {
+export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
+
+  @Input() isMicroActive  = true;
+  @Input() isVideoActive = false;
+
   private _linkedPeerConnections: Map<string, RTCPeerConnection> = new Map();
   private _hubConnection?: any;
 
@@ -35,11 +38,24 @@ export class StreamHandlerComponent implements OnInit, OnDestroy {
   public stream: any;
 
   constructor(private signalRService: SignalRService) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes.isMicroActive){
+      this.changeMicroStatus(changes.isMicroActive.currentValue)
+    }
+    if(changes.isVideoActive){
+      this.changeVideoStatus(changes.isVideoActive.currentValue)
+    }
+  }
+
   ngOnDestroy(): void {
     this.endChat();
   }
 
   ngOnInit(): void {
+    this.mediaConstraints.audio = this.isMicroActive;
+    this.mediaConstraints.video = this.isVideoActive;
+
     this.signalRService.hubConnection.on(
       'AddNewcomer',
       async (newcomerConnectionId: string, chatId: any) => {
