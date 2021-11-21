@@ -1,6 +1,6 @@
 <div *ngIf="isEnableNews">
-  <div style="margin-top: 22px;margin-bottom: 20px;" >
-    <p matTooltipClass="example-tooltip-blue" (click)="hideNews()" matTooltip = "Скрыть новости"
+  <div style="margin-top: 22px;margin-bottom: 23px;" >
+    <p matTooltipClass="example-tooltip-blue" (click)="hideNews()" [matTooltip]="'text.subjects.news.hide' | translate : 'Скрыть новости'"
          style="padding-left: 9%;cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5; width: 10px; float: left; ">></p>
      <p style="font-family: Roboto, Helvetica Neue, sans-serif;font-size: 24px; color: #3F51B5;margin-left: 30%">{{'text.schedule.news' | translate:'Новости'}}</p>
   </div>
@@ -12,7 +12,7 @@
             <h6 (click) = "openItemInfo(item)" style = "color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:14px;line-height:20px;cursor: pointer;left: 0%;font-weight: initial; ">{{item?.Title}}</h6>
           </div>
           <div style="margin-left:6%;margin-top: 20px;display: flex;justify-content: space-between;">
-            <h6 matTooltip="{{item?.Subject?.Name}}" matTooltipClass="example-tooltip-blue" style = "cursor: pointer;font-size:14px;line-height:16px;left: 0%;float: left; font-family: Roboto, Helvetica Neue, sans-serif;">{{item?.Subject?.ShortName}}</h6>
+            <h6 (click)="rerouteToSubject(item)" matTooltip="{{item?.Subject?.Name}}" matTooltipClass="example-tooltip-blue" style = "cursor: pointer;font-size:14px;line-height:16px;left: 0%;float: left; font-family: Roboto, Helvetica Neue, sans-serif;">{{item?.Subject?.ShortName}}</h6>
             <h6 style = "line-height:14px;margin-top: 2px;left: 0%;font-weight: initial; float: right;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;font-size:12px;">{{item?.EditDate.slice(6,-2) | date:'dd.MM.yyyy' }}</h6>
           </div>
           <p></p>

@@ -107,8 +107,8 @@ export class LessonService {
   }
 
   getReferenceToSubject(title: string): any {
-    const splitted = title.split('|', 8);
-    return '/Subject?subjectId=' + splitted[7];
+    const splitted = title.split('|', 9);
+    return '/web/viewer/subject/' + splitted[8];
   }
 
   getLocation(title: string): any {

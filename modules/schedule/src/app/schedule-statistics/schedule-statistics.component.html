@@ -1,50 +1,62 @@
-<div id="chart">
-  <apx-chart
-    [series]="chartOptions.series"
-    [chart]="chartOptions.chart"
-    [labels]="chartOptions.labels"
-    [responsive]="chartOptions.responsive"
-  ></apx-chart>
+<div>
+  <mat-icon class = "icon" (click)="onCancelClick()" style="cursor: pointer;position: relative; margin-left: 98%">close</mat-icon>
 </div>
-
-<div id="chart1">
-  <apx-chart
-    [series]="chartOptions1.series"
-    [chart]="chartOptions1.chart"
-    [xaxis]="chartOptions1.xaxis"
-    [dataLabels]="chartOptions1.dataLabels"
-    [grid]="chartOptions1.grid"
-    [stroke]="chartOptions1.stroke"
-    [title]="chartOptions1.title"
-  ></apx-chart>
-</div>
-
-<div id="chart2">
-  <apx-chart
-    [series]="chartOptions2.series"
-    [chart]="chartOptions2.chart"
-    [dataLabels]="chartOptions2.dataLabels"
-    [plotOptions]="chartOptions2.plotOptions"
-    [yaxis]="chartOptions2.yaxis"
-    [xaxis]="chartOptions2.xaxis"
-    [legend]="chartOptions2.legend"
-    [colors]="chartOptions2.colors"
-    [grid]="chartOptions2.grid"
-  ></apx-chart>
-</div>
-
-<div id="chart3">
-  <apx-chart
-    [series]="chartOptions3.series"
-    [chart]="chartOptions3.chart"
-    [dataLabels]="chartOptions3.dataLabels"
-    [plotOptions]="chartOptions3.plotOptions"
-    [xaxis]="chartOptions3.xaxis"
-    [stroke]="chartOptions3.stroke"
-    [fill]="chartOptions3.fill"
-    [yaxis]="chartOptions3.yaxis"
-    [title]="chartOptions3.title"
-    [tooltip]="chartOptions3.tooltip"
-    [legend]="chartOptions3.legend"
-  ></apx-chart>
-</div>
+<mat-tab-group class="remove-border-bottom">
+  <mat-tab [label]="'text.schedule.educational.load.per.week' | translate: 'Учебная нагрузка в неделю'">
+    <div id="chart">
+      <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [labels]="chartOptions.labels"
+        [responsive]="chartOptions.responsive"
+        [colors] = "chartOptions.colors"
+      ></apx-chart>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'text.schedule.educational.load.day.per.week' | translate: 'Нагрузка по каждому дню в неделю'">
+    <div id="chart1">
+      <apx-chart
+        [series]="chartOptions1.series"
+        [chart]="chartOptions1.chart"
+        [xaxis]="chartOptions1.xaxis"
+        [dataLabels]="chartOptions1.dataLabels"
+        [grid]="chartOptions1.grid"
+        [stroke]="chartOptions1.stroke"
+        [title]="chartOptions1.title"
+      ></apx-chart>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'text.schedule.educational.load.subject.per.week' | translate: 'Нагрузка по каждому предмету в неделю'">
+    <div id="chart2">
+      <apx-chart
+        [series]="chartOptions2.series"
+        [chart]="chartOptions2.chart"
+        [dataLabels]="chartOptions2.dataLabels"
+        [plotOptions]="chartOptions2.plotOptions"
+        [yaxis]="chartOptions2.yaxis"
+        [xaxis]="chartOptions2.xaxis"
+        [legend]="chartOptions2.legend"
+        [colors]="chartOptions2.colors"
+        [grid]="chartOptions2.grid"
+      ></apx-chart>
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'text.schedule.educational.load.types.week' | translate: 'Виды учебной нагрузки в неделю '">
+      <div id="chart3">
+        <apx-chart
+          [series]="chartOptions3.series"
+          [chart]="chartOptions3.chart"
+          [dataLabels]="chartOptions3.dataLabels"
+          [plotOptions]="chartOptions3.plotOptions"
+          [xaxis]="chartOptions3.xaxis"
+          [stroke]="chartOptions3.stroke"
+          [fill]="chartOptions3.fill"
+          [yaxis]="chartOptions3.yaxis"
+          [title]="chartOptions3.title"
+          [tooltip]="chartOptions3.tooltip"
+          [colors]="chartOptions3.colors"
+          [legend]="chartOptions3.legend"
+        ></apx-chart>
+      </div>
+  </mat-tab>
+</mat-tab-group>

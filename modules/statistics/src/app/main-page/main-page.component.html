@@ -1,6 +1,8 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<table style = "width: 100%">
+  <tr>
 <div *ngFor="let chart of this.listChartOptions"  class="diagram">
-  <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
+  <h6 (click)="rerouteToSubject(chart.subject)" style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
   margin-left: 12%; margin-top: 10px; text-align: center">
     {{chart.title.text}}</h6>
   <div class = "radar">
@@ -19,57 +21,31 @@
 
   <table style = "margin-top: -10%;margin-left: 10%">
     <tr *ngFor="let i of [0,1,2,3,4]">
-      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{chart.series[0].data[i]}}</td>
+      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px', 'padding-right': '10px'}">{{chart.series[0].data[i]}}</td>
       <td *ngIf="chart.categories[i] != '0'" style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{chart.categories[i]}}</td>
     </tr>
   </table>
 </div>
+  </tr>
 
-<!--div class="diagram">
-  <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
-  margin-left: 12%; margin-top: 10px; text-align: center">
-    Надежность программного обеспечения</h6>
-  <div class = "radar">
-    <apx-chart
-      [series]="chartOptions1.series"
-      [chart]="chartOptions1.chart"
-      [xaxis]="chartOptions1.xaxis"
-      [colors]="chartOptions1.colors"
-      [legend] = "chartOptions1.legend"
-      [fill] = "chartOptions1.fill"
-      [markers] = "chartOptions1.markers"
-      [stroke]= "chartOptions1.stroke"
-    ></apx-chart>
-  </div>
-  <table style = "margin-top: -10%;margin-left: 10%">
-    <tr *ngFor="let i of [0,1,2,3]">
-      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{categories[i][1]}}</td>
-      <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{categories[i][2]}}</td>
-    </tr>
-  </table>
-</div>
-
-
-<div class="diagram">
-  <h6 style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
-  margin-left: 12%; margin-top: 10px; text-align: center">
-    Надежность программного обеспечения</h6>
-  <div class = "radar">
+<tr>
+<div *ngIf="chartOptions1 != undefined" id="chart" style = "width: 100%; margin-top: 30px; margin-left: 2%;">
   <apx-chart
-    [series]="chartOptions2.series"
-    [chart]="chartOptions2.chart"
-    [xaxis]="chartOptions2.xaxis"
-    [colors]="chartOptions2.colors"
-    [legend] = "chartOptions2.legend"
-    [fill] = "chartOptions2.fill"
-    [markers] = "chartOptions2.markers"
-    [stroke]= "chartOptions2.stroke"
+    [series]="chartOptions1.series"
+    [chart]="chartOptions1.chart"
+    [dataLabels]="chartOptions1.dataLabels"
+    [plotOptions]="chartOptions1.plotOptions"
+    [xaxis]="chartOptions1.xaxis"
+    [stroke]="chartOptions1.stroke"
+    [fill]="chartOptions1.fill"
+    [yaxis]="chartOptions1.yaxis"
+    [title]="chartOptions1.title"
+    [tooltip]="chartOptions1.tooltip"
+    [colors]="chartOptions1.colors"
+    [legend]="chartOptions1.legend"
   ></apx-chart>
-  </div>
-  <table style = "margin-top: -10%; margin-left: 10%">
-    <tr *ngFor="let i of [0,1,2]"  style = "margin-bottom: 15px">
-      <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif', 'font-size': '16px'}">{{categories[i][1]}}</td>
-      <td style = "font-size: 14px;font-family: Roboto, Helvetica Neue, sans-serif;">{{categories[i][2]}}</td>
-    </tr>
-  </table>
-</div-->
+</div>
+</tr>
+</table>
+
+
