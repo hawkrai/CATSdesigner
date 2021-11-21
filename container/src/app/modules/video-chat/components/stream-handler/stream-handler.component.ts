@@ -177,13 +177,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.mediaConstraints.audio && !this.mediaConstraints.video) {
       audioStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
+        video: true
       });
-      audioStream
-        .getVideoTracks()
-        .forEach((track: any) => (track.enabled = !track.enabled));
       audioStream?.getTracks()?.forEach((track: any) => {
         track.enabled = false;
-        return peerConnection.addTrack(track, audioStream);
+        peerConnection.addTrack(track, audioStream);
       });
     } else {
       audioStream = await navigator.mediaDevices.getUserMedia(
@@ -262,12 +260,14 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   changeMicroStatus(isEnabled: boolean) {
+    console.log("micro changes", isEnabled);
     this.stream?.getTracks()?.forEach((t: any) => {
       if (t.kind == 'audio') t.enabled = isEnabled;
     });
   }
 
   changeVideoStatus(isEnabled: boolean) {
+    console.log("video changes", isEnabled);
     this.stream?.getTracks()?.forEach((t: any) => {
       if (t.kind == 'video') t.enabled = isEnabled;
     });

@@ -47,11 +47,9 @@ export class VideoHandlerComponent implements OnInit {
 
   switchMicro() {
     this.IsMicroActive = !this.IsMicroActive
-    this.child.changeMicroStatus(this.IsMicroActive);
   }
 
   switchVideo() {
     this.isVideoActive = !this.isVideoActive;
-    this.child.changeVideoStatus(this.isVideoActive);
   }
 }

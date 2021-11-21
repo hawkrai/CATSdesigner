@@ -20,10 +20,10 @@ const DisconnectUser = "HandleDisconnection";
 export class SignalRService {
   public hubConnection: HubConnection
   public user: any;
-  private videoChatService: VideoChatService
+
   constructor(
     private dataService: DataService,
-    // private videoChatService: VideoChatService,
+    private videoChatService: VideoChatService,
     private contactService: ContactService) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.connect();
