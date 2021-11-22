@@ -25,7 +25,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isVideoActive = false;
 
   private _linkedPeerConnections: Map<string, RTCPeerConnection> = new Map();
-  private _hubConnection?: any;
 
   public mediaConstraints = {
     audio: true,
@@ -37,7 +36,9 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
   public stream: any;
 
-  constructor(private signalRService: SignalRService) {}
+  constructor(private signalRService: SignalRService) {
+    console.log("created")
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes.isMicroActive){
@@ -49,13 +50,18 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    console.log("destruyed");
+    this._linkedPeerConnections = new Map();
+
     this.endChat();
   }
 
   ngOnInit(): void {
+    console.log("init")
     this.mediaConstraints.audio = this.isMicroActive;
     this.mediaConstraints.video = this.isVideoActive;
 
+    this.signalRService.hubConnection.off("AddNewcomer");
     this.signalRService.hubConnection.on(
       'AddNewcomer',
       async (newcomerConnectionId: string, chatId: any) => {
@@ -67,6 +73,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       }
     );
 
+    this.signalRService.hubConnection.off("RegisterOffer");
     this.signalRService.hubConnection.on(
       'RegisterOffer',
       async (offer, fromClientHubId) => {
@@ -78,6 +85,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       }
     );
 
+    this.signalRService.hubConnection.off("RegisterAnswer");
     this.signalRService.hubConnection.on(
       'RegisterAnswer',
       async (answer, userConnectionId) => {
@@ -93,9 +101,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       }
     );
 
+    this.signalRService.hubConnection.off("HandleNewCandidate");
     this.signalRService.hubConnection.on(
       'HandleNewCandidate',
       async (candidate, userConnectionId) => {
+        console.log("handle new candidate");
         let cand = new RTCIceCandidate(candidate);
         console.log(candidate);
         const peerConnection =
