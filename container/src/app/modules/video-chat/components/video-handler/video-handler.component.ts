@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataService } from 'src/app/modules/chat/shared/services/dataService';
 import { StreamHandlerComponent } from '../stream-handler/stream-handler.component';
 import { SignalRService } from './../../../chat/shared/services/signalRSerivce';
@@ -7,9 +7,9 @@ import { VideoChatService } from './../../services/video-chat.service';
 @Component({
   selector: 'app-video-handler',
   templateUrl: './video-handler.component.html',
-  styleUrls: ['./video-handler.component.less'],
+  styleUrls: ['./video-handler.component.scss'],
 })
-export class VideoHandlerComponent implements OnInit {
+export class VideoHandlerComponent implements OnInit, OnDestroy {
 
   @ViewChild('child') child:StreamHandlerComponent
 
@@ -30,6 +30,10 @@ export class VideoHandlerComponent implements OnInit {
       this.IsIncomingCall = value;
     });
   }
+  ngOnDestroy(): void {
+    console.log("destroed");
+    this.endCall();
+  }
 
   ngOnInit(): void {}
 
@@ -41,6 +45,10 @@ export class VideoHandlerComponent implements OnInit {
 
   endCall() {
     console.log(this.videoChatService.currentChatId)
+    if(!this.IsActiveCall && !this.IsIncomingCall){
+      return
+    }
+
     this.signalRService.disconnectFromCall(this.videoChatService.currentChatId);
     this.videoChatService.disconnectFromCall();
   }

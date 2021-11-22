@@ -1,0 +1,19 @@
+.ng-draggable {
+  cursor: grab;
+  background-color: black;
+}
+
+.video-call {
+  &__controls {
+    display: flex;
+    justify-content: center;
+  }
+  &__control {
+    margin: 4px;
+  }
+}
+.control-icon{
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+}

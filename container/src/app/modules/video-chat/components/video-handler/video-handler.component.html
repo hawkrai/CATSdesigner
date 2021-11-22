@@ -10,20 +10,38 @@
   >
     <div *ngIf="IsActiveCall" class="video-call">
       <div class="video-call__videos">
-        <app-stream-handler #child [isMicroActive]="this.IsMicroActive" [isVideoActive]="this.isVideoActive"></app-stream-handler>
+        <app-stream-handler
+          #child
+          [isMicroActive]="this.IsMicroActive"
+          [isVideoActive]="this.isVideoActive"
+        ></app-stream-handler>
       </div>
 
-      <div class="video-call_controls">
-        <div class="video-call_audio-control" (click)="this.switchMicro()">
-          <mat-icon *ngIf="IsMicroActive">mic</mat-icon>
-          <mat-icon *ngIf="!IsMicroActive">mic_off</mat-icon>
+      <div class="video-call__controls">
+        <div
+          class="video-call__control"
+          (click)="this.switchMicro()"
+        >
+          <mat-icon class="control-icon" *ngIf="IsMicroActive"
+            >mic</mat-icon
+          >
+          <mat-icon class="control-icon" *ngIf="!IsMicroActive"
+            >mic_off</mat-icon
+          >
         </div>
-        <div class="video-call_video-control" (click)="this.switchVideo()">
-          <mat-icon *ngIf="isVideoActive">videocam</mat-icon>
-          <mat-icon *ngIf="!isVideoActive">videocam_off</mat-icon>
+        <div
+          class="video-call__control"
+          (click)="this.switchVideo()"
+        >
+          <mat-icon class="control-icon" *ngIf="isVideoActive"
+            >videocam</mat-icon
+          >
+          <mat-icon class="control-icon" *ngIf="!isVideoActive"
+            >videocam_off</mat-icon
+          >
         </div>
 
-        <mat-icon (click)="endCall()" [ngStyle]="{ color: 'red' }">
+        <mat-icon class="control-icon" (click)="endCall()" [ngStyle]="{ color: 'red' }">
           call_end</mat-icon
         >
       </div>
@@ -33,10 +51,10 @@
         some information about the caller
         <!-- todo -->
       </div>
-      <mat-icon (click)="answerCall()" [ngStyle]="{ color: 'green' }">
+      <mat-icon class="control-icon" (click)="answerCall()" [ngStyle]="{ color: 'green' }">
         call</mat-icon
       >
-      <mat-icon (click)="endCall()" [ngStyle]="{ color: 'red' }">
+      <mat-icon class="control-icon" (click)="endCall()" [ngStyle]="{ color: 'red' }">
         call_end</mat-icon
       >
     </div>
