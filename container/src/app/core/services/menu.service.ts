@@ -61,7 +61,7 @@ export class MenuService {
     }
 
     getModuleTypeByItem(item: string): ModuleType {
-        return Array.from(this.subjectsInfo.keys()).find(k => this.subjectsInfo.get(k).item === item);
+        return Array.from(this.subjectsInfo.keys()).find(k => item && item.startsWith(this.subjectsInfo.get(k).item));
     }
 
     getFirstModuleType(): ModuleType {
@@ -69,7 +69,7 @@ export class MenuService {
     }
 
     getModuleFromItem(item: string): string {
-        return Array.from(this.subjectsInfo.values()).find(c => c.item === item).module;
+        return Array.from(this.subjectsInfo.values()).find(c => item && item.startsWith(c.item)).module;
     }
 
     public toogleSidenav(): void {

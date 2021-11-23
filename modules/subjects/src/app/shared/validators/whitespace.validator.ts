@@ -11,3 +11,7 @@ export class WhitespaceDirective implements Validator {
     return (control.value || '').trim().length === 0 ? { whitespace: true } : null;
   }
 }
+
+export const whitespace = (control: AbstractControl): ValidationErrors | null  => {
+  return (control.value || '').trim().length === 0 ? { whitespace: true } : null;
+}

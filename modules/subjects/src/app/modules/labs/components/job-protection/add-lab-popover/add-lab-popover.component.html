@@ -7,13 +7,9 @@
       <mat-form-field
         class="example-full-width"
         *ngIf="!data.body.isTeacher"
-        [matTooltip]="
-          'text.subjects.labs.choose.lab'
-            | translate: 'Выберите название лабораторной работы'
-        "
-        matTooltipPosition="above"
       >
-        <mat-select formControlName="labId">
+        <mat-select formControlName="labId" [placeholder]="'text.subjects.labs.choose.lab'
+        | translate: 'Выберите название лабораторной работы'">
           <mat-option *ngFor="let lab of labs$ | async" [value]="lab.LabId">
             {{ lab.ShortName }}. {{ lab.Theme }}
           </mat-option>

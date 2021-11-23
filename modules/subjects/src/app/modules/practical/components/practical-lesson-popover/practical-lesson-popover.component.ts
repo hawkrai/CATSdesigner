@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { FilesService } from 'src/app/services/files.service';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { attchedFileConverter } from 'src/app/utils';
+import { whitespace } from 'src/app/shared/validators/whitespace.validator';
 
 @Component({
   selector: 'app-lab-work-popover',
@@ -35,8 +36,8 @@ export class PracticalLessonPopoverComponent extends BaseFileManagementComponent
     this.loadAttachments();
     this.practicalForm = new FormGroup({
       id: new FormControl(this.data.model.id),
-      theme: new FormControl(this.data.model.theme, [Validators.required, Validators.maxLength(256)]),
-      duration: new FormControl(this.data.model.duration, [Validators.required, Validators.min(1), Validators.max(5)]),
+      theme: new FormControl(this.data.model.theme, [Validators.required, whitespace, Validators.maxLength(256)]),
+      duration: new FormControl(this.data.model.duration, [Validators.required, Validators.min(1), Validators.max(36)]),
       order: new FormControl(this.data.model.order),
       pathFile: new FormControl(this.data.model.pathFile),
       shortName: new FormControl(this.data.model.shortName),

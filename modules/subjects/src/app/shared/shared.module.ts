@@ -42,6 +42,8 @@ import { ListItemBodyDirective } from './components/list/directives/list-item-bo
 import { ListItemActionsDirective } from './components/list/directives/list-item-actions.directive';
 import * as dataEn from '../core/translation/translations_en.json';
 import * as dataRu from '../core/translation/translations_ru.json';
+import { SomePipe } from './pipes/some.pipe';
+import { StartWithPipe } from './pipes/start-with.pipe';
 
 @NgModule({
   declarations: [
@@ -79,7 +81,9 @@ import * as dataRu from '../core/translation/translations_ru.json';
     ListItemComponent,
     ListItemHeaderDirective,
     ListItemBodyDirective,
-    ListItemActionsDirective
+    ListItemActionsDirective,
+    SomePipe,
+    StartWithPipe
     ],
   imports: [
     CommonModule,
@@ -131,7 +135,9 @@ import * as dataRu from '../core/translation/translations_ru.json';
     ListComponent,
     ListItemHeaderDirective,
     ListItemBodyDirective,
-    ListItemActionsDirective
+    ListItemActionsDirective,
+    SomePipe,
+    StartWithPipe
   ],
   providers: [TranslatePipe]
 })

@@ -9,7 +9,7 @@
         <textarea formControlName="theme" matInput></textarea>
       </mat-form-field>
       <mat-form-field class="full-width">
-        <mat-label>{{'text.number.hours' | translate:'Количество часов'}}(1-5)</mat-label>
+        <mat-label>{{'text.number.hours' | translate:'Количество часов'}} (1-36)</mat-label>
         <input  type="number" matInput [placeholder]="'text.number.hours' | translate:'Количество часов'" formControlName="duration">
       </mat-form-field>
       <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="filesArray.value" (upload)="uploadFile($event)"></app-file-uploader>

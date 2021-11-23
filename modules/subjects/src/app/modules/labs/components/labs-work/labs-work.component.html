@@ -28,9 +28,11 @@
       <th mat-header-cell *matHeaderCellDef>{{'text.attachments.plural' | translate:'Файлы'}}</th>
       <td mat-cell *matCellDef="let element">
         <button class="mdc-button" *ngIf="element.Attachments.length > 0"
+          [matTooltip]="'attached.files.tooltip' | translate:'Приклеплённые файлы'"
+          matTooltipPosition="above"
           (click)="openFilePopup(element.Attachments)">
           <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
-          <sub class="mdc-button__label">({{element.Attachments.length}})</sub>
+          <sub class="mdc-button__label">{{element.Attachments.length}}</sub>
         </button>
       </td>
     </ng-container>

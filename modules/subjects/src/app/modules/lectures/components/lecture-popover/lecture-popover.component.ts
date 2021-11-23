@@ -8,6 +8,7 @@ import { IAppState } from 'src/app/store/state/app.state';
 import { FilesService } from 'src/app/services/files.service';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { attchedFileConverter } from 'src/app/utils';
+import { whitespace } from 'src/app/shared/validators/whitespace.validator';
 
 @Component({
   selector: 'app-lecture-popover',
@@ -36,8 +37,8 @@ export class LecturePopoverComponent extends BaseFileManagementComponent {
     this.loadAttachments();
     this.lectureForm = new FormGroup({
       id: new FormControl(this.data.model.id),
-      theme: new FormControl(this.data.model.theme, [Validators.required, Validators.maxLength(256)]),
-      duration: new FormControl(this.data.model.duration, [Validators.min(1), Validators.max(5), Validators.required]),
+      theme: new FormControl(this.data.model.theme, [Validators.required, whitespace, Validators.maxLength(256)]),
+      duration: new FormControl(this.data.model.duration, [Validators.min(1), Validators.max(36), Validators.required]),
       order: new FormControl(this.data.model.order),
       pathFile: new FormControl(this.data.model.pathFile),
       attachments: new FormArray([]),

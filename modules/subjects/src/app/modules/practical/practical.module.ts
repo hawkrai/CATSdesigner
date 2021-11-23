@@ -14,6 +14,7 @@ import { ResultsComponent } from './components/results/results.component';
 import { MarkPropertyPipe } from './pipes/mark-property.pipe';
 import { ResultPipe } from './pipes/result.pipe';
 import { VisitPipe } from './pipes/visit.pipe';
+import { PracticalRoutingModule } from './practical-routing.module';
 
 @NgModule({
   declarations: [
@@ -29,12 +30,13 @@ import { VisitPipe } from './pipes/visit.pipe';
     VisitPipe
   ],
   imports: [
+    PracticalRoutingModule,
     CommonModule,
     MatModule,
     FormsModule,
     SharedModule,
     DragDropModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   entryComponents: [
     PracticalLessonPopoverComponent,

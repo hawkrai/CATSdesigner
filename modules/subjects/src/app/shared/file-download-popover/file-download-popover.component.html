@@ -1,4 +1,4 @@
-<app-popover-dialog width="300">
+<app-popover-dialog width="400">
   <ng-container title>
     {{data.title}}
   </ng-container>
@@ -9,7 +9,8 @@
                     [color]="'primary'"
                     [(ngModel)]="attachment.isDownload"
       >
-        {{attachment.Name}}
+        
+        <span class="text-ow">{{attachment.Name}}</span>
       </mat-checkbox>
     </section>
   </ng-container>

@@ -96,10 +96,10 @@ namespace Application.Infrastructure.SubjectManagement
         }
 
 
-        public List<Subject> GetGroupSubjects(int groupId)
+        public List<Subject> GetGroupSubjects(int groupId, bool isArchive = false)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			return repositoriesContainer.SubjectRepository.GetSubjects(groupId: groupId).Where(e => !e.IsArchive).ToList();
+			return repositoriesContainer.SubjectRepository.GetSubjects(groupId: groupId).Where(e => e.IsArchive == isArchive).ToList();
 		}
 
 		public List<Subject> GetGroupSubjectsLite(int groupId)

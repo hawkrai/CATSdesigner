@@ -18,7 +18,7 @@ namespace Application.Infrastructure.SubjectManagement
 
         List<Subject> GetUserSubjectsV2(int userId);
 
-        List<Subject> GetGroupSubjects(int groupId);
+        List<Subject> GetGroupSubjects(int groupId, bool isArchive = false);
 
         List<Subject> GetGroupSubjectsLite(int groupId);
 

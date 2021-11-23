@@ -17,6 +17,7 @@ using Application.Infrastructure.UserManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
+using LMPlatform.UI.Services.Modules.News;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using LMPlatform.UI.ViewModels.LmsViewModels;
 using WebMatrix.WebData;
@@ -464,7 +465,7 @@ namespace LMPlatform.UI.Controllers
             else
                 news = subjectService.GetNewsByGroup(user.Student.GroupId);
 
-            return this.Json(news.OrderByDescending(e => e.EditDate).ToList());
+            return this.Json(news.OrderByDescending(e => e.EditDate).Select(x => new NewsViewData(x)).ToList());
         }
 
         [HttpPost]

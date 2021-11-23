@@ -2,6 +2,9 @@
   <div class="subjects-component__actions">
     <button mat-raised-button color="primary" (click)="constructorSubject(state.subjects)">{{'subject.add' |
       translate:'Добавить предмет'}}</button>
+      <div>
+        <app-help [message]="subjectsHelp.message" [action]="subjectsHelp.action" class="help"></app-help>
+      </div>
   </div>
   <ng-container *ngIf="state.subjects">
     <table mat-table *ngIf="!listViewMatcher.matches; else listView" [dataSource]="state.subjects | orderBy:'DisplayName'"
