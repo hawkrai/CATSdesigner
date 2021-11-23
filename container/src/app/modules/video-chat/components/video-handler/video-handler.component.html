@@ -12,6 +12,7 @@
       <div class="video-call__videos">
         <app-stream-handler
           #child
+          (clientDisconnected)="this.clientDisconnected()"
           [isMicroActive]="this.IsMicroActive"
           [isVideoActive]="this.isVideoActive"
         ></app-stream-handler>

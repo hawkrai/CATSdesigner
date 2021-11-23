@@ -60,4 +60,8 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
   switchVideo() {
     this.isVideoActive = !this.isVideoActive;
   }
+
+  clientDisconnected(){
+    this.endCall();
+  }
 }

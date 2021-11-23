@@ -1,5 +1,14 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  Input,
+  Output,
+  OnDestroy,
+} from '@angular/core';
 import { SignalRService } from 'src/app/modules/chat/shared/services/signalRSerivce';
+import { EventEmitter } from '@angular/core';
 
 const configuration = {
   configuration: {
@@ -20,9 +29,9 @@ const options = {
   styleUrls: ['./stream-handler.component.less'],
 })
 export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
-
-  @Input() isMicroActive  = true;
+  @Input() isMicroActive = true;
   @Input() isVideoActive = false;
+  @Output() clientDisconnected = new EventEmitter();
 
   private _linkedPeerConnections: Map<string, RTCPeerConnection> = new Map();
 
@@ -37,31 +46,31 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   public stream: any;
 
   constructor(private signalRService: SignalRService) {
-    console.log("created")
+    console.log('created');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes.isMicroActive){
-      this.changeMicroStatus(changes.isMicroActive.currentValue)
+    if (changes.isMicroActive) {
+      this.changeMicroStatus(changes.isMicroActive.currentValue);
     }
-    if(changes.isVideoActive){
-      this.changeVideoStatus(changes.isVideoActive.currentValue)
+    if (changes.isVideoActive) {
+      this.changeVideoStatus(changes.isVideoActive.currentValue);
     }
   }
 
   ngOnDestroy(): void {
-    console.log("destruyed");
+    console.log('destruyed');
     this._linkedPeerConnections = new Map();
 
     this.endChat();
   }
 
   ngOnInit(): void {
-    console.log("init")
+    console.log('init');
     this.mediaConstraints.audio = this.isMicroActive;
     this.mediaConstraints.video = this.isVideoActive;
 
-    this.signalRService.hubConnection.off("AddNewcomer");
+    this.signalRService.hubConnection.off('AddNewcomer');
     this.signalRService.hubConnection.on(
       'AddNewcomer',
       async (newcomerConnectionId: string, chatId: any) => {
@@ -73,7 +82,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       }
     );
 
-    this.signalRService.hubConnection.off("RegisterOffer");
+    this.signalRService.hubConnection.off('RegisterOffer');
     this.signalRService.hubConnection.on(
       'RegisterOffer',
       async (offer, fromClientHubId) => {
@@ -85,7 +94,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       }
     );
 
-    this.signalRService.hubConnection.off("RegisterAnswer");
+    this.signalRService.hubConnection.off('RegisterAnswer');
     this.signalRService.hubConnection.on(
       'RegisterAnswer',
       async (answer, userConnectionId) => {
@@ -101,11 +110,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       }
     );
 
-    this.signalRService.hubConnection.off("HandleNewCandidate");
+    this.signalRService.hubConnection.off('HandleNewCandidate');
     this.signalRService.hubConnection.on(
       'HandleNewCandidate',
       async (candidate, userConnectionId) => {
-        console.log("handle new candidate");
+        console.log('handle new candidate');
         let cand = new RTCIceCandidate(candidate);
         console.log(candidate);
         const peerConnection =
@@ -187,7 +196,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.mediaConstraints.audio && !this.mediaConstraints.video) {
       audioStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: true
+        video: true,
       });
       audioStream?.getTracks()?.forEach((track: any) => {
         track.enabled = false;
@@ -212,7 +221,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onConnectionStateChange = (event: any) => {
-    //if (peerConnection.connectionState === 'connected') {
     console.log('onConnectionStateChange');
     console.log(event);
     console.log(
@@ -224,10 +232,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       event?.target?.connectionState
     );
     if (event?.currentTarget?.connectionState == 'disconnected') {
-      //this.endChat();
-      this.stream?.getTracks()?.forEach((t: any) => t.stop());
+      this.clientDisconnected.emit();
     }
-    //}
   };
   onNegotiationNeeded = (event: any) => {
     console.log('onNegotiationNeeded event');
@@ -270,14 +276,14 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   changeMicroStatus(isEnabled: boolean) {
-    console.log("micro changes", isEnabled);
+    console.log('micro changes', isEnabled);
     this.stream?.getTracks()?.forEach((t: any) => {
       if (t.kind == 'audio') t.enabled = isEnabled;
     });
   }
 
   changeVideoStatus(isEnabled: boolean) {
-    console.log("video changes", isEnabled);
+    console.log('video changes', isEnabled);
     this.stream?.getTracks()?.forEach((t: any) => {
       if (t.kind == 'video') t.enabled = isEnabled;
     });
