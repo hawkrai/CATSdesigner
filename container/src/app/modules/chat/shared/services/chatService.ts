@@ -28,9 +28,14 @@ export class ChatService {
     public loadChats(): Observable<Chat[]> {
         return this.http.get<Chat[]>('catService/chat/GetAllChats?userId=' + this.user.id);
     }
-    
+
     public loadGroups():  Observable<SubjectGroups[]>
     {
         return this.http.get<SubjectGroups[]>('catService/chat/GetAllGroups?userId=' + this.user.id+"&role="+this.user.role)
+    }
+
+    public LoadChat(chatId: number)
+    {
+        return this.http.get<any>('catService/chat/GetChatById?userId='+ this.user.id + '&chatId=' + chatId);
     }
 }

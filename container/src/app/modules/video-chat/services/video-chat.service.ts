@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppToastrService } from 'src/app/core/services/toastr.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, BehaviorSubject } from 'rxjs';
+import { ChatService } from '../../chat/shared/services/chatService';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,9 @@ export class VideoChatService {
 
   public isActiveCall = new BehaviorSubject<boolean>(false);
   public isIncomingCall = new BehaviorSubject<boolean>(false);
+  public chat : any;
 
-  constructor() {}
+  constructor(private chatService: ChatService) {}
 
   public NotifyIncomeCall(chatId: any) {
     if (this.isActiveCall.getValue()) {
@@ -20,6 +22,7 @@ export class VideoChatService {
     }
     this.currentChatId = chatId;
     console.log(chatId)
+    this.getChatInfo(chatId);
     this.isIncomingCall.next(true);
   }
 
@@ -31,15 +34,11 @@ export class VideoChatService {
   }
 
   public DisconnectUser(chatId: any, userId: any) {
-    this.currentChatId = null;
-    this.isIncomingCall.next(false);
-    this.isActiveCall.next(false);
+    this.endCall(chatId);
   }
 
   public disconnectFromCall() {
-    this.currentChatId = null
-    this.isActiveCall.next(false);
-    this.isIncomingCall.next(false);
+    this.endCall();
   }
 
   public answerCall(){
@@ -49,5 +48,26 @@ export class VideoChatService {
       return;
 
     this.isActiveCall.next(true);
+  }
+
+  public getChatInfo(chatId){
+    console.log("get chat info")
+    this.chatService.LoadChat(chatId).subscribe(
+      (chat: any) => {
+        console.log("chat", chat)
+        this.chat = chat;
+      }
+    )
+  }
+
+  public endCall(chatId = null){
+    if(this.currentChatId || chatId)
+    {
+
+    }
+    this.currentChatId = null
+    this.chat = null
+    this.isActiveCall.next(false);
+    this.isIncomingCall.next(false);
   }
 }

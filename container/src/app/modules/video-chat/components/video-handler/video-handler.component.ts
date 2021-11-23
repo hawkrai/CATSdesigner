@@ -3,6 +3,7 @@ import { DataService } from 'src/app/modules/chat/shared/services/dataService';
 import { StreamHandlerComponent } from '../stream-handler/stream-handler.component';
 import { SignalRService } from './../../../chat/shared/services/signalRSerivce';
 import { VideoChatService } from './../../services/video-chat.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-video-handler',
@@ -19,9 +20,10 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
   public isVideoActive: boolean = false;
 
   constructor(
-    private videoChatService: VideoChatService,
+    public videoChatService: VideoChatService,
     private signalRService: SignalRService,
-    public dataService: DataService
+    public dataService: DataService,
+    public http: HttpClient,
   ) {
     this.videoChatService.isActiveCall.subscribe((value: boolean) => {
       this.IsActiveCall = value;

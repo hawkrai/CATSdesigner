@@ -97,7 +97,7 @@ namespace ChatServer.Controllers
         }
 
         [HttpGet]
-        public async Task<ChatDto> GetСhatById(int userId, int chatId)
+        public async Task<ChatDto> GetChatById(int userId, int chatId)
         {
             var chats = await _userService.GetUserChats(userId);
             return chats.FirstOrDefault(c => c.Id == chatId);
