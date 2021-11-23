@@ -97,6 +97,13 @@ namespace ChatServer.Controllers
         }
 
         [HttpGet]
+        public async Task<ChatDto> GetСhatById(int userId, int chatId)
+        {
+            var chats = await _userService.GetUserChats(userId);
+            return chats.FirstOrDefault(c => c.Id == chatId);
+        }
+
+        [HttpGet]
         public async Task<IEnumerable<SubjectChatsDto>> GetAllGroups(int userId, string role)
         {
             bool isLector = role.ToLower().Equals("lector");

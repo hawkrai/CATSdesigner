@@ -49,8 +49,17 @@
     </div>
     <div *ngIf="IsIncomingCall">
       <div class="caller-information">
-        some information about the caller
-        <!-- todo -->
+        <div class="chat-user-img align-self-center mr-3">
+          <img style="height: 36px !important;" *ngIf="dataService.activChat.img"
+            src="{{dataService.activChat.img}}" class="rounded-circle avatar-xs" alt="">
+          <div class="avatar-xs" *ngIf="!dataService.activChat.img">
+            <span style="height: 36px !important;"
+              class="avatar-title rounded-circle bg-soft-primary text-primary">
+              {{dataService.activChat.name.split(' ')[0].charAt(0)+dataService.activChat.name.split('
+              ')[1].charAt(0)}}
+            </span>
+          </div>
+        </div>
       </div>
       <mat-icon class="control-icon" (click)="answerCall()" [ngStyle]="{ color: 'green' }">
         call</mat-icon
