@@ -1,8 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Message} from '../../../../../../container/src/app/core/models/message';
-import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
-import {Attachment} from '../../../../../subjects/src/app/models/file/attachment.model';
+import * as filesActions from '../../service/files.actions';
+import {Store} from '@ngrx/store';
+import {IAppState} from '../../../../../complex/src/app/store/states/app.state';
 
 @Component({
   selector: 'app-news-info',
@@ -12,7 +13,8 @@ import {Attachment} from '../../../../../subjects/src/app/models/file/attachment
 export class NewsInfoComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<NewsInfoComponent>,
-              @Inject(MAT_DIALOG_DATA) private data: any, private modulecommunicationservice: ModuleCommunicationService) {
+              @Inject(MAT_DIALOG_DATA) private data: any,
+              private store: Store<IAppState>) {
   }
 
   ngOnInit() {
@@ -20,7 +22,7 @@ export class NewsInfoComponent implements OnInit {
 
   public rerouteToSubject() {
     const message: Message = new Message();
-    message.Value = '/Subject?subjectId=' + this.data.itemNews.SubjectId;
+    message.Value = '/web/viewer/subject/' + this.data.itemNews.SubjectId;
     message.Type = 'Route';
     this.sendMessage(message);
   }
@@ -29,7 +31,8 @@ export class NewsInfoComponent implements OnInit {
     window.parent.postMessage([{channel: message.Type, value: message.Value}], '*');
   }
 
-  fileDownload(attachment: Attachment) {
+  fileDownload(path: string) {
+    this.store.dispatch(filesActions.downloadFile({ pathName: path, fileName: 'NB8D7FD53273748CFA125EFC2BA19D434.docx' }));
   }
 
   onCancelClick() {

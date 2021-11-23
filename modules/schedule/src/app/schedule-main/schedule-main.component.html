@@ -10,9 +10,6 @@
       </div>
       <div class="col-md-4" style="margin-top: 24px;font-family: Roboto, Helvetica Neue, sans-serif; align-items: center;">
         <div style="display:inline-block"><h6 style="color:#3F51B5;font-size: 1.5rem;">{{'text.schedule'| translate: 'Расписание занятий'}}</h6></div>
-        <div *ngIf="isStudent" style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" matTooltip="Помощь" matTooltipPosition="right" (click)="showHelp()">
-          <mat-icon>help_outline</mat-icon>
-          </button></div>
       </div>
       <div class="col-md-4" style="margin-top: 17px;margin-bottom: 1%;padding-right: 0px">
         <div class="btn-group" style="line-height: 0; justify-content: space-between;">
@@ -47,11 +44,14 @@
               >
             </div>
           </div>
-          <button mat-icon-button (click)="this.openStatisitcs()"><mat-icon>pie_chart</mat-icon></button>
+          <div *ngIf="isStudent" style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" [matTooltip]="'text.help' | translate : 'Помощь'" matTooltipPosition="right" (click)="showHelp()">
+            <mat-icon style="color: #3F51B5;">help_outline</mat-icon>
+          </button></div>
+          <button [matTooltip]="'text.statistics' | translate : 'Статистика'" style = "color: #3F51B5;" mat-icon-button [disabled] ="events.length == 0" (click)="this.openStatisitcs()"><mat-icon>bar_chart</mat-icon></button>
           <div *ngIf="hideButton.length != 0" style="margin-left: 5%; margin-top: 18px; display: flex" class="desktopNews">
             <p matTooltipClass="example-tooltip-blue" (click)="hideNews()"
                style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5">{{hideButton}}</p>
-            <p style = "float: left; font-family:Roboto, Helvetica Neue, sans-serif; color: #808080">Новости</p>
+            <p style = "float: left; font-family:Roboto, Helvetica Neue, sans-serif; color: #808080; padding-top: 3px;"> {{'text.schedule.news'| translate: 'Новости'}}</p>
           </div>
         </div>
       </div>

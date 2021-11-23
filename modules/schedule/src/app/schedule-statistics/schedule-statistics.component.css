@@ -1,20 +1,20 @@
 #chart {
-  max-width: 380px;
-  margin: 35px auto;
+  margin: 20px auto auto;
+  max-width: 80%;
   padding: 0;
 }
 
 #chart1 {
-  max-width: 650px;
-  margin: 35px auto;
+  max-width: 95%;
+  margin: 20px auto auto;
 }
 
 #chart2 {
-  max-width: 650px;
-  margin: 35px auto;
+  max-width: 95%;
+  margin: 20px auto auto;
 }
 
 #chart3 {
-  max-width: 650px;
-  margin: 35px auto;
+  max-width: 95%;
+  margin: 20px auto auto;
 }

@@ -1,6 +1,7 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {LessonService} from '../service/lesson.service';
+import {TranslatePipe} from 'educats-translate';
 import {
   ApexChart,
   ApexAxisChartSeries,
@@ -52,6 +53,7 @@ export interface ChartOptions3 {
   title: ApexTitleSubtitle;
   tooltip: ApexTooltip;
   fill: ApexFill;
+  colors: string[];
   legend: ApexLegend;
 }
 
@@ -78,77 +80,100 @@ export class ScheduleStatisticsComponent implements OnInit {
 
   chartOptions: any;
   chartOptions1: any;
-
+  startDate: Date;
+  endDate: Date;
   lessonMarks: number[] = [];
   lessons: string[] = [];
   series: any[] = [];
   lessonDayMarks: any [][] = [];
 
-  weekDays: string[] = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
+  weekDays: string[] = [this.translatePipe.transform('text.schedule.monday', 'Понедельник'),
+                        this.translatePipe.transform('text.schedule.tuesday', 'Вторник'),
+                        this.translatePipe.transform('text.schedule.wednesday', 'Среда'),
+                        this.translatePipe.transform('text.schedule.thursday', 'Четверг'),
+                        this.translatePipe.transform('text.schedule.friday', 'Пятница'),
+                        this.translatePipe.transform('text.schedule.saturday', 'Суббота'),
+                        this.translatePipe.transform('text.schedule.sunday', 'Воскресенье')];
 
+  lessonTypes: string[] = [ this.translatePipe.transform('text.schedule.lecture', 'Лекция'),
+    this.translatePipe.transform('text.schedule.workshop', 'Практическое занятие') ,
+    this.translatePipe.transform('text.schedule.lab', 'Лабораторная работа') ,
+    this.translatePipe.transform('text.schedule.course.project', 'Консультация по курсовому проектированию') ,
+    this.translatePipe.transform('text.schedule.graduation.project', 'Консультация по дипломному проектированию')];
+
+  public typeColors: string [] = [ '#0000FF', '#FFA500', '#ff0000',  '#7F00FF' , '#006400'];
+  public lessonColors: string [] = [];
   public chartOptions2: Partial<ChartOptions>;
   public chartOptions3: Partial<ChartOptions3>;
 
   constructor(public dialogRef: MatDialogRef<ScheduleStatisticsComponent>, private lessonservice: LessonService,
-              @Inject(MAT_DIALOG_DATA) private data: any) { }
+              @Inject(MAT_DIALOG_DATA) private data: any, private translatePipe: TranslatePipe) { }
 
   ngOnInit() {
+
+    this.startDate = new Date(this.data.start);
+    this.endDate = new Date(this.data.end + ' 23:59:59');
     this.data.schedule.forEach(event => {
-      if (event.meta == 'lesson') {
-        let type = this.lessonservice.getType(event.title);
-        type = type.replaceAll(' ', '');
-        if (type == 'Лекция' || type == 'Lect.') {
-          this.lectCount += 1;
-        }
-        if (type == 'Лаб.работа' || type == 'Lab') {
-          this.labCount += 1;
-        }
-        if (type == 'Практ.зан.' || type == 'WS') {
-          this.practCount += 1;
-        }
-        if (type == 'ДП' || type == 'GP') {
-          this.diplomCount += 1;
-        }
-        if (type == 'КП' || type == 'CP') {
-          this.couseCount += 1;
-        }
-        let day = event.start.getDay();
-        if (day == 0) {
-          this.sundayCount += 1;
-          day = 7;
-        }
-        if (day == 1) {
-          this.mondayCount += 1;
-        }
-        if (day == 2) {
-          this.tuesdayCount += 1;
-        }
-        if (day == 3) {
-          this.wednesdayCount += 1;
-        }
-        if (day == 4) {
-          this.thursdayCount += 1;
-        }
-        if (day == 5) {
-          this.fridayCount += 1;
-        }
-        if (day == 6) {
-          this.saturdayCount += 1;
-        }
-        let lessonType = this.lessonservice.getTitelPart(event.title,  3).replaceAll(' ', '');
-        if (lessonType == '') {
-          lessonType = 'ДП';
-        }
-        const index = this.lessons.indexOf(lessonType);
-        if (index == -1 ) {
+      if (!(event.start < this.startDate || event.end > this.endDate)) {
+        if (event.meta == 'lesson') {
+          let type = this.lessonservice.getType(event.title);
+          type = type.replaceAll(' ', '');
+          if (type == 'Лекция' || type == 'Lect.') {
+            this.lectCount += 1;
+          }
+          if (type == 'Лаб.работа' || type == 'Lab') {
+            this.labCount += 1;
+          }
+          if (type == 'Практ.зан.' || type == 'WS') {
+            this.practCount += 1;
+          }
+          if (type == 'ДП' || type == 'GP') {
+            this.diplomCount += 1;
+          }
+          if (type == 'КП' || type == 'CP') {
+            this.couseCount += 1;
+          }
+          let day = event.start.getDay();
+          if (day == 0) {
+            this.sundayCount += 1;
+            day = 7;
+          }
+          if (day == 1) {
+            this.mondayCount += 1;
+          }
+          if (day == 2) {
+            this.tuesdayCount += 1;
+          }
+          if (day == 3) {
+            this.wednesdayCount += 1;
+          }
+          if (day == 4) {
+            this.thursdayCount += 1;
+          }
+          if (day == 5) {
+            this.fridayCount += 1;
+          }
+          if (day == 6) {
+            this.saturdayCount += 1;
+          }
+          let lessonType = this.lessonservice.getTitelPart(event.title, 3).replaceAll(' ', '');
+          let color = this.lessonservice.getColorLesson(event);
+          if (lessonType == '') {
+            lessonType = 'ДП';
+            color = '#7F00FF';
+          }
+          const index = this.lessons.indexOf(lessonType);
+          if (index == -1) {
             this.lessons.push(lessonType);
+            this.lessonColors.push(color);
             this.lessonMarks.push(1);
             const marksTemp = [0, 0, 0, 0, 0, 0, 0];
             marksTemp[day - 1] = 1;
             this.lessonDayMarks.push(marksTemp);
-        } else {
+          } else {
             this.lessonMarks[index] = this.lessonMarks[index] + 1;
             this.lessonDayMarks[index][day - 1] = this.lessonDayMarks[index][day - 1] + 1;
+          }
         }
       }
     });
@@ -158,17 +183,19 @@ export class ScheduleStatisticsComponent implements OnInit {
     });
 
     this.chartOptions = {
-      series: [this.lectCount, this.labCount, this.practCount, this.diplomCount, this.couseCount],
+      series: [this.lectCount, this.labCount, this.practCount, this.couseCount, this.diplomCount],
       chart: {
         type: 'donut'
       },
-      labels: ['Лекции', 'Лабораторные работы ', 'Практичесие занятия', 'Дипломный проект', 'Курсовой проект'],
+      colors: this.typeColors,
+      labels: this.lessonTypes,
       responsive: [
         {
           breakpoint: 480,
           options: {
             chart: {
-              width: 200
+              width: 200,
+              height: 200
             },
             legend: {
               position: 'bottom'
@@ -181,8 +208,9 @@ export class ScheduleStatisticsComponent implements OnInit {
     this.chartOptions1 = {
       series: [
         {
-          name: 'Занятия',
-          data: [this.mondayCount, this.tuesdayCount, this.wednesdayCount, this.thursdayCount, this.fridayCount, this.saturdayCount, this.sundayCount]
+          name: this.translatePipe.transform('text.schedule.lesson', 'Занятие'),
+          data: [this.mondayCount, this.tuesdayCount, this.wednesdayCount, this.thursdayCount,
+                 this.fridayCount, this.saturdayCount, this.sundayCount]
         }
       ],
       chart: {
@@ -190,6 +218,11 @@ export class ScheduleStatisticsComponent implements OnInit {
         type: 'line',
         zoom: {
           enabled: false
+        },
+        toolbar: {
+          tools: {
+            download: '⇩'
+          }
         }
       },
       dataLabels: {
@@ -199,7 +232,7 @@ export class ScheduleStatisticsComponent implements OnInit {
         curve: 'straight'
       },
       title: {
-        text: 'Занятия каждый день',
+        text: '',
         align: 'left'
       },
       grid: {
@@ -217,7 +250,7 @@ export class ScheduleStatisticsComponent implements OnInit {
     this.chartOptions2 = {
       series: [
         {
-          name: 'Количество',
+          name: this.translatePipe.transform('text.schedule.count', 'Количество'),
           data: this.lessonMarks
         }
       ],
@@ -225,16 +258,7 @@ export class ScheduleStatisticsComponent implements OnInit {
         height: 350,
         type: 'bar'
       },
-      colors: [
-        '#008FFB',
-        '#00E396',
-        '#FEB019',
-        '#FF4560',
-        '#775DD0',
-        '#546E7A',
-        '#26a69a',
-        '#D10CE8'
-      ],
+      colors: this.lessonColors,
       plotOptions: {
         bar: {
           columnWidth: '45%',
@@ -254,16 +278,7 @@ export class ScheduleStatisticsComponent implements OnInit {
         categories: this.lessons,
         labels: {
           style: {
-            colors: [
-              '#008FFB',
-              '#00E396',
-              '#FEB019',
-              '#FF4560',
-              '#775DD0',
-              '#546E7A',
-              '#26a69a',
-              '#D10CE8'
-            ],
+            colors: this.lessonColors,
             fontSize: '12px'
           }
         }
@@ -278,6 +293,7 @@ export class ScheduleStatisticsComponent implements OnInit {
         height: 350,
         stacked: true
       },
+      colors: this.lessonColors,
       plotOptions: {
         bar: {
           horizontal: true
@@ -288,7 +304,7 @@ export class ScheduleStatisticsComponent implements OnInit {
         colors: ['#fff']
       },
       title: {
-        text: 'Предметы каждый день'
+        text: ''
       },
       xaxis: {
         categories: this.weekDays
@@ -316,4 +332,7 @@ export class ScheduleStatisticsComponent implements OnInit {
     };
   }
 
+  onCancelClick() {
+    this.dialogRef.close(null);
+  }
 }

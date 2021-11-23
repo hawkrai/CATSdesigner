@@ -40,6 +40,11 @@ import * as dataRu from './core/translate/translations_ru.json';
 import * as dataEn from './core/translate/translations_en.json';
 import { ScheduleStatisticsComponent } from './schedule-statistics/schedule-statistics.component';
 import {NgApexchartsModule} from 'ng-apexcharts';
+import {StoreModule} from '@ngrx/store';
+import {appReducers} from '../../../complex/src/app/store/reducers/app.reducers';
+import {EffectsModule} from '@ngrx/effects';
+import { FilesEffects } from './service/files.effects';
+
 
 registerLocaleData(localeRu);
 
@@ -77,11 +82,19 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     MatInputModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+
     MatFormFieldModule,
     ReactiveFormsModule,
     NgxMaterialTimepickerModule,
     NgApexchartsModule,
     FlatpickrModule.forRoot(),
+    StoreModule.forRoot(appReducers, {
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false
+      }
+    }),
+    EffectsModule.forRoot([ FilesEffects]),
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory

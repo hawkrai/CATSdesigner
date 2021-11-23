@@ -10,13 +10,13 @@
     <div [innerHTML]="newItem.Body" class="body"
          style="font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 1em;  margin-bottom: 0em;max-height: 35vh;overflow-y: auto;">
     </div>
-    <!--div *ngIf="newItem.Attachments.length">
+    <div *ngIf="newItem.Attachments">
       <div class="attachments-container">
-        <a class="attachment" *ngFor="let file of data.itemNews.Attachments" (click)="fileDownload(file)">{{file.Name}}</a>
+        <a class="attachment"  (click)="fileDownload(newItem.Attachments)">Приложение</a>
       </div>
-    </div-->
+    </div>
     <div>
-      <h6 (click)="rerouteToSubject()"
+      <h6 (click)="rerouteToSubject(newItem.SubjectId)"
           style="font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;color: #777; ">{{newItem.Subject.Name}}</h6>
     </div>
     <h6

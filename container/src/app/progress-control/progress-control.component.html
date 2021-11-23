@@ -1,31 +1,31 @@
 <app-nav></app-nav>
 <div class="container">
     <div class="h1-container">
-        <span class="h1">Контроль успеваемости</span>
+        <span class="h1"> {{'text.academic.performance.monitoring' | translate: 'Контроль успеваемости'}}</span>
         <!--div style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" matTooltip="Помощь" matTooltipPosition="right" (click)="showHelp()">
             <mat-icon>help_outline</mat-icon>
         </button></div-->
-      <h2 style = "float: right;margin: -5px 0 10px;" (click)="logOut()"> < На стартовую</h2>
+      <h2 style = "float: right;margin: -5px 0 10px;" (click)="logOut()"> {{'text.academic.performance.monitoring.start.page' | translate: '< На стартовую'}}</h2>
     </div>
     <p></p>
     <div style = "display: flex">
       <div style="width: 70%;font-size: 14px;color: #000000;font-family: Roboto, Helvetica Neue, sans-serif;">
-        <p>Для просмотра успеваемости студентов введите номер их группы. Если интересует успеваемость отдельного студента, то добавьте его фамилию. </p>
-        <p>Можно просмотреть суммарную статистику успеваемости по всем изучаемым в настоящее время предметам, а также выборочно по каждому предмету. Также можно ознакомиться со статисткой успеваемости по изученным ранее предметам.</p>
-        <p>Полученную информацию можно распечатать либо экспортировать в MS Excel.</p>
+        <p>{{'text.academic.performance.monitoring.start.info.first' | translate: 'Для просмотра успеваемости студентов введите номер их группы. Если интересует успеваемость отдельного студента, то добавьте его фамилию.'}} </p>
+        <p>{{'text.academic.performance.monitoring.start.info.second' | translate: 'Можно просмотреть суммарную статистику успеваемости по всем изучаемым в настоящее время предметам, а также выборочно по каждому предмету. Также можно ознакомиться со статистикой успеваемости по изученным ранее предметам.'}}</p>
+        <p>{{'text.academic.performance.monitoring.start.info.third' | translate: 'Полученную информацию можно распечатать либо экспортировать в MS Excel.'}}</p>
       </div>
 
       <div style = "float: right; margin-top: -15px;" >
         <form [formGroup]="controlForm">
             <mat-form-field class="default" color="primary">
-                <input matInput color="primary" formControlName="groupName" placeholder="Введите номер группы" type="text">
+                <input matInput color="primary" formControlName="groupName" placeholder= "{{'text.academic.performance.monitoring.enter.surname' | translate : 'Введите номер группы'}}" type="text">
             </mat-form-field>
           <p></p>
           <mat-form-field class="default" color="primary">
-            <input matInput color="primary" formControlName="surname" placeholder="Введите фамилию студента" type="text">
+            <input matInput color="primary" formControlName="surname" placeholder="{{'text.academic.performance.monitoring.enter.surname' | translate : 'Введите фамилию студента'}}" type="text">
           </mat-form-field>
           <p></p>
-            <a mat-flat-button color="primary" (click)="enterGroup()">Найти</a>
+            <a mat-flat-button color="primary" (click)="enterGroup()">{{'search' | translate: 'Найти'}}</a>
             <!--a mat-flat-button color="primary" href="/login">Выйти</a-->
         </form>
       </div>
