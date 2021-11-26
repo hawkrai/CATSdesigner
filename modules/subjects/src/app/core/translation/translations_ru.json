@@ -23,6 +23,7 @@
   "mark": "Оценка",
   "subgroup": "Подгруппа",
   "subdivision": "Разделение на подгруппы",
+  "subdivision.move": "Переместить в другую подгруппу",
   "subgroup.management": "Управление подгруппами",
   "subject.management": "Управление предметами",
   "subject.choose": "Выберите предмет",

@@ -41,6 +41,7 @@
   "mark": "Mark",
   "subgroup": "Subgroup",
   "subdivision": "Subdivision",
+  "subdivision.move": "Move to another subgroup",
   "subgroup.management": "Subgroup management",
   "subject.management": "Subjects management",
   "search": "Search",
