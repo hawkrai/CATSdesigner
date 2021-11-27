@@ -78,6 +78,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         console.log('from connection Id ', newcomerConnectionId);
         console.log('from chat id', chatId);
         console.log('------------------');
+        this.signalRService.callWasConfirmed(chatId);
         await this.createRTCPeerConnection(newcomerConnectionId);
       }
     );

@@ -20,6 +20,8 @@ const DisconnectUser = "HandleDisconnection";
 export class SignalRService {
   public hubConnection: HubConnection
   public user: any;
+  private timer: any;
+  private timerCHat: any;
 
   constructor(
     private dataService: DataService,
@@ -69,7 +71,6 @@ export class SignalRService {
 
     this.hubConnection.on(IncomeCall, (chatId:any) => {
       this.videoChatService.NotifyIncomeCall(chatId);
-
     })
     this.hubConnection.on(DisconnectUser, (chatId:any, userId:any) => {
       console.log("disconnect user request", chatId, userId);
@@ -103,16 +104,33 @@ export class SignalRService {
   }
 
   public sendCallRequest(chatId: number){
+    this.timer = setTimeout(
+      async () => {
+        this.videoChatService.endCall(chatId);
+        await this.disconnectFromCall(chatId);
+      },
+      10000
+    );
     this.videoChatService.SetActiveCall(chatId)
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId)
   }
 
   public disconnectFromCall(chatId: any){
+    this.callWasConfirmed(chatId);
     return this.hubConnection.invoke(DisconnectFromChat, this.user.id, chatId );
   }
 
   public SetVoiceChatConnection(chatId: any){
     return this.hubConnection.invoke("SetVoiceChatConnection", chatId, this.user.id);
+  }
+
+  public callWasConfirmed(chatId: any){
+    try{
+      clearTimeout(this.timer);
+    }
+    catch{
+
+    }
   }
   public SendGroupFiles(files) {
     const k = 1024;
@@ -147,4 +165,5 @@ export class SignalRService {
   public join(userId: number, role: string) {
     return this.hubConnection.invoke("Join", userId, role);
   }
+
 }

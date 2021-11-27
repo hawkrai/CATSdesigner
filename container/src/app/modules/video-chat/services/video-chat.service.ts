@@ -17,9 +17,9 @@ export class VideoChatService {
   constructor(private chatService: ChatService) {}
 
   public NotifyIncomeCall(chatId: any) {
-    if (this.isActiveCall.getValue() || this.isIncomingCall) {
-      return false;
-    }
+    // if (this.isActiveCall.getValue() || this.isIncomingCall) {
+    //   return false;
+    // }
     this.currentChatId = chatId;
     console.log(chatId)
 
@@ -30,9 +30,9 @@ export class VideoChatService {
   }
 
   public SetActiveCall(chatId: any) {
-    if(this.isActiveCall){
-      return false;
-    }
+    // if(this.isActiveCall){
+    //   return false;
+    // }
     this.currentChatId = chatId;
 
     this.isIncomingCall.next(false);
