@@ -142,6 +142,7 @@
   "text.subjects.labs.jobs.deleting": "Удаление работы",
   "text.subjects.labs.to.protect": "На защиту лабораторной работы",
   "text.subjects.labs.for.revision": "На доработку",
+  "text.subjects.labs.unverified": "Имеются непроверенные лабораторные работы",
   "text.subjects.lector.joining": "Присоединение преподавателя к предмету",
   "text.subjects.lector.choose": "Выберите преподавателя",
   "text.subjects.lector.plural": "Преподаватели",

@@ -70,7 +70,9 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this.modules$ = this.activeRouter.params.pipe(
-      switchMap((params: Params) => this.coreService.getSubjectModules(+params.id))
+      switchMap((params: Params) => {
+        return this.coreService.getSubjectModules(+params.id)
+      })
     );
   }
 

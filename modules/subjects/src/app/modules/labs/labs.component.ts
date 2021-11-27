@@ -56,6 +56,8 @@ export class LabsComponent implements OnInit {
       { tab: this.translate.transform('works.protection', 'Защита работ'), route: 'job-protection' }
     ];
 
+    this.store.dispatch(labsActions.checkJobProtections());
+
     this.state$ = combineLatest(
       this.store.select(groupsSelectors.getGroups),
       this.store.select(subjectSelectors.getSubjectId),
