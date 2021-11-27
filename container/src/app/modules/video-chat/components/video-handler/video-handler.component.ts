@@ -32,6 +32,7 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
       this.IsIncomingCall = value;
     });
   }
+  
   ngOnDestroy(): void {
     console.log("destroed");
     this.endCall();
