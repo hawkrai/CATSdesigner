@@ -248,6 +248,18 @@ namespace ChatServer.Hubs
                 );
         }
 
+        public async Task Reject(int chatId, string message)
+        {
+            await Clients
+                .GroupExcept(
+                    chatId.ToString(),
+                    Context.ConnectionId
+                )
+                .SendAsync(
+                    "HandleRejection",
+                    chatId,
+                    message);
+        }
         #endregion
     }
 }

@@ -12,16 +12,19 @@ export class VideoChatService {
 
   public isActiveCall = new BehaviorSubject<boolean>(false);
   public isIncomingCall = new BehaviorSubject<boolean>(false);
-  public chat : any;
+  public chat: any;
 
   constructor(private chatService: ChatService) {}
 
   public NotifyIncomeCall(chatId: any) {
-    // if (this.isActiveCall.getValue() || this.isIncomingCall) {
-    //   return false;
-    // }
+    if (this.currentChatId !== chatId) {
+      if (this.isActiveCall.getValue() || this.isIncomingCall.getValue()) {
+        return false;
+      }
+    }
+
     this.currentChatId = chatId;
-    console.log(chatId)
+    console.log(chatId);
 
     this.getChatInfo(chatId);
     this.isIncomingCall.next(true);
@@ -30,9 +33,11 @@ export class VideoChatService {
   }
 
   public SetActiveCall(chatId: any) {
-    // if(this.isActiveCall){
-    //   return false;
-    // }
+    if (this.currentChatId !== chatId) {
+      if (this.isActiveCall.getValue() || this.isIncomingCall.getValue()) {
+        return false;
+      }
+    }
     this.currentChatId = chatId;
 
     this.isIncomingCall.next(false);
@@ -49,34 +54,30 @@ export class VideoChatService {
     this.endCall();
   }
 
-  public answerCall(){
+  public answerCall() {
     this.isIncomingCall.next(false);
 
-    if(this.currentChatId == null)
-      return;
+    if (this.currentChatId == null) return;
 
     this.isActiveCall.next(true);
   }
 
-  public getChatInfo(chatId){
-    console.log("get chat info")
-    this.chatService.LoadChat(chatId).subscribe(
-      (chat: any) => {
-        console.log("chat", chat)
-        this.chat = chat;
-      }
-    )
+  public getChatInfo(chatId) {
+    console.log('get chat info');
+    this.chatService.LoadChat(chatId).subscribe((chat: any) => {
+      console.log('chat', chat);
+      this.chat = chat;
+    });
   }
 
-  public endCall(chatId = null){
-    if(chatId != null)
-    {
-      if(this.currentChatId != chatId){
+  public endCall(chatId = null) {
+    if (chatId != null) {
+      if (this.currentChatId != chatId) {
         return;
       }
     }
-    this.currentChatId = null
-    this.chat = null
+    this.currentChatId = null;
+    this.chat = null;
     this.isActiveCall.next(false);
     this.isIncomingCall.next(false);
   }

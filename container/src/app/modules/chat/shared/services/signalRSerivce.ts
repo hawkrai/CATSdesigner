@@ -6,13 +6,16 @@ import { ContactService } from './contactService';
 import { MessageCto } from '../models/dto/messageCto';
 import { environment } from 'src/environments/environment';
 import { VideoChatService } from './../../../video-chat/services/video-chat.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 //api methods
 const SendCallRequest = 'SendCallRequest';
 const DisconnectFromChat = 'DisconnectFromChat';
+const SendRejection = "Reject";
 //handlers
 const IncomeCall = 'HandleIncomeCall';
 const DisconnectUser = 'HandleDisconnection';
+const HandleRejection = "HandleRejection";
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +24,12 @@ export class SignalRService {
   public hubConnection: HubConnection;
   public user: any;
   private timer: any;
-  private timerCHat: any;
 
   constructor(
     private dataService: DataService,
     private videoChatService: VideoChatService,
-    private contactService: ContactService
+    private contactService: ContactService,
+    private snackBar: MatSnackBar
   ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.connect();
@@ -77,12 +80,26 @@ export class SignalRService {
 
     this.hubConnection.on(IncomeCall, (chatId: any) => {
       this.setEndChatTimer(chatId, 45000);
-      this.videoChatService.NotifyIncomeCall(chatId);
+      if(!this.videoChatService.NotifyIncomeCall(chatId)){
+        console.log("rejected");
+        this.sendRejection(chatId, "unable to connect");
+      }
     });
+
     this.hubConnection.on(DisconnectUser, (chatId: any, userId: any) => {
       console.log('disconnect user request', chatId, userId);
       this.videoChatService.DisconnectUser(chatId, userId);
     });
+
+    this.hubConnection.on(HandleRejection, (chatId: any, message: string) => {
+      console.log("on rejection");
+      console.log(chatId);
+      console.log(this.videoChatService.currentChatId);
+      if(this.videoChatService.currentChatId == chatId){
+        this.reject(message);
+        this.videoChatService.endCall(chatId);
+      }
+    })
   }
 
   public addChat(firstId: number, secondId: number, chatId: number) {
@@ -114,6 +131,10 @@ export class SignalRService {
     );
   }
 
+  public sendRejection(chatId: number, message: string){
+    return this.hubConnection.invoke(SendRejection, chatId, message);
+  }
+
   public sendCallRequest(chatId: number) {
     this.setEndChatTimer(chatId, 40000);
     this.videoChatService.SetActiveCall(chatId);
@@ -133,17 +154,36 @@ export class SignalRService {
     );
   }
 
+  public reject(message: string){
+    this.snackBar.open(message, null, {
+      duration: 2000,
+    });
+  }
+
   public async setEndChatTimer(chatId: any, ms: number) {
+    this.clearTimer();
     this.timer = setTimeout(async () => {
       this.videoChatService.endCall(chatId);
       await this.disconnectFromCall(chatId);
     }, ms);
+
+    this.callWasConfirmed = (localChatId: any) => {
+      console.log(`localChatId`, localChatId);
+      console.log(`chatId`, chatId);
+      if(chatId == localChatId){
+        this.clearTimer();
+      }
+    }
   }
 
-  public callWasConfirmed(chatId: any) {
+  private clearTimer(){
     try {
-      clearTimeout(this.timer);
+        clearTimeout(this.timer);
     } catch {}
+  }
+
+  public callWasConfirmed = (chatId: any) => {
+
   }
 
   public SendGroupFiles(files) {
