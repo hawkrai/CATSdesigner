@@ -5,7 +5,9 @@
   <div
     ngDraggable
     [ngResizable]="IsActiveCall"
-    [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+    [rzHandles]="'se,sw,ne,nw'"
+    [rzAspectRatio]="1"
+    [rzMinWidth]="250"
     zIndex="'100000'"
   >
     <div *ngIf="IsActiveCall" class="video-call">

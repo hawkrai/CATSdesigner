@@ -1,6 +1,9 @@
 .ng-draggable {
   cursor: grab;
   background-color: black;
+
+  min-height: fit-content;
+  width: 150px;
 }
 
 .video-call {
