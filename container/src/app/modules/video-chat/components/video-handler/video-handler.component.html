@@ -49,16 +49,11 @@
     </div>
     <div *ngIf="IsIncomingCall">
       <div class="caller-information" *ngIf="this.videoChatService.chat">
-        <div class="chat-user-img align-self-center mr-3">
           <img style="height: 36px !important;" *ngIf="this.videoChatService.chat?.img"
             src="{{this.videoChatService.chat.img}}" class="rounded-circle avatar-xs" alt="">
-          <div class="avatar-xs" *ngIf="!this.videoChatService?.chat">
-            <span style="height: 36px !important;"
-              class="avatar-title rounded-circle bg-soft-primary text-primary">
-              {{this.videoChatService.chat?.name}}
-            </span>
+          <div class="caller-information__name" *ngIf="this.videoChatService?.chat">
+            {{this.videoChatService.chat?.name}}
           </div>
-        </div>
       </div>
       <mat-icon class="control-icon" (click)="answerCall()" [ngStyle]="{ color: 'green' }">
         call</mat-icon

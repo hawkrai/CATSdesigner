@@ -190,6 +190,7 @@ export class IndexComponent implements OnInit {
     }
     return false;
   }
+
   public openSnackBar(message: string, action?: string) {
     this.snackBar.open(message, action, {
       duration: 2000,

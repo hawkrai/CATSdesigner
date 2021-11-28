@@ -76,7 +76,7 @@ export class SignalRService {
     );
 
     this.hubConnection.on(IncomeCall, (chatId: any) => {
-      this.setEndChatTimer(chatId, 25000);
+      this.setEndChatTimer(chatId, 45000);
       this.videoChatService.NotifyIncomeCall(chatId);
     });
     this.hubConnection.on(DisconnectUser, (chatId: any, userId: any) => {
@@ -115,7 +115,7 @@ export class SignalRService {
   }
 
   public sendCallRequest(chatId: number) {
-    this.setEndChatTimer(chatId, 20000);
+    this.setEndChatTimer(chatId, 40000);
     this.videoChatService.SetActiveCall(chatId);
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId);
   }
@@ -134,10 +134,10 @@ export class SignalRService {
   }
 
   public async setEndChatTimer(chatId: any, ms: number) {
-    this.timer = setTimeout(async () => {
-      this.videoChatService.endCall(chatId);
-      await this.disconnectFromCall(chatId);
-    }, ms);
+    // this.timer = setTimeout(async () => {
+    //   this.videoChatService.endCall(chatId);
+    //   await this.disconnectFromCall(chatId);
+    // }, ms);
   }
 
   public callWasConfirmed(chatId: any) {
