@@ -185,6 +185,10 @@ export class IndexComponent implements OnInit {
     this.signalRService.sendCallRequest(this.dataService.activChatId)
   }
   isAllowedForUser(){
+    if(this.dataService?.activChat?.groupId){
+      return false;
+    }
+
     if(this.dataService.user.role === "lector"){
       return true;
     }
