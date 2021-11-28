@@ -184,6 +184,12 @@ export class IndexComponent implements OnInit {
   startCall() {
     this.signalRService.sendCallRequest(this.dataService.activChatId)
   }
+  isAllowedForUser(){
+    if(this.dataService.user.role === "lector"){
+      return true;
+    }
+    return false;
+  }
   public openSnackBar(message: string, action?: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
