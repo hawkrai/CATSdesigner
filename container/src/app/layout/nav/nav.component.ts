@@ -46,6 +46,9 @@ export class NavComponent implements OnInit, OnDestroy {
   lecturerSearchResults!: Lecturer[];
   studentSearchResults!: Student[];
   groupSearchResults!: Group[];
+  bestLecturerSearchResult!: Lecturer;
+  bestStudentSearchResult!: Student;
+  bestGroupSearchResult!: Group;
  
   constructor(private layoutService: LayoutService,
     private router: Router ,
@@ -155,9 +158,11 @@ export class NavComponent implements OnInit, OnDestroy {
       this.viewGroupSearchResults();
       this.viewLecturerSearchResults();
       this.viewStudentSearchResults();
+      
     }
     else {
       this.cleanSearchResults();
+      //
     }
   }
 
@@ -165,12 +170,17 @@ export class NavComponent implements OnInit, OnDestroy {
     this.lecturerSearchResults = null;
     this.studentSearchResults = null;
     this.groupSearchResults = null;
+    this.bestLecturerSearchResult = null;
+    this.bestStudentSearchResult = null;
+    this.bestGroupSearchResult = null;
   }
 
   viewLecturerSearchResults() {
     this.searchService.getLecturerSearchResults(this.valueForSearch).subscribe(res => {
       if(res.length > 0)
-        this.lecturerSearchResults = res;
+      this.lecturerSearchResults = res;
+      this.bestLecturerSearchResult = this.lecturerSearchResults[0];
+      this.lecturerSearchResults = this.lecturerSearchResults.slice(1, this.lecturerSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
     });
   }
 
@@ -178,6 +188,8 @@ export class NavComponent implements OnInit, OnDestroy {
     this.searchService.getStudentSearchResults(this.valueForSearch).subscribe(res => {
       if(res.length > 0)
         this.studentSearchResults = res;
+        this.bestStudentSearchResult = this.studentSearchResults[0];
+        this.studentSearchResults = this.studentSearchResults.slice(1, this.studentSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
     });
   }
 
@@ -185,8 +197,11 @@ export class NavComponent implements OnInit, OnDestroy {
     this.searchService.getGroupSearchResults(this.valueForSearch).subscribe(res => {
       if(res.length > 0)
         this.groupSearchResults = res;
-    });
-  }
+        this.bestGroupSearchResult = this.groupSearchResults[0];
+        this.groupSearchResults = this.groupSearchResults.slice(1, this.groupSearchResults.length - 1).sort((n1, n2) => n1.Name.localeCompare(n2.Name));
+      });
+    }
+  
 
   public routeToAboutPopover() {
 

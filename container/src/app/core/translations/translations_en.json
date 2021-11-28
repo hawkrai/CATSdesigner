@@ -462,7 +462,9 @@
   "text.profile.currentSubjects": "Current subjects",
   "text.profile.complitedSubjects": "Complited subjects",
   "text.profile.cp": "Course projects",
-  "text.profile.dp": "Graduation project",
+  "text.profile.dpOne": "Graduation project",
+  "text.profile.dp": "Graduation projects",
+
 
   "text.login.WrongData": "Wrong login and (or) password!",
   "text.login.NotVerified": "Your account has not been verified. Contact your teacher to confirm your account.",
