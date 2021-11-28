@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { SignalRService } from 'src/app/modules/chat/shared/services/signalRSerivce';
 import { EventEmitter } from '@angular/core';
+import { VideoChatService } from './../../services/video-chat.service';
 
 const configuration = {
   configuration: {
@@ -45,7 +46,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
   public stream: any;
 
-  constructor(private signalRService: SignalRService) {
+  constructor(private signalRService: SignalRService, private videoChatService : VideoChatService) {
     console.log('created');
   }
 
@@ -79,19 +80,21 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         console.log('from chat id', chatId);
         console.log('------------------');
         this.signalRService.callWasConfirmed(chatId);
-        await this.createRTCPeerConnection(newcomerConnectionId);
+        await this.createRTCPeerConnection(chatId, newcomerConnectionId);
       }
     );
 
     this.signalRService.hubConnection.off('RegisterOffer');
     this.signalRService.hubConnection.on(
       'RegisterOffer',
-      async (offer, fromClientHubId) => {
+      async (chatId, offer, fromClientHubId) => {
+
         console.log('RegisterOffer');
         console.log(fromClientHubId);
         console.log(offer);
         console.log('------------------');
-        this.createRTCPeerConnection(fromClientHubId, offer);
+        this.signalRService.callWasConfirmed(chatId);
+        this.createRTCPeerConnection(chatId, fromClientHubId, offer);
       }
     );
 
@@ -133,7 +136,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.invoke('SetVoiceChatConnection', 1, user);
   }
 
-  async createRTCPeerConnection(fromClientConnectionId: string, offer = null) {
+  async createRTCPeerConnection(chatId: number, fromClientConnectionId: string, offer = null) {
     const peerConnection = new RTCPeerConnection(configuration);
     this._linkedPeerConnections.set(fromClientConnectionId, peerConnection);
 
@@ -153,7 +156,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         offer
       );
     } else {
-      this.createNewRTCPeerConnection(peerConnection, fromClientConnectionId);
+      this.createNewRTCPeerConnection(chatId, peerConnection, fromClientConnectionId);
     }
   }
 
@@ -176,6 +179,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async createNewRTCPeerConnection(
+    chatId : number,
     peerConnection: RTCPeerConnection,
     FromClientHubId: string
   ) {
@@ -186,6 +190,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     console.log('FromClientHubId', FromClientHubId);
     this.signalRService.hubConnection?.invoke(
       'SendOffer',
+      chatId,
       offer,
       FromClientHubId
     );

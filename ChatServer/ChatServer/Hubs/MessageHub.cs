@@ -211,13 +211,14 @@ namespace ChatServer.Hubs
                     chatId);
         }
 
-        public async Task SendOffer(object offer, string fromConnectionId)
+        public async Task SendOffer(int chatId, object offer, string fromConnectionId)
         {
             await Clients.Client(
                     fromConnectionId
                 )
                 .SendAsync(
                     "RegisterOffer",
+                    chatId,
                     offer,
                     Context.ConnectionId
                 );
