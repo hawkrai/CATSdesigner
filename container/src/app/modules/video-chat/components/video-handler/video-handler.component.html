@@ -21,21 +21,13 @@
       </div>
 
       <div class="video-call__controls">
-        <div
-          class="video-call__control"
-          (click)="this.switchMicro()"
-        >
-          <mat-icon class="control-icon" *ngIf="IsMicroActive"
-            >mic</mat-icon
-          >
+        <div class="video-call__control" (click)="this.switchMicro()">
+          <mat-icon class="control-icon" *ngIf="IsMicroActive">mic</mat-icon>
           <mat-icon class="control-icon" *ngIf="!IsMicroActive"
             >mic_off</mat-icon
           >
         </div>
-        <div
-          class="video-call__control"
-          (click)="this.switchVideo()"
-        >
+        <div class="video-call__control" (click)="this.switchVideo()">
           <mat-icon class="control-icon" *ngIf="isVideoActive"
             >videocam</mat-icon
           >
@@ -44,25 +36,47 @@
           >
         </div>
 
-        <mat-icon class="control-icon" (click)="endCall()" [ngStyle]="{ color: 'red' }">
+        <mat-icon
+          class="control-icon"
+          (click)="endCall()"
+          [ngStyle]="{ color: 'red' }"
+        >
           call_end</mat-icon
         >
       </div>
     </div>
     <div *ngIf="IsIncomingCall">
       <div class="caller-information" *ngIf="this.videoChatService.chat">
-          <img style="height: 36px !important;" *ngIf="this.videoChatService.chat?.img"
-            src="{{this.videoChatService.chat.img}}" class="rounded-circle avatar-xs" alt="">
-          <div class="caller-information__name" *ngIf="this.videoChatService?.chat">
-            {{this.videoChatService.chat?.name}}
-          </div>
+        <img
+          style="height: 36px !important"
+          *ngIf="this.videoChatService.chat?.img"
+          src="{{ this.videoChatService.chat.img }}"
+          class="rounded-circle avatar-xs"
+          alt=""
+        />
+        <div
+          class="caller-information__name"
+          *ngIf="this.videoChatService?.chat"
+        >
+          {{ this.videoChatService.chat?.name }}
+        </div>
       </div>
-      <mat-icon class="control-icon" (click)="answerCall()" [ngStyle]="{ color: 'green' }">
-        call</mat-icon
-      >
-      <mat-icon class="control-icon" (click)="endCall()" [ngStyle]="{ color: 'red' }">
-        call_end</mat-icon
-      >
+      <div class="video-call__controls">
+        <mat-icon
+          class="control-icon"
+          (click)="answerCall()"
+          [ngStyle]="{ color: 'green' }"
+        >
+          call</mat-icon
+        >
+        <mat-icon
+          class="control-icon"
+          (click)="endCall()"
+          [ngStyle]="{ color: 'red' }"
+        >
+          call_end</mat-icon
+        >
+      </div>
     </div>
   </div>
 </div>
