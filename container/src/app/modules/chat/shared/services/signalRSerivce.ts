@@ -134,10 +134,10 @@ export class SignalRService {
   }
 
   public async setEndChatTimer(chatId: any, ms: number) {
-    // this.timer = setTimeout(async () => {
-    //   this.videoChatService.endCall(chatId);
-    //   await this.disconnectFromCall(chatId);
-    // }, ms);
+    this.timer = setTimeout(async () => {
+      this.videoChatService.endCall(chatId);
+      await this.disconnectFromCall(chatId);
+    }, ms);
   }
 
   public callWasConfirmed(chatId: any) {
