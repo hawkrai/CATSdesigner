@@ -81,4 +81,8 @@ export class VideoChatService {
     this.isActiveCall.next(false);
     this.isIncomingCall.next(false);
   }
+
+  public isChatMatch(chatId: number){
+    return this.currentChatId === chatId;
+  }
 }

@@ -82,6 +82,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         console.log('from connection Id ', newcomerConnectionId);
         console.log('from chat id', chatId);
         console.log('------------------');
+
+        if(!this.videoChatService.isChatMatch(chatId)){
+          this.signalRService.sendRejection(chatId, "Use is in call");
+          return;
+        }
         this.signalRService.callWasConfirmed(chatId);
         await this.createRTCPeerConnection(chatId, newcomerConnectionId);
       }
