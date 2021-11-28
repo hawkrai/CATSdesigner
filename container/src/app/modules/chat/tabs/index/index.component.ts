@@ -182,6 +182,10 @@ export class IndexComponent implements OnInit {
   }
 
   startCall() {
+    if(!this.dataService.activChat){
+      this.openSnackBar("Не выбран чат");
+      return false;
+    }
     this.signalRService.sendCallRequest(this.dataService.activChatId)
   }
   isAllowedForUser(){
