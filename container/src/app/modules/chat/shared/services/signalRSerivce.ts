@@ -37,9 +37,9 @@ export class SignalRService {
 
   public connect() {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('https://localhost:44303/chat/')
-      .withAutomaticReconnect()
-      .build();
+                            .withUrl('http://172.16.11.41:4201/chat/')
+                            .withAutomaticReconnect()
+                            .build();
     this.hubConnection
       .start()
       .then(() => {

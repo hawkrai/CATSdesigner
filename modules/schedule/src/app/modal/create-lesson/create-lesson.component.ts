@@ -7,6 +7,8 @@ import {Note} from '../../model/note.model';
 import flatpickr from 'flatpickr';
 import {Russian} from 'flatpickr/dist/l10n/ru';
 import {NoteService} from '../../service/note.service';
+import {pairwise, startWith} from 'rxjs/operators';
+
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian);
@@ -366,6 +368,16 @@ export class CreateLessonComponent implements OnInit {
     if (event.value == 0) {
       this.changedType = '4';
     }
+    this.formGroup.get('subjectF').valueChanges.pipe(
+      startWith(this.formGroup.get('subjectF').value),
+      pairwise()
+    ).subscribe(
+      ([old, value]) => {
+        if (old == 0) {
+          this.changedType = '';
+        }
+      }
+    );
     this.lessonservice.getGroupsBySubjectId(event.value).subscribe(re => {
       this.groups = re.Groups;
     });
@@ -376,6 +388,13 @@ export class CreateLessonComponent implements OnInit {
   }
 
   typeChange(event): void {
+    if (this.changedType == '4') {
+      this.formGroup.get('subjectF').setValue('');
+    }
+
+    if (event.value == '4') {
+      this.formGroup.get('subjectF').setValue(0);
+    }
     this.changedType = event.value;
     if (event.value == '0' || event.value == '4' ) {
       this.formGroup.controls.group.disable();

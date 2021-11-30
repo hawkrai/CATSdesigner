@@ -1,16 +1,20 @@
 <div class="files-component content" *ngIf="state$ | async as state">
   <div class="actions-group actions-group__space-between">
     <h2 class="files-component__title" mat-dialog-title>{{'text.subjects.attachments.files' | translate:'Предметные файлы'}}</h2>
-    <button
+    <div class="row gap-7">
+      <button
       mat-icon-button
       color="primary"
       style="margin-left: auto;margin-right: 0px; display: block;"
       [matTooltip]="'text.download.archive' | translate:'Скачать архивом'"
-      matTooltipPosition="above"
+      matTooltipPosition="below"
       (click)="downloadAsZip()"
     >
       <mat-icon>get_app</mat-icon>
     </button>
+    <app-help [message]="filesHelp.message" [action]="filesHelp.action" class="help"></app-help>
+
+    </div>
   </div>
   <div class="mdc-data-table file-table" *ngIf="state.files.length">
     <table class="mdc-data-table__table">

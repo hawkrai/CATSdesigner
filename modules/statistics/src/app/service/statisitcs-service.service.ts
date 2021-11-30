@@ -13,12 +13,8 @@ export class StatisitcsServiceService {
     return this.http.get<any>('/Services/Parental/ParentalService.svc/LoadGroup?groupId=' + groupId);
   }
 
-  getLabsStastics(subjectId: any, groupId: any): Observable<any> {
-    return this.http.get<any>('/Services/Labs/LabsService.svc/GetMarksV2?subjectID=' + subjectId + '&groupID=' + groupId);
-  }
-
-  getTestStastics(subjectId: any, groupId: any): Observable<any> {
-    return this.http.get<any>('/subject/Services/Labs/LabsService.svc/GetMarksV3?subjectID=' + subjectId + '&groupID=' + groupId);
+  getLabsStastics(groupId: any): Observable<any> {
+    return this.http.get<any>('/Services/Parental/ParentalService.svc/LoadGroup?groupId=' + groupId);
   }
 
   getPracticalStastics(subjectId: any, groupId: any): Observable<any> {
@@ -34,4 +30,7 @@ export class StatisitcsServiceService {
     return this.http.get<any>('/Profile/GetProfileInfoById/' + id);
   }
 
+  getTeacherStatistics(): Observable<any> {
+    return this.http.get<any>('/Services/Statistics/StatisticsService.svc/GetTeacherStatistics');
+  }
 }

@@ -5,9 +5,15 @@
 }
 
 .tabs-container{
-    margin-left: 50px;
+    margin-left: 40px;
 }
 
 button{
     margin-right: 10px;
+}
+
+.h1{
+  width: 100%;
+  font-size: 28px;
+  color: red;
 }

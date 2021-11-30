@@ -9,48 +9,49 @@ import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-p
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
 import { IAppState } from 'src/app/store/state/app.state';
 import * as lecturesSelectors from '../../../../store/selectors/lectures.selectors';
-import * as  lecturesActions from '../../../../store/actions/lectures.actions';
+import * as lecturesActions from '../../../../store/actions/lectures.actions';
 import { DialogService } from 'src/app/services/dialog.service';
 import { VisitDateLecturesPopoverComponent } from './visit-date-lectures-popover/visit-date-lectures-popover.component';
 import { Help } from 'src/app/models/help.model';
 import { Message } from 'src/app/models/message.model';
 import * as catsActions from '../../../../store/actions/cats.actions';
 import * as moment from 'moment';
+import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
+import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { TranslatePipe } from 'educats-translate';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-visit-lectures',
   templateUrl: './visit-lectures.component.html',
   styleUrls: ['./visit-lectures.component.less']
 })
-export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
-
-  @Input() subjectId: number;
-  @Input() isTeacher: boolean;
-  @Input() groupId: number;
-
-  state$: Observable<{ calendar: Calendar[], groupsVisiting: GroupsVisiting }>;
-
+export class VisitLecturesComponent implements OnInit, OnDestroy {
+  
+  state$: Observable<{ calendar: Calendar[], groupsVisiting: GroupsVisiting, isTeacher: boolean }>;
+  subs = new SubSink();
   constructor(
     private store: Store<IAppState>,
     private dialogService: DialogService,
     private translate: TranslatePipe
   ) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.groupId && changes.groupId.currentValue) {
-      this.store.dispatch(lecturesActions.loadGroupsVisiting());
-    }
-  }
-
   ngOnInit() {
     this.store.dispatch(lecturesActions.loadCalendar());
     this.state$ = combineLatest(
       this.store.select(lecturesSelectors.getCalendar),
-      this.store.select(lecturesSelectors.getGroupsVisiting)
+      this.store.select(lecturesSelectors.getGroupsVisiting),
+      this.store.select(subjectSelectors.isTeacher)
     ).pipe(
-      map(([calendar, groupsVisiting]) => ({ calendar, groupsVisiting }))
+      map(([calendar, groupsVisiting, isTeacher]) => ({ calendar, groupsVisiting, isTeacher }))
       );
+    this.subs.add(
+      this.store.select(groupsSelectors.getCurrentGroup).subscribe(group => {
+        if (group) {
+          this.store.dispatch(lecturesActions.loadGroupsVisiting());
+        }
+      })
+    )
   }
 
   getDisplayedColumns(calendar: Calendar[]): string[] {
@@ -58,6 +59,7 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subs.unsubscribe();
     this.store.dispatch(lecturesActions.resetVisiting());
   }
 
@@ -85,28 +87,26 @@ export class VisitLecturesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setVisitMarks(date: Calendar, lecturesMarksVisiting: LecturesMarksVisiting[], index: number): void {
-    if (this.isTeacher) {
-      const visits = {
-        date: moment(date.Date, 'DD.MM.YYYY'),
-        students: lecturesMarksVisiting.map(student => ({
-          name: student.StudentName,
-          mark: student.Marks[index].Mark,
-          comment: student.Marks[index].Comment
-        }))
-      };
+    const visits = {
+      date: moment(date.Date, 'DD.MM.YYYY'),
+      students: lecturesMarksVisiting.map(student => ({
+        name: student.StudentName,
+        mark: student.Marks[index].Mark,
+        comment: student.Marks[index].Comment
+      }))
+    };
 
-      const dialogData: DialogData = {
-        title: this.translate.transform('text.subjects.attendance.students', 'Посещаемость студентов'),
-        buttonText: this.translate.transform('button.save', 'Сохранить'),
-        body: visits
-      };
-      const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs([...lecturesMarksVisiting.map(x => ({ ...x, Marks: [...x.Marks.map(m => ({ ...m }))] }))], index, result.students) }));
-        }
-      });
-    }
+    const dialogData: DialogData = {
+      title: this.translate.transform('text.subjects.attendance.students', 'Посещаемость студентов'),
+      buttonText: this.translate.transform('button.save', 'Сохранить'),
+      body: visits
+    };
+    const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.dispatch(lecturesActions.setLecturesVisitingDate({ lecturesMarks: this.getModelVisitLabs([...lecturesMarksVisiting.map(x => ({ ...x, Marks: [...x.Marks.map(m => ({ ...m }))] }))], index, result.students) }));
+      }
+    });
   }
 
   getModelVisitLabs(lecturesMarksVisiting: LecturesMarksVisiting[], index: number, students: { name: string, mark: string, comment: string}[]): LecturesMarksVisiting[] {

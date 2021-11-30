@@ -20,6 +20,7 @@ import { map } from 'rxjs/operators';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
 import { TranslatePipe } from 'educats-translate';
+import { Help } from 'src/app/models/help.model';
 
 @Component({
   selector: 'app-subject',
@@ -132,4 +133,8 @@ export class SubjectComponent implements OnInit, OnDestroy {
     return groups.map(x => x.GroupName).join('\n');
   }
 
+  subjectsHelp: Help = {
+    message: this.translate.transform('text.help.popover.subject', 'Предмет.'), 
+    action: this.translate.transform('button.understand','Понятно')
+  };
 }

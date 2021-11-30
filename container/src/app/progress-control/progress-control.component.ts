@@ -5,6 +5,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HelpPopoverProgressControlComponent } from './help-popover-progress-control/help-popover-progress-control.component';
 import { MatDialog } from '@angular/material/dialog';
+import {first} from 'rxjs/operators';
+import {AuthenticationService} from '../core/services/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-progress-control',
@@ -14,28 +17,36 @@ import { MatDialog } from '@angular/material/dialog';
 export class ProgressControlComponent implements OnInit {
   controlForm: FormGroup;
   selectedGroup: SafeResourceUrl;
-  isLoad: boolean = false;
+  surname: SafeResourceUrl;
+  isLoad = false;
 
-  constructor(private coreService: CoreService,  private formBuilder: FormBuilder, private sanitizer: DomSanitizer,
-    public dialog: MatDialog) { }
+  constructor(private coreService: CoreService, private router: Router ,  private autService: AuthenticationService,
+              private formBuilder: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/0`);
     this.controlForm = this.formBuilder.group({
-      groupName: ['', Validators.  required]
-    }); 
+      groupName: ['', Validators.  required],
+      surname: ['']
+    });
   }
 
   get f() { return this.controlForm.controls; }
-  
+
   enterGroup(): void {
-    this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/${this.f.groupName.value}`);
+    this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/${this.f.groupName.value}/${this.f.surname.value}`);
     this.isLoad = true;
+  }
+
+  public logOut(): void {
+    this.autService.logout().pipe(first()).subscribe(
+      () => location.reload());
+    this.router.navigate(['/login']);
   }
 
   showHelp(): void{
 
-    const dialogRef = this.dialog.open(HelpPopoverProgressControlComponent, 
+    const dialogRef = this.dialog.open(HelpPopoverProgressControlComponent,
       {
       width: '370px',
       height: '320px',
@@ -47,6 +58,7 @@ export class ProgressControlComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
     });
+
 
 }
 

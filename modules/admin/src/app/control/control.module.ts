@@ -18,6 +18,7 @@ import { StatsComponent } from './stats/stats.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { GroupNotFoundComponent } from './group-not-found/group-not-found.component';
 import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/table-for-stats-subject.component';
+import {NgApexchartsModule} from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/t
     MatFormFieldModule,
     BrowserAnimationsModule,
     MatMenuModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgApexchartsModule
   ],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
   bootstrap: [],

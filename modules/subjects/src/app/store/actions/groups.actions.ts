@@ -2,12 +2,13 @@ import { createAction, props } from '@ngrx/store';
 import {Group} from '../../models/group.model';
 
 export const loadGroups = createAction(
-  '[Groups] Load Groups'
+  '[Groups] Load Groups',
+  props<{ groupId: number }>()
 );
 
 export const loadGroupsSuccess = createAction(
   '[Groups] Load Groups Success',
-  props<{ groups: Group[] }>()
+  props<{ groups: Group[], groupId: number }>()
 );
 
 export const setCurrentGroup = createAction(
@@ -21,15 +22,13 @@ export const setCurrentGroupById = createAction(
 );
 
 export const loadOldGroups = createAction(
-  '[Groups] Load Old Groups'
+  '[Groups] Load Old Groups',
+  props<{ groupId: number }>()
 );
 
 export const loadActiveGroups = createAction(
-  '[Groups] Load Active Groups'
-);
-
-export const resetGroups = createAction(
-  '[Groups] Reset Groups'
+  '[Groups] Load Active Groups',
+  props<{ groupId: number }>()
 );
 
 export const loadStudentGroup = createAction(

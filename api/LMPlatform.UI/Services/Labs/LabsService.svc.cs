@@ -134,8 +134,8 @@ namespace LMPlatform.UI.Services.Labs
 
 	    public ResultViewData Save(int subjectId, int id, string theme, int duration, int order, string shortName, string pathFile, string attachments)
         {
-            try
-            {
+			try
+			{
 				var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
 				if (!isUserAssigned)
 				{
@@ -146,6 +146,24 @@ namespace LMPlatform.UI.Services.Labs
 					};
 				}
 				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
+				var normalizedTheme = theme?.Trim();
+
+				if (string.IsNullOrWhiteSpace(normalizedTheme) || normalizedTheme.Length > 256)
+				{
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Ошибка вылидации"
+					};
+				}
+				else if (duration < 1 || duration > 36)
+                {
+					return new ResultViewData
+					{
+						Code = "500",
+						Message = "Ошибка вылидации"
+					};
+				}
                 SubjectManagementService.SaveLabs(new Models.Labs
                 {
                     SubjectId = subjectId,

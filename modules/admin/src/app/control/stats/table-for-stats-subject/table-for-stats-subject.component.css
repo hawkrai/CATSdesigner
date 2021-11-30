@@ -3,7 +3,7 @@ table {
 }
 
 .stats-table {
-    padding: 80px;
+  padding: 80px 80px 30px 50px;
 }
 
 .main-header {
@@ -31,3 +31,18 @@ td.mat-cell {
 .all {
     background: antiquewhite;
 }
+
+.diagram {
+  float: left;
+  height: 400px;
+  width: 400px;
+  box-shadow: 5px 5px 5px rgba(187,187,187,0.25);
+  border: 1px solid aliceblue;
+  margin-bottom: 30px;
+}
+.radar {
+  width: 50%;
+  margin-left: 20%;
+}
+
+

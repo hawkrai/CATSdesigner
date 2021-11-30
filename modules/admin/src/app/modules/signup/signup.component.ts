@@ -23,6 +23,7 @@ export class SignupComponent implements OnInit {
   form: FormGroup;
   groups: any;
   isLoad = false;
+  selectedQuestion = questions[0].value;
 
   constructor(private formBuilder: FormBuilder, private accountService: AccountService,
               private groupService: GroupService, private dialog: MatDialog,
@@ -108,7 +109,7 @@ export class SignupComponent implements OnInit {
             right: '0px'
           }
         });
-        this.route.navigate(['/login']);
+        window.parent.location.href = "/login";
       }, () => {
         this.dialog.open(MessageComponent, {
           data: 'Пользователь успешно зарегистрирован.',

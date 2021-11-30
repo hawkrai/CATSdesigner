@@ -11,8 +11,8 @@ import {SubSink} from 'subsink';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { Observable, combineLatest } from 'rxjs';
 import * as moment from 'moment';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
+import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
 import * as catsActions from '../../../../store/actions/cats.actions';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
@@ -28,25 +28,15 @@ import { TranslatePipe } from 'educats-translate';
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.less']
 })
-export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
+export class ResultsComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
-  @Input() isTeacher: boolean;
-  @Input() groupId: number;
 
-  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number }>;
+  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean }>;
 
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
-    private dialogService: DialogService,
-    private snackBar: MatSnackBar) {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.groupId && changes.groupId.currentValue) {
-      this.store.dispatch(labsActions.loadLabsSchedule());
-      this.store.dispatch(labsActions.loadLabStudents());
-    }
+    private dialogService: DialogService) {
   }
 
   ngOnInit(): void {
@@ -54,10 +44,20 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
       this.store.select(labsSelectors.getLabsCalendar),
       this.store.select(labsSelectors.getLabs),
       this.store.select(labsSelectors.getLabStudents),
-      this.store.select(subjectSelectors.getUserId)
+      this.store.select(subjectSelectors.getUserId),
+      this.store.select(subjectSelectors.isTeacher)
     ).pipe(
-      map(([schedule, labs, students, userId]) => ({ schedule, labs, students, userId }))
+      map(([schedule, labs, students, userId, isTeacher]) => ({ schedule, labs, students, userId, isTeacher }))
     );
+
+    this.subs.add(
+      this.store.select(groupsSelectors.getCurrentGroup).subscribe(group => {
+        if (group) {
+          this.store.dispatch(labsActions.loadLabsSchedule());
+          this.store.dispatch(labsActions.loadLabStudents());
+        }
+      })
+    )
   }
 
   getHeaders(subGroupLabs: Lab[]): { head: string, text: string, tooltip: string }[] {
@@ -77,9 +77,6 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setMark(student: StudentMark, labId: string, recommendedMark: string) {
-    if (!this.isTeacher) {
-      return;
-    }
     const mark = student.LabsMarks.find(mark => mark.LabId === +labId);
     if (mark) {
       const labsMark = this.getLabMark(mark, student.StudentId);

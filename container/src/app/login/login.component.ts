@@ -8,6 +8,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {VideoComponent} from './modal/video.component';
 import { ViewEncapsulation } from '@angular/core';
 import { AppToastrService } from '../core/services/toastr.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface Locale {
   name: string;
@@ -72,10 +73,17 @@ export class LoginComponent implements OnInit {
             (data) => {
                 this.router.navigate([this.returnUrl]);
             },
-            (error) => {                
+            (error : HttpErrorResponse) => {
                 this.loading = false;
-                this.submitted = false;
-                this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.login.WrongData', "Неверный логин и(или) пароль!"))
+                this.submitted = false; 
+                if(error.message.includes("User hasn't verified yet!")){
+                  this.toastr.addWarningFlashMessage(this.translatePipe.transform('text.login.NotVerified', "Ваш аккаунт не подтвержден. Обратитесь к преподавателю для подтверждения аккаунта!"))
+                }       
+                else{
+                  this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.login.WrongData', "Неверный логин и (или) пароль!"))
+                }
+            
+
             });
   }
 

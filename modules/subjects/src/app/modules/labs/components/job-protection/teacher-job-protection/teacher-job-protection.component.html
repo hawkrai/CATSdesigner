@@ -19,6 +19,7 @@
                  [actionsTemplate]="actionsTemplate"></app-job-protection-content>
                  <ng-template let-file="file" #actionsTemplate>
                   <button mat-icon-button color="primary"
+                  *ngIf="file.Attachments.length"
                   [matTooltip]="'text.subjects.labs.plagiarism.check' | translate:'Проверить на плагиат'"
                   (click)="checkPlagiarism(file.Id)"
                   >
@@ -34,7 +35,7 @@
                     </button>
                     <button
                     mat-icon-button color="primary"
-                    [matTooltip]="'text.subjects.labs.return' | translate:'Вернуть работу'"
+                    [matTooltip]="'text.subjects.labs.return' | translate:'Отправить на доработку'"
                     (click)="addLab(file.UserId, file.LabId, file.Id)"
                     >
                     <mat-icon>arrow_forward</mat-icon>

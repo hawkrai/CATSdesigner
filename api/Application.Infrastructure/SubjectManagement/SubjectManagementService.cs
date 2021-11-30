@@ -96,10 +96,10 @@ namespace Application.Infrastructure.SubjectManagement
         }
 
 
-        public List<Subject> GetGroupSubjects(int groupId)
+        public List<Subject> GetGroupSubjects(int groupId, bool isArchive = false)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			return repositoriesContainer.SubjectRepository.GetSubjects(groupId: groupId).Where(e => !e.IsArchive).ToList();
+			return repositoriesContainer.SubjectRepository.GetSubjects(groupId: groupId).Where(e => e.IsArchive == isArchive).ToList();
 		}
 
 		public List<Subject> GetGroupSubjectsLite(int groupId)
@@ -1052,7 +1052,7 @@ namespace Application.Infrastructure.SubjectManagement
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				model = repositoriesContainer.SubjectRepository.GetSubjects(lecturerId: userId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetAllSubjects(lecturerId: userId).ToList();
 			}
 
 			return model;
@@ -1100,7 +1100,7 @@ namespace Application.Infrastructure.SubjectManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetAllSubjects(groupId: student.GroupId).ToList();
 			}
 
 			return model;

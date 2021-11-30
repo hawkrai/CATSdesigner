@@ -1,6 +1,6 @@
 .main {
     font-weight: lighter;
-    margin-left: 90px;
+    margin-left: 50px;
 }
 
 h1 {
@@ -12,7 +12,7 @@ h1 {
 }
 
 mat-form-field {
-    width: 95%;
+    width: 100%;
 }
 
 .export-button {

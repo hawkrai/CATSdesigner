@@ -13,6 +13,7 @@ import {DatePipe} from '@angular/common';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {TranslatePipe} from 'educats-translate';
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component';
+import {ScheduleStatisticsComponent} from '../schedule-statistics/schedule-statistics.component';
 
 
 const colors: any = {
@@ -61,9 +62,11 @@ export class ScheduleMainComponent implements OnInit {
 
   activeDayIsOpen = true;
 
-  message = 'Чтобы добавить лабораторное, практическое занятие или лекцию, нажмите на нужную ячейку. ' +
-    'Также Вы можете добавить даты занятий с помощью подразделов Практические занятия, Лабораторные работы, ' +
-    'Лекции в определенном предмете.';
+  message = 'Чтобы добавить лекцию, практическое занятие, лабораторную работу, консультацию ' +
+    'или другое событие, нажмите на нужную ячейку. Также Вы можете добавить даты занятий с ' +
+    'помощью аналогичных модулей через пункт меню Предметы.';
+
+
   action = 'Понятно';
 
   public isMobile(): boolean {
@@ -81,7 +84,6 @@ export class ScheduleMainComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.changeDate();
     this.isLoadActive = false;
-
 
     if (this.user.role === 'student') {
       this.isStudent = false;
@@ -191,7 +193,8 @@ export class ScheduleMainComponent implements OnInit {
     const message: Message = new Message();
     message.Value = this.lessonservice.getReferenceToSubject(title);
     message.Type = 'Route';
-    this.modulecommunicationservice.sendMessage(window.parent, message);
+    window.parent.postMessage(message, '*');
+    //this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
 
@@ -350,6 +353,7 @@ export class ScheduleMainComponent implements OnInit {
           draggable: true,
           meta: eventToChange.meta
         });
+
         this.refresh.next();
       }
     });
@@ -485,6 +489,7 @@ export class ScheduleMainComponent implements OnInit {
             meta: 'lesson'
           });
         });
+        this.isLoadActive = false;
         this.refresh.next();
       }
     );
@@ -502,8 +507,20 @@ export class ScheduleMainComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
     });
+  }
 
-}
-
+  openStatisitcs(): void {
+    const a = new Date(this.viewDate);
+    let day = this.viewDate.getDay();
+    if (day == 0) {
+      day = 7;
+    }
+    a.setDate(a.getDate() + (7 - day));
+    const endDate = this.lessonservice.formatDate1(a);
+    a.setDate(a.getDate() - 6);
+    const startDate = this.lessonservice.formatDate1(a);
+    const dialogRef = this.dialog.open(ScheduleStatisticsComponent,
+      {width: '1000px',  height: '100%', data: {schedule: this.events, start: startDate, end: endDate}, position: {top: '0%'}});
+  }
 }
 

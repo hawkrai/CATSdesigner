@@ -22,7 +22,7 @@
                 <mat-label>Год окончания</mat-label>
                 <mat-select formControlName="GraduationYear">
                     <mat-optgroup [label]="this.form.controls.GraduationYear.value">
-                        <mat-option *ngFor="let group of this.yearOfIssue()" [value]="group">
+                        <mat-option *ngFor="let group of this.yearOfGraduation()" [value]="group">
                             {{group}}
                         </mat-option>
                     </mat-optgroup>

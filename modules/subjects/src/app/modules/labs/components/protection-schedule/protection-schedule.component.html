@@ -2,7 +2,7 @@
   <div class="protection-schedule-component__subGroup" *ngFor="let subGroup of state.labs | unique:'SubGroup'; let idx = index">
     <span mat-dialog-title class="protection-schedule-component__subGroup-title">{{'subgroup' | translate:'Подгруппа'}} {{idx + 1}}</span>
     <div class="protection-schedule-component__body">
-      <div class="protection-schedule-component__actions" *ngIf="isTeacher">
+      <div class="protection-schedule-component__actions" *ngIf="state.isTeacher">
         <button mat-raised-button color="primary" (click)="settingVisitDate(subGroup, state.subGroupsIds[idx])">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>
       </div>
       <div class="protection-schedule-component__subGroup-table">

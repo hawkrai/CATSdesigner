@@ -37,6 +37,14 @@
   .mat-column-duration {
     width: 15% !important;
   }
+  .mat-column-files {
+    width: 25%!important;
+
+    & .mdc-button .mdc-button__icon {
+      font-size: 22px;
+      margin-right: 5px;
+    }
+  }
 }
 
 table.mat-table {
@@ -68,4 +76,9 @@ table.mat-table {
 
 .cdk-drop-list-dragging .mat-row:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.mdc-button__label {
+  margin-top: 10px;
+  display: block;
 }

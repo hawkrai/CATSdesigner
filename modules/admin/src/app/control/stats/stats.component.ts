@@ -23,13 +23,15 @@ export class StatsComponent implements OnInit {
   tableStats: any;
   groupName: string;
   studentStatistic: GroupStatsStudent[];
+  surname: string;
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.groupName = this.route.snapshot.params.groupName;
-    this.initData(this.groupName);    
+    this.surname = this.route.snapshot.params.surname;
+    this.initData(this.groupName);
   }
 
   getStatistic(groupId) {
@@ -45,61 +47,105 @@ export class StatsComponent implements OnInit {
   statisticSubject() {
     const id = this.selectedItem;
     const groupName = this.groupName;
+    let labMarks = 0;
+    let practMarks = 0;
+    let testMarks = 0;
+    let rating = 0;
     if (id && id !== -1) {
       const subject = this.subjects.find(({Id}) => Id === id);
-      
       this.tableStats = this.studentStatistic.map((item) => {
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
         const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
+        const userPracticalPass = 2;
+        const userPracticalMarks = 5;
+        labMarks += userAvgLabMarks;
+        practMarks += userPracticalMarks;
+        testMarks += userAvgTestMarks;
+
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         return {
           GroupName: groupName,
           FIO: item.FIO,
           Subject: subject.Name,
-          Rating: ((userAvgLabMarks + userAvgTestMarks) / 2).toFixed(2),
-          AllPass: userLabPass + userLecturePass,
+          Rating: ((userAvgLabMarks + userAvgTestMarks + userPracticalMarks) / 3).toFixed(2),
+          AllPass: userLabPass + userLecturePass + userPracticalPass,
           UserAvgLabMarks: userAvgLabMarks.toFixed(2),
           UserAvgTestMarks: userAvgTestMarks.toFixed(2),
+          UserAvgPracticalMarks: userPracticalMarks.toFixed(2),
           UserTestCount: item.UserTestCount.find(({Key}) => Key === id).Value,
           UserLabCount: item.UserLabCount.find(({Key}) => Key === id).Value,
           UserLabPass: userLabPass,
-          UserLecturePass: userLecturePass };
+          UserLecturePass: userLecturePass,
+          UserPracticalPass: userPracticalPass};
       });
     } else if (id === -1) {
       this.tableStats = this.studentStatistic.map( item => {
         let labPassTotal = 0;
         let lecturePassTotal = 0;
+        let practicalPassTotal = 0;
         let avgLabMarksTotal = 0;
         let avgTestMarksTotal = 0;
+        let avgPracticalMarksTotal = 0;
         item.UserLabPass.map( ( statsItem, index) => {
           labPassTotal += statsItem.Value;
           lecturePassTotal += item.UserLecturePass[index].Value;
+          practicalPassTotal = 3;
           avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
+          avgPracticalMarksTotal += 5;
         });
+        avgLabMarksTotal = avgLabMarksTotal / item.UserLabPass.length;
+        avgTestMarksTotal = avgTestMarksTotal / item.UserLabPass.length;
+        avgPracticalMarksTotal = avgPracticalMarksTotal / item.UserLabPass.length;
+        labMarks += avgLabMarksTotal;
+        practMarks += avgPracticalMarksTotal;
+        testMarks += avgTestMarksTotal;
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         return {
           GroupName: groupName,
           FIO: item.FIO,
           Subject: 'Все предметы',
-          Rating: ((avgTestMarksTotal + avgLabMarksTotal) / 2).toFixed(2),
-          AllPass: labPassTotal + lecturePassTotal,
+          Rating: ((avgTestMarksTotal + avgLabMarksTotal + avgPracticalMarksTotal) / 3).toFixed(2),
+          AllPass: labPassTotal + lecturePassTotal + practicalPassTotal,
           UserAvgLabMarks: avgLabMarksTotal.toFixed(2),
           UserAvgTestMarks: avgTestMarksTotal.toFixed(2),
           UserLabPass: labPassTotal,
-          UserLecturePass: lecturePassTotal
+          UserAvgPracticalMarks: avgPracticalMarksTotal.toFixed(2),
+          UserLecturePass: lecturePassTotal,
+          UserPracticalPass: practicalPassTotal
         };
       });
     }
+    labMarks = Math.round(labMarks / this.studentStatistic.length * 100) / 100;
+    practMarks = Math.round(practMarks / this.studentStatistic.length * 100) / 100;
+    testMarks = Math.round(testMarks / this.studentStatistic.length * 100) / 100;
+    rating = Math.round((labMarks + practMarks + testMarks) / 3 * 100) / 100;
+    this.tableStats.marks = [labMarks, practMarks, testMarks, rating];
+    while (true) {
+      if (this.tableStats.indexOf(undefined) == -1) {
+        break;
+      }
+      this.remove(undefined);
+    }
   }
 
+  remove(value: any) {
+    this.tableStats.forEach((element, index) => {
+      if (element == value) { this.tableStats.splice(index, 1); }
+    });
+  }
   initData(groupName) {
     this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjects = subjectResponse.Subjects;
       this.groupId = subjectResponse.GroupId;
       this.getStatistic(this.groupId);
       console.log(this.studentStatistic);
-      this.isLoad = true;
     });
   }
 

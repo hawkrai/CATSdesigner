@@ -10,6 +10,7 @@ import { Module } from "../models/module.model";
 import { Subject } from '../models/subject';
 import { Lector } from '../models/lector.model';
 import { AuthenticationService } from './auth.service';
+import { ConfirmationService } from './confirmation.service';
 
 type Tooltip = 'success' | 'warning';
 
@@ -26,7 +27,8 @@ export class CoreService {
     private router: Router,
     private location: Location,
     private toastrService: ToastrService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private confirmationService: ConfirmationService
     ) {
     this.selectedSubject = null;
   }
@@ -58,6 +60,14 @@ export class CoreService {
       if (message.channel == "Route"){
         this.router.navigateByUrl(`/${message.value}`);
       }      
+      if (message.channel === 'Comfirmation') {
+        this.confirmationService.confirmationSubject.next(+message.value);
+      }
+
+      if (message.channel === 'Location') {
+        this.location.go(message.value);
+      }
+
       if (message.channel === 'SubjectId') {
         this.subjectIdSub.next(+message.value);
       }  

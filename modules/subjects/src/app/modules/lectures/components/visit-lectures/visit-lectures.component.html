@@ -1,12 +1,12 @@
 <div class="visit-lectures-component" *ngIf="state$ | async as state; else: load">
-  <div class="visit-lectures-component-actions" *ngIf="isTeacher">
+  <div class="visit-lectures-component-actions" *ngIf="state.isTeacher">
     <div class="actions-group">
       <button mat-raised-button color="primary" (click)="settingVisitDate()">{{'text.schedule.management' | translate:'Управление расписанием'}}</button>
       <button mat-raised-button color="warn" (click)="deletePopover()">{{'text.schedule.management.delete.all' | translate:'Удалить все даты'}}</button>
     </div>
     <div class="actions-group">
       <app-help [message]="help.message" [action]="help.action"></app-help>
-      <div class="_excel-file" (click)="getExcelFile()" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="above">
+      <div class="_excel-file" (click)="getExcelFile()" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
         <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
       </div>
     </div>
@@ -31,7 +31,7 @@
         </th>
         <td mat-cell *matCellDef="let element"
             style="text-align: center;"
-            (dblclick)="setVisitMarks(day, state.groupsVisiting.LecturesMarksVisiting, i)"
+            (dblclick)="state.isTeacher && setVisitMarks(day, state.groupsVisiting.LecturesMarksVisiting, i)"
         >
         <div *ngIf="element.Marks[i] && element.Marks[i].Comment" class="comment" [matTooltip]="element.Marks[i].Comment" matTooltipPosition="above">
           <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>

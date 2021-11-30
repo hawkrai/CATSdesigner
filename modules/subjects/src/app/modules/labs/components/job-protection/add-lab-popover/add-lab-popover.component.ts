@@ -1,12 +1,12 @@
 import { AttachedFile } from './../../../../../models/file/attached-file.model';
-import { FormControl, Validators, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormArray, ValidationErrors } from '@angular/forms';
 import { Component, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { from, Observable } from 'rxjs';
 
 import { BaseFileManagementComponent } from 'src/app/shared/base-file-management-dialog.component';
-import {DialogData} from '../../../../../models/dialog-data.model';
+import { DialogData } from '../../../../../models/dialog-data.model';
 import { IAppState } from 'src/app/store/state/app.state';
 import * as filesActions from '../../../../../store/actions/files.actions';
 import { Lab } from 'src/app/models/lab.model';
@@ -14,21 +14,22 @@ import * as labsActions from '../../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../../store/selectors/labs.selectors';
 import { FilesService } from 'src/app/services/files.service';
 import { attchedFileConverter } from '../../../../../utils';
+import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-lab-work-popover',
   templateUrl: './add-lab-popover.component.html',
   styleUrls: ['./add-lab-popover.component.less']
 })
-export class AddLabPopoverComponent extends BaseFileManagementComponent{
+export class AddLabPopoverComponent extends BaseFileManagementComponent {
 
   constructor(
     private dialogRef: MatDialogRef<AddLabPopoverComponent>,
     store: Store<IAppState>,
     filesService: FilesService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-      super(store, filesService);
-      this.setAttachments(this.data.model.attachments);
-  } 
+    super(store, filesService);
+    this.setAttachments(this.data.model.attachments);
+  }
 
   jobProtectionForm: FormGroup;
   labs$: Observable<Lab[]>;
@@ -43,13 +44,23 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
       labId: new FormControl(this.data.model.labId, [Validators.required]),
       comments: new FormControl(this.data.model.comments),
       attachments: new FormArray([]),
-    });
+    }, [this.validateForm.bind(this)]);
 
     this.store.dispatch(labsActions.loadLabs());
     this.labs$ = this.store.select(labsSelectors.getLabs);
-    
+
 
     this.observeAttachments(this.filesArray);
+  }
+
+  validateForm(formGroup: FormGroup): ValidationErrors | null {
+    const attachments = formGroup.get('attachments').value;
+    if (this.data.model.labId && (formGroup.get('labId').value === this.data.model.labId &&
+      formGroup.get('comments').value === this.data.model.comments &&
+      (this.initAttachments.every(x => attachments.some(a => a && a.IdFile === x.IdFile)) && this.data.model.attachments.length === attachments.length))) {
+      return { form: true };
+    }
+    return null;
   }
 
   onPaste(clipboardData: DataTransfer): void {
@@ -64,11 +75,13 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
 
   onClose(toSave: boolean): void {
     if (toSave) {
-        this.onSave();
+      this.onSave();
     } else {
-        this.filesArray.value.filter(f => f.IdFile <= 0)
-        .forEach(f => this.deleteFile(f));
-        this.dialogRef.close();
+      this.removeFiles(this.filesArray.value.filter(f => f.IdFile <= 0)).pipe(take(1)).subscribe({
+        complete: () => {
+          this.dialogRef.close();
+        }
+      });
     }
   }
 
@@ -78,6 +91,11 @@ export class AddLabPopoverComponent extends BaseFileManagementComponent{
     }
     const value = this.jobProtectionForm.value;
     value.attachments = value.attachments.map(a => attchedFileConverter(a));
-    this.dialogRef.close(value);
+    this.removeDeletedFiles().pipe(take(1)).subscribe({
+      complete: () => {
+        this.dialogRef.close(value);
+      }
+    });
+
   }
 }
