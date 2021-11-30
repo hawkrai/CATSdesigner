@@ -49,9 +49,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private signalRService: SignalRService,
     private videoChatService: VideoChatService
-  ) {
-    console.log('created');
-  }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.isMicroActive) {
@@ -63,14 +61,12 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
-    console.log('destruyed');
     this._linkedPeerConnections = new Map();
 
     this.endChat();
   }
 
   ngOnInit(): void {
-    console.log('init');
     this.mediaConstraints.audio = this.isMicroActive;
     this.mediaConstraints.video = this.isVideoActive;
 
@@ -78,13 +74,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'AddNewcomer',
       async (newcomerConnectionId: string, chatId: any) => {
-        console.log('add newcomer');
-        console.log('from connection Id ', newcomerConnectionId);
-        console.log('from chat id', chatId);
-        console.log('------------------');
-
-        if(!this.videoChatService.isChatMatch(chatId)){
-          this.signalRService.sendRejection(chatId, "Use is in call");
+        if (!this.videoChatService.isChatMatch(chatId)) {
+          this.signalRService.sendRejection(chatId, 'Use is in call');
           return;
         }
         this.signalRService.callWasConfirmed(chatId);
@@ -96,10 +87,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'RegisterOffer',
       async (chatId, offer, fromClientHubId) => {
-        console.log('RegisterOffer');
-        console.log(fromClientHubId);
-        console.log(offer);
-        console.log('------------------');
         this.signalRService.callWasConfirmed(chatId);
         this.createRTCPeerConnection(chatId, fromClientHubId, offer);
       }
@@ -109,10 +96,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'RegisterAnswer',
       async (answer, userConnectionId) => {
-        console.log('RegisterAnswer');
-        console.log(answer);
-        console.log(userConnectionId);
-        console.log('------------------');
         await this.registerAnswer(
           this._linkedPeerConnections.get(userConnectionId)!,
           answer,
@@ -125,22 +108,12 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'HandleNewCandidate',
       async (candidate, userConnectionId) => {
-        console.log('handle new candidate');
         let cand = new RTCIceCandidate(candidate);
-        console.log(candidate);
         const peerConnection =
           this._linkedPeerConnections.get(userConnectionId);
-        console.log(peerConnection);
         peerConnection!.addIceCandidate(cand).catch((e) => console.log(e));
       }
     );
-  }
-
-  onClick() {
-    console.log('clicked');
-    let user = prompt('enter the userName');
-    console.log(user);
-    this.signalRService.hubConnection.invoke('SetVoiceChatConnection', 1, user);
   }
 
   async createRTCPeerConnection(
@@ -182,7 +155,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   ) {
     const remoteDesc = new RTCSessionDescription(offer);
     await peerConnection.setRemoteDescription(remoteDesc);
-    //await this.createMediaController(peerConnection);
 
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
@@ -200,9 +172,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   ) {
     const offer = await peerConnection.createOffer(options);
     await peerConnection.setLocalDescription(offer);
-    console.log('offer');
-    console.log(offer);
-    console.log('FromClientHubId', FromClientHubId);
     this.signalRService.hubConnection?.invoke(
       'SendOffer',
       chatId,
@@ -229,7 +198,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
       );
       audioStream?.getTracks()?.forEach((track: any) => {
         peerConnection.addTrack(track, audioStream);
-        console.log('track', track);
       });
     }
 
@@ -242,23 +210,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onConnectionStateChange = (event: any) => {
-    console.log('onConnectionStateChange');
-    console.log(event);
-    console.log(
-      `event?.currentTarget?.connectionState`,
-      event?.currentTarget?.connectionState
-    );
-    console.log(
-      `event?.target?.connectionState`,
-      event?.target?.connectionState
-    );
     if (event?.currentTarget?.connectionState == 'disconnected') {
       this.clientDisconnected.emit();
     }
   };
   onNegotiationNeeded = (event: any) => {
-    console.log('onNegotiationNeeded event');
-    console.log(event);
     // if (peerConnection.connectionState === 'connected') {
     //   console.log('connected');
     //   console.log(peerConnection);
@@ -269,8 +225,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     peerConnection: RTCPeerConnection,
     fromClientHubId: string
   ) => {
-    console.log('candidate event');
-    console.log(event);
     event.currentTarget;
     if (event.candidate) {
       this.signalRService.hubConnection?.invoke(
@@ -297,14 +251,12 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   changeMicroStatus(isEnabled: boolean) {
-    console.log('micro changes', isEnabled);
     this.stream?.getTracks()?.forEach((t: any) => {
       if (t.kind == 'audio') t.enabled = isEnabled;
     });
   }
 
   changeVideoStatus(isEnabled: boolean) {
-    console.log('video changes', isEnabled);
     this.stream?.getTracks()?.forEach((t: any) => {
       if (t.kind == 'video') t.enabled = isEnabled;
     });

@@ -11,11 +11,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 //api methods
 const SendCallRequest = 'SendCallRequest';
 const DisconnectFromChat = 'DisconnectFromChat';
-const SendRejection = "Reject";
+const SendRejection = 'Reject';
 //handlers
 const IncomeCall = 'HandleIncomeCall';
 const DisconnectUser = 'HandleDisconnection';
-const HandleRejection = "HandleRejection";
+const HandleRejection = 'HandleRejection';
 
 @Injectable({
   providedIn: 'root',
@@ -80,26 +80,21 @@ export class SignalRService {
 
     this.hubConnection.on(IncomeCall, (chatId: any) => {
       this.setEndChatTimer(chatId, 45000);
-      if(!this.videoChatService.NotifyIncomeCall(chatId)){
-        console.log("rejected");
-        this.sendRejection(chatId, "unable to connect");
+      if (!this.videoChatService.NotifyIncomeCall(chatId)) {
+        this.sendRejection(chatId, 'unable to connect');
       }
     });
 
     this.hubConnection.on(DisconnectUser, (chatId: any, userId: any) => {
-      console.log('disconnect user request', chatId, userId);
       this.videoChatService.DisconnectUser(chatId, userId);
     });
 
     this.hubConnection.on(HandleRejection, (chatId: any, message: string) => {
-      console.log("on rejection");
-      console.log(chatId);
-      console.log(this.videoChatService.currentChatId);
-      if(this.videoChatService.currentChatId == chatId){
+      if (this.videoChatService.currentChatId == chatId) {
         this.reject(message);
         this.videoChatService.endCall(chatId);
       }
-    })
+    });
   }
 
   public addChat(firstId: number, secondId: number, chatId: number) {
@@ -131,7 +126,7 @@ export class SignalRService {
     );
   }
 
-  public sendRejection(chatId: number, message: string){
+  public sendRejection(chatId: number, message: string) {
     return this.hubConnection.invoke(SendRejection, chatId, message);
   }
 
@@ -154,7 +149,7 @@ export class SignalRService {
     );
   }
 
-  public reject(message: string){
+  public reject(message: string) {
     this.snackBar.open(message, null, {
       duration: 2000,
     });
@@ -168,23 +163,19 @@ export class SignalRService {
     }, ms);
 
     this.callWasConfirmed = (localChatId: any) => {
-      console.log(`localChatId`, localChatId);
-      console.log(`chatId`, chatId);
-      if(chatId == localChatId){
+      if (chatId == localChatId) {
         this.clearTimer();
       }
-    }
+    };
   }
 
-  private clearTimer(){
+  private clearTimer() {
     try {
-        clearTimeout(this.timer);
+      clearTimeout(this.timer);
     } catch {}
   }
 
-  public callWasConfirmed = (chatId: any) => {
-
-  }
+  public callWasConfirmed = (chatId: any) => {};
 
   public SendGroupFiles(files) {
     const k = 1024;

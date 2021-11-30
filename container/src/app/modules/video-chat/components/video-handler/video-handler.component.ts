@@ -11,8 +11,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./video-handler.component.scss'],
 })
 export class VideoHandlerComponent implements OnInit, OnDestroy {
-
-  @ViewChild('child') child:StreamHandlerComponent
+  @ViewChild('child') child: StreamHandlerComponent;
 
   public IsIncomingCall: boolean = false;
   public IsActiveCall: boolean = false;
@@ -23,7 +22,7 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
     public videoChatService: VideoChatService,
     private signalRService: SignalRService,
     public dataService: DataService,
-    public http: HttpClient,
+    public http: HttpClient
   ) {
     this.videoChatService.isActiveCall.subscribe((value: boolean) => {
       this.IsActiveCall = value;
@@ -34,22 +33,21 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log("destroed");
     this.endCall();
   }
 
   ngOnInit(): void {}
 
   answerCall() {
-    console.log('The call was answered');
     this.videoChatService.answerCall();
-    this.signalRService.SetVoiceChatConnection(this.videoChatService.currentChatId);
+    this.signalRService.SetVoiceChatConnection(
+      this.videoChatService.currentChatId
+    );
   }
 
   endCall() {
-    console.log(this.videoChatService.currentChatId)
-    if(!this.IsActiveCall && !this.IsIncomingCall){
-      return
+    if (!this.IsActiveCall && !this.IsIncomingCall) {
+      return;
     }
 
     this.signalRService.disconnectFromCall(this.videoChatService.currentChatId);
@@ -57,14 +55,14 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
   }
 
   switchMicro() {
-    this.IsMicroActive = !this.IsMicroActive
+    this.IsMicroActive = !this.IsMicroActive;
   }
 
   switchVideo() {
     this.isVideoActive = !this.isVideoActive;
   }
 
-  clientDisconnected(){
+  clientDisconnected() {
     this.endCall();
   }
 }

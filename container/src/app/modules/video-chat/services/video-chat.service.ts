@@ -24,7 +24,6 @@ export class VideoChatService {
     }
 
     this.currentChatId = chatId;
-    console.log(chatId);
 
     this.getChatInfo(chatId);
     this.isIncomingCall.next(true);
@@ -63,9 +62,7 @@ export class VideoChatService {
   }
 
   public getChatInfo(chatId) {
-    console.log('get chat info');
     this.chatService.LoadChat(chatId).subscribe((chat: any) => {
-      console.log('chat', chat);
       this.chat = chat;
     });
   }
@@ -82,7 +79,7 @@ export class VideoChatService {
     this.isIncomingCall.next(false);
   }
 
-  public isChatMatch(chatId: number){
+  public isChatMatch(chatId: number) {
     return this.currentChatId === chatId;
   }
 }
