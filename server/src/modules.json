@@ -1,6 +1,6 @@
 {
     "web": {
-        "path": "D:/Project/temp",
+        "path": "d:/CatsProject/apps/container",
         "entryPoint": "index.html"
     },
     "subject": {

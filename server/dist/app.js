@@ -14,10 +14,12 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const http_proxy_middleware_1 = require("http-proxy-middleware");
 const modules = __importStar(require("./modules.json"));
+var https = require('https');
+var http = require('http');
 const app = express_1.default();
 const port = 3000;
-const targetDomain = "https://educats.by";
-app.use(express_1.default.static(path_1.default.resolve('d:/CatsProject/apps')));
+const targetDomain = "https://host27072020.of.by";
+app.use(express_1.default.static(path_1.default.resolve('/home/educatsb/apps')));
 const allowedExt = [
     '.js',
     'gif',
@@ -112,7 +114,7 @@ const proxyElasticSearchOptions = {
     }
 };
 const proxyChatOptions = {
-    target: "https://localhost:44303/",
+    target: "https://localhost:4200/",
     changeOrigin: true,
     pathRewrite: {
         '^/catService': '/ChatApi',
@@ -151,11 +153,5 @@ app.get('*', (req, res) => {
     else {
         res.sendFile(path_1.default.resolve(`${modulePath}/${entryPoint}`));
     }
-});
-app.listen(port, err => {
-    if (err) {
-        return console.error(err);
-    }
-    return console.log(`server is listening on ${port}`);
 });
 //# sourceMappingURL=app.js.map
