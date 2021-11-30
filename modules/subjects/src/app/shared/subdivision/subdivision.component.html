@@ -46,46 +46,14 @@
               <p class="mat-typography text-center">
                 {{ "subgroup" | translate: "Подгруппа" }} 1
               </p>
-              <button mat-icon-button color="primary">
+              <button mat-icon-button color="primary" (click)="transferSelected(1, 2)">
                 <mat-icon
-                  [popover]="subGroupsPopover"
-                  popoverPlacement="auto"
-                  [popoverOnHover]="false"
                   matTooltipPosition="below"
                   [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
                 >
                   arrow_forward
                 </mat-icon>
               </button>
-
-              <popover-content
-                style="position: absolute; z-index: 100"
-                #subGroupsPopover
-                [animation]="true"
-                placement="right"
-                [closeOnClickOutside]="true"
-                [closeOnMouseOutside]="false"
-              >
-                <div class="popover-container">
-                  <mat-list>
-                    <mat-list-item
-                      matRipple
-                      class="mat-list-option"
-                      (click)="transferSelected(1, 2)"
-                    >
-                      2
-                    </mat-list-item>
-                    <mat-list-item
-                      (click)="transferSelected(1, 3)"
-                      matRipple
-                      *ngIf="thirdSubGroupVisible"
-                      class="mat-list-option"
-                    >
-                      3
-                    </mat-list-item>
-                  </mat-list>
-                </div>
-              </popover-content>
             </div>
             <mat-list
               class="subdivision-students__list"
@@ -112,49 +80,25 @@
             *var="studentList | filter: 'subGroup':2 as secondSubgroupList"
           >
             <div class="subdivision-students__header">
+              <button mat-icon-button color="primary" (click)="transferSelected(2, 1)">
+                <mat-icon
+                  matTooltipPosition="below"
+                  [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
+                >
+                  arrow_back
+                </mat-icon>
+              </button>
               <p class="mat-typography text-center">
                 {{ "subgroup" | translate: "Подгруппа" }} 2
               </p>
-              <button mat-icon-button color="primary">
+              <button mat-icon-button color="primary" (click)="transferSelected(2, 3)" *ngIf="thirdSubGroupVisible">
                 <mat-icon
-                  [popover]="subGroupsPopover"
-                  popoverPlacement="auto"
-                  [popoverOnHover]="false"
                   matTooltipPosition="below"
                   [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
                 >
                   arrow_forward
                 </mat-icon>
               </button>
-
-              <popover-content
-                style="position: absolute; z-index: 100"
-                #subGroupsPopover
-                [animation]="true"
-                placement="right"
-                [closeOnClickOutside]="true"
-                [closeOnMouseOutside]="false"
-              >
-                <div class="popover-container">
-                  <mat-list>
-                    <mat-list-item
-                      matRipple
-                      class="mat-list-option"
-                      (click)="transferSelected(2, 1)"
-                    >
-                      1
-                    </mat-list-item>
-                    <mat-list-item
-                      (click)="transferSelected(2, 3)"
-                      matRipple
-                      *ngIf="thirdSubGroupVisible"
-                      class="mat-list-option"
-                    >
-                      3
-                    </mat-list-item>
-                  </mat-list>
-                </div>
-              </popover-content>
             </div>
             <mat-list
               cdkDropList
@@ -182,48 +126,17 @@
               *var="studentList | filter: 'subGroup':3 as thirdSubgroupList"
             >
               <div class="subdivision-students__header">
-                <p class="mat-typography text-center">
-                  {{ "subgroup" | translate: "Подгруппа" }} 3
-                </p>
-                <button mat-icon-button color="primary">
+                <button mat-icon-button color="primary" (click)="transferSelected(3, 2)">
                   <mat-icon
-                    [popover]="subGroupsPopover"
-                    popoverPlacement="auto"
-                    [popoverOnHover]="false"
                     [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
                     matTooltipPosition="below"
                   >
-                    arrow_forward
+                    arrow_back
                   </mat-icon>
                 </button>
-  
-                <popover-content
-                  style="position: absolute; z-index: 100"
-                  #subGroupsPopover
-                  [animation]="true"
-                  placement="right"
-                  [closeOnClickOutside]="true"
-                  [closeOnMouseOutside]="false"
-                >
-                  <div class="popover-container">
-                    <mat-list>
-                      <mat-list-item
-                        matRipple
-                        class="mat-list-option"
-                        (click)="transferSelected(3, 1)"
-                      >
-                        1
-                      </mat-list-item>
-                      <mat-list-item
-                        (click)="transferSelected(3, 2)"
-                        matRipple
-                        class="mat-list-option"
-                      >
-                        2
-                      </mat-list-item>
-                    </mat-list>
-                  </div>
-                </popover-content>
+                <p class="mat-typography text-center">
+                  {{ "subgroup" | translate: "Подгруппа" }} 3
+                </p>
               </div>
               <mat-list
                 cdkDropList

@@ -14,13 +14,13 @@
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">
           <span>{{ tab.tab | firstLetterUppercase }} </span>
-          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && idx === 1">groups</mat-icon>
+          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && tab.route === 'schedule'">groups</mat-icon>
           <mat-icon
             class="priority-icon"
             style="margin-top: -5px"
             *ngIf="
             state.isTeacher &&
-              router.url | startWith:'/labs/job-protection' &&
+              tab.route === 'job-protection' &&
               (state.hasJobProtections | any: 'HasJobProtection')
             "
             class="priority"
@@ -66,6 +66,8 @@
                   (router.url | startWith:'/labs/job-protection') &&
                     groupHasJobProtection(state.hasJobProtections, group)
                   "
+                  [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
+                  matTooltipPosition="below"
                   [color]="'warn'"
                   >priority_high</mat-icon
                 >
@@ -81,6 +83,8 @@
                     (router.url | startWith:'/labs/job-protection') &&
                     groupHasJobProtection(state.hasJobProtections, state.group)
                   "
+                  [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
+                  matTooltipPosition="below"
                   class="priority-icon"
                   [color]="'warn'"
                   >priority_high</mat-icon

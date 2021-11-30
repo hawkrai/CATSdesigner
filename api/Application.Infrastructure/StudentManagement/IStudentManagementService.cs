@@ -25,5 +25,7 @@ namespace Application.Infrastructure.StudentManagement
 	    void СonfirmationStudent(int studentId);
 
 	    void UnConfirmationStudent(int studentId);
+
+        void RemoveFromSubGroups(int studentId, int groupId);
     }
 }
