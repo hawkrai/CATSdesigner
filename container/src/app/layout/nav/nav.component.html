@@ -122,7 +122,7 @@
                            (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
             {{result.FullName}}
           </mat-list-option>
-    
+
           <mat-list-option class = "search-results-separator" *ngIf = this.lecturerSearchResults>
             {{'lecturers' | translate:'Преподаватели'}} :
           </mat-list-option>
@@ -130,7 +130,7 @@
                            (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
             {{result.FullName}}
           </mat-list-option>
-    
+
           <mat-list-option class = "search-results-separator" *ngIf = this.groupSearchResults>
             {{'groups' | translate:'Группы'}} :
           </mat-list-option>
