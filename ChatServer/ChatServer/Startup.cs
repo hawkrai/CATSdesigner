@@ -56,7 +56,7 @@ namespace ChatServer
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:4200", "http://localhost:3000", "https://educats.by", "https://hidden-wildwood-02858.herokuapp.com").AllowCredentials().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200", "http://localhost:3000", "http://localhost:80", "http://172.16.11.41", "http://localhost", "https://educats.by", "https://hidden-wildwood-02858.herokuapp.com").AllowCredentials().AllowAnyHeader().AllowAnyMethod());
 
             app.UseRouting();
 
