@@ -597,6 +597,7 @@
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
     <Compile Include="Services\Modules\Labs\JobProtectionViewData.cs" />
     <Compile Include="Services\Modules\Labs\StudentJobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\News\ProfileNews.cs" />
     <Compile Include="Services\Modules\News\TelegramNewsResult.cs" />
     <Compile Include="Services\Modules\News\TelegramNewsViewModel.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewData.cs" />
@@ -649,6 +650,7 @@
     <Compile Include="Services\Modules\Schedule\ScheduleViewResultSingle.cs" />
     <Compile Include="Services\Modules\Statistics\SubjectStatisticsViewResult.cs" />
     <Compile Include="Services\Modules\Statistics\TeacherStatisticsViewData.cs" />
+    <Compile Include="Services\Modules\Subjects\ProfileSubject.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />
