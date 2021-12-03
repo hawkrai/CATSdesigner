@@ -488,6 +488,7 @@
     </Compile>
     <Compile Include="Helpers\TaskScheduler\TaskScheduler.cs" />
     <Compile Include="Helpers\TaskScheduler\Tasks\SearchTask.cs" />
+    <Compile Include="Managers\JwtAuthorizationManager.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
