@@ -2,6 +2,7 @@
 using JWT.Builder;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Security.Claims;
 using System.Web;
 using WebMatrix.WebData;
 
@@ -15,7 +16,7 @@ namespace Application.Core.Helpers
 
         public static string Role { get; set; }
 
-        public static int CurrentUserId => UserId();
+        public static int CurrentUserId => WebSecurity.CurrentUserId <= 0 ? int.Parse(Id) : WebSecurity.CurrentUserId;
 
         public static string CurrentUserName =>
             string.IsNullOrEmpty(WebSecurity.CurrentUserName) ? Name : WebSecurity.CurrentUserName;
@@ -46,5 +47,6 @@ namespace Application.Core.Helpers
             }
             return WebSecurity.CurrentUserId <= 0 ? int.Parse(Id) : WebSecurity.CurrentUserId; ;
         }
+
     }
 }

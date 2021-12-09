@@ -86,10 +86,10 @@ namespace LMPlatform.UI.Services.Statistics
                 }
                 subjectStatistics.Add(new SubjectStatisticsViewResult
                 {
-                    AverageCourceProjectMark = marks.Count == 0 ? 0 : Math.Round((decimal)(marks.Select(x => string.IsNullOrEmpty(x.CourseProjectMark) ? 0 : int.Parse(x.CourseProjectMark)).Sum() / marks.Count), 2),
-                    AverageLabsMark = marks.Count == 0 ? 0 : Math.Round((decimal)(marks.Select(x => string.IsNullOrEmpty(x.LabsMarkTotal) ? 0 : double.Parse(x.LabsMarkTotal)).Sum()) / marks.Count, 2),
-                    AveragePracticalsMark = marks.Count == 0 ? 0 : Math.Round((decimal)(marks.Select(x => string.IsNullOrEmpty(x.PracticalsMarkTotal) ? 0 : double.Parse(x.PracticalsMarkTotal)).Sum() / marks.Count), 2),
-                    AverageTestsMark = marks.Count == 0 ? 0 : Math.Round((decimal)(marks.Select(x => string.IsNullOrEmpty(x.TestMark) ? 0 : double.Parse(x.TestMark)).Sum() / marks.Count), 2),
+                    AverageCourceProjectMark = marks.Count == 0 ? 0 : Math.Round(marks.Select(x => double.TryParse(x.CourseProjectMark, out var courseProjectMark) ? courseProjectMark : 0).Sum() / marks.Count, 2),
+                    AverageLabsMark = marks.Count == 0 ? 0 : Math.Round(marks.Select(x => double.TryParse(x.LabsMarkTotal, out var labsMarkTotal) ? labsMarkTotal : 0).Sum() / marks.Count, 2),
+                    AveragePracticalsMark = marks.Count == 0 ? 0 : Math.Round(marks.Select(x => double.TryParse(x.PracticalsMarkTotal, out var practicalsMarkTotal) ? practicalsMarkTotal : 0).Sum() / marks.Count, 2),
+                    AverageTestsMark = marks.Count == 0 ? 0 : Math.Round(marks.Select(x => double.TryParse(x.TestMark, out var testMark) ? testMark : 0).Sum() / marks.Count, 2),
                     SubjectName = subject.Name
                 });
             }

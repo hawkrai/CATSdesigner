@@ -11,6 +11,7 @@ using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.DPManagement;
+using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
@@ -18,9 +19,9 @@ using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.News;
+using LMPlatform.UI.Services.Modules.Subjects;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using LMPlatform.UI.ViewModels.LmsViewModels;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
@@ -465,7 +466,24 @@ namespace LMPlatform.UI.Controllers
             else
                 news = subjectService.GetNewsByGroup(user.Student.GroupId);
 
-            return this.Json(news.OrderByDescending(e => e.EditDate).Select(x => new NewsViewData(x)).ToList());
+            var filesService = new FilesManagementService();
+
+            return this.Json(news.OrderByDescending(e => e.EditDate).Select(x => new ProfileNews {
+                Body = x.Body,
+                Id = x.Id,
+                Title = x.Title,
+                SubjectId = x.SubjectId,
+                EditDate = x.EditDate,
+                Disabled = x.Disabled,
+                Subject = x.Subject != null ? new ProfileSubject
+                {
+                    Id = x.SubjectId,
+                    Color = x.Subject.Color,
+                    Name = x.Subject.Name,
+                    ShortName = x.Subject.ShortName
+                } : null,
+                Attachments = string.IsNullOrEmpty(x.Attachments) ? new List<Attachment>() : filesService.GetAttachments(x.Attachments)
+        }).ToList());
         }
 
         [HttpPost]
