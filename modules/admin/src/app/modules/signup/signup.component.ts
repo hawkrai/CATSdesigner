@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit {
   form: FormGroup;
   groups: any;
   isLoad = false;
-  selectedQuestion = questions[0].value;
+  selectedQuestion = this.quest[0].value;
 
   constructor(private formBuilder: FormBuilder, private accountService: AccountService,
               private groupService: GroupService, private dialog: MatDialog,
@@ -58,7 +58,7 @@ export class SignupComponent implements OnInit {
   getGroups() {
     this.groupService.getGroups().subscribe(items => {
       this.groups = items;
-      this.groups.sort((n1, n2) => n2.Name - n1.Name);
+      this.groups = this.groups.sort((n1, n2) => n1.Name - n2.Name);
       this.isLoad = true;
     });
   }

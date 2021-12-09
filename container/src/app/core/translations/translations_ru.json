@@ -408,9 +408,11 @@
   "text.profile.skill": "Должность",
   "text.profile.lastLogin": "Последний визит",
   "text.profile.currentSubjects": "Текущие предметы",
+  
   "text.profile.complitedSubjects": "Завершенные предметы",
   "text.profile.cp": "Курсовые проекты",
-  "text.profile.dp": "Дипломный проект",
+  "text.profile.dpOne": "Дипломный проект",
+  "text.profile.dp": "Дипломные проекты",
 
   "text.login.WrongData": "Неверный логин и (или) пароль!",
   "text.login.NotVerified": "Ваш аккаунт не подтвержден. Обратитесь к преподавателю для подтверждения аккаунта.",
