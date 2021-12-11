@@ -58,7 +58,7 @@ export class CoreService {
       if (message.channel == "Route"){
         this.router.navigateByUrl(`/${message.value}`);
       }      
-      if (message.channel === 'Comfirmation') {
+      if (message.channel === 'Confirmation') {
         this.confirmationService.confirmationSubject.next(+message.value);
       }
 
