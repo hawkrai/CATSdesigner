@@ -14,6 +14,7 @@ import * as catsActions from '../../../../store/actions/cats.actions';
 import * as practicalsActions from '../../../../store/actions/practicals.actions';
 import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
+import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
 import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model';
 import { Practical } from 'src/app/models/practical.model';
 import { PracticalMark } from 'src/app/models/mark/practical-mark.model';
@@ -29,8 +30,6 @@ import { TranslatePipe } from 'educats-translate';
 })
 export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   private subs = new SubSink();
-  @Input() isTeacher: boolean;
-  @Input() groupId: number;
 
   state$: Observable<{ practicals: Practical[], schedule: ScheduleProtectionPractical[], students: StudentMark[], userId: number }>;
 
@@ -52,9 +51,19 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
       this.store.select(practicalsSelectors.selectSchedule),
       this.store.select(practicalsSelectors.selectPracticals),
       this.store.select(practicalsSelectors.selectMarks),
-      this.store.select(subjectSelectors.getUserId)
+      this.store.select(subjectSelectors.getUserId),
+      this.store.select(subjectSelectors.isTeacher)
     ).pipe(
-      map(([schedule, practicals, students, userId]) => ({ schedule, practicals, students, userId }))
+      map(([schedule, practicals, students, userId, isTeacher]) => ({ schedule, practicals, students, userId, isTeacher }))
+    );
+
+    this.subs.add(
+      this.store.select(groupsSelectors.getCurrentGroup).subscribe(group => {
+        if (group) {
+          this.store.dispatch(practicalsActions.loadSchedule());
+          this.store.dispatch(practicalsActions.loadMarks());
+        }
+      })
     );
   }
 
@@ -75,9 +84,6 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setMark(student: StudentMark, practicalId: number, recommendedMark: string) {
-    if (!this.isTeacher) {
-      return;
-    }
     const mark = student.PracticalsMarks.find(mark => mark.PracticalId === +practicalId);
     if (mark) {
       const practicalMark = this.getPracticalMark(mark, student.StudentId);
