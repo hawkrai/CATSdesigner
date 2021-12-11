@@ -22,8 +22,8 @@ export class SubjectService {
     return this.http.post('Subject/SaveSubject', body);
   }
 
-  public editGroups(subjectId: number): Observable<any> {
-    return this.http.get('Subject/SubGroups?subjectId=' + subjectId);
+  public editGroups(subjectId: number, groupId: number): Observable<any> {
+    return this.http.get(`Subject/SubGroups?subjectId=${subjectId}&groupId=${groupId}`);
   }
 
   public subGroupsChangeGroup(subjectId: number, groupId: string): Observable<any> {

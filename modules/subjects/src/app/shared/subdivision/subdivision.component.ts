@@ -47,7 +47,7 @@ export class SubdivisionComponent implements OnInit {
   ngOnInit(): void {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-      this.subjectService.editGroups(subjectId).subscribe(res => {
+      this.subjectService.editGroups(subjectId, this.data.model).subscribe(res => {
         this.setData(res);
       });
     });
@@ -107,6 +107,7 @@ export class SubdivisionComponent implements OnInit {
   private setData(data) {
     this.groups = data.GroupsList;
     this.selectedGroup = data.GroupId;
+    console.log(data)
     this.setSubGroupId([[...data.SubGroupsFirstList, ...data.StudentGroupList], [...data.SubGroupsTwoList], [...data.SubGroupsThirdList]]);
   }
 

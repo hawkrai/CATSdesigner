@@ -339,10 +339,10 @@ namespace LMPlatform.UI.Controllers
             return JsonResponse(model);
         }
 
-        public ActionResult SubGroups(int subjectId)
+        public ActionResult SubGroups(int subjectId, int groupId)
         {
             var model = new SubjectWorkingViewModel(subjectId);
-            return JsonResponse(model.SubGroups);
+            return JsonResponse(model.SubGroup(groupId));
         }
 
         [HttpPost]

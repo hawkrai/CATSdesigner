@@ -20,6 +20,7 @@ import { Help } from 'src/app/models/help.model';
 import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
 import { TranslatePipe } from 'educats-translate';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DialogData } from 'src/app/models/dialog-data.model';
 
 interface State {
   groups: Group[];
@@ -122,7 +123,10 @@ export class LabsComponent implements OnInit {
     action: this.translate.transform ('button.understand','Понятно')
   }
 
-  subdivision() {
-    this.dialogService.openDialog(SubdivisionComponent);
+  subdivision(groupId: number) {
+    const dialogData: DialogData = {
+      model: groupId,
+    };
+    this.dialogService.openDialog(SubdivisionComponent, dialogData);
   }
 }
