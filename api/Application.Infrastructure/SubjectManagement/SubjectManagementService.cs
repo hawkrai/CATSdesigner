@@ -469,11 +469,12 @@ namespace Application.Infrastructure.SubjectManagement
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			var subjectGroup =
-				repositoriesContainer.SubjectRepository.GetBy(
-					new Query<Subject>(e => e.Id == subjectId && e.SubjectGroups.Any(x => x.GroupId == groupId))
-						.Include(e => e.SubjectGroups.Select(x => x.SubGroups.Select(c => c.ScheduleProtectionLabs))));
+				repositoriesContainer.RepositoryFor<SubjectGroup>().GetBy(
+					new Query<SubjectGroup>(e => e.GroupId == groupId && e.SubjectId == subjectId)
+						.Include(e => e.SubGroups.Select(c => c.ScheduleProtectionLabs))
+						.Include(e => e.SubjectStudents));
 						
-			return subjectGroup.SubjectGroups.First(e => e.GroupId == groupId).SubGroups.ToList();
+			return subjectGroup.SubGroups.Where(x => x.SubjectStudents?.Count > 0).ToList();
 		}
 
 		public void SaveSubGroup(int subjectId, int groupId, IList<int> firstInts, IList<int> secoInts, IList<int> thirdInts)

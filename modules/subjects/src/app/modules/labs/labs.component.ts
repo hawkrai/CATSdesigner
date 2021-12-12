@@ -1,6 +1,6 @@
 import { DialogService } from './../../services/dialog.service';
 import { Observable, combineLatest } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {Store} from '@ngrx/store';
 import { map } from 'rxjs/operators';
 
@@ -21,6 +21,7 @@ import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.com
 import { TranslatePipe } from 'educats-translate';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogData } from 'src/app/models/dialog-data.model';
+import { SubSink } from 'subsink';
 
 interface State {
   groups: Group[];
@@ -36,17 +37,21 @@ interface State {
   templateUrl: './labs.component.html',
   styleUrls: ['./labs.component.less']
 })
-export class LabsComponent implements OnInit {
+export class LabsComponent implements OnInit, OnDestroy {
 
   tabs: { tab: string, route: string }[] = [];
   public state$: Observable<State>;
-
+  private subs = new SubSink();
   constructor(
     private dialogService: DialogService,
     private translate: TranslatePipe,
     private store: Store<IAppState>,
     public router: Router,
     private route: ActivatedRoute) {}
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.tabs = [
@@ -127,6 +132,13 @@ export class LabsComponent implements OnInit {
     const dialogData: DialogData = {
       model: groupId,
     };
-    this.dialogService.openDialog(SubdivisionComponent, dialogData);
+    const dialogRef = this.dialogService.openDialog(SubdivisionComponent, dialogData);    
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(obj => {
+        if (obj && obj.updated) {
+          this.store.dispatch(labsActions.loadLabsSchedule());
+        }
+      })
+    );
   }
 }

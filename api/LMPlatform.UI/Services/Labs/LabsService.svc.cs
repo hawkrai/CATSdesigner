@@ -634,172 +634,67 @@ namespace LMPlatform.UI.Services.Labs
 				var labs = this.SubjectManagementService.GetLabsV2(subjectId).OrderBy(e => e.Order);
 
 				var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
-
-				var labsSubOne = labs.Select(e => new LabsViewData
+				var labsSubGroups = new List<LabsViewData>();
+				var scheduleProtectionLabs = new List<ScheduleProtectionLabsViewData>();
+				foreach (var subGroup in subGroups)
 				{
-					Theme = e.Theme,
-					Order = e.Order,
-					Duration = e.Duration,
-					ShortName = e.ShortName,
-					LabId = e.Id,
-					SubjectId = e.SubjectId,
-					SubGroup = 1,
-					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
-						.FirstOrDefault(x => x.Name == "first").ScheduleProtectionLabs
-						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLesson
-						{
-							ScheduleProtectionId = x.Id,
-							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLesson>()
-				}).ToList();
-
-
-				var durationCount = 0;
-
-				foreach (var lab in labsSubOne)
-				{
-					var mark = 10;
-					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
+					var subGroupValue = subGroup.Name == "first" ? 1 : subGroup.Name == "second" ? 2 : 3;
+					var labsSubGroup = labs.Select(e => new LabsViewData
 					{
-						if (i + 1 > durationCount - (lab.Duration / 2))
-						{
-							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
-
-							if (i + 1 >= durationCount)
+						Theme = e.Theme,
+						Order = e.Order,
+						Duration = e.Duration,
+						ShortName = e.ShortName,
+						LabId = e.Id,
+						SubjectId = e.SubjectId,
+						SubGroup = subGroupValue,
+						ScheduleProtectionLabsRecommended = subGroup.ScheduleProtectionLabs
+							.OrderBy(x => x.Date)
+							.Select(x => new ScheduleProtectionLesson
 							{
-								if (mark != 1)
+								ScheduleProtectionId = x.Id,
+								Mark = string.Empty
+							}).ToList()
+					});
+					var durationCount = 0;
+
+					foreach (var lab in labsSubGroup)
+					{
+						var mark = 10;
+						durationCount += lab.Duration / 2;
+						for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
+						{
+							if (i + 1 > durationCount - (lab.Duration / 2))
+							{
+								lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+
+								if (i + 1 >= durationCount)
 								{
-									mark -= 1;
+									if (mark != 1)
+									{
+										mark -= 1;
+									}
 								}
 							}
 						}
 					}
-				}
+					labsSubGroups.AddRange(labsSubGroup);
 
-				var labsSubTwo = labs.Select(e => new LabsViewData
-				{
-					Theme = e.Theme,
-					Order = e.Order,
-					Duration = e.Duration,
-					ShortName = e.ShortName,
-					LabId = e.Id,
-					SubjectId = e.SubjectId,
-					SubGroup = 2,
-					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
-						.FirstOrDefault(x => x.Name == "second").ScheduleProtectionLabs
-						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLesson
-						{
-							ScheduleProtectionId = x.Id,
-							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLesson>()
-				}).ToList();
-
-				durationCount = 0;
-				foreach (var lab in labsSubTwo)
-				{
-					var mark = 10;
-					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
-					{
-						if (i + 1 > durationCount - (lab.Duration / 2))
-						{
-							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
-
-							if (i + 1 >= durationCount)
-							{
-								if (mark != 1)
-								{
-									mark -= 1;
-								}
-							}
-						}
-					}
-				}
-
-				var labsSubThird = labs.Select(e => new LabsViewData
-				{
-					Theme = e.Theme,
-					Order = e.Order,
-					Duration = e.Duration,
-					ShortName = e.ShortName,
-					LabId = e.Id,
-					SubjectId = e.SubjectId,
-					SubGroup = 3,
-					ScheduleProtectionLabsRecommended = subGroups.Any() ? subGroups
-						.FirstOrDefault(x => x.Name == "third").ScheduleProtectionLabs
-						.OrderBy(x => x.Date)
-						.Select(x => new ScheduleProtectionLesson
-						{
-							ScheduleProtectionId = x.Id,
-							Mark = string.Empty
-						}).ToList() : new List<ScheduleProtectionLesson>()
-				}).ToList();
-
-				durationCount = 0;
-				foreach (var lab in labsSubThird)
-				{
-					var mark = 10;
-					durationCount += lab.Duration / 2;
-					for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
-					{
-						if (i + 1 > durationCount - (lab.Duration / 2))
-						{
-							lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
-
-							if (i + 1 >= durationCount)
-							{
-								if (mark != 1)
-								{
-									mark -= 1;
-								}
-							}
-						}
-					}
-				}
-
-				labsSubOne.AddRange(labsSubTwo);
-				labsSubOne.AddRange(labsSubThird);
-
-				var scheduleProtectionLabsOne =
-					subGroups.FirstOrDefault() != null ? subGroups
-						.FirstOrDefault(e => e.Name == "first").ScheduleProtectionLabs
+					var scheduleProtactionLabsSubGroup = subGroup.ScheduleProtectionLabs
 						.OrderBy(e => e.Date)
 						.Select(
-					e => new ScheduleProtectionLabsViewData(e)).ToList() : new List<ScheduleProtectionLabsViewData>();
-
-				scheduleProtectionLabsOne.ForEach(e => e.SubGroup = 1);
-
-				var scheduleProtectionLabsTwo =
-					subGroups.LastOrDefault() != null ? subGroups
-						.FirstOrDefault(e => e.Name == "second").ScheduleProtectionLabs
-						.OrderBy(e => e.Date)
-						.Select(
-					e => new ScheduleProtectionLabsViewData(e)).ToList() : new List<ScheduleProtectionLabsViewData>();
-
-				scheduleProtectionLabsTwo.ForEach(e => e.SubGroup = 2);
-
-				var scheduleProtectionLabsThird =
-					subGroups.LastOrDefault() != null ? subGroups
-						.FirstOrDefault(e => e.Name == "third").ScheduleProtectionLabs
-						.OrderBy(e => e.Date)
-						.Select(
-					e => new ScheduleProtectionLabsViewData(e)).ToList() : new List<ScheduleProtectionLabsViewData>();
-
-				scheduleProtectionLabsThird.ForEach(e => e.SubGroup = 3);
-
-				scheduleProtectionLabsOne.AddRange(scheduleProtectionLabsTwo);
-
-				scheduleProtectionLabsOne.AddRange(scheduleProtectionLabsThird);
+					e => new ScheduleProtectionLabsViewData(e)).ToList();
+					scheduleProtactionLabsSubGroup.ForEach(e => e.SubGroup = subGroupValue);
+					scheduleProtectionLabs.AddRange(scheduleProtactionLabsSubGroup);
+				}
 
 				return new LabsResult
 				{
-					Labs = labsSubOne,
-					ScheduleProtectionLabs = scheduleProtectionLabsOne,
+					Labs = labsSubGroups,
+					ScheduleProtectionLabs = scheduleProtectionLabs,
 					Message = "Лабораторные работы успешно загружены",
-					Code = "200"
+					Code = "200",
+					SubGroups = subGroups.Select(x => new SubGroupViewData(x)).ToList()
 				};
 			}
             catch
@@ -1197,5 +1092,10 @@ namespace LMPlatform.UI.Services.Labs
 			};
 		}
 
-    }
+        public List<SubGroupViewData> GetSubGroups(int subjectId, int groupId)
+        {
+			var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
+			return subGroups.Select(x => new SubGroupViewData(x)).ToList();
+		}
+	}
 }

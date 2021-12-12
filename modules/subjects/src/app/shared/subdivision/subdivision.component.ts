@@ -70,8 +70,9 @@ export class SubdivisionComponent implements OnInit {
         body.subGroupThirdIds += student.Value + ',';
       }
     });
-    this.subjectService.saveSubGroup(body).subscribe(res => console.log(res));
-    this.dialogRef.close();
+    this.subjectService.saveSubGroup(body).subscribe(res => {
+      this.dialogRef.close({ updated: true });
+    });
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
@@ -107,7 +108,6 @@ export class SubdivisionComponent implements OnInit {
   private setData(data) {
     this.groups = data.GroupsList;
     this.selectedGroup = data.GroupId;
-    console.log(data)
     this.setSubGroupId([[...data.SubGroupsFirstList, ...data.StudentGroupList], [...data.SubGroupsTwoList], [...data.SubGroupsThirdList]]);
   }
 

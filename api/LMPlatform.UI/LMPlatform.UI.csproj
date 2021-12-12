@@ -598,6 +598,7 @@
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
     <Compile Include="Services\Modules\Labs\JobProtectionViewData.cs" />
     <Compile Include="Services\Modules\Labs\StudentJobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Labs\SubGroupViewData.cs" />
     <Compile Include="Services\Modules\News\ProfileNews.cs" />
     <Compile Include="Services\Modules\News\TelegramNewsResult.cs" />
     <Compile Include="Services\Modules\News\TelegramNewsViewModel.cs" />
