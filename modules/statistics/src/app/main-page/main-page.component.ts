@@ -26,7 +26,7 @@ export class MainPageComponent implements OnInit {
   practSum = 0;
   labSum = 0;
   ratingAvg = 0;
-  courseMark = 3.8;
+  courseMark = 5.8;
 
   practMarks: any[] = [];
   labMarks: any[] = [];
@@ -38,13 +38,14 @@ export class MainPageComponent implements OnInit {
   categoriesTemp: string[] = [];
   series: any[] = [];
 
+  colors: string [] = [ 'orange', 'red', 'blue', 'purple' , 'green'];
+
+
   public categoriesConst: string[]  = [this.translatePipe.transform('text.statistics.avg.pract', 'Средний балл за практические занятия'),
-                                      this.translatePipe.transform('text.statistics.avg.test', 'Средний балл за лабораторные работы') ,
+                                      this.translatePipe.transform('text.statistics.avg.lab', 'Средний балл за лабораторные работы') ,
                                    this.translatePipe.transform('text.statistics.avg.test', 'Средняя оценка за тесты'),
                                   this.translatePipe.transform('text.statistics.avg.course', 'Оценка за курсовой проект'),
                                   this.translatePipe.transform('text.statistics.avg.rating', 'Рейтинговая оценка')];
-
-  colors: string [] = [ 'orange', 'red', 'blue', 'purple' , 'green'];
 
   constructor(private serviceService: StatisitcsServiceService, private translatePipe: TranslatePipe ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
@@ -63,9 +64,9 @@ export class MainPageComponent implements OnInit {
                 this.labSum = 0;
                 result.Students.forEach(student => {
                   if (student.Id == this.user.id) {
-                    this.testSum = (Math.round(+student.UserAvgTestMarks.find(({Key}) => Key === subject.Id)!.Value * 10) / 10) ;
-                    this.practSum = 5;
-                    this.labSum = (Math.round(+student.UserAvgLabMarks.find(({Key}) => Key === subject.Id)!.Value * 10) / 10) ;
+                    this.testSum = this.serviceService.round(+student.UserAvgTestMarks.find(({Key}) => Key === subject.Id)!.Value) ;
+                    this.practSum = this.serviceService.round(+student.UserAvgPracticalMarks.find(({Key}) => Key === subject.Id)!.Value);
+                    this.labSum = this.serviceService.round(+student.UserAvgLabMarks.find(({Key}) => Key === subject.Id)!.Value );
                   }
                 });
                 if (this.practSum != null && this.practSum != undefined) {
@@ -96,7 +97,7 @@ export class MainPageComponent implements OnInit {
                 this.temp.forEach(el => {
                   this.tempAvg += el;
                 });
-                const rating = Math.round(this.tempAvg / this.temp.length * 10) / 10;
+                const rating = this.serviceService.round(this.tempAvg / this.temp.length) ;
                 this.temp.push(rating);
                 this.ratingMarks.push(rating);
                 this.subjectName.push(subject.Name);
@@ -116,9 +117,46 @@ export class MainPageComponent implements OnInit {
       });
     } else {
       this.serviceService.getTeacherStatistics().subscribe(res => {
-        console.log(res);
+        res.SubjectStatistics.forEach(subject => {
+          this.temp = [];
+          this.tempAvg = 0;
+          this.temp.push(this.serviceService.round(+subject.AveragePracticalsMark));
+          this.temp.push(this.serviceService.round(+subject.AverageLabsMark));
+          this.temp.push(this.serviceService.round(+subject.AverageTestsMark));
+          this.temp.push(this.serviceService.round(+subject.AverageCourceProjectMark));
+          this.practMarks.push(this.serviceService.round(+subject.AveragePracticalsMark));
+          this.labMarks.push(this.serviceService.round(+subject.AverageLabsMark));
+          this.testMarks.push(this.serviceService.round(+subject.AverageTestsMark));
+          this.conMarks.push(this.serviceService.round(+subject.AverageCourceProjectMark));
+          this.temp.forEach(el => {
+            this.tempAvg += el;
+          });
+          const rating = this.serviceService.round(this.tempAvg / this.temp.length);
+          this.ratingMarks.push(rating);
+          this.temp.push(rating);
+          this.addChart(this.temp, subject.SubjectName, this.categoriesConst, 4112);
+          this.subjectName.push(subject.SubjectName);
+        });
+        this.series.push({name: this.categoriesConst[0], data: this.practMarks});
+        this.series.push({name: this.categoriesConst[1], data: this.labMarks});
+        this.series.push({name: this.categoriesConst[2], data: this.testMarks});
+        this.series.push({name: this.categoriesConst[3], data: this.conMarks});
+        this.series.push({name: this.categoriesConst[4], data: this.ratingMarks});
+
+        // this.series.push({name: this.categoriesConst[0], data: [5.7, 5.5, 6.3, 7.7, 6.7 ]});
+        // this.series.push({name: this.categoriesConst[1], data: [6.9, 7.1, 6.2, 5.9, 6.5 ]});
+        // this.series.push({name: this.categoriesConst[2], data: [7.4, 8.2, 7.2, 7.5, 7.9 ]});
+       // this.series.push({name: this.categoriesConst[3], data: [6.7, 6.4, 8.8, 6.9, 8.4 ]});
+        // this.series.push({name: this.categoriesConst[4], data: [6.7, 6.8, 7.1, 7, 7.7 ]});
+        // this.addMarksChart(this.series, ['Базы данных', 'Модульное тестирование', 'Методы и алгоритмы принятия решений', 'Основы защиты информации', 'Английский язык в профдеятельности']);
+        this.addMarksChart(this.series, this.subjectName);
       });
-      this.addChart([7, 6, 9, 5, 7], 'Test', this.categoriesConst, 4112);
+      // this.addChart([5.7, 6.9, 7.4, 6.7, 6.7], 'Базы данных', this.categoriesConst, 4112);
+      // this.addChart([5.5, 7.1, 8.2, 6.4, 6.8], 'Модульное тестирование', this.categoriesConst, 4112);
+      // this.addChart([6.3, 6.2, 7.2, 8.8, 7.1], 'Методы и алгоритмы принятия решений', this.categoriesConst, 4112);
+      // this.addChart([7.7, 5.9, 7.5, 6.9, 7], 'Основы защиты информации', this.categoriesConst, 4112);
+      // this.addChart([6.7, 6.5, 7.9, 8.4, 7.7], 'Английский язык в профдеятельности', this.categoriesConst, 4112);
+
     }
   }
 

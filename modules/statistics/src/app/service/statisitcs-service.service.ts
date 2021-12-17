@@ -17,6 +17,10 @@ export class StatisitcsServiceService {
     return this.http.get<any>('/Services/Parental/ParentalService.svc/LoadGroup?groupId=' + groupId);
   }
 
+  getArchiveStatistics(groupId: any): Observable<any> {
+    return this.http.get<any>('/Services/Parental/ParentalService.svc/LoadGroup?groupId=' + groupId + '&isArchive=true');
+  }
+
   getPracticalStastics(subjectId: any, groupId: any): Observable<any> {
     return this.http.get<any>('/Services/Practicals/PracticalService.svc/GetMarks?subjectID=' + subjectId + '&groupID=' + groupId);
   }
@@ -32,5 +36,9 @@ export class StatisitcsServiceService {
 
   getTeacherStatistics(): Observable<any> {
     return this.http.get<any>('/Services/Statistics/StatisticsService.svc/GetTeacherStatistics');
+  }
+
+  round(value: any): number {
+    return Math.round(value * 10) / 10;
   }
 }

@@ -4,6 +4,7 @@ import {Message} from '../../../../../../container/src/app/core/models/message';
 import * as filesActions from '../../service/files.actions';
 import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../../complex/src/app/store/states/app.state';
+import {Attachment} from '../../../../../complex/src/app/models/Attachment';
 
 @Component({
   selector: 'app-news-info',
@@ -31,8 +32,8 @@ export class NewsInfoComponent implements OnInit {
     window.parent.postMessage([{channel: message.Type, value: message.Value}], '*');
   }
 
-  fileDownload(path: string) {
-    this.store.dispatch(filesActions.downloadFile({ pathName: path, fileName: 'NB8D7FD53273748CFA125EFC2BA19D434.docx' }));
+  fileDownload(attachment: Attachment) {
+    this.store.dispatch(filesActions.downloadFile({ pathName: attachment.PathName, fileName: attachment.FileName }));
   }
 
   onCancelClick() {

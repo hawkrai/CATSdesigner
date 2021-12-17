@@ -58,8 +58,8 @@ export class StatsComponent implements OnInit {
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
         const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
-        const userPracticalPass = 2;
-        const userPracticalMarks = 5;
+        const userPracticalPass = item.UserPracticalPass.find(({Key}) => Key === id).Value;
+        const userPracticalMarks = item.UserAvgPracticalMarks.find(({Key}) => Key === id).Value;
         labMarks += userAvgLabMarks;
         practMarks += userPracticalMarks;
         testMarks += userAvgTestMarks;
@@ -93,10 +93,10 @@ export class StatsComponent implements OnInit {
         item.UserLabPass.map( ( statsItem, index) => {
           labPassTotal += statsItem.Value;
           lecturePassTotal += item.UserLecturePass[index].Value;
-          practicalPassTotal = 3;
+          practicalPassTotal = item.UserPracticalPass[index].Value;
           avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
-          avgPracticalMarksTotal += 5;
+          avgPracticalMarksTotal += item.UserAvgPracticalMarks[index].Value;
         });
         avgLabMarksTotal = avgLabMarksTotal / item.UserLabPass.length;
         avgTestMarksTotal = avgTestMarksTotal / item.UserLabPass.length;
