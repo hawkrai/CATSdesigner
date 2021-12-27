@@ -1,4 +1,11 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<mat-slide-toggle class="example-margin"
+                  [color]="'primary'"
+                  (change)="subjectsStatusChange($event)"
+>
+  {{'text.statistics.inactive.subjects' | translate:'Неактивные предметы'}}
+</mat-slide-toggle>
+<div *ngIf="!isArchived">
 <table style = "width: 100%">
   <tr>
 <div *ngFor="let chart of this.listChartOptions"  class="diagram">
@@ -47,5 +54,56 @@
 </div>
 </tr>
 </table>
+</div>
 
+<div *ngIf="isArchived">
+  <table style = "width: 100%">
+    <tr>
+      <div *ngFor="let chart of this.listChartOptionsArchive"  class="diagram">
+        <h6 (click)="rerouteToSubject(chart.subject)" style = "font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
+  margin-left: 12%; margin-top: 10px; text-align: center">
+          {{chart.title.text}}</h6>
+        <div class = "radar">
+          <apx-chart
+            [series]="chart.series"
+            [chart]="chart.chart"
+            [xaxis]="chart.xaxis"
+            [yaxis]="chart.yaxis"
+            [legend] = "chart.legend"
+            [fill] = "chart.fill"
+            [colors] = "chart.colors"
+            [markers] = "chart.markers"
+            [stroke]= "chart.stroke"
+          ></apx-chart>
+        </div>
+
+        <table style = "margin-top: -10%;margin-left: 10%">
+          <tr *ngFor="let i of [0,1,2,3,4]">
+            <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif',
+      'font-size': '16px', 'padding-right': '10px'}">{{chart.series[0].data[i]}}</td>
+            <td *ngIf="chart.categories[i] != '0'" style = "font-size: 14px;
+      font-family: Roboto, Helvetica Neue, sans-serif;">{{chart.categories[i]}}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div *ngIf="chartOptionsArchive != undefined" id="chartArchive" style = "width: 100%; margin-top: 30px; margin-left: 2%;">
+        <apx-chart
+          [series]="chartOptionsArchive.series"
+          [chart]="chartOptionsArchive.chart"
+          [dataLabels]="chartOptionsArchive.dataLabels"
+          [plotOptions]="chartOptionsArchive.plotOptions"
+          [xaxis]="chartOptionsArchive.xaxis"
+          [stroke]="chartOptionsArchive.stroke"
+          [fill]="chartOptionsArchive.fill"
+          [yaxis]="chartOptionsArchive.yaxis"
+          [title]="chartOptionsArchive.title"
+          [tooltip]="chartOptionsArchive.tooltip"
+          [colors]="chartOptionsArchive.colors"
+          [legend]="chartOptionsArchive.legend"
+        ></apx-chart>
+      </div>
+    </tr>
+  </table>
+</div>
 

@@ -40,6 +40,8 @@ export class StatsComponent implements OnInit {
       res => {
         this.studentStatistic = res.Students;
         this.isLoad = true;
+        this.selectedItem = -1;
+        this.statisticSubject();
       }
     );
   }

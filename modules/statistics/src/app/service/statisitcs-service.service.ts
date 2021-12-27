@@ -38,6 +38,10 @@ export class StatisitcsServiceService {
     return this.http.get<any>('/Services/Statistics/StatisticsService.svc/GetTeacherStatistics');
   }
 
+  getCheckedType(subjectId: any): Observable<any> {
+    return this.http.get<any>('/Services/Subjects/SubjectsService.svc/Modules/' + subjectId);
+  }
+
   round(value: any): number {
     return Math.round(value * 10) / 10;
   }
