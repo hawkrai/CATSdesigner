@@ -55,7 +55,7 @@ export class LessonService {
   }
 
   deletePractical(idPract: any, subjId: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeleteLabScheduleDate', {id: idPract, subjectId: subjId});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeletePracticalScheduleDate', {id: idPract, subjectId: subjId});
   }
 
   saveLecture(lect: any, dateLes: string): Observable<any> {

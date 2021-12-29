@@ -16,4 +16,14 @@ export class StatisticService {
     getStatistics(userId): Observable<StatisticResponse> {
         return this.http.get<StatisticResponse>(this.api + 'AttendanceJson/' + userId);
     }
+
+  cutName(name: string): string {
+    if (name != null) {
+      const splitted = name.split(' ', 3);
+      const a = ' ' + splitted[1][0] + '. ';
+      const b = splitted[2][0] + '. ';
+      return splitted[0] + a + b;
+    }
+    return name;
+  }
 }

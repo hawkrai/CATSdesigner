@@ -10,7 +10,7 @@
     </div>
     <div *ngIf="data.itemNews.Attachments">
       <div class="attachments-container">
-        <a class="attachment"  (click)="fileDownload(data.itemNews.Attachments)">Приложение</a>
+        <a class="attachment" *ngFor="let file of data.itemNews.Attachments" (click)="fileDownload(file)">{{file.Name}}</a>
       </div>
     </div>
     <div>
