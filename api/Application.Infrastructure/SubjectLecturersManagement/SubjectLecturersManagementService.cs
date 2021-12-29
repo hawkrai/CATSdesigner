@@ -14,12 +14,12 @@ namespace Application.Infrastructure.SubjectLecturersManagement
         public bool HasStudent(int lecturerId, int studentId)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			var subjectLecturers = repositoriesContainer.RepositoryFor<SubjectLecturer>()
-				.GetAll(new Query<SubjectLecturer>(e => e.LecturerId == lecturerId)
-					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubjectStudents)))
+			var subjects = repositoriesContainer.SubjectRepository
+				.GetAll(new Query<Subject>(e => !e.IsArchive && e.SubjectLecturers.Any(x => x.LecturerId == lecturerId))
+					.Include(e => e.SubjectGroups.Select(x => x.Group.Students)))
 				.ToList();
 
-			return subjectLecturers.Any(x => x.Subject.SubjectGroups.Any(x => x.SubjectStudents.Any(x => x.StudentId == studentId)));
+			return subjects.Any(x => x.SubjectGroups.Any(x => x.Group.Students.Any(x => x.Id == studentId)));
 		}
     }
 }

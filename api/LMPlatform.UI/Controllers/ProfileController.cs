@@ -156,7 +156,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetProfileInfoSubjects(string userLogin)
+        public ActionResult GetProfileInfoSubjects(string userLogin, bool isArchive = false)
         {
             var userService = new UsersManagementService();
 
@@ -167,9 +167,9 @@ namespace LMPlatform.UI.Controllers
             List<Subject> model;
 
             if (user.Lecturer == null)
-                model = subjectService.GetSubjectsByStudent(user.Id);
+                model = subjectService.GetSubjectsByStudent(user.Id, isArchive);
             else
-                model = subjectService.GetSubjectsByLector(user.Id);
+                model = subjectService.GetSubjectsByLector(user.Id, isArchive);
 
 
             var returnModel = new List<object>();

@@ -24,7 +24,12 @@ export const labsReducer = createReducer(
     ...state,
     labs: [],
     schedule: [],
-    students: []
+    students: [],
+    subGroups: []
+  })),
+  on(labsActions.setLabsSubGroups, (state, { subGroups }): ILabsState => ({
+    ...state,
+    subGroups
   })),
   on(labsActions.loadGroupJobProtectionSuccess, (state, { groupJobProtection }): ILabsState => ({
     ...state,

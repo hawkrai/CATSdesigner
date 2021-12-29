@@ -1,8 +1,7 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ConfirmationService} from "../services/confirmation.service";
 import {takeUntil, tap} from "rxjs/operators";
 import {iif, Subject} from "rxjs";
-import {MatSnackBar, MatTableDataSource} from "@angular/material";
 import { Group } from "../models/group.model";
 import { Student } from "../models/student.model";
 import { CatsMessageService } from "../services/cats-message.service";
@@ -23,7 +22,6 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
 
   constructor(
     private confirmationService: ConfirmationService,
-    private snackBar: MatSnackBar,
     private catsMessageService: CatsMessageService
     ) {
   }
@@ -60,24 +58,17 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribeStream$)
       ).subscribe(response => {
-        this.openSnackBar(response.Message);
         this.onGroupValueChange(this.selectedGroup);
         this.updateGroupUncofirmedStudents(confirm);
-        this.catsMessageService.sendMessage(new Message('Comfirmation', confirm ? '-1' : '1'));
-
+        this.catsMessageService.sendMessage(new Message('Confirmation', confirm ? '-1' : '1'));
+        this.catsMessageService.sendMessage(new Message('Toast',  JSON.stringify({ text: response.Message as string, type: response.Code === '200' ? 'success' : 'warning' })));
       });
   }
 
   private updateGroupUncofirmedStudents(increase: boolean = true): void {
     this.groups = this.groups.map(
-      (group): Group => +group.GroupId === +this.selectedGroup ? { ...group, CountUnconfirmedStudents: group.CountUnconfirmedStudents + (increase ? 1 : -1) } : group
+      (group): Group => +group.GroupId === +this.selectedGroup ? { ...group, CountUnconfirmedStudents: group.CountUnconfirmedStudents + (increase ? -1 : 1) } : group
       );
-  }
-
-  public openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    });
   }
 
   public ngOnDestroy(): void {

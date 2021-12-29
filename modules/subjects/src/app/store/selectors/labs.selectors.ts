@@ -20,6 +20,11 @@ export const getLabStudents = createSelector(
   state => state.students
 );
 
+export const getSubGroups = createSelector(
+  labsSelector,
+  state => state.subGroups
+);
+
 export const hasJobProtections = createSelector(
   labsSelector,
   state => state.hasJobProtections
