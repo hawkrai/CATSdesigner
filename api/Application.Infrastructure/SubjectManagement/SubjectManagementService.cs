@@ -1046,13 +1046,13 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public List<Subject> GetAllSubjectsByLector(int userId)
+		public List<Subject> GetSubjectsInfoByLector(int userId)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				model = repositoriesContainer.SubjectRepository.GetAllSubjects(lecturerId: userId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjectsInfoByLecturerId(lecturerId: userId).ToList();
 			}
 
 			return model;
@@ -1087,20 +1087,20 @@ namespace Application.Infrastructure.SubjectManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).Where(e => !e.IsArchive).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjectsLite(groupId: student.GroupId).Where(e => !e.IsArchive).ToList();
 			}
 
 			return model;
 		}
 
-		public List<Subject> GetAllSubjectsByStudent(int userId)
+		public List<Subject> GetSubjectsInfoByStudent(int userId)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetAllSubjects(groupId: student.GroupId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjectsInfoByGroupId(groupId: student.GroupId).ToList();
 			}
 
 			return model;

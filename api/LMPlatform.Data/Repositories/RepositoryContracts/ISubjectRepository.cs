@@ -7,7 +7,8 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
     public interface ISubjectRepository : IRepositoryBase<Subject>
     {
         List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0);
-        List<Subject> GetAllSubjects(int groupId = 0, int lecturerId = 0);
+        List<Subject> GetSubjectsInfoByLecturerId(int lecturerId);
+        List<Subject> GetSubjectsInfoByGroupId(int groupId);
 
         List<Subject> GetSubjectsV2(int groupId = 0, int lecturerId = 0);
 
