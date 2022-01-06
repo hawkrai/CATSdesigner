@@ -14,6 +14,7 @@ import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedu
 import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model';
 import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
+import { SubGroup } from 'src/app/models/sub-group.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,16 +30,23 @@ export class LabsRestService {
     );
   }
 
-  public getProtectionSchedule(subjectId: number, groupId: number): Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[]}> {
+  public getProtectionSchedule(subjectId: number, groupId: number): Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], subGroups: SubGroup[] }> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId.toString());
     return this.http.get('Services/Labs/LabsService.svc/GetLabsV2', {params}).pipe(
       map(res => {
         return {labs: res['Labs'],
-          scheduleProtectionLabs: res['ScheduleProtectionLabs']}
+          scheduleProtectionLabs: res['ScheduleProtectionLabs'], subGroups: res['SubGroups'] }
       })
     )
+  }
+
+  getSubGroups(subjectId: number, groupId: number): Observable<SubGroup[]> {
+    const params = new HttpParams()
+    .set('subjectId', subjectId.toString())
+    .set('groupId', groupId.toString());
+    return this.http.get<SubGroup[]>('Services/Labs/LabsService.svc/GetSubGroups', {params});
   }
 
   public getMarksV2(subjectId: number, groupId: number): Observable<StudentMark[]> {

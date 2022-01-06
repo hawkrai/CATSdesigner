@@ -22,5 +22,8 @@ namespace LMPlatform.UI.Services.Modules.Statistics
 
         [DataMember]
         public double AverageTestsMark { get; set; }
+
+        [DataMember]
+        public int SubjectId { get; set; }
     }
 }

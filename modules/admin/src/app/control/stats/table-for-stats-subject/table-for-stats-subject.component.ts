@@ -1,5 +1,6 @@
 import {Component, Input, OnInit, SimpleChanges, OnChanges} from '@angular/core';
-import {GroupStatsStatistic} from '../../../model/group.stats';
+import { StatisticService } from 'src/app/service/statistic.service';
+
 
 @Component({
   selector: 'app-table-for-stats-subject',
@@ -8,8 +9,8 @@ import {GroupStatsStatistic} from '../../../model/group.stats';
 })
 export class TableForStatsSubjectComponent implements OnInit, OnChanges {
 
-  displayedColumns: string[] = ['position', 'FIO', 'UserLabPass', 'UserLecturePass', 'UserPracticalPass', 'AllPass',
-   'UserAvgLabMarks', 'UserAvgTestMarks', 'UserAvgPracticalMarks', 'Rating'];
+  displayedColumns: string[] = ['position', 'FIO', 'UserLecturePass', 'UserPracticalPass',  'UserLabPass',  'AllPass',
+    'UserAvgPracticalMarks', 'UserAvgLabMarks', 'UserAvgTestMarks',  'Rating'];
   headerRow: string[] = ['family-header', 'option-header', 'omissions-header', 'average-mark-header'];
 
   public categoriesConst: string[]  = ['Средний балл за практические занятия',
@@ -28,7 +29,7 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
   public chartOptions1: any;
   @Input() data: any;
 
-  constructor() {}
+  constructor(private statisticsService: StatisticService) {}
 
   ngOnInit() {
     this.dataSource = this.data;
@@ -40,7 +41,7 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
     this.addChart(this.marks, this.dataSource[0].Subject, this.categoriesConst);
     delete this.dataSource.marks;
     this.dataSource.forEach(student => {
-      this.surnames.push(student.FIO.split(' ')[0]);
+      this.surnames.push(this.statisticsService.cutName(student.FIO));
       this.passes.push(student.AllPass);
       this.marksChart.push(+student.Rating);
     });
@@ -129,11 +130,11 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
     this.chartOptions1 = {
       series: [
         {
-          name: 'Пропуски',
+          name: 'Пропуски, ч.',
           data: passes
         },
         {
-          name: 'Оценки',
+          name: 'Рейтинг',
           data: marks
         }
       ],

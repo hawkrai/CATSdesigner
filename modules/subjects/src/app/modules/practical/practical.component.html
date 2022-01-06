@@ -40,7 +40,7 @@
               <app-help [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
               <button class="mat-icon-button-groups" mat-icon-button
                 [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below"
-                (click)="subdivision()">
+                (click)="subdivision(state.group.GroupId)">
                 <mat-icon color="primary">groups</mat-icon>
               </button>
             </ng-container>

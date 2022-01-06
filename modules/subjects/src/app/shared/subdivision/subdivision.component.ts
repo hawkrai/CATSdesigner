@@ -47,7 +47,7 @@ export class SubdivisionComponent implements OnInit {
   ngOnInit(): void {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-      this.subjectService.editGroups(subjectId).subscribe(res => {
+      this.subjectService.editGroups(subjectId, this.data.model).subscribe(res => {
         this.setData(res);
       });
     });
@@ -70,8 +70,9 @@ export class SubdivisionComponent implements OnInit {
         body.subGroupThirdIds += student.Value + ',';
       }
     });
-    this.subjectService.saveSubGroup(body).subscribe(res => console.log(res));
-    this.dialogRef.close();
+    this.subjectService.saveSubGroup(body).subscribe(res => {
+      this.dialogRef.close({ updated: true });
+    });
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {

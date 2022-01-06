@@ -159,57 +159,8 @@
               </mat-list>
             </div>
           </ng-container>
-          <!-- <div class="subdivision-student__container">
-              (click)="includeNone()"
-              <button mat-raised-button ><<</button>
-              <mat-list>
-                <mat-list-item matRipple class="mat-list-option" *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
-                               (click)="move(i, data.selectedGroups, groups)">
-                  {{group.GroupName}}
-                </mat-list-item>
-              </mat-list>
-            </div> -->
-          <!-- <mat-selection-list #students
-                              name="selectList"
-                              [(ngModel)]="selectedOptions"
-                              [color]="'primary'">
-            <mat-list-option *ngFor="let student of studentList | sortBy:'Text'" [value]="student.Value">
-              <div class="subdivision-students__body-text">
-                <div class="subdivision-students__body-sub-group">
-                  {{student.subGroup}}
-                </div>
-                <div>
-                  {{student.Text}}
-                </div>
-              </div>
-            </mat-list-option>
-          </mat-selection-list> -->
         </div>
-        <!-- <div class="subdivision-students__footer">
-          <p class="mat-typography text">
-            {{'text.students.selected.genitive' | translate:'Выбранных студентов'}}: {{students.selectedOptions.selected.length}}
-          </p>
-          <div class="subdivision-students__footer-checkbox">
-            <mat-checkbox [color]="'primary'"
-                          name="allStudents"
-                          [(ngModel)]="allCheckbox"
-                          (change)="selectedAll($event, students)"></mat-checkbox>
-          </div>
-        </div> -->
       </div>
-      <!-- <div class="subdivision-students__actions">
-        <mat-form-field>
-          <mat-label>{{'subgroup' | translate:'Подгруппа'}}</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let subgroup of subgroups"
-                        (onSelectionChange)="splitUp($event, students)"
-                        [value]="subgroup"
-            >
-              {{subgroup}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div> -->
     </form>
   </ng-container>
   <ng-container actions>

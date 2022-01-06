@@ -27,7 +27,7 @@
                     [ngStyle]="{ padding: 0, position: 'relative'}"
                 >
                     <div *ngIf="element | markProperty:+schedulePractical.head:state.practicals:state.schedule as markProperty;"
-                        (dblclick)="setMark(element,+schedulePractical.head, markProperty.recommendedMark);"
+                        (dblclick)="state.isTeacher && setMark(element,+schedulePractical.head, markProperty.recommendedMark);"
                         class="mark">
                     <div *ngIf="markProperty.mark">
                         {{markProperty.mark.Mark}}

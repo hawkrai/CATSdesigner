@@ -469,11 +469,12 @@ namespace Application.Infrastructure.SubjectManagement
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			var subjectGroup =
-				repositoriesContainer.SubjectRepository.GetBy(
-					new Query<Subject>(e => e.Id == subjectId && e.SubjectGroups.Any(x => x.GroupId == groupId))
-						.Include(e => e.SubjectGroups.Select(x => x.SubGroups.Select(c => c.ScheduleProtectionLabs))));
+				repositoriesContainer.RepositoryFor<SubjectGroup>().GetBy(
+					new Query<SubjectGroup>(e => e.GroupId == groupId && e.SubjectId == subjectId)
+						.Include(e => e.SubGroups.Select(c => c.ScheduleProtectionLabs))
+						.Include(e => e.SubjectStudents));
 						
-			return subjectGroup.SubjectGroups.First(e => e.GroupId == groupId).SubGroups.ToList();
+			return subjectGroup.SubGroups.Where(x => x.SubjectStudents?.Count > 0).ToList();
 		}
 
 		public void SaveSubGroup(int subjectId, int groupId, IList<int> firstInts, IList<int> secoInts, IList<int> thirdInts)
@@ -1034,13 +1035,13 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-        public List<Subject> GetSubjectsByLector(int userId)
+        public List<Subject> GetSubjectsByLector(int userId, bool isArchive = false)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				model = repositoriesContainer.SubjectRepository.GetSubjects(lecturerId: userId).Where(e => !e.IsArchive).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjects(lecturerId: userId).Where(e => e.IsArchive == isArchive).ToList();
 			}
 
 			return model;
@@ -1080,14 +1081,14 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public List<Subject> GetSubjectsByStudent(int userId)
+		public List<Subject> GetSubjectsByStudent(int userId, bool isArchive)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetSubjectsLite(groupId: student.GroupId).Where(e => !e.IsArchive).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).Where(e => e.IsArchive == isArchive).ToList();
 			}
 
 			return model;

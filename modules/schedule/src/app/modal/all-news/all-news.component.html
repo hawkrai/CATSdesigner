@@ -10,9 +10,9 @@
     <div [innerHTML]="newItem.Body" class="body"
          style="font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 1em;  margin-bottom: 0em;max-height: 35vh;overflow-y: auto;">
     </div>
-    <div *ngIf="newItem.Attachments">
+    <div *ngIf="newItem.Attachments.length">
       <div class="attachments-container">
-        <a class="attachment"  (click)="fileDownload(newItem.Attachments)">Приложение</a>
+        <a class="attachment" *ngFor="let file of newItem.Attachments" (click)="fileDownload(file)">{{file.Name}}</a>
       </div>
     </div>
     <div>
