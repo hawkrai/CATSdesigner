@@ -3,7 +3,7 @@
     {{ 'subdivision' | translate:'Разделение на подгруппы' }}
   </ng-container>
   <ng-container body>
-    <form class="example-form">
+    <form class="subdivision-form">
       <div class="form-container form-container__space-between">
         <mat-form-field>
           <mat-select [value]="selectedGroup ? selectedGroup : ''">
@@ -26,8 +26,8 @@
               !thirdSubGroupVisible
                 ? ('text.thirdsubgroup.add'
                   | translate: 'Добавить третью подгруппу')
-                : ('text.thirdsubgroup.remove'
-                  | translate: 'Убрать третью подгруппу')
+                : (('text.thirdsubgroup.remove'
+                  | translate: 'Убрать третью подгруппу') + '\n' + ('text.subdivision.to.the.first.subgroup' | translate:'Студенты будут перемещены в подгруппу'))
             "
             matTooltipPosition="below"
             (click)="triggerThirdSubGroupVisible()"
@@ -55,7 +55,8 @@
                 </mat-icon>
               </button>
             </div>
-            <mat-list
+            <div class="subdivision-students__wrapper">
+              <mat-list
               class="subdivision-students__list"
               [cdkDropListData]="firstSubgroupList"
               (cdkDropListDropped)="drop($event, 1)"
@@ -74,6 +75,8 @@
                 {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
               </mat-list-item>
             </mat-list>
+            </div>
+
           </div>
           <div
             class="subdivision-students__container"
@@ -100,7 +103,8 @@
                 </mat-icon>
               </button>
             </div>
-            <mat-list
+            <div class="subdivision-students__wrapper">
+              <mat-list
               cdkDropList
               [cdkDropListData]="secondSubgroupList"
               (cdkDropListDropped)="drop($event, 2)"
@@ -120,6 +124,7 @@
 
               </mat-list-item>
             </mat-list>
+            </div>
           </div>
           <ng-container *ngIf="thirdSubGroupVisible">
             <div
@@ -139,7 +144,8 @@
                   {{ "subgroup" | translate: "Подгруппа" }} 3
                 </p>
               </div>
-              <mat-list
+              <div class="subdivision-students__wrapper">
+                <mat-list
                 cdkDropList
                 [cdkDropListData]="thirdSubgroupList"
                 (cdkDropListDropped)="drop($event, 3)"
@@ -158,6 +164,7 @@
                   {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
                 </mat-list-item>
               </mat-list>
+              </div>
             </div>
           </ng-container>
         </div>

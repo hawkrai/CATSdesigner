@@ -207,5 +207,6 @@
   "text.schedule.dates": "Dates of classes",
   "text.schedule.management.dates.deleting": "Deleting dates",
   "text.schedule.date.and.connected.data": "date and all related data",
-  "text.students.transfered": "Student(s) were successfully transfered to the subgroup"
+  "text.students.transfered": "Student(s) were successfully transfered to the subgroup",
+  "text.subdivision.to.the.first.subgroup": "Students will be transferred to the first subgroup"
 }
