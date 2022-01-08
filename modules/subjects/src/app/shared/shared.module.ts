@@ -44,6 +44,7 @@ import * as dataEn from '../core/translation/translations_en.json';
 import * as dataRu from '../core/translation/translations_ru.json';
 import { SomePipe } from './pipes/some.pipe';
 import { StartWithPipe } from './pipes/start-with.pipe';
+import { FirstLetterPipe } from './pipes/first-letter.pipe';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { StartWithPipe } from './pipes/start-with.pipe';
     ListItemBodyDirective,
     ListItemActionsDirective,
     SomePipe,
-    StartWithPipe
+    StartWithPipe,
+    FirstLetterPipe
     ],
   imports: [
     CommonModule,
@@ -137,7 +139,8 @@ import { StartWithPipe } from './pipes/start-with.pipe';
     ListItemBodyDirective,
     ListItemActionsDirective,
     SomePipe,
-    StartWithPipe
+    StartWithPipe,
+    FirstLetterPipe
   ],
   providers: [TranslatePipe]
 })

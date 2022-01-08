@@ -69,9 +69,9 @@
                 }"
                 matRipple
                 class="mat-list-option"
-                *ngFor="let student of firstSubgroupList | sortBy: 'Text'"
+                *ngFor="let student of firstSubgroupList | sortBy: 'LastName'"
               >
-                {{ student.Text | initials }}
+                {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
               </mat-list-item>
             </mat-list>
           </div>
@@ -114,9 +114,10 @@
                 (click)="selectStudent(2, student)"
                 matRipple
                 class="mat-list-option"
-                *ngFor="let student of secondSubgroupList | sortBy: 'Text'"
+                *ngFor="let student of secondSubgroupList | sortBy: 'LastName'"
               >
-                {{ student.Text | initials }}
+                {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
+
               </mat-list-item>
             </mat-list>
           </div>
@@ -152,9 +153,9 @@
                   }"
                   matRipple
                   class="mat-list-option"
-                  *ngFor="let student of thirdSubgroupList | sortBy: 'Text'"
+                  *ngFor="let student of thirdSubgroupList | sortBy: 'LastName'"
                 >
-                  {{ student.Text | initials }}
+                  {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
                 </mat-list-item>
               </mat-list>
             </div>
@@ -167,7 +168,7 @@
     <button mat-raised-button (click)="onClick()">
       {{ "button.cancel" | translate: "Отмена" }}
     </button>
-    <button mat-raised-button color="primary" (click)="save()">
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="!canSave()">
       {{ "button.save" | translate: "Сохранить" }}
     </button>
   </ng-container>

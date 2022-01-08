@@ -1078,7 +1078,7 @@ namespace LMPlatform.UI.Services.Labs
 			var studentJobProtection = new List<StudentJobProtectionViewData>();
 			var studentsLabFiles = SubjectManagementService.GetGroupLabFiles(subjectId, groupId);
 
-			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed != null || e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
+			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
             {
 				studentJobProtection.Add(new StudentJobProtectionViewData
 				{
