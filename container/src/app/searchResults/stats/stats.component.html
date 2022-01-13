@@ -1,16 +1,16 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div class="main" *ngIf="isLoad">
-    <h1>Статистика</h1>
+    <h1> {{'text.group.statistics' | translate : ("Статистика")}} </h1>
     <mat-form-field>
-        <mat-label>Выберите предмет</mat-label>
+        <mat-label>{{'text.group.selectSubject' | translate : ("Выберите предмет")}}</mat-label>
         <mat-select [(ngModel)]="selectedItem" name="item" (ngModelChange)="this.statisticSubject()">
             <mat-option *ngFor="let item of this.subjects" [value]="item.Id">{{item.Name}}</mat-option>
-            <mat-option [value]="-1">Суммарная статистика по всем предметам</mat-option>
+            <mat-option [value]="-1">{{'text.group.totalStatistics' | translate : ("Суммарная статистика по всем предметам")}}</mat-option>
         </mat-select>
     </mat-form-field>
 </div>
 <div class="export-button">
-  <button class="btn" (click)="this.captureScreen()">Печать</button>
+  <button class="btn" (click)="this.captureScreen()">{{'text.group.print' | translate : ("Печать")}}</button>
   <button class="btn" (click)="this.exportExcel()"><i class="fa fa-download"></i>Excel</button>
 </div>
 <div *ngIf="this.selectedItem">
