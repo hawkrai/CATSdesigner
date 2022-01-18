@@ -30,6 +30,10 @@ export class StatisitcsServiceService {
     return this.http.post<any>('/Profile/GetProfileInfoSubjects', {userLogin: username});
   }
 
+  getAllArchiveSubjects(username: string): Observable<any> {
+    return this.http.post<any>('/Profile/GetProfileInfoSubjects?isArchive=true', {userLogin: username});
+  }
+
   getUserInfo(id: string): Observable<any> {
     return this.http.get<any>('/Profile/GetProfileInfoById/' + id);
   }

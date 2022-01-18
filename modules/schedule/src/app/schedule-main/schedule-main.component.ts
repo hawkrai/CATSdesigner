@@ -83,12 +83,10 @@ export class ScheduleMainComponent implements OnInit {
     this.locale = this.translatePipe.transform('text.schedule.locale.en', 'ru');
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.changeDate();
-    this.isLoadActive = false;
-
     if (this.user.role === 'student') {
-      this.isStudent = false;
-    } else {
       this.isStudent = true;
+    } else {
+      this.isStudent = false;
     }
 
   }
@@ -194,7 +192,7 @@ export class ScheduleMainComponent implements OnInit {
     message.Value = this.lessonservice.getReferenceToSubject(title);
     message.Type = 'Route';
     window.parent.postMessage(message, '*');
-    //this.modulecommunicationservice.sendMessage(window.parent, message);
+    // this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
 

@@ -18,7 +18,7 @@ export class StatisticService {
     }
 
   cutName(name: string): string {
-    if (name != null) {
+    if (name != null && name.split(' ', 3).length > 2) {
       const splitted = name.split(' ', 3);
       const a = ' ' + splitted[1][0] + '. ';
       const b = splitted[2][0] + '. ';
