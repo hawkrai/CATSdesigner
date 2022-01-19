@@ -58,7 +58,7 @@ export class SignupComponent implements OnInit {
   getGroups() {
     this.groupService.getGroups().subscribe(items => {
       this.groups = items;
-      this.groups = this.groups.sort((n1, n2) => n1.Name - n2.Name);
+      this.groups = this.groups.sort((n1, n2) => n1.Name.localeCompare(n2.Name));
       this.isLoad = true;
     });
   }

@@ -634,5 +634,10 @@
   "text.academic.performance.monitoring.start.page":"< Start Page",
   "text.academic.performance.monitoring.start.info.first":"To view the progress of students, enter their group number. If you are interested in the academic performance of an individual student, then add his last name.",
   "text.academic.performance.monitoring.start.info.second": "You can view the total performance statistics for all currently studied courses, as well as selectively for each subject. You can also get acquainted with the statistics of academic performance in previously studied subjects.",
-  "text.academic.performance.monitoring.start.info.third": "The received information can be printed or exported to MS Excel."
+  "text.academic.performance.monitoring.start.info.third": "The received information can be printed or exported to MS Excel.",
+
+  "text.group.statistics":"Statistics",
+  "text.group.selectSubject":"Select the subject",
+  "text.group.totalStatistics":"Total statistics",
+  "text.group.text.group.print":"Print"
 }
