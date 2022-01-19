@@ -17,13 +17,17 @@ export class StatsComponent implements OnInit {
   @ViewChild('table', { static: false }) table: ElementRef;
 
   subjects: Subject[];
+  subjectsArchive: Subject[];
   isLoad = false;
   groupId: any;
   selectedItem: any;
   tableStats: any;
   groupName: string;
   studentStatistic: GroupStatsStudent[];
+  studentStatisticArchive: GroupStatsStudent[];
+  studentStatisticTemp: GroupStatsStudent[];
   surname: string;
+  isArchive = false;
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
@@ -38,10 +42,20 @@ export class StatsComponent implements OnInit {
     this.isLoad = false;
     this.subjectService.loadGroup(groupId).subscribe(
       res => {
-        this.studentStatistic = res.Students;
-        this.isLoad = true;
-        this.selectedItem = -1;
-        this.statisticSubject();
+        this.subjectService.loadGroupArchive(groupId).subscribe(resArchive => {
+          this.subjectService.getUserInfo(resArchive.Students[6].Id + '').subscribe(userInfo => {
+            console.log(userInfo);
+          });
+          // this.subjectService.getAllArchiveSubjects(resArchive).subscribe(subjectResponseArchive => {
+
+          // });
+          res.Students.splice(0, 1);
+          this.studentStatistic = res.Students;
+          this.studentStatisticArchive = resArchive.Students;
+          this.isLoad = true;
+          this.selectedItem = -1;
+          this.statisticSubject();
+        });
       }
     );
   }
@@ -52,7 +66,15 @@ export class StatsComponent implements OnInit {
     let labMarks = 0;
     let practMarks = 0;
     let testMarks = 0;
+    let lectPass = 0;
+    let practPass = 0;
+    let labPass = 0;
     let rating = 0;
+    if (this.isArchive) {
+      this.studentStatisticTemp = this.studentStatisticArchive;
+    } else {
+      this.studentStatisticTemp = this.studentStatistic;
+    }
     if (id && id !== -1) {
       const subject = this.subjects.find(({Id}) => Id === id);
       this.tableStats = this.studentStatistic.map((item) => {
@@ -65,6 +87,9 @@ export class StatsComponent implements OnInit {
         labMarks += userAvgLabMarks;
         practMarks += userPracticalMarks;
         testMarks += userAvgTestMarks;
+        lectPass += userLecturePass;
+        practPass += userPracticalPass;
+        labPass += userLabPass;
 
         if (this.surname != undefined && !item.FIO.includes(this.surname)) {
           return ;
@@ -106,6 +131,9 @@ export class StatsComponent implements OnInit {
         labMarks += avgLabMarksTotal;
         practMarks += avgPracticalMarksTotal;
         testMarks += avgTestMarksTotal;
+        lectPass += lecturePassTotal;
+        practPass += practicalPassTotal;
+        labPass += labPassTotal;
         if (this.surname != undefined && !item.FIO.includes(this.surname)) {
           return ;
         }
@@ -124,11 +152,28 @@ export class StatsComponent implements OnInit {
         };
       });
     }
+
     labMarks = Math.round(labMarks / this.studentStatistic.length * 100) / 100;
     practMarks = Math.round(practMarks / this.studentStatistic.length * 100) / 100;
     testMarks = Math.round(testMarks / this.studentStatistic.length * 100) / 100;
     rating = Math.round((labMarks + practMarks + testMarks) / 3 * 100) / 100;
-    this.tableStats.marks = [labMarks, practMarks, testMarks, rating];
+
+    lectPass = Math.round(lectPass / this.studentStatistic.length * 100) / 100;
+    practPass = Math.round(practPass / this.studentStatistic.length * 100) / 100;
+    labPass = Math.round(labPass / this.studentStatistic.length * 100) / 100;
+    this.tableStats.push({
+      GroupName: groupName,
+      FIO: '',
+      Subject: 'Все предметы',
+      Rating: rating,
+      AllPass: lectPass + practPass + labPass,
+      UserAvgLabMarks: labMarks,
+      UserAvgTestMarks: testMarks,
+      UserLabPass: labPass,
+      UserAvgPracticalMarks: practMarks,
+      UserLecturePass: lectPass,
+      UserPracticalPass: practPass
+    });
     while (true) {
       if (this.tableStats.indexOf(undefined) == -1) {
         break;
@@ -147,7 +192,6 @@ export class StatsComponent implements OnInit {
       this.subjects = subjectResponse.Subjects;
       this.groupId = subjectResponse.GroupId;
       this.getStatistic(this.groupId);
-      console.log(this.studentStatistic);
     });
   }
 

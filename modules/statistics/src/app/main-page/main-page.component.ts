@@ -53,16 +53,16 @@ export class MainPageComponent implements OnInit {
                                   this.translatePipe.transform('text.statistics.avg.rating', 'Рейтинговая оценка')];
 
   constructor(private serviceService: StatisitcsServiceService, private translatePipe: TranslatePipe ) {
-    this.user = JSON.parse(localStorage.getItem('currentUser'));
     if (this.user.role == 'student') {
       this.serviceService.getUserInfo(this.user.id).subscribe(res => {
         this.serviceService.getLabsStastics(res.GroupId).subscribe(result => {
           if (result.Message == 'Ok') {
             this.serviceService.getAllSubjects(this.user.userName).subscribe(subjects => {
-            this.performData(subjects, result, this.listChartOptions, this.chartOptions1);
+            this.performData(subjects, result, this.listChartOptions, false);
             this.serviceService.getArchiveStatistics(res.GroupId).subscribe(resultArchive => {
-              // console.log(resultArchive);
-              // this.performData(subjects, resultArchive, this.listChartOptionsArchive, this.chartOptionsArchive);
+              this.serviceService.getAllArchiveSubjects(this.user.userName).subscribe(subjectsArchive => {
+                this.performData(subjectsArchive, resultArchive, this.listChartOptionsArchive, true);
+              });
             });
             });
           }
@@ -87,7 +87,7 @@ export class MainPageComponent implements OnInit {
             const rating = this.serviceService.round(this.tempAvg / this.temp.length);
             this.ratingMarks.push(rating);
             this.temp.push(rating);
-            this.addChart(this.temp, subject.SubjectName, this.categoriesConst, 4112, this.listChartOptions);
+            this.addChart(this.temp, subject.SubjectName, this.categoriesConst, subject.SubjectId, this.listChartOptions);
             this.subjectName.push(subject.SubjectName);
           });
         this.series.push({name: this.categoriesConst[0], data: this.practMarks});
@@ -96,19 +96,19 @@ export class MainPageComponent implements OnInit {
         this.series.push({name: this.categoriesConst[3], data: this.conMarks});
         this.series.push({name: this.categoriesConst[4], data: this.ratingMarks});
 
-        // this.series.push({name: this.categoriesConst[0], data: [5.7, 5.5, 6.3, 7.7, 6.7 ]});
-        // this.series.push({name: this.categoriesConst[1], data: [6.9, 7.1, 6.2, 5.9, 6.5 ]});
-        // this.series.push({name: this.categoriesConst[2], data: [7.4, 8.2, 7.2, 7.5, 7.9 ]});
-       // this.series.push({name: this.categoriesConst[3], data: [6.7, 6.4, 8.8, 6.9, 8.4 ]});
-        // this.series.push({name: this.categoriesConst[4], data: [6.7, 6.8, 7.1, 7, 7.7 ]});
+        // this.series.push({name: this.categoriesConst[0], data: [7.4, 5.5, 0,   0,   6.7 ]});
+        // this.series.push({name: this.categoriesConst[1], data: [0,   0,   6.3, 7.7, 6.5 ]});
+        // this.series.push({name: this.categoriesConst[2], data: [6.7, 8.2, 6.2, 5.9, 0  ]});
+        // this.series.push({name: this.categoriesConst[3], data: [0,   0,   0,   0,   6 ]});
+        // this.series.push({name: this.categoriesConst[4], data: [7.1, 6.9, 6.3, 6.8, 6.4 ]});
         // this.addMarksChart(this.series, ['Базы данных', 'Модульное тестирование', 'Методы и алгоритмы принятия решений', 'Основы защиты информации', 'Английский язык в профдеятельности']);
-        this.addMarksChart(this.series, this.subjectName, this.chartOptions1);
+        this.addMarksChart(this.series, this.subjectName);
       });
-      // this.addChart([5.7, 6.9, 7.4, 6.7, 6.7], 'Базы данных', this.categoriesConst, 4112);
-      // this.addChart([5.5, 7.1, 8.2, 6.4, 6.8], 'Модульное тестирование', this.categoriesConst, 4112);
-      // this.addChart([6.3, 6.2, 7.2, 8.8, 7.1], 'Методы и алгоритмы принятия решений', this.categoriesConst, 4112);
-      // this.addChart([7.7, 5.9, 7.5, 6.9, 7], 'Основы защиты информации', this.categoriesConst, 4112);
-      // this.addChart([6.7, 6.5, 7.9, 8.4, 7.7], 'Английский язык в профдеятельности', this.categoriesConst, 4112);
+       // this.addChart([ 7.4, 6.7, 7.1], 'Базы данных', this.categoriesLabFree, 4112, this.listChartOptions);
+      // this.addChart([5.5, 8.2, 6.9], 'Модульное тестирование', this.categoriesLabFree, 4112,  this.listChartOptions);
+       // this.addChart([6.3, 6.2,  6.3], 'Методы и алгоритмы принятия решений', this.categoriesPractFree, 4112, this.listChartOptions);
+       // this.addChart([7.7, 5.9, 6.8], 'Основы защиты информации', this.categoriesPractFree, 4112, this.listChartOptions);
+       // this.addChart([6.7, 6.5, 6, 6.4], 'Английский язык в профдеятельности', this.categoriesPractCourse, 4112, this.listChartOptions);
 
     }
   }
@@ -194,8 +194,55 @@ export class MainPageComponent implements OnInit {
     );
   }
 
-  addMarksChart(seriesMarks: any, subjects: any, chart) {
+  addMarksChart(seriesMarks: any, subjects: any) {
     this.chartOptions1 = {
+      series: seriesMarks,
+      chart: {
+        type: 'bar',
+        height: Math.round(subjects.length * 35 + 90),
+        stacked: true
+      },
+      colors: ['#FFA500', '#ff0000', '#0000FF',    '#7F00FF' , '#006400'],
+      plotOptions: {
+        bar: {
+          horizontal: true
+        }
+      },
+      stroke: {
+        width: 1,
+        colors: ['#fff']
+      },
+      title: {
+        text: ''
+      },
+      xaxis: {
+        categories: subjects
+      },
+      yaxis: {
+        title: {
+          text: undefined
+        }
+      },
+      tooltip: {
+        y: {
+          formatter(val) {
+            return val + '';
+          }
+        }
+      },
+      fill: {
+        opacity: 1
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'left',
+        offsetX: 40
+      }
+    };
+  }
+
+  addArchiveMarksChart(seriesMarks: any, subjects: any) {
+    this.chartOptionsArchive = {
       series: seriesMarks,
       chart: {
         type: 'bar',
@@ -262,8 +309,16 @@ export class MainPageComponent implements OnInit {
     }
   }
 
-  performData(subjects: any, result: any, chartList1: any, chart2: any) {
+  performData(subjects: any, result: any, chartList1: any, isArchive: boolean) {
     subjects.sort((a, b) => a.Name.localeCompare(b.Name));
+    this.subjectName = [];
+    this.series = [];
+    this.practMarks = [];
+    this.labMarks = [];
+    this.testMarks = [];
+    this.conMarks = [];
+    this.ratingMarks = [];
+    this.checked = [];
     subjects.forEach(subject => {
       this.serviceService.getCheckedType(subject.Id).subscribe(types => {
         types.forEach(type => {
@@ -341,7 +396,12 @@ export class MainPageComponent implements OnInit {
           this.series.push({name: this.categoriesConst[2], data: this.testMarks});
           this.series.push({name: this.categoriesConst[3], data: this.conMarks});
           this.series.push({name: this.categoriesConst[4], data: this.ratingMarks});
-          this.addMarksChart(this.series, this.subjectName, chart2);
+          //this.addMarksChart(this.series, this.subjectName);
+          if (isArchive) {
+            this.addArchiveMarksChart(this.series, this.subjectName);
+          } else {
+            this.addMarksChart(this.series, this.subjectName);
+          }
         }
       });
     });

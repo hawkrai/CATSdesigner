@@ -18,8 +18,20 @@ export class SubjectService {
         return this.http.get<SubjectResponse>(this.api + 'GetGroupSubjectsByGroupName/' + groupName);
     }
 
+    getAllArchiveSubjects(username: string): Observable<any> {
+      return this.http.post<any>('/Profile/GetProfileInfoSubjects?isArchive=true', {userLogin: username});
+    }
+
     loadGroup(groupId): Observable<GroupStatsStatistic> {
       return this.http.get<GroupStatsStatistic>(this.api + '/LoadGroup?groupId=' + groupId);
+    }
+
+    loadGroupArchive(groupId): Observable<GroupStatsStatistic> {
+      return this.http.get<GroupStatsStatistic>(this.api + '/LoadGroup?groupId=' + groupId + '&isArchive=true');
+    }
+
+    getUserInfo(id: string): Observable<any> {
+      return this.http.get<any>('/Profile/GetProfileInfoById/' + id);
     }
 
 }

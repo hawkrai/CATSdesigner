@@ -246,6 +246,7 @@
   "text.statistics.avg.rating": "Average rating",
   "text.statistics.avg.course": "Average course project rating",
   "text.statistics": "Statistics",
+  "text.statistics.inactive.subjects": "Inactive subjects",
   "button.delete": "Delete",
   "button.edit": "Edit",
   "button.no": "No",
