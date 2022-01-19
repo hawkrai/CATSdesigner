@@ -190,5 +190,7 @@
   "text.schedule.dates.and.connected.data": "даты и все связанные с ними данные",
   "text.schedule.dates": "Даты занятий",
   "text.schedule.dates.deleting": "Удаление дат",
-  "text.schedule.date.and.connected.data": "дату и все связанные с ней данные"
+  "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
+  "text.students.transfered": "Студент(ы) были успешно переведены в подгруппу",
+  "text.subdivision.to.the.first.subgroup": "Студенты будут перемещены в подгруппу 1"
 }

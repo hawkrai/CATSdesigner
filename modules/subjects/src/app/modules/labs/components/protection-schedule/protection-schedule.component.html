@@ -1,6 +1,6 @@
 <div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
   <div class="protection-schedule-component__subGroup" *ngFor="let subGroup of state.subGroups">
-    <span mat-dialog-title class="protection-schedule-component__subGroup-title">{{'subgroup' | translate:'Подгруппа'}} {{subGroup.SubGroupValue}}</span>
+    <span class="protection-schedule-component__subGroup-title">{{'subgroup' | translate:'Подгруппа'}} {{subGroup.SubGroupValue}}</span>
     <div class="protection-schedule-component__body">
       <div class="protection-schedule-component__actions" *ngIf="state.isTeacher">
         <button mat-raised-button color="primary" (click)="settingVisitDate(subGroup, subGroup.Id)">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>

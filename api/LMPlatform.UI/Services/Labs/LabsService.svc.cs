@@ -331,7 +331,7 @@ namespace LMPlatform.UI.Services.Labs
 					LabId = e.LabId,
 					UserId = e.UserId,
                     Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
-		            Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
+		            Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList(),
 	            }).Where(x => x.IsCoursProject == isCoursPrj).ToList();
                 return new UserLabFilesResult
                 {
@@ -362,6 +362,7 @@ namespace LMPlatform.UI.Services.Labs
 					.Select(e => new UserLabFileViewData
 				{
 					LabShortName = e.Lab?.ShortName,
+					LabTheme = e.Lab?.Theme,
 					Order = e.Lab?.Order,
 					Comments = e.Comments,
 					Id = e.Id,
@@ -422,6 +423,7 @@ namespace LMPlatform.UI.Services.Labs
 					IsCoursProject = userLabFile.IsCoursProject,
 					LabId = userLabFile.LabId,
 					LabShortName = userLabFile.Lab?.ShortName,
+					LabTheme = userLabFile.Lab?.Theme,
 					Date = userLabFile.Date != null ? userLabFile.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
 					Attachments = FilesManagementService.GetAttachments(userLabFile.Attachments).ToList(),
 					UserId = userLabFile.UserId,
@@ -1076,7 +1078,7 @@ namespace LMPlatform.UI.Services.Labs
 			var studentJobProtection = new List<StudentJobProtectionViewData>();
 			var studentsLabFiles = SubjectManagementService.GetGroupLabFiles(subjectId, groupId);
 
-			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed != null || e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
+			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
             {
 				studentJobProtection.Add(new StudentJobProtectionViewData
 				{

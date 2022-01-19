@@ -58,7 +58,7 @@ export class PracticalRestService {
     return this.http.post('Services/Practicals/PracticalService.svc/SavePracticalsVisitingData', body);
   }
 
-  public setPracticalMark(body: { studentId: number, practicalId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } ): Observable<any> {
+  public setPracticalMark(body: { studentId: number, practicalId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean, subjectId: number } ): Observable<any> {
     return this.http.post('Services/Practicals/PracticalService.svc/SaveStudentPracticalMark', body);
   }
 

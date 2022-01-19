@@ -541,20 +541,26 @@ namespace LMPlatform.UI.Services
         }
 
 
-
+		public GroupsResult GetUserGroups()
+        {
+			return GetGroupsByUser(UserContext.CurrentUserId.ToString());
+        }
 		public GroupsResult GetGroupsByUser(string userId)
 		{
 			try
 			{
 				var id = int.Parse(userId);
-				var groups = this.GroupManagementService.GetLecturesGroups(id);
+				var groups = this.GroupManagementService.GetLecturesGroups(id, true);
 
 				var groupsViewModel = new List<GroupsViewData>();
 
 				foreach (var group in groups.DistinctBy(e => e.Id))
 				{
+					var students = this.StudentManagementService.GetGroupStudents(group.Id).Count(e => e.Confirmed != null && !e.Confirmed.Value);
+
 					groupsViewModel.Add(new GroupsViewData
 					{
+						CountUnconfirmedStudents = students,
 						GroupId = group.Id,
 						GroupName = group.Name
 					});
@@ -562,7 +568,7 @@ namespace LMPlatform.UI.Services
 
 				return new GroupsResult
 				{
-					Groups = groupsViewModel.ToList(),
+					Groups = groupsViewModel.OrderByDescending(x => x.CountUnconfirmedStudents).ThenBy(x => x.GroupName).ToList(),
 					Message = "Группы успешно загружены",
 					Code = "200"
 				};
