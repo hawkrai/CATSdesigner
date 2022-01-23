@@ -39,7 +39,7 @@ export class ScheduleMainComponent implements OnInit {
               private modulecommunicationservice: ModuleCommunicationService) {
   }
 
-  isLoadActive = true;
+  isLoadActive = false;
   scheduleWidth = '82%';
   newsWidth = '18%';
   newsLeft = '82%';

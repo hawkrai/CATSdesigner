@@ -39,7 +39,7 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
     this.surnames = [];
     this.marksChart = [];
     this.dataSource = changes.data.currentValue;
-    console.log(this.dataSource);
+
     this.dataSource.forEach(student => {
       this.surnames.push(this.statisticsService.cutName(student.FIO));
       this.passes.push(student.AllPass);
