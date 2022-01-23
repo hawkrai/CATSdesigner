@@ -18,6 +18,7 @@ export class StatsComponent implements OnInit {
 
   subjects: Subject[];
   subjectsArchive: Subject[];
+  subjectsTemp: Subject[];
   isLoad = false;
   groupId: any;
   selectedItem: any;
@@ -27,7 +28,10 @@ export class StatsComponent implements OnInit {
   studentStatisticArchive: GroupStatsStudent[];
   studentStatisticTemp: GroupStatsStudent[];
   surname: string;
+  start: string;
+  end: string;
   isArchive = false;
+  isArchiveEnable = true;
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
@@ -35,21 +39,24 @@ export class StatsComponent implements OnInit {
   ngOnInit() {
     this.groupName = this.route.snapshot.params.groupName;
     this.surname = this.route.snapshot.params.surname;
+    this.start = this.route.snapshot.params.start;
+    this.end = this.route.snapshot.params.end;
     this.initData(this.groupName);
   }
 
   getStatistic(groupId) {
     this.isLoad = false;
-    this.subjectService.loadGroup(groupId).subscribe(
+    this.subjectService.loadGroupByDates(groupId, this.start, this.end).subscribe(
       res => {
-        this.subjectService.loadGroupArchive(groupId).subscribe(resArchive => {
+        this.subjectService.loadGroupArchiveByDates(groupId, this.start, this.end).subscribe(resArchive => {
           this.subjectService.getUserInfo(resArchive.Students[6].Id + '').subscribe(userInfo => {
-            console.log(userInfo);
+            this.subjectService.getAllArchiveSubjects(userInfo.Login).subscribe(subjectResponseArchive => {
+              this.subjectsArchive = subjectResponseArchive;
+              if (this.subjectsArchive.length == 0) {
+                this.isArchiveEnable = false;
+              }
+            });
           });
-          // this.subjectService.getAllArchiveSubjects(resArchive).subscribe(subjectResponseArchive => {
-
-          // });
-          res.Students.splice(0, 1);
           this.studentStatistic = res.Students;
           this.studentStatisticArchive = resArchive.Students;
           this.isLoad = true;
@@ -58,6 +65,15 @@ export class StatsComponent implements OnInit {
         });
       }
     );
+  }
+
+  subjectsStatusChange(event) {
+    this.isArchive = false;
+    if (event.checked) {
+      this.isArchive = true;
+    }
+    this.selectedItem = -1;
+    this.statisticSubject();
   }
 
   statisticSubject() {
@@ -72,12 +88,14 @@ export class StatsComponent implements OnInit {
     let rating = 0;
     if (this.isArchive) {
       this.studentStatisticTemp = this.studentStatisticArchive;
+      this.subjectsTemp = this.subjectsArchive;
     } else {
       this.studentStatisticTemp = this.studentStatistic;
+      this.subjectsTemp = this.subjects;
     }
     if (id && id !== -1) {
-      const subject = this.subjects.find(({Id}) => Id === id);
-      this.tableStats = this.studentStatistic.map((item) => {
+      const subject = this.subjectsTemp.find(({Id}) => Id === id);
+      this.tableStats = this.studentStatisticTemp.map((item) => {
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
@@ -110,7 +128,7 @@ export class StatsComponent implements OnInit {
           UserPracticalPass: userPracticalPass};
       });
     } else if (id === -1) {
-      this.tableStats = this.studentStatistic.map( item => {
+      this.tableStats = this.studentStatisticTemp.map( item => {
         let labPassTotal = 0;
         let lecturePassTotal = 0;
         let practicalPassTotal = 0;

@@ -15,6 +15,12 @@
         <mat-option [value]="-1">Суммарная статистика по всем предметам</mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-slide-toggle *ngIf = "isArchiveEnable" class="example-margin"
+                      [color]="'primary'"
+                      (change)="subjectsStatusChange($event)"
+    >
+      Неактивные предметы
+    </mat-slide-toggle>
 </div>
 <div class="export-button">
   <button mat-icon-button matTooltip="Распечатать"  (click)="this.captureScreen()"><mat-icon>print</mat-icon></button>

@@ -20,6 +20,7 @@ import { GroupNotFoundComponent } from './group-not-found/group-not-found.compon
 import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/table-for-stats-subject.component';
 import {NgApexchartsModule} from 'ng-apexcharts';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
         MatMenuModule,
         MatProgressSpinnerModule,
         NgApexchartsModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatSlideToggleModule
     ],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
   bootstrap: [],
