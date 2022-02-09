@@ -53,6 +53,7 @@ export class MainPageComponent implements OnInit {
                                   this.translatePipe.transform('text.statistics.avg.rating', 'Рейтинговая оценка')];
 
   constructor(private serviceService: StatisitcsServiceService, private translatePipe: TranslatePipe ) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
     if (this.user.role == 'student') {
       this.serviceService.getUserInfo(this.user.id).subscribe(res => {
         this.serviceService.getLabsStastics(res.GroupId).subscribe(result => {
