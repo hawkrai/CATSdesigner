@@ -6,6 +6,7 @@ import { DeleteItemComponent } from '../modal/delete-person/delete-person.compon
 import { Group } from 'src/app/model/group';
 import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-students.component';
 import {MessageComponent} from '../../../component/message/message.component';
+import { AppToastrService } from 'src/app/service/toastr.service';
 
 @Component({
   selector: 'app-group',
@@ -21,7 +22,7 @@ export class GroupComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   isLoad = false;
 
-  constructor(private groupService: GroupService, private dialog: MatDialog) { }
+  constructor(private groupService: GroupService, private dialog: MatDialog, private toastr: AppToastrService) { }
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
@@ -40,31 +41,13 @@ export class GroupComponent implements OnInit {
   saveGroup(group: Group) {
     this.groupService.addGroup(group).subscribe(() => {
       this.group = new Group();
-      this.dialog.open(MessageComponent, {
-        data: 'Группа успешно сохранена.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
+      this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       this.loadGroup();
     }, err => {
       if (err.status === 500) {
-        this.dialog.open(MessageComponent, {
-          data: 'Группа успешно сохранена.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       } else {
-        this.dialog.open(MessageComponent, {
-          data: 'Произошла ошибка при сохранении.Попробуйте заново.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addErrorFlashMessage('Произошла ошибка при сохранении. Повторите попытку');
       }
     });
   }
@@ -84,10 +67,18 @@ export class GroupComponent implements OnInit {
     const dialogRef = this.dialog.open(DeleteItemComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.groupService.deleteGroup(id).subscribe(() => {
-          this.loadGroup();
-        });
+        this.removeGroup(id);
       }
+    });
+  }
+
+  removeGroup(id) {
+    this.groupService.deleteGroup(id).subscribe(() => {
+      this.loadGroup();
+      this.toastr.addSuccessFlashMessage("Группа удалена!");
+    }, 
+    err => {
+      this.toastr.addErrorFlashMessage('Произошла ошибка! Повторите попытку!');
     });
   }
 

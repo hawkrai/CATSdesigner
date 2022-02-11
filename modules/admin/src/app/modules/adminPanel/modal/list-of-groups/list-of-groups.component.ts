@@ -9,7 +9,7 @@ import { GroupService } from 'src/app/service/group.service';
 })
 export class ListOfGroupsComponent implements OnInit {
 
-  displayedColumns: string[] = ['subject', 'groups', 'countOfStudents'];
+  displayedColumns: string[] = ['subject', 'groups', 'countOfStudents', 'groupStatus'];
   dataSource = new MatTableDataSource<object>();
   groupInfo;
   isLoad = false;
@@ -26,6 +26,13 @@ export class ListOfGroupsComponent implements OnInit {
       this.groupInfo = result;
       this.isLoad = true;
     });
+  }
+
+  getGroupStatus(status) {
+    if(status == true){
+      return "Активен"
+    }
+    return "Откреплен"
   }
 
 }
