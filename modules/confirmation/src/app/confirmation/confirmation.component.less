@@ -51,6 +51,12 @@ table {
   &-number {
     width: 10%;
   }
+
+  &-group {
+    &-option, ::ng-deep .mat-select-trigger {
+      font-size: 18px;
+    }
+  }
 }
 
 
@@ -61,5 +67,11 @@ table {
 
   &-clear {
     color: red;
+  }
+}
+
+::ng-deep {
+  .mat-select-panel {
+    max-height: 50vh!important;
   }
 }
