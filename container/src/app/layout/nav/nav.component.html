@@ -72,7 +72,7 @@
 
 
   <div *ngIf="isLector">
-    <button mat-icon-button class="icon-h">
+    <button mat-icon-button class="icon-h" [matTooltip]="'new.students' | translate:'Новые студенты'" matTooltipPosition="below">
       <mat-icon [matBadge]="unconfirmedStudents"
                 matBadgeOverlap="true"
                 matBadgePosition="above"
@@ -83,7 +83,7 @@
       </mat-icon>
     </button>
   </div>
-  <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h">
+  <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h" [matTooltip]="'chat' | translate:'Чат'" matTooltipPosition="below">
     <mat-icon matBadge={{unRead}}
     [matBadgeHidden]="unRead<1"
     matBadgeOverlap="true"
@@ -94,9 +94,7 @@
       mail
     </mat-icon>
   </button>
-
-
-  <button mat-icon-button class="end icon-h" [routerLink]="['personalAccount']">
+  <button mat-icon-button class="end icon-h" [routerLink]="['personalAccount']" [matTooltip]="'personal.account' | translate:'Личный кабинет'" matTooltipPosition="below">
     <img *ngIf="this.profileIcon" src="{{this.profileIcon}}" class="account" />
     <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
     {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
@@ -190,7 +188,7 @@
       </mat-select>
 
       <div *ngIf="isLector">
-        <button mat-icon-button class="icon-h">
+        <button mat-icon-button class="icon-h" [matTooltip]="'new.students' | translate:'Новые студенты'" matTooltipPosition="below">
           <mat-icon [matBadge]="unconfirmedStudents"
                     matBadgeOverlap="true"
                     matBadgePosition="above"
@@ -202,7 +200,7 @@
         </button>
       </div>
 
-      <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h">
+      <button mat-icon-button [routerLink]="'/web/chat'"  class="icon-h" [matTooltip]="'chat' | translate:'Чат'" matTooltipPosition="below">
         <mat-icon matBadge={{unRead}}
         [matBadgeHidden]="unRead<1"
         matBadgeOverlap="true"
@@ -211,8 +209,7 @@
         matBadgeSize="small"
         [routerLink]="'/web/chat'">mail</mat-icon>
       </button>
-
-      <button mat-icon-button [routerLink]="['personalAccount']" class="end icon-h">
+      <button mat-icon-button [routerLink]="['personalAccount']" class="end icon-h" [matTooltip]="'personal.account' | translate:'Личный кабинет'" matTooltipPosition="below">
         <img *ngIf="this.profileIcon" t src="{{this.profileIcon}}" class="account" />
         <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
           {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
