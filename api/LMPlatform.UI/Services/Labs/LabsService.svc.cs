@@ -294,8 +294,7 @@ namespace LMPlatform.UI.Services.Labs
         {
             try
             {
-				        SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
-
+				SubjectManagementService.SaveStudentLabsMark(new StudentLabMark(labId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
                 return new ResultViewData
                 {
                     Message = "Данные успешно добавлены",
@@ -309,6 +308,26 @@ namespace LMPlatform.UI.Services.Labs
                     Message = "Произошла ошибка при добавлении данных",
                     Code = "500"
                 };
+            }
+        }
+
+		public ResultViewData RemoveStudentLabsMark(int id)
+        {
+			try
+            {
+				SubjectManagementService.RemoveStudentLabsMark(id);
+				return new ResultViewData
+				{
+					Message = "Данные успешно удалены",
+					Code = "200"
+				};
+            } catch
+            {
+				return new ResultViewData
+				{
+					Message = "Произошла ошибка при удалении данных",
+					Code = "500"
+				};
             }
         }
 

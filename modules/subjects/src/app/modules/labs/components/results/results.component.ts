@@ -93,15 +93,24 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
       this.subs.add(dialogRef.afterClosed().pipe(
         filter(r => r),
-        map((result: MarkForm) => ({
-          ...labsMark,
-          comment: result.comment,
-          date: moment(result.date).format('DD.MM.YYYY'),
-          mark: result.mark,
-          showForStudent: result.showForStudent
-        })),
+        map((result) => {
+          if (result.delete) {
+            return 
+          }
+          return {
+            ...labsMark,
+            comment: result.comment,
+            date: moment(result.date).format('DD.MM.YYYY'),
+            mark: result.mark,
+            showForStudent: result.showForStudent
+          }
+        }),
       ).subscribe((labMark) => {
-        this.store.dispatch(labsActions.setLabMark({ labMark }));
+        if (labMark) {
+          this.store.dispatch(labsActions.setLabMark({ labMark }));
+        } else {
+          this.store.dispatch(labsActions.removeLabMark({ id: labsMark.id }));
+        }
       }));
 
     }
