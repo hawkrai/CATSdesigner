@@ -3,7 +3,7 @@
     <span class="protection-schedule-component__subGroup-title">{{'subgroup' | translate:'Подгруппа'}} {{subGroup.SubGroupValue}}</span>
     <div class="protection-schedule-component__body">
       <div class="protection-schedule-component__actions" *ngIf="state.isTeacher">
-        <button mat-raised-button color="primary" (click)="settingVisitDate(subGroup, subGroup.Id)">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>
+        <button mat-raised-button color="primary" (click)="settingVisitDate(subGroup)">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>
       </div>
       <div class="protection-schedule-component__subGroup-table">
         <table mat-table [dataSource]="state.labs | filter:'SubGroup':subGroup.SubGroupValue" class="mat-elevation-z14">
