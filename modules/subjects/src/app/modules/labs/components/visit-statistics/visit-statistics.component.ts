@@ -27,7 +27,7 @@ import { TranslatePipe } from 'educats-translate';
 })
 export class VisitStatisticsComponent implements OnInit,  OnDestroy {
   private subs = new SubSink();
-  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean }>;
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean, subGroups: number[] }>;
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
@@ -45,9 +45,10 @@ export class VisitStatisticsComponent implements OnInit,  OnDestroy {
       this.store.select(labsSelectors.getLabsCalendar),
       this.store.select(labsSelectors.getLabStudents),
       this.store.select(subjectSelectors.getUserId),
-      this.store.select(subjectSelectors.isTeacher)
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(labsSelectors.getSubGroups)
     ).pipe(
-      map(([labs, scheduleProtectionLabs, students, userId, isTeacher]) => ({ labs, scheduleProtectionLabs, students, userId, isTeacher }))
+      map(([labs, scheduleProtectionLabs, students, userId, isTeacher, subGroups]) => ({ labs, scheduleProtectionLabs, students, userId, isTeacher, subGroups: subGroups.map(x => x.SubGroupValue) }))
     );
 
     this.subs.add(

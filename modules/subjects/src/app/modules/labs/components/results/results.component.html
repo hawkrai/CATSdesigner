@@ -1,5 +1,5 @@
 <div class="results-component" *ngIf="state$ | async as state; else: load">
-  <div class="results-component__subGroup" *ngFor="let subGroup of state.labs | unique:'SubGroup'">
+  <div class="results-component__subGroup" *ngFor="let subGroup of state.subGroups">
     <ng-container *ngIf="(state.students | filter:'SubGroup': subGroup).length">
       <div class="results-component__subGroup-title">
         <span class="results-component__subGroup-title-text">{{'subgroup' | translate:'Подгруппа'}} {{subGroup}}</span>
