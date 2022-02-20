@@ -420,7 +420,8 @@ namespace LMPlatform.UI.Controllers
                     Groups = s.SubjectGroups.Where(sg => sg.Group != null).Select(sg => new
                     {
                         GroupName = sg.Group.Name,
-                        StudentsCount = sg.Group.Students.Count
+                        StudentsCount = sg.Group.Students.Count,
+                        IsActive = sg.IsActiveOnCurrentGroup    
                     })
                 })
             };

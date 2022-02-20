@@ -1,4 +1,4 @@
-/deep/ text {
+text {
     font-size: 14px;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
@@ -9,4 +9,8 @@
 
 .close-icon {
   float: right;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
 }

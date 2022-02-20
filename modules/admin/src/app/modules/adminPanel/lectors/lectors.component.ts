@@ -3,6 +3,7 @@ import { MatDialog, MatTableDataSource, MatPaginator, MatSort } from '@angular/m
 import { LectorModalComponent } from '../modal/lector-modal/lector-modal.component';
 import { Professor, EditProfessor } from 'src/app/model/professor';
 import { ProfessorService } from 'src/app/service/professor.service';
+import { AppToastrService } from 'src/app/service/toastr.service';
 import { DeleteItemComponent } from '../modal/delete-person/delete-person.component';
 import { EditLectorComponent } from '../modal/edit-lector/edit-lector.component';
 import { ListOfGroupsComponent } from '../modal/list-of-groups/list-of-groups.component';
@@ -25,7 +26,7 @@ export class LectorsComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  constructor(private dialog: MatDialog, private professorService: ProfessorService, private router: Router) { }
+  constructor(private dialog: MatDialog, private professorService: ProfessorService, private router: Router, private toastr: AppToastrService) { }
 
   ngOnInit(): void {
     this.dataSource.paginator = this.paginator;
@@ -125,54 +126,22 @@ export class LectorsComponent implements OnInit {
     this.professorService.addProfessor(professor).subscribe(() => {
       this.loadLector();
       this.dataLector = new Professor();
-      this.dialog.open(MessageComponent, {
-        data: 'Преподаватель добавлен.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
-    }, () => {
-      this.loadLector();
-      this.dialog.open(MessageComponent, {
-        data: 'Преподаватель добавлен.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
-    });
+      this.toastr.addSuccessFlashMessage("Преподаватель добавлен!");}
+      );
   }
 
   editLector(professor): void {
     this.professorService.editProfessor(professor).subscribe(() => {
       this.loadLector();
       this.dataLector = new Professor();
-      this.dialog.open(MessageComponent, {
-        data: 'Преподаватель изменен.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
-    }, err => {
+      this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
+    }, 
+    err => {
       if ( err.status === 500) {
         this.loadLector();
-        this.dialog.open(MessageComponent, {
-          data: 'Преподаватель изменен.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
       } else {
-        this.dialog.open(MessageComponent, {
-          data: 'Произошла ошибка при редактировании преподавателя. Повторите попытку',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addErrorFlashMessage('Произошла ошибка при редактировании преподавателя. Повторите попытку');
       }
     });
   }
@@ -180,6 +149,7 @@ export class LectorsComponent implements OnInit {
   deleteLector(id) {
     this.professorService.deleteProfessor(id).subscribe(() => {
       this.loadLector();
+      this.toastr.addSuccessFlashMessage("Преподаватель удален!");
     });
   }
 
