@@ -6,7 +6,13 @@ import { Group } from "../models/group.model";
 })
 export class GroupSortPipe implements PipeTransform {
     transform(groups: Group[]): Group[] {
-        return groups.sort((a, b) => b.CountUnconfirmedStudents - a.CountUnconfirmedStudents || a.GroupName.localeCompare(b.GroupName));
+        const sortedGroups = groups.sort((a, b) => b.CountUnconfirmedStudents - a.CountUnconfirmedStudents || a.GroupName.localeCompare(b.GroupName));
+
+        const groupsWithUncofirmedStudents = sortedGroups.filter(x => !!x.CountUnconfirmedStudents);
+        if (groupsWithUncofirmedStudents.length) {
+            groupsWithUncofirmedStudents[groupsWithUncofirmedStudents.length - 1].lastGroupWithUnconfirmedStudents = true
+        }
+        return sortedGroups;
     }
 
 }

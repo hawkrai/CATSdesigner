@@ -74,6 +74,11 @@ export const setLabMark = createAction(
   props<{ labMark: { studentId: number, labId: number, mark: string, comment: string, date: string, id: number, showForStudent: boolean } }>()
 );
 
+export const removeLabMark = createAction(
+  '[Labs] Remove Lab Mark',
+  props<{ id: number }>()
+);
+
 export const loadStudentsLabsFilesSuccess = createAction(
   '[Labs] Load Students Labs Files Success',
   props<{ studentsLabsFiles: StudentMark[] }>()

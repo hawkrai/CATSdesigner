@@ -118,7 +118,16 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
       ).subscribe((result: Attachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
+        if (result.length) {
+          if (result.length ===  1) {
+            const attachment = result[0];
+            this.store.dispatch(filesActions.downloadFile({ fileName: attachment.FileName, pathName: attachment.PathName }));
+
+          } else {
+            this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
+
+          }
+        }
       })
     );
   }

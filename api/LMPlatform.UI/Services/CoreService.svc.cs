@@ -98,7 +98,8 @@ namespace LMPlatform.UI.Services
 			{
 				var id = int.Parse(subjectId);
 				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId)
-					.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+					.GroupBy(x => x.Id).Select(x => x.First())
+					.Where(x => x.Id != CurrentUserId).ToList();
 
 				return new LectorsResult
 				{
@@ -164,7 +165,7 @@ namespace LMPlatform.UI.Services
 				var lectors = LecturerManagementService.GetNoAdjointLectorers(int.Parse(subjectId), CurrentUserId);
 				return new LectorsResult
 				{
-					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),
+					Lectors = lectors.Where(x => x.Id != CurrentUserId).Select(e => new LectorViewData(e)).ToList(),
 					Message = "Преподаватели успешно загружены",
 					Code = "200"
 				};

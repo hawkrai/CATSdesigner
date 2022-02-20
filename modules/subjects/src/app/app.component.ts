@@ -47,7 +47,6 @@ export class AppComponent implements OnInit, OnDestroy {
         if (event instanceof NavigationEnd) {
           if (!isLoaded) {
             const groupId = Number.isNaN(+this.route.snapshot.queryParams.groupId) ? null : + this.route.snapshot.queryParams.groupId;
-            console.log(groupId)
             if (isTeacher) {
               this.store.dispatch(groupsActions.loadGroups({ groupId }));
             } else {
@@ -55,7 +54,9 @@ export class AppComponent implements OnInit, OnDestroy {
             }
             isLoaded = true;
           }
-          this.store.dispatch(catsActions.sendMessage({ message: new Message('Location', `web/viewer/subject/${subject.id}#${event.url.slice(1)}`) }));
+          if (subject) {
+            this.store.dispatch(catsActions.sendMessage({ message: new Message('Location', `web/viewer/subject/${subject.id}#${event.url.slice(1)}`) }));
+          }
         }
       }),
       this.route.queryParams.subscribe(params => {

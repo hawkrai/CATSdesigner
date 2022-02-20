@@ -25,8 +25,12 @@ export class VisitDateLabsPopoverComponent implements OnInit {
   ) { }
   schedule$: Observable<ScheduleProtectionLab[]>;
   ngOnInit() {
+    console.log(this.data)
     this.schedule$ = this.store.select(labsSelectors.getLabsCalendar).pipe(
-      map(schedule => schedule.filter(day => day.SubGroup === this.data.body.subGroup))
+      map(schedule => {
+        console.log(schedule);
+        return schedule.filter(day => day.SubGroupId === this.data.body.subGroupId);
+      })
     );
   }
   

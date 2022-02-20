@@ -666,6 +666,16 @@ namespace Application.Infrastructure.SubjectManagement
 			repositoriesContainer.ApplyChanges();
 		}
 
+		public void RemoveStudentLabsMark(int id)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			var repository = repositoriesContainer.RepositoryFor<StudentLabMark>();
+			var studentLabMark = repository.GetBy(new Query<StudentLabMark>(x => x.Id == id));
+			repository.Delete(studentLabMark);
+			repositoriesContainer.ApplyChanges();
+
+		}
+
 		public List<string> GetLecturesAttachments(int subjectId)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

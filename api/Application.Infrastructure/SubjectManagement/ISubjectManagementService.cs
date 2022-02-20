@@ -86,6 +86,8 @@ namespace Application.Infrastructure.SubjectManagement
 
         void SaveStudentLabsMark(StudentLabMark studentLabMark);
 
+        public void RemoveStudentLabsMark(int id);
+
         List<string> GetLecturesAttachments(int subjectId);
 
         List<string> GetLabsAttachments(int subjectId);

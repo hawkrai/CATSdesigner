@@ -136,7 +136,11 @@ export class LabsComponent implements OnInit, OnDestroy {
     this.subs.add(
       dialogRef.afterClosed().subscribe(obj => {
         if (obj && obj.updated) {
-          this.store.dispatch(labsActions.loadLabsSchedule());
+          this.store.dispatch(labsActions.loadLabsSubGroups());
+
+          if (this.router.url.startsWith('/labs/visit-statistics') || this.router.url.startsWith('/labs/results')) {
+            this.store.dispatch(labsActions.loadLabStudents());
+          }
         }
       })
     );

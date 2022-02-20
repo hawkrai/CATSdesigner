@@ -1,58 +1,62 @@
 <div class="confirmation">
-  <div class="confirmaiton-group">
+  <div class="confirmation-title">
+    {{'confirmation.title' | translate:'Подтверждение студентов'}}
+  </div>
+  <div class="confirmation-group">
     <mat-form-field *ngIf="groups">
       <mat-select [value]="groups[0]?.GroupId" (selectionChange)="onGroupValueChange($event.source.value)">
         <mat-option *ngFor="let group of groups | groupSort" [value]="group.GroupId">
-          {{group.GroupName}} <span *ngIf="group.CountUnconfirmedStudents"> -
-            ({{group.CountUnconfirmedStudents}})</span>
+          <span class="confirmation-group-option"> {{group.GroupName}} <span *ngIf="group.CountUnconfirmedStudents"> -
+              ({{group.CountUnconfirmedStudents}})</span></span>
+          <mat-divider *ngIf="group.lastGroupWithUnconfirmedStudents"></mat-divider>
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{'students.search' | translate:'Поиск студентов'}}</mat-label>
+      <input matInput [(ngModel)]="search" class="confirmation-search">
+    </mat-form-field>
   </div>
 
-  <div class="confirmation-body">
-    <div class="confirmation-search">
-      <mat-form-field>
-        <mat-label>{{'students.search' | translate:'Поиск студентов'}}</mat-label>
-        <input matInput [(ngModel)]="search">
-      </mat-form-field>
-    </div>
-    <div class="confirmation-content">
-      <table *ngIf="students && students.length" mat-table [dataSource]="students | filter:'FullName':search:'contains'"
-        class="confirmation-table">
+  <div class="confirmation-content">
+    <table *ngIf="students && students.length" mat-table [dataSource]="students | filter:'FullName':search:'contains'"
+      class="confirmation-table">
 
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef> No.</th>
-          <td class="confirmation-number" mat-cell *matCellDef="let index = index"> {{index+1}}</td>
-        </ng-container>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> No.</th>
+        <td mat-cell *matCellDef="let index = index"> {{index+1}}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> {{'student' | translate:'Студент'}}</th>
-          <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
-        </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> {{'student' | translate:'Студент'}}</th>
+        <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef> {{'confirm' | translate:'Подтвердить'}}/{{'detach' |
-            translate:'Открепить'}}</th>
-          <td class="confirmation-action" mat-cell *matCellDef="let element">
-            <mat-icon (click)="confirm(element, false)" *ngIf="element.Confirmed" matTooltip="Закрыть доступ"
-              matTooltipClass="example-tooltip-blue" class="icon-done">done
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> {{'confirm' | translate:'Подтвердить'}} /<br>{{'block' |
+          translate:'Закрыть доступ'}}</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="confirm(element, false)" *ngIf="element.Confirmed" matTooltip="Закрыть доступ"
+            matTooltipClass="example-tooltip-blue">
+            <mat-icon class="icon-done">done
             </mat-icon>
-            <mat-icon (click)="confirm(element)" *ngIf="!element.Confirmed" matTooltip="Открыть доступ"
-              matTooltipClass="example-tooltip-blue" class="icon-clear">clear
+          </button>
+          <button mat-icon-button (click)="confirm(element)" *ngIf="!element.Confirmed" matTooltip="Открыть доступ"
+            matTooltipClass="example-tooltip-blue">
+            <mat-icon class="icon-clear">clear
             </mat-icon>
-          </td>
-        </ng-container>
+          </button>
+        </td>
+      </ng-container>
 
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="3">{{'no-data' | translate:'Нет данных соответствующих фильтру'}} "{{search}}"
-          </td>
-        </tr>
-      </table>
-    </div>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="3">{{'no-data' | translate:'Нет данных соответствующих фильтру'}} "{{search}}"
+        </td>
+      </tr>
+    </table>
   </div>
 </div>

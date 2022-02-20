@@ -1,5 +1,8 @@
 
 {
+  "chat": "Chat",
+  "new.students": "New students",
+  "personal.account": "Personal account",
   "chat.chats":"Chats",
   "chat.groups":"Groups",
   "chat.fio":"Name",
