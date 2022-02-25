@@ -1098,7 +1098,7 @@ namespace Application.Infrastructure.SubjectManagement
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).Where(e => e.IsArchive == isArchive).ToList();
+				model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(student.GroupId).Where(e => e.IsArchive == isArchive).ToList();
 			}
 
 			return model;
