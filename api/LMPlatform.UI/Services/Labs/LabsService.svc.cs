@@ -563,15 +563,17 @@ namespace LMPlatform.UI.Services.Labs
 
 			var marks = new List<StudentMark>();
 
-			var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
-
 			var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
+
+			var students = group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName);
+
+			var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
 	
-			foreach (var student in group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName))
+			foreach (var student in students)
 			{
 				var subGroup = group.SubGroups.FirstOrDefault(x => x.SubjectStudents.Any(x => x.StudentId == student.Id));
-
-				var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionLabs: subGroup.ScheduleProtectionLabs, labs: subject.Labs);
+				var studenTestsPassResults = testsResults.Results.ContainsKey(student.Id) ? testsResults.Results[student.Id] : new List<Models.KnowledgeTesting.TestPassResult>();
+				var studentViewData = new StudentsViewData(studenTestsPassResults, student, scheduleProtectionLabs: subGroup.ScheduleProtectionLabs, labs: subject.Labs);
 
 				marks.Add(new StudentMark
 				{
@@ -582,7 +584,9 @@ namespace LMPlatform.UI.Services.Labs
 					TestMark = studentViewData.TestMark,
 					LabVisitingMark = studentViewData.LabVisitingMark,
 					LabsMarks = studentViewData.StudentLabMarks,
-					AllTestsPassed = studentViewData.AllTestsPassed
+					AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
+					TestsPassed = studenTestsPassResults.Count,
+					Tests = testsResults.Tests.Count
 				}) ;
 			}
 
@@ -674,9 +678,9 @@ namespace LMPlatform.UI.Services.Labs
 							.Select(x => new ScheduleProtectionLesson
 							{
 								ScheduleProtectionId = x.Id,
-								Mark = string.Empty
+								Mark = String.Empty
 							}).ToList()
-					});
+					}).ToList();
 					var durationCount = 0;
 
 					foreach (var lab in labsSubGroup)

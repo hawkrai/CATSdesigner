@@ -125,6 +125,16 @@ export class ResultsComponent implements OnInit, OnDestroy {
     return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}: ${schedule.find(s => s.ScheduleProtectionLabId === sc.ScheduleProtectionLabId).Date}`).join('\n');
   }
 
+  getAverageTooltip(student: StudentMark) {
+    const actualCount = student.LabsMarks.filter(x => x.Mark).length;
+    const jobsCount = student.LabsMarks.length;
+    return this.translate.transform('text.subjects.results.protected', `Защищено ${actualCount} работ из ${jobsCount}`, { actualCount: actualCount.toString(), jobsCount: jobsCount.toString() }); 
+  }
+
+  getTestsPassedTooltip(student: StudentMark) {
+    return this.translate.transform('text.subjects.tests.written', `Написано ${student.TestsPassed} тестов из ${student.Tests}`, { actualCount: student.TestsPassed.toString(), testsCount: student.Tests.toString() });
+  }
+
   private getLabMark(mark: LabMark, studentId: number) {
     const dateValues = mark.Date.split('.');
     return {

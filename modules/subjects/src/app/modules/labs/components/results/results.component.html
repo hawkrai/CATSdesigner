@@ -32,7 +32,7 @@
                 *matCellDef="let element"
                 [ngStyle]="{ padding: 0, position: 'relative'}"
             >
-              <div *ngIf="element | markProperty: +scheduleLab.head:subGroupLabs:subGroupSchedule as markProperty;"
+              <div *ngIf="element | markProperty:+scheduleLab.head:subGroupLabs:subGroupSchedule as markProperty;"
                    (dblclick)="state.isTeacher && setMark(element, scheduleLab.head, markProperty.recommendedMark);"
                    class="mark">
                 <div *ngIf="markProperty.mark">
@@ -59,20 +59,22 @@
             <th mat-header-cell *matHeaderCellDef>{{'text.average.labs.mark' | translate:'Средний балл'}}</th>
             <td mat-cell
                 *matCellDef="let element"
-                [class.not-all]="element | isNotAll">
+                [class.not-all]="element | isNotAll" [matTooltip]="getAverageTooltip(element)" matTooltipPosition="below" [matTooltipDisabled]="!(element | isNotAll)">
               <p>{{element.LabsMarkTotal}}</p></td>
           </ng-container>
   
           <ng-container matColumnDef="total-test">
             <th mat-header-cell *matHeaderCellDef>{{'text.average.test' | translate:'Средний балл за тесты'}}</th>
-            <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed && !element.TestMark"> {{element.TestMark}}</td>
+            <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed"  [matTooltip]="getTestsPassedTooltip(element)" matTooltipPosition="below" [matTooltipDisabled]="!element.AllTestsPassed"><p>{{element.TestMark}}</p></td>
           </ng-container>
+          
   
           <ng-container matColumnDef="total">
             <th mat-header-cell *matHeaderCellDef>{{'text.rating' | translate:'Рейтинговая оценка'}}</th>
             <td mat-cell
+                [matTooltip]="'text.sbjects.preliminary.rating' | translate:'Предварительная рейтинговая оценка'" matTooltipPosition="below" [matTooltipDisabled]="!(element | isNotAll) && element.AllTestsPassed"
                 *matCellDef="let element"
-                [ngClass]="{'not-all': element | isNotAll}">
+                [ngClass]="{'not-all': (element | isNotAll) || !element.AllTestsPassed}">
               <p>{{getTotal(element)}}</p></td>
           </ng-container>
   
