@@ -62,9 +62,9 @@ export class ScheduleMainComponent implements OnInit {
 
   activeDayIsOpen = true;
 
-  message = 'Чтобы добавить лекцию, практическое занятие, лабораторную работу, консультацию ' +
-    'или другое событие, нажмите на нужную ячейку. Также Вы можете добавить даты занятий с ' +
-    'помощью аналогичных модулей через пункт меню Предметы.';
+  message = 'Чтобы добавить лекцию, практическое занятие, лабораторную работу, консультацию или другое событие, ' +
+    'нажмите на нужную ячейку. Также Вы можете добавить даты занятий с помощью аналогичных ' +
+    'модулей через пункт меню Предметы';
 
 
   action = 'Понятно';
@@ -137,14 +137,14 @@ export class ScheduleMainComponent implements OnInit {
 
   getTitelConsultation(consultation: any) {
     return consultation.StartTime.split(':')[0] + ':' +  consultation.StartTime.split(':')[1] +  '-'
-           + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|' +
+           + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|'
            + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
       + '|' + '|' + '|' + '|';
   }
 
   getTitelDiplomConsultation(consultation: any) {
     return consultation.Start.split(':')[0] + ':' +  consultation.Start.split(':')[1] +  '-'
-      + consultation.End.split(':')[0] + ':' +  consultation.End.split(':')[1] +  '|' +
+      + consultation.End.split(':')[0] + ':' +  consultation.End.split(':')[1] +  '|'
       + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
       + '|' + '|' + '|' + '|';
   }
