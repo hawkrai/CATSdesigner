@@ -18,14 +18,19 @@ export class NavbarStatisticComponent implements OnInit {
   groupName: string;
   surname: string;
   groupId: number;
+  start: string;
+  end: string;
 
-  constructor(private dialog: MatDialog, private subjectService: SubjectService, private activateRoute: ActivatedRoute, private router: Router,) {
+  constructor(private dialog: MatDialog, private subjectService: SubjectService,
+              private activateRoute: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {
     this.groupName = this.activateRoute.snapshot.firstChild.params.groupName;
     this.surname = this.activateRoute.snapshot.firstChild.params.surname;
-    if(this.groupName !== '0') {
+    this.start = this.activateRoute.snapshot.firstChild.params.start;
+    this.end = this.activateRoute.snapshot.firstChild.params.end;
+    if (this.groupName !== '0') {
       this.getSubjectName(this.groupName);
     }
   }
@@ -36,7 +41,11 @@ export class NavbarStatisticComponent implements OnInit {
       this.groupId = this.subjectResponse.GroupId;
       this.isLoad = true;
       if (this.groupName && subjectResponse.Subjects !== null &&  subjectResponse.Subjects.length !== 0) {
-        if (this.surname !== undefined) {
+        if (this.surname !== undefined && this.start !== undefined && this.end !== undefined) {
+          this.router.navigate(['/control/statistic', this.groupName, this.surname, this.start, this.end]);
+        } else if (this.start !== undefined && this.end !== undefined) {
+          this.router.navigate(['/control/statistic', this.groupName, this.start, this.end]);
+        } else if (this.surname !== undefined) {
           this.router.navigate(['/control/statistic', this.groupName, this.surname]);
         } else {
           this.router.navigate(['/control/statistic', this.groupName]);

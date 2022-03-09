@@ -81,6 +81,7 @@ namespace LMPlatform.Data.Repositories
 					.Include(e => e.Subject.LecturesScheduleVisitings)
 					.Include(e=>e.Subject.SubjectGroups.Select(x => x.Group.Students))
 					.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(t => t.ScheduleProtectionLabs)))
+					.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
 					.Where(e => e.LecturerId == lecturerId).ToList();
 			return subjectLecturer.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
 		}

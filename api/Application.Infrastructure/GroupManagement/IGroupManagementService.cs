@@ -46,6 +46,6 @@ namespace Application.Infrastructure.GroupManagement
         List<List<string>> GetPracticalsMarks(int subjectId, int groupId);
 
         List<List<string>> GetPracticalsScheduleMarks(int subjectId, int groupId);
-        List<Group> GetLecturesGroups(int id);
+        List<Group> GetLecturesGroups(int id, bool activeOnly = false);
     }
 }

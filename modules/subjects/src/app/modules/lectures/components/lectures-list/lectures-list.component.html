@@ -29,7 +29,7 @@
       <button class="mdc-button" *ngIf="element.Attachments.length > 0"
         (click)="openFilePopup(element.Attachments)">
         <i class="material-icons mdc-button__icon" aria-hidden="true">library_books</i>
-        <sub class="mdc-button__label">({{element.Attachments.length}})</sub>
+        <sub class="mdc-button__label">{{element.Attachments.length}}</sub>
       </button>
     </td>
   </ng-container>

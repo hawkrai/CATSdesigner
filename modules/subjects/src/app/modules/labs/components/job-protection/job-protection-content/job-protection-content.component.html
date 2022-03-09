@@ -1,8 +1,8 @@
-<ng-container *ngIf="labFiles && labFiles.length">
+<ng-container *ngIf="labFiles">
   <table mat-table [dataSource]="labFiles">
     <ng-container matColumnDef="lab">
       <th mat-header-cell *matHeaderCellDef>{{'text.subjects.labs' | translate:'Лабораторная работа'}}</th>
-      <td mat-cell *matCellDef="let element">
+      <td mat-cell *matCellDef="let element" [matTooltip]="element.LabTheme">
         {{element.LabShortName}}
       </td>
     </ng-container>

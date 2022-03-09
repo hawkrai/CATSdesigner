@@ -83,4 +83,8 @@ export class MarkPopoverComponent implements OnInit {
     }
     this.dialogRef.close(this.markForm.value);
   }
+
+  onDelete(): void {
+    this.dialogRef.close({ delete: true });
+  }
 }

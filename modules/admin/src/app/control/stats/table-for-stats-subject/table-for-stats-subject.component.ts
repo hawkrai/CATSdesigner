@@ -21,11 +21,10 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
   public surnames: string [] = [];
   public marksChart: any[] = [];
   public passes: any[] = [];
-  public marks: any;
+  public chartColors: string [] = ['#7F00FF' , '#006400'];
 
   colors: string [] = [ 'orange', 'red', 'blue', 'green'];
   dataSource;
-  public chartOptions: any;
   public chartOptions1: any;
   @Input() data: any;
 
@@ -36,94 +35,17 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.passes = [];
+    this.surnames = [];
+    this.marksChart = [];
     this.dataSource = changes.data.currentValue;
-    this.marks = JSON.parse(JSON.stringify(this.dataSource.marks));
-    this.addChart(this.marks, this.dataSource[0].Subject, this.categoriesConst);
-    delete this.dataSource.marks;
+
     this.dataSource.forEach(student => {
       this.surnames.push(this.statisticsService.cutName(student.FIO));
       this.passes.push(student.AllPass);
       this.marksChart.push(+student.Rating);
     });
     this.addPassAndMarksChart(this.marksChart, this.passes, this.surnames);
-  }
-
-  addChart(marks: any, name: string, cat: any) {
-      this.chartOptions = {
-        categories: cat,
-        series: [
-          {
-            name: 'Средняя оценка',
-            data: marks
-          }
-        ],
-        chart: {
-          height: 200,
-          type: 'radar',
-          width: 200
-        },
-        title: {
-          text: name
-        },
-        xaxis: {
-          categories: ['', '', '', '', '']
-
-        },
-        yaxis: {
-        },
-        fill: {
-          type: 'solid',
-          opacity: 0,
-        },
-        markers: {
-          discrete: [{
-            seriesIndex: 0,
-            dataPointIndex: 0,
-            fillColor: this.colors[0],
-            strokeColor: '#fff',
-            size: 5
-          }, {
-            seriesIndex: 0,
-            dataPointIndex: 1,
-            fillColor: this.colors[1],
-            strokeColor: '#eee',
-            size: 5
-          }, {
-            seriesIndex: 0,
-            dataPointIndex: 2,
-            fillColor: this.colors[2],
-            strokeColor: '#eee',
-            size: 5
-          }, {
-            seriesIndex: 0,
-            dataPointIndex: 3,
-            fillColor: this.colors[3],
-            strokeColor: '#eee',
-            size: 5
-          }, {
-            seriesIndex: 0,
-            dataPointIndex: 4,
-            fillColor: this.colors[4],
-            strokeColor: '#eee',
-            size: 5
-          }]
-        },
-        stroke: {
-          show: true,
-          width: 0.3,
-          colors: ['black'],
-          dashArray: 0
-        },
-        legend: {
-          show: 'true',
-          position: 'bottom',
-          horizontalAlign: 'center',
-          floating: false,
-          fontSize: '14px',
-          fontFamily: 'Helvetica, Arial',
-          fontWeight: 400,
-        }
-      };
   }
 
   addPassAndMarksChart(marks: any, passes: any, surnames: any ) {
@@ -138,9 +60,10 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
           data: marks
         }
       ],
+      colors: this.chartColors,
       chart: {
         type: 'bar',
-        height: 350
+        height: 450
       },
       plotOptions: {
         bar: {

@@ -1,6 +1,8 @@
 <div class="labs-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
     <button
+    [matTooltip]="(state.isTeacher &&  tab.route === 'job-protection' && (state.hasJobProtections | any: 'HasJobProtection')) ? ('text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы') : ''"
+    matTooltipPosition="below"
       class="mdc-tab"
       role="tab"
       aria-selected="true"
@@ -14,7 +16,7 @@
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">
           <span>{{ tab.tab | firstLetterUppercase }} </span>
-          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && tab.route === 'schedule'">groups</mat-icon>
+          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && (tab.route === 'schedule' || tab.route === 'visit-statistics' || tab.route === 'results')">groups</mat-icon>
           <mat-icon
             class="priority-icon"
             style="margin-top: -5px"
@@ -23,6 +25,7 @@
               tab.route === 'job-protection' &&
               (state.hasJobProtections | any: 'HasJobProtection')
             "
+            
             class="priority"
             [color]="'warn'"
             >priority_high</mat-icon
@@ -43,8 +46,9 @@
     </button>
   </div>
   <div class="labs-component__body">
-    <div class="labs-component__controls" *ngIf="state.isTeacher">
-      <div
+    <div class="labs-component__controls">
+      <ng-container  *ngIf="state.isTeacher">
+        <div
         class="labs-component__select-group"
         *ngIf="!(router.url | startWith:'/labs/list')"
       >
@@ -69,8 +73,7 @@
                   [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
                   matTooltipPosition="below"
                   [color]="'warn'"
-                  >priority_high</mat-icon
-                >
+                  >priority_high</mat-icon>
               </span>
             </mat-option>
             <mat-select-trigger *ngIf="state.group">
@@ -104,12 +107,13 @@
       </div>
       <div class="labs-component__actions">
         <div class="actions-group">
-          <ng-container *ngIf="router.url | startWith:'/labs/schedule'">
-            <app-help  [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
+
+          <ng-container *ngIf="(router.url | startWith:'/labs/schedule') || (router.url | startWith:'/labs/visit-statistics') || (router.url | startWith:'/labs/results')">
             <button class="mat-icon-button-groups " mat-icon-button [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below" (click)="subdivision(state.group.GroupId)">
               <mat-icon color="primary">groups</mat-icon>
             </button>
           </ng-container>
+          <app-help  [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action" *ngIf="(router.url | startWith:'/labs/schedule')"></app-help>
           <ng-container *ngIf="router.url | startWith:'/labs/visit-statistics'">
             <app-help
               [message]="visitingHelp.message"
@@ -172,38 +176,13 @@
           </ng-container>
         </div>
       </div>
+      </ng-container>
+      <ng-container *ngIf="!state.isTeacher && !(router.url | startWith:'/labs/list')  && state.group">
+        {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
+      </ng-container>
     </div>
-    <div
-      class="labs-component__controls"
-      *ngIf="!state.isTeacher && !(router.url | startWith:'/labs/list') && state.group"
-    >
-      {{ "group" | translate: "Группа" }}:
-      {{ state.group.GroupName }}
-    </div>
+
+
     <router-outlet></router-outlet>
-    <!-- <app-labs-work
-      *ngIf="selectedTab === 0"
-      [isTeacher]="state.isTeacher"
-    ></app-labs-work> -->
-    <!-- <app-protection-schedule
-      *ngIf="selectedTab === 1 && state.group"
-      [groupId]="state.group.GroupId && state.group.GroupId"
-      [isTeacher]="state.isTeacher"
-    ></app-protection-schedule>
-    <app-visit-statistics
-      *ngIf="selectedTab === 2 && state.group"
-      [groupId]="state.group.GroupId"
-      [isTeacher]="state.isTeacher"
-    ></app-visit-statistics>
-    <app-results
-      *ngIf="selectedTab === 3 && state.group"
-      [groupId]="state.group.GroupId"
-      [isTeacher]="state.isTeacher"
-    ></app-results>
-    <app-job-protection
-      *ngIf="selectedTab === 4 && state.group"
-      [groupId]="state.group.GroupId"
-      [isTeacher]="state.isTeacher"
-    ></app-job-protection> -->
   </div>
 </div>

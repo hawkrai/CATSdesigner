@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import { Group } from "../models/group.model";
 
 
 @Injectable({
@@ -13,6 +14,10 @@ export class ConfirmationService {
 
   public getGroups(): Observable<any> {
         return this.http.get<any>("/Services/CoreService.svc/GetAllGroupsLite/");
+  }
+
+  getUserGroups() {
+    return this.http.get<Group[]>(`/Services/CoreService.svc/GetUserGroups`);
   }
 
   public getStudents(groupId): Observable<any> {
