@@ -96,10 +96,10 @@
   </button>
 
 
-  <button mat-icon-button class="end icon-h" [routerLink]="['personalAccount']">
+  <button *ngIf="!this.isAdmin" mat-icon-button class="end icon-h" [routerLink]="['personalAccount']">
     <img *ngIf="this.profileIcon" src="{{this.profileIcon}}" class="account" />
     <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
-    {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
+    {{this.getUserInitials()}}
     </span>
   </button>
 
@@ -212,10 +212,10 @@
         [routerLink]="'/web/chat'">mail</mat-icon>
       </button>
 
-      <button mat-icon-button [routerLink]="['personalAccount']" class="end icon-h">
+      <button *ngIf="!this.isAdmin" mat-icon-button [routerLink]="['personalAccount']" class="end icon-h">
         <img *ngIf="this.profileIcon" t src="{{this.profileIcon}}" class="account" />
         <span *ngIf="!this.profileIcon" class="avatar-title rounded-circle bg-soft-primary text-primary">
-          {{this.userFullName.split(' ')[0].charAt(0) + this.userFullName.split(' ')[1].charAt(0)}}
+          {{this.getUserInitials()}}
         </span>
       </button>
 

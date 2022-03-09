@@ -91,7 +91,7 @@ export class LectorsComponent implements OnInit {
   }
 
   openListOfGroup(lectorId) {
-    const dialogRef = this.dialog.open( ListOfGroupsComponent, {
+    const dialogRef = this.dialog.open(ListOfGroupsComponent, {
       data: lectorId
     });
     dialogRef.afterClosed();

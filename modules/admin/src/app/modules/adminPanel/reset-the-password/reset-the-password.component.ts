@@ -21,6 +21,10 @@ export class ResetThePasswordComponent implements OnInit {
   student;
   isLoad = false;
   form: FormGroup;
+  hidePassword = true;
+  hideConfirm = true;
+  password  = "";
+  confirmPassword = "";
   @Output() submitEM = new EventEmitter();
 
   constructor(private userService: UserService, private lectorService: ProfessorService , private studentService: StudentService,

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { EditProfessor } from 'src/app/model/professor';
+import { EditProfessor, Professor } from 'src/app/model/professor';
 import { GroupService } from 'src/app/service/group.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -15,6 +15,7 @@ export class EditLectorComponent implements OnInit {
   @Output() submitEM = new EventEmitter();
   form: FormGroup;
   isLoad = false;
+  professor : Professor;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -23,31 +24,46 @@ export class EditLectorComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    const professor = this.data;
     this.loadGroup();
+    this.professor = this.data;
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
-      Name: new FormControl(professor.FirstName, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+      Name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Surname: new FormControl(professor.LastName, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+      Surname: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Patronymic: new FormControl(professor.MiddleName, [Validators.maxLength(30),
+      Patronymic: new FormControl('', [Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Email: new FormControl(professor.Email || '',
+      Email: new FormControl(this.professor.Email || '',
 [Validators.pattern('^[a-z0-9_.@-]{3,30}$'), Validators.maxLength(30)]),
-      SkypeContact: new FormControl(professor.SkypeContact || '', [Validators.maxLength(50)]),
-      Phone: new FormControl(professor.Phone || '', [Validators.maxLength(50)]),
-      Skill: new FormControl(professor.Skill || '', [Validators.maxLength(250)]),
-      About: new FormControl(professor.About || '', [Validators.maxLength(255)]),
-      IsSecretary: new FormControl(professor.IsSecretary),
-      IsLecturerHasGraduateStudents: new FormControl(professor.IsLectureHasGraduateStudents),
-      Groups: new FormControl(professor.Groups)
+      SkypeContact: new FormControl(this.professor.SkypeContact || '', [Validators.maxLength(50)]),
+      Phone: new FormControl(this.professor.Phone || '', [Validators.maxLength(50)]),
+      Skill: new FormControl(this.professor.Skill || '', [Validators.maxLength(250)]),
+      About: new FormControl(this.professor.About || '', [Validators.maxLength(255)]),
+      IsSecretary: new FormControl(this.professor.IsSecretary),
+      IsLecturerHasGraduateStudents: new FormControl(this.professor.IsLecturerHasGraduateStudents),
+      Groups: new FormControl(this.professor.Groups)
     });
+  }
+
+  trimFields() {
+    if(this.professor.FirstName != null){
+    this.professor.FirstName = this.professor.FirstName.trim();
+    }
+    if(this.professor.LastName != null){
+    this.professor.LastName = this.professor.LastName.trim();
+    }
+    if(this.professor.MiddleName != null){
+    this.professor.MiddleName = this.professor.MiddleName.trim();
+    }
+    if(this.professor.Email != null){
+    this.professor.Email = this.professor.Email.trim();
+    }
   }
 
   onNoClick(): void {
     this.dialogRef.close();
-  }z
+  }
 
   onYesClick(): void {
     this.dialogRef.close({data: this.sendData()});
