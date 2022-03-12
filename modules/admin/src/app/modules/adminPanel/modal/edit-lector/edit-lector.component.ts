@@ -48,16 +48,16 @@ export class EditLectorComponent implements OnInit {
 
   trimFields() {
     if(this.professor.FirstName != null){
-    this.professor.FirstName = this.professor.FirstName.trim();
+    this.professor.FirstName = this.professor.FirstName.replace(/\s/g, "");
     }
     if(this.professor.LastName != null){
-    this.professor.LastName = this.professor.LastName.trim();
+    this.professor.LastName = this.professor.LastName.replace(/\s/g, "");
     }
     if(this.professor.MiddleName != null){
-    this.professor.MiddleName = this.professor.MiddleName.trim();
+    this.professor.MiddleName = this.professor.MiddleName.replace(/\s/g, "");
     }
     if(this.professor.Email != null){
-    this.professor.Email = this.professor.Email.trim();
+    this.professor.Email = this.professor.Email.replace(/\s/g, "");
     }
   }
 

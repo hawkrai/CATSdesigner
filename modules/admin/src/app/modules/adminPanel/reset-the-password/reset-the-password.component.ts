@@ -25,6 +25,8 @@ export class ResetThePasswordComponent implements OnInit {
   hideConfirm = true;
   password  = "";
   confirmPassword = "";
+  fullName =""
+  login =""
   @Output() submitEM = new EventEmitter();
 
   constructor(private userService: UserService, private lectorService: ProfessorService , private studentService: StudentService,
@@ -63,6 +65,8 @@ export class ResetThePasswordComponent implements OnInit {
   getStudent(studentId) {
     this.studentService.getStudentById(studentId).subscribe( item => {
       this.student = item;
+      this.login = this.student.UserName
+      this.fullName = this.student.Name + " " + this.student.Surname
       this.isLoad = true;
     });
   }
@@ -70,6 +74,8 @@ export class ResetThePasswordComponent implements OnInit {
   getLector(lectorId) {
     this.lectorService.getProfessorById(lectorId).subscribe( item => {
       this.student = item;
+      this.login = this.student.Login
+      this.fullName = this.student.FullName
       this.isLoad = true;
     });
   }
