@@ -29,7 +29,7 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
   search: string = '';
 
   ngOnInit() {
-    this.confirmationService.getGroups()
+    this.confirmationService.getUserGroups()
       .pipe(
         tap((groups: any) => {
           if (groups && groups.Groups) {

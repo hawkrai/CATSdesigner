@@ -31,7 +31,7 @@ import { TranslatePipe } from 'educats-translate';
 export class ResultsComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
 
-  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean }>;
+  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean, subGroups: number[] }>;
 
   constructor(
     private store: Store<IAppState>,
@@ -45,9 +45,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
       this.store.select(labsSelectors.getLabs),
       this.store.select(labsSelectors.getLabStudents),
       this.store.select(subjectSelectors.getUserId),
-      this.store.select(subjectSelectors.isTeacher)
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(labsSelectors.getSubGroups)
     ).pipe(
-      map(([schedule, labs, students, userId, isTeacher]) => ({ schedule, labs, students, userId, isTeacher }))
+      map(([schedule, labs, students, userId, isTeacher, subGroups]) => ({ schedule, labs, students, userId, isTeacher, subGroups: subGroups.map(x => x.SubGroupValue) }))
     );
 
     this.subs.add(
@@ -93,15 +94,24 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
       this.subs.add(dialogRef.afterClosed().pipe(
         filter(r => r),
-        map((result: MarkForm) => ({
-          ...labsMark,
-          comment: result.comment,
-          date: moment(result.date).format('DD.MM.YYYY'),
-          mark: result.mark,
-          showForStudent: result.showForStudent
-        })),
+        map((result) => {
+          if (result.delete) {
+            return 
+          }
+          return {
+            ...labsMark,
+            comment: result.comment,
+            date: moment(result.date).format('DD.MM.YYYY'),
+            mark: result.mark,
+            showForStudent: result.showForStudent
+          }
+        }),
       ).subscribe((labMark) => {
-        this.store.dispatch(labsActions.setLabMark({ labMark }));
+        if (labMark) {
+          this.store.dispatch(labsActions.setLabMark({ labMark }));
+        } else {
+          this.store.dispatch(labsActions.removeLabMark({ id: labsMark.id }));
+        }
       }));
 
     }

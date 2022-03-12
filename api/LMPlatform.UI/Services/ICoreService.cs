@@ -78,6 +78,10 @@ namespace LMPlatform.UI.Services
 		GroupsResult GetGroupsByUser(string userId);
 
 		[OperationContract]
+		[WebInvoke(UriTemplate = "/GetUserGroups", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+		GroupsResult GetUserGroups();
+
+		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetGroupsByUserV2/{userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		GroupsResult GetGroupsByUserV2(string userId);
 

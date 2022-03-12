@@ -98,7 +98,8 @@ namespace LMPlatform.UI.Services
 			{
 				var id = int.Parse(subjectId);
 				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId)
-					.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+					.GroupBy(x => x.Id).Select(x => x.First())
+					.Where(x => x.Id != CurrentUserId).ToList();
 
 				return new LectorsResult
 				{
@@ -164,7 +165,7 @@ namespace LMPlatform.UI.Services
 				var lectors = LecturerManagementService.GetNoAdjointLectorers(int.Parse(subjectId), CurrentUserId);
 				return new LectorsResult
 				{
-					Lectors = lectors.Select(e => new LectorViewData(e)).ToList(),
+					Lectors = lectors.Where(x => x.Id != CurrentUserId).Select(e => new LectorViewData(e)).ToList(),
 					Message = "Преподаватели успешно загружены",
 					Code = "200"
 				};
@@ -541,20 +542,26 @@ namespace LMPlatform.UI.Services
         }
 
 
-
+		public GroupsResult GetUserGroups()
+        {
+			return GetGroupsByUser(UserContext.CurrentUserId.ToString());
+        }
 		public GroupsResult GetGroupsByUser(string userId)
 		{
 			try
 			{
 				var id = int.Parse(userId);
-				var groups = this.GroupManagementService.GetLecturesGroups(id);
+				var groups = this.GroupManagementService.GetLecturesGroups(id, true);
 
 				var groupsViewModel = new List<GroupsViewData>();
 
 				foreach (var group in groups.DistinctBy(e => e.Id))
 				{
+					var students = this.StudentManagementService.GetGroupStudents(group.Id).Count(e => e.Confirmed != null && !e.Confirmed.Value);
+
 					groupsViewModel.Add(new GroupsViewData
 					{
+						CountUnconfirmedStudents = students,
 						GroupId = group.Id,
 						GroupName = group.Name
 					});
@@ -562,7 +569,7 @@ namespace LMPlatform.UI.Services
 
 				return new GroupsResult
 				{
-					Groups = groupsViewModel.ToList(),
+					Groups = groupsViewModel.OrderByDescending(x => x.CountUnconfirmedStudents).ThenBy(x => x.GroupName).ToList(),
 					Message = "Группы успешно загружены",
 					Code = "200"
 				};

@@ -430,19 +430,21 @@ namespace Application.Infrastructure.GroupManagement
             return data;
         }
 
-	    public List<Group> GetLecturesGroups(int id)
+	    public List<Group> GetLecturesGroups(int id, bool activeOnly = false)
 	    {
 		    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 		    var subjects = repositoriesContainer.RepositoryFor<SubjectLecturer>()
 			    .GetAll(new Query<SubjectLecturer>(e => e.LecturerId == id)
 				    .Include(e => e.Subject.SubjectGroups
-					    .Select(x => x.Group)));
+					    .Select(x => x.Group)))
+                .Where(x => activeOnly ? !x.Subject.IsArchive : true)
+                .ToList();
 
 		    var groups = new List<Group>();
 
 		    foreach (var subject in subjects)
 		    {
-			    groups.AddRange(subject.Subject.SubjectGroups.Select(e => e.Group));
+			    groups.AddRange(subject.Subject.SubjectGroups.Where(e => activeOnly ? e.IsActiveOnCurrentGroup : true).Select(e => e.Group));
 		    }
 
 		    return groups;

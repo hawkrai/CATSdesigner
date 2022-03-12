@@ -111,6 +111,13 @@ export class LabsEffects {
     ))
   ));
 
+  removeLabMark$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.removeLabMark),
+    switchMap(({ id }) => this.rest.removeLabsMark(id).pipe(
+      switchMap((body) => [catsActions.showMessage({ body }), labsActions.loadLabStudents()])
+    ))
+  ))
+
   labsVisitingExcel$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.getVisitingExcel),
     withLatestFrom(

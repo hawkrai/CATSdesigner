@@ -1,8 +1,8 @@
 <div class="results-component" *ngIf="state$ | async as state; else: load">
-  <div class="results-component__subGroup" *ngFor="let subGroup of state.labs | unique:'SubGroup'">
+  <div class="results-component__subGroup" *ngFor="let subGroup of state.subGroups">
     <ng-container *ngIf="(state.students | filter:'SubGroup': subGroup).length">
       <div class="results-component__subGroup-title">
-        <span mat-dialog-title class="results-component__subGroup-title-text">{{'subgroup' | translate:'Подгруппа'}} {{subGroup}}</span>
+        <span class="results-component__subGroup-title-text">{{'subgroup' | translate:'Подгруппа'}} {{subGroup}}</span>
       </div>
       <div class="results-component__subGroup-table" *var="state.labs | filter:'SubGroup':subGroup as subGroupLabs">
         <table mat-table [dataSource]="state.students | filter:'SubGroup': subGroup" class="mat-elevation-z14" 

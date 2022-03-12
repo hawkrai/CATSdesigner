@@ -18,11 +18,21 @@
       <div style = "float: right; margin-top: -15px;" >
         <form [formGroup]="controlForm">
             <mat-form-field class="default" color="primary">
-                <input matInput color="primary" formControlName="groupName" placeholder= "{{'text.academic.performance.monitoring.enter.surname' | translate : 'Введите номер группы'}}" type="text">
+                <input matInput color="primary" formControlName="groupName" placeholder= "{{'text.academic.performance.monitoring.enter.group' | translate : 'Введите номер группы'}}" type="text">
             </mat-form-field>
           <p></p>
           <mat-form-field class="default" color="primary">
             <input matInput color="primary" formControlName="surname" placeholder="{{'text.academic.performance.monitoring.enter.surname' | translate : 'Введите фамилию студента'}}" type="text">
+          </mat-form-field>
+          <p></p>
+          <mat-form-field class="default" color="primary">
+            <input type = 'date' matInput formControlName="start"
+                   [placeholder]="'text.schedule.lesson.start' | translate:'Начало'">
+          </mat-form-field>
+          <p></p>
+          <mat-form-field class="default" color="primary">
+            <input type = 'date' matInput formControlName="end"
+                   [placeholder]="'text.schedule.lesson.start' | translate:'Конец'">
           </mat-form-field>
           <p></p>
             <a mat-flat-button color="primary" (click)="enterGroup()">{{'search' | translate: 'Найти'}}</a>

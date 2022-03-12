@@ -269,6 +269,7 @@ namespace LMPlatform.UI.Controllers
             model.Phone = user.Phone;
             model.About = user.About;
             model.Id = user.Id;
+            model.Login = user.UserName;
             if (user.AttendanceList.Any())
             {
                 model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy HH:mm:ss");

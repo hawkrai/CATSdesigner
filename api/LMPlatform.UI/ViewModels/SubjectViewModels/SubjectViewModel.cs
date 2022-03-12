@@ -27,6 +27,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             }).OrderBy(x => x.GroupName);
             var owner = model.SubjectLecturers.FirstOrDefault(x => x.Owner.HasValue)?.Owner;
             Owner =  owner is null ? model.SubjectLecturers.FirstOrDefault(x => !x.Owner.HasValue).LecturerId : owner;
+            Lectors = model.SubjectLecturers.Select(x => new LectorViewModel(x.Lecturer));
         }
 
         public int? Owner { get; set; }
@@ -54,6 +55,8 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
         public int StudentsCount { get; set; }
 
         public IEnumerable<GroupsViewData> Groups { get; set; }
+
+        public IEnumerable<LectorViewModel> Lectors { get; set; }
 
     }
 }

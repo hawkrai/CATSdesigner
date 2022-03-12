@@ -14,12 +14,14 @@ import * as dataEn from './core/translate/translate_en.json';
 import * as dataRu from './core/translate/translate_ru.json';
 import { SharedModule } from './shared/shared.module';
 import { CatsMessageService } from './services/cats-message.service';
+import { GroupSortPipe } from './pipes/group-sort.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    GroupSortPipe
   ],
   imports: [
     FormsModule,

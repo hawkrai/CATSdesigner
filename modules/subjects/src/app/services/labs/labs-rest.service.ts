@@ -80,6 +80,10 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/SaveStudentLabsMark', body);
   }
 
+  removeLabsMark(id: number): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/RemoveStudentLabsMark', { id });
+  }
+
   public getFilesLab(subjectId: number, userId: number): Observable<UserLabFile[]> {
     return this.http.post('Services/Labs/LabsService.svc/GetFilesLab', { subjectId, userId }).pipe(
       map(res => res['UserLabFiles']));

@@ -8,6 +8,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { TranslateModule, TranslatePipe } from 'educats-translate';
+import {PopoverModule} from "ngx-smart-popover";
 
 import {FilterPipe} from './pipes/filter.pipe';
 import { PluralPipe } from './pipes/plural.pipe';
@@ -28,13 +29,11 @@ import { MarkPopoverComponent } from './mark-popover/mark-popover.component';
 import { PopoverDialogComponent } from './popover-dialog/popover-dialog.component';
 import { FileComponent } from './components/file/file.component';
 import { HelpComponent } from './components/help/help.component';
-import { HelpPopoverComponent } from './components/help/help-popover/help-popover.component';
 import { SubjectNameFreeDirective } from './validators/subject-name-free.validator';
 import { SubjectAbbreviationFreeDirective } from './validators/subject-abbreviation-free.validator';
 import { WhitespaceDirective } from './validators/whitespace.validator';
 import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 import { SubdivisionComponent } from './subdivision/subdivision.component';
-import {PopoverModule} from "ngx-smart-popover";
 import { ListComponent } from './components/list/list.component';
 import { ListItemComponent } from './components/list/list-item/list-item.component';
 import { ListItemHeaderDirective } from './components/list/directives/list-item-header.directive';
@@ -44,6 +43,7 @@ import * as dataEn from '../core/translation/translations_en.json';
 import * as dataRu from '../core/translation/translations_ru.json';
 import { SomePipe } from './pipes/some.pipe';
 import { StartWithPipe } from './pipes/start-with.pipe';
+import { FirstLetterPipe } from './pipes/first-letter.pipe';
 
 @NgModule({
   declarations: [
@@ -71,7 +71,6 @@ import { StartWithPipe } from './pipes/start-with.pipe';
     PopoverDialogComponent,
     FileComponent,
     HelpComponent,
-    HelpPopoverComponent,
     SubjectNameFreeDirective,
     SubjectAbbreviationFreeDirective,
     WhitespaceDirective,
@@ -83,7 +82,8 @@ import { StartWithPipe } from './pipes/start-with.pipe';
     ListItemBodyDirective,
     ListItemActionsDirective,
     SomePipe,
-    StartWithPipe
+    StartWithPipe,
+    FirstLetterPipe
     ],
   imports: [
     CommonModule,
@@ -104,7 +104,6 @@ import { StartWithPipe } from './pipes/start-with.pipe';
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
     MarkPopoverComponent,
-    HelpPopoverComponent,
     SubdivisionComponent
   ],
   exports: [
@@ -137,7 +136,8 @@ import { StartWithPipe } from './pipes/start-with.pipe';
     ListItemBodyDirective,
     ListItemActionsDirective,
     SomePipe,
-    StartWithPipe
+    StartWithPipe,
+    FirstLetterPipe
   ],
   providers: [TranslatePipe]
 })

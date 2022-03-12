@@ -62,7 +62,7 @@ namespace LMPlatform.UI.Managers
                     Console.WriteLine("Token has expired");
                     return false;
                 }
-                catch (SignatureVerificationException)
+                catch (Exception)
                 {
                     Console.WriteLine("Token has invalid signature");
                     return false;

@@ -107,7 +107,8 @@ export class PracticalsEffects {
 
     setPracticalMark$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.setPracticalMark),
-        switchMap(({ body }) => this.rest.setPracticalMark({ ...body }).pipe(
+        withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
+        switchMap(([{ body }, subjectId]) => this.rest.setPracticalMark({ ...body, subjectId }).pipe(
             switchMap((body) => [catsActions.showMessage({ body }), practicalsActions.loadMarks()])
         ))
     ));

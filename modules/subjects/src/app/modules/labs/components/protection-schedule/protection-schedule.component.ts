@@ -60,11 +60,11 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
     return [...this.displayedColumns, ...schedule.map(res => res.Date + res.ScheduleProtectionLabId)];
   }
 
-  settingVisitDate(subGroup: number, subGroupId: number) {
+  settingVisitDate(subGroup: SubGroup) {
     const dialogData: DialogData = {
       title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
       buttonText: this.translate.transform('button.add', 'Добавить'),
-      body: { subGroupId, subGroup },
+      body: { subGroupId: subGroup.Id },
     };
 
     this.dialogService.openDialog(VisitDateLabsPopoverComponent, dialogData);

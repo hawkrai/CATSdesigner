@@ -34,6 +34,7 @@
   "subject.creation": "Course adding",
   "subject.editing": "Course editing",
   "subject.students.count": "Number of students per course",
+  "subject.lectors.count": "Number of lectors per course",
   "subject.groups.count": "number of groups per course",
   "subject.name.not.free": "Course with the same name already exists",
   "subject.abbreviation.not.free": "Course with this abbreviation already exists",
@@ -62,6 +63,7 @@
   "text.news.accusative": "News",
   "text.student": "Student",
   "text.students": "Students",
+  "text.lectors": "Lectors",
   "text.students.selected.genitive": "Selected students",
   "text.generated automatically": "generated automatically",
   "text.lectures": "Lecture",
@@ -206,5 +208,7 @@
   "text.schedule.dates.and.connected.data": "dates and all related data",
   "text.schedule.dates": "Dates of classes",
   "text.schedule.management.dates.deleting": "Deleting dates",
-  "text.schedule.date.and.connected.data": "date and all related data"
+  "text.schedule.date.and.connected.data": "date and all related data",
+  "text.students.transfered": "Student(s) were successfully transfered to the subgroup",
+  "text.subdivision.to.the.first.subgroup": "Students will be transferred to the first subgroup"
 }
