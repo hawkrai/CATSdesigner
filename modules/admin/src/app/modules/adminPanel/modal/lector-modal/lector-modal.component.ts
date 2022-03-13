@@ -20,6 +20,8 @@ export class LectorModalComponent implements OnInit {
   quest = questions;
   groups;
   isLoad;
+  professor : Professor;
+ 
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,17 +29,18 @@ export class LectorModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: Professor,
     private accountService: AccountService, private groupService: GroupService) { }
 
+
   ngOnInit(): void {
-    const professor = this.data;
+    this.professor = this.data;
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
-      Username: new FormControl( professor.Username,
+      Username: new FormControl('',
         [Validators.required, Validators.minLength(3),
           Validators.pattern('^[A-Za-z0-9_.-@]*$')], ValidateEmailNotTaken.createValidator(this.accountService)),
-      Password: new FormControl( professor.Password,
+      Password: new FormControl('',
         [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z0-9_-]*$'),
         Validators.maxLength(30), this.passwordValidator]),
-      ConfirmPassword: new FormControl(professor.ConfirmPassword),
+      ConfirmPassword: new FormControl(this.professor.ConfirmPassword),
       Surname: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
       Name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
@@ -63,6 +66,21 @@ export class LectorModalComponent implements OnInit {
     }
     return null;
    }
+
+   trimFields() {
+    if(this.professor.FirstName != null){
+    this.professor.FirstName = this.professor.FirstName.replace(/\s/g, "");
+    }
+    if(this.professor.LastName != null){
+    this.professor.LastName = this.professor.LastName.replace(/\s/g, "");
+    }
+    if(this.professor.MiddleName != null){
+    this.professor.MiddleName = this.professor.MiddleName.replace(/\s/g, "");
+    }
+    if(this.professor.Username != null){
+    this.professor.Username = this.professor.Username.replace(/\s/g, "");
+    }
+  }
 
   submit() {
     if (this.form.valid) {

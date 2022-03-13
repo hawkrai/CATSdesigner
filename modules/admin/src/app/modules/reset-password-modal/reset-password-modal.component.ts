@@ -15,6 +15,10 @@ import { AppToastrService } from 'src/app/service/toastr.service';
 })
 export class ResetPasswordModalComponent implements OnInit {
 
+  hidePassword = true;
+  hideConfirm = true;
+  password  = "";
+  confirmPassword = "";
   form: FormGroup;
   @Output() submitEM = new EventEmitter();
   constructor(private formBuilder: FormBuilder, private userService: UserService, private accountService: AccountService,
@@ -24,7 +28,7 @@ export class ResetPasswordModalComponent implements OnInit {
   ngOnInit() {
     console.log(this.data);
     this.form = this.formBuilder.group({
-        password: new FormControl('' , [Validators.required, Validators.pattern('^[A-Za-z0-9_]*$'),
+        password: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_]*$'),
          Validators.minLength(6), Validators.maxLength(30), this.passwordValidator]),
         confirmPassword: new FormControl(''),
     }, {

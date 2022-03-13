@@ -110,6 +110,10 @@ export class CreateLessonComponent implements OnInit {
           this.lessonservice.getGroupsBySubjectId(+this.lesson.SubjectId).subscribe(res => {
             this.formGroup.controls.group.enable();
             this.formGroup.controls.subGroup.enable();
+            if (this.isStudentUpdateLesson) {
+              this.formGroup.controls.group.disable();
+              this.formGroup.controls.subGroup.disable();
+            }
             this.groups = res.Groups;
             this.currentGroup = this.groups.find(group => group.GroupId == this.lesson.GroupId);
             this.formGroup.get('group').setValue(this.lesson.GroupId);

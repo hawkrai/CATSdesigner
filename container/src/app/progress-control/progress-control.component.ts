@@ -40,6 +40,15 @@ export class ProgressControlComponent implements OnInit {
     if ((this.f.start.value != '' && this.f.end.value == '') || (this.f.start.value == '' && this.f.end.value != '')){
       return;
     }
+    if (this.f.start.value != '' && this.f.end.value != '') {
+      if (this.f.start.value > this.f.end.value) {
+        const a = this.f.start.value;
+        this.f.start.setValue(this.f.end.value);
+        this.f.end.setValue(a);
+      }
+    }
+    console.log(this.f.start.value);
+    console.log(this.f.end.value);
     this.url = `/control/main/${this.f.groupName.value}/${this.f.start.value}/${this.f.end.value}`;
     if (this.f.surname.value != undefined && this.f.surname.value != ''){
       this.url = `/control/main/${this.f.groupName.value}/${this.f.surname.value}/${this.f.start.value}/${this.f.end.value}`;
