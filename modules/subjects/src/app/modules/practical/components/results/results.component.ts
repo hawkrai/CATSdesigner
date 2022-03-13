@@ -114,6 +114,16 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  getAverageTooltip(student: StudentMark) {
+    const actualCount = student.PracticalsMarks.filter(x => x.Mark).length;
+    const jobsCount = student.PracticalsMarks.length;
+    return this.translate.transform('text.subjects.results.protected', `Защищено ${actualCount} работ из ${jobsCount}`, { actualCount: actualCount.toString(), jobsCount: jobsCount.toString() }); 
+  }
+
+  getTestsPassedTooltip(student: StudentMark) {
+    return this.translate.transform('text.subjects.tests.written', `Написано ${student.TestsPassed} тестов из ${student.Tests}`, { actualCount: student.TestsPassed.toString(), testsCount: student.Tests.toString() });
+  }
+
   getMissingTooltip(marks: PracticalVisitingMark[], schedule: ScheduleProtectionPractical[]) {
     return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}: ${schedule.find(s => s.ScheduleProtectionPracticalId === sc.ScheduleProtectionPracticalId).Date}`).join('\n');
 
