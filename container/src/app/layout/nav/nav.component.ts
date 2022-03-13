@@ -217,4 +217,14 @@ export class NavComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  public getUserInitials(){
+    var initials = this.userFullName?.split(' ')[0]?.charAt(0) + this.userFullName?.split(' ')[1]?.charAt(0);
+    if(initials != null){
+      return initials
+    } 
+    else{
+      return "Ad"
+    }
+  }
 }
