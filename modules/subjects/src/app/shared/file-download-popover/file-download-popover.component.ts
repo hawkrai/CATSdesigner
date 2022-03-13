@@ -19,4 +19,8 @@ export class FileDownloadPopoverComponent {
   download(): void {
     this.dialogRef.close(this.attachments.filter(a => (a as any).isDownload));
   }
+
+  get downloadDisabled() {
+    return !this.attachments.some(x => (x as any).isDownload);
+  }
 }
