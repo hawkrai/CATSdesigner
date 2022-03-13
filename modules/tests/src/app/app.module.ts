@@ -50,6 +50,7 @@ import {MenuItemComponent} from "./questions-page/components/question-popup/comp
 import {NeuralNetworkPopupComponent} from "./questions-page/components/neural-network-popup/neural-network-popup.component";
 import * as dataEn from './core/translate/translations_en.json';
 import * as dataRu from './core/translate/translations_ru.json';
+import { IsIntegerPipe } from "./pipes/is-integer.pipe";
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import * as dataRu from './core/translate/translations_ru.json';
     TestResultComponent,
     AutocompleteFormComponent,
     LoginComponent,
-    NeuralNetworkPopupComponent
+    NeuralNetworkPopupComponent,
+    IsIntegerPipe
   ],
   imports: [
     FormsModule,

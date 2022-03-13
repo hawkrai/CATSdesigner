@@ -162,6 +162,27 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             return result;
         }
 
+        public List<TestPassResult> GetStudentControlTestResults(int subjectId, int studentId)
+        {
+            var tests = GetTestsForSubject(subjectId);
+            var testIds = tests.Where(test => !test.ForSelfStudy && !test.BeforeEUMK && !test.ForEUMK && !test.ForNN).Select(test => test.Id);
+            List<TestPassResult> result;
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                result =
+                    repositoriesContainer.RepositoryFor<TestPassResult>().GetAll(
+                        new Query<TestPassResult>(res => testIds.Contains(res.TestId) && res.StudentId == studentId)).ToList();
+            }
+
+            foreach (var testPassResult in result)
+            {
+                testPassResult.TestName = tests.Single(t => t.Id == testPassResult.TestId).Title;
+            }
+
+            return result;
+           
+        }
+
         public void MakeUserAnswer(IEnumerable<Answer> answers, int userId, int testId, int questionNumber)
         {
             var test = GetTest(testId);
