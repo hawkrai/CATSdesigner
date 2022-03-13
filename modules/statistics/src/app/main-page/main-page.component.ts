@@ -27,7 +27,7 @@ export class MainPageComponent implements OnInit {
   practSum = 0;
   labSum = 0;
   ratingAvg = 0;
-  courseMark = 5.8;
+  courseMark = 0;
 
   practMarks: any[] = [];
   labMarks: any[] = [];
@@ -38,6 +38,7 @@ export class MainPageComponent implements OnInit {
   categories: string[][] = [[]];
   categoriesTemp: string[] = [];
   series: any[] = [];
+  colorsTemp: any[] = [];
   checked: any[] = [false, false, false, false];
   isArchived = false;
 
@@ -88,7 +89,7 @@ export class MainPageComponent implements OnInit {
             const rating = this.serviceService.round(this.tempAvg / this.temp.length);
             this.ratingMarks.push(rating);
             this.temp.push(rating);
-            this.addChart(this.temp, subject.SubjectName, this.categoriesConst, subject.SubjectId, this.listChartOptions);
+            this.addChart(this.temp, subject.SubjectName, this.categoriesConst, subject.SubjectId, this.listChartOptions, this.colors);
             this.subjectName.push(subject.SubjectName);
           });
         this.series.push({name: this.categoriesConst[0], data: this.practMarks});
@@ -114,10 +115,11 @@ export class MainPageComponent implements OnInit {
     }
   }
 
-  addChart(marks: any, name: string, cat: any, subjectId: any, list: any[]) {
+  addChart(marks: any, name: string, cat: any, subjectId: any, list: any[], colorsTemp: any[]) {
     list.push(
       this.chartOptions = {
         subject : subjectId,
+        colors: colorsTemp,
         categories: cat,
         series: [
           {
@@ -147,31 +149,31 @@ export class MainPageComponent implements OnInit {
           discrete: [{
             seriesIndex: 0,
             dataPointIndex: 0,
-            fillColor: this.colors[0],
+            fillColor: colorsTemp[0],
             strokeColor: '#fff',
             size: 5
           }, {
             seriesIndex: 0,
             dataPointIndex: 1,
-            fillColor: this.colors[1],
+            fillColor: colorsTemp[1],
             strokeColor: '#eee',
             size: 5
           }, {
             seriesIndex: 0,
             dataPointIndex: 2,
-            fillColor: this.colors[2],
+            fillColor: colorsTemp[2],
             strokeColor: '#eee',
             size: 5
           }, {
             seriesIndex: 0,
             dataPointIndex: 3,
-            fillColor: this.colors[3],
+            fillColor: colorsTemp[3],
             strokeColor: '#eee',
             size: 5
           }, {
             seriesIndex: 0,
             dataPointIndex: 4,
-            fillColor: this.colors[4],
+            fillColor: colorsTemp[4],
             strokeColor: '#eee',
             size: 5
           }]
@@ -294,7 +296,7 @@ export class MainPageComponent implements OnInit {
 
   public rerouteToSubject(subjectId: any) {
     const message: Message = new Message();
-    message.Value = '/web/viewer/subject/' + subjectId;
+    message.Value = '/web/viewer/subject/' + subjectId + '#news';
     message.Type = 'Route';
     this.sendMessage(message);
   }
@@ -319,8 +321,9 @@ export class MainPageComponent implements OnInit {
     this.testMarks = [];
     this.conMarks = [];
     this.ratingMarks = [];
-    this.checked = [];
+
     subjects.forEach(subject => {
+      this.checked = [false, false, false, false];
       this.serviceService.getCheckedType(subject.Id).subscribe(types => {
         types.forEach(type => {
           if (type.ModuleId == 13) {
@@ -336,9 +339,9 @@ export class MainPageComponent implements OnInit {
             this.checked[3] = true;
           }
         });
-
         this.categoriesTemp = [];
         this.temp = [];
+        this.colorsTemp = [];
         this.tempAvg = 0;
         this.testSum = 0;
         this.practSum = 0;
@@ -348,9 +351,11 @@ export class MainPageComponent implements OnInit {
             this.testSum = this.serviceService.round(+student.UserAvgTestMarks.find(({Key}) => Key === subject.Id)!.Value) ;
             this.practSum = this.serviceService.round(+student.UserAvgPracticalMarks.find(({Key}) => Key === subject.Id)!.Value);
             this.labSum = this.serviceService.round(+student.UserAvgLabMarks.find(({Key}) => Key === subject.Id)!.Value );
+            this.courseMark = this.serviceService.round(+student.UserCoursePass.find(({Key}) => Key === subject.Id)!.Value );
           }
         });
         if (this.checked[0]) {
+          this.colorsTemp.push(this.colors[0]);
           this.temp.push(this.practSum);
           this.practMarks.push(this.practSum);
           this.categoriesTemp.push(this.categoriesConst[0]);
@@ -359,6 +364,7 @@ export class MainPageComponent implements OnInit {
         }
 
         if (this.checked[1]) {
+          this.colorsTemp.push(this.colors[1]);
           this.categoriesTemp.push(this.categoriesConst[1]);
           this.temp.push(this.labSum);
           this.labMarks.push(this.labSum);
@@ -367,6 +373,7 @@ export class MainPageComponent implements OnInit {
         }
 
         if (this.checked[2]) {
+          this.colorsTemp.push(this.colors[2]);
           this.temp.push(this.testSum);
           this.categoriesTemp.push(this.categoriesConst[2]);
           this.testMarks.push(this.testSum);
@@ -375,6 +382,7 @@ export class MainPageComponent implements OnInit {
         }
 
         if (this.checked[3]) {
+          this.colorsTemp.push(this.colors[3]);
           this.temp.push(this.courseMark);
           this.categoriesTemp.push(this.categoriesConst[3]);
           this.conMarks.push(this.courseMark);
@@ -387,10 +395,11 @@ export class MainPageComponent implements OnInit {
         });
         const rating = this.serviceService.round(this.tempAvg / this.temp.length) ;
         this.temp.push(rating);
+        this.colorsTemp.push(this.colors[4]);
         this.ratingMarks.push(rating);
         this.subjectName.push(subject.Name);
         this.categoriesTemp.push(this.categoriesConst[4]);
-        this.addChart(this.temp, subject.Name, this.categoriesTemp, subject.Id, chartList1);
+        this.addChart(this.temp, subject.Name, this.categoriesTemp, subject.Id, chartList1, this.colorsTemp);
         if (this.practMarks.length == subjects.length) {
           this.series.push({name: this.categoriesConst[0], data: this.practMarks});
           this.series.push({name: this.categoriesConst[1], data: this.labMarks});
