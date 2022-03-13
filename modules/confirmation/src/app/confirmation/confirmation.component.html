@@ -6,8 +6,8 @@
     <mat-form-field *ngIf="groups">
       <mat-select [value]="groups[0]?.GroupId" (selectionChange)="onGroupValueChange($event.source.value)">
         <mat-option *ngFor="let group of groups | groupSort" [value]="group.GroupId">
-          <span class="confirmation-group-option"> {{group.GroupName}} <span *ngIf="group.CountUnconfirmedStudents"> -
-              ({{group.CountUnconfirmedStudents}})</span></span>
+          <span class="confirmation-group-option"> {{group.GroupName}} <span *ngIf="group.CountUnconfirmedStudents">
+              ({{'new.students' | translate:'Новые студенты'}}: {{group.CountUnconfirmedStudents}})</span></span>
           <mat-divider *ngIf="group.lastGroupWithUnconfirmedStudents"></mat-divider>
         </mat-option>
       </mat-select>
