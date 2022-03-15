@@ -11,6 +11,12 @@ h2, mat-label, p, div {
   color: #363636;
 }
 
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
 .cdk-global-overlay-wrapper {
   display: -webkit-box;
   position: absolute;
