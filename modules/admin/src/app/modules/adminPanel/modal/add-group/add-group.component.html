@@ -4,15 +4,15 @@
         <h2 *ngIf="this.data.Name"> Группа {{ this.data.Name }}</h2>
         <div>
             <mat-form-field>
-                <input matInput formControlName="Name" placeholder="Номер группы" maxlength="10">
+                <input matInput [(ngModel)]="this.data.Name" (blur)="this.trimFields()" formControlName="Name" placeholder="Номер группы" maxlength="10">
                 <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
-                <mat-error *ngIf="hasError('Name', 'pattern')">Номер группы должен состоять из цифр</mat-error>
+                <mat-error *ngIf="hasError('Name', 'pattern')">Используйте следующие символы: {{this.groupNameSymbols}}</mat-error>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Год поступления</mat-label>
                 <mat-select formControlName="StartYear">
                     <mat-optgroup [label]="this.form.controls.StartYear.value">
-                        <mat-option *ngFor="let group of this.yearOfIssue()" [value]="group">
+                        <mat-option *ngFor="let group of this.yearOfIssue()"  [value]="group">
                             <p>{{group}}</p>
                         </mat-option>
                     </mat-optgroup>
@@ -22,7 +22,7 @@
                 <mat-label>Год окончания</mat-label>
                 <mat-select formControlName="GraduationYear">
                     <mat-optgroup [label]="this.form.controls.GraduationYear.value">
-                        <mat-option *ngFor="let group of this.yearOfGraduation()" [value]="group">
+                        <mat-option *ngFor="let group of this.yearOfGraduation()"  [value]="group">
                             {{group}}
                         </mat-option>
                     </mat-optgroup>

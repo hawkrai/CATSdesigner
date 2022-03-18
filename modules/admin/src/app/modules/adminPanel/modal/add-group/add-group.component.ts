@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Group } from 'src/app/model/group';
 
 @Component({
   selector: 'app-add-group',
@@ -10,6 +11,8 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 export class AddGroupComponent implements OnInit {
 
   form: FormGroup;
+  date: Date;
+  groupNameSymbols ='А-Яа-яA-Za-z0-9ёЁіІ _-,.';
   @Output() submitEM = new EventEmitter();
 
   constructor(
@@ -18,12 +21,19 @@ export class AddGroupComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    const group = this.data;
-    console.log(group);
+    this.date = new Date();
+    const nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-,.]*$';
+    if(this.data.Name == null){
+      this.data = new Group();
+      this.data.Name = "New Group";
+      this.data.StartYear = this.date.getFullYear();
+      this.data.GraduationYear = this.date.getFullYear() + 4;
+    }
+    console.log(this.data);
     this.form = this.formBuilder.group({
-      Name: new FormControl(group.Name, [Validators.required, Validators.pattern('^[0-9]*$'), Validators.maxLength(10)]),
-      StartYear: new FormControl(group.StartYear),
-      GraduationYear: new FormControl(group.GraduationYear)
+      Name: new FormControl(this.data.Name, [Validators.required, Validators.pattern('^[0-9a-zA-ZА-Яа-я .,_-]*$'), Validators.maxLength(10)]),
+      StartYear: new FormControl(Number.parseInt(this.data.StartYear)),
+      GraduationYear: new FormControl(Number.parseInt(this.data.GraduationYear))
     });
   }
 
@@ -38,7 +48,7 @@ export class AddGroupComponent implements OnInit {
   yearOfIssue() {
     var range = 40;
     const yearArr = new Array();
-    let currentYear = new Date().getFullYear() - range/2;
+    let currentYear = this.date.getFullYear() - range/2;
     for (let i = 0; i < range; i++) {
       yearArr.push(currentYear);
       currentYear++;
@@ -58,6 +68,12 @@ export class AddGroupComponent implements OnInit {
     }
     
     return yearArr;
+  }
+
+  trimFields() {
+    if (this.data.Name != null) {
+      this.data.Name = this.data.Name.trim();
+    }
   }
 
   submit() {
