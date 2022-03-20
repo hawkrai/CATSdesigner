@@ -1,6 +1,6 @@
 import { DialogService } from './../../services/dialog.service';
 import { Observable, combineLatest } from 'rxjs';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {Store} from '@ngrx/store';
 import { map } from 'rxjs/operators';
 
@@ -20,6 +20,8 @@ import { Help } from 'src/app/models/help.model';
 import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.component';
 import { TranslatePipe } from 'educats-translate';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DialogData } from 'src/app/models/dialog-data.model';
+import { SubSink } from 'subsink';
 
 interface State {
   groups: Group[];
@@ -35,17 +37,21 @@ interface State {
   templateUrl: './labs.component.html',
   styleUrls: ['./labs.component.less']
 })
-export class LabsComponent implements OnInit {
+export class LabsComponent implements OnInit, OnDestroy {
 
   tabs: { tab: string, route: string }[] = [];
   public state$: Observable<State>;
-
+  private subs = new SubSink();
   constructor(
     private dialogService: DialogService,
     private translate: TranslatePipe,
     private store: Store<IAppState>,
     public router: Router,
     private route: ActivatedRoute) {}
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.tabs = [
@@ -55,6 +61,8 @@ export class LabsComponent implements OnInit {
       { tab: this.translate.transform('results', 'Результаты'), route: 'results' },
       { tab: this.translate.transform('works.protection', 'Защита работ'), route: 'job-protection' }
     ];
+
+    this.store.dispatch(labsActions.checkJobProtections());
 
     this.state$ = combineLatest(
       this.store.select(groupsSelectors.getGroups),
@@ -120,7 +128,21 @@ export class LabsComponent implements OnInit {
     action: this.translate.transform ('button.understand','Понятно')
   }
 
-  subdivision() {
-    this.dialogService.openDialog(SubdivisionComponent);
+  subdivision(groupId: number) {
+    const dialogData: DialogData = {
+      model: groupId,
+    };
+    const dialogRef = this.dialogService.openDialog(SubdivisionComponent, dialogData);    
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(obj => {
+        if (obj && obj.updated) {
+          this.store.dispatch(labsActions.loadLabsSubGroups());
+
+          if (this.router.url.startsWith('/labs/visit-statistics') || this.router.url.startsWith('/labs/results')) {
+            this.store.dispatch(labsActions.loadLabStudents());
+          }
+        }
+      })
+    );
   }
 }

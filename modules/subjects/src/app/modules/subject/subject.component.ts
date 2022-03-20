@@ -21,6 +21,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
 import { TranslatePipe } from 'educats-translate';
 import { Help } from 'src/app/models/help.model';
+import { SubjectLector } from 'src/app/models/subject-letor.model';
 
 @Component({
   selector: 'app-subject',
@@ -42,7 +43,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   mobileViewMatcher: MediaQueryList;
 
   
-  public displayedColumns = ['name', 'shortName', 'groups', 'students', 'actions'];
+  public displayedColumns = ['name', 'shortName', 'groups', 'students', 'lectors', 'actions'];
 
   constructor(
     private store: Store<IAppState>,
@@ -131,6 +132,10 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   getSubjectGroupsTooltip(groups: Group[]): string {
     return groups.map(x => x.GroupName).join('\n');
+  }
+
+  getLectorsTooltip(lectors: SubjectLector[]): string {
+    return lectors.map(x => `${x.LastName} ${x.FirstName} ${x.MiddleName}`).join('\n');
   }
 
   subjectsHelp: Help = {

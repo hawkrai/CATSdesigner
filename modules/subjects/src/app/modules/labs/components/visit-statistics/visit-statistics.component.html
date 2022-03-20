@@ -1,5 +1,5 @@
 <div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
-  <div class="protection-schedule-component__subGroups" *ngFor="let subGroup of state.labs | unique:'SubGroup'; let idx = index">
+  <div class="protection-schedule-component__subGroups" *ngFor="let subGroup of state.subGroups; let idx = index">
     <ng-container *ngIf="(state.students | filter:'SubGroup': subGroup).length">
       <ng-container *var="state.labs | filter:'SubGroup':subGroup as subGroupLabs">
         <div class="protection-schedule-component__subGroups-title">

@@ -420,7 +420,8 @@ namespace LMPlatform.UI.Controllers
                     Groups = s.SubjectGroups.Where(sg => sg.Group != null).Select(sg => new
                     {
                         GroupName = sg.Group.Name,
-                        StudentsCount = sg.Group.Students.Count
+                        StudentsCount = sg.Group.Students.Count,
+                        IsActive = sg.IsActiveOnCurrentGroup    
                     })
                 })
             };
@@ -431,18 +432,19 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public ActionResult ListOfSubjectsByStudentJson(int id)
         {
-            var groups = this.SubjectManagementService.GetSubjectsByStudent(id).OrderBy(subject => subject.Name)
+            var subjects = this.SubjectManagementService.GetSubjectsByStudent(id).OrderBy(subject => subject.Name)
                 .ToList();
             var stud = this.StudentManagementService.GetStudent(id);
 
             if (stud == null) return StatusCode(HttpStatusCode.BadRequest);
-            var model = ListSubjectViewModel.FormSubjects(groups, stud.FullName);
+            var model = ListSubjectViewModel.FormSubjects(subjects, stud.FullName);
             var response = new
             {
                 Student = model.Name,
                 Subjects = model.Subjects.Select(s => new
                 {
                     SubjectName = s.Name,
+                    IsActiveOnGroup = s.SubjectGroups?.Select(prof => prof.IsActiveOnCurrentGroup),
                     Lecturers = s.SubjectLecturers?.Select(prof => prof.Lecturer.FullName)
                 })
             };

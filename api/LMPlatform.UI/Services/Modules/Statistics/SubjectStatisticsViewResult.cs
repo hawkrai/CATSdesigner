@@ -12,15 +12,18 @@ namespace LMPlatform.UI.Services.Modules.Statistics
         [DataMember]
         public string SubjectName { get; set; }
         [DataMember]
-        public decimal AverageLabsMark { get; set; }
+        public double AverageLabsMark { get; set; }
         [DataMember]
 
-        public decimal AveragePracticalsMark { get; set; }
+        public double AveragePracticalsMark { get; set; }
 
         [DataMember]
-        public decimal AverageCourceProjectMark { get; set; }
+        public double AverageCourceProjectMark { get; set; }
 
         [DataMember]
-        public decimal AverageTestsMark { get; set; }
+        public double AverageTestsMark { get; set; }
+
+        [DataMember]
+        public int SubjectId { get; set; }
     }
 }

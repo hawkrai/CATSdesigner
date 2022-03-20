@@ -16,6 +16,7 @@ import { ChangePasswordComponent } from './modules/change-password/change-passwo
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResetPasswordModalComponent } from './modules/reset-password-modal/reset-password-modal.component';
 import {MessageComponent} from './component/message/message.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,10 @@ import {MessageComponent} from './component/message/message.component';
     MatFormFieldModule,
     MatCheckboxModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right'
+    })
   ],
   entryComponents: [MessageComponent, ChangePasswordComponent, ResetPasswordModalComponent],
   providers: [],

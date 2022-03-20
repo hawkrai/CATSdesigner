@@ -1,13 +1,9 @@
-/*import { Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
-
-
-
 
 @Injectable({
     providedIn: 'root'
 })
-
 
 export class AppToastrService {
 
@@ -26,4 +22,3 @@ export class AppToastrService {
     this.toastr.warning(msg)
   }
 }
-*/

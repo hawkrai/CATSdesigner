@@ -12,8 +12,8 @@ namespace LMPlatform.UI.Services.Parental
 		SubjectListResult GetGroupSubjectsByGroupName(string groupName);
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "/LoadGroup?groupId={groupId}&isArchive={isArchive}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-        ParentalResult LoadGroup(string groupId, string isArchive);
+        [WebInvoke(UriTemplate = "/LoadGroup?groupId={groupId}&isArchive={isArchive}&startDate={startDate}&endDate={endDate}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+        ParentalResult LoadGroup(string groupId, string isArchive, string startDate, string endDate);
 
     }
 }

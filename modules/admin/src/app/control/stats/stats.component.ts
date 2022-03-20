@@ -17,13 +17,21 @@ export class StatsComponent implements OnInit {
   @ViewChild('table', { static: false }) table: ElementRef;
 
   subjects: Subject[];
+  subjectsArchive: Subject[];
+  subjectsTemp: Subject[];
   isLoad = false;
   groupId: any;
   selectedItem: any;
   tableStats: any;
   groupName: string;
   studentStatistic: GroupStatsStudent[];
+  studentStatisticArchive: GroupStatsStudent[];
+  studentStatisticTemp: GroupStatsStudent[];
   surname: string;
+  start: string;
+  end: string;
+  isArchive = false;
+  isArchiveEnable = true;
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
@@ -31,17 +39,41 @@ export class StatsComponent implements OnInit {
   ngOnInit() {
     this.groupName = this.route.snapshot.params.groupName;
     this.surname = this.route.snapshot.params.surname;
+    this.start = this.route.snapshot.params.start;
+    this.end = this.route.snapshot.params.end;
     this.initData(this.groupName);
   }
 
   getStatistic(groupId) {
     this.isLoad = false;
-    this.subjectService.loadGroup(groupId).subscribe(
+    this.subjectService.loadGroupByDates(groupId, this.start, this.end).subscribe(
       res => {
-        this.studentStatistic = res.Students;
-        this.isLoad = true;
+        this.subjectService.loadGroupArchiveByDates(groupId, this.start, this.end).subscribe(resArchive => {
+          this.subjectService.getUserInfo(resArchive.Students[6].Id + '').subscribe(userInfo => {
+            this.subjectService.getAllArchiveSubjects(userInfo.Login).subscribe(subjectResponseArchive => {
+              this.subjectsArchive = subjectResponseArchive;
+              if (this.subjectsArchive.length == 0) {
+                this.isArchiveEnable = false;
+              }
+            });
+          });
+          this.studentStatistic = res.Students;
+          this.studentStatisticArchive = resArchive.Students;
+          this.isLoad = true;
+          this.selectedItem = -1;
+          this.statisticSubject();
+        });
       }
     );
+  }
+
+  subjectsStatusChange(event) {
+    this.isArchive = false;
+    if (event.checked) {
+      this.isArchive = true;
+    }
+    this.selectedItem = -1;
+    this.statisticSubject();
   }
 
   statisticSubject() {
@@ -50,19 +82,32 @@ export class StatsComponent implements OnInit {
     let labMarks = 0;
     let practMarks = 0;
     let testMarks = 0;
+    let lectPass = 0;
+    let practPass = 0;
+    let labPass = 0;
     let rating = 0;
+    if (this.isArchive) {
+      this.studentStatisticTemp = this.studentStatisticArchive;
+      this.subjectsTemp = this.subjectsArchive;
+    } else {
+      this.studentStatisticTemp = this.studentStatistic;
+      this.subjectsTemp = this.subjects;
+    }
     if (id && id !== -1) {
-      const subject = this.subjects.find(({Id}) => Id === id);
-      this.tableStats = this.studentStatistic.map((item) => {
+      const subject = this.subjectsTemp.find(({Id}) => Id === id);
+      this.tableStats = this.studentStatisticTemp.map((item) => {
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
         const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
-        const userPracticalPass = 2;
-        const userPracticalMarks = 5;
+        const userPracticalPass = item.UserPracticalPass.find(({Key}) => Key === id).Value;
+        const userPracticalMarks = item.UserAvgPracticalMarks.find(({Key}) => Key === id).Value;
         labMarks += userAvgLabMarks;
         practMarks += userPracticalMarks;
         testMarks += userAvgTestMarks;
+        lectPass += userLecturePass;
+        practPass += userPracticalPass;
+        labPass += userLabPass;
 
         if (this.surname != undefined && !item.FIO.includes(this.surname)) {
           return ;
@@ -83,7 +128,7 @@ export class StatsComponent implements OnInit {
           UserPracticalPass: userPracticalPass};
       });
     } else if (id === -1) {
-      this.tableStats = this.studentStatistic.map( item => {
+      this.tableStats = this.studentStatisticTemp.map( item => {
         let labPassTotal = 0;
         let lecturePassTotal = 0;
         let practicalPassTotal = 0;
@@ -93,10 +138,10 @@ export class StatsComponent implements OnInit {
         item.UserLabPass.map( ( statsItem, index) => {
           labPassTotal += statsItem.Value;
           lecturePassTotal += item.UserLecturePass[index].Value;
-          practicalPassTotal = 3;
+          practicalPassTotal = item.UserPracticalPass[index].Value;
           avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
-          avgPracticalMarksTotal += 5;
+          avgPracticalMarksTotal += item.UserAvgPracticalMarks[index].Value;
         });
         avgLabMarksTotal = avgLabMarksTotal / item.UserLabPass.length;
         avgTestMarksTotal = avgTestMarksTotal / item.UserLabPass.length;
@@ -104,6 +149,9 @@ export class StatsComponent implements OnInit {
         labMarks += avgLabMarksTotal;
         practMarks += avgPracticalMarksTotal;
         testMarks += avgTestMarksTotal;
+        lectPass += lecturePassTotal;
+        practPass += practicalPassTotal;
+        labPass += labPassTotal;
         if (this.surname != undefined && !item.FIO.includes(this.surname)) {
           return ;
         }
@@ -122,11 +170,28 @@ export class StatsComponent implements OnInit {
         };
       });
     }
+
     labMarks = Math.round(labMarks / this.studentStatistic.length * 100) / 100;
     practMarks = Math.round(practMarks / this.studentStatistic.length * 100) / 100;
     testMarks = Math.round(testMarks / this.studentStatistic.length * 100) / 100;
     rating = Math.round((labMarks + practMarks + testMarks) / 3 * 100) / 100;
-    this.tableStats.marks = [labMarks, practMarks, testMarks, rating];
+
+    lectPass = Math.round(lectPass / this.studentStatistic.length * 100) / 100;
+    practPass = Math.round(practPass / this.studentStatistic.length * 100) / 100;
+    labPass = Math.round(labPass / this.studentStatistic.length * 100) / 100;
+    this.tableStats.push({
+      GroupName: groupName,
+      FIO: '',
+      Subject: 'Все предметы',
+      Rating: rating,
+      AllPass: lectPass + practPass + labPass,
+      UserAvgLabMarks: labMarks,
+      UserAvgTestMarks: testMarks,
+      UserLabPass: labPass,
+      UserAvgPracticalMarks: practMarks,
+      UserLecturePass: lectPass,
+      UserPracticalPass: practPass
+    });
     while (true) {
       if (this.tableStats.indexOf(undefined) == -1) {
         break;
@@ -145,7 +210,6 @@ export class StatsComponent implements OnInit {
       this.subjects = subjectResponse.Subjects;
       this.groupId = subjectResponse.GroupId;
       this.getStatistic(this.groupId);
-      console.log(this.studentStatistic);
     });
   }
 

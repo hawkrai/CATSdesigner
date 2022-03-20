@@ -39,7 +39,7 @@ export class ScheduleMainComponent implements OnInit {
               private modulecommunicationservice: ModuleCommunicationService) {
   }
 
-  isLoadActive = true;
+  isLoadActive = false;
   scheduleWidth = '82%';
   newsWidth = '18%';
   newsLeft = '82%';
@@ -62,9 +62,9 @@ export class ScheduleMainComponent implements OnInit {
 
   activeDayIsOpen = true;
 
-  message = 'Чтобы добавить лекцию, практическое занятие, лабораторную работу, консультацию ' +
-    'или другое событие, нажмите на нужную ячейку. Также Вы можете добавить даты занятий с ' +
-    'помощью аналогичных модулей через пункт меню Предметы.';
+  message = 'Чтобы добавить лекцию, практическое занятие, лабораторную работу, консультацию или другое событие, ' +
+    'нажмите на нужную ячейку. Также Вы можете добавить даты занятий с помощью аналогичных ' +
+    'модулей через пункт меню Предметы';
 
 
   action = 'Понятно';
@@ -83,12 +83,10 @@ export class ScheduleMainComponent implements OnInit {
     this.locale = this.translatePipe.transform('text.schedule.locale.en', 'ru');
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     this.changeDate();
-    this.isLoadActive = false;
-
     if (this.user.role === 'student') {
-      this.isStudent = false;
-    } else {
       this.isStudent = true;
+    } else {
+      this.isStudent = false;
     }
 
   }
@@ -139,14 +137,14 @@ export class ScheduleMainComponent implements OnInit {
 
   getTitelConsultation(consultation: any) {
     return consultation.StartTime.split(':')[0] + ':' +  consultation.StartTime.split(':')[1] +  '-'
-           + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|' +
+           + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|'
            + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
       + '|' + '|' + '|' + '|';
   }
 
   getTitelDiplomConsultation(consultation: any) {
     return consultation.Start.split(':')[0] + ':' +  consultation.Start.split(':')[1] +  '-'
-      + consultation.End.split(':')[0] + ':' +  consultation.End.split(':')[1] +  '|' +
+      + consultation.End.split(':')[0] + ':' +  consultation.End.split(':')[1] +  '|'
       + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
       + '|' + '|' + '|' + '|';
   }
@@ -194,7 +192,7 @@ export class ScheduleMainComponent implements OnInit {
     message.Value = this.lessonservice.getReferenceToSubject(title);
     message.Type = 'Route';
     window.parent.postMessage(message, '*');
-    //this.modulecommunicationservice.sendMessage(window.parent, message);
+    // this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
 

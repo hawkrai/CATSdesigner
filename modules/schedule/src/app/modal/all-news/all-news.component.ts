@@ -38,7 +38,7 @@ export class AllNewsComponent implements OnInit {
     this.dialogRef.close(null);
   }
 
-  fileDownload(path: string) {
-    this.store.dispatch(filesActions.downloadFile({ pathName: path, fileName: 'NB8D7FD53273748CFA125EFC2BA19D434.docx' }));
+  fileDownload(attachment: Attachment) {
+    this.store.dispatch(filesActions.downloadFile({ pathName: attachment.PathName, fileName: attachment.FileName }));
   }
 }

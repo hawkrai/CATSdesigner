@@ -30,10 +30,15 @@ const routes: Routes = [
     path: 'control', component: GeneralComponent, children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
       { path: 'main/:groupName', component: MainContolComponent },
-      { path: 'main/:groupName/:surname', component: MainContolComponent },
+      { path: 'main/:groupName/', component: MainContolComponent },
+      { path: 'main/:groupName/:surname/', component: MainContolComponent },
+      { path: 'main/:groupName/:surname/:start/:end', component: MainContolComponent },
+      { path: 'main/:groupName/:start/:end', component: MainContolComponent },
       { path: 'item/:groupName/:subjectId', component: ItemComponent },
       { path: 'statistic/:groupName', component: StatsComponent },
       { path: 'statistic/:groupName/:surname', component: StatsComponent },
+      { path: 'statistic/:groupName/:surname/:start/:end', component: StatsComponent },
+      { path: 'statistic/:groupName/:start/:end', component: StatsComponent },
       { path: 'groupNotFound', component: GroupNotFoundComponent }
     ]
   },

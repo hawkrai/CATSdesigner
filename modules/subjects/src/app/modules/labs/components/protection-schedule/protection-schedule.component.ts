@@ -16,6 +16,7 @@ import { map, tap } from 'rxjs/operators';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { TranslatePipe } from 'educats-translate';
 import { SubSink } from 'subsink';
+import { SubGroup } from 'src/app/models/sub-group.model';
 
 @Component({
   selector: 'app-protection-schedule',
@@ -24,7 +25,7 @@ import { SubSink } from 'subsink';
 })
 export class ProtectionScheduleComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
-  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], subGroupsIds: number[], isTeacher: boolean }>;
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], isTeacher: boolean, subGroups: SubGroup[] }>;
   public displayedColumns: string[] = ['position', 'theme'];
   constructor(
     private store: Store<IAppState>,
@@ -40,10 +41,10 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
     this.state$ = combineLatest(
       this.store.select(labsSelectors.getLabs),
       this.store.select(labsSelectors.getLabsCalendar),
-      this.store.select(groupSelectors.getCurrentGroupSubGroupIds),
+      this.store.select(labsSelectors.getSubGroups),
       this.store.select(subjectSelectors.isTeacher)
     ).pipe(
-      map(([labs, scheduleProtectionLabs, subGroupsIds, isTeacher]) => ({ labs, scheduleProtectionLabs, subGroupsIds, isTeacher }))
+      map(([labs, scheduleProtectionLabs, subGroups, isTeacher]) => ({ labs, scheduleProtectionLabs, subGroups, isTeacher }))
     );
 
     this.subs.add(
@@ -59,11 +60,11 @@ export class ProtectionScheduleComponent implements OnInit, OnDestroy {
     return [...this.displayedColumns, ...schedule.map(res => res.Date + res.ScheduleProtectionLabId)];
   }
 
-  settingVisitDate(subGroup: number, subGroupId: number) {
+  settingVisitDate(subGroup: SubGroup) {
     const dialogData: DialogData = {
       title: this.translate.transform('text.schedule.dates', 'Даты занятий'),
       buttonText: this.translate.transform('button.add', 'Добавить'),
-      body: { subGroupId, subGroup },
+      body: { subGroupId: subGroup.Id },
     };
 
     this.dialogService.openDialog(VisitDateLabsPopoverComponent, dialogData);

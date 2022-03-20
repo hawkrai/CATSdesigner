@@ -8,21 +8,24 @@
   
   <form [formGroup]="this.form" (ngSubmit)="submit()">
       <mat-dialog-content>
-          <h2>{{ this.data.FullName}} <br> ({{this.data.Login}})</h2>
+          <h2>{{ this.professor.FullName}} <br> ({{this.professor.Login}})</h2>
           <mat-form-field>
-              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="30">
+              <input matInput [(ngModel)]="this.professor.LastName"
+               formControlName="Surname" 
+               (blur)="this.trimFields()" 
+               placeholder="Фамилия" maxlength="30">
               <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
               <mat-error *ngIf="hasError('Surname', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Name" placeholder="Имя" maxlength="30">
+              <input matInput [(ngModel)]="this.professor.FirstName" formControlName="Name"  (blur)="this.trimFields()" placeholder="Имя" maxlength="30">
               <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
               <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="30">
+              <input matInput [(ngModel)]="this.professor.MiddleName" formControlName="Patronymic"  (blur)="this.trimFields()" placeholder="Отчество" maxlength="30">
               <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
           <div class="checkbox">
@@ -34,7 +37,7 @@
           </div>
 
           <div class="password">
-              <a [routerLink]="['resetPassword/lector', this.data.Id]" (click)="onNoClick()">Сбросить пароль</a>
+              <a [routerLink]="['resetPassword/lector', this.professor.Id]" (click)="onNoClick()">Сбросить пароль</a>
           </div>
 
       </mat-dialog-content>

@@ -86,6 +86,8 @@ namespace Application.Infrastructure.SubjectManagement
 
         void SaveStudentLabsMark(StudentLabMark studentLabMark);
 
+        public void RemoveStudentLabsMark(int id);
+
         List<string> GetLecturesAttachments(int subjectId);
 
         List<string> GetLabsAttachments(int subjectId);
@@ -116,11 +118,11 @@ namespace Application.Infrastructure.SubjectManagement
 
         List<ProfileCalendarModel> GetLecturesEvents(int userId);
 
-        List<Subject> GetSubjectsByLector(int userId);
-        List<Subject> GetAllSubjectsByLector(int userId);
+        List<Subject> GetSubjectsByLector(int userId, bool isArchive = false);
+        List<Subject> GetSubjectsInfoByLector(int userId);
 
-        List<Subject> GetSubjectsByStudent(int userId);
-        List<Subject> GetAllSubjectsByStudent(int userId);
+        List<Subject> GetSubjectsByStudent(int userId, bool isArchive = false);
+        List<Subject> GetSubjectsInfoByStudent(int userId);
 
 		decimal GetSubjectCompleting(int subjectId, string user, Student student);
 

@@ -27,9 +27,17 @@ export class LabsEffects {
     ofType(labsActions.loadLabsSchedule),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId),this.store.select(groupsSelectors.getCurrentGroupId)),
     switchMap(([_, subjectId, groupId]) => this.rest.getProtectionSchedule(subjectId, groupId)),
-    mergeMap(({ labs, scheduleProtectionLabs }) => [labsActions.loadLabsSuccess({ labs }), labsActions.loadLabsScheduleSuccess({ scheduleProtectionLabs })])
+    mergeMap(({ labs, scheduleProtectionLabs, subGroups }) => [labsActions.loadLabsSuccess({ labs }), labsActions.loadLabsScheduleSuccess({ scheduleProtectionLabs }), labsActions.setLabsSubGroups({ subGroups })])
     )
   );
+
+  subGroups$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.loadLabsSubGroups),
+    withLatestFrom(this.store.select(subjectSelectors.getSubjectId), this.store.select(groupsSelectors.getCurrentGroupId)),
+    switchMap(([_, subjectId, groupId ]) => this.rest.getSubGroups(subjectId, groupId).pipe(
+      map(subGroups => labsActions.setLabsSubGroups({ subGroups }))
+    ))
+  ));
 
   updateOrder$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.updateOrder),
@@ -102,6 +110,13 @@ export class LabsEffects {
       switchMap((body) => [catsActions.showMessage({ body }),labsActions.loadLabStudents()])
     ))
   ));
+
+  removeLabMark$ = createEffect(() => this.actions$.pipe(
+    ofType(labsActions.removeLabMark),
+    switchMap(({ id }) => this.rest.removeLabsMark(id).pipe(
+      switchMap((body) => [catsActions.showMessage({ body }), labsActions.loadLabStudents()])
+    ))
+  ))
 
   labsVisitingExcel$ = createEffect(() => this.actions$.pipe(
     ofType(labsActions.getVisitingExcel),

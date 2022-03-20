@@ -1,14 +1,12 @@
-import { AfterViewChecked, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChangeDetectorRef, AfterContentChecked} from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
 
 import { CoreService } from "../../core/services/core.service";
 import { Subject } from "../../core/models/subject";
 import { AuthenticationService } from './../../core/services/auth.service';
 import { switchMap } from 'rxjs/operators';
 import { MenuService } from 'src/app/core/services/menu.service';
-import { Lector } from 'src/app/core/models/lector.model';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-subjects-nav',
@@ -36,9 +34,8 @@ export class SubjectsNavComponent implements OnInit, AfterViewChecked {
     this.coreService.getUserSubjects().subscribe((subjects) => {
       this.subjects = subjects;
       if(this.subjects.length > 0) {
-        let urls = this.router.url.split('/');
-        let subjectId = 0;
-        subjectId = + urls[urls.length - 1].split("#")[0];           
+        const urlParts = this.router.url.split('#')[0].split('/');
+        const subjectId = +urlParts[urlParts.length - 1];
         this.coreService.selectedSubject = this.subjects.find(element => element.Id == subjectId);
         if(this.coreService.selectedSubject) {
           this.subjectId = subjectId;

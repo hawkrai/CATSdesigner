@@ -1,10 +1,13 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div *ngIf="this.isLoad">
+  <button mat-button class="close-icon" [mat-dialog-close]="true">
+        <mat-icon>close</mat-icon>
+  </button>
   <h1 mat-dialog-title>Добавление преподавателя</h1>
   <form [formGroup]="this.form" (ngSubmit)="submit()">
       <mat-dialog-content>
           <mat-form-field class="example-full-width">
-              <input matInput formControlName="Username" placeholder="Логин">
+              <input matInput formControlName="Username" [(ngModel)]="this.professor.Username" (blur)="this.trimFields()" placeholder="Логин">
               <mat-hint *ngIf="this.isControlInvalid('Username')">Логин должен содержать не меньше 3 символов, только латинские буквы и цифры.</mat-hint>
               <mat-error *ngIf="hasError('Username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
               <mat-error *ngIf="hasError('Username', 'userExist')">Такой пользователь уже существует в системе.</mat-error>
@@ -26,19 +29,19 @@
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Surname" placeholder="Фамилия" maxlength="30">
+              <input matInput formControlName="Surname" [(ngModel)]="this.professor.LastName" (blur)="this.trimFields()" placeholder="Фамилия" maxlength="30">
               <mat-error *ngIf="hasError('Surname', 'minlength')">Поле не может быть пустым.</mat-error>
               <mat-error *ngIf="hasError('Surname', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Name" placeholder="Имя" maxlength="30">
+              <input matInput formControlName="Name" [(ngModel)]="this.professor.FirstName" (blur)="this.trimFields()" placeholder="Имя" maxlength="30">
               <mat-error *ngIf="hasError('Name', 'minlength')">Поле не может быть пустым.</mat-error>
               <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Patronymic" placeholder="Отчество" maxlength="30">
+              <input matInput formControlName="Patronymic" [(ngModel)]="this.professor.MiddleName" (blur)="this.trimFields()" placeholder="Отчество" maxlength="30">
               <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
           

@@ -6,6 +6,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {ResetPasswordJson} from '../../model/resetPassword';
 import {AccountService} from '../../service/account.service';
 import {MessageComponent} from '../../component/message/message.component';
+import { AppToastrService } from 'src/app/service/toastr.service';
 
 @Component({
   selector: 'app-reset-password-modal',
@@ -14,16 +15,20 @@ import {MessageComponent} from '../../component/message/message.component';
 })
 export class ResetPasswordModalComponent implements OnInit {
 
+  hidePassword = true;
+  hideConfirm = true;
+  password  = "";
+  confirmPassword = "";
   form: FormGroup;
   @Output() submitEM = new EventEmitter();
   constructor(private formBuilder: FormBuilder, private userService: UserService, private accountService: AccountService,
-              private dialog: MatDialog, public dialogRef: MatDialogRef<ResetPasswordModalComponent>,
+              private dialog: MatDialog, public dialogRef: MatDialogRef<ResetPasswordModalComponent>, private toastr: AppToastrService,
               @Inject(MAT_DIALOG_DATA) public data: string) {}
 
   ngOnInit() {
     console.log(this.data);
     this.form = this.formBuilder.group({
-        password: new FormControl('' , [Validators.required, Validators.pattern('^[A-Za-z0-9_]*$'),
+        password: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_]*$'),
          Validators.minLength(6), Validators.maxLength(30), this.passwordValidator]),
         confirmPassword: new FormControl(''),
     }, {
@@ -60,14 +65,7 @@ export class ResetPasswordModalComponent implements OnInit {
 
   resetPassword(resetPasswordModel) {
     this.accountService.resetPassword(resetPasswordModel).subscribe( () => {
-      this.dialog.open(MessageComponent, {
-        data: 'Пароль успешно изменен.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
-      this.dialogRef.close();
+      this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
       window.parent.location.href = "/login";
     });
   }

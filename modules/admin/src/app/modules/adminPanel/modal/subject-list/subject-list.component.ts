@@ -9,7 +9,7 @@ import { UserService } from 'src/app/service/userService';
 })
 export class SubjectListComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'lectures'];
+  displayedColumns: string[] = ['name', 'subjectStatus', 'lectures'];
   dataSource = new MatTableDataSource<object>();
   subjectInfo;
   isLoad = false;
@@ -19,6 +19,15 @@ export class SubjectListComponent implements OnInit {
 
   ngOnInit() {
     this.loadData(this.data);
+  }
+
+  getSubjectStatus(status) {
+    if(status == true){
+      return "Активен"
+    }
+    else{
+    return "Откреплен"
+  }
   }
 
   loadData(studentId) {

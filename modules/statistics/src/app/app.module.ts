@@ -10,6 +10,8 @@ import {HttpClientModule} from '@angular/common/http';
 import { TranslateModule, TranslatePipe } from 'educats-translate';
 import * as dataRu from './core/translate/translations_ru.json';
 import * as dataEn from './core/translate/translations_en.json';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import * as dataEn from './core/translate/translations_en.json';
     AppRoutingModule,
     ChartsModule,
     NgApexchartsModule,
+    MatSlideToggleModule,
     HttpClientModule,
     TranslateModule.forRoot({
       localizationMap: {

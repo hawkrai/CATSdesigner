@@ -1,10 +1,12 @@
 <ng-container *ngIf="state$ | async as state">
-    <button mat-raised-button color="primary" (click)="addLab()" style="margin: 20px 0;">
+    <button mat-raised-button color="primary" (click)="addLab()">
         {{'text.subjects.labs.add' | translate:'Добавить работу'}}
         </button>
-    <app-job-protection-content 
-    [labFiles]="state.labFiles" 
-    [actionsTemplate]="studentActions"></app-job-protection-content>
+    <div class="student-job-protection-body">
+        <app-job-protection-content 
+        [labFiles]="state.labFiles" 
+        [actionsTemplate]="studentActions"></app-job-protection-content>
+    </div>
     <ng-template let-file="file" #studentActions>
         <div *ngIf="!(file.IsReceived || file.IsReturned)">
             <button mat-icon-button color="primary"

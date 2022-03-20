@@ -104,9 +104,9 @@ namespace LMPlatform.UI.Services.Subjects
 
         }
 
-        public SubjectsResult GetUserSubjects(string userId)
+        public SubjectsResult GetUserSubjects()
         {
-            var subjects = SubjectManagementService.GetUserSubjectsV2(int.Parse(userId));
+            var subjects = SubjectManagementService.GetUserSubjectsV2(UserContext.CurrentUserId);
             var subjectsResponse = new List<SubjectViewData>();
             foreach(var subject in subjects)
             {
