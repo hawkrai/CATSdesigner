@@ -37,7 +37,7 @@ export class SignalRService {
 
   public connect() {
     this.hubConnection = new HubConnectionBuilder()
-                            .withUrl('http://172.16.11.41:4201/chat/')
+                            .withUrl('https://172.16.11.41:4200/chat/')
                             .withAutomaticReconnect()
                             .build();
     this.hubConnection
