@@ -140,6 +140,11 @@ export class MainPageComponent implements OnInit {
 
         },
         yaxis: {
+          max: 10,
+          min: 0,
+          tickAmount: 5,
+          floating: true,
+          decimalsInFloat: 0
         },
         fill: {
           type: 'solid',
@@ -323,8 +328,8 @@ export class MainPageComponent implements OnInit {
     this.ratingMarks = [];
 
     subjects.forEach(subject => {
-      this.checked = [false, false, false, false];
       this.serviceService.getCheckedType(subject.Id).subscribe(types => {
+        this.checked = [false, false, false, false];
         types.forEach(type => {
           if (type.ModuleId == 13) {
             this.checked[0] = true;

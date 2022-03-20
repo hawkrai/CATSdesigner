@@ -49,7 +49,7 @@ export class NavComponent implements OnInit, OnDestroy {
   bestLecturerSearchResult!: Lecturer;
   bestStudentSearchResult!: Student;
   bestGroupSearchResult!: Group;
- 
+
   constructor(private layoutService: LayoutService,
     private router: Router ,
     private coreService: CoreService,
@@ -70,8 +70,12 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.isLector = this.autService.currentUserValue.role == "lector";
-    this.isAdmin = this.autService.currentUserValue.role == "admin";
+    this.isLector = false;
+    this.isAdmin = false;
+    if (this.autService.currentUserValue != undefined) {
+      this.isLector = this.autService.currentUserValue.role == "lector";
+      this.isAdmin = this.autService.currentUserValue.role == "admin";
+    }
     this.getUserInfo();
     this.confirmationService.confirmationSubject
     .pipe(
@@ -158,7 +162,7 @@ export class NavComponent implements OnInit, OnDestroy {
       this.viewGroupSearchResults();
       this.viewLecturerSearchResults();
       this.viewStudentSearchResults();
-      
+
     }
     else {
       this.cleanSearchResults();
@@ -201,7 +205,7 @@ export class NavComponent implements OnInit, OnDestroy {
         this.groupSearchResults = this.groupSearchResults.slice(1, this.groupSearchResults.length - 1).sort((n1, n2) => n1.Name.localeCompare(n2.Name));
       });
     }
-  
+
 
   public routeToAboutPopover() {
 
