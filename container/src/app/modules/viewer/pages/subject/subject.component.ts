@@ -12,6 +12,7 @@ import { Message } from './../../../../core/models/message';
 import { combineLatest, Observable } from 'rxjs';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
+import { typeofExpr } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-subject',
@@ -57,14 +58,15 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.activeRouter.fragment.subscribe((fragment: string) => {
       let type = this.menuService.getModuleTypeByItem(fragment);
-      if (type){
-        this.clickedItem = fragment
-      } else {
+      const hasType = !!type;
+      if (!hasType) {
         type = this.menuService.getFirstModuleType();
-        this.clickedItem = this.menuService.getSubjectInfo(type).item;
+      }
+      this.clickedItem = this.menuService.getSubjectInfo(type).item;
+      if (!hasType) {
         fragment = this.clickedItem;
       }
-      this.navigate(this.clickedItem);
+      this.navigate(fragment);
       this.initState(fragment);
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     });

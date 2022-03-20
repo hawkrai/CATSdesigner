@@ -29,6 +29,7 @@
   </ng-container>
   <ng-container actions>
     <button mat-raised-button mat-dialog-close>{{'button.cancel' | translate:'Отмена'}}</button>
+    <button mat-raised-button color="primary" class="mark-button__delete" *ngIf="data.body.id" (click)="onDelete()">{{'button.delete' | translate:'Удалить'}}</button>
     <button mat-raised-button
             (click)="onSubmit()"
             color="primary"

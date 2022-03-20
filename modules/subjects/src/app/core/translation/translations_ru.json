@@ -41,6 +41,7 @@
   "subject.creation": "Добавление предмета",
   "subject.editing": "Редактирование предмета",
   "subject.students.count": "Количество студентов на предмете",
+  "subject.lectors.count": "Количество преподавателей на предмете",
   "subject.groups.count": "Количество групп на предмете",
   "subject.name.not.free": "Предмет с таким названием уже существует",
   "subject.abbreviation.not.free": "Предмет с такой аббревиатурой уже существует",
@@ -55,6 +56,7 @@
   "text.news.plural": "Новости",
   "text.student": "Студент",
   "text.students": "Студенты",
+  "text.lectors": "Преподаватели",
   "text.students.selected.genitive": "Выбранных студентов",
   "text.generated automatically": "cоздаётся автоматически",
   "text.lectures": "Лекция",
@@ -142,6 +144,9 @@
   "text.subjects.labs.jobs.deleting": "Удаление работы",
   "text.subjects.labs.to.protect": "На защиту лабораторной работы",
   "text.subjects.labs.for.revision": "На доработку",
+  "text.subjects.labs.results.protected": "Защищено {actualCount} работ из {jobsCount}",
+  "text.subjects.tests.written": "Написано {actualCount} тестов из {testsCount}",
+  "text.sbjects.preliminary.rating": "Предварительная рейтинговая оценка",
   "text.subjects.labs.unverified": "Имеются непроверенные лабораторные работы",
   "text.subjects.lector.joining": "Присоединение преподавателя к предмету",
   "text.subjects.lector.choose": "Выберите преподавателя",
@@ -190,5 +195,7 @@
   "text.schedule.dates.and.connected.data": "даты и все связанные с ними данные",
   "text.schedule.dates": "Даты занятий",
   "text.schedule.dates.deleting": "Удаление дат",
-  "text.schedule.date.and.connected.data": "дату и все связанные с ней данные"
+  "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
+  "text.students.transfered": "Студент(ы) были успешно переведены в подгруппу",
+  "text.subdivision.to.the.first.subgroup": "Студенты будут перемещены в подгруппу 1"
 }

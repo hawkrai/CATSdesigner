@@ -34,6 +34,7 @@
   "subject.creation": "Course adding",
   "subject.editing": "Course editing",
   "subject.students.count": "Number of students per course",
+  "subject.lectors.count": "Number of lectors per course",
   "subject.groups.count": "number of groups per course",
   "subject.name.not.free": "Course with the same name already exists",
   "subject.abbreviation.not.free": "Course with this abbreviation already exists",
@@ -62,6 +63,7 @@
   "text.news.accusative": "News",
   "text.student": "Student",
   "text.students": "Students",
+  "text.lectors": "Lectors",
   "text.students.selected.genitive": "Selected students",
   "text.generated automatically": "generated automatically",
   "text.lectures": "Lecture",
@@ -158,12 +160,15 @@
   "text.subjects.labs.to.protect": "To protect laboratory work",
   "text.subjects.labs.for.revision": "For revision",
   "text.subjects.labs.unverified": "There are unverified labs available",
+  "text.subjects.results.protected": "Protected {actualCount} jobs out of {jobsCount}",
   "text.subjects.lector.joining": "Joining the lector to the course",
   "text.subjects.lector.choose": "Select a lector",
   "text.subjects.lector.plural": "Lectors",
   "text.subjects.lector.joined": "Joined lectors",
   "text.subjects.lector.disjoin": "Disjoin the lector",
 
+  "text.subjects.tests.written": "Written {actualCount} tests out of {testsCount}",
+  "text.sbjects.preliminary.rating": "Preliminary rating assessment",
   "schedule.protection": "Schedule protection",
   "visit.statistics": "Visit statistics",
   "results": "Results",
@@ -206,5 +211,7 @@
   "text.schedule.dates.and.connected.data": "dates and all related data",
   "text.schedule.dates": "Dates of classes",
   "text.schedule.management.dates.deleting": "Deleting dates",
-  "text.schedule.date.and.connected.data": "date and all related data"
+  "text.schedule.date.and.connected.data": "date and all related data",
+  "text.students.transfered": "Student(s) were successfully transfered to the subgroup",
+  "text.subdivision.to.the.first.subgroup": "Students will be transferred to the first subgroup"
 }

@@ -2,7 +2,7 @@
     "students.search": "Search for students",
     "student": "Student",
     "confirm": "Confirm",
-    "detach": "Detach",
-    "no-data": "No data matching the filter"
-
+    "block": "Block access",
+    "no-data": "No data matching the filter",
+    "confirmation.title": "Students confirmation"
 }

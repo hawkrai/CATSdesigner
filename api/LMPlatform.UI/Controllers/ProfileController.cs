@@ -231,11 +231,11 @@ namespace LMPlatform.UI.Controllers
 
             if (user.Lecturer == null)
             {
-                model = subjectService.GetAllSubjectsByStudent(user.Id);
+                model = subjectService.GetSubjectsInfoByStudent(user.Id);
             }
             else
             {
-                model = subjectService.GetAllSubjectsByLector(user.Id);
+                model = subjectService.GetSubjectsInfoByLector(user.Id);
             }
 
             var returnModel = new List<object>();
@@ -247,10 +247,10 @@ namespace LMPlatform.UI.Controllers
                     subject.Id,
                     subject.ShortName,
                     subject.Color,
-                    Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
-                        user.Student),
-                    subject.IsArchive
-                });
+                    Completing = "2",/*subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
+                        user.Student),*/
+                    IsActive = subject.SubjectGroups.FirstOrDefault(sg => sg.SubjectId == subject.Id).IsActiveOnCurrentGroup
+                }) ;
 
             return this.Json(returnModel, JsonRequestBehavior.AllowGet);
         }
@@ -269,6 +269,7 @@ namespace LMPlatform.UI.Controllers
             model.Phone = user.Phone;
             model.About = user.About;
             model.Id = user.Id;
+            model.Login = user.UserName;
             if (user.AttendanceList.Any())
             {
                 model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy HH:mm:ss");
@@ -281,7 +282,7 @@ namespace LMPlatform.UI.Controllers
                 model.Name = user.Lecturer.LastName + " " + user.Lecturer.FirstName + " " + user.Lecturer.MiddleName;
                 model.Skill = user.Lecturer.Skill;
             }
-            else
+            else if(user.Student != null)
             {
                 model.Name = user.Student.LastName + " " + user.Student.FirstName + " " + user.Student.MiddleName;
                 var course = int.Parse(DateTime.Now.Year.ToString()) - int.Parse(user.Student.Group.StartYear);

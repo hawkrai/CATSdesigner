@@ -179,14 +179,16 @@ namespace LMPlatform.UI.Services.Practicals
 
             var marks = new List<StudentMark>();
 
-            var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
-
             var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
             var scheduleProtectionPracticalMarksGroup = subject.ScheduleProtectionPracticals.Where(x => x.GroupId == groupId);
-            foreach (var student in group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName))
+            var students = group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName);
+
+            var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
+
+            foreach (var student in students)
             {
-               
-                var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionPracticals: scheduleProtectionPracticalMarksGroup, practicals: subject.Practicals);
+                var studenTestsPassResults = testsResults.Results.ContainsKey(student.Id) ? testsResults.Results[student.Id] : new List<Models.KnowledgeTesting.TestPassResult>();
+                var studentViewData = new StudentsViewData(studenTestsPassResults, student, scheduleProtectionPracticals: scheduleProtectionPracticalMarksGroup, practicals: subject.Practicals);
 
                 marks.Add(new StudentMark
                 {
@@ -196,7 +198,9 @@ namespace LMPlatform.UI.Services.Practicals
                     TestMark = studentViewData.TestMark,
                     PracticalVisitingMark = studentViewData.PracticalVisitingMark,
                     PracticalsMarks = studentViewData.StudentPracticalMarks,
-                    AllTestsPassed = studentViewData.AllTestsPassed
+                    AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
+                    TestsPassed = studenTestsPassResults.Count,
+                    Tests = testsResults.Tests.Count
                 });
             }
 
@@ -392,10 +396,19 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public ResultViewData SaveStudentLabsMark(int studentId, int practicalId, string mark, string comment, string date, int id, bool showForStudent)
+        public ResultViewData SaveStudentPracticalMark(int studentId, int practicalId, string mark, string comment, string date, int id, bool showForStudent, int subjectId)
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 PracticalManagementService.SaveStudentPracticalMark(new StudentPracticalMark(practicalId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
 
                 return new ResultViewData

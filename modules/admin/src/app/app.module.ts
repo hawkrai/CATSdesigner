@@ -18,8 +18,8 @@ import { ResetPasswordModalComponent } from './modules/reset-password-modal/rese
 import {MessageComponent} from './component/message/message.component';
 import * as dataRu from './translate/translations_ru.json';
 import * as dataEn from './translate/translations_en.json';
-
 import {TranslateModule, TranslatePipe} from 'educats-translate';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -53,6 +53,9 @@ import {TranslateModule, TranslatePipe} from 'educats-translate';
         ru: dataRu,
         en: dataEn
       }
+    }),
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right'
     })
   ],
   entryComponents: [MessageComponent, ChangePasswordComponent, ResetPasswordModalComponent],

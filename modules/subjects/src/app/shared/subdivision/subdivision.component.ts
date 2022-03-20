@@ -10,6 +10,8 @@ import {MatSelectionList} from '@angular/material/list';
 import { Help } from 'src/app/models/help.model';
 import { TranslatePipe } from 'educats-translate';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { StudentSubGroup } from 'src/app/models/student-subgroup.model';
+import * as catsActions from '../../store/actions/cats.actions';
 
 @Component({
   selector: 'app-subdivision',
@@ -21,14 +23,14 @@ export class SubdivisionComponent implements OnInit {
   public groups;
   public subjectId;
   public selectedGroup;
-  public studentList = [];
-
+  public studentList: StudentSubGroup[] = [];
+  public initStudentsList: StudentSubGroup[] = [];
   public allCheckbox = false;
 
   public subgroups = [1, 2, 3];
   public selectedOptions: any[];
 
-  selectedGroupsMap = new Map<number, any[]>();
+  selectedGroupsMap = new Map<number, StudentSubGroup[]>();
 
 
   constructor(
@@ -63,11 +65,11 @@ export class SubdivisionComponent implements OnInit {
     };
     this.studentList.forEach((student, index) => {
       if (student.subGroup === 1) {
-        body.subGroupFirstIds += student.Value + ',';
+        body.subGroupFirstIds += student.Id + ',';
       } else if (student.subGroup === 2) {
-        body.subGroupSecondIds += student.Value + ',';
+        body.subGroupSecondIds += student.Id + ',';
       } else if (student.subGroup === 3) {
-        body.subGroupThirdIds += student.Value + ',';
+        body.subGroupThirdIds += student.Id + ',';
       }
     });
     this.subjectService.saveSubGroup(body).subscribe(res => {
@@ -95,7 +97,7 @@ export class SubdivisionComponent implements OnInit {
     if (event.isUserInput && this.selectedOptions && this.selectedOptions.length) {
       const subGroup = event.source.value;
       this.studentList.map(student => {
-        if (this.selectedOptions.includes(student.Value.toString())) {
+        if (this.selectedOptions.includes(student.Id)) {
           student.subGroup = subGroup;
         }
       });
@@ -121,6 +123,7 @@ export class SubdivisionComponent implements OnInit {
         this.studentList.push({...students, subGroup: index + 1});
       })
     });
+    this.initStudentsList = this.studentList.map(x => ({ ...x }));
   }
 
   help: Help = {
@@ -131,8 +134,9 @@ export class SubdivisionComponent implements OnInit {
   transferSelected(from: number, to: number): void {
     if (this.selectedGroupsMap.has(from)) {
       const selectedStudents = this.selectedGroupsMap.get(from);
-      this.studentList = this.studentList.map(x => selectedStudents.some(s => s.Value === x.Value) ? { ...x, subGroup: to } : x);
+      this.studentList = this.studentList.map(x => selectedStudents.some(s => s.Id === x.Id) ? { ...x, subGroup: to } : x);
       this.selectedGroupsMap.delete(from);
+      this.store.dispatch(catsActions.showMessage({ body: { Code: '200', Message: this.translate.transform('text.students.transfered', 'Студент(ы) были успешно переведены в подгруппу') } }));
     }
   }
 
@@ -146,15 +150,15 @@ export class SubdivisionComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<any[]>, subGroup: number): void {
-    const student = event.previousContainer.data[event.previousIndex]
+    const student: StudentSubGroup = event.previousContainer.data[event.previousIndex]
 
-    this.studentList = this.studentList.map(x => x.Value === student.Value ? { ...student, subGroup } : x);
+    this.studentList = this.studentList.map(x => x.Id === student.Id ? { ...student, subGroup } : x);
   }
 
-  selectStudent(subgroup: number, student: any): void {
+  selectStudent(subgroup: number, student: StudentSubGroup): void {
     if (this.selectedGroupsMap.has(subgroup)) {
       const students = this.selectedGroupsMap.get(subgroup);
-      const index = students.findIndex(x => x.Value === student.Value);
+      const index = students.findIndex(x => x.Id === student.Id);
       const newStudents = index >= 0 ? students.slice(0, index).concat(students.slice(index + 1)) : [...students, student];
       this.selectedGroupsMap.set(subgroup, newStudents);
     } else {
@@ -162,7 +166,15 @@ export class SubdivisionComponent implements OnInit {
     }
   }
 
-  isStudentSelected(subgroup: number, student: any): boolean {
-    return this.selectedGroupsMap.has(subgroup) && this.selectedGroupsMap.get(subgroup).some(x => x.Value === student.Value);
+  isStudentSelected(subgroup: number, student: StudentSubGroup): boolean {
+    return this.selectedGroupsMap.has(subgroup) && this.selectedGroupsMap.get(subgroup).some(x => x.Id === student.Id);
+  }
+
+  canSave() {
+    if (this.studentList.some(student => this.initStudentsList.some(initStudent => initStudent.Id === student.Id && initStudent.subGroup !== student.subGroup))) {
+      return true; 
+    }
+
+    return false;
   }
 }

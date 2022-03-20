@@ -99,11 +99,11 @@ export class ProfileComponent implements OnInit {
  } 
 
   currentFilter(element, index, array) { 
-    return (!element.IsArchived); 
+    return element.IsActive; 
  } 
 
   archivedFilter(element, index, array) { 
-   return (element.IsArchived); 
+   return (!element.IsActive); 
  } 
 
  

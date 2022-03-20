@@ -17,4 +17,6 @@ export class StudentMark {
     TestMark: string;
     FileLabs: UserLabFile[]
     AllTestsPassed: boolean;
+    Tests: number;
+    TestsPassed: number;
 }
