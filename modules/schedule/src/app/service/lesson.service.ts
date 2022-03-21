@@ -112,7 +112,6 @@ export class LessonService {
   }
 
   getLocation(title: string): any {
-    console.log(title);
     const splitted = title.split('|', 3);
     let a = splitted[1];
     if (a.length != 0) {

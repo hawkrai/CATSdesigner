@@ -229,6 +229,9 @@ export class ScheduleMainComponent implements OnInit {
             meta: 'lesson'
           });
         } else if (result.type === 'note') {
+          if (result.note.note == undefined){
+            result.note.note = '';
+          }
           this.notes.push(result.note);
           this.events = [
             ...this.events,
@@ -283,7 +286,7 @@ export class ScheduleMainComponent implements OnInit {
 
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
-      width: '250px',
+      width: '300px',
       disableClose: true,
       height: '150px',
       data: {}

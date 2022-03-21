@@ -21,6 +21,7 @@ import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/t
 import {NgApexchartsModule} from 'ng-apexcharts';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {TranslateModule} from 'educats-translate';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
         MatProgressSpinnerModule,
         NgApexchartsModule,
         MatTooltipModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        TranslateModule
     ],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
   bootstrap: [],
