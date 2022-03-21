@@ -29,14 +29,17 @@
             <mat-cell *matCellDef="let element" class="mat-header-cell-action"
                       (click)="openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
                       [matTooltip]="element[1].test[i].testName">
-              {{element[1].test[i].points ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
+              {{(element[1].test[i].points | isInteger) ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
               ('text.test.not.passed' | translate: "тест не пройден")}}
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="average">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">{{'text.test.average.score'| translate:'Средний балл'}}</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-average" [class.all]="size && element[3]"
+            <mat-cell *matCellDef="let element" class="mat-header-cell-average"
+              [matTooltip]="getAverageTooltip(element)" 
+              matTooltipPosition="below" 
+              [matTooltipDisabled]="size && element[3]"
                       [class.notAll]="size && !element[3]"> {{element[2]}}
             </mat-cell>
           </ng-container>

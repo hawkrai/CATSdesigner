@@ -16,6 +16,7 @@ import {LoginComponent} from "./login/login.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/page', pathMatch: 'full'},
+  {path: 'testsModule', redirectTo: '/page', pathMatch: 'full'},
   {path: "page", component: PageComponent, canActivate: [RedirectPupilGuard]},
   {path: "test/:id", component: TestComponent},
   {path: "test-passing/:id", component: TestExecutionComponent},
@@ -25,7 +26,7 @@ const routes: Routes = [
   {path: "test-control", component: TestControlPageComponent, canActivate: [RedirectTeacherGuard]},
   {path: "test-result", component: TestResultComponent},
   {path: "result-teacher", component: ResultTeacherComponent},
-  {path: "login", component: LoginComponent},
+  {path: "login", component: LoginComponent}
 ];
 
 
