@@ -1,5 +1,20 @@
 @tabletMedia: 570px;
 
+.subject {
+  &-input {
+    width: 230px;
+  }
+
+  &-wrapper {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 5px 15px;
+    width: 100%;
+    @media (max-width:  @tabletMedia) {
+      flex-direction: column;
+    }
+  }
+}
 .subject-management {
   width: 500px;
   .example-h2 {
@@ -21,7 +36,6 @@
     grid-row-gap: 5px;
     margin-bottom: 21px;
     width: 100%;
-    justify-content: space-between;
 
     @media (max-width: @tabletMedia) {
       grid-template-columns: 1fr!important;
@@ -41,7 +55,7 @@
     border-radius: 3px;
     width: 180px;
     position: inherit !important;
-    margin-bottom: 21px;
+    margin-top: 21px;
     @media (max-width: @tabletMedia) {
       width: 100%;
     }
@@ -64,16 +78,6 @@
 
 ::ng-deep.mat-checkbox-disabled .mat-checkbox-label {
   color: inherit
-}
-
-.wrapper {
-  display: flex;
-  justify-content: space-between;
-
-  @media (max-width:  @tabletMedia) {
-    flex-direction: column;
-    gap: 5px;
-  }
 }
 
 .select-groups {
