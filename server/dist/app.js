@@ -17,6 +17,7 @@ const modules = __importStar(require("./modules.json"));
 const app = express_1.default();
 const port = 3000;
 const targetDomain = "https://educats.by";
+const targetChatDomain = "https://localhost:44303";
 app.use(express_1.default.static(path_1.default.resolve('d:/CatsProject/apps')));
 const allowedExt = [
     '.js',
@@ -112,7 +113,7 @@ const proxyElasticSearchOptions = {
     }
 };
 const proxyChatOptions = {
-    target: "https://localhost:44303/",
+    target: targetChatDomain,
     changeOrigin: true,
     pathRewrite: {
         '^/catService': '/ChatApi',
@@ -120,10 +121,11 @@ const proxyChatOptions = {
     secure: false
 };
 const proxySignalROptions = {
-    target: "https://localhost:4200/",
+    target: targetChatDomain,
     pathRewrite: {
         '^/chatSignalR': '/chat'
     },
+    ws: true,
     secure: false
 };
 app.use('*/chatSignalR/*', http_proxy_middleware_1.createProxyMiddleware(proxySignalROptions));

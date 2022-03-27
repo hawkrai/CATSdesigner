@@ -6,7 +6,7 @@ import * as modules from './modules.json';
 const app = express();
 const port = 3000;
 const targetDomain = "https://educats.by";
-
+const targetChatDomain = "https://localhost:44303"
 app.use(express.static(path.resolve('d:/CatsProject/apps')));
 
 const allowedExt = [
@@ -116,7 +116,7 @@ const proxyElasticSearchOptions = {
 }
 
 const proxyChatOptions = { 
-  target: "https://localhost:44303/", 
+  target: targetChatDomain, 
   changeOrigin: true,
   pathRewrite: {
     '^/catService': '/ChatApi', // rewrite path
@@ -125,10 +125,11 @@ const proxyChatOptions = {
 }
 
 const proxySignalROptions = { 
-  target: "https://localhost:4200/", 
+  target: targetChatDomain, 
   pathRewrite: {
     '^/chatSignalR':'/chat'
   },
+  ws: true,
   secure: false
 }
 
