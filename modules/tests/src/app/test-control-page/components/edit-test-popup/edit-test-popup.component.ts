@@ -9,6 +9,7 @@ import {takeUntil, tap} from "rxjs/operators";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormUtils} from "../../../utils/form.utils";
 import {TranslatePipe} from "educats-translate";
+import { whitespace } from "src/app/shared/validators/whitespace.validator";
 
 
 @AutoUnsubscribe
@@ -76,10 +77,10 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     } else {
       this.formGroup = this.formBuilder.group({
         title: new FormControl("", Validators.compose([
-          Validators.maxLength(255), Validators.required
+          Validators.maxLength(255), Validators.required, whitespace
         ])),
         description: new FormControl("", Validators.compose([
-          Validators.maxLength(1000)
+          Validators.maxLength(1000), whitespace
         ])),
         countOfQuestions: new FormControl(10, Validators.compose([
           Validators.max(200),
@@ -119,10 +120,10 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
         this.editingTest = test;
         this.formGroup = this.formBuilder.group({
           title: new FormControl(this.editingTest.Title, Validators.compose([
-            Validators.maxLength(255), Validators.required
+            Validators.maxLength(255), Validators.required, whitespace
           ])),
           description: new FormControl(this.editingTest.Description, Validators.compose([
-            Validators.maxLength(1000)
+            Validators.maxLength(1000), whitespace
           ])),
           countOfQuestions: new FormControl(this.editingTest.CountOfQuestions, Validators.compose([
             Validators.max(200),
