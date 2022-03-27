@@ -82,9 +82,9 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
       date: moment(schedule.Date, 'DD.MM.YYYY'),
       students: students.map(s => ({
         name: s.FullName,
-        mark: s.PracticalVisitingMark[index].Mark,
-        comment: s.PracticalVisitingMark[index].Comment,
-        showForStudent: s.PracticalVisitingMark[index].ShowForStudent
+        mark: s.PracticalVisitingMark[index] ? s.PracticalVisitingMark[index].Mark : '',
+        comment: s.PracticalVisitingMark[index] ? s.PracticalVisitingMark[index].Comment : '',
+        showForStudent: s.PracticalVisitingMark[index] ? s.PracticalVisitingMark[index].ShowForStudent : false
       }))
     };
     const dialogData: DialogData = {

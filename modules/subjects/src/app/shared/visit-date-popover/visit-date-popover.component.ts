@@ -42,6 +42,7 @@ export class VisitDatePopoverComponent {
     StartTime: string;
     EndTime: string; 
     Audience: string;
+    Building: string
   }[];
   @Output() createDate = new EventEmitter<string>();
   @Output() close = new EventEmitter<void>();
@@ -80,7 +81,8 @@ export class VisitDatePopoverComponent {
       this.dateForm.patchValue({
         startTime: moment(`${now} ${lastDay.StartTime}`).format('HH:mm'),
         endTime: moment(`${now} ${lastDay.EndTime}`).format('HH:mm'),
-        audience: lastDay.Audience
+        audience: lastDay.Audience,
+        building: lastDay.Building
       });
     }
   }
