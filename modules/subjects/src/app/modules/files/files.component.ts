@@ -19,7 +19,7 @@ import { TranslatePipe } from 'educats-translate';
 })
 export class FilesComponent implements OnInit {
 
-  state$: Observable<{ isTeacher: boolean, files: AttachedFile[] }>;
+  state$: Observable<{ isTeacher: boolean, files: AttachedFile[], isDownloading: boolean }>;
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe
@@ -29,8 +29,9 @@ export class FilesComponent implements OnInit {
     this.store.dispatch(filesActions.loadSubjectFiles());
     this.state$ = combineLatest(
       this.store.select(filesSelectors.getFiles),
-      this.store.select(subjectSelector.isTeacher)
-    ).pipe(map(([files, isTeacher]) => ({ files, isTeacher })));
+      this.store.select(subjectSelector.isTeacher),
+      this.store.select(filesSelectors.isDownloading)
+    ).pipe(map(([files, isTeacher, isDownloading]) => ({ files, isTeacher, isDownloading })));
   }
 
   deleteFile(file: AttachedFile) {
