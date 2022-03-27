@@ -1,4 +1,7 @@
 {
+  "chat": "Чат",
+  "new.students": "Новые студенты",
+  "personal.account": "Личный кабинет",
   "chat.chats":"Чаты",
   "chat.groups":"Группы",
   "chat.fio":"ФИО",
@@ -408,9 +411,11 @@
   "text.profile.skill": "Должность",
   "text.profile.lastLogin": "Последний визит",
   "text.profile.currentSubjects": "Текущие предметы",
+  
   "text.profile.complitedSubjects": "Завершенные предметы",
   "text.profile.cp": "Курсовые проекты",
-  "text.profile.dp": "Дипломный проект",
+  "text.profile.dpOne": "Дипломный проект",
+  "text.profile.dp": "Дипломные проекты",
 
   "text.login.WrongData": "Неверный логин и (или) пароль!",
   "text.login.NotVerified": "Ваш аккаунт не подтвержден. Обратитесь к преподавателю для подтверждения аккаунта.",
@@ -572,7 +577,12 @@
   "text.help.popover.content.third": "Руководитель проекта: к.т.н., доцент Попова Ю.Б.",
   "text.help.popover.content.fourth": "БНТУ-2021",
   "text.help.popover.route.manual": "Перейти к руководству пользователя",
-  "text.help.popover.close": "Закрыть"
+  "text.help.popover.close": "Закрыть",
+
+  "text.group.statistics":"Статитстика",
+  "text.group.selectSubject":"Выберите предмет",
+  "text.group.totalStatistics":"Суммарная статистика",
+  "text.group.text.group.print":"Печать"
 
   
 }

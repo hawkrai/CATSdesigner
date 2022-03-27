@@ -9,9 +9,9 @@ import { SearchService } from '../../core/services/searchResults/search.service'
 import { ProfileService } from '../../core/services/searchResults/profile.service';
 import { DataService } from '../../modules/chat/shared/services/dataService';
 import { ChatService } from "src/app/modules/chat/shared/services/chatService";
-import {MenuService} from "src/app/core/services/menu.service";
-import {MatDialog} from "@angular/material/dialog";
-import {AboutSystemPopoverComponent} from "../../about-system/about-popover/about-popover.component";
+import { MenuService } from "src/app/core/services/menu.service";
+import { MatDialog } from "@angular/material/dialog";
+import { AboutSystemPopoverComponent } from "../../about-system/about-popover/about-popover.component";
 import { Router } from "@angular/router";
 import { ConfirmationService } from "src/app/core/services/confirmation.service";
 
@@ -33,11 +33,11 @@ export class NavComponent implements OnInit, OnDestroy {
   public unRead: number = 0;
   public unconfirmedStudents: number = 0;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-  public locales: DropDownValue[] = [{name: "Ru", value: "ru"}, {name: "En", value: "en"}];
+  public locales: DropDownValue[] = [{ name: "Ru", value: "ru" }, { name: "En", value: "en" }];
   public locale: DropDownValue;
   public profileIcon = "/assets/images/account.png";
   public userFullName;
-  public themes: DropDownValue[] = [{name: "White", value: "white"}, {name: "Dark", value: "dark"}];
+  public themes: DropDownValue[] = [{ name: "White", value: "white" }, { name: "Dark", value: "dark" }];
   public theme: DropDownValue;
 
   valueForSearch!: string;
@@ -46,19 +46,21 @@ export class NavComponent implements OnInit, OnDestroy {
   lecturerSearchResults!: Lecturer[];
   studentSearchResults!: Student[];
   groupSearchResults!: Group[];
- 
+  bestLecturerSearchResult!: Lecturer;
+  bestStudentSearchResult!: Student;
+  bestGroupSearchResult!: Group;
+
   constructor(private layoutService: LayoutService,
-    private router: Router ,
+    private router: Router,
     private coreService: CoreService,
     private chatService: ChatService,
-    private dataService:DataService,
+    private dataService: DataService,
     private autService: AuthenticationService,
     private searchService: SearchService,
     private profileService: ProfileService,
     private menuService: MenuService,
     public dialog: MatDialog,
-    private confirmationService: ConfirmationService)
-  {
+    private confirmationService: ConfirmationService) {
   }
 
   get logoWidth(): string {
@@ -67,16 +69,20 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.isLector = this.autService.currentUserValue.role == "lector";
-    this.isAdmin = this.autService.currentUserValue.role == "admin";
+    const authRole = this.autService.currentUserValue.role;
+    this.isLector = authRole === "lector";
+    this.isAdmin = authRole === "admin";
+
     this.getUserInfo();
-    this.confirmationService.confirmationSubject
-    .pipe(
-      takeUntil(this.unsubscribeStream$)
-    )
-    .subscribe(value => {
-      this.unconfirmedStudents += value;
-    })
+    if (this.isLector) {
+      this.confirmationService.confirmationSubject
+        .pipe(
+          takeUntil(this.unsubscribeStream$)
+        )
+        .subscribe(value => {
+          this.unconfirmedStudents += value;
+        });
+    }
     if (!localStorage.getItem("theme")) {
       localStorage.setItem("theme", "white");
     }
@@ -84,8 +90,8 @@ export class NavComponent implements OnInit, OnDestroy {
     this.locale = local ? this.locales.find((locale: DropDownValue) => locale.value === local) : this.locales[0];
 
     this.dataService.readMessageCount.subscribe(
-      count=>{
-        this.unRead-=count
+      count => {
+        this.unRead -= count
       })
 
     this.chatService.loadChats().subscribe(chats =>
@@ -96,18 +102,16 @@ export class NavComponent implements OnInit, OnDestroy {
     this.chatService.loadGroups().subscribe(groups =>
       groups.forEach(subjectGroup => {
         this.unRead += subjectGroup.unread;
-        subjectGroup.groups.forEach(group=>this.unRead+=group.unread)
+        subjectGroup.groups.forEach(group => this.unRead += group.unread)
       }));
-
-    this.coreService.getGroups()
+    if (this.isLector) {
+      this.confirmationService.getUncofirmedStudentsCount()
       .pipe(
-        tap((groups: any) => {
-          if (groups && groups.Groups) {
-            this.unconfirmedStudents = groups.Groups.reduce((acc, group) => acc + group.CountUnconfirmedStudents, 0);
-          }
-        }),
         takeUntil(this.unsubscribeStream$)
-      ).subscribe();
+      ).subscribe(count => {
+        this.unconfirmedStudents = count;
+      });
+    }
   }
 
   public sidenavAction(): void {
@@ -116,7 +120,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   public logOut(): void {
     this.autService.logout().pipe(first()).subscribe(
-    () => location.reload());
+      () => location.reload());
     this.router.navigate(['/login']);
   }
 
@@ -155,9 +159,11 @@ export class NavComponent implements OnInit, OnDestroy {
       this.viewGroupSearchResults();
       this.viewLecturerSearchResults();
       this.viewStudentSearchResults();
+
     }
     else {
       this.cleanSearchResults();
+      //
     }
   }
 
@@ -165,40 +171,60 @@ export class NavComponent implements OnInit, OnDestroy {
     this.lecturerSearchResults = null;
     this.studentSearchResults = null;
     this.groupSearchResults = null;
+    this.bestLecturerSearchResult = null;
+    this.bestStudentSearchResult = null;
+    this.bestGroupSearchResult = null;
   }
 
   viewLecturerSearchResults() {
     this.searchService.getLecturerSearchResults(this.valueForSearch).subscribe(res => {
-      if(res.length > 0)
+      if (res.length > 0)
         this.lecturerSearchResults = res;
+      this.bestLecturerSearchResult = this.lecturerSearchResults[0];
+      this.lecturerSearchResults = this.lecturerSearchResults.slice(1, this.lecturerSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
     });
   }
 
   viewStudentSearchResults() {
     this.searchService.getStudentSearchResults(this.valueForSearch).subscribe(res => {
-      if(res.length > 0)
+      if (res.length > 0)
         this.studentSearchResults = res;
+      this.bestStudentSearchResult = this.studentSearchResults[0];
+      this.studentSearchResults = this.studentSearchResults.slice(1, this.studentSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
     });
   }
 
   viewGroupSearchResults() {
     this.searchService.getGroupSearchResults(this.valueForSearch).subscribe(res => {
-      if(res.length > 0)
+      if (res.length > 0)
         this.groupSearchResults = res;
+      this.bestGroupSearchResult = this.groupSearchResults[0];
+      this.groupSearchResults = this.groupSearchResults.slice(1, this.groupSearchResults.length - 1).sort((n1, n2) => n1.Name.localeCompare(n2.Name));
     });
   }
+
 
   public routeToAboutPopover() {
 
     const dialogRef = this.dialog.open(AboutSystemPopoverComponent, {
       width: "600px",
       height: "350px",
-      position: {top: "128px"}
+      position: { top: "128px" }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
       }
     });
+  }
+
+  public getUserInitials(){
+    var initials = this.userFullName?.split(' ')[0]?.charAt(0) + this.userFullName?.split(' ')[1]?.charAt(0);
+    if(initials != null){
+      return initials
+    } 
+    else{
+      return "Ad"
+    }
   }
 }

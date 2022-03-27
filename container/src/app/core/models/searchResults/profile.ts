@@ -10,7 +10,7 @@ export class ProfileInfoSubject {
   ShortName?: string;
   Color?: string;
   Completing?: number;
-  IsArchive?: boolean;
+  IsActive?: boolean;
 }
 
 export class ProfileInfo {

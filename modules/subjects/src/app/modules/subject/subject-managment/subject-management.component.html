@@ -53,9 +53,9 @@
           </mat-error>
         </ng-container>
       </form>
-  
+
       <h3 mat-dialog-title class="mat-typography title"></h3>
-  
+
       <div class="section">
         <section class="example-section" [ngStyle]="{ 'grid-template-columns': 'repeat(' + columnsCount + ', auto)' }">
           <div *ngFor="let module of subject.Modules | toColumn:columnsCount">
@@ -66,13 +66,13 @@
             [disabled]="module.Required"
             [(ngModel)]="module.Checked"
           >
-            {{ module.Name }}
+            {{ getModuleName(module)  }}
           </mat-checkbox>
           </div>
-  
+
         </section>
       </div>
-  
+
       <div class="wrapper">
         <div>
           <h3 mat-dialog-title class="mat-typography title">{{'group.plural' | translate:'Группы'}}</h3>

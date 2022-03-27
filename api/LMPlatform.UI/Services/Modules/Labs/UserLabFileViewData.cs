@@ -35,6 +35,9 @@ namespace LMPlatform.UI.Services.Modules.Labs
         public string LabShortName { get; set; }
 
         [DataMember]
+        public string LabTheme { get; set; }
+
+        [DataMember]
         public int? Order { get; set; }
     }
 }

@@ -12,5 +12,8 @@
 
 		[DataMember]
 		public List<ScheduleProtectionLabsViewData> ScheduleProtectionLabs { get; set; } 
+
+        [DataMember]
+        public List<SubGroupViewData> SubGroups { get; set; }
     }
 }

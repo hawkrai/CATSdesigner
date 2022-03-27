@@ -18,6 +18,7 @@ export class ProgressControlComponent implements OnInit {
   controlForm: FormGroup;
   selectedGroup: SafeResourceUrl;
   surname: SafeResourceUrl;
+  url: any;
   isLoad = false;
 
   constructor(private coreService: CoreService, private router: Router ,  private autService: AuthenticationService,
@@ -27,14 +28,32 @@ export class ProgressControlComponent implements OnInit {
     this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/0`);
     this.controlForm = this.formBuilder.group({
       groupName: ['', Validators.  required],
-      surname: ['']
+      surname: [''],
+      start: [''],
+      end: [''],
     });
   }
 
   get f() { return this.controlForm.controls; }
 
   enterGroup(): void {
-    this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/${this.f.groupName.value}/${this.f.surname.value}`);
+    if ((this.f.start.value != '' && this.f.end.value == '') || (this.f.start.value == '' && this.f.end.value != '')){
+      return;
+    }
+    if (this.f.start.value != '' && this.f.end.value != '') {
+      if (this.f.start.value > this.f.end.value) {
+        const a = this.f.start.value;
+        this.f.start.setValue(this.f.end.value);
+        this.f.end.setValue(a);
+      }
+    }
+    console.log(this.f.start.value);
+    console.log(this.f.end.value);
+    this.url = `/control/main/${this.f.groupName.value}/${this.f.start.value}/${this.f.end.value}`;
+    if (this.f.surname.value != undefined && this.f.surname.value != ''){
+      this.url = `/control/main/${this.f.groupName.value}/${this.f.surname.value}/${this.f.start.value}/${this.f.end.value}`;
+    }
+    this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
     this.isLoad = true;
   }
 

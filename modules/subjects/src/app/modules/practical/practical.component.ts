@@ -15,6 +15,7 @@ import { SubdivisionComponent } from 'src/app/shared/subdivision/subdivision.com
 import { DialogService } from 'src/app/services/dialog.service';
 import { TranslatePipe } from 'educats-translate';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DialogData } from 'src/app/models/dialog-data.model';
 
 interface State {
   groups: Group[];
@@ -92,7 +93,10 @@ export class PracticalComponent implements OnInit {
     this.store.dispatch(practicalsActions.getMarksExcel());
   }
   
-  subdivision() {
-    this.dialogService.openDialog(SubdivisionComponent);
+  subdivision(groupId: number) {
+    const dialogData: DialogData = {
+      model: groupId,
+    };
+    this.dialogService.openDialog(SubdivisionComponent, dialogData);
   }
 }

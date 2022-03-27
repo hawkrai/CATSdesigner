@@ -28,17 +28,19 @@
   </div>
   <div class="lectures-component-body">
     <div class="lectures-component-controls">
-      <div class="lectures-component__select-group" *ngIf="state.isTeacher">
-        <mat-form-field *ngIf="!(router.url | startWith:'/lectures/list')">
-          <mat-select [value]="state.group ? state.group.GroupId : state.groups.length ? state.groups[0].GroupId : ''">
-            <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)"
-              [value]="group.GroupId">
-              {{group.GroupName}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <ng-container *ngIf="!state.isTeacher && !(router.url | startWith:'/lectures/list')">
+      <ng-container *ngIf="state.isTeacher">
+        <div class="lectures-component__select-group"  *ngIf="!(router.url | startWith:'/lectures/list')">
+          <mat-form-field>
+            <mat-select [value]="state.group ? state.group.GroupId : state.groups.length ? state.groups[0].GroupId : ''">
+              <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)"
+                [value]="group.GroupId">
+                {{group.GroupName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!state.isTeacher && !(router.url | startWith:'/lectures/list') && state.group">
         {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
       </ng-container>
     </div>

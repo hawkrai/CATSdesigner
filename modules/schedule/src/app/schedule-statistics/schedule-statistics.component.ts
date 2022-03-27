@@ -101,7 +101,7 @@ export class ScheduleStatisticsComponent implements OnInit {
     this.translatePipe.transform('text.schedule.course.project', 'Консультация по курсовому проектированию') ,
     this.translatePipe.transform('text.schedule.graduation.project', 'Консультация по дипломному проектированию')];
 
-  public typeColors: string [] = [ '#0000FF', '#FFA500', '#ff0000',  '#7F00FF' , '#006400'];
+  public typeColors: string [] = [ '#0000FF', '#FFA500', '#ff0000', '#006400',  '#7F00FF' ];
   public lessonColors: string [] = [];
   public chartOptions2: Partial<ChartOptions>;
   public chartOptions3: Partial<ChartOptions3>;

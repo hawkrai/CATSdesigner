@@ -44,25 +44,25 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 			set;
 		}
 
-		public List<SelectListItem> StudentGroupList
+		public List<StudentSubGroupViewModel> StudentGroupList
 		{
 			get;
 			set;
 		}
 
-		public List<SelectListItem> SubGroupsFirstList
+		public List<StudentSubGroupViewModel> SubGroupsFirstList
 		{
 			get;
 			set;
 		}
 
-		public List<SelectListItem> SubGroupsTwoList
+		public List<StudentSubGroupViewModel> SubGroupsTwoList
 		{
 			get;
 			set;
 		}
 
-		public List<SelectListItem> SubGroupsThirdList
+		public List<StudentSubGroupViewModel> SubGroupsThirdList
 		{
 			get;
 			set;
@@ -86,28 +86,34 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 
 		private void FillSubGroupsList(IEnumerable<SubGroup> subGroups)
 		{
-			SubGroupsFirstList = new List<SelectListItem>();
-			SubGroupsTwoList = new List<SelectListItem>();
-			SubGroupsThirdList = new List<SelectListItem>();
+			SubGroupsFirstList = new List<StudentSubGroupViewModel>();
+			SubGroupsTwoList = new List<StudentSubGroupViewModel>();
+			SubGroupsThirdList = new List<StudentSubGroupViewModel>();
 
-			SubGroupsFirstList = subGroups.FirstOrDefault(e => e.Name == "first").SubjectStudents.Where(e => e.Student.Confirmed == null || e.Student.Confirmed.Value).Select(e => new SelectListItem
+			SubGroupsFirstList = subGroups.FirstOrDefault(e => e.Name == "first").SubjectStudents.Where(e => e.Student.Confirmed == null || e.Student.Confirmed.Value).Select(e => new StudentSubGroupViewModel
 			{
-				Text = e.Student.FullName,
-				Value = e.Student.Id.ToString(CultureInfo.InvariantCulture),
+				FirstName = e.Student.FirstName,
+				LastName = e.Student.LastName,
+				MiddleName = e.Student.MiddleName,
+				Id = e.Student.Id,
 				Selected = false
 			}).ToList();
 
-			SubGroupsTwoList = subGroups.FirstOrDefault(e => e.Name == "second").SubjectStudents.Where(e => e.Student.Confirmed == null || e.Student.Confirmed.Value).Select(e => new SelectListItem
+			SubGroupsTwoList = subGroups.FirstOrDefault(e => e.Name == "second").SubjectStudents.Where(e => e.Student.Confirmed == null || e.Student.Confirmed.Value).Select(e => new StudentSubGroupViewModel
 			{
-                Text = e.Student.FullName,
-				Value = e.Student.Id.ToString(CultureInfo.InvariantCulture),
+				FirstName = e.Student.FirstName,
+				LastName = e.Student.LastName,
+				MiddleName = e.Student.MiddleName,
+				Id = e.Student.Id,
 				Selected = false
 			}).ToList();
 
-			SubGroupsThirdList = subGroups.FirstOrDefault(e => e.Name == "third").SubjectStudents.Where(e => e.Student.Confirmed == null || e.Student.Confirmed.Value).Select(e => new SelectListItem
+			SubGroupsThirdList = subGroups.FirstOrDefault(e => e.Name == "third").SubjectStudents.Where(e => e.Student.Confirmed == null || e.Student.Confirmed.Value).Select(e => new StudentSubGroupViewModel
 			{
-				Text = e.Student.FullName,
-				Value = e.Student.Id.ToString(CultureInfo.InvariantCulture),
+				FirstName = e.Student.FirstName,
+				LastName = e.Student.LastName,
+				MiddleName = e.Student.MiddleName,
+				Id = e.Student.Id,
 				Selected = false
 			}).ToList();
 		}
@@ -145,7 +151,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 
 		public SubGroupEditingViewModel(int subjectId, int groupId = 0)
 		{
-			var groups = GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId)).Include(e => e.Students));
+			var groups = GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup)).Include(e => e.Students));
 			FillGroupsList(groups);
 
             if (groupId == 0)
@@ -160,39 +166,41 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 			if (subGroups.Any())
 			{
 				FillSubGroupsList(subGroups);
-                StudentGroupList = new List<SelectListItem>();
+                StudentGroupList = new List<StudentSubGroupViewModel>();
 			    
                 foreach (var student in groups.FirstOrDefault(e => e.Id == groupId).Students)
                 {
 	                if (student.Confirmed == null || student.Confirmed.Value)
 	                {
-		                var studentId = student.Id.ToString(CultureInfo.InvariantCulture);
-
-					
+		                var studentId = student.Id;
 
 						if (!SubGroupsFirstList.Any() && !SubGroupsTwoList.Any() && !SubGroupsThirdList.Any())
 						{
-							StudentGroupList.Add(new SelectListItem
+							StudentGroupList.Add(new StudentSubGroupViewModel
 							{
-								Selected = false,
-								Text = student.FullName,
-								Value = studentId
+								FirstName = student.FirstName,
+								LastName = student.LastName,
+								MiddleName = student.MiddleName,
+								Id = student.Id,
+								Selected = false
 							});
 						}
 						else
 						{
-							if (SubGroupsFirstList.Any(e => e.Value == studentId) ||
-								SubGroupsTwoList.Any(e => e.Value == studentId) ||
-								SubGroupsThirdList.Any(e => e.Value == studentId))
+							if (SubGroupsFirstList.Any(e => e.Id == studentId) ||
+								SubGroupsTwoList.Any(e => e.Id == studentId) ||
+								SubGroupsThirdList.Any(e => e.Id == studentId))
 							{
 							}
 							else
 							{
-								StudentGroupList.Add(new SelectListItem
+								StudentGroupList.Add(new StudentSubGroupViewModel
 								{
 									Selected = false,
-									Text = student.FullName,
-									Value = studentId
+									FirstName = student.FirstName,
+									LastName = student.LastName,
+									MiddleName = student.MiddleName,
+									Id = student.Id,
 								}); 
 							}
 						}
@@ -201,14 +209,16 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
 			}
 			else
 			{
-                SubGroupsFirstList = new List<SelectListItem>();
-                SubGroupsTwoList = new List<SelectListItem>();
-				SubGroupsThirdList = new List<SelectListItem>();
+                SubGroupsFirstList = new List<StudentSubGroupViewModel>();
+                SubGroupsTwoList = new List<StudentSubGroupViewModel>();
+				SubGroupsThirdList = new List<StudentSubGroupViewModel>();
 
-                StudentGroupList = groups.FirstOrDefault(e => e.Id == groupId).Students.Where(e => e.Confirmed == null || e.Confirmed.Value).Select(e => new SelectListItem
+                StudentGroupList = groups.FirstOrDefault(e => e.Id == groupId).Students.Where(e => e.Confirmed == null || e.Confirmed.Value).Select(e => new StudentSubGroupViewModel
 				{
-					Text = e.FullName,
-					Value = e.Id.ToString(CultureInfo.InvariantCulture),
+					FirstName = e.FirstName,
+					LastName = e.LastName,
+					MiddleName = e.MiddleName,
+					Id = e.Id,
 					Selected = false
 				}).ToList();
 			}

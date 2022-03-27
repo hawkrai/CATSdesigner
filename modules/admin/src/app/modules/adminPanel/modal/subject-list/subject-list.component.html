@@ -15,13 +15,20 @@
                 <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} </td>
             </ng-container>
 
+            <ng-container matColumnDef="subjectStatus">
+                <th mat-header-cell *matHeaderCellDef> Статус предмета </th>
+                <td class="table-container" mat-cell *matCellDef="let element">
+                    {{ getSubjectStatus(element.IsActiveOnGroup) }}
+                </td>
+            </ng-container>
+
             <ng-container matColumnDef="lectures">
                 <th mat-header-cell *matHeaderCellDef>Преподаватели </th>
                 <td class="table-container" mat-cell *matCellDef="let element">
                     <p *ngFor="let lecture of element.Lecturers">{{ lecture }}</p>
                 </td>
             </ng-container>
-
+            
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>

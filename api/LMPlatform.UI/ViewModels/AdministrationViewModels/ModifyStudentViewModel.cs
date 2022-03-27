@@ -130,6 +130,13 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				}
 			};
 
+			var dbStudent = this.StudentManagementService.GetStudent(student.Id, true);
+
+			if (dbStudent.GroupId != student.GroupId)
+            {
+				StudentManagementService.RemoveFromSubGroups(student.Id, dbStudent.GroupId);
+            }
+
 			this.StudentManagementService.UpdateStudent(student);
 			this.ElasticManagementService.ModifyStudent(student);
 		}

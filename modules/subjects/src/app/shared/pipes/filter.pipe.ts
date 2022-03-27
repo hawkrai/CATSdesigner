@@ -2,7 +2,8 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 export enum FilterOp {
   Eq = 'eq',
-  Contains = 'contains'
+  Contains = 'contains',
+  Neq = 'neq'
 }
 
 @Pipe({
@@ -20,6 +21,8 @@ export class FilterPipe implements PipeTransform {
         return (a, b) => b.includes(a);
       case FilterOp.Eq:
         return (a, b) => a === b;
+      case FilterOp.Neq:
+        return (a, b) => a !== b;
       default:
         return (a, b) => a === b;
     }

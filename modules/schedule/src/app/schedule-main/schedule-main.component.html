@@ -44,7 +44,7 @@
               >
             </div>
           </div>
-          <div *ngIf="isStudent" style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" [matTooltip]="'text.help' | translate : 'Помощь'" matTooltipPosition="right" (click)="showHelp()">
+          <div *ngIf="!isStudent" style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" [matTooltip]="'text.help' | translate : 'Помощь'" matTooltipPosition="right" (click)="showHelp()">
             <mat-icon style="color: #3F51B5;">help_outline</mat-icon>
           </button></div>
           <button [matTooltip]="'text.statistics' | translate : 'Статистика'" style = "color: #3F51B5;" mat-icon-button [disabled] ="events.length == 0" (click)="this.openStatisitcs()"><mat-icon>bar_chart</mat-icon></button>
@@ -126,7 +126,7 @@
                   mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
                   <mat-menu #menu="matMenu">
                     <button style="outline: none;" (click)="changeLesson(event)" mat-menu-item><mat-icon>edit</mat-icon><span>{{'button.edit'| translate:'Редактировать'}}</span></button>
-                    <button style="outline: none;" (click)="deleteEvent(event)" mat-menu-item><mat-icon>delete</mat-icon><span>{{'button.delete' | translate: 'Удалить'}}</span></button>
+                    <button [disabled] = 'isStudent' style="outline: none;" (click)="deleteEvent(event)" mat-menu-item><mat-icon>delete</mat-icon><span>{{'button.delete' | translate: 'Удалить'}}</span></button>
                   </mat-menu>
                 </button>
               </div>

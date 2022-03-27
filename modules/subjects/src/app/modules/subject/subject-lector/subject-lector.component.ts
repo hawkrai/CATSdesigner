@@ -21,7 +21,7 @@ export class SubjectLectorComponent implements OnInit {
   allLectors: Lector[] = [];
 
   public subjectId: number;
-
+  userId: number;
   constructor(
     public dialogRef: MatDialogRef<SubjectLectorComponent>,
     public subjectService: SubjectService,
@@ -36,16 +36,19 @@ export class SubjectLectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.data.model && this.data.model.subjectId) {
-      this.subjectId = this.data.model.subjectId;
-      this.setLectors();
-    } else {
-      this.store.select(subjectSelectors.getSelectedSubject).subscribe(subject => {
-        this.subjectId = subject.id;
-        this.data.body = subject;
+    this.store.select(subjectSelectors.getUserId).subscribe(userId => {
+      this.userId = userId;
+      if (this.data.model && this.data.model.subjectId) {
+        this.subjectId = this.data.model.subjectId;
         this.setLectors();
-      })
-    }
+      } else {
+        this.store.select(subjectSelectors.getSelectedSubject).subscribe(subject => {
+          this.subjectId = subject.id;
+          this.data.body = subject;
+          this.setLectors();
+        })
+      }
+    });
   }
 
   setLectors() {

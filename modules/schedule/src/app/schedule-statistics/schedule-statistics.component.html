@@ -2,7 +2,7 @@
   <mat-icon class = "icon" (click)="onCancelClick()" style="cursor: pointer;position: relative; margin-left: 98%">close</mat-icon>
 </div>
 <mat-tab-group class="remove-border-bottom">
-  <mat-tab [label]="'text.schedule.educational.load.per.week' | translate: 'Учебная нагрузка в неделю'">
+  <mat-tab [label]="'text.schedule.educational.load.types.week' | translate: 'Виды учебной нагрузки в неделю '">
     <div id="chart">
       <apx-chart
         [series]="chartOptions.series"
@@ -41,7 +41,7 @@
       ></apx-chart>
     </div>
   </mat-tab>
-  <mat-tab [label]="'text.schedule.educational.load.types.week' | translate: 'Виды учебной нагрузки в неделю '">
+  <mat-tab [label]="'text.schedule.educational.load.per.week' | translate: 'Учебная нагрузка в неделю'">
       <div id="chart3">
         <apx-chart
           [series]="chartOptions3.series"

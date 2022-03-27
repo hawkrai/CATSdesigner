@@ -469,11 +469,12 @@ namespace Application.Infrastructure.SubjectManagement
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			var subjectGroup =
-				repositoriesContainer.SubjectRepository.GetBy(
-					new Query<Subject>(e => e.Id == subjectId && e.SubjectGroups.Any(x => x.GroupId == groupId))
-						.Include(e => e.SubjectGroups.Select(x => x.SubGroups.Select(c => c.ScheduleProtectionLabs))));
+				repositoriesContainer.RepositoryFor<SubjectGroup>().GetBy(
+					new Query<SubjectGroup>(e => e.GroupId == groupId && e.SubjectId == subjectId)
+						.Include(e => e.SubGroups.Select(c => c.ScheduleProtectionLabs))
+						.Include(e => e.SubjectStudents));
 						
-			return subjectGroup.SubjectGroups.First(e => e.GroupId == groupId).SubGroups.ToList();
+			return subjectGroup.SubGroups.Where(x => x.SubjectStudents?.Count > 0).ToList();
 		}
 
 		public void SaveSubGroup(int subjectId, int groupId, IList<int> firstInts, IList<int> secoInts, IList<int> thirdInts)
@@ -663,6 +664,16 @@ namespace Application.Infrastructure.SubjectManagement
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			repositoriesContainer.RepositoryFor<StudentLabMark>().Save(studentLabMark);
 			repositoriesContainer.ApplyChanges();
+		}
+
+		public void RemoveStudentLabsMark(int id)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			var repository = repositoriesContainer.RepositoryFor<StudentLabMark>();
+			var studentLabMark = repository.GetBy(new Query<StudentLabMark>(x => x.Id == id));
+			repository.Delete(studentLabMark);
+			repositoriesContainer.ApplyChanges();
+
 		}
 
 		public List<string> GetLecturesAttachments(int subjectId)
@@ -1034,25 +1045,25 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-        public List<Subject> GetSubjectsByLector(int userId)
+        public List<Subject> GetSubjectsByLector(int userId, bool isArchive = false)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				model = repositoriesContainer.SubjectRepository.GetSubjects(lecturerId: userId).Where(e => !e.IsArchive).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjects(lecturerId: userId).Where(e => e.IsArchive == isArchive).ToList();
 			}
 
 			return model;
 		}
 
-		public List<Subject> GetAllSubjectsByLector(int userId)
+		public List<Subject> GetSubjectsInfoByLector(int userId)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				model = repositoriesContainer.SubjectRepository.GetAllSubjects(lecturerId: userId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjectsInfoByLecturerId(lecturerId: userId).ToList();
 			}
 
 			return model;
@@ -1080,27 +1091,27 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public List<Subject> GetSubjectsByStudent(int userId)
+		public List<Subject> GetSubjectsByStudent(int userId, bool isArchive)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetSubjects(groupId: student.GroupId).Where(e => !e.IsArchive).ToList();
+				model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(student.GroupId).Where(e => e.IsArchive == isArchive).ToList();
 			}
 
 			return model;
 		}
 
-		public List<Subject> GetAllSubjectsByStudent(int userId)
+		public List<Subject> GetSubjectsInfoByStudent(int userId)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetAllSubjects(groupId: student.GroupId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjectsInfoByGroupId(groupId: student.GroupId).ToList();
 			}
 
 			return model;

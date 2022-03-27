@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.Infrastructure.NewsManagement;
+using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.News;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Web.Http;
 
 namespace LMPlatform.UI.Services.TelegramBot
 {
@@ -17,6 +19,7 @@ namespace LMPlatform.UI.Services.TelegramBot
         private readonly LazyDependency<INewsManagementService> newsManagementService = new LazyDependency<INewsManagementService>();
         public INewsManagementService NewsManagementService => newsManagementService.Value;
 
+        [AllowAnonymous]
         public TelegramNewsResult GetNewsByGroupName(string groupName)
         {
             var groupNews = NewsManagementService.GetNewsForTelgeramByGroupName(groupName);
@@ -25,7 +28,7 @@ namespace LMPlatform.UI.Services.TelegramBot
                 News = groupNews.Select(x => new TelegramNewsViewModel(x)).ToList(),
             };
         }
-
+        [AllowAnonymous]
         public TelegramNewsResult GetUserNewsByFIO(string fio)
         {
             var userNews = NewsManagementService.GetUserNewsByFIO(fio);

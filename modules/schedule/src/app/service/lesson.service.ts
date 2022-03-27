@@ -55,7 +55,7 @@ export class LessonService {
   }
 
   deletePractical(idPract: any, subjId: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeleteLabScheduleDate', {id: idPract, subjectId: subjId});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeletePracticalScheduleDate', {id: idPract, subjectId: subjId});
   }
 
   saveLecture(lect: any, dateLes: string): Observable<any> {
@@ -112,12 +112,13 @@ export class LessonService {
   }
 
   getLocation(title: string): any {
+    console.log(title);
     const splitted = title.split('|', 3);
-    let a = splitted[2];
+    let a = splitted[1];
     if (a.length != 0) {
-      a = ' к. ' + a;
+      a = ', a.' + a;
     }
-    return 'а.' + splitted[1] + a;
+    return 'к.' + splitted[2] + a;
   }
 
 
