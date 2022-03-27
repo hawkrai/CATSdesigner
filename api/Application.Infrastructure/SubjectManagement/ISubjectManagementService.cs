@@ -11,6 +11,8 @@ namespace Application.Infrastructure.SubjectManagement
     {
         List<Subject> GetUserSubjects(int userId);
 
+        Subject GetUserSubject(int subjectId, int userId);
+
         bool IsUserAssignedToSubject(int useId, int subjectId);
         bool IsUserAssignedToSubjectAndLector(int useId, int subjectId);
 

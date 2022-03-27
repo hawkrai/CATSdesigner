@@ -398,7 +398,7 @@ namespace LMPlatform.UI.Controllers
             var s = this.SubjectsManagementService.GetUserSubjects(UserContext.CurrentUserId).Where(e => !e.IsArchive);
             var CourseProjectSubjects = s.Where(cs =>
                     this.ModulesManagementService.GetModules(cs.Id).Any(m => m.ModuleType == ModuleType.SmartTest))
-                .Select(e => new SubjectViewModel(e)).ToList();
+                .Select(e => new SubjectViewModel(e, CurrentUserId)).ToList();
             return JsonResponse(CourseProjectSubjects);
         }
 
