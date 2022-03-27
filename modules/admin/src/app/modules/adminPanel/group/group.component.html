@@ -1,5 +1,5 @@
 <div class="main">
-    <button mat-raised-button (click)="addGroup(this.group)">Добавить группу</button>
+    <button mat-raised-button (click)="addGroup(this.dataGroup)">Добавить группу</button>
     <div [hidden]="!isLoad" class="table">
         <mat-form-field class="search">
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">

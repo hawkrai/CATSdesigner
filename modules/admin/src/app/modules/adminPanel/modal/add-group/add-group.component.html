@@ -1,10 +1,10 @@
-<h1 mat-dialog-title>{{ this.data.Name ? 'Редактирование группы' : 'Добавление группы' }}</h1>
+<h1 mat-dialog-title>{{ this.group.Name ? 'Редактирование группы' : 'Добавление группы' }}</h1>
 <form [formGroup]="this.form" (ngSubmit)="submit()">
     <mat-dialog-content>
-        <h2 *ngIf="this.data.Name"> Группа {{ this.data.Name }}</h2>
+        <h2 *ngIf="this.group.Name"> Группа {{ this.group.Name }}</h2>
         <div>
             <mat-form-field>
-                <input matInput [(ngModel)]="this.data.Name" (blur)="this.trimFields()" formControlName="Name" placeholder="Номер группы" maxlength="10">
+                <input matInput formControlName="Name" (blur)="this.trimFields()"  placeholder="Номер группы" maxlength="10">
                 <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
                 <mat-error *ngIf="hasError('Name', 'pattern')">Используйте следующие символы: {{this.groupNameSymbols}}</mat-error>
             </mat-form-field>
@@ -32,6 +32,6 @@
     </mat-dialog-content>
     <mat-dialog-actions>
         <button mat-raised-button class="cancel" (click)="onNoClick()">Отмена</button>
-        <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">{{ this.data.Name ? 'Изменить' : 'Сохранить' }}</button>
+        <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">{{ this.group.Name ? 'Изменить' : 'Сохранить' }}</button>
     </mat-dialog-actions>
 </form>

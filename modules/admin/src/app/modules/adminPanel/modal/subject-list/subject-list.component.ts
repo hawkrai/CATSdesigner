@@ -22,7 +22,7 @@ export class SubjectListComponent implements OnInit {
   }
 
   getSubjectStatus(status) {
-    if(status == true){
+    if(status[0] == true){
       return "Активен"
     }
     else{
@@ -31,7 +31,7 @@ export class SubjectListComponent implements OnInit {
   }
 
   loadData(studentId) {
-    this.userService.getListOfSubjectsByStudentId(studentId).subscribe( result => {
+    this.userService.getListOfAllSubjectsByStudentId(studentId).subscribe( result => {
       this.subjectInfo = result;
       this.isLoad = true;
     });

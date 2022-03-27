@@ -12,6 +12,7 @@ export class AddGroupComponent implements OnInit {
 
   form: FormGroup;
   date: Date;
+  group: Group;
   groupNameSymbols ='А-Яа-яA-Za-z0-9ёЁіІ _-,.';
   @Output() submitEM = new EventEmitter();
 
@@ -22,16 +23,17 @@ export class AddGroupComponent implements OnInit {
 
   ngOnInit() {
     this.date = new Date();
+    this.group = this.data;
     const nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-,.]*$';
     if(this.data.Name == null){
       this.data = new Group();
-      this.data.Name = "New Group";
-      this.data.StartYear = this.date.getFullYear();
-      this.data.GraduationYear = this.date.getFullYear() + 4;
+      this.group.Name = "New Group";
+      this.data.StartYear = this.date.getFullYear().toString();
+      this.data.GraduationYear = (this.date.getFullYear() + 4).toString();
     }
     console.log(this.data);
     this.form = this.formBuilder.group({
-      Name: new FormControl(this.data.Name, [Validators.required, Validators.pattern('^[0-9a-zA-ZА-Яа-я .,_-]*$'), Validators.maxLength(10)]),
+      Name: new FormControl(this.group.Name, [Validators.required, Validators.pattern('^[0-9a-zA-ZА-Яа-я .,_-]*$'), Validators.maxLength(10)]),
       StartYear: new FormControl(Number.parseInt(this.data.StartYear)),
       GraduationYear: new FormControl(Number.parseInt(this.data.GraduationYear))
     });

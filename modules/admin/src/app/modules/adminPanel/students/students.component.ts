@@ -22,7 +22,7 @@ import { AppToastrService } from 'src/app/service/toastr.service';
 export class StudentsComponent implements OnInit {
 
   isLoad: boolean;
-  student = new Student();
+  dataStudent = new Student();
   displayedColumns: string[] = ['position', 'GroupName', 'FullName', 'UserName', 'action'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -34,6 +34,9 @@ export class StudentsComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    // this.dataSource.filterPredicate = (data: Student, filter: string) => {
+    //   return data.FullName.startsWith(filter) ;
+    //  };
     this.loadStudent();
   }
 
@@ -43,17 +46,16 @@ export class StudentsComponent implements OnInit {
 
   loadStudent() {
     this.studentService.getStudents().subscribe(items => {
-      this.dataSource.data = items;
+      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
       this.isLoad = true;
     });
   }
 
   editStudent(student): void {
     this.studentService.editStudents(student).subscribe(() => {
-      student = new Student();
-      this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
-     // this.toastr.addSuccessFlashMessage('Студент успешно изменен.');
       this.loadStudent();
+      this.dataStudent = new Student();
+      this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
     }, err => {
       if ( err.status === 500) {
         // we do it because db have some issue. After fixing, delete this function, please
@@ -110,5 +112,17 @@ export class StudentsComponent implements OnInit {
     });
     dialogRef.afterClosed();
   }
+
+  sortFunc(a, b) { 
+    if(a.FullName < b.FullName){
+      return -1;
+    }
+
+    else if(a.FullName > b.FullName){
+      return 1;
+    }
+    
+    return 0;
+ } 
 
 }

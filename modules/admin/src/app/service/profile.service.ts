@@ -42,6 +42,10 @@ export class ProfileService {
     return this.http.get<ProfileInfoSubject[]>(this.api + 'GetProfileInfoSubjectsById/' + Id);
   }
 
+  getAllProfileInfoSubjectsById(Id: any): Observable<ProfileInfoSubject[]> {
+    return this.http.get<ProfileInfoSubject[]>(this.api + 'GetAllProfileInfoSubjectsById/' + Id);
+  }
+
   getProfileInfoById(Id: any): Observable<ProfileInfo> {
     return this.http.get<ProfileInfo>(this.api + 'GetProfileInfoById/' + Id);
   }

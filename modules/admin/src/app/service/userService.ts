@@ -26,4 +26,8 @@ export class UserService {
     getListOfSubjectsByStudentId(studentId): Observable<SubjectDepend> {
         return this.http.get<SubjectDepend>(this.api + 'ListOfSubjectsByStudentJson/' + studentId);
     }
+
+    getListOfAllSubjectsByStudentId(studentId): Observable<SubjectDepend> {
+        return this.http.get<SubjectDepend>(this.api + 'ListOfAllSubjectsByStudentJson/' + studentId);
+    }
 }
