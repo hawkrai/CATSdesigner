@@ -1,15 +1,23 @@
-<h1 mat-dialog-title *ngIf="data.edit">Редактирование темы курсового проекта</h1>
-<h1 mat-dialog-title *ngIf="!data.edit">Добавление темы курсового проекта</h1>
-<div mat-dialog-content>
+<div class="add-project-dialog__title-container">
+  <h1 mat-dialog-title *ngIf="data.edit">Редактирование темы курсового проекта</h1>
+  <h1 class="add-project-dialog__title" mat-dialog-title *ngIf="!data.edit">Добавление темы курсового проекта</h1>
+  <button mat-icon-button (click)="close()" class="add-project-dialog__close-btn">
+    <mat-icon aria-hidden="false">close</mat-icon>
+  </button>
+</div>
+<div>
   <mat-form-field class="form-field">
     <mat-label>Тема курсового проекта</mat-label>
-    <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
+    <textarea matInput [formControl]="nameControl"></textarea>
     <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
   </mat-form-field>
-  <mat-label style="font-size: 12px">Группы:</mat-label>
+  <div>
+    <mat-label class="form-field__lecturer">Руководитель проекта: {{data.lecturer}}</mat-label>
+  </div>
+  <mat-label class="form-field__groups">Группы:</mat-label>
   <div class="group-picker">
     <div class="group-container">
-      <button mat-raised-button (click)="includeAll()">>></button>
+      <button mat-raised-button [matTooltip]="'Переместить в доступные для темы группы'" matTooltipPosition="below"  (click)="includeAll()">>></button>
       <mat-list>
         <mat-list-item matRipple class="mat-list-option" *ngFor="let group of groups; index as i; trackBy: trackByFn"
                        (click)="move(i, groups, data.selectedGroups)">
@@ -18,9 +26,10 @@
       </mat-list>
     </div>
     <div class="group-container">
-      <button mat-raised-button (click)="includeNone()"><<</button>
+      <button mat-raised-button [matTooltip]="'Переместить в недоступные для темы группы'" matTooltipPosition="below"  (click)="includeNone()"><<</button>
       <mat-list>
-        <mat-list-item matRipple class="mat-list-option" *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
+        <mat-list-item matRipple class="mat-list-option"
+                       *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
                        (click)="move(i, data.selectedGroups, groups)">
           {{group.GroupName}}
         </mat-list-item>
@@ -30,8 +39,11 @@
 </div>
 <div mat-dialog-actions class="dialog-buttons">
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
-  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data"
-          [disabled]="nameControl.invalid">
+  <button mat-flat-button class="dialog-button" id="saveButton" color="primary"
+          (click)="saveTheme()"
+          [disabled]="nameControl.invalid"
+  >
     Сохранить
   </button>
 </div>
+

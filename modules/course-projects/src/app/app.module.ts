@@ -9,30 +9,30 @@ import {PercentagesListComponent} from './components/percentages/percentages-lis
 import {PercentageResultsComponent} from './components/percentage-results/percentage-results.component';
 import {PercentageResultsListComponent} from './components/percentage-results/percentage-results-list/percentage-results-list.component';
 import {
-    MAT_DATE_LOCALE,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatNativeDateModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTableModule,
-    MatTabsModule, MatToolbarModule,
-    MatTooltipModule,
-    DateAdapter
+  MAT_DATE_LOCALE,
+  MatButtonModule,
+  MatCheckboxModule,
+  MatDatepickerModule,
+  MatDialogModule,
+  MatDividerModule,
+  MatExpansionModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatNativeDateModule,
+  MatProgressSpinnerModule,
+  MatRadioModule,
+  MatRippleModule,
+  MatSelectModule,
+  MatSidenavModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
+  MatSortModule,
+  MatTableModule,
+  MatTabsModule, MatToolbarModule,
+  MatTooltipModule,
+  DateAdapter
 } from '@angular/material';
 import {TaskSheetComponent} from './components/task-sheet/task-sheet.component';
 import {VisitStatsComponent} from './components/visit-stats/visit-stats.component';
@@ -55,7 +55,8 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {AddJobDialogComponent} from './components/defense/add-project-dialog/add-job-dialog.component';
 import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover/check-plagiarism-popover.component';
 import {CheckPlagiarismStudentComponent} from './components/defense/check-plagiarism-student/check-plagiarism-student.component';
-import { CustomDateAdapter } from './custom-date-adapter';
+import {CustomDateAdapter} from './custom-date-adapter';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -80,41 +81,44 @@ import { CustomDateAdapter } from './custom-date-adapter';
     VisitingPopoverComponent,
     AddJobDialogComponent,
     CheckPlagiarismPopoverComponent,
-    CheckPlagiarismStudentComponent
+    CheckPlagiarismStudentComponent,
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatDialogModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatTooltipModule,
-        MatListModule,
-        MatTableModule,
-        MatTabsModule,
-        MatExpansionModule,
-        MatSortModule,
-        MatSnackBarModule,
-        MatCheckboxModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        MatDividerModule,
-        FormsModule,
-        StoreModule.forRoot(appReducers),
-        StoreDevtoolsModule.instrument(),
-        MatSlideToggleModule,
-        MatProgressSpinnerModule,
-        MatRadioModule,
-        MatRippleModule
-    ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTooltipModule,
+    MatListModule,
+    MatTableModule,
+    MatTabsModule,
+    MatExpansionModule,
+    MatSortModule,
+    MatSnackBarModule,
+    MatCheckboxModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatDividerModule,
+    FormsModule,
+    StoreModule.forRoot(appReducers),
+    StoreDevtoolsModule.instrument(),
+    MatSlideToggleModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatRippleModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right'
+    })
+  ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},
     {provide: DateAdapter, useClass: CustomDateAdapter}
