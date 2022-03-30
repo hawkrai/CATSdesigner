@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CourseUser} from '../../models/course-user.model';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {AddProjectDialogComponent} from './add-project-dialog/add-project-dialog.component';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import {AssignProjectDialogComponent} from './assign-project-dialog/assign-project-dialog.component';
@@ -11,8 +11,9 @@ import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {AppComponent} from '../../app.component';
-import { CoreGroup } from 'src/app/models/core-group.model';
+import {CoreGroup} from 'src/app/models/core-group.model';
 import {GroupService} from '../../services/group.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-projects',
@@ -39,8 +40,8 @@ export class ProjectsComponent implements OnInit {
               private groupService: GroupService,
               private projectsService: ProjectsService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private store: Store<IAppState>) {
+              private store: Store<IAppState>,
+              private toastr: ToastrService) {
   }
 
   ngOnInit() {
@@ -87,12 +88,17 @@ export class ProjectsComponent implements OnInit {
 
   chooseCourseProject(projectId: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '540px',
+      autoFocus: false,
+      width: '548px',
       data: {
         label: 'Выбор темы курсового проекта',
         message: 'Вы действительно хотите выбрать данную тему курсового проекта?',
+        alert: 'После выбора темы ожидайте подтверждение руководителя курсового проекта. ' +
+          'Затем появится возможность скачать лист задания. Если выбранная тема будет отклонена ' +
+          'руководителем курсового проекта, она вновь станет доступной всем студентам.',
         actionName: 'Выбрать',
-        color: 'primary'
+        color: 'primary',
+        isConfirm: true,
       }
     });
 
@@ -108,7 +114,8 @@ export class ProjectsComponent implements OnInit {
 
   addProject() {
     const dialogRef = this.dialog.open(AddProjectDialogComponent, {
-      width: '500px',
+      autoFocus: false,
+      width: '548px',
       data: {
         groups: this.groups,
         selectedGroups: this.groups.slice()
@@ -117,18 +124,18 @@ export class ProjectsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
-        result.name = result.name.replace("\n","");
-        var checkTheme = this.projects.find((i) => i.Theme === result.name);
-        if (checkTheme == undefined){
+        result.name = result.name.replace('\n', '');
+        const checkTheme = this.projects.find((i) => i.Theme === result.name);
+        if (checkTheme === undefined) {
           this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
-          .subscribe(() => {
-            this.ngOnInit();
-            this.addFlashMessage('Тема успешно сохранена');
-          });
-        }
-        else{
+            .subscribe(() => {
+              this.ngOnInit();
+              this.toastr.success('test');
+              // this.addFlashMessage('Тема успешно сохранена');
+            });
+        } else {
           this.addFlashMessage('Такая тема уже существует');
-        } 
+        }
       }
     });
   }
@@ -136,37 +143,34 @@ export class ProjectsComponent implements OnInit {
   editProject(project: Project) {
     this.projectsService.getProject(project.Id).subscribe(response => {
       const dialogRef = this.dialog.open(AddProjectDialogComponent, {
-        width: '700px',
+        autoFocus: false,
+        width: '548px',
         data: {
           name: project.Theme,
           groups: this.groups,
+          lecturer: project.Lecturer,
           selectedGroups: this.groups.filter(g => response.SelectedGroupsIds.find(id => g.GroupId === id)),
           edit: true
         }
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        if (result != null && result.name != null) {
-          result.name = result.name.replace("\n","");
-          var checkTheme = this.projects.find((i) => i.Theme === result.name);
-          if (checkTheme == undefined){
-            this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
+        if (result != null) {
+          result.name = result.name.replace('\n', '');
+          this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
               this.addFlashMessage('Тема успешно сохранена');
             });
-          }
-          else{
-            this.addFlashMessage('Такая тема уже существует');
-          }
         }
       });
     });
   }
 
   deleteProject(project: Project) {
-    if(project.Student === null){
+    if (project.Student === null) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        autoFocus: false,
         width: '500px',
         data: {
           label: 'Удаление темы курсового проекта',
@@ -175,7 +179,7 @@ export class ProjectsComponent implements OnInit {
           color: 'primary'
         }
       });
-  
+
       dialogRef.afterClosed().subscribe(result => {
         if (result != null && result) {
           this.projectsService.deleteProject(project.Id).subscribe(() => {
@@ -184,11 +188,10 @@ export class ProjectsComponent implements OnInit {
           });
         }
       });
-    }
-    else{
+    } else {
       this.addFlashMessage('Отмените назначение темы');
     }
-    
+
   }
 
   assignProject(project: Project) {
@@ -197,8 +200,10 @@ export class ProjectsComponent implements OnInit {
       '&filter[courseProjectId]=' + project.Id)
       .subscribe(response => {
         const dialogRef = this.dialog.open(AssignProjectDialogComponent, {
-          width: '720px',
+          autoFocus: false,
+          width: '548px',
           data: {
+            theme: project.Theme,
             students: response.Items
           }
         });
@@ -223,11 +228,12 @@ export class ProjectsComponent implements OnInit {
 
   removeAssignment(project: Project) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '540px',
+      autoFocus: false,
+      width: '548px',
       data: {
         label: 'Отменить назначение темы курсового проекта',
         message: 'Вы действительно хотите отменить назначение темы курсового проекта?',
-        actionName: 'Отменить назначение',
+        actionName: 'Да',
         color: 'primary'
       }
     });
@@ -243,14 +249,16 @@ export class ProjectsComponent implements OnInit {
   }
 
   downloadTaskSheet(project: Project) {
-    //const url = 'http://localhost:8080/Cp/';
+    // const url = 'http://localhost:8080/Cp/';
     location.href = location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + project.Id;
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
+    console.log(msg);
+  }
+
+  test(): void {
+
   }
 
 }
