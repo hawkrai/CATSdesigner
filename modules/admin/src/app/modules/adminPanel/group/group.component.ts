@@ -15,7 +15,7 @@ import { AppToastrService } from 'src/app/service/toastr.service';
 })
 export class GroupComponent implements OnInit {
 
-  group = new Group();
+  dataGroup  = new Group();
   displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount', 's'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -31,20 +31,32 @@ export class GroupComponent implements OnInit {
   }
 
   loadGroup() {
-    this.isLoad = false;
     this.groupService.getGroups().subscribe(items => {
-      this.dataSource.data = items;
+      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
       this.isLoad = true;
     });
   }
 
+  sortFunc(a, b) { 
+    if(a.Name < b.Name){
+      return -1;
+    }
+
+    else if(a.Name > b.Name){
+      return 1;
+    }
+    
+    return 0;
+ } 
+
   saveGroup(group: Group) {
     this.groupService.addGroup(group).subscribe(() => {
-      this.group = new Group();
-      this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       this.loadGroup();
+      this.dataGroup = new Group();
+      this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
     }, err => {
       if (err.status === 500) {
+        this.loadGroup();
         this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       } else {
         this.toastr.addErrorFlashMessage('Произошла ошибка при сохранении. Повторите попытку');

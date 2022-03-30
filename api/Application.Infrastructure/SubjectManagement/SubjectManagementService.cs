@@ -1122,6 +1122,19 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
+		public List<Subject> GetAllSubjectsByStudent(int userId)
+		{
+			List<Subject> model;
+
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
+				model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(student.GroupId).ToList();
+			}
+
+			return model;
+		}
+
 		public List<Subject> GetSubjectsInfoByStudent(int userId)
 		{
 			List<Subject> model;

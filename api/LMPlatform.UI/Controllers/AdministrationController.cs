@@ -453,6 +453,29 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
+        public ActionResult ListOfAllSubjectsByStudentJson(int id)
+        {
+            var subjects = this.SubjectManagementService.GetAllSubjectsByStudent(id).OrderBy(subject => subject.Name)
+                .ToList();
+            var stud = this.StudentManagementService.GetStudent(id);
+
+            if (stud == null) return StatusCode(HttpStatusCode.BadRequest);
+            var model = ListSubjectViewModel.FormSubjects(subjects, stud.FullName);
+            var response = new
+            {
+                Student = model.Name,
+                Subjects = model.Subjects.Select(s => new
+                {
+                    SubjectName = s.Name,
+                    IsActiveOnGroup = s.SubjectGroups?.Select(prof => prof.IsActiveOnCurrentGroup),
+                    Lecturers = s.SubjectLecturers?.Select(prof => prof.Lecturer.FullName)
+                })
+            };
+            return JsonResponse(response);
+
+        }
+
+        [HttpGet]
         public ActionResult ListOfStudentsByGroupJson(int id)
         {
             try

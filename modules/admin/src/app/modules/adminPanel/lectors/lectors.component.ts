@@ -117,10 +117,22 @@ export class LectorsComponent implements OnInit {
 
   loadLector() {
     this.professorService.getProfessors().subscribe(items => {
-      this.dataSource.data = items;
+      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
       this.isLoad = true;
     });
   }
+
+  sortFunc(a, b) { 
+    if(a.FullName < b.FullName){
+      return -1;
+    }
+
+    else if(a.FullName > b.FullName){
+      return 1;
+    }
+    
+    return 0;
+ } 
 
   addLector(professor): void {
     this.professorService.addProfessor(professor).subscribe(() => {
