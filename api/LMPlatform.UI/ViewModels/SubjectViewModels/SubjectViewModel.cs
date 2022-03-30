@@ -12,7 +12,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
         {
         }
 
-        public SubjectViewModel(Subject model)
+        public SubjectViewModel(Subject model, int userId)
         {
             var subjectGroups = model.SubjectGroups.Where(x => x.IsActiveOnCurrentGroup);
             SubjectId = model.Id;
@@ -27,7 +27,10 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
             }).OrderBy(x => x.GroupName);
             var owner = model.SubjectLecturers.FirstOrDefault(x => x.Owner.HasValue)?.Owner;
             Owner =  owner is null ? model.SubjectLecturers.FirstOrDefault(x => !x.Owner.HasValue).LecturerId : owner;
-            Lectors = model.SubjectLecturers.Select(x => new LectorViewModel(x.Lecturer));
+            Lectors = model.SubjectLecturers.GroupBy(x => x.Id).Select(x => x.First())
+                    .Where(x => x.Id != userId)
+                    .Select(x => new LectorViewModel(x.Lecturer))
+                    .ToList();
         }
 
         public int? Owner { get; set; }

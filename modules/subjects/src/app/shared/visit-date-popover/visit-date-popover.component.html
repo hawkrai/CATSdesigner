@@ -49,6 +49,7 @@
           <input formControlName="building" type="text" matInput [placeholder]="'lesson.building' | translate:'Корпус'">
         </mat-form-field>
         <div *ngIf="(dateForm.get('building').touched || dateForm.get('building').dirty) && dateForm.get('building').errors" class="form-error">
+          <mat-error *ngIf="dateForm.get('building').hasError('building')">{{'building.required' | translate:'Корпус обязателен'}}</mat-error>
           <mat-error *ngIf="dateForm.get('building').hasError('minLength')">{{'sybmols.min.length' | translate: 'Минимальное количество символов'}}: 1</mat-error>
           <mat-error *ngIf="dateForm.get('building').hasError('maxLength')">{{'sybmols.max.length' | translate: 'Максимальное количество символов'}}: 5</mat-error>
         </div>

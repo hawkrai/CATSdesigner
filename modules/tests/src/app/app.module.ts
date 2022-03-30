@@ -43,6 +43,7 @@ import {QuestionOtherTestComponent} from "./questions-page/components/question-o
 import {TestResultComponent} from "./test-result/test-result.component";
 import {TranslateModule, TranslatePipe} from "educats-translate";
 import {AutocompleteFormComponent} from "./shared/autocomplete-form/autocomplete-form.component";
+import { WhitespaceDirective } from "./shared/validators/whitespace.validator";
 import {SelectAutocompleteModule} from "mat-select-autocomplete";
 import {LoginComponent} from "./login/login.component";
 import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
@@ -88,7 +89,8 @@ import { IsIntegerPipe } from "./pipes/is-integer.pipe";
     AutocompleteFormComponent,
     LoginComponent,
     NeuralNetworkPopupComponent,
-    IsIntegerPipe
+    IsIntegerPipe,
+    WhitespaceDirective
   ],
   imports: [
     FormsModule,

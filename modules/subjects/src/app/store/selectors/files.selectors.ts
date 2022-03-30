@@ -8,3 +8,8 @@ export const getFiles = createSelector(
     filesSelector,
     state => state.files
 );
+
+export const isDownloading = createSelector(
+    filesSelector,
+    state => state.isDownloading
+);

@@ -24,5 +24,9 @@ export const filesReducer = createReducer(
     on(filesActions.deleteFileSuccess, (state, { guidFileName }): IFilesState => ({
         ...state,
         files: state.files.filter(file => file.GuidFileName !== guidFileName)
+    })),
+    on(filesActions.setIsDownloading, (state, { isDownloading }): IFilesState => ({
+        ...state,
+        isDownloading
     }))
 );
