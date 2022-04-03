@@ -203,4 +203,8 @@ export class LessonService {
   public deleteCourseConsultation(id: any): Observable<any> {
     return this.http.post('/api/CourseProjectConsultationDate/' + id, null);
   }
+
+  getCheckedType(subjectId: any): Observable<any> {
+    return this.http.get<any>('/Services/Subjects/SubjectsService.svc/Modules/' + subjectId);
+  }
 }
