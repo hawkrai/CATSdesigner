@@ -106,7 +106,7 @@ export class ProjectsComponent implements OnInit {
       if (result != null && result) {
         this.projectsService.chooseProject(projectId).subscribe(() => {
           this.appComponent.ngOnInit();
-          this.addFlashMessage('Тема успешно выбрана');
+          this.toastr.success('Тема успешно выбрана');
         });
       }
     });
@@ -130,11 +130,10 @@ export class ProjectsComponent implements OnInit {
           this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
-              this.toastr.success('test');
-              // this.addFlashMessage('Тема успешно сохранена');
+              this.toastr.success('Тема успешно сохранена');
             });
         } else {
-          this.addFlashMessage('Такая тема уже существует');
+          this.toastr.success('Такая тема уже существует');
         }
       }
     });
@@ -160,7 +159,7 @@ export class ProjectsComponent implements OnInit {
           this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Тема успешно сохранена');
+              this.toastr.success('Тема успешно сохранена');
             });
         }
       });
@@ -184,12 +183,12 @@ export class ProjectsComponent implements OnInit {
         if (result != null && result) {
           this.projectsService.deleteProject(project.Id).subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('Тема успешно удалена');
+            this.toastr.success('Тема успешно удалена');
           });
         }
       });
     } else {
-      this.addFlashMessage('Отмените назначение темы');
+      this.toastr.success('Отмените назначение темы');
     }
 
   }
@@ -212,7 +211,7 @@ export class ProjectsComponent implements OnInit {
           if (result != null && result) {
             this.projectsService.assignProject(project.Id, result).subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Тема успешно назначена студенту');
+              this.toastr.success('Тема успешно назначена студенту');
             });
           }
         });
@@ -222,7 +221,7 @@ export class ProjectsComponent implements OnInit {
   approveChoice(project: Project) {
     this.projectsService.approveChoice(project.Id).subscribe(() => {
       this.ngOnInit();
-      this.addFlashMessage('Тема успешно подтверждена');
+      this.toastr.success('Тема успешно подтверждена');
     });
   }
 
@@ -242,7 +241,7 @@ export class ProjectsComponent implements OnInit {
       if (result != null && result) {
         this.projectsService.removeAssignment(project.Id).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage('Назначение успешно отменено');
+          this.toastr.success('Назначение успешно отменено');
         });
       }
     });
@@ -252,13 +251,4 @@ export class ProjectsComponent implements OnInit {
     // const url = 'http://localhost:8080/Cp/';
     location.href = location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + project.Id;
   }
-
-  addFlashMessage(msg: string) {
-    console.log(msg);
-  }
-
-  test(): void {
-
-  }
-
 }
