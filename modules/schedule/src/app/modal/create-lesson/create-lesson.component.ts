@@ -40,6 +40,7 @@ export class CreateLessonComponent implements OnInit {
   memo: string;
   date: string;
   groups: any[] = [];
+  typeSubject: any[] = [];
   currentGroup: any;
 
   formGroupNote: any;
@@ -288,72 +289,91 @@ export class CreateLessonComponent implements OnInit {
         this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
       });
     } else {
-      if (this.formGroup.controls.type.value === '0') {
-        this.lessonservice.saveLecture(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-          if (l.Code == '200') {
-            if (this.lesson.Notes.length != 0) {
-              this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
-                console.log(res);
-              });
-            }
-            this.lesson.Id = l.Schedule.Id;
-            if (l.Schedule.Teacher != undefined) {
-              this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
-            }
-            this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
-          } else {
-            this.dialogRef.close();
+      this.lessonservice.getCheckedType(this.lesson.SubjectId).subscribe(types => {
+        this.typeSubject = [false, false, false, false];
+        types.forEach(type => {
+          if (type.ModuleId == 2) {
+            this.typeSubject[0] = true;
+          }
+          if (type.ModuleId == 3) {
+            this.typeSubject[1] = true;
+          }
+          if (type.ModuleId == 13) {
+            this.typeSubject[2] = true;
+          }
+          if (type.ModuleId == 4) {
+            this.typeSubject[3] = true;
           }
         });
-      } else if (this.formGroup.controls.type.value === '2') {
-        this.lessonservice.saveLab(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-          if (l.Code == '200') {
-            if (this.lesson.Notes.length != 0) {
-              this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
-                console.log(res);
-              });
+        if (this.formGroup.controls.type.value === '0' && this.typeSubject[0]) {
+          this.lessonservice.saveLecture(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
+            if (l.Code == '200') {
+              if (this.lesson.Notes.length != 0) {
+                this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
+                  console.log(res);
+                });
+              }
+              this.lesson.Id = l.Schedule.Id;
+              if (l.Schedule.Teacher != undefined) {
+                this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+              }
+              this.dialogRef.close({lesson: this.lesson, type: 'lesson', code: l.Code, message: l.Message });
+            } else {
+              this.dialogRef.close({ code: l.Code, message: l.Message});
             }
-            this.lesson.Id = l.Schedule.Id;
-            if (l.Schedule.Teacher != undefined) {
-              this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+          });
+        } else if (this.formGroup.controls.type.value === '2' && this.typeSubject[1]) {
+          this.lessonservice.saveLab(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
+            if (l.Code == '200') {
+              if (this.lesson.Notes.length != 0) {
+                this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
+                  console.log(res);
+                });
+              }
+              this.lesson.Id = l.Schedule.Id;
+              if (l.Schedule.Teacher != undefined) {
+                this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+              }
+              this.dialogRef.close({lesson: this.lesson, type: 'lesson', code: l.Code, message: l.Message});
+            } else {
+              this.dialogRef.close({ code: l.Code, message: l.Message});
             }
-            this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
-          } else {
-            this.dialogRef.close();
-          }
-        });
-      } else if (this.formGroup.controls.type.value === '1') {
-        this.lessonservice.savePractical(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-          if (l.Code == '200') {
-            if (this.lesson.Notes.length != 0) {
-              this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
-                console.log(res);
-              });
+          });
+        } else if (this.formGroup.controls.type.value === '1' && this.typeSubject[2]) {
+          this.lessonservice.savePractical(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
+            if (l.Code == '200') {
+              if (this.lesson.Notes.length != 0) {
+                this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
+                  console.log(res);
+                });
+              }
+              this.lesson.Id = l.Schedule.Id;
+              if (l.Schedule.Teacher != undefined) {
+                this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+              }
+              this.dialogRef.close({lesson: this.lesson, type: 'lesson', code: l.Code, message: l.Message});
+            } else {
+              this.dialogRef.close({ code: l.Code, message: l.Message});
             }
-            this.lesson.Id = l.Schedule.Id;
-            if (l.Schedule.Teacher != undefined) {
-              this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
-            }
-            this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
-          } else {
-            this.dialogRef.close();
-          }
-        });
-      } else if (this.formGroup.controls.type.value === '3') {
-        this.dialogRef.close({lesson: this.lesson, type: 'course'});
-        this.lessonservice.addCourseConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00', this.lesson.SubjectId,
-          this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
-          this.lesson.Building).subscribe(r => {
-          console.log(r);
-        });
-      } else if (this.formGroup.controls.type.value === '4') {
-        this.dialogRef.close({lesson: this.lesson, type: 'diplom'});
-        this.lessonservice.addDiplomConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
-          this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
-          this.lesson.Building).subscribe(r => {
-          console.log(r);
-        });
-      }
+          });
+        } else if (this.formGroup.controls.type.value === '3' && this.typeSubject[3]) {
+          this.dialogRef.close({lesson: this.lesson, type: 'course'});
+          this.lessonservice.addCourseConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00', this.lesson.SubjectId,
+            this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
+            this.lesson.Building).subscribe(r => {
+            console.log(r);
+          });
+        } else if (this.formGroup.controls.type.value === '4') {
+          this.dialogRef.close({lesson: this.lesson, type: 'diplom'});
+          this.lessonservice.addDiplomConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
+            this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
+            this.lesson.Building).subscribe(r => {
+            console.log(r);
+          });
+        } else {
+          this.dialogRef.close({lesson: null,  code: '500', message: 'Не удалось добавить занятие'});
+        }
+      });
     }
   }
 
@@ -369,7 +389,7 @@ export class CreateLessonComponent implements OnInit {
     this.note.start.setHours(+this.startTimeOfNote.split(':')[0], +this.startTimeOfNote.split(':')[1]);
     this.note.end.setHours(+this.endTimeOfNote.split(':')[0], +this.endTimeOfNote.split(':')[1]);
     this.noteService.savePersonalNote(this.note, this.lessonservice.formatDate2(this.dayOfNote),
-                                      this.startTimeOfNote, this.endTimeOfNote).subscribe(l => {
+      this.startTimeOfNote, this.endTimeOfNote).subscribe(l => {
       console.log(l);
     });
     this.dialogRef.close({note: this.note, type: 'note'});
