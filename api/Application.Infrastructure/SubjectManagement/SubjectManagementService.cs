@@ -1104,6 +1104,17 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
+		public int GetSubjectsCountByStudent(int userId, bool isActive)
+		{
+			int count;
+
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
+				return repositoriesContainer.SubjectRepository.GetSubjectsCountByGroupId(student.GroupId, isActive);
+			}
+		}
+
 		public List<Subject> GetAllSubjectsByStudent(int userId)
 		{
 			List<Subject> model;
@@ -1333,5 +1344,6 @@ namespace Application.Infrastructure.SubjectManagement
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.SubjectRepository.GetAll(query).ToList();
 		}
+
     }
 }

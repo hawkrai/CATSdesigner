@@ -123,6 +123,8 @@ namespace Application.Infrastructure.SubjectManagement
         List<Subject> GetSubjectsInfoByLector(int userId);
 
         List<Subject> GetSubjectsByStudent(int userId, bool isArchive = false);
+
+        int GetSubjectsCountByStudent(int userId, bool isActive);
         List<Subject> GetSubjectsInfoByStudent(int userId);
 
 		decimal GetSubjectCompleting(int subjectId, string user, Student student);

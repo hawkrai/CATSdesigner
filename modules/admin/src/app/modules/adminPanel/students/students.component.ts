@@ -23,7 +23,7 @@ export class StudentsComponent implements OnInit {
 
   isLoad: boolean;
   dataStudent = new Student();
-  displayedColumns: string[] = ['position', 'GroupName', 'FullName', 'UserName', 'action'];
+  displayedColumns: string[] = ['position', 'GroupName', 'FullName', 'UserName', 'Confirmed', 'Subjects', 'action'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -113,6 +113,13 @@ export class StudentsComponent implements OnInit {
     dialogRef.afterClosed();
   }
 
+  getStudentStatus(status){
+    if(status == true){
+        return "Подтвержден"
+    }
+    return "Не подтвержден"
+  }
+
   sortFunc(a, b) { 
     if(a.FullName < b.FullName){
       return -1;
@@ -124,5 +131,6 @@ export class StudentsComponent implements OnInit {
     
     return 0;
  } 
+ 
 
 }

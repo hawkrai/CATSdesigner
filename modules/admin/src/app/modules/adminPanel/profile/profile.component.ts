@@ -43,6 +43,15 @@ export class ProfileComponent implements OnInit {
   isStudent() {
     return this.profileInfo.UserType == "2";
   }
+
+  getDpString(){
+    if(this.isStudent){
+      return "Дипломный проект пользователя"
+    }
+    else{
+      return "Дипломные проект пользователя"
+    }
+  }
   getProfileInfo(id: any) {
     this.profileService.getProfileInfoById(id).subscribe((res) => {
       this.profileInfo = res;

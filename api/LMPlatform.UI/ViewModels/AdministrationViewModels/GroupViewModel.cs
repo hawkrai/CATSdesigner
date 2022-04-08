@@ -43,6 +43,10 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         [DisplayName("Действие")]
         public HtmlString HtmlLinks { get; set; }
+        public int StudentsConfirmedCount { get; set; }
+        public int StudentsNotConfirmedCount { get; set; }
+        public int GroupsActiveCount { get; set; }
+        public int GroupsNotActiveCount { get; set; }
 
         public int Id { get; set; }
 
@@ -81,7 +85,11 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             {
                 Id = group.Id,
                 Name = group.Name,
+                StudentsNotConfirmedCount = group.Students.Where(s => s.Confirmed != true).Count(),
                 StudentsCount = group.Students.Count(),
+                StudentsConfirmedCount = group.Students.Where(s => s.Confirmed == true).Count(),
+                GroupsActiveCount = group.SubjectGroups.Where(s => s.IsActiveOnCurrentGroup == true).Count(),
+                GroupsNotActiveCount = group.SubjectGroups.Where(s => s.IsActiveOnCurrentGroup != true).Count(),
                 StartYear = group.StartYear,
                 GraduationYear = group.GraduationYear,
                 HtmlLinks = new HtmlString(htmlLinks)

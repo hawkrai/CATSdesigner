@@ -19,7 +19,7 @@ export class ListOfStudentsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    this.loadStudentById(this.data);
+    this.loadStudentById(this.data.Id);
   }
 
   isStudents() {

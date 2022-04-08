@@ -25,7 +25,7 @@ namespace LMPlatform.Data.Repositories
                 {
 					var subjectLecturer = context.Set<SubjectLecturer>().
 						Where(sg => sg.LecturerId == lecturerId);
-					return subjectLecturer.Select(sg => sg.Subject).DistinctBy(x => x.Id).ToList();
+					return subjectLecturer.Select(sg => sg.Subject).Include(s => s.SubjectGroups).DistinctBy(x => x.Id).ToList();
 				}
 			}
 		}
@@ -37,6 +37,18 @@ namespace LMPlatform.Data.Repositories
 					var subjectGroup = context.Set<SubjectGroup>().
 						Where(sg => sg.GroupId == groupId);
 					return subjectGroup.Select(sg => sg.Subject).Include(s => s.SubjectGroups).DistinctBy(x => x.Id).ToList();
+			}
+		}
+
+
+		public int GetSubjectsCountByGroupId(int groupId, bool isActive)
+		{
+			using (var context = new LmPlatformModelsContext())
+			{
+				var subjectGroup = context.Set<SubjectGroup>().
+					Where(sg => sg.GroupId == groupId && sg.IsActiveOnCurrentGroup == isActive);
+
+				return subjectGroup.Select(sg => sg.Subject).Count();
 			}
 		}
 

@@ -13,6 +13,7 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
 
         List<Subject> GetSubjectsV2(int groupId = 0, int lecturerId = 0);
 
+        int GetSubjectsCountByGroupId(int groupId, bool isActive);
         List<Subject> GetSubjectsLite(int? groupId = null);
 
         void DeleteLection(Lectures lectures);

@@ -26,6 +26,18 @@
       <td mat-cell *matCellDef="let element"> {{ element.UserName }} </td>
     </ng-container>
 
+    <ng-container matColumnDef="Confirmed">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Статус </th>
+      <td mat-cell *matCellDef="let element"> {{ getStudentStatus(element.Confirmed) }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Subjects">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Предметы (текущие\завершенные) </th>
+      <td mat-cell *matCellDef="let element"> {{ element.NotActiveSubjects}}\{{element.ActiveSubjects }} </td>
+    </ng-container>
+
+
+    
     <ng-container matColumnDef="action" class="actions">
       <th mat-header-cell *matHeaderCellDef> Действиe </th>
       <td mat-cell *matCellDef="let element">

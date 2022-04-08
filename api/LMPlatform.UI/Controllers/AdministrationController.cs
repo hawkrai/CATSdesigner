@@ -266,7 +266,10 @@ namespace LMPlatform.UI.Controllers
         [AllowAnonymous]
         public ActionResult GetGroupsJson()
         {
-            var groups = this.GroupManagementService.GetGroups(new Query<Group>().Include(e => e.Students));
+            var groups = this.GroupManagementService.GetGroups(new Query<Group>()
+                .Include(e => e.Students)
+                .Include(e => e.SubjectGroups)
+                );
 
             var responseModel = groups.Select(l => GroupViewModel.FormGroup(l, null));
 
@@ -468,7 +471,7 @@ namespace LMPlatform.UI.Controllers
                 {
                     SubjectName = s.Name,
                     IsActiveOnGroup = s.SubjectGroups?.Select(prof => prof.IsActiveOnCurrentGroup),
-                    Lecturers = s.SubjectLecturers?.Select(prof => prof.Lecturer.FullName)
+                    Lecturers = s.SubjectLecturers?.Select(prof => prof.Lecturer.FullName).ToHashSet()
                 })
             };
             return JsonResponse(response);
