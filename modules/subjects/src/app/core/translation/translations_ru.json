@@ -16,6 +16,7 @@
   "modules": "Модули",
   "work.accusative": "работу",
   "date.required": "Дата обязательна",
+  "building.required": "Корпус обязателен",
   "date.selected": "Выбранные даты",
   "date.delete": "Удалить дату",
   "comment": "Комментарий",

@@ -13,7 +13,7 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
   const port = 3000;
   const httpsPort = 443;
   const targetDomain = "http://localhost:2021";
-
+  const targetChatDomain = "https://localhost:4200/";
   app.use(express.static(path.resolve('d:/CatsProject/apps')));
 
   const allowedExt = [
@@ -123,19 +123,20 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
   }
 
   const proxyChatOptions = { 
-    target: "https://localhost:4200/", 
+    target: targetChatDomain, 
     changeOrigin: true,
     pathRewrite: {
       '^/catService': '/ChatApi', // rewrite path
     },
     secure: false
   }
-
+  
   const proxySignalROptions = { 
-    target: "https://localhost:4200/", 
+    target: targetChatDomain, 
     pathRewrite: {
-      '^/chatSignalR':'/chat'
+      '^/chatSignalR':'/chat' // rewrite path
     },
+    ws: true,
     secure: false
   }
 

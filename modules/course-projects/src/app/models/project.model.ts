@@ -4,6 +4,8 @@ export class Project {
   Id: string;
   Order: number;
   Theme: string;
+  Lecturer: string;
+  LecturerId: number;
   Student: string;
   StudentId: number;
   Group: string;

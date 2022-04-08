@@ -94,6 +94,11 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 throw new InvalidDataException("Название вопроса не должно быть пустым");
             }
 
+            if (question.Title.Trim() == string.Empty)
+            {
+                throw new InvalidDataException("Название вопроса не должно состоять только из пробелов");
+            }
+
             if (question.ComlexityLevel <= 0)
             {
                 throw new InvalidDataException("Сложность теста должна быть боьше нуля");

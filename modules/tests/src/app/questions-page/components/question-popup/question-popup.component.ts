@@ -13,6 +13,7 @@ import {Base64UploaderPlugin} from "../../../core/Base64Upload";
 import {FormUtils} from "../../../utils/form.utils";
 import {NavItem} from "../../../models/nav-item";
 import {TranslatePipe} from "educats-translate";
+import { whitespace } from "src/app/shared/validators/whitespace.validator";
 
 
 @AutoUnsubscribe
@@ -90,7 +91,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           this.newCase = false;
           this.formGroup = this.formBuilder.group({
             title: new FormControl(this.question.Title, Validators.compose([
-              Validators.maxLength(255), Validators.required
+              Validators.maxLength(255), Validators.required, whitespace
             ])),
             description: new FormControl(this.question.Description, Validators.compose([
               Validators.maxLength(1000)
@@ -118,7 +119,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       this.question.ComplexityLevel = 1;
       this.formGroup = this.formBuilder.group({
         title: new FormControl("", Validators.compose([
-          Validators.maxLength(255), Validators.required
+          Validators.maxLength(255), Validators.required, whitespace
         ])),
         description: new FormControl("", Validators.compose([
           Validators.maxLength(1000)

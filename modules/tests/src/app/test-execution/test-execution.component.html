@@ -1,8 +1,8 @@
-<div class="test-execution-container">
+<div class="test-execution-container" *ngIf="question">
   <div class="test-execution-block-top">
     <div class="question-title">
       <div class="question-title-big">
-        {{'text.test.question.num' | translate : ('Вопрос №' + question?.Number) : {number:question?.Number} }}
+        {{'text.test.question.num' | translate : ('Вопрос №' + question.Number) : {number:question.Number + ''} }}
       </div>
       <div class="question-title-small" *ngIf="test">{{test?.Title}}</div>
     </div>
@@ -12,19 +12,13 @@
       </div>
     </div>
   </div>
-  <div class="test-execution-block-question" *ngIf="question">
+  <div class="test-execution-block-question">
     <app-question class="test-execution-block-question"
                   [question]="question"
                   [questionNumber]="questionNumber"
                   (goToNextQuestion)="nextQuestion($event)"
                   [test]="test">
     </app-question>
-  </div>
-  <div class="test-execution-block-question-spinner" *ngIf="!question">
-    <mat-progress-spinner
-      [color]="'primary'"
-      [mode]="'indeterminate'">
-    </mat-progress-spinner>
   </div>
   <div class="test-execution-block-progress" *ngIf="test">
     <div class="test-execution-block-progress-block">
@@ -40,4 +34,10 @@
       </div>
     </div>
   </div>
+</div>
+<div class="test-execution-block-question-spinner" *ngIf="!question">
+  <mat-progress-spinner
+    [color]="'primary'"
+    [mode]="'indeterminate'">
+  </mat-progress-spinner>
 </div>

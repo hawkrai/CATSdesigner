@@ -159,7 +159,7 @@ export class ScheduleStatisticsComponent implements OnInit {
           let lessonType = this.lessonservice.getTitelPart(event.title, 3).replaceAll(' ', '');
           let color = this.lessonservice.getColorLesson(event);
           if (lessonType == '') {
-            lessonType = 'ДП';
+            lessonType = this.translatePipe.transform('text.schedule.graduation.project.cut', 'ДП');
             color = '#7F00FF';
           }
           const index = this.lessons.indexOf(lessonType);
@@ -183,7 +183,7 @@ export class ScheduleStatisticsComponent implements OnInit {
     });
 
     this.chartOptions = {
-      series: [this.lectCount, this.labCount, this.practCount, this.couseCount, this.diplomCount],
+      series: [this.lectCount, this.practCount, this.labCount,  this.couseCount, this.diplomCount],
       chart: {
         type: 'donut'
       },

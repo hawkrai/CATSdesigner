@@ -16,11 +16,18 @@
 
     </div>
   </div>
-  <div class="mdc-data-table file-table" *ngIf="state.files.length">
-    <table class="mdc-data-table__table">
-      <tbody>
-        <app-file *ngFor="let file of state.files" [file]="file" [canDelete]="state.isTeacher" (deleteFile)="deleteFile($event)"></app-file>
-      </tbody>
-    </table>
-  </div>
+  <ng-container *ngIf="!state.isDownloading; else loader">
+    <div class="mdc-data-table file-table" *ngIf="state.files.length">
+      <table class="mdc-data-table__table">
+        <tbody>
+          <app-file *ngFor="let file of state.files" [file]="file" [canDelete]="state.isTeacher" (deleteFile)="deleteFile($event)"></app-file>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-template #loader>
+    <div class="files-component-spinner">
+      <mat-spinner mode="indeterminate" class="spinner" color="primary"></mat-spinner>
+    </div>
+  </ng-template>
 </div>

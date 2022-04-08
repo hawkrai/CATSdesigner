@@ -34,6 +34,10 @@ export class SubjectService {
     return this.http.get<Subject[]>('Subject/Subjects');
   }
 
+  public getSubject(subjectId: number): Observable<Subject> {
+    return this.http.get<Subject>('Subject/Subject/' + subjectId);
+  }
+
   public deleteSubject(subjectId: number): Observable<any> {
     return this.http.get('Subject/DeleteSubject/' + subjectId);
   }

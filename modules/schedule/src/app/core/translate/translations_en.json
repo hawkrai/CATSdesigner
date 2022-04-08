@@ -249,10 +249,10 @@
   "text.schedule.sunday": "Sunday",
   "text.schedule.count": "Count",
 
-  "text.schedule.educational.load.per.week": "Educational load per week",
-  "text.schedule.educational.load.day.per.week": "Educational load for every day of the week",
-  "text.schedule.educational.load.subject.per.week": "Educational load for every subject of the week",
-  "text.schedule.educational.load.types.week": "Educational load types of week",
+  "text.schedule.educational.load.per.week": "Load per week",
+  "text.schedule.educational.load.day.per.week": "Load for days of the week",
+  "text.schedule.educational.load.subject.per.week": "Load for subjects of the week",
+  "text.schedule.educational.load.types.week": "Load types of week",
 
   "text.statistics.avg.lab": "Average laboratory works rating",
   "text.statistics.avg.test": "Average tests rating",

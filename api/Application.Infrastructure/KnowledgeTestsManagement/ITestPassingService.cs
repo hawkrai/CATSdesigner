@@ -41,5 +41,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         Dictionary<int, double?> GetAverageMarkForTests(int groupId, int subjectId);
 
         TestsResult GetSubjectControlTestsResult(int subjectId, IEnumerable<int> studentsIds);
+
+        List<TestPassResult> GetStudentControlTestResults(int subjectId, int studentId);
     }
 }

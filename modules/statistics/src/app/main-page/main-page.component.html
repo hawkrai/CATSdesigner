@@ -1,9 +1,9 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<mat-slide-toggle class="example-margin"
+<mat-slide-toggle style = "margin-top: 15px;float: right;" class="example-margin"
                   [color]="'primary'"
                   (change)="subjectsStatusChange($event)"
 >
-  {{'text.statistics.inactive.subjects' | translate:'Неактивные предметы'}}
+  {{'text.statistics.inactive.subjects' | translate:'Завершенные предметы'}}
 </mat-slide-toggle>
 <div *ngIf="!isArchived">
 <table style = "width: 100%">

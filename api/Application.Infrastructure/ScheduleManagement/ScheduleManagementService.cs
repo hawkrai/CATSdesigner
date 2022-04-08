@@ -45,7 +45,7 @@ namespace Application.Infrastructure.ScheduleManagement
 					(x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
 					(x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
 					(x.Start >= startTime && x.Start <= endTime && startTime <= x.End && x.End <= endTime))
-					&& x.Audience.Trim().ToLower() == audience.Trim().ToLower());
+					&& x.Audience.Trim().ToLower() == audience.Trim().ToLower() && (string.IsNullOrWhiteSpace(x.Building) ? true : x.Building.Trim().ToLower() == building.Trim().ToLower()));
 			}
 		}
 
