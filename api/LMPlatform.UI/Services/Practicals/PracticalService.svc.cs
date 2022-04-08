@@ -343,9 +343,10 @@ namespace LMPlatform.UI.Services.Practicals
             try
             {
                 var practicals = PracticalManagementService.GetPracticals(new Query<Practical>(e => e.SubjectId == subjectId)).OrderBy(e => e.Order).ToList();
+                var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
                 var groupProtectionSchedule = GroupManagementService.GetGroup(
                     new Query<Group>(e => e.Id == groupId)
-                    .Include(x => x.ScheduleProtectionPracticals)
+                    .Include(x => x.ScheduleProtectionPracticals.Select(x => x.Lecturer.User))
                     ).ScheduleProtectionPracticals.ToList();
 
                 var practicalsViewData = practicals.Select(e => new PracticalsViewData(e) {
@@ -381,7 +382,14 @@ namespace LMPlatform.UI.Services.Practicals
                 return new PracticalsResult
                 {
                     Practicals = practicalsViewData.ToList(),
-                    ScheduleProtectionPracticals = groupProtectionSchedule.Select(e => new ScheduleProtectionPracticalViewData(e)).ToList(),
+                    ScheduleProtectionPracticals = groupProtectionSchedule.Select(e =>
+                    {
+                        if (e.Lecturer == null)
+                        {
+                            e.Lecturer = subjectOwner;
+                        }
+                        return new ScheduleProtectionPracticalViewData(e);
+                    }).ToList(),
                     Message = "Практические работы успешно загружены",
                     Code = "200"
                 };

@@ -657,7 +657,7 @@ namespace LMPlatform.UI.Services.Labs
             try
             {
 				var labs = this.SubjectManagementService.GetLabsV2(subjectId).OrderBy(e => e.Order);
-
+				var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
 				var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
 				var labsSubGroups = new List<LabsViewData>();
 				var scheduleProtectionLabs = new List<ScheduleProtectionLabsViewData>();
@@ -708,7 +708,14 @@ namespace LMPlatform.UI.Services.Labs
 					var scheduleProtactionLabsSubGroup = subGroup.ScheduleProtectionLabs
 						.OrderBy(e => e.Date)
 						.Select(
-					e => new ScheduleProtectionLabsViewData(e)).ToList();
+					e =>
+                    {
+						if (e.Lecturer == null)
+                        {
+							e.Lecturer = subjectOwner;
+                        }
+						return new ScheduleProtectionLabsViewData(e);
+					}).ToList();
 					scheduleProtactionLabsSubGroup.ForEach(e => e.SubGroup = subGroupValue);
 					scheduleProtectionLabs.AddRange(scheduleProtactionLabsSubGroup);
 				}

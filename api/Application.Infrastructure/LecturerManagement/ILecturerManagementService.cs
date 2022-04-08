@@ -28,13 +28,13 @@ namespace Application.Infrastructure.LecturerManagement
 
 		bool Join(int subjectId, int lectorId, int owner);
 
-	    List<Lecturer> GetJoinedLector(int subjectId, int owner);
+	    List<Lecturer> GetJoinedLector(int subjectId);
 
-	    void DisjoinLector(int subjectId, int lectorId, int? owner);
+	    void DisjoinLector(int subjectId, int lectorId, int owner);
 
 	    void DisjoinOwnerLector(int subjectId, int lectorId);
 
         bool IsLectorJoined(int subjectId, int lectorId);
-        List<Lecturer> GetNoAdjointLectorers(int subjectId, int owner);
+        List<Lecturer> GetNoAdjointLectorers(int subjectId);
     }
 }

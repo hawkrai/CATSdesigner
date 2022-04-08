@@ -92,14 +92,14 @@ namespace LMPlatform.UI.Services
 
 
 
-		public LectorsResult GetJoinedLector(string subjectId)
+		public LectorsResult GetJoinedLector(string subjectId, bool loadSelf = false)
 		{
 			try
 			{
 				var id = int.Parse(subjectId);
-				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId)
+				var lectors = this.LecturerManagementService.GetJoinedLector(id)
 					.GroupBy(x => x.Id).Select(x => x.First())
-					.Where(x => x.Id != CurrentUserId).ToList();
+					.Where(x => loadSelf ? true : x.Id != CurrentUserId).ToList();
 
 				return new LectorsResult
 				{
@@ -162,7 +162,7 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var lectors = LecturerManagementService.GetNoAdjointLectorers(int.Parse(subjectId), CurrentUserId);
+				var lectors = LecturerManagementService.GetNoAdjointLectorers(int.Parse(subjectId));
 				return new LectorsResult
 				{
 					Lectors = lectors.Where(x => x.Id != CurrentUserId).Select(e => new LectorViewData(e)).ToList(),

@@ -4,14 +4,40 @@
   </ng-container>
   <ng-container body>
     <form [formGroup]="dateForm" class="form">
-      <mat-form-field class="full-width">
-        <mat-label>{{'date' | translate:'Дата'}}</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <div *ngIf="(dateForm.get('date').touched || dateForm.get('date').dirty) && dateForm.get('date').errors" class="form-error">
-        <mat-error *ngIf="dateForm.get('date').hasError('required')">{{'date.required' | translate:'Дата обязательна'}}</mat-error>
+      <div class="form-container">
+        <div class="form-group">
+          <mat-form-field class="full-width">
+            <mat-label>{{'date' | translate:'Дата'}}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <div *ngIf="(dateForm.get('date').touched || dateForm.get('date').dirty) && dateForm.get('date').errors" class="form-error">
+            <mat-error *ngIf="dateForm.get('date').hasError('required')">{{'date.required' | translate:'Дата обязательна'}}</mat-error>
+          </div>
+        </div>
+        <div class="form-group">
+          <mat-form-field class="full-width">
+            <mat-label>{{'text.subjecs.lector' | translate:'Преподаватель'}}</mat-label>
+            <mat-select
+            formControlName="lecturerId"
+          >
+            <mat-option
+              *ngFor="let lector of lectors"              
+              [value]="lector.LectorId"
+            >
+              <span class="icon-container">
+                {{ lector.FullName }}
+              </span>
+            </mat-option>
+            <!-- <mat-select-trigger *ngIf="state.group">
+            </mat-select-trigger> -->
+          </mat-select>
+          </mat-form-field>
+          <div *ngIf="(dateForm.get('lecturerId').touched || dateForm.get('lecturerId').dirty) && dateForm.get('lecturerId').errors" class="form-error">
+            <mat-error *ngIf="dateForm.get('lecturerId').hasError('lecturerId')">{{'lecturer.required' | translate:'Выберете преподавателя'}}</mat-error>
+          </div>
+        </div>
       </div>
       <div class="form-container">
         <div class="form-group">

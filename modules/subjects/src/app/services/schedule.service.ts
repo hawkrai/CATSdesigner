@@ -13,13 +13,13 @@ export class ScheduleService {
     }
 
     public createLabDateVisit(request: {
-        subGroupId: number, date: string, subjectId: number, startTime: string, endTime: string, building: string, audience: string
+        subGroupId: number, date: string, subjectId: number, startTime: string, endTime: string, building: string, audience: string, lecturerId: number
     }): Observable<any> {
         return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLab', request);
     }
 
     public createLectureDateVisit(request: {
-        subjectId: number, date: string, startTime: string, endTime: string, building: string, audience: string
+        subjectId: number, date: string, startTime: string, endTime: string, building: string, audience: string, lecturerId: number
       }): Observable<any> {
         return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLectures', request);
       }
@@ -33,7 +33,7 @@ export class ScheduleService {
     }
 
     public createPracticalDateVisit(request: {
-        groupId: number, date: string, subjectId: number, startTime: string, endTime: string, building: string, audience: string
+        groupId: number, date: string, subjectId: number, startTime: string, endTime: string, building: string, audience: string, lecturerId: number
     }): Observable<any> {
         return this.http.post('Services/Schedule/ScheduleService.svc/SaveDatePractical', request);
     }
