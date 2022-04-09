@@ -44,6 +44,9 @@
                     <button mat-button matTooltip="Список студентов, состоящих в данной группе" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfStudents(element)">
                         <mat-icon>supervised_user_circle</mat-icon>
                     </button>
+                    <button mat-button matTooltip="Список предметов" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfSubject(element)">
+                        <mat-icon>list</mat-icon>
+                      </button>
                     <button mat-button matTooltip="Редактировать группу" [matTooltipPosition]="'above'" aria-label="Edit" matTooltipClass="tooltip" (click)="this.editGroup(element)">
                         <mat-icon>edit</mat-icon>
                     </button>

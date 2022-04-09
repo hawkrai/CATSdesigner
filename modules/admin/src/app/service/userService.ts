@@ -30,4 +30,8 @@ export class UserService {
     getListOfAllSubjectsByStudentId(studentId): Observable<SubjectDepend> {
         return this.http.get<SubjectDepend>(this.api + 'ListOfAllSubjectsByStudentJson/' + studentId);
     }
+
+    getListOfAllSubjectsByGroupId(groupId): Observable<SubjectDepend> {
+        return this.http.get<SubjectDepend>(this.api + 'ListOfAllSubjectsByGroupJson/' + groupId);
+    }
 }

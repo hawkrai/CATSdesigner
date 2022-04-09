@@ -463,10 +463,32 @@ namespace LMPlatform.UI.Controllers
             var stud = this.StudentManagementService.GetStudent(id);
 
             if (stud == null) return StatusCode(HttpStatusCode.BadRequest);
-            var model = ListSubjectViewModel.FormSubjects(subjects, stud.FullName);
+
+            return getSubjectInfo(subjects, stud.FullName);
+
+        }
+
+        [HttpGet]
+        public ActionResult ListOfAllSubjectsByGroupJson(int id)
+        {
+            var subjects = this.SubjectManagementService.GetSubjectsInfoByGroup(id).OrderBy(subject => subject.Name)
+                .ToList();
+
+            var Group= this.GroupManagementService.GetGroup(id);
+
+            if (Group == null) return StatusCode(HttpStatusCode.BadRequest);
+
+            return getSubjectInfo(subjects, Group.Name);
+            
+        }
+
+
+        private ActionResult getSubjectInfo(List<Subject> subjects, string name)
+        {
+            var model = ListSubjectViewModel.FormSubjects(subjects, name);
             var response = new
             {
-                Student = model.Name,
+                Owner = model.Name,
                 Subjects = model.Subjects.Select(s => new
                 {
                     SubjectName = s.Name,

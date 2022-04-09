@@ -7,6 +7,7 @@ import { Group } from 'src/app/model/group';
 import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-students.component';
 import {MessageComponent} from '../../../component/message/message.component';
 import { AppToastrService } from 'src/app/service/toastr.service';
+import { SubjectListComponent } from '../modal/subject-list/subject-list.component';
 
 @Component({
   selector: 'app-group',
@@ -29,6 +30,14 @@ export class GroupComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.loadGroup();
   }
+
+  openListOfSubject(group) {
+    const dialogRef = this.dialog.open(SubjectListComponent, {
+      data: group
+    });
+    dialogRef.afterClosed();
+  }
+
 
   loadGroup() {
     this.groupService.getGroups().subscribe(items => {
