@@ -237,12 +237,12 @@ namespace LMPlatform.UI.Services.Modules.Parental
 
             foreach (var sub in Subjects)
             {
-                var tests = TestPassingService.GetStidentResults(sub.Id, student.Id);
+                var tests = TestPassingService.GetStudentControlTestResults(sub.Id, student.Id);
                 if (tests != null)
                 {
                     foreach (var test in tests)
                     {
-                        if (test.Points != null)
+                        if (test.Points.HasValue)
                         {
                             this.UserAvgTestMarks[sub.Id] += (double)test.Points;
                             this.UserTestCount[sub.Id]++;

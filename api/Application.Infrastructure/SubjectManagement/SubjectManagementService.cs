@@ -47,6 +47,24 @@ namespace Application.Infrastructure.SubjectManagement
 			}
 		}
 
+		public Subject GetUserSubject(int subjectId, int userId)
+        {
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+				var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.Id == userId)
+					.Include(e => e.Lecturer)
+					.Include(e => e.Student));
+				if (user.Student != null)
+				{
+					return repositoriesContainer.SubjectRepository.GetSubject(subjectId, groupId: user.Student.GroupId);
+				}
+				else
+				{
+					return repositoriesContainer.SubjectRepository.GetSubject(subjectId, lecturerId: user.Lecturer.Id);
+				}
+			}
+        }
+
 		public bool IsUserAssignedToSubject(int userId, int subjectId)
         {
 			var subjects = GetUserSubjectsV2(userId);

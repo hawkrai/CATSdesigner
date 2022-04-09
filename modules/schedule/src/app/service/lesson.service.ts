@@ -112,7 +112,6 @@ export class LessonService {
   }
 
   getLocation(title: string): any {
-    console.log(title);
     const splitted = title.split('|', 3);
     let a = splitted[1];
     if (a.length != 0) {
@@ -203,5 +202,9 @@ export class LessonService {
 
   public deleteCourseConsultation(id: any): Observable<any> {
     return this.http.post('/api/CourseProjectConsultationDate/' + id, null);
+  }
+
+  getCheckedType(subjectId: any): Observable<any> {
+    return this.http.get<any>('/Services/Subjects/SubjectsService.svc/Modules/' + subjectId);
   }
 }

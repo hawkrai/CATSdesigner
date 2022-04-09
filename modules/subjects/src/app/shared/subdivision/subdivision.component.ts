@@ -74,6 +74,7 @@ export class SubdivisionComponent implements OnInit {
     });
     this.subjectService.saveSubGroup(body).subscribe(res => {
       this.dialogRef.close({ updated: true });
+      this.store.dispatch(catsActions.showMessage({ body: { Code: '200', Message: this.translate.transform('text.students.transfered', 'Студент(ы) были успешно переведены в подгруппу') } }));
     });
   }
 
@@ -136,7 +137,6 @@ export class SubdivisionComponent implements OnInit {
       const selectedStudents = this.selectedGroupsMap.get(from);
       this.studentList = this.studentList.map(x => selectedStudents.some(s => s.Id === x.Id) ? { ...x, subGroup: to } : x);
       this.selectedGroupsMap.delete(from);
-      this.store.dispatch(catsActions.showMessage({ body: { Code: '200', Message: this.translate.transform('text.students.transfered', 'Студент(ы) были успешно переведены в подгруппу') } }));
     }
   }
 

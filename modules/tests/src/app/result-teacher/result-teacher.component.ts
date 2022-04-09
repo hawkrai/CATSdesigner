@@ -147,7 +147,6 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
 
   public groupChange(eventChange) {
     if (eventChange.length && this.groupChangeCheckBoxes !== eventChange) {
-      console.log(eventChange);
       this.groupChangeCheckBoxes = eventChange;
       this.testPassingService.getResultsByGroupsAndSubject(eventChange, this.subject.id).subscribe((results: Results[]) => {
         this.initArraysMass();
@@ -229,7 +228,6 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
           resultForTable.subGroup = result.SubGroup;
           resultForTable.StudentShortName = result.StudentShortName;
           resultForTable.id = result && result.TestPassResults[0] && result.TestPassResults[0].StudentId;
-
           this.initTestArray(this.selfControlTests, resultForTable, result.Login);
           this.initTestArray(this.nNTests, resultForTable, result.Login);
           this.initTestArray(this.beforeEUMKTests, resultForTable, result.Login);

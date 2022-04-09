@@ -23,17 +23,17 @@ namespace LMPlatform.UI.ViewModels.LmsViewModels
         public LmsViewModel(int userId, bool isLector)
         {
             var s = this.SubjectManagementService.GetUserSubjects(userId).Where(e => !e.IsArchive);
-            this.Subjects = s.Select(e => new SubjectViewModel(e)).ToList();
+            this.Subjects = s.Select(e => new SubjectViewModel(e, userId)).ToList();
             this.CurrentSubjects = this.Subjects.Count();
             this.TotalSubject = this.SubjectManagementService.GetSubjects().Count();
             this.ComplexSubjects = s
                 .Where(cs =>
                     this.ModulesManagementService.GetModules(cs.Id)
                         .Any(m => m.ModuleType == ModuleType.ComplexMaterial))
-                .Select(e => new SubjectViewModel(e)).ToList();
+                .Select(e => new SubjectViewModel(e, userId)).ToList();
             this.CourseProjectSubjects = s.Where(cs =>
                     this.ModulesManagementService.GetModules(cs.Id).Any(m => m.ModuleType == ModuleType.YeManagment))
-                .Select(e => new SubjectViewModel(e)).ToList();
+                .Select(e => new SubjectViewModel(e, userId)).ToList();
 
             var modelStudents = new List<int>();
             this.CurrentStudents = 0;

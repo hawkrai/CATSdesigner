@@ -5,7 +5,9 @@ interface DialogData {
   label: string;
   message: string;
   actionName: string;
+  alert: string;
   color: string;
+  isConfirm: boolean;
 }
 
 @Component({

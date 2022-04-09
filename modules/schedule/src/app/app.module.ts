@@ -44,6 +44,7 @@ import {StoreModule} from '@ngrx/store';
 import {appReducers} from '../../../complex/src/app/store/reducers/app.reducers';
 import {EffectsModule} from '@ngrx/effects';
 import { FilesEffects } from './service/files.effects';
+import {NotifierModule, NotifierOptions} from 'angular-notifier';
 
 
 registerLocaleData(localeRu);
@@ -56,6 +57,15 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     }).format(date);
   }
 }
+
+const customNotifierOptions: NotifierOptions = {
+  position: {
+    horizontal: {
+      position: 'right',
+      distance: 10
+    }
+  }
+};
 
 @NgModule({
   declarations: [
@@ -82,7 +92,7 @@ class CustomDateFormatter extends CalendarNativeDateFormatter {
     MatInputModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-
+    NotifierModule.withConfig(customNotifierOptions),
     MatFormFieldModule,
     ReactiveFormsModule,
     NgxMaterialTimepickerModule,

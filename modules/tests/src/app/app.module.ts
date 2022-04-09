@@ -43,6 +43,7 @@ import {QuestionOtherTestComponent} from "./questions-page/components/question-o
 import {TestResultComponent} from "./test-result/test-result.component";
 import {TranslateModule, TranslatePipe} from "educats-translate";
 import {AutocompleteFormComponent} from "./shared/autocomplete-form/autocomplete-form.component";
+import { WhitespaceDirective } from "./shared/validators/whitespace.validator";
 import {SelectAutocompleteModule} from "mat-select-autocomplete";
 import {LoginComponent} from "./login/login.component";
 import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
@@ -50,6 +51,7 @@ import {MenuItemComponent} from "./questions-page/components/question-popup/comp
 import {NeuralNetworkPopupComponent} from "./questions-page/components/neural-network-popup/neural-network-popup.component";
 import * as dataEn from './core/translate/translations_en.json';
 import * as dataRu from './core/translate/translations_ru.json';
+import { IsIntegerPipe } from "./pipes/is-integer.pipe";
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import * as dataRu from './core/translate/translations_ru.json';
     TestResultComponent,
     AutocompleteFormComponent,
     LoginComponent,
-    NeuralNetworkPopupComponent
+    NeuralNetworkPopupComponent,
+    IsIntegerPipe,
+    WhitespaceDirective
   ],
   imports: [
     FormsModule,

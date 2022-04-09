@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions } from '@aspnet/signalr';
 import { Message } from '../models/entities/message.model';
 import { DataService } from './dataService';
 import { ContactService } from './contactService';
@@ -7,6 +7,7 @@ import { MessageCto } from '../models/dto/messageCto';
 import { environment } from 'src/environments/environment';
 import { VideoChatService } from './../../../video-chat/services/video-chat.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Options } from 'http-proxy-middleware';
 
 //api methods
 const SendCallRequest = 'SendCallRequest';
@@ -37,9 +38,11 @@ export class SignalRService {
 
   public connect() {
     this.hubConnection = new HubConnectionBuilder()
-                            .withUrl('http://172.16.11.41:4201/chat/')
-                            .withAutomaticReconnect()
-                            .build();
+      .withUrl(
+        'chatSignalR')
+      .withAutomaticReconnect()
+      .build();
+
     this.hubConnection
       .start()
       .then(() => {

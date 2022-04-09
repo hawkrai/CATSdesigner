@@ -14,6 +14,8 @@ import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import {TranslatePipe} from 'educats-translate';
 import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component';
 import {ScheduleStatisticsComponent} from '../schedule-statistics/schedule-statistics.component';
+import { NotifierService } from 'angular-notifier';
+
 
 
 const colors: any = {
@@ -36,7 +38,7 @@ export class ScheduleMainComponent implements OnInit {
               private dialog: MatDialog,
               private datePipe: DatePipe,
               private translatePipe: TranslatePipe,
-              private modulecommunicationservice: ModuleCommunicationService) {
+              private modulecommunicationservice: ModuleCommunicationService, private notifierService: NotifierService) {
   }
 
   isLoadActive = false;
@@ -137,8 +139,8 @@ export class ScheduleMainComponent implements OnInit {
 
   getTitelConsultation(consultation: any) {
     return consultation.StartTime.split(':')[0] + ':' +  consultation.StartTime.split(':')[1] +  '-'
-           + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|'
-           + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
+      + consultation.EndTime.split(':')[0] + ':' +  consultation.EndTime.split(':')[1] +  '|'
+      + consultation.Audience + '|' + consultation.Building + '|' + '|' + 'ДП' + '|' + '|' + 'White' + '|' + '|' + '|'
       + '|' + '|' + '|' + '|';
   }
 
@@ -206,8 +208,20 @@ export class ScheduleMainComponent implements OnInit {
         position: {top: '0%'}
       });
     dialogRef.afterClosed().subscribe(result => {
+      let type: string;
+      if (result.code == '200') {
+        type = 'success';
+      } else if (result.code == '500') {
+        type = 'error';
+      }
+      console.log(result);
+      if (type != undefined) {
+        this.notifierService.notify(type, result.message);
+      }
+
       if (result != null) {
         if (result.type === 'lesson') {
+
           this.lesson = result.lesson;
           const startT = new Date(this.lesson.Date);
           const endT = new Date(this.lesson.Date);
@@ -229,6 +243,9 @@ export class ScheduleMainComponent implements OnInit {
             meta: 'lesson'
           });
         } else if (result.type === 'note') {
+          if (result.note.note == undefined){
+            result.note.note = '';
+          }
           this.notes.push(result.note);
           this.events = [
             ...this.events,
@@ -283,7 +300,7 @@ export class ScheduleMainComponent implements OnInit {
 
   deleteEvent(eventToDelete: CalendarEvent) {
     const dialogRef = this.dialog.open(ConfirmationComponent, {
-      width: '250px',
+      width: '300px',
       disableClose: true,
       height: '150px',
       data: {}
@@ -497,11 +514,11 @@ export class ScheduleMainComponent implements OnInit {
     const dialogRef = this.dialog.open(HelpPopoverScheduleComponent,
       {data: {message: this.translatePipe.transform ('text.help.schedule', this.message),
           action: this.translatePipe.transform ('button.understand', this.action)},
-      disableClose: true,
-      hasBackdrop: true,
-      backdropClass: 'backdrop-help',
-      panelClass: 'help-popover'
-    });
+        disableClose: true,
+        hasBackdrop: true,
+        backdropClass: 'backdrop-help',
+        panelClass: 'help-popover'
+      });
 
     dialogRef.afterClosed().subscribe(result => {
     });
@@ -521,4 +538,3 @@ export class ScheduleMainComponent implements OnInit {
       {width: '1000px',  height: '100%', data: {schedule: this.events, start: startDate, end: endDate}, position: {top: '0%'}});
   }
 }
-
