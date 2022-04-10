@@ -221,7 +221,7 @@ namespace LMPlatform.UI.Services
 						Code = "403"
 					};
 				}
-				this.StudentManagementService.СonfirmationStudent(id);
+				this.StudentManagementService.СonfirmationStudent(id, UserContext.CurrentUserId);
 
 				return new StudentsResult
 				{
@@ -277,7 +277,7 @@ namespace LMPlatform.UI.Services
 			{
 				var id = int.Parse(groupId);
 				var students = this.GroupManagementService.GetGroups(
-					new Query<Group>(g => g.Id == id).Include(g => g.Students))
+					new Query<Group>(g => g.Id == id).Include(g => g.Students.Select(x => x.ConfirmedBy.User)))
 					.Single().Students
 					.OrderBy(e => e.FullName);
 
@@ -287,7 +287,9 @@ namespace LMPlatform.UI.Services
 					{
 						StudentId = e.Id,
 						FullName = e.FullName,
-						Confirmed  = e.Confirmed == null || e.Confirmed.Value
+						Confirmed  = e.Confirmed == null || e.Confirmed.Value,
+						ConfirmedBy = e.ConfirmedById.HasValue ? new LectorViewData(e.ConfirmedBy, true) : null,
+						ConfirmedAt = e.ConfirmedAt
 					}).ToList(),
 					Message = "Студенты успешно загружены",
 					Code = "200"

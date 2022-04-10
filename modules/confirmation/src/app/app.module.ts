@@ -15,13 +15,15 @@ import * as dataRu from './core/translate/translate_ru.json';
 import { SharedModule } from './shared/shared.module';
 import { CatsMessageService } from './services/cats-message.service';
 import { GroupSortPipe } from './pipes/group-sort.pipe';
+import { AspNetDatePipe } from './pipes/asp-net-date.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     ConfirmationComponent,
-    GroupSortPipe
+    GroupSortPipe,
+    AspNetDatePipe
   ],
   imports: [
     FormsModule,

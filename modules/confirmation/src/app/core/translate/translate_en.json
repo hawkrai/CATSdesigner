@@ -5,5 +5,7 @@
     "block": "Block access",
     "no-data": "No data matching the filter",
     "confirmation.title": "Students confirmation",
-    "new.students": "New students"
+    "new.students": "New students",
+    "confirm.at": "Confirmed at",
+    "confirm.by": "Confirmed by"
 }
