@@ -566,7 +566,6 @@
   "text.help.popover.content.fourth": "БНТУ-2021",
   "text.help.popover.route.manual": "Перейти к руководству пользователя",
   "text.help.popover.close": "Закрыть",
-  "text.tests.written": "Написано {actualCount} тестов из {testsCount}"
-
-  
+  "text.tests.written": "Написано {actualCount} тестов из {testsCount}",
+  "text.points": "Баллы" 
 }
