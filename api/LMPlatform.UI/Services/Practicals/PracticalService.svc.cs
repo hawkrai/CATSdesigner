@@ -234,19 +234,11 @@ namespace LMPlatform.UI.Services.Practicals
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
                     var showForStudent = showForStudents[i];
+                    var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
 
-                    foreach (var student in students)
+                    if (student != null && student.PracticalVisitingMark.Any(x => x.ScheduleProtectionPracticalId == dateId))
                     {
-                        if (student.StudentId == currentStudentId)
-                        {
-                            foreach (var practicalVisiting in student.PracticalVisitingMark)
-                            {
-                                if (practicalVisiting.ScheduleProtectionPracticalId == dateId)
-                                {
-                                    SubjectManagementService.SavePracticalVisitingData(new ScheduleProtectionPracticalMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
-                                }
-                            }
-                        }
+                        SubjectManagementService.SavePracticalVisitingData(new ScheduleProtectionPracticalMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
 
                     }
                 }

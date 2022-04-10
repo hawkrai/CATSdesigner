@@ -256,21 +256,12 @@ namespace LMPlatform.UI.Services.Labs
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
 					var showForStudent = showForStudents[i];
-
-                    foreach (var student in students)
+					var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
+					if (student != null && student.LabVisitingMark.Any(x => x.ScheduleProtectionLabId == dateId))
                     {
-                        if (student.StudentId == currentStudentId)
-                        {
-                            foreach (var labVisiting in student.LabVisitingMark)
-                            {
-                                if (labVisiting.ScheduleProtectionLabId == dateId)
-                                {
-                                    SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
-                                }
-                            }
-                        }
+						SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
 
-                    }
+					}
                 }
 
                 return new ResultViewData
