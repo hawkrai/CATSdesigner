@@ -1122,17 +1122,15 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public List<Subject> GetAllSubjectsByStudent(int userId)
+		public int GetSubjectsCountByStudent(int userId, bool isActive)
 		{
-			List<Subject> model;
+			int count;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
-				model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(student.GroupId).ToList();
+				return repositoriesContainer.SubjectRepository.GetSubjectsCountByGroupId(student.GroupId, isActive);
 			}
-
-			return model;
 		}
 
 		public List<Subject> GetSubjectsInfoByStudent(int userId)
@@ -1146,6 +1144,26 @@ namespace Application.Infrastructure.SubjectManagement
 			}
 
 			return model;
+		}
+
+		public List<Subject> GetAllSubjectsByStudent(int userId)
+		{
+			List<Subject> model;
+
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				var student = repositoriesContainer.StudentsRepository.GetStudent(userId);
+				model = repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(student.GroupId).ToList();
+			}
+
+			return model;
+		}
+
+		public List<Subject> GetSubjectsInfoByGroup(int Id) { 
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+			{
+				return repositoriesContainer.SubjectRepository.GetAllSubjectsForGroup(Id).ToList();
+			}
 		}
 
 		public int LabsCountByStudent(int userId)
@@ -1351,5 +1369,6 @@ namespace Application.Infrastructure.SubjectManagement
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.SubjectRepository.GetAll(query).ToList();
 		}
+
     }
 }

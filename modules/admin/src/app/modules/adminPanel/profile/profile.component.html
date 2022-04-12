@@ -75,7 +75,7 @@
     <div class = "project-table">
     <table mat-table [dataSource]="this.dpProfileProjects">
       <ng-container matColumnDef="item">
-        <th mat-header-cell *matHeaderCellDef> Дипломный проект пользователя </th>
+        <th mat-header-cell *matHeaderCellDef> {{this.getDpString()}}</th>
         <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
       </ng-container>
 

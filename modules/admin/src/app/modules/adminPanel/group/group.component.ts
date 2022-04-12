@@ -7,6 +7,7 @@ import { Group } from 'src/app/model/group';
 import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-students.component';
 import {MessageComponent} from '../../../component/message/message.component';
 import { AppToastrService } from 'src/app/service/toastr.service';
+import { SubjectListComponent } from '../modal/subject-list/subject-list.component';
 
 @Component({
   selector: 'app-group',
@@ -16,7 +17,7 @@ import { AppToastrService } from 'src/app/service/toastr.service';
 export class GroupComponent implements OnInit {
 
   dataGroup  = new Group();
-  displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount', 's'];
+  displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount','subjectsCount', 's'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -29,6 +30,14 @@ export class GroupComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.loadGroup();
   }
+
+  openListOfSubject(group) {
+    const dialogRef = this.dialog.open(SubjectListComponent, {
+      data: group
+    });
+    dialogRef.afterClosed();
+  }
+
 
   loadGroup() {
     this.groupService.getGroups().subscribe(items => {
@@ -105,10 +114,10 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  async openListOfStudents(groupId) {
-    const dialogRef = this.dialog.open(ListOfStudentsComponent, {
-        data: groupId
-    });
+  async openListOfStudents(group) {
+    const dialogRef = this.dialog.open(ListOfStudentsComponent, 
+      {data: group},
+    );
     dialogRef.afterClosed();
   }
 
