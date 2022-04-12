@@ -155,7 +155,7 @@
   "text.test.no.results": "There are no results to display",
   "text.test.mark": "Score",
   "text.test.edit.question": "Edit question",
-  "text.text.percent": "Percentage",
+  "text.text.percent": "Percentage",  
   "text.test.delete.question": "Delete question",
   "text.test.want.to.delete.test": "Are you sure you want to delete the test?",
   "text.test.open.all": "Open for everyone",
@@ -618,5 +618,6 @@
   "text.help.popover.content.fourth": "BNTU-2021",
   "text.help.popover.route.manual":"Go to user manual",
   "text.help.popover.close":"Close",
-  "text.tests.written": "Written {actualCount} tests out of {testsCount}"
+  "text.tests.written": "Written {actualCount} tests out of {testsCount}",
+  "text.points": "Points"
 }

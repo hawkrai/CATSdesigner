@@ -63,12 +63,19 @@ namespace LMPlatform.UI.Services.Lectures
             {
 	            var id = int.Parse(subjectId); 
 				var lecturesScheduleVisitingsQuery = new Query<Subject>(e => e.Id == id)
-					.Include(e => e.LecturesScheduleVisitings);
-
+					.Include(e => e.LecturesScheduleVisitings.Select(x => x.Lecturer.User));
+                var subjectOwner = SubjectManagementService.GetSubjectOwner(id);
                 var entities = SubjectManagementService.GetSubject(lecturesScheduleVisitingsQuery)
                         .LecturesScheduleVisitings
                         .OrderBy(e => e.Date);
-                var model = entities.Select(e => new CalendarViewData(e)).ToList();
+                var model = entities.Select(e =>
+                {
+                    if (e.Lecturer == null)
+                    {
+                        e.Lecturer = subjectOwner;
+                    }
+                    return new CalendarViewData(e);
+                }).ToList();
 
                 return new CalendarResult
                 {

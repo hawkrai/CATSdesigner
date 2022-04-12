@@ -191,7 +191,7 @@
   "text.test.question.num": "Вопрос №{number}",
   "text.test.theme.finished": "Тест на тему «{title}» завершен",
   "text.test.time.completing": "Время прохождения: {start} - {end}",
-  "text.test.your.mark": "Ваша оценка - {mark} ({percent}%)",
+  "text.test.your.mark": "Ваша оценка: {mark} ({percent}%)",
   "text.test.result.test": "Результаты тестирования",
   "text.test.control.compleating.test": "Контроль прохождения тестов",
   "text.test.theme.test": "Темы тестов",
@@ -566,7 +566,6 @@
   "text.help.popover.content.fourth": "БНТУ-2021",
   "text.help.popover.route.manual": "Перейти к руководству пользователя",
   "text.help.popover.close": "Закрыть",
-  "text.tests.written": "Написано {actualCount} тестов из {testsCount}"
-
-  
+  "text.tests.written": "Написано {actualCount} тестов из {testsCount}",
+  "text.points": "Баллы" 
 }

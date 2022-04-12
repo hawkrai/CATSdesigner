@@ -17,7 +17,7 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
   public groups: Group[] = [];
   public selectedGroup: number;
   public students: Student[] = [];
-  public displayedColumns: string[] = ["id", "name", "action"];
+  public displayedColumns: string[] = ["id", "name", 'confirmedAt', 'confirmedBy', "action"];
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(

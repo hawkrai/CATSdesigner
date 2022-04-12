@@ -4,6 +4,7 @@ using Application.Core.Data;
 using LMPlatform.Models.DP;
 using LMPlatform.Models.KnowledgeTesting;
 using LMPlatform.Models.CP;
+using System;
 
 namespace LMPlatform.Models
 {
@@ -18,6 +19,12 @@ namespace LMPlatform.Models
 	    public string MiddleName { get; set; }
 
 	    public bool? Confirmed { get; set; }
+
+        public int? ConfirmedById { get; set; }
+
+        public Lecturer ConfirmedBy { get; set; }
+
+        public DateTime? ConfirmedAt { get; set; }
 
 	    public User User { get; set; }
 

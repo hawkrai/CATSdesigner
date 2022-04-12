@@ -9,7 +9,6 @@ namespace LMPlatform.Models
     public class ScheduleProtectionLabs : ScheduleBase
     {
         public int? SubjectId { get; set; }
-
         public Subject Subject { get; set; }
         public int SuGroupId { get; set; }
 
@@ -17,6 +16,9 @@ namespace LMPlatform.Models
 
         public ICollection<ScheduleProtectionLabMark> ScheduleProtectionLabMarks { get; set; }
 
-        public ICollection<Note> Notes { get; set; } = new List<Note>();
+        public ScheduleProtectionLabs() { }
+
+        public ScheduleProtectionLabs(ScheduleBase scheduleBase) : base(scheduleBase) { }
+
     }
 }

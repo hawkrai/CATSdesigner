@@ -256,21 +256,12 @@ namespace LMPlatform.UI.Services.Labs
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
 					var showForStudent = showForStudents[i];
-
-                    foreach (var student in students)
+					var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
+					if (student != null && student.LabVisitingMark.Any(x => x.ScheduleProtectionLabId == dateId))
                     {
-                        if (student.StudentId == currentStudentId)
-                        {
-                            foreach (var labVisiting in student.LabVisitingMark)
-                            {
-                                if (labVisiting.ScheduleProtectionLabId == dateId)
-                                {
-                                    SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
-                                }
-                            }
-                        }
+						SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
 
-                    }
+					}
                 }
 
                 return new ResultViewData
@@ -657,7 +648,7 @@ namespace LMPlatform.UI.Services.Labs
             try
             {
 				var labs = this.SubjectManagementService.GetLabsV2(subjectId).OrderBy(e => e.Order);
-
+				var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
 				var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
 				var labsSubGroups = new List<LabsViewData>();
 				var scheduleProtectionLabs = new List<ScheduleProtectionLabsViewData>();
@@ -708,7 +699,14 @@ namespace LMPlatform.UI.Services.Labs
 					var scheduleProtactionLabsSubGroup = subGroup.ScheduleProtectionLabs
 						.OrderBy(e => e.Date)
 						.Select(
-					e => new ScheduleProtectionLabsViewData(e)).ToList();
+					e =>
+                    {
+						if (e.Lecturer == null)
+                        {
+							e.Lecturer = subjectOwner;
+                        }
+						return new ScheduleProtectionLabsViewData(e);
+					}).ToList();
 					scheduleProtactionLabsSubGroup.ForEach(e => e.SubGroup = subGroupValue);
 					scheduleProtectionLabs.AddRange(scheduleProtactionLabsSubGroup);
 				}

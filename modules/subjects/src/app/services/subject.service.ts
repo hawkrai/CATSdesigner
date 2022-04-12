@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -56,8 +56,10 @@ export class SubjectService {
     );
   }
 
-  public getJoinedLector(subjectId: number): Observable<Lector[]> {
-    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId).pipe(
+  public getJoinedLector(subjectId: number, loadSelf: boolean = false): Observable<Lector[]> {
+    const params = new HttpParams()
+      .set('loadSelf', loadSelf + '');
+    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId, { params }).pipe(
       map(res => res['Lectors'])
     );
   }

@@ -22,7 +22,7 @@ namespace Application.Infrastructure.StudentManagement
 
 	    int CountUnconfirmedStudents(int lecturerId);
 
-	    void СonfirmationStudent(int studentId);
+	    void СonfirmationStudent(int studentId, int userId);
 
 	    void UnConfirmationStudent(int studentId);
 

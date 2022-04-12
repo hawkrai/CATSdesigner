@@ -1,11 +1,11 @@
 <div>
   <!--<app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Доступные тесты'"></app-header>-->
-  <app-main-page [allowChanges]="false"
+  <!-- <app-main-page [allowChanges]="false"
                  [adminQuestions]="false"
                  [adminTests]="false"
                  [hideSearch]="true"
-                 (onValueChangeSearch)="filterTests($event)"></app-main-page>
+                 (onValueChangeSearch)="filterTests($event)"></app-main-page> -->
   <mat-tab-group class="container-table-tab" (selectedTabChange)="onChange($event)">
     <mat-tab [label]="'text.test.theme.test' | translate: 'Темы тестов'">
       <div class="container-table-tests" *ngIf="knowledgeControlTests?.length">

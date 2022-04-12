@@ -489,7 +489,7 @@ namespace Application.Infrastructure.SubjectManagement
 			var subjectGroup =
 				repositoriesContainer.RepositoryFor<SubjectGroup>().GetBy(
 					new Query<SubjectGroup>(e => e.GroupId == groupId && e.SubjectId == subjectId)
-						.Include(e => e.SubGroups.Select(c => c.ScheduleProtectionLabs))
+						.Include(e => e.SubGroups.Select(c => c.ScheduleProtectionLabs.Select(x => x.Lecturer.User)))
 						.Include(e => e.SubjectStudents));
 						
 			return subjectGroup.SubGroups.Where(x => x.SubjectStudents?.Count > 0).ToList();
