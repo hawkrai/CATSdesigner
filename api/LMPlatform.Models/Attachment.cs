@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Application.Core.Data;
 
 namespace LMPlatform.Models
@@ -19,8 +20,26 @@ namespace LMPlatform.Models
 
 		public User Author { get; set; }
 
-        //public int? SubjectNewsId { get; set; }
+		[NotMapped]
+		public string CreationDateString
+		{
+			get
+			{
+				return CreationDate?.ToString("dd/MM/yyyy");
+			}
+		}
 
-        //public SubjectNews SubjectNews { get; set; }
+		[NotMapped]
+		public string AuthorName
+		{
+			get
+			{
+				return Author?.FullName;
+			}
+		}
+
+		//public int? SubjectNewsId { get; set; }
+
+		//public SubjectNews SubjectNews { get; set; }
 	}
 }

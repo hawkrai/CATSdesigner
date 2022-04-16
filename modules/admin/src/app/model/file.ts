@@ -11,4 +11,8 @@ export class File {
     FileName: string;
     Name: string;
     PathName: string;
+    CreationDateString :string;
+    DateTime :string;
+    AuthorName: string;
+
 }

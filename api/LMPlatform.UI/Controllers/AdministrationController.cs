@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using System.Web.Security;
+using Application.Core;
 using Application.Core.Data;
 using Application.Core.UI.Controllers;
 using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure.DPManagement;
+using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.StudentManagement;
@@ -24,6 +27,12 @@ namespace LMPlatform.UI.Controllers
     [JwtAuth(Roles = "admin")]
     public class AdministrationController : BasicController
     {
+
+        private readonly LazyDependency<IFilesManagementService> _filesManagementService =
+            new LazyDependency<IFilesManagementService>();
+
+        public IFilesManagementService FilesManagementService => this._filesManagementService.Value;
+
         [HttpPost]
         public DataTablesResult<StudentViewModel> GetCollectionStudents(DataTablesParam dataTableParam)
         {
@@ -114,6 +123,29 @@ namespace LMPlatform.UI.Controllers
             };
 
             return JsonResponse(responseObj);
+        }
+
+        [HttpGet]
+        public ActionResult GetFiles()
+        {
+            try
+            {
+                var attachments = this.FilesManagementService.GetAttachments(null).ToList();
+                var storageRoot = ConfigurationManager.AppSettings["FileUploadPath"];
+                var result = new 
+                {
+                    Files = attachments,
+                    ServerPath = storageRoot,
+                    Message = "Данные успешно загружены",
+                    Code = "200"
+                };
+
+                return JsonResponse(result);
+            }
+            catch
+            {
+                return StatusCode(HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
