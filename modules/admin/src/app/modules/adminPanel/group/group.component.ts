@@ -7,6 +7,7 @@ import { Group } from 'src/app/model/group';
 import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-students.component';
 import {MessageComponent} from '../../../component/message/message.component';
 import { AppToastrService } from 'src/app/service/toastr.service';
+import { SubjectListComponent } from '../modal/subject-list/subject-list.component';
 
 @Component({
   selector: 'app-group',
@@ -15,8 +16,8 @@ import { AppToastrService } from 'src/app/service/toastr.service';
 })
 export class GroupComponent implements OnInit {
 
-  group = new Group();
-  displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount', 's'];
+  dataGroup  = new Group();
+  displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount','subjectsCount', 's'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -30,21 +31,41 @@ export class GroupComponent implements OnInit {
     this.loadGroup();
   }
 
+  openListOfSubject(group) {
+    const dialogRef = this.dialog.open(SubjectListComponent, {
+      data: group
+    });
+    dialogRef.afterClosed();
+  }
+
+
   loadGroup() {
-    this.isLoad = false;
     this.groupService.getGroups().subscribe(items => {
-      this.dataSource.data = items;
+      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
       this.isLoad = true;
     });
   }
 
+  sortFunc(a, b) { 
+    if(a.Name < b.Name){
+      return -1;
+    }
+
+    else if(a.Name > b.Name){
+      return 1;
+    }
+    
+    return 0;
+ } 
+
   saveGroup(group: Group) {
     this.groupService.addGroup(group).subscribe(() => {
-      this.group = new Group();
-      this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       this.loadGroup();
+      this.dataGroup = new Group();
+      this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
     }, err => {
       if (err.status === 500) {
+        this.loadGroup();
         this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       } else {
         this.toastr.addErrorFlashMessage('Произошла ошибка при сохранении. Повторите попытку');
@@ -93,10 +114,10 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  async openListOfStudents(groupId) {
-    const dialogRef = this.dialog.open(ListOfStudentsComponent, {
-        data: groupId
-    });
+  async openListOfStudents(group) {
+    const dialogRef = this.dialog.open(ListOfStudentsComponent, 
+      {data: group},
+    );
     dialogRef.afterClosed();
   }
 

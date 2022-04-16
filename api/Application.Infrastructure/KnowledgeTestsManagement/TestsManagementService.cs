@@ -22,8 +22,12 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				var unlocks = repositoriesContainer.TestsRepository.GetBy(testsQuery).TestUnlocks;
-				if (unlocks != null && unlocks.Count > 0)
+				var test = repositoriesContainer.TestsRepository.GetBy(testsQuery);
+				if (!(test.ForSelfStudy ||
+					test.ForEUMK ||
+					test.BeforeEUMK ||
+					test.ForNN) &&
+					test.TestUnlocks != null && test.TestUnlocks.Count > 0)
 				{
 					throw new InvalidDataException("Тест не может быть изменён, т.к. доступен для прохождения");
 				}
@@ -65,6 +69,19 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 			if (test.CountOfQuestions <= 0)
 			{
 				throw new InvalidDataException("Количество вопросов должно быть больше нуля");
+			}
+			if (string.IsNullOrEmpty(test.Title))
+            {
+				throw new InvalidDataException("Название теста не должно быть пустым");
+            }
+			if (test.Title.Trim() == string.Empty)
+			{
+				throw new InvalidDataException("Название теста не должно состоять только из пробелов");
+			}
+
+			if (!string.IsNullOrEmpty(test.Description) && test.Description.Trim() == string.Empty)
+			{
+				throw new InvalidDataException("Описание теста не должно состоять только из пробелов");
 			}
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
@@ -298,5 +315,5 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
 			return students;
 		}
-	}
+    }
 }

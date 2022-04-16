@@ -8,6 +8,7 @@ export class ProfileInfoSubject {
     ShortName: string;
     Color: string;
     Completing: number;
+    IsActive: boolean;
 }
 
 export class ProfileInfo {

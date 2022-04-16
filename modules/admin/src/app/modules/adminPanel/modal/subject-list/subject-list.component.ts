@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource } from '@angular/material';
+import { Group } from 'src/app/model/group';
 import { UserService } from 'src/app/service/userService';
 
 @Component({
@@ -22,7 +23,7 @@ export class SubjectListComponent implements OnInit {
   }
 
   getSubjectStatus(status) {
-    if(status == true){
+    if(status[0] == true){
       return "Активен"
     }
     else{
@@ -30,11 +31,22 @@ export class SubjectListComponent implements OnInit {
   }
   }
 
-  loadData(studentId) {
-    this.userService.getListOfSubjectsByStudentId(studentId).subscribe( result => {
+  loadData(data) {
+    if(!this.isGroup(data)){
+    this.userService.getListOfAllSubjectsByStudentId(data.Id).subscribe( result => {
       this.subjectInfo = result;
       this.isLoad = true;
-    });
-  }
+    });}
+
+    else{
+      this.userService.getListOfAllSubjectsByGroupId(data.Id).subscribe( result => {
+        this.subjectInfo = result;
+        this.isLoad = true;
+      });}
+    }
+  
+  isGroup(data){
+    return data.StudentsCount !== undefined;
+}
 
 }

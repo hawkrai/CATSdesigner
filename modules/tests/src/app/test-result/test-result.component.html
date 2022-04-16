@@ -1,32 +1,32 @@
 <!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Доступные тесты'"></app-header>-->
 <div class="test-result__container">
-
   <div class="test-result__backlink" (click)="navigate()">
     {{'text.test.back.to.test' | translate: "< К тестам"}}
   </div>
-  <div class="test-result__title" *ngIf="testName">
-    {{'text.test.theme.finished' | translate : ("Тест на тему «" + testName + "» завершен") : {title: testName} }}
+  <div class="test-result-list">
+    <div class="test-result-text__title" *ngIf="testName">
+      {{'text.test.theme.finished' | translate : ("Тест на тему «" + testName + "» завершен") : {title: testName} }}
+    </div>
+  
+    <div class="test-result-text">
+      {{'text.test.your.mark' | translate: ("Ваша оценка: " + mark + "(" + percent + ")") : {mark: mark + '', percent: percent + ''} }}
+    </div>
+    <div class="test-result-text">
+      {{('text.test.date.completing' | translate : "Дата прохождения теста :") + endDate }}
+    </div>
+    <div class="test-result-text">
+      {{('text.test.time.start' | translate : "Время начала теста :") + startTime }}
+    </div>
+    <div class="test-result-text">
+      {{('text.test.time.end' | translate : "Время окончания теста :") + endTime }}
+    </div>
   </div>
-
-  <div class="test-result__mark">
-    {{'text.test.your.mark' | translate: ("Ваша оценка - " + mark + "(" + percent + ")") : {mark: mark + '', percent: percent + ''} }}
-  </div>
-  <div class="test-result__date">
-    {{('text.test.date.completing' | translate : "Дата прохождения теста :") + endDate }}
-  </div>
-  <div class="test-result__date">
-    {{('text.test.time.start' | translate : "Время начала теста :") + startTime }}
-  </div>
-  <div class="test-result__date">
-    {{('text.test.time.end' | translate : "Время окончания теста :") + endTime }}
-  </div>
-
 
   <div class="test-result__results">
     <div class="test-result__results-line" *ngFor="let question of result">
       <div class="test-result__results-line-mark">
-        {{'text.test.question.num' | translate : ("Вопрос №" + question.Number) : {number: question.Number} }}
+        <p>{{'text.test.question.num' | translate : ("Вопрос №" + question.Number) : {number: question.Number} }}</p>
       </div>
       <div class="test-result__results-line-color"
            [class.right]="question.Points !== 0"
@@ -36,7 +36,5 @@
       ></div>
     </div>
   </div>
-  <div class="test-result__backlink" (click)="navigate()">
-    {{'text.test.back.to.test' | translate: "< К тестам"}}
-  </div>
+
 </div>

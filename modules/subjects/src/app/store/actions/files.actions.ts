@@ -63,3 +63,8 @@ export const getAttachmentsAsZip = createAction(
 export const downloadAsZipLoadedFiles = createAction(
     '[Files] Download As Zip Loaded Files'
 );
+
+export const setIsDownloading = createAction(
+    '[Files] Set Is Downloading',
+    props<{ isDownloading: boolean }>()
+);

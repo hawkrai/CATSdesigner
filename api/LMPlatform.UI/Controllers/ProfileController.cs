@@ -247,9 +247,9 @@ namespace LMPlatform.UI.Controllers
                     subject.Id,
                     subject.ShortName,
                     subject.Color,
-                    Completing = "2",/*subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
-                        user.Student),*/
-                    IsActive = subject.SubjectGroups.FirstOrDefault(sg => sg.SubjectId == subject.Id).IsActiveOnCurrentGroup
+                    Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
+                        user.Student),
+                    IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id)?.IsActiveOnCurrentGroup
                 }) ;
 
             return this.Json(returnModel, JsonRequestBehavior.AllowGet);

@@ -96,6 +96,9 @@ export class StatsComponent implements OnInit {
     if (id && id !== -1) {
       const subject = this.subjectsTemp.find(({Id}) => Id === id);
       this.tableStats = this.studentStatisticTemp.map((item) => {
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
@@ -109,18 +112,16 @@ export class StatsComponent implements OnInit {
         practPass += userPracticalPass;
         labPass += userLabPass;
 
-        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
-          return ;
-        }
+
         return {
           GroupName: groupName,
           FIO: item.FIO,
           Subject: subject.Name,
-          Rating: ((userAvgLabMarks + userAvgTestMarks + userPracticalMarks) / 3).toFixed(2),
+          Rating: ((userAvgLabMarks + userAvgTestMarks + userPracticalMarks) / 3).toFixed(1),
           AllPass: userLabPass + userLecturePass + userPracticalPass,
-          UserAvgLabMarks: userAvgLabMarks.toFixed(2),
-          UserAvgTestMarks: userAvgTestMarks.toFixed(2),
-          UserAvgPracticalMarks: userPracticalMarks.toFixed(2),
+          UserAvgLabMarks: userAvgLabMarks.toFixed(1),
+          UserAvgTestMarks: userAvgTestMarks.toFixed(1),
+          UserAvgPracticalMarks: userPracticalMarks.toFixed(1),
           UserTestCount: item.UserTestCount.find(({Key}) => Key === id).Value,
           UserLabCount: item.UserLabCount.find(({Key}) => Key === id).Value,
           UserLabPass: userLabPass,
@@ -129,6 +130,9 @@ export class StatsComponent implements OnInit {
       });
     } else if (id === -1) {
       this.tableStats = this.studentStatisticTemp.map( item => {
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         let labPassTotal = 0;
         let lecturePassTotal = 0;
         let practicalPassTotal = 0;
@@ -152,36 +156,45 @@ export class StatsComponent implements OnInit {
         lectPass += lecturePassTotal;
         practPass += practicalPassTotal;
         labPass += labPassTotal;
-        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
-          return ;
-        }
+
         return {
           GroupName: groupName,
           FIO: item.FIO,
           Subject: 'Все предметы',
-          Rating: ((avgTestMarksTotal + avgLabMarksTotal + avgPracticalMarksTotal) / 3).toFixed(2),
+          Rating: ((avgTestMarksTotal + avgLabMarksTotal + avgPracticalMarksTotal) / 3).toFixed(1),
           AllPass: labPassTotal + lecturePassTotal + practicalPassTotal,
-          UserAvgLabMarks: avgLabMarksTotal.toFixed(2),
-          UserAvgTestMarks: avgTestMarksTotal.toFixed(2),
+          UserAvgLabMarks: avgLabMarksTotal.toFixed(1),
+          UserAvgTestMarks: avgTestMarksTotal.toFixed(1),
           UserLabPass: labPassTotal,
-          UserAvgPracticalMarks: avgPracticalMarksTotal.toFixed(2),
+          UserAvgPracticalMarks: avgPracticalMarksTotal.toFixed(1),
           UserLecturePass: lecturePassTotal,
           UserPracticalPass: practicalPassTotal
         };
       });
     }
 
-    labMarks = Math.round(labMarks / this.studentStatistic.length * 100) / 100;
-    practMarks = Math.round(practMarks / this.studentStatistic.length * 100) / 100;
-    testMarks = Math.round(testMarks / this.studentStatistic.length * 100) / 100;
-    rating = Math.round((labMarks + practMarks + testMarks) / 3 * 100) / 100;
+    if (this.surname == undefined) {
+      labMarks = Math.round(labMarks / this.studentStatistic.length) ;
+      practMarks = Math.round(practMarks / this.studentStatistic.length) ;
+      testMarks = Math.round(testMarks / this.studentStatistic.length);
 
-    lectPass = Math.round(lectPass / this.studentStatistic.length * 100) / 100;
-    practPass = Math.round(practPass / this.studentStatistic.length * 100) / 100;
-    labPass = Math.round(labPass / this.studentStatistic.length * 100) / 100;
+      lectPass = Math.round(lectPass / this.studentStatistic.length) ;
+      practPass = Math.round(practPass / this.studentStatistic.length);
+      labPass = Math.round(labPass / this.studentStatistic.length) ;
+    }
+
+    labMarks = Math.round(labMarks  * 10) / 10;
+    practMarks = Math.round(practMarks  * 10) / 10;
+    testMarks = Math.round(testMarks * 10) / 10;
+    rating = Math.round((labMarks + practMarks + testMarks) / 3 * 10) / 10;
+
+    lectPass = Math.round(lectPass  * 10) / 10;
+    practPass = Math.round(practPass  * 10) / 10;
+    labPass = Math.round(labPass  * 10) / 10;
+
     this.tableStats.push({
       GroupName: groupName,
-      FIO: '',
+      FIO: 'Средние значения',
       Subject: 'Все предметы',
       Rating: rating,
       AllPass: lectPass + practPass + labPass,

@@ -66,7 +66,7 @@ export const resetVisiting = createAction(
 
 export const createDateVisit = createAction(
   '[Lectures] Create Date Visit',
-  props<{ obj: { date: string, startTime: string, endTime: string, building: string, audience: string } }>()
+  props<{ obj: { date: string, startTime: string, endTime: string, building: string, audience: string, lecturerId: number } }>()
 );
 
 export const deleteDateVisit = createAction(

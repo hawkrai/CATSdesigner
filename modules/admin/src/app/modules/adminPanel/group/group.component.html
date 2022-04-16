@@ -1,5 +1,5 @@
 <div class="main">
-    <button mat-raised-button (click)="addGroup(this.group)">Добавить группу</button>
+    <button mat-raised-button (click)="addGroup(this.dataGroup)">Добавить группу</button>
     <div [hidden]="!isLoad" class="table">
         <mat-form-field class="search">
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
@@ -29,16 +29,24 @@
             </ng-container>
 
             <ng-container matColumnDef="studentsCount">
-                <th mat-header-cell *matHeaderCellDef>Количество студентов</th>
-                <td mat-cell *matCellDef="let element"> {{ element.StudentsCount }} </td>
+                <th mat-header-cell *matHeaderCellDef>Количество студентов (Подтверждено\Не подтверждено) </th>
+                <td mat-cell *matCellDef="let element"> {{ element.StudentsConfirmedCount}}\{{element.StudentsNotConfirmedCount }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subjectsCount">
+                <th mat-header-cell *matHeaderCellDef>Количество предметов (Активно\Не активно)  </th>
+                <td mat-cell *matCellDef="let element"> {{ element.GroupsActiveCount}}\{{element.GroupsNotActiveCount }} </td>
             </ng-container>
 
             <ng-container matColumnDef="s" class="actions">
                 <th mat-header-cell *matHeaderCellDef>Действиe</th>
                 <td mat-cell *matCellDef="let element">
-                    <button mat-button matTooltip="Список студентов, состоящих в данной группе" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfStudents(element.Id)">
+                    <button mat-button matTooltip="Список студентов, состоящих в данной группе" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfStudents(element)">
                         <mat-icon>supervised_user_circle</mat-icon>
                     </button>
+                    <button mat-button matTooltip="Список предметов" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfSubject(element)">
+                        <mat-icon>list</mat-icon>
+                      </button>
                     <button mat-button matTooltip="Редактировать группу" [matTooltipPosition]="'above'" aria-label="Edit" matTooltipClass="tooltip" (click)="this.editGroup(element)">
                         <mat-icon>edit</mat-icon>
                     </button>

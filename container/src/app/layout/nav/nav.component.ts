@@ -69,10 +69,13 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const authRole = this.autService.currentUserValue.role;
-    this.isLector = authRole === "lector";
-    this.isAdmin = authRole === "admin";
-
+	  this.isLector = false;
+    this.isAdmin = false;
+    if (this.autService.currentUserValue != undefined) {
+      const authRole = this.autService.currentUserValue.role;
+	  this.isLector = authRole === "lector";
+	  this.isAdmin = authRole === "admin";
+    }
     this.getUserInfo();
     if (this.isLector) {
       this.confirmationService.confirmationSubject
@@ -194,7 +197,7 @@ export class NavComponent implements OnInit, OnDestroy {
     });
   }
 
-  viewGroupSearchResults() {
+ viewGroupSearchResults() {
     this.searchService.getGroupSearchResults(this.valueForSearch).subscribe(res => {
       if (res.length > 0)
         this.groupSearchResults = res;

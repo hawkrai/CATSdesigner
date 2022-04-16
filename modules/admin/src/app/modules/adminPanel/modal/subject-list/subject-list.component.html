@@ -6,7 +6,7 @@
           <mat-icon>close</mat-icon>
         </button>
     </div>
-    <p class="student-name">{{ this.subjectInfo.Student }}</p>
+    <p class="student-name">{{ this.subjectInfo.Owner }}</p>
     <div mat-dialog-content>
         <table mat-table [dataSource]="this.subjectInfo.Subjects">
 
@@ -18,7 +18,7 @@
             <ng-container matColumnDef="subjectStatus">
                 <th mat-header-cell *matHeaderCellDef> Статус предмета </th>
                 <td class="table-container" mat-cell *matCellDef="let element">
-                    {{ getSubjectStatus(element.IsActiveOnGroup) }}
+                    {{getSubjectStatus(element.IsActiveOnGroup)}}
                 </td>
             </ng-container>
 

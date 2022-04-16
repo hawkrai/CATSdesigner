@@ -1,6 +1,6 @@
 <!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Управление тестами'"></app-header>-->
-<div class="question-page__backlink-first" (click)="navigate()">
+<div class="question-page__backlink" (click)="navigate()">
   {{'text.test.back.to.test' | translate : "< К тестам"}}
 </div>
 <div class="question-page-container">
@@ -28,7 +28,4 @@
     (onDeleteQuestion)="openConfirmationDialog($event)"
     (onOpenEditPopup)="openPopup($event)">
   </app-table-questions>
-  <div class="question-page__backlink" (click)="navigate()">
-    {{'text.test.back.to.test' | translate : "< К тестам"}}
-  </div>
 </div>

@@ -43,6 +43,15 @@ export class ProfileComponent implements OnInit {
   isStudent() {
     return this.profileInfo.UserType == "2";
   }
+
+  getDpString(){
+    if(this.isStudent){
+      return "Дипломный проект пользователя"
+    }
+    else{
+      return "Дипломные проект пользователя"
+    }
+  }
   getProfileInfo(id: any) {
     this.profileService.getProfileInfoById(id).subscribe((res) => {
       this.profileInfo = res;
@@ -67,7 +76,7 @@ export class ProfileComponent implements OnInit {
   }
   
   getProfileInfoSubjects(id: any) {
-    this.profileService.getProfileInfoSubjectsById(id).subscribe((res: any) => {
+    this.profileService.getAllProfileInfoSubjectsById(id).subscribe((res: any) => {
       this.profileInfoSubjects = res;
       this.archivedSubjects = this.profileInfoSubjects.filter(this.archivedFilter).sort((a,b) =>  this.sortFunc(a, b));
       this.currentSubjects = this.profileInfoSubjects.filter(this.currentFilter).sort((a,b) => this.sortFunc(a, b));
@@ -85,25 +94,24 @@ export class ProfileComponent implements OnInit {
     }
     
     else{
-      if(a.Name < b.Completing){
+      if(a.Name < b.Name){
         return -1;
       }
   
-      else if(a.Completing > b.Completing){
+      else if(a.Name > b.Name){
         return 1;
       }
-  
+
       return 0;
     }
-    
  } 
 
   currentFilter(element, index, array) { 
-    return (!element.IsArchived); 
+    return (element.IsActive); 
  } 
 
   archivedFilter(element, index, array) { 
-   return (element.IsArchived); 
+   return (!element.IsActive); 
  } 
 
  

@@ -1,7 +1,7 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div [hidden]='!this.isLoad'>
     <div mat-dialog-title class="container">
-        <p>Группа</p>
+        <p>Группа {{this.data.Name}}</p>
         <button mat-button class="close-icon" [mat-dialog-close]="true">
             <mat-icon>close</mat-icon>
         </button>

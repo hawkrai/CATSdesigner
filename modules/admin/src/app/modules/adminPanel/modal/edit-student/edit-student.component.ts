@@ -14,18 +14,17 @@ export class EditStudentComponent implements OnInit {
 
   groups: Group[];
   form: FormGroup;
-  fullName: string;
   student: Student
   @Output() submitEM = new EventEmitter();
   constructor(
     private formBuilder: FormBuilder,
     public groupService: GroupService,
-    public dialogRef: MatDialogRef<object>,
+    public dialogRef: MatDialogRef<EditStudentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    this.student = this.data;
     this.loadGroup();
+    this.student = this.data;
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
       Id: new FormControl(this.student.Id),

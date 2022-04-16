@@ -14,5 +14,8 @@ namespace LMPlatform.UI.Services.Modules.Parental
 
         [DataMember]
         public string GroupName { get; set; }
+
+        [DataMember]
+        public string UserName { get; set; }
     }
 }

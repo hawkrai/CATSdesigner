@@ -1,7 +1,8 @@
-<app-visit-date-popover 
+<app-visit-date-popover *ngIf="state$ | async as state"
     (createDate)="onCreateDate($event)" 
     (close)="onClose($event)" 
     (deleteDay)="onDeleteDay($event)" 
     [data]="data" 
-    [schedule]="schedule$ | async">
+    [schedule]="state.schedule"
+    [lectors]="state.lectors">
 </app-visit-date-popover>

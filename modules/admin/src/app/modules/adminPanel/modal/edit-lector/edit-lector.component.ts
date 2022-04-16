@@ -28,11 +28,11 @@ export class EditLectorComponent implements OnInit {
     this.professor = this.data;
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
-      Name: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+      Name: new FormControl(this.professor.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Surname: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+      Surname: new FormControl(this.professor.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Patronymic: new FormControl('', [Validators.maxLength(30),
+      Patronymic: new FormControl(this.professor.Patronymic, [Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
       Email: new FormControl(this.professor.Email || '',
 [Validators.pattern('^[a-z0-9_.@-]{3,30}$'), Validators.maxLength(30)]),

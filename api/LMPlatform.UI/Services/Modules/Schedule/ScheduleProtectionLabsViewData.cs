@@ -13,7 +13,8 @@
                   scheduleProtectionLabs.EndTime,
                   scheduleProtectionLabs.Building,
                   scheduleProtectionLabs.Audience,
-                  scheduleProtectionLabs.SubjectId)
+                  scheduleProtectionLabs.SubjectId,
+                  scheduleProtectionLabs.Lecturer)
         {
             ScheduleProtectionLabId = scheduleProtectionLabs.Id;
             SubGroupId = scheduleProtectionLabs.SuGroupId;

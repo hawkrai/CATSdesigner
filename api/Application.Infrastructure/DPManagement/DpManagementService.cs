@@ -133,10 +133,15 @@ namespace Application.Infrastructure.DPManagement
                                          Theme = dp.Theme,
                                      } ;
 
-            List<DiplomProjectData> diplomProjects = buf.ToList<DiplomProjectData>();
+            List<DiplomProjectData> diplomProjects = null;
 
-            return diplomProjects;
+            try { 
+                diplomProjects = buf.ToList<DiplomProjectData>();
+            }
+            catch { }
             
+            return diplomProjects;
+    
         }
         public DiplomProjectData GetProject(int id)
         {

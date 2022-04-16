@@ -6,8 +6,8 @@
     <mat-form-field *ngIf="groups">
       <mat-select [value]="groups[0]?.GroupId" (selectionChange)="onGroupValueChange($event.source.value)">
         <mat-option *ngFor="let group of groups | groupSort" [value]="group.GroupId">
-          <span class="confirmation-group-option"> {{group.GroupName}} <span *ngIf="group.CountUnconfirmedStudents"> -
-              ({{group.CountUnconfirmedStudents}})</span></span>
+          <span class="confirmation-group-option"> {{group.GroupName}} <span *ngIf="group.CountUnconfirmedStudents">
+              ({{'new.students' | translate:'Новые студенты'}}: {{group.CountUnconfirmedStudents}})</span></span>
           <mat-divider *ngIf="group.lastGroupWithUnconfirmedStudents"></mat-divider>
         </mat-option>
       </mat-select>
@@ -30,6 +30,16 @@
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> {{'student' | translate:'Студент'}}</th>
         <td mat-cell *matCellDef="let element"> {{element.FullName}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="confirmedAt">
+        <th mat-header-cell *matHeaderCellDef> {{'confirm.at' | translate:'Подтверждён когда'}}</th>
+        <td mat-cell *matCellDef="let element"> <span *ngIf="element.ConfirmedAt">{{element.ConfirmedAt | aspNetDate | date:'dd.MM.yyyy'}}</span></td>
+      </ng-container>
+
+      <ng-container matColumnDef="confirmedBy">
+        <th mat-header-cell *matHeaderCellDef> {{'confirm.by' | translate:'Подтверждён кем'}}</th>
+        <td mat-cell *matCellDef="let element"> <span *ngIf="element.ConfirmedBy">{{element.ConfirmedBy.FullName}}</span></td>
       </ng-container>
 
       <ng-container matColumnDef="action">

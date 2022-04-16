@@ -1,4 +1,7 @@
 <h1 mat-dialog-title>Назначение темы курсового проекта</h1>
+<ng-container title>
+  <span class="theme-name">{{data.theme}}</span>
+</ng-container>
 <div mat-dialog-content>
   <table mat-table [dataSource]="data.students" class="mat-elevation-z8">
 
@@ -20,7 +23,7 @@
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef>Действие</th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" matTooltip="Назначить" [mat-dialog-close]="element.Id">
+        <button mat-icon-button color="primary" matTooltip="Назначить тему" [mat-dialog-close]="element.Id">
           <mat-icon>assignment</mat-icon>
         </button>
       </td>

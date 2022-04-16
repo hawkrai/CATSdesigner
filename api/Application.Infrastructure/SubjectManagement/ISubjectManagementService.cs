@@ -9,11 +9,14 @@ namespace Application.Infrastructure.SubjectManagement
 
     public interface ISubjectManagementService
     {
+        List<Subject> GetAllSubjectsByStudent(int userId);
         List<Subject> GetUserSubjects(int userId);
 
+        Subject GetUserSubject(int subjectId, int userId);
+
+        List<Subject> GetSubjectsInfoByGroup(int Id);
         bool IsUserAssignedToSubject(int useId, int subjectId);
         bool IsUserAssignedToSubjectAndLector(int useId, int subjectId);
-
         bool IsUserSubjectOwner(int userId, int subjectId);
 
         List<Subject> GetUserSubjectsV2(int userId);
@@ -122,6 +125,8 @@ namespace Application.Infrastructure.SubjectManagement
         List<Subject> GetSubjectsInfoByLector(int userId);
 
         List<Subject> GetSubjectsByStudent(int userId, bool isArchive = false);
+
+        int GetSubjectsCountByStudent(int userId, bool isActive);
         List<Subject> GetSubjectsInfoByStudent(int userId);
 
 		decimal GetSubjectCompleting(int subjectId, string user, Student student);

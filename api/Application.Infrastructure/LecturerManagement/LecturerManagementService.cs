@@ -170,15 +170,15 @@ namespace Application.Infrastructure.LecturerManagement
 		    return true;
 	    }
 
-	    public List<Lecturer> GetJoinedLector(int subjectId, int owner)
+	    public List<Lecturer> GetJoinedLector(int subjectId)
 	    {
 		    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 		    return repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(
-			    new Query<SubjectLecturer>(e => e.SubjectId == subjectId && e.Owner == owner)
+			    new Query<SubjectLecturer>(e => e.SubjectId == subjectId)
 				    .Include(e => e.Lecturer)).Select(e => e.Lecturer).ToList();
 	    }
 
-	    public void DisjoinLector(int subjectId, int lectorId, int? owner)
+	    public void DisjoinLector(int subjectId, int lectorId, int owner)
 	    {
 		    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 		    var relation = repositoriesContainer.RepositoryFor<SubjectLecturer>().GetBy(
@@ -208,12 +208,12 @@ namespace Application.Infrastructure.LecturerManagement
 				new Query<SubjectLecturer>(e => e.SubjectId == subjectId && e.LecturerId == lectorId)).Any();
 		}
 
-        public List<Lecturer> GetNoAdjointLectorers(int subjectId, int owner)
+        public List<Lecturer> GetNoAdjointLectorers(int subjectId)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 
 			var lecturers = repositoriesContainer.LecturerRepository.GetAll().ToList();
-			var joinedLectures = GetJoinedLector(subjectId, owner);
+			var joinedLectures = GetJoinedLector(subjectId);
 
 			return lecturers.Where(x => !joinedLectures.Any(jl => jl.Id == x.Id)).ToList();
             

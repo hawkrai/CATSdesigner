@@ -61,8 +61,8 @@ namespace LMPlatform.UI.Services
 	    ResultViewData JoinLector(int subjectId, int lectorId);
 
 		[OperationContract]
-		[WebInvoke(UriTemplate = "/GetJoinedLector/{subjectId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-	    LectorsResult GetJoinedLector(string subjectId);
+		[WebInvoke(UriTemplate = "/GetJoinedLector/{subjectId}?loadSelf={loadSelf}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+	    LectorsResult GetJoinedLector(string subjectId, bool loadSelf = false);
 
 	    [OperationContract]
 		[WebInvoke(UriTemplate = "/DisjoinLector", RequestFormat = WebMessageFormat.Json, Method = "POST")]
