@@ -12,7 +12,7 @@
     <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
   </mat-form-field>
   <div>
-    <mat-label class="form-field__lecturer">Руководитель проекта: {{data.lecturer}}</mat-label>
+    <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
   </div>
   <mat-label class="form-field__groups">Группы:</mat-label>
   <div class="group-picker">
@@ -41,7 +41,7 @@
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
   <button mat-flat-button class="dialog-button" id="saveButton" color="primary"
           (click)="saveTheme()"
-          [disabled]="nameControl.invalid"
+          [disabled]="nameControl.invalid || (data.edit && originName === nameControl.value)"
   >
     Сохранить
   </button>
