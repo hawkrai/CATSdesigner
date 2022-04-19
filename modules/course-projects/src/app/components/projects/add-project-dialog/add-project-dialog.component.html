@@ -1,49 +1,54 @@
-<div class="add-project-dialog__title-container">
-  <h1 mat-dialog-title *ngIf="data.edit">Редактирование темы курсового проекта</h1>
-  <h1 class="add-project-dialog__title" mat-dialog-title *ngIf="!data.edit">Добавление темы курсового проекта</h1>
-  <button mat-icon-button (click)="close()" class="add-project-dialog__close-btn">
-    <mat-icon aria-hidden="false">close</mat-icon>
-  </button>
-</div>
-<div>
-  <mat-form-field class="form-field">
-    <mat-label>Тема курсового проекта</mat-label>
-    <textarea matInput [formControl]="nameControl"></textarea>
-    <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
-  </mat-form-field>
+<div class="add-project-dialog__container">
+  <div class="add-project-dialog__title-container">
+    <h1 class="add-project-dialog__title" mat-dialog-title *ngIf="data.edit">Редактирование темы курсового проекта</h1>
+    <h1 class="add-project-dialog__title" mat-dialog-title *ngIf="!data.edit">Добавление темы курсового проекта</h1>
+    <button mat-icon-button (click)="close()" class="add-project-dialog__close-btn">
+      <mat-icon aria-hidden="false">close</mat-icon>
+    </button>
+  </div>
   <div>
-    <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
+    <mat-form-field class="form-field">
+      <mat-label>Тема курсового проекта</mat-label>
+      <textarea matInput [formControl]="nameControl"></textarea>
+      <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
+    </mat-form-field>
+    <div>
+      <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
+    </div>
+    <mat-label class="form-field__groups">Группы:</mat-label>
+    <div class="group-picker">
+      <div class="group-container">
+        <button mat-raised-button [matTooltip]="'Переместить в доступные для темы группы'" matTooltipPosition="below"
+                (click)="includeAll()">>>
+        </button>
+        <mat-list>
+          <mat-list-item matRipple class="mat-list-option" *ngFor="let group of groups; index as i; trackBy: trackByFn"
+                         (click)="move(i, groups, data.selectedGroups)">
+            {{group.GroupName}}
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div class="group-container">
+        <button mat-raised-button [matTooltip]="'Переместить в недоступные для темы группы'" matTooltipPosition="below"
+                (click)="includeNone()"><<
+        </button>
+        <mat-list>
+          <mat-list-item matRipple class="mat-list-option"
+                         *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
+                         (click)="move(i, data.selectedGroups, groups)">
+            {{group.GroupName}}
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
   </div>
-  <mat-label class="form-field__groups">Группы:</mat-label>
-  <div class="group-picker">
-    <div class="group-container">
-      <button mat-raised-button [matTooltip]="'Переместить в доступные для темы группы'" matTooltipPosition="below"  (click)="includeAll()">>></button>
-      <mat-list>
-        <mat-list-item matRipple class="mat-list-option" *ngFor="let group of groups; index as i; trackBy: trackByFn"
-                       (click)="move(i, groups, data.selectedGroups)">
-          {{group.GroupName}}
-        </mat-list-item>
-      </mat-list>
-    </div>
-    <div class="group-container">
-      <button mat-raised-button [matTooltip]="'Переместить в недоступные для темы группы'" matTooltipPosition="below"  (click)="includeNone()"><<</button>
-      <mat-list>
-        <mat-list-item matRipple class="mat-list-option"
-                       *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
-                       (click)="move(i, data.selectedGroups, groups)">
-          {{group.GroupName}}
-        </mat-list-item>
-      </mat-list>
-    </div>
+  <div mat-dialog-actions class="dialog-buttons">
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
+    <button mat-flat-button class="dialog-button" id="saveButton" color="primary"
+            (click)="saveTheme()"
+            [disabled]="nameControl.invalid || (data.edit && originName === nameControl.value)"
+    >
+      Сохранить
+    </button>
   </div>
 </div>
-<div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
-  <button mat-flat-button class="dialog-button" id="saveButton" color="primary"
-          (click)="saveTheme()"
-          [disabled]="nameControl.invalid || (data.edit && originName === nameControl.value)"
-  >
-    Сохранить
-  </button>
-</div>
-
