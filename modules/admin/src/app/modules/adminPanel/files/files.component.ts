@@ -14,7 +14,7 @@ export class FilesComponent implements OnInit {
 
   isLoad: boolean;
   file: any;
-  displayedColumns = ['id', 'Name', 'nameOnDisk', 'packageOnDisk'];
+  displayedColumns = ['id', 'Name', 'date', 'author','nameOnDisk', 'packageOnDisk'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -40,6 +40,32 @@ export class FilesComponent implements OnInit {
 
   downloadFile(path, filename) {
     this.fileService.downloadFile(path, filename);
+  }
+
+  getDateString(date : Date){
+    return date.toDateString();;
+  }
+
+  getAuthor(AuthorName){
+    if(AuthorName != null)
+    {
+      return AuthorName;
+    }
+
+    else{
+      return 'Нет данных'
+    }
+  }
+
+  getDate(CreationDateString){
+    if(CreationDateString != null)
+    {
+      return CreationDateString;
+    }
+
+    else{
+      return 'Нет данных'
+    }
   }
 
 }

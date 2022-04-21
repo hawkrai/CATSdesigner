@@ -84,22 +84,33 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  deleteGroup(id) {
+  deleteGroup(id, subCount, studCount) {
     const dialogRef = this.dialog.open(DeleteItemComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.removeGroup(id);
+        this.removeGroup(id, subCount, studCount);
       }
     });
   }
 
-  removeGroup(id) {
+  removeGroup(id, subCount, studCount) {
     this.groupService.deleteGroup(id).subscribe(() => {
       this.loadGroup();
       this.toastr.addSuccessFlashMessage("Группа удалена!");
     }, 
     err => {
-      this.toastr.addErrorFlashMessage('Произошла ошибка! Повторите попытку!');
+        var msg = 'Произошла ошибка!\n';
+        if (studCount != 0) {
+          msg = msg + 'Нельзя удалить группу со студентами!\n'
+        } 
+
+        if (subCount != 0) {
+          msg = msg + 'Нельзя удалить группу за которой закреплены предметы!\n'
+        }
+
+        this.toastr.addErrorFlashMessage(msg);
+
+        this.loadGroup();
     });
   }
 
