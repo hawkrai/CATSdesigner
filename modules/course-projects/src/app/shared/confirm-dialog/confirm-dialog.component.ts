@@ -8,6 +8,7 @@ interface DialogData {
   alert: string;
   color: string;
   isConfirm: boolean;
+  projectTheme?: string;
 }
 
 @Component({

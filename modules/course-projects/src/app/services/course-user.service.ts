@@ -12,4 +12,8 @@ export class CourseUserService {
   public getUser(): Observable<any> {
     return this.http.get('api/CourseUser');
   }
+
+  public getUserInfo(id: string): Observable<any> {
+    return this.http.get<any>('/Profile/GetProfileInfoById/' + id);
+  }
 }

@@ -18,14 +18,16 @@ interface DialogData {
 })
 export class AddProjectDialogComponent {
 
-  private nameControl: FormControl = new FormControl(this.data.name,
+  nameControl: FormControl = new FormControl(this.data.name,
     [Validators.minLength(3), Validators.maxLength(255), Validators.required, this.noWhitespaceValidator]);
 
   private groups: CoreGroup[];
+  originName = '';
 
   constructor(public dialogRef: MatDialogRef<AddProjectDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId));
+    this.originName = data.name;
     this.nameControl.setValue(data.name);
   }
 
@@ -71,5 +73,4 @@ export class AddProjectDialogComponent {
     const isValid = !isWhitespace;
     return isValid ? null : { whitespace: true };
   }
-
 }

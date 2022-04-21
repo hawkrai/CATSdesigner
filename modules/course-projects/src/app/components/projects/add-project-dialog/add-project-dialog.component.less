@@ -17,6 +17,13 @@
 }
 
 .add-project-dialog {
+  &__container{
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 12px;
+    height: 100%;
+  }
+
   &__title {
     font: 400 20px/32px Roboto, "Helvetica Neue", sans-serif;
 
@@ -34,8 +41,8 @@
 }
 
 .dialog-buttons {
-  float: right;
-  padding-top: 28px;
+  padding: 0;
+  margin-left: auto;
 }
 
 .group-picker {

@@ -5,7 +5,8 @@
 }
 
 .dialog-buttons {
-  float: right;
+  padding: 0;
+  margin-left: auto;
 }
 
 table {
@@ -16,4 +17,34 @@ table {
   display: block;
   font-size: 14px;
   color: #808080;
+  padding-bottom: 20px;
+  margin-top: -10px;
+}
+
+.assign-project-dialog {
+  &__container {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 12px;
+    height: 100%;
+  }
+
+  &__title {
+    font: 400 20px/32px Roboto, "Helvetica Neue", sans-serif;
+
+    &-container {
+      position: relative;
+    }
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: -4px;
+    right: -19px;
+    color: gray;
+  }
+
+  &__action-btn {
+    padding-left: 10px;
+  }
 }
