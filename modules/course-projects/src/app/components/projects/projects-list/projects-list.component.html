@@ -25,7 +25,9 @@
                   *ngIf="project.StudentId == courseUser.UserId && project.ApproveDate != null" (click)="projectsComponent.downloadTaskSheet(project)">
             <mat-icon>cloud_download</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Выбрать тему" (click)="projectsComponent.chooseCourseProject(project)">
+          <button mat-icon-button color="primary" matTooltip="Выбрать тему"
+                  *ngIf="!(courseUser.HasAssignedDiplomProject || courseUser.HasChosenDiplomProject)
+            && project.StudentId == null" (click)="projectsComponent.chooseCourseProject(project)">
             <mat-icon>done</mat-icon>
           </button>
         </td>
