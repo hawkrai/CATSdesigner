@@ -200,13 +200,13 @@ namespace LMPlatform.UI.Services.Practicals
                     PracticalsMarks = studentViewData.StudentPracticalMarks,
                     AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
                     TestsPassed = studenTestsPassResults.Count,
-                    Tests = testsResults.Tests.Count
                 });
             }
 
             return new StudentsMarksResult
             {
                 Students = marks,
+                TestsCount = testsResults.Tests.Count,
                 Message = "",
                 Code = "200"
             };

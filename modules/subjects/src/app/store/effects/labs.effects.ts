@@ -10,6 +10,7 @@ import * as labsActions from '../actions/labs.actions';
 import * as subjectSelectors from '../selectors/subject.selector';
 import * as filesActions from '../actions/files.actions';
 import * as catsActions from '../actions/cats.actions';
+import * as testsActions from '../actions/tests.actions';
 import { iif, of } from 'rxjs';
 import { ScheduleService } from 'src/app/services/schedule.service';
 
@@ -100,7 +101,7 @@ export class LabsEffects {
       this.store.select(groupsSelectors.getCurrentGroupId)
     ),
     switchMap(([_, subjectId, groupId]) => this.rest.getMarksV2(subjectId, groupId).pipe(
-      map(students => labsActions.setLabStudents({ students }))
+      switchMap(({ students, testsCount }) => [labsActions.setLabStudents({ students }), testsActions.loadedTestsCount({ testsCount})])
     ))
   ));
 

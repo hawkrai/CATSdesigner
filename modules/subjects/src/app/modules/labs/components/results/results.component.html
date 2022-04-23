@@ -55,7 +55,7 @@
             </td>
           </ng-container>
   
-          <ng-container matColumnDef="total-lab">
+          <ng-container matColumnDef="total-lab" *ngIf="subGroupLabs.length">
             <th mat-header-cell *matHeaderCellDef>{{'text.average.labs.mark' | translate:'Средний балл'}}</th>
             <td mat-cell
                 *matCellDef="let element"
@@ -63,23 +63,24 @@
               <p>{{element.LabsMarkTotal}}</p></td>
           </ng-container>
   
-          <ng-container matColumnDef="total-test">
+          <ng-container matColumnDef="total-test" *ngIf="state.testsCount">
             <th mat-header-cell *matHeaderCellDef>{{'text.average.test' | translate:'Средний балл за тесты'}}</th>
-            <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed"  [matTooltip]="getTestsPassedTooltip(element)" matTooltipPosition="below" [matTooltipDisabled]="!element.AllTestsPassed"><p>{{element.TestMark}}</p></td>
+            <td mat-cell *matCellDef="let element" [class.not-all]="state.testsCount && !element.AllTestsPassed"  [matTooltip]="getTestsPassedTooltip(element, state.testsCount)" matTooltipPosition="below" 
+            [matTooltipDisabled]="state.testsCount && !element.AllTestsPassed"><p>{{element.TestMark}}</p></td>
           </ng-container>
           
   
-          <ng-container matColumnDef="total">
+          <ng-container matColumnDef="total" *ngIf="state.testsCount || subGroupLabs.length">
             <th mat-header-cell *matHeaderCellDef>{{'text.rating' | translate:'Рейтинговая оценка'}}</th>
             <td mat-cell
-                [matTooltip]="'text.sbjects.preliminary.rating' | translate:'Предварительная рейтинговая оценка'" matTooltipPosition="below" [matTooltipDisabled]="!(element | isNotAll) && element.AllTestsPassed"
+                [matTooltip]="'text.sbjects.preliminary.rating' | translate:'Предварительная рейтинговая оценка'" matTooltipPosition="below" [matTooltipDisabled]="!(element | isNotAll) && (state.testsCount ? element.AllTestsPassed : true)"
                 *matCellDef="let element"
-                [ngClass]="{'not-all': (element | isNotAll) || !element.AllTestsPassed}">
-              <p>{{getTotal(element)}}</p></td>
+                [ngClass]="{'not-all': (element | isNotAll) || (state.testsCount && !element.AllTestsPassed)}">
+              <p>{{getTotal(element, state.testsCount)}}</p></td>
           </ng-container>
   
-          <tr mat-header-row *matHeaderRowDef="getSubGroupDisplayColumns(subGroupLabs)"></tr>
-          <tr mat-row *matRowDef="let row; columns: getSubGroupDisplayColumns(subGroupLabs)"></tr>
+          <tr mat-header-row *matHeaderRowDef="getSubGroupDisplayColumns(subGroupLabs, state.testsCount)"></tr>
+          <tr mat-row *matRowDef="let row; columns: getSubGroupDisplayColumns(subGroupLabs, state.testsCount)"></tr>
         </table>
       </div>
     </ng-container>

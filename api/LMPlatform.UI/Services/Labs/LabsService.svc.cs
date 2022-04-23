@@ -576,14 +576,14 @@ namespace LMPlatform.UI.Services.Labs
 					LabVisitingMark = studentViewData.LabVisitingMark,
 					LabsMarks = studentViewData.StudentLabMarks,
 					AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
-					TestsPassed = studenTestsPassResults.Count,
-					Tests = testsResults.Tests.Count
+					TestsPassed = studenTestsPassResults.Count
 				}) ;
 			}
 
 			return new StudentsMarksResult
 			{
 				Students = marks,
+				TestsCount = testsResults.Tests.Count,
 				Message = "",
 				Code = "200"
 			};
