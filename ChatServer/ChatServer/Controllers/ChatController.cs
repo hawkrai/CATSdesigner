@@ -42,12 +42,20 @@ namespace ChatServer.Controllers
         {
             var chat = new Chat();
             chat.Name = user.FirstId + "_" + user.SecondId;
-            await _userChatService.Create(chat);
-            chat.Users = new List<User>();
+            var users = new List<User>();
             var user1 = await _userService.GetUser(user.FirstId);
             var user2 = await _userService.GetUser(user.SecondId);
-            chat.Users.Add(user1);
-            chat.Users.Add(user2);
+            users.Add(user1);
+            users.Add(user2);
+
+            //check if chat already exists
+            var chatFromDb = await _userChatService.TryGet(chat.Name, users);
+            if (chatFromDb != null)
+                return chatFromDb.Id;
+
+            await _userChatService.Create(chat);
+
+            chat.Users = users;
             await _userChatService.Update(chat);
 
             var chatHistory = new UserChatHistory();

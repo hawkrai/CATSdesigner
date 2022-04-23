@@ -27,11 +27,27 @@ namespace Services
             await _repository.SaveAsync();
         }
 
+        public async Task<Chat> TryGet(string chatName, IEnumerable<User> users)
+        {
+            var user = users.FirstOrDefault();
+
+            if (user == null)
+                return null;
+
+            var chats = await _repository.UserChats.GetUserChatsAsync(false);
+
+            var chatFromDb = chats.FirstOrDefault(c => c.Name == chatName && c.Users.Contains(user));
+
+            return chatFromDb;
+        }
+
 
         public async Task Create(Chat chat)
         {
             await _repository.UserChats.Add(chat);
             await _repository.SaveAsync();
         }
+
+        
     }
 }
