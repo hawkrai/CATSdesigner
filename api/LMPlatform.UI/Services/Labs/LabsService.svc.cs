@@ -677,19 +677,16 @@ namespace LMPlatform.UI.Services.Labs
 					foreach (var lab in labsSubGroup)
 					{
 						var mark = 10;
-						durationCount += lab.Duration / 2;
+						durationCount += lab.Duration;
 						for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 						{
-							if (i + 1 > durationCount - (lab.Duration / 2))
+							if (i >= durationCount - lab.Duration)
 							{
 								lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
-								if (i + 1 >= durationCount)
+								if (mark != 1)
 								{
-									if (mark != 1)
-									{
-										mark -= 1;
-									}
+									mark -= 1;
 								}
 							}
 						}
