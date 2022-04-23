@@ -77,15 +77,18 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
     return defaultHeaders.concat(practicals.map((p, index) => ({ head: p.PracticalId.toString(), text: p.ShortName, length: Math.floor(p.Duration / 2), tooltip: p.Theme })))
   }
 
-  setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionPractical, index: number) {
+  setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionPractical) {
     const visits = {
       date: moment(schedule.Date, 'DD.MM.YYYY'),
-      students: students.map(s => ({
-        name: s.FullName,
-        mark: s.PracticalVisitingMark[index] ? s.PracticalVisitingMark[index].Mark : '',
-        comment: s.PracticalVisitingMark[index] ? s.PracticalVisitingMark[index].Comment : '',
-        showForStudent: s.PracticalVisitingMark[index] ? s.PracticalVisitingMark[index].ShowForStudent : false
-      }))
+      students: students.map(s => {
+        const practiacalVisitingMark = s.PracticalVisitingMark.find(x => x.ScheduleProtectionPracticalId === schedule.ScheduleProtectionPracticalId);
+        return ({
+          name: s.FullName,
+          mark: practiacalVisitingMark ? practiacalVisitingMark.Mark : '',
+          comment:  practiacalVisitingMark ? practiacalVisitingMark.Comment : '',
+          showForStudent:  practiacalVisitingMark ? practiacalVisitingMark.ShowForStudent : false
+        })
+      })
     };
     const dialogData: DialogData = {
       title: this.translate.transform('text.subjects.attendance.lesson', 'Посещаемость занятий'),
@@ -97,17 +100,22 @@ export class VisitStatisticComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().pipe(
       filter(result => result),
       take(1),
-      map(result => this.getVisitingPracticals(students, index, schedule.ScheduleProtectionPracticalId, result.students)),
+      map(result => this.getVisitingPracticals(students, schedule.ScheduleProtectionPracticalId, result.students)),
     ).subscribe((visiting) => {
       this.store.dispatch(practicalsActions.setPracticalsVisitingDate({ visiting }));
     })
   }
 
-  private getVisitingPracticals(students: StudentMark[], index: number, dateId: number, visits): { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } {
-    const visitsModel = { Id: [], comments: [], showForStudents: [], dateId, marks: [], studentsId: [], students };
+  findVisitingIndex(studentMark: StudentMark, schedule: ScheduleProtectionPractical) {
+    return studentMark.PracticalVisitingMark.findIndex(x => x.ScheduleProtectionPracticalId === schedule.ScheduleProtectionPracticalId);
+  }
 
+  private getVisitingPracticals(students: StudentMark[], dateId: number, visits): { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } {
+    const visitsModel = { Id: [], comments: [], showForStudents: [], dateId, marks: [], studentsId: [], students };
+    console.log(visits)
     students.forEach(student => {
-      visitsModel.Id.push(student.PracticalVisitingMark[index].PracticalVisitingMarkId);
+      const visitingMark = student.PracticalVisitingMark.find(x => x.ScheduleProtectionPracticalId === dateId);
+      visitsModel.Id.push(visitingMark ? visitingMark.PracticalVisitingMarkId: 0);
       visitsModel.studentsId.push(student.StudentId);
     });
     visits.forEach(visit => {
