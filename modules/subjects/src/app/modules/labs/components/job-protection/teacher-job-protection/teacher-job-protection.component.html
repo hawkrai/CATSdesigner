@@ -11,7 +11,8 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title style="display: flex; align-items: flex-end;">
                     {{studentJobProtection.StudentName}}
-                    <mat-icon class="priority" *ngIf="studentJobProtection.HasProtection" [color]="'warn'">priority_high</mat-icon>
+                    <mat-icon class="priority" *ngIf="studentJobProtection.HasProtection" [color]="'warn'"             [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
+                    matTooltipPosition="below">priority_high</mat-icon>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <app-job-protection-content 
@@ -19,6 +20,7 @@
                  [actionsTemplate]="actionsTemplate"></app-job-protection-content>
                  <ng-template let-file="file" #actionsTemplate>
                   <button mat-icon-button color="primary"
+                  *ngIf="file.Attachments.length"
                   [matTooltip]="'text.subjects.labs.plagiarism.check' | translate:'Проверить на плагиат'"
                   (click)="checkPlagiarism(file.Id)"
                   >
@@ -34,7 +36,7 @@
                     </button>
                     <button
                     mat-icon-button color="primary"
-                    [matTooltip]="'text.subjects.labs.return' | translate:'Вернуть работу'"
+                    [matTooltip]="'text.subjects.labs.return' | translate:'Отправить на доработку'"
                     (click)="addLab(file.UserId, file.LabId, file.Id)"
                     >
                     <mat-icon>arrow_forward</mat-icon>

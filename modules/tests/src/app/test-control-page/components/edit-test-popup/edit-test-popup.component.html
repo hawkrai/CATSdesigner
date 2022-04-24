@@ -23,6 +23,9 @@
           <mat-error *ngIf="formGroup.controls.title.hasError('required')">
             {{'text.test.error.enter.name' | translate : "Введите название теста"}}
           </mat-error>
+          <mat-error *ngIf="formGroup.controls.title.hasError('whitespace')">
+            {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div mat-dialog-content>
@@ -34,6 +37,9 @@
                 (change)="writeTitle($event, 'Description')"></textarea>
           <mat-error *ngIf="formGroup.controls.description.hasError('maxlength')">
             {{'text.test.error.max.length.1000' | translate : "Длина превышает 1000 символов"}}
+          </mat-error>
+          <mat-error *ngIf="formGroup.controls.description.hasError('whitespace')">
+            {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
           </mat-error>
         </mat-form-field>
       </div>

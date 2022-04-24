@@ -64,7 +64,7 @@
     <div class = "project-table">
     <table mat-table [dataSource]="this.cpProfileProjects">
       <ng-container matColumnDef="item">
-        <th mat-header-cell *matHeaderCellDef> Текущие курсовые проекты пользователя </th>
+        <th mat-header-cell *matHeaderCellDef> Курсовые проекты пользователя </th>
         <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
       </ng-container>
 
@@ -75,7 +75,7 @@
     <div class = "project-table">
     <table mat-table [dataSource]="this.dpProfileProjects">
       <ng-container matColumnDef="item">
-        <th mat-header-cell *matHeaderCellDef> Текущие дипломные проекты пользователя </th>
+        <th mat-header-cell *matHeaderCellDef> {{this.getDpString()}}</th>
         <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
       </ng-container>
 

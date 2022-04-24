@@ -16,6 +16,7 @@ namespace LMPlatform.UI.Services.Modules.Lectures
             EndTime = visiting.EndTime?.ToString(@"hh\:mm");
             Building = visiting.Building;
             Audience = visiting.Audience;
+            Lector = new LectorViewData(visiting.Lecturer, true);
         }
 
         [DataMember]
@@ -38,5 +39,8 @@ namespace LMPlatform.UI.Services.Modules.Lectures
 
         [DataMember]
         public string Audience { get; set; }
+
+        [DataMember]
+        public LectorViewData Lector { get; set; }
     }
 }

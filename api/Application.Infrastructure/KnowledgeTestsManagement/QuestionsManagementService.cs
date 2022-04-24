@@ -29,10 +29,11 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-	            var test = repositoriesContainer.TestsRepository.GetBy(testsQuery);
-				if (!test.ForSelfStudy &&
-					!test.ForEUMK &&
-					!test.BeforeEUMK &&
+                var test = repositoriesContainer.TestsRepository.GetBy(testsQuery);
+                if (!(test.ForSelfStudy ||
+                    test.ForEUMK ||
+                    test.BeforeEUMK ||
+                    test.ForNN) &&
 					test.TestUnlocks.Count > 0)
                 {
                     throw new InvalidDataException("Тест не может быть изменён, т.к. доступен для прохождения");
@@ -92,6 +93,11 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             if (string.IsNullOrEmpty(question.Title))
             {
                 throw new InvalidDataException("Название вопроса не должно быть пустым");
+            }
+
+            if (question.Title.Trim() == string.Empty)
+            {
+                throw new InvalidDataException("Название вопроса не должно состоять только из пробелов");
             }
 
             if (question.ComlexityLevel <= 0)

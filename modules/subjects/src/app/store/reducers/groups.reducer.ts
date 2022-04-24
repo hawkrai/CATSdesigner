@@ -4,10 +4,10 @@ import * as groupActions from '../actions/groups.actions';
 
 export const groupsReducer = createReducer(
   initialGroupsState,
-  on(groupActions.loadGroupsSuccess, (state, action): IGroupsState => ({
+  on(groupActions.loadGroupsSuccess, (state, { groups, groupId }): IGroupsState => ({
     ...state,
-    groups: action.groups,
-    currentGroup: action.groups && action.groups.length ? action.groups[0] : null
+    groups,
+    currentGroup: groups.find(x => x.GroupId === groupId) || groups[0]
   })),
   on(groupActions.setCurrentGroup, (state, action): IGroupsState => ({
     ...state,
@@ -16,11 +16,6 @@ export const groupsReducer = createReducer(
   on(groupActions.setCurrentGroupById, (state, action): IGroupsState => ({
     ...state,
     currentGroup: state.groups.find(g => g.GroupId === action.id)
-  })),
-  on(groupActions.resetGroups, (state): IGroupsState => ({
-    ...state,
-    currentGroup: null,
-    groups: []
   })),
   on(groupActions.setActiveState, (state, { isActive }): IGroupsState => ({
     ...state,

@@ -38,6 +38,20 @@
       text-align: center;
     }
 
+    .mat-header-cell.mat-column-name, .mat-header-cell.mat-column-position {
+      border-top: none;
+      vertical-align: initial;
+      padding-top: 1.45%;
+    }
+
+    .mat-column-position:first-of-type, .mat-header-cell:first-of-type {
+      max-width: 35px;
+      max-height: 55px;
+      width: 35px;
+      height: 55px;
+      box-sizing: border-box;
+    }
+
     .mat-column-position {
       text-align: center;
       padding-left: 0;
@@ -54,6 +68,24 @@
     td, th {
       border-right: 1px solid rgba(0, 0, 0, .12);
       border-bottom: 0;
+      border-top: 1px solid rgba(0, 0, 0, .12);
+    }
+
+    .mat-column-name {
+      padding-left: 10px;
+    }
+
+    .mat-header-cell.mat-column-name {
+      text-align: center;
+    }
+
+    .mat-column-position {
+      padding-left: 10px;
+      padding-right: 5px;
+    }
+
+    table {
+      border-top: none;
     }
 
     td.mat-cell:last-of-type, th.mat-header-cell:last-of-type {

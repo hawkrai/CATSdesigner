@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { SubSink } from 'subsink';
 import { filter, map } from 'rxjs/operators';
 import {Store } from '@ngrx/store';
-import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
 import { StudentMark } from './../../../../models/student-mark.model';
 import { Lab } from '../../../../models/lab.model';
@@ -11,7 +11,7 @@ import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {VisitingPopoverComponent} from '../../../../shared/visiting-popover/visiting-popover.component';
 import { DialogService } from 'src/app/services/dialog.service';
-
+import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
 import * as catsActions from '../../../../store/actions/cats.actions';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
@@ -20,36 +20,23 @@ import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedu
 import { Message } from 'src/app/models/message.model';
 import { TranslatePipe } from 'educats-translate';
 
-
 @Component({
   selector: 'app-visit-statistics',
   templateUrl: './visit-statistics.component.html',
   styleUrls: ['./visit-statistics.component.less']
 })
-export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
-
-  @Input() isTeacher: boolean;
-  @Input() groupId: number;
+export class VisitStatisticsComponent implements OnInit,  OnDestroy {
   private subs = new SubSink();
-  
-  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], students: StudentMark[], userId: number }>;
-
+  state$: Observable<{ labs: Lab[], scheduleProtectionLabs: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean, subGroups: number[] }>;
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
     public dialogService: DialogService) {
-  }
+  } 
 
   ngOnDestroy(): void {
      this.subs.unsubscribe();
      this.store.dispatch(labsActions.resetLabs());
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.groupId && changes.groupId.currentValue) {
-      this.store.dispatch(labsActions.loadLabsSchedule());
-      this.store.dispatch(labsActions.loadLabStudents());
-    }
   }
 
   ngOnInit() {
@@ -57,9 +44,20 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
       this.store.select(labsSelectors.getLabs),
       this.store.select(labsSelectors.getLabsCalendar),
       this.store.select(labsSelectors.getLabStudents),
-      this.store.select(subjectSelectors.getUserId)
+      this.store.select(subjectSelectors.getUserId),
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(labsSelectors.getSubGroups)
     ).pipe(
-      map(([labs, scheduleProtectionLabs, students, userId]) => ({ labs, scheduleProtectionLabs, students, userId }))
+      map(([labs, scheduleProtectionLabs, students, userId, isTeacher, subGroups]) => ({ labs, scheduleProtectionLabs, students, userId, isTeacher, subGroups: subGroups.map(x => x.SubGroupValue) }))
+    );
+
+    this.subs.add(
+      this.store.select(groupsSelectors.getCurrentGroup).subscribe(group => {
+        if (group) {
+          this.store.dispatch(labsActions.loadLabsSchedule());
+          this.store.dispatch(labsActions.loadLabStudents());
+        }
+      })
     );
   }
 
@@ -76,32 +74,30 @@ export class VisitStatisticsComponent implements OnInit, OnChanges,  OnDestroy {
   }
 
   setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionLab, index: number) {
-    if (this.isTeacher) {
-      const visits = {
-        date: moment(schedule.Date, 'DD.MM.YYYY'), 
-        students: students.map(s => ({ 
-          name: s.FullName, 
-          mark: s.LabVisitingMark[index].Mark, 
-          comment: s.LabVisitingMark[index].Comment,
-          showForStudent: s.LabVisitingMark[index].ShowForStudent
-        }))
-      };
-      const dialogData: DialogData = {
-        title: this.translate.transform('text.subjects.attendance.lesson', 'Посещаемость занятий'),
-        buttonText: this.translate.transform('button.save', 'Сохранить'),
-        body: visits
-      };
-      const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
+    const visits = {
+      date: moment(schedule.Date, 'DD.MM.YYYY'), 
+      students: students.map(s => ({ 
+        name: s.FullName, 
+        mark: s.LabVisitingMark[index].Mark, 
+        comment: s.LabVisitingMark[index].Comment,
+        showForStudent: s.LabVisitingMark[index].ShowForStudent
+      }))
+    };
+    const dialogData: DialogData = {
+      title: this.translate.transform('text.subjects.attendance.lesson', 'Посещаемость занятий'),
+      buttonText: this.translate.transform('button.save', 'Сохранить'),
+      body: visits
+    };
+    const dialogRef = this.dialogService.openDialog(VisitingPopoverComponent, dialogData);
 
-      this.subs.add(
-        dialogRef.afterClosed().pipe(
-          filter(result => result),
-          map(result => this.getVisitingLabs(students, index, schedule.ScheduleProtectionLabId, result.students)),
-        ).subscribe((visiting) => {
-          this.store.dispatch(labsActions.setLabsVisitingDate({ visiting }));
-        })
-      );
-    }
+    this.subs.add(
+      dialogRef.afterClosed().pipe(
+        filter(result => result),
+        map(result => this.getVisitingLabs(students, index, schedule.ScheduleProtectionLabId, result.students)),
+      ).subscribe((visiting) => {
+        this.store.dispatch(labsActions.setLabsVisitingDate({ visiting }));
+      })
+    );
   }
 
   private getVisitingLabs(students: StudentMark[], index: number, dateId: number, visits): { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } {

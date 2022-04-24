@@ -1,3 +1,5 @@
+import { Lector } from "../lector.model";
+
 export class ScheduleProtection {
     Date: string;
     StartTime: string;
@@ -5,4 +7,5 @@ export class ScheduleProtection {
     Building: string;
     Audience: string;
     SubjectId: number;
+    Lector: Lector
 }

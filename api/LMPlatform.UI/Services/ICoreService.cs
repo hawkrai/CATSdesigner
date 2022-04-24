@@ -61,8 +61,8 @@ namespace LMPlatform.UI.Services
 	    ResultViewData JoinLector(int subjectId, int lectorId);
 
 		[OperationContract]
-		[WebInvoke(UriTemplate = "/GetJoinedLector/{subjectId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-	    LectorsResult GetJoinedLector(string subjectId);
+		[WebInvoke(UriTemplate = "/GetJoinedLector/{subjectId}?loadSelf={loadSelf}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+	    LectorsResult GetJoinedLector(string subjectId, bool loadSelf = false);
 
 	    [OperationContract]
 		[WebInvoke(UriTemplate = "/DisjoinLector", RequestFormat = WebMessageFormat.Json, Method = "POST")]
@@ -76,6 +76,10 @@ namespace LMPlatform.UI.Services
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetGroupsByUser/{userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		GroupsResult GetGroupsByUser(string userId);
+
+		[OperationContract]
+		[WebInvoke(UriTemplate = "/GetUserGroups", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+		GroupsResult GetUserGroups();
 
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetGroupsByUserV2/{userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]

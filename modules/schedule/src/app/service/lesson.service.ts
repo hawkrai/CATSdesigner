@@ -55,7 +55,7 @@ export class LessonService {
   }
 
   deletePractical(idPract: any, subjId: any): Observable<any> {
-    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeleteLabScheduleDate', {id: idPract, subjectId: subjId});
+    return this.http.post<any>('/Services/Schedule/ScheduleService.svc/DeletePracticalScheduleDate', {id: idPract, subjectId: subjId});
   }
 
   saveLecture(lect: any, dateLes: string): Observable<any> {
@@ -107,17 +107,17 @@ export class LessonService {
   }
 
   getReferenceToSubject(title: string): any {
-    const splitted = title.split('|', 8);
-    return '/Subject?subjectId=' + splitted[7];
+    const splitted = title.split('|', 9);
+    return '/web/viewer/subject/' + splitted[8];
   }
 
   getLocation(title: string): any {
     const splitted = title.split('|', 3);
-    let a = splitted[2];
+    let a = splitted[1];
     if (a.length != 0) {
-      a = ' к. ' + a;
+      a = ', a.' + a;
     }
-    return 'а.' + splitted[1] + a;
+    return 'к.' + splitted[2] + a;
   }
 
 
@@ -202,5 +202,9 @@ export class LessonService {
 
   public deleteCourseConsultation(id: any): Observable<any> {
     return this.http.post('/api/CourseProjectConsultationDate/' + id, null);
+  }
+
+  getCheckedType(subjectId: any): Observable<any> {
+    return this.http.get<any>('/Services/Subjects/SubjectsService.svc/Modules/' + subjectId);
   }
 }

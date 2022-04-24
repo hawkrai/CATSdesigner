@@ -7,6 +7,8 @@ import {Note} from '../../model/note.model';
 import flatpickr from 'flatpickr';
 import {Russian} from 'flatpickr/dist/l10n/ru';
 import {NoteService} from '../../service/note.service';
+import {pairwise, startWith} from 'rxjs/operators';
+
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian);
@@ -38,6 +40,7 @@ export class CreateLessonComponent implements OnInit {
   memo: string;
   date: string;
   groups: any[] = [];
+  typeSubject: any[] = [];
   currentGroup: any;
 
   formGroupNote: any;
@@ -53,6 +56,7 @@ export class CreateLessonComponent implements OnInit {
   stageValue = '';
   stageValueSub = '';
   isDiplomAvailable = false;
+  isStudentUpdateLesson = false;
 
   constructor(public dialogRef: MatDialogRef<CreateLessonComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any,
@@ -74,18 +78,21 @@ export class CreateLessonComponent implements OnInit {
         this.lessonTypesFull = this.lessonservice.getLessonTypeFull().slice(0, 4);
       }
     });
+    if (this.data.user.role === 'student'  && this.data.lesson != null) {
+      this.isStudentUpdateLesson = true;
+    }
     this.formGroup = new FormGroup({
-      subjectF: new FormControl('', [Validators.required]),
-      dayEvent: new FormControl('', [Validators.required]),
-      startEvent: new FormControl('', [Validators.required, Validators.min(8)]),
-      endEvent: new FormControl('', [Validators.required, Validators.min(8)]),
-      type: new FormControl('', [Validators.required]),
-      teacher: new FormControl('', [Validators.required]),
-      building: new FormControl('', [Validators.required, Validators.maxLength(3)]),
-      audience: new FormControl('', [Validators.required, Validators.maxLength(5)]),
+      subjectF: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required] ),
+      dayEvent: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required]),
+      startEvent: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required, Validators.min(8)]),
+      endEvent: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required, Validators.min(8)]),
+      type: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required]),
+      teacher: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required]),
+      building: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required, Validators.maxLength(3)]),
+      audience: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, [Validators.required, Validators.maxLength(5)]),
       memo: new FormControl('', ),
-      group: new FormControl('', ),
-      subGroup: new FormControl('', )
+      group: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, ),
+      subGroup: new FormControl({value: '', disabled: this.isStudentUpdateLesson}, )
     });
     this.formGroup.controls.group.disable();
     this.formGroup.controls.subGroup.disable();
@@ -104,6 +111,10 @@ export class CreateLessonComponent implements OnInit {
           this.lessonservice.getGroupsBySubjectId(+this.lesson.SubjectId).subscribe(res => {
             this.formGroup.controls.group.enable();
             this.formGroup.controls.subGroup.enable();
+            if (this.isStudentUpdateLesson) {
+              this.formGroup.controls.group.disable();
+              this.formGroup.controls.subGroup.disable();
+            }
             this.groups = res.Groups;
             this.currentGroup = this.groups.find(group => group.GroupId == this.lesson.GroupId);
             this.formGroup.get('group').setValue(this.lesson.GroupId);
@@ -166,9 +177,10 @@ export class CreateLessonComponent implements OnInit {
       this.selectedIndex = 1;
       this.disableLesson = true;
     }
-    if (this.data.user.role === 'student') {
+    if (this.data.user.role === 'student'  && this.data.lesson == null) {
       this.selectedIndex = 1;
       this.disableLesson = true;
+      this.isStudentUpdateLesson = true;
     }
     this.formGroup.controls.teacher.disable();
     this.formGroup.controls.dayEvent.disable();
@@ -271,70 +283,96 @@ export class CreateLessonComponent implements OnInit {
     }
     this.lesson.GroupId = this.formGroup.controls.group.value;
     this.lesson.SubGroupId = this.formGroup.controls.subGroup.value;
-    if (this.formGroup.controls.type.value === '0') {
-      this.lessonservice.saveLecture(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-        if (l.Code == '200') {
-          if (this.lesson.Notes.length != 0) {
-            this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
-              console.log(res);
-            });
+    if (this.isStudentUpdateLesson) {
+      this.lessonservice.saveLessonNote(+this.lesson.Id, this.lesson.Notes[0].message).subscribe(res => {
+        console.log(res);
+        this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
+      });
+    } else {
+      this.lessonservice.getCheckedType(this.lesson.SubjectId).subscribe(types => {
+        this.typeSubject = [false, false, false, false];
+        types.forEach(type => {
+          if (type.ModuleId == 2) {
+            this.typeSubject[0] = true;
           }
-          this.lesson.Id = l.Schedule.Id;
-          if (l.Schedule.Teacher != undefined) {
-            this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+          if (type.ModuleId == 3) {
+            this.typeSubject[1] = true;
           }
-          this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
+          if (type.ModuleId == 13) {
+            this.typeSubject[2] = true;
+          }
+          if (type.ModuleId == 4) {
+            this.typeSubject[3] = true;
+          }
+        });
+        if (this.formGroup.controls.type.value === '0' && this.typeSubject[0]) {
+          this.lessonservice.saveLecture(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
+            if (l.Code == '200') {
+              if (this.lesson.Notes.length != 0) {
+                this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
+                  console.log(res);
+                });
+              }
+              this.lesson.Id = l.Schedule.Id;
+              if (l.Schedule.Teacher != undefined) {
+                this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+              }
+              this.dialogRef.close({lesson: this.lesson, type: 'lesson', code: l.Code, message: l.Message });
+            } else {
+              this.dialogRef.close({ code: l.Code, message: l.Message});
+            }
+          });
+        } else if (this.formGroup.controls.type.value === '2' && this.typeSubject[1]) {
+          this.lessonservice.saveLab(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
+            if (l.Code == '200') {
+              if (this.lesson.Notes.length != 0) {
+                this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
+                  console.log(res);
+                });
+              }
+              this.lesson.Id = l.Schedule.Id;
+              if (l.Schedule.Teacher != undefined) {
+                this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+              }
+              this.dialogRef.close({lesson: this.lesson, type: 'lesson', code: l.Code, message: l.Message});
+            } else {
+              this.dialogRef.close({ code: l.Code, message: l.Message});
+            }
+          });
+        } else if (this.formGroup.controls.type.value === '1' && this.typeSubject[2]) {
+          this.lessonservice.savePractical(this.lesson, this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
+            if (l.Code == '200') {
+              if (this.lesson.Notes.length != 0) {
+                this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
+                  console.log(res);
+                });
+              }
+              this.lesson.Id = l.Schedule.Id;
+              if (l.Schedule.Teacher != undefined) {
+                this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
+              }
+              this.dialogRef.close({lesson: this.lesson, type: 'lesson', code: l.Code, message: l.Message});
+            } else {
+              this.dialogRef.close({ code: l.Code, message: l.Message});
+            }
+          });
+        } else if (this.formGroup.controls.type.value === '3' && this.typeSubject[3]) {
+          this.dialogRef.close({lesson: this.lesson, type: 'course'});
+          this.lessonservice.addCourseConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00', this.lesson.SubjectId,
+            this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
+            this.lesson.Building).subscribe(r => {
+            console.log(r);
+          });
+        } else if (this.formGroup.controls.type.value === '4') {
+          this.dialogRef.close({lesson: this.lesson, type: 'diplom'});
+          this.lessonservice.addDiplomConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
+            this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
+            this.lesson.Building).subscribe(r => {
+            console.log(r);
+          });
         } else {
-          this.dialogRef.close();
+          this.dialogRef.close({lesson: null,  code: '500', message: 'Не удалось добавить занятие'});
         }
-      });
-    } else if (this.formGroup.controls.type.value === '2') {
-      this.lessonservice.saveLab(this.lesson,  this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-        if (l.Code == '200') {
-          if (this.lesson.Notes.length != 0) {
-            this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
-              console.log(res);
-            });
-          }
-          this.lesson.Id = l.Schedule.Id;
-          if (l.Schedule.Teacher != undefined) {
-            this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
-          }
-          this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
-        } else {
-          this.dialogRef.close();
-        }
-      });
-    } else if (this.formGroup.controls.type.value === '1') {
-      this.lessonservice.savePractical(this.lesson,  this.lessonservice.formatDate2(this.dayOfLesson)).subscribe(l => {
-        if (l.Code == '200') {
-          if (this.lesson.Notes.length != 0) {
-            this.lessonservice.saveLessonNote(l.Schedule.Id, this.lesson.Notes[0].message).subscribe(res => {
-              console.log(res);
-            });
-          }
-          this.lesson.Id = l.Schedule.Id;
-          if (l.Schedule.Teacher != undefined) {
-            this.lesson.Teacher = {FullName: this.lessonservice.cutTeacherName(l.Schedule.Teacher.FullName)};
-          }
-          this.dialogRef.close({lesson: this.lesson, type: 'lesson'});
-        } else {
-          this.dialogRef.close();
-        }
-      });
-    } else if (this.formGroup.controls.type.value === '3') {
-      this.dialogRef.close({lesson: this.lesson, type: 'course'});
-      this.lessonservice.addCourseConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00', this.lesson.SubjectId,
-        this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
-        this.lesson.Building).subscribe( r => {
-        console.log(r);
-      });
-    } else if (this.formGroup.controls.type.value === '4') {
-      this.dialogRef.close({lesson: this.lesson, type: 'diplom'});
-      this.lessonservice.addDiplomConsultation(this.lessonservice.formatDate5(this.dayOfLesson) + 'T00:00:00',
-        this.lesson.Start + ':00', this.lesson.End + ':00', this.lesson.Audience,
-        this.lesson.Building).subscribe( r => {
-          console.log(r);
       });
     }
   }
@@ -351,7 +389,7 @@ export class CreateLessonComponent implements OnInit {
     this.note.start.setHours(+this.startTimeOfNote.split(':')[0], +this.startTimeOfNote.split(':')[1]);
     this.note.end.setHours(+this.endTimeOfNote.split(':')[0], +this.endTimeOfNote.split(':')[1]);
     this.noteService.savePersonalNote(this.note, this.lessonservice.formatDate2(this.dayOfNote),
-                                      this.startTimeOfNote, this.endTimeOfNote).subscribe(l => {
+      this.startTimeOfNote, this.endTimeOfNote).subscribe(l => {
       console.log(l);
     });
     this.dialogRef.close({note: this.note, type: 'note'});
@@ -366,6 +404,16 @@ export class CreateLessonComponent implements OnInit {
     if (event.value == 0) {
       this.changedType = '4';
     }
+    this.formGroup.get('subjectF').valueChanges.pipe(
+      startWith(this.formGroup.get('subjectF').value),
+      pairwise()
+    ).subscribe(
+      ([old, value]) => {
+        if (old == 0) {
+          this.changedType = '';
+        }
+      }
+    );
     this.lessonservice.getGroupsBySubjectId(event.value).subscribe(re => {
       this.groups = re.Groups;
     });
@@ -376,6 +424,13 @@ export class CreateLessonComponent implements OnInit {
   }
 
   typeChange(event): void {
+    if (this.changedType == '4') {
+      this.formGroup.get('subjectF').setValue('');
+    }
+
+    if (event.value == '4') {
+      this.formGroup.get('subjectF').setValue(0);
+    }
     this.changedType = event.value;
     if (event.value == '0' || event.value == '4' ) {
       this.formGroup.controls.group.disable();

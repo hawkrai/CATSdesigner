@@ -1,9 +1,9 @@
 <app-popover-dialog [width]="thirdSubGroupVisible ? 600 : 500">
   <ng-container title>
-    {{ "subgroup.management" | translate: "Управление подгруппами" }}
+    {{ 'subdivision' | translate:'Разделение на подгруппы' }}
   </ng-container>
   <ng-container body>
-    <form class="example-form">
+    <form class="subdivision-form">
       <div class="form-container form-container__space-between">
         <mat-form-field>
           <mat-select [value]="selectedGroup ? selectedGroup : ''">
@@ -26,10 +26,10 @@
               !thirdSubGroupVisible
                 ? ('text.thirdsubgroup.add'
                   | translate: 'Добавить третью подгруппу')
-                : ('text.thirdsubgroup.remove'
-                  | translate: 'Убрать третью подгруппу')
+                : (('text.thirdsubgroup.remove'
+                  | translate: 'Убрать третью подгруппу') + '\n' + ('text.subdivision.to.the.first.subgroup' | translate:'Студенты будут перемещены в подгруппу'))
             "
-            matTooltipPosition="left"
+            matTooltipPosition="below"
             (click)="triggerThirdSubGroupVisible()"
           >
             <mat-icon>{{ thirdSubGroupVisible ? "remove" : "add" }}</mat-icon>
@@ -46,46 +46,17 @@
               <p class="mat-typography text-center">
                 {{ "subgroup" | translate: "Подгруппа" }} 1
               </p>
-              <button mat-icon-button color="primary">
+              <button mat-icon-button color="primary" (click)="transferSelected(1, 2)">
                 <mat-icon
-                  [popover]="subGroupsPopover"
-                  popoverPlacement="auto"
-                  [popoverOnHover]="false"
+                  matTooltipPosition="below"
+                  [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
                 >
                   arrow_forward
                 </mat-icon>
               </button>
-
-              <popover-content
-                style="position: absolute; z-index: 100"
-                #subGroupsPopover
-                [animation]="true"
-                placement="right"
-                [closeOnClickOutside]="true"
-                [closeOnMouseOutside]="false"
-              >
-                <div class="popover-container">
-                  <mat-list>
-                    <mat-list-item
-                      matRipple
-                      class="mat-list-option"
-                      (click)="transferSelected(1, 2)"
-                    >
-                      2
-                    </mat-list-item>
-                    <mat-list-item
-                      (click)="transferSelected(1, 3)"
-                      matRipple
-                      *ngIf="thirdSubGroupVisible"
-                      class="mat-list-option"
-                    >
-                      3
-                    </mat-list-item>
-                  </mat-list>
-                </div>
-              </popover-content>
             </div>
-            <mat-list
+            <div class="subdivision-students__wrapper">
+              <mat-list
               class="subdivision-students__list"
               [cdkDropListData]="firstSubgroupList"
               (cdkDropListDropped)="drop($event, 1)"
@@ -99,60 +70,41 @@
                 }"
                 matRipple
                 class="mat-list-option"
-                *ngFor="let student of firstSubgroupList | sortBy: 'Text'"
+                *ngFor="let student of firstSubgroupList | sortBy: 'LastName'"
               >
-                {{ student.Text | initials }}
+                {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
               </mat-list-item>
             </mat-list>
+            </div>
+
           </div>
           <div
             class="subdivision-students__container"
             *var="studentList | filter: 'subGroup':2 as secondSubgroupList"
           >
             <div class="subdivision-students__header">
+              <button mat-icon-button color="primary" (click)="transferSelected(2, 1)">
+                <mat-icon
+                  matTooltipPosition="below"
+                  [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
+                >
+                  arrow_back
+                </mat-icon>
+              </button>
               <p class="mat-typography text-center">
                 {{ "subgroup" | translate: "Подгруппа" }} 2
               </p>
-              <button mat-icon-button color="primary">
+              <button mat-icon-button color="primary" (click)="transferSelected(2, 3)" *ngIf="thirdSubGroupVisible">
                 <mat-icon
-                  [popover]="subGroupsPopover"
-                  popoverPlacement="auto"
-                  [popoverOnHover]="false"
+                  matTooltipPosition="below"
+                  [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
                 >
                   arrow_forward
                 </mat-icon>
               </button>
-
-              <popover-content
-                style="position: absolute; z-index: 100"
-                #subGroupsPopover
-                [animation]="true"
-                placement="right"
-                [closeOnClickOutside]="true"
-                [closeOnMouseOutside]="false"
-              >
-                <div class="popover-container">
-                  <mat-list>
-                    <mat-list-item
-                      matRipple
-                      class="mat-list-option"
-                      (click)="transferSelected(2, 1)"
-                    >
-                      1
-                    </mat-list-item>
-                    <mat-list-item
-                      (click)="transferSelected(2, 3)"
-                      matRipple
-                      *ngIf="thirdSubGroupVisible"
-                      class="mat-list-option"
-                    >
-                      3
-                    </mat-list-item>
-                  </mat-list>
-                </div>
-              </popover-content>
             </div>
-            <mat-list
+            <div class="subdivision-students__wrapper">
+              <mat-list
               cdkDropList
               [cdkDropListData]="secondSubgroupList"
               (cdkDropListDropped)="drop($event, 2)"
@@ -166,11 +118,13 @@
                 (click)="selectStudent(2, student)"
                 matRipple
                 class="mat-list-option"
-                *ngFor="let student of secondSubgroupList | sortBy: 'Text'"
+                *ngFor="let student of secondSubgroupList | sortBy: 'LastName'"
               >
-                {{ student.Text | initials }}
+                {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
+
               </mat-list-item>
             </mat-list>
+            </div>
           </div>
           <ng-container *ngIf="thirdSubGroupVisible">
             <div
@@ -178,48 +132,20 @@
               *var="studentList | filter: 'subGroup':3 as thirdSubgroupList"
             >
               <div class="subdivision-students__header">
+                <button mat-icon-button color="primary" (click)="transferSelected(3, 2)">
+                  <mat-icon
+                    [matTooltip]="'subdivision.move' | translate:'Переместить в другую подгруппу'"
+                    matTooltipPosition="below"
+                  >
+                    arrow_back
+                  </mat-icon>
+                </button>
                 <p class="mat-typography text-center">
                   {{ "subgroup" | translate: "Подгруппа" }} 3
                 </p>
-                <button mat-icon-button color="primary">
-                  <mat-icon
-                    [popover]="subGroupsPopover"
-                    popoverPlacement="auto"
-                    [popoverOnHover]="false"
-                  >
-                    arrow_forward
-                  </mat-icon>
-                </button>
-  
-                <popover-content
-                  style="position: absolute; z-index: 100"
-                  #subGroupsPopover
-                  [animation]="true"
-                  placement="right"
-                  [closeOnClickOutside]="true"
-                  [closeOnMouseOutside]="false"
-                >
-                  <div class="popover-container">
-                    <mat-list>
-                      <mat-list-item
-                        matRipple
-                        class="mat-list-option"
-                        (click)="transferSelected(3, 1)"
-                      >
-                        1
-                      </mat-list-item>
-                      <mat-list-item
-                        (click)="transferSelected(3, 2)"
-                        matRipple
-                        class="mat-list-option"
-                      >
-                        2
-                      </mat-list-item>
-                    </mat-list>
-                  </div>
-                </popover-content>
               </div>
-              <mat-list
+              <div class="subdivision-students__wrapper">
+                <mat-list
                 cdkDropList
                 [cdkDropListData]="thirdSubgroupList"
                 (cdkDropListDropped)="drop($event, 3)"
@@ -233,71 +159,23 @@
                   }"
                   matRipple
                   class="mat-list-option"
-                  *ngFor="let student of thirdSubgroupList | sortBy: 'Text'"
+                  *ngFor="let student of thirdSubgroupList | sortBy: 'LastName'"
                 >
-                  {{ student.Text | initials }}
+                  {{student.LastName}} {{student.FirstName | firstLetter | uppercase}} {{student.MiddleName | firstLetter | uppercase}}
                 </mat-list-item>
               </mat-list>
+              </div>
             </div>
           </ng-container>
-          <!-- <div class="subdivision-student__container">
-              (click)="includeNone()"
-              <button mat-raised-button ><<</button>
-              <mat-list>
-                <mat-list-item matRipple class="mat-list-option" *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
-                               (click)="move(i, data.selectedGroups, groups)">
-                  {{group.GroupName}}
-                </mat-list-item>
-              </mat-list>
-            </div> -->
-          <!-- <mat-selection-list #students
-                              name="selectList"
-                              [(ngModel)]="selectedOptions"
-                              [color]="'primary'">
-            <mat-list-option *ngFor="let student of studentList | sortBy:'Text'" [value]="student.Value">
-              <div class="subdivision-students__body-text">
-                <div class="subdivision-students__body-sub-group">
-                  {{student.subGroup}}
-                </div>
-                <div>
-                  {{student.Text}}
-                </div>
-              </div>
-            </mat-list-option>
-          </mat-selection-list> -->
         </div>
-        <!-- <div class="subdivision-students__footer">
-          <p class="mat-typography text">
-            {{'text.students.selected.genitive' | translate:'Выбранных студентов'}}: {{students.selectedOptions.selected.length}}
-          </p>
-          <div class="subdivision-students__footer-checkbox">
-            <mat-checkbox [color]="'primary'"
-                          name="allStudents"
-                          [(ngModel)]="allCheckbox"
-                          (change)="selectedAll($event, students)"></mat-checkbox>
-          </div>
-        </div> -->
       </div>
-      <!-- <div class="subdivision-students__actions">
-        <mat-form-field>
-          <mat-label>{{'subgroup' | translate:'Подгруппа'}}</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let subgroup of subgroups"
-                        (onSelectionChange)="splitUp($event, students)"
-                        [value]="subgroup"
-            >
-              {{subgroup}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div> -->
     </form>
   </ng-container>
   <ng-container actions>
     <button mat-raised-button (click)="onClick()">
       {{ "button.cancel" | translate: "Отмена" }}
     </button>
-    <button mat-raised-button color="primary" (click)="save()">
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="!canSave()">
       {{ "button.save" | translate: "Сохранить" }}
     </button>
   </ng-container>

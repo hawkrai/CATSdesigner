@@ -23,6 +23,7 @@ export class SignupComponent implements OnInit {
   form: FormGroup;
   groups: any;
   isLoad = false;
+  selectedQuestion = this.quest[0].value;
 
   constructor(private formBuilder: FormBuilder, private accountService: AccountService,
               private groupService: GroupService, private dialog: MatDialog,
@@ -57,7 +58,7 @@ export class SignupComponent implements OnInit {
   getGroups() {
     this.groupService.getGroups().subscribe(items => {
       this.groups = items;
-      this.groups.sort((n1, n2) => n2.Name - n1.Name);
+      this.groups = this.groups.sort((n1, n2) => n1.Name.localeCompare(n2.Name));
       this.isLoad = true;
     });
   }
@@ -108,7 +109,7 @@ export class SignupComponent implements OnInit {
             right: '0px'
           }
         });
-        this.route.navigate(['/login']);
+        window.parent.location.href = "/login";
       }, () => {
         this.dialog.open(MessageComponent, {
           data: 'Пользователь успешно зарегистрирован.',

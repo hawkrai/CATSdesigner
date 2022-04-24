@@ -63,12 +63,19 @@ namespace LMPlatform.UI.Services.Lectures
             {
 	            var id = int.Parse(subjectId); 
 				var lecturesScheduleVisitingsQuery = new Query<Subject>(e => e.Id == id)
-					.Include(e => e.LecturesScheduleVisitings);
-
+					.Include(e => e.LecturesScheduleVisitings.Select(x => x.Lecturer.User));
+                var subjectOwner = SubjectManagementService.GetSubjectOwner(id);
                 var entities = SubjectManagementService.GetSubject(lecturesScheduleVisitingsQuery)
                         .LecturesScheduleVisitings
                         .OrderBy(e => e.Date);
-                var model = entities.Select(e => new CalendarViewData(e)).ToList();
+                var model = entities.Select(e =>
+                {
+                    if (e.Lecturer == null)
+                    {
+                        e.Lecturer = subjectOwner;
+                    }
+                    return new CalendarViewData(e);
+                }).ToList();
 
                 return new CalendarResult
                 {
@@ -129,6 +136,23 @@ namespace LMPlatform.UI.Services.Lectures
                     {
                         Code = "500",
                         Message = "Пользователь не присоединён к предмету"
+                    };
+                }
+                var normalizedTheme = theme?.Trim();
+                if (string.IsNullOrWhiteSpace(normalizedTheme) || normalizedTheme.Length > 256)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Ошибка вылидации"
+                    };
+                }
+                if (duration < 1 || duration > 36)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Ошибка вылидации"
                     };
                 }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();

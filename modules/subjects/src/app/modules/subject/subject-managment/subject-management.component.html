@@ -53,12 +53,12 @@
           </mat-error>
         </ng-container>
       </form>
-  
+
       <h3 mat-dialog-title class="mat-typography title"></h3>
-  
+
       <div class="section">
         <section class="example-section" [ngStyle]="{ 'grid-template-columns': 'repeat(' + columnsCount + ', auto)' }">
-          <div *ngFor="let module of subject.Modules | toColumn:columnsCount">
+          <div *ngFor="let module of subject.Modules | toColumn:columnsCount" class="subject-input">
             <mat-checkbox
             class="example-margin"
             *ngIf="module"
@@ -66,15 +66,15 @@
             [disabled]="module.Required"
             [(ngModel)]="module.Checked"
           >
-            {{ module.Name }}
+            {{ getModuleName(module)  }}
           </mat-checkbox>
           </div>
-  
+
         </section>
       </div>
-  
-      <div class="wrapper">
-        <div>
+
+      <div class="subject-wrapper">
+        <div class="subject-input">
           <h3 mat-dialog-title class="mat-typography title">{{'group.plural' | translate:'Группы'}}</h3>
           <mat-form-field class="example-full-width select-groups">
             <mat-label>{{'group.plural' | translate:'Группы'}}</mat-label>
@@ -94,7 +94,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div>
+        <div class="subject-input">
           <h3 mat-dialog-title class="mat-typography title">{{'subject.color' | translate:'Цвет предмета'}}</h3>
           <input
             class="color-picker"

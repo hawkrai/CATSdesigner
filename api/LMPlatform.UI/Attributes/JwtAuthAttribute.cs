@@ -1,13 +1,15 @@
-﻿using JWT;
+﻿using Application.Core.Helpers;
+using JWT;
 using JWT.Algorithms;
 using JWT.Builder;
+using JWT.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
-using Application.Core.Helpers;
+
 
 namespace LMPlatform.UI.Attributes
 {
@@ -27,7 +29,6 @@ namespace LMPlatform.UI.Attributes
             if (authCookie != null || autHeader != null)
             {
                 var token = authCookie != null ? authCookie.Value : autHeader.Replace("Bearer","");
-
                 try
                 {
                     var tokenSecret = ConfigurationManager.AppSettings["jwt:secret"];

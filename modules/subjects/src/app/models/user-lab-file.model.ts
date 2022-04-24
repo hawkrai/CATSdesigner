@@ -10,6 +10,7 @@ export class UserLabFile {
     Attachments: Attachment[]
     LabId?: number;
     UserId: number;
-    LabShortName: string;
+    LabShortName?: string;
     Order?: number;
+    LabTheme?: string;
 }

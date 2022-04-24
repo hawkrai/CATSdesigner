@@ -14,7 +14,7 @@ export class FileService {
     }
 
     getFiles(): Observable<FileResponse> {
-        return this.http.get<FileResponse>(this.api + 'GetFiles/');
+        return this.http.get<FileResponse>('/Administration/' + 'GetFiles/');
     }
 
     downloadFile(filepath: string, filename: string) {

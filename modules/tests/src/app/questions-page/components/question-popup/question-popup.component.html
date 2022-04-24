@@ -25,6 +25,9 @@
         <mat-error *ngIf="formGroup.controls.title.hasError('required')">
           {{'text.test.enter.question.name' | translate : "Введите название вопроса"}}
         </mat-error>
+        <mat-error *ngIf="formGroup.controls.title.hasError('whitespace')">
+          {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+        </mat-error>
       </mat-form-field>
     </div>
 

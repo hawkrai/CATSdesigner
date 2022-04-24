@@ -8,6 +8,7 @@
         <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
         <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">Группа</th>
         <th mat-sort-header="ApproveDate" class="mdc-data-table__header-cell" role="columnheader" scope="col">Дата</th>
+        <th mat-sort-header="Lecturer" class="mdc-data-table__header-cell" role="columnheader" scope="col">Руководитель проекта</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Действие</th>
       </tr>
       </thead>
@@ -18,6 +19,7 @@
         <td class="mdc-data-table__cell">{{ project.Student }}</td>
         <td class="mdc-data-table__cell">{{ project.Group }}</td>
         <td class="mdc-data-table__cell">{{ project.ApproveDate | date:'dd.MM.yyyy'}}</td>
+        <td class="mdc-data-table__cell">{{ project.Lecturer}}</td>
         <td class="mdc-data-table__cell" *ngIf="courseUser.IsStudent">
           <button mat-icon-button color="primary" matTooltip="Скачать лист задания"
                   *ngIf="project.StudentId == courseUser.UserId && project.ApproveDate != null" (click)="projectsComponent.downloadTaskSheet(project)">
@@ -25,19 +27,19 @@
           </button>
           <button mat-icon-button color="primary" matTooltip="Выбрать тему"
                   *ngIf="!(courseUser.HasAssignedDiplomProject || courseUser.HasChosenDiplomProject)
-            && project.StudentId == null" (click)="projectsComponent.chooseCourseProject(project.Id)">
+            && project.StudentId == null" (click)="projectsComponent.chooseCourseProject(project)">
             <mat-icon>done</mat-icon>
           </button>
         </td>
         <td class="mdc-data-table__cell" *ngIf="courseUser.IsLecturer">
-          <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="projectsComponent.editProject(project)">
+          <button mat-icon-button color="primary" matTooltip="Редактировать тему" (click)="projectsComponent.editProject(project)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Назначить" (click)="projectsComponent.assignProject(project)"
+          <button mat-icon-button color="primary" matTooltip="Назначить тему" (click)="projectsComponent.assignProject(project)"
                   *ngIf="project.StudentId == null">
             <mat-icon>assignment</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Отменить назначение" (click)="projectsComponent.removeAssignment(project)"
+          <button mat-icon-button color="primary" matTooltip="Отменить назначение темы" (click)="projectsComponent.removeAssignment(project)"
                   *ngIf="project.StudentId != null">
             <mat-icon>remove_circle_outline</mat-icon>
           </button>
@@ -45,7 +47,7 @@
                   *ngIf="project.StudentId != null">
             <mat-icon>cloud_download</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Удалить" (click)="projectsComponent.deleteProject(project)">
+          <button mat-icon-button color="primary" matTooltip="Удалить тему" (click)="projectsComponent.deleteProject(project)">
             <mat-icon>delete</mat-icon>
           </button>
           <button mat-icon-button color="primary" matTooltip="Подтвердить выбранную тему" (click)="projectsComponent.approveChoice(project)"

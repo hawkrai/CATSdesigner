@@ -8,6 +8,7 @@ import {MatModule} from '../../mat.module';
 import {LecturePopoverComponent} from './components/lecture-popover/lecture-popover.component';
 import {SharedModule} from '../../shared/shared.module';
 import { VisitDateLecturesPopoverComponent } from './components/visit-lectures/visit-date-lectures-popover/visit-date-lectures-popover.component'
+import { LecturesRoutingModule } from './lectures-routing.module';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { VisitDateLecturesPopoverComponent } from './components/visit-lectures/v
     MatModule,
     FormsModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LecturesRoutingModule
   ],
   entryComponents: [
     LecturePopoverComponent,

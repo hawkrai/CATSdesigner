@@ -3,12 +3,25 @@ table {
 }
 
 .mat-header-cell {
-  font-size: 20px;
+  font-weight: 600;
+  color: rgba(0,0,0,.87);
+  font-size: .875rem;
+  line-height: 1.375rem;
+  letter-spacing: .0071428571em;
+  text-decoration: inherit;
+  text-transform: inherit;
+  text-align: left;
 }
 
 .mat-cell {
-  font-size: 17px;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  letter-spacing: .0178571429em;
+  text-decoration: inherit;
+  text-transform: inherit;
 }
+
 
 .mat-form-field {
   font-size: 14px;
@@ -16,15 +29,89 @@ table {
 }
 
 .confirmation {
-  margin-left: 20px;
-  margin-right: 20px;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
 
-  &-action {
-    width: 5%;
-    cursor: pointer;
+  &-title {
+    color: #3f51b5;
+    font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    font-size: 24px !important;
   }
 
-  &-number {
+  &-body {
+    display: grid;
+    height: 100%;
+    height: 100%;
+    grid-template-rows: auto 1fr;
+  }
+
+  &-content {
+    overflow-y: auto;
+    height: 100%;
+    position: relative;
+    padding-top: 15px;
+  }
+
+  &-table {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-height: 100%;
+  }
+
+  &-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    &-option, ::ng-deep .mat-select-trigger {
+      font-size: 18px;
+    }
+  }
+
+  &-search, &-seach::placeholder {
+    font-size: 18px;
+  }
+}
+
+
+.icon {
+  &-done {
+    color: green;
+  }
+
+  &-clear {
+    color: red;
+  }
+}
+
+::ng-deep {
+  .mat-select-panel {
+    max-height: 50vh!important;
+  }
+}
+
+
+.mat-column {
+  &-action {
     width: 10%;
+  }
+  
+  &-id {
+    width: 5%;
+  }
+
+  &-confirmedAt {
+    width: 10%;
+  }
+
+  &-confirmedBy {
+    width: 25%;
+  }
+  
+  &-name {
+    width: 50%;
   }
 }

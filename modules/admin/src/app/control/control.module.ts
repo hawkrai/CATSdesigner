@@ -18,6 +18,10 @@ import { StatsComponent } from './stats/stats.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { GroupNotFoundComponent } from './group-not-found/group-not-found.component';
 import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/table-for-stats-subject.component';
+import {NgApexchartsModule} from 'ng-apexcharts';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {TranslateModule} from 'educats-translate';
 
 @NgModule({
   declarations: [
@@ -31,23 +35,27 @@ import { TableForStatsSubjectComponent } from './stats/table-for-stats-subject/t
     GroupNotFoundComponent,
     TableForStatsSubjectComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatInputModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    BrowserAnimationsModule,
-    MatMenuModule,
-    MatProgressSpinnerModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatInputModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        MatFormFieldModule,
+        BrowserAnimationsModule,
+        MatMenuModule,
+        MatProgressSpinnerModule,
+        NgApexchartsModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        TranslateModule
+    ],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: [] }],
   bootstrap: [],
   exports: [ NavbarStatisticComponent,

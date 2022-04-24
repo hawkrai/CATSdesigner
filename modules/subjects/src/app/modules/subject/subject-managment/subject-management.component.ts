@@ -6,6 +6,8 @@ import {SubSink} from 'subsink';
 import {DialogData} from '../../../models/dialog-data.model';
 import {SubjectService} from '../../../services/subject.service';
 import { SubjectForm } from 'src/app/models/form/subject-form.model';
+import { TranslatePipe } from 'educats-translate';
+import { Module, ModuleType } from 'src/app/models/modue.model';
 
 
 interface Group {
@@ -30,7 +32,8 @@ export class SubjectManagementComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<SubjectManagementComponent>,
     public subjectService: SubjectService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public translate: TranslatePipe) {
     this.dialogRef.disableClose = true;
   }
 
@@ -70,4 +73,31 @@ export class SubjectManagementComponent implements OnInit, OnDestroy {
     return this.groupList.find(group => group.id === id).value;
   }
 
+
+  getModuleName(module: Module) {
+    return this.translate.transform(this.getModuleTranslationString(module.Type), module.Name);
+  }
+
+  private getModuleTranslationString(moduleType: ModuleType){
+    switch(moduleType) {
+      case ModuleType.News:
+        return 'text.news.plural';
+      case ModuleType.Lectures:
+        return 'text.lectures.plural';
+      case ModuleType.Practical:
+        return 'text.menu.workshops';
+      case ModuleType.Labs:
+        return 'text.subjects.labs.plural';
+      case ModuleType.YeManagment:
+        return 'text.menu.course';
+      case ModuleType.SmartTest:
+        return 'text.menu.tests';
+      case ModuleType.InteractiveTutorial:
+        return 'text.menu.interactive.book';
+      case ModuleType.SubjectAttachments:
+        return 'text.attachments.plural';
+      case ModuleType.ComplexMaterial:
+        return 'text.menu.cm';
+    }
+  }
 }

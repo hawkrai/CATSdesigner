@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {ModuleCommunicationService} from 'test-mipe-bntu-schedule';
 import { Router} from '@angular/router';
 
@@ -7,12 +7,21 @@ import { Router} from '@angular/router';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.less']
 })
+
+
 export class HomeComponent implements OnInit {
 
-  constructor(private modulecommunicationservice: ModuleCommunicationService, private router: Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
-    this.modulecommunicationservice.receiveMessage1(window, this.router);
   }
+
+  @HostListener('window:message', ['$event'])
+  onMessage(e) {
+    if (e.data.Value != undefined) {
+      this.router.navigate([e.data.Value]);
+    }
+  }
+
 
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Application.Infrastructure.Models;
 using LMPlatform.Models;
 using LMPlatform.Models.KnowledgeTesting;
 
@@ -38,5 +39,9 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
         /// Returns set of students and average marks for subject
         /// </summary>
         Dictionary<int, double?> GetAverageMarkForTests(int groupId, int subjectId);
+
+        TestsResult GetSubjectControlTestsResult(int subjectId, IEnumerable<int> studentsIds);
+
+        List<TestPassResult> GetStudentControlTestResults(int subjectId, int studentId);
     }
 }

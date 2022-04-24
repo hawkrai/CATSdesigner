@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Student} from '../../../models/student.model';
 
 interface DialogData {
+  theme: string;
   students: Student[];
 }
 
@@ -16,7 +17,8 @@ export class AssignProjectDialogComponent {
   displayedColumns: string[] = ['position', 'name', 'group', 'action'];
 
   constructor(public dialogRef: MatDialogRef<AssignProjectDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+  }
 
   onCancelClick(): void {
     this.dialogRef.close();

@@ -14,11 +14,12 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const http_proxy_middleware_1 = require("http-proxy-middleware");
 const modules = __importStar(require("./modules.json"));
+var https = require('https');
+var http = require('http');
 const app = express_1.default();
 const port = 3000;
-const targetDomain = "https://educats.by";
-const targetChatDomain = "https://localhost:44303";
-app.use(express_1.default.static(path_1.default.resolve('d:/CatsProject/apps')));
+const targetDomain = "https://host27072020.of.by";
+app.use(express_1.default.static(path_1.default.resolve('/home/educatsb/apps')));
 const allowedExt = [
     '.js',
     'gif',
@@ -113,7 +114,7 @@ const proxyElasticSearchOptions = {
     }
 };
 const proxyChatOptions = {
-    target: targetChatDomain,
+    target: "https://localhost:4200/",
     changeOrigin: true,
     pathRewrite: {
         '^/catService': '/ChatApi',
@@ -121,11 +122,10 @@ const proxyChatOptions = {
     secure: false
 };
 const proxySignalROptions = {
-    target: targetChatDomain,
+    target: "https://localhost:4200/",
     pathRewrite: {
         '^/chatSignalR': '/chat'
     },
-    ws: true,
     secure: false
 };
 app.use('*/chatSignalR/*', http_proxy_middleware_1.createProxyMiddleware(proxySignalROptions));
@@ -153,11 +153,5 @@ app.get('*', (req, res) => {
     else {
         res.sendFile(path_1.default.resolve(`${modulePath}/${entryPoint}`));
     }
-});
-app.listen(port, err => {
-    if (err) {
-        return console.error(err);
-    }
-    return console.log(`server is listening on ${port}`);
 });
 //# sourceMappingURL=app.js.map

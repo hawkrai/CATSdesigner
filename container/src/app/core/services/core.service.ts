@@ -3,13 +3,13 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Location} from '@angular/common';
 import * as rxjs from 'rxjs';
-import {map, switchMap,} from "rxjs/operators";
+import {map} from "rxjs/operators";
 import { ToastrService } from 'ngx-toastr';
 import {Message} from "../models/message";
 import { Module } from "../models/module.model";
 import { Subject } from '../models/subject';
 import { Lector } from '../models/lector.model';
-import { AuthenticationService } from './auth.service';
+import { ConfirmationService } from './confirmation.service';
 
 type Tooltip = 'success' | 'warning';
 
@@ -26,7 +26,7 @@ export class CoreService {
     private router: Router,
     private location: Location,
     private toastrService: ToastrService,
-    private authService: AuthenticationService
+    private confirmationService: ConfirmationService
     ) {
     this.selectedSubject = null;
   }
@@ -58,6 +58,14 @@ export class CoreService {
       if (message.channel == "Route"){
         this.router.navigateByUrl(`/${message.value}`);
       }      
+      if (message.channel === 'Confirmation') {
+        this.confirmationService.confirmationSubject.next(+message.value);
+      }
+
+      if (message.channel === 'Location') {
+        this.location.go(message.value);
+      }
+
       if (message.channel === 'SubjectId') {
         this.subjectIdSub.next(+message.value);
       }  
@@ -82,8 +90,7 @@ export class CoreService {
   }
 
   public getUserSubjects(): rxjs.Observable<Subject[]> {
-    return this.authService.currentUser.pipe(
-      switchMap(user => this.http.get<any>(`/Services/Subjects/SubjectsService.svc/GetUserSubjects/${user.id}`)),
+    return this.http.get<any>(`/Services/Subjects/SubjectsService.svc/GetUserSubjects`).pipe(
       map(subjects => {
         this.listOfSubjects = subjects.Subjects;
         return this.listOfSubjects;

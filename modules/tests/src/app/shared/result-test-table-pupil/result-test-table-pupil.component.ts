@@ -3,8 +3,6 @@ import {Test} from "../../models/test.model";
 import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
 import {Label} from "ng2-charts";
 import * as pluginDataLabels from "chartjs-plugin-datalabels";
-import {TranslatePipe} from "educats-translate";
-
 
 @Component({
   selector: "app-result-test-table-pupil",
@@ -26,7 +24,7 @@ export class ResultTestTablePupilComponent implements OnChanges {
       xAxes: [{}], yAxes: [{
         ticks: {
           min: 0,
-          max: 100,
+          max: 10,
         }
       }]
     },
@@ -36,6 +34,9 @@ export class ResultTestTablePupilComponent implements OnChanges {
         anchor: "end",
         align: "end",
       }
+    },
+    legend: {
+      display: false
     }
   };
   public barChartLabels: Label[] = [];
@@ -44,14 +45,10 @@ export class ResultTestTablePupilComponent implements OnChanges {
   public barChartPlugins = [pluginDataLabels];
   public barChartData: ChartDataSets[];
 
-  constructor(private translatePipe: TranslatePipe) {
-
-  }
-
   public ngOnChanges(changes: SimpleChanges): void {
     this.barChartLabels = [];
     this.barChartData = [
-      {data: [], label: this.translatePipe.transform('text.text.percent',"Проценты")}
+      {data: [] }
     ];
     this.barChartData[0].data = [];
     this.tests && this.tests.forEach((test: Test) => {
@@ -60,7 +57,7 @@ export class ResultTestTablePupilComponent implements OnChanges {
         sliced += "...";
       }
       this.barChartLabels.push(sliced);
-      this.barChartData[0].data.push(test.Percent);
+      this.barChartData[0].data.push(test.Points);
     });
     this.loading = false;
   }

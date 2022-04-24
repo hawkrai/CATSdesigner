@@ -258,6 +258,7 @@
     <Compile Include="Models\ProfileCalendarModel.cs" />
     <Compile Include="Models\ScheduleModel.cs" />
     <Compile Include="Models\StudentJobProtection.cs" />
+    <Compile Include="Models\TestsResult.cs" />
     <Compile Include="NewsManagement\INewsManagementService.cs" />
     <Compile Include="NewsManagement\NewsManagementService.cs" />
     <Compile Include="NoteManagement\INoteManagementService.cs" />
@@ -269,6 +270,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduleManagement\IScheduleManagementService.cs" />
     <Compile Include="ScheduleManagement\ScheduleManagementService.cs" />
+    <Compile Include="SubjectLecturersManagement\ISubjectLecturersManagementService.cs" />
+    <Compile Include="SubjectLecturersManagement\SubjectLecturersManagementService.cs" />
     <Compile Include="SubjectManagement\IModulesManagementService.cs" />
     <Compile Include="StudentManagement\IStudentManagementService.cs" />
     <Compile Include="StudentManagement\StudentManagementService.cs" />

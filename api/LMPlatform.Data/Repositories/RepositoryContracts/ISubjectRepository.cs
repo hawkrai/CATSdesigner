@@ -6,10 +6,14 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
 {
     public interface ISubjectRepository : IRepositoryBase<Subject>
     {
+        List<Subject> GetAllSubjectsForGroup(int groupId);
         List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0);
+        List<Subject> GetSubjectsInfoByLecturerId(int lecturerId);
+        List<Subject> GetSubjectsInfoByGroupId(int groupId);
 
         List<Subject> GetSubjectsV2(int groupId = 0, int lecturerId = 0);
-
+        int GetSubjectsCountByGroupId(int groupId, bool isActive);
+        Subject GetSubject(int subjectId, int groupId = 0, int lecturerId = 0);
         List<Subject> GetSubjectsLite(int? groupId = null);
 
         void DeleteLection(Lectures lectures);

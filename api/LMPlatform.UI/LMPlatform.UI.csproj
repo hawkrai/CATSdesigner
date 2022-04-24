@@ -109,8 +109,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\itextsharp.dll</HintPath>
     </Reference>
-    <Reference Include="JWT, Version=6.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
-      <HintPath>..\packages\JWT.6.1.4\lib\net46\JWT.dll</HintPath>
+    <Reference Include="JWT, Version=7.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
+      <HintPath>..\packages\JWT.7.3.1\lib\net46\JWT.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -488,6 +488,7 @@
     </Compile>
     <Compile Include="Helpers\TaskScheduler\TaskScheduler.cs" />
     <Compile Include="Helpers\TaskScheduler\Tasks\SearchTask.cs" />
+    <Compile Include="Managers\JwtAuthorizationManager.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -597,6 +598,8 @@
     <Compile Include="Services\Modules\Labs\LabVisitingMark.cs" />
     <Compile Include="Services\Modules\Labs\JobProtectionViewData.cs" />
     <Compile Include="Services\Modules\Labs\StudentJobProtectionViewData.cs" />
+    <Compile Include="Services\Modules\Labs\SubGroupViewData.cs" />
+    <Compile Include="Services\Modules\News\ProfileNews.cs" />
     <Compile Include="Services\Modules\News\TelegramNewsResult.cs" />
     <Compile Include="Services\Modules\News\TelegramNewsViewModel.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewData.cs" />
@@ -649,6 +652,7 @@
     <Compile Include="Services\Modules\Schedule\ScheduleViewResultSingle.cs" />
     <Compile Include="Services\Modules\Statistics\SubjectStatisticsViewResult.cs" />
     <Compile Include="Services\Modules\Statistics\TeacherStatisticsViewData.cs" />
+    <Compile Include="Services\Modules\Subjects\ProfileSubject.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />
@@ -745,8 +749,10 @@
     <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\NewsDataViewModel.cs" />
     <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\PracticalsDataViewModel.cs" />
     <Compile Include="ViewModels\SubjectModulesViewModel\ModulesViewModel\ScheduleProtectionLabsDataViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\LectorViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModels\ModulesDataWorkingViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModels\ModulesViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModels\StudentSubGroupViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModels\SubGroupEditingViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModels\SubjectEditViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModels\SubjectListViewModel.cs" />

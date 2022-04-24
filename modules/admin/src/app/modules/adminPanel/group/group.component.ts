@@ -6,6 +6,8 @@ import { DeleteItemComponent } from '../modal/delete-person/delete-person.compon
 import { Group } from 'src/app/model/group';
 import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-students.component';
 import {MessageComponent} from '../../../component/message/message.component';
+import { AppToastrService } from 'src/app/service/toastr.service';
+import { SubjectListComponent } from '../modal/subject-list/subject-list.component';
 
 @Component({
   selector: 'app-group',
@@ -14,14 +16,14 @@ import {MessageComponent} from '../../../component/message/message.component';
 })
 export class GroupComponent implements OnInit {
 
-  group = new Group();
-  displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount', 's'];
+  dataGroup  = new Group();
+  displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount','subjectsCount', 's'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   isLoad = false;
 
-  constructor(private groupService: GroupService, private dialog: MatDialog) { }
+  constructor(private groupService: GroupService, private dialog: MatDialog, private toastr: AppToastrService) { }
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
@@ -29,42 +31,44 @@ export class GroupComponent implements OnInit {
     this.loadGroup();
   }
 
+  openListOfSubject(group) {
+    const dialogRef = this.dialog.open(SubjectListComponent, {
+      data: group
+    });
+    dialogRef.afterClosed();
+  }
+
+
   loadGroup() {
-    this.isLoad = false;
     this.groupService.getGroups().subscribe(items => {
-      this.dataSource.data = items;
+      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
       this.isLoad = true;
     });
   }
 
+  sortFunc(a, b) { 
+    if(a.Name < b.Name){
+      return -1;
+    }
+
+    else if(a.Name > b.Name){
+      return 1;
+    }
+    
+    return 0;
+ } 
+
   saveGroup(group: Group) {
     this.groupService.addGroup(group).subscribe(() => {
-      this.group = new Group();
-      this.dialog.open(MessageComponent, {
-        data: 'Группа успешно сохранена.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
       this.loadGroup();
+      this.dataGroup = new Group();
+      this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
     }, err => {
       if (err.status === 500) {
-        this.dialog.open(MessageComponent, {
-          data: 'Группа успешно сохранена.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.loadGroup();
+        this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       } else {
-        this.dialog.open(MessageComponent, {
-          data: 'Произошла ошибка при сохранении.Попробуйте заново.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addErrorFlashMessage('Произошла ошибка при сохранении. Повторите попытку');
       }
     });
   }
@@ -80,14 +84,33 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  deleteGroup(id) {
+  deleteGroup(id, subCount, studCount) {
     const dialogRef = this.dialog.open(DeleteItemComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.groupService.deleteGroup(id).subscribe(() => {
-          this.loadGroup();
-        });
+        this.removeGroup(id, subCount, studCount);
       }
+    });
+  }
+
+  removeGroup(id, subCount, studCount) {
+    this.groupService.deleteGroup(id).subscribe(() => {
+      this.loadGroup();
+      this.toastr.addSuccessFlashMessage("Группа удалена!");
+    }, 
+    err => {
+        var msg = 'Произошла ошибка!\n';
+        if (studCount != 0) {
+          msg = msg + 'Нельзя удалить группу со студентами!\n'
+        } 
+
+        if (subCount != 0) {
+          msg = msg + 'Нельзя удалить группу за которой закреплены предметы!\n'
+        }
+
+        this.toastr.addErrorFlashMessage(msg);
+
+        this.loadGroup();
     });
   }
 
@@ -102,10 +125,10 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  async openListOfStudents(groupId) {
-    const dialogRef = this.dialog.open(ListOfStudentsComponent, {
-        data: groupId
-    });
+  async openListOfStudents(group) {
+    const dialogRef = this.dialog.open(ListOfStudentsComponent, 
+      {data: group},
+    );
     dialogRef.afterClosed();
   }
 

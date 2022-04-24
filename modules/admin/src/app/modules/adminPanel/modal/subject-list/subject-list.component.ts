@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource } from '@angular/material';
+import { Group } from 'src/app/model/group';
 import { UserService } from 'src/app/service/userService';
 
 @Component({
@@ -9,7 +10,7 @@ import { UserService } from 'src/app/service/userService';
 })
 export class SubjectListComponent implements OnInit {
 
-  displayedColumns: string[] = ['name', 'lectures'];
+  displayedColumns: string[] = ['name', 'subjectStatus', 'lectures'];
   dataSource = new MatTableDataSource<object>();
   subjectInfo;
   isLoad = false;
@@ -21,11 +22,31 @@ export class SubjectListComponent implements OnInit {
     this.loadData(this.data);
   }
 
-  loadData(studentId) {
-    this.userService.getListOfSubjectsByStudentId(studentId).subscribe( result => {
+  getSubjectStatus(status) {
+    if(status[0] == true){
+      return "Активен"
+    }
+    else{
+    return "Откреплен"
+  }
+  }
+
+  loadData(data) {
+    if(!this.isGroup(data)){
+    this.userService.getListOfAllSubjectsByStudentId(data.Id).subscribe( result => {
       this.subjectInfo = result;
       this.isLoad = true;
-    });
-  }
+    });}
+
+    else{
+      this.userService.getListOfAllSubjectsByGroupId(data.Id).subscribe( result => {
+        this.subjectInfo = result;
+        this.isLoad = true;
+      });}
+    }
+  
+  isGroup(data){
+    return data.StudentsCount !== undefined;
+}
 
 }

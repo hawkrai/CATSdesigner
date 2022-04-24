@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using System.Web.Security;
+using Application.Core;
 using Application.Core.Data;
 using Application.Core.UI.Controllers;
 using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure.DPManagement;
+using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.StudentManagement;
@@ -24,6 +27,12 @@ namespace LMPlatform.UI.Controllers
     [JwtAuth(Roles = "admin")]
     public class AdministrationController : BasicController
     {
+
+        private readonly LazyDependency<IFilesManagementService> _filesManagementService =
+            new LazyDependency<IFilesManagementService>();
+
+        public IFilesManagementService FilesManagementService => this._filesManagementService.Value;
+
         [HttpPost]
         public DataTablesResult<StudentViewModel> GetCollectionStudents(DataTablesParam dataTableParam)
         {
@@ -114,6 +123,29 @@ namespace LMPlatform.UI.Controllers
             };
 
             return JsonResponse(responseObj);
+        }
+
+        [HttpGet]
+        public ActionResult GetFiles()
+        {
+            try
+            {
+                var attachments = this.FilesManagementService.GetAttachments(null).ToList();
+                var storageRoot = ConfigurationManager.AppSettings["FileUploadPath"];
+                var result = new 
+                {
+                    Files = attachments,
+                    ServerPath = storageRoot,
+                    Message = "Данные успешно загружены",
+                    Code = "200"
+                };
+
+                return JsonResponse(result);
+            }
+            catch
+            {
+                return StatusCode(HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet]
@@ -266,7 +298,10 @@ namespace LMPlatform.UI.Controllers
         [AllowAnonymous]
         public ActionResult GetGroupsJson()
         {
-            var groups = this.GroupManagementService.GetGroups(new Query<Group>().Include(e => e.Students));
+            var groups = this.GroupManagementService.GetGroups(new Query<Group>()
+                .Include(e => e.Students)
+                .Include(e => e.SubjectGroups)
+                );
 
             var responseModel = groups.Select(l => GroupViewModel.FormGroup(l, null));
 
@@ -420,7 +455,8 @@ namespace LMPlatform.UI.Controllers
                     Groups = s.SubjectGroups.Where(sg => sg.Group != null).Select(sg => new
                     {
                         GroupName = sg.Group.Name,
-                        StudentsCount = sg.Group.Students.Count
+                        StudentsCount = sg.Group.Students.Count,
+                        IsActive = sg.IsActiveOnCurrentGroup    
                     })
                 })
             };
@@ -431,19 +467,65 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public ActionResult ListOfSubjectsByStudentJson(int id)
         {
-            var groups = this.SubjectManagementService.GetSubjectsByStudent(id).OrderBy(subject => subject.Name)
+            var subjects = this.SubjectManagementService.GetSubjectsByStudent(id).OrderBy(subject => subject.Name)
                 .ToList();
             var stud = this.StudentManagementService.GetStudent(id);
 
             if (stud == null) return StatusCode(HttpStatusCode.BadRequest);
-            var model = ListSubjectViewModel.FormSubjects(groups, stud.FullName);
+            var model = ListSubjectViewModel.FormSubjects(subjects, stud.FullName);
             var response = new
             {
                 Student = model.Name,
                 Subjects = model.Subjects.Select(s => new
                 {
                     SubjectName = s.Name,
+                    IsActiveOnGroup = s.SubjectGroups?.Select(prof => prof.IsActiveOnCurrentGroup),
                     Lecturers = s.SubjectLecturers?.Select(prof => prof.Lecturer.FullName)
+                })
+            };
+            return JsonResponse(response);
+
+        }
+
+        [HttpGet]
+        public ActionResult ListOfAllSubjectsByStudentJson(int id)
+        {
+            var subjects = this.SubjectManagementService.GetAllSubjectsByStudent(id).OrderBy(subject => subject.Name)
+                .ToList();
+            var stud = this.StudentManagementService.GetStudent(id);
+
+            if (stud == null) return StatusCode(HttpStatusCode.BadRequest);
+
+            return getSubjectInfo(subjects, stud.FullName);
+
+        }
+
+        [HttpGet]
+        public ActionResult ListOfAllSubjectsByGroupJson(int id)
+        {
+            var subjects = this.SubjectManagementService.GetSubjectsInfoByGroup(id).OrderBy(subject => subject.Name)
+                .ToList();
+
+            var Group= this.GroupManagementService.GetGroup(id);
+
+            if (Group == null) return StatusCode(HttpStatusCode.BadRequest);
+
+            return getSubjectInfo(subjects, Group.Name);
+            
+        }
+
+
+        private ActionResult getSubjectInfo(List<Subject> subjects, string name)
+        {
+            var model = ListSubjectViewModel.FormSubjects(subjects, name);
+            var response = new
+            {
+                Owner = model.Name,
+                Subjects = model.Subjects.Select(s => new
+                {
+                    SubjectName = s.Name,
+                    IsActiveOnGroup = s.SubjectGroups?.Select(prof => prof.IsActiveOnCurrentGroup),
+                    Lecturers = s.SubjectLecturers?.Select(prof => prof.Lecturer.FullName).ToHashSet()
                 })
             };
             return JsonResponse(response);

@@ -36,4 +36,12 @@ export const resetSubjects = createAction(
   '[Subjects] Reset Subjects'
 );
 
+export const loadSubject = createAction(
+  '[Subject] Load Subject',
+  props<{ subjectId: number }>()
+);
 
+export const loadSubjectSuccess = createAction(
+  '[Subject] Load Subject Success',
+  props<{ subject: Subject }>()
+);

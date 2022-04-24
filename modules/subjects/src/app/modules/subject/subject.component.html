@@ -2,6 +2,9 @@
   <div class="subjects-component__actions">
     <button mat-raised-button color="primary" (click)="constructorSubject(state.subjects)">{{'subject.add' |
       translate:'Добавить предмет'}}</button>
+      <div>
+        <app-help [message]="subjectsHelp.message" [action]="subjectsHelp.action" class="help"></app-help>
+      </div>
   </div>
   <ng-container *ngIf="state.subjects">
     <table mat-table *ngIf="!listViewMatcher.matches; else listView" [dataSource]="state.subjects | orderBy:'DisplayName'"
@@ -34,6 +37,14 @@
           [matTooltip]="'subject.students.count' | translate: 'Количество студентов на предмете'"
           matTooltipPosition="above">{{'text.students' | translate:'Студенты'}}</th>
         <td mat-cell *matCellDef="let element"> {{element.StudentsCount}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="lectors">
+        <th mat-header-cell *matHeaderCellDef
+          [matTooltip]="'subject.lectors.count' | translate: 'Количество преподавателей на предмете'"
+          matTooltipPosition="above">{{'text.lectors' | translate:'Преподаватели'}}</th>
+        <td mat-cell *matCellDef="let element" [matTooltipClass]="'tooltip'"
+        [matTooltip]="getLectorsTooltip(element.Lectors)"> {{element.Lectors.length}}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">

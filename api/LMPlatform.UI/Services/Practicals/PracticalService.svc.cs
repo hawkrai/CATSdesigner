@@ -93,6 +93,23 @@ namespace LMPlatform.UI.Services.Practicals
                         Message = "Пользователь не присоединён к предмету"
                     };
                 }
+                var normalizedTheme = theme?.Trim();
+                if (string.IsNullOrWhiteSpace(normalizedTheme) || normalizedTheme.Length > 256)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Ошибка вылидации"
+                    };
+                }
+                if (duration < 1 || duration > 36)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Ошибка вылидации"
+                    };
+                }
                 var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
                 PracticalManagementService.SavePractical(new Practical
                 {
@@ -162,14 +179,16 @@ namespace LMPlatform.UI.Services.Practicals
 
             var marks = new List<StudentMark>();
 
-            var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
-
             var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
             var scheduleProtectionPracticalMarksGroup = subject.ScheduleProtectionPracticals.Where(x => x.GroupId == groupId);
-            foreach (var student in group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName))
+            var students = group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName);
+
+            var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
+
+            foreach (var student in students)
             {
-               
-                var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subjectId, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), student, scheduleProtectionPracticals: scheduleProtectionPracticalMarksGroup, practicals: subject.Practicals);
+                var studenTestsPassResults = testsResults.Results.ContainsKey(student.Id) ? testsResults.Results[student.Id] : new List<Models.KnowledgeTesting.TestPassResult>();
+                var studentViewData = new StudentsViewData(studenTestsPassResults, student, scheduleProtectionPracticals: scheduleProtectionPracticalMarksGroup, practicals: subject.Practicals);
 
                 marks.Add(new StudentMark
                 {
@@ -179,7 +198,9 @@ namespace LMPlatform.UI.Services.Practicals
                     TestMark = studentViewData.TestMark,
                     PracticalVisitingMark = studentViewData.PracticalVisitingMark,
                     PracticalsMarks = studentViewData.StudentPracticalMarks,
-                    AllTestsPassed = studentViewData.AllTestsPassed
+                    AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
+                    TestsPassed = studenTestsPassResults.Count,
+                    Tests = testsResults.Tests.Count
                 });
             }
 
@@ -213,19 +234,11 @@ namespace LMPlatform.UI.Services.Practicals
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
                     var showForStudent = showForStudents[i];
+                    var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
 
-                    foreach (var student in students)
+                    if (student != null && student.PracticalVisitingMark.Any(x => x.ScheduleProtectionPracticalId == dateId))
                     {
-                        if (student.StudentId == currentStudentId)
-                        {
-                            foreach (var practicalVisiting in student.PracticalVisitingMark)
-                            {
-                                if (practicalVisiting.ScheduleProtectionPracticalId == dateId)
-                                {
-                                    SubjectManagementService.SavePracticalVisitingData(new ScheduleProtectionPracticalMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
-                                }
-                            }
-                        }
+                        SubjectManagementService.SavePracticalVisitingData(new ScheduleProtectionPracticalMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
 
                     }
                 }
@@ -322,9 +335,10 @@ namespace LMPlatform.UI.Services.Practicals
             try
             {
                 var practicals = PracticalManagementService.GetPracticals(new Query<Practical>(e => e.SubjectId == subjectId)).OrderBy(e => e.Order).ToList();
+                var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
                 var groupProtectionSchedule = GroupManagementService.GetGroup(
                     new Query<Group>(e => e.Id == groupId)
-                    .Include(x => x.ScheduleProtectionPracticals)
+                    .Include(x => x.ScheduleProtectionPracticals.Select(x => x.Lecturer.User))
                     ).ScheduleProtectionPracticals.ToList();
 
                 var practicalsViewData = practicals.Select(e => new PracticalsViewData(e) {
@@ -360,7 +374,14 @@ namespace LMPlatform.UI.Services.Practicals
                 return new PracticalsResult
                 {
                     Practicals = practicalsViewData.ToList(),
-                    ScheduleProtectionPracticals = groupProtectionSchedule.Select(e => new ScheduleProtectionPracticalViewData(e)).ToList(),
+                    ScheduleProtectionPracticals = groupProtectionSchedule.Select(e =>
+                    {
+                        if (e.Lecturer == null)
+                        {
+                            e.Lecturer = subjectOwner;
+                        }
+                        return new ScheduleProtectionPracticalViewData(e);
+                    }).ToList(),
                     Message = "Практические работы успешно загружены",
                     Code = "200"
                 };
@@ -375,10 +396,19 @@ namespace LMPlatform.UI.Services.Practicals
             }
         }
 
-        public ResultViewData SaveStudentLabsMark(int studentId, int practicalId, string mark, string comment, string date, int id, bool showForStudent)
+        public ResultViewData SaveStudentPracticalMark(int studentId, int practicalId, string mark, string comment, string date, int id, bool showForStudent, int subjectId)
         {
             try
             {
+                var isUserAssigned = SubjectManagementService.IsUserAssignedToSubjectAndLector(UserContext.CurrentUserId, subjectId);
+                if (!isUserAssigned)
+                {
+                    return new ResultViewData
+                    {
+                        Code = "500",
+                        Message = "Пользователь не присоединён к предмету"
+                    };
+                }
                 PracticalManagementService.SaveStudentPracticalMark(new StudentPracticalMark(practicalId, studentId, UserContext.CurrentUserId, mark, comment, date, id, showForStudent));
 
                 return new ResultViewData

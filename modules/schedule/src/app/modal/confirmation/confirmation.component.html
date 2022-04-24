@@ -1,4 +1,7 @@
 <div>
+  <mat-icon (click)="onCancelClick()" style="cursor: pointer;position: relative; float: right">close</mat-icon>
+</div>
+<div>
   <p align="center"> {{'text.schedule.delete.event' | translate:'Удалить занятие/событие?'}} </p>
   <div align="center">
     <button mat-raised-button color="basic" style="outline:none;" (click)=onCancelClick()>{{'button.no'| translate:'Нет'}}</button>

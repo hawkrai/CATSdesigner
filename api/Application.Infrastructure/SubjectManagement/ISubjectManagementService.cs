@@ -9,16 +9,19 @@ namespace Application.Infrastructure.SubjectManagement
 
     public interface ISubjectManagementService
     {
+        List<Subject> GetAllSubjectsByStudent(int userId);
         List<Subject> GetUserSubjects(int userId);
 
+        Subject GetUserSubject(int subjectId, int userId);
+
+        List<Subject> GetSubjectsInfoByGroup(int Id);
         bool IsUserAssignedToSubject(int useId, int subjectId);
         bool IsUserAssignedToSubjectAndLector(int useId, int subjectId);
-
         bool IsUserSubjectOwner(int userId, int subjectId);
 
         List<Subject> GetUserSubjectsV2(int userId);
 
-        List<Subject> GetGroupSubjects(int groupId);
+        List<Subject> GetGroupSubjects(int groupId, bool isArchive = false);
 
         List<Subject> GetGroupSubjectsLite(int groupId);
 
@@ -86,6 +89,8 @@ namespace Application.Infrastructure.SubjectManagement
 
         void SaveStudentLabsMark(StudentLabMark studentLabMark);
 
+        public void RemoveStudentLabsMark(int id);
+
         List<string> GetLecturesAttachments(int subjectId);
 
         List<string> GetLabsAttachments(int subjectId);
@@ -116,11 +121,13 @@ namespace Application.Infrastructure.SubjectManagement
 
         List<ProfileCalendarModel> GetLecturesEvents(int userId);
 
-        List<Subject> GetSubjectsByLector(int userId);
-        List<Subject> GetAllSubjectsByLector(int userId);
+        List<Subject> GetSubjectsByLector(int userId, bool isArchive = false);
+        List<Subject> GetSubjectsInfoByLector(int userId);
 
-        List<Subject> GetSubjectsByStudent(int userId);
-        List<Subject> GetAllSubjectsByStudent(int userId);
+        List<Subject> GetSubjectsByStudent(int userId, bool isArchive = false);
+
+        int GetSubjectsCountByStudent(int userId, bool isActive);
+        List<Subject> GetSubjectsInfoByStudent(int userId);
 
 		decimal GetSubjectCompleting(int subjectId, string user, Student student);
 

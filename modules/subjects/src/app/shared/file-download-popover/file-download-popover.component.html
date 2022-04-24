@@ -1,4 +1,4 @@
-<app-popover-dialog width="300">
+<app-popover-dialog width="400">
   <ng-container title>
     {{data.title}}
   </ng-container>
@@ -9,12 +9,13 @@
                     [color]="'primary'"
                     [(ngModel)]="attachment.isDownload"
       >
-        {{attachment.Name}}
+        
+        <span class="text-ow">{{attachment.Name}}</span>
       </mat-checkbox>
     </section>
   </ng-container>
   <ng-container actions>
     <button mat-raised-button mat-dialog-close>{{'button.cancel' | translate:'Отмена'}}</button>
-    <button mat-raised-button (click)="download()" color="primary">{{data.buttonText}}</button>
+    <button mat-raised-button (click)="download()" color="primary" [disabled]="downloadDisabled">{{data.buttonText}}</button>
   </ng-container>
 </app-popover-dialog>

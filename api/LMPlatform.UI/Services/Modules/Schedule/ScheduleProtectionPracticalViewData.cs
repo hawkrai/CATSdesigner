@@ -13,7 +13,8 @@ namespace LMPlatform.UI.Services.Modules.Schedule
                   scheduleProtectionPractical.EndTime,
                   scheduleProtectionPractical.Building,
                   scheduleProtectionPractical.Audience,
-                  scheduleProtectionPractical.SubjectId)
+                  scheduleProtectionPractical.SubjectId,
+                  scheduleProtectionPractical.Lecturer)
         {
             ScheduleProtectionPracticalId = scheduleProtectionPractical.Id;
             GroupId = scheduleProtectionPractical.GroupId;

@@ -34,8 +34,26 @@
     width: 12% !important;
   }
 
+  .mat-column {
+    &-position {
+      width: 5%;
+    }
+
+    &-shortName {
+      width: 17%;
+    }
+  }
+
   .mat-column-duration {
-    width: 15% !important;
+    width: 10% !important;
+  }
+  .mat-column-files {
+    width: 10%!important;
+
+    & .mdc-button .mdc-button__icon {
+      font-size: 22px;
+      margin-right: 5px;
+    }
   }
 }
 
@@ -68,4 +86,9 @@ table.mat-table {
 
 .cdk-drop-list-dragging .mat-row:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.mdc-button__label {
+  margin-top: 10px;
+  display: block;
 }

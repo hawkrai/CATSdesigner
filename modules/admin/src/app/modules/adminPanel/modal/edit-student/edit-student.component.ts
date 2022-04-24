@@ -3,7 +3,7 @@ import { Group } from 'src/app/model/group';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { GroupService } from 'src/app/service/group.service';
-import { EditStudent } from 'src/app/model/student';
+import { EditStudent, Student } from 'src/app/model/student';
 
 @Component({
   selector: 'app-edit-student',
@@ -14,28 +14,40 @@ export class EditStudentComponent implements OnInit {
 
   groups: Group[];
   form: FormGroup;
-  fullName: string;
+  student: Student
   @Output() submitEM = new EventEmitter();
   constructor(
     private formBuilder: FormBuilder,
     public groupService: GroupService,
-    public dialogRef: MatDialogRef<object>,
+    public dialogRef: MatDialogRef<EditStudentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    const student = this.data;
     this.loadGroup();
+    this.student = this.data;
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
-      Id: new FormControl(student.Id),
-      Surname: new FormControl(student.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+      Id: new FormControl(this.student.Id),
+      Surname: new FormControl(this.student.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Name: new FormControl(student.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
+      Name: new FormControl(this.student.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Patronymic: new FormControl(student.Patronymic, [Validators.maxLength(30),
+      Patronymic: new FormControl(this.student.Patronymic, [Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Group: new FormControl(student.Group),
+      Group: new FormControl(this.student.Group),
     });
+  }
+
+  trimFields() {
+    if(this.student.Name != null){
+    this.student.Name = this.student.Name.replace(/\s/g, "");
+    }
+    if(this.student.Surname != null){
+    this.student.Surname = this.student.Surname.replace(/\s/g, "");
+    }
+    if(this.student.Patronymic != null){
+    this.student.Patronymic= this.student.Patronymic.replace(/\s/g, "");
+    }
   }
 
   onNoClick(): void {

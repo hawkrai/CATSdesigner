@@ -1,8 +1,11 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
-import {ConfirmationService} from "../service/confirmation.service";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ConfirmationService} from "../services/confirmation.service";
 import {takeUntil, tap} from "rxjs/operators";
-import {Subject} from "rxjs";
-import {MatSnackBar, MatTableDataSource} from "@angular/material";
+import {iif, Subject} from "rxjs";
+import { Group } from "../models/group.model";
+import { Student } from "../models/student.model";
+import { CatsMessageService } from "../services/cats-message.service";
+import { Message } from "../models/message.model";
 
 
 @Component({
@@ -11,33 +14,28 @@ import {MatSnackBar, MatTableDataSource} from "@angular/material";
   styleUrls: ["./confirmation.component.less"]
 })
 export class ConfirmationComponent implements OnInit, OnDestroy {
-  public groups = [];
-  public selectedGroup;
-  public students: any = [];
-  public displayedColumns: string[] = ["id", "name", "action"];
-  public dataSource: any;
+  public groups: Group[] = [];
+  public selectedGroup: number;
+  public students: Student[] = [];
+  public displayedColumns: string[] = ["id", "name", 'confirmedAt', 'confirmedBy', "action"];
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
-  constructor(private confirmationService: ConfirmationService,
-              private snackBar: MatSnackBar,
-              private cdr: ChangeDetectorRef) {
+  constructor(
+    private confirmationService: ConfirmationService,
+    private catsMessageService: CatsMessageService
+    ) {
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
+  search: string = '';
 
   ngOnInit() {
-    this.confirmationService.getGroups()
+    this.confirmationService.getUserGroups()
       .pipe(
         tap((groups: any) => {
           if (groups && groups.Groups) {
-            groups.Groups.forEach((group: any) => {
-              this.groups.push({id: group.GroupId, value: group.GroupName + " - (" + group.CountUnconfirmedStudents + ")"});
-            });
+            this.groups = groups.Groups;
           }
-          this.onGroupValueChange(this.groups && this.groups[0].id);
+          this.onGroupValueChange(this.groups && this.groups[0].GroupId);
         }),
         takeUntil(this.unsubscribeStream$)
       ).subscribe();
@@ -46,46 +44,31 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
   public onGroupValueChange(event): void {
     this.selectedGroup = event;
     this.students = [];
-    console.log("event.source.value " + event);
     this.confirmationService.getStudents(event)
       .pipe(
-        tap((students) => {
-          students.Students.forEach((student) => {
-            this.students.push({id: student.StudentId, name: student.FullName, confirmed: student.Confirmed});
-          });
-          this.dataSource = new MatTableDataSource(this.students);
-          this.cdr.detectChanges();
-        }),
         takeUntil(this.unsubscribeStream$)
-      ).subscribe();
+      ).subscribe(students => {
+        this.students = students.Students;
+      });
   }
 
-  public open(student): void {
-    this.confirmationService.confirmationStudent(student.id)
+
+  public confirm(student: Student, confirm = true): void {
+    iif(() => confirm, this.confirmationService.confirmationStudent(student.StudentId), this.confirmationService.unconfirmationStudent(student.StudentId))
       .pipe(
-        tap((response) => {
-          this.openSnackBar(response.Message);
-          this.onGroupValueChange(this.selectedGroup);
-        }),
         takeUntil(this.unsubscribeStream$)
-      ).subscribe();
+      ).subscribe(response => {
+        this.onGroupValueChange(this.selectedGroup);
+        this.updateGroupUncofirmedStudents(confirm);
+        this.catsMessageService.sendMessage(new Message('Confirmation', confirm ? '-1' : '1'));
+        this.catsMessageService.sendMessage(new Message('Toast',  JSON.stringify({ text: response.Message as string, type: response.Code === '200' ? 'success' : 'warning' })));
+      });
   }
 
-  public close(student): void {
-    this.confirmationService.unconfirmationStudent(student.id)
-      .pipe(
-        tap((response) => {
-          this.openSnackBar(response.Message);
-          this.onGroupValueChange(this.selectedGroup);
-        }),
-        takeUntil(this.unsubscribeStream$)
-      ).subscribe();
-  }
-
-  public openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    });
+  private updateGroupUncofirmedStudents(increase: boolean = true): void {
+    this.groups = this.groups.map(
+      (group): Group => +group.GroupId === +this.selectedGroup ? { ...group, CountUnconfirmedStudents: group.CountUnconfirmedStudents + (increase ? -1 : 1) } : group
+      );
   }
 
   public ngOnDestroy(): void {

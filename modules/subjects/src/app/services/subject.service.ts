@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -22,8 +22,8 @@ export class SubjectService {
     return this.http.post('Subject/SaveSubject', body);
   }
 
-  public editGroups(subjectId: number): Observable<any> {
-    return this.http.get('Subject/SubGroups?subjectId=' + subjectId);
+  public editGroups(subjectId: number, groupId: number): Observable<any> {
+    return this.http.get(`Subject/SubGroups?subjectId=${subjectId}&groupId=${groupId}`);
   }
 
   public subGroupsChangeGroup(subjectId: number, groupId: string): Observable<any> {
@@ -32,6 +32,10 @@ export class SubjectService {
 
   public getSubjects(): Observable<Subject[]> {
     return this.http.get<Subject[]>('Subject/Subjects');
+  }
+
+  public getSubject(subjectId: number): Observable<Subject> {
+    return this.http.get<Subject>('Subject/Subject/' + subjectId);
   }
 
   public deleteSubject(subjectId: number): Observable<any> {
@@ -52,8 +56,10 @@ export class SubjectService {
     );
   }
 
-  public getJoinedLector(subjectId: number): Observable<Lector[]> {
-    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId).pipe(
+  public getJoinedLector(subjectId: number, loadSelf: boolean = false): Observable<Lector[]> {
+    const params = new HttpParams()
+      .set('loadSelf', loadSelf + '');
+    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId, { params }).pipe(
       map(res => res['Lectors'])
     );
   }

@@ -16,10 +16,12 @@ import * as catsActions from '../../store/actions/cats.actions';
 import { Message } from 'src/app/models/message.model';
 import { Group } from 'src/app/models/group.model';
 import { User } from 'src/app/models/user.model';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { FilterOp } from 'src/app/shared/pipes/filter.pipe';
 import { TranslatePipe } from 'educats-translate';
+import { Help } from 'src/app/models/help.model';
+import { SubjectLector } from 'src/app/models/subject-letor.model';
 
 @Component({
   selector: 'app-subject',
@@ -41,7 +43,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   mobileViewMatcher: MediaQueryList;
 
   
-  public displayedColumns = ['name', 'shortName', 'groups', 'students', 'actions'];
+  public displayedColumns = ['name', 'shortName', 'groups', 'students', 'lectors', 'actions'];
 
   constructor(
     private store: Store<IAppState>,
@@ -103,7 +105,11 @@ export class SubjectComponent implements OnInit, OnDestroy {
       body: { subjectName },
       model: { subjectId }
     };
-    this.dialogService.openDialog(SubjectLectorComponent, dialogData);
+    const dialog = this.dialogService.openDialog(SubjectLectorComponent, dialogData);
+
+    dialog.afterClosed().pipe(take(1)).subscribe(() => {
+      this.store.dispatch(subjectActions.loadSubject({ subjectId: +subjectId }));
+    });
   }
 
   deleteSubject(subject : Subject) {
@@ -132,4 +138,12 @@ export class SubjectComponent implements OnInit, OnDestroy {
     return groups.map(x => x.GroupName).join('\n');
   }
 
+  getLectorsTooltip(lectors: SubjectLector[]): string {
+    return lectors.map(x => `${x.LastName} ${x.FirstName} ${x.MiddleName}`).join('\n');
+  }
+
+  subjectsHelp: Help = {
+    message: this.translate.transform('text.help.popover.subject', 'Предмет.'), 
+    action: this.translate.transform('button.understand','Понятно')
+  };
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Core.Data;
+using Application.Infrastructure.Models;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using LMPlatform.Models.KnowledgeTesting;
@@ -159,6 +160,27 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             }
 
             return result;
+        }
+
+        public List<TestPassResult> GetStudentControlTestResults(int subjectId, int studentId)
+        {
+            var tests = GetTestsForSubject(subjectId);
+            var testIds = tests.Where(test => !test.ForSelfStudy && !test.BeforeEUMK && !test.ForEUMK && !test.ForNN).Select(test => test.Id);
+            List<TestPassResult> result;
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                result =
+                    repositoriesContainer.RepositoryFor<TestPassResult>().GetAll(
+                        new Query<TestPassResult>(res => testIds.Contains(res.TestId) && res.StudentId == studentId)).ToList();
+            }
+
+            foreach (var testPassResult in result)
+            {
+                testPassResult.TestName = tests.Single(t => t.Id == testPassResult.TestId).Title;
+            }
+
+            return result;
+           
         }
 
         public void MakeUserAnswer(IEnumerable<Answer> answers, int userId, int testId, int questionNumber)
@@ -860,6 +882,38 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             }
 
             return isTestLockedForUser;
+        }
+
+        public TestsResult GetSubjectControlTestsResult(int subjectId, IEnumerable<int> studentsIds)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+            var tests = repositoriesContainer.TestsRepository.GetAll(
+                new Query<Test>(
+                    test => !test.ForSelfStudy && !test.BeforeEUMK && !test.ForEUMK && !test.ForNN && test.SubjectId == subjectId)).ToList();
+            var testIds = tests.Select(test => test.Id);
+            List<TestPassResult> testsPassResult =
+                     repositoriesContainer.RepositoryFor<TestPassResult>().GetAll(
+                         new Query<TestPassResult>(res =>  testIds.Contains(res.TestId) && studentsIds.Contains(res.StudentId))).ToList();
+            var testsResult = new Dictionary<int, List<TestPassResult>>();
+
+            foreach (var testPassResult in testsPassResult)
+            {
+                testPassResult.TestName = tests.Single(t => t.Id == testPassResult.TestId).Title;
+                if (testsResult.ContainsKey(testPassResult.StudentId))
+                {
+                    testsResult[testPassResult.StudentId].Add(testPassResult);
+                } else
+                {
+                    testsResult.Add(testPassResult.StudentId, new List<TestPassResult> { testPassResult });
+                }
+            }
+
+            return new TestsResult
+            {
+                Results = testsResult,
+                Tests = tests
+            };
         }
     }
 }

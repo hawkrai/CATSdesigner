@@ -1,8 +1,7 @@
 import { DialogService } from './../../../../services/dialog.service';
-import { Component, Input, OnInit, OnDestroy, SimpleChanges, AfterViewChecked, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, ChangeDetectorRef, ViewChild } from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Store} from '@ngrx/store';
-import { Observable } from 'rxjs';
 import { MatTable } from '@angular/material';
 import { SubSink } from 'subsink';
 
@@ -10,6 +9,7 @@ import * as practicalsActions from '../../../../store/actions/practicals.actions
 import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
 import * as filesActions from '../../../../store/actions/files.actions';
 import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model';
+import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import {IAppState} from '../../../../store/state/app.state';
 import {DeletePopoverComponent} from '../../../../shared/delete-popover/delete-popover.component';
 import {PracticalLessonPopoverComponent} from '../practical-lesson-popover/practical-lesson-popover.component';
@@ -27,9 +27,8 @@ import { TranslatePipe } from 'educats-translate';
 })
 export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewChecked {
 
-  @Input() isTeacher: boolean;
   @ViewChild('table', { static: false }) table: MatTable<Practical>;
-
+  isTeacher: boolean;
   public practicals: Practical[];
   private subs = new SubSink();
 
@@ -43,7 +42,11 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
     this.store.dispatch(practicalsActions.loadPracticals());
     this.subs.add(this.store.select(practicalsSelectors.selectPracticals).subscribe(practicals => {
       this.practicals = [...practicals]
-    }));
+    }),
+      this.store.select(subjectSelectors.isTeacher).subscribe(isTeacher => {
+        this.isTeacher = isTeacher;
+      })
+    );
   }
   
 
@@ -127,21 +130,30 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       dialogRef.afterClosed().pipe(
         filter(r => !!r)
       ).subscribe((result: Attachment[]) => {
-        this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
+        if (result.length) {
+          if (result.length ===  1) {
+            const attachment = result[0];
+            this.store.dispatch(filesActions.downloadFile({ fileName: attachment.FileName, pathName: attachment.PathName }));
+
+          } else {
+            this.store.dispatch(filesActions.getAttachmentsAsZip({ attachmentsIds: result.map(r => r.Id) }));
+
+          }
+        }
       })
     );
   }
 
   private getLesson(lessonsCount: number, lesson: Practical) {
-    const order = lesson ? lesson.Order : lessonsCount + 1;
+    const order = lesson ? lesson.Order : lessonsCount;
     return {
       id: lesson ? lesson.PracticalId : 0,
       theme: lesson ? lesson.Theme : '',
-      duration: lesson ? lesson.Duration : '',
+      duration: lesson ? lesson.Duration : 1,
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],
-      shortName: `ПЗ${order}`
+      shortName: `ПЗ${order + 1}`
     };
   }
 

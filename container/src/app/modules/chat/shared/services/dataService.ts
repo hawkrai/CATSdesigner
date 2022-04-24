@@ -35,7 +35,12 @@ export class DataService {
         private msgService: MsgService,
         private chatGroupService: ChatService) {
         this.user = JSON.parse(localStorage.getItem('currentUser'));
-        this.isLecturer = this.user.role == "lector";
+        if (this.user != null){
+          this.isLecturer = this.user.role == "lector";
+        } else {
+          this.isLecturer = false;
+        }
+
     }
 
     public LoadChats(): void {

@@ -19,7 +19,7 @@ export class SubjectService {
     }
 
     loadGroup(groupId: number): Observable<GroupStatsStatistic> {
-      return this.http.get<GroupStatsStatistic>(this.api + '/LoadGroup?groupId=' + groupId);
+      return this.http.get<GroupStatsStatistic>(this.api + 'LoadGroup?groupId=' + groupId);
     }
 
 }

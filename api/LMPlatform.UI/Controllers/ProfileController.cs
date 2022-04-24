@@ -11,15 +11,17 @@ using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.DPManagement;
+using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
+using LMPlatform.UI.Services.Modules.News;
+using LMPlatform.UI.Services.Modules.Subjects;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using LMPlatform.UI.ViewModels.LmsViewModels;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
@@ -154,7 +156,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetProfileInfoSubjects(string userLogin)
+        public ActionResult GetProfileInfoSubjects(string userLogin, bool isArchive = false)
         {
             var userService = new UsersManagementService();
 
@@ -165,9 +167,9 @@ namespace LMPlatform.UI.Controllers
             List<Subject> model;
 
             if (user.Lecturer == null)
-                model = subjectService.GetSubjectsByStudent(user.Id);
+                model = subjectService.GetSubjectsByStudent(user.Id, isArchive);
             else
-                model = subjectService.GetSubjectsByLector(user.Id);
+                model = subjectService.GetSubjectsByLector(user.Id, isArchive);
 
 
             var returnModel = new List<object>();
@@ -229,11 +231,11 @@ namespace LMPlatform.UI.Controllers
 
             if (user.Lecturer == null)
             {
-                model = subjectService.GetAllSubjectsByStudent(user.Id);
+                model = subjectService.GetSubjectsInfoByStudent(user.Id);
             }
             else
             {
-                model = subjectService.GetAllSubjectsByLector(user.Id);
+                model = subjectService.GetSubjectsInfoByLector(user.Id);
             }
 
             var returnModel = new List<object>();
@@ -247,8 +249,8 @@ namespace LMPlatform.UI.Controllers
                     subject.Color,
                     Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
                         user.Student),
-                    subject.IsArchive
-                });
+                    IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id)?.IsActiveOnCurrentGroup
+                }) ;
 
             return this.Json(returnModel, JsonRequestBehavior.AllowGet);
         }
@@ -267,6 +269,7 @@ namespace LMPlatform.UI.Controllers
             model.Phone = user.Phone;
             model.About = user.About;
             model.Id = user.Id;
+            model.Login = user.UserName;
             if (user.AttendanceList.Any())
             {
                 model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy HH:mm:ss");
@@ -279,7 +282,7 @@ namespace LMPlatform.UI.Controllers
                 model.Name = user.Lecturer.LastName + " " + user.Lecturer.FirstName + " " + user.Lecturer.MiddleName;
                 model.Skill = user.Lecturer.Skill;
             }
-            else
+            else if(user.Student != null)
             {
                 model.Name = user.Student.LastName + " " + user.Student.FirstName + " " + user.Student.MiddleName;
                 var course = int.Parse(DateTime.Now.Year.ToString()) - int.Parse(user.Student.Group.StartYear);
@@ -464,7 +467,24 @@ namespace LMPlatform.UI.Controllers
             else
                 news = subjectService.GetNewsByGroup(user.Student.GroupId);
 
-            return this.Json(news.OrderByDescending(e => e.EditDate).ToList());
+            var filesService = new FilesManagementService();
+
+            return this.Json(news.OrderByDescending(e => e.EditDate).Select(x => new ProfileNews {
+                Body = x.Body,
+                Id = x.Id,
+                Title = x.Title,
+                SubjectId = x.SubjectId,
+                EditDate = x.EditDate,
+                Disabled = x.Disabled,
+                Subject = x.Subject != null ? new ProfileSubject
+                {
+                    Id = x.SubjectId,
+                    Color = x.Subject.Color,
+                    Name = x.Subject.Name,
+                    ShortName = x.Subject.ShortName
+                } : null,
+                Attachments = string.IsNullOrEmpty(x.Attachments) ? new List<Attachment>() : filesService.GetAttachments(x.Attachments)
+        }).ToList());
         }
 
         [HttpPost]

@@ -8,6 +8,7 @@ using Application.Core;
 using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.StudentManagement;
+using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 
 namespace LMPlatform.UI.ViewModels.AdministrationViewModels
@@ -20,6 +21,9 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 		private readonly LazyDependency<IStudentManagementService> _studentManagementService =
 			new LazyDependency<IStudentManagementService>();
 
+		private readonly LazyDependency<ISubjectManagementService> _subjectManagementService =
+			new LazyDependency<ISubjectManagementService>();
+
 		private IStudentManagementService StudentManagementService => this._studentManagementService.Value;
 
 		private IGroupManagementService GroupManagementService => this._groupManagementService.Value;
@@ -27,6 +31,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 		private readonly LazyDependency<IElasticManagementService> _elasticManagementService = new LazyDependency<IElasticManagementService>();
 		private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
 
+		private ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
 		public ModifyStudentViewModel() { }
 
 		public ModifyStudentViewModel(Student student)
@@ -50,6 +55,9 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				this.Phone = student.User.Phone;
 				this.About = student.User.About;
 				this.Email = student.User.Email;
+				this.Confirmed = student.Confirmed;
+				this.ActiveSubjects = this.SubjectManagementService.GetSubjectsCountByStudent(student.Id, true);
+				this.NotActiveSubjects = this.SubjectManagementService.GetSubjectsCountByStudent(student.Id, false);
 			}
 		}
 
@@ -95,6 +103,12 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
 		public string About { get; set; }
 
+		public bool? Confirmed { get; set; }
+		public int ActiveSubjects { get; set; }
+		public int NotActiveSubjects { get; set; }
+
+
+
 		public IList<SelectListItem> GetGroups()
 		{
 			var groups = this.GroupManagementService.GetGroups();
@@ -129,6 +143,13 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 					Id = this.Id
 				}
 			};
+
+			var dbStudent = this.StudentManagementService.GetStudent(student.Id, true);
+
+			if (dbStudent.GroupId != student.GroupId)
+            {
+				StudentManagementService.RemoveFromSubGroups(student.Id, dbStudent.GroupId);
+            }
 
 			this.StudentManagementService.UpdateStudent(student);
 			this.ElasticManagementService.ModifyStudent(student);

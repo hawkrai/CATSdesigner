@@ -7,10 +7,11 @@ import * as filesActions from '../actions/files.actions';
 import * as filesSelectors from '../selectors/files.selectors';
 import * as subjectSelectors from '../selectors/subject.selector';
 import * as groupsSelectors from '../selectors/groups.selectors';
-import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { IAppState } from '../state/app.state';
 import { SubjectService } from 'src/app/services/subject.service';
 import { CoreService } from 'src/app/services/core.service';
+import { of } from 'rxjs';
 
 @Injectable()
 export class FilesEffects {
@@ -71,10 +72,14 @@ export class FilesEffects {
         })
     ), { dispatch: false });
     
-    getAttachemntsAsZip = createEffect(() => this.actions$.pipe(
+    getAttachemntsAsZip$ = createEffect(() => this.actions$.pipe(
         ofType(filesActions.getAttachmentsAsZip),
+        tap(() => {
+            this.store.dispatch(filesActions.setIsDownloading({ isDownloading: true }))
+        }), 
         switchMap(({ attachmentsIds }) => this.subjectService.getAttachmentsAsZip(attachmentsIds)),
         tap((response) => {
+            this.store.dispatch(filesActions.setIsDownloading({ isDownloading: false }))
             this.coreService.download(response);
         })
     ), { dispatch: false });

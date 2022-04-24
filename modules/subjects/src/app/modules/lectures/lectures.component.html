@@ -1,12 +1,16 @@
 <div class="lectures-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
-    <ng-container *ngIf="!mobileMatcher.matches; else selectView">
+    <ng-container>
       <button class="mdc-tab" role="tab" aria-selected="true" [tabindex]="idx" *ngFor="let tab of tabs; let idx = index"
-        [class.mdc-tab--active]="idx === selectedTab" (click)="selectTab(idx)">
+        [routerLink]="tab.route"
+        routerLinkActive="mdc-tab--active"
+        queryParamsHandling="merge"
+        #rla="routerLinkActive"
+        >
         <span class="mdc-tab__content">
-          <span class="mdc-tab__text-label">{{ tab | firstLetterUppercase }}</span>
+          <span class="mdc-tab__text-label">{{ tab.tab | firstLetterUppercase }}</span>
         </span>
-        <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="idx === selectedTab">
+        <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="rla.isActive">
           <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
         </span>
         <span class="mdc-tab__ripple"></span>
@@ -24,23 +28,22 @@
   </div>
   <div class="lectures-component-body">
     <div class="lectures-component-controls">
-      <div class="lectures-component__select-group" *ngIf="state.isTeacher">
-        <mat-form-field *ngIf="selectedTab !== 0">
-          <mat-select [value]="state.groups ? state.groups[0].GroupId : 0">
-            <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)"
-              [value]="group.GroupId">
-              {{group.GroupName}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <ng-container *ngIf="!state.isTeacher && selectedTab !== 0">
+      <ng-container *ngIf="state.isTeacher">
+        <div class="lectures-component__select-group"  *ngIf="!(router.url | startWith:'/lectures/list')">
+          <mat-form-field>
+            <mat-select [value]="state.group ? state.group.GroupId : state.groups.length ? state.groups[0].GroupId : ''">
+              <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)"
+                [value]="group.GroupId">
+                {{group.GroupName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!state.isTeacher && !(router.url | startWith:'/lectures/list') && state.group">
         {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
       </ng-container>
     </div>
-    <app-lectures-list *ngIf="selectedTab === 0" [subjectId]="state.subjectId" [isTeacher]="state.isTeacher">
-    </app-lectures-list>
-    <app-visit-lectures *ngIf="selectedTab === 1" [subjectId]="state.subjectId" [isTeacher]="state.isTeacher"
-      [groupId]="state.groupId"> </app-visit-lectures>
+    <router-outlet></router-outlet>
   </div>
 </div>

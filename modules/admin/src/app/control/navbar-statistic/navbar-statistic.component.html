@@ -1,5 +1,8 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
-<div class="tabs-container" *ngIf="isLoad">    
+<div class="tabs-container" *ngIf="isWrongGroup">
+  <span class="h1">{{'text.statistics.no.group.info' | translate:'Информация по данной группе не найдена'}}</span>
+</div>
+<!--div class="tabs-container" *ngIf="isLoad">
     <button *ngIf="this.groupName && this.isSubject()" mat-raised-button [matMenuTriggerFor]="subject" color="accent">
         Предметы
         <mat-icon>keyboard_arrow_down</mat-icon>
@@ -13,4 +16,4 @@
         Статистика
     </button>
 
-</div>
+</div-->

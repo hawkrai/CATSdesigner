@@ -3,6 +3,20 @@
   flex-flow: column;
   align-content: center;
   margin-bottom: 15px;
+
+  & {
+    ::ng-deep {
+      .mat-checkbox {
+        &-label, &-layout {
+          width: 100%;
+        }
+        &-layout {
+          white-space: normal;
+          display: block;
+        }
+      }
+    }
+  }
 }
 
 .example-margin {
@@ -14,3 +28,4 @@
     justify-content: flex-end;
   }
 }
+

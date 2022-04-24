@@ -8,6 +8,11 @@
     <div [innerHTML]="data.itemNews.Body" class="body"
          style="font-family: Roboto, Helvetica Neue, sans-serif; margin-top: 20px;max-height: 35vh;overflow-y: auto;">
     </div>
+    <div *ngIf="data.itemNews.Attachments">
+      <div class="attachments-container">
+        <a class="attachment" *ngFor="let file of data.itemNews.Attachments" (click)="fileDownload(file)">{{file.Name}}</a>
+      </div>
+    </div>
     <div>
       <h6 (click)="rerouteToSubject()"
           style="font-family: Roboto, Helvetica Neue, sans-serif; cursor: pointer;font-weight: initial;">{{data.itemNews.Subject.Name}}</h6>

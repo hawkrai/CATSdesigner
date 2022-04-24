@@ -17,89 +17,212 @@ export class StatsComponent implements OnInit {
   @ViewChild('table', { static: false }) table: ElementRef;
 
   subjects: Subject[];
+  subjectsArchive: Subject[];
+  subjectsTemp: Subject[];
   isLoad = false;
   groupId: any;
   selectedItem: any;
   tableStats: any;
   groupName: string;
   studentStatistic: GroupStatsStudent[];
+  studentStatisticArchive: GroupStatsStudent[];
+  studentStatisticTemp: GroupStatsStudent[];
+  surname: string;
+  start: string;
+  end: string;
+  isArchive = false;
+  isArchiveEnable = true;
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.groupName = this.route.snapshot.params.groupName;
-    this.initData(this.groupName);    
+    this.surname = this.route.snapshot.params.surname;
+    this.start = this.route.snapshot.params.start;
+    this.end = this.route.snapshot.params.end;
+    this.initData(this.groupName);
   }
 
   getStatistic(groupId) {
     this.isLoad = false;
-    this.subjectService.loadGroup(groupId).subscribe(
+    this.subjectService.loadGroupByDates(groupId, this.start, this.end).subscribe(
       res => {
-        this.studentStatistic = res.Students;
-        this.isLoad = true;
+        this.subjectService.loadGroupArchiveByDates(groupId, this.start, this.end).subscribe(resArchive => {
+          this.subjectService.getUserInfo(resArchive.Students[6].Id + '').subscribe(userInfo => {
+            this.subjectService.getAllArchiveSubjects(userInfo.Login).subscribe(subjectResponseArchive => {
+              this.subjectsArchive = subjectResponseArchive;
+              if (this.subjectsArchive.length == 0) {
+                this.isArchiveEnable = false;
+              }
+            });
+          });
+          this.studentStatistic = res.Students;
+          this.studentStatisticArchive = resArchive.Students;
+          this.isLoad = true;
+          this.selectedItem = -1;
+          this.statisticSubject();
+        });
       }
     );
+  }
+
+  subjectsStatusChange(event) {
+    this.isArchive = false;
+    if (event.checked) {
+      this.isArchive = true;
+    }
+    this.selectedItem = -1;
+    this.statisticSubject();
   }
 
   statisticSubject() {
     const id = this.selectedItem;
     const groupName = this.groupName;
+    let labMarks = 0;
+    let practMarks = 0;
+    let testMarks = 0;
+    let lectPass = 0;
+    let practPass = 0;
+    let labPass = 0;
+    let rating = 0;
+    if (this.isArchive) {
+      this.studentStatisticTemp = this.studentStatisticArchive;
+      this.subjectsTemp = this.subjectsArchive;
+    } else {
+      this.studentStatisticTemp = this.studentStatistic;
+      this.subjectsTemp = this.subjects;
+    }
     if (id && id !== -1) {
-      const subject = this.subjects.find(({Id}) => Id === id);
-      
-      this.tableStats = this.studentStatistic.map((item) => {
+      const subject = this.subjectsTemp.find(({Id}) => Id === id);
+      this.tableStats = this.studentStatisticTemp.map((item) => {
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
         const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
         const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
+        const userPracticalPass = item.UserPracticalPass.find(({Key}) => Key === id).Value;
+        const userPracticalMarks = item.UserAvgPracticalMarks.find(({Key}) => Key === id).Value;
+        labMarks += userAvgLabMarks;
+        practMarks += userPracticalMarks;
+        testMarks += userAvgTestMarks;
+        lectPass += userLecturePass;
+        practPass += userPracticalPass;
+        labPass += userLabPass;
+
+
         return {
           GroupName: groupName,
           FIO: item.FIO,
           Subject: subject.Name,
-          Rating: ((userAvgLabMarks + userAvgTestMarks) / 2).toFixed(2),
-          AllPass: userLabPass + userLecturePass,
-          UserAvgLabMarks: userAvgLabMarks.toFixed(2),
-          UserAvgTestMarks: userAvgTestMarks.toFixed(2),
+          Rating: ((userAvgLabMarks + userAvgTestMarks + userPracticalMarks) / 3).toFixed(1),
+          AllPass: userLabPass + userLecturePass + userPracticalPass,
+          UserAvgLabMarks: userAvgLabMarks.toFixed(1),
+          UserAvgTestMarks: userAvgTestMarks.toFixed(1),
+          UserAvgPracticalMarks: userPracticalMarks.toFixed(1),
           UserTestCount: item.UserTestCount.find(({Key}) => Key === id).Value,
           UserLabCount: item.UserLabCount.find(({Key}) => Key === id).Value,
           UserLabPass: userLabPass,
-          UserLecturePass: userLecturePass };
+          UserLecturePass: userLecturePass,
+          UserPracticalPass: userPracticalPass};
       });
     } else if (id === -1) {
-      this.tableStats = this.studentStatistic.map( item => {
+      this.tableStats = this.studentStatisticTemp.map( item => {
+        if (this.surname != undefined && !item.FIO.includes(this.surname)) {
+          return ;
+        }
         let labPassTotal = 0;
         let lecturePassTotal = 0;
+        let practicalPassTotal = 0;
         let avgLabMarksTotal = 0;
         let avgTestMarksTotal = 0;
+        let avgPracticalMarksTotal = 0;
         item.UserLabPass.map( ( statsItem, index) => {
           labPassTotal += statsItem.Value;
           lecturePassTotal += item.UserLecturePass[index].Value;
+          practicalPassTotal = item.UserPracticalPass[index].Value;
           avgLabMarksTotal += item.UserAvgLabMarks[index].Value;
           avgTestMarksTotal += item.UserAvgTestMarks[index].Value;
+          avgPracticalMarksTotal += item.UserAvgPracticalMarks[index].Value;
         });
+        avgLabMarksTotal = avgLabMarksTotal / item.UserLabPass.length;
+        avgTestMarksTotal = avgTestMarksTotal / item.UserLabPass.length;
+        avgPracticalMarksTotal = avgPracticalMarksTotal / item.UserLabPass.length;
+        labMarks += avgLabMarksTotal;
+        practMarks += avgPracticalMarksTotal;
+        testMarks += avgTestMarksTotal;
+        lectPass += lecturePassTotal;
+        practPass += practicalPassTotal;
+        labPass += labPassTotal;
+
         return {
           GroupName: groupName,
           FIO: item.FIO,
           Subject: 'Все предметы',
-          Rating: ((avgTestMarksTotal + avgLabMarksTotal) / 2).toFixed(2),
-          AllPass: labPassTotal + lecturePassTotal,
-          UserAvgLabMarks: avgLabMarksTotal.toFixed(2),
-          UserAvgTestMarks: avgTestMarksTotal.toFixed(2),
+          Rating: ((avgTestMarksTotal + avgLabMarksTotal + avgPracticalMarksTotal) / 3).toFixed(1),
+          AllPass: labPassTotal + lecturePassTotal + practicalPassTotal,
+          UserAvgLabMarks: avgLabMarksTotal.toFixed(1),
+          UserAvgTestMarks: avgTestMarksTotal.toFixed(1),
           UserLabPass: labPassTotal,
-          UserLecturePass: lecturePassTotal
+          UserAvgPracticalMarks: avgPracticalMarksTotal.toFixed(1),
+          UserLecturePass: lecturePassTotal,
+          UserPracticalPass: practicalPassTotal
         };
       });
     }
+
+    if (this.surname == undefined) {
+      labMarks = Math.round(labMarks / this.studentStatistic.length) ;
+      practMarks = Math.round(practMarks / this.studentStatistic.length) ;
+      testMarks = Math.round(testMarks / this.studentStatistic.length);
+
+      lectPass = Math.round(lectPass / this.studentStatistic.length) ;
+      practPass = Math.round(practPass / this.studentStatistic.length);
+      labPass = Math.round(labPass / this.studentStatistic.length) ;
+    }
+
+    labMarks = Math.round(labMarks  * 10) / 10;
+    practMarks = Math.round(practMarks  * 10) / 10;
+    testMarks = Math.round(testMarks * 10) / 10;
+    rating = Math.round((labMarks + practMarks + testMarks) / 3 * 10) / 10;
+
+    lectPass = Math.round(lectPass  * 10) / 10;
+    practPass = Math.round(practPass  * 10) / 10;
+    labPass = Math.round(labPass  * 10) / 10;
+
+    this.tableStats.push({
+      GroupName: groupName,
+      FIO: 'Средние значения',
+      Subject: 'Все предметы',
+      Rating: rating,
+      AllPass: lectPass + practPass + labPass,
+      UserAvgLabMarks: labMarks,
+      UserAvgTestMarks: testMarks,
+      UserLabPass: labPass,
+      UserAvgPracticalMarks: practMarks,
+      UserLecturePass: lectPass,
+      UserPracticalPass: practPass
+    });
+    while (true) {
+      if (this.tableStats.indexOf(undefined) == -1) {
+        break;
+      }
+      this.remove(undefined);
+    }
   }
 
+  remove(value: any) {
+    this.tableStats.forEach((element, index) => {
+      if (element == value) { this.tableStats.splice(index, 1); }
+    });
+  }
   initData(groupName) {
     this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjects = subjectResponse.Subjects;
       this.groupId = subjectResponse.GroupId;
       this.getStatistic(this.groupId);
-      console.log(this.studentStatistic);
-      this.isLoad = true;
     });
   }
 

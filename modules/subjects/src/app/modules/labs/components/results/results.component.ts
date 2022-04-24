@@ -11,8 +11,8 @@ import {SubSink} from 'subsink';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { Observable, combineLatest } from 'rxjs';
 import * as moment from 'moment';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
+import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
 import * as catsActions from '../../../../store/actions/cats.actions';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
@@ -28,25 +28,15 @@ import { TranslatePipe } from 'educats-translate';
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.less']
 })
-export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
+export class ResultsComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
-  @Input() isTeacher: boolean;
-  @Input() groupId: number;
 
-  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number }>;
+  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean, subGroups: number[] }>;
 
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
-    private dialogService: DialogService,
-    private snackBar: MatSnackBar) {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.groupId && changes.groupId.currentValue) {
-      this.store.dispatch(labsActions.loadLabsSchedule());
-      this.store.dispatch(labsActions.loadLabStudents());
-    }
+    private dialogService: DialogService) {
   }
 
   ngOnInit(): void {
@@ -54,10 +44,21 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
       this.store.select(labsSelectors.getLabsCalendar),
       this.store.select(labsSelectors.getLabs),
       this.store.select(labsSelectors.getLabStudents),
-      this.store.select(subjectSelectors.getUserId)
+      this.store.select(subjectSelectors.getUserId),
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(labsSelectors.getSubGroups)
     ).pipe(
-      map(([schedule, labs, students, userId]) => ({ schedule, labs, students, userId }))
+      map(([schedule, labs, students, userId, isTeacher, subGroups]) => ({ schedule, labs, students, userId, isTeacher, subGroups: subGroups.map(x => x.SubGroupValue) }))
     );
+
+    this.subs.add(
+      this.store.select(groupsSelectors.getCurrentGroup).subscribe(group => {
+        if (group) {
+          this.store.dispatch(labsActions.loadLabsSchedule());
+          this.store.dispatch(labsActions.loadLabStudents());
+        }
+      })
+    )
   }
 
   getHeaders(subGroupLabs: Lab[]): { head: string, text: string, tooltip: string }[] {
@@ -77,9 +78,6 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setMark(student: StudentMark, labId: string, recommendedMark: string) {
-    if (!this.isTeacher) {
-      return;
-    }
     const mark = student.LabsMarks.find(mark => mark.LabId === +labId);
     if (mark) {
       const labsMark = this.getLabMark(mark, student.StudentId);
@@ -96,15 +94,24 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
 
       this.subs.add(dialogRef.afterClosed().pipe(
         filter(r => r),
-        map((result: MarkForm) => ({
-          ...labsMark,
-          comment: result.comment,
-          date: moment(result.date).format('DD.MM.YYYY'),
-          mark: result.mark,
-          showForStudent: result.showForStudent
-        })),
+        map((result) => {
+          if (result.delete) {
+            return 
+          }
+          return {
+            ...labsMark,
+            comment: result.comment,
+            date: moment(result.date).format('DD.MM.YYYY'),
+            mark: result.mark,
+            showForStudent: result.showForStudent
+          }
+        }),
       ).subscribe((labMark) => {
-        this.store.dispatch(labsActions.setLabMark({ labMark }));
+        if (labMark) {
+          this.store.dispatch(labsActions.setLabMark({ labMark }));
+        } else {
+          this.store.dispatch(labsActions.removeLabMark({ id: labsMark.id }));
+        }
       }));
 
     }
@@ -116,6 +123,16 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
 
   getMissingTooltip(marks: LabVisitingMark[], schedule: ScheduleProtectionLab[]) {
     return marks.map(sc => `${this.translate.transform('text.subjects.missed', 'Пропустил(a)')} ${sc.Mark} ${this.translate.transform('text.subjects.missed/hours', 'часа(ов)')}: ${schedule.find(s => s.ScheduleProtectionLabId === sc.ScheduleProtectionLabId).Date}`).join('\n');
+  }
+
+  getAverageTooltip(student: StudentMark) {
+    const actualCount = student.LabsMarks.filter(x => x.Mark).length;
+    const jobsCount = student.LabsMarks.length;
+    return this.translate.transform('text.subjects.results.protected', `Защищено ${actualCount} работ из ${jobsCount}`, { actualCount: actualCount.toString(), jobsCount: jobsCount.toString() }); 
+  }
+
+  getTestsPassedTooltip(student: StudentMark) {
+    return this.translate.transform('text.subjects.tests.written', `Написано ${student.TestsPassed} тестов из ${student.Tests}`, { actualCount: student.TestsPassed.toString(), testsCount: student.Tests.toString() });
   }
 
   private getLabMark(mark: LabMark, studentId: number) {

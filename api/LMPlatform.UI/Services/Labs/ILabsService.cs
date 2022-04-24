@@ -36,6 +36,10 @@ namespace LMPlatform.UI.Services.Labs
 		[WebInvoke(UriTemplate = "/GetLabsV2?subjectId={subjectId}&groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		LabsResult GetLabsV2(int subjectId, int groupId);
 
+        [OperationContract]
+        [WebInvoke(UriTemplate = "/GetSubGroups?subjectId={subjectId}&groupId={groupId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+        List<SubGroupViewData> GetSubGroups(int subjectId, int groupId);
+
 		// OK
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/Save")]
@@ -60,6 +64,10 @@ namespace LMPlatform.UI.Services.Labs
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/SaveStudentLabsMark")]
         ResultViewData SaveStudentLabsMark(int studentId, int labId, string mark, string comment, string date, int id, bool showForStudent);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/RemoveStudentLabsMark")]
+        ResultViewData RemoveStudentLabsMark(int id);
 
         // OK
         [OperationContract]

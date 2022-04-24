@@ -15,6 +15,8 @@ export class GroupStatsStudent {
   UserLabPass: StatsValue[];
   UserLecturePass: StatsValue[];
   UserTestCount: StatsValue[];
+  UserPracticalPass: StatsValue[];
+  UserAvgPracticalMarks: StatsValue[];
 }
 
 export class StatsValue {

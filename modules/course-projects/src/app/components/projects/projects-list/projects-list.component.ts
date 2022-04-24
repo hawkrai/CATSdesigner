@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Sort} from '@angular/material';
 import {ProjectsComponent} from '../projects.component';
 import {CourseUser} from '../../../models/course-user.model';
@@ -9,15 +9,12 @@ import {Project} from '../../../models/project.model';
   templateUrl: './projects-list.component.html',
   styleUrls: ['./projects-list.component.less']
 })
-export class ProjectsListComponent implements OnInit {
+export class ProjectsListComponent {
 
   @Input() projects: Project[];
   @Input() courseUser: CourseUser;
 
   constructor(private projectsComponent: ProjectsComponent) {
-  }
-
-  ngOnInit(): void {
   }
 
   sortData(sort: Sort) {

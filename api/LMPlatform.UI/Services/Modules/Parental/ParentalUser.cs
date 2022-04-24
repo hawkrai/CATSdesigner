@@ -24,18 +24,34 @@ namespace LMPlatform.UI.Services.Modules.Parental
 
         [DataMember]
         public Dictionary<int, int> UserLabPass { get; set; }
+        [DataMember]
+        public Dictionary<int, int> UserPracticalPass { get; set; }
 
         [DataMember]
         public Dictionary<int, double> UserAvgLabMarks { get; set; }
+        [DataMember]
+        public Dictionary<int, double> UserAvgPracticalMarks { get; set; }
 
         [DataMember]
         public Dictionary<int, double> UserAvgTestMarks { get; set; }
 
         [DataMember]
         public Dictionary<int, int> UserLabCount { get; set; }
+        [DataMember]
+        public Dictionary<int, int> UserPracticalCount { get; set; }
 
         [DataMember]
         public Dictionary<int, int> UserTestCount { get; set; }
+
+        [DataMember]
+        public Dictionary<int, int> UserCourseCount { get; set; }
+
+        [DataMember]
+        public Dictionary<int, int> UserCoursePass { get; set; }
+
+        [DataMember]
+        public Dictionary<int, int> UserAvgCourseMark { get; set; }
+
 
         [DataMember]
         public double Rating { get; set; }
@@ -64,6 +80,12 @@ namespace LMPlatform.UI.Services.Modules.Parental
             this.UserAvgTestMarks = new Dictionary<int, double>();
             this.UserLabCount = new Dictionary<int, int>();
             this.UserTestCount = new Dictionary<int, int>();
+            this.UserPracticalPass = new Dictionary<int, int>();
+            this.UserPracticalCount = new Dictionary<int, int>();
+            this.UserAvgPracticalMarks = new Dictionary<int, double>();
+            this.UserAvgCourseMark = new Dictionary<int, int>();
+            this.UserCourseCount = new Dictionary<int, int>();
+            this.UserCoursePass = new Dictionary<int, int>();
             this.Subjects = subjects;
 
             foreach (var subject in subjects)
@@ -74,17 +96,32 @@ namespace LMPlatform.UI.Services.Modules.Parental
                 this.UserLabCount.Add(subject.Id, 0);
                 this.UserAvgTestMarks.Add(subject.Id, 0);
                 this.UserTestCount.Add(subject.Id, 0);
+                this.UserPracticalPass.Add(subject.Id, 0);
+                this.UserAvgPracticalMarks.Add(subject.Id, 0);
+                this.UserPracticalCount.Add(subject.Id, 0);
+                this.UserCourseCount.Add(subject.Id, 0);
+                this.UserCoursePass.Add(subject.Id, 0);
+                this.UserAvgCourseMark.Add(subject.Id, 0);
             }
             InitLecturePass(student);
             InitLabPass(student);
             InitAvgLabMarks(student);
+            InitPracticalPass(student);
+            InitAvgPracticalMarks(student);
             InitAvgTestMarks(student);
+            InitCoursePass(student);
+            InitAvgCourseMarks(student);
+
             foreach (var subject in subjects)
             {
                 if (this.UserLabCount[subject.Id] != 0)
                     this.UserAvgLabMarks[subject.Id] /= this.UserLabCount[subject.Id];
                 if (this.UserTestCount[subject.Id] != 0)
                     this.UserAvgTestMarks[subject.Id] /= this.UserTestCount[subject.Id];
+                if (this.UserPracticalCount[subject.Id] != 0)
+                    this.UserAvgPracticalMarks[subject.Id] /= this.UserPracticalCount[subject.Id];
+                if (this.UserCourseCount[subject.Id] != 0)
+                    this.UserAvgCourseMark[subject.Id] /= this.UserCourseCount[subject.Id];
             }
             #endregion
         }
@@ -132,6 +169,27 @@ namespace LMPlatform.UI.Services.Modules.Parental
             }
         }
 
+        private void InitPracticalPass(Student student)
+        {
+            if (student.ScheduleProtectionPracticalMarks != null)
+            {
+                foreach (var practical in student.ScheduleProtectionPracticalMarks)
+                {
+
+                    if (practical != null && practical.ScheduleProtectionPractical != null)
+                    {
+                        int pass;
+                        Int32.TryParse(practical.Mark, out pass);
+                        if (UserPracticalPass.ContainsKey(practical.ScheduleProtectionPractical.SubjectId))
+                        {
+                            this.UserPracticalPass[practical.ScheduleProtectionPractical.SubjectId] += pass;
+                        }
+
+                    }
+                }
+            }
+        }
+
         private void InitAvgLabMarks(Student student)
         {
             if (student.StudentLabMarks != null)
@@ -153,22 +211,90 @@ namespace LMPlatform.UI.Services.Modules.Parental
             }
         }
 
+        private void InitAvgPracticalMarks(Student student)
+        {
+            if (student.StudentPracticalMarks != null)
+            {
+                foreach (var practical in student.StudentPracticalMarks)
+                {
+                    double mark;
+                    double.TryParse(practical.Mark, out mark);
+                    if (this.UserAvgPracticalMarks.ContainsKey(practical.Practical.SubjectId))
+                    {
+                        this.UserAvgPracticalMarks[practical.Practical.SubjectId] += mark;
+                    }
+
+                    if (this.UserPracticalCount.ContainsKey(practical.Practical.SubjectId))
+                    {
+                        this.UserPracticalCount[practical.Practical.SubjectId]++;
+                    }
+                }
+            }
+        }
+
         private void InitAvgTestMarks(Student student)
         {
 
             foreach (var sub in Subjects)
             {
-                var tests = TestPassingService.GetStidentResults(sub.Id, student.Id);
+                var tests = TestPassingService.GetStudentControlTestResults(sub.Id, student.Id);
                 if (tests != null)
                 {
                     foreach (var test in tests)
                     {
-                        if (test.Points != null)
+                        if (test.Points.HasValue)
                         {
                             this.UserAvgTestMarks[sub.Id] += (double)test.Points;
                             this.UserTestCount[sub.Id]++;
                         }
                     }
+                }
+            }
+        }
+
+        private void InitCoursePass(Student student)
+        {
+            if (student.AssignedCourseProjects != null)
+            {
+                foreach (var courseProject in student.AssignedCourseProjects)
+                {
+                    if (courseProject != null)
+                    {
+                        if (courseProject.CourseProject != null && courseProject.Mark != null && courseProject.CourseProject.SubjectId != null)
+                        {
+                            int mark = courseProject.Mark.Value;
+                            if (UserCoursePass.ContainsKey(courseProject.CourseProject.SubjectId.Value))
+                            {
+                                this.UserCoursePass[courseProject.CourseProject.SubjectId.Value] += mark;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void InitAvgCourseMarks(Student student)
+        {
+            if (student.CoursePercentagesResults != null)
+            {
+                foreach (var courseResult in student.CoursePercentagesResults)
+                {
+                    if (courseResult != null && courseResult.Mark.HasValue && 
+                        courseResult.CoursePercentagesGraph != null
+                        )
+                    {
+                        int mark = courseResult.Mark.Value;
+                        if (this.UserAvgCourseMark.ContainsKey(courseResult.CoursePercentagesGraph.SubjectId))
+                        {
+                            this.UserAvgCourseMark[courseResult.CoursePercentagesGraph.SubjectId] += mark;
+                        }
+
+                        if (this.UserCourseCount.ContainsKey(courseResult.CoursePercentagesGraph.SubjectId))
+                        {
+                            this.UserCourseCount[courseResult.CoursePercentagesGraph.SubjectId]++;
+                        }
+                    }
+
                 }
             }
         }

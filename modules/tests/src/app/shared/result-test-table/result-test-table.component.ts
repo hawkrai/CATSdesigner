@@ -77,7 +77,8 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   constructor(public dialog: MatDialog,
               private translatePipe: TranslatePipe,
               private cdr: ChangeDetectorRef,
-              private testPassingService: TestPassingService) {
+              private testPassingService: TestPassingService,
+              private translate: TranslatePipe) {
     super();
   }
 
@@ -129,10 +130,12 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
             sumOfMarks += test.points;
           }
           let entire = [];
+          const testSize =  pupil[1].test.filter(x => Number.isInteger(x.points)).length;
           entire.push(this.getShortName(pupil));
-          entire.push((sumOfMarks / this.testSize).toFixed(2));
+          const averageMark = testSize > 0 ? (sumOfMarks / testSize).toFixed(2) : '0';
+          entire.push(averageMark);
           mass.push(entire);
-          pupil.push((sumOfMarks / this.testSize).toFixed(2));
+          pupil.push(averageMark);
           if (this.size) {
             pupil.push(pupil[1].test.length === this.size && pupil[1].test.every((test) => test.percent));
           }
@@ -156,5 +159,12 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.cdr.detectChanges();
+  }
+
+  getAverageTooltip(element) {
+    const testsArray = element[1].test;
+    const testsCount =  testsArray.length;
+    const passedTests = testsArray.filter(x => Number.isInteger(x.points)).length;
+    return this.translate.transform('text.tests.written', `Написано ${passedTests} тестов из ${testsCount}`, { actualCount: passedTests.toString(), testsCount: testsCount.toString() });
   }
 }

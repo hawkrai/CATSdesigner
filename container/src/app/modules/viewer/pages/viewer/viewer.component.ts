@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef, HostListener} from '@angular/core';
 import { CoreService } from 'src/app/core/services/core.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-viewer',
@@ -8,12 +9,19 @@ import { CoreService } from 'src/app/core/services/core.service';
 })
 export class ViewerComponent implements OnInit {
 
-  constructor(private coreService: CoreService, private cdRef:ChangeDetectorRef) { }
+  constructor(private coreService: CoreService, private cdRef: ChangeDetectorRef, private router: Router) { }
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.coreService.removeCurrentSubject();    
+      this.coreService.removeCurrentSubject();
     });
+  }
+
+  @HostListener('window:message', ['$event'])
+  onMessage(e) {
+    if (e.data.Value != undefined) {
+      this.router.navigate([e.data.Value]);
+    }
   }
 
 }

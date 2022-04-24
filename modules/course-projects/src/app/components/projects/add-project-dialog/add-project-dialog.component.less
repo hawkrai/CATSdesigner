@@ -1,14 +1,53 @@
 .form-field {
   width: 100%;
+  mat-form-field {
+    padding-bottom: 0;
+  }
+  &__textarea {
+    overflow: hidden;
+  }
+
+  &__groups {
+    font-size: 14px;
+  }
+
+  &__lecturer {
+    margin-bottom: 10px;
+  }
+}
+
+.add-project-dialog {
+  &__container{
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 12px;
+    height: 100%;
+  }
+
+  &__title {
+    font: 400 20px/32px Roboto, "Helvetica Neue", sans-serif;
+
+    &-container {
+      position: relative;
+    }
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: -19px;
+    right: -19px;
+    color: gray;
+  }
 }
 
 .dialog-buttons {
-  float: right;
-  padding-top: 28px;
+  padding: 0;
+  margin-left: auto;
 }
 
 .group-picker {
   display: flex;
+  margin-top: 14px;
   width: 100%;
 }
 
@@ -19,7 +58,7 @@
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
-  border-color: rgba(0,0,0,.12);
+  border-color: rgba(0, 0, 0, .12);
 
   .mat-list-option {
     height: 35px;

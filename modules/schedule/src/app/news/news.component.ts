@@ -56,7 +56,7 @@ export class NewsComponent implements OnInit {
 
   public rerouteToSubject(item: any) {
     const message: Message = new Message();
-    message.Value = '/Subject?subjectId=' + item.SubjectId;
+    message.Value = '/web/viewer/subject/' + item.SubjectId;
     message.Type = 'Route';
     this.modulecommunicationservice.sendMessage(window.parent, message);
   }

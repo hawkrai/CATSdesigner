@@ -316,6 +316,12 @@ namespace LMPlatform.UI.Controllers
             return JsonResponse(subjects);
         }
 
+        public ActionResult Subject(int id)
+        {
+            var subject = SubjectManagementService.GetUserSubject(id, UserContext.CurrentUserId);
+            return JsonResponse(new SubjectViewModel(subject, UserContext.CurrentUserId));
+        }
+
         public ActionResult GetSubjectsForCM()
         {
             var model = new SubjectManagementViewModel(
@@ -339,10 +345,10 @@ namespace LMPlatform.UI.Controllers
             return JsonResponse(model);
         }
 
-        public ActionResult SubGroups(int subjectId)
+        public ActionResult SubGroups(int subjectId, int groupId)
         {
             var model = new SubjectWorkingViewModel(subjectId);
-            return JsonResponse(model.SubGroups);
+            return JsonResponse(model.SubGroup(groupId));
         }
 
         [HttpPost]

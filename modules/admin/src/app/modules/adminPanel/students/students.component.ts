@@ -11,6 +11,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatDialog} from '@angular/material/dialog';
+import { AppToastrService } from 'src/app/service/toastr.service';
 //import { AppToastrService } from 'src/app/service/toastr.service';
 
 @Component({
@@ -21,18 +22,21 @@ import {MatDialog} from '@angular/material/dialog';
 export class StudentsComponent implements OnInit {
 
   isLoad: boolean;
-  student = new Student();
-  displayedColumns: string[] = ['position', 'GroupName', 'FullName', 'UserName', 'action'];
+  dataStudent = new Student();
+  displayedColumns: string[] = ['position', 'GroupName', 'FullName', 'UserName', 'Confirmed', 'Subjects', 'action'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   isDelete = false;
 
-  constructor(private dialog: MatDialog, /*private toastr: AppToastrService,*/ private studentService: StudentService, private router: Router) { }
+  constructor(private dialog: MatDialog, private toastr: AppToastrService, private studentService: StudentService, private router: Router) { }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    // this.dataSource.filterPredicate = (data: Student, filter: string) => {
+    //   return data.FullName.startsWith(filter) ;
+    //  };
     this.loadStudent();
   }
 
@@ -42,42 +46,23 @@ export class StudentsComponent implements OnInit {
 
   loadStudent() {
     this.studentService.getStudents().subscribe(items => {
-      this.dataSource.data = items;
+      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
       this.isLoad = true;
     });
   }
 
   editStudent(student): void {
     this.studentService.editStudents(student).subscribe(() => {
-      student = new Student();
-      this.dialog.open(MessageComponent, {
-        data: 'Студент успешно изменен.',
-        position: {
-          bottom: '0px',
-          right: '0px'
-        }
-      });
-     // this.toastr.addSuccessFlashMessage('Студент успешно изменен.');
       this.loadStudent();
+      this.dataStudent = new Student();
+      this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
     }, err => {
       if ( err.status === 500) {
         // we do it because db have some issue. After fixing, delete this function, please
         this.loadStudent();
-        this.dialog.open(MessageComponent, {
-          data: 'Студент успешно изменен.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
       } else {
-        this.dialog.open(MessageComponent, {
-          data: 'Произошла ошибка при изменении студента.Попробуйте заново.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addErrorFlashMessage('Произошла ошибка при изменении студента.Попробуйте заново.');
       }
     });
   }
@@ -93,7 +78,12 @@ export class StudentsComponent implements OnInit {
       if (result) {
         this.studentService.deleteStudent(id).subscribe(() => {
           this.loadStudent();
-        });
+          this.toastr.addSuccessFlashMessage("Студент удален!");
+        },
+        err => {
+          this.toastr.addErrorFlashMessage("Ошибка удаления! Попробуйте позже!");
+        }
+        );
       }
     });
   }
@@ -122,5 +112,25 @@ export class StudentsComponent implements OnInit {
     });
     dialogRef.afterClosed();
   }
+
+  getStudentStatus(status){
+    if(status == true){
+        return "Подтвержден"
+    }
+    return "Не подтвержден"
+  }
+
+  sortFunc(a, b) { 
+    if(a.FullName < b.FullName){
+      return -1;
+    }
+
+    else if(a.FullName > b.FullName){
+      return 1;
+    }
+    
+    return 0;
+ } 
+ 
 
 }

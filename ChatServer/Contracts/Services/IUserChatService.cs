@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Entities.Models;
-using System;
+﻿using Entities.Models;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Contracts.Services
@@ -11,5 +8,6 @@ namespace Contracts.Services
     {
         Task Create(Chat chat);
         Task Update(Chat chat);
+        Task<Chat> TryGet(string chat, IEnumerable<User> users);
     }
 }

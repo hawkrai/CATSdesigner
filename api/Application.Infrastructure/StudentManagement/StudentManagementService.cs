@@ -159,14 +159,15 @@ namespace Application.Infrastructure.StudentManagement
 			}
 		}
 
-	    public void СonfirmationStudent(int studentId)
+	    public void СonfirmationStudent(int studentId, int userId)
 	    {
 		    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 		    var student = this.GetStudent(studentId);
 
 		    student.Confirmed = true;
-
-		    this.UpdateStudent(student);
+			student.ConfirmedById = userId;
+			student.ConfirmedAt = System.DateTime.UtcNow;
+			this.UpdateStudent(student);
 
 		    var subjects = repositoriesContainer.SubjectRepository.GetSubjects(student.GroupId).Where(e => !e.IsArchive);
 
@@ -196,33 +197,40 @@ namespace Application.Infrastructure.StudentManagement
 
 		public void UnConfirmationStudent(int studentId)
 		{
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			var student = this.GetStudent(studentId);
-
 			student.Confirmed = false;
-
+			student.ConfirmedById = null;
+			student.ConfirmedAt = null;
 			this.UpdateStudent(student);
 
-			var subjects = repositoriesContainer.SubjectRepository.GetSubjects(student.GroupId).Where(e => !e.IsArchive);
+			RemoveFromSubGroups(student.Id, student.GroupId);
+		}
 
+        public void RemoveFromSubGroups(int studentId, int groupId)
+        {
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+			var subjects = repositoriesContainer.SubjectRepository.GetSubjects(groupId).Where(e => !e.IsArchive);
+
+			var subjectStudentRepository = repositoriesContainer.RepositoryFor<SubjectStudent>();
 			foreach (var subject in subjects)
 			{
-				if (subject.SubjectGroups.Any(e => e.SubjectStudents.Any(x => x.StudentId == student.Id)))
+				if (subject.SubjectGroups.Any(e => e.SubjectStudents.Any(x => x.StudentId == studentId)))
 				{
-					var firstOrDefault = subject.SubjectGroups.FirstOrDefault(e => e.GroupId == student.GroupId);
+					var firstOrDefault = subject.SubjectGroups.FirstOrDefault(e => e.GroupId == groupId);
 
 					if (firstOrDefault != null)
 					{
 						var subjectStudent = firstOrDefault.SubjectStudents.FirstOrDefault(e => e.StudentId == studentId);
 
-						repositoriesContainer.RepositoryFor<SubjectStudent>().Delete(subjectStudent);
-						repositoriesContainer.ApplyChanges();
+						subjectStudentRepository.Delete(subjectStudent);
 					}
 				}
 			}
+			repositoriesContainer.ApplyChanges();
 		}
 
-	    private readonly LazyDependency<IUsersManagementService> _userManagementService =
+		private readonly LazyDependency<IUsersManagementService> _userManagementService =
             new LazyDependency<IUsersManagementService>();
 
         public IUsersManagementService UserManagementService
