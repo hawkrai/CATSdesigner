@@ -10,6 +10,7 @@ using Application.Core.Data;
 using Application.Core.UI.Controllers;
 using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure.DPManagement;
+using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.LecturerManagement;
@@ -32,6 +33,9 @@ namespace LMPlatform.UI.Controllers
             new LazyDependency<IFilesManagementService>();
 
         public IFilesManagementService FilesManagementService => this._filesManagementService.Value;
+
+        private readonly LazyDependency<IElasticManagementService> _elasticManagementService = new LazyDependency<IElasticManagementService>();
+        private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
 
         [HttpPost]
         public DataTablesResult<StudentViewModel> GetCollectionStudents(DataTablesParam dataTableParam)
@@ -386,6 +390,7 @@ namespace LMPlatform.UI.Controllers
 
                 if (student == null) return StatusCode(HttpStatusCode.BadRequest);
                 var result = this.StudentManagementService.DeleteStudent(id);
+                this.ElasticManagementService.DeleteStudent(id);
 
                 return StatusCode(result ? HttpStatusCode.OK : HttpStatusCode.Conflict);
 
@@ -410,6 +415,7 @@ namespace LMPlatform.UI.Controllers
                         this.LecturerManagementService.DisjoinOwnerLector(lecturerSubjectLecturer.SubjectId, id);
 
                 var result = this.LecturerManagementService.DeleteLecturer(id);
+                this.ElasticManagementService.DeleteLecturer(id);
 
                 return StatusCode(result ? HttpStatusCode.OK : HttpStatusCode.Conflict);
 
@@ -430,6 +436,7 @@ namespace LMPlatform.UI.Controllers
                 if (group.Students != null && group.Students.Count > 0) return StatusCode(HttpStatusCode.Conflict);
 
                 this.GroupManagementService.DeleteGroup(id);
+                this.ElasticManagementService.DeleteGroup(id);
                 return StatusCode(HttpStatusCode.OK);
 
             }
