@@ -12,7 +12,7 @@ import { ChatService } from "src/app/modules/chat/shared/services/chatService";
 import { MenuService } from "src/app/core/services/menu.service";
 import { MatDialog } from "@angular/material/dialog";
 import { AboutSystemPopoverComponent } from "../../about-system/about-popover/about-popover.component";
-import { Router } from "@angular/router";
+import { Router,ActivatedRoute } from "@angular/router";
 import { ConfirmationService } from "src/app/core/services/confirmation.service";
 
 
@@ -60,7 +60,8 @@ export class NavComponent implements OnInit, OnDestroy {
     private profileService: ProfileService,
     private menuService: MenuService,
     public dialog: MatDialog,
-    private confirmationService: ConfirmationService) {
+    private confirmationService: ConfirmationService,
+    private route: ActivatedRoute) {
   }
 
   get logoWidth(): string {
@@ -76,6 +77,7 @@ export class NavComponent implements OnInit, OnDestroy {
 	  this.isLector = authRole === "lector";
 	  this.isAdmin = authRole === "admin";
     }
+    this.route.params
     this.getUserInfo();
     if (this.isLector) {
       this.confirmationService.confirmationSubject
@@ -132,9 +134,9 @@ export class NavComponent implements OnInit, OnDestroy {
     window.location.reload();
   }
 
-  public routeToSearchResult(url: string): void {
-    this.router.navigate([url]);
-    window.location.reload();
+  public routeToSearchResult(url: string, param): void {
+    this.cleanSearchResults();
+    this.router.navigate([url, param],{relativeTo: this.route})
   }
 
 
@@ -181,28 +183,32 @@ export class NavComponent implements OnInit, OnDestroy {
 
   viewLecturerSearchResults() {
     this.searchService.getLecturerSearchResults(this.valueForSearch).subscribe(res => {
-      if (res.length > 0)
-        this.lecturerSearchResults = res;
+      if (res != null && res.length > 0){
+      this.lecturerSearchResults = res;
       this.bestLecturerSearchResult = this.lecturerSearchResults[0];
       this.lecturerSearchResults = this.lecturerSearchResults.slice(1, this.lecturerSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
+      }
     });
   }
 
   viewStudentSearchResults() {
     this.searchService.getStudentSearchResults(this.valueForSearch).subscribe(res => {
-      if (res.length > 0)
+      if (res != null && res.length > 0){
         this.studentSearchResults = res;
-      this.bestStudentSearchResult = this.studentSearchResults[0];
-      this.studentSearchResults = this.studentSearchResults.slice(1, this.studentSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
-    });
+        this.bestStudentSearchResult = this.studentSearchResults[0];
+        this.studentSearchResults = this.studentSearchResults.slice(1, this.studentSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
+      } 
+      });
   }
 
  viewGroupSearchResults() {
     this.searchService.getGroupSearchResults(this.valueForSearch).subscribe(res => {
-      if (res.length > 0)
+      if (res != null && res.length > 0)
+      {
         this.groupSearchResults = res;
-      this.bestGroupSearchResult = this.groupSearchResults[0];
-      this.groupSearchResults = this.groupSearchResults.slice(1, this.groupSearchResults.length - 1).sort((n1, n2) => n1.Name.localeCompare(n2.Name));
+        this.bestGroupSearchResult = this.groupSearchResults[0];
+        this.groupSearchResults = this.groupSearchResults.slice(1, this.groupSearchResults.length - 1).sort((n1, n2) => n1.Name.localeCompare(n2.Name));
+      }
     });
   }
 
@@ -219,6 +225,11 @@ export class NavComponent implements OnInit, OnDestroy {
       if (result != null) {
       }
     });
+  }
+
+  UpdateSearchResultView(){
+    this.cleanSearchResults();
+    window.location.reload();
   }
 
   public getUserInitials(){

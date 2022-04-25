@@ -50,7 +50,7 @@
         {{this.bestGroupSearchResult.Name}}
       </mat-list-option>
       <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result"
-                       (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
+                       (click)="this.routeToSearchResult('group',result.Name)">
         {{result.Name}}
       </mat-list-option>
     </mat-selection-list>

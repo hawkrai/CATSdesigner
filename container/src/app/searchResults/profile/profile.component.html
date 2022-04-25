@@ -22,6 +22,7 @@
       <p *ngIf="this.profileInfo.SkypeContact">{{'text.personalAccount.messenger' | translate : ("Skype, Viber, Telegram и др.")}}: {{ this.profileInfo.SkypeContact}}</p>
       <p *ngIf="this.profileInfo.Email">{{'text.personalAccount.email' | translate : ("Почта")}}: {{ this.profileInfo.Email}}</p>
       <p *ngIf="this.profileInfo.Phone">{{'text.personalAccount.phoneNumber' | translate : ("Телефон")}}: {{ this.profileInfo.Phone}}</p>
+      <p *ngIf="this.profileInfo.About">{{'text.personalAccount.about' | translate : ("О себе")}}: {{ this.profileInfo.About}}</p>
     </mat-card-content>
     
   </mat-card>
