@@ -36,10 +36,10 @@ export class PracticalRestService {
     );
   }
 
-  public getMarks(subjectId: number, groupId: number): Observable<StudentMark[]> {
+  public getMarks(subjectId: number, groupId: number): Observable<{ students: StudentMark[], testsCount: number }> {
     return this.http.post('Services/Practicals/PracticalService.svc/GetMarks', { subjectId, groupId }).pipe(
-      map(res => res['Students'])
-    )
+      map(res => ({ students: res['Students'], testsCount: res['TestsCount'] }))
+    );
   }
 
   public updatePracticalsOrder(subjectId: number, prevIndex: number, curIndex: number): Observable<any> {

@@ -9,6 +9,7 @@ import * as subjectSelectors from '../selectors/subject.selector';
 import * as catsActions from '../actions/cats.actions';
 import { PracticalRestService } from 'src/app/services/practical/practical-rest.service';
 import * as filesActions from '../actions/files.actions';
+import * as testsActions from '../actions/tests.actions';
 import { IAppState } from '../state/app.state';
 import { ScheduleService } from "src/app/services/schedule.service";
 
@@ -93,7 +94,7 @@ export class PracticalsEffects {
             this.store.select(subjectSelectors.getSubjectId)
             ),
         switchMap(([_, groupId, subjectId]) => this.rest.getMarks(subjectId, groupId).pipe(
-            map(students => practicalsActions.loadMarksSuccess({ students }))
+            switchMap(({ students, testsCount }) => [practicalsActions.loadMarksSuccess({ students }), testsActions.loadedTestsCount({ testsCount})])
         ))
     ));
 

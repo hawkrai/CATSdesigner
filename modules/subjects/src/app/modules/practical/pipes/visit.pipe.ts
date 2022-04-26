@@ -16,7 +16,7 @@ export class VisitPipe implements PipeTransform {
         scheduleIds.push(schedule.ScheduleProtectionId.toString());
       }
     });
-
+    
     return value.PracticalVisitingMark.filter(visiting => scheduleIds.includes(visiting.ScheduleProtectionPracticalId.toString()) && visiting.Mark);
 
   }

@@ -49,12 +49,12 @@ export class LabsRestService {
     return this.http.get<SubGroup[]>('Services/Labs/LabsService.svc/GetSubGroups', {params});
   }
 
-  public getMarksV2(subjectId: number, groupId: number): Observable<StudentMark[]> {
+  public getMarksV2(subjectId: number, groupId: number): Observable<{ students: StudentMark[], testsCount: number }> {
     const params = new HttpParams()
       .set('subjectId', subjectId.toString())
       .set('groupId', groupId.toString());
     return this.http.get('Services/Labs/LabsService.svc/GetMarksV3', {params}).pipe(
-      map(res => res['Students']))
+      map(res => ({ students: res['Students'], testsCount: res['TestsCount'] })));
   }
 
   public saveLab(lab: CreateLessonEntity) {

@@ -8,5 +8,8 @@
 	{
 		[DataMember]
 		public List<StudentMark> Students { get; set; }
+
+		[DataMember]
+		public int TestsCount { get; set; }
 	}
 }

@@ -7,6 +7,7 @@ import {lecturesReducer} from './lectures.reducer';
 import {labsReducer} from './labs.reducer';
 import { practicalsReducer } from './practicals.reducer';
 import { filesReducer } from './files.reducer';
+import { testsReducer } from './tests.reducer';
 
 export const appReducers: ActionReducerMap<IAppState, any> = {
   subject: subjectReducer,
@@ -15,5 +16,6 @@ export const appReducers: ActionReducerMap<IAppState, any> = {
   lectures: lecturesReducer,
   labs: labsReducer,
   practicals: practicalsReducer,
-  files: filesReducer
+  files: filesReducer,
+  tests: testsReducer
 };
