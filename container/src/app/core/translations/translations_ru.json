@@ -394,7 +394,7 @@
   "text.personalAccount.wrongData": "Некоторые поля не соответствуют формату!",
   "text.personalAccount.deletePhoto": "Удалить фото",
   "text.personalAccount.tooBigImage": "Размер изображения слишком велик!",
-
+  "text.personalAccount.about": "О себе",
   "text.personalAccount.changingPassword": "Изменение пароля",
   "text.personalAccount.changePassword.passwordChanged": "Пароль успешно изменен!",
   "text.personalAccount.changePassword.passwordNotChanged": "Пароль не был изменен!",

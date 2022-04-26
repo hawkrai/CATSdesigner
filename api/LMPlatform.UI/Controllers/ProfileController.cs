@@ -315,7 +315,7 @@ namespace LMPlatform.UI.Controllers
         {
             var dpProject = this.DpManagementService.GetProjectsByUserId(id);
 
-            return this.Json(dpProject.Select(e => new
+            return this.Json(dpProject?.Select(e => new
             {
                 Name = e.Theme
             }), JsonRequestBehavior.AllowGet);

@@ -28,7 +28,7 @@ export class ChangePersonalDataComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
   emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})$')]);
-  phoneFormControl = new FormControl('', [Validators.pattern('^([0-9]{0,20})$')]);
+  phoneFormControl = new FormControl('', [Validators.pattern('^([0-9+-]{0,20})$')]);
 
   nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
     Validators.pattern(this.nameRegExp)])

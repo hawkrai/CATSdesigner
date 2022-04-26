@@ -44,16 +44,11 @@ namespace Application.Infrastructure.FilesManagement
 
         public IList<Attachment> GetAttachments(string path)
         {
-	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-            var result = string.IsNullOrEmpty(path) ? repositoriesContainer.AttachmentRepository.GetAll().ToList()
-                : repositoriesContainer.AttachmentRepository.GetAll(
-                    new Query<Attachment>(e => e.PathName == path)
-                .Include(e => e.Author.FullName)
-                .Include(e => e.CreationDate.Value))
-                .ToList()
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return string.IsNullOrEmpty(path) ? repositoriesContainer.AttachmentRepository.GetAll().ToList()
+                : repositoriesContainer.AttachmentRepository.GetAll(new Query<Attachment>(e => e.PathName == path)).ToList()
                 .Where(attachemnt => File.Exists(_storageRoot + $"{attachemnt.PathName}//{attachemnt.FileName}"))
                 .ToList();
-            return result;
         }
 
         public IList<Attachment> GetAttachments(string filter, int filesPerPage, int page)

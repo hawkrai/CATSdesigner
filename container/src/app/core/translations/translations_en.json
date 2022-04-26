@@ -446,7 +446,7 @@
   "text.personalAccount.wrongData": "Some fields are invalid!",
   "text.personalAccount.deletePhoto": "Delete photo",
   "text.personalAccount.tooBigImage": "Image size is too large! ",
-
+  "text.personalAccount.about": "About",
   "text.personalAccount.changingPassword": "Password changing",
   "text.personalAccount.changePassword.passwordChanged": "Password was changed successfully!",
   "text.personalAccount.changePassword.passwordNotChanged": "Password was't changed successfully!",
