@@ -4,6 +4,8 @@
     [routerLink]="tab.route"
     routerLinkActive="mdc-tab--active"
     queryParamsHandling="merge"
+    [matTooltip]="state.isTeacher && tab.route === 'schedule' ? ('subdivision' | translate:'Разделение на подгруппы') : ''"
+    matTooltipPosition="below"
     #rla="routerLinkActive">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{tab.tab | firstLetterUppercase}}
@@ -36,13 +38,13 @@
         </div>
         <div class="practical-component-actions">
           <div class="actions-group">
+            <button *ngIf="(router.url | startWith:'/practical/schedule') || (router.url | startWith:'/practical/visit-statistics') || (router.url | startWith:'/practical/results')" class="mat-icon-button-groups" mat-icon-button
+            [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below"
+            (click)="subdivision(state.group.GroupId)">
+            <mat-icon color="primary">groups</mat-icon>
+          </button>
             <ng-container *ngIf="router.url | startWith:'/practical/schedule'">
               <app-help [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
-              <button class="mat-icon-button-groups" mat-icon-button
-                [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below"
-                (click)="subdivision(state.group.GroupId)">
-                <mat-icon color="primary">groups</mat-icon>
-              </button>
             </ng-container>
             <ng-container *ngIf="router.url | startWith:'/practical/visit-statistics'">
               <app-help [message]="visitingHelp.message" [action]="visitingHelp.action" class="help"></app-help>
