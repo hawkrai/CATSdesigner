@@ -13,6 +13,7 @@ import * as catsActions from '../actions/cats.actions';
 import * as testsActions from '../actions/tests.actions';
 import { iif, of } from 'rxjs';
 import { ScheduleService } from 'src/app/services/schedule.service';
+import { generateCreateDateException } from 'src/app/utils/exceptions';
 
 @Injectable()
 export class LabsEffects {
@@ -76,7 +77,7 @@ export class LabsEffects {
     ofType(labsActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
     switchMap(([{ obj }, subjectId]) => this.scheduleService.createLabDateVisit({ ...obj, subjectId }).pipe(
-      switchMap(body => [catsActions.showMessage({ body }) ,labsActions.loadLabsSchedule()])
+      switchMap(body => [catsActions.showMessage({ body: { ...body, Message: body.Code === '200' ? body.Message : generateCreateDateException(body) } }) ,labsActions.loadLabsSchedule()])
     ))
   ));
 

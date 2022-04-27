@@ -11,5 +11,11 @@ namespace LMPlatform.UI.Services.Modules.Schedule
     {
         [DataMember]
         public ScheduleViewData Schedule { get; set; }
+
+        [DataMember]
+        public LectorViewData Lector { get; set; }
+
+        [DataMember]
+        public string GroupName { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace Application.Infrastructure.ScheduleManagement
         LecturesScheduleVisiting SaveDateLectures(LecturesScheduleVisiting lecturesScheduleVisiting);
         ScheduleProtectionPractical SaveDatePractical(ScheduleProtectionPractical scheduleProtectionPractical);
 
-        bool CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
+        IEnumerable<ScheduleModel> CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience);
 
         IEnumerable<ScheduleModel> GetScheduleForDate(DateTime date);
 
