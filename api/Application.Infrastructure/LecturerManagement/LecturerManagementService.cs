@@ -174,7 +174,7 @@ namespace Application.Infrastructure.LecturerManagement
 	    {
 		    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 		    return repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(
-			    new Query<SubjectLecturer>(e => e.SubjectId == subjectId)
+			    new Query<SubjectLecturer>(e => e.SubjectId == subjectId && e.Lecturer.IsActive)
 				    .Include(e => e.Lecturer)).Select(e => e.Lecturer).ToList();
 	    }
 
@@ -215,7 +215,7 @@ namespace Application.Infrastructure.LecturerManagement
 			var lecturers = repositoriesContainer.LecturerRepository.GetAll().ToList();
 			var joinedLectures = GetJoinedLector(subjectId);
 
-			return lecturers.Where(x => !joinedLectures.Any(jl => jl.Id == x.Id)).ToList();
+			return lecturers.Where(x => x.IsActive && !joinedLectures.Any(jl => jl.Id == x.Id)).ToList();
             
 		}
     }
