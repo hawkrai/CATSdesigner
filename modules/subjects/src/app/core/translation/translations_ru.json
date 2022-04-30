@@ -1,5 +1,6 @@
 {
   "subject": "Предметы",
+  "course": "Предмет",
   "other": "Другой",
   "others": "Другие",
   "group.plural": "Группы",
@@ -199,5 +200,12 @@
   "text.schedule.dates.deleting": "Удаление дат",
   "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
   "text.students.transfered": "Студент(ы) были успешно переведены в подгруппу",
-  "text.subdivision.to.the.first.subgroup": "Студенты будут перемещены в подгруппу 1"
+  "text.subdivision.to.the.first.subgroup": "Студенты будут перемещены в подгруппу 1",
+  "author": "Автор",
+  "plagiarism.check": "Проверка на плагиат",
+  "similarity.percentage": "Процент схожести",
+  "check": "Проверить",
+  "custer": "Кастер",
+  "vector.method": "Векторный метод",
+  "shingles.method": "Метод шинглов"
 }

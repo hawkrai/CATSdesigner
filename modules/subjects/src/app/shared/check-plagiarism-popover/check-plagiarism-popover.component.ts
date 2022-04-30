@@ -1,13 +1,14 @@
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { PlagiarismResultSubject } from './../../models/plagiarism-result-subject.model';
 import { LabsRestService } from 'src/app/services/labs/labs-rest.service';
-import {Component} from "@angular/core";
-import {MatDialogRef} from "@angular/material/dialog";
+import { Component } from "@angular/core";
+import { MatDialogRef } from "@angular/material/dialog";
 import { Store } from "@ngrx/store";
 import { IAppState } from "src/app/store/state/app.state";
 import * as subjectSelectors from '../../store/selectors/subject.selector';
 import * as filesActions from '../../store/actions/files.actions';
+import * as catsActions from '../../store/actions/cats.actions';
 import { CorrectDoc } from 'src/app/models/plagiarism-result.model';
 
 @Component({
@@ -28,7 +29,7 @@ export class CheckPlagiarismPopoverComponent {
     private dialogRef: MatDialogRef<CheckPlagiarismPopoverComponent>,
     private store: Store<IAppState>,
     private labsService: LabsRestService
-  ) {}
+  ) { }
 
   onClick(): void {
     this.dialogRef.close();
@@ -37,8 +38,12 @@ export class CheckPlagiarismPopoverComponent {
     this.loading = true;
     this.result$ = this.store.select(subjectSelectors.getSubjectId).pipe(
       switchMap(subjectId => this.labsService.checkPlagiarismSubjects({ threshold: this.percent.toString(), subjectId, type: this.labelPosition })),
-      tap(() => this.loading = false)
-      );
+      tap(response => {
+        this.loading = false;
+        this.store.dispatch(catsActions.showMessage({ body: response }));
+      }),
+      map(response => response.DataD)
+    );
   }
 
   downloadFile(plagResult: CorrectDoc): void {

@@ -1,62 +1,65 @@
-<div class="check-plagiarism result" >
-  <h2 mat-dialog-title>Проверка на плагиат</h2>
-  <div mat-dialog-content>
+<app-popover-dialog width="600">
+  <ng-container title>
+    {{'plagiarism.check' | translate:'Проверка на плагиат'}}
+  </ng-container>
+  <ng-container body>
     <form class="example-form" #formElement>
       <section class="example-section">
         <mat-radio-group name="group" [(ngModel)]="labelPosition" [color]="'primary'" class="section-method">
-          <mat-radio-button class="example-margin" value="0">Векторный метод</mat-radio-button>
-          <mat-radio-button class="example-margin" value="1">Метод шинглов</mat-radio-button>
+          <mat-radio-button class="example-margin" value="0">{{'vector.method' | translate:'Векторный метод'}}</mat-radio-button>
+          <mat-radio-button class="example-margin" value="1">{{'shingles.method' | translate:'Метод шинглов'}}</mat-radio-button>
         </mat-radio-group>
       </section>
       <mat-form-field class="example-full-width">
-        <mat-label>Процент схожести, %</mat-label>
+        <mat-label>{{'similarity.percentage' | translate:'Процент схожести'}}, %</mat-label>
         <input name="percent" min="50" max="100" required type="number" matInput [(ngModel)]="percent">
       </mat-form-field>
     </form>
-  </div>
-  <div *ngIf="result$ | async as result">
-    <div *ngFor="let caster of result; let i = index">
-      <p class="mat-typography text">Кастер {{i + 1}}</p>
-      <table mat-table
-             [dataSource]="caster.correctDocs"
-             class="mat-elevation-z14 example-list">
 
-        <ng-container matColumnDef="author">
-          <th mat-header-cell *matHeaderCellDef>Автор</th>
-          <td mat-cell *matCellDef="let element"> {{element.author}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="group">
-          <th mat-header-cell *matHeaderCellDef>Группа</th>
-          <td mat-cell *matCellDef="let element"> {{element.groupName}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="subject">
-          <th mat-header-cell *matHeaderCellDef>Предмет</th>
-          <td mat-cell *matCellDef="let element"> {{element.subjectName}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="file">
-          <th mat-header-cell *matHeaderCellDef>Файл</th>
-          <td mat-cell *matCellDef="let element"  class="link" (click)="downloadFile(element)"> {{element.doc}}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+    <div *ngIf="result$ | async as result">
+      <div *ngFor="let caster of result; let i = index">
+        <p class="mat-typography text"> {{'custer' | translate:'Кастер'}} {{i + 1}}</p>
+        <table mat-table
+               [dataSource]="caster.correctDocs"
+               class="mat-elevation-z14 example-list">
+  
+          <ng-container matColumnDef="author">
+            <th mat-header-cell *matHeaderCellDef>{{'author' | translate:'Автор'}}</th>
+            <td mat-cell *matCellDef="let element"> {{element.author}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="group">
+            <th mat-header-cell *matHeaderCellDef>{{'group' | translate:'Группа'}}</th>
+            <td mat-cell *matCellDef="let element"> {{element.groupName}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="subject">
+            <th mat-header-cell *matHeaderCellDef>{{'course' | translate:'Предмет'}}</th>
+            <td mat-cell *matCellDef="let element"> {{element.subjectName}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="file">
+            <th mat-header-cell *matHeaderCellDef>{{'text.attachments' | translate:'Файл'}}</th>
+            <td mat-cell *matCellDef="let element"  class="link" (click)="downloadFile(element)"> {{element.doc}}</td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
     </div>
-  </div>
-
-  <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClick()">Отмена</button>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onClick()">{{'button.cancel' | translate:'Отмена'}}</button>
     <button mat-raised-button
             (click)="onSave()"
             color="primary"
             [disabled]="!formElement.checkValidity()">
-      Проверить
+      {{'check' | translate:'Проверить'}}
     </button>
-  </div>
-</div>
+  </ng-container>
+</app-popover-dialog>
+
 <ng-template #load>
   <div class="spinner">
     <mat-spinner></mat-spinner>

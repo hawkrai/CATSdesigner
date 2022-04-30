@@ -1,43 +1,51 @@
-<div class="check-plagiarism result" *ngIf="plagResults$ | async as plagResults; else load">
-  <h2 mat-dialog-title>Проверка на плагиат</h2>
-  <div *ngIf="plagResults">
-      <table mat-table
-             [dataSource]="plagResults"
-             class="mat-elevation-z14 example-list">
+<app-popover-dialog width="600">
+  <ng-container title>
+    {{'plagiarism.check' | translate:'Проверка на плагиат'}}
+  </ng-container>
+  <ng-container body>
+    <ng-container *ngIf="plagResults$ | async as plagResults; load">
+      <div class="check-plagiarism" *ngIf="plagResults; else load">
+        <table mat-table
+               [dataSource]="plagResults"
+               class="mat-elevation-z14 example-list">
+  
+          <ng-container matColumnDef="coeff">
+            <th mat-header-cell *matHeaderCellDef>{{'similarity.percentage' | translate:'Процент схожести'}}, %</th>
+            <td mat-cell *matCellDef="let element"> {{element.coeff}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="author">
+            <th mat-header-cell *matHeaderCellDef>{{'author' | translate:'Автор'}}</th>
+            <td mat-cell *matCellDef="let element"> {{element.author}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="group">
+            <th mat-header-cell *matHeaderCellDef>{{'group' | translate:'Группа'}}</th>
+            <td mat-cell *matCellDef="let element"> {{element.groupName}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="subject">
+            <th mat-header-cell *matHeaderCellDef>{{'course' | translate:'Предмет'}}</th>
+            <td mat-cell *matCellDef="let element"> {{element.subjectName}}</td>
+          </ng-container>
+  
+          <ng-container matColumnDef="file">
+            <th mat-header-cell *matHeaderCellDef>{{'text.attachments' | translate:'Файл'}}</th>
+            <td mat-cell *matCellDef="let element"  class="link" (click)="downloadFile(element)"> {{element.doc}}</td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+    </ng-container>
 
-        <ng-container matColumnDef="coeff">
-          <th mat-header-cell *matHeaderCellDef>Процент схожести, %</th>
-          <td mat-cell *matCellDef="let element"> {{element.coeff}}</td>
-        </ng-container>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onClick()">{{'button.cancel' | translate:'Отмена'}}</button>
+  </ng-container>
+</app-popover-dialog>
 
-        <ng-container matColumnDef="author">
-          <th mat-header-cell *matHeaderCellDef>Автор</th>
-          <td mat-cell *matCellDef="let element"> {{element.author}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="group">
-          <th mat-header-cell *matHeaderCellDef>Группа</th>
-          <td mat-cell *matCellDef="let element"> {{element.groupName}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="subject">
-          <th mat-header-cell *matHeaderCellDef>Предмет</th>
-          <td mat-cell *matCellDef="let element"> {{element.subjectName}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="file">
-          <th mat-header-cell *matHeaderCellDef>Файл</th>
-          <td mat-cell *matCellDef="let element"  class="link" (click)="downloadFile(element)"> {{element.doc}}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-  </div>
-  <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClick()">Закрыть</button>
-  </div>
-</div>
 <ng-template #load>
   <div class="spinner">
     <mat-spinner></mat-spinner>
