@@ -84,10 +84,6 @@ export const loadStudentsLabsFilesSuccess = createAction(
   props<{ studentsLabsFiles: StudentMark[] }>()
 );
 
-export const refreshJobProtection = createAction(
-  '[Labs] Refresh Job Protection'
-);
-
 export const getMarksExcel = createAction(
   '[Labs] Get Marks Excel'
 );

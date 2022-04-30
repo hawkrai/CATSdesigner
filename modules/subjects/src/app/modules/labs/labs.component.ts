@@ -106,7 +106,7 @@ export class LabsComponent implements OnInit, OnDestroy {
   }
 
   refreshJobProtection() {
-    this.store.dispatch(labsActions.refreshJobProtection());
+    this.store.dispatch(labsActions.loadGroupJobProtection());
   }
 
   checkPlagiarism() {
