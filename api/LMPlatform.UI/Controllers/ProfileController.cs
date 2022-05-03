@@ -228,31 +228,40 @@ namespace LMPlatform.UI.Controllers
             var subjectService = this.SubjectManagementService;
             var user = userService.GetUserById(id);
             List<Subject> model;
+            var returnModel = new List<object>();
 
             if (user.Lecturer == null)
             {
                 model = subjectService.GetSubjectsInfoByStudent(user.Id);
+                foreach (var subject in model)
+                    returnModel.Add(new
+                    {
+                        subject.Name,
+                        subject.Id,
+                        subject.ShortName,
+                        subject.Color,
+                        Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
+                            user.Student),
+                        IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id && sg.GroupId == user.Student.GroupId)?.IsActiveOnCurrentGroup
+                    });
             }
             else
             {
                 model = subjectService.GetSubjectsInfoByLector(user.Id);
+                foreach (var subject in model)
+                    returnModel.Add(new
+                    {
+                        subject.Name,
+                        subject.Id,
+                        subject.ShortName,
+                        subject.Color,
+                        Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
+                            user.Student),
+                        IsActive = subject.SubjectGroups?.Any(s => s.IsActiveOnCurrentGroup)
+                    });
             }
 
-            var returnModel = new List<object>();
-
-            foreach (var subject in model)
-                returnModel.Add(new
-                {
-                    subject.Name,
-                    subject.Id,
-                    subject.ShortName,
-                    subject.Color,
-                    Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
-                        user.Student),
-                    IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id)?.IsActiveOnCurrentGroup
-                }) ;
-
-            return this.Json(returnModel, JsonRequestBehavior.AllowGet);
+          return this.Json(returnModel, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

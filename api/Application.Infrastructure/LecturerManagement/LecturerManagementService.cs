@@ -106,7 +106,7 @@ namespace Application.Infrastructure.LecturerManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 repositoriesContainer.LecturerRepository.SaveLecturer(lecturer);
-                repositoriesContainer.ApplyChanges();
+				repositoriesContainer.ApplyChanges();
             }            
             return lecturer;
         }

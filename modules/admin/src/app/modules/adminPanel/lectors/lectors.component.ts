@@ -59,7 +59,7 @@ export class LectorsComponent implements OnInit {
     newProfessorObject.Phone = professor.Phone || '';
     newProfessorObject.Skill = professor.Skill || '';
     newProfessorObject.SkypeContact = professor.SkypeContact || '';
-    newProfessorObject.SeletectedGroupIds = professor.SeletectedGroupIds || [];
+    newProfessorObject.SelectedGroupIds = professor.SecretaryGroupsIds || [];
     newProfessorObject.UserName = professor.Login || '';
     professor.isActive = true;
     this.editLector(newProfessorObject);

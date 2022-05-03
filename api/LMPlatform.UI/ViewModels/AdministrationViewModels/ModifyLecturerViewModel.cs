@@ -108,7 +108,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				Phone = lecturer.User.Phone;
 				About = lecturer.User.About;
 				Email = lecturer.User.Email;
-
+                SelectedGroupIds = lecturer.SecretaryGroups?.Select(s => s.Id).ToList();
                 IsSecretary = lecturer.IsSecretary;
                 IsLecturerHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents;
 	            IsActive = lecturer.IsActive;

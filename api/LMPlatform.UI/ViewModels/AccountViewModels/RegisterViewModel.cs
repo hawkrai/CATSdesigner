@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Core.Data;
 using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.GroupManagement;
@@ -17,25 +18,25 @@ using LMPlatform.Models;
 
 namespace LMPlatform.UI.ViewModels.AccountViewModels
 {
-	public class RegisterViewModel
-	{
-		private readonly LazyDependency<IAccountManagementService> _accountRegistrationService =
-			new LazyDependency<IAccountManagementService>();
+    public class RegisterViewModel
+    {
+        private readonly LazyDependency<IAccountManagementService> _accountRegistrationService =
+            new LazyDependency<IAccountManagementService>();
 
-		private readonly LazyDependency<IGroupManagementService> _groupManagementService =
-			new LazyDependency<IGroupManagementService>();
+        private readonly LazyDependency<IGroupManagementService> _groupManagementService =
+            new LazyDependency<IGroupManagementService>();
 
-		private readonly LazyDependency<ILecturerManagementService> _lecturerManagementService =
-			new LazyDependency<ILecturerManagementService>();
+        private readonly LazyDependency<ILecturerManagementService> _lecturerManagementService =
+            new LazyDependency<ILecturerManagementService>();
 
-		private readonly LazyDependency<IStudentManagementService> _studentManagementService =
-			new LazyDependency<IStudentManagementService>();
+        private readonly LazyDependency<IStudentManagementService> _studentManagementService =
+            new LazyDependency<IStudentManagementService>();
 
-		private readonly LazyDependency<IStudentsRepository> _studentsRepository =
-			new LazyDependency<IStudentsRepository>();
+        private readonly LazyDependency<IStudentsRepository> _studentsRepository =
+            new LazyDependency<IStudentsRepository>();
 
-		private readonly LazyDependency<IUsersManagementService> _usersManagementService =
-			new LazyDependency<IUsersManagementService>();
+        private readonly LazyDependency<IUsersManagementService> _usersManagementService =
+            new LazyDependency<IUsersManagementService>();
 
         private readonly LazyDependency<IElasticManagementService> _elasticManagementService =
     new LazyDependency<IElasticManagementService>();
@@ -43,15 +44,15 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
         private IStudentsRepository StudentsRepository => _studentsRepository.Value;
 
-		private IStudentManagementService StudentManagementService => _studentManagementService.Value;
+        private IStudentManagementService StudentManagementService => _studentManagementService.Value;
 
-		private ILecturerManagementService LecturerManagementService => _lecturerManagementService.Value;
+        private ILecturerManagementService LecturerManagementService => _lecturerManagementService.Value;
 
-		private IGroupManagementService GroupManagementService => _groupManagementService.Value;
+        private IGroupManagementService GroupManagementService => _groupManagementService.Value;
 
-		private IAccountManagementService AccountRegistrationService => _accountRegistrationService.Value;
+        private IAccountManagementService AccountRegistrationService => _accountRegistrationService.Value;
 
-		private IUsersManagementService UsersManagementService => _usersManagementService.Value;
+        private IUsersManagementService UsersManagementService => _usersManagementService.Value;
 
         #region Properties
 
@@ -117,18 +118,20 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         [Display(Name = "Код доступа")]
         public string Code { get; set; }
 
+        public List<int> SelectedGroupIds { get; set; }
+
         #endregion
 
-		public IList<SelectListItem> GetGroups()
-		{
-			var groups = GroupManagementService.GetGroups();
+        public IList<SelectListItem> GetGroups()
+        {
+            var groups = GroupManagementService.GetGroups();
 
-			return groups.Select(v => new SelectListItem
-			{
-				Text = v.Name,
-				Value = v.Id.ToString(CultureInfo.InvariantCulture)
-			}).OrderBy(e => e.Text).ToList();
-		}
+            return groups.Select(v => new SelectListItem
+            {
+                Text = v.Name,
+                Value = v.Id.ToString(CultureInfo.InvariantCulture)
+            }).OrderBy(e => e.Text).ToList();
+        }
 
         public IList<SelectListItem> GetSecretQuestions()
         {
@@ -173,7 +176,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             var user = UsersManagementService.GetUser(UserName);
             user.Answer = Answer;
             int id;
-            user.QuestionId = int.TryParse(QuestionId, out id) ? id : (int?) null;
+            user.QuestionId = int.TryParse(QuestionId, out id) ? id : (int?)null;
             var student = StudentManagementService.Save(new Student
             {
                 Id = user.Id,
@@ -181,16 +184,16 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
                 LastName = Surname,
                 MiddleName = Patronymic,
                 GroupId = int.Parse(Group),
-				Confirmed = false
+                Confirmed = false
             });
             student.User = user;
             student.Group = GroupManagementService.GetGroup(student.GroupId);
             ElasticManagementService.AddStudent(student);
             UsersManagementService.UpdateUser(user);
-            new StudentSearchMethod().AddToIndex(student); 
-                
+            new StudentSearchMethod().AddToIndex(student);
+
         }
-        
+
         private void SaveLecturer()
         {
             var user = UsersManagementService.GetUser(UserName);
@@ -201,12 +204,31 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
                 LastName = Surname,
                 MiddleName = Patronymic,
                 IsSecretary = IsSecretary,
+                SecretaryGroups = SelectedGroupIds != null && SelectedGroupIds.Count > 0 ?
+                GroupManagementService.GetGroups(new Query<Group>(x => SelectedGroupIds.Contains(x.Id))) :
+                new List<Group>(),
                 IsLecturerHasGraduateStudents = IsLecturerHasGraduateStudents,
-				IsActive = true
+                IsActive = true
             });
+
+            foreach (var group in GroupManagementService.GetGroups(new Query<Group>(x => x.SecretaryId == lecturer.Id)))
+            {
+                group.SecretaryId = null;
+                GroupManagementService.UpdateGroup(group);
+            }
+
+            if (IsSecretary)
+            {
+                foreach (var group in lecturer.SecretaryGroups)
+                {
+                    group.SecretaryId = lecturer.Id;
+                    GroupManagementService.UpdateGroup(group);
+                }
+            }
+
             lecturer.User = user;
-            new LecturerSearchMethod().AddToIndex(lecturer);          
+            new LecturerSearchMethod().AddToIndex(lecturer);
             ElasticManagementService.AddLecturer(lecturer);
         }
-	}
+    }
 }

@@ -65,7 +65,7 @@ export class ResetPasswordModalComponent implements OnInit {
 
   resetPassword(resetPasswordModel) {
     this.accountService.resetPassword(resetPasswordModel).subscribe( () => {
-      this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
+      this.toastr.addSuccessFlashMessage('Пароль успешно изменен!');
       window.parent.location.href = "/login";
     });
   }
