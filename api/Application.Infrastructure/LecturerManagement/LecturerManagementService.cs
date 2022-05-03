@@ -215,7 +215,7 @@ namespace Application.Infrastructure.LecturerManagement
 			var lecturers = repositoriesContainer.LecturerRepository.GetAll().ToList();
 			var joinedLectures = GetJoinedLector(subjectId);
 
-			return lecturers.Where(x => x.IsActive && !joinedLectures.Any(jl => jl.Id == x.Id)).ToList();
+			return lecturers.Where(x => x.IsActive && joinedLectures.All(jl => jl.Id != x.Id)).ToList();
             
 		}
     }

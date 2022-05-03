@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Application.Core;
 using Application.Infrastructure.SubjectManagement;
 using Application.Core.Data;
@@ -120,6 +121,20 @@ namespace LMPlatform.UI.Services.Subjects
             };
 
             return result;
+        }
+
+        public UniqueViewData IsSubjectNameUnique(string subjectName, int subjectId)
+        {
+            var subjects = SubjectManagementService.GetSubjects(new Query<Subject>(x => x.Id != subjectId && x.Name.ToLower() == subjectName.ToLower())).ToList();
+
+            return new UniqueViewData { IsUnique = !subjects.Any() };
+        }
+
+        public UniqueViewData IsSubjectAbbreviationUnique(string subjectAbbreviation, int subjectId)
+        {
+            var subjects = SubjectManagementService.GetSubjects(new Query<Subject>(x => x.Id != subjectId && x.ShortName.ToLower() == subjectAbbreviation.ToLower())).ToList();
+
+            return new UniqueViewData { IsUnique = !subjects.Any() };
         }
     }
 }

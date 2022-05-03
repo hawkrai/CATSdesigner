@@ -654,6 +654,7 @@
     <Compile Include="Services\Modules\Statistics\SubjectStatisticsViewResult.cs" />
     <Compile Include="Services\Modules\Statistics\TeacherStatisticsViewData.cs" />
     <Compile Include="Services\Modules\Subjects\ProfileSubject.cs" />
+    <Compile Include="Services\Modules\UniqueViewData.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />

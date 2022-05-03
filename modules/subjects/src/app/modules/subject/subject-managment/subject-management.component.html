@@ -12,9 +12,8 @@
             name="name"
             maxlength="256"
             matInput
-            [subjectNameFree]="data.body"
+            [subjectNameFree]="subject.SubjectId"
             #name="ngModel"
-            [subjectId]="subject.SubjectId"
             [(ngModel)]="subject.DisplayName"
             whitespace
           />
@@ -38,9 +37,8 @@
             name="abbreviation"
             matInput
             #shortName="ngModel"
-            [subjectAbbreviationFree]="data.body"
+            [subjectAbbreviationFree]="subject.SubjectId"
             [(ngModel)]="subject.ShortName"
-            [subjectId]="subject.SubjectId"
             whitespace
           />
         </mat-form-field>
