@@ -34,9 +34,9 @@ namespace Services
             if (user == null)
                 return null;
 
-            var chats = await _repository.UserChats.GetUserChatsAsync(false);
+            var chats = (await _repository.UserChats.GetUserChatsAsync(true)).ToList();
 
-            var chatFromDb = chats.FirstOrDefault(c => c.Name == chatName && c.Users.Contains(user));
+            var chatFromDb = chats.FirstOrDefault(c => c.Name == chatName);
 
             return chatFromDb;
         }

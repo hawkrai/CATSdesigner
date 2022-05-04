@@ -102,7 +102,18 @@ export class IndexComponent implements OnInit {
     }
   }
 
+  attachFileClick(fileInput:any){
+    if(!this.dataService.activChat){
+      this.openSnackBar("Не выбран чат!");
+      return false;
+    }
+    fileInput.click();
+  }
   uploadFiles(event) {
+    if(!this.dataService.activChat){
+      this.openSnackBar("Не выбран чат!");
+      return false;
+    }
     if (event.files)
       this.fileService.UploadFile(event.files)
   }
@@ -116,7 +127,17 @@ export class IndexComponent implements OnInit {
   }
 
   sendMsg() {
-    if (this.isEdit && this.currentMsg?.text && this.currentMsg.text != "") {
+    if(!this.dataService.activChat){
+      this.openSnackBar("Не выбран чат!");
+      return false;
+    }
+
+    if(!this.currentMsg?.text || this.currentMsg.text == "" || this.currentMsg.text.length > 25000){
+      this.openSnackBar("Сообщение пустое или превышает разрешенный размер!");
+      return;
+    }
+
+    if (this.isEdit && this.currentMsg?.text && this.currentMsg.text != "" && this.currentMsg.text.length < 25000) {
       if (this.dataService.isGroupChat) {
         this.signalRService.updateGroupMessage(this.editedMsg.id, this.currentMsg.text, this.dataService.activChatId)
         .then(
@@ -146,7 +167,7 @@ export class IndexComponent implements OnInit {
       }
     }
     else {
-      if (this.currentMsg?.text && this.currentMsg.text != "") {
+      if (this.currentMsg?.text && this.currentMsg.text != "" && this.currentMsg.text.length < 25000) {
         this.currentMsg.userId = this.dataService.user.id;
         this.currentMsg.chatId = this.dataService.activChatId;
         if (this.dataService.isGroupChat) {
