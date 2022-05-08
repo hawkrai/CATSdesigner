@@ -12,5 +12,8 @@ namespace Application.Infrastructure.LabsManagement
         IEnumerable<UserLabFiles> GetUserLabFiles(int userId, int labId);
         bool HasSubjectProtection(int groupId, int subjectId);
 
+        List<UserLabFiles> GetGroupLabFiles(int subjectId, int groupId);
+        List<UserLabFiles> GetStudentLabFiles(int subjectId, int studentId);
+
     }
 }

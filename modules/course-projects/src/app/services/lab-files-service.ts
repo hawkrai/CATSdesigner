@@ -11,11 +11,11 @@ export class LabFilesService {
   constructor(private http: HttpClient) { }
 
   public getCourseProjectFilesForUser(subjectId: string, userId: string): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/GetFilesLab', {isCoursPrj: true, subjectId, userId});
+    return this.http.post('Services/Courses/CoursesService.svc/GetFiles', {isCoursPrj: true, subjectId, userId});
   }
 
   public getCourseProjectFiles(params: any): Observable<any> {
-    return this.http.get('Services/Labs/LabsService.svc/GetFilesV2', {params: new HttpParams({fromObject: params})});
+    return this.http.get('Services/Courses/CoursesService.svc/GetFilesV2', {params: new HttpParams({fromObject: params})});
   }
 
   public uploadFile(file: File): Observable<any> {
@@ -29,11 +29,11 @@ export class LabFilesService {
   }
 
   public sendJob(body: any): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/SendFile', body);
+    return this.http.post('Services/UserFiles/UserFilesService.svc/SendFile', body);
   }
 
   public deleteJob(id: string): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/DeleteUserFile', {id});
+    return this.http.post('Services/UserFiles/UserFilesService.svc/DeleteUserFile', {id});
   }
 
   public getAttachment(params: any): Observable<any> {
@@ -41,21 +41,21 @@ export class LabFilesService {
   }
 
   public approveJob(userFileId: string): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/ReceivedLabFile', {userFileId});
+    return this.http.post('Services/UserFiles/UserFilesService.svc/ReceivedFile', {userFileId});
   }
 
   public restoreFromArchive(userFileId: string): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/CancelReceivedLabFile', {userFileId});
+    return this.http.post('Services/UserFiles/UserFilesService.svc/CancelReceivedFile', {userFileId});
   }
 
   public checkPlagiarism(body: {subjectId: string, userFileId: number}): Observable<any> {
-    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', body).pipe(
+    return this.http.post('Services/UserFiles/UserFilesService.svc/CheckPlagiarism', { ...body, isCp: true }).pipe(
       map(res => res['DataD'])
     );
   }
 
   public checkPlagiarismSubjects(body: {subjectId: string, threshold: string, type: string}): Observable<any> {
-    return this.http.post('api/Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
+    return this.http.post('Services/UserFiles/UserFilesService.svc/CheckPlagiarismSubjects', { ...body, isCp: true }).pipe(
       map(res => res['DataD'])
     );
   }

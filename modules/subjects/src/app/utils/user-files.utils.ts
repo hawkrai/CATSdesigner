@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 import { UserLabFile } from "../models/user-lab-file.model";
 
-export const sendUserLabFileSuccess = (userLabFiles: UserLabFile[], userLabFile: UserLabFile): UserLabFile[] => {
+export const sendUserFileSuccess = (userLabFiles: UserLabFile[], userLabFile: UserLabFile): UserLabFile[] => {
     userLabFiles = userLabFiles ? userLabFiles : [];
     const index = userLabFiles.findIndex(x => x.Id === userLabFile.Id);
 

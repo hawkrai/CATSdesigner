@@ -5,6 +5,7 @@ using System.Linq;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Helpers;
+using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.PracticalManagement;
@@ -13,6 +14,7 @@ using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.CoreModels;
+using LMPlatform.UI.Services.Modules.Labs;
 using LMPlatform.UI.Services.Modules.Practicals;
 using LMPlatform.UI.Services.Modules.Schedule;
 using Newtonsoft.Json;
@@ -45,6 +47,10 @@ namespace LMPlatform.UI.Services.Practicals
         private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
 
         public ITestPassingService TestPassingService => testPassingService.Value;
+
+        private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
+
+        public IFilesManagementService FilesManagementService => filesManagementService.Value;
 
         private const int PracticalModuleId = 13;
 
@@ -422,6 +428,113 @@ namespace LMPlatform.UI.Services.Practicals
                     Code = "500"
                 };
             }
+        }
+
+        public UserLabFilesResult GetUserPracticalFiles(int userId, int subjectId)
+        {
+            try
+            {
+                var labFiles = PracticalManagementService.GetUserPracticalFiles(userId, subjectId);
+                var model = labFiles
+                    .GroupBy(x => x.Lab?.Order)
+                    .OrderBy(x => x.Key)
+                    .SelectMany(x => x.OrderBy(x => x.Date))
+                    .Select(e => new UserLabFileViewData
+                    {
+                        PracticalShortName = e.Practical?.ShortName,
+                        PracticalTheme = e.Lab?.Theme,
+                        Order = e.Practical?.Order,
+                        Comments = e.Comments,
+                        Id = e.Id,
+                        PathFile = e.Attachments,
+                        IsReceived = e.IsReceived,
+                        IsReturned = e.IsReturned,
+                        PracticalId = e.PracticalId,
+                        UserId = e.UserId,
+                        Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+                        Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
+                    }).ToList();
+                return new UserLabFilesResult
+                {
+                    UserLabFiles = model,
+                    Message = "Данные получены",
+                    Code = "200"
+                };
+            }
+            catch
+            {
+                return new UserLabFilesResult
+                {
+                    Message = "Произошла ошибка при получении данных",
+                    Code = "500"
+                };
+            }
+        }
+
+        public HasGroupsJobProtectionViewData HasSubjectPracticalsJobProtection(int subjectId, bool isActive)
+        {
+            var groups = SubjectManagementService.GetSubjectGroups(new Query<SubjectGroup>(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup == isActive));
+            return new HasGroupsJobProtectionViewData
+            {
+                HasGroupsJobProtection = groups.Select(x => new HasGroupJobProtectionViewData
+                {
+                    GroupId = x.GroupId,
+                    HasJobProtection = PracticalManagementService.HasSubjectProtection(x.GroupId, subjectId)
+                })
+            };
+        }
+
+        public GroupJobProtectionViewData GetGroupJobProtection(int subjectId, int groupId)
+        {
+            var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
+                .Include(x => x.SubjectStudents.Select(x => x.Student))
+                .Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
+
+            var studentJobProtection = new List<StudentJobProtectionViewData>();
+            var studentsLabFiles = PracticalManagementService.GetGroupPracticalFiles(subjectId, groupId);
+
+            foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
+            {
+                studentJobProtection.Add(new StudentJobProtectionViewData
+                {
+                    StudentId = subjectStudent.StudentId,
+                    StudentName = subjectStudent.Student.FullName,
+                    GroupId = groupId,
+                    HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
+                });
+            }
+            return new GroupJobProtectionViewData
+            {
+                StudentsJobProtections = studentJobProtection
+            };
+        }
+
+        public StudentJobProtectionViewData GetStudentJobProtection(int subjectId, int groupId, int studentId)
+        {
+            var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
+                .Include(x => x.SubjectStudents.Select(x => x.Student))
+                .Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
+
+            var subjectStudent = group.SubjectStudents.FirstOrDefault(x => x.Student.Confirmed.HasValue && x.Student.Confirmed.Value && x.StudentId == studentId);
+
+            if (subjectStudent == null)
+            {
+                return new StudentJobProtectionViewData
+                {
+                    Code = "500"
+                };
+            }
+
+            var studentsLabFiles = PracticalManagementService.GetStudentLabFiles(subjectId, studentId);
+
+            return new StudentJobProtectionViewData
+            {
+                StudentId = studentId,
+                StudentName = subjectStudent.Student.FullName,
+                GroupId = groupId,
+                HasProtection = studentsLabFiles.Any(x =>
+                    x.UserId == studentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
+            };
         }
     }
 }

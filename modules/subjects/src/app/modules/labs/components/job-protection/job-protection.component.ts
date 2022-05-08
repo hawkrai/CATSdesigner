@@ -6,17 +6,16 @@ import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
 import {AddLabPopoverComponent} from './add-lab-popover/add-lab-popover.component';
 import {filter, map, withLatestFrom} from 'rxjs/operators';
-import { StudentMark } from 'src/app/models/student-mark.model';
 import { Attachment } from 'src/app/models/file/attachment.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as subjectSelectors from '../../.././../store/selectors/subject.selector';
 import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
-import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component';
 import { TranslatePipe } from 'educats-translate';
 import { combineLatest } from 'rxjs';
+import { CheckPlagiarismStudentComponent } from 'src/app/shared/check-plagiarism-student/check-plagiarism-student.component';
 
 @Component({
   selector: 'app-job-protection',
@@ -53,10 +52,6 @@ export class JobProtectionComponent implements OnDestroy {
     this.subs.unsubscribe();
   }
 
-  hasNewLabs(student: StudentMark): boolean {
-    return student.FileLabs.some(this.isNewFile);
-  }
-
   isNewFile = (file: UserLabFile): boolean => {
     return  (this.isTeacher && !file.IsReturned && !file.IsReceived) || (!this.isTeacher && file.IsReturned);
   }
@@ -89,7 +84,7 @@ export class JobProtectionComponent implements OnDestroy {
 
   checkPlagiarism(userFileId: number): void {
      const dialogData: DialogData = {
-       body: { userFileId }
+       body: { userFileId, isLab: true }
     };
     this.dialogService.openDialog(CheckPlagiarismStudentComponent, dialogData);
   }

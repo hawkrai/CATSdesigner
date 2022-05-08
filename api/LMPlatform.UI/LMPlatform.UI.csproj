@@ -526,6 +526,10 @@
       <DependentUpon>ConceptService.svc</DependentUpon>
     </Compile>
     <Compile Include="Services\Concept\IConceptService.cs" />
+    <Compile Include="Services\Courses\CoursesService.svc.cs">
+      <DependentUpon>CoursesService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Courses\ICoursesService.cs" />
     <Compile Include="Services\Documents\DocumentService.svc.cs">
       <DependentUpon>DocumentService.svc</DependentUpon>
     </Compile>
@@ -694,6 +698,10 @@
     <Compile Include="Services\TelegramBot\TelegramBotService.svc.cs">
       <DependentUpon>TelegramBotService.svc</DependentUpon>
     </Compile>
+    <Compile Include="Services\UserFiles\IUserFilesService.cs" />
+    <Compile Include="Services\UserFiles\UserFilesService.svc.cs">
+      <DependentUpon>UserFilesService.svc</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AccountViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\AccountViewModels\PersonalDataViewModel.cs" />
     <Compile Include="ViewModels\AccountViewModels\RegisterViewModel.cs" />
@@ -805,6 +813,7 @@
     <Content Include="Services\BTS\ProjectsService.svc" />
     <Content Include="Services\Concept\ConceptService.svc" />
     <Content Include="Services\CoreService.svc" />
+    <Content Include="Services\Courses\CoursesService.svc" />
     <Content Include="Services\Documents\DocumentService.svc" />
     <Content Include="Services\Files\FilesService.svc" />
     <Content Include="Services\Materials\MaterialsService.svc" />
@@ -820,6 +829,7 @@
     <Content Include="Services\Statistics\StatisticsService.svc" />
     <Content Include="Services\Subjects\SubjectsService.svc" />
     <Content Include="Services\TelegramBot\TelegramBotService.svc" />
+    <Content Include="Services\UserFiles\UserFilesService.svc" />
     <Content Include="Unity.Mvc4.README.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

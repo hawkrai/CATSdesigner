@@ -15,10 +15,9 @@ namespace Application.Infrastructure.PracticalManagement
     public class PracticalManagementService : IPracticalManagementService
     {
 
-		private readonly LazyDependency<IFilesManagementService> _filesManagementService =
-			new LazyDependency<IFilesManagementService>();
+		private readonly LazyDependency<IFilesManagementService> _filesManagementService = new();
 
-		private readonly LazyDependency<IConceptManagementService> _conceptManagementService = new LazyDependency<IConceptManagementService>();
+		private readonly LazyDependency<IConceptManagementService> _conceptManagementService = new();
 
 		public IConceptManagementService ConceptManagementService => _conceptManagementService.Value;
 
@@ -222,5 +221,42 @@ namespace Application.Infrastructure.PracticalManagement
 			repositoriesContainer.RepositoryFor<StudentPracticalMark>().Save(studentPracticalMark);
 			repositoriesContainer.ApplyChanges();
 		}
+
+        public IEnumerable<UserLabFiles> GetUserPracticalFiles(int userId, int subjectId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(
+                    new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && !e.IsCoursProject && e.PracticalId.Value > 0)
+                        .Include(x => x.Practical)).ToList();
+            }
+        }
+
+        public bool HasSubjectProtection(int groupId, int subjectId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(x =>
+                    x.User.Student.GroupId == groupId &&
+                    x.SubjectId == subjectId && !x.IsCoursProject && !x.IsReceived && !x.IsReturned && x.PracticalId.Value > 0)).Any();
+            }
+        }
+
+        public List<UserLabFiles> GetGroupPracticalFiles(int subjectId, int groupId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.RepositoryFor<UserLabFiles>()
+                .GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.User.Student.GroupId == groupId && !e.IsCoursProject && e.PracticalId.Value > 0))
+                .ToList();
+
+        }
+
+        public List<UserLabFiles> GetStudentLabFiles(int subjectId, int studentId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.RepositoryFor<UserLabFiles>()
+                .GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.User.Student.Id == studentId && !e.IsCoursProject && e.PracticalId.Value > 0))
+                .ToList();
+        }
 	}
 }

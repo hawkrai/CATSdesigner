@@ -295,6 +295,13 @@ namespace LMPlatform.Data.Infrastructure
                 .HasForeignKey(e => e.LabId)
                 .WillCascadeOnDelete(true);
 
+
+            modelBuilder.Entity<Practical>()
+                .HasMany(e => e.UserPracticalFiles)
+                .WithRequired(e => e.Practical)
+                .HasForeignKey(e => e.PracticalId)
+                .WillCascadeOnDelete(true);
+
             modelBuilder.Entity<User>()
                 .HasRequired<Lecturer>(e => e.Lecturer)
                 .WithRequiredPrincipal(e => e.User)

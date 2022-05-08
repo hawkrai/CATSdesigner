@@ -110,7 +110,10 @@ export class LabsComponent implements OnInit, OnDestroy {
   }
 
   checkPlagiarism() {
-    this.dialogService.openDialog(CheckPlagiarismPopoverComponent);
+    const dialogData: DialogData = {
+        body: { isLab: true }
+    };
+    this.dialogService.openDialog(CheckPlagiarismPopoverComponent, dialogData);
   }
 
   visitingHelp: Help = {

@@ -1,0 +1,27 @@
+<ng-container *ngIf="state$ | async as state">
+    <button mat-raised-button color="primary" (click)="addPractical()">
+        {{'text.subjects.add' | translate:'Добавить работу'}}
+        </button>
+    <div class="student-job-protection-body">
+        <app-job-protection-content 
+        [practicalFiles]="state.practicalFiles" 
+        [actionsTemplate]="studentActions"></app-job-protection-content>
+    </div>
+    <ng-template let-file="file" #studentActions>
+        <div *ngIf="!(file.IsReceived || file.IsReturned)">
+            <button mat-icon-button color="primary"
+                    [matTooltip]="'text.subjects.practicals.protection.edit' | translate:'Редактировать практическую работу'"
+                    (click)="addPractical(state.userId, file)"
+            >
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+                    [matTooltip]="'text.subjects.practicals.protection.delete' | translate:'Удалить практическую работу'"
+                    (click)="deletePractical(file.Id, state.userId, file.PracticalId)"
+            >
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+    </ng-template>
+</ng-container>
+
