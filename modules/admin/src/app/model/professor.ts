@@ -26,7 +26,7 @@ export class Professor {
     LastName: string;
     MiddleName: string;
     Email: string;
-    SeletectedGroupIds: string[];
+    SecretaryGroupsIds: string[];
     QuestionId: string;
     Answer: string;
 }
@@ -38,6 +38,7 @@ export class AddProfessor  {
   UserName: string;
   IsLecturerHasGraduateStudents: boolean;
   IsSecretary: boolean;
+  SelectedGroupIds: string[];
   Password: string;
   ConfirmPassword: string;
   QuestionId: string;
@@ -52,7 +53,7 @@ export class EditProfessor {
     UserName: string;
     IsActive: boolean;
     Email: string;
-    SeletectedGroupIds: string[];
+    SelectedGroupIds: string[];
     Groups: [];
     LecturerId: number;
     IsLecturerHasGraduateStudents: boolean;

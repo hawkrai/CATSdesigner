@@ -74,48 +74,48 @@ namespace Application.Infrastructure.UserManagement
             }
         }
 
-	    private readonly LazyDependency<IDpContext> context = new LazyDependency<IDpContext>();
+        private readonly LazyDependency<IDpContext> context = new LazyDependency<IDpContext>();
 
-	    private IDpContext Context
-	    {
-		    get { return context.Value; }
-	    }
+        private IDpContext Context
+        {
+            get { return context.Value; }
+        }
 
         public User GetUser(string userName)
         {
-	        try
-	        {
-				if (IsExistsUser(userName))
-				{
-					return UsersRepository.GetAll(new Query<User>()
+            try
+            {
+                if (IsExistsUser(userName))
+                {
+                    return UsersRepository.GetAll(new Query<User>()
                         .Include(u => u.Student)
                         .Include(e => e.Student.Group)
                         .Include(u => u.Lecturer)
                         .Include(u => u.Membership.Roles))
-						.Single(e => e.UserName == userName);
-				}
-	        }
-	        catch (ReflectionTypeLoadException ex)
-	        {
-		        StringBuilder sb = new StringBuilder();
-		        foreach (Exception exSub in ex.LoaderExceptions)
-		        {
-			        sb.AppendLine(exSub.Message);
-			        FileNotFoundException exFileNotFound = exSub as FileNotFoundException;
-			        if (exFileNotFound != null)
-			        {
-				        if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
-				        {
-					        sb.AppendLine("Fusion Log:");
-					        sb.AppendLine(exFileNotFound.FusionLog);
-				        }
-			        }
-			        sb.AppendLine();
-		        }
-		        string errorMessage = sb.ToString();
-		        throw new Exception(errorMessage);
-	        }
-            
+                        .Single(e => e.UserName == userName);
+                }
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Exception exSub in ex.LoaderExceptions)
+                {
+                    sb.AppendLine(exSub.Message);
+                    FileNotFoundException exFileNotFound = exSub as FileNotFoundException;
+                    if (exFileNotFound != null)
+                    {
+                        if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
+                        {
+                            sb.AppendLine("Fusion Log:");
+                            sb.AppendLine(exFileNotFound.FusionLog);
+                        }
+                    }
+                    sb.AppendLine();
+                }
+                string errorMessage = sb.ToString();
+                throw new Exception(errorMessage);
+            }
+
 
             return null;
         }
@@ -151,53 +151,53 @@ namespace Application.Infrastructure.UserManagement
 
         }
 
-        public User GetUserByName(string firstName, string lastName, string middleName)
-        {
-            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            public User GetUserByName(string firstName, string lastName, string middleName)
             {
-                var checkPatronymic = !string.IsNullOrEmpty(middleName);
-
-                var lecturers = repositoriesContainer.LecturerRepository.GetAll(
-                        new Query<Lecturer>(e =>
-                            (e.FirstName == firstName && e.LastName == lastName && !checkPatronymic)
-                            || (checkPatronymic && (e.MiddleName == middleName && e.FirstName == firstName && e.LastName == lastName))))
-                            .Select(l => l.User).ToList();
-
-                if (lecturers.Any())
+                using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
                 {
-                    return lecturers.First();
+                    var checkPatronymic = !string.IsNullOrEmpty(middleName);
+
+                    var lecturers = repositoriesContainer.LecturerRepository.GetAll(
+                            new Query<Lecturer>(e =>
+                                (e.FirstName == firstName && e.LastName == lastName && !checkPatronymic)
+                                || (checkPatronymic && (e.MiddleName == middleName && e.FirstName == firstName && e.LastName == lastName))))
+                                .Select(l => l.User).Include(lec => lec.Lecturer).ToList();
+
+                    if (lecturers.Any())
+                    {
+                        return lecturers.First();
+                    }
+
+                    var students = repositoriesContainer.StudentsRepository.GetAll(
+                            new Query<Student>(e =>
+                                (e.FirstName == firstName && e.LastName == lastName && !checkPatronymic)
+                                || (checkPatronymic && (e.MiddleName == middleName && e.FirstName == firstName && e.LastName == lastName))))
+                                .Select(l => l.User);
+
+                    return students.Any() ? students.First() : null;
+                }
+            }
+
+            public User GetUser(int id)
+            {
+                return UsersRepository.GetBy(new Query<User>(u => u.Id == id)
+                    .Include(u => u.Student).Include(u => u.Lecturer).Include(u => u.Membership.Roles));
+            }
+
+            public void UpdateUser(User user)
+            {
+                UsersRepository.Save(user);
+            }
+
+            public bool IsExistsUser(string userName)
+            {
+                if (UsersRepository.GetAll().Any(e => e.UserName == userName))
+                {
+                    return true;
                 }
 
-                var students = repositoriesContainer.StudentsRepository.GetAll(
-                        new Query<Student>(e =>
-                            (e.FirstName == firstName && e.LastName == lastName && !checkPatronymic)
-                            || (checkPatronymic && (e.MiddleName == middleName && e.FirstName == firstName && e.LastName == lastName))))
-                            .Select(l => l.User);
-
-                return students.Any() ? students.First() : null;
+                return false;
             }
-        }
-
-        public User GetUser(int id)
-        {
-            return UsersRepository.GetBy(new Query<User>(u => u.Id == id)
-                .Include(u => u.Student).Include(u => u.Lecturer).Include(u => u.Membership.Roles));
-        }
-
-        public void UpdateUser(User user)
-        {
-            UsersRepository.Save(user);
-        }
-
-        public bool IsExistsUser(string userName)
-        {
-            if (UsersRepository.GetAll().Any(e => e.UserName == userName))
-            {
-                return true;
-            }
-
-            return false;
-        }
 
         public User CurrentUser
         {
@@ -213,7 +213,7 @@ namespace Application.Infrastructure.UserManagement
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var query = new Query<User>().AddFilterClause(u => u.Id == id).Include(u => u.ProjectUsers).Include(u=>u.Student);
+                var query = new Query<User>().AddFilterClause(u => u.Id == id).Include(u => u.ProjectUsers).Include(u => u.Student);
                 var user = repositoriesContainer.UsersRepository.GetBy(query);
 
                 repositoriesContainer.MessageRepository.DeleteUserMessages(user.Id);
@@ -224,42 +224,42 @@ namespace Application.Infrastructure.UserManagement
                     ProjectManagementService.DeleteUserFromProject(id, projectId);
                 }
 
-	            if (user.Student != null)
-	            {
-					var acp = user.Student.AssignedCourseProjects.Select(e => e.CourseProjectId);
-					foreach (var acpId in acp)
-					{
-						CPManagementService.DeleteUserFromAcpProject(id, acpId);
-					}
+                if (user.Student != null)
+                {
+                    var acp = user.Student.AssignedCourseProjects.Select(e => e.CourseProjectId);
+                    foreach (var acpId in acp)
+                    {
+                        CPManagementService.DeleteUserFromAcpProject(id, acpId);
+                    }
 
-		            var subjects = repositoriesContainer.RepositoryFor<SubjectStudent>()
-			            .GetAll(new Query<SubjectStudent>(e => e.StudentId == id));
+                    var subjects = repositoriesContainer.RepositoryFor<SubjectStudent>()
+                        .GetAll(new Query<SubjectStudent>(e => e.StudentId == id));
 
-					foreach (var subjectS in subjects)
-		            {
-			            repositoriesContainer.RepositoryFor<SubjectStudent>().Delete(subjectS);
-		            }
+                    foreach (var subjectS in subjects)
+                    {
+                        repositoriesContainer.RepositoryFor<SubjectStudent>().Delete(subjectS);
+                    }
 
-		            var diploms = Context.AssignedDiplomProjects.Where(e => e.StudentId == id).ToList();
+                    var diploms = Context.AssignedDiplomProjects.Where(e => e.StudentId == id).ToList();
 
-		            var diplomsRessList = Context.DiplomPercentagesResults.Where(e => e.StudentId == id).ToList();
+                    var diplomsRessList = Context.DiplomPercentagesResults.Where(e => e.StudentId == id).ToList();
 
-					foreach (var diplom in diploms)
-		            {
-						Context.AssignedDiplomProjects.Remove(diplom);
-			            Context.SaveChanges();
-		            }
+                    foreach (var diplom in diploms)
+                    {
+                        Context.AssignedDiplomProjects.Remove(diplom);
+                        Context.SaveChanges();
+                    }
 
-					foreach (var diplomsRes in diplomsRessList)
-		            {
-						Context.DiplomPercentagesResults.Remove(diplomsRes);
-			            Context.SaveChanges();
-		            }
-	            }
+                    foreach (var diplomsRes in diplomsRessList)
+                    {
+                        Context.DiplomPercentagesResults.Remove(diplomsRes);
+                        Context.SaveChanges();
+                    }
+                }
 
                 CPManagementService.DeletePercenageAndVisitStatsForUser(id);
 
-	            repositoriesContainer.ApplyChanges();
+                repositoriesContainer.ApplyChanges();
                 var result = AccountManagementService.DeleteAccount(user.UserName);
                 repositoriesContainer.ApplyChanges();
 

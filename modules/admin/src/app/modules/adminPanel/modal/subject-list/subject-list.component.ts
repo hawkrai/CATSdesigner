@@ -23,7 +23,7 @@ export class SubjectListComponent implements OnInit {
   }
 
   getSubjectStatus(status) {
-    if(status[0] == true){
+    if(status == true){
       return "Активен"
     }
     else{

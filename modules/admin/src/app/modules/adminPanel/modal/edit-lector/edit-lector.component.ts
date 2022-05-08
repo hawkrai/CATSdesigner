@@ -42,7 +42,8 @@ export class EditLectorComponent implements OnInit {
       About: new FormControl(this.professor.About || '', [Validators.maxLength(255)]),
       IsSecretary: new FormControl(this.professor.IsSecretary),
       IsLecturerHasGraduateStudents: new FormControl(this.professor.IsLecturerHasGraduateStudents),
-      Groups: new FormControl(this.professor.Groups)
+      Groups: new FormControl(this.professor.Groups),
+      SecGroupsIds: new FormControl(this.professor.SecretaryGroupsIds)
     });
   }
 
@@ -70,7 +71,7 @@ export class EditLectorComponent implements OnInit {
   }
 
   loadGroup() {
-    return this.groupService.getGroups().subscribe( items => {
+    return this.groupService.getGraduateGroups().subscribe( items => {
       this.groups = items;
       this.isLoad = true;
     });
@@ -95,7 +96,7 @@ export class EditLectorComponent implements OnInit {
     object.UserName = professor.Login;
     object.IsActive = professor.IsActive !== 'Удален';
     object.Email = this.form.controls.Email.value;
-    object.SeletectedGroupIds = this.form.controls.Groups.value || [];
+    object.SelectedGroupIds = this.form.controls.SecGroupsIds.value;
     object.Groups = this.form.controls.Groups.value || [];
     object.LecturerId = professor.Id;
     object.IsSecretary = this.form.controls.IsSecretary.value || false;

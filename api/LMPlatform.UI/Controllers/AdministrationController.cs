@@ -29,7 +29,7 @@ namespace LMPlatform.UI.Controllers
     public class AdministrationController : BasicController
     {
 
-        private readonly LazyDependency<IFilesManagementService> _filesManagementService =
+            private readonly LazyDependency<IFilesManagementService> _filesManagementService =
             new LazyDependency<IFilesManagementService>();
 
         public IFilesManagementService FilesManagementService => this._filesManagementService.Value;
@@ -313,6 +313,21 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+        public ActionResult getGraduateGroupsJson()
+        {
+            var groups = this.GroupManagementService.GetGroups(new Query<Group>()
+                .Include(e => e.Students)
+                .Include(e => e.SubjectGroups)
+                ).Where(g=> g.GraduationYear == DateTime.Now.Year.ToString());
+
+            var responseModel = groups.Select(l => GroupViewModel.FormGroup(l, null));
+
+            return JsonResponse(responseModel);
+        }
+        
+
+        [HttpGet]
         public ActionResult GetSubjectsJson(int id)
         {
             var subjects = this.SubjectManagementService.GetSubjectsByStudent(id).OrderBy(subject => subject.Name)
@@ -503,7 +518,7 @@ namespace LMPlatform.UI.Controllers
 
             if (stud == null) return StatusCode(HttpStatusCode.BadRequest);
 
-            return getSubjectInfo(subjects, stud.FullName);
+            return getSubjectInfo(subjects, stud.FullName, stud.GroupId);
 
         }
 
@@ -517,12 +532,12 @@ namespace LMPlatform.UI.Controllers
 
             if (Group == null) return StatusCode(HttpStatusCode.BadRequest);
 
-            return getSubjectInfo(subjects, Group.Name);
+            return getSubjectInfo(subjects, Group.Name, Group.Id);
             
         }
 
 
-        private ActionResult getSubjectInfo(List<Subject> subjects, string name)
+        private ActionResult getSubjectInfo(List<Subject> subjects, string name, int groupId)
         {
             var model = ListSubjectViewModel.FormSubjects(subjects, name);
             var response = new
@@ -531,7 +546,7 @@ namespace LMPlatform.UI.Controllers
                 Subjects = model.Subjects.Select(s => new
                 {
                     SubjectName = s.Name,
-                    IsActiveOnGroup = s.SubjectGroups?.Select(prof => prof.IsActiveOnCurrentGroup),
+                    IsActiveOnGroup = s.SubjectGroups?.First(s=>s.GroupId == groupId).IsActiveOnCurrentGroup,
                     Lecturers = s.SubjectLecturers?.Select(prof => prof.Lecturer.FullName).ToHashSet()
                 })
             };
