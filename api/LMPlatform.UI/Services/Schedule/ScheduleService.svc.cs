@@ -65,14 +65,28 @@ namespace LMPlatform.UI.Services.Schedule
 
             try
             {
-                var lecturesSchedule = SaveDateValidate(id, subjectId, date, startTime, endTime, building, audience, note, lecturerId);
-                var schedule = ScheduleManagementService.SaveDateLectures(new LecturesScheduleVisiting(lecturesSchedule) { SubjectId = subjectId });
+                var lecturesSchedule = SaveDateValidate(id, subjectId, date, startTime, endTime, building, audience,
+                    note, lecturerId);
+                var schedule = ScheduleManagementService.SaveDateLectures(new LecturesScheduleVisiting(lecturesSchedule)
+                    { SubjectId = subjectId });
                 return new ScheduleViewResultSingle
                 {
                     Message = "Дата успешно добавлена",
                     Code = "200",
-                    Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lecture))
+                    Schedule = new ScheduleViewData(
+                        ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lecture))
 
+                };
+            }
+            catch (ScheduleBusyException ex)
+            {
+                var firstSchedule = ex.Schedule.First();
+                return new ScheduleViewResultSingle
+                {
+                    Code = "500",
+                    Message = "Время и место занято",
+                    Lector = new LectorViewData(firstSchedule.Teacher, true),
+                    GroupName = firstSchedule.GroupName,
                 };
             }
             catch (Exception ex)
@@ -99,6 +113,17 @@ namespace LMPlatform.UI.Services.Schedule
 
                 };
 			}
+            catch (ScheduleBusyException ex)
+            {
+                var firstSchedule = ex.Schedule.First();
+                return new ScheduleViewResultSingle
+                {
+                    Code = "500",
+                    Message = "Время и место занято",
+                    Lector = new LectorViewData(firstSchedule.Teacher, true),
+                    GroupName = firstSchedule.GroupName,
+                };
+            }
             catch (Exception ex)
             {
 				return new ScheduleViewResultSingle
@@ -121,6 +146,17 @@ namespace LMPlatform.UI.Services.Schedule
                     Code = "200",
                     Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Practical))
 
+                };
+            }
+            catch (ScheduleBusyException ex)
+            {
+                var firstSchedule = ex.Schedule.First();
+                return new ScheduleViewResultSingle
+                {
+                    Code = "500",
+                    Message = "Время и место занято",
+                    Lector = new LectorViewData(firstSchedule.Teacher, true),
+                    GroupName = firstSchedule.GroupName,
                 };
             }
             catch (Exception ex)
@@ -238,10 +274,10 @@ namespace LMPlatform.UI.Services.Schedule
             var dateTime = DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             var start = DateTime.ParseExact(startTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
             var end = DateTime.ParseExact(endTime, "HH:mm", CultureInfo.InvariantCulture).TimeOfDay;
-            var canAdd = ScheduleManagementService.CheckIfAllowed(dateTime, start, end, building, audience);
-            if (!canAdd)
+            var busySchedules = ScheduleManagementService.CheckIfAllowed(dateTime, start, end, building, audience).ToList();
+            if (busySchedules.Any())
             {
-                throw new ArgumentException("Время и место занято");
+                throw new ScheduleBusyException{ Schedule = busySchedules};
 
             }
             var scheduleDate = new ScheduleBase

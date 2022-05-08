@@ -126,16 +126,12 @@ export class LabsRestService {
     return this.http.post('Services/Labs/LabsService.svc/ReturnLabFile', { userFileId });
   }
 
-  public checkPlagiarism(subjectId: number, userFileId: number ): Observable<CorrectDoc[]> {
-    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', { userFileId, subjectId, isCp: false }).pipe(
-      map(res => res['DataD'])
-    );
+  public checkPlagiarism(subjectId: number, userFileId: number ): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarism', { userFileId, subjectId, isCp: false });
   }
 
-  public checkPlagiarismSubjects(body: { subjectId: number, type: string, threshold: string, isCp?: boolean }): Observable<PlagiarismResultSubject[]> {
-    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body).pipe(
-      map(res => res['DataD'])
-    );
+  public checkPlagiarismSubjects(body: { subjectId: number, type: string, threshold: string, isCp?: boolean }): Observable<any> {
+    return this.http.post('Services/Labs/LabsService.svc/CheckPlagiarismSubjects', body);
   }
 
   public getLabsMarksExcel(subjectId: number, groupId: number): Observable<HttpResponse<Blob>> {

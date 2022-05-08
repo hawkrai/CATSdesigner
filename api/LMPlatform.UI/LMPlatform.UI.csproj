@@ -604,6 +604,7 @@
     <Compile Include="Services\Modules\News\TelegramNewsViewModel.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewData.cs" />
     <Compile Include="Services\Modules\Notes\UserNoteViewResult.cs" />
+    <Compile Include="Services\Modules\Schedule\ScheduleBusyException.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleProtectionLesson.cs" />
     <Compile Include="Services\Modules\Labs\ScheduleProtectionLabResult.cs" />
     <Compile Include="Services\Modules\Schedule\ScheduleProtectionLabsViewData.cs" />
@@ -653,6 +654,7 @@
     <Compile Include="Services\Modules\Statistics\SubjectStatisticsViewResult.cs" />
     <Compile Include="Services\Modules\Statistics\TeacherStatisticsViewData.cs" />
     <Compile Include="Services\Modules\Subjects\ProfileSubject.cs" />
+    <Compile Include="Services\Modules\UniqueViewData.cs" />
     <Compile Include="Services\Modules\UserAssignedViewData.cs" />
     <Compile Include="Services\Modules\SubjectResult.cs" />
     <Compile Include="Services\Modules\SubjectsResult.cs" />

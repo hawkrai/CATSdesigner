@@ -1,7 +1,7 @@
 <div class="labs-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
     <button
-    [matTooltip]="(state.isTeacher &&  tab.route === 'job-protection' && (state.hasJobProtections | any: 'HasJobProtection')) ? ('text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы') : ''"
+    [matTooltip]="state.isTeacher ? (tab.route === 'job-protection' && (state.hasJobProtections | any: 'HasJobProtection')) ? ('text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы') : (tab.route === 'schedule') ? ('subdivision' | translate:'Разделение на подгруппы') : '' : ''"
     matTooltipPosition="below"
       class="mdc-tab"
       role="tab"
@@ -16,7 +16,7 @@
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">
           <span>{{ tab.tab | firstLetterUppercase }} </span>
-          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && (tab.route === 'schedule' || tab.route === 'visit-statistics' || tab.route === 'results')">groups</mat-icon>
+          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && tab.route === 'schedule'">groups</mat-icon>
           <mat-icon
             class="priority-icon"
             style="margin-top: -5px"
@@ -157,7 +157,7 @@
               color="primary"
               [matTooltip]="
                 'text.check.plagiarism.all'
-                  | translate: 'Проверить на плагиат всех работ'
+                  | translate: 'Проверить на плагиат все работы'
               "
               matTooltipPosition="below"
               (click)="checkPlagiarism(state.subjectId)"

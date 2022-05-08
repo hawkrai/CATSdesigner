@@ -811,7 +811,7 @@ namespace LMPlatform.UI.Services.Labs
 					return new ResultPSubjectViewData
 					{
 						Message = "Отсутствуют принятые работы для проверки на плагиат",
-						Code = "200"
+						Code = "500"
 					};
 				}
 

@@ -1,6 +1,7 @@
 
 {
   "subject": "Courses",
+  "course": "Course",
   "graduation.project": "Graduation project",
   "other": "Other",
   "others": "Others",
@@ -221,5 +222,12 @@
   "text.schedule.management.dates.deleting": "Deleting dates",
   "text.schedule.date.and.connected.data": "date and all related data",
   "text.students.transfered": "Student(s) were successfully transfered to the subgroup",
-  "text.subdivision.to.the.first.subgroup": "Students will be transferred to the first subgroup"
+  "text.subdivision.to.the.first.subgroup": "Students will be transferred to the first subgroup",
+  "author": "Author",
+  "plagiarism.check": "Plagiarism check",
+  "similarity.percentage": "Similarity percentage",
+  "check": "Check",
+  "custer": "Custer",
+  "vector.method": "Vector method",
+  "shingles.method": "Shingles method"
 }

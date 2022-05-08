@@ -12,6 +12,7 @@ import * as filesActions from '../actions/files.actions';
 import * as testsActions from '../actions/tests.actions';
 import { IAppState } from '../state/app.state';
 import { ScheduleService } from "src/app/services/schedule.service";
+import { generateCreateDateException } from "src/app/utils/exceptions";
 
 @Injectable()
 export class PracticalsEffects {
@@ -76,7 +77,7 @@ export class PracticalsEffects {
             this.store.select(groupSelectors.getCurrentGroupId)
             ),
         switchMap(([{ obj }, subjectId, groupId]) => this.scheduleService.createPracticalDateVisit({ ...obj, subjectId, groupId }).pipe(
-          switchMap(body => [catsActions.showMessage({ body }), practicalsActions.loadSchedule()])
+          switchMap(body => [catsActions.showMessage({ body: { ...body, Message: body.Code === '200' ? body.Message : generateCreateDateException(body) }}), practicalsActions.loadSchedule()])
         ))
       ));
     

@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import {Subject} from '../models/subject.model';
 import { Lector } from '../models/lector.model';
 import { SubjectForm } from '../models/form/subject-form.model';
+import { UniqueViewData } from '../models/unique.model';
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +87,14 @@ export class SubjectService {
     form.append('subGroupSecondIds', body.subGroupSecondIds);
     form.append('subGroupThirdIds', body.subGroupThirdIds);
     return this.http.post('Subject/SaveSubGroup', form);
+  }
+
+  isUniqueSubjectName(subjectName: string, subjectId: number): Observable<UniqueViewData> {
+    return this.http.post<UniqueViewData>('Services/Subjects/SubjectsService.svc/Name/Unique', { subjectName, subjectId });
+  }
+
+  isUniqueSubjectAbbreviation(subjectAbbreviation: string, subjectId: number) {
+    return this.http.post<UniqueViewData>('Services/Subjects/SubjectsService.svc/Abbreviation/Unique', { subjectAbbreviation, subjectId });
   }
 }
 
