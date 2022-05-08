@@ -411,12 +411,12 @@ namespace LMPlatform.UI.Services
 			try
 			{
 				var id = int.Parse(subjectId);
-				var groups = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == id && x.IsActiveOnCurrentGroup)));
+				var groups = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == id)).Include(x => x.SubjectGroups));
 
 
 				var groupsViewData = new List<GroupsViewData>();
 
-				foreach (var @group in groups)
+				foreach (var @group in groups.Where(x => x.SubjectGroups.Any(x => x.IsActiveOnCurrentGroup && x.SubjectId == id)))
 				{
 					var subGroups = this.SubjectManagementService.GetSubGroupsV2(id, @group.Id);
 					groupsViewData.Add(new GroupsViewData
@@ -446,8 +446,9 @@ namespace LMPlatform.UI.Services
 					
 					Groups = groupsViewData.OrderBy(e => e.GroupName).ToList(),
                     Message = "Группы успешно загружены",
-                    Code = "200"
-                };
+                    Code = "200",
+					HasInactiveGroups = groups.Any(x => x.SubjectGroups.Any(x => !x.IsActiveOnCurrentGroup && x.SubjectId == id)),
+				};
 			}
 			catch (Exception ex)
             {
@@ -491,7 +492,7 @@ namespace LMPlatform.UI.Services
 
 		}
 
-		public GroupsResult GetGroupsV3(string subjectId)
+        public GroupsResult GetGroupsV3(string subjectId)
         {
             try
             {

@@ -33,3 +33,8 @@ export const isActiveGroup = createSelector(
   groupsSelector,
   state => state.isActive
 )
+
+export const hasInactiveGroups = createSelector(
+  groupsSelector,
+  state => state.hasInactiveGroups
+)

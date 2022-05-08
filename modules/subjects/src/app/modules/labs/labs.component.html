@@ -55,7 +55,7 @@
             </mat-select>
           </mat-form-field>
           <mat-slide-toggle *ngIf="!(router.url | startWith:'/labs/schedule')" [color]="'primary'"
-            [checked]="state.detachedGroup" (change)="groupStatusChange($event)">
+            [checked]="state.detachedGroup" (change)="groupStatusChange($event)" [disabled]="!state.hasInactiveGroups">
             {{ "text.groups.detached" | translate: "Открепленные группы" }}
           </mat-slide-toggle>
         </div>

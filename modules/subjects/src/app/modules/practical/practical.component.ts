@@ -27,6 +27,7 @@ interface State {
   isTeacher: boolean;
   detachedGroup: boolean;
   hasJobProtections: HasJobProtection[];
+  hasInactiveGroups: boolean
 }
 
 @Component({
@@ -65,9 +66,10 @@ export class PracticalComponent implements OnInit {
       this.store.select(groupSelectors.getCurrentGroup), 
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(groupSelectors.isActiveGroup),
-      this.store.select(practicalsSelectors.hasJobProtections)
+      this.store.select(practicalsSelectors.hasJobProtections),
+      this.store.select(groupSelectors.hasInactiveGroups)
       )
-    .pipe(map(([groups, group, isTeacher, isActive, hasJobProtections]) => ({ groups, group, isTeacher, detachedGroup: !isActive, hasJobProtections })));
+    .pipe(map(([groups, group, isTeacher, isActive, hasJobProtections, hasInactiveGroups]) => ({ groups, group, isTeacher, detachedGroup: !isActive, hasJobProtections, hasInactiveGroups })));
   }
 
   groupStatusChange(event) {
