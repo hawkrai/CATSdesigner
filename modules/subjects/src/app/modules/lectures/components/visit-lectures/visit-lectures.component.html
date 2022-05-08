@@ -39,7 +39,17 @@
           {{element.Marks[i] && element.Marks[i].Mark}}
         </td>
       </ng-container>
-
+      <ng-container *ngFor="let lectureName of getHeaders(state.lectures)" matColumnDef="{{lectureName.head}}">
+        <th 
+        [matTooltip]="lectureName.tooltip"
+        [matTooltipDisabled]="!lectureName.tooltip"
+        matTooltipPosition="above"
+        class="name" mat-header-cell *matHeaderCellDef
+            [attr.colspan]="lectureName.length">
+          {{lectureName.text}}
+        </th>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="getHeaders(state.lectures) | pluck:'head'"></tr>
       <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(state.calendar)"></tr>
       <tr mat-row *matRowDef="let row; columns: getDisplayedColumns(state.calendar);"></tr>
     </table>
