@@ -1,12 +1,11 @@
 import { Pipe, PipeTransform } from "@angular/core";
+import * as  moment from 'moment';
 
 @Pipe({
     name: 'aspNetDate'
 })
 export class AspNetDatePipe implements PipeTransform {
     transform(value: any): Date {
-        const re = /-?\d+/;
-        const m = re.exec(value);
-        return new Date(parseInt(m[0], 10));
+        return moment(value).toDate();
     }
 }
