@@ -43,3 +43,8 @@ export const setActiveState = createAction(
   '[Groups] Set Group Active State',
   props<{ isActive: boolean }>()
 );
+
+export const checkHasInactiveSuccess = createAction(
+  '[Groups] Check Has Inactive Success',
+  props<{ hasInactiveGroups: boolean }>()
+);

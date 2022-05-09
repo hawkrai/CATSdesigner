@@ -21,5 +21,8 @@ namespace LMPlatform.UI.Services.Modules.Labs
 
         [DataMember]
         public bool HasProtection { get; set; }
+
+        [DataMember]
+        public int GroupId { get; set; }
     }
 }

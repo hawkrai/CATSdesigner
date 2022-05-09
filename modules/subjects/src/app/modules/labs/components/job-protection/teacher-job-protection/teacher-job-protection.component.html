@@ -21,7 +21,7 @@
                  <ng-template let-file="file" #actionsTemplate>
                   <button mat-icon-button color="primary"
                   *ngIf="file.Attachments.length"
-                  [matTooltip]="'text.subjects.labs.plagiarism.check' | translate:'Проверить на плагиат'"
+                  [matTooltip]="'text.subjects.plagiarism.check' | translate:'Проверить на плагиат'"
                   (click)="checkPlagiarism(file.Id)"
                   >
                   <mat-icon>visibility</mat-icon>
@@ -29,14 +29,14 @@
                   <ng-container *ngIf="!file.IsReturned && !file.IsReceived">
                     <button
                     mat-icon-button color="primary"
-                    [matTooltip]="'text.subjects.labs.accept' | translate:'Принять работу'"
+                    [matTooltip]="'text.subjects.accept' | translate:'Принять работу'"
                     (click)="receiveLab(file.Id, file.UserId)"
                     >
                     <mat-icon>thumb_up_alt</mat-icon>
                     </button>
                     <button
                     mat-icon-button color="primary"
-                    [matTooltip]="'text.subjects.labs.return' | translate:'Отправить на доработку'"
+                    [matTooltip]="'text.subjects.return' | translate:'Отправить на доработку'"
                     (click)="addLab(file.UserId, file.LabId, file.Id)"
                     >
                     <mat-icon>arrow_forward</mat-icon>
@@ -44,7 +44,7 @@
                   </ng-container>
                   <button *ngIf="file.IsReceived"
                           mat-icon-button color="primary"
-                          [matTooltip]="'text.subjects.labs.reject' | translate:'Отклонить работу'"
+                          [matTooltip]="'text.subjects.reject' | translate:'Отклонить работу'"
                           (click)="cancelLab(file.Id, file.UserId)"
                   >
                   <mat-icon>thumb_down_alt</mat-icon>

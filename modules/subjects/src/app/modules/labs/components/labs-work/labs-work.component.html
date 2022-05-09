@@ -1,6 +1,6 @@
 <div class="labs-work-component" *ngIf="labs; else: load">
   <div class="labs-work-component__actions" *ngIf="isTeacher">
-    <button mat-raised-button color="primary" (click)="constructorLab(labs.length)">{{'text.subjects.labs.add' | translate:'Добавить работу'}}</button>
+    <button mat-raised-button color="primary" (click)="constructorLab(labs.length)">{{'text.subjects.add' | translate:'Добавить работу'}}</button>
   </div>
   <table mat-table #table [dataSource]="labs"
      cdkDropList [cdkDropListData]="labs" (cdkDropListDropped)="drop($event)">

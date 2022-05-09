@@ -6,6 +6,6 @@
     "no-data": "No data matching the filter",
     "confirmation.title": "Students confirmation",
     "new.students": "New students",
-    "confirm.at": "Confirmed at",
-    "confirm.by": "Confirmed by"
+    "confirm.at": "Date, time confirmation",
+    "confirm.by": "Lector"
 }

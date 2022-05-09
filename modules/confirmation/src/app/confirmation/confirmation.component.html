@@ -33,8 +33,8 @@
       </ng-container>
 
       <ng-container matColumnDef="confirmedAt">
-        <th mat-header-cell *matHeaderCellDef> {{'confirm.at' | translate:'Подтверждён когда'}}</th>
-        <td mat-cell *matCellDef="let element"> <span *ngIf="element.ConfirmedAt">{{element.ConfirmedAt | aspNetDate | date:'dd.MM.yyyy'}}</span></td>
+        <th mat-header-cell *matHeaderCellDef> {{'confirm.at' | translate:'Дата, время подтверждение'}}</th>
+        <td mat-cell *matCellDef="let element"> <span *ngIf="element.ConfirmedAt">{{element.ConfirmedAt | aspNetDate | date:'dd.MM.yyyy hh:mm'}}</span></td>
       </ng-container>
 
       <ng-container matColumnDef="confirmedBy">

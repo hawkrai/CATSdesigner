@@ -1,181 +1,110 @@
 <div class="labs-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
     <button
-    [matTooltip]="state.isTeacher ? (tab.route === 'job-protection' && (state.hasJobProtections | any: 'HasJobProtection')) ? ('text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы') : (tab.route === 'schedule') ? ('subdivision' | translate:'Разделение на подгруппы') : '' : ''"
-    matTooltipPosition="below"
-      class="mdc-tab"
-      role="tab"
-      aria-selected="true"
-      *ngFor="let tab of tabs; let idx = index"
-      [tabindex]="idx"
-      [routerLink]="tab.route"
-      routerLinkActive="mdc-tab--active"
-      queryParamsHandling="merge"
-      #rla="routerLinkActive"
-    >
+      [matTooltip]="state.isTeacher ? (tab.route === 'job-protection' && (state.hasJobProtections | any: 'HasJobProtection')) ? ('text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы') : (tab.route === 'schedule') ? ('subdivision' | translate:'Разделение на подгруппы') : '' : ''"
+      matTooltipPosition="below" class="mdc-tab" role="tab" aria-selected="true"
+      *ngFor="let tab of tabs; let idx = index" [tabindex]="idx" [routerLink]="tab.route"
+      routerLinkActive="mdc-tab--active" queryParamsHandling="merge" #rla="routerLinkActive">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">
           <span>{{ tab.tab | firstLetterUppercase }} </span>
           <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && tab.route === 'schedule'">groups</mat-icon>
-          <mat-icon
-            class="priority-icon"
-            style="margin-top: -5px"
-            *ngIf="
+          <mat-icon class="priority-icon" style="margin-top: -5px" *ngIf="
             state.isTeacher &&
               tab.route === 'job-protection' &&
               (state.hasJobProtections | any: 'HasJobProtection')
-            "
-            
-            class="priority"
-            [color]="'warn'"
-            >priority_high</mat-icon
-          >
+            " class="priority" [color]="'warn'">priority_high</mat-icon>
         </span>
       </span>
-      <span
-        class="mdc-tab-indicator"
-        [class.mdc-tab-indicator--active]="rla.isActive"
-      >
-        <span
-          class="
+      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="rla.isActive">
+        <span class="
             mdc-tab-indicator__content mdc-tab-indicator__content--underline
-          "
-        ></span>
+          "></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
   </div>
   <div class="labs-component__body">
     <div class="labs-component__controls">
-      <ng-container  *ngIf="state.isTeacher">
-        <div
-        class="labs-component__select-group"
-        *ngIf="!(router.url | startWith:'/labs/list')"
-      >
-        <mat-form-field>
-          <mat-select
-            [value]="state.group ? state.group.GroupId : state.groups.length ? state.groups[0].GroupId : ''"
-          >
-            <mat-option
-              *ngFor="let group of state.groups"
-              (onSelectionChange)="selectedGroup($event)"
-              [value]="group.GroupId"
-            >
-              <span class="icon-container">
-                {{ group.GroupName }}
-                <mat-icon
-                  style="font-size: 17px; height: 17px"
-                  data-icon="priority"
-                  *ngIf="
+      <ng-container *ngIf="state.isTeacher">
+        <div class="labs-component__select-group" *ngIf="!(router.url | startWith:'/labs/list')">
+          <mat-form-field>
+            <mat-select
+              [value]="state.group ? state.group.GroupId : state.groups.length ? state.groups[0].GroupId : ''">
+              <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)"
+                [value]="group.GroupId">
+                <span class="icon-container">
+                  {{ group.GroupName }}
+                  <mat-icon style="font-size: 17px; height: 17px" data-icon="priority" *ngIf="
                   (router.url | startWith:'/labs/job-protection') &&
                     groupHasJobProtection(state.hasJobProtections, group)
-                  "
-                  [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
-                  matTooltipPosition="below"
-                  [color]="'warn'"
-                  >priority_high</mat-icon>
-              </span>
-            </mat-option>
-            <mat-select-trigger *ngIf="state.group">
-              <span #name class="icon-container">
-                {{ state.group.GroupName }}
-                <mat-icon
-                  style="font-size: 17px; height: 17px"
-                  data-icon="priority"
-                  *ngIf="
+                  " [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
+                    matTooltipPosition="below" [color]="'warn'">priority_high</mat-icon>
+                </span>
+              </mat-option>
+              <mat-select-trigger *ngIf="state.group">
+                <span #name class="icon-container">
+                  {{ state.group.GroupName }}
+                  <mat-icon style="font-size: 17px; height: 17px" data-icon="priority" *ngIf="
                     (router.url | startWith:'/labs/job-protection') &&
                     groupHasJobProtection(state.hasJobProtections, state.group)
-                  "
-                  [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
-                  matTooltipPosition="below"
-                  class="priority-icon"
-                  [color]="'warn'"
-                  >priority_high</mat-icon
-                >
-              </span>
-            </mat-select-trigger>
-          </mat-select>
-        </mat-form-field>
-        <mat-slide-toggle
-          *ngIf="!(router.url | startWith:'/labs/schedule')"
-          [color]="'primary'"
-          [checked]="state.detachedGroup"
-          (change)="groupStatusChange($event)"
-        >
-          {{ "text.groups.detached" | translate: "Открепленные группы" }}
-        </mat-slide-toggle>
-      </div>
-      <div class="labs-component__actions">
-        <div class="actions-group">
+                  " [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
+                    matTooltipPosition="below" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
+                </span>
+              </mat-select-trigger>
+            </mat-select>
+          </mat-form-field>
+          <mat-slide-toggle *ngIf="!(router.url | startWith:'/labs/schedule')" [color]="'primary'"
+            [checked]="state.detachedGroup" (change)="groupStatusChange($event)" [disabled]="!state.hasInactiveGroups">
+            {{ "text.groups.detached" | translate: "Открепленные группы" }}
+          </mat-slide-toggle>
+        </div>
+        <div class="labs-component__actions">
+          <div class="actions-group">
 
-          <ng-container *ngIf="(router.url | startWith:'/labs/schedule') || (router.url | startWith:'/labs/visit-statistics') || (router.url | startWith:'/labs/results')">
-            <button class="mat-icon-button-groups " mat-icon-button [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below" (click)="subdivision(state.group.GroupId)">
-              <mat-icon color="primary">groups</mat-icon>
-            </button>
-          </ng-container>
-          <app-help  [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action" *ngIf="(router.url | startWith:'/labs/schedule')"></app-help>
-          <ng-container *ngIf="router.url | startWith:'/labs/visit-statistics'">
-            <app-help
-              [message]="visitingHelp.message"
-              [action]="visitingHelp.action"
-            ></app-help>
-            <div class="_excel-file" (click)="getVisitingExcelFile()" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
-              <span
-                class="iconify"
-                data-icon="mdi-file-excel"
-                data-inline="false"
-              ></span>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="router.url | startWith:'/labs/results'">
-            <app-help
-              [message]="resultsHelp.message"
-              [action]="resultsHelp.action"
-            ></app-help>
-            <div class="_excel-file" (click)="getResultsExcelFile()" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
-              <span
-                class="iconify"
-                data-icon="mdi-file-excel"
-                data-inline="false"
-              ></span>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="router.url | startWith:'/labs/job-protection'">
-            <button
-              mat-icon-button
-              color="primary"
-              [matTooltip]="
+            <ng-container
+              *ngIf="(router.url | startWith:'/labs/schedule') || (router.url | startWith:'/labs/visit-statistics') || (router.url | startWith:'/labs/results')">
+              <button class="mat-icon-button-groups " mat-icon-button
+                [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below"
+                (click)="subdivision(state.group.GroupId)">
+                <mat-icon color="primary">groups</mat-icon>
+              </button>
+            </ng-container>
+            <app-help [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"
+              *ngIf="(router.url | startWith:'/labs/schedule')"></app-help>
+            <ng-container *ngIf="router.url | startWith:'/labs/visit-statistics'">
+              <app-help [message]="visitingHelp.message" [action]="visitingHelp.action"></app-help>
+              <div class="_excel-file" (click)="getVisitingExcelFile()"
+                [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
+                <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="router.url | startWith:'/labs/results'">
+              <app-help [message]="resultsHelp.message" [action]="resultsHelp.action"></app-help>
+              <div class="_excel-file" (click)="getResultsExcelFile()"
+                [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
+                <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="router.url | startWith:'/labs/job-protection'">
+              <button mat-icon-button color="primary" [matTooltip]="
                 'text.download.archive' | translate: 'Скачать архивом'
-              "
-              matTooltipPosition="below"
-              (click)="downloadAll()"
-            >
-              <mat-icon>get_app</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="primary"
-              [matTooltip]="
+              " matTooltipPosition="below" (click)="downloadAll()">
+                <mat-icon>get_app</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" [matTooltip]="
                 'text.check.plagiarism.all'
                   | translate: 'Проверить на плагиат все работы'
-              "
-              matTooltipPosition="below"
-              (click)="checkPlagiarism(state.subjectId)"
-            >
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="primary"
-              [matTooltip]="'text.refresh.data' | translate: 'Обновить данные'"
-              (click)="refreshJobProtection()"
-              matTooltipPosition="below"
-            >
-              <mat-icon>cached</mat-icon>
-            </button>
-          </ng-container>
+              " matTooltipPosition="below" (click)="checkPlagiarism(state.subjectId)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" [matTooltip]="'text.refresh.data' | translate: 'Обновить данные'"
+                (click)="refreshJobProtection()" matTooltipPosition="below">
+                <mat-icon>cached</mat-icon>
+              </button>
+            </ng-container>
+          </div>
         </div>
-      </div>
       </ng-container>
       <ng-container *ngIf="!state.isTeacher && !(router.url | startWith:'/labs/list')  && state.group">
         {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}

@@ -52,16 +52,23 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
       });
   }
 
-
+  isConfirming: boolean;
   public confirm(student: Student, confirm = true): void {
+    if (this.isConfirming) {
+      return;
+    }
+    this.isConfirming = true;
     iif(() => confirm, this.confirmationService.confirmationStudent(student.StudentId), this.confirmationService.unconfirmationStudent(student.StudentId))
       .pipe(
         takeUntil(this.unsubscribeStream$)
       ).subscribe(response => {
+        this.isConfirming = false;
         this.onGroupValueChange(this.selectedGroup);
         this.updateGroupUncofirmedStudents(confirm);
         this.catsMessageService.sendMessage(new Message('Confirmation', confirm ? '-1' : '1'));
         this.catsMessageService.sendMessage(new Message('Toast',  JSON.stringify({ text: response.Message as string, type: response.Code === '200' ? 'success' : 'warning' })));
+      }, () => {
+        this.isConfirming = false;
       });
   }
 

@@ -9,7 +9,7 @@
         *ngIf="!data.body.isTeacher"
       >
         <mat-select formControlName="labId" [placeholder]="'text.subjects.labs.choose.lab'
-        | translate: 'Выберите название лабораторной работы'">
+        | translate: 'Выберите лабораторную работу'">
           <mat-option *ngFor="let lab of labs$ | async" [value]="lab.LabId">
             {{ lab.ShortName }}. {{ lab.Theme }}
           </mat-option>

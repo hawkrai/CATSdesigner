@@ -12,9 +12,9 @@ export class GroupsRestService {
 
   constructor(private http: HttpClient) { }
 
-  public getAllGroups(subjectId: number): Observable<Group[]> {
+  public getAllGroups(subjectId: number): Observable<{ groups: Group[], hasInactiveGroups: boolean }> {
     return this.http.get('Services/CoreService.svc/GetGroupsV2/' + subjectId).pipe(
-      map(res => res['Groups'])
+      map(res => ({ groups: res['Groups'], hasInactiveGroups: res['HasInactiveGroups']}))
     );
   }
 
@@ -32,7 +32,6 @@ export class GroupsRestService {
       map(res => res['Group'])
     );
   }
-
 }
 
 
