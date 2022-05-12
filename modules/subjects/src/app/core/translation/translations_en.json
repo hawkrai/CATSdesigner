@@ -1,6 +1,7 @@
 
 {
   "subject": "Courses",
+  "course": "Course",
   "graduation.project": "Graduation project",
   "other": "Other",
   "others": "Others",
@@ -145,6 +146,12 @@
   "text.subjects.practicals.editing": "Editing practical lesson",
   "text.subjects.practicals.prefix": "PL",
   "text.subjects.practicals.name": "The name of the practical lesson",
+  "text.subjects.practicals.unverified": "There are unverified practicals available",
+  "text.subjects.practicals.deleting": "Deleting practical work",
+  "text.subjects.practicals.choose.practical": "Choose practical lesson",
+  "text.subjects.practicals.protection.edit": "Edit work",
+  "text.subjects.practicals.protection.delete": "Delete word",
+  "text.subjects.practicals.to.protect": "To protect the practical work",
 
   "text.subjects.labs": "Laboratory work",
   "text.subjects.labs.plural": "Laboratory works",
@@ -159,18 +166,21 @@
   "text.subjects.labs.deleting": "Deleting laboratory work",
   "text.subjects.labs.name": "The name on the laboratory work",
   "text.subjects.labs.choose.lab": "Choose labatory work",
-  "text.subjects.labs.accept": "Accept work",
-  "text.subjects.labs.return": "Send for revision",
-  "text.subjects.labs.reject": "Reject work",
+  "text.subjects.labs.to.protect": "To protect the laboratory work",
+
+  "text.subjects.accept": "Accept work",
+  "text.subjects.return": "Send for revision",
+  "text.subjects.reject": "Reject work",
   "text.subjects.labs.jobs.deleting": "Deleting work",
-  "text.subjects.labs.plagiarism.check": "Check for plagiarism",
-  "text.subjects.labs.to.protect": "To protect laboratory work",
+  "text.subjects.plagiarism.check": "Check for plagiarism",
+  "text.subjects.to.protect": "To protect laboratory work",
   "text.subjects.labs.for.revision": "For revision",
   "text.subjects.labs.unverified": "There are unverified labs available",
   "text.subjects.results.protected": "Protected {actualCount} jobs out of {jobsCount}",
   "text.subjects.lector.joining": "Joining the lector to the course",
   "text.subjects.lector.choose": "Select a lector",
   "text.subjects.lector.plural": "Lectors",
+  "text.subjecs.lector": "Lector",
   "text.subjects.lector.joined": "Joined lectors",
   "text.subjects.lector.disjoin": "Disjoin the lector",
 
@@ -220,5 +230,12 @@
   "text.schedule.management.dates.deleting": "Deleting dates",
   "text.schedule.date.and.connected.data": "date and all related data",
   "text.students.transfered": "Student(s) were successfully transfered to the subgroup",
-  "text.subdivision.to.the.first.subgroup": "Students will be transferred to the first subgroup"
+  "text.subdivision.to.the.first.subgroup": "Students will be transferred to the first subgroup",
+  "author": "Author",
+  "plagiarism.check": "Plagiarism check",
+  "similarity.percentage": "Similarity percentage",
+  "check": "Check",
+  "custer": "Custer",
+  "vector.method": "Vector method",
+  "shingles.method": "Shingles method"
 }

@@ -9,6 +9,7 @@ import { DialogData } from '../../models/dialog-data.model';
 import { DeletePopoverComponent } from '../delete-popover/delete-popover.component';
 import { timeValidator } from '../validators/time.validator';
 import { TranslatePipe } from "educats-translate";
+import { Lector } from "src/app/models/lector.model";
 
 export const MY_FORMATS = {
   parse: {
@@ -42,12 +43,15 @@ export class VisitDatePopoverComponent {
     StartTime: string;
     EndTime: string; 
     Audience: string;
-    Building: string
+    Building: string;
+    Lector: Lector
   }[];
   @Output() createDate = new EventEmitter<string>();
   @Output() close = new EventEmitter<void>();
   @Output() deleteDay = new EventEmitter<any>();
   @Input() data: { title: string, buttonText: string };
+  @Input() lectors: Lector[];
+
   constructor(
     protected dialogService: DialogService,
     private translate: TranslatePipe,
@@ -69,7 +73,8 @@ export class VisitDatePopoverComponent {
     startTime: new FormControl(moment().format("HH:mm"), [Validators.required]),
     endTime: new FormControl(moment().add(1, 'hour').add(30, 'minutes').format("HH:mm"), [Validators.required, this.time]),
     building: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]),
-    audience: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)])
+    audience: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]),
+    lecturerId: new FormControl(null, [Validators.required, this.validateLector.bind(this)])
   });
 
 
@@ -82,7 +87,8 @@ export class VisitDatePopoverComponent {
         startTime: moment(`${now} ${lastDay.StartTime}`).format('HH:mm'),
         endTime: moment(`${now} ${lastDay.EndTime}`).format('HH:mm'),
         audience: lastDay.Audience,
-        building: lastDay.Building
+        building: lastDay.Building,
+        lecturerId: lastDay.Lector ? lastDay.Lector.LectorId : null
       });
     }
   }
@@ -115,5 +121,12 @@ export class VisitDatePopoverComponent {
         this.onDeleteDate(day);
       }
     });
+  }
+
+  validateLector(control: AbstractControl) {
+    if (!control.value || !this.lectors.some(x => x.LectorId == +control.value)) {
+      return { lecturerId: true };
+    }
+    return null;
   }
 }

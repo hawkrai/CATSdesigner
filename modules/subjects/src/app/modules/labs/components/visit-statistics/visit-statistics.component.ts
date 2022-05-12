@@ -73,15 +73,18 @@ export class VisitStatisticsComponent implements OnInit,  OnDestroy {
     return defaultHeaders.concat(subGroupLabs.map((l, index) => ({head: l.LabId.toString(), text: l.ShortName, length: Math.floor(l.Duration / 2), tooltip: l.Theme })))
   }
 
-  setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionLab, index: number) {
+  setVisitMarks(students: StudentMark[], schedule: ScheduleProtectionLab) {
     const visits = {
       date: moment(schedule.Date, 'DD.MM.YYYY'), 
-      students: students.map(s => ({ 
-        name: s.FullName, 
-        mark: s.LabVisitingMark[index].Mark, 
-        comment: s.LabVisitingMark[index].Comment,
-        showForStudent: s.LabVisitingMark[index].ShowForStudent
-      }))
+      students: students.map(s => {
+        const labVisitingMark = s.LabVisitingMark.find(x => x.ScheduleProtectionLabId === schedule.ScheduleProtectionLabId);
+        return ({ 
+          name: s.FullName, 
+          mark: labVisitingMark ? labVisitingMark.Mark : '', 
+          comment: labVisitingMark ? labVisitingMark.Comment : '',
+          showForStudent: labVisitingMark ? labVisitingMark.ShowForStudent : false
+        })
+      })
     };
     const dialogData: DialogData = {
       title: this.translate.transform('text.subjects.attendance.lesson', 'Посещаемость занятий'),
@@ -93,18 +96,23 @@ export class VisitStatisticsComponent implements OnInit,  OnDestroy {
     this.subs.add(
       dialogRef.afterClosed().pipe(
         filter(result => result),
-        map(result => this.getVisitingLabs(students, index, schedule.ScheduleProtectionLabId, result.students)),
+        map(result => this.getVisitingLabs(students, schedule.ScheduleProtectionLabId, result.students)),
       ).subscribe((visiting) => {
         this.store.dispatch(labsActions.setLabsVisitingDate({ visiting }));
       })
     );
   }
 
-  private getVisitingLabs(students: StudentMark[], index: number, dateId: number, visits): { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } {
+  findVisitingIndex(studentMark: StudentMark, schedule:ScheduleProtectionLab) {
+    return studentMark.LabVisitingMark.findIndex(x => x.ScheduleProtectionLabId === schedule.ScheduleProtectionLabId);
+  }
+
+  private getVisitingLabs(students: StudentMark[], dateId: number, visits): { Id: number[], comments: string[], showForStudents: boolean[], dateId: number, marks: string[], students: StudentMark[] } {
     const visitsModel = { Id: [], comments: [], showForStudents: [], dateId, marks: [], studentsId: [], students };
 
     students.forEach(student => {
-      visitsModel.Id.push(student.LabVisitingMark[index].LabVisitingMarkId);
+      const visitingMark = student.LabVisitingMark.find(x => x.ScheduleProtectionLabId === dateId);
+      visitsModel.Id.push(visitingMark ? visitingMark.LabVisitingMarkId : 0);
       visitsModel.studentsId.push(student.StudentId);
     });
     visits.forEach(visit => {

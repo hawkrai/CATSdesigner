@@ -6,6 +6,7 @@ using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,35 +20,37 @@ namespace Application.Infrastructure.ScheduleManagement
 
 		public ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
 
-		public bool CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
+		public IEnumerable<ScheduleModel> CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
 		{
-			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-			{
-				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date))
-					.ToList()
-					.Select(LectureScheduleToModel)
-					.ToList();
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date))
+                .Include(x => x.Lecturer.User)
+                .ToList()
+                .Select(LectureScheduleToModel)
+                .ToList();
 
-				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date == date))
-					.ToList()
-					.Select(PracticalScheduleToModel)
-					.ToList();
+            var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date == date))
+                .Include(x => x.Lecturer.User)
+                .Include(x => x.Group)
+				.ToList()
+                .Select(PracticalScheduleToModel)
+                .ToList();
 
-				var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date == date))
-					.ToList()
-					.Select(LabScheduleToModel)
-					.ToList();
+            var labsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionLabs>().GetAll(new Query<ScheduleProtectionLabs>(x => x.Date == date))
+                .Include(x => x.Lecturer.User)
+                .Include(x => x.Subject.SubjectGroups.Select(x => x.SubGroups))
+                .ToList()
+                .Select(LabScheduleToModel)
+                .ToList();
 
-				return !lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
-					.Where(x => x.Start.HasValue && x.End.HasValue)
-					.Any(x =>
-					((x.Start <= startTime && x.End >= endTime) ||
-					(x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
-					(x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
-					(x.Start >= startTime && x.Start <= endTime && startTime <= x.End && x.End <= endTime))
-					&& x.Audience.Trim().ToLower() == audience.Trim().ToLower() && (string.IsNullOrWhiteSpace(x.Building) ? true : x.Building.Trim().ToLower() == building.Trim().ToLower()));
-			}
-		}
+            return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
+                .Where(x => x.Start.HasValue && x.End.HasValue &&
+                ((x.Start <= startTime && x.End >= endTime) ||
+                (x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
+                (x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
+                (x.Start >= startTime && x.Start <= endTime && startTime <= x.End && x.End <= endTime))
+                && string.Equals(x.Audience.Trim(), audience.Trim(), StringComparison.CurrentCultureIgnoreCase) && (string.IsNullOrWhiteSpace(x.Building) || string.Equals(x.Building.Trim(), building.Trim(), StringComparison.CurrentCultureIgnoreCase)));
+        }
 
 		public IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime endDate)
 		{
@@ -155,7 +158,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				Start = lecturesSchedule.StartTime,
 				Name = lecturesSchedule.Subject?.Name ?? string.Empty,
 				ShortName = lecturesSchedule.Subject?.ShortName ?? string.Empty,
-				Teacher = SubjectManagementService.GetSubjectOwner(lecturesSchedule.SubjectId),
+				Teacher = lecturesSchedule.LecturerId.HasValue ? lecturesSchedule.Lecturer : SubjectManagementService.GetSubjectOwner(lecturesSchedule.SubjectId),
 				SubjectId = lecturesSchedule.SubjectId,
 				Type = ClassType.Lecture,
 				Date = lecturesSchedule.Date,
@@ -176,7 +179,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				Start = practicalSchedule.StartTime,
 				Name = practicalSchedule.Subject?.Name ?? string.Empty,
 				ShortName = practicalSchedule.Subject?.ShortName ?? string.Empty,
-				Teacher = SubjectManagementService.GetSubjectOwner(practicalSchedule.SubjectId),
+				Teacher = practicalSchedule.LecturerId.HasValue ? practicalSchedule.Lecturer : SubjectManagementService.GetSubjectOwner(practicalSchedule.SubjectId),
 				SubjectId = practicalSchedule.SubjectId,
 				Type = ClassType.Practical,
 				Date = practicalSchedule.Date,
@@ -201,17 +204,17 @@ namespace Application.Infrastructure.ScheduleManagement
 				Start = labSchedule.StartTime,
 				Name = labSchedule.Subject?.Name ?? string.Empty,
 				ShortName = labSchedule.Subject?.ShortName ?? string.Empty,
-				Teacher = labSchedule.SubjectId.HasValue ? SubjectManagementService.GetSubjectOwner((int)labSchedule.SubjectId) : null,
+				Teacher = labSchedule.LecturerId.HasValue ? labSchedule.Lecturer : labSchedule.SubjectId.HasValue ? SubjectManagementService.GetSubjectOwner((int)labSchedule.SubjectId) : null,
 				SubjectId = labSchedule.SubjectId,
 				Type = ClassType.Lab,
 				Date = labSchedule.Date,
 				Id = labSchedule.Id,
 				Notes = labSchedule?.Subject?.ScheduleProtectionLabs?.FirstOrDefault(x => x.Id == labSchedule.Id)?.Notes ?? Enumerable.Empty<Note>(),
-				GroupId = group == null ? new int?() : group.Id,
+				GroupId = group?.Id,
 				GroupName = group == null ? string.Empty : group.Name,
 				SubGroupId = labSchedule.SubGroup == null ? new int?() : labSchedule.SuGroupId,
 				SubGroupName = labSchedule.SubGroup == null ? string.Empty : labSchedule.SubGroup.Name
-			};
+            };
 		}
 
 		public IEnumerable<ScheduleModel> GetUserSchedule(int userId, DateTime startDate, DateTime endDate)

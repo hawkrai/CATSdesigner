@@ -33,6 +33,10 @@ namespace LMPlatform.Models
 
 		public virtual ICollection<CourseProjectConsultationDate> CourseProjectConsultationDates { get; set; }
 
+		public virtual ICollection<ScheduleProtectionLabs> ScheduleProtectionLabs { get; set; }
+		public virtual ICollection<ScheduleProtectionPractical> ScheduleProtectionPracticals { get; set; }
+		public virtual ICollection<LecturesScheduleVisiting> LecturesScheduleVisitings { get; set; }
+
 		public virtual ICollection<Group> SecretaryGroups { get; set; }
 
 		public ICollection<StudentLabMark> StudentLabMarks { get; set; }

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import {Store} from '@ngrx/store';
 import {IAppState} from '../state/app.state';
-import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 import {getSubjectId} from '../selectors/subject.selector';
 import {GroupsRestService} from '../../services/groups/groups-rest.service';
 import * as groupsActions from '../actions/groups.actions';
@@ -22,7 +22,7 @@ export class GroupsEffects {
     ofType(groupsActions.loadActiveGroups),
     switchMap(({ groupId }) => this.store.select(getSubjectId).pipe(
       switchMap(subjectId => this.rest.getAllGroups(subjectId)),
-      map(groups => groupsActions.loadGroupsSuccess({ groups, groupId }))
+      switchMap(({groups, hasInactiveGroups }) => [groupsActions.loadGroupsSuccess({ groups, groupId }), groupsActions.checkHasInactiveSuccess({ hasInactiveGroups })])
     ))
   ));
 

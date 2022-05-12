@@ -92,14 +92,14 @@ namespace LMPlatform.UI.Services
 
 
 
-		public LectorsResult GetJoinedLector(string subjectId)
+		public LectorsResult GetJoinedLector(string subjectId, bool loadSelf = false)
 		{
 			try
 			{
 				var id = int.Parse(subjectId);
-				var lectors = this.LecturerManagementService.GetJoinedLector(id, this.CurrentUserId)
+				var lectors = this.LecturerManagementService.GetJoinedLector(id)
 					.GroupBy(x => x.Id).Select(x => x.First())
-					.Where(x => x.Id != CurrentUserId).ToList();
+					.Where(x => loadSelf ? true : x.Id != CurrentUserId).ToList();
 
 				return new LectorsResult
 				{
@@ -162,7 +162,7 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var lectors = LecturerManagementService.GetNoAdjointLectorers(int.Parse(subjectId), CurrentUserId);
+				var lectors = LecturerManagementService.GetNoAdjointLectorers(int.Parse(subjectId));
 				return new LectorsResult
 				{
 					Lectors = lectors.Where(x => x.Id != CurrentUserId).Select(e => new LectorViewData(e)).ToList(),
@@ -221,7 +221,7 @@ namespace LMPlatform.UI.Services
 						Code = "403"
 					};
 				}
-				this.StudentManagementService.СonfirmationStudent(id);
+				this.StudentManagementService.СonfirmationStudent(id, UserContext.CurrentUserId);
 
 				return new StudentsResult
 				{
@@ -277,7 +277,7 @@ namespace LMPlatform.UI.Services
 			{
 				var id = int.Parse(groupId);
 				var students = this.GroupManagementService.GetGroups(
-					new Query<Group>(g => g.Id == id).Include(g => g.Students))
+					new Query<Group>(g => g.Id == id).Include(g => g.Students.Select(x => x.ConfirmedBy.User)))
 					.Single().Students
 					.OrderBy(e => e.FullName);
 
@@ -287,7 +287,9 @@ namespace LMPlatform.UI.Services
 					{
 						StudentId = e.Id,
 						FullName = e.FullName,
-						Confirmed  = e.Confirmed == null || e.Confirmed.Value
+						Confirmed  = e.Confirmed == null || e.Confirmed.Value,
+						ConfirmedBy = e.ConfirmedById.HasValue ? new LectorViewData(e.ConfirmedBy, true) : null,
+						ConfirmedAt = e.ConfirmedAt
 					}).ToList(),
 					Message = "Студенты успешно загружены",
 					Code = "200"
@@ -409,12 +411,12 @@ namespace LMPlatform.UI.Services
 			try
 			{
 				var id = int.Parse(subjectId);
-				var groups = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == id && x.IsActiveOnCurrentGroup)));
+				var groups = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == id)).Include(x => x.SubjectGroups));
 
 
 				var groupsViewData = new List<GroupsViewData>();
 
-				foreach (var @group in groups)
+				foreach (var @group in groups.Where(x => x.SubjectGroups.Any(x => x.IsActiveOnCurrentGroup && x.SubjectId == id)))
 				{
 					var subGroups = this.SubjectManagementService.GetSubGroupsV2(id, @group.Id);
 					groupsViewData.Add(new GroupsViewData
@@ -444,8 +446,9 @@ namespace LMPlatform.UI.Services
 					
 					Groups = groupsViewData.OrderBy(e => e.GroupName).ToList(),
                     Message = "Группы успешно загружены",
-                    Code = "200"
-                };
+                    Code = "200",
+					HasInactiveGroups = groups.Any(x => x.SubjectGroups.Any(x => !x.IsActiveOnCurrentGroup && x.SubjectId == id)),
+				};
 			}
 			catch (Exception ex)
             {
@@ -489,7 +492,7 @@ namespace LMPlatform.UI.Services
 
 		}
 
-		public GroupsResult GetGroupsV3(string subjectId)
+        public GroupsResult GetGroupsV3(string subjectId)
         {
             try
             {

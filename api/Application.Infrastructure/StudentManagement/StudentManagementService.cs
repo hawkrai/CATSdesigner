@@ -159,14 +159,15 @@ namespace Application.Infrastructure.StudentManagement
 			}
 		}
 
-	    public void СonfirmationStudent(int studentId)
+	    public void СonfirmationStudent(int studentId, int userId)
 	    {
 		    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 		    var student = this.GetStudent(studentId);
 
 		    student.Confirmed = true;
-
-		    this.UpdateStudent(student);
+			student.ConfirmedById = userId;
+			student.ConfirmedAt = System.DateTime.Now;
+			this.UpdateStudent(student);
 
 		    var subjects = repositoriesContainer.SubjectRepository.GetSubjects(student.GroupId).Where(e => !e.IsArchive);
 
@@ -198,7 +199,8 @@ namespace Application.Infrastructure.StudentManagement
 		{
 			var student = this.GetStudent(studentId);
 			student.Confirmed = false;
-
+			student.ConfirmedById = null;
+			student.ConfirmedAt = null;
 			this.UpdateStudent(student);
 
 			RemoveFromSubGroups(student.Id, student.GroupId);

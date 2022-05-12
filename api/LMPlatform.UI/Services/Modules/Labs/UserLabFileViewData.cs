@@ -39,5 +39,14 @@ namespace LMPlatform.UI.Services.Modules.Labs
 
         [DataMember]
         public int? Order { get; set; }
+
+        [DataMember]
+        public int? PracticalId { get; set; }
+
+        [DataMember]
+        public string PracticalShortName { get; set; }
+
+        [DataMember]
+        public string PracticalTheme { get; set; }
     }
 }

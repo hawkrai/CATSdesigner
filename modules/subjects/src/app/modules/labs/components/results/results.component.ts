@@ -1,11 +1,10 @@
 import { LabMark } from './../../../../models/mark/lab-mark.model';
 import { DialogService } from 'src/app/services/dialog.service';
-import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {Store} from '@ngrx/store';
 import {IAppState} from '../../../../store/state/app.state';
 import {DialogData} from '../../../../models/dialog-data.model';
 import { Lab } from '../../../../models/lab.model';
-import {MarkForm} from '../../../../models/mark-form.model';
 import {filter, map} from 'rxjs/operators';
 import {SubSink} from 'subsink';
 import { StudentMark } from 'src/app/models/student-mark.model';
@@ -17,6 +16,7 @@ import * as catsActions from '../../../../store/actions/cats.actions';
 import * as labsActions from '../../../../store/actions/labs.actions';
 import * as labsSelectors from '../../../../store/selectors/labs.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
+import * as testsSelectors from '../../../../store/selectors/tests.selectors';
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model';
 import { MarkPopoverComponent } from 'src/app/shared/mark-popover/mark-popover.component';
 import { LabVisitingMark } from 'src/app/models/visiting-mark/lab-visiting-mark.model';
@@ -31,7 +31,7 @@ import { TranslatePipe } from 'educats-translate';
 export class ResultsComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
 
-  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean, subGroups: number[] }>;
+  state$: Observable<{ labs: Lab[], schedule: ScheduleProtectionLab[], students: StudentMark[], userId: number, isTeacher: boolean, subGroups: number[], testsCount: number }>;
 
   constructor(
     private store: Store<IAppState>,
@@ -46,9 +46,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
       this.store.select(labsSelectors.getLabStudents),
       this.store.select(subjectSelectors.getUserId),
       this.store.select(subjectSelectors.isTeacher),
-      this.store.select(labsSelectors.getSubGroups)
+      this.store.select(labsSelectors.getSubGroups),
+      this.store.select(testsSelectors.getTestsCount)
     ).pipe(
-      map(([schedule, labs, students, userId, isTeacher, subGroups]) => ({ schedule, labs, students, userId, isTeacher, subGroups: subGroups.map(x => x.SubGroupValue) }))
+      map(([schedule, labs, students, userId, isTeacher, subGroups, testsCount]) => ({ schedule, labs, students, userId, isTeacher, subGroups: subGroups.map(x => x.SubGroupValue), testsCount }))
     );
 
     this.subs.add(
@@ -65,16 +66,32 @@ export class ResultsComponent implements OnInit, OnDestroy {
     return subGroupLabs.map((l, index) => ({ head: l.LabId.toString(), text: l.ShortName, tooltip: l.Theme }));
   }
 
-  getSubGroupDisplayColumns(subGroupLabs: Lab[]): string[] {
-    return ['position', 'name', ...subGroupLabs.map(l => l.LabId.toString()), 'total-lab', 'total-test', 'total'];
+  getSubGroupDisplayColumns(subGroupLabs: Lab[], testsCount: number): string[] {
+    const initColumns = ['position', 'name', ...subGroupLabs.map(l => l.LabId.toString())];
+    if (subGroupLabs.length) {
+      initColumns.push('total-lab');
+    }
+    if (testsCount) {
+      initColumns.push('total-test');
+    }
+    if (subGroupLabs.length || testsCount) {
+      initColumns.push('total');
+    }
+    return initColumns;
   }
 
-  getTotal(student: StudentMark): number {
-    if (student.TestMark === null || student.TestMark === '') {
-      return +student.LabsMarkTotal;
+  getTotal(student: StudentMark, testsCount: number): number {
+    let totalMark = 0;
+    if (testsCount && student.TestsPassed && student.LabsMarks.length) {
+      totalMark = ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2)
     }
-    const mark = ((Number(student.LabsMarkTotal) + Number(student.TestMark)) / 2)
-    return Math.round(mark * 10) / 10;
+    else if (testsCount && student.TestsPassed) {
+      totalMark = +student.TestMark;
+    }
+    else if (student.LabsMarks.length) {
+      totalMark = +student.LabsMarkTotal;
+    }
+    return Math.round(totalMark * 10) / 10;
   }
 
   setMark(student: StudentMark, labId: string, recommendedMark: string) {
@@ -131,8 +148,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
     return this.translate.transform('text.subjects.results.protected', `Защищено ${actualCount} работ из ${jobsCount}`, { actualCount: actualCount.toString(), jobsCount: jobsCount.toString() }); 
   }
 
-  getTestsPassedTooltip(student: StudentMark) {
-    return this.translate.transform('text.subjects.tests.written', `Написано ${student.TestsPassed} тестов из ${student.Tests}`, { actualCount: student.TestsPassed.toString(), testsCount: student.Tests.toString() });
+  getTestsPassedTooltip(student: StudentMark, testsCount: number) {
+    return this.translate.transform('text.subjects.tests.written', `Написано ${student.TestsPassed} тестов из ${testsCount}`, { actualCount: student.TestsPassed.toString(), testsCount: testsCount.toString() });
   }
 
   private getLabMark(mark: LabMark, studentId: number) {

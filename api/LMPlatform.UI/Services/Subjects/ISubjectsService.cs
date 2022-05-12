@@ -32,7 +32,19 @@ namespace LMPlatform.UI.Services.Subjects
         LectorResult GetSubjectOwner(string subjectId);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "/GetUserSubjects", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "GET", UriTemplate = "/GetUserSubjects", ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json)]
         SubjectsResult GetUserSubjects();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "/Name/Unique", ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json)]
+        UniqueViewData IsSubjectNameUnique(string subjectName, int subjectId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "/Abbreviation/Unique", ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json)]
+        UniqueViewData IsSubjectAbbreviationUnique(string subjectAbbreviation, int subjectId);
+
     }
 }

@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {of, Subject, Subscription} from 'rxjs';
 import {CourseUser} from '../../models/course-user.model';
 import {MatDialog} from '@angular/material';
 import {AddProjectDialogComponent} from './add-project-dialog/add-project-dialog.component';
@@ -14,13 +14,15 @@ import {AppComponent} from '../../app.component';
 import {CoreGroup} from 'src/app/models/core-group.model';
 import {GroupService} from '../../services/group.service';
 import {ToastrService} from 'ngx-toastr';
+import {CourseUserService} from '../../services/course-user.service';
+import {switchMap, takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-projects',
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.less']
 })
-export class ProjectsComponent implements OnInit {
+export class ProjectsComponent implements OnInit, OnDestroy {
 
   @Input() courseUser: CourseUser;
 
@@ -35,13 +37,16 @@ export class ProjectsComponent implements OnInit {
   private searchString = '';
   private sorting = 'Id';
   private direction = 'desc';
+  private readonly destroy$: Subject<void> = new Subject<void>();
+  private lecturerName = '';
 
   constructor(private appComponent: AppComponent,
               private groupService: GroupService,
               private projectsService: ProjectsService,
               private dialog: MatDialog,
               private store: Store<IAppState>,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private courseService: CourseUserService) {
   }
 
   ngOnInit() {
@@ -51,6 +56,24 @@ export class ProjectsComponent implements OnInit {
       this.groupService.getGroups(this.subjectId).subscribe(res => this.groups = res.Groups);
       this.retrieveProjects();
     });
+
+    this.courseService.getUser().pipe(switchMap((res) => {
+      if (res.IsLecturer) {
+        return this.courseService.getUserInfo(res.UserId);
+      } else {
+        return of();
+      }
+    }), takeUntil(this.destroy$),
+    ).subscribe(res => {
+      this.lecturerName = res.Name;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (!this.destroy$.closed) {
+      this.destroy$.next();
+      this.destroy$.unsubscribe();
+    }
   }
 
   retrieveProjects() {
@@ -86,7 +109,7 @@ export class ProjectsComponent implements OnInit {
     this.retrieveProjects();
   }
 
-  chooseCourseProject(projectId: string) {
+  chooseCourseProject(project: Project) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,
       width: '548px',
@@ -99,12 +122,13 @@ export class ProjectsComponent implements OnInit {
         actionName: 'Выбрать',
         color: 'primary',
         isConfirm: true,
+        projectTheme: project.Theme
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result) {
-        this.projectsService.chooseProject(projectId).subscribe(() => {
+        this.projectsService.chooseProject(project.Id).subscribe(() => {
           this.appComponent.ngOnInit();
           this.toastr.success('Тема успешно выбрана');
         });
@@ -118,7 +142,8 @@ export class ProjectsComponent implements OnInit {
       width: '548px',
       data: {
         groups: this.groups,
-        selectedGroups: this.groups.slice()
+        selectedGroups: this.groups.slice(),
+        lecturer: this.lecturerName,
       }
     });
 
@@ -133,7 +158,7 @@ export class ProjectsComponent implements OnInit {
               this.toastr.success('Тема успешно сохранена');
             });
         } else {
-          this.toastr.success('Такая тема уже существует');
+          this.toastr.error('Такая тема уже существует');
         }
       }
     });
@@ -145,6 +170,7 @@ export class ProjectsComponent implements OnInit {
         autoFocus: false,
         width: '548px',
         data: {
+          id: project.Id,
           name: project.Theme,
           groups: this.groups,
           lecturer: project.Lecturer,
@@ -154,13 +180,18 @@ export class ProjectsComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        if (result != null) {
+        if (result != null && result.name != null) {
           result.name = result.name.replace('\n', '');
-          this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
-            .subscribe(() => {
-              this.ngOnInit();
-              this.toastr.success('Тема успешно сохранена');
-            });
+          const checkTheme = this.projects.find((i) => i.Theme === result.name && i.Id !== result.id);
+          if (checkTheme === undefined) {
+            this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
+              .subscribe(() => {
+                this.ngOnInit();
+                this.toastr.success('Тема успешно сохранена');
+              });
+          } else {
+            this.toastr.error('Такая тема уже существует');
+          }
         }
       });
     });
@@ -188,7 +219,7 @@ export class ProjectsComponent implements OnInit {
         }
       });
     } else {
-      this.toastr.success('Отмените назначение темы');
+      this.toastr.error('Отмените назначение темы');
     }
 
   }

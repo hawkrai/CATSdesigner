@@ -5,6 +5,7 @@ import { IGroupsState } from './groups.state';
 import { ILecturesState } from './lectures.state';
 import { ILabsState } from './labs.state';
 import { IPracticalsState } from './practicals.state';
+import { ITestsState } from './tests.state';
 
 
 export interface IAppState {
@@ -14,6 +15,7 @@ export interface IAppState {
   lectures: ILecturesState;
   labs: ILabsState,
   practicals: IPracticalsState,
-  files: IFilesState
+  files: IFilesState,
+  tests: ITestsState
 };
 

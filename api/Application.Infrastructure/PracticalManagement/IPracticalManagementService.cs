@@ -27,5 +27,11 @@ namespace Application.Infrastructure.PracticalManagement
         Practical SavePractical(Practical practical, IList<Attachment> attachments, int userId);
 
         void SavePracticalMarks(List<StudentPracticalMark> studentPracticalMarks);
+
+        IEnumerable<UserLabFiles> GetUserPracticalFiles(int userId, int subjectId);
+
+        bool HasSubjectProtection(int groupId, int subjectId);
+        List<UserLabFiles> GetGroupPracticalFiles(int subjectId, int groupId);
+        List<UserLabFiles> GetStudentLabFiles(int subjectId, int studentId);
     }
 }

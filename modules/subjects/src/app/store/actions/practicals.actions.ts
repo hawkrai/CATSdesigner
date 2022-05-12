@@ -5,6 +5,10 @@ import { Practical } from '../../models/practical.model';
 import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
 import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
+import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
+import { UserLabFile } from 'src/app/models/user-lab-file.model';
+import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model';
+import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 
 export const loadPracticals = createAction(
     '[Practicals] Load Practicals'
@@ -54,7 +58,7 @@ export const updateOrder = createAction(
 
 export const createDateVisit = createAction(
     '[Practicals] Create Date Visit',
-    props<{ obj: { date: string, startTime: string, endTime: string, building: string, audience: string } }>()
+    props<{ obj: { date: string, startTime: string, endTime: string, building: string, audience: string, lecturerId: number } }>()
   );
   
 export const deleteDateVisit = createAction(
@@ -78,4 +82,102 @@ export const getMarksExcel = createAction(
   
   export const getVisitingExcel = createAction(
     '[Practicals] Get Visiting Excel'
+  );
+
+  export const loadGroupJobProtection = createAction(
+    '[Practicals] Load Group Job Protection'
+  );
+  
+  export const loadGroupJobProtectionSuccess = createAction(
+    '[Practicals] Load Group Job Protection Success',
+    props<{ groupJobProtection: GroupJobProtection }>()
+  );
+
+  export const sendUserFile = createAction(
+    '[Practicals] Send User File',
+    props<{ sendFile: { attachments: string, id: number, pathFile: string, comments: string, userId: number, practicalId: number, isRet: boolean }, fileId: number }>()
+  );
+  
+  export const sendUserFileSuccess = createAction(
+    '[Practicals] Send User File Success',
+    props<{ userLabFile: UserLabFile, isReturned: boolean, fileId?: number }>()
+  );
+
+  export const returnFile = createAction(
+    '[Practicals] Return Files',
+    props<{ userId: number, userFileId: number }>()
+  );
+
+  export const returnFileSuccess = createAction(
+    '[Practicals] Return Files Success',
+    props<{ userId: number, userFileId: number }>()
+  );
+
+  export const deleteUserFile = createAction(
+    '[Practicals] Delete User File',
+    props<{ userLabFileId: number, userId: number }>()
+  );
+  
+  export const deleteUserFileSuccess = createAction(
+    '[Practicals] Delete User File Success',
+    props<{ userId: number, userLabFileId: number }>()
+  );
+
+  export const receiveFile = createAction(
+    '[Practicals] Receive Files',
+    props<{ userId: number, userFileId: number }>()
+  );
+
+  export const receiveFileSuccess = createAction(
+    '[Practicals] Receive Files Success',
+    props<{ userId: number, userFileId: number }>()
+  );
+
+  export const cancelFile = createAction(
+    '[Practicals] Cancel File',
+    props<{ userId: number, userFileId: number }>()
+  );
+
+  export const cancelFileSuccess = createAction(
+    '[Practicals] Cancel File Success',
+    props<{ userId: number, userFileId: number }>()
+  );
+
+  export const loadStudentFiles = createAction(
+    '[Practicals] Get Student Files',
+    props<{ userId?: number }>()
+  );
+  
+  export const loadStudentFilesSuccess = createAction(
+    '[Practicals] Get Student Files Success',
+    props<{ practicalFiles: UserLabFile[], studentId: number }>()
+  );
+
+  export const resetStudentJobProtection = createAction(
+    '[Practicals] Reset Student Job Protection',
+    props<{ studentId: number }>()
+  );
+
+  export const checkJobProtections = createAction(
+    '[Practicals] Check Job Protection'
+  );
+
+  export const setJobProtections = createAction(
+    '[Practicals] Set Job Protections',
+    props<{ hasJobProtections: HasJobProtection[] }>()
+  );
+
+  export const getAsZip = createAction(
+    '[Practicals] Get As Zip'
+  );
+
+  export const loadStudentJobProtection = createAction(
+    '[Practicals] Load Student Job Protection',
+    props<{ studentId: number }>()
+  
+  );
+  
+  export const loadStudentJobProtectionSuccess = createAction(
+    '[Practicals] Load Student Job Protection Success',
+    props<{ studentJobProtection: StudentJobProtection }>()
   );

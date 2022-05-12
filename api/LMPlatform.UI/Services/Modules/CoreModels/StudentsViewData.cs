@@ -217,6 +217,12 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
         public int GroupId { get; set; }
 
         [DataMember]
+        public DateTime? ConfirmedAt { get; set; }
+
+        [DataMember]
+        public LectorViewData ConfirmedBy { get; set; }
+
+        [DataMember]
         public List<LabVisitingMarkViewData> LabVisitingMark { get; set; }
 
         [DataMember]

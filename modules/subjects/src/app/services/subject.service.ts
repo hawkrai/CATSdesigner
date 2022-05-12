@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import {Subject} from '../models/subject.model';
 import { Lector } from '../models/lector.model';
 import { SubjectForm } from '../models/form/subject-form.model';
+import { UniqueViewData } from '../models/unique.model';
 
 @Injectable({
   providedIn: 'root'
@@ -56,8 +57,10 @@ export class SubjectService {
     );
   }
 
-  public getJoinedLector(subjectId: number): Observable<Lector[]> {
-    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId).pipe(
+  public getJoinedLector(subjectId: number, loadSelf: boolean = false): Observable<Lector[]> {
+    const params = new HttpParams()
+      .set('loadSelf', loadSelf + '');
+    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId, { params }).pipe(
       map(res => res['Lectors'])
     );
   }
@@ -84,6 +87,14 @@ export class SubjectService {
     form.append('subGroupSecondIds', body.subGroupSecondIds);
     form.append('subGroupThirdIds', body.subGroupThirdIds);
     return this.http.post('Subject/SaveSubGroup', form);
+  }
+
+  isUniqueSubjectName(subjectName: string, subjectId: number): Observable<UniqueViewData> {
+    return this.http.post<UniqueViewData>('Services/Subjects/SubjectsService.svc/Name/Unique', { subjectName, subjectId });
+  }
+
+  isUniqueSubjectAbbreviation(subjectAbbreviation: string, subjectId: number) {
+    return this.http.post<UniqueViewData>('Services/Subjects/SubjectsService.svc/Abbreviation/Unique', { subjectAbbreviation, subjectId });
   }
 }
 

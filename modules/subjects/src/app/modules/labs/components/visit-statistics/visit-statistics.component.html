@@ -19,7 +19,7 @@
               </td>
             </ng-container>
     
-            <ng-container *ngFor="let scheduleProtectionLab of subGroupProtectionSchedule; let i = index"
+            <ng-container *ngFor="let scheduleProtectionLab of subGroupProtectionSchedule"
                           matColumnDef="{{scheduleProtectionLab.Date + scheduleProtectionLab.ScheduleProtectionLabId}}"
             >
               <th mat-header-cell *matHeaderCellDef>
@@ -28,9 +28,11 @@
               <td mat-cell
                   *matCellDef="let element"
                   class="mark-cell"
-                  (dblclick)="state.isTeacher && setVisitMarks(subGroupStudents, scheduleProtectionLab, i)">
-                {{element.LabVisitingMark[i] && element.LabVisitingMark[i].Mark}}
-                <mat-icon *ngIf="element.LabVisitingMark[i] && element.LabVisitingMark[i].Comment && (state.isTeacher || (element.LabVisitingMark[i].ShowForStudent && element.LabVisitingMark[i].StudentId === state.userId))" class="comment-icon" [matTooltip]="element.LabVisitingMark[i].Comment" matTooltipPosition="above">chat_bubble_outline</mat-icon>
+                  (dblclick)="state.isTeacher && setVisitMarks(subGroupStudents, scheduleProtectionLab)">
+                  <ng-container *var="findVisitingIndex(element, scheduleProtectionLab) as visitingIndex">
+                  {{element.LabVisitingMark[visitingIndex] && element.LabVisitingMark[visitingIndex].Mark}}
+                  <mat-icon *ngIf="element.LabVisitingMark[visitingIndex] && element.LabVisitingMark[visitingIndex].Comment && (state.isTeacher || (element.LabVisitingMark[visitingIndex].ShowForStudent && element.LabVisitingMark[visitingIndex].StudentId === state.userId))" class="comment-icon" [matTooltip]="element.LabVisitingMark[visitingIndex].Comment" matTooltipPosition="above">chat_bubble_outline</mat-icon>
+                  </ng-container>
               </td>
             </ng-container>
             <ng-container *ngFor="let labName of getSubGroupHeaders(subGroupLabs)" matColumnDef="{{labName.head}}">

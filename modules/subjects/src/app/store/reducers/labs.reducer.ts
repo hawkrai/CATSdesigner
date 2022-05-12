@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import {initialLabsState, ILabsState} from '../state/labs.state';
 import * as labsActions from '../actions/labs.actions';
-import * as labsUtils from '../../utils/labs.utils';
+import * as userFilesUtils from '../../utils/user-files.utils';
 import { JobProtection } from 'src/app/models/job-protection/job-protection.model';
 import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
@@ -35,6 +35,10 @@ export const labsReducer = createReducer(
     ...state,
     groupJobProtection
   })),
+  on(labsActions.loadStudentJobProtectionSuccess, (state, { studentJobProtection }): ILabsState => ({
+    ...state,
+    groupJobProtection: { ...state.groupJobProtection, StudentsJobProtections: state.groupJobProtection.StudentsJobProtections.map(x => x.StudentId === studentJobProtection.StudentId ? studentJobProtection : x )}
+  })),
   on(labsActions.setJobProtections, (state, { hasJobProtections }): ILabsState => ({
     ...state,
     hasJobProtections
@@ -45,15 +49,6 @@ export const labsReducer = createReducer(
       ...state.studentsLabsFiles,
       [studentId]: labFiles
     }
-  })),
-  on(labsActions.resetStudentsLabFiles, (state): ILabsState => ({
-    ...state,
-    studentsLabsFiles: {}
-  })),
-  on(labsActions.resetStudentLabFiles, (state, { studentId }): ILabsState => ({
-    ...state,
-    studentsLabsFiles: Object.keys(state.studentsLabsFiles)
-    .filter(k => +k === studentId).reduce((acc, key) => ({ ...acc, [key]: state.studentsLabsFiles[key] }), {})
   })),
   on(labsActions.receiveLabFileSuccess, (state, { userId, userFileId }): ILabsState => ({
     ...state,
@@ -80,26 +75,14 @@ export const labsReducer = createReducer(
     ...state,
     studentsLabsFiles: {
       ...state.studentsLabsFiles,
-      [userLabFile.UserId]: labsUtils.sendUserLabFileSuccess(state.studentsLabsFiles[userLabFile.UserId] || [], userLabFile)
+      [userLabFile.UserId]: userFilesUtils.sendUserFileSuccess(state.studentsLabsFiles[userLabFile.UserId] || [], userLabFile)
     }
   })),
-  on(labsActions.deleteUserLabFileSuccess, (state, { userId, labId }): ILabsState => ({
+  on(labsActions.deleteUserLabFileSuccess, (state, { userId, userLabFileId }): ILabsState => ({
     ...state,
     studentsLabsFiles: {
       ...state.studentsLabsFiles,
-      [userId]: (state.studentsLabsFiles[userId] || []).filter(x => x.LabId !== labId)
-    }
-  })),
-  on(labsActions.updateJobProtection, (state, { userId }): ILabsState => ({
-    ...state,
-    groupJobProtection: {
-      ...state.groupJobProtection,
-      StudentsJobProtections: state
-      .groupJobProtection
-      .StudentsJobProtections.map((s): StudentJobProtection => s.StudentId === userId ? { 
-        ...s, 
-        HasProtection: state.studentsLabsFiles[userId].some(x => !x.IsReceived && !x.IsReturned)
-      } : s)
+      [userId]: (state.studentsLabsFiles[userId] || []).filter(x => x.Id !== userLabFileId)
     }
   }))
 );

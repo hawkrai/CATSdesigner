@@ -1,4 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
+import { StudentMark } from 'src/app/models/student-mark.model';
 import { LabVisitingMark } from 'src/app/models/visiting-mark/lab-visiting-mark.model';
 import {Lab} from '../../../../../models/lab.model';
 
@@ -6,7 +7,7 @@ import {Lab} from '../../../../../models/lab.model';
   name: 'checkVisit'
 })
 export class VisitPipe implements PipeTransform {
-  transform(value: any, ...args: [string, Lab[]]): LabVisitingMark[] {
+  transform(value: StudentMark, ...args: [string, Lab[]]): LabVisitingMark[] {
     const lab = args[1].find(res => res.LabId.toString() === args[0].toString() && res.SubGroup === value.SubGroup);
     const scheduleIds = [];
     lab.ScheduleProtectionLabsRecommended.forEach(schedule => {
@@ -14,7 +15,7 @@ export class VisitPipe implements PipeTransform {
         scheduleIds.push(schedule.ScheduleProtectionId.toString());
       }
     });
-
+    
     return value.LabVisitingMark.filter(visiting => scheduleIds.includes(visiting.ScheduleProtectionLabId.toString()) && visiting.Mark);
 
   }

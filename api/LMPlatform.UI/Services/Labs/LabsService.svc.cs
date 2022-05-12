@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Web;
 using Application.Core;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.Labs;
-using LMPlatform.PlagiarismNet.Controllers;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using System.Globalization;
-using System.Configuration;
 using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Infrastructure.StudentManagement;
@@ -30,10 +25,6 @@ namespace LMPlatform.UI.Services.Labs
     public class LabsService : ILabsService
     {
 		private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
-
-		public string PlagiarismTempPath => ConfigurationManager.AppSettings["PlagiarismTempPath"];
-
-		public string FileUploadPath => ConfigurationManager.AppSettings["FileUploadPath"];
 
 		public ITestPassingService TestPassingService => testPassingService.Value;
 
@@ -53,11 +44,7 @@ namespace LMPlatform.UI.Services.Labs
 
         public ITestsManagementService TestsManagementService => testsManagementService.Value;
 
-        private readonly LazyDependency<IStudentManagementService> studentManagementService = new LazyDependency<IStudentManagementService>();
-
-		public IStudentManagementService StudentManagementService => studentManagementService.Value;
-
-		private readonly LazyDependency<ILabsManagementService> labsManagementService = new LazyDependency<ILabsManagementService>();
+        private readonly LazyDependency<ILabsManagementService> labsManagementService = new LazyDependency<ILabsManagementService>();
 
 		public ILabsManagementService LabsManagementService => labsManagementService.Value;
 
@@ -256,21 +243,12 @@ namespace LMPlatform.UI.Services.Labs
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
 					var showForStudent = showForStudents[i];
-
-                    foreach (var student in students)
+					var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
+					if (student != null && student.LabVisitingMark.Any(x => x.ScheduleProtectionLabId == dateId))
                     {
-                        if (student.StudentId == currentStudentId)
-                        {
-                            foreach (var labVisiting in student.LabVisitingMark)
-                            {
-                                if (labVisiting.ScheduleProtectionLabId == dateId)
-                                {
-                                    SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
-                                }
-                            }
-                        }
+						SubjectManagementService.SaveLabsVisitingData(new ScheduleProtectionLabMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
 
-                    }
+					}
                 }
 
                 return new ResultViewData
@@ -330,46 +308,7 @@ namespace LMPlatform.UI.Services.Labs
 				};
             }
         }
-
-
-        public UserLabFilesResult GetFilesLab(int userId, int subjectId, bool isCoursPrj = false)
-        {
-            try
-            {
-
-	            var model = new List<UserLabFileViewData>();
-	            var data = SubjectManagementService.GetUserLabFiles(userId, subjectId);
-	            model = data.Select(e => new UserLabFileViewData
-				{
-		            Comments = e.Comments,
-					Id = e.Id,
-					PathFile = e.Attachments,
-					IsReceived = e.IsReceived,
-	                IsReturned = e.IsReturned,
-	                IsCoursProject = e.IsCoursProject,
-					LabId = e.LabId,
-					UserId = e.UserId,
-                    Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
-		            Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList(),
-	            }).Where(x => x.IsCoursProject == isCoursPrj).ToList();
-                return new UserLabFilesResult
-                {
-					UserLabFiles = model,
-                    Message = "Данные получены",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new UserLabFilesResult
-                {
-                    Message = "Произошла ошибка при получении данных",
-                    Code = "500"
-                };
-            }
-        }
-
-		public UserLabFilesResult GetUserLabFiles(int userId, int subjectId)
+        public UserLabFilesResult GetUserLabFiles(int userId, int subjectId)
         {
 			try
 			{
@@ -405,76 +344,6 @@ namespace LMPlatform.UI.Services.Labs
 				return new UserLabFilesResult
 				{
 					Message = "Произошла ошибка при получении данных",
-					Code = "500"
-				};
-			}
-		}
-
-		public UserLabFileViewData SendFile(int subjectId, int userId, int id, string comments, string pathFile, string attachments, int labId, bool isCp = false, bool isRet = false)
-		{
-			try
-			{
-				var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
-
-				var userLabFile = SubjectManagementService.SaveUserLabFiles(new UserLabFiles
-				{
-					SubjectId = subjectId,
-                    Date = DateTime.Now,
-					UserId = userId,
-					Comments = comments,
-					Attachments = pathFile,
-					Id = id,
-					LabId = labId,
-				    IsCoursProject = isCp,
-				    IsReceived = false,
-				    IsReturned = isRet
-                }, attachmentsModel);
-
-				return new UserLabFileViewData()
-				{
-					Message = "Файл(ы) успешно отправлен(ы)",
-					Code = "200",
-					Comments = userLabFile.Comments,
-					Id = userLabFile.Id,
-					PathFile = userLabFile.Attachments,
-					IsReceived = userLabFile.IsReceived,
-					IsReturned = userLabFile.IsReturned,
-					IsCoursProject = userLabFile.IsCoursProject,
-					LabId = userLabFile.LabId,
-					LabShortName = userLabFile.Lab?.ShortName,
-					LabTheme = userLabFile.Lab?.Theme,
-					Date = userLabFile.Date != null ? userLabFile.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
-					Attachments = FilesManagementService.GetAttachments(userLabFile.Attachments).ToList(),
-					UserId = userLabFile.UserId,
-					Order = userLabFile.Lab?.Order
-				};
-			}
-			catch
-			{
-				return new UserLabFileViewData
-				{
-					Message = "Произошла ошибка",
-					Code = "500"
-				};
-			}
-		}
-
-		public ResultViewData DeleteUserFile(int id)
-		{
-			try
-			{
-				SubjectManagementService.DeleteUserLabFile(id);
-				return new ResultViewData
-				{
-					Message = "Работа удалена",
-					Code = "200"
-				};
-			}
-			catch (Exception e)
-			{
-				return new ResultViewData
-				{
-					Message = "Произошла ошибка при удалении работы - " + e.Message,
 					Code = "500"
 				};
 			}
@@ -585,70 +454,17 @@ namespace LMPlatform.UI.Services.Labs
 					LabVisitingMark = studentViewData.LabVisitingMark,
 					LabsMarks = studentViewData.StudentLabMarks,
 					AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
-					TestsPassed = studenTestsPassResults.Count,
-					Tests = testsResults.Tests.Count
+					TestsPassed = studenTestsPassResults.Count
 				}) ;
 			}
 
 			return new StudentsMarksResult
 			{
 				Students = marks,
+				TestsCount = testsResults.Tests.Count,
 				Message = "",
 				Code = "200"
 			};
-		}
-
-		public StudentsMarksResult GetFilesV2(int subjectId, int groupId, bool isCp)
-		{
-			try
-			{
-				var group = this.GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
-					.Include(e => e.Students.Select(x => x.User))).FirstOrDefault();
-				IList<SubGroup> subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
-				var students = new List<StudentMark>();
-
-				foreach (var student in group.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.LastName))
-				{
-					var files =
-						SubjectManagementService.GetUserLabFiles(student.Id, subjectId).Select(
-							t =>
-							new UserLabFileViewData
-							{
-								Comments = t.Comments,
-								Date = t.Date != null ? t.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
-								Id = t.Id,
-								PathFile = t.Attachments,
-								IsReceived = t.IsReceived,
-							    IsReturned = t.IsReturned,
-							    IsCoursProject = t.IsCoursProject,
-								UserId = t.UserId,
-								LabId = t.LabId,
-                                Attachments = FilesManagementService.GetAttachments(t.Attachments).ToList()
-							}).Where(x => x.IsCoursProject == isCp).ToList();
-					students.Add(new StudentMark
-					{
-						StudentId = student.Id,
-						FullName = student.FullName,
-						SubGroup = subGroups.FirstOrDefault(x => x.Name == "first").SubjectStudents.Any(x => x.StudentId == student.Id) ? 1 : subGroups.FirstOrDefault(x => x.Name == "second").SubjectStudents.Any(x => x.StudentId == student.Id) ? 2 : subGroups.FirstOrDefault(x => x.Name == "third").SubjectStudents.Any(x => x.StudentId == student.Id) ? 3 : 4,
-						FileLabs = files
-					});
-				}
-
-				return new StudentsMarksResult
-				{
-					Students = students,
-					Message = "",
-					Code = "200"
-				};
-			}
-			catch
-			{
-				return new StudentsMarksResult
-				{
-					Message = "Произошла ошибка при получении результатов студентов",
-					Code = "500"
-				};
-			}
 		}
 
 		public LabsResult GetLabsV2(int subjectId, int groupId)
@@ -657,7 +473,7 @@ namespace LMPlatform.UI.Services.Labs
             try
             {
 				var labs = this.SubjectManagementService.GetLabsV2(subjectId).OrderBy(e => e.Order);
-
+				var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
 				var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
 				var labsSubGroups = new List<LabsViewData>();
 				var scheduleProtectionLabs = new List<ScheduleProtectionLabsViewData>();
@@ -686,19 +502,16 @@ namespace LMPlatform.UI.Services.Labs
 					foreach (var lab in labsSubGroup)
 					{
 						var mark = 10;
-						durationCount += lab.Duration / 2;
+						durationCount += lab.Duration;
 						for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
 						{
-							if (i + 1 > durationCount - (lab.Duration / 2))
+							if (i >= durationCount - lab.Duration)
 							{
 								lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
-								if (i + 1 >= durationCount)
+								if (mark != 1)
 								{
-									if (mark != 1)
-									{
-										mark -= 1;
-									}
+									mark -= 1;
 								}
 							}
 						}
@@ -708,7 +521,14 @@ namespace LMPlatform.UI.Services.Labs
 					var scheduleProtactionLabsSubGroup = subGroup.ScheduleProtectionLabs
 						.OrderBy(e => e.Date)
 						.Select(
-					e => new ScheduleProtectionLabsViewData(e)).ToList();
+					e =>
+                    {
+						if (e.Lecturer == null)
+                        {
+							e.Lecturer = subjectOwner;
+                        }
+						return new ScheduleProtectionLabsViewData(e);
+					}).ToList();
 					scheduleProtactionLabsSubGroup.ForEach(e => e.SubGroup = subGroupValue);
 					scheduleProtectionLabs.AddRange(scheduleProtactionLabsSubGroup);
 				}
@@ -731,326 +551,6 @@ namespace LMPlatform.UI.Services.Labs
                 };
             }
         }
-
-		public ResultViewData ReceivedLabFile(int userFileId)
-		{
-			try
-			{
-				this.SubjectManagementService.UpdateUserLabFile(userFileId, true);
-				return new ResultViewData
-				{
-					Message = "Файл(ы) перемещен(ы) в архив",
-					Code = "200"
-				};
-			}
-			catch
-			{
-				return new ResultViewData
-				{
-					Message = "Произошла ошибка переноса файла в архив",
-					Code = "500"
-				};
-			}
-		}
-
-		public ResultViewData ReturnLabFile(int userFileId)
-        {
-			try
-            {
-				SubjectManagementService.UpdateUserLabFile(userFileId, isReturned: true);
-				return new ResultViewData
-				{
-					Message = "Файл отправлен на доработку",
-					Code = "200"
-				};
-			} catch
-            {
-                return new ResultViewData { 
-					Code = "500",
-					Message = "Не удалось отправить файл на доработку"
-				};
-            }
-        }
-
-		public ResultViewData CancelReceivedLabFile(int userFileId)
-		{
-			try
-			{
-				this.SubjectManagementService.UpdateUserLabFile(userFileId, false);
-				return new ResultViewData
-				{
-					Message = "Файл(ы) перемещен(ы) из архива",
-					Code = "200"
-				};
-			}
-			catch
-			{
-				return new ResultViewData
-				{
-					Message = "Произошла ошибка переноса файла из архива",
-					Code = "500"
-				};
-			}
-		}
-
-		public ResultPSubjectViewData CheckPlagiarismSubjects(string subjectId, int type, int threshold, bool isCp = false) 
-		{
-			var path = Guid.NewGuid().ToString("N");
-
-			try
-			{
-				ClearCache();
-
-				var subjectName = this.SubjectManagementService.GetSubject(int.Parse(subjectId)).ShortName;
-
-				Directory.CreateDirectory(this.PlagiarismTempPath + path);
-								
-				var usersFiles = this.SubjectManagementService.GetUserLabFiles(0, int.Parse(subjectId)).Where(e => e.IsReceived && e.IsCoursProject == isCp);
-
-				var filesPaths = usersFiles.Select(e => e.Attachments);
-
-				var key = 0;
-
-				if (filesPaths.Count() == 0)
-				{
-					return new ResultPSubjectViewData
-					{
-						Message = "Отсутствуют принятые работы для проверки на плагиат",
-						Code = "200"
-					};
-				}
-
-				foreach (var filesPath in filesPaths)
-				{
-					if (Directory.Exists(this.FileUploadPath + filesPath))
-					{
-						foreach (var srcPath in Directory.GetFiles(this.FileUploadPath + filesPath))
-						{
-							File.Copy(srcPath,
-								srcPath.Replace(this.FileUploadPath + filesPath, this.PlagiarismTempPath + path), true);
-						}
-					}
-					key += filesPath.GetHashCode();
-				}
-
-				var plagiarismController = new PlagiarismController();
-				var result = plagiarismController.CheckByDirectory(new []{ PlagiarismTempPath + path }.ToList(), threshold, 10, type);
-
-				var data = new ResultPlagSubjectClu
-				{
-					clusters = new ResultPlagSubject[result.Count]
-				};
-
-				for (int i = 0; i < result.Count; ++i)
-				{
-					data.clusters[i] = new ResultPlagSubject();
-
-					var correctDocs = new List<ResultPlag>();
-
-					foreach (var doc in result[i].Docs)
-					{
-						var resultS = new ResultPlag();
-						
-						var fileName = Path.GetFileName(doc);
-
-						resultS.DocFileName = fileName;
-
-						var name = this.FilesManagementService.GetFileDisplayName(fileName);
-						
-						resultS.subjectName = subjectName;
-						
-						resultS.doc = name;
-						
-						var pathName = this.FilesManagementService.GetPathName(fileName);
-
-						resultS.DocPathName = pathName;
-
-						var userFileT = this.SubjectManagementService.GetUserLabFile(pathName);
-
-						var userId = userFileT.UserId;
-
-						var user = this.StudentManagementService.GetStudent(userId);
-
-						resultS.author = user.FullName;
-
-						resultS.groupName = user.Group.Name;
-
-						correctDocs.Add(resultS);
-					}
-					data.clusters[i].correctDocs = correctDocs.OrderBy(x => x.groupName).ThenBy(x => x.author).ToList();
-				}
-				Directory.Delete(this.PlagiarismTempPath + path, true);
-
-				HttpContext.Current.Session.Add(key.ToString(), data.clusters.ToList());
-
-				return new ResultPSubjectViewData
-				{
-					DataD = data.clusters.ToList(),
-					Message = "Проверка успешно завершена",
-					Code = "200"
-				};
-			}
-			catch (Exception e)
-			{
-				return new ResultPSubjectViewData
-				{
-					Message = e.Message + "   " + e,
-					Code = "500"
-				};
-			}
-			finally
-			{
-				var fullPath = this.PlagiarismTempPath + path;
-				if (Directory.Exists(fullPath))
-				{
-					Directory.Delete(fullPath, true);
-				}
-			}
-		}
-
-		public ResultViewData CheckPlagiarism(int userFileId, int subjectId, bool isCp = false)
-		{
-			var path = Guid.NewGuid().ToString("N");
-			try
-			{
-				ClearCache();			
-
-				var subjectName = this.SubjectManagementService.GetSubject(new Query<Subject>(e => e.Id == subjectId)).ShortName;
-
-				var key = 0;
-
-				Directory.CreateDirectory(this.PlagiarismTempPath + path);
-
-				var userFile = this.SubjectManagementService.GetUserLabFile(userFileId);
-
-				var usersFiles = this.SubjectManagementService.GetUserLabFiles(0, subjectId)
-					.Where(e => e.IsReceived && e.Id != userFile.Id && e.IsCoursProject == isCp);
-
-				var filesPaths = usersFiles.Select(e => e.Attachments);
-
-				if (filesPaths.Count() == 0)
-				{
-					return new ResultViewData
-					{
-						Message = "Отсутствуют принятые работы для проверки на плагиат",
-						Code = "200"
-					};
-				}
-
-				foreach (var filesPath in filesPaths)
-				{
-					foreach (var srcPath in Directory.GetFiles(this.FileUploadPath + filesPath))
-					{
-						File.Copy(srcPath, srcPath.Replace(this.FileUploadPath + filesPath, this.PlagiarismTempPath + path), true);
-					}
-
-					key += filesPath.GetHashCode();
-				}
-
-				string firstFileName =
-					Directory.GetFiles(FileUploadPath + userFile.Attachments)
-					.Select(fi => fi)
-					.FirstOrDefault();
-
-				var plagiarismController = new PlagiarismController();
-				var result = plagiarismController.CheckBySingleDoc(firstFileName, new[] { PlagiarismTempPath + path }.ToList(), 10, 10);
-
-				var data = new List<ResultPlag>();
-
-				foreach (var res in result)
-				{
-					var resPlag = new ResultPlag();
-
-					var fileName = Path.GetFileName(res.Doc);
-
-					resPlag.DocFileName = fileName;
-
-					var name = FilesManagementService.GetFileDisplayName(fileName);
-
-					resPlag.doc = name;
-
-					resPlag.subjectName = subjectName;
-
-					resPlag.coeff = res.Coeff.ToString();
-
-					var pathName = FilesManagementService.GetPathName(fileName);
-
-					resPlag.DocPathName = pathName;
-
-					var userFileT = SubjectManagementService.GetUserLabFile(pathName);
-
-					var userId = userFileT.UserId;
-
-					var user = StudentManagementService.GetStudent(userId);
-
-					resPlag.author = user.FullName;
-
-					resPlag.groupName = user.Group.Name;
-
-					data.Add(resPlag);
-				}
-
-				HttpContext.Current.Session.Add(key.ToString(), data.ToList());
-
-				return new ResultViewData
-				{
-					DataD = data.OrderByDescending(x => int.Parse(x.coeff)).ToList(),
-					Message = "Проверка успешно завершена",
-					Code = "200"
-				};
-			}
-			catch (Exception e)
-			{
-				return new ResultViewData
-				{
-					Message = e.Message + "   " + e,
-					Code = "500"
-				};
-			}
-			finally 
-			{
-				var fullPath = this.PlagiarismTempPath + path;
-				if (Directory.Exists(fullPath))
-				{
-					Directory.Delete(fullPath, true);
-				}
-			}
-		}
-
-		private static void ClearCache()
-		{
-			foreach (DictionaryEntry entry_loopVariable in HttpContext.Current.Cache)
-			{
-				var entry = entry_loopVariable;
-				HttpContext.Current.Cache.Remove(entry.Key.ToString());
-			}
-
-			IDictionaryEnumerator enumerator = HttpContext.Current.Cache.GetEnumerator();
-
-			while (enumerator.MoveNext())
-			{
-				HttpContext.Current.Cache.Remove(enumerator.Key.ToString());
-			}
-			HttpContext.Current.Response.ClearHeaders();
-			HttpContext.Current.Response.Expires = 0;
-			HttpContext.Current.Response.CacheControl = "no-cache";
-			HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.ServerAndNoCache);
-			HttpContext.Current.Response.Cache.SetNoStore();
-			HttpContext.Current.Response.Buffer = true;
-			HttpContext.Current.Response.ExpiresAbsolute = DateTime.Now.Subtract(new TimeSpan(1, 0, 0, 0));
-			HttpContext.Current.Response.AppendHeader("Pragma", "no-cache");
-			HttpContext.Current.Response.AppendHeader("", "");
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "no-cache"); //HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "private"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "no-store"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "must-revalidate"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "max-stale=0"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "post-check=0"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Cache-Control", "pre-check=0"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.1
-			HttpContext.Current.Response.AppendHeader("Keep-Alive", "timeout=3, max=993"); // HTTP 1.1
-		}
-
         public ResultViewData UpdateLabsOrder(int subjectId, int prevIndex, int curIndex)
         {
             try
@@ -1099,7 +599,7 @@ namespace LMPlatform.UI.Services.Labs
 					.Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
 
 			var studentJobProtection = new List<StudentJobProtectionViewData>();
-			var studentsLabFiles = SubjectManagementService.GetGroupLabFiles(subjectId, groupId);
+			var studentsLabFiles = LabsManagementService.GetGroupLabFiles(subjectId, groupId);
 
 			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
             {
@@ -1108,6 +608,7 @@ namespace LMPlatform.UI.Services.Labs
 					StudentId = subjectStudent.StudentId,
 					StudentName = subjectStudent.Student.FullName,
 					SubGroup = GetSubGroupNumber(subjectStudent.SubGroup),
+					GroupId = groupId,
 					HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
 				});
             }
@@ -1117,7 +618,36 @@ namespace LMPlatform.UI.Services.Labs
 			};
 		}
 
-        public List<SubGroupViewData> GetSubGroups(int subjectId, int groupId)
+        public StudentJobProtectionViewData GetStudentJobProtection(int subjectId, int groupId, int studentId)
+        {
+            var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
+                .Include(x => x.SubjectStudents.Select(x => x.Student))
+                .Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
+
+            var subjectStudent = group.SubjectStudents.FirstOrDefault(x => x.Student.Confirmed.HasValue && x.Student.Confirmed.Value && x.StudentId == studentId);
+
+            if (subjectStudent == null)
+            {
+                return new StudentJobProtectionViewData
+                {
+                    Code = "500"
+                };
+            }
+
+            var studentsLabFiles = LabsManagementService.GetStudentLabFiles(subjectId, studentId);
+
+            return new StudentJobProtectionViewData
+            {
+                StudentId = studentId,
+                StudentName = subjectStudent.Student.FullName,
+                SubGroup = GetSubGroupNumber(subjectStudent.SubGroup),
+                GroupId = groupId,
+                HasProtection = studentsLabFiles.Any(x =>
+                    x.UserId == studentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
+            };
+        }
+
+		public List<SubGroupViewData> GetSubGroups(int subjectId, int groupId)
         {
 			var subGroups = this.SubjectManagementService.GetSubGroupsV2WithScheduleProtectionLabs(subjectId, groupId);
 			return subGroups.Select(x => new SubGroupViewData(x)).ToList();

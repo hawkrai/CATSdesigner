@@ -15,6 +15,7 @@ import * as practicalsActions from '../../../../store/actions/practicals.actions
 import * as practicalsSelectors from '../../../../store/selectors/practicals.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
+import * as testsSelectors from '../../../../store/selectors/tests.selectors';
 import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model';
 import { Practical } from 'src/app/models/practical.model';
 import { PracticalMark } from 'src/app/models/mark/practical-mark.model';
@@ -31,7 +32,7 @@ import { TranslatePipe } from 'educats-translate';
 export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
   private subs = new SubSink();
 
-  state$: Observable<{ practicals: Practical[], schedule: ScheduleProtectionPractical[], students: StudentMark[], userId: number }>;
+  state$: Observable<{ practicals: Practical[], schedule: ScheduleProtectionPractical[], students: StudentMark[], userId: number, testsCount: number }>;
 
   constructor(
     private store: Store<IAppState>,
@@ -52,9 +53,10 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
       this.store.select(practicalsSelectors.selectPracticals),
       this.store.select(practicalsSelectors.selectMarks),
       this.store.select(subjectSelectors.getUserId),
-      this.store.select(subjectSelectors.isTeacher)
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(testsSelectors.getTestsCount)
     ).pipe(
-      map(([schedule, practicals, students, userId, isTeacher]) => ({ schedule, practicals, students, userId, isTeacher }))
+      map(([schedule, practicals, students, userId, isTeacher, testsCount]) => ({ schedule, practicals, students, userId, isTeacher, testsCount }))
     );
 
     this.subs.add(
@@ -71,17 +73,34 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     return practicals.map((p, index) => ({ head: p.PracticalId.toString(), text: p.ShortName, tooltip: p.Theme }));
   }
 
-  getDisplayColumns(practicals: Practical[]): string[] {
-    return ['position', 'name', ...practicals.map(l => l.PracticalId.toString()), 'total-practical', 'total-test', 'total'];
+  getDisplayColumns(practicals: Practical[], testsCount: number): string[] {
+    const initColumns = ['position', 'name', ...practicals.map(l => l.PracticalId.toString())];
+    if (practicals.length) {
+      initColumns.push('total-practical');
+    }
+    if (testsCount) {
+      initColumns.push('total-test');
+    }
+    if (practicals.length || testsCount) {
+      initColumns.push('total');
+    }
+    return initColumns;
   }
 
-  getTotal(student: StudentMark): number {
-    if (student.TestMark === null || student.TestMark === '') {
-      return +student.PracticalsMarkTotal;
+  getTotal(student: StudentMark, testsCount: number): number {
+    let totalMark = 0;
+    if (testsCount && student.TestsPassed && student.PracticalsMarks.length) {
+      totalMark = ((Number(student.PracticalsMarkTotal) + Number(student.TestMark)) / 2)
     }
-    const mark = ((Number(student.PracticalsMarkTotal) + Number(student.TestMark)) / 2)
-    return Math.round(mark * 10) / 10;
+    else if (testsCount && student.TestsPassed) {
+      totalMark = +student.TestMark;
+    }
+    else if (student.PracticalsMarks.length) {
+      totalMark = +student.PracticalsMarkTotal;
+    }
+    return Math.round(totalMark * 10) / 10;
   }
+
 
   setMark(student: StudentMark, practicalId: number, recommendedMark: string) {
     const mark = student.PracticalsMarks.find(mark => mark.PracticalId === +practicalId);
@@ -120,8 +139,8 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
     return this.translate.transform('text.subjects.results.protected', `Защищено ${actualCount} работ из ${jobsCount}`, { actualCount: actualCount.toString(), jobsCount: jobsCount.toString() }); 
   }
 
-  getTestsPassedTooltip(student: StudentMark) {
-    return this.translate.transform('text.subjects.tests.written', `Написано ${student.TestsPassed} тестов из ${student.Tests}`, { actualCount: student.TestsPassed.toString(), testsCount: student.Tests.toString() });
+  getTestsPassedTooltip(student: StudentMark, testsCount: number) {
+    return this.translate.transform('text.subjects.tests.written', `Написано ${student.TestsPassed} тестов из ${testsCount}`, { actualCount: student.TestsPassed.toString(), testsCount: testsCount.toString() });
   }
 
   getMissingTooltip(marks: PracticalVisitingMark[], schedule: ScheduleProtectionPractical[]) {

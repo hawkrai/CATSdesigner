@@ -1,17 +1,25 @@
 import { Directive, Input } from "@angular/core";
-import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from "@angular/forms";
-import { Subject } from "src/app/models/subject.model";
+import { AbstractControl, AsyncValidator, NG_ASYNC_VALIDATORS, ValidationErrors } from "@angular/forms";
+import { Observable } from "rxjs";
+import { debounceTime, map } from "rxjs/operators";
+import { SubjectService } from "src/app/services/subject.service";
 
 @Directive({
   selector: '[subjectAbbreviationFree]',
-  providers: [{provide: NG_VALIDATORS, useExisting: SubjectAbbreviationFreeDirective, multi: true}]
+  providers: [{provide: NG_ASYNC_VALIDATORS, useExisting: SubjectAbbreviationFreeDirective, multi: true}]
 })
-export class SubjectAbbreviationFreeDirective implements Validator {
-  @Input('subjectAbbreviationFree') subjects: Subject[] = [];
-  @Input() subjectId?: number;
+export class SubjectAbbreviationFreeDirective implements AsyncValidator {
+  @Input('subjectAbbreviationFree') subjectId: number;
 
-  validate(control: AbstractControl): ValidationErrors | null {
-    const value = control.value ? control.value.toLowerCase() : control.value;
-    return this.subjects.some(x => x.Name.toLowerCase() === value && x.SubjectId !== this.subjectId) ? { subjectAbbreviationFree: true } : null;
+  constructor(private subjectsService: SubjectService) {}
+
+  validate(control: AbstractControl): Observable<ValidationErrors | null> {
+    const value = control.value ? control.value.toLowerCase() : '';
+
+    return this.subjectsService.isUniqueSubjectAbbreviation(value, this.subjectId ? this.subjectId : 0)
+      .pipe(
+        debounceTime(500),
+        map(({ IsUnique }) => IsUnique ? null : { subjectAbbreviationFree: true })
+      );
   }
 }

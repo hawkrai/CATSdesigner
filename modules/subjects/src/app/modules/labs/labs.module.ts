@@ -15,7 +15,6 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ResultPipe} from './components/results/result.pipe/result.pipe';
 import {MarkPropertyPipe} from './components/results/mark-property.pipe/mark-property.pipe';
 import {VisitPipe} from './components/results/visit.pipe/visit.pipe';
-import {CheckPlagiarismStudentComponent} from './components/job-protection/check-plagiarism-student/check-plagiarism-student.component';
 import { VisitDateLabsPopoverComponent } from './components/protection-schedule/visit-date-labs-popover/visit-date-labs-popover.component';
 import { StudentJobProtectionComponent } from './components/job-protection/student-job-protection/student-job-protection.component';
 import { TeacherJobProtectionComponent } from './components/job-protection/teacher-job-protection/teacher-job-protection.component';
@@ -33,7 +32,6 @@ import { LabsRoutingModule } from './labs-routing.module';
     JobProtectionComponent,
     LabWorkPopoverComponent,
     AddLabPopoverComponent,
-    CheckPlagiarismStudentComponent,
     ResultPipe,
     MarkPropertyPipe,
     VisitPipe,
@@ -45,7 +43,6 @@ import { LabsRoutingModule } from './labs-routing.module';
   entryComponents: [
     LabWorkPopoverComponent,
     AddLabPopoverComponent,
-    CheckPlagiarismStudentComponent,
     VisitDateLabsPopoverComponent
   ],
   imports: [

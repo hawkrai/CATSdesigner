@@ -8,5 +8,8 @@
     {
         [DataMember]
         public List<GroupsViewData> Groups { get; set; } 
+
+        [DataMember]
+        public bool HasInactiveGroups { get; set; }
     }
 }

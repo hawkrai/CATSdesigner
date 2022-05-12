@@ -5,6 +5,7 @@ using System.Linq;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Helpers;
+using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.PracticalManagement;
@@ -13,6 +14,7 @@ using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Services.Modules.CoreModels;
+using LMPlatform.UI.Services.Modules.Labs;
 using LMPlatform.UI.Services.Modules.Practicals;
 using LMPlatform.UI.Services.Modules.Schedule;
 using Newtonsoft.Json;
@@ -45,6 +47,10 @@ namespace LMPlatform.UI.Services.Practicals
         private readonly LazyDependency<ITestPassingService> testPassingService = new LazyDependency<ITestPassingService>();
 
         public ITestPassingService TestPassingService => testPassingService.Value;
+
+        private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
+
+        public IFilesManagementService FilesManagementService => filesManagementService.Value;
 
         private const int PracticalModuleId = 13;
 
@@ -200,13 +206,13 @@ namespace LMPlatform.UI.Services.Practicals
                     PracticalsMarks = studentViewData.StudentPracticalMarks,
                     AllTestsPassed = studenTestsPassResults.Count == testsResults.Tests.Count,
                     TestsPassed = studenTestsPassResults.Count,
-                    Tests = testsResults.Tests.Count
                 });
             }
 
             return new StudentsMarksResult
             {
                 Students = marks,
+                TestsCount = testsResults.Tests.Count,
                 Message = "",
                 Code = "200"
             };
@@ -234,19 +240,11 @@ namespace LMPlatform.UI.Services.Practicals
                     var currentStudentId = studentsId[i];
                     var currentId = Id[i];
                     var showForStudent = showForStudents[i];
+                    var student = students.FirstOrDefault(x => x.StudentId == currentStudentId);
 
-                    foreach (var student in students)
+                    if (student != null && student.PracticalVisitingMark.Any(x => x.ScheduleProtectionPracticalId == dateId))
                     {
-                        if (student.StudentId == currentStudentId)
-                        {
-                            foreach (var practicalVisiting in student.PracticalVisitingMark)
-                            {
-                                if (practicalVisiting.ScheduleProtectionPracticalId == dateId)
-                                {
-                                    SubjectManagementService.SavePracticalVisitingData(new ScheduleProtectionPracticalMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
-                                }
-                            }
-                        }
+                        SubjectManagementService.SavePracticalVisitingData(new ScheduleProtectionPracticalMark(currentId, currentStudentId, currentComment, currentMark, dateId, showForStudent));
 
                     }
                 }
@@ -343,9 +341,10 @@ namespace LMPlatform.UI.Services.Practicals
             try
             {
                 var practicals = PracticalManagementService.GetPracticals(new Query<Practical>(e => e.SubjectId == subjectId)).OrderBy(e => e.Order).ToList();
+                var subjectOwner = SubjectManagementService.GetSubjectOwner(subjectId);
                 var groupProtectionSchedule = GroupManagementService.GetGroup(
                     new Query<Group>(e => e.Id == groupId)
-                    .Include(x => x.ScheduleProtectionPracticals)
+                    .Include(x => x.ScheduleProtectionPracticals.Select(x => x.Lecturer.User))
                     ).ScheduleProtectionPracticals.ToList();
 
                 var practicalsViewData = practicals.Select(e => new PracticalsViewData(e) {
@@ -360,19 +359,16 @@ namespace LMPlatform.UI.Services.Practicals
                 foreach (var practical in practicalsViewData)
                 {
                     var mark = 10;
-                    durationCount += practical.Duration / 2;
+                    durationCount += practical.Duration;
                     for (int i = 0; i < practical.ScheduleProtectionPracticalsRecommended.Count; i++)
                     {
-                        if (i + 1 > durationCount - (practical.Duration / 2))
+                        if (i >= durationCount - practical.Duration)
                         {
                             practical.ScheduleProtectionPracticalsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
 
-                            if (i + 1 >= durationCount)
+                            if (mark != 1)
                             {
-                                if (mark != 1)
-                                {
-                                    mark -= 1;
-                                }
+                                mark -= 1;
                             }
                         }
                     }
@@ -381,7 +377,14 @@ namespace LMPlatform.UI.Services.Practicals
                 return new PracticalsResult
                 {
                     Practicals = practicalsViewData.ToList(),
-                    ScheduleProtectionPracticals = groupProtectionSchedule.Select(e => new ScheduleProtectionPracticalViewData(e)).ToList(),
+                    ScheduleProtectionPracticals = groupProtectionSchedule.Select(e =>
+                    {
+                        if (e.Lecturer == null)
+                        {
+                            e.Lecturer = subjectOwner;
+                        }
+                        return new ScheduleProtectionPracticalViewData(e);
+                    }).ToList(),
                     Message = "Практические работы успешно загружены",
                     Code = "200"
                 };
@@ -425,6 +428,113 @@ namespace LMPlatform.UI.Services.Practicals
                     Code = "500"
                 };
             }
+        }
+
+        public UserLabFilesResult GetUserPracticalFiles(int userId, int subjectId)
+        {
+            try
+            {
+                var labFiles = PracticalManagementService.GetUserPracticalFiles(userId, subjectId);
+                var model = labFiles
+                    .GroupBy(x => x.Lab?.Order)
+                    .OrderBy(x => x.Key)
+                    .SelectMany(x => x.OrderBy(x => x.Date))
+                    .Select(e => new UserLabFileViewData
+                    {
+                        PracticalShortName = e.Practical?.ShortName,
+                        PracticalTheme = e.Lab?.Theme,
+                        Order = e.Practical?.Order,
+                        Comments = e.Comments,
+                        Id = e.Id,
+                        PathFile = e.Attachments,
+                        IsReceived = e.IsReceived,
+                        IsReturned = e.IsReturned,
+                        PracticalId = e.PracticalId,
+                        UserId = e.UserId,
+                        Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+                        Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList()
+                    }).ToList();
+                return new UserLabFilesResult
+                {
+                    UserLabFiles = model,
+                    Message = "Данные получены",
+                    Code = "200"
+                };
+            }
+            catch
+            {
+                return new UserLabFilesResult
+                {
+                    Message = "Произошла ошибка при получении данных",
+                    Code = "500"
+                };
+            }
+        }
+
+        public HasGroupsJobProtectionViewData HasSubjectPracticalsJobProtection(int subjectId, bool isActive)
+        {
+            var groups = SubjectManagementService.GetSubjectGroups(new Query<SubjectGroup>(x => x.SubjectId == subjectId && x.IsActiveOnCurrentGroup == isActive));
+            return new HasGroupsJobProtectionViewData
+            {
+                HasGroupsJobProtection = groups.Select(x => new HasGroupJobProtectionViewData
+                {
+                    GroupId = x.GroupId,
+                    HasJobProtection = PracticalManagementService.HasSubjectProtection(x.GroupId, subjectId)
+                })
+            };
+        }
+
+        public GroupJobProtectionViewData GetGroupJobProtection(int subjectId, int groupId)
+        {
+            var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
+                .Include(x => x.SubjectStudents.Select(x => x.Student))
+                .Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
+
+            var studentJobProtection = new List<StudentJobProtectionViewData>();
+            var studentsLabFiles = PracticalManagementService.GetGroupPracticalFiles(subjectId, groupId);
+
+            foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
+            {
+                studentJobProtection.Add(new StudentJobProtectionViewData
+                {
+                    StudentId = subjectStudent.StudentId,
+                    StudentName = subjectStudent.Student.FullName,
+                    GroupId = groupId,
+                    HasProtection = studentsLabFiles.Any(x => x.UserId == subjectStudent.StudentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
+                });
+            }
+            return new GroupJobProtectionViewData
+            {
+                StudentsJobProtections = studentJobProtection
+            };
+        }
+
+        public StudentJobProtectionViewData GetStudentJobProtection(int subjectId, int groupId, int studentId)
+        {
+            var group = SubjectManagementService.GetSubjectGroup(new Query<SubjectGroup>(x => x.GroupId == groupId && x.SubjectId == subjectId)
+                .Include(x => x.SubjectStudents.Select(x => x.Student))
+                .Include(x => x.SubjectStudents.Select(x => x.SubGroup)));
+
+            var subjectStudent = group.SubjectStudents.FirstOrDefault(x => x.Student.Confirmed.HasValue && x.Student.Confirmed.Value && x.StudentId == studentId);
+
+            if (subjectStudent == null)
+            {
+                return new StudentJobProtectionViewData
+                {
+                    Code = "500"
+                };
+            }
+
+            var studentsLabFiles = PracticalManagementService.GetStudentLabFiles(subjectId, studentId);
+
+            return new StudentJobProtectionViewData
+            {
+                StudentId = studentId,
+                StudentName = subjectStudent.Student.FullName,
+                GroupId = groupId,
+                HasProtection = studentsLabFiles.Any(x =>
+                    x.UserId == studentId && !x.IsReceived && !x.IsReturned && !x.IsCoursProject)
+            };
         }
     }
 }

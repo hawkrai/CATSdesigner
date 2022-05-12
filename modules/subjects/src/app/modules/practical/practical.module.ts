@@ -15,6 +15,11 @@ import { MarkPropertyPipe } from './pipes/mark-property.pipe';
 import { ResultPipe } from './pipes/result.pipe';
 import { VisitPipe } from './pipes/visit.pipe';
 import { PracticalRoutingModule } from './practical-routing.module';
+import { AddPracticalPopoverComponent } from './components/job-protection/add-practical-popover/add-practical-popover.component';
+import { StudentJobProtectionComponent } from './components/job-protection/student-job-protection/student-job-protection.component';
+import { JobProtectionContentComponent } from './components/job-protection/job-protection-content/job-protection-content.component';
+import { TeacherJobProtectionComponent } from './components/job-protection/teacher-job-protection/teacher-job-protection.component';
+import { JobProtectionComponent } from './components/job-protection/job-protection.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +32,12 @@ import { PracticalRoutingModule } from './practical-routing.module';
     ResultsComponent, 
     MarkPropertyPipe,
     ResultPipe, 
-    VisitPipe
+    VisitPipe,
+    AddPracticalPopoverComponent,
+    JobProtectionContentComponent,
+    StudentJobProtectionComponent,
+    TeacherJobProtectionComponent,
+    JobProtectionComponent
   ],
   imports: [
     PracticalRoutingModule,
@@ -40,7 +50,8 @@ import { PracticalRoutingModule } from './practical-routing.module';
   ],
   entryComponents: [
     PracticalLessonPopoverComponent,
-    VisitDatePracticalsPopoverComponent
+    VisitDatePracticalsPopoverComponent,
+    AddPracticalPopoverComponent
   ],
 })
 export class PracticalModule { }
