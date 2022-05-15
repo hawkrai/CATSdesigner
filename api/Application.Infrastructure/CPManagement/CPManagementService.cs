@@ -13,11 +13,16 @@ using System.Collections.Generic;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.Export;
+using Application.Infrastructure.LecturerManagement;
 
 namespace Application.Infrastructure.CPManagement
 {
     public class CPManagementService: ICPManagementService
     {
+        private readonly LazyDependency<ILecturerManagementService> lecturerManagementService = new();
+
+        public ILecturerManagementService LecturerManagementService => lecturerManagementService.Value;
+
         public PagedList<CourseProjectData> GetProjects(int userId, GetPagedListParams parms)
         {
             var subjectId = int.Parse(parms.Filters["subjectId"]);
@@ -32,12 +37,14 @@ namespace Application.Infrastructure.CPManagement
 
             if (user != null && user.Lecturer != null)
             {
-                    query = query.Where(x => x.LecturerId == userId).Where(x => x.SubjectId == subjectId);
+                var joinedLectorsIds = LecturerManagementService.GetJoinedLector(subjectId)
+                    .GroupBy(x => x.Id).Select(x => x.First().Id).ToList();
+                    query = query.Where(x => x.SubjectId == subjectId && joinedLectorsIds.Any(id => id == x.LecturerId));
             }
 
             if (user != null && user.Student != null)
             {
-                    query = query.Where(x => x.CourseProjectGroups.Any(dpg => dpg.GroupId == user.Student.GroupId)).Where(x => x.SubjectId == subjectId);
+                    query = query.Where(x => x.SubjectId == subjectId && x.CourseProjectGroups.Any(dpg => dpg.GroupId == user.Student.GroupId));
             }
 
             if (searchString.Length > 0)
