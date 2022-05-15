@@ -35,7 +35,7 @@ namespace LMPlatform.UI.Services.Statistics
 
 
 
-        public TeacherStatisticsViewData GetTeacherStatistics()
+        public TeacherStatisticsViewData GetTeacherStatistics(int page, int pageSize)
         {
             if (UserContext.Role != "lector")
             {
@@ -45,6 +45,17 @@ namespace LMPlatform.UI.Services.Statistics
                     Message = ""
                 };
             }
+
+            if (page < 0)
+            {
+                page = 0;
+            }
+
+            if (pageSize < 0)
+            {
+                pageSize = 0;
+            }
+            
             var subjects = SubjectManagementService.GetSubjects(new Query<Subject>(x => !x.IsArchive && x.SubjectLecturers.Any(sl => sl.LecturerId == UserContext.CurrentUserId))
                 .Include(x => x.Labs)
                 .Include(x => x.Practicals)
@@ -53,19 +64,26 @@ namespace LMPlatform.UI.Services.Statistics
                 .Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.ScheduleProtectionLabs)))
                 .Include(x => x.SubjectGroups.Select(g => g.SubGroups.Select(sg => sg.SubjectStudents)))
                 .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.CoursePercentagesResults.Select(r => r.CoursePercentagesGraph))))
-                .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.StudentLabMarks))));
+                .Include(x => x.SubjectGroups.Select(g => g.SubjectStudents.Select(s => s.Student.StudentLabMarks)))
+                .Include(x => x.SubjectTests.Select(x => x.PassResults)))
+                .Skip(page <= 0 ? 0 : (page - 1) * pageSize);
+
+            if (pageSize > 0)
+            {
+                subjects = subjects.Take(pageSize);
+            }
 
             var subjectStatistics = new List<SubjectStatisticsViewResult>();
 
             foreach(var subject in subjects)
             {
                 var marks = new List<StudentMark>();
-                var controlTests = TestsManagementService.GetTestsForSubject(subject.Id).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
+                var controlTests = subject.SubjectTests.Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
                 foreach(var group in subject.SubjectGroups)
                 {
                     foreach (var student in group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName))
                     {
-                        var studentViewData = new StudentsViewData(TestPassingService.GetStidentResults(subject.Id, student.Id).Where(x => controlTests.Any(y => y.Id == x.TestId)).ToList(), 
+                        var studentViewData = new StudentsViewData(controlTests.SelectMany(x => x.PassResults).Where(x => x.StudentId == student.Id).ToList(), 
                             student, labs: subject.Labs, practicals: subject.Practicals);
 
                         marks.Add(new StudentMark

@@ -14,7 +14,7 @@ namespace LMPlatform.UI.Services.Statistics
     public interface IStatisticsService
     {
         [OperationContract]
-        [WebInvoke(UriTemplate = "/GetTeacherStatistics", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-        TeacherStatisticsViewData GetTeacherStatistics();
+        [WebInvoke(UriTemplate = "/GetTeacherStatistics?pager={page}&pageSize={pageSize}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
+        TeacherStatisticsViewData GetTeacherStatistics(int page, int pageSize);
     }
 }
