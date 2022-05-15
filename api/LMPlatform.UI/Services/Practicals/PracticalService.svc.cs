@@ -187,7 +187,7 @@ namespace LMPlatform.UI.Services.Practicals
 
             var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
             var scheduleProtectionPracticalMarksGroup = subject.ScheduleProtectionPracticals.Where(x => x.GroupId == groupId);
-            var students = group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName);
+            var students = group.SubjectStudents.Select(x => x.Student).Where(x => x.Confirmed.HasValue && x.Confirmed.Value).OrderBy(x => x.LastName);
 
             var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
 
@@ -352,7 +352,7 @@ namespace LMPlatform.UI.Services.Practicals
                     {
                         ScheduleProtectionId = x.Id,
                         Mark = string.Empty
-                    })?.ToList() ?? new List<ScheduleProtectionLesson>()
+                    })?.ToList()
                 }).ToList();
                 var durationCount = 0;
 
