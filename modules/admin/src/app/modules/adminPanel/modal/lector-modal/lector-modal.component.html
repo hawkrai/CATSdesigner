@@ -46,11 +46,19 @@
           </mat-form-field>
           
           <div class="checkbox">
+            <mat-checkbox formControlName="IsLecturerHasGraduateStudents">Руководитель дипломного проекта</mat-checkbox>
+        </div>
+          <div class="checkbox">
               <mat-checkbox formControlName="IsSecretary">Секретарь ГЭК</mat-checkbox>
           </div>
-          <div class="checkbox">
-              <mat-checkbox formControlName="IsLecturerHasGraduateStudents">Руководитель дипломного проекта</mat-checkbox>
-          </div>
+          
+
+          <mat-form-field *ngIf ="this.form.controls.IsSecretary.value" appearance="fill">
+            <mat-label>Группы секретаря ГЭК</mat-label>
+            <mat-select [formControl]="this.form.controls.SecGroupsIds" multiple>
+              <mat-option *ngFor="let group of this.groups" [value]="group.Id">{{group.Name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
 
       </mat-dialog-content>
       <mat-dialog-actions>

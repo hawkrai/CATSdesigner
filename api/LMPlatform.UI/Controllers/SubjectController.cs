@@ -265,6 +265,41 @@ namespace LMPlatform.UI.Controllers
             return new FileStreamResult(memoryStream, "application/zip") {FileDownloadName = groups.Name + ".zip"};
         }
 
+        public FileResult GetZipPracticals(int id, int subjectId)
+        {
+            var zip = new ZipFile(Encoding.UTF8);
+
+            var groups = this.SubjectManagementService.GetGroup(id);
+            var created = new List<string>();
+            foreach (var group in groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value))
+            {
+                var model = this.SubjectManagementService.GetUserPracticalFiles(group.Id, subjectId).Where(e => e.IsReceived);
+
+                var attachments = new List<Attachment>();
+
+                foreach (var data in model)
+                {
+                    attachments.AddRange(this.FilesManagementService.GetAttachments(data.Attachments));
+                }
+
+                if (created.All(e => e != group.FullName.Replace(" ", "_")))
+                {
+                    UtilZip.CreateZipFile(ConfigurationManager.AppSettings["FileUploadPath"], zip, attachments,
+                        group.FullName.Replace(" ", "_"));
+                    created.Add(group.FullName.Replace(" ", "_"));
+                }
+            }
+
+            var memoryStream = new MemoryStream();
+
+            zip.Save(memoryStream);
+
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            return new FileStreamResult(memoryStream, "application/zip") { FileDownloadName = groups.Name + ".zip" };
+        }
+
+
         public FileResult GetStudentZipLabs(int id, int subjectId, int userId)
         {
             var zip = new ZipFile(Encoding.UTF8);

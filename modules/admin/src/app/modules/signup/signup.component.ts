@@ -88,6 +88,17 @@ export class SignupComponent implements OnInit {
     return control.invalid && control.touched;
   }
 
+  deleteSpaces() {
+    if(this.form.controls.Name != null)
+      this.form.controls.Name.setValue(this.form.controls.Name.value.replace(' ',''));
+    if(this.form.controls.Surname != null)
+      this.form.controls.Surname.setValue(this.form.controls.Surname.value.replace(' ',''));
+    if(this.form.controls.Name != null)
+      this.form.controls.Patronymic.setValue(this.form.controls.Patronymic.value.replace(' ',''));   
+    if(this.form.controls.SecretAnswer != null)
+      this.form.controls.SecretAnswer.setValue(this.form.controls.SecretAnswer.value.replace(' ',''));  
+  }
+
   register() {
     const resultObject = new RegisterModel();
     const controls = this.form.controls;

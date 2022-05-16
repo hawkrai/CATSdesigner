@@ -23,6 +23,10 @@ export class GroupService {
         return this.http.get<Group[]>(this.api + 'GetGroupsJson');
     }
 
+    getGraduateGroups(): Observable<Group[]> {
+        return this.http.get<Group[]>(this.api + 'getGraduateGroupsJson');
+    }
+
     getGroupById(groupId): Observable<Group> {
         return this.http.get<Group>(this.api + 'GetGroupJson/' + groupId);
     }

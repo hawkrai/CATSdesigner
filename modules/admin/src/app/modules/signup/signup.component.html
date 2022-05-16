@@ -42,21 +42,21 @@
                             <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')">Пароли не совпадают</mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Фамилия" formControlName="Surname" maxlength="30">
+                            <input matInput placeholder="Фамилия" formControlName="Surname" (input)="deleteSpaces()" maxlength="30">
                             <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('Surname', 'minlength')">Вы ввели меньше 3 символов</mat-error>
                             <mat-error *ngIf="hasError('Surname', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
                             <mat-error *ngIf="hasError('Surname', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Имя" formControlName="Name" maxlength="30">
+                            <input matInput placeholder="Имя" formControlName="Name" (input)="deleteSpaces()" maxlength="30">
                             <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('Name', 'minlength')">Вы ввели меньше 3 символов</mat-error>
                             <mat-error *ngIf="hasError('Name', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
                             <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Отчество" formControlName="Patronymic" maxlength="30">
+                            <input matInput placeholder="Отчество" formControlName="Patronymic" (input)="deleteSpaces()" maxlength="30">
                             <mat-error *ngIf="hasError('Patronymic', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
                             <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
                         </mat-form-field>

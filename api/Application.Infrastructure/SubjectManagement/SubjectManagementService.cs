@@ -589,7 +589,18 @@ namespace Application.Infrastructure.SubjectManagement
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
-			userLabFiles.Lab = repositoriesContainer.LabsRepository.GetBy(new Query<Labs>(x => x.Id == userLabFiles.LabId));
+
+            if (userLabFiles.LabId.HasValue)
+            {
+                userLabFiles.Lab = repositoriesContainer.LabsRepository.GetBy(new Query<Labs>(x => x.Id == userLabFiles.LabId));
+
+			} else if (userLabFiles.PracticalId.HasValue)
+            {
+                userLabFiles.Practical =
+                    repositoriesContainer.PracticalRepository.GetBy(new Query<Practical>(x =>
+                        x.Id == userLabFiles.PracticalId));
+
+            }
 			repositoriesContainer.RepositoryFor<UserLabFiles>().Save(userLabFiles);
 			repositoriesContainer.ApplyChanges();
 
@@ -762,19 +773,32 @@ namespace Application.Infrastructure.SubjectManagement
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			if (userId == 0)
 			{
-				return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId)).ToList();
+				return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && (e.LabId.Value > 0 || e.LabId.Value <= 0 && e.PracticalId.Value <= 0) && !e.IsCoursProject)).ToList();
 			}
 
-			return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId)).ToList();
+			return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && (e.LabId.Value > 0 || e.LabId.Value <= 0 && e.PracticalId.Value <= 0) && !e.IsCoursProject)).ToList();
 		}
 
-		public List<UserLabFiles> GetGroupLabFiles(int subjectId, int groupId)
+        public List<UserLabFiles> GetUserPracticalFiles(int userId, int subjectId)
         {
-			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-			return repositoriesContainer.RepositoryFor<UserLabFiles>()
-				.GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.User.Student.GroupId == groupId && !e.IsCoursProject && e.LabId.Value > 0))
-				.ToList();
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            if (userId == 0)
+            {
+                return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.PracticalId.Value > 0)).ToList();
+            }
 
+            return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && e.PracticalId.Value > 0)).ToList();
+        }
+
+		public List<UserLabFiles> GetUserCourseFiles(int userId, int subjectId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            if (userId == 0)
+            {
+                return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.SubjectId == subjectId && e.IsCoursProject)).ToList();
+            }
+
+            return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId && e.IsCoursProject)).ToList();
 		}
 
 		public UserLabFiles GetUserLabFile(int id)
@@ -999,7 +1023,7 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public void UpdateUserLabFile(int userFileId, bool isReceived = false, bool isReturned = false)
+		public void UpdateUserFile(int userFileId, bool isReceived = false, bool isReturned = false)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			var userFile = repositoriesContainer.RepositoryFor<UserLabFiles>()
@@ -1356,7 +1380,7 @@ namespace Application.Infrastructure.SubjectManagement
 
 		}
 
-		public IEnumerable<SubjectGroup> GetSubjectGroups(IQuery<SubjectGroup> query)
+        public IEnumerable<SubjectGroup> GetSubjectGroups(IQuery<SubjectGroup> query)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 

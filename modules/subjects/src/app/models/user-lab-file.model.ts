@@ -13,4 +13,7 @@ export class UserLabFile {
     LabShortName?: string;
     Order?: number;
     LabTheme?: string;
+    PracticalId?: number;
+    PracticalShortName?: string;
+    PracticalTheme?: string;
 }

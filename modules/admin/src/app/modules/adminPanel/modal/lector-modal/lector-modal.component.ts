@@ -47,7 +47,8 @@ export class LectorModalComponent implements OnInit {
         Validators.pattern(nameRegExp)]),
       Patronymic: new FormControl('', [Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      IsSecretary: new FormControl(false),
+      IsSecretary: new FormControl(this.professor.IsSecretary? true : false),
+      SecGroupsIds: new FormControl(this.professor.SecretaryGroupsIds),
       IsLecturerHasGraduateStudents: new FormControl(false)
     }, {
       validator: MustMatch('Password', 'ConfirmPassword')
@@ -89,7 +90,7 @@ export class LectorModalComponent implements OnInit {
   }
 
   getGroups() {
-    this.groupService.getGroups().subscribe(items => {
+    this.groupService.getGraduateGroups().subscribe(items => {
       this.groups = items;
       this.isLoad = true;
     });
@@ -119,6 +120,7 @@ export class LectorModalComponent implements OnInit {
     object.ConfirmPassword = this.form.controls.ConfirmPassword.value;
     object.Surname = this.form.controls.Surname.value;
     object.Name = this.form.controls.Name.value || '';
+    object.SelectedGroupIds = this.form.controls.SecGroupsIds.value;
     object.Patronymic = this.form.controls.Patronymic.value || '';
     object.IsSecretary = this.form.controls.IsSecretary.value;
     object.IsLecturerHasGraduateStudents = this.form.controls.IsLecturerHasGraduateStudents.value;

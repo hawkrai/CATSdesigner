@@ -12,6 +12,7 @@ import * as groupsSelectors from '../selectors/groups.selectors';
 import * as filesActions from '../actions/files.actions';
 import * as catsActions from '../actions/cats.actions';
 import { ScheduleService } from 'src/app/services/schedule.service';
+import { generateCreateDateException } from 'src/app/utils/exceptions';
 
 @Injectable()
 export class LecturesEffects {
@@ -89,10 +90,10 @@ export class LecturesEffects {
     ofType(lecturesActions.createDateVisit),
     withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
     switchMap(([{ obj }, subjectId]) => this.scheduleService.createLectureDateVisit({ ...obj, subjectId }).pipe(
-      map(() => lecturesActions.loadCalendar())
+      switchMap((body) => [catsActions.showMessage({ body: { ...body, Message: body.Code === '200' ? body.Message : generateCreateDateException(body) } }) , lecturesActions.loadCalendar()])
     ))
   ));
-
+  
   deleteDateVisit$ = createEffect(() => this.actions$.pipe(
     ofType(lecturesActions.deleteDateVisit),
     switchMap(({ id }) => this.scheduleService.deleteLectureDateVisit(id).pipe(

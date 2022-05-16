@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { JobProtectionComponent } from "./components/job-protection/job-protection.component";
 import { PracticalLessonsComponent } from "./components/practical-lessons/practical-lessons.component";
 import { PracticalProtectionScheduleComponent } from "./components/practical-protection-schedule/practical-protection-schedule.component";
 import { ResultsComponent } from "./components/results/results.component";
@@ -31,6 +32,10 @@ const routes: Routes = [
             {
                 path: 'results',
                 component: ResultsComponent
+            },
+            {
+                path: 'job-protection',
+                component: JobProtectionComponent
             }
         ]
     }

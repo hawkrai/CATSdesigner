@@ -7,6 +7,10 @@ import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.mod
 import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
 import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
+import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model';
+import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
+import { UserLabFile } from 'src/app/models/user-lab-file.model';
+import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 
 @Injectable({
   providedIn: 'root'
@@ -75,5 +79,46 @@ export class PracticalRestService {
       .set('subjectId', subjetId.toString())
       .set('groupId', groupId.toString());
     return this.http.get('Statistic/GetVisitPracticals', { params, responseType: 'blob', observe: 'response' });
+  }
+
+  public hasJobProtections(subjectId: number, isActive: boolean): Observable<HasGroupJobProtection[]> {
+    const params = new HttpParams()
+      .set('subjectId', subjectId.toString())
+      .set('isActive', String(isActive));
+    
+    return this.http.get('Services/Practicals/PracticalService.svc/HasSubjectPracticalsJobProtection', { params }).pipe(
+      map(response => response['HasGroupsJobProtection'])
+    );
+  }
+
+  public getGroupJobProtection(subjectId: number, groupId: number): Observable<GroupJobProtection> {
+    const params = new HttpParams()
+      .append('subjectId', subjectId.toString())
+      .append('groupId', groupId.toString());
+    return this.http.get<GroupJobProtection>('Services/Practicals/PracticalService.svc/GroupJobProtection', { params });
+  }
+
+  public getUserPracticalFiles(userId: number, subjectId: number): Observable<UserLabFile[]> {
+    const params = new HttpParams()
+    .append('userId', userId.toString())
+    .append('subjectId', subjectId.toString());
+    return this.http.get('Services/Practicals/PracticalService.svc/GetUserPracticalFiles', { params }).pipe(
+      map(res => res['UserLabFiles'])
+    );
+  }
+
+  public getPracticalsZip(subjectId: number, groupId: number): Observable<HttpResponse<ArrayBuffer>> {
+    const params = new HttpParams()
+      .set('id', groupId.toString())
+      .set('subjectId', subjectId.toString());
+    return this.http.get('Subject/GetZipPracticals', { params, responseType: 'arraybuffer', observe: 'response' });
+  }
+
+  public getStudentJobProtection(subjectId: number, groupId: number, studentId: number): Observable<StudentJobProtection> {
+    const params = new HttpParams()
+      .append('subjectId', subjectId.toString())
+      .append('studentId', studentId.toString())
+      .append('groupId', groupId.toString());
+    return this.http.get<StudentJobProtection>('Services/Practicals/PracticalService.svc/StudentJobProtection', { params });
   }
 }

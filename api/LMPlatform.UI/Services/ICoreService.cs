@@ -91,6 +91,6 @@ namespace LMPlatform.UI.Services
 		[OperationContract]
 		[WebInvoke(UriTemplate = "/GetUserSubjectGroup?subjectId={subjectId}&userId={userId}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
 		GroupResult GetUserSubjectGroup(int subjectId, int userId);
-			
-	}
+
+    }
 }

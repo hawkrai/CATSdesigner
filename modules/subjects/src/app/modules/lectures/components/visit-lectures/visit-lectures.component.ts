@@ -20,6 +20,7 @@ import * as groupsSelectors from '../../../../store/selectors/groups.selectors';
 import * as subjectSelectors from '../../../../store/selectors/subject.selector';
 import { TranslatePipe } from 'educats-translate';
 import { SubSink } from 'subsink';
+import { Lecture } from 'src/app/models/lecture.model';
 
 @Component({
   selector: 'app-visit-lectures',
@@ -28,7 +29,7 @@ import { SubSink } from 'subsink';
 })
 export class VisitLecturesComponent implements OnInit, OnDestroy {
   
-  state$: Observable<{ calendar: Calendar[], groupsVisiting: GroupsVisiting, isTeacher: boolean }>;
+  state$: Observable<{ calendar: Calendar[], groupsVisiting: GroupsVisiting, isTeacher: boolean, lectures: Lecture[] }>;
   subs = new SubSink();
   constructor(
     private store: Store<IAppState>,
@@ -38,12 +39,14 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(lecturesActions.loadCalendar());
+    this.store.dispatch(lecturesActions.loadLectures());
     this.state$ = combineLatest(
       this.store.select(lecturesSelectors.getCalendar),
       this.store.select(lecturesSelectors.getGroupsVisiting),
-      this.store.select(subjectSelectors.isTeacher)
+      this.store.select(subjectSelectors.isTeacher),
+      this.store.select(lecturesSelectors.getLectures)
     ).pipe(
-      map(([calendar, groupsVisiting, isTeacher]) => ({ calendar, groupsVisiting, isTeacher }))
+      map(([calendar, groupsVisiting, isTeacher, lectures]) => ({ calendar, groupsVisiting, isTeacher, lectures: lectures ? lectures : [] }))
       );
     this.subs.add(
       this.store.select(groupsSelectors.getCurrentGroup).subscribe(group => {
@@ -52,6 +55,11 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
         }
       })
     )
+  }
+  
+  getHeaders(lectures: Lecture[]): { head: string, text: string, length: number, tooltip?: string }[] {
+    const defaultHeaders = [{ head: 'emptyPosition', text: '', length: 1 }, { head: 'emptyName', text: '', length: 1 }];
+    return defaultHeaders.concat(lectures.map((l, index) => ({ head: l.LecturesId.toString(), text: `Л${index + 1}`, length: Math.floor(l.Duration / 2), tooltip: l.Theme })))
   }
 
   getDisplayedColumns(calendar: Calendar[]): string[] {

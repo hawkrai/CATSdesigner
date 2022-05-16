@@ -48,6 +48,9 @@ namespace LMPlatform.Models
             set;
         }    
    
-        public ICollection<StudentPracticalMark> StudentPracticalMarks { get; set; } 
+        public ICollection<StudentPracticalMark> StudentPracticalMarks { get; set; }
+
+        public ICollection<UserLabFiles> UserPracticalFiles { get; set; }
+
     }
 }

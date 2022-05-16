@@ -30,6 +30,7 @@ interface State {
   detachedGroup: boolean;
   isTeacher: boolean;
   group: Group;
+  hasInactiveGroups: boolean
 }
 
 @Component({
@@ -70,9 +71,10 @@ export class LabsComponent implements OnInit, OnDestroy {
       this.store.select(labsSelectors.hasJobProtections),
       this.store.select(groupsSelectors.isActiveGroup),
       this.store.select(subjectSelectors.isTeacher),
-      this.store.select(groupsSelectors.getCurrentGroup)
+      this.store.select(groupsSelectors.getCurrentGroup),
+      this.store.select(groupsSelectors.hasInactiveGroups)
       ).pipe(
-        map(([groups, subjectId, hasJobProtections, isActive, isTeacher, group]) => ({ groups, subjectId, hasJobProtections, detachedGroup: !isActive, isTeacher, group })),
+        map(([groups, subjectId, hasJobProtections, isActive, isTeacher, group, hasInactiveGroups]) => ({ groups, subjectId, hasJobProtections, detachedGroup: !isActive, isTeacher, group, hasInactiveGroups })),
       );
 
   }
@@ -106,11 +108,14 @@ export class LabsComponent implements OnInit, OnDestroy {
   }
 
   refreshJobProtection() {
-    this.store.dispatch(labsActions.refreshJobProtection());
+    this.store.dispatch(labsActions.loadGroupJobProtection());
   }
 
   checkPlagiarism() {
-    this.dialogService.openDialog(CheckPlagiarismPopoverComponent);
+    const dialogData: DialogData = {
+        body: { isLab: true }
+    };
+    this.dialogService.openDialog(CheckPlagiarismPopoverComponent, dialogData);
   }
 
   visitingHelp: Help = {

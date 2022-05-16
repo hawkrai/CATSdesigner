@@ -104,10 +104,10 @@ namespace Application.Infrastructure.SubjectManagement
         List<Subject> GetSubjects();
 
 	    List<UserLabFiles> GetUserLabFiles(int userId, int subjectId);
+	    List<UserLabFiles> GetUserCourseFiles(int userId, int subjectId);
+        List<UserLabFiles> GetUserPracticalFiles(int userId, int subjectId);
 
-        List<UserLabFiles> GetGroupLabFiles(int subjectId, int groupId);
-
-		UserLabFiles GetUserLabFile(int id);
+        UserLabFiles GetUserLabFile(int id);
 
 		void DeleteUserLabFile(int id);
 
@@ -154,7 +154,7 @@ namespace Application.Infrastructure.SubjectManagement
 
 		List<ProfileCalendarModel> GetGroupsLabEvents(int groupId, int userId);
 
-		void UpdateUserLabFile(int userFileId, bool isReceived = false, bool isReturned = false);
+		void UpdateUserFile(int userFileId, bool isReceived = false, bool isReturned = false);
 
 		UserLabFiles GetUserLabFile(string path);
 

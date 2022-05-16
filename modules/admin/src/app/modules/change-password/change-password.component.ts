@@ -51,6 +51,12 @@ export class ChangePasswordComponent implements OnInit {
   cancel(){
     window.parent.location.href = "/login";  
   }
+
+  deleteSpaces() {
+    if(this.form.controls.SecretAnswer != null)
+      this.form.controls.SecretAnswer.setValue(this.form.controls.SecretAnswer.value.replace(' ',''));
+  }
+
   verify() {
     this.accountService.verifySecretQuestion(this.form.controls.Username.value,
       this.form.controls.SecretQuestion.value, this.form.controls.SecretAnswer.value).subscribe(

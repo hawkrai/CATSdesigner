@@ -19,7 +19,9 @@ namespace LMPlatform.Models
         public int? LabId { get; set; }
 
         public Labs Lab { get; set; }
+        public int? PracticalId { get; set; }
 
+        public Practical Practical { get; set; }
         public DateTime? Date { get; set; }
 
 		public bool IsReceived { get; set; }
