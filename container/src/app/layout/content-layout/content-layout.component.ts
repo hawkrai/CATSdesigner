@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CoreService } from 'src/app/core/services/core.service';
+import { VideoChatService } from './../../modules/video-chat/services/video-chat.service';
 
 @Component({
   selector: 'app-content-layout',
@@ -7,9 +8,10 @@ import { CoreService } from 'src/app/core/services/core.service';
   styleUrls: ['./content-layout.component.less']
 })
 export class ContentLayoutComponent implements OnInit {
-  
+
   constructor(
-    private coreService: CoreService
+    private coreService: CoreService,
+    private videoChatService :VideoChatService
   ) {
 
   }
@@ -17,4 +19,7 @@ export class ContentLayoutComponent implements OnInit {
     this.coreService.setupMessageCommunication();
   }
 
+  isVideoChatAvailable():boolean {
+    return this.videoChatService.isSecureConnection();
+  }
 }
