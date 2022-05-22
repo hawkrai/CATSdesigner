@@ -105,5 +105,7 @@ namespace LMPlatform.Models.KnowledgeTesting
             get;
             set;
         }
+
+        public ICollection<TestPassResult> PassResults { get; set; }
     }
 }

@@ -249,19 +249,6 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
         [DataMember]
         public List<UserLabFileViewData> FileLabs { get; set; }
 
-		public ITestPassingService TestPassingService
-		{
-			get
-			{
-				return ApplicationService<ITestPassingService>();
-			}
-		}
-
-		public TService ApplicationService<TService>()
-		{
-			return UnityWrapper.Resolve<TService>();
-		}
-
 		[DataMember]
 		public bool? Confirmed
 		{

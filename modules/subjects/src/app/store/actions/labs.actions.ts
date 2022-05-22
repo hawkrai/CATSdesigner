@@ -8,6 +8,7 @@ import { HasJobProtection } from 'src/app/models/job-protection/has-job-protecti
 import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
 import { SubGroup } from 'src/app/models/sub-group.model';
 import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
+import { Protection } from 'src/app/models/protection.model';
 
 export const loadLabs = createAction(
   '[Labs] Load Labs'
@@ -127,7 +128,7 @@ export const sendUserFile = createAction(
 
 export const sendUserFileSuccess = createAction(
   '[Labs] Send User File Success',
-  props<{ userLabFile: UserLabFile, isReturned: boolean, fileId?: number }>()
+  props<{ userLabFile: UserLabFile, isReturned: boolean, fileId?: number, userId: number }>()
 );
 
 export const deleteUserLabFile = createAction(
@@ -207,4 +208,14 @@ export const loadStudentJobProtection = createAction(
 export const loadStudentJobProtectionSuccess = createAction(
   '[Labs] Load Student Job Protection Success',
   props<{ studentJobProtection: StudentJobProtection }>()
+);
+
+export const protectionChanged = createAction(
+  '[Labs] Protection Changed',
+  props<Protection>()
+);
+
+export const protectionChangedUpdate = createAction(
+  '[Labs] Protection Changed Update',
+  props<{ userId: number }>()
 );

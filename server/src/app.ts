@@ -126,22 +126,30 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
     target: targetChatDomain, 
     changeOrigin: true,
     pathRewrite: {
-      '^/catService': '/ChatApi', // rewrite path
+      '^/catService': '/ChatApi',
+      '^/subject/ProtectionApi': '/ProtectionApi'
     },
     secure: false
   }
+
   
   const proxySignalROptions = { 
-    target: targetChatDomain, 
+    target: targetChatDomain,
     pathRewrite: {
-      '^/chatSignalR':'/chat' // rewrite path
+      '^/chatSignalR':'/chat', 
+      '^/notificationSignalR': '/notification'
     },
+    changeOrigin: true,
     ws: true,
     secure: false
   }
 
+  const socketProxy = createProxyMiddleware(proxySignalROptions);
+  const chatOptions = createProxyMiddleware(proxyChatOptions)
+
   app.use('*/chatSignalR/*', createProxyMiddleware(proxySignalROptions));
-  app.use('*/catService/*', createProxyMiddleware(proxyChatOptions));
+  app.use('*/catService/*', chatOptions);
+  app.use('*/ProtectionApi/*', chatOptions);
   app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
   app.use('*/Account/*', createProxyMiddleware(proxyAccountOptions));
   app.use('*/Profile/*', createProxyMiddleware(proxyProfileOptions));
@@ -151,6 +159,7 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
   app.use('*/Administration/*', createProxyMiddleware(proxyAdmingOptions));
   app.use('*/subject/Subject/*', createProxyMiddleware(proxySubjectOptions));
   app.use('*/subject/Statistic/*', createProxyMiddleware(proxyStatisticOptions));
+  app.use('*/notificationSignalR/*', socketProxy);
   app.use('*/ElasticSearch/*', createProxyMiddleware(proxyElasticSearchOptions));
 
   app.get('*', (req,res) => {
@@ -171,6 +180,9 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
 
   var httpServer = http.createServer(app);
   var httpsServer = https.createServer(credentials, app);
+
+  httpServer.on('upgrade', socketProxy.upgrade);
+  httpsServer.on('upgrade', socketProxy.upgrade);
 
   httpServer.listen(port);
   httpsServer.listen(httpsPort);
