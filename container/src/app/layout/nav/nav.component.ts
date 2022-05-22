@@ -212,6 +212,11 @@ export class NavComponent implements OnInit, OnDestroy {
     });
   }
 
+  public routeToResult(relativePath) {
+    this.router.navigate([relativePath]);
+    location.reload();
+  }
+  
 
   public routeToAboutPopover() {
 

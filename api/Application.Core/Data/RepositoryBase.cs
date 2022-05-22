@@ -205,7 +205,7 @@ namespace Application.Core.Data
 			var sequence = ApplyFilters(query, dataContext.Set<TModel>());
 			sequence = ApplyIncludedProperties(query, sequence);
 
-			return sequence.SingleOrDefault();
+			return sequence.FirstOrDefault();
 		}
 
 		protected virtual void PerformUpdate(TModel newValue, TDataContext dataContext)

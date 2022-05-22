@@ -28,8 +28,14 @@ export class StatsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupName = this.route.snapshot.params.groupName;
-    this.initData(this.groupName);    
+    this.route.params.subscribe(params =>{
+      this.groupName = params['groupName'];
+      this.initData(this.groupName);   
+      if(this.selectedItem != null){
+        this.selectedItem = null;
+      }
+      }
+    )
   }
 
   initData(groupName: any) {
@@ -44,11 +50,9 @@ export class StatsComponent implements OnInit {
   }
 
   getStatistic(groupId: number) {
-    this.isLoad = false;
     this.subjectService.loadGroup(groupId).subscribe(
       res => {
         this.studentStatistic = res.Students;
-        this.isLoad = true;
       }
     );
   }
