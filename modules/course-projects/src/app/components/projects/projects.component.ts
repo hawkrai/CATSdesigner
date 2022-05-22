@@ -144,6 +144,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         groups: this.groups,
         selectedGroups: this.groups.slice(),
         lecturer: this.lecturerName,
+        edit: false
       }
     });
 

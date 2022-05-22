@@ -22,11 +22,15 @@ export class AddProjectDialogComponent {
     [Validators.minLength(3), Validators.maxLength(255), Validators.required, this.noWhitespaceValidator]);
 
   private groups: CoreGroup[];
+  private originSelectedGroups: string[];
   originName = '';
 
   constructor(public dialogRef: MatDialogRef<AddProjectDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId));
+    this.originSelectedGroups = data.groups.map(a => a.GroupId).sort((a: any, b: any) => {
+      return a - b;
+    });
     this.originName = data.name;
     this.nameControl.setValue(data.name);
   }
@@ -72,5 +76,12 @@ export class AddProjectDialogComponent {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { whitespace: true };
+  }
+
+  get areGroupsNotChanged(): boolean {
+    const selectedGroups = this.data.selectedGroups.map(a => a.GroupId).sort((a: any, b: any) => {
+      return a - b;
+    });
+    return JSON.stringify(this.originSelectedGroups) === JSON.stringify(selectedGroups);
   }
 }

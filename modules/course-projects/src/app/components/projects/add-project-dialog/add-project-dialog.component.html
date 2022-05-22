@@ -1,7 +1,9 @@
 <div class="add-project-dialog__container">
   <div class="add-project-dialog__title-container">
-    <h1 class="add-project-dialog__title" mat-dialog-title *ngIf="data.edit">Редактирование темы курсового проекта</h1>
-    <h1 class="add-project-dialog__title" mat-dialog-title *ngIf="!data.edit">Добавление темы курсового проекта</h1>
+    <h1 class="add-project-dialog__title add-project-dialog__title_add-title" mat-dialog-title *ngIf="data.edit">
+      Редактирование темы курсового проекта</h1>
+    <h1 class="add-project-dialog__title add-project-dialog__title_add-title" mat-dialog-title *ngIf="!data.edit">
+      Добавление темы курсового проекта</h1>
     <button mat-icon-button (click)="close()" class="add-project-dialog__close-btn">
       <mat-icon aria-hidden="false">close</mat-icon>
     </button>
@@ -12,7 +14,7 @@
       <textarea matInput [formControl]="nameControl"></textarea>
       <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
     </mat-form-field>
-    <div>
+    <div class="add-project-dialog__lecturer">
       <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
     </div>
     <mat-label class="form-field__groups">Группы:</mat-label>
@@ -46,7 +48,7 @@
     <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
     <button mat-flat-button class="dialog-button" id="saveButton" color="primary"
             (click)="saveTheme()"
-            [disabled]="nameControl.invalid || (data.edit && originName === nameControl.value)"
+            [disabled]="(nameControl.invalid && !data.edit) || ((data.edit && originName === nameControl.value) && areGroupsNotChanged)"
     >
       Сохранить
     </button>

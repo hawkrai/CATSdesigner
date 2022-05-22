@@ -53,38 +53,37 @@ export class PercentagesComponent implements OnInit {
 
   addStage() {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
-      width: '600px',
+      width: '548px',
       data: {
-        title: "Добавление этапа"
+        title: 'Добавление этапа'
        }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
-        result.name = result.name.replace("\n","");
-        var checkTheme = this.percentages.find((i) => i.Name === result.name);
+        result.name = result.name.replace('\n', '');
+        const checkTheme = this.percentages.find((i) => i.Name === result.name);
 
-        if (checkTheme == undefined) {
+        if (checkTheme === undefined) {
           const date = new Date(result.date);
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
+          date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+          this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage('Этап успешно сохранен');
           });
-        }
-        else{
+        } else {
           this.addFlashMessage('Этап с таким названием уже существует');
-        } 
+        }
       }
     });
   }
 
   editStage(stage: Percentage) {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
-      width: '600px',
+      width: '548px',
       data: {
-        title: "Редактирование этапа",
+        title: 'Редактирование этапа',
         name: stage.Name,
         percentage: stage.Percentage,
         date: stage.Date
@@ -93,9 +92,9 @@ export class PercentagesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
-        result.name = result.name.replace("\n","");
-        var checkTheme = this.percentages.find((i) => i.Name === result.name);
-        if (checkTheme == undefined) {
+        result.name = result.name.replace('\n', '');
+        const checkTheme = this.percentages.find((i) => i.Name === result.name);
+        if (checkTheme === undefined) {
           const date = new Date(result.date);
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
           this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)
@@ -103,17 +102,17 @@ export class PercentagesComponent implements OnInit {
               this.ngOnInit();
               this.addFlashMessage('Этап успешно изменен');
           });
-        }
-        else{
+        } else {
           this.addFlashMessage('Этап с таким названием уже существует');
-        } 
+        }
       }
     });
   }
 
   deleteStage(id: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
+      autoFocus: false,
+      width: '548px',
       data: {
         label: 'Удаление этапа процентовки',
         message: 'Вы действительно хотите удалить этап?',
