@@ -240,7 +240,7 @@
                   </li>
                   <li *ngIf="!isEdit" class="list-inline-item">
                     <input #fileInput hidden="true" type="file" (change)="uploadFiles($event.target)" />
-                    <button type="button" (click)="fileInput.click()"
+                    <button type="button" (click)="attachFileClick(fileInput)"
                       class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
                       matTooltip="{{ 'chat.attachFile' | translate: 'Прикрепить файл'}}"
                       ng-reflect-tooltip-class="tooltip">
