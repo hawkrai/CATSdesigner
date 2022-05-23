@@ -1,9 +1,9 @@
 <div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
-  <div class="protection-schedule-component__subGroups" *ngFor="let subGroup of state.subGroups; let idx = index">
+  <div class="protection-schedule-component__subGroups" *ngFor="let subGroup of state.subGroups">
     <ng-container *ngIf="(state.students | filter:'SubGroup': subGroup).length">
       <ng-container *var="state.labs | filter:'SubGroup':subGroup as subGroupLabs">
         <div class="protection-schedule-component__subGroups-title">
-          <span class="protection-schedule-component__subGroups-title-text">{{'subgroup' | translate:'Подгруппа'}} {{idx + 1}}</span>
+          <span class="protection-schedule-component__subGroups-title-text">{{'subgroup' | translate:'Подгруппа'}} {{subGroup}}</span>
         </div>
         <div class="protection-schedule-component__subGroups-table" *var="state.scheduleProtectionLabs | filter:'SubGroup':subGroup as subGroupProtectionSchedule">
           <table *var="state.students | filter:'SubGroup': subGroup as subGroupStudents" mat-table [dataSource]="subGroupStudents" class="mat-elevation-z14">

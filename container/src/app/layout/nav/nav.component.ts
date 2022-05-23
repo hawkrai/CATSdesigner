@@ -157,12 +157,13 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   getUserInfo() {
-    this.profileService.getProfileInfo(this.autService.currentUserValue.id).subscribe(res => {
-      this.profileIcon = res.Avatar;
-      this.userFullName = res.Name;
-    });
+    if (this.autService.currentUserValue != null && this.autService.currentUserValue != undefined) {
+      this.profileService.getProfileInfo(this.autService.currentUserValue.id).subscribe(res => {
+        this.profileIcon = res.Avatar;
+        this.userFullName = res.Name;
+      });
+    }
   }
-
   viewSearchResults() {
     this.valueForSearch = this.valueForSearch.trim();
     if (this.valueForSearch.length >= 3) {
@@ -203,7 +204,7 @@ export class NavComponent implements OnInit, OnDestroy {
         this.studentSearchResults = res;
         this.bestStudentSearchResult = this.studentSearchResults[0];
         this.studentSearchResults = this.studentSearchResults.slice(1, this.studentSearchResults.length - 1).sort((n1, n2) => n1.FullName.localeCompare(n2.FullName));
-      } 
+      }
       });
   }
 
@@ -247,7 +248,7 @@ export class NavComponent implements OnInit, OnDestroy {
     var initials = this.userFullName?.split(' ')[0]?.charAt(0) + this.userFullName?.split(' ')[1]?.charAt(0);
     if(initials != null){
       return initials
-    } 
+    }
     else{
       return "Ad"
     }

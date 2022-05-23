@@ -222,7 +222,7 @@ namespace LMPlatform.UI.Services.Lectures
 
                 var group = GroupManagementService.GetGroup(groupId);
                 var model = new List<StudentMarkForDateViewData>();
-                foreach (var student in group.Students.OrderBy(e => e.FullName))
+                foreach (var student in group.Students.Where(x => x.Confirmed.HasValue && x.Confirmed.Value).OrderBy(e => e.FullName))
                 {
                     if (student.LecturesVisitMarks.Any(e => e.LecturesScheduleVisitingId == visitingDate.Id))
                     { 
@@ -363,7 +363,7 @@ namespace LMPlatform.UI.Services.Lectures
                 var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
 
                 var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
-                var students = groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName);
+                var students = groups.Students.Where(x => x.Confirmed.HasValue && x.Confirmed.Value).OrderBy(e => e.FullName);
                 foreach (var student in students)
                 {
                     var data = new List<MarkViewData>();
@@ -440,7 +440,7 @@ namespace LMPlatform.UI.Services.Lectures
                 var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
 
                 var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
-                var students = groups.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.FullName);
+                var students = groups.Students.Where(x => x.Confirmed.HasValue && x.Confirmed.Value).OrderBy(e => e.FullName);
                 foreach (var student in students)
                 {
                     var data = new List<MarkViewData>();

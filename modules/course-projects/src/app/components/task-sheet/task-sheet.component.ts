@@ -44,7 +44,12 @@ export class TaskSheetComponent implements OnInit {
       this.projectThemeService.getThemes({entity: 'CourseProject', subjectId: this.subjectId})
         .subscribe(res => {
           if (res.length > 0) {
-            this.themes = res;
+            this.themes = res.sort((a, b) => {
+              return a.Name.localeCompare(b.Name, undefined, {
+                numeric: true,
+                sensitivity: 'base'
+              });
+            });
             if (this.courseProjectId == null) {
               this.courseProjectId = res[0].Id;
             }
@@ -69,14 +74,14 @@ export class TaskSheetComponent implements OnInit {
       .subscribe(res => {
         if (res != null) {
           this.taskSheetHtml = res;
-        const div = document.getElementById('task-sheet');
-        div.innerHTML = res;
+          const div = document.getElementById('task-sheet');
+          div.innerHTML = res;
         }
       });
   }
 
-  getTaskSheetTemplate(taskSheet: any): object{
-    var checkTheme = this.templates.find((i) => i.InputData == taskSheet.InputData
+  getTaskSheetTemplate(taskSheet: any): object {
+    let checkTheme = this.templates.find((i) => i.InputData == taskSheet.InputData
     && i.Faculty == i.Faculty
     && i.HeadCathedra == i.HeadCathedra
     && i.RpzContent == i.RpzContent
@@ -85,13 +90,12 @@ export class TaskSheetComponent implements OnInit {
     && i.DateEnd == i.DateEnd
     && i.DateStart == i.DateStart);
 
-    if (checkTheme != undefined){
+    if (checkTheme != undefined) {
       this.tepmlate = new Template();
       this.tepmlate.Id = String(checkTheme.Id);
       this.tepmlate.Name = checkTheme.Name;
       return this.tepmlate;
-    }
-    else{
+    } else {
       return undefined;
     }
   }
@@ -99,7 +103,7 @@ export class TaskSheetComponent implements OnInit {
   editTaskSheet() {
     this.taskSheetService.getTaskSheet({courseProjectId: this.courseProjectId}).subscribe(response => {
       const dialogRef = this.dialog.open(EditTaskSheetComponent, {
-        width: '700px',
+        width: '548px',
         data: {
           subjectId: this.subjectId,
           taskSheet: response,
@@ -116,8 +120,7 @@ export class TaskSheetComponent implements OnInit {
               duration: 2000
             });
           });
-        }
-        else{
+        } else {
           this.ngOnInit();
         }
       });

@@ -16,6 +16,8 @@ import { ScheduleService } from "src/app/services/schedule.service";
 import { generateCreateDateException } from "src/app/utils/exceptions";
 import { UserFilesService } from "src/app/services/user-files.service";
 import { iif, of } from "rxjs";
+import { ProtectionType } from "src/app/models/protection-type.enum";
+import * as protectionActions from '../actions/protection.actions';
 
 @Injectable()
 export class PracticalsEffects {
@@ -155,7 +157,8 @@ export class PracticalsEffects {
             this.store.select(subjectSelectors.getSubjectId),
         ),
         switchMap(([{ sendFile, fileId }, subjectId]) => this.userFilesService.sendUserFile({ ...sendFile, subjectId }).pipe(
-            switchMap(body => [...(!body.IsReturned ? [catsActions.showMessage({ body })] : []), practicalsActions.sendUserFileSuccess({ userLabFile: body, isReturned: sendFile.isRet, fileId })])
+
+            switchMap(body => [...(!body.IsReturned ? [catsActions.showMessage({ body })] : []), practicalsActions.sendUserFileSuccess({ userLabFile: body, isReturned: sendFile.isRet, fileId, userId: sendFile.userId })])
         ))
     ));
 
@@ -174,8 +177,29 @@ export class PracticalsEffects {
     ));
 
     checkJobProptection$ = createEffect(() => this.actions$.pipe(
-        ofType(practicalsActions.receiveFileSuccess, practicalsActions.returnFileSuccess, practicalsActions.cancelFileSuccess),
-        switchMap(({ userId }) => [practicalsActions.checkJobProtections(), practicalsActions.loadStudentJobProtection({ studentId: userId })])
+
+        ofType(practicalsActions.receiveFileSuccess, practicalsActions.returnFileSuccess, practicalsActions.cancelFileSuccess, practicalsActions.protectionChangedUpdate, practicalsActions.sendUserFileSuccess),
+        withLatestFrom(
+            this.store.select(subjectSelectors.getUserId),
+            this.store.select(subjectSelectors.getSubjectId),
+            this.store.select(groupsSelectors.getCurrentGroupId),
+            this.store.select(subjectSelectors.isTeacher)
+        ),
+          switchMap(([{ userId, type }, currentUserId, subjectId, groupId, isTeacher]) => {
+            if (type === practicalsActions.sendUserFileSuccess.type) {
+                return [protectionActions.protectionChanged({ userId, from: currentUserId, subjectId, groupId, protectionType: ProtectionType.Practical })];
+              }
+              const actions: any[] = [practicalsActions.checkJobProtections()];
+              if (isTeacher) {
+                actions.push(practicalsActions.loadStudentJobProtection({ studentId: userId }));
+              } else {
+                actions.push(practicalsActions.loadStudentFiles({ userId: userId }));
+              }
+              if (type !== practicalsActions.protectionChangedUpdate.type) {
+                actions.push(protectionActions.protectionChanged({ userId, from: currentUserId, subjectId, groupId, protectionType: ProtectionType.Practical }));
+              } 
+              return actions;
+          })
     ));
 
     returnFile$ = createEffect(() => this.actions$.pipe(
@@ -216,6 +240,7 @@ export class PracticalsEffects {
         ),
         switchMap(([_, groupId, subjectId]) => this.rest.getPracticalsZip(subjectId, groupId).pipe(
             map(response => filesActions.exportFile({ response }))
+
         ))
     ));
 
@@ -235,12 +260,17 @@ export class PracticalsEffects {
     loadStudentJobProtection$ = createEffect(() => this.actions$.pipe(
         ofType(practicalsActions.loadStudentJobProtection),
         withLatestFrom(
-          this.store.select(subjectSelectors.getSubjectId),
-          this.store.select(groupsSelectors.getCurrentGroupId)
+            this.store.select(subjectSelectors.getSubjectId),
+            this.store.select(groupsSelectors.getCurrentGroupId)
         ),
         switchMap(([{ studentId }, subjectId, groupId]) => this.rest.getStudentJobProtection(subjectId, groupId, studentId).pipe(
-          map(studentJobProtection => practicalsActions.loadStudentJobProtectionSuccess({ studentJobProtection }))
+            map(studentJobProtection => practicalsActions.loadStudentJobProtectionSuccess({ studentJobProtection }))
         ))
-      ));
+    ));
 
+    protectionChanged$ = createEffect(() => this.actions$.pipe(
+        ofType(practicalsActions.protectionChanged),
+        filter(body => body.protectionType === ProtectionType.Practical),
+        map(body => practicalsActions.protectionChangedUpdate({ userId: body.userId }))
+    ));
 }

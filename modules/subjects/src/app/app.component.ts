@@ -8,7 +8,6 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Message } from './models/message.model';
 import { SubSink } from 'subsink';
 import * as  groupsActions from './store/actions/groups.actions';
-import * as groupsSelectors from './store/selectors/groups.selectors';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
     this.store.dispatch(catsActions.setupMessageCommunication());
     const subject = JSON.parse(localStorage.getItem('currentSubject'));
     const user = JSON.parse(localStorage.getItem('currentUser')) as User;
