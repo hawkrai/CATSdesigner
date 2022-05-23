@@ -36,6 +36,8 @@ export class ChangePersonalDataComponent implements OnInit {
   phoneFormControl : new FormControl('', [Validators.pattern('^([0-9+-]{0,20})$')]),
   surnameFormControl : new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),Validators.pattern(this.nameRegExp)]),
   nameFormControl : new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),Validators.pattern(this.nameRegExp)]),
+  aboutFormControl : new FormControl('', [Validators.maxLength(1024)]),
+  messangerFormControl : new FormControl('', [Validators.maxLength(255)]),
   patronymicFormControl : new FormControl('', [Validators.minLength(1), Validators.maxLength(30), Validators.pattern(this.nameRegExp)])});
   
 

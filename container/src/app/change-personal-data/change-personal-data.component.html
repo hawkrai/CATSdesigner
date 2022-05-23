@@ -79,12 +79,12 @@
 
       <mat-form-field class="text-area-full-width">
         <mat-label>{{'text.personalAccount.messenger' | translate : ("Skype, Viber, Telegram и др.")}}</mat-label>
-        <textarea matInput id="skypeInput" [(ngModel)]="this.profileData.SkypeContact" (blur)="this.deleteSpaces()" rows="2" maxlength="255"></textarea>
+        <textarea matInput id="skypeInput" [formControl]="this.dataGroup.controls.messangerFormControl" [(ngModel)]="this.profileData.SkypeContact" (blur)="this.deleteSpaces()" rows="2" maxlength="255"></textarea>
       </mat-form-field>
 
       <mat-form-field class="text-area-full-width">
         <mat-label>{{'text.personalAccount.about' | translate : ("О себе")}}</mat-label>
-        <textarea matInput id="aboutInput" [(ngModel)]="this.profileData.About" (blur)="this.deleteSpaces()" rows="2" maxlength="1024"></textarea>
+        <textarea matInput id="aboutInput" [formControl]="this.dataGroup.controls.aboutFormControl" [(ngModel)]="this.profileData.About" (blur)="this.deleteSpaces()" rows="2" maxlength="1024"></textarea>
       </mat-form-field>
 
     </mat-card>

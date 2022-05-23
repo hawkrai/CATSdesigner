@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { LayoutService } from "../layout.service";
 import { AuthenticationService } from "../../core/services/auth.service";
 import { first, takeUntil, tap } from "rxjs/operators";
@@ -14,6 +14,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { AboutSystemPopoverComponent } from "../../about-system/about-popover/about-popover.component";
 import { Router,ActivatedRoute } from "@angular/router";
 import { ConfirmationService } from "src/app/core/services/confirmation.service";
+import { MatSelectionList } from "@angular/material/list";
+import { MatSelect } from "@angular/material/select";
 
 
 interface DropDownValue {
@@ -41,7 +43,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public theme: DropDownValue;
 
   valueForSearch!: string;
-
+  showSearchResults = false;
   searchResults !: string[];
   lecturerSearchResults!: Lecturer[];
   studentSearchResults!: Student[];
@@ -49,6 +51,8 @@ export class NavComponent implements OnInit, OnDestroy {
   bestLecturerSearchResult!: Lecturer;
   bestStudentSearchResult!: Student;
   bestGroupSearchResult!: Group;
+
+
 
   constructor(private layoutService: LayoutService,
     private router: Router,
@@ -64,6 +68,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) {
   }
 
+  
   get logoWidth(): string {
     const width = this.menuService.getSideNavWidth();
     return width ? `${width - 16}px` : "auto";
@@ -173,6 +178,7 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   cleanSearchResults() {
+    this.valueForSearch = '';
     this.lecturerSearchResults = null;
     this.studentSearchResults = null;
     this.groupSearchResults = null;

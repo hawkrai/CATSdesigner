@@ -17,7 +17,7 @@
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
         <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">
     <!-- <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" maxlength="30"> -->
-    <mat-selection-list [multiple]="false">
+    <mat-selection-list (mouseleave) = "this.cleanSearchResults()" [multiple]="false">
       <mat-list-option class = "search-results-separator" *ngIf = this.studentSearchResults>
         {{'students' | translate:'Студенты'}} :
       </mat-list-option>
@@ -125,7 +125,7 @@
       </a>
       <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
         <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">
-        <mat-selection-list [multiple]="false">
+        <mat-selection-list (mouseleave) = "this.cleanSearchResults()" [multiple]="false">
           <mat-list-option class = "search-results-separator" *ngIf = this.studentSearchResults>
             {{'students' | translate:'Студенты'}} :
           </mat-list-option>
