@@ -32,20 +32,20 @@
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.lastName' | translate : ("Фамилия")}}</mat-label>
-        <input matInput id="surnameInput" [(ngModel)]="this.profileData.Surname" (blur)="this.trimFields()" [formControl]="surnameFormControl" maxlength="30">
-        <mat-error *ngIf="surnameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
+        <input matInput id="surnameInput" [(ngModel)]="this.profileData.Surname" (blur)="this.trimFields()" [formControl]="this.dataGroup.controls.surnameFormControl" maxlength="30">
+        <mat-error *ngIf="this.dataGroup.controls.surnameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.firstName' | translate : ("Имя")}}</mat-label>
-        <input matInput id="nameInput" [(ngModel)]="this.profileData.Name" (blur)="this.trimFields()" [formControl]="nameFormControl" maxlength="30">
-        <mat-error *ngIf="nameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
+        <input matInput id="nameInput" [(ngModel)]="this.profileData.Name" (blur)="this.trimFields()" [formControl]="this.dataGroup.controls.nameFormControl" maxlength="30">
+        <mat-error *ngIf="this.dataGroup.controls.nameFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.middleName' | translate : ("Отчество")}}</mat-label>
-        <input matInput id="patronymicInput" [(ngModel)]="this.profileData.Patronymic" (blur)="this.trimFields()" [formControl]="patronymicFormControl" maxlength="30">
-        <mat-error *ngIf="patronymicFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
+        <input matInput id="patronymicInput" [(ngModel)]="this.profileData.Patronymic" (blur)="this.trimFields()" [formControl]="this.dataGroup.controls.patronymicFormControl" maxlength="30">
+        <mat-error *ngIf="this.dataGroup.controls.patronymicFormControl.invalid">{{'text.personalAccount.wrongName' | translate : ("Допустимая длина поля от 1 до 30 символов")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="input-full-width">
@@ -67,14 +67,14 @@
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.email' | translate : ("Почта")}}</mat-label>
-        <input matInput id="emailInput" [(ngModel)]="this.profileData.Email" (blur)="this.trimFields()" [formControl]="emailFormControl" maxlength="50">
-        <mat-error *ngIf="emailFormControl.invalid">{{'text.personalAccount.wrongEmail' | translate : ("Почта не соответствует формату!")}}</mat-error>
+        <input matInput id="emailInput" [(ngModel)]="this.profileData.Email" (blur)="this.trimFields()" [formControl]="this.dataGroup.controls.emailFormControl" maxlength="50">
+        <mat-error *ngIf="this.dataGroup.controls.emailFormControl.invalid">{{'text.personalAccount.wrongEmail' | translate : ("Почта не соответствует формату!")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="input-full-width">
         <mat-label>{{'text.personalAccount.phoneNumber' | translate : ("Телефон")}}</mat-label>
-        <input matInput id="phoneInput" [(ngModel)]="this.profileData.Phone" (blur)="this.trimFields()" [formControl]="phoneFormControl" maxlength="20">
-        <mat-error *ngIf="phoneFormControl.hasError('pattern')">{{'text.personalAccount.wrongNumber' | translate : ("Номер не соответствует формату!")}}</mat-error>
+        <input matInput id="phoneInput" [(ngModel)]="this.profileData.Phone" (blur)="this.trimFields()" [formControl]="this.dataGroup.controls.phoneFormControl" maxlength="20">
+        <mat-error *ngIf="this.dataGroup.controls.phoneFormControl.hasError('pattern')">{{'text.personalAccount.wrongNumber' | translate : ("Номер не соответствует формату!")}}</mat-error>
       </mat-form-field>
 
       <mat-form-field class="text-area-full-width">
@@ -93,7 +93,7 @@
 
   <div class="buttons-row">
     <button mat-button class="cancel-button" (click)="this.backClicked()">{{'button.cancel' | translate : ("Отмена")}}</button>
-    <button mat-button class="edit-button" (click)="this.updatePersonalInfo()">{{'text.personalAccount.save' | translate : ("Сохранить")}}</button>
+    <button mat-button class="edit-button" [disabled]="!this.dataGroup.dirty" (click)="this.updatePersonalInfo()">{{'text.personalAccount.save' | translate : ("Сохранить")}}</button>
   </div>
 
 </div>

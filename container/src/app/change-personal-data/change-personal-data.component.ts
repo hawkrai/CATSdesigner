@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
 import { PersonalDataService } from '../core/services/personal-data.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ChangePasswordDialog } from '../change-password-dialog/change-password-dialog.component';
-import { Validators, FormControl, ValidationErrors } from '@angular/forms';
+import { Validators, FormControl, ValidationErrors, FormGroup } from '@angular/forms';
 import { TranslatePipe } from 'educats-translate';
 import { AppToastrService } from '../core/services/toastr.service';
 
@@ -20,6 +20,7 @@ import { AppToastrService } from '../core/services/toastr.service';
 export class ChangePersonalDataComponent implements OnInit {
   MAX_IMAGE_LEN = 700000;
   isLoad = false;
+  hasChanges = false;
   defaultAvatar = "/assets/images/account.png";
   startImgFileStr = "data:image/";
   imageFormats = ["png","img","jpg","gif"];
@@ -27,17 +28,16 @@ export class ChangePersonalDataComponent implements OnInit {
   profileData!: ProfileData;
   dialogRef: MatDialogRef<any>;
   nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
-  emailFormControl = new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})$')]);
-  phoneFormControl = new FormControl('', [Validators.pattern('^([0-9+-]{0,20})$')]);
 
-  nameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern(this.nameRegExp)])
-
-  surnameFormControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern(this.nameRegExp)])
-
-  patronymicFormControl = new FormControl('', [Validators.minLength(1), Validators.maxLength(30),
-    Validators.pattern(this.nameRegExp)])
+  
+  dataGroup =
+   new FormGroup({
+  emailFormControl : new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})$')]),
+  phoneFormControl : new FormControl('', [Validators.pattern('^([0-9+-]{0,20})$')]),
+  surnameFormControl : new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),Validators.pattern(this.nameRegExp)]),
+  nameFormControl : new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(30),Validators.pattern(this.nameRegExp)]),
+  patronymicFormControl : new FormControl('', [Validators.minLength(1), Validators.maxLength(30), Validators.pattern(this.nameRegExp)])});
+  
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
     private location: Location, public dialog: MatDialog,
@@ -95,8 +95,8 @@ export class ChangePersonalDataComponent implements OnInit {
 
   updatePersonalInfo() {
     this.trimFields();
-    if ((!this.patronymicFormControl.invalid) && (!this.surnameFormControl.invalid) && (!this.nameFormControl.invalid) &&
-      (!this.phoneFormControl.invalid) && (!this.emailFormControl.invalid)) {
+    if ((!this.dataGroup.controls.patronymicFormControl.invalid) && (!this.dataGroup.controls.surnameFormControl.invalid) && (!this.dataGroup.controls.nameFormControl.invalid) &&
+      (!this.dataGroup.controls.phoneFormControl.invalid) && (!this.dataGroup.controls.emailFormControl.invalid)) {
         this.dataService.changeProfileData(this.profileData, this.profileData.Avatar).subscribe(res => {
           if (res) {
             this.toastr.addSuccessFlashMessage(this.translatePipe.transform('text.personalAccount.changesSaved', "Изменения успешно сохранены!"));
