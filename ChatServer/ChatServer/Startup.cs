@@ -44,7 +44,7 @@ namespace ChatServer
 
             services.ConfigureServices();
             services.ConfigureSqlContext(Configuration);
-
+            
             services.AddControllers();
         }
 
@@ -64,6 +64,7 @@ namespace ChatServer
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<MessageHub>("/chat");
+                endpoints.MapHub<NotificationHub>("/notification");
             });
         }
     }

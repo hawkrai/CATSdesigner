@@ -369,7 +369,7 @@ namespace LMPlatform.UI.Services.Labs
                 var controlTests = TestsManagementService.GetTestsForSubject(subjectId).Where(x => !x.ForSelfStudy && !x.BeforeEUMK && !x.ForEUMK && !x.ForNN);
 
 
-                foreach (var student in group.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.LastName))
+                foreach (var student in group.Students.Where(e => e.Confirmed.HasValue && e.Confirmed.Value).OrderBy(e => e.LastName))
 				{
 					var scheduleProtectionLabs = subGroups.Any()
 													 ? subGroups.FirstOrDefault(x => x.Name == "first").SubjectStudents.Any(x => x.StudentId == student.Id)
@@ -434,7 +434,7 @@ namespace LMPlatform.UI.Services.Labs
 
 			var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
 
-			var students = group.SubjectStudents.Select(x => x.Student).OrderBy(x => x.LastName);
+			var students = group.SubjectStudents.Select(x => x.Student).Where(e => e.Confirmed.HasValue && e.Confirmed.Value).OrderBy(x => x.LastName);
 
 			var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
 	

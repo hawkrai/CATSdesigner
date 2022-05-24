@@ -17,6 +17,10 @@ export class StatisitcsServiceService {
     return this.http.get<any>('/Services/Parental/ParentalService.svc/LoadGroup?groupId=' + groupId);
   }
 
+  getUserStastics(): Observable<any> {
+    return this.http.get<any>('/Services/Parental/ParentalService.svc/LoadStudent');
+  }
+
   getArchiveStatistics(groupId: any): Observable<any> {
     return this.http.get<any>('/Services/Parental/ParentalService.svc/LoadGroup?groupId=' + groupId + '&isArchive=true');
   }
@@ -48,5 +52,9 @@ export class StatisitcsServiceService {
 
   round(value: any): number {
     return Math.round(value * 10) / 10;
+  }
+
+  getGroupsBySubjectId(id: number): Observable<any> {
+    return this.http.get<any>('/Services/CoreService.svc/GetGroupsV2/' + id);
   }
 }

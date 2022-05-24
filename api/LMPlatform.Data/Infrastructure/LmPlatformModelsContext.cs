@@ -656,6 +656,11 @@ namespace LMPlatform.Data.Infrastructure
                 .HasForeignKey(test => test.SubjectId);
             testEntity.Ignore(test => test.Unlocked);
 
+            testEntity.HasMany(test => test.PassResults)
+                .WithRequired(e => e.Test)
+                .HasForeignKey(e => e.TestId)
+                .WillCascadeOnDelete();
+
             var questionEntity = modelBuilder.Entity<Question>();
             questionEntity.Property(question => question.Title).IsRequired();
             questionEntity.HasRequired(question => question.Test)

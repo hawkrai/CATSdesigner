@@ -27,6 +27,7 @@ import { PracticalsEffects } from './store/effects/practicals.effects';
 import { CatsEffects } from './store/effects/cats.effects';
 import { FilesEffects } from './store/effects/files.effects';
 import { SettingsModule } from './modules/settings/settings.module';
+import { ProtectionEffects } from './store/effects/protection.effects';
 
 
 
@@ -55,7 +56,7 @@ import { SettingsModule } from './modules/settings/settings.module';
         strictActionImmutability: false
       }   
     }),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects]),
+    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects, ProtectionEffects]),
     StoreDevtoolsModule.instrument(),
   ],
   providers: [

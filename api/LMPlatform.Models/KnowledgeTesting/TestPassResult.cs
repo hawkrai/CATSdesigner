@@ -17,6 +17,8 @@ namespace LMPlatform.Models.KnowledgeTesting
             set;
         }
 
+        public Test Test { get; set; }
+
         public int? Points
         {
             get;

@@ -2,13 +2,14 @@ import { CreateLessonEntity } from './../../models/form/create-lesson-entity.mod
 import { createAction, props } from '@ngrx/store';
 
 import { Practical } from '../../models/practical.model';
-import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model';
 import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model';
 import { StudentMark } from 'src/app/models/student-mark.model';
 import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model';
 import { UserLabFile } from 'src/app/models/user-lab-file.model';
 import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model';
 import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
+import { Protection } from 'src/app/models/protection.model';
+
 
 export const loadPracticals = createAction(
     '[Practicals] Load Practicals'
@@ -100,7 +101,7 @@ export const getMarksExcel = createAction(
   
   export const sendUserFileSuccess = createAction(
     '[Practicals] Send User File Success',
-    props<{ userLabFile: UserLabFile, isReturned: boolean, fileId?: number }>()
+    props<{ userLabFile: UserLabFile, isReturned: boolean, fileId?: number, userId: number }>()
   );
 
   export const returnFile = createAction(
@@ -180,4 +181,14 @@ export const getMarksExcel = createAction(
   export const loadStudentJobProtectionSuccess = createAction(
     '[Practicals] Load Student Job Protection Success',
     props<{ studentJobProtection: StudentJobProtection }>()
+  );
+
+  export const protectionChanged = createAction(
+    '[Practicals] Protection Changed',
+    props<Protection>()
+  );
+
+  export const protectionChangedUpdate = createAction(
+    '[Practicals] Protection Changed Update',
+    props<{ userId: number }>()
   );

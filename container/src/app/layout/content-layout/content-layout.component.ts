@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CoreService } from 'src/app/core/services/core.service';
+import { NotificationService } from 'src/app/core/services/notification.service';
 
 @Component({
   selector: 'app-content-layout',
@@ -9,12 +10,14 @@ import { CoreService } from 'src/app/core/services/core.service';
 export class ContentLayoutComponent implements OnInit {
   
   constructor(
-    private coreService: CoreService
+    private coreService: CoreService,
+    private notificationService: NotificationService
   ) {
 
   }
   ngOnInit(): void {
     this.coreService.setupMessageCommunication();
+    this.notificationService.connect();
   }
 
 }
