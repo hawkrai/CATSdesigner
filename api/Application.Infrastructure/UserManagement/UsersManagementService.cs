@@ -161,7 +161,7 @@ namespace Application.Infrastructure.UserManagement
                             new Query<Lecturer>(e =>
                                 (e.FirstName == firstName && e.LastName == lastName && !checkPatronymic)
                                 || (checkPatronymic && (e.MiddleName == middleName && e.FirstName == firstName && e.LastName == lastName))))
-                                .Select(l => l.User).Include(lec => lec.Lecturer).ToList();
+                                .Select(l => l.User).ToList();
 
                     if (lecturers.Any())
                     {
