@@ -10,6 +10,7 @@ import { HasJobProtection } from 'src/app/models/job-protection/has-job-protecti
 import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode';
 import { Protection } from 'src/app/models/protection.model';
 
+
 export const loadPracticals = createAction(
     '[Practicals] Load Practicals'
 );

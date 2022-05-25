@@ -11,6 +11,7 @@ import * as subjectSelectors from '../selectors/subject.selector';
 import * as filesActions from '../actions/files.actions';
 import * as catsActions from '../actions/cats.actions';
 import * as testsActions from '../actions/tests.actions';
+
 import * as protectionActions from '../actions/protection.actions';
 import { iif, of } from 'rxjs';
 import { ScheduleService } from 'src/app/services/schedule.service';
@@ -233,6 +234,7 @@ export class LabsEffects {
   ));
 
   checkJobProptection$ = createEffect(() => this.actions$.pipe(
+
     ofType(labsActions.receiveLabFileSuccess, labsActions.returnLabFileSuccess, labsActions.cancelLabFileSuccess, labsActions.protectionChangedUpdate, labsActions.sendUserFileSuccess),
     withLatestFrom(
       this.store.select(subjectSelectors.getUserId),
@@ -273,5 +275,6 @@ export class LabsEffects {
     filter(body => body.protectionType === ProtectionType.Lab),
     map(body => labsActions.protectionChangedUpdate({ userId: body.userId }))
   ));
+
 }
 

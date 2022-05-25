@@ -17,16 +17,16 @@
   <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
         <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">
     <!-- <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" maxlength="30"> -->
-    <mat-selection-list [multiple]="false">
+    <mat-selection-list (mouseleave) = "this.cleanSearchResults()" [multiple]="false">
       <mat-list-option class = "search-results-separator" *ngIf = this.studentSearchResults>
         {{'students' | translate:'Студенты'}} :
       </mat-list-option>
       <mat-list-option *ngIf="this.bestStudentSearchResult" [value]="this.bestStudentSearchResult"
-                       (click)="this.cleanSearchResults()" [routerLink]="['profile',this.bestStudentSearchResult.Id]">
+                      (click)="this.routeToSearchResult('profile',this.bestStudentSearchResult.Id)">
         {{this.bestStudentSearchResult.FullName}}
       </mat-list-option>
       <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result"
-                       (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+                      (click)="this.routeToSearchResult('profile',result.Id)">
         {{result.FullName}}
       </mat-list-option>
 
@@ -34,11 +34,11 @@
         {{'lecturers' | translate:'Преподаватели'}} :
       </mat-list-option>
       <mat-list-option *ngIf="this.bestLecturerSearchResult" [value]="this.bestLecturerSearchResult"
-                       (click)="this.cleanSearchResults()" [routerLink]="['profile',this.bestLecturerSearchResult.Id]">
+                      (click)="this.routeToSearchResult('profile',this.bestLecturerSearchResult.Id)">
         {{this.bestLecturerSearchResult.FullName}}
       </mat-list-option>
       <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result"
-                       (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+                      (click)="this.routeToSearchResult('profile',result.Id)">
         {{result.FullName}}
       </mat-list-option>
 
@@ -46,7 +46,7 @@
         {{'groups' | translate:'Группы'}} :
       </mat-list-option>
       <mat-list-option *ngIf="this.bestGroupSearchResult" [value]="this.bestGroupSearchResult"
-                       (click)="this.cleanSearchResults()" [routerLink]="['profile',this.bestGroupSearchResult.Id]">
+                       (click)="this.routeToSearchResult('group',this.bestGroupSearchResult.Name)">
         {{this.bestGroupSearchResult.Name}}
       </mat-list-option>
       <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result"
@@ -125,28 +125,40 @@
       </a>
       <mat-form-field *ngIf="!isAdmin" class="search-form" appearance="legacy" (keydown.escape)="this.cleanSearchResults()" (blur)="this.cleanSearchResults()">
         <input matInput [(ngModel)]="valueForSearch" type="text" placeholder="{{'search' | translate:'Поиск'}}" (input)="viewSearchResults()"  maxlength="30">
-        <mat-selection-list [multiple]="false">
+        <mat-selection-list (mouseleave) = "this.cleanSearchResults()" [multiple]="false">
           <mat-list-option class = "search-results-separator" *ngIf = this.studentSearchResults>
             {{'students' | translate:'Студенты'}} :
           </mat-list-option>
+          <mat-list-option *ngIf="this.bestStudentSearchResult" [value]="this.bestStudentSearchResult"
+                          (click)="this.routeToSearchResult('profile',this.bestStudentSearchResult.Id)">
+            {{this.bestStudentSearchResult.FullName}}
+          </mat-list-option>
           <mat-list-option *ngFor="let result of this.studentSearchResults" [value]="result"
-                           (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+                          (click)="this.routeToSearchResult('profile',result.Id)">
             {{result.FullName}}
           </mat-list-option>
-
+    
           <mat-list-option class = "search-results-separator" *ngIf = this.lecturerSearchResults>
             {{'lecturers' | translate:'Преподаватели'}} :
           </mat-list-option>
+          <mat-list-option *ngIf="this.bestLecturerSearchResult" [value]="this.bestLecturerSearchResult"
+                          (click)="this.routeToSearchResult('profile',this.bestLecturerSearchResult.Id)">
+            {{this.bestLecturerSearchResult.FullName}}
+          </mat-list-option>
           <mat-list-option *ngFor="let result of this.lecturerSearchResults" [value]="result"
-                           (click)="this.cleanSearchResults()" [routerLink]="['profile',result.Id]">
+                          (click)="this.routeToSearchResult('profile',result.Id)">
             {{result.FullName}}
           </mat-list-option>
-
+    
           <mat-list-option class = "search-results-separator" *ngIf = this.groupSearchResults>
             {{'groups' | translate:'Группы'}} :
           </mat-list-option>
+          <mat-list-option *ngIf="this.bestGroupSearchResult" [value]="this.bestGroupSearchResult"
+                           (click)="this.routeToSearchResult('group',this.bestGroupSearchResult.Name)">
+            {{this.bestGroupSearchResult.Name}}
+          </mat-list-option>
           <mat-list-option *ngFor="let result of this.groupSearchResults" [value]="result"
-                           (click)="this.cleanSearchResults()" [routerLink]="['group',result.Name]">
+                           (click)="this.routeToSearchResult('group',result.Name)">
             {{result.Name}}
           </mat-list-option>
         </mat-selection-list>

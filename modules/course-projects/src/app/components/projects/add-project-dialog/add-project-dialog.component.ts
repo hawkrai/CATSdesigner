@@ -78,6 +78,7 @@ export class AddProjectDialogComponent {
     return isValid ? null : { whitespace: true };
   }
 
+
   get areGroupsNotChanged(): boolean {
     const selectedGroups = this.data.selectedGroups.map(a => a.GroupId).sort((a: any, b: any) => {
       return a - b;

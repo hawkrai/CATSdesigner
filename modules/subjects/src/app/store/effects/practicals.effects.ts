@@ -157,6 +157,7 @@ export class PracticalsEffects {
             this.store.select(subjectSelectors.getSubjectId),
         ),
         switchMap(([{ sendFile, fileId }, subjectId]) => this.userFilesService.sendUserFile({ ...sendFile, subjectId }).pipe(
+
             switchMap(body => [...(!body.IsReturned ? [catsActions.showMessage({ body })] : []), practicalsActions.sendUserFileSuccess({ userLabFile: body, isReturned: sendFile.isRet, fileId, userId: sendFile.userId })])
         ))
     ));
@@ -176,6 +177,7 @@ export class PracticalsEffects {
     ));
 
     checkJobProptection$ = createEffect(() => this.actions$.pipe(
+
         ofType(practicalsActions.receiveFileSuccess, practicalsActions.returnFileSuccess, practicalsActions.cancelFileSuccess, practicalsActions.protectionChangedUpdate, practicalsActions.sendUserFileSuccess),
         withLatestFrom(
             this.store.select(subjectSelectors.getUserId),
@@ -238,6 +240,7 @@ export class PracticalsEffects {
         ),
         switchMap(([_, groupId, subjectId]) => this.rest.getPracticalsZip(subjectId, groupId).pipe(
             map(response => filesActions.exportFile({ response }))
+
         ))
     ));
 
