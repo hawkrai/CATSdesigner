@@ -108,7 +108,10 @@ namespace LMPlatform.UI.Controllers
                     .AddClaims(claims.Select(c => new KeyValuePair<string, object>(c.Type, c.Value)))
                     .Encode();
 
-                if (!this.User.IsInRole("admin")) this.UsersManagementService.UpdateLastLoginDate(model.UserName);
+                if (!User.IsInRole("admin"))
+                {
+                    UsersManagementService.UpdateLastLoginDate(model.UserName);
+                }
 
                 this.Response.Cookies.Add(new HttpCookie("Authorization", token)
                     { Expires = DateTime.UtcNow.AddMonths(1) });

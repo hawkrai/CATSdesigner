@@ -45,25 +45,10 @@ namespace LMPlatform.Models
 
 		public ICollection<Documents> Documents { get; set; }
 
+		public ICollection<Attendance> Attendances { get; set; }
+
 		public virtual DateTime? LastLogin { get; set; }
-
-		public virtual string Attendance { get; set; }
-
-		public string Avatar { get; set; }
-
-		[NotMapped]
-		public List<DateTime> AttendanceList
-		{
-			get
-			{
-				if (!string.IsNullOrEmpty(Attendance))
-					return (List<DateTime>) JsonConvert.DeserializeObject(Attendance, new List<DateTime>().GetType());
-
-				return new List<DateTime>();
-			}
-
-			set => Attendance = JsonConvert.SerializeObject(value);
-		}
+        public string Avatar { get; set; }
 
 		[NotMapped]
 		public string FullName
