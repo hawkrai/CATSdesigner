@@ -122,7 +122,7 @@ namespace Application.Infrastructure.SubjectManagement
         List<ProfileCalendarModel> GetLecturesEvents(int userId);
 
         List<Subject> GetSubjectsByLector(int userId, bool isArchive = false);
-        List<Subject> GetSubjectsInfoByLector(int userId);
+        List<Subject> GetSubjectsInfoByLector(int userId, bool isArchive = false);
 
         List<Subject> GetSubjectsByStudent(int userId, bool isArchive = false);
 

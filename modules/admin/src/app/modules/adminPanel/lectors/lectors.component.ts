@@ -153,7 +153,6 @@ export class LectorsComponent implements OnInit {
         this.loadLector();
         this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
       } else {
-        this.toastr.addErrorFlashMessage('Произошла ошибка при редактировании преподавателя. Повторите попытку');
       }
     });
   }

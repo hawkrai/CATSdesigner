@@ -122,7 +122,7 @@ export class ChangePersonalDataComponent implements OnInit {
       config.height = 'auto';
     }
     else {
-      config.width = '40%';
+      config.width = '30%';
       config.height = '100%';
       config.panelClass = "app-password-dialog";
     }

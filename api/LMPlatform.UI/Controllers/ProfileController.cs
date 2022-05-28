@@ -247,7 +247,7 @@ namespace LMPlatform.UI.Controllers
             }
             else
             {
-                model = subjectService.GetSubjectsInfoByLector(user.Id);
+                model = subjectService.GetSubjectsInfoByLector(userId : user.Id);
                 foreach (var subject in model)
                     returnModel.Add(new
                     {

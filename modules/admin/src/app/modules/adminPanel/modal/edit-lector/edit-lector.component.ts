@@ -16,7 +16,6 @@ export class EditLectorComponent implements OnInit {
   form: FormGroup;
   isLoad = false;
   professor : Professor;
-
   constructor(
     private formBuilder: FormBuilder,
     public groupService: GroupService,
@@ -28,14 +27,10 @@ export class EditLectorComponent implements OnInit {
     this.professor = this.data;
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
-      Name: new FormControl(this.professor.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-        Validators.pattern(nameRegExp)]),
-      Surname: new FormControl(this.professor.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
-        Validators.pattern(nameRegExp)]),
-      Patronymic: new FormControl(this.professor.Patronymic, [Validators.maxLength(30),
-        Validators.pattern(nameRegExp)]),
-      Email: new FormControl(this.professor.Email || '',
-[Validators.pattern('^[a-z0-9_.@-]{3,30}$'), Validators.maxLength(30)]),
+      Name: new FormControl(this.professor.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30), Validators.pattern(nameRegExp)]),
+      Surname: new FormControl(this.professor.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30), Validators.pattern(nameRegExp)]),
+      Patronymic: new FormControl(this.professor.Patronymic, [Validators.maxLength(30), Validators.pattern(nameRegExp)]),
+      Email: new FormControl(this.professor.Email || '', [Validators.pattern('^[a-z0-9_.@-]{3,30}$'), Validators.maxLength(30)]),
       SkypeContact: new FormControl(this.professor.SkypeContact || '', [Validators.maxLength(50)]),
       Phone: new FormControl(this.professor.Phone || '', [Validators.maxLength(50)]),
       Skill: new FormControl(this.professor.Skill || '', [Validators.maxLength(250)]),
@@ -109,4 +104,5 @@ export class EditLectorComponent implements OnInit {
     object.Skill = this.form.controls.Skill.value || '';
     return object;
   }
+  
 }

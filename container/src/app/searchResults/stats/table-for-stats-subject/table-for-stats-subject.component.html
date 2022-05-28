@@ -44,8 +44,8 @@
         <ng-container matColumnDef="main-header">
             <th mat-header-cell *matHeaderCellDef [attr.colspan]="8">
                 <div class="main-header">
-                    <p>Группа: {{ this.dataSource.length !== 0 ? this.dataSource[0].GroupName : '' }} </p>
-                    <p>Предмет: {{ this.dataSource.length !== 0 ? this.dataSource[0].Subject : '' }}</p>
+                    <p>Группа: {{ this.dataSource?.length !== 0 ? this.dataSource[0].GroupName : '' }} </p>
+                    <p>Предмет: {{ this.dataSource?.length !== 0 ? this.dataSource[0].Subject : '' }}</p>
                 </div>
             </th>
         </ng-container>

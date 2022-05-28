@@ -7,6 +7,7 @@ import { ChangePasswordComponent } from '../change-password/change-password.comp
 import {AccountService} from '../../service/account.service';
 import {Router} from '@angular/router';
 import {MessageComponent} from '../../component/message/message.component';
+import { AppToastrService } from 'src/app/service/toastr.service';
 
 enum Role {
   ADMIN = 'admin',
@@ -30,7 +31,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  constructor(private studentService: StudentService, private accountService: AccountService, private router: Router,
+  constructor(private studentService: StudentService,private toastr: AppToastrService, private accountService: AccountService, private router: Router,
               private dialog: MatDialog) {
   }
 
@@ -46,7 +47,7 @@ export class LoginComponent implements OnInit {
   }
 
   changePassword() {
-    this.dialog.open(ChangePasswordComponent);
+    const dialogRef = this.dialog.open(ChangePasswordComponent);
   }
 
   login() {

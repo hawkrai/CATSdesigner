@@ -30,7 +30,10 @@
                             <mat-error *ngIf="hasError('Username', 'userExist')">Такой пользователь уже существует.</mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input type="password" matInput placeholder="Пароль" formControlName="Password" maxlength="30">
+                            <input [type]="hidePassword ? 'password' : 'text'" matInput placeholder="Пароль" formControlName="Password" maxlength="30">
+                            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'">
+                                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                              </button>
                             <mat-hint *ngIf="this.isControlInvalid('Password') && !hasError('Password', 'minlength') && !hasError('Password', 'required') && !hasError('Password', 'pattern')">Пароль должен содержать хотя бы 1 маленькую и большую букву и 1 цифру</mat-hint>
                             <mat-error *ngIf="hasError('Password', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
@@ -38,7 +41,10 @@
                             <mat-error *ngIf="hasError('Password', 'pattern')">Допустимые символы: "A(a)-Z(z)", "0-9", "_"</mat-error>                         
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput type="password" placeholder="Подтверждение пароля" formControlName="ConfirmPassword" maxlength="30">
+                            <input matInput [type]="hidePassword2 ? 'password' : 'text'" placeholder="Подтверждение пароля" formControlName="ConfirmPassword" maxlength="30">
+                            <button mat-icon-button matSuffix (click)="hidePassword2 = !hidePassword2" [attr.aria-label]="'Hide password'">
+                                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                              </button>
                             <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')">Пароли не совпадают</mat-error>
                         </mat-form-field>
                         <mat-form-field>
@@ -77,7 +83,7 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Ответ на секретный вопрос" formControlName="SecretAnswer" maxlength="30">
+                            <input matInput placeholder="Ответ на секретный вопрос" formControlName="SecretAnswer"   (input)="deleteSpaces()" maxlength="30">
                             <mat-error *ngIf="hasError('SecretAnswer', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('SecretAnswer', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
                         </mat-form-field>

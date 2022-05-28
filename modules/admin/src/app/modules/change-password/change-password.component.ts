@@ -28,7 +28,7 @@ export class ChangePasswordComponent implements OnInit {
     this.form = this.formBuilder.group({
       Username: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-@]{3,30}$'), 
       Validators.minLength(3), Validators.maxLength(30)]),
-      SecretQuestion: new FormControl(''),
+      SecretQuestion: new FormControl('', [Validators.required]),
       SecretAnswer: new FormControl('', [Validators.required,Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$'), 
       Validators.minLength(1), Validators.maxLength(30)])
     });
@@ -62,9 +62,10 @@ export class ChangePasswordComponent implements OnInit {
       this.form.controls.SecretQuestion.value, this.form.controls.SecretAnswer.value).subscribe(
         res => {
           if (res === 'OK') {
-            this.dialog.open( ResetPasswordModalComponent, {
+            var diagRef = this.dialog.open( ResetPasswordModalComponent, {
               data: this.form.controls.Username.value
             });
+            diagRef.afterClosed().subscribe(res => {window.parent.location.href = "/login";});
           } else {
             document.getElementById('message').hidden = false;
           }
