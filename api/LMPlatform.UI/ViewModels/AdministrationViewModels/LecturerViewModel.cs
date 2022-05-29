@@ -5,11 +5,16 @@ using LMPlatform.Models;
 namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 {
     using System.Linq;
-
+    using Application.Core;
     using Application.Core.UI.HtmlHelpers;
+    using Application.Infrastructure.SubjectManagement;
 
     public class LecturerViewModel : BaseNumberedGridItem
+
     {
+        static public ISubjectManagementService SubjectManagementService =>
+            UnityWrapper.Resolve<ISubjectManagementService>();
+
         [DisplayName("Полное имя")]
         public string FullName => $"{this.LastName} {this.FirstName} {this.MiddleName}";
 
@@ -54,9 +59,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				HtmlLinks = new HtmlString(htmlLinks),
 				IsActive = lecturer.IsActive,
 				LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin.ToString() : "-",
-				Subjects = (lecturer.SubjectLecturers != null && lecturer.SubjectLecturers.Count > 0 && lecturer.SubjectLecturers.Where(e => e.Subject != null).Any(e => !e.Subject.IsArchive))
-					? lecturer.SubjectLecturers.Count(e => !e.Subject.IsArchive).ToString()
-					: "-",
+				Subjects = SubjectManagementService.GetSubjectsByLector(lecturer.Id).OrderBy(subject => subject.Name).Count().ToString(),
 				IsSecretary = lecturer.IsSecretary,
 				IsLectureHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
                 SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray()

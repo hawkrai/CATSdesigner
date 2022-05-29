@@ -1099,13 +1099,13 @@ namespace Application.Infrastructure.SubjectManagement
 			return model;
 		}
 
-		public List<Subject> GetSubjectsInfoByLector(int userId)
+		public List<Subject> GetSubjectsInfoByLector(int userId, bool isArchive = false)
 		{
 			List<Subject> model;
 
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
-				model = repositoriesContainer.SubjectRepository.GetSubjectsInfoByLecturerId(lecturerId: userId).ToList();
+				model = repositoriesContainer.SubjectRepository.GetSubjectsInfoByLecturerId(lecturerId: userId).Where(e => e.IsArchive == isArchive).ToList();
 			}
 
 			return model;

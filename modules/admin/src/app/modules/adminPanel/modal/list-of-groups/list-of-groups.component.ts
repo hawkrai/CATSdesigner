@@ -30,9 +30,9 @@ export class ListOfGroupsComponent implements OnInit {
 
   getGroupStatus(status) {
     if(status == true){
-      return "Активен"
+      return "Текущий"
     }
-    return "Откреплен"
+    return "Завершенный"
   }
 
 }

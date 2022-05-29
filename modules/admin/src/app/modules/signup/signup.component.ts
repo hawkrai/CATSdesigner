@@ -19,6 +19,8 @@ export class SignupComponent implements OnInit {
 
   @Output() submitEM = new EventEmitter();
 
+  hidePassword = true;
+  hidePassword2 = true;
   quest = questions;
   form: FormGroup;
   groups: any;
@@ -54,6 +56,7 @@ export class SignupComponent implements OnInit {
       this.submitEM.emit(this.form.value);
     }
   }
+
 
   getGroups() {
     this.groupService.getGroups().subscribe(items => {

@@ -1,5 +1,5 @@
-export modules_path='/c/Work/CATSdesigner/modules'
-export admin_path=$modules_path/'admin'
+export modules_path='g:/.temp/CATSdesigner/modules'	
+export admin_path=$modules_path'/admin'
 export tests_path=$modules_path'/tests'
 export subjects_path=$modules_path'/subjects'
 export cp_path=$modules_path'/course-projects'
@@ -10,7 +10,7 @@ export complex_path=$modules_path'/complex'
 export schedule_path=$modules_path'/schedule'
 export statistics_path=$modules_path'/statistics'
 
-cd $admin_path
+cd /d $admin_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i

@@ -11,7 +11,7 @@
         <table mat-table [dataSource]="this.groupInfo.Subjects">
 
             <ng-container matColumnDef="subject">
-                <th mat-header-cell *matHeaderCellDef> Предмет </th>
+                <th mat-header-cell style="width: 150px;" *matHeaderCellDef> Предмет </th>
                 <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} </td>
             </ng-container>
 
