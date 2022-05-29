@@ -1,15 +1,18 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatCheckboxChange, MatDialogRef, MatSnackBar} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {TestService} from "../../../service/test.service";
-import {Test} from "../../../models/test.model";
+import {TestType} from "../../../models/test.model";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {Subject} from "rxjs";
 import {takeUntil, tap} from "rxjs/operators";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
 import {FormUtils} from "../../../utils/form.utils";
-import {TranslatePipe} from "educats-translate";
 import { whitespace } from "src/app/shared/validators/whitespace.validator";
+import { CatsService } from "src/app/service/cats.service";
+import { TranslatePipe } from "educats-translate";
+import { Module, ModuleType } from "src/app/models/module.model";
+import { SubjectService } from "src/app/service/subject.service";
 
 
 @AutoUnsubscribe
@@ -22,44 +25,42 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
 
   public CATEGORIES = [{
     name: "text.test.for.control",
-    value: "Тест для контроля знаний",
+    value: TestType.Control,
     tooltip: "Необходимо открывать доступ обучающимся для каждого прохождения теста"
   },
     {
       name: "text.test.for.self.control",
-      value: "Тест для самоконтроля",
+      value: TestType.ForSelfStudy,
       tooltip: "Постоянно открыт для обучающихся"
     },
     {
       name: "text.test.for.pre.eumk",
-      value: "Предтест для обучения в ЭУМК",
+      value: TestType.BeforeEUMK,
       tooltip: "Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное Обучение, доступен из модуля ЭУМК"
     },
     {
       name: "text.test.for.eumk",
-      value: "Тест для обучения в ЭУМК",
+      value: TestType.ForEUMK,
       tooltip: "Позволяют реализовать адаптивное обучение по результатам предтеста"
     },
     {
       name: "text.test.for.nn",
-      value: "Тест для обучения с искусственной нейронной сетью",
+      value: TestType.ForNN,
       tooltip: "Позволяет определять плохо изученные темы обучающимся"
     }];
-//todo any delete
-  public user: any;
+
+    
   public newTest: boolean = true;
-  public subject: any;
-  public chosenType: any;
-  public editingTest: Test;
   public formGroup: FormGroup;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
-
+  isLoading: boolean;
   constructor(private testService: TestService,
               private formBuilder: FormBuilder,
-              private snackBar: MatSnackBar,
-              private translatePipe: TranslatePipe,
               public dialogRef: MatDialogRef<EditTestPopupComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              private catsService: CatsService,
+              private translatePipe: TranslatePipe,
+              private subjectService: SubjectService) {
     super();
   }
 
@@ -68,139 +69,113 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   ngOnInit() {
-    this.user = JSON.parse(localStorage.getItem("currentUser"));
-    this.subject = JSON.parse(localStorage.getItem("currentSubject"));
-
-    if (this.data.event) {
-      this.loadTests();
-      console.log(this.data);
-    } else {
+    this.isLoading = true;
+    const subjectId = JSON.parse(localStorage.getItem("currentSubject")).id;
+    this.subjectService.getSubjectModules(subjectId).subscribe(modules => {
       this.formGroup = this.formBuilder.group({
-        title: new FormControl("", Validators.compose([
+        Title: new FormControl("", Validators.compose([
           Validators.maxLength(255), Validators.required, whitespace
         ])),
-        description: new FormControl("", Validators.compose([
+        Description: new FormControl("", Validators.compose([
           Validators.maxLength(1000), whitespace
         ])),
-        countOfQuestions: new FormControl(10, Validators.compose([
+        CountOfQuestions: new FormControl(10, Validators.compose([
           Validators.max(200),
           Validators.min(1),
           Validators.required
         ])),
-        timeForCompleting: new FormControl(10, Validators.compose([
+        TimeForCompleting: new FormControl(10, Validators.compose([
           Validators.max(150),
           Validators.min(0),
           Validators.required
-        ]))
+        ])),
+        SetTimeForAllTest: new FormControl(true),
+        Type: new FormControl(null, [Validators.required, this.testTypeValidator(modules)]),
+        SubjectId: new FormControl(subjectId)
       });
-      this.editingTest = new Test();
-      this.editingTest.CountOfQuestions = 10;
-      this.editingTest.TimeForCompleting = 10;
-      this.editingTest.SetTimeForAllTest = true;
-    }
+      if (this.data.event) {
+        this.loadTests();
+      } else {
+        this.isLoading = false;
+      }
+    })
+
+  }
+
+   testTypeValidator(modules: Module[]): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value == null) {
+        return null;
+      }
+      const testType = +control.value;
+      if (Number.isInteger(testType) && ((testType === TestType.BeforeEUMK || testType === TestType.ForEUMK) && !modules.some(x => x.Type === ModuleType.ComplexMaterial))) {
+        return { type: true };
+      }
+      return null;
+    };
   }
 
   public loadTests(): void {
     this.testService.getTestById(this.data.event.Id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
-
-        if (test.ForNN) {
-          this.chosenType = "Тест для обучения с искусственной нейронной сетью";
-        } else if (test.ForEUMK) {
-          this.chosenType = "Тест для обучения в ЭУМК";
-        } else if (test.BeforeEUMK) {
-          this.chosenType = "Предтест для обучения в ЭУМК";
-        } else if (test.ForSelfStudy) {
-          this.chosenType = "Тест для самоконтроля";
-        } else {
-          this.chosenType = "Тест для контроля знаний";
-        }
         this.newTest = false;
-        this.editingTest = test;
-        this.formGroup = this.formBuilder.group({
-          title: new FormControl(this.editingTest.Title, Validators.compose([
-            Validators.maxLength(255), Validators.required, whitespace
-          ])),
-          description: new FormControl(this.editingTest.Description, Validators.compose([
-            Validators.maxLength(1000), whitespace
-          ])),
-          countOfQuestions: new FormControl(this.editingTest.CountOfQuestions, Validators.compose([
-            Validators.max(200),
-            Validators.min(1),
-            Validators.required
-          ])),
-          timeForCompleting: new FormControl(this.editingTest.TimeForCompleting, Validators.compose([
-            Validators.max(150),
-            Validators.min(0),
-            Validators.required
-          ]))
+        this.formGroup.patchValue({
+          Title: test.Title,
+          Description: test.Description,
+          CountOfQuestions: test.CountOfQuestions,
+          TimeForCompleting: test.TimeForCompleting,
+          SetTimeForAllTest: test.SetTimeForAllTest,
+          Type: test.ForNN ? TestType.ForNN : test.ForEUMK ? TestType.ForEUMK : test.BeforeEUMK ? TestType.BeforeEUMK : test.ForSelfStudy ? TestType.ForSelfStudy : TestType.Control
         });
+        this.isLoading = false;
       });
   }
 
   onYesClick() {
-    if (this.formGroup.valid) {
-      this.editingTest.ForSelfStudy = false;
-      this.editingTest.BeforeEUMK = false;
-      this.editingTest.ForEUMK = false;
-      this.editingTest.ForNN = false;
-      switch (this.chosenType) {
-        case "Тест для самоконтроля": {
-          this.editingTest.ForSelfStudy = true;
-          break;
-        }
-        case "Предтест для обучения в ЭУМК": {
-          this.editingTest.BeforeEUMK = true;
-          break;
-        }
-        case "Тест для обучения в ЭУМК": {
-          this.editingTest.ForEUMK = true;
-          break;
-        }
-        case "Тест для обучения с искусственной нейронной сетью": {
-          this.editingTest.ForNN = true;
-          break;
-        }
-      }
-      this.editingTest.SubjectId = this.subject.id;
-      if (!this.chosenType) {
-        this.openSnackBar(this.translatePipe.transform("text.test.choose.type", "Выберите тип"));
-      } else if (this.formGroup.valid && this.editingTest.Title) {
-        this.testService.saveTest(this.editingTest)
-          .pipe(
-            tap((message) => {
-              if (message && message.ErrorMessage) {
-                this.openSnackBar(message.ErrorMessage);
-              } else {
-                this.newTest ? this.openSnackBar(this.translatePipe.transform("text.test.created", "Тест создан")) :
-                  this.openSnackBar(this.translatePipe.transform("text.test.edited", "Тест изменен"));
-                this.dialogRef.close(true);
-              }
-            }),
-            takeUntil(this.unsubscribeStream$)
-          )
-          .subscribe();
-      }
-      else {
-        this.openSnackBar(this.translatePipe.transform("text.test.check.data.correctness", "Проверьте правильность заполенения данных"));
-      }
-    } else {
+    if (this.formGroup.invalid) {
       FormUtils.highlightInvalidControls(this.formGroup);
+      this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.check.data.correctness", "Проверьте правильность заполенения данных"), Code: '500' });
+
+      return;
     }
+    const test = this.formGroup.value;
+    test.ForSelfStudy = false;
+    test.BeforeEUMK = false;
+    test.ForEUMK = false;
+    test.ForNN = false;
+    switch (test.Type) {
+      case TestType.ForSelfStudy: {
+        test.ForSelfStudy = true;
+        break;
+      }
+      case TestType.BeforeEUMK: {
+        test.BeforeEUMK = true;
+        break;
+      }
+      case TestType.ForEUMK: {
+        test.ForEUMK = true;
+        break;
+      }
+      case TestType.ForNN: {
+        test.ForNN = true;
+        break;
+      }
+    }
+    delete test.Type;
+    this.testService.saveTest(test)
+    .pipe(
+      tap((message) => {
+        if (message && message.ErrorMessage) {
+          this.catsService.showMessage({ Message: message.ErrorMessage, Code: '500' });
+        } else {
+          this.catsService.showMessage({ Message: this.newTest ? this.translatePipe.transform("text.test.created", "Тест создан") : this.translatePipe.transform("text.test.edited", "Тест изменен"), Code: '200' });
+          this.dialogRef.close(true);
+        }
+      }),
+      takeUntil(this.unsubscribeStream$)
+    )
+    .subscribe();
   }
 
-  public openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    });
-  }
-
-  public writeTitle(event, field): void {
-    this.editingTest[field] = event.currentTarget.value;
-  }
-
-  checkBoxTrue(event: MatCheckboxChange) {
-    this.editingTest.SetTimeForAllTest = !event.checked;
-  }
 }

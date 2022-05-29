@@ -25,3 +25,11 @@ export class Test {
   public Number: number;
   public tooltipTitle: string;
 }
+
+export enum TestType {
+  BeforeEUMK,
+  ForEUMK,
+  ForNN,
+  ForSelfStudy,
+  Control
+}

@@ -69,7 +69,6 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
 
   openDialog(event?: any): void {
     const dialogRef = this.dialog.open(EditTestPopupComponent, {
-      width: "700px",
       data: {event}
     });
 

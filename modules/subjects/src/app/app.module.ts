@@ -56,7 +56,16 @@ import { ProtectionEffects } from './store/effects/protection.effects';
         strictActionImmutability: false
       }   
     }),
-    EffectsModule.forRoot([NewsEffects, GroupsEffects, LecturesEffects, LabsEffects, SubjectEffect, PracticalsEffects, CatsEffects, FilesEffects, ProtectionEffects]),
+    EffectsModule.forRoot([
+      NewsEffects, 
+      GroupsEffects, 
+      LecturesEffects,
+       LabsEffects, 
+       SubjectEffect, 
+       PracticalsEffects,
+        CatsEffects,
+        FilesEffects, 
+        ProtectionEffects]),
     StoreDevtoolsModule.instrument(),
   ],
   providers: [

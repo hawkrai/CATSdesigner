@@ -255,6 +255,16 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
+                if (testViewModel.BeforeEUMK || testViewModel.ForEUMK)
+                {
+                    var modules = ModulesManagementService.GetModules(testViewModel.SubjectId);
+
+                    if (modules.All(x => x.ModuleType != ModuleType.ComplexMaterial))
+                    {
+                        return Json(new { ErrorMessage = "Для создания этого типа теста необходимо добавить модуль ЭУМК к текущему учебному предмету" });
+                    }
+                }
+
                 var savedTest = this.TestsManagementService.SaveTest(testViewModel.ToTest());
                 return this.Json(savedTest);
             }

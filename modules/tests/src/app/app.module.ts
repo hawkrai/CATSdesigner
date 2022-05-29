@@ -13,7 +13,6 @@ import {TestPassingService} from "./service/test-passing.service";
 import {HttpClientModule} from "@angular/common/http";
 import {TestComponent} from "./test/test.component";
 import {TestDescriptionComponent} from "./test-description/test-description.component";
-import {DemoMaterialModule} from "./material-module";
 import {TestExecutionComponent} from "./test-execution/test-execution.component";
 import {QuestionComponent} from "./test-execution/components/question/question.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -45,13 +44,13 @@ import {TranslateModule, TranslatePipe} from "educats-translate";
 import {AutocompleteFormComponent} from "./shared/autocomplete-form/autocomplete-form.component";
 import { WhitespaceDirective } from "./shared/validators/whitespace.validator";
 import {SelectAutocompleteModule} from "mat-select-autocomplete";
-import {LoginComponent} from "./login/login.component";
 import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 import {MenuItemComponent} from "./questions-page/components/question-popup/components/menu-item/menu-item.component";
 import {NeuralNetworkPopupComponent} from "./questions-page/components/neural-network-popup/neural-network-popup.component";
 import * as dataEn from './core/translate/translations_en.json';
 import * as dataRu from './core/translate/translations_ru.json';
 import { IsIntegerPipe } from "./pipes/is-integer.pipe";
+import { SharedModule } from "./shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -87,7 +86,6 @@ import { IsIntegerPipe } from "./pipes/is-integer.pipe";
     DeleteQuestionConfirmationPopupComponent,
     TestResultComponent,
     AutocompleteFormComponent,
-    LoginComponent,
     NeuralNetworkPopupComponent,
     IsIntegerPipe,
     WhitespaceDirective
@@ -99,7 +97,7 @@ import { IsIntegerPipe } from "./pipes/is-integer.pipe";
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    DemoMaterialModule,
+    SharedModule,
     ChartsModule,
     CKEditorModule,
     SelectAutocompleteModule,
