@@ -30,7 +30,6 @@ namespace Application.Infrastructure.UserManagement
 
     public class UsersManagementService : IUsersManagementService
     {
-        private readonly LazyDependency<IUsersRepository> _usersRepository = new LazyDependency<IUsersRepository>();
         private readonly LazyDependency<IMembershipRepository> _membershipRepository = new LazyDependency<IMembershipRepository>();
         private readonly LazyDependency<IAccountManagementService> _accountManagementService = new LazyDependency<IAccountManagementService>();
         private readonly LazyDependency<IProjectManagementService> _projectManagementService = new LazyDependency<IProjectManagementService>();
@@ -40,14 +39,6 @@ namespace Application.Infrastructure.UserManagement
         private ICPManagementService CPManagementService
         {
             get { return _cpManagementService.Value; }
-        }
-
-        public IUsersRepository UsersRepository
-        {
-            get
-            {
-                return _usersRepository.Value;
-            }
         }
 
         public IMembershipRepository MembershipRepository
@@ -87,12 +78,14 @@ namespace Application.Infrastructure.UserManagement
             {
                 if (IsExistsUser(userName))
                 {
-                    return UsersRepository.GetAll(new Query<User>()
-                        .Include(u => u.Student)
-                        .Include(e => e.Student.Group)
-                        .Include(u => u.Lecturer)
-                        .Include(u => u.Membership.Roles))
-                        .Single(e => e.UserName == userName);
+                    using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+                    {
+                        return repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)
+                            .Include(u => u.Student)
+                            .Include(e => e.Student.Group)
+                            .Include(u => u.Lecturer)
+                            .Include(u => u.Membership.Roles));
+                    }
                 }
             }
             catch (ReflectionTypeLoadException ex)
@@ -124,7 +117,9 @@ namespace Application.Infrastructure.UserManagement
         {
             try
             {
-                return UsersRepository.GetBy(new Query<User>(u => u.Id == id)
+                using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+                return repositoriesContainer.UsersRepository.GetBy(new Query<User>(u => u.Id == id)
                 .Include(u => u.Student).Include(e => e.Student.Group).Include(u => u.Lecturer).Include(u => u.Membership.Roles));
             }
             catch (ReflectionTypeLoadException ex)
@@ -180,23 +175,31 @@ namespace Application.Infrastructure.UserManagement
 
             public User GetUser(int id)
             {
-                return UsersRepository.GetBy(new Query<User>(u => u.Id == id)
-                    .Include(u => u.Student).Include(u => u.Lecturer).Include(u => u.Membership.Roles));
+                using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+                return repositoriesContainer.UsersRepository.GetBy(new Query<User>(u => u.Id == id)
+                    .Include(u => u.Student).Include(u => u.Lecturer).Include(u => u.Membership.Roles).Include(x => x.Attendances));
             }
 
             public void UpdateUser(User user)
             {
-                UsersRepository.Save(user);
+                using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+                repositoriesContainer.UsersRepository.Save(user);
             }
 
             public bool IsExistsUser(string userName)
             {
-                if (UsersRepository.GetAll().Any(e => e.UserName == userName))
+                using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
                 {
-                    return true;
+                    if (repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)) != null)
+                    {
+                        return true;
+                    }
+
+                    return false;
                 }
 
-                return false;
             }
 
         public User CurrentUser
@@ -290,19 +293,26 @@ namespace Application.Infrastructure.UserManagement
             {
                 query.Include(u => u.Membership.Roles);
             }
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 
-            return UsersRepository.GetAll(query).ToList();
+            return repositoriesContainer.UsersRepository.GetAll(query).ToList();
         }
 
         public void UpdateLastLoginDate(string userName)
         {
-            var user = GetUser(userName);
-            var now = DateTime.Now;
-            user.LastLogin = now;
-            var attendanceList = user.AttendanceList;
-            attendanceList.Add(now);
-            user.AttendanceList = attendanceList;
-            UsersRepository.Save(user, u => u.LastLogin == now);
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName).Include(e => e.Attendances));
+                if (user != null)
+                {
+                    var now = DateTime.Now;
+                    user.LastLogin = now;
+                    user.Attendances.Add(new Attendance{ Login = now }); 
+                    repositoriesContainer.UsersRepository.Save(user, u => u.LastLogin == now);
+                }
+            }
+
         }
 
         public (User, Role) Login(string userName, string password)
