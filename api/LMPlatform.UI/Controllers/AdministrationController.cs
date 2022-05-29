@@ -388,9 +388,9 @@ namespace LMPlatform.UI.Controllers
         public ActionResult AttendanceJson(int id)
         {
             var user = this.UsersManagementService.GetUser(id);
-
-            if (user?.Attendance == null) return StatusCode(HttpStatusCode.BadRequest);
-            var data = user.AttendanceList.GroupBy(e => e.Date)
+            var attendances = user?.Attendances?.ToList();
+            if (attendances == null) return StatusCode(HttpStatusCode.BadRequest);
+            var data = attendances.GroupBy(e => e.Login.Date)
                 .Select(d => new {day = d.Key.ToString("d"), count = d.Count()});
 
             return JsonResponse(new {resultMessage = user.FullName, attendance = data});

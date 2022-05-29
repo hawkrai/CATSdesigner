@@ -279,9 +279,9 @@ namespace LMPlatform.UI.Controllers
             model.About = user.About;
             model.Id = user.Id;
             model.Login = user.UserName;
-            if (user.AttendanceList.Any())
+            if (user.LastLogin.HasValue)
             {
-                model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy HH:mm:ss");
+                model.LastLogitData = user.LastLogin.Value.ToString("dd/MM/yyyy HH:mm:ss");
             }
             else {
                 model.LastLogitData = "-";
@@ -359,7 +359,10 @@ namespace LMPlatform.UI.Controllers
             model.Phone = user.Phone;
             model.About = user.About;
             model.Id = user.Id;
-            model.LastLogitData = user.AttendanceList.LastOrDefault().ToString("dd/MM/yyyy HH:mm:ss");
+            if (user.LastLogin.HasValue)
+            {
+                model.LastLogitData = user.LastLogin.Value.ToString("dd/MM/yyyy HH:mm:ss");
+            }
             if (user.Lecturer != null)
             {
                 model.Name = user.Lecturer.LastName + " " + user.Lecturer.FirstName + " " + user.Lecturer.MiddleName;

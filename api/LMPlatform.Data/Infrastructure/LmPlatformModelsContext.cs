@@ -44,6 +44,8 @@ namespace LMPlatform.Data.Infrastructure
 
         public DbSet<TinCanObjects> TinCanObjects { get; set; }
 
+        public DbSet<Attendance> Attendances { get; set; }
+
         public IQueryable<Student> GetGraduateStudents()
         {
             return Students.Where(StudentIsGraduate);
@@ -244,6 +246,7 @@ namespace LMPlatform.Data.Infrastructure
             modelBuilder.Entity<User>().Map(m => m.ToTable("Users"))
                 .Property(m => m.Id)
                 .HasColumnName("UserId");
+            modelBuilder.Entity<Attendance>().Map(m => m.ToTable("Attendances"));
             modelBuilder.Entity<Student>().Map(m => m.ToTable("Students"))
                 .Property(m => m.Id)
                 .HasColumnName("UserId")
@@ -305,6 +308,12 @@ namespace LMPlatform.Data.Infrastructure
             modelBuilder.Entity<User>()
                 .HasRequired<Lecturer>(e => e.Lecturer)
                 .WithRequiredPrincipal(e => e.User)
+                .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Attendances)
+                .WithRequired(e => e.User)
+                .HasForeignKey(e => e.UserId)
                 .WillCascadeOnDelete(true);
 
             modelBuilder.Entity<Subject>()
