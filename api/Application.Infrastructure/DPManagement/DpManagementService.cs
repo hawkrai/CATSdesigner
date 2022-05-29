@@ -114,8 +114,7 @@ namespace Application.Infrastructure.DPManagement
                 {
                     var currentYear = _currentAcademicYearEndDate.Year.ToString();
                     query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x => x.AssignedDiplomProjects
-                    .FirstOrDefault().Student.Group.GraduationYear == currentYear).Where(x => x.AssignedDiplomProjects
-                    .FirstOrDefault().Student.Group.SecretaryId == userId);
+                    .FirstOrDefault().Student.Group.GraduationYear == currentYear);
                 }
 
                 else
