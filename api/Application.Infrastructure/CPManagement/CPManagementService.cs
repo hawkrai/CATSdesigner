@@ -203,8 +203,7 @@ namespace Application.Infrastructure.CPManagement
 
             var assignment = Context.AssignedCourseProjects.FirstOrDefault(x => x.CourseProjectId == projectId);
 
-            if ((isLecturer && assignment != null && assignment.ApproveDate.HasValue)
-                || (isStudent && assignment != null))
+            if ((isLecturer && assignment != null && assignment.ApproveDate.HasValue))
             {
                 throw new ApplicationException("The selected Diplom Project has already been assigned!");
             }
