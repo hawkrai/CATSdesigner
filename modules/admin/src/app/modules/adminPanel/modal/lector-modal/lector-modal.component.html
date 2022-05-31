@@ -1,6 +1,6 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div *ngIf="this.isLoad">
-  <button mat-button class="close-icon" [mat-dialog-close]="true">
+  <button mat-button class="close-icon"(click)="onNoClick()">
         <mat-icon>close</mat-icon>
   </button>
   <h1 mat-dialog-title>Добавление преподавателя</h1>

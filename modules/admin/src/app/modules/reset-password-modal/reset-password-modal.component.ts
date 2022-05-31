@@ -15,6 +15,7 @@ import { AppToastrService } from 'src/app/service/toastr.service';
 })
 export class ResetPasswordModalComponent implements OnInit {
 
+  
   hidePassword = true;
   hideConfirm = true;
   password  = "";
@@ -22,7 +23,7 @@ export class ResetPasswordModalComponent implements OnInit {
   form: FormGroup;
   @Output() submitEM = new EventEmitter();
   constructor(private formBuilder: FormBuilder, private userService: UserService, private accountService: AccountService,
-              private dialog: MatDialog, public dialogRef: MatDialogRef<ResetPasswordModalComponent>, private toastr: AppToastrService,
+              private dialog: MatDialog,public dialogRefThis: MatDialogRef<ResetPasswordModalComponent>, private toastr: AppToastrService,
               @Inject(MAT_DIALOG_DATA) public data: string) {}
 
   ngOnInit() {
@@ -65,8 +66,8 @@ export class ResetPasswordModalComponent implements OnInit {
 
   resetPassword(resetPasswordModel) {
     this.accountService.resetPassword(resetPasswordModel).subscribe( () => {
-      this.toastr.addSuccessFlashMessage('Пароль успешно изменен!');
-      window.parent.location.href = "/login";
+      this.toastr.addSuccessFlashMessage("Пароль изменен!");
+      this.dialogRefThis.close();
     });
   }
 

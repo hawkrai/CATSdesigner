@@ -93,7 +93,7 @@
 
   <div class="buttons-row">
     <button mat-button class="cancel-button" (click)="this.backClicked()">{{'button.cancel' | translate : ("Отмена")}}</button>
-    <button mat-button class="edit-button" [disabled]="!this.dataGroup.dirty" (click)="this.updatePersonalInfo()">{{'text.personalAccount.save' | translate : ("Сохранить")}}</button>
+    <button mat-raised-button class="edit-button" [disabled]="!this.dataGroup.dirty" (click)="this.updatePersonalInfo()">{{'text.personalAccount.save' | translate : ("Сохранить")}}</button>
   </div>
 
 </div>

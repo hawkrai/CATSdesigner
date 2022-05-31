@@ -479,7 +479,7 @@ namespace LMPlatform.UI.Controllers
                         GroupName = sg.Group.Name,
                         StudentsCount = sg.Group.Students.Count,
                         IsActive = sg.IsActiveOnCurrentGroup    
-                    })
+                    }).OrderBy(g => g.GroupName)
                 })
             };
             return JsonResponse(response);

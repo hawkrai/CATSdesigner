@@ -48,6 +48,10 @@ export class ChangePasswordDialog implements OnInit {
       const control = this.form.controls[controlName];
       return control.invalid && control.touched;
     }
+
+    invalidForm(){
+      return this.form.invalid || this.form.controls.newPasswordFormControl.value != this.form.controls.newPasswordRepeatFormControl.value
+    }
     
   onNoClick(): void {
     this.dialogRef.close();

@@ -62,7 +62,6 @@ export class StudentsComponent implements OnInit {
         this.loadStudent();
         this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
       } else {
-        this.toastr.addErrorFlashMessage('Произошла ошибка при изменении студента.Попробуйте заново.');
       }
     });
   }
@@ -88,6 +87,14 @@ export class StudentsComponent implements OnInit {
     });
   }
 
+  getName(element: Student){
+    if(element.Patronymic != null){
+      return element.Surname + ' ' + element.Name + ' ' + element.Patronymic;
+    }
+    else{
+      return element.Surname + ' ' + element.Name;
+    }
+  }
   openDialogEdit(person) {
     const dialogRef = this.dialog.open(EditStudentComponent, {
       data: person

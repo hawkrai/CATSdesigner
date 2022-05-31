@@ -27,7 +27,7 @@ export class AddGroupComponent implements OnInit {
     const nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-,.]*$';
     if(this.data.Name == null){
       this.data = new Group();
-      this.group.Name = "New Group";
+      this.group.Name;
       this.data.StartYear = this.date.getFullYear().toString();
       this.data.GraduationYear = (this.date.getFullYear() + 4).toString();
     }
