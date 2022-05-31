@@ -18,8 +18,6 @@ namespace Entities.Models
 
         public virtual DateTime? LastLogin { get; set; }
 
-        public virtual string Attendance { get; set; }
-
         public string Avatar { get; set; }
 
         public string SkypeContact { get; set; }
