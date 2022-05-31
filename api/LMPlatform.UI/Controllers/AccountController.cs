@@ -113,8 +113,10 @@ namespace LMPlatform.UI.Controllers
                     UsersManagementService.UpdateLastLoginDate(model.UserName);
                 }
 
+                var origin = Request.Headers.GetValues("Origin").FirstOrDefault();
+                Uri url = new Uri(origin);
                 this.Response.Cookies.Add(new HttpCookie("Authorization", token)
-                    { Expires = DateTime.UtcNow.AddMonths(1) });
+                    { Expires = DateTime.UtcNow.AddMonths(1), Secure = url.Scheme == Uri.UriSchemeHttps });
 
                 return this.Json(new
                 {
