@@ -1,9 +1,9 @@
-import { Message } from './../../../../../container/src/app/core/models/message';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { IAppState } from '../store/state/app.state';
 import { Store } from '@ngrx/store';
 import * as protectionActions from '../store/actions/protection.actions';
+import { Message } from '../models/message.model';
 
 @Injectable({ providedIn: 'root' })
 export class CatsMessageService {
