@@ -45,7 +45,6 @@ export class StatsComponent implements OnInit {
       this.groupId = subjectResponse.GroupId;
       this.getStatistic(this.groupId);
       console.log(this.studentStatistic);
-      this.isLoad = true;
     });
   }
 
@@ -53,6 +52,7 @@ export class StatsComponent implements OnInit {
     this.subjectService.loadGroup(groupId).subscribe(
       res => {
         this.studentStatistic = res.Students;
+        this.isLoad = true;
       }
     );
   }
