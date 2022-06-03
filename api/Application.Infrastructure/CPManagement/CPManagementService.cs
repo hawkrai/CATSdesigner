@@ -271,7 +271,7 @@ namespace Application.Infrastructure.CPManagement
                 .Select(s => new StudentData
                 {
                     Id = s.Id,
-                    Name = s.LastName + " " + s.FirstName + " " + s.MiddleName, //todo
+                    Name = s.MiddleName != null ? s.LastName + " " + s.FirstName + " " + s.MiddleName : s.LastName + " " + s.FirstName, //todo
                     Group = s.Group.Name
                 }).ApplyPaging(parms);
         }
