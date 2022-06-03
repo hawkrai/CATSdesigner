@@ -43,6 +43,15 @@ export class ProfileComponent implements OnInit {
   isStudent() {
     return this.profileInfo.UserType == "2";
   }
+
+  getDpString() {
+    if(this.isStudent()){
+      return this.translatePipe.transform('text.profile.dpOne', "Текущий дипломные проект");
+    }
+    else{
+      return this.translatePipe.transform('text.profile.dp', "Текущие дипломные проекты");
+    }
+  }
   getProfileInfo(id: any) {
     this.profileService.getProfileInfo(id).subscribe((res) => {
       this.profileInfo = res;
