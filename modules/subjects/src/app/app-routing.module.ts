@@ -2,9 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {FilesComponent} from './modules/files/files.component';
 import {SubjectComponent} from './modules/subject/subject.component';
-import { SettingsComponent } from './modules/settings/settings.component';
-
-
 
 const routes: Routes = [
   {
@@ -17,7 +14,6 @@ const routes: Routes = [
   { path: 'labs', loadChildren: () => import('./modules/labs/labs.module').then(m => m.LabsModule) },
   { path: 'practical', loadChildren: () => import('./modules/practical/practical.module').then(m => m.PracticalModule) },
   { path: 'files', component: FilesComponent},
-  { path: 'settings', component: SettingsComponent},
   { path: 'subject', component: SubjectComponent},
   // { path: '**', component: NotFoundComponent }
 ];

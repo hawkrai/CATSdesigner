@@ -142,7 +142,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private getLab(labsCount: number, lab: Lab) {
-    const order = lab ? lab.Order : labsCount;
+    const order = lab ? lab.Order : labsCount + 1;
     return {
       id: lab ? lab.LabId : 0,
       theme: lab ? lab.Theme : '',
@@ -150,7 +150,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       order,
       pathFile: lab ? lab.PathFile : '',
       attachments: lab ? lab.Attachments : [],
-      shortName: `ЛР${order + 1}`
+      shortName: `ЛР${order}`
     };
   }
 
