@@ -151,5 +151,6 @@
   "button.delete": "Delete",
   "button.edit": "Edit",
   "button.no": "No",
-  "text.test.CM.required": "To create this type of test, you need to add the EUMK module to the current subject"
+  "text.test.CM.required": "To create this type of test, you need to add the EUMK module to the current subject",
+  "validation.whitespace": "The field can't contain only spaces"
 }

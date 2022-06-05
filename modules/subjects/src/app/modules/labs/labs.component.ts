@@ -129,7 +129,12 @@ export class LabsComponent implements OnInit, OnDestroy {
   }
 
   protectionScheduleHelp: Help = {
-    message: this.translate.transform ('text.help.labs.protection.schedule','Нажмите на кнопку "Управление датами", чтобы добавить или удалить даты лабораторных занятий.'),
+    message: this.translate.transform ('text.help.labs.protection.schedule','Нажмите на кнопку «Управление датами», чтобы добавить или удалить даты лабораторных занятий. Расчет рекомендуемых оценок произойдет автоматически.'),
+    action: this.translate.transform ('button.understand','Понятно')
+  }
+
+  protectionStudentHelp: Help = {
+    message: this.translate.transform ('text.help.protection.student','Нажмите на кнопку «Загрузить работу», чтобы отправить выполненную работу на проверку.'),
     action: this.translate.transform ('button.understand','Понятно')
   }
 

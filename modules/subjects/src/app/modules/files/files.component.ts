@@ -43,7 +43,7 @@ export class FilesComponent implements OnInit {
   }
 
   filesHelp: Help = {
-    message: this.translate.transform('text.help.popover.files', 'Файлы.'), 
+    message: this.translate.transform('text.help.popover.files', 'Все файлы по предмету расположены здесь. Скачивайте по одному либо архивом.'), 
     action: this.translate.transform('button.understand','Понятно')
   };
 }

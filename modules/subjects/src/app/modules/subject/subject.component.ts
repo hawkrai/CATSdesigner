@@ -143,7 +143,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   subjectsHelp: Help = {
-    message: this.translate.transform('text.help.popover.subject', 'Предмет.'), 
+    message: this.translate.transform('text.help.popover.subject', 'Нажмите на кнопку «Добавить предмет» для создания нового предмета. Затем выберите нужные модули и присоедините группы.'), 
     action: this.translate.transform('button.understand','Понятно')
   };
 }

@@ -65,8 +65,8 @@
   
           <ng-container matColumnDef="total-test" *ngIf="state.testsCount">
             <th mat-header-cell *matHeaderCellDef>{{'text.average.test' | translate:'Средний балл за тесты'}}</th>
-            <td mat-cell *matCellDef="let element" [class.not-all]="state.testsCount && !element.AllTestsPassed"  [matTooltip]="getTestsPassedTooltip(element, state.testsCount)" matTooltipPosition="below" 
-            [matTooltipDisabled]="state.testsCount && !element.AllTestsPassed"><p>{{element.TestMark}}</p></td>
+            <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed"  [matTooltip]="getTestsPassedTooltip(element, state.testsCount)" matTooltipPosition="below" 
+            [matTooltipDisabled]="element.AllTestsPassed"><p>{{element.TestMark}}</p></td>
           </ng-container>
           
   

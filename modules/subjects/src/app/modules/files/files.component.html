@@ -2,6 +2,7 @@
   <div class="actions-group actions-group__space-between">
     <h2 class="files-component__title" mat-dialog-title>{{'text.subjects.attachments.files' | translate:'Предметные файлы'}}</h2>
     <div class="row gap-7">
+      <app-help [message]="filesHelp.message" [action]="filesHelp.action" class="help"></app-help>
       <button
       mat-icon-button
       color="primary"
@@ -12,7 +13,6 @@
     >
       <mat-icon>get_app</mat-icon>
     </button>
-    <app-help [message]="filesHelp.message" [action]="filesHelp.action" class="help"></app-help>
 
     </div>
   </div>

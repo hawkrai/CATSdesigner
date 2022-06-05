@@ -15,7 +15,7 @@
           {{'text.test.error.enter.name' | translate : "Введите название теста"}}
         </mat-error>
         <mat-error *ngIf="formGroup.controls.Title.hasError('whitespace')">
-          {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+          {{'validation.whitespace' | translate:'Поле не может содержать только пробелы'}}
         </mat-error>
       </mat-form-field>
       <mat-form-field class="edit-test-wrapper">
@@ -26,7 +26,7 @@
           {{'text.test.error.max.length.1000' | translate : "Длина превышает 1000 символов"}}
         </mat-error>
         <mat-error *ngIf="formGroup.controls.Description.hasError('whitespace')">
-          {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+          {{'validation.whitespace' | translate:'Поле не может содержать только пробелы'}}
         </mat-error>
       </mat-form-field>
       <div class="row test-form-time">
