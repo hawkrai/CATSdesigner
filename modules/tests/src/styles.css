@@ -60,12 +60,13 @@ body, html {
 
 .mat-cell {
   justify-content: left;
+  color: #363636;
 }
 
 .mat-header-cell {
   font-family: Roboto, sans-serif;
   font-weight: 600;
-  color: black;
+  color: #363636;
   font-size: 14px;
 }
 
@@ -129,4 +130,15 @@ body, html {
 
 .cdk-overlay-pane {
   max-width: 100vw!important;
+}
+
+.main-anchor {
+  font-size: 20px;
+  color: #3f51b5;
+  text-decoration:none;
+}
+
+.main-anchor:hover {
+  color: #AAAAAA;
+  cursor: pointer;
 }

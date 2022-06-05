@@ -25,7 +25,7 @@
   "text.test.for.nn": "Тест для обучения с искусственной нейронной сетью",
   "text.test.want.to.delete": "Вы действительно хотите удалить вопрос?",
   "text.test.yes": "Да",
-  "text.test.create.nn": "Создание нейронной сети",
+  "text.test.create.nn": "Создать искусственную нейронную сеть",
   "text.test.step.first": "Этап 1: Обучающая выборка",
   "text.test.question": "Вопрос",
   "text.test.complexity": "Сложность",
