@@ -203,8 +203,7 @@ namespace Application.Infrastructure.CPManagement
 
             var assignment = Context.AssignedCourseProjects.FirstOrDefault(x => x.CourseProjectId == projectId);
 
-            if ((isLecturer && assignment != null && assignment.ApproveDate.HasValue)
-                || (isStudent && assignment != null))
+            if ((isLecturer && assignment != null && assignment.ApproveDate.HasValue))
             {
                 throw new ApplicationException("The selected Diplom Project has already been assigned!");
             }
@@ -272,7 +271,7 @@ namespace Application.Infrastructure.CPManagement
                 .Select(s => new StudentData
                 {
                     Id = s.Id,
-                    Name = s.LastName + " " + s.FirstName + " " + s.MiddleName, //todo
+                    Name = s.MiddleName != null ? s.LastName + " " + s.FirstName + " " + s.MiddleName : s.LastName + " " + s.FirstName, //todo
                     Group = s.Group.Name
                 }).ApplyPaging(parms);
         }

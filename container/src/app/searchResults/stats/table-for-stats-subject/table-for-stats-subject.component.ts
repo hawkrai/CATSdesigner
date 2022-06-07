@@ -20,6 +20,17 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
     this.dataSource = this.data;
   }
 
+  getGroupNameStr() {
+    if(this.dataSource){
+      return this.dataSource?.length != 0 ? "Группа: " + this.dataSource[0].GroupName : ''; 
+    }
+  }
+
+  getSubjectNameStr() {
+    if(this.dataSource){
+      return this.dataSource?.length != 0 ? "Предмет: " + this.dataSource[0].Subject : ''; 
+    }
+  }
   ngOnChanges(changes: SimpleChanges) {
     this.dataSource = changes.data.currentValue;
   }
