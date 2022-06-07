@@ -69,7 +69,7 @@
     <table mat-table [dataSource]="this.cpProfileProjects">
       <ng-container matColumnDef="item">
         <th mat-header-cell *matHeaderCellDef> {{'text.profile.cp' | translate : ("Текущие курсовые проекты")}} </th>
-        <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
+        <td mat-cell *matCellDef="let element "> {{element.Name}} ({{element.SubjectName}}) </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -79,8 +79,7 @@
     <div class = "project-table">
     <table mat-table [dataSource]="this.dpProfileProjects">
       <ng-container matColumnDef="item">
-        <th mat-header-cell *matHeaderCellDef = "!this.isStudent()" > {{'text.profile.dpOne' | translate : ("Текущий дипломные проект")}} </th>
-        <th mat-header-cell *matHeaderCellDef = "this.isStudent()"  > {{'text.profile.dp' | translate : ("Текущие дипломные проекты")}} </th>
+        <th mat-header-cell *matHeaderCellDef>{{getDpString()}}</th>
         <td mat-cell *matCellDef="let element "> {{element.Name}} </td>
       </ng-container>
 
