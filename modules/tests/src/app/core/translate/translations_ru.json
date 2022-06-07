@@ -25,7 +25,7 @@
   "text.test.for.nn": "Тест для обучения с искусственной нейронной сетью",
   "text.test.want.to.delete": "Вы действительно хотите удалить вопрос?",
   "text.test.yes": "Да",
-  "text.test.create.nn": "Создание нейронной сети",
+  "text.test.create.nn": "Создать искусственную нейронную сеть",
   "text.test.step.first": "Этап 1: Обучающая выборка",
   "text.test.question": "Вопрос",
   "text.test.complexity": "Сложность",
@@ -46,7 +46,7 @@
   "text.test.error.max.length": "Длина превышает 255 символов",
   "text.test.enter.question.name": "Введите название вопроса",
   "text.test.question.description": "Задание к вопросу",
-  "text.test.open.window": "Открыь описание",
+  "text.test.open.window": "Открыть описание",
   "text.test.answers": "Ответы",
   "text.test.add.answer": "Добавить ответ",
   "text.test.question.type": "Тип вопроса",
@@ -143,5 +143,6 @@
   "text.test.result.mark": "Оценка: {mark} ({percent}%)",
   "text.test.new.questions.for.test": "Вопрос №{number}",
   "text.text.type": "Тип теста",
-  "text.test.CM.required": "Для создания этого типа теста необходимо добавить модуль ЭУМК к текущему учебному предмету"
+  "text.test.CM.required": "Для создания этого типа теста необходимо добавить модуль ЭУМК к текущему учебному предмету",
+  "validation.whitespace": "Поле не может содержать только пробелы"
 }

@@ -328,6 +328,10 @@ namespace Application.Infrastructure.SubjectManagement
 					.GetAll(new Query<StudentLabMark>(e => e.LabId == id))
 					.ToList();
 
+			var deleteLabFiles = repositoriesContainer.RepositoryFor<UserLabFiles>()
+                .GetAll(new Query<UserLabFiles>(e => e.LabId == id))
+                .ToList();
+
 			foreach (var attachment in deleteFiles)
 			{
 				FilesManagementService.DeleteFileAttachment(attachment);
@@ -336,6 +340,11 @@ namespace Application.Infrastructure.SubjectManagement
 			foreach (var mark in studentLabMarks)
 			{
 				repositoriesContainer.RepositoryFor<StudentLabMark>().Delete(mark);
+			}
+
+            foreach (var labFile in deleteLabFiles)
+            {
+				repositoriesContainer.RepositoryFor<UserLabFiles>().Delete(labFile);
 			}
 
 			repositoriesContainer.ApplyChanges();
@@ -921,9 +930,9 @@ namespace Application.Infrastructure.SubjectManagement
 
 			foreach(var lab in labs.MoveItem(prevIndex, curIndex).Select((x, index) => new { Value = x, Index = index }))
             {
-				var order = lab.Index;
+				var order = lab.Index + 1;
 				lab.Value.Order = order;
-				lab.Value.ShortName = $"ЛР{order + 1}";
+				lab.Value.ShortName = $"ЛР{order}";
 				repositoriesContainer.LabsRepository.Save(lab.Value);
 			}
 

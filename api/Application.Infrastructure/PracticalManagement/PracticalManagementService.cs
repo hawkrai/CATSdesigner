@@ -46,6 +46,12 @@ namespace Application.Infrastructure.PracticalManagement
 					.GetAll(new Query<StudentPracticalMark>(e => e.PracticalId == id))
 					.ToList();
 
+
+            var deletePracticalFiles = repositoriesContainer.RepositoryFor<UserLabFiles>()
+                .GetAll(new Query<UserLabFiles>(e => e.PracticalId == id))
+                .ToList();
+
+
 			foreach (var attachment in deleteFiles)
 			{
 				FilesManagementService.DeleteFileAttachment(attachment);
@@ -55,6 +61,11 @@ namespace Application.Infrastructure.PracticalManagement
 			{
 				repositoriesContainer.RepositoryFor<StudentPracticalMark>().Delete(mark);
 			}
+
+            foreach (var practicalFile in deletePracticalFiles)
+            {
+                repositoriesContainer.RepositoryFor<UserLabFiles>().Delete(practicalFile);
+            }
 
 			repositoriesContainer.ApplyChanges();
 
@@ -150,8 +161,9 @@ namespace Application.Infrastructure.PracticalManagement
 
 			foreach (var practical in practicals.MoveItem(prevIndex, curIndex).Select((x, index) => new { Value = x, Index = index }))
 			{
-				practical.Value.Order = practical.Index;
-				practical.Value.ShortName = $"ПЗ{practical.Index + 1}";
+                var order = practical.Index + 1;
+                practical.Value.Order = order;
+				practical.Value.ShortName = $"ПЗ{order + 1}";
 				repositoriesContainer.PracticalRepository.Save(practical.Value);
 			}
 

@@ -61,15 +61,6 @@
         </div>
         <div class="labs-component__actions">
           <div class="actions-group">
-
-            <ng-container
-              *ngIf="(router.url | startWith:'/labs/schedule') || (router.url | startWith:'/labs/visit-statistics') || (router.url | startWith:'/labs/results')">
-              <button class="mat-icon-button-groups " mat-icon-button
-                [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below"
-                (click)="subdivision(state.group.GroupId)">
-                <mat-icon color="primary">groups</mat-icon>
-              </button>
-            </ng-container>
             <app-help [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"
               *ngIf="(router.url | startWith:'/labs/schedule')"></app-help>
             <ng-container *ngIf="router.url | startWith:'/labs/visit-statistics'">
@@ -85,6 +76,14 @@
                 [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'" matTooltipPosition="below">
                 <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
               </div>
+            </ng-container>
+            <ng-container
+              *ngIf="(router.url | startWith:'/labs/schedule') || (router.url | startWith:'/labs/visit-statistics') || (router.url | startWith:'/labs/results')">
+              <button class="mat-icon-button-groups " mat-icon-button
+                [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below"
+                (click)="subdivision(state.group.GroupId)">
+                <mat-icon color="primary">groups</mat-icon>
+              </button>
             </ng-container>
             <ng-container *ngIf="router.url | startWith:'/labs/job-protection'">
               <button mat-icon-button color="primary" [matTooltip]="
@@ -106,8 +105,19 @@
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="!state.isTeacher && !(router.url | startWith:'/labs/list')  && state.group">
-        {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
+      <ng-container *ngIf="!state.isTeacher">
+        <div>
+          <ng-container *ngIf="!(router.url | startWith:'/labs/list')  && state.group">
+            {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
+          </ng-container>
+        </div>
+        <div class="practical-component-actions">
+          <div class="actions-group">
+            <ng-container *ngIf="router.url | startWith:'/labs/job-protection'">
+              <app-help [message]="protectionStudentHelp.message" [action]="protectionStudentHelp.action"></app-help>
+            </ng-container>
+          </div>
+        </div>
       </ng-container>
     </div>
 

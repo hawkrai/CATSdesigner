@@ -85,11 +85,6 @@
           <mat-label>{{'lesson.audience' | translate:'Аудитория'}}</mat-label>
           <input formControlName="audience" type="text" matInput [placeholder]="'lesson.audience' | translate:'Аудитория'">
         </mat-form-field>
-        <div *ngIf="(dateForm.get('audience').touched || dateForm.get('audience').dirty) && dateForm.get('audience').errors" class="form-error">
-          <mat-error *ngIf="dateForm.get('audience').hasError('required')">{{'lesson.audience.required' | translate:'Аудитория обязательно'}}</mat-error>
-          <mat-error *ngIf="dateForm.get('audience').hasError('minLength')">{{'sybmols.min.length' | translate: 'Минимальное количество символов'}}: 1</mat-error>
-          <mat-error *ngIf="dateForm.get('audience').hasError('maxLength')">{{'sybmols.max.length' | translate: 'Максимальное количество символов'}}: 5</mat-error>
-        </div>
       </div>
     </div>
       <button mat-raised-button

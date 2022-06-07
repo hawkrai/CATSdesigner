@@ -145,7 +145,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
   }
 
   private getLesson(lessonsCount: number, lesson: Practical) {
-    const order = lesson ? lesson.Order : lessonsCount;
+    const order = lesson ? lesson.Order : lessonsCount + 1;
     return {
       id: lesson ? lesson.PracticalId : 0,
       theme: lesson ? lesson.Theme : '',
@@ -153,7 +153,7 @@ export class PracticalLessonsComponent implements OnInit, OnDestroy, AfterViewCh
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],
-      shortName: `ПЗ${order + 1}`
+      shortName: `ПЗ${order}`
     };
   }
 

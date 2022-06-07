@@ -1,9 +1,8 @@
-import { AttachedFile } from './../../../../../models/file/attached-file.model';
 import { FormControl, Validators, FormGroup, FormArray, ValidationErrors } from '@angular/forms';
 import { Component, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { BaseFileManagementComponent } from 'src/app/shared/base-file-management-dialog.component';
 import { DialogData } from '../../../../../models/dialog-data.model';

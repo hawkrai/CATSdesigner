@@ -26,7 +26,7 @@
           {{'text.test.enter.question.name' | translate : "Введите название вопроса"}}
         </mat-error>
         <mat-error *ngIf="formGroup.controls.title.hasError('whitespace')">
-          {{'validation.whitespace' | translate:'Поле не может содержать пустых порбелов'}}
+          {{'validation.whitespace' | translate:'Поле не может содержать только пробелы'}}
         </mat-error>
       </mat-form-field>
     </div>
@@ -39,7 +39,7 @@
           [checked]="showDescription || question.Description"
           (change)="descriptionStateChange($event)"
         >
-          {{'text.test.open.window' | translate: "Открыть окно"}}
+          {{'text.test.open.window' | translate: "Открыть описание"}}
         </mat-slide-toggle>
       </div>
       <ng-container *ngIf="showDescription || question.Description">

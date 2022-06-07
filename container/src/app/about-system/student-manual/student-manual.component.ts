@@ -6,7 +6,8 @@ import { AuthenticationService } from 'src/app/core/services/auth.service';
 
 @Component({
   templateUrl: './student-manual.component.html',
-  styleUrls: ['./student-manual.component.less']
+  styleUrls: ['./student-manual.component.less'],
+  selector: 'app-student-manual'
 })
 export class StudentManualComponent implements OnInit {
   loginForm: FormGroup;
