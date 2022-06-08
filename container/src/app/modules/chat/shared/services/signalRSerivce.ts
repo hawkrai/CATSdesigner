@@ -36,6 +36,7 @@ export class SignalRService {
     this.connect();
   }
 
+
   public connect() {
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(
