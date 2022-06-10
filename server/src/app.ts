@@ -12,8 +12,8 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
   const app = express();
   const port = 3000;
   const httpsPort = 443;
-  const targetDomain = "http://localhost:2021";
-  const targetChatDomain = "http://172.16.11.41:4201";
+  const targetDomain = "https://educats.by";
+  const targetChatDomain = "https://localhost:44303"
   app.use(express.static(path.resolve('d:/CatsProject/apps')));
 
   const allowedExt = [

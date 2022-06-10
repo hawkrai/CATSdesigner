@@ -1,1 +1,5 @@
-<video *ngIf="remoteAudio" class="stream-handler" [srcObject]="remoteAudio" autoplay></video>
+
+<div class="container">
+  <div class="remote"><video *ngIf="remoteAudio" class="stream-handler" [srcObject]="remoteAudio" autoplay></video></div>
+  <div class="self"><video *ngIf="selfMedia" class="stream-handler" [srcObject]="selfMedia" autoplay></video></div>
+</div>
