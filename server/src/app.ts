@@ -147,7 +147,7 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
   const socketProxy = createProxyMiddleware(proxySignalROptions);
   const chatOptions = createProxyMiddleware(proxyChatOptions)
 
-  app.use('*/chatSignalR/*', createProxyMiddleware(proxySignalROptions));
+  app.use('*/chatSignalR/*', socketProxy);
   app.use('*/catService/*', chatOptions);
   app.use('*/ProtectionApi/*', chatOptions);
   app.use('*/Services/*', createProxyMiddleware(proxyServiceOptions));
