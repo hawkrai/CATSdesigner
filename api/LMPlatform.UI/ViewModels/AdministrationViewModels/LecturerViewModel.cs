@@ -47,8 +47,13 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         public int[] SecretaryGroupsIds { get; set; }
 
+        public string OwnSubjectsNumber { get; set; }
+        public string AttachedSubjectsNumber { get; set; }
+
         public static LecturerViewModel FormLecturers(Lecturer lecturer, string htmlLinks)
         {
+            var subjectsNumber = SubjectManagementService.GetSubjectsByLector(lecturer.Id).OrderBy(subject => subject.Name).Count();
+            var ownSubjectsNumber = SubjectManagementService.GetSubjectsByLector(lecturer.Id).Where(s => s.SubjectLecturers.First().Owner == lecturer.Id).OrderBy(subject => subject.Name).Count();
             return new LecturerViewModel
 			{
 				Id = lecturer.Id,
@@ -59,7 +64,9 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				HtmlLinks = new HtmlString(htmlLinks),
 				IsActive = lecturer.IsActive,
 				LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin.ToString() : "-",
-				Subjects = SubjectManagementService.GetSubjectsByLector(lecturer.Id).OrderBy(subject => subject.Name).Count().ToString(),
+				Subjects = subjectsNumber.ToString() ,
+				OwnSubjectsNumber = ownSubjectsNumber.ToString(),
+				AttachedSubjectsNumber = (subjectsNumber - ownSubjectsNumber).ToString(),
 				IsSecretary = lecturer.IsSecretary,
 				IsLectureHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
                 SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray()
