@@ -16,6 +16,10 @@ export class VideoChatService {
 
   constructor(private chatService: ChatService) {}
 
+  public isSecureConnection():boolean {
+    return navigator.mediaDevices != undefined;
+  }
+
   public NotifyIncomeCall(chatId: any) {
     if (this.currentChatId !== chatId) {
       if (this.isActiveCall.getValue() || this.isIncomingCall.getValue()) {

@@ -16,7 +16,7 @@ const configuration = {
     offerToReceiveAudio: true,
     offerToReceiveVideo: true,
   },
-  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+  iceServers: [{ urls: 'stun:numb.viagenie.ca:3478' }],
 };
 
 const options = {
@@ -42,7 +42,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   };
 
   public remoteAudio: any;
-  public selfAudio: any;
+  public selfMedia: any;
 
   public stream: any;
 
@@ -108,10 +108,13 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'HandleNewCandidate',
       async (candidate, userConnectionId) => {
+        console.log('HandleNewCandidate')
+        console.log(candidate);
         let cand = new RTCIceCandidate(candidate);
+        console.log(cand);
         const peerConnection =
           this._linkedPeerConnections.get(userConnectionId);
-        peerConnection!.addIceCandidate(cand).catch((e) => console.log(e));
+        if(cand) peerConnection!.addIceCandidate(cand).catch((e) => console.log(e));
       }
     );
   }
@@ -125,7 +128,13 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this._linkedPeerConnections.set(fromClientConnectionId, peerConnection);
 
     peerConnection.onicecandidate = async (event) => {
+
+      console.log(`candidate: ${event.candidate}`);
+      if(event.candidate == null)
+        return;
+      console.log(event.candidate);
       await this.onIceCandidate(event, peerConnection, fromClientConnectionId);
+
     };
 
     peerConnection.onnegotiationneeded = this.onNegotiationNeeded;
@@ -206,7 +215,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     peerConnection.ontrack = (event: any) => {
       this.remoteAudio = event.streams[0];
     };
-    //this.selfAudio = audioStream;
+    this.selfMedia = audioStream;
   }
 
   onConnectionStateChange = (event: any) => {
