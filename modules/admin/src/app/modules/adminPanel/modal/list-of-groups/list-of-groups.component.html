@@ -12,7 +12,7 @@
 
             <ng-container matColumnDef="subject">
                 <th mat-header-cell style="width: 150px;" *matHeaderCellDef> Предмет </th>
-                <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} </td>
+                <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} <br> ({{element.SubjectAuthorName}}) </td>
             </ng-container>
 
             <ng-container matColumnDef="groups">

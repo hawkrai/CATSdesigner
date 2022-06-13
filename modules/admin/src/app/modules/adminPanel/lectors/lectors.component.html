@@ -34,8 +34,8 @@
             </ng-container>
 
             <ng-container matColumnDef="subjects">
-                <th mat-header-cell *matHeaderCellDef> Предметы </th>
-                <td mat-cell *matCellDef="let element"> {{element.Subjects}} </td>
+                <th mat-header-cell *matHeaderCellDef> Предметы<br>(созданные\присоединенные)  </th>
+                <td mat-cell *matCellDef="let element"> {{element.OwnSubjectsNumber}}\{{element.AttachedSubjectsNumber}} </td>
             </ng-container>
 
             <ng-container matColumnDef="action" class="actions">

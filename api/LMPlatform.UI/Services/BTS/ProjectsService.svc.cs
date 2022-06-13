@@ -8,6 +8,7 @@ using LMPlatform.UI.Services.Modules.BTS;
 using WebMatrix.WebData;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
+using Application.Infrastructure.UserManagement;
 
 namespace LMPlatform.UI.Services.BTS
 {
@@ -16,10 +17,12 @@ namespace LMPlatform.UI.Services.BTS
     {
 	    private readonly LazyDependency<IProjectManagementService> projectManagementService = new LazyDependency<IProjectManagementService>();
         private readonly LazyDependency<IMatrixManagmentService> matrixManagementService = new LazyDependency<IMatrixManagmentService>();
+        private readonly LazyDependency<IUsersManagementService> userManagementService = new LazyDependency<IUsersManagementService>();
 
         private IProjectManagementService ProjectManagementService => projectManagementService.Value;
 
         private IMatrixManagmentService MatrixManagmentService => matrixManagementService.Value;
+        private IUsersManagementService UserManagmentService => userManagementService.Value;
 
         public ProjectsResult Index(int pageSize, int pageNumber, string sortingPropertyName, bool desc = false, string searchString = null)
         {
@@ -93,6 +96,8 @@ namespace LMPlatform.UI.Services.BTS
             {
                 Name = projectFile.Name,
                 FileName = projectFile.FileName,
+                CreationDate = DateTime.Now,
+                Author = UserManagmentService.CurrentUser,
                 AttachmentType = (AttachmentType)Enum.Parse(typeof(AttachmentType), projectFile.AttachmentType)
             };
             attachment = ProjectManagementService.SaveAttachment(int.Parse(id), attachment);
