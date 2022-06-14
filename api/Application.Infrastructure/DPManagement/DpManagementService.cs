@@ -100,26 +100,25 @@ namespace Application.Infrastructure.DPManagement
 
         public List<DiplomProjectData> GetProjectsByUserId(int userId)
         {
+            User user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
             var query = Context.DiplomProjects.AsNoTracking()
                 .Include(x => x.Lecturer)
-                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group));
-
-            var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
+                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student))
+                .Include(x => x.AssignedDiplomProjects.Select(asp => asp.Student.Group)).ToList();
 
             if (user != null)
             {
-                query = query.Where(x => x.LecturerId == userId);
-
                 if (user.Lecturer != null && user.Lecturer.IsSecretary)
                 {
+                    query = query.Where(x => x.LecturerId == userId).ToList();
                     var currentYear = _currentAcademicYearEndDate.Year.ToString();
                     query = query.Where(x => x.AssignedDiplomProjects.Any()).Where(x => x.AssignedDiplomProjects
-                    .FirstOrDefault().Student.Group.GraduationYear == currentYear);
+                    .FirstOrDefault().Student.Group.GraduationYear == currentYear).ToList();
                 }
 
                 else
                 {
-                    query = query.Where(x => x.AssignedDiplomProjects.Any(dpg => dpg.StudentId == user.Student.Id));
+                    query = query.Where(x => x.AssignedDiplomProjects.Any(dpg => dpg.StudentId == userId)).ToList();
                 }
 
             }
