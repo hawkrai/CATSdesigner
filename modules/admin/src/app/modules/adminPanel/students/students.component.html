@@ -18,7 +18,7 @@
 
     <ng-container matColumnDef="FullName">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Полное имя</th>
-      <td mat-cell *matCellDef="let element"> {{getName(element)}} </td>
+      <td mat-cell *matCellDef="let element"> {{ element.FullName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="UserName">
