@@ -30,9 +30,6 @@ export class LectorsComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.filterPredicate = (data: Professor, filter: string) => {
-        return data.FullName.trim().toLowerCase().startsWith(filter);
-     };
     this.dataSource.sort = this.sort;
     this.loadLector();
   }

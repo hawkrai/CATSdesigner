@@ -33,9 +33,6 @@ export class StudentsComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.filterPredicate = (data: Student, filter: string) => {
-      return data.FullName.toLowerCase().startsWith(filter) ;
-     };
     this.dataSource.sort = this.sort;
     this.loadStudent();
 
