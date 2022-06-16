@@ -7,6 +7,7 @@ import {
   Output,
   OnDestroy,
 } from '@angular/core';
+
 import { SignalRService } from 'src/app/modules/chat/shared/services/signalRSerivce';
 import { EventEmitter } from '@angular/core';
 import { VideoChatService } from './../../services/video-chat.service';
@@ -180,6 +181,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
     peerConnection.onnegotiationneeded = this.onNegotiationNeeded;
     peerConnection.onconnectionstatechange = this.onConnectionStateChange;
+    peerConnection.oniceconnectionstatechange = (e) => {
+      if (peerConnection.iceConnectionState === "failed") {
+        console.log('peer failed');
+      }
+    };
 
     await this.createMediaController(peerConnection);
 
