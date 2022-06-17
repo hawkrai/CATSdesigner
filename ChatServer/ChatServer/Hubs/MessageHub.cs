@@ -248,6 +248,19 @@ namespace ChatServer.Hubs
                 );
         }
 
+        public async Task FireCandidateV2(object candidate, int chatId)
+        {
+            await Clients.GroupExcept(
+                    chatId.ToString(),
+                    Context.ConnectionId
+                )
+                .SendAsync(
+                    "HandleNewCandidate",
+                    candidate,
+                    Context.ConnectionId
+                );
+        }
+
         public async Task Reject(int chatId, string message)
         {
             await Clients

@@ -7,6 +7,7 @@ import {
   Output,
   OnDestroy,
 } from '@angular/core';
+
 import { SignalRService } from 'src/app/modules/chat/shared/services/signalRSerivce';
 import { EventEmitter } from '@angular/core';
 import { VideoChatService } from './../../services/video-chat.service';
@@ -16,13 +17,46 @@ const configuration = {
     offerToReceiveAudio: true,
     offerToReceiveVideo: true,
   },
-  iceServers: [{ urls: 'stun:numb.viagenie.ca:3478' }],
+  // iceServers: [{ urls: 'stun:numb.viagenie.ca:3478' }],
+  iceServers: [
+    {
+      urls: 'stun:openrelay.metered.ca:80',
+    },
+    {
+      urls: 'turn:numb.viagenie.ca',
+      credential: 'muazkh',
+      username: 'webrtc@live.com',
+    },
+    {
+      urls: 'turn:192.158.29.39:3478?transport=udp',
+      credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+      username: '28224511:1379330808',
+    },
+    {
+      urls: 'turn:192.158.29.39:3478?transport=tcp',
+      credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+      username: '28224511:1379330808',
+    },
+    {
+      urls: 'turn:turn.bistri.com:80',
+      credential: 'homeo',
+      username: 'homeo',
+    },
+    {
+      urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
+      credential: 'webrtc',
+      username: 'webrtc',
+    },
+  ],
 };
 
 const options = {
   offerToReceiveAudio: true,
   offerToReceiveVideo: true,
 };
+
+let iceCount = 0;
+let iceCountLocal = 0;
 
 @Component({
   selector: 'app-stream-handler',
@@ -62,18 +96,23 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy(): void {
     this._linkedPeerConnections = new Map();
-
+    //this.signalRService.hubConnection.off('AddNewcomer');
+    //this.signalRService.hubConnection.off('RegisterOffer');
+    //this.signalRService.hubConnection.off('HandleNewCandidate');
     this.endChat();
   }
 
   ngOnInit(): void {
     this.mediaConstraints.audio = this.isMicroActive;
     this.mediaConstraints.video = this.isVideoActive;
+    iceCount = 0;
+    iceCountLocal = 0;
 
     this.signalRService.hubConnection.off('AddNewcomer');
     this.signalRService.hubConnection.on(
       'AddNewcomer',
       async (newcomerConnectionId: string, chatId: any) => {
+        console.log('New call', newcomerConnectionId, chatId);
         if (!this.videoChatService.isChatMatch(chatId)) {
           this.signalRService.sendRejection(chatId, 'Use is in call');
           return;
@@ -87,6 +126,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'RegisterOffer',
       async (chatId, offer, fromClientHubId) => {
+        console.log('New offer', fromClientHubId, chatId);
+        console.log(offer);
         this.signalRService.callWasConfirmed(chatId);
         this.createRTCPeerConnection(chatId, fromClientHubId, offer);
       }
@@ -96,6 +137,8 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'RegisterAnswer',
       async (answer, userConnectionId) => {
+        console.log('New answer', userConnectionId);
+        console.log(answer);
         await this.registerAnswer(
           this._linkedPeerConnections.get(userConnectionId)!,
           answer,
@@ -108,13 +151,15 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'HandleNewCandidate',
       async (candidate, userConnectionId) => {
-        console.log('HandleNewCandidate')
+        console.log('HandleNewCandidate', ++iceCount);
         console.log(candidate);
         let cand = new RTCIceCandidate(candidate);
+        console.log('web rtc candidate');
         console.log(cand);
         const peerConnection =
           this._linkedPeerConnections.get(userConnectionId);
-        if(cand) peerConnection!.addIceCandidate(cand).catch((e) => console.log(e));
+        if (cand)
+          peerConnection!.addIceCandidate(cand).catch((e) => console.log(e));
       }
     );
   }
@@ -128,17 +173,19 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this._linkedPeerConnections.set(fromClientConnectionId, peerConnection);
 
     peerConnection.onicecandidate = async (event) => {
-
-      console.log(`candidate: ${event.candidate}`);
-      if(event.candidate == null)
-        return;
+      console.log(`candidate: ${++iceCountLocal}`);
       console.log(event.candidate);
+      if (event.candidate == null) return;
       await this.onIceCandidate(event, peerConnection, fromClientConnectionId);
-
     };
 
     peerConnection.onnegotiationneeded = this.onNegotiationNeeded;
     peerConnection.onconnectionstatechange = this.onConnectionStateChange;
+    peerConnection.oniceconnectionstatechange = (e) => {
+      if (peerConnection.iceConnectionState === "failed") {
+        console.log('peer failed');
+      }
+    };
 
     await this.createMediaController(peerConnection);
 
