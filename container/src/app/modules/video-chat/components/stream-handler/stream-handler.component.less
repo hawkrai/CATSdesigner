@@ -2,3 +2,16 @@
   width: 100%;
   height: 100%;
 }
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "remote remote ."
+    "remote remote self"
+    "remote remote self";
+}
+.remote { grid-area: remote; }
+.self { grid-area: self; }

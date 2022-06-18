@@ -474,6 +474,7 @@ namespace LMPlatform.UI.Controllers
                 Subjects = model.Subjects.Distinct().Select(s => new
                 {
                     SubjectName = s.Name,
+                    SubjectAuthorName = s.SubjectLecturers.First().OwnerLecturer.FullName,
                     Groups = s.SubjectGroups.Where(sg => sg.Group != null).Select(sg => new
                     {
                         GroupName = sg.Group.Name,

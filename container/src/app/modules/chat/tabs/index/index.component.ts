@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClipboardService } from 'ngx-clipboard';
 import { MessageCto } from '../../shared/models/dto/messageCto';
 import { DataService } from '../../shared/services/dataService';
+import { VideoChatService } from './../../../video-chat/services/video-chat.service';
 
 @Component({
   selector: 'app-index',
@@ -35,7 +36,7 @@ export class IndexComponent implements OnInit {
   unreadChat:number=0;
   unreadGroup:number=0;
 
-  constructor(private cdr: ChangeDetectorRef, private clipboardApi: ClipboardService, private snackBar: MatSnackBar, private contactService: ContactService, private router: Router, public dialog: MatDialog, public signalRService: SignalRService, public dataService: DataService, public fileService: FileService) { }
+  constructor(private cdr: ChangeDetectorRef, private clipboardApi: ClipboardService, private snackBar: MatSnackBar, private contactService: ContactService, private router: Router, public dialog: MatDialog, public signalRService: SignalRService, public dataService: DataService, public fileService: FileService, public videoChatService:VideoChatService) { }
 
   @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent;
   @ViewChild(PerfectScrollbarDirective) directiveRef?: PerfectScrollbarDirective;
@@ -209,7 +210,14 @@ export class IndexComponent implements OnInit {
     }
     this.signalRService.sendCallRequest(this.dataService.activChatId)
   }
+
   isAllowedForUser(){
+    if(!this.videoChatService.isSecureConnection())
+      {
+        this.openSnackBar("Видео-чат не доступен в небезопасном режиме");
+        return false;
+      }
+
     if(this.dataService?.activChat?.groupId){
       return false;
     }
