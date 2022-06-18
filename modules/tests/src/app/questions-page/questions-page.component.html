@@ -18,7 +18,7 @@
                [adminQuestions]="true"
                [forNN]="test?.ForNN"
                [hideSearch]="true"
-               (addNewQuestion)="addNewQuestion()"
+               (addNewQuestion)="addNewQuestion(null)"
                (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest($event)"
                (createNeuralNetworkEvent)="createNeuralNetwork()"
                (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
@@ -26,6 +26,6 @@
   <app-table-questions
     [questions]="questions"
     (onDeleteQuestion)="openConfirmationDialog($event)"
-    (onOpenEditPopup)="openPopup($event)">
+    (onOpenEditPopup)="addNewQuestion($event)">
   </app-table-questions>
 </div>

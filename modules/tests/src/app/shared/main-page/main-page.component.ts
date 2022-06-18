@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Group} from "../../models/group.model";
 
 
@@ -7,7 +7,7 @@ import {Group} from "../../models/group.model";
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.less']
 })
-export class MainPageComponent implements OnChanges {
+export class MainPageComponent {
 
   @Input()
   public allowChanges: boolean;
@@ -62,7 +62,6 @@ export class MainPageComponent implements OnChanges {
   }
 
   public onGroupValueChange(event): void {
-    console.log("event.source.value " + event.source.value);
     this.groupValueChange.emit(event.source.value);
   }
 
@@ -76,10 +75,6 @@ export class MainPageComponent implements OnChanges {
 
   public addQuestionFromOtherTest(): void {
     this.addQuestionFromOtherTestEvent.emit();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log("ngOnChanges - MainPageComponent " + this.inputValue);
   }
 
   public createNeuralNetwork(): void {

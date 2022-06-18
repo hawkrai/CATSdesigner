@@ -67,6 +67,8 @@ namespace LMPlatform.Models
 
         public virtual int? LabId { get; set; }
 
+        public ICollection<Question> Questions { get; set; }
+
         public List<Concept> GetAllChildren()
         {
 	        var list = new List<Concept>();

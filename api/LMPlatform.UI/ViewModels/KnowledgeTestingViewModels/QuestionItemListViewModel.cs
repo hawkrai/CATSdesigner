@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Web;
 using Application.Core.UI.HtmlHelpers;
 using LMPlatform.Models.KnowledgeTesting;
@@ -51,6 +52,8 @@ namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
 		    set;
 	    }
 
+        public string ConceptTheme { get; set; }
+
         public static QuestionItemListViewModel FromQuestion(Question question, string htmlString)
         {
             var model = FromQuestion(question);
@@ -67,7 +70,8 @@ namespace LMPlatform.UI.ViewModels.KnowledgeTestingViewModels
                 Title = question.Title,
                 QuestionNumber = question.QuestionNumber,
 				ComlexityLevel = question.ComlexityLevel,
-				ConceptId = question.ConceptId
+				ConceptId = question.ConceptId,
+                ConceptTheme = question.Concept?.Name ?? string.Empty
             };
         }
     }

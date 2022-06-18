@@ -10,6 +10,7 @@ export class Question {
   ComlexityLevel?: number;
   ComplexityLevel?: number;
   ConceptId?: any;
+  ConceptTheme: string;
   QuestionType?: number;
   Answers?: Answer[];
   ConceptQuestions?: any;

@@ -34,7 +34,7 @@
   "text.test.step.second": "Этап 2: Обучение",
   "text.test.learn": "Обучить",
   "text.test.step.third": "Этап 3: Сохранение",
-  "text.test.save.set": "Сохранить сеть",
+  "text.test.save.set": "Сохранить ИНС",
   "text.test.network.teach": "Сеть обучена",
   "text.test.network.saved": "Сеть сохранена",
   "text.test.network.error": "Произошла ошибка",
@@ -55,10 +55,10 @@
   "text.test.error.complexity.max": "Сложность вопроса не может быть больше 10",
   "text.test.error.complexity.min": "Сложность вопроса должна быть больше нуля",
   "text.test.enter.complexity": "Введите сложность",
-  "text.test.one.variant": "С одним вариантом",
-  "text.test.many.variant": "С несколькими вариантами",
-  "text.test.from.keyboard": "Ввод с клавиатуры",
-  "text.test.sequence": "Последовательность элементов",
+  "text.test.one.variant": "С одним вариантом ответа",
+  "text.test.many.variant": "С несколькими вариантами ответа",
+  "text.test.from.keyboard": "Ввод ответа с клавиатуры",
+  "text.test.sequence": "Выбор последовательности в ответе",
   "text.test.check.correctness": "Проверьте варианты ответов. Они не должны быть пустыми",
   "text.test.question.created": "Вопрос создан",
   "text.test.question.changed": "Вопрос изменен",
@@ -144,5 +144,6 @@
   "text.test.new.questions.for.test": "Вопрос №{number}",
   "text.text.type": "Тип теста",
   "text.test.CM.required": "Для создания этого типа теста необходимо добавить модуль ЭУМК к текущему учебному предмету",
-  "validation.whitespace": "Поле не может содержать только пробелы"
+  "validation.whitespace": "Поле не может содержать только пробелы",
+  "text.test.theme.eumk": "Тема в ЭУМК"
 }

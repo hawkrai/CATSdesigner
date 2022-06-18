@@ -1,12 +1,13 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
-import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Question} from "../../../models/question/question.model";
 import * as neuralNetworkV2 from "../../../core/neuron/neuron1.js";
 import {TestPassingService} from "../../../service/test-passing.service";
 import {catchError, takeUntil, tap} from "rxjs/operators";
 import {Subject, throwError} from "rxjs";
 import {TranslatePipe} from "educats-translate";
+import { CatsService } from "src/app/service/cats.service";
 
 
 @Component({
@@ -30,14 +31,18 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
 
   constructor(public dialogRef: MatDialogRef<NeuralNetworkPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private snackBar: MatSnackBar,
               private translatePipe: TranslatePipe,
-              private testPassingService: TestPassingService) {
+              private testPassingService: TestPassingService,
+              private catsService: CatsService) {
     super();
   }
 
   ngOnInit(): void {
     this.questions = this.data.questions;
+
+    if (!this.generateDisabled) {
+      this.generate();
+    }
   }
 
   public disableButtons(state: boolean): void {
@@ -77,7 +82,6 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
     topicsNum.push(currentNumb);
     let cartesian = this.cartesian(argumentsD);
     cartesian.unshift(queestions);
-    console.log(cartesian);
     let dataForTopic = this.cartesian(argumentsD);
     this.savedDataAnswersValue = JSON.parse(JSON.stringify(dataForTopic));
     let topicsValue = [];
@@ -95,7 +99,6 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
     });
     this.savedTopicsValue = JSON.parse(JSON.stringify(topicsValue));
     topicsValue.unshift(topics);
-    console.log(topicsValue);
     this.showTable = true;
     this.disableButtons(false);
     this.trainHidden = false;
@@ -130,37 +133,30 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
       let temp = {input: value, output: this.savedTopicsValue[index]};
       data.push(temp);
     });
-    neuralNetworkV2.neuralNetworkV2.train(data, {log: false});
+    neuralNetworkV2.neuralNetworkV2.train(data, {log: true});
     this.saveHidden = false;
     this.showThirdStep = true;
     this.disableButtons(false);
-    this.openSnackBar(this.translatePipe.transform("text.test.network.teach","Сеть обучена"));
-  }
-
-  public openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    });
+    this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.network.teach","Сеть обучена"), Code: '200' });
   }
 
   public save(): void {
     this.disableButtons(true);
     const data = JSON.stringify(neuralNetworkV2.neuralNetworkV2.toJSON());
-    console.log(data);
     this.testPassingService.saveNeuralNetwork(data, this.data.testId)
       .pipe(
         tap((message) => {
           if (message && message.ErrorMessage) {
-            this.openSnackBar(message.ErrorMessage);
+            this.catsService.showMessage({ Message: message.ErrorMessage, Code: '500' });
           } else {
-            this.openSnackBar(this.translatePipe.transform("text.test.network.saved","Сеть сохранена"));
+            this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.network.saved","Сеть сохранена"), Code: '200' });
           }
           this.disableButtons(false);
         }),
         takeUntil(this.unsubscribeStream$),
         catchError(() => {
           this.disableButtons(false);
-          this.openSnackBar(this.translatePipe.transform("text.test.network.error","Произошла ошибка"));
+          this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.network.error","Произошла ошибка"), Code: '500' });
           return throwError(null);
         }))
       .subscribe();

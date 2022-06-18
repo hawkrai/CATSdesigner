@@ -2,40 +2,31 @@
   overflow: auto;
   position: fixed;
 
-  &-header {
-    display: block;
-  }
-  &-complexity {
-    width: 100%;
-    margin-top: 10px;
-  }
-  &-container {
-
-    &-slider {
-      display: flex;
-      justify-content: space-between;
-    }
-    &-sub {
-      margin-top: 1px;
-    }
-    &.mat-dialog-title {
-      font-weight: 400;
-    }
-    &.mat-dialog-container {
-      color: black;
-    }
-    display: flex;
-    width: 27%;
-    font: 400 20px/32px Roboto, "Helvetica Neue", sans-serif;
-    text-align: left;
-    margin: 10px 0 0;
+  &-text {
     &-small {
       font-size: 14px;
       color: #6c6c6c;
-      width: 73%;
-      display: flex;
-      align-items: flex-end;
       margin-bottom: 4px;
+    }
+  }
+
+  &-header {
+    display: block;
+  }
+
+  &-answer {
+    &-button {
+      background: #388E3C;
+      color: white;
+      height: 45px;
+    }
+  }
+
+  &-container {
+    &__justify {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
     }
   }
   &-answers {
@@ -70,11 +61,7 @@
       width: 100%;
     }
   }
-  &-loader {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+
   &-full {
     display: block;
     width: 100%;
@@ -83,54 +70,18 @@
     }
   }
 
-  &-types {
-    &-container {
-      display: flex;
-      margin-top: 15px;
-      justify-content: space-between;
-      @media only screen and (max-width: 768px) {
-        display: flex;
-        flex-direction: column-reverse;
-      }
-      &-button {
-
-      }
-      &-dropdown {
-        width: 300px;
-      }
-    }
+  &-inputs {
+    display: flex;
   }
   &-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-}
 
-.mat-radio-label-content {
-  width: 100%;
-}
-
-.example-section {
-  display: inline-grid;
-  width: 100%;
-}
-
-.example-margin {
-  margin-top: 20px;
-  .mat-checkbox-layout {
-    width: 100%;
+  &-type {
+    margin-right: 20px;
   }
-  .mat-checkbox-inner-container {
-    width: 100%;
-  }
-  .mat-checkbox-label {
-    width: 100%;
-  }
-}
-
-.mat-dialog-actions {
-  justify-content: flex-end;
 }
 
 .basic-container {
@@ -139,10 +90,4 @@
   display: flex;
   align-items: center;
 
-}
-
-.version-info {
-  font-size: 8pt;
-  float: right;
-  padding: 8px;
 }

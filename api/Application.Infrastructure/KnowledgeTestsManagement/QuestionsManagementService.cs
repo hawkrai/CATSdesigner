@@ -247,6 +247,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                     query.AddFilterClause(question => question.Title.Contains(searchString));
                 }
 
+                query.Include(question => question.Concept);
                 searchResults = repositoriesContainer.QuestionsRepository.GetAll(query).ToList();
             }
 
