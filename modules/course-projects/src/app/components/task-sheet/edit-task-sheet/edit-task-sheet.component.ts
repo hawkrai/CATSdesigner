@@ -8,6 +8,9 @@ import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
 import { Project } from 'src/app/models/project.model';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { CoreGroup } from 'src/app/models/core-group.model';
+import {Help} from '../../../models/help.model';
+import {HelpPopoverScheduleComponent} from '../../../shared/help-popover/help-popover-schedule.component';
+import {MatDialog} from '@angular/material/dialog';
 
 interface DialogData {
   subjectId: string;
@@ -22,6 +25,11 @@ interface DialogData {
   styleUrls: ['./edit-task-sheet.component.less']
 })
 export class EditTaskSheetComponent implements OnInit {
+
+  helpMessage: Help = {
+    message: 'Выберите готовый шаблон, чтобы применить его к листу задания. Шаблон можно изменить и применить к указанным группам',
+    action: 'Понятно'
+  };
 
   private COUNT = 1000000;
   private PAGE = 1;
@@ -55,19 +63,34 @@ export class EditTaskSheetComponent implements OnInit {
   private selectedGroups: any[];
   private projects: Project[];
   private taskSheets: TaskSheet[];
-  private selectedTemplate = "data.taskSheetTemplate";
+  private selectedTemplate = 'data.taskSheetTemplate';
 
   constructor(private taskSheetService: TaskSheetService,
               private snackBar: MatSnackBar,
               public dialogRef: MatDialogRef<EditTaskSheetComponent>,
               private projectsService: ProjectsService,
+              private dialog: MatDialog,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
     this.taskSheetService.getTemplateList({entity: 'CourseProjectTaskSheetTemplate', subjectId: this.data.subjectId})
       .subscribe(res => this.templates = res);
-      this.retrieveProjects();
-      this.retrieveTaskSheets();
+    this.retrieveProjects();
+    this.retrieveTaskSheets();
+  }
+
+  showHelp(): void {
+    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent,
+      {data: {message: this.helpMessage.message,
+          action: this.helpMessage.action},
+        disableClose: true,
+        hasBackdrop: true,
+        backdropClass: 'backdrop-help',
+        panelClass: 'help-popover'
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   onCancelClick(): void {
@@ -93,9 +116,9 @@ export class EditTaskSheetComponent implements OnInit {
       this.facultyControl.invalid || this.headCathedraControl.invalid || this.startDateControl.invalid || this.endDateControl.invalid;
   }
 
-  isSelectedGroupsInvalid(): boolean{
-    if(this.selectedGroups == undefined){
-      return true
+  isSelectedGroupsInvalid(): boolean {
+    if (this.selectedGroups === undefined) {
+      return true;
     }
     return this.selectedGroups.length < 1;
   }
@@ -112,11 +135,11 @@ export class EditTaskSheetComponent implements OnInit {
     });
   }
 
-  applyTemplate(){
+  applyTemplate() {
     this.projects.forEach(element => {
-      if (element.Group != null){
-        if (this.selectedGroups.includes(element.Group)){
-          let taskSheet = this.taskSheets.find(i => i.CourseProjectId === element.Id);
+      if (element.Group != null) {
+        if (this.selectedGroups.includes(element.Group)) {
+          const taskSheet = this.taskSheets.find(i => i.CourseProjectId === element.Id);
           this.populateSheet(taskSheet);
           this.taskSheetService.editTaskSheet(taskSheet).subscribe();
         }

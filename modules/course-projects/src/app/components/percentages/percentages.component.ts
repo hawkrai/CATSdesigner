@@ -8,6 +8,7 @@ import {AddStageDialogComponent} from './add-stage-dialog/add-stage-dialog.compo
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {getSubjectId} from '../../store/selectors/subject.selector';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-percentages',
@@ -28,6 +29,7 @@ export class PercentagesComponent implements OnInit {
   constructor(private percentagesService: PercentagesService,
               public dialog: MatDialog,
               private snackBar: MatSnackBar,
+              private toastr: ToastrService,
               private store: Store<IAppState>) {
   }
 
@@ -70,10 +72,10 @@ export class PercentagesComponent implements OnInit {
           this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('Этап успешно сохранен');
+            this.toastr.success('Этап успешно сохранен');
           });
         } else {
-          this.addFlashMessage('Этап с таким названием уже существует');
+          this.toastr.error('Этап с таким названием уже существует');
         }
       }
     });
@@ -100,10 +102,10 @@ export class PercentagesComponent implements OnInit {
           this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Этап успешно изменен');
-          });
+              this.toastr.success('Этап успешно изменен');
+            });
         } else {
-          this.addFlashMessage('Этап с таким названием уже существует');
+          this.toastr.error('Этап с таким названием уже существует');
         }
       }
     });
@@ -125,16 +127,10 @@ export class PercentagesComponent implements OnInit {
       if (result != null && result) {
         this.percentagesService.deleteStage(id).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage('Этап успешно удален');
+          this.toastr.success('Этап успешно удален');
+
         });
       }
     });
   }
-
-  addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
-  }
-
 }
