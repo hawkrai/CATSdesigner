@@ -53,7 +53,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public static LecturerViewModel FormLecturers(Lecturer lecturer, string htmlLinks)
         {
             var subjectsNumber = SubjectManagementService.GetSubjectsByLector(lecturer.Id).OrderBy(subject => subject.Name).Count();
-            var ownSubjectsNumber = SubjectManagementService.GetSubjectsByLector(lecturer.Id).Where(s => s.SubjectLecturers.First().Owner == lecturer.Id).OrderBy(subject => subject.Name).Count();
+            var ownSubjectsNumber = SubjectManagementService.GetSubjectsByLector(lecturer.Id).Where(s => s.SubjectLecturers.First().Owner == null).OrderBy(subject => subject.Name).Count();
             return new LecturerViewModel
 			{
 				Id = lecturer.Id,

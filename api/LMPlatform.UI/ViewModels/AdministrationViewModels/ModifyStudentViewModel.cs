@@ -95,7 +95,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 		[Editable(false)]
 		public int Id { get; set; }
 
-		public string FullName => $"{this.Name} {this.Surname} ({this.UserName})";
+		public string FullName => $"{this.Name} {this.Surname} {this.Patronymic}";
 
 		public string SkypeContact { get; set; }
 
