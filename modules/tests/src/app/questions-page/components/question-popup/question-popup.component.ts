@@ -1,19 +1,19 @@
-import {ChangeDetectorRef, Component, Inject, OnInit, ViewChild} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef, MatRadioChange, MatSlideToggleChange, MatSnackBar} from "@angular/material";
+import {Component, Inject, OnInit} from "@angular/core";
+import {MAT_DIALOG_DATA, MatDialogRef, MatSlideToggleChange} from "@angular/material";
 import {TestService} from "../../../service/test.service";
 import {Question} from "../../../models/question/question.model";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Answer} from "../../../models/question/answer.model";
-import {ActivatedRoute} from "@angular/router";
 import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {combineLatest, of, Subject} from "rxjs";
-import {catchError, takeUntil, tap} from "rxjs/operators";
+import {takeUntil, tap} from "rxjs/operators";
 import {Base64UploaderPlugin} from "../../../core/Base64Upload";
 import {FormUtils} from "../../../utils/form.utils";
 import {NavItem} from "../../../models/nav-item";
 import {TranslatePipe} from "educats-translate";
 import { whitespace } from "src/app/shared/validators/whitespace.validator";
+import { CatsService } from "src/app/service/cats.service";
 
 
 @AutoUnsubscribe
@@ -27,14 +27,12 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public chosenQuestionType: any = 0;
   public chosenType: any;
   navItems: NavItem[] = [];
+
   ckconfig = {
-    // include any other configuration you want
     extraPlugins: [Base64UploaderPlugin]
   };
-  name = "ng2-ckeditor";
-  ckeConfig: any;
-  log: string = "";
-  @ViewChild("myckeditor", {static: true}) ckeditor: any;
+
+  ckConfig: any;
 
   public chars: { [key: string]: string } = {};
   public charsNeskolko: { [key: string]: any[] } = {};
@@ -42,13 +40,14 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public charsSequence: { [key: string]: string } = {};
   public charsde: any;
   public newCase: boolean;
-  public readonly ANSWER_TYPES: any = [{id: 0, label: "text.test.one.variant"},
+  public readonly ANSWER_TYPES: any = [
+    {id: 0, label: "text.test.one.variant"},
     {id: 1, label: "text.test.many.variant"},
     {id: 2, label: "text.test.from.keyboard"},
-    {id: 3, label: "text.test.sequence"}];
+    {id: 3, label: "text.test.sequence"}]
+    ;
   public formGroup: FormGroup;
   public concept: any;
-  public loader: boolean;
   public selectedConcept: string;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   private conceptId: any;
@@ -57,30 +56,22 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private testService: TestService,
-              private snackBar: MatSnackBar,
               private translatePipe: TranslatePipe,
-              private formBuilder: FormBuilder,
-              private route: ActivatedRoute,
-              private cdr: ChangeDetectorRef) {
+              private catsService: CatsService) {
     super();
   }
 
   ngOnInit() {
-    this.loader = true;
     const subject = JSON.parse(localStorage.getItem("currentSubject"));
-    this.ckeConfig = {
+    this.ckConfig = {
       allowedContent: true,
       extraPlugins: "divarea",
       forcePasteAsPlainText: false
     };
     this.initForm();
     if (this.data.event) {
-      combineLatest(this.testService.getQuestion(this.data.event), (this.data.isEUMKTest ? this.testService.getConcepts(subject.id) : of(null)))
-        .pipe(takeUntil(this.unsubscribeStream$),
-          catchError(error => {
-            this.loader = false;
-            return of(false);
-          }))
+      combineLatest([this.testService.getQuestion(this.data.event), (this.data.isEUMKTest ? this.testService.getConcepts(subject.id) : of(null))])
+        .pipe(takeUntil(this.unsubscribeStream$))
         .subscribe(([question, concept]) => {
           this.question = question;
           this.navItems = concept;
@@ -89,11 +80,11 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
             this.getConceptName();
           }
           this.newCase = false;
-          this.formGroup = this.formBuilder.group({
-            title: new FormControl(this.question.Title, Validators.compose([
+          this.formGroup = new FormGroup({
+            Title: new FormControl(this.question.Title, Validators.compose([
               Validators.maxLength(255), Validators.required, whitespace
             ])),
-            description: new FormControl(this.question.Description, Validators.compose([
+            Description: new FormControl(this.question.Description, Validators.compose([
               Validators.maxLength(1000)
             ])),
             ComplexityLevel: new FormControl(this.question.ComplexityLevel, Validators.compose([
@@ -104,7 +95,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           });
           this.chosenQuestionType = question.QuestionType;
           this.initExisting(this.question.Answers);
-          this.loader = false;
         });
     } else {
       this.newCase = true;
@@ -117,11 +107,11 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       }
       this.question.ComlexityLevel = 1;
       this.question.ComplexityLevel = 1;
-      this.formGroup = this.formBuilder.group({
-        title: new FormControl("", Validators.compose([
+      this.formGroup = new FormGroup({
+        Title: new FormControl("", Validators.compose([
           Validators.maxLength(255), Validators.required, whitespace
         ])),
-        description: new FormControl("", Validators.compose([
+        Description: new FormControl("", Validators.compose([
           Validators.maxLength(1000)
         ])),
         ComplexityLevel: new FormControl(1, Validators.compose([
@@ -130,20 +120,11 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           Validators.required
         ]))
       });
-      this.loader = false;
     }
   }
 
   onNoClick(): void {
     this.dialogRef.close();
-  }
-
-  onChange(event) {
-    console.log("changed");
-  }
-
-  onBlur(event) {
-    console.log("blur " + event);
   }
 
   public addAnswer(): void {
@@ -152,7 +133,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       num = Number(num.split("key")[1]);
       this.chars["key" + (num + 1)] = "";
       this.charsde = Object.keys(this.chars);
-      console.log(this.chosenType);
     } else if (this.chosenQuestionType === 1) {
       let num: any = Object.keys(this.charsNeskolko)[Object.keys(this.charsNeskolko).length - 1];
       num = Number(num.split("key")[1]);
@@ -171,7 +151,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       this.charsSequence  ["key" + (num + 1)] = "";
       this.charsde = Object.keys(this.charsSequence);
     }
-    this.cdr.detectChanges();
   }
 
   public onValueChange(event): void {
@@ -187,12 +166,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     } else if (this.chosenQuestionType === 3) {
       this.initSequence();
     }
-    this.cdr.detectChanges();
-  }
-
-  kkkk($event: MatRadioChange) {
-    console.log(this.chosenType);
-
   }
 
   public deleteAnswer(control: string) {
@@ -209,106 +182,87 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       delete this.charsSequence[control];
       this.charsde = Object.keys(this.charsSequence);
     }
-    this.cdr.detectChanges();
-  }
-
-  public writeTitle(event, control, number?: boolean): void {
-    console.log(event.target.value);
-
-    this.question[control] = number ? Number(event.target.value) : event.target.value;
-  }
-
-  onChange1($event: any): void {
-    console.log("onChange");
-    //this.log += new Date() + "<br />";
-  }
-
-  onPaste($event: any): void {
-    console.log("onPaste");
-    //this.log += new Date() + "<br />";
   }
 
   public onYesClick() {
-    if (this.formGroup.valid) {
-      this.question.Answers = [];
-      if (this.chosenQuestionType === 0) {
-        if (this.chosenType) {
-          Object.values(this.chars).forEach((value) => {
-            let question = new Answer();
-            question["Content"] = value;
-            question["IsCorrect"] = 0;
-            this.question.Answers.push(question);
-          });
-          let num = Number(this.chosenType.split("key")[1]);
-          this.question.Answers[num].IsCorrect = 1;
-          this.question.Answers[0].QuestionId = 0;
-        } else {
-          this.openSnackBar(this.translatePipe.transform('text.test.check.correctness',"Проверьте варианты ответов. Они не должны быть пустыми"));
-          return;
-        }
-      } else if (this.chosenQuestionType === 1) {
-        Object.values(this.charsNeskolko).forEach((value) => {
-          let question = new Answer();
-          question["Content"] = value[0];
-          question["IsCorrect"] = value[1] ? 1 : 0;
-          this.question.Answers.push(question);
-        });
-        this.question.Answers[0].QuestionId = 0;
-
-
-        this.charsde = Object.keys(this.charsNeskolko);
-      } else if (this.chosenQuestionType === 2) {
-        Object.values(this.charsWords).forEach((value) => {
-          let question = new Answer();
-          question["Content"] = value;
-          question["IsCorrect"] = 0;
-          this.question.Answers.push(question);
-        });
-        this.question.Answers[0].QuestionId = 0;
-      }
-
-
-      else if (this.chosenQuestionType === 3) {
-
-        Object.values(this.charsSequence).forEach((value) => {
-          let question = new Answer();
-          question["Content"] = value;
-          question["IsCorrect"] = 0;
-          this.question.Answers.push(question);
-        });
-        this.question.Answers[0].QuestionId = 0;
-      }
-
-
-      this.question["TestId"] = this.data.test;
-      /*this.question['QuestionType'] = 0;
-      this.question['Id'] = 0;
-      this.question['ConceptId'] = null;*/
-      if (this.data.isEUMKTest) {
-        this.question.ConceptId = this.conceptId;
-      }
-      this.testService.saveQuestion(this.question)
-        .pipe(takeUntil(this.unsubscribeStream$))
-        .subscribe((res) => {
-          if (res.ErrorMessage) {
-            this.openSnackBar(res.ErrorMessage);
-          } else {
-            this.newCase ? this.openSnackBar(this.translatePipe.transform('text.test.question.created',"Вопрос создан")) : this.openSnackBar(this.translatePipe.transform('text.test.question.changed',"Вопрос изменен"));
-            this.dialogRef.close(true);
-          }
-
-        }, error1 => {
-          this.openSnackBar(this.translatePipe.transform('text.test.internal.server.error',"Ошибка ответа сервера"));
-        });
-    } else {
+    if (this.formGroup.invalid) {
       FormUtils.highlightInvalidControls(this.formGroup);
+      return;
     }
-  }
+    const value = this.formGroup.value;
+    this.question.Title = value.Title;
+    this.question.Description = value.Description;
+    this.question.ComplexityLevel = value.ComplexityLevel;
+    this.question.Answers = [];
+    if (this.chosenQuestionType === 0) {
+      if (this.chosenType) {
+        Object.values(this.chars).forEach((value) => {
+          let question = new Answer();
+          question["Content"] = value;
+          question["IsCorrect"] = 0;
+          this.question.Answers.push(question);
+        });
+        let num = Number(this.chosenType.split("key")[1]);
+        this.question.Answers[num].IsCorrect = 1;
+        this.question.Answers[0].QuestionId = 0;
+      } else {
+        this.catsService.showMessage({ Message: this.translatePipe.transform('text.test.check.correctness',"Проверьте варианты ответов. Они не должны быть пустыми"), Code: '500' });
+        return;
+      }
+    } else if (this.chosenQuestionType === 1) {
+      Object.values(this.charsNeskolko).forEach((value) => {
+        let question = new Answer();
+        question["Content"] = value[0];
+        question["IsCorrect"] = value[1] ? 1 : 0;
+        this.question.Answers.push(question);
+      });
+      this.question.Answers[0].QuestionId = 0;
 
-  public openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    });
+
+      this.charsde = Object.keys(this.charsNeskolko);
+    } else if (this.chosenQuestionType === 2) {
+      Object.values(this.charsWords).forEach((value) => {
+        let question = new Answer();
+        question["Content"] = value;
+        question["IsCorrect"] = 0;
+        this.question.Answers.push(question);
+      });
+      this.question.Answers[0].QuestionId = 0;
+    }
+
+
+    else if (this.chosenQuestionType === 3) {
+
+      Object.values(this.charsSequence).forEach((value) => {
+        let question = new Answer();
+        question["Content"] = value;
+        question["IsCorrect"] = 0;
+        this.question.Answers.push(question);
+      });
+      this.question.Answers[0].QuestionId = 0;
+    }
+
+
+    this.question["TestId"] = this.data.test;
+    /*this.question['QuestionType'] = 0;
+    this.question['Id'] = 0;
+    this.question['ConceptId'] = null;*/
+    if (this.data.isEUMKTest) {
+      this.question.ConceptId = this.conceptId;
+    }
+    this.testService.saveQuestion(this.question)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((res) => {
+        if (res.ErrorMessage) {
+          this.catsService.showMessage({ Message: res.ErrorMessage, Code: '500' });
+        } else {
+          this.catsService.showMessage({ Message: this.newCase ? this.translatePipe.transform('text.test.question.created',"Вопрос создан") : this.translatePipe.transform('text.test.question.changed',"Вопрос изменен"), Code: '200' });
+          this.dialogRef.close(true);
+        }
+
+      }, () => {
+        this.catsService.showMessage({ Message: this.translatePipe.transform('text.test.internal.server.error',"Ошибка ответа сервера"), Code: '500' });
+      });
   }
 
   selectConcept(Id: any) {
@@ -343,7 +297,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   private initNeskolko() {
     this.charsNeskolko = {};
     this.charsNeskolko["key0"] = [];
-    this.charsNeskolko["key0"][0] = "fghjk";
+    this.charsNeskolko["key0"][0] = "";
     this.charsNeskolko["key0"][1] = false;
     this.charsde = Object.keys(this.charsNeskolko);
   }

@@ -1,83 +1,80 @@
-<div class="neural-network-popup-container">
-  <div class="neural-network-popup-title">{{'text.test.create.nn' | translate: "Создание нейронной сети"}}</div>
-  <div class="neural-network-popup-block">
-    <div class="neural-network-popup-block-title">
-      {{'text.test.step.first' | translate: "Этап 1: Обучающая выборка"}}
-    </div>
-    <div class="neural-network-popup-block-table" *ngIf="showTable && questions">
-      <div class="neural-network-popup-block-table-header">
-        <div class="neural-network-popup-block-table-header-question">{{'text.test.question' | translate: "Вопрос"}}</div>
-        <div class="neural-network-popup-block-table-header-complexity">{{'text.test.complexity' | translate: "Сложность"}}</div>
-        <div class="neural-network-popup-block-table-header-theme">{{'text.test.theme' | translate: "Тема"}}</div>
+<app-popover-dialog>
+  <ng-container title>
+    <div class="neural-network-popup-title">{{'text.test.create.nn' | translate: "Создание нейронной сети"}}</div>
+  </ng-container>
+  <ng-container body>
+    <div class="neural-network-popup-block">
+      <div class="neural-network-popup-block-title">
+        {{'text.test.step.first' | translate: "Этап 1: Обучающая выборка"}}
       </div>
-      <div class="neural-network-popup-block-table-value" *ngFor="let question of data.questions">
-        <div class="neural-network-popup-block-table-value-question">{{question.Title}}</div>
-        <div class="neural-network-popup-block-table-value-complexity">{{question.ComlexityLevel}}</div>
-        <div class="neural-network-popup-block-table-value-theme">{{question.ConceptId}}</div>
+      <div class="neural-network-popup-block-table" *ngIf="showTable && questions">
+        <div class="neural-network-popup-block-table-header">
+          <div class="neural-network-popup-block-table-header-question">{{'text.test.question' | translate: "Вопрос"}}</div>
+          <div class="neural-network-popup-block-table-header-complexity">{{'text.test.complexity' | translate: "Сложность"}}</div>
+          <div class="neural-network-popup-block-table-header-theme">{{'text.test.theme.eumk' | translate: "Тема в ЭУМК"}}</div>
+        </div>
+        <div class="neural-network-popup-block-table-value" *ngFor="let question of data.questions">
+          <div class="neural-network-popup-block-table-value-question">{{question.Title}}</div>
+          <div class="neural-network-popup-block-table-value-complexity">{{question.ComlexityLevel}}</div>
+          <div class="neural-network-popup-block-table-value-theme" [matTooltip]="question.ConceptTheme" matTooltipPosition="below" matTooltipClass="mat-tooltip">{{question.ConceptId}}</div>
+        </div>
       </div>
     </div>
-    <button class="neural-network-popup-block-button"
-            mat-raised-button
-            [class.disabled]="generateDisabled"
-            [disabled]="generateDisabled"
-            (click)="generate()">
-      {{'text.test.generate' | translate: "Сгенерировать"}}
-    </button>
-  </div>
-
-  <div class="neural-network-popup-block" *ngIf="showSecondStep">
-    <div class="neural-network-popup-block-title">{{'text.test.step.second' | translate: "Этап 2: Обучение"}}</div>
-    <div>
-      <button *ngIf="!trainHidden"
-              class="neural-network-popup-block-button"
-              [class.disabled]="trainDisabled"
-              mat-raised-button
-              [disabled]="trainDisabled"
-              (click)="train()">
-        {{'text.test.learn' | translate: "Обучить"}}
-      </button>
+  
+    <div class="neural-network-popup-block" *ngIf="showSecondStep">
+      <div class="neural-network-popup-block-title">{{'text.test.step.second' | translate: "Этап 2: Обучение ИНС"}}</div>
+      <div>
+        <button *ngIf="!trainHidden"
+                class="neural-network-popup-block-button"
+                [class.disabled]="trainDisabled"
+                mat-raised-button
+                [disabled]="trainDisabled"
+                (click)="train()">
+          {{'text.test.learn' | translate: "Обучить ИНС"}}
+        </button>
+      </div>
+      <ng-container *ngIf="trainDisabled && !saveDisabled">
+        <mat-card>
+          <mat-card-content>
+            <section class="example-section">
+              <mat-progress-bar
+                class="example-margin"
+                [color]="'primary'"
+                [mode]="'indeterminate'">
+              </mat-progress-bar>
+            </section>
+          </mat-card-content>
+        </mat-card>
+      </ng-container>
     </div>
-    <ng-container *ngIf="trainDisabled">
-      <mat-card>
-        <mat-card-content>
-          <section class="example-section">
-            <mat-progress-bar
-              class="example-margin"
-              [color]="'primary'"
-              [mode]="'indeterminate'">
-            </mat-progress-bar>
-          </section>
-        </mat-card-content>
-      </mat-card>
-    </ng-container>
-  </div>
-  <div class="neural-network-popup-block" *ngIf="showThirdStep">
-    <div class="neural-network-popup-block-title">{{'text.test.step.third' | translate: "Этап 3: Сохранение"}}</div>
-    <div>
-      <button class="neural-network-popup-block-button"
-              [class.disabled]="saveDisabled"
-              mat-raised-button
-              *ngIf="!saveHidden"
-              [disabled]="saveDisabled"
-              (click)="save()">
-        {{'text.test.save.set' | translate: "Сохранить сеть"}}
-      </button>
+    <div class="neural-network-popup-block" *ngIf="showThirdStep">
+      <div class="neural-network-popup-block-title">{{'text.test.step.third' | translate: "Этап 3: Сохранение"}}</div>
+      <div>
+        <button class="neural-network-popup-block-button"
+                [class.disabled]="saveDisabled"
+                mat-raised-button
+                *ngIf="!saveHidden"
+                [disabled]="saveDisabled"
+                (click)="save()">
+          {{'text.test.save.set' | translate: "Сохранить ИНС"}}
+        </button>
+      </div>
+      <ng-container *ngIf="saveDisabled">
+        <mat-card>
+          <mat-card-content>
+            <section class="example-section">
+              <mat-progress-bar
+                class="example-margin"
+                [color]="'primary'"
+                [mode]="'indeterminate'">
+              </mat-progress-bar>
+            </section>
+          </mat-card-content>
+        </mat-card>
+      </ng-container>
     </div>
-    <ng-container *ngIf="saveDisabled">
-      <mat-card>
-        <mat-card-content>
-          <section class="example-section">
-            <mat-progress-bar
-              class="example-margin"
-              [color]="'primary'"
-              [mode]="'indeterminate'">
-            </mat-progress-bar>
-          </section>
-        </mat-card-content>
-      </mat-card>
-    </ng-container>
-  </div>
-  <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
-  </div>
-</div>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onNoClick()">{{'button.cancel' | translate : 'Отмена'}}</button>
+  </ng-container>
+</app-popover-dialog>

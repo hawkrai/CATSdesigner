@@ -49,6 +49,8 @@ namespace LMPlatform.Models.KnowledgeTesting
             set;
         }
 
+        public Concept Concept { get; set; }
+
         public QuestionType QuestionType
         {
             get;

@@ -369,6 +369,12 @@ namespace LMPlatform.Data.Infrastructure
               .HasForeignKey(e => e.QuestionId)
               .WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<Concept>()
+                .HasMany(e => e.Questions)
+                .WithOptional(e => e.Concept)
+                .HasForeignKey(e => e.ConceptId)
+                .WillCascadeOnDelete(true);
+
             modelBuilder.Entity<Subject>()
                 .HasMany<Concept>(e => e.Concept)
                 .WithRequired(e => e.Subject)

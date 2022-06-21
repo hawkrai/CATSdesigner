@@ -45,9 +45,8 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     this.testService.getTestById(this.testId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test: Test) => {
-        console.log("this.test " + this.test);
         this.test = test;
-        this.isEUMKTest = test.BeforeEUMK || test.ForEUMK;
+        this.isEUMKTest = test && (test.BeforeEUMK || test.ForEUMK || test.ForNN);
       });
     this.loadQuestions()
       .pipe(takeUntil(this.unsubscribeStream$))
@@ -99,32 +98,12 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
 
   public createNeuralNetwork():void{
     const dialogRef = this.dialog.open(NeuralNetworkPopupComponent, {
-      width: "500px",
       data: {questions: this.questions, testId: this.testId}
     });
 
     dialogRef.afterClosed()
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe();
-  }
-
-  public openPopup(event): void {
-    const title = this.test.Title;
-    const dialogRef = this.dialog.open(QuestionPopupComponent, {
-      width: "700px",
-      data: {event, title, test: this.testId, questionLength: this.questions.length, isEUMKTest: this.isEUMKTest},
-      autoFocus: false,
-    });
-
-    dialogRef.afterClosed()
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe(result => {
-        if (result) {
-          this.loadQuestions()
-            .pipe(takeUntil(this.unsubscribeStream$))
-            .subscribe();
-        }
-      });
   }
 
   public addQuestionFromOtherTest(event): void {
@@ -150,8 +129,20 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
     this.questions = this.questions.filter(question => question.Title.includes(event));
   }
 
-  public addNewQuestion(): void {
-    this.openPopup(null);
+  public addNewQuestion(event): void {
+    const dialogRef = this.dialog.open(QuestionPopupComponent, {
+      data: {event, title: this.test.Title, test: this.testId, questionLength: this.questions.length, isEUMKTest: this.isEUMKTest},
+    });
+
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe(result => {
+        if (result) {
+          this.loadQuestions()
+            .pipe(takeUntil(this.unsubscribeStream$))
+            .subscribe();
+        }
+      });
   }
 
   public navigate(): void {
