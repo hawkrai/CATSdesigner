@@ -1,14 +1,23 @@
 <h1 mat-dialog-title>Редактирование листа задания</h1>
 <div mat-dialog-content style="display: block">
-  <mat-form-field class="form-field">
-    <mat-label>Выберите готовый шаблон</mat-label>
-    <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
-      <mat-option *ngIf="data.taskSheetTemplate != undefined" value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
-      <mat-option *ngFor="let template of templates" [value]="template">
-        {{template.Name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="choose-template">
+    <mat-form-field class="form-field">
+      <mat-label>Выберите готовый шаблон</mat-label>
+      <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
+        <mat-option *ngIf="data.taskSheetTemplate != undefined" value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
+        <mat-option *ngFor="let template of templates" [value]="template">
+          {{template.Name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div>
+      <button class="mat-icon-button-help" mat-icon-button
+              [matTooltip]="'Помощь'" matTooltipPosition="below"
+      (click)="showHelp()">
+        <mat-icon color="primary">help_outline</mat-icon>
+      </button>
+    </div>
+  </div>
   <div class="save-template">
     <mat-form-field>
       <mat-label>Название шаблона</mat-label>
@@ -16,7 +25,7 @@
       <mat-error *ngIf="templateNameControl.invalid">До 30 символов</mat-error>
     </mat-form-field>
     <button mat-flat-button class="saveTemplateButton" color="primary" [disabled]="templateNameControl.invalid || isFormInvalid()"
-            (click)="saveTemplate()">Создать шаблон</button>
+            (click)="saveTemplate()">Сохранить шаблон</button>
   </div>
 
   <div class="apply-template">
