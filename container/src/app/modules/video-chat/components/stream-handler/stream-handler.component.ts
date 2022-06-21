@@ -241,7 +241,10 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
 
     if (!this.mediaConstraints.audio && !this.mediaConstraints.video) {
       audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+        },
         video: true,
       });
       audioStream?.getTracks()?.forEach((track: any) => {
