@@ -17,7 +17,7 @@ const SendRejection = 'Reject';
 const IncomeCall = 'HandleIncomeCall';
 const DisconnectUser = 'HandleDisconnection';
 const HandleRejection = 'HandleRejection';
-
+const ChatTimeOut = 45000;
 @Injectable({
   providedIn: 'root',
 })
@@ -83,7 +83,7 @@ export class SignalRService {
     );
 
     this.hubConnection.on(IncomeCall, (chatId: any) => {
-      this.setEndChatTimer(chatId, 45000);
+      this.setEndChatTimer(chatId, ChatTimeOut);
       if (!this.videoChatService.NotifyIncomeCall(chatId)) {
         this.sendRejection(chatId, 'unable to connect');
       }
@@ -135,7 +135,7 @@ export class SignalRService {
   }
 
   public sendCallRequest(chatId: number) {
-    this.setEndChatTimer(chatId, 40000);
+    this.setEndChatTimer(chatId, ChatTimeOut);
     this.videoChatService.SetActiveCall(chatId);
     return this.hubConnection.invoke(SendCallRequest, this.user.id, chatId);
   }
