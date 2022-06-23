@@ -10,7 +10,7 @@
       <mat-dialog-content>
           <h2>{{ this.professor.FullName}} <br> ({{this.professor.Login}})</h2>
           <mat-form-field>
-              <input matInput [(ngModel)]="this.professor.LastName"
+              <input matInput
                formControlName="Surname" 
                (blur)="this.trimFields()" 
                placeholder="Фамилия" maxlength="30">
@@ -19,13 +19,13 @@
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput [(ngModel)]="this.professor.FirstName" formControlName="Name"  (blur)="this.trimFields()" placeholder="Имя" maxlength="30">
+              <input matInput formControlName="Name"  (blur)="this.trimFields()" placeholder="Имя" maxlength="30">
               <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
               <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput [(ngModel)]="this.professor.MiddleName" formControlName="Patronymic"  (blur)="this.trimFields()" placeholder="Отчество" maxlength="30">
+              <input matInput formControlName="Patronymic"  (blur)="this.trimFields()" placeholder="Отчество" maxlength="30">
               <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
           <div class="checkbox">
