@@ -78,14 +78,12 @@ namespace Application.Infrastructure.UserManagement
             {
                 if (IsExistsUser(userName))
                 {
-                    using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
-                    {
-                        return repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)
-                            .Include(u => u.Student)
-                            .Include(e => e.Student.Group)
-                            .Include(u => u.Lecturer)
-                            .Include(u => u.Membership.Roles));
-                    }
+                    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+                    return repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)
+                        .Include(u => u.Student)
+                        .Include(e => e.Student.Group)
+                        .Include(u => u.Lecturer)
+                        .Include(u => u.Membership.Roles));
                 }
             }
             catch (ReflectionTypeLoadException ex)
@@ -190,16 +188,13 @@ namespace Application.Infrastructure.UserManagement
 
             public bool IsExistsUser(string userName)
             {
-                using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+                using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+                if (repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)) != null)
                 {
-                    if (repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)) != null)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return true;
                 }
 
+                return false;
             }
 
         public User CurrentUser
@@ -300,24 +295,23 @@ namespace Application.Infrastructure.UserManagement
 
         public void UpdateLastLoginDate(string userName)
         {
-
-            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName).Include(e => e.Attendances));
+            if (user != null)
             {
-                var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName).Include(e => e.Attendances));
-                if (user != null)
-                {
-                    var now = DateTime.Now;
-                    user.LastLogin = now;
-                    user.Attendances.Add(new Attendance{ Login = now }); 
-                    repositoriesContainer.UsersRepository.Save(user, u => u.LastLogin == now);
-                }
+                var now = DateTime.Now;
+                user.LastLogin = now;
+                user.Attendances.Add(new Attendance{ Login = now }); 
+                repositoriesContainer.UsersRepository.Save(user, u => u.LastLogin == now);
             }
-
         }
 
         public (User, Role) Login(string userName, string password)
         {
-            var user = this.GetUser(userName);
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+             
+            var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)
+                .Include(u => u.Membership.Roles)); ;
             if (user is null || !Crypto.VerifyHashedPassword(user.Membership.Password, password)) return default;
             var role = user.Membership.Roles.Single();
             return (user, role);

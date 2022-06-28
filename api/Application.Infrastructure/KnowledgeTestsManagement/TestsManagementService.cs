@@ -34,7 +34,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 			}
 		}
 
-		public Test GetTest(int id, bool includeQuestions = false)
+		public Test GetTest(int id, bool includeQuestions = false, bool includeConcept = false)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
@@ -42,6 +42,11 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 				if (includeQuestions)
 				{
 					query.Include(t => t.Questions);
+
+                    if (includeConcept)
+                    {
+                        query.Include(t => t.Questions.Select(x => x.Concept));
+                    }
 				}
 
 				return repositoriesContainer.TestsRepository.GetBy(query);

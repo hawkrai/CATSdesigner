@@ -381,18 +381,13 @@ namespace LMPlatform.UI.Controllers
 
         private JsonResult GetCloseTestResult(int testId, int mark, int percent, UserAnswersCallback answersCallback, bool fillTestPassResult = false)
         {
-            var test = this.TestsManagementService.GetTest(testId, true);
-
-            var themIds = test.Questions.OrderBy(e => e.ConceptId).ThenBy(e => e.Id)
-                .Where(e => e.ConceptId.HasValue).Select(e => (int)e.ConceptId)
-                .Distinct();
+            var test = this.TestsManagementService.GetTest(testId, true, true);
 
             var thems = new List<object>();
 
-            foreach (var themId in themIds.OrderBy(e => e))
+            foreach (var concept in test.Questions.Where(e => e.ConceptId.HasValue).Select(x => x.Concept).OrderBy(e => e.Id))
             {
-                var them = this.ConceptManagementService.GetById(themId);
-                thems.Add(new { name = them.Name, id = them.Id });
+                thems.Add(new { name = concept.Name, id = concept.Id });
             }
 
             var answers = this.TestPassingService.GetAnswersForEndedTest(testId, UserContext.CurrentUserId);            

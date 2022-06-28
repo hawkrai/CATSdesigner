@@ -110,7 +110,14 @@ namespace LMPlatform.UI.Controllers
 
                 if (!User.IsInRole("admin"))
                 {
-                    UsersManagementService.UpdateLastLoginDate(model.UserName);
+                    try
+                    {
+                        UsersManagementService.UpdateLastLoginDate(model.UserName);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 }
 
                 var origin = Request.Headers.GetValues("Origin").FirstOrDefault();
