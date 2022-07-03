@@ -21,10 +21,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class LecturesComponent implements OnInit, OnDestroy {
 
-  state$: Observable<{ 
-    isTeacher: boolean, 
-    subjectId: number, 
-    groups: Group[], 
+  state$: Observable<{
+    isTeacher: boolean,
+    subjectId: number,
+    groups: Group[],
     groupId: number,
     group: Group
    }>;

@@ -1,19 +1,19 @@
-import {Inject, Pipe, PipeTransform} from "@angular/core";
-import { LOCALIZATION } from "../../tokens";
+import {Inject, Pipe, PipeTransform} from '@angular/core';
+import { LOCALIZATION } from '../../tokens';
 
 
-@Pipe({name: "translate"})
+@Pipe({name: 'translate'})
 export class TranslatePipe implements PipeTransform {
 
-  private isShowTranslateCodes: boolean = false;
+  private isShowTranslateCodes = false;
 
   constructor(
       @Inject(LOCALIZATION) private localizationMap: any
   ) {
-    const wnd: any = (<any>window);
+    const wnd: any = (window as any);
     const hash: string = wnd.location.hash;
-    const params: { [key: string]: string } = hash ? this.getSearchParams(hash.substr(hash.indexOf("?") + 1)) : this.getSearchParams(wnd.location.search.substr(1));
-    this.isShowTranslateCodes = (params["translate"] === "true");
+    const params: { [key: string]: string } = hash ? this.getSearchParams(hash.substr(hash.indexOf('?') + 1)) : this.getSearchParams(wnd.location.search.substr(1));
+    this.isShowTranslateCodes = (params.translate === 'true');
 
   }
 
@@ -30,7 +30,7 @@ export class TranslatePipe implements PipeTransform {
       if (localizedValue != null) {
         if (params) {
           Object.keys(params).forEach((param: string) => {
-            localizedValue = localizedValue.replace(new RegExp(`{${param}}`, "gi"), params[param]);
+            localizedValue = localizedValue.replace(new RegExp(`{${param}}`, 'gi'), params[param]);
           });
         }
         return localizedValue;
@@ -40,8 +40,8 @@ export class TranslatePipe implements PipeTransform {
   }
 
   private getSearchParams(search: string): { [key: string]: string } {
-    return search.split("&").reduce((result, item) => {
-      const parts = item.split("=");
+    return search.split('&').reduce((result, item) => {
+      const parts = item.split('=');
       result[parts[0]] = parts[1];
       return result;
     }, {} as  any);

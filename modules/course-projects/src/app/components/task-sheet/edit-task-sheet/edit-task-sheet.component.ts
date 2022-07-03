@@ -52,6 +52,9 @@ export class EditTaskSheetComponent implements OnInit {
   private facultyControl: FormControl = new FormControl(this.data.taskSheet.Faculty,
     [Validators.maxLength(255)]);
 
+  private departmentControl: FormControl = new FormControl(this.data.taskSheet.Faculty,
+    [Validators.maxLength(255)]);
+
   private headCathedraControl: FormControl = new FormControl(this.data.taskSheet.HeadCathedra,
     [Validators.maxLength(255)]);
 
@@ -113,7 +116,7 @@ export class EditTaskSheetComponent implements OnInit {
 
   isFormInvalid(): boolean {
     return this.inputDataControl.invalid || this.contentControl.invalid || this.drawContentControl.invalid || this.univerControl.invalid ||
-      this.facultyControl.invalid || this.headCathedraControl.invalid || this.startDateControl.invalid || this.endDateControl.invalid;
+      this.facultyControl.invalid || this.headCathedraControl.invalid || this.startDateControl.invalid || this.endDateControl.invalid || this.departmentControl.invalid;
   }
 
   isSelectedGroupsInvalid(): boolean {
