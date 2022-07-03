@@ -36,6 +36,7 @@ export class EditStudentComponent implements OnInit {
         Validators.pattern(nameRegExp)]),
       Group: new FormControl(this.student.Group),
     });
+     console.log(this.data);
   }
 
   trimFields() {

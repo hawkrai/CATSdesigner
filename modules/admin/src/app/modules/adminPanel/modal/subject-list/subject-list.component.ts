@@ -24,10 +24,10 @@ export class SubjectListComponent implements OnInit {
 
   getSubjectStatus(status) {
     if(status == true){
-      return "Активен"
+      return "Текущий"
     }
     else{
-    return "Откреплен"
+    return "Завершенный"
   }
   }
 

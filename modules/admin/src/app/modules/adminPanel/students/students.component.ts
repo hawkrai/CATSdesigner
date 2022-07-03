@@ -24,7 +24,7 @@ export class StudentsComponent implements OnInit {
   isLoad: boolean;
   dataStudent = new Student();
   displayedColumns: string[] = ['position', 'GroupName', 'FullName', 'UserName', 'Confirmed', 'Subjects', 'action'];
-  dataSource = new MatTableDataSource<object>();
+  dataSource = new MatTableDataSource<Student>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   isDelete = false;
@@ -34,6 +34,7 @@ export class StudentsComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.dataSource.filterPredicate = (data, filter) => data.FullName.trim().toLowerCase().startsWith(filter.trim().toLowerCase());
     this.loadStudent();
 
   }
@@ -64,6 +65,9 @@ export class StudentsComponent implements OnInit {
     });
   }
 
+  // applyFilter() {
+  //   this.dataSource.filterPredicate = (data, filter) => data.FullName.trim().toLowerCase().startsWith(filter.trim().toLowerCase());
+  // }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
