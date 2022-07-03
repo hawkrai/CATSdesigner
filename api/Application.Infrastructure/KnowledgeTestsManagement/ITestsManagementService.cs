@@ -9,7 +9,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
 	    List<Question> GetQuestions();
 
-		Test GetTest(int id, bool includeQuestions = false);
+		Test GetTest(int id, bool includeQuestions = false, bool includeConcept = false);
 
 		Test SaveTest(Test test, bool withountValidation = false);
 
