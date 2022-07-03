@@ -22,6 +22,7 @@ const configuration = {
     {
       urls: 'stun:openrelay.metered.ca:80',
     },
+    { urls: 'stun:stun.l.google.com:19302' },
     {
       urls: 'turn:numb.viagenie.ca',
       credential: 'muazkh',
@@ -46,6 +47,21 @@ const configuration = {
       urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
       credential: 'webrtc',
       username: 'webrtc',
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject',
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject',
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject',
     },
   ],
 };
@@ -107,6 +123,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.mediaConstraints.video = this.isVideoActive;
     iceCount = 0;
     iceCountLocal = 0;
+    var peer = new RTCPeerConnection(configuration);
 
     this.signalRService.hubConnection.off('AddNewcomer');
     this.signalRService.hubConnection.on(
@@ -118,7 +135,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
           return;
         }
         this.signalRService.callWasConfirmed(chatId);
-        await this.createRTCPeerConnection(chatId, newcomerConnectionId);
+        await this.createRTCPeerConnectionPeer(peer, chatId, newcomerConnectionId);
       }
     );
 
@@ -129,7 +146,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         console.log('New offer', fromClientHubId, chatId);
         console.log(offer);
         this.signalRService.callWasConfirmed(chatId);
-        this.createRTCPeerConnection(chatId, fromClientHubId, offer);
+        this.createRTCPeerConnectionPeer(peer, chatId, fromClientHubId, offer);
       }
     );
 
@@ -151,15 +168,14 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.signalRService.hubConnection.on(
       'HandleNewCandidate',
       async (candidate, userConnectionId) => {
-        console.log('HandleNewCandidate', ++iceCount);
-        console.log(candidate);
+        // console.log('HandleNewCandidate', ++iceCount);
+        //console.log(candidate);
         let cand = new RTCIceCandidate(candidate);
-        console.log('web rtc candidate');
-        console.log(cand);
+        //console.log('web rtc candidate');
+        //console.log(cand);
         const peerConnection =
           this._linkedPeerConnections.get(userConnectionId);
-        if (cand)
-          peerConnection!.addIceCandidate(cand).catch((e) => console.log(e));
+        peerConnection!.addIceCandidate(cand).catch((e) => console.log(e));
       }
     );
   }
@@ -169,22 +185,58 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     fromClientConnectionId: string,
     offer = null
   ) {
-    const peerConnection = new RTCPeerConnection(configuration);
+    await this.createRTCPeerConnectionPeer(new RTCPeerConnection(configuration), chatId, fromClientConnectionId, offer);
+  }
+  async createRTCPeerConnectionPeer(
+    peerConnection: RTCPeerConnection,
+    chatId: number,
+    fromClientConnectionId: string,
+    offer = null
+  ) {
+
     this._linkedPeerConnections.set(fromClientConnectionId, peerConnection);
 
     peerConnection.onicecandidate = async (event) => {
-      console.log(`candidate: ${++iceCountLocal}`);
-      console.log(event.candidate);
-      if (event.candidate == null) return;
+      //console.log(`candidate: ${++iceCountLocal}`);
+      //console.log(event.candidate);
+      //if (event.candidate == null) return;
       await this.onIceCandidate(event, peerConnection, fromClientConnectionId);
     };
 
-    peerConnection.onnegotiationneeded = this.onNegotiationNeeded;
-    peerConnection.onconnectionstatechange = this.onConnectionStateChange;
-    peerConnection.oniceconnectionstatechange = (e) => {
-      if (peerConnection.iceConnectionState === "failed") {
-        console.log('peer failed');
+    peerConnection.onnegotiationneeded = async (event: any) => {
+      console.log('neg needed');
+      console.log(event);
+      const offer = await peerConnection.createOffer(options);
+      await peerConnection.setLocalDescription(offer);
+      this.signalRService.hubConnection?.invoke(
+        'SendOffer',
+        chatId,
+        offer,
+        fromClientConnectionId
+      );
+    };
+    peerConnection.onconnectionstatechange = (event: any) => {
+      console.log('State Changed');
+      console.log(event?.currentTarget?.connectionState);
+
+      if (event?.currentTarget?.connectionState === "failed") {
+        console.log("!! Connection failed !!");
+        (peerConnection as any).restartIce();
       }
+
+      if (event?.currentTarget?.connectionState == 'disconnected') {
+        this.clientDisconnected.emit();
+      }
+    };
+    peerConnection.oniceconnectionstatechange = (e) => {
+      console.log('ICE State Changed');
+      console.log(peerConnection.iceConnectionState);
+
+      if (peerConnection.iceConnectionState === "failed") {
+        console.log("!! Connection failed !!");
+        (peerConnection as any).restartIce();
+      }
+
     };
 
     await this.createMediaController(peerConnection);
@@ -196,11 +248,11 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         offer
       );
     } else {
-      this.createNewRTCPeerConnection(
-        chatId,
-        peerConnection,
-        fromClientConnectionId
-      );
+      // this.createNewRTCPeerConnection(
+      //   chatId,
+      //   peerConnection,
+      //   fromClientConnectionId
+      // );
     }
   }
 
@@ -268,17 +320,6 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
     this.selfMedia = audioStream;
   }
 
-  onConnectionStateChange = (event: any) => {
-    if (event?.currentTarget?.connectionState == 'disconnected') {
-      this.clientDisconnected.emit();
-    }
-  };
-  onNegotiationNeeded = (event: any) => {
-    // if (peerConnection.connectionState === 'connected') {
-    //   console.log('connected');
-    //   console.log(peerConnection);
-    // }
-  };
   onIceCandidate = async (
     event: any,
     peerConnection: RTCPeerConnection,
