@@ -126,7 +126,7 @@
                   mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
                   <mat-menu #menu="matMenu">
                     <button style="outline: none;" (click)="changeLesson(event)" mat-menu-item><mat-icon>edit</mat-icon><span>{{'button.edit'| translate:'Редактировать'}}</span></button>
-                    <button [disabled] = 'isStudent' style="outline: none;" (click)="deleteEvent(event)" mat-menu-item><mat-icon>delete</mat-icon><span>{{'button.delete' | translate: 'Удалить'}}</span></button>
+                    <!--button [disabled] = 'isStudent' style="outline: none;" (click)="deleteEvent(event)" mat-menu-item><mat-icon>delete</mat-icon><span>{{'button.delete' | translate: 'Удалить'}}</span></button-->
                   </mat-menu>
                 </button>
               </div>
