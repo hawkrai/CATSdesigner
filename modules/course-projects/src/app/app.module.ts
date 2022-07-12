@@ -57,6 +57,9 @@ import {CheckPlagiarismPopoverComponent} from './shared/check-plagiarism-popover
 import {CheckPlagiarismStudentComponent} from './components/defense/check-plagiarism-student/check-plagiarism-student.component';
 import {CustomDateAdapter} from './custom-date-adapter';
 import {ToastrModule} from 'ngx-toastr';
+import {HelpComponent} from './shared/help/help.component';
+import {PopoverModule} from 'ngx-smart-popover';
+import {HelpPopoverScheduleComponent} from './shared/help-popover/help-popover-schedule.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +85,8 @@ import {ToastrModule} from 'ngx-toastr';
     AddJobDialogComponent,
     CheckPlagiarismPopoverComponent,
     CheckPlagiarismStudentComponent,
+    HelpComponent,
+    HelpPopoverScheduleComponent
   ],
   imports: [
     BrowserModule,
@@ -117,15 +122,16 @@ import {ToastrModule} from 'ngx-toastr';
     MatRippleModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right'
-    })
+    }),
+    PopoverModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},
-    {provide: DateAdapter, useClass: CustomDateAdapter}
+    {provide: DateAdapter, useClass: CustomDateAdapter},
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
     AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent, AddJobDialogComponent,
-    CheckPlagiarismPopoverComponent, CheckPlagiarismStudentComponent],
+    CheckPlagiarismPopoverComponent, CheckPlagiarismStudentComponent, HelpComponent, HelpPopoverScheduleComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

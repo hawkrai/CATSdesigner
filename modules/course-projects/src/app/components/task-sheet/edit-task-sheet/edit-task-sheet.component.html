@@ -63,17 +63,22 @@
     <mat-tab label="Сведения о ВУЗе">
       <mat-form-field appearance="fill">
         <mat-label>Название учебного заведения</mat-label>
-        <textarea matInput style="height: 58px" [formControl]="univerControl"></textarea>
+        <textarea matInput style="height: 40px" [formControl]="univerControl"></textarea>
         <mat-error *ngIf="univerControl.invalid">До 255 символов</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Название факультета</mat-label>
-        <textarea matInput style="height: 58px" [formControl]="facultyControl"></textarea>
+        <textarea matInput style="height: 40px" [formControl]="facultyControl"></textarea>
         <mat-error *ngIf="facultyControl.invalid">До 255 символов</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
+        <mat-label>Название кафедры</mat-label>
+        <textarea matInput style="height: 40px" [formControl]="departmentControl"></textarea>
+        <mat-error *ngIf="departmentControl.invalid">До 255 символов</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
         <mat-label>Фамилия, инициалы заведующего кафедры</mat-label>
-        <textarea matInput style="height: 58px" [formControl]="headCathedraControl"></textarea>
+        <textarea matInput style="height: 40px" [formControl]="headCathedraControl"></textarea>
         <mat-error *ngIf="headCathedraControl.invalid">До 255 символов</mat-error>
       </mat-form-field>
     </mat-tab>

@@ -27,7 +27,7 @@ interface State {
   isTeacher: boolean;
   detachedGroup: boolean;
   hasJobProtections: HasJobProtection[];
-  hasInactiveGroups: boolean
+  hasInactiveGroups: boolean;
 }
 
 @Component({
@@ -37,10 +37,6 @@ interface State {
 })
 export class PracticalComponent implements OnInit {
 
-  tabs: { tab: string, route: string }[] = [];
-
-  state$: Observable<State>;
-
   constructor(
     private store: Store<IAppState>,
     private translate: TranslatePipe,
@@ -48,6 +44,30 @@ export class PracticalComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute
     ) { }
+
+  tabs: { tab: string, route: string }[] = [];
+
+  state$: Observable<State>;
+
+  visitingHelp: Help = {
+    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'),
+    action: this.translate.transform('button.understand', 'Понятно')
+  };
+
+  resultsHelp: Help = {
+    message: this.translate.transform ('text.help.results', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'),
+    action: this.translate.transform ('button.understand', 'Понятно')
+  };
+
+  protectionScheduleHelp: Help = {
+    message: this.translate.transform ('text.help.practicals.protection.schedule', 'Нажмите на кнопку «Управление датами», чтобы добавить или удалить даты практических занятий. Расчет рекомендуемых оценок произойдет автоматически.'),
+    action: this.translate.transform ('button.understand', 'Понятно')
+  };
+
+  protectionStudentHelp: Help = {
+    message: this.translate.transform ('text.help.protection.student', 'Нажмите на кнопку «Загрузить работу», чтобы отправить выполненную работу на проверку.'),
+    action: this.translate.transform ('button.understand', 'Понятно')
+  };
 
   ngOnInit(): void {
 
@@ -62,8 +82,8 @@ export class PracticalComponent implements OnInit {
     this.store.dispatch(practicalsActions.checkJobProtections());
 
     this.state$ = combineLatest(
-      this.store.select(groupSelectors.getGroups), 
-      this.store.select(groupSelectors.getCurrentGroup), 
+      this.store.select(groupSelectors.getGroups),
+      this.store.select(groupSelectors.getCurrentGroup),
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(groupSelectors.isActiveGroup),
       this.store.select(practicalsSelectors.hasJobProtections),
@@ -88,34 +108,14 @@ export class PracticalComponent implements OnInit {
     }
   }
 
-  visitingHelp: Help = {
-    message: this.translate.transform('text.help.visit.statistic', 'Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы отметить посещаемость и оставить комментарии.'), 
-    action: this.translate.transform('button.understand','Понятно')
-  };
-
   getVisitingExcelFile(): void {
     this.store.dispatch(practicalsActions.getVisitingExcel());
-  }
-
-  resultsHelp: Help = {
-    message: this.translate.transform ('text.help.results','Нажмите 2 раза на ячейку напротив любого студента в нужную дату, чтобы выставить оценку.'), 
-    action: this.translate.transform ('button.understand','Понятно')
-  };
-
-  protectionScheduleHelp: Help = {
-    message: this.translate.transform ('text.help.practicals.protection.schedule','Нажмите на кнопку «Управление датами», чтобы добавить или удалить даты практических занятий. Расчет рекомендуемых оценок произойдет автоматически.'),
-    action: this.translate.transform ('button.understand','Понятно')
-  }
-
-  protectionStudentHelp: Help = {
-    message: this.translate.transform ('text.help.protection.student','Нажмите на кнопку «Загрузить работу», чтобы отправить выполненную работу на проверку.'),
-    action: this.translate.transform ('button.understand','Понятно')
   }
 
   getResultsExcelFile(): void {
     this.store.dispatch(practicalsActions.getMarksExcel());
   }
-  
+
   subdivision(groupId: number) {
     const dialogData: DialogData = {
       model: groupId,
