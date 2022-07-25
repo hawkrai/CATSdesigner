@@ -49,7 +49,7 @@ export class MainPageComponent implements OnInit {
   checked: any[] = [false, false, false, false];
   isArchived = false;
   isArchiveTeacher = false;
-
+  charts: any[] = [];
 
   colors: string [] = ['orange', 'red', 'blue', 'purple', 'green'];
 
@@ -78,12 +78,14 @@ export class MainPageComponent implements OnInit {
         });
       });
     } else {
+      this.charts = [];
       this.serviceService.getTeacherStatistics().subscribe(res => {
+        res.SubjectStatistics.sort((a, b) => a.SubjectName.localeCompare(b.SubjectName));
         res.SubjectStatistics.forEach(subject => {
           this.serviceService.getGroupsBySubjectId(subject.SubjectId).subscribe(groups => {
             this.serviceService.getCheckedType(subject.SubjectId).subscribe(types => {
               this.isArchiveTeacher = false;
-              if(groups.Groups.length == 0) {
+              if (groups.Groups.length == 0) {
                 this.isArchiveTeacher = true;
               }
               this.checked = [false, false, false, false];
@@ -107,69 +109,72 @@ export class MainPageComponent implements OnInit {
               this.tempAvg = 0;
               if (this.checked[0]) {
                 if (this.isArchiveTeacher) {
-                  this.practMarksArchive.push(this.serviceService.round(+subject.AveragePracticalsMark));
+                  this.practMarksArchive[res.SubjectStatistics.indexOf(subject)]
+                    = this.serviceService.round(+subject.AveragePracticalsMark);
                 } else {
-                  this.practMarks.push(this.serviceService.round(+subject.AveragePracticalsMark));
+                  console.log(subject.SubjectName);
+                  this.practMarks[res.SubjectStatistics.indexOf(subject)] = this.serviceService.round(+subject.AveragePracticalsMark);
                 }
                 this.colorsTemp.push(this.colors[0]);
                 this.temp.push(this.serviceService.round(+subject.AveragePracticalsMark));
                 this.categoriesTemp.push(this.categoriesConst[0]);
               } else {
                 if (this.isArchiveTeacher) {
-                  this.practMarksArchive.push(0);
+                  this.practMarksArchive[res.SubjectStatistics.indexOf(subject)] = 0;
                 } else {
-                  this.practMarks.push(0);
+                  this.practMarks[res.SubjectStatistics.indexOf(subject)] = 0;
                 }
               }
 
               if (this.checked[1]) {
                 if (this.isArchiveTeacher) {
-                  this.labMarksArchive.push(this.serviceService.round(+subject.AverageLabsMark));
+                  this.labMarksArchive[res.SubjectStatistics.indexOf(subject)] = this.serviceService.round(+subject.AverageLabsMark);
                 } else {
-                  this.labMarks.push(this.serviceService.round(+subject.AverageLabsMark));
+                  this.labMarks[res.SubjectStatistics.indexOf(subject)] = this.serviceService.round(+subject.AverageLabsMark);
                 }
                 this.colorsTemp.push(this.colors[1]);
                 this.categoriesTemp.push(this.categoriesConst[1]);
                 this.temp.push(this.serviceService.round(+subject.AverageLabsMark));
               } else {
                 if (this.isArchiveTeacher) {
-                  this.labMarksArchive.push(0);
+                  this.labMarksArchive[res.SubjectStatistics.indexOf(subject)] = 0;
                 } else {
-                  this.labMarks.push(0);
+                  this.labMarks[res.SubjectStatistics.indexOf(subject)] = 0;
                 }
               }
 
               if (this.checked[2]) {
                 if (this.isArchiveTeacher) {
-                  this.testMarksArchive.push(this.serviceService.round(+subject.AverageTestsMark));
+                  this.testMarksArchive[res.SubjectStatistics.indexOf(subject)] = this.serviceService.round(+subject.AverageTestsMark);
                 } else {
-                  this.testMarks.push(this.serviceService.round(+subject.AverageTestsMark));
+                  this.testMarks[res.SubjectStatistics.indexOf(subject)] = this.serviceService.round(+subject.AverageTestsMark);
                 }
                 this.colorsTemp.push(this.colors[2]);
                 this.temp.push(this.serviceService.round(+subject.AverageTestsMark));
                 this.categoriesTemp.push(this.categoriesConst[2]);
               } else {
                 if (this.isArchiveTeacher) {
-                  this.testMarksArchive.push(0);
+                  this.testMarksArchive[res.SubjectStatistics.indexOf(subject)] = 0;
                 } else {
-                  this.testMarks.push(0);
+                  this.testMarks[res.SubjectStatistics.indexOf(subject)] = 0;
                 }
               }
 
               if (this.checked[3]) {
                 if (this.isArchiveTeacher) {
-                  this.conMarksArchive.push(this.serviceService.round(+subject.AverageCourceProjectMark));
+                  this.conMarksArchive[res.SubjectStatistics.indexOf(subject)]
+                    = this.serviceService.round(+subject.AverageCourceProjectMark);
                 } else {
-                  this.conMarks.push(this.serviceService.round(+subject.AverageCourceProjectMark));
+                  this.conMarks[res.SubjectStatistics.indexOf(subject)] = this.serviceService.round(+subject.AverageCourceProjectMark);
                 }
                 this.colorsTemp.push(this.colors[3]);
                 this.temp.push(this.serviceService.round(+subject.AverageCourceProjectMark));
                 this.categoriesTemp.push(this.categoriesConst[3]);
               } else {
                 if (this.isArchiveTeacher) {
-                  this.conMarksArchive.push(0);
+                  this.conMarksArchive[res.SubjectStatistics.indexOf(subject)] = 0;
                 } else {
-                  this.conMarks.push(0);
+                  this.conMarks[res.SubjectStatistics.indexOf(subject)] = 0;
                 }
               }
               if (this.categoriesTemp.length != 0) {
@@ -177,20 +182,34 @@ export class MainPageComponent implements OnInit {
                   this.tempAvg += el;
                 });
                 const rating = this.serviceService.round(this.tempAvg / this.temp.length);
-                this.ratingMarks.push(rating);
+                this.ratingMarks[res.SubjectStatistics.indexOf(subject)] = rating;
                 this.temp.push(rating);
                 this.categoriesTemp.push(this.categoriesConst[4]);
                 if (this.isArchiveTeacher) {
-                  this.addChart(this.temp, subject.SubjectName, this.categoriesTemp, subject.SubjectId,
-                    this.listChartOptionsArchive, this.colorsTemp);
-                  this.subjectNameArchive.push(subject.SubjectName);
+                   this.charts[res.SubjectStatistics.indexOf(subject)]
+                     = [this.temp, subject.SubjectName, this.categoriesTemp, subject.SubjectId,
+                    this.listChartOptionsArchive, this.colorsTemp];
+                   this.subjectNameArchive[res.SubjectStatistics.indexOf(subject)] = subject.SubjectName;
                 } else {
-                  this.addChart(this.temp, subject.SubjectName, this.categoriesTemp,
-                    subject.SubjectId, this.listChartOptions, this.colorsTemp);
-                  this.subjectName.push(subject.SubjectName);
+                  this.charts[res.SubjectStatistics.indexOf(subject)] = [this.temp, subject.SubjectName, this.categoriesTemp,
+                    subject.SubjectId, this.listChartOptions, this.colorsTemp ];
+                  this.subjectName[res.SubjectStatistics.indexOf(subject)] = subject.SubjectName;
                 }
+              } else {
+                this.practMarks[res.SubjectStatistics.indexOf(subject)] = null;
+                this.labMarks[res.SubjectStatistics.indexOf(subject)] = null;
+                this.testMarks[res.SubjectStatistics.indexOf(subject)] = null;
+                this.conMarks[res.SubjectStatistics.indexOf(subject)] = null;
+                this.ratingMarks[res.SubjectStatistics.indexOf(subject)] = null;
               }
               if (res.SubjectStatistics.indexOf(subject) == res.SubjectStatistics.length - 1) {
+                this.practMarks = this.practMarks.filter(x => x !== null);
+                this.labMarks = this.labMarks.filter(x => x !== null);
+                this.testMarks = this.testMarks.filter(x => x !== null);
+                this.conMarks = this.conMarks.filter(x => x !== null);
+                this.ratingMarks = this.ratingMarks.filter(x => x !== null);
+                this.subjectName = this.subjectName.filter(x => x !== null);
+                this.subjectNameArchive = this.subjectNameArchive.filter(x => x !== null);
                 this.series.push({name: this.categoriesConst[0], data: this.practMarks});
                 this.series.push({name: this.categoriesConst[1], data: this.labMarks});
                 this.series.push({name: this.categoriesConst[2], data: this.testMarks});
@@ -206,9 +225,15 @@ export class MainPageComponent implements OnInit {
                 // this.series.push({name: this.categoriesConst[2], data: [6.7, 8.2, 6.2, 5.9, 0  ]});
                 // this.series.push({name: this.categoriesConst[3], data: [0,   0,   0,   0,   6 ]});
                 // this.series.push({name: this.categoriesConst[4], data: [7.1, 6.9, 6.3, 6.8, 6.4 ]});
-                // this.addMarksChart(this.series, ['Базы данных', 'Модульное тестирование', 'Методы и алгоритмы принятия решений', 'Основы защиты информации', 'Английский язык в профдеятельности']);
+                // this.addMarksChart(this.series, ['Базы данных', 'Модульное тестирование',
+                // 'Методы и алгоритмы принятия решений', 'Основы защиты информации', 'Английский язык в профдеятельности']);
+                console.log(this.series);
+                console.log(this.subjectName);
                 this.addMarksChart(this.series, this.subjectName);
                 this.addArchiveMarksChart(this.seriesArchive, this.subjectNameArchive);
+                this.charts.forEach(chart => {
+                  this.addChart(chart[0], chart[1], chart[2], chart[3], chart[4], chart[5]);
+                });
               }
             });
           });
@@ -426,7 +451,7 @@ export class MainPageComponent implements OnInit {
   }
 
   performData(subjects: any, result: any, chartList1: any, isArchive: boolean) {
-    subjects.sort((a, b) => a.Name.localeCompare(b.Name));
+    subjects = subjects.sort((a, b) => a.Name.localeCompare(b.Name));
     this.subjectName = [];
     this.series = [];
     this.practMarks = [];
@@ -434,6 +459,7 @@ export class MainPageComponent implements OnInit {
     this.testMarks = [];
     this.conMarks = [];
     this.ratingMarks = [];
+    this.charts = [];
 
     subjects.forEach(subject => {
       this.serviceService.getCheckedType(subject.Id).subscribe(types => {
@@ -472,37 +498,37 @@ export class MainPageComponent implements OnInit {
         if (this.checked[0]) {
           this.colorsTemp.push(this.colors[0]);
           this.temp.push(this.practSum);
-          this.practMarks.push(this.practSum);
+          this.practMarks[subjects.indexOf(subject)] = this.practSum;
           this.categoriesTemp.push(this.categoriesConst[0]);
         } else {
-          this.practMarks.push(0);
+          this.practMarks[subjects.indexOf(subject)] = 0;
         }
 
         if (this.checked[1]) {
           this.colorsTemp.push(this.colors[1]);
           this.categoriesTemp.push(this.categoriesConst[1]);
           this.temp.push(this.labSum);
-          this.labMarks.push(this.labSum);
+          this.labMarks[subjects.indexOf(subject)] = this.labSum;
         } else {
-          this.labMarks.push(0);
+          this.labMarks[subjects.indexOf(subject)] = 0;
         }
 
         if (this.checked[2]) {
           this.colorsTemp.push(this.colors[2]);
           this.temp.push(this.testSum);
           this.categoriesTemp.push(this.categoriesConst[2]);
-          this.testMarks.push(this.testSum);
+          this.testMarks[subjects.indexOf(subject)] = this.testSum;
         } else {
-          this.testMarks.push(0);
+          this.testMarks[subjects.indexOf(subject)] = 0;
         }
 
         if (this.checked[3]) {
           this.colorsTemp.push(this.colors[3]);
           this.temp.push(this.courseMark);
           this.categoriesTemp.push(this.categoriesConst[3]);
-          this.conMarks.push(this.courseMark);
+          this.conMarks[subjects.indexOf(subject)] = this.courseMark;
         } else {
-          this.conMarks.push(0);
+          this.conMarks[subjects.indexOf(subject)] = 0;
         }
 
         this.temp.forEach(el => {
@@ -511,10 +537,10 @@ export class MainPageComponent implements OnInit {
         const rating = this.serviceService.round(this.tempAvg / this.temp.length);
         this.temp.push(rating);
         this.colorsTemp.push(this.colors[4]);
-        this.ratingMarks.push(rating);
-        this.subjectName.push(subject.Name);
+        this.ratingMarks[subjects.indexOf(subject)] = rating;
+        this.subjectName[subjects.indexOf(subject)] = subject.Name;
         this.categoriesTemp.push(this.categoriesConst[4]);
-        this.addChart(this.temp, subject.Name, this.categoriesTemp, subject.Id, chartList1, this.colorsTemp);
+        this.charts[subjects.indexOf(subject)] = [this.temp, subject.Name, this.categoriesTemp, subject.Id, chartList1, this.colorsTemp];
         if (subjects.indexOf(subject) == subjects.length - 1) {
           this.series.push({name: this.categoriesConst[0], data: this.practMarks});
           this.series.push({name: this.categoriesConst[1], data: this.labMarks});
@@ -522,6 +548,9 @@ export class MainPageComponent implements OnInit {
           this.series.push({name: this.categoriesConst[3], data: this.conMarks});
           this.series.push({name: this.categoriesConst[4], data: this.ratingMarks});
           // this.addMarksChart(this.series, this.subjectName);
+          this.charts.forEach(chart => {
+            this.addChart(chart[0], chart[1], chart[2], chart[3], chart[4], chart[5]);
+          });
           if (isArchive) {
             this.addArchiveMarksChart(this.series, this.subjectName);
           } else {
