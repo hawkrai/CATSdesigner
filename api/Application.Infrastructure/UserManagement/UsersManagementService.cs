@@ -311,7 +311,8 @@ namespace Application.Infrastructure.UserManagement
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
              
             var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName)
-                .Include(u => u.Membership.Roles)); ;
+                .Include(e => e.Student)
+                .Include(u => u.Membership.Roles));
             if (user is null || !Crypto.VerifyHashedPassword(user.Membership.Password, password)) return default;
             var role = user.Membership.Roles.Single();
             return (user, role);
