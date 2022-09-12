@@ -1,19 +1,20 @@
 <h1 mat-dialog-title>Редактирование листа задания</h1>
-<div mat-dialog-content style="display: block">
+<div mat-dialog-content style="display: block" [formGroup]="formGroup">
   <div class="choose-template">
     <mat-form-field class="form-field">
       <mat-label>Выберите готовый шаблон</mat-label>
       <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
-        <mat-option *ngIf="data.taskSheetTemplate != undefined" value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
+        <mat-option *ngIf="data.taskSheetTemplate != undefined"
+                    value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
         <mat-option *ngFor="let template of templates" [value]="template">
           {{template.Name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <div>
+    <div class="help-icon">
       <button class="mat-icon-button-help" mat-icon-button
               [matTooltip]="'Помощь'" matTooltipPosition="below"
-      (click)="showHelp()">
+              (click)="showHelp()">
         <mat-icon color="primary">help_outline</mat-icon>
       </button>
     </div>
@@ -21,11 +22,13 @@
   <div class="save-template">
     <mat-form-field>
       <mat-label>Название шаблона</mat-label>
-      <input matInput [formControl]="templateNameControl">
-      <mat-error *ngIf="templateNameControl.invalid">До 30 символов</mat-error>
+      <input matInput formControlName="templateNameControl">
+      <mat-error *ngIf="formGroup.controls.templateNameControl.invalid">До 30 символов</mat-error>
     </mat-form-field>
-    <button mat-flat-button class="saveTemplateButton" color="primary" [disabled]="templateNameControl.invalid || isFormInvalid()"
-            (click)="saveTemplate()">Сохранить шаблон</button>
+    <button mat-flat-button class="saveTemplateButton" color="primary"
+            [disabled]="formGroup.controls.templateNameControl.invalid || isFormInvalid"
+            (click)="saveTemplate()">Сохранить шаблон
+    </button>
   </div>
 
   <div class="apply-template">
@@ -37,65 +40,67 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-flat-button class="applyButton" color="primary" [disabled]="isSelectedGroupsInvalid() || templateNameControl.invalid || isFormInvalid()"
-            (click)="applyTemplate()">Применить шаблон</button>
+    <button mat-flat-button class="applyButton" color="primary"
+            [disabled]="isSelectedGroupsInvalid() || formGroup.controls.templateNameControl.invalid || isFormInvalid"
+            (click)="applyTemplate()">Применить шаблон
+    </button>
   </div>
 
   <mat-tab-group dynamicHeight class="dialog-tab-content">
     <mat-tab label="Входные данные">
       <mat-form-field appearance="fill">
-        <textarea matInput style="height: 300px" [formControl]="inputDataControl"></textarea>
-        <mat-error *ngIf="inputDataControl.invalid">До 999 символов</mat-error>
+        <textarea matInput style="height: 300px" formControlName="inputDataControl"></textarea>
+        <mat-error *ngIf="formGroup.controls.inputDataControl.invalid">До 999 символов</mat-error>
       </mat-form-field>
     </mat-tab>
     <mat-tab label="Содержание">
       <mat-form-field appearance="fill">
-        <textarea matInput style="height: 300px" [formControl]="contentControl"></textarea>
-        <mat-error *ngIf="contentControl.invalid">До 999 символов</mat-error>
+        <textarea matInput style="height: 300px" formControlName="contentControl"></textarea>
+        <mat-error *ngIf="formGroup.controls.contentControl.invalid">До 999 символов</mat-error>
       </mat-form-field>
     </mat-tab>
     <mat-tab label="Графические материалы">
       <mat-form-field appearance="fill">
-        <textarea matInput style="height: 300px" [formControl]="drawContentControl"></textarea>
-        <mat-error *ngIf="drawContentControl.invalid">До 999 символов</mat-error>
+        <textarea matInput style="height: 300px" formControlName="drawContentControl"></textarea>
+        <mat-error *ngIf="formGroup.controls.drawContentControl.invalid">До 999 символов</mat-error>
       </mat-form-field>
     </mat-tab>
     <mat-tab label="Сведения о ВУЗе">
       <mat-form-field appearance="fill">
         <mat-label>Название учебного заведения</mat-label>
-        <textarea matInput style="height: 40px" [formControl]="univerControl"></textarea>
-        <mat-error *ngIf="univerControl.invalid">До 255 символов</mat-error>
+        <textarea matInput style="height: 40px" formControlName="univerControl"></textarea>
+        <mat-error *ngIf="formGroup.controls.univerControl.invalid">До 255 символов</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Название факультета</mat-label>
-        <textarea matInput style="height: 40px" [formControl]="facultyControl"></textarea>
-        <mat-error *ngIf="facultyControl.invalid">До 255 символов</mat-error>
+        <textarea matInput style="height: 40px" formControlName="facultyControl"></textarea>
+        <mat-error *ngIf="formGroup.controls.facultyControl.invalid">До 255 символов</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Название кафедры</mat-label>
-        <textarea matInput style="height: 40px" [formControl]="departmentControl"></textarea>
-        <mat-error *ngIf="departmentControl.invalid">До 255 символов</mat-error>
+        <textarea matInput style="height: 40px" formControlName="departmentControl"></textarea>
+        <mat-error *ngIf="formGroup.controls.departmentControl.invalid">До 255 символов</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Фамилия, инициалы заведующего кафедры</mat-label>
-        <textarea matInput style="height: 40px" [formControl]="headCathedraControl"></textarea>
-        <mat-error *ngIf="headCathedraControl.invalid">До 255 символов</mat-error>
+        <textarea matInput style="height: 40px" formControlName="headCathedraControl"></textarea>
+        <mat-error *ngIf="formGroup.controls.headCathedraControl.invalid">До 255 символов</mat-error>
       </mat-form-field>
     </mat-tab>
     <mat-tab label="Даты">
       <mat-form-field class="form-field" style="margin-top: 20px">
         <mat-label>Дата выдачи задания</mat-label>
-        <input matInput [matDatepicker]="dp1" [formControl]="startDateControl">
+        <input matInput [matDatepicker]="dp1" formControlName="startDateControl">
         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
         <mat-datepicker #dp1></mat-datepicker>
-        <mat-error *ngIf="startDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
+        <mat-error *ngIf="formGroup.controls.startDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
       </mat-form-field>
       <mat-form-field class="form-field">
         <mat-label>Сроки сдачи курсового проекта</mat-label>
-        <input matInput [matDatepicker]="dp2" [formControl]="endDateControl">
+        <input matInput [matDatepicker]="dp2" formControlName="endDateControl">
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
         <mat-datepicker #dp2></mat-datepicker>
-        <mat-error *ngIf="endDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
+        <mat-error *ngIf="formGroup.controls.endDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
       </mat-form-field>
     </mat-tab>
   </mat-tab-group>
@@ -103,7 +108,8 @@
 </div>
 <div mat-dialog-actions class="dialog-buttons">
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
-  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()" [disabled]="isFormInvalid()">
+  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()"
+          [disabled]="!hasChange">
     Сохранить
   </button>
 </div>

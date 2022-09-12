@@ -11,30 +11,30 @@ export class NoAuthGuard implements CanActivate {
     private authenticationService: AuthenticationService
 ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) : Observable<boolean> {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     const currentUser = this.authenticationService.currentUserValue;
-    let isAut: Boolean = true;
+    const isAut = true;
     return this.authenticationService.check()
     .pipe(
       map(response => {
         this.authenticationService.setCurrentUserValue(response);
-        if(response.role == 'admin'){
+        if (response.role === 'admin'){
           this.redirectAdmin();
         }
         return true;
       }),
       catchError(error => {
-        this.redirect(state); 
+        this.redirect(state);
         return of(false);
       })
     );
   }
 
   redirect(state: RouterStateSnapshot) {
-    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});  
+    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
   }
 
   redirectAdmin() {
-    this.router.navigate(['/adminPanel']);  
+    this.router.navigate(['/adminPanel']);
   }
 }

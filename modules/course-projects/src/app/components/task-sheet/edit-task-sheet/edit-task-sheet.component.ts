@@ -1,13 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef, MatSelectChange, MatSnackBar} from '@angular/material';
 import {TaskSheet} from '../../../models/task-sheet.model';
-import {FormControl, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Template} from '../../../models/template.model';
 import {TaskSheetService} from '../../../services/task-sheet.service';
 import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
-import { Project } from 'src/app/models/project.model';
-import { ProjectsService } from 'src/app/services/projects.service';
-import { CoreGroup } from 'src/app/models/core-group.model';
+import {Project} from 'src/app/models/project.model';
+import {ProjectsService} from 'src/app/services/projects.service';
+import {CoreGroup} from 'src/app/models/core-group.model';
 import {Help} from '../../../models/help.model';
 import {HelpPopoverScheduleComponent} from '../../../shared/help-popover/help-popover-schedule.component';
 import {MatDialog} from '@angular/material/dialog';
@@ -31,36 +31,11 @@ export class EditTaskSheetComponent implements OnInit {
     action: 'Понятно'
   };
 
+  formGroup: FormGroup;
+
   private COUNT = 1000000;
   private PAGE = 1;
-
-  private templateNameControl: FormControl = new FormControl(null,
-    [Validators.maxLength(30), Validators.required]);
-
-  private inputDataControl: FormControl = new FormControl(this.data.taskSheet.InputData,
-    [Validators.maxLength(999)]);
-
-  private contentControl: FormControl = new FormControl(this.data.taskSheet.RpzContent,
-    [Validators.maxLength(999)]);
-
-  private drawContentControl: FormControl = new FormControl(this.data.taskSheet.DrawMaterials,
-    [Validators.maxLength(999)]);
-
-  private univerControl: FormControl = new FormControl(this.data.taskSheet.Univer,
-    [Validators.maxLength(255)]);
-
-  private facultyControl: FormControl = new FormControl(this.data.taskSheet.Faculty,
-    [Validators.maxLength(255)]);
-
-  private departmentControl: FormControl = new FormControl(this.data.taskSheet.Faculty,
-    [Validators.maxLength(255)]);
-
-  private headCathedraControl: FormControl = new FormControl(this.data.taskSheet.HeadCathedra,
-    [Validators.maxLength(255)]);
-
-  private startDateControl = new FormControl(this.data.taskSheet.DateStart != null ? new Date(this.data.taskSheet.DateStart) : new Date());
-
-  private endDateControl = new FormControl(this.data.taskSheet.DateEnd);
+  hasChange = false;
 
   private templates: Template[];
   private selectedGroups: any[];
@@ -72,20 +47,58 @@ export class EditTaskSheetComponent implements OnInit {
               private snackBar: MatSnackBar,
               public dialogRef: MatDialogRef<EditTaskSheetComponent>,
               private projectsService: ProjectsService,
+              private formBuilder: FormBuilder,
               private dialog: MatDialog,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+  }
 
   ngOnInit(): void {
+    this.initForm();
     this.taskSheetService.getTemplateList({entity: 'CourseProjectTaskSheetTemplate', subjectId: this.data.subjectId})
       .subscribe(res => this.templates = res);
     this.retrieveProjects();
     this.retrieveTaskSheets();
+    this.onCreateGroupFormValueChange();
+  }
+
+  private initForm(): void {
+    this.formGroup = this.formBuilder.group({
+      templateNameControl: new FormControl(null,
+        [Validators.maxLength(30), Validators.required]),
+      inputDataControl: new FormControl(this.data.taskSheet.InputData,
+        [Validators.maxLength(999)]),
+      contentControl: new FormControl(this.data.taskSheet.RpzContent,
+        [Validators.maxLength(999)]),
+      drawContentControl: new FormControl(this.data.taskSheet.DrawMaterials,
+        [Validators.maxLength(999)]),
+      univerControl: new FormControl(this.data.taskSheet.Univer,
+        [Validators.maxLength(255)]),
+      facultyControl: new FormControl(this.data.taskSheet.Faculty,
+        [Validators.maxLength(255)]),
+      departmentControl: new FormControl(this.data.taskSheet.Faculty,
+        [Validators.maxLength(255)]),
+      headCathedraControl: new FormControl(this.data.taskSheet.HeadCathedra,
+        [Validators.maxLength(255)]),
+      startDateControl: new FormControl(this.data.taskSheet.DateStart != null ? new Date(this.data.taskSheet.DateStart) : new Date()),
+      endDateControl: new FormControl(this.data.taskSheet.DateEnd)
+    });
+  }
+
+  onCreateGroupFormValueChange() {
+    const initialValue = this.formGroup.value;
+    this.formGroup.valueChanges.subscribe(value => {
+      console.log(JSON.stringify(initialValue) !== JSON.stringify(value));
+      this.hasChange = JSON.stringify(initialValue) !== JSON.stringify(value);
+    });
   }
 
   showHelp(): void {
     const dialogRef = this.dialog.open(HelpPopoverScheduleComponent,
-      {data: {message: this.helpMessage.message,
-          action: this.helpMessage.action},
+      {
+        data: {
+          message: this.helpMessage.message,
+          action: this.helpMessage.action
+        },
         disableClose: true,
         hasBackdrop: true,
         backdropClass: 'backdrop-help',
@@ -102,21 +115,16 @@ export class EditTaskSheetComponent implements OnInit {
 
   onTemplateChange(event: MatSelectChange) {
     this.taskSheetService.getTemplate({templateId: event.value.Id}).subscribe(res => {
-      this.templateNameControl.setValue(event.value.Name);
-      this.inputDataControl.setValue(res.InputData);
-      this.contentControl.setValue(res.RpzContent);
-      this.drawContentControl.setValue(res.DrawMaterials);
-      this.univerControl.setValue(res.Univer);
-      this.facultyControl.setValue(res.Faculty);
-      this.headCathedraControl.setValue(res.HeadCathedra);
-      this.startDateControl.setValue(res.DateStart);
-      this.endDateControl.setValue(res.DateEnd);
+      this.formGroup.controls.templateNameControl.setValue(event.value.Name);
+      this.formGroup.controls.inputDataControl.setValue(res.InputData);
+      this.formGroup.controls.contentControl.setValue(res.RpzContent);
+      this.formGroup.controls.drawContentControl.setValue(res.DrawMaterials);
+      this.formGroup.controls.univerControl.setValue(res.Univer);
+      this.formGroup.controls.facultyControl.setValue(res.Faculty);
+      this.formGroup.controls.headCathedraControl.setValue(res.HeadCathedra);
+      this.formGroup.controls.startDateControl.setValue(res.DateStart);
+      this.formGroup.controls.endDateControl.setValue(res.DateEnd);
     });
-  }
-
-  isFormInvalid(): boolean {
-    return this.inputDataControl.invalid || this.contentControl.invalid || this.drawContentControl.invalid || this.univerControl.invalid ||
-      this.facultyControl.invalid || this.headCathedraControl.invalid || this.startDateControl.invalid || this.endDateControl.invalid || this.departmentControl.invalid;
   }
 
   isSelectedGroupsInvalid(): boolean {
@@ -128,7 +136,7 @@ export class EditTaskSheetComponent implements OnInit {
 
   saveTemplate() {
     const template = new TaskSheetTemplate();
-    template.Name = this.templateNameControl.value;
+    template.Name = this.formGroup.get('templateNameControl').value;
     this.populateSheet(template);
     this.taskSheetService.editTemplate(template).subscribe(() => {
       this.ngOnInit();
@@ -160,14 +168,14 @@ export class EditTaskSheetComponent implements OnInit {
   }
 
   populateSheet(taskSheet: TaskSheet): void {
-    taskSheet.InputData = this.inputDataControl.value;
-    taskSheet.RpzContent = this.contentControl.value;
-    taskSheet.DrawMaterials = this.drawContentControl.value;
-    taskSheet.Univer = this.univerControl.value;
-    taskSheet.Faculty = this.facultyControl.value;
-    taskSheet.HeadCathedra = this.headCathedraControl.value;
-    taskSheet.DateStart = this.startDateControl.value;
-    taskSheet.DateEnd = this.endDateControl.value;
+    taskSheet.InputData = this.formGroup.get('inputDataControl').value;
+    taskSheet.RpzContent = this.formGroup.get('contentControl').value;
+    taskSheet.DrawMaterials = this.formGroup.get('drawContentControl').value;
+    taskSheet.Univer = this.formGroup.get('univerControl').value;
+    taskSheet.Faculty = this.formGroup.get('facultyControl').value;
+    taskSheet.HeadCathedra = this.formGroup.get('headCathedraControl').value;
+    taskSheet.DateStart = this.formGroup.get('startDateControl').value;
+    taskSheet.DateEnd = this.formGroup.get('endDateControl').value;
   }
 
   retrieveProjects() {
@@ -192,4 +200,15 @@ export class EditTaskSheetComponent implements OnInit {
       .subscribe(res => this.taskSheets = res);
   }
 
+  get isFormInvalid(): boolean {
+    return (this.formGroup.controls.inputDataControl.invalid ||
+      this.formGroup.controls.contentControl.invalid ||
+      this.formGroup.controls.drawContentControl.invalid ||
+      this.formGroup.controls.univerControl.invalid ||
+      this.formGroup.controls.facultyControl.invalid ||
+      this.formGroup.controls.headCathedraControl.invalid ||
+      this.formGroup.controls.startDateControl.invalid ||
+      this.formGroup.controls.endDateControl.invalid ||
+      this.formGroup.controls.departmentControl.invalid);
+  }
 }

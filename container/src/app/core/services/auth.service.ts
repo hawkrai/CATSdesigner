@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, throwError, Observable, of } from 'rxjs';
+import { BehaviorSubject, throwError, Observable } from 'rxjs';
 import { map, catchError, } from 'rxjs/operators';
 
 import { User } from './../models/user';
@@ -22,13 +22,13 @@ export class AuthenticationService {
     setCurrentUserValue(user: any): void{
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
-    } 
+    }
 
     login(username, password) {
-        return this.http.post<any>(`/Account/LoginJWT`, 
+        return this.http.post<any>(`/Account/LoginJWT`,
             {
                 userName: username,
-                password: password
+                password
             })
             .pipe(
                 map(user => {
@@ -36,21 +36,21 @@ export class AuthenticationService {
                 return user;
             }),
             catchError((error) => {
-              console.log(error)
+              console.log(error);
               return throwError(error);
             })
             );
     }
 
     check() {
-        return this.http.get<any>('/Account/UserSessionCheck');                    
+        return this.http.get<any>('/Account/UserSessionCheck');
     }
 
     logout() {
         return this.http.get<any>('/Account/LogOff')
             .pipe(map(user => {
                 localStorage.removeItem('currentUser');
-                this.currentUserSubject.next(null);                
-        }));        
+                this.currentUserSubject.next(null);
+        }));
     }
 }
