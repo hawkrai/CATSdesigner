@@ -53,7 +53,7 @@ namespace LMPlatform.UI.Controllers
                 this.SetupSettings(dataTableParam);
                 return DataTableExtensions.GetResults(
                     students.Items.Select(s =>
-                        StudentViewModel.FromStudent(s, this.PartialViewToString("_EditGlyphLinks", s.Id))),
+                        StudentViewModel.FromStudent(s, this.PartialViewToString("_EditGlyphLinks", s.Id, s.IsActive))),
                     dataTableParam, students.TotalCount);
             }
             catch (Exception e)

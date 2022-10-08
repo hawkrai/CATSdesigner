@@ -132,8 +132,22 @@ namespace Application.Infrastructure.StudentManagement
 
         public bool DeleteStudent(int id)
         {
-            new StudentSearchMethod().DeleteIndex(id);
-            return UserManagementService.DeleteUser(id);
+			using (var repositoriesContainer = new LmPlatformRepositoriesContainer()) 
+			{
+				var student = repositoriesContainer.StudentsRepository.GetBy(
+					new Query<Student>(e => e.Id == id)
+				);
+
+				if (student is null) 
+				{
+					return false;
+				}
+
+				repositoriesContainer.StudentsRepository.DeleteStudent(student);
+			}
+
+			new StudentSearchMethod().DeleteIndex(id);
+            return true;
         }
 
 		public int CountUnconfirmedStudents(int lecturerId)

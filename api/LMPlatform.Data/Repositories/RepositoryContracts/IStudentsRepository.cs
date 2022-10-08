@@ -17,5 +17,7 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
         List<Student> GetStudents();
 
         void SaveStudent(Student student);
+
+        void DeleteStudent(Student student);
     }
 }

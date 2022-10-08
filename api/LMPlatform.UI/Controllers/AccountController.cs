@@ -13,6 +13,7 @@ using Application.Core.UI.Controllers;
 using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.UserManagement;
+using Application.Infrastructure.StudentManagement;
 using JWT.Algorithms;
 using JWT.Builder;
 using LMPlatform.Models;
@@ -30,6 +31,8 @@ namespace LMPlatform.UI.Controllers
 
         public ILecturerManagementService LecturerManagementService =>
             this.ApplicationService<ILecturerManagementService>();
+        public IStudentManagementService StudentManagementService =>
+            this.ApplicationService<IStudentManagementService>();
         public IAccountManagementService AccountAuthenticationService =>
             this.ApplicationService<IAccountManagementService>();
 
@@ -42,7 +45,7 @@ namespace LMPlatform.UI.Controllers
         {
             if (AccountAuthenticationService.Login(userName, password, true))
             {
-                if (!this.IsLecturerActive(userName))
+                if (!this.IsLecturerActive(userName) || !this.IsStudentActive(userName))
                 {
                     AccountAuthenticationService.Logout();
                     return StatusCode(HttpStatusCode.BadRequest,
@@ -81,7 +84,7 @@ namespace LMPlatform.UI.Controllers
             if (this.ModelState.IsValid &&
                 this.UsersManagementService.Login(model.UserName, model.Password) is (User user, Role role))
             {
-                if (!this.IsLecturerActive(model.UserName))
+                if (!this.IsLecturerActive(model.UserName) || !this.IsStudentActive(model.UserName))
                     return StatusCode(HttpStatusCode.BadRequest,
                         "Данныe имя пользователя и пароль больше не действительны");
 
@@ -273,6 +276,7 @@ namespace LMPlatform.UI.Controllers
                                 MiddleName = string.IsNullOrEmpty(model.Patronymic)
                                     ? string.Empty
                                     : model.Patronymic.Trim(),
+                                IsActive = model.IsActive,
                                 User =
                                     new User
                                     {
@@ -333,6 +337,13 @@ namespace LMPlatform.UI.Controllers
             var userId = this.UsersManagementService.GetUser(userName).Id;
             var lecturer = this.LecturerManagementService.GetLecturer(userId);
             return lecturer?.IsActive ?? true;
+        }
+
+        private bool IsStudentActive(string userName) 
+        {
+            var userId = this.UsersManagementService.GetUser(userName).Id;
+            var student = this.StudentManagementService.GetStudent(userId);
+            return student?.IsActive ?? true;
         }
     }
 }

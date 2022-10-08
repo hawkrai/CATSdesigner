@@ -23,6 +23,9 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
     [DisplayName("Действие")]
     public HtmlString HtmlLinks { get; set; }
 
+    [DisplayName("Статус")]
+    public bool IsActive { get; set; }
+
     public int Id { get; set; }
 
     private string FirstName { get; set; }
@@ -42,7 +45,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         Group = student.Group.Name,
         Login = student.User.UserName,
         HtmlLinks = new HtmlString(htmlLinks),
-        LastLogin = student.User.LastLogin.HasValue ? student.User.LastLogin.ToString() : "-"
+        LastLogin = student.User.LastLogin.HasValue ? student.User.LastLogin.ToString() : "-",
+        IsActive = student.IsActive
       };
     }
   }
