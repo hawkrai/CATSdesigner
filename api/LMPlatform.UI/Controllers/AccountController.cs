@@ -14,6 +14,7 @@ using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.UserManagement;
 using Application.Infrastructure.StudentManagement;
+using Application.Infrastructure.ElasticManagement;
 using JWT.Algorithms;
 using JWT.Builder;
 using LMPlatform.Models;
@@ -35,6 +36,9 @@ namespace LMPlatform.UI.Controllers
             this.ApplicationService<IStudentManagementService>();
         public IAccountManagementService AccountAuthenticationService =>
             this.ApplicationService<IAccountManagementService>();
+
+        public IElasticManagementService ElasticManagementService =>
+            this.ApplicationService<IElasticManagementService>();
 
         [HttpGet]
         public ActionResult Unauthorized() => StatusCode(HttpStatusCode.Unauthorized);
@@ -314,6 +318,23 @@ namespace LMPlatform.UI.Controllers
             return "data:image/png;base64," + Convert.ToBase64String(thePictureAsBytes);
         }
 
+        [JwtAuth]
+        [HttpGet]
+        public ActionResult DeleteAccount()
+        {
+            var model = new PersonalDataViewModel();
+            var userId = UsersManagementService.GetUser(model.UserName).Id;
+
+            if (Roles.IsUserInRole("lector"))
+            {
+                return DeleteLecturer(userId);
+            }
+            else
+            {
+                return DeleteStudent(userId);
+            }
+        }
+
         public string GetAvatar()
         {
             var model = new PersonalDataViewModel();
@@ -330,6 +351,49 @@ namespace LMPlatform.UI.Controllers
             return $"{model.Surname} {model.Name} {model.Patronymic}";
 
 
+        }
+
+        private ActionResult DeleteStudent(int id)
+        {
+            try
+            {
+                var student = this.StudentManagementService.GetStudent(id);
+
+                if (student == null) return StatusCode(HttpStatusCode.BadRequest);
+                var result = this.StudentManagementService.DeleteStudent(id);
+                this.ElasticManagementService.DeleteStudent(id);
+
+                return StatusCode(result ? HttpStatusCode.OK : HttpStatusCode.Conflict);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        private ActionResult DeleteLecturer(int id)
+        {
+            try
+            {
+                var lecturer = this.LecturerManagementService.GetLecturer(id);
+
+                if (lecturer == null) return StatusCode(HttpStatusCode.BadRequest);
+                if (lecturer.SubjectLecturers != null && lecturer.SubjectLecturers.Any() &&
+                    lecturer.SubjectLecturers.All(e => e.Subject.IsArchive))
+                    foreach (var lecturerSubjectLecturer in lecturer.SubjectLecturers)
+                        this.LecturerManagementService.DisjoinOwnerLector(lecturerSubjectLecturer.SubjectId, id);
+
+                var result = this.LecturerManagementService.DeleteLecturer(id);
+                this.ElasticManagementService.DeleteLecturer(id);
+
+                return StatusCode(result ? HttpStatusCode.OK : HttpStatusCode.Conflict);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         private bool IsLecturerActive(string userName)
