@@ -27,6 +27,7 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
     '.woff',
     '.ttf',
     '.svg',
+    'mp4',
   ];
 
   function getModule(url: string){
