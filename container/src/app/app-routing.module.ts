@@ -31,7 +31,7 @@ const routes: Routes = [
     path: 'web',
     component: ContentLayoutComponent,
     canActivate: [NoAuthGuard],
-    children: [  
+    children: [
       {
         path: 'chat',
         loadChildren: () => import("./modules/chat/chat.module").then(m => m.ChatModule)
@@ -39,13 +39,13 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () => import("./modules/main/main.module").then(m => m.MainModule)
-      },    
+      },
       {
         path: 'viewer',
         loadChildren: () => import("./modules/viewer/viewer.module").then(m => m.ViewerModule)
       },
-      { 
-        path: 'confirmation', 
+      {
+        path: 'confirmation',
         component: ConfirmationComponent
       },
 
@@ -62,24 +62,26 @@ const routes: Routes = [
         component: ChangePersonalDataComponent
       },
 
-      { 
-        path: 'diplom', 
+      {
+        path: 'diplom',
         component: DiplomComponent
       },
 
-      { path: 'about-system',
-       component: AboutSystemComponent }
+      {
+        path: 'about-system',
+        component: AboutSystemComponent
+      }
 
     ]
-    
+
   },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot', component: ResetComponent },
   { path: 'progControl', component: ProgressControlComponent },
   { path: 'nav', component: SubjectsNavComponent },
-  { 
-    path: 'adminPanel', 
+  {
+    path: 'adminPanel',
     component: AdminComponent,
     //canActivate: [NoAuthGuardAdmin],
   },
@@ -89,7 +91,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{ useHash: true })],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

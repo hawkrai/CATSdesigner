@@ -9,12 +9,20 @@ import { ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class VideoComponent implements OnInit {
+  videoUrl = '';
 
   constructor(public dialogRef: MatDialogRef<VideoComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any ) { }
 
 
   ngOnInit() {
+    const locale = localStorage.getItem('locale');
+
+    if (locale === 'ru') {
+      this.videoUrl = 'assets/videos/fitr.mp4';
+    } else {
+      this.videoUrl = 'assets/videos/fitr_en.mp4';
+    }
   }
 
   onCancelClick() {

@@ -8,8 +8,8 @@
                         <img id="mascot-tail" src="./../../../assets/images/mascot-tail.svg"/>
                     </div>
                     <br>
-                    <img class="logo" src="./../../../assets/logo.png"/>
-                    <p>Care about the students </p> 
+                    <img class="logo" src="./../../../assets/images/logo.png"/>
+                    <p>Care about the students </p>
                     <h1>Адаптивная обучающая система</h1>
                     <a mat-fab (click)="this.cancel()">
                         <mat-icon class="icon_p">play_arrow</mat-icon>
@@ -38,7 +38,7 @@
                             <mat-error *ngIf="hasError('Password', 'required')">Поле не может быть пустым</mat-error>
                             <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
                             <mat-error *ngIf="hasError('Password', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Password', 'pattern')">Допустимые символы: "A(a)-Z(z)", "0-9", "_"</mat-error>                         
+                            <mat-error *ngIf="hasError('Password', 'pattern')">Допустимые символы: "A(a)-Z(z)", "0-9", "_"</mat-error>
                         </mat-form-field>
                         <mat-form-field>
                             <input matInput [type]="hidePassword2 ? 'password' : 'text'" placeholder="Подтверждение пароля" formControlName="ConfirmPassword" maxlength="30">
