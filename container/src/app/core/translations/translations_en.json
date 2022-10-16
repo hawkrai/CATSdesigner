@@ -1,5 +1,6 @@
 
 {
+  "general.back": "Back",
   "chat": "Chat",
   "new.students": "New students",
   "personal.account": "Personal account",
@@ -640,8 +641,37 @@
   "text.academic.performance.monitoring.start.info.third": "The received information can be printed or exported to MS Excel.",
   "text.academic.performance.monitoring.start.info.forth": "If you are interested in performance statistics for a certain period, select the appropriate dates.",
 
-  "text.group.statistics":"Statistics",
+  "text.about.statistics":"Statistics",
   "text.group.selectSubject":"Select the subject",
   "text.group.totalStatistics":"Total statistics",
-  "text.group.text.group.print":"Print"
+  "text.group.text.group.print":"Print",
+
+  "text.about.text.1":"What is the CATS system",
+  "text.about.text.2":"The CATS learning management system is designed to improve the student’s preparation quality, as well as for independent learning. In terms of functionality, work in four roles is supported",
+  "text.about.text.3":"Administrator",
+  "text.about.text.4":"Teacher",
+  "text.about.text.5":"Student",
+  "text.about.text.6":"Observer",
+  "text.about.text.7":"The first three roles are subject to authentication",
+  "text.about.text.8":"The functionality in the role of a teacher",
+  "text.about.text.9":"Creating/editing/deleting items",
+  "text.about.text.10":"The course formation from various modules (news, lectures, etc.)",
+  "text.about.text.11":"Attaching groups to courses, dividing students into subgroups",
+  "text.about.text.12":"Organization of lectures, practical, laboratory classes with attachment of assignments and necessary materials, maintenance of an electronic journal, the formation of a schedule for the defense of works, the calculation of a rating score for a course",
+  "text.about.text.13":"Checking the submitted tasks for plagiarism by comparing them with the tasks stored in the archive of the current and previous semesters",
+  "text.about.text.14":"The formation of tests for the control and self-control of students' knowledge, the organization of automated testing, the maintenance of statistics on the results of the tests passed",
+  "text.about.text.15":"Organization of course and diploma project",
+  "text.about.text.16":"Creation of electronic educational complexes with automatic formation of an educational map",
+  "text.about.text.17":"Adaptability of learning to identify gaps in the knowledge of the student and build his individual learning path",
+  "text.about.text.18":"Creation of an interactive textbook with a built-in editor and the ability to export",
+  "text.about.text.19":"Messaging with system users (administrator, teachers and students)",
+  "text.about.text.20":"The following functionality is available as a student",
+  "text.about.text.21":"Viewing / downloading all the information provided (class schedules, news, tasks, etc.) for academic disciplines",
+  "text.about.text.22":"Study of educational content in the electronic educational complexes and an interactive textbook",
+  "text.about.text.23":"Passing tests for knowledge control, self-learning and adaptive learning",
+  "text.about.text.24":"Sending reports on laboratory and practical work for protection",
+  "text.about.text.25":"Selection of topics for course and diploma project, tracking percentages of project implementation",
+  "text.about.text.26":"Messaging with teachers and administrator",
+  "text.about.text.27":"Viewing personal performance statistics in academic disciplines",
+  "text.about.text.28":"In the role of an observer, the functionality of viewing progress statistics has been implemented, which allows parents of students, employees of the dean's office and the department to view information of interest about the effectiveness of the educational process: the number of missed classes, the number of defended tasks, test scores, student ratings, etc. This does not require authorization in system, but only enter the number of the group of interest or the name of the student"
 }
