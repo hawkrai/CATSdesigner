@@ -14,6 +14,7 @@ using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.UserManagement;
 using Application.Infrastructure.StudentManagement;
+using Application.Infrastructure.ElasticManagement;
 using JWT.Algorithms;
 using JWT.Builder;
 using LMPlatform.Models;
@@ -35,6 +36,8 @@ namespace LMPlatform.UI.Controllers
            this.ApplicationService<IStudentManagementService>();
         public IAccountManagementService AccountAuthenticationService =>
             this.ApplicationService<IAccountManagementService>();
+        public IElasticManagementService ElasticManagementService =>
+            this.ElasticManagementService;
 
         [HttpGet]
         public ActionResult Unauthorized() => StatusCode(HttpStatusCode.Unauthorized);
@@ -312,6 +315,57 @@ namespace LMPlatform.UI.Controllers
             var thePictureAsBytes = theReader.ReadBytes(file.ContentLength);
 
             return "data:image/png;base64," + Convert.ToBase64String(thePictureAsBytes);
+        }
+
+        [JwtAuth]
+        [HttpPost]
+        public ActionResult DeleteAccount()
+        {
+            var model = new PersonalDataViewModel();
+            var id = UsersManagementService.GetUser(model.UserName).Id;
+
+            var deleted = false;
+
+            try
+            {
+                if (Roles.IsUserInRole("lector"))
+                {
+                    var lecturer = this.LecturerManagementService.GetLecturer(id);
+
+                    if (lecturer is null)
+                    {
+                        return StatusCode(HttpStatusCode.BadRequest);
+                    }
+
+                    if (!(lecturer.SubjectLecturers is null) && lecturer.SubjectLecturers.Any() &&
+                        lecturer.SubjectLecturers.All(e => e.Subject.IsArchive))
+                    {
+                        foreach (var lecturerSubjectLecturer in lecturer.SubjectLecturers)
+                        {
+                            this.LecturerManagementService.DisjoinOwnerLector(lecturerSubjectLecturer.SubjectId, id);
+                        }
+                    }
+
+                    deleted = this.LecturerManagementService.DeleteLecturer(id);
+                    this.ElasticManagementService.DeleteLecturer(id);
+                }
+                else
+                {
+                    if (StudentManagementService.GetStudent(id) is null)
+                    {
+                        return StatusCode(HttpStatusCode.BadRequest);
+                    }
+
+                    deleted = this.StudentManagementService.DeleteStudent(id);
+                    this.ElasticManagementService.DeleteStudent(id);
+                }
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+            return StatusCode(deleted ? HttpStatusCode.OK : HttpStatusCode.Conflict);
         }
 
         public string GetAvatar()
