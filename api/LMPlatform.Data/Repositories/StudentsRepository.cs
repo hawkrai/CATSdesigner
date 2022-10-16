@@ -52,5 +52,15 @@ namespace LMPlatform.Data.Repositories
                 context.SaveChanges();
             }
         }
+
+        public void DeleteStudent(Student student)
+        {
+            using (var context = new LmPlatformModelsContext())
+            {
+                student.IsActive = false;
+                context.Update(student);
+                context.SaveChanges();
+            }
+        }
     }
 }

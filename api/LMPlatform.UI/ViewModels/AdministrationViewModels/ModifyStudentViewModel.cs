@@ -58,6 +58,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				this.Confirmed = student.Confirmed;
 				this.ActiveSubjects = this.SubjectManagementService.GetSubjectsCountByStudent(student.Id, true);
 				this.NotActiveSubjects = this.SubjectManagementService.GetSubjectsCountByStudent(student.Id, false);
+				this.IsActive = student.IsActive;
 			}
 		}
 
@@ -94,6 +95,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
 		[Editable(false)]
 		public int Id { get; set; }
+
+		public bool IsActive { get; set; }
 
 		public string FullName => $"{this.Name} {this.Surname} {this.Patronymic}";
 
@@ -132,7 +135,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				Confirmed = true,
 				GroupId = this.Group,
 				Group = this.GroupManagementService.GetGroup(this.Group),
-				User = new User
+                IsActive = IsActive,
+                User = new User
 				{
 					Avatar = this.Avatar,
 					UserName = this.UserName,

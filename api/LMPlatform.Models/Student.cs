@@ -61,5 +61,6 @@ namespace LMPlatform.Models
 
         public ICollection<StudentPracticalMark> StudentPracticalMarks { get; set; } 
 
+        public bool IsActive { get; set; }
     }
 }

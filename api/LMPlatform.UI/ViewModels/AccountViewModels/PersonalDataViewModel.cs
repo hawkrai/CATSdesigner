@@ -95,6 +95,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
 				Phone = user.User.Phone;
 				Email = user.User.Email;
                 GroupName = user.Group.Name;
+                IsActive = user.IsActive;
             }
         }
     }
