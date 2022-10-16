@@ -227,7 +227,7 @@ namespace Application.Infrastructure.Export
             string student;
             if (awork is null)
             {
-                dateStart = work.DateStart.HasValue ? work.DateStart.Value.ToString("dd'.MM'.'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
+                dateStart = work.DateStart.HasValue ? work.DateStart.Value.ToString("dd'.'MM'.'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
                 dateEnd = work.DateEnd != null && work.DateEnd.HasValue ? work.DateEnd.Value.ToString("dd'.'MM'.'yyyy'г.'", cultureInfo.DateTimeFormat) : string.Empty;
                 lecturer = string.Format("{0}.{1}. {2}", work.Lecturer.FirstName[0], work.Lecturer.MiddleName[0], work.Lecturer.LastName);
                 student = "";

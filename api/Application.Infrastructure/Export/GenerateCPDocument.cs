@@ -7317,13 +7317,14 @@ namespace Application.Infrastructure.Export
 
             Run run157 = new Run();
             Text text142 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            if (awork.Student.MiddleName is null || awork.Student.MiddleName == "")
+            if (string.IsNullOrWhiteSpace(awork.Student?.MiddleName))
             {
-                text142.Text = awork is null ? "" : string.Format("{0}. {1}", awork.Student.FirstName[0], awork.Student.LastName);
+                text142.Text = awork is null ? "" : string.Format("{0}." +
+                                                                  " {1}", awork.Student.FirstName[0], awork.Student.LastName);
             }
             else
             {
-                text142.Text = awork is null ? "" : string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+                text142.Text = string.Empty;
             }
             
 
