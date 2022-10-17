@@ -208,6 +208,12 @@ namespace Application.Infrastructure.LecturerManagement
 				new Query<SubjectLecturer>(e => e.SubjectId == subjectId && e.LecturerId == lectorId)).Any();
 		}
 
+        public bool IsLecturerActive(int userId)
+        {
+            var lecturer = GetLecturer(userId);
+            return lecturer?.IsActive ?? true;
+        }
+
         public List<Lecturer> GetNoAdjointLectorers(int subjectId)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();

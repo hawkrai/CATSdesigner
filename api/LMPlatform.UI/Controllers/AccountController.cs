@@ -22,6 +22,7 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.AccountViewModels;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using WebMatrix.WebData;
+using System.Threading.Tasks;
 
 namespace LMPlatform.UI.Controllers
 {   
@@ -48,7 +49,9 @@ namespace LMPlatform.UI.Controllers
         {
             if (AccountAuthenticationService.Login(userName, password, true))
             {
-                if (!this.IsLecturerActive(userName) || !this.IsStudentActive(userName))
+                var userId = UsersManagementService.GetUser(userName).Id;
+
+                if (!LecturerManagementService.IsLecturerActive(userId) || !StudentManagementService.IsStudentActive(userId))
                 {
                     AccountAuthenticationService.Logout();
                     return StatusCode(HttpStatusCode.BadRequest,
@@ -87,7 +90,9 @@ namespace LMPlatform.UI.Controllers
             if (this.ModelState.IsValid &&
                 this.UsersManagementService.Login(model.UserName, model.Password) is (User user, Role role))
             {
-                if (!this.IsLecturerActive(model.UserName) || !this.IsStudentActive(model.UserName))
+                var userId = UsersManagementService.GetUser(model.UserName).Id;
+
+                if (!LecturerManagementService.IsLecturerActive(userId) || !StudentManagementService.IsStudentActive(userId))
                     return StatusCode(HttpStatusCode.BadRequest,
                         "Данныe имя пользователя и пароль больше не действительны");
 
@@ -319,45 +324,47 @@ namespace LMPlatform.UI.Controllers
 
         [JwtAuth]
         [HttpPost]
-        public ActionResult DeleteAccount()
+        public async Task<ActionResult> DeleteAccount()
         {
             var model = new PersonalDataViewModel();
-            var id = UsersManagementService.GetUser(model.UserName).Id;
+            var id = await Task.Run(() => UsersManagementService.GetUser(model.UserName).Id);
 
             var deleted = false;
 
             try
             {
-                if (Roles.IsUserInRole("lector"))
+                bool isLector = await Task.Run(() => Roles.IsUserInRole("lector"));
+
+                if (isLector)
                 {
-                    var lecturer = this.LecturerManagementService.GetLecturer(id);
+                    var lecturer = await Task.Run(() => this.LecturerManagementService.GetLecturer(id));
 
                     if (lecturer is null)
                     {
                         return StatusCode(HttpStatusCode.BadRequest);
                     }
 
-                    if (!(lecturer.SubjectLecturers is null) && lecturer.SubjectLecturers.Any() &&
-                        lecturer.SubjectLecturers.All(e => e.Subject.IsArchive))
+                    bool isArchive = await Task.Run(() => 
+                        !(lecturer.SubjectLecturers is null) && 
+                        lecturer.SubjectLecturers.Any() &&
+                        lecturer.SubjectLecturers.All(e => e.Subject.IsArchive)
+                    );
+
+                    if (isArchive)
                     {
                         foreach (var lecturerSubjectLecturer in lecturer.SubjectLecturers)
                         {
-                            this.LecturerManagementService.DisjoinOwnerLector(lecturerSubjectLecturer.SubjectId, id);
+                            await Task.Run(() => this.LecturerManagementService.DisjoinOwnerLector(lecturerSubjectLecturer.SubjectId, id));
                         }
                     }
 
-                    deleted = this.LecturerManagementService.DeleteLecturer(id);
-                    this.ElasticManagementService.DeleteLecturer(id);
+                    deleted = await Task.Run(() => this.LecturerManagementService.DeleteLecturer(id));
+                    await Task.Run(() => this.ElasticManagementService.DeleteLecturer(id));
                 }
                 else
                 {
-                    if (StudentManagementService.GetStudent(id) is null)
-                    {
-                        return StatusCode(HttpStatusCode.BadRequest);
-                    }
-
-                    deleted = this.StudentManagementService.DeleteStudent(id);
-                    this.ElasticManagementService.DeleteStudent(id);
+                    deleted = await this.StudentManagementService.DeleteStudent(id);
+                    await Task.Run(() => this.ElasticManagementService.DeleteStudent(id));
                 }
             }
             catch (Exception ex) 
@@ -382,22 +389,6 @@ namespace LMPlatform.UI.Controllers
             var model = new PersonalDataViewModel();
 
             return $"{model.Surname} {model.Name} {model.Patronymic}";
-
-
-        }
-
-        private bool IsLecturerActive(string userName)
-        {
-            var userId = this.UsersManagementService.GetUser(userName).Id;
-            var lecturer = this.LecturerManagementService.GetLecturer(userId);
-            return lecturer?.IsActive ?? true;
-        }
-
-        private bool IsStudentActive(string userName)
-        {
-            var userId = this.UsersManagementService.GetUser(userName).Id;
-            var student = this.StudentManagementService.GetStudent(userId);
-            return student?.IsActive ?? true;
         }
     }
 }

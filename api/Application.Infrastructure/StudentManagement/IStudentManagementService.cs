@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.Core.Data;
 using LMPlatform.Models;
 
@@ -18,7 +19,9 @@ namespace Application.Infrastructure.StudentManagement
 
         void UpdateStudent(Student student);
 
-        bool DeleteStudent(int id);
+        Task<bool> DeleteStudent(int id);
+
+        bool IsStudentActive(int userId);
 
 	    int CountUnconfirmedStudents(int lecturerId);
 

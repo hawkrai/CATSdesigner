@@ -6,6 +6,7 @@ using Application.Infrastructure.UserManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using Application.SearchEngine.SearchMethods;
+using System.Threading.Tasks;
 
 namespace Application.Infrastructure.StudentManagement
 {
@@ -130,12 +131,12 @@ namespace Application.Infrastructure.StudentManagement
 	        this.UpdateSubGroup(repositoriesContainer, student);
         }
 
-        public bool DeleteStudent(int id)
+        public async Task<bool> DeleteStudent(int id)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var student = repositoriesContainer.StudentsRepository.GetBy(
-                    new Query<Student>(e => e.Id == id)
+                var student = await Task.Run(() => repositoriesContainer.StudentsRepository.GetBy(
+                    new Query<Student>(e => e.Id == id))
                 );
 
                 if (student is null)
@@ -143,14 +144,20 @@ namespace Application.Infrastructure.StudentManagement
                     return false;
                 }
 
-                repositoriesContainer.StudentsRepository.DeleteStudent(student);
+                await Task.Run(() => repositoriesContainer.StudentsRepository.DeleteStudent(student));
             }
 
-            new StudentSearchMethod().DeleteIndex(id);
+            await Task.Run(() => new StudentSearchMethod().DeleteIndex(id));
             return true;
         }
 
-		public int CountUnconfirmedStudents(int lecturerId)
+        public bool IsStudentActive(int userId)
+        {
+			var student = GetStudent(userId);
+            return student?.IsActive ?? true;
+        }
+
+        public int CountUnconfirmedStudents(int lecturerId)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
