@@ -1,9 +1,4 @@
 USE LMPlatform
-GO
 
 ALTER TABLE Students
-ADD IsActive BIT
-GO
-
-UPDATE Students
-SET IsActive = 1
+ADD IsActive BIT DEFAULT 1
