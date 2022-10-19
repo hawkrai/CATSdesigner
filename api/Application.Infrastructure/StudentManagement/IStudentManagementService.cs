@@ -9,6 +9,8 @@ namespace Application.Infrastructure.StudentManagement
     {
         Student GetStudent(int userId, bool lite = false);
 
+        Task<Student> GetStudentAsync(int userId, bool lite = false);
+
         IEnumerable<Student> GetGroupStudents(int groupId);
 
         IEnumerable<Student> GetStudents(IQuery<Student> query = null);
@@ -19,7 +21,7 @@ namespace Application.Infrastructure.StudentManagement
 
         void UpdateStudent(Student student);
 
-        Task<bool> DeleteStudent(int id);
+        Task<bool> DeleteStudentAsync(int id);
 
         bool IsStudentActive(int userId);
 

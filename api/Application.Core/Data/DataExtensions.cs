@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Application.Core.Data
 {
@@ -109,7 +110,36 @@ namespace Application.Core.Data
 			}
 		}
 
-		public static void Add<TModel, TDataContext>(this TDataContext dataContext, IEnumerable<TModel> models)
+        public static async Task UpdateAsync<TModel, TDataContext>(this TDataContext dataContext, TModel model)
+            where TDataContext : DbContext
+            where TModel : class, IHasIdentifyKey
+        {
+			if (model is null) 
+			{
+				return;
+			}
+
+            var entry = dataContext.Entry(model);
+
+            TModel currentValue = null;
+
+            if (entry.State == EntityState.Detached)
+            {
+                currentValue = await dataContext.Set<TModel>().FindAsync(model.Id);
+            }
+
+            if (!(currentValue is null))
+            {
+                var attachedEntry = dataContext.Entry(currentValue);
+                attachedEntry.CurrentValues.SetValues(model);
+            }
+            else
+            {
+                dataContext.Entry(model).State = EntityState.Modified;
+            }
+        }
+
+        public static void Add<TModel, TDataContext>(this TDataContext dataContext, IEnumerable<TModel> models)
 			where TDataContext : DbContext
 			where TModel : class
 		{

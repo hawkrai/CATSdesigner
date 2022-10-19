@@ -37,5 +37,15 @@ namespace LMPlatform.Data.Repositories
                 context.SaveChanges();
             }
         }
+
+        public async Task DeleteLecturerAsync(Lecturer lecturer) 
+        {
+            using (var context = new LmPlatformModelsContext())
+            {
+                lecturer.IsActive = false;
+                await context.UpdateAsync(lecturer);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Core.Data;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Data.Repositories.RepositoryContracts;
+using System.Threading.Tasks;
 
 namespace LMPlatform.Data.Repositories
 {
@@ -77,6 +78,11 @@ namespace LMPlatform.Data.Repositories
         public void ApplyChanges()
         {
             _dataContext.SaveChanges();
+        }
+
+        public async Task ApplyChangesAsync() 
+        {
+            await _dataContext.SaveChangesAsync();
         }
 
         public void Dispose()

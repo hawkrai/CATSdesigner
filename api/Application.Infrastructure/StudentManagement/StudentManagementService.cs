@@ -20,6 +20,20 @@ namespace Application.Infrastructure.StudentManagement
 	        return student;
         }
 
+		public async Task<Student> GetStudentAsync(int userId, bool lite = false) 
+		{
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+			if (lite)
+			{
+				return await repositoriesContainer.StudentsRepository.GetByAsync(new Query<Student>(s => s.Id == userId));
+            }
+			else 
+			{
+				return await repositoriesContainer.StudentsRepository.GetByAsync(new Query<Student>(e => e.Id == userId).Include(e => e.Group).Include(e => e.User));
+            }
+        }
+
         public IEnumerable<Student> GetGroupStudents(int groupId)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
@@ -131,23 +145,23 @@ namespace Application.Infrastructure.StudentManagement
 	        this.UpdateSubGroup(repositoriesContainer, student);
         }
 
-        public async Task<bool> DeleteStudent(int id)
+        public async Task<bool> DeleteStudentAsync(int id)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var student = await Task.Run(() => repositoriesContainer.StudentsRepository.GetBy(
-                    new Query<Student>(e => e.Id == id))
-                );
+				var student = await repositoriesContainer.StudentsRepository.GetByAsync(
+					new Query<Student>(e => e.Id == id)
+				);
 
                 if (student is null)
                 {
                     return false;
                 }
 
-                await Task.Run(() => repositoriesContainer.StudentsRepository.DeleteStudent(student));
+                await repositoriesContainer.StudentsRepository.DeleteStudentAsync(student);
             }
 
-            await Task.Run(() => new StudentSearchMethod().DeleteIndex(id));
+            new StudentSearchMethod().DeleteIndex(id);
             return true;
         }
 

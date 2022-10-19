@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using DataException = System.Data.DataException;
 
 namespace Application.Core.Data
@@ -41,6 +42,11 @@ namespace Application.Core.Data
 		public void Delete(TModel model)
 		{
 			ProcessMethod(() => PerformDelete(model, DataContext));
+		}
+
+		public async Task DeleteAsync(TModel model) 
+		{
+			await ProcessMethod(async () => await PerformDeleteAsync(model, DataContext));
 		}
 
 		public void Delete(IEnumerable<TModel> models)
@@ -99,6 +105,11 @@ namespace Application.Core.Data
                 var item = PerformSelectSingle(query, DataContext);
                 return item;
             });
+        }
+
+		public async Task<TModel> GetByAsync(IQuery<TModel> query) 
+		{
+			return await ProcessMethod(async () => await PerformSelectSingleAsync(query, DataContext));
         }
 
 		public void Save(TModel model, Func<TModel, bool> performUpdate = null)
@@ -189,7 +200,17 @@ namespace Application.Core.Data
 			}
 		}
 
-		protected virtual IOrderedQueryable<TModel> PerformGetBy(IPageableQuery<TModel> query, TDataContext dataContext)
+        protected virtual async Task PerformDeleteAsync(TModel model, TDataContext dataContext)
+        {
+            var deletingEntity = await dataContext.Set<TModel>().FindAsync(model.Id);
+
+            if (!(deletingEntity is null))
+            {
+                dataContext.Set<TModel>().Remove(deletingEntity);
+            }
+        }
+
+        protected virtual IOrderedQueryable<TModel> PerformGetBy(IPageableQuery<TModel> query, TDataContext dataContext)
 		{
 			var sequence = ApplyFilters(query, dataContext.Set<TModel>());
 
@@ -208,7 +229,15 @@ namespace Application.Core.Data
 			return sequence.FirstOrDefault();
 		}
 
-		protected virtual void PerformUpdate(TModel newValue, TDataContext dataContext)
+        protected virtual async Task<TModel> PerformSelectSingleAsync(IQuery<TModel> query, TDataContext dataContext)
+        {
+            var sequence = ApplyFilters(query, dataContext.Set<TModel>());
+            sequence = ApplyIncludedProperties(query, sequence);
+
+            return await sequence.FirstOrDefaultAsync();
+        }
+
+        protected virtual void PerformUpdate(TModel newValue, TDataContext dataContext)
 		{
 			dataContext.Update(newValue);
 		}

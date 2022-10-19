@@ -327,44 +327,38 @@ namespace LMPlatform.UI.Controllers
         public async Task<ActionResult> DeleteAccount()
         {
             var model = new PersonalDataViewModel();
-            var id = await Task.Run(() => UsersManagementService.GetUser(model.UserName).Id);
+            var id = (await UsersManagementService.GetUserAsync(model.UserName)).Id;
 
             var deleted = false;
 
             try
             {
-                bool isLector = await Task.Run(() => Roles.IsUserInRole("lector"));
-
-                if (isLector)
+                if (Roles.IsUserInRole("lector"))
                 {
-                    var lecturer = await Task.Run(() => this.LecturerManagementService.GetLecturer(id));
+                    var lecturer = await this.LecturerManagementService.GetLecturerAsync(id);
 
                     if (lecturer is null)
                     {
                         return StatusCode(HttpStatusCode.BadRequest);
                     }
 
-                    bool isArchive = await Task.Run(() => 
-                        !(lecturer.SubjectLecturers is null) && 
+                    if (!(lecturer.SubjectLecturers is null) &&
                         lecturer.SubjectLecturers.Any() &&
-                        lecturer.SubjectLecturers.All(e => e.Subject.IsArchive)
-                    );
-
-                    if (isArchive)
+                        lecturer.SubjectLecturers.All(e => e.Subject.IsArchive))
                     {
                         foreach (var lecturerSubjectLecturer in lecturer.SubjectLecturers)
                         {
-                            await Task.Run(() => this.LecturerManagementService.DisjoinOwnerLector(lecturerSubjectLecturer.SubjectId, id));
+                            await this.LecturerManagementService.DisjoinOwnerLectorAsync(lecturerSubjectLecturer.SubjectId, id);
                         }
                     }
 
-                    deleted = await Task.Run(() => this.LecturerManagementService.DeleteLecturer(id));
-                    await Task.Run(() => this.ElasticManagementService.DeleteLecturer(id));
+                    deleted = await this.LecturerManagementService.DeleteLecturerAsync(id);
+                    await this.ElasticManagementService.DeleteLecturerAsync(id);
                 }
                 else
                 {
-                    deleted = await this.StudentManagementService.DeleteStudent(id);
-                    await Task.Run(() => this.ElasticManagementService.DeleteStudent(id));
+                    deleted = await this.StudentManagementService.DeleteStudentAsync(id);
+                    await this.ElasticManagementService.DeleteStudentAsync(id);
                 }
             }
             catch (Exception ex) 

@@ -113,10 +113,28 @@ namespace Application.Infrastructure.ElasticManagement
         {
             if(StudentRepo != null)  StudentRepo.DeleteFromIndex(modelId);
         }
+
+        public async Task DeleteStudentAsync(int modelId) 
+        {
+            if (StudentRepo is not null)
+            {
+                await StudentRepo.DeleteFromIndexAsync(modelId);
+            }
+        }
+
         public void DeleteLecturer(int modelId)
         {
            if(LecturerRepo != null) LecturerRepo.DeleteFromIndex(modelId);
         }
+
+        public async Task DeleteLecturerAsync(int modelId) 
+        {
+            if (LecturerRepo is not null) 
+            {
+                await LecturerRepo.DeleteFromIndexAsync(modelId);
+            }
+        }
+
         public void DeleteGroup(int modelId)
         {
            if(GroupRepo != null) GroupRepo.DeleteFromIndex(modelId);

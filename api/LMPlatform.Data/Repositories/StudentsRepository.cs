@@ -9,6 +9,7 @@ namespace LMPlatform.Data.Repositories
     using LMPlatform.Data.Infrastructure;
     using LMPlatform.Data.Repositories.RepositoryContracts;
     using LMPlatform.Models;
+    using System.Threading.Tasks;
 
     public class StudentsRepository : RepositoryBase<LmPlatformModelsContext, Student>, IStudentsRepository
     {
@@ -53,13 +54,13 @@ namespace LMPlatform.Data.Repositories
             }
         }
 
-        public void DeleteStudent(Student student)
+        public async Task DeleteStudentAsync(Student student)
         {
             using (var context = new LmPlatformModelsContext())
             {
                 student.IsActive = false;
-                context.Update(student);
-                context.SaveChanges();
+                await context.UpdateAsync(student);
+                await context.SaveChangesAsync();
             }
         }
     }
