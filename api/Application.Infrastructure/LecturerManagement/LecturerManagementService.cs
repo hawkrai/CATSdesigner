@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.UserManagement;
@@ -18,6 +19,18 @@ namespace Application.Infrastructure.LecturerManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 return repositoriesContainer.LecturerRepository.GetBy(
+                    new Query<Lecturer>(e => e.Id == userId)
+                    .Include(e => e.SubjectLecturers.Select(x => x.Subject))
+                    .Include(e => e.User)
+                    .Include(e => e.SecretaryGroups));
+            }
+        }
+
+        public async Task<Lecturer> GetLecturerAsync(int userId) 
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                return await repositoriesContainer.LecturerRepository.GetByAsync(
                     new Query<Lecturer>(e => e.Id == userId)
                     .Include(e => e.SubjectLecturers.Select(x => x.Subject))
                     .Include(e => e.User)
@@ -148,6 +161,27 @@ namespace Application.Infrastructure.LecturerManagement
             return true;//UserManagementService.DeleteUser(id);
         }
 
+        public async Task<bool> DeleteLecturerAsync(int id) 
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var lecturer = await repositoriesContainer.LecturerRepository.GetByAsync(
+                     new Query<Lecturer>(e => e.Id == id).Include(e => e.SubjectLecturers)
+                );
+
+                if (lecturer is null)
+                {
+                    return false;
+                }
+
+                await repositoriesContainer.LecturerRepository.DeleteLecturerAsync(lecturer);
+            }
+
+            new LecturerSearchMethod().DeleteIndex(id);
+
+            return true;
+        }
+
         private readonly LazyDependency<IUsersManagementService> _userManagementService =
             new LazyDependency<IUsersManagementService>();
 
@@ -201,12 +235,33 @@ namespace Application.Infrastructure.LecturerManagement
 		    }
 	    }
 
+        public async Task DisjoinOwnerLectorAsync(int subjectId, int lectorId)
+        {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var subjectLecturersRepository = repositoriesContainer.RepositoryFor<SubjectLecturer>();
+
+                var relation = await subjectLecturersRepository.GetByAsync(
+                    new Query<SubjectLecturer>(e => e.Owner.HasValue == false && e.LecturerId == lectorId && e.SubjectId == subjectId)
+                );
+
+                await subjectLecturersRepository.DeleteAsync(relation);
+                await repositoriesContainer.ApplyChangesAsync();
+            }
+        }
+
         public bool IsLectorJoined(int subjectId, int lectorId)
         {
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.RepositoryFor<SubjectLecturer>().GetAll(
 				new Query<SubjectLecturer>(e => e.SubjectId == subjectId && e.LecturerId == lectorId)).Any();
 		}
+
+        public bool IsLecturerActive(int userId)
+        {
+            var lecturer = GetLecturer(userId);
+            return lecturer?.IsActive ?? true;
+        }
 
         public List<Lecturer> GetNoAdjointLectorers(int subjectId)
 		{

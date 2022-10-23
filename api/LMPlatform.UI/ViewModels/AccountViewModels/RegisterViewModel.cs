@@ -184,7 +184,8 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
                 LastName = Surname,
                 MiddleName = Patronymic,
                 GroupId = int.Parse(Group),
-                Confirmed = false
+                Confirmed = false,
+                IsActive = true
             });
             student.User = user;
             student.Group = GroupManagementService.GetGroup(student.GroupId);

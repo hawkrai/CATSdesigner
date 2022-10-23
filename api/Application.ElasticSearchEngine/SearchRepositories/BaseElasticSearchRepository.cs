@@ -4,6 +4,7 @@ using Nest.JsonNetSerializer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Threading.Tasks;
 
 namespace Application.ElasticSearchEngine.SearchRepositories
 {
@@ -77,6 +78,21 @@ namespace Application.ElasticSearchEngine.SearchRepositories
 
             return true;
         }
+
+        public async Task<bool> DeleteFromIndexAsync(int id) 
+        {
+            try
+            {
+                await client.DeleteAsync(new DeleteRequest(indexName, id));
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public bool DeleteIndex()
         {
             try

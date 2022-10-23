@@ -27,6 +27,7 @@ namespace Application.Infrastructure.UserManagement
     using LMPlatform.Models;
     using CPManagement;
     using System.Data.Entity;
+    using System.Threading.Tasks;
 
     public class UsersManagementService : IUsersManagementService
     {
@@ -107,6 +108,44 @@ namespace Application.Infrastructure.UserManagement
                 throw new Exception(errorMessage);
             }
 
+
+            return null;
+        }
+
+        public async Task<User> GetUserAsync(string userName)
+        {
+            try
+            {
+                if (await IsExistsUserAsync(userName))
+                {
+                    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+                    return await repositoriesContainer.UsersRepository.GetByAsync(new Query<User>(e => e.UserName == userName)
+                        .Include(u => u.Student)
+                        .Include(e => e.Student.Group)
+                        .Include(u => u.Lecturer)
+                        .Include(u => u.Membership.Roles));
+                }
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Exception exSub in ex.LoaderExceptions)
+                {
+                    sb.AppendLine(exSub.Message);
+                    FileNotFoundException exFileNotFound = exSub as FileNotFoundException;
+                    if (exFileNotFound != null)
+                    {
+                        if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
+                        {
+                            sb.AppendLine("Fusion Log:");
+                            sb.AppendLine(exFileNotFound.FusionLog);
+                        }
+                    }
+                    sb.AppendLine();
+                }
+                string errorMessage = sb.ToString();
+                throw new Exception(errorMessage);
+            }
 
             return null;
         }
@@ -195,6 +234,12 @@ namespace Application.Infrastructure.UserManagement
                 }
 
                 return false;
+            }
+
+            public async Task<bool> IsExistsUserAsync(string userName)
+            {
+                using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+                return await repositoriesContainer.UsersRepository.GetByAsync(new Query<User>(e => e.UserName == userName)) is not null;
             }
 
         public User CurrentUser

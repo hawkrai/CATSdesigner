@@ -26,7 +26,9 @@ namespace Application.Infrastructure.ElasticManagement
         public void AddProject(Project project);
 
         public void DeleteStudent(int modelId);
+        public Task DeleteStudentAsync(int modelId);
         public void DeleteLecturer(int modelId);
+        public Task DeleteLecturerAsync(int modelId);
         public void DeleteGroup(int modelId);
         public void DeleteProject(int modelId);
 

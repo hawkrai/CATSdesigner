@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Security;
 using Application.Core;
@@ -397,15 +398,15 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
-        public ActionResult DeleteStudentJson(int id)
+        public async Task<ActionResult> DeleteStudentJson(int id)
         {
             try
             {
-                var student = this.StudentManagementService.GetStudent(id);
+                var student = await this.StudentManagementService.GetStudentAsync(id);
 
                 if (student == null) return StatusCode(HttpStatusCode.BadRequest);
-                var result = this.StudentManagementService.DeleteStudent(id);
-                this.ElasticManagementService.DeleteStudent(id);
+                var result = await this.StudentManagementService.DeleteStudentAsync(id);
+                await this.ElasticManagementService.DeleteStudentAsync(id);
 
                 return StatusCode(result ? HttpStatusCode.OK : HttpStatusCode.Conflict);
 

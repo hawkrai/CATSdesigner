@@ -12,5 +12,6 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
     {
         void SaveLecturer(Lecturer lecturer);
         void DeleteLecturer(Lecturer lecturer);
+        Task DeleteLecturerAsync(Lecturer lecturer);
     }
 }

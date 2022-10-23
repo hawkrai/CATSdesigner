@@ -6,6 +6,7 @@ using Application.Infrastructure.UserManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using Application.SearchEngine.SearchMethods;
+using System.Threading.Tasks;
 
 namespace Application.Infrastructure.StudentManagement
 {
@@ -17,6 +18,20 @@ namespace Application.Infrastructure.StudentManagement
 	        var student = lite ? repositoriesContainer.StudentsRepository.GetBy(new Query<Student>(s => s.Id == userId)) 
 		        : repositoriesContainer.StudentsRepository.GetBy(new Query<Student>(e => e.Id == userId).Include(e => e.Group).Include(e => e.User));
 	        return student;
+        }
+
+		public async Task<Student> GetStudentAsync(int userId, bool lite = false) 
+		{
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+			if (lite)
+			{
+				return await repositoriesContainer.StudentsRepository.GetByAsync(new Query<Student>(s => s.Id == userId));
+            }
+			else 
+			{
+				return await repositoriesContainer.StudentsRepository.GetByAsync(new Query<Student>(e => e.Id == userId).Include(e => e.Group).Include(e => e.User));
+            }
         }
 
         public IEnumerable<Student> GetGroupStudents(int groupId)
@@ -130,13 +145,33 @@ namespace Application.Infrastructure.StudentManagement
 	        this.UpdateSubGroup(repositoriesContainer, student);
         }
 
-        public bool DeleteStudent(int id)
+        public async Task<bool> DeleteStudentAsync(int id)
         {
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+				var student = await repositoriesContainer.StudentsRepository.GetByAsync(
+					new Query<Student>(e => e.Id == id)
+				);
+
+                if (student is null)
+                {
+                    return false;
+                }
+
+                await repositoriesContainer.StudentsRepository.DeleteStudentAsync(student);
+            }
+
             new StudentSearchMethod().DeleteIndex(id);
-            return UserManagementService.DeleteUser(id);
+            return true;
         }
 
-		public int CountUnconfirmedStudents(int lecturerId)
+        public bool IsStudentActive(int userId)
+        {
+			var student = GetStudent(userId);
+            return student?.IsActive ?? true;
+        }
+
+        public int CountUnconfirmedStudents(int lecturerId)
 		{
 			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{

@@ -13,6 +13,8 @@ using Application.Core.UI.Controllers;
 using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.UserManagement;
+using Application.Infrastructure.StudentManagement;
+using Application.Infrastructure.ElasticManagement;
 using JWT.Algorithms;
 using JWT.Builder;
 using LMPlatform.Models;
@@ -20,6 +22,7 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.AccountViewModels;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using WebMatrix.WebData;
+using System.Threading.Tasks;
 
 namespace LMPlatform.UI.Controllers
 {   
@@ -30,8 +33,12 @@ namespace LMPlatform.UI.Controllers
 
         public ILecturerManagementService LecturerManagementService =>
             this.ApplicationService<ILecturerManagementService>();
+        public IStudentManagementService StudentManagementService =>
+           this.ApplicationService<IStudentManagementService>();
         public IAccountManagementService AccountAuthenticationService =>
             this.ApplicationService<IAccountManagementService>();
+        public IElasticManagementService ElasticManagementService =>
+            this.ElasticManagementService;
 
         [HttpGet]
         public ActionResult Unauthorized() => StatusCode(HttpStatusCode.Unauthorized);
@@ -42,7 +49,9 @@ namespace LMPlatform.UI.Controllers
         {
             if (AccountAuthenticationService.Login(userName, password, true))
             {
-                if (!this.IsLecturerActive(userName))
+                var userId = UsersManagementService.GetUser(userName).Id;
+
+                if (!LecturerManagementService.IsLecturerActive(userId) || !StudentManagementService.IsStudentActive(userId))
                 {
                     AccountAuthenticationService.Logout();
                     return StatusCode(HttpStatusCode.BadRequest,
@@ -81,7 +90,9 @@ namespace LMPlatform.UI.Controllers
             if (this.ModelState.IsValid &&
                 this.UsersManagementService.Login(model.UserName, model.Password) is (User user, Role role))
             {
-                if (!this.IsLecturerActive(model.UserName))
+                var userId = UsersManagementService.GetUser(model.UserName).Id;
+
+                if (!LecturerManagementService.IsLecturerActive(userId) || !StudentManagementService.IsStudentActive(userId))
                     return StatusCode(HttpStatusCode.BadRequest,
                         "Данныe имя пользователя и пароль больше не действительны");
 
@@ -273,6 +284,7 @@ namespace LMPlatform.UI.Controllers
                                 MiddleName = string.IsNullOrEmpty(model.Patronymic)
                                     ? string.Empty
                                     : model.Patronymic.Trim(),
+                                IsActive = model.IsActive,
                                 User =
                                     new User
                                     {
@@ -310,6 +322,53 @@ namespace LMPlatform.UI.Controllers
             return "data:image/png;base64," + Convert.ToBase64String(thePictureAsBytes);
         }
 
+        [JwtAuth]
+        [HttpPost]
+        public async Task<ActionResult> DeleteAccount()
+        {
+            var model = new PersonalDataViewModel();
+            var id = (await UsersManagementService.GetUserAsync(model.UserName)).Id;
+
+            var deleted = false;
+
+            try
+            {
+                if (Roles.IsUserInRole("lector"))
+                {
+                    var lecturer = await this.LecturerManagementService.GetLecturerAsync(id);
+
+                    if (lecturer is null)
+                    {
+                        return StatusCode(HttpStatusCode.BadRequest);
+                    }
+
+                    if (!(lecturer.SubjectLecturers is null) &&
+                        lecturer.SubjectLecturers.Any() &&
+                        lecturer.SubjectLecturers.All(e => e.Subject.IsArchive))
+                    {
+                        foreach (var lecturerSubjectLecturer in lecturer.SubjectLecturers)
+                        {
+                            await this.LecturerManagementService.DisjoinOwnerLectorAsync(lecturerSubjectLecturer.SubjectId, id);
+                        }
+                    }
+
+                    deleted = await this.LecturerManagementService.DeleteLecturerAsync(id);
+                    await this.ElasticManagementService.DeleteLecturerAsync(id);
+                }
+                else
+                {
+                    deleted = await this.StudentManagementService.DeleteStudentAsync(id);
+                    await this.ElasticManagementService.DeleteStudentAsync(id);
+                }
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+            return StatusCode(deleted ? HttpStatusCode.OK : HttpStatusCode.Conflict);
+        }
+
         public string GetAvatar()
         {
             var model = new PersonalDataViewModel();
@@ -324,15 +383,6 @@ namespace LMPlatform.UI.Controllers
             var model = new PersonalDataViewModel();
 
             return $"{model.Surname} {model.Name} {model.Patronymic}";
-
-
-        }
-
-        private bool IsLecturerActive(string userName)
-        {
-            var userId = this.UsersManagementService.GetUser(userName).Id;
-            var lecturer = this.LecturerManagementService.GetLecturer(userId);
-            return lecturer?.IsActive ?? true;
         }
     }
 }

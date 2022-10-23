@@ -7,6 +7,7 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
     using Application.Core.Data;
 
     using LMPlatform.Models;
+    using System.Threading.Tasks;
 
     public interface IStudentsRepository : IRepositoryBase<Student>
     {
@@ -17,5 +18,7 @@ namespace LMPlatform.Data.Repositories.RepositoryContracts
         List<Student> GetStudents();
 
         void SaveStudent(Student student);
+
+        Task DeleteStudentAsync(Student student);
     }
 }

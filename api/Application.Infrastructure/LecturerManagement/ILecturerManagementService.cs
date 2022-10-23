@@ -3,12 +3,14 @@ using Application.Core.Data;
 using LMPlatform.Models;
 using System.Linq.Expressions;
 using System;
+using System.Threading.Tasks;
 
 namespace Application.Infrastructure.LecturerManagement
 {
     public interface ILecturerManagementService
     {
         Lecturer GetLecturer(int userId);
+        Task<Lecturer> GetLecturerAsync(int userId);
 
         Lecturer GetLecturerBase(int userId);
 
@@ -25,6 +27,7 @@ namespace Application.Infrastructure.LecturerManagement
 	    List<List<string>> GetLecturesScheduleMarks(int subjectId, int groupId);
 
         bool DeleteLecturer(int id);
+        Task<bool> DeleteLecturerAsync(int id);
 
 		bool Join(int subjectId, int lectorId, int owner);
 
@@ -33,8 +36,12 @@ namespace Application.Infrastructure.LecturerManagement
 	    void DisjoinLector(int subjectId, int lectorId, int owner);
 
 	    void DisjoinOwnerLector(int subjectId, int lectorId);
+        Task DisjoinOwnerLectorAsync(int subjectId, int lectorId);
 
         bool IsLectorJoined(int subjectId, int lectorId);
+
+        bool IsLecturerActive(int userId);
+
         List<Lecturer> GetNoAdjointLectorers(int subjectId);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Application.Core.Data
 {
@@ -9,12 +10,15 @@ namespace Application.Core.Data
         #region IRepositoryBase Members
 
         void Delete(TModel model);
+        Task DeleteAsync(TModel model);
 
         IPageableList<TModel> GetPageableBy(IPageableQuery<TModel> query = null);
 
         IQueryable<TModel> GetAll(IQuery<TModel> query = null);
 
         TModel GetBy(IQuery<TModel> query);
+
+        Task<TModel> GetByAsync(IQuery<TModel> query);
 
         void Save(TModel model, Func<TModel, bool> performUpdate = null);
 

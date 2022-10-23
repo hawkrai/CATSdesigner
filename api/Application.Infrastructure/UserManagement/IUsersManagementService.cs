@@ -3,12 +3,13 @@
 namespace Application.Infrastructure.UserManagement
 {
     using System;
-
+    using System.Threading.Tasks;
     using LMPlatform.Models;
 
     public interface IUsersManagementService
 	{
         User GetUser(string userName);
+        Task<User> GetUserAsync(string userName);
 
         User GetUser(int id);
         User GetUserById(int id);
