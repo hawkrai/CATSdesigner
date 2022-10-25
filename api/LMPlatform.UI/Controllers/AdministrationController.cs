@@ -228,6 +228,27 @@ namespace LMPlatform.UI.Controllers
             return JsonResponse(model);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetProfessorByNameJsonAsync(string userName) 
+        {
+            var user = await this.UsersManagementService.GetUserAsync(userName);
+
+            if (user is null)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var lecturer = await this.LecturerManagementService.GetLecturerAsync(user.Id);
+
+            if (lecturer is null) 
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var model = LecturerViewModel.FormLecturers(lecturer, null);
+            return JsonResponse(model);
+        }
+
         [HttpPost]
         public ActionResult SaveProfessorJson(ModifyLecturerViewModel model)
         {
