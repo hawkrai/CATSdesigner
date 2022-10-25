@@ -50,15 +50,46 @@ export class StudentsComponent implements OnInit {
     });
   }
 
+  loadChangedStudent(userName) {
+    this.studentService.getStudentByName(userName).subscribe(item => {
+      let data = this.dataSource.data;
+      let index = data.findIndex(value => value.Id == item.Id);
+
+      if (index == -1)
+      {
+        return;        
+      }
+
+      data[index] = item;
+      this.dataSource.data = data.sort((a, b) => this.sortFunc(a, b));
+      this.isLoad = true;
+    })
+  }
+
+  loadDeletedStudent(id){
+    this.studentService.getStudentById(id).subscribe(item => {
+      let data = this.dataSource.data;
+      let index = data.findIndex(value => value.Id == item.Id);
+
+      if (index == -1) {
+        return;
+      }
+
+      data[index] = item;
+      this.dataSource.data = data;
+      this.isLoad = true;
+    })
+  }
+
   editStudent(student): void {
     this.studentService.editStudents(student).subscribe(() => {
-      this.loadStudent();
+      this.loadChangedStudent(student.UserName);
       this.dataStudent = new Student();
       this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
     }, err => {
       if ( err.status === 500) {
         // we do it because db have some issue. After fixing, delete this function, please
-        this.loadStudent();
+        this.loadChangedStudent(student.UserName);
         this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
       } else {
       }

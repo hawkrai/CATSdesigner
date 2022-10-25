@@ -84,6 +84,7 @@ export class EditStudentComponent implements OnInit {
     object.UserName = this.data.UserName;
     object.Group = this.form.controls.Group.value;
     object.Email = this.data.Email || '';
+    object.IsActive = this.data.IsActive;
     object.Id = this.data.Id;
     object.SkypeContact = this.data.SkypeContact || '';
     object.Phone = this.data.Phone || '';
