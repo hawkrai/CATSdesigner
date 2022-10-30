@@ -2,13 +2,15 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
 import { MustMatch } from '../../shared/MustMatch';
 import { questions } from '../../shared/questions';
-import {AccountService} from '../../service/account.service';
-import {RegisterModel} from '../../model/student';
-import {GroupService} from '../../service/group.service';
-import {MatDialog} from '@angular/material/dialog';
-import {ValidateEmailNotTaken} from '../../shared/ValidateEmailNotTaken';
-import {Router} from '@angular/router';
-import {MessageComponent} from "../../component/message/message.component";
+import { AccountService } from '../../service/account.service';
+import { RegisterModel } from '../../model/student';
+import { GroupService } from '../../service/group.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ValidateEmailNotTaken } from '../../shared/ValidateEmailNotTaken';
+import { Router } from '@angular/router';
+import { MessageComponent } from "../../component/message/message.component";
+import { AppToastrService } from '../../service/toastr.service';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-signup',
@@ -28,26 +30,26 @@ export class SignupComponent implements OnInit {
   selectedQuestion = this.quest[0].value;
 
   constructor(private formBuilder: FormBuilder, private accountService: AccountService,
-              private groupService: GroupService, private dialog: MatDialog,
-              private route: Router) { }
+    private groupService: GroupService, private dialog: MatDialog,
+    private route: Router, private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
 
   ngOnInit() {
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
-        Username: new FormControl('', [Validators.required, Validators.minLength(3),Validators.maxLength(30),
-          Validators.pattern('^[A-Za-z0-9_.-@]*$')], ValidateEmailNotTaken.createValidator(this.accountService)),
-        Password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
-          Validators.pattern('^[A-Za-z0-9_]*$'), this.passwordValidator], ValidateEmailNotTaken.createValidator(this.accountService) ),
-        ConfirmPassword: new FormControl(''),
-        Surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(nameRegExp), Validators.maxLength(30)]),
-        Name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(nameRegExp), Validators.maxLength(30)]),
-        Patronymic: new FormControl('', [ Validators.pattern(nameRegExp), Validators.maxLength(30)]),
-        GroupId: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]),
-        SecretId: new FormControl(1),
-        SecretAnswer: new FormControl('', [Validators.required,Validators.pattern(nameRegExp), Validators.minLength(1), Validators.maxLength(30)])
-      }, {
-        validator: MustMatch('Password', 'ConfirmPassword')
-      });
+      Username: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30),
+      Validators.pattern('^[A-Za-z0-9_.-@]*$')], ValidateEmailNotTaken.createValidator(this.accountService)),
+      Password: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(30),
+      Validators.pattern('^[A-Za-z0-9_]*$'), this.passwordValidator], ValidateEmailNotTaken.createValidator(this.accountService)),
+      ConfirmPassword: new FormControl(''),
+      Surname: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(nameRegExp), Validators.maxLength(30)]),
+      Name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.pattern(nameRegExp), Validators.maxLength(30)]),
+      Patronymic: new FormControl('', [Validators.pattern(nameRegExp), Validators.maxLength(30)]),
+      GroupId: new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]),
+      SecretId: new FormControl(1),
+      SecretAnswer: new FormControl('', [Validators.required, Validators.pattern(nameRegExp), Validators.minLength(1), Validators.maxLength(30)])
+    }, {
+      validator: MustMatch('Password', 'ConfirmPassword')
+    });
     this.getGroups();
   }
 
@@ -73,16 +75,16 @@ export class SignupComponent implements OnInit {
     const hasLowercaseLetter = /[a-z]/.test(value);
     const passwordValid = hasNumber && hasCapitalLetter && hasLowercaseLetter;
     if (!passwordValid) {
-     return {invalid: 'Password invalid'};
+      return { invalid: 'Password invalid' };
     }
     return null;
-   }
+  }
 
   hasError = (controlName: string, errorName: string) => {
     return this.form.controls[controlName].hasError(errorName);
   }
 
-  back(){
+  back() {
     window.parent.location.href = "/login";
   }
 
@@ -92,14 +94,14 @@ export class SignupComponent implements OnInit {
   }
 
   deleteSpaces() {
-    if(this.form.controls.Name != null)
-      this.form.controls.Name.setValue(this.form.controls.Name.value.replace(' ',''));
-    if(this.form.controls.Surname != null)
-      this.form.controls.Surname.setValue(this.form.controls.Surname.value.replace(' ',''));
-    if(this.form.controls.Name != null)
-      this.form.controls.Patronymic.setValue(this.form.controls.Patronymic.value.replace(' ',''));   
-    if(this.form.controls.SecretAnswer != null)
-      this.form.controls.SecretAnswer.setValue(this.form.controls.SecretAnswer.value.replace(' ',''));  
+    if (this.form.controls.Name != null)
+      this.form.controls.Name.setValue(this.form.controls.Name.value.replace(' ', ''));
+    if (this.form.controls.Surname != null)
+      this.form.controls.Surname.setValue(this.form.controls.Surname.value.replace(' ', ''));
+    if (this.form.controls.Name != null)
+      this.form.controls.Patronymic.setValue(this.form.controls.Patronymic.value.replace(' ', ''));
+    if (this.form.controls.SecretAnswer != null)
+      this.form.controls.SecretAnswer.setValue(this.form.controls.SecretAnswer.value.replace(' ', ''));
   }
 
   register() {
@@ -116,22 +118,14 @@ export class SignupComponent implements OnInit {
     resultObject.QuestionId = controls.SecretId.value;
     this.accountService.register(resultObject).subscribe(
       () => {
-        this.dialog.open(MessageComponent, {
-          data: 'Пользователь успешно зарегистрирован.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addSuccessFlashMessage(
+          this.translatePipe.transform('text.signup.success_registration', 'Пользователь успешно зарегистрирован.')
+        );
         window.parent.location.href = "/login";
       }, () => {
-        this.dialog.open(MessageComponent, {
-          data: 'Пользователь успешно зарегистрирован.',
-          position: {
-            bottom: '0px',
-            right: '0px'
-          }
-        });
+        this.toastr.addSuccessFlashMessage(
+          this.translatePipe.transform('text.signup.success_registration', 'Пользователь успешно зарегистрирован.')
+        );
         window.parent.location.href = "/login";
       });
   }
