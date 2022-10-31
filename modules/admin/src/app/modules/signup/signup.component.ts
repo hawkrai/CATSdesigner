@@ -1,3 +1,4 @@
+import { Locale } from './../../../../../../container/src/app/shared/interfaces/locale.interface';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
 import { MustMatch } from '../../shared/utils/MustMatch';
@@ -29,9 +30,18 @@ export class SignupComponent implements OnInit {
   isLoad = false;
   selectedQuestion = this.quest[0].value;
 
-  constructor(private formBuilder: FormBuilder, private accountService: AccountService,
-    private groupService: GroupService, private dialog: MatDialog,
-    private route: Router, private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
+  public locales: Locale[] = [{ name: 'Ru', value: 'ru' }, { name: 'En', value: 'en' }];
+  public locale: Locale;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private accountService: AccountService,
+    private groupService: GroupService,
+    private dialog: MatDialog,
+    private route: Router,
+    private toastr: AppToastrService,
+    private translatePipe: TranslatePipe,
+  ) { }
 
   ngOnInit() {
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
@@ -50,6 +60,9 @@ export class SignupComponent implements OnInit {
     }, {
       validator: MustMatch('Password', 'ConfirmPassword')
     });
+
+    const local: string = localStorage.getItem('locale');
+    this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
     this.getGroups();
   }
 
@@ -86,6 +99,11 @@ export class SignupComponent implements OnInit {
 
   back() {
     window.parent.location.href = '/login';
+  }
+
+  public onValueChange(value: any): void {
+    localStorage.setItem('locale', value.value.value);
+    window.location.reload();
   }
 
   isControlInvalid(controlName: string): boolean {
