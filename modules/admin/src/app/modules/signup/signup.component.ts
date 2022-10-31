@@ -1,14 +1,14 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidationErrors, FormBuilder } from '@angular/forms';
-import { MustMatch } from '../../shared/MustMatch';
-import { questions } from '../../shared/questions';
+import { MustMatch } from '../../shared/utils/MustMatch';
+import { questions } from '../../shared/utils/questions';
 import { AccountService } from '../../service/account.service';
 import { RegisterModel } from '../../model/student';
 import { GroupService } from '../../service/group.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ValidateEmailNotTaken } from '../../shared/ValidateEmailNotTaken';
+import { ValidateEmailNotTaken } from '../../shared/utils/ValidateEmailNotTaken';
 import { Router } from '@angular/router';
-import { MessageComponent } from "../../component/message/message.component";
+import { MessageComponent } from '../../component/message/message.component';
 import { AppToastrService } from '../../service/toastr.service';
 import { TranslatePipe } from 'educats-translate';
 
@@ -85,7 +85,7 @@ export class SignupComponent implements OnInit {
   }
 
   back() {
-    window.parent.location.href = "/login";
+    window.parent.location.href = '/login';
   }
 
   isControlInvalid(controlName: string): boolean {
@@ -121,16 +121,16 @@ export class SignupComponent implements OnInit {
         this.toastr.addSuccessFlashMessage(
           this.translatePipe.transform('text.signup.success_registration', 'Пользователь успешно зарегистрирован.')
         );
-        window.parent.location.href = "/login";
+        window.parent.location.href = '/login';
       }, () => {
         this.toastr.addSuccessFlashMessage(
           this.translatePipe.transform('text.signup.success_registration', 'Пользователь успешно зарегистрирован.')
         );
-        window.parent.location.href = "/login";
+        window.parent.location.href = '/login';
       });
   }
 
   cancel() {
-    window.parent.location.href = "/login";
+    window.parent.location.href = '/login';
   }
 }

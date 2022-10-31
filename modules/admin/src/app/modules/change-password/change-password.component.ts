@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { questions } from '../../shared/questions';
+import { questions } from '../../shared/utils/questions';
 import { AccountService } from '../../service/account.service';
 import { ResetPasswordModalComponent } from '../reset-password-modal/reset-password-modal.component';
 

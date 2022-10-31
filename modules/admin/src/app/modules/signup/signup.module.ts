@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import { SignupComponent } from './signup.component';
 import {MatProgressSpinnerModule} from '@angular/material';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {MatProgressSpinnerModule} from '@angular/material';
     MatCardModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatButtonModule
+    MatButtonModule,
+    SharedModule,
   ],
   providers: [],
   bootstrap: [],

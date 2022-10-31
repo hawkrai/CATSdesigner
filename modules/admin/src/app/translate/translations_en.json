@@ -74,6 +74,8 @@
   "symbols.max.length": "Maximum number of characters",
   "comment.for.student": "Show comment for student",
   "text.signup.success_registration": "User successfully registered.",
+  "text.signup.new_user": "New user.",
+  "text.signup.user_name": "User name",
   "text.test.passing.now": "The tests are currently passing:",
   "text.tests.for.control": "Tests to control knowledge",
   "text.test.for.control": "Test for knowledge control",

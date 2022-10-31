@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, Inject, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators, ValidationErrors } from '@angular/forms';
-import { MustMatch } from '../../shared/MustMatch';
+import { MustMatch } from '../../shared/utils/MustMatch';
 import { UserService } from '../../service/userService';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {ResetPasswordJson} from '../../model/resetPassword';
@@ -15,7 +15,7 @@ import { AppToastrService } from 'src/app/service/toastr.service';
 })
 export class ResetPasswordModalComponent implements OnInit {
 
-  
+
   hidePassword = true;
   hideConfirm = true;
   password  = "";
