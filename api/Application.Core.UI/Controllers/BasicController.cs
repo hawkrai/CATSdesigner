@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using System.Net;
 using System.Web.Mvc;
+using Application.Core.UI.Enums;
+using Application.Core.UI.Http;
+using Application.Core.UI.Extentions;
 
 namespace Application.Core.UI.Controllers
 {
@@ -57,6 +60,18 @@ namespace Application.Core.UI.Controllers
                 MaxJsonLength = int.MaxValue,
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
+        }
+
+        public static ActionResult JsonHttpStatusCode(HttpStatusCode statusCode, ErrorCode errorCode) 
+        {
+            return new JsonHttpStatusResult(
+                new
+                {
+                    error = errorCode,
+                    description = errorCode.GetDescription()
+                },
+                statusCode
+            );
         }
 
         public static ActionResult StatusCode(HttpStatusCode statusCode, string description = null)

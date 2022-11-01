@@ -98,10 +98,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\BasicController.cs" />
+    <Compile Include="Enums\ErrorCodes.cs" />
+    <Compile Include="Extentions\EnumExtentions.cs" />
     <Compile Include="HtmlHelpers\BaseNumberedGridItem.cs" />
     <Compile Include="HtmlHelpers\DataTableExtensions.cs" />
     <Compile Include="HtmlHelpers\DataTableOptions.cs" />
     <Compile Include="HtmlHelpers\DataTableViewModel.cs" />
+    <Compile Include="Http\JsonHttpStatusResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

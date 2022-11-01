@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using Application.Core.Helpers;
 using Application.Core.UI.Controllers;
+using Application.Core.UI.Enums;
 using Application.Infrastructure.AccountManagement;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.UserManagement;
@@ -93,12 +94,11 @@ namespace LMPlatform.UI.Controllers
                 var userId = UsersManagementService.GetUser(model.UserName).Id;
 
                 if (!LecturerManagementService.IsLecturerActive(userId) || !StudentManagementService.IsStudentActive(userId))
-                    return StatusCode(HttpStatusCode.BadRequest,
-                        "Данныe имя пользователя и пароль больше не действительны");
+                    return JsonHttpStatusCode(HttpStatusCode.BadRequest, ErrorCode.Deleted);
 
                 if (role.RoleName == "student" &&  (!user.Student.Confirmed.HasValue || !user.Student.Confirmed.Value))
                 {
-                    return StatusCode(HttpStatusCode.BadRequest, "User hasn't verified yet!");
+                    return JsonHttpStatusCode(HttpStatusCode.BadRequest, ErrorCode.NotConfirmed);
                 }
 
                 var claims = new List<Claim>
@@ -142,7 +142,7 @@ namespace LMPlatform.UI.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
 
-            return StatusCode(HttpStatusCode.BadRequest, "Имя пользователя или пароль не являются корректными");
+            return JsonHttpStatusCode(HttpStatusCode.BadRequest, ErrorCode.DoesNotExist);
         }
 
         [HttpGet]
