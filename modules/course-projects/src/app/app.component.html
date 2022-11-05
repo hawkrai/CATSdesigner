@@ -101,7 +101,7 @@
       </div>
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
         <app-help
-          [message]="'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
+          [message]="'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
           [action]="'Понятно'"></app-help>
         <div class="excel-file" matTooltip="Загрузить документ Excel"
              *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
