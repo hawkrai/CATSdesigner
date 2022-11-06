@@ -1,16 +1,20 @@
 .visit-stats-component {
 
   &__header {
-    position: relative;
-    overflow: auto;
-    margin-left: 236px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
   }
 
   .addDateBtn{
     margin-top: 4px;
     margin-bottom: 20px;
   }
-  
+
   .button {
     position: absolute;
     margin-bottom: 20px;
@@ -22,7 +26,6 @@
 
   &__search {
     float: right;
-    width: 30%;
   }
 
   &__body {

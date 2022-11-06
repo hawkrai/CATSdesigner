@@ -91,18 +91,18 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         const result = student.PercentageResults.find(pr => pr.PercentageGraphId === percentageGraph.Id);
         if (result != null) {
           if (result.Mark == null) {
-            result.Mark = '-';
+            result.Mark = '';
           }
           results.push(result);
         } else {
           // @ts-ignore
-          const pr: PercentageResult = {StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '-'};
+          const pr: PercentageResult = {StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: ''};
           results.push(pr);
         }
       }
       student.PercentageResults = results;
       if (student.Mark == null) {
-        student.Mark = '-';
+        student.Mark = '';
       }
     }
     return studentPercentageResults;
@@ -112,7 +112,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       width: '400px',
       data: {
-        mark: pr.Mark !== '-' ? pr.Mark : null,
+        mark: pr.Mark !== '' ? pr.Mark : null,
         min: 0,
         max: 100,
         regex: '^[0-9]*$',
@@ -148,7 +148,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       width: '400px',
       data: {
-        mark: student.Mark !== '-' ? student.Mark : null,
+        mark: student.Mark !== '' ? student.Mark : null,
         min: 1,
         max: 10,
         regex: '^[0-9]*$',

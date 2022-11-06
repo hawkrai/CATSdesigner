@@ -6,8 +6,10 @@
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Тема курсового проекта</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Руководитель</th>
         <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let graph of percentageGraphs">
-          <div class="header-date">
+          <div class="header-date"
+               [matTooltip]="graph.Name" matTooltipPosition="below">
             {{ graph.Date | date:'dd.MM.yyyy' }}
           </div>
         </th>
@@ -17,8 +19,9 @@
       <tbody *ngIf="percentageResults; else load">
       <tr class="mdc-data-table__row" *ngFor="let student of percentageResults; index as i">
         <td class="mdc-data-table__cell">{{ i + 1 }}</td>
-        <td class="mdc-data-table__cell">{{ student.Name }}</td>
+        <td class="mdc-data-table__cell cell">{{ student.Name }}</td>
         <td class="mdc-data-table__cell">{{ student.Group }}</td>
+        <td class="mdc-data-table__cell cell">{{ student.LecturerName ? student.LecturerName : student.Lecturer }}</td>
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
           <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">
             {{result.Mark}}
