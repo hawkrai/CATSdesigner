@@ -174,6 +174,27 @@ namespace LMPlatform.UI.Controllers
             return JsonResponse(model);
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetStudentByNameJsonAsync(string userName)
+        {
+            var user = await this.UsersManagementService.GetUserAsync(userName);
+
+            if (user is null) 
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var student = await this.StudentManagementService.GetStudentAsync(user.Id);
+
+            if (student is null) 
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var model = new ModifyStudentViewModel(student);
+            return JsonResponse(model);
+        }
+
         [HttpPost]
         public ActionResult SaveStudentJson(ModifyStudentViewModel model)
         {
@@ -224,6 +245,27 @@ namespace LMPlatform.UI.Controllers
             var lecturer = this.LecturerManagementService.GetLecturer(id);
 
             if (lecturer == null) return StatusCode(HttpStatusCode.BadRequest);
+            var model = LecturerViewModel.FormLecturers(lecturer, null);
+            return JsonResponse(model);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetProfessorByNameJsonAsync(string userName) 
+        {
+            var user = await this.UsersManagementService.GetUserAsync(userName);
+
+            if (user is null)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var lecturer = await this.LecturerManagementService.GetLecturerAsync(user.Id);
+
+            if (lecturer is null) 
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
             var model = LecturerViewModel.FormLecturers(lecturer, null);
             return JsonResponse(model);
         }

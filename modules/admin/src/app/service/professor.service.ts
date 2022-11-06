@@ -17,6 +17,10 @@ export class ProfessorService {
         return this.http.get<Professor>(this.api + 'GetProfessorJson/' + professorId);
     }
 
+    getProfessorByName(userName): Observable<Professor> {
+        return this.http.get<Professor>(this.api + 'GetProfessorByNameJsonAsync/?userName=' + userName);
+    }
+
     getProfessors(): Observable<Professor[]> {
         return this.http.get<Professor[]>(this.api + 'GetProfessorsJson');
     }

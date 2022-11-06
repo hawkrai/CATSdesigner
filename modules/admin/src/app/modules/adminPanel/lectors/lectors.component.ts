@@ -122,6 +122,45 @@ export class LectorsComponent implements OnInit {
     });
   }
 
+  loadAddedLector(userName) {
+    this.professorService.getProfessorByName(userName).subscribe(item => {
+      let data = this.dataSource.data;
+      data.push(item);
+      this.dataSource.data = data.sort((a, b) => this.sortFunc(a, b));
+      this.isLoad = true;
+    });
+  }
+
+  loadChangedLector(userName) {
+    this.professorService.getProfessorByName(userName).subscribe(item => {
+      let data = this.dataSource.data;
+      let index = data.findIndex(value => value.Id == item.Id);
+
+      if (index == -1) {
+        return;
+      }
+
+      data[index] = item;
+      this.dataSource.data = data.sort((a, b) => this.sortFunc(a, b));
+      this.isLoad = true;
+    })
+  }
+
+  loadDeletedLector(id) {
+    this.professorService.getProfessorById(id).subscribe(item => {
+      let data = this.dataSource.data;
+      let index = data.findIndex(value => value.Id == item.Id);
+
+      if (index == -1) {
+        return;
+      }
+
+      data[index] = item;
+      this.dataSource.data = data;
+      this.isLoad = true;
+    })
+  }
+
   sortFunc(a, b) { 
     if(a.FullName < b.FullName){
       return -1;
@@ -136,7 +175,7 @@ export class LectorsComponent implements OnInit {
 
   addLector(professor): void {
     this.professorService.addProfessor(professor).subscribe(() => {
-      this.loadLector();
+      this.loadAddedLector(professor.UserName);
       this.dataLector = new Professor();
       this.toastr.addSuccessFlashMessage("Преподаватель добавлен!");}
       );
@@ -144,13 +183,13 @@ export class LectorsComponent implements OnInit {
 
   editLector(professor): void {
     this.professorService.editProfessor(professor).subscribe(() => {
-      this.loadLector();
+      this.loadChangedLector(professor.UserName);
       this.dataLector = new Professor();
       this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
     }, 
     err => {
       if ( err.status === 500) {
-        this.loadLector();
+        this.loadChangedLector(professor.UserName);
         this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
       } else {
       }
@@ -159,7 +198,7 @@ export class LectorsComponent implements OnInit {
 
   deleteLector(id) {
     this.professorService.deleteProfessor(id).subscribe(() => {
-      this.loadLector();
+      this.loadDeletedLector(id);
       this.toastr.addSuccessFlashMessage("Преподаватель удален!");
     });
   }

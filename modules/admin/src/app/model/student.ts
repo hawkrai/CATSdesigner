@@ -9,6 +9,7 @@ export class Student {
     ConfirmPassword: string;
     Group: string;
     Email: string;
+    IsActive: boolean;
     Id: number;
     FullName: string;
     SkypeContact: string;
@@ -25,6 +26,7 @@ export class EditStudent {
     UserName: string;
     Group: string;
     Email: string;
+    IsActive: boolean;
     Id: number;
     SkypeContact: string;
     Phone: string;

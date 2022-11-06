@@ -22,6 +22,10 @@ export class StudentService {
         return this.http.get<Student>(this.api + 'GetStudentJson/' + studentId);
     }
 
+    getStudentByName(userName): Observable<Student> {
+        return this.http.get<Student>(this.api + 'GetStudentByNameJsonAsync/?userName=' + userName);
+    }
+
     editStudents(student): Observable<EditStudent> {
         return this.http.post<Student>(this.api + 'EditStudentJson', student);
     }

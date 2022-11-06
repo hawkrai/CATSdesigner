@@ -98,7 +98,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
 		public bool IsActive { get; set; }
 
-		public string FullName => $"{this.Name} {this.Surname} {this.Patronymic}";
+		public string FullName => $"{this.Surname} {this.Name} {this.Patronymic}";
 
 		public string SkypeContact { get; set; }
 

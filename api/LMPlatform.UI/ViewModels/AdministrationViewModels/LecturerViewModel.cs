@@ -32,7 +32,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         public bool IsSecretary { get; set; }
 
-        public bool IsLectureHasGraduateStudents { get; set; }
+        public bool IsLecturerHasGraduateStudents { get; set; }
 
         public string FirstName { get; set; }
 
@@ -68,7 +68,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				OwnSubjectsNumber = ownSubjectsNumber.ToString(),
 				AttachedSubjectsNumber = (subjectsNumber - ownSubjectsNumber).ToString(),
 				IsSecretary = lecturer.IsSecretary,
-				IsLectureHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
+				IsLecturerHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
                 SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray()
             };
         }
