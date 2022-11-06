@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StudentService } from 'src/app/service/student.service';
 import { Student } from 'src/app/model/student';
 import { FormGroup, Validators, FormControl, FormBuilder, ValidationErrors } from '@angular/forms';
-import { MustMatch } from 'src/app/shared/MustMatch';
+import { MustMatch } from 'src/app/shared/utils/MustMatch';
 import { ProfessorService } from 'src/app/service/professor.service';
 import { UserService } from 'src/app/service/userService';
 import { ResetPassword } from 'src/app/model/resetPassword';

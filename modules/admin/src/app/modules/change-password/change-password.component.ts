@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { questions } from '../../shared/questions';
+import { questions } from '../../shared/utils/questions';
 import { AccountService } from '../../service/account.service';
 import { ResetPasswordModalComponent } from '../reset-password-modal/reset-password-modal.component';
 
@@ -26,10 +26,10 @@ export class ChangePasswordComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      Username: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-@]{3,30}$'), 
+      Username: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-@]{3,30}$'),
       Validators.minLength(3), Validators.maxLength(30)]),
       SecretQuestion: new FormControl('', [Validators.required]),
-      SecretAnswer: new FormControl('', [Validators.required,Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$'), 
+      SecretAnswer: new FormControl('', [Validators.required,Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$'),
       Validators.minLength(1), Validators.maxLength(30)])
     });
   }
@@ -49,7 +49,7 @@ export class ChangePasswordComponent implements OnInit {
     }
   }
   cancel(){
-    window.parent.location.href = "/login";  
+    window.parent.location.href = "/login";
   }
 
   deleteSpaces() {
@@ -62,6 +62,8 @@ export class ChangePasswordComponent implements OnInit {
       this.form.controls.SecretQuestion.value, this.form.controls.SecretAnswer.value).subscribe(
         res => {
           if (res === 'OK') {
+            document.getElementById('message').hidden = true;
+
             var diagRef = this.dialog.open( ResetPasswordModalComponent, {
               data: this.form.controls.Username.value
             });

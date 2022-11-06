@@ -29,7 +29,7 @@ export class ChangePersonalDataComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
 
-  
+
   dataGroup =
    new FormGroup({
   emailFormControl : new FormControl('', [Validators.pattern('^([A-Za-z0-9_.-]{1,30}@[A-Za-z0-9_.-]{1,30}[.]{1}[A-Za-z0-9_-]{1,30})$')]),
@@ -39,7 +39,7 @@ export class ChangePersonalDataComponent implements OnInit {
   aboutFormControl : new FormControl('', [Validators.maxLength(1024)]),
   messangerFormControl : new FormControl('', [Validators.maxLength(255)]),
   patronymicFormControl : new FormControl('', [Validators.minLength(1), Validators.maxLength(30), Validators.pattern(this.nameRegExp)])});
-  
+
 
   constructor(private autService: AuthenticationService, private dataService: PersonalDataService,
     private location: Location, public dialog: MatDialog,
@@ -49,7 +49,7 @@ export class ChangePersonalDataComponent implements OnInit {
     var file = event.target.files[0];
     var reader = new FileReader();
     var buffer = this;
-    
+
 
     reader.onloadend = function () {
       if (buffer.isGoodAvatarImage(reader.result.toString())) {
@@ -113,7 +113,7 @@ export class ChangePersonalDataComponent implements OnInit {
     else {
       this.toastr.addWarningFlashMessage(this.translatePipe.transform('text.personalAccount.wrongData', "Некоторые поля не соответствуют формату!"));
     }
-  } 
+  }
 
   openDialog(): void {
     const config = new MatDialogConfig();
@@ -163,7 +163,7 @@ export class ChangePersonalDataComponent implements OnInit {
         x++;
       }
     }
-    
+
     return temp.join('\n');
   }
 

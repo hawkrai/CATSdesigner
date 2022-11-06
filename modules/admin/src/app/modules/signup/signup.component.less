@@ -1,3 +1,14 @@
+::ng-deep {
+  .mat-select-value-text, .mat-select-arrow {
+    color: #fff !important;
+  }
+}
+
+.mselect{
+  width: 40px;
+  margin-left: 40px;
+}
+
 .container{
     display: flex;
     justify-content: center;
@@ -8,51 +19,54 @@
     position: absolute;
     font-family: Roboto,"Helvetica Neue",sans-serif;
   }
-  
+
   table{
     border-spacing: 0px;
     border: 0px;
   }
-  
+
   .col-first{
     height: 100vh;
     width: 56vw;
     vertical-align: middle;
     padding: 0px;
     background-image: linear-gradient(-135deg, #3597ffcc,  #FF7C8Dcc);
-  
+
+
+
     .cat {
       width: 18vw;
       display: block;
       margin: 0 auto;
     }
-  
+
     >img {
       width: 18vw;
       display: block;
       margin: 0 auto;
     }
-  
+
     >p{
       margin-top: 0.8vw;
       color: #ffffff;
       font-size: 1.6vw;
       text-align: center;
     }
-    
-    >h1{
+
+    >h1, h1 > a{
       font-size: 2vw;
       color: #ffffff;
       text-align: center;
       margin-top: 3vw;
       font-weight: normal;
+      text-decoration: none;
     }
-    
+
     >.logo{
       margin-top: -15px;
       width: 18vw;
     }
-    
+
     >a {
       display: block;
       margin: 5vw auto 0 auto;
@@ -62,7 +76,7 @@
     }
 
     .icon_p{
-      color: #ffffff;  
+      color: #ffffff;
       font-size: 60px;
       margin-left: -36px;
       margin-top: -11px;
@@ -74,7 +88,7 @@
     padding: 0px;
     vertical-align: middle;
 }
-  
+
 form{
     border-spacing: 0px;
     display: inline-grid;
@@ -87,7 +101,7 @@ form{
         font-size: 2.5vw;
         font-weight: normal;
       }
-    
+
       >.sign-in{
         margin-bottom: 6vh;
 
@@ -178,12 +192,12 @@ form{
     >h1{
       font-size: 2.7vw;
     }
-    
+
     >p{
       font-size: 2.2vw;
       text-align: center;
     }
-    
+
     >.logo{
       width: 25vw;
     }
@@ -196,7 +210,7 @@ form{
       width: 70px;
       height: 70px;
     }
-  
+
     .icon_p{
       font-size: 50px;
       margin-left: -26px;
@@ -255,12 +269,12 @@ form {
     >h1{
       font-size: 19px;
     }
-    
+
     >p{
       font-size: 14px;
       text-align: center;
     }
-    
+
     >.logo{
       width: 160px;
     }
@@ -269,9 +283,9 @@ form {
       width: 50px;
       height: 50px;
     }
-  
+
     .icon_p{
-      
+
       font-size: 30px;
       margin-left: -5px;
       margin-top: -12px;

@@ -1,102 +1,246 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<mat-spinner
+  mode="indeterminate"
+  *ngIf="!this.isLoad"
+  class="spinner"
+  color="primary"
+></mat-spinner>
 <div *ngIf="this.isLoad">
-	<div class="container">
-        <table>
-            <td class="col-first">
-                    <div class="cat">
-                        <img id="mascot-body" src="./../../../assets/images/mascot-body.svg" />
-                        <img id="mascot-tail" src="./../../../assets/images/mascot-tail.svg"/>
-                    </div>
-                    <br>
-                    <img class="logo" src="./../../../assets/images/logo.png"/>
-                    <p>Care about the students </p>
-                    <h1>Адаптивная обучающая система</h1>
-                    <a mat-fab (click)="this.cancel()">
-                        <mat-icon class="icon_p">play_arrow</mat-icon>
-                    </a>
-            </td>
-            <td class="col-second">
-                <div class="inner-container" >
-                <form [formGroup]="this.form" (ngSubmit)="submit()">
-                    <h1 class="title">Новый пользователь!</h1>
+  <div class="container">
+    <table>
+      <td class="col-first">
+        <mat-select class="mselect"  (selectionChange)="onValueChange($event)" [value]="locale">
+          <mat-option *ngFor="let locale of locales" [value]="locale">
+          {{locale.name}}
+          </mat-option>
+        </mat-select>
+        <div class="cat">
+          <img
+            id="mascot-body"
+            src="./../../../assets/images/mascot-body.svg"
+          />
+          <img
+            id="mascot-tail"
+            src="./../../../assets/images/mascot-tail.svg"
+          />
+        </div>
+        <br />
+        <img class="logo" src="./../../../assets/images/logo.png" />
+        <p>Care about the students</p>
+        <h1><a routerLink="/about" class = "aboutlink" title= "{{'text.start.helpAbout'| translate: 'Что из себя представляет система CATS?'}}">{{'text.start.title'| translate: 'Адаптивная обучающая система'}}</a></h1>
+        <a mat-fab (click)="this.cancel()">
+          <mat-icon class="icon_p">play_arrow</mat-icon>
+        </a>
+      </td>
+      <td class="col-second">
+        <div class="inner-container">
+          <form [formGroup]="this.form" (ngSubmit)="submit()">
+            <h1 class="title">{{'text.start.new_user' | translate: 'Новый пользователь!'}}</h1>
 
-                    <div class="fields">
-                        <mat-form-field>
-                            <input type="text" matInput placeholder="Имя пользователя" formControlName="Username" maxlength="30">
-                            <mat-error *ngIf="hasError('Username', 'required')">Поле не может быть пустым</mat-error>
-                            <mat-error *ngIf="hasError('Username', 'minlength')">Вы ввели меньше 3 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Username', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Username', 'pattern')">Допустимые символы: "A(a)-Z(z)", "0-9", "-", "@", "_", "."</mat-error>
-                            <mat-error *ngIf="hasError('Username', 'userExist')">Такой пользователь уже существует.</mat-error>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input [type]="hidePassword ? 'password' : 'text'" matInput placeholder="Пароль" formControlName="Password" maxlength="30">
-                            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'">
-                                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                              </button>
-                            <mat-hint *ngIf="this.isControlInvalid('Password') && !hasError('Password', 'minlength') && !hasError('Password', 'required') && !hasError('Password', 'pattern')">Пароль должен содержать хотя бы 1 маленькую и большую букву и 1 цифру</mat-hint>
-                            <mat-error *ngIf="hasError('Password', 'required')">Поле не может быть пустым</mat-error>
-                            <mat-error *ngIf="hasError('Password', 'minlength')">Вы ввели меньше 6 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Password', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Password', 'pattern')">Допустимые символы: "A(a)-Z(z)", "0-9", "_"</mat-error>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input matInput [type]="hidePassword2 ? 'password' : 'text'" placeholder="Подтверждение пароля" formControlName="ConfirmPassword" maxlength="30">
-                            <button mat-icon-button matSuffix (click)="hidePassword2 = !hidePassword2" [attr.aria-label]="'Hide password'">
-                                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                              </button>
-                            <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')">Пароли не совпадают</mat-error>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input matInput placeholder="Фамилия" formControlName="Surname" (input)="deleteSpaces()" maxlength="30">
-                            <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
-                            <mat-error *ngIf="hasError('Surname', 'minlength')">Вы ввели меньше 3 символов</mat-error>
-                            <mat-error *ngIf="hasError('Surname', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Surname', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input matInput placeholder="Имя" formControlName="Name" (input)="deleteSpaces()" maxlength="30">
-                            <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
-                            <mat-error *ngIf="hasError('Name', 'minlength')">Вы ввели меньше 3 символов</mat-error>
-                            <mat-error *ngIf="hasError('Name', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input matInput placeholder="Отчество" formControlName="Patronymic" (input)="deleteSpaces()" maxlength="30">
-                            <mat-error *ngIf="hasError('Patronymic', 'maxlength')">Вы ввели больше 30 символов.</mat-error>
-                            <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Группа</mat-label>
-                            <mat-select formControlName="GroupId" maxlength="30">
-                                <mat-option *ngFor="let item of groups" [value]="item.Id">
-                                    {{item.Name}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Секретный вопрос</mat-label>
-                            <mat-select [(ngModel)]="this.quest[0].value" formControlName="SecretId">
-                                <mat-option *ngFor="let item of quest" [value]="item.value">
-                                    {{item.text}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input matInput placeholder="Ответ на секретный вопрос" formControlName="SecretAnswer"   (input)="deleteSpaces()" maxlength="30">
-                            <mat-error *ngIf="hasError('SecretAnswer', 'required')">Поле не может быть пустым</mat-error>
-                            <mat-error *ngIf="hasError('SecretAnswer', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <button mat-raised-button (click)="this.register()" [disabled]='this.form.invalid' class="btn">Зарегистрироваться</button>
-                    <div class="sign-in">
-
-						<button mat-raised-button color="basic" (click)="this.cancel()" href="">Отмена</button>
-
-					</div>
-                </form>
-                </div>
-            </td>
-        </table>
-	</div>
+            <div class="fields">
+              <mat-form-field>
+                <input
+                  type="text"
+                  matInput
+                  placeholder="{{'text.signup.user_name' | translate: 'Имя пользователя'}}"
+                  formControlName="Username"
+                  maxlength="30"
+                />
+                <mat-error *ngIf="hasError('Username', 'required')"
+                  >{{'text.signup.required_field'| translate: 'Поле не может быть пустым'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Username', 'minlength')"
+                  >{{'text.signup.min_length_3'| translate: 'Вы ввели меньше 3 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Username', 'maxlength')"
+                  >{{'text.signup.max_length_30'| translate: 'Вы ввели больше 30 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Username', 'pattern')"
+                  >{{'text.signup.available_symbols_username'| translate: 'Допустимые символы'}}: "A(a)-Z(z)", "0-9", "-", "@", "_",
+                  "."</mat-error
+                >
+                <mat-error *ngIf="hasError('Username', 'userExist')"
+                  >{{'text.signup.such_user_exists'| translate: 'Такой пользователь уже существует'}}.</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  [type]="hidePassword ? 'password' : 'text'"
+                  matInput
+                  placeholder="{{'text.signup.password'| translate: 'Пароль'}}"
+                  formControlName="Password"
+                  maxlength="30"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="hidePassword = !hidePassword"
+                  [attr.aria-label]="'Hide password'"
+                >
+                  <mat-icon>{{
+                    hidePassword ? "visibility_off" : "visibility"
+                  }}</mat-icon>
+                </button>
+                <mat-hint
+                  *ngIf="
+                    this.isControlInvalid('Password') &&
+                    !hasError('Password', 'minlength') &&
+                    !hasError('Password', 'required') &&
+                    !hasError('Password', 'pattern')
+                  "
+                  >{{'text.signup.required_field'| translate: 'Пароль должен содержать хотя бы 1 маленькую и большую букву и 1 цифру'}}.</mat-hint
+                >
+                <mat-error *ngIf="hasError('Password', 'required')"
+                  >{{'text.signup.required_field'| translate: 'Поле не может быть пустым'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Password', 'minlength')"
+                  >{{'text.signup.password_min_length_6'| translate: 'Вы ввели меньше 6 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Password', 'maxlength')"
+                  >{{'text.signup.max_length_30'| translate: 'Вы ввели больше 30 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Password', 'pattern')"
+                  >{{'text.signup.available_symbols_username'| translate: 'Допустимые символы'}}: "A(a)-Z(z)", "0-9", "_"</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  matInput
+                  [type]="hidePassword2 ? 'password' : 'text'"
+                  placeholder="{{'text.signup.confirm_password'| translate: 'Подтверждение пароля'}}"
+                  formControlName="ConfirmPassword"
+                  maxlength="30"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="hidePassword2 = !hidePassword2"
+                  [attr.aria-label]="'Hide password'"
+                >
+                  <mat-icon>{{
+                    hidePassword ? "visibility_off" : "visibility"
+                  }}</mat-icon>
+                </button>
+                <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')"
+                  >Пароли не совпадают</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  matInput
+                  placeholder="{{'text.signup.last_name'| translate: 'Фамилия'}}"
+                  formControlName="Surname"
+                  (input)="deleteSpaces()"
+                  maxlength="30"
+                />
+                <mat-error *ngIf="hasError('Surname', 'required')"
+                  >{{'text.signup.required_field'| translate: 'Поле не может быть пустым'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Surname', 'minlength')"
+                  >{{'text.signup.min_length_3'| translate: 'Вы ввели меньше 3 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Surname', 'maxlength')"
+                  >{{'text.signup.max_length_30'| translate: 'Вы ввели больше 30 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Surname', 'pattern')"
+                  >{{'text.signup.available_symbols_username'| translate: 'Допустимые символы'}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-",
+                  "_", " "</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  matInput
+                  placeholder="{{'text.signup.name'| translate: 'Имя'}}"
+                  formControlName="Name"
+                  (input)="deleteSpaces()"
+                  maxlength="30"
+                />
+                <mat-error *ngIf="hasError('Name', 'required')"
+                  >{{'text.signup.required_field'| translate: 'Поле не может быть пустым'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Name', 'minlength')"
+                  >{{'text.signup.min_length_3'| translate: 'Вы ввели меньше 3 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Name', 'maxlength')"
+                  >{{'text.signup.max_length_30'| translate: 'Вы ввели больше 30 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Name', 'pattern')"
+                  >{{'text.signup.available_symbols_username'| translate: 'Допустимые символы'}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-",
+                  "_", " "</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  matInput
+                  placeholder="{{'text.signup.patronymic'| translate: 'Отчество'}}"
+                  formControlName="Patronymic"
+                  (input)="deleteSpaces()"
+                  maxlength="30"
+                />
+                <mat-error *ngIf="hasError('Patronymic', 'maxlength')"
+                  >{{'text.signup.max_length_30'| translate: 'Вы ввели больше 30 символов'}}.</mat-error
+                >
+                <mat-error *ngIf="hasError('Patronymic', 'pattern')"
+                  >{{'text.signup.available_symbols_username'| translate: 'Допустимые символы'}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-",
+                  "_", " "</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>{{'text.signup.group' | translate: 'Группа'}}</mat-label>
+                <mat-select formControlName="GroupId" maxlength="30">
+                  <mat-option *ngFor="let item of groups" [value]="item.Id">
+                    {{ item.Name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>{{'text.signup.secret_question' | translate: 'Секретный вопрос'}}</mat-label>
+                <mat-select
+                  [(ngModel)]="this.quest[0].value"
+                  formControlName="SecretId"
+                >
+                  <mat-option *ngFor="let item of quest" [value]="item.value">
+                    {{ item.text }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <input
+                  matInput
+                  placeholder="{{'text.signup.secret_answer'| translate: 'Ответ на секретный вопрос'}}"
+                  formControlName="SecretAnswer"
+                  (input)="deleteSpaces()"
+                  maxlength="30"
+                />
+                <mat-error *ngIf="hasError('SecretAnswer', 'required')"
+                  >{{'text.signup.required_field'| translate: 'Поле не может быть пустым'}}</mat-error
+                >
+                <mat-error *ngIf="hasError('SecretAnswer', 'pattern')"
+                  >{{'text.signup.available_symbols_username'| translate: 'Допустимые символы'}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-",
+                  "_", " "</mat-error
+                >
+              </mat-form-field>
+            </div>
+            <button
+              mat-raised-button
+              (click)="this.register()"
+              [disabled]="this.form.invalid"
+              class="btn"
+            >
+            {{'text.signup.register'| translate: 'Зарегистрироваться'}}
+            </button>
+            <div class="sign-in">
+              <button
+                mat-raised-button
+                color="basic"
+                (click)="this.cancel()"
+                href=""
+              >
+              {{'text.signup.cancel'| translate: 'Отмена'}}
+              </button>
+            </div>
+          </form>
+        </div>
+      </td>
+    </table>
+  </div>
 </div>
