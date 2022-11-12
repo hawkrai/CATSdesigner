@@ -26,6 +26,11 @@
       <td mat-cell *matCellDef="let element"> {{ element.UserName }} </td>
     </ng-container>
 
+    <ng-container matColumnDef="LastLogin">
+      <th mat-header-cell *matHeaderCellDef> Последний вход </th>
+      <td mat-cell *matCellDef="let element"> {{ element.LastLogin }} </td>
+  </ng-container>
+
     <ng-container matColumnDef="Confirmed">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Статус </th>
       <td mat-cell *matCellDef="let element"> {{ getStudentStatus(element.Confirmed) }} </td>

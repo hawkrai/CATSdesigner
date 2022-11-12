@@ -60,7 +60,7 @@ namespace LMPlatform.UI.Controllers
             catch (Exception e)
             {
                 return DataTableExtensions.GetResults(
-                    new List<StudentViewModel> {new StudentViewModel {Login = e.StackTrace}}, dataTableParam, 1);
+                    new List<StudentViewModel> {new StudentViewModel {UserName = e.StackTrace}}, dataTableParam, 1);
             }
         }
 
@@ -158,7 +158,7 @@ namespace LMPlatform.UI.Controllers
         {
             var students = this.StudentManagementService.GetStudents();
 
-            var result = students.Select(s => new ModifyStudentViewModel(s) {Avatar = null});
+            var result = students.Select(s => StudentViewModel.FromStudent(s, null));
 
             return JsonResponse(result);
         }
