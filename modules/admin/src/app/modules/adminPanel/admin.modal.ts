@@ -43,6 +43,7 @@ import { MatListModule } from '@angular/material/list';
 import { MessageDetailComponent } from './modal/message-detail/message-detail.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ActiveStatsComponent} from './active-stats/active-stats.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import {ActiveStatsComponent} from './active-stats/active-stats.component';
     MatCardModule,
     MatAutocompleteModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgApexchartsModule
   ],
   entryComponents: [LectorModalComponent, AddGroupComponent,
     DeleteItemComponent, EditLectorComponent, SubjectListComponent, ListOfGroupsComponent,
