@@ -80,9 +80,17 @@ namespace Application.Infrastructure.ElasticManagement
         {
             if(StudentRepo != null) StudentRepo.AddToIndex(student);
         }
+        public async Task AddStudentAsync(ElasticStudent student) 
+        {
+            if (StudentRepo != null) await StudentRepo.AddToIndexAsync(student);
+        }
         public void AddStudent(Student student)
         {
             if(StudentRepo != null)  StudentRepo.AddToIndex(Initializer.ConvertStudent(student));
+        }
+        public async Task AddStudentAsync(Student student)
+        {
+            if (StudentRepo != null) await StudentRepo.AddToIndexAsync(Initializer.ConvertStudent(student));
         }
         public void AddProject(ElasticProject project)
         {
@@ -153,6 +161,11 @@ namespace Application.Infrastructure.ElasticManagement
         {
             DeleteStudent(student.Id);
             AddStudent(student);
+        }
+        public async Task ModifyStudentAsync(Student student) 
+        {
+            await DeleteStudentAsync(student.Id);
+            await AddStudentAsync(student);
         }
         public void ModifyLecturer(ElasticLecturer lecturer)
         {

@@ -50,7 +50,7 @@ export class StudentsComponent implements OnInit {
     });
   }
 
-  loadChangedStudent(userName) {
+  loadStudentByName(userName) {
     this.studentService.getStudentByName(userName).subscribe(item => {
       let data = this.dataSource.data;
       let index = data.findIndex(value => value.Id == item.Id);
@@ -66,7 +66,7 @@ export class StudentsComponent implements OnInit {
     })
   }
 
-  loadDeletedStudent(id){
+  loadStudentById(id){
     this.studentService.getStudentById(id).subscribe(item => {
       let data = this.dataSource.data;
       let index = data.findIndex(value => value.Id == item.Id);
@@ -76,29 +76,43 @@ export class StudentsComponent implements OnInit {
       }
 
       data[index] = item;
-      this.dataSource.data = data;
+      this.dataSource.data = data.sort((a, b) => this.sortFunc(a, b));
       this.isLoad = true;
     })
   }
 
   editStudent(student): void {
     this.studentService.editStudents(student).subscribe(() => {
-      this.loadChangedStudent(student.UserName);
+      this.loadStudentByName(student.UserName);
       this.dataStudent = new Student();
       this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
     }, err => {
       if ( err.status === 500) {
         // we do it because db have some issue. After fixing, delete this function, please
-        this.loadChangedStudent(student.UserName);
+        this.loadStudentByName(student.UserName);
         this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
       } else {
       }
     });
   }
 
+  restoreStudent(id): void {
+    this.studentService.restoreStudent(id).subscribe(() => {
+      this.loadStudentById(id);
+      this.toastr.addSuccessFlashMessage('Студент успешно восстановлен!');
+    },
+    () => {
+      this.toastr.addErrorFlashMessage('Не удалость восстановить студента!');
+    });
+  }
+
   // applyFilter() {
   //   this.dataSource.filterPredicate = (data, filter) => data.FullName.trim().toLowerCase().startsWith(filter.trim().toLowerCase());
   // }
+
+  isActive(student){
+    return student.IsActive;
+  }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -109,7 +123,7 @@ export class StudentsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.studentService.deleteStudent(id).subscribe(() => {
-          this.loadDeletedStudent(id);
+          this.loadStudentById(id);
           this.toastr.addSuccessFlashMessage("Студент удален!");
         },
         err => {
@@ -153,10 +167,15 @@ export class StudentsComponent implements OnInit {
     dialogRef.afterClosed();
   }
 
-  getStudentStatus(status){
-    if(status == true){
+  getStudentStatus(student){
+    if (!student.IsActive){
+      return "Удален"
+    }
+    
+    if(student.Confirmed){
         return "Подтвержден"
     }
+
     return "Не подтвержден"
   }
 

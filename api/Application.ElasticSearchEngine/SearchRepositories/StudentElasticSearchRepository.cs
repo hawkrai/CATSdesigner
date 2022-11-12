@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.ElasticSearchEngine.SearchRepositories
 {
@@ -65,9 +66,9 @@ namespace Application.ElasticSearchEngine.SearchRepositories
         {
             Client.IndexMany(students,STUDENTS_INDEX_NAME);
         }
-        public void AddToIndexAsync(ElasticStudent student)
+        public async Task AddToIndexAsync(ElasticStudent student)
         {
-            Client.IndexAsync<ElasticStudent>(student, st => st.Index(STUDENTS_INDEX_NAME));
+            await Client.IndexAsync<ElasticStudent>(student, st => st.Index(STUDENTS_INDEX_NAME));
         }
         public void AddToIndexAsync(IEnumerable<ElasticStudent> students)
         {

@@ -33,4 +33,8 @@ export class StudentService {
     deleteStudent(studentId): Observable<void> {
         return this.http.get<void>(this.api + 'DeleteStudentJson/' + studentId);
     }
+
+    restoreStudent(id): Observable<void> {
+        return this.http.post<void>(this.api + 'RestoreStudentAsync', {id: id});
+    }
 }

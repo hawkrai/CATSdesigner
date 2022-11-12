@@ -28,7 +28,7 @@ namespace Application.Core.Data
 			ProcessMethod(() => PerformAdd(model, DataContext));
 		}
 
-		protected void Add(IEnumerable<TModel> models)
+        protected void Add(IEnumerable<TModel> models)
 		{
 			ProcessMethod(() =>
 			{
@@ -134,6 +134,28 @@ namespace Application.Core.Data
 			}
 		}
 
+		public async Task SaveAsync(TModel model, Func<TModel, bool> performUpdate = null) 
+		{
+            if (model != null)
+            {
+                if (performUpdate == null)
+                {
+                    performUpdate = e => !e.IsNew;
+                }
+
+                if (performUpdate(model))
+                {
+                    await UpdateAsync(model);
+                }
+                else
+                {
+                    Add(model);
+                }
+
+                await _dataContext.SaveChangesAsync();
+            }
+        }
+
 		public void Save(IEnumerable<TModel> models, Func<TModel, bool> performUpdate = null)
 		{
 			ProcessMethod(() =>
@@ -167,6 +189,17 @@ namespace Application.Core.Data
 				if (model != null)
 				{
 					PerformUpdate(model, _dataContext);
+				}
+			});
+		}
+
+		protected async Task UpdateAsync(TModel model) 
+		{
+			await ProcessMethod(async () =>
+			{
+				if (!(model is null)) 
+				{
+					await PerformUpdateAsync(model, _dataContext);
 				}
 			});
 		}
@@ -242,7 +275,12 @@ namespace Application.Core.Data
 			dataContext.Update(newValue);
 		}
 
-		protected TResult ProcessMethod<TResult>(Func<TResult> func)
+        protected virtual async Task PerformUpdateAsync(TModel newValue, TDataContext dataContext)
+        {
+            await dataContext.UpdateAsync(newValue);
+        }
+
+        protected TResult ProcessMethod<TResult>(Func<TResult> func)
 		{
 			TResult result;
 
