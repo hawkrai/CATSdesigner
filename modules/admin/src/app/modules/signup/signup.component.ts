@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { MessageComponent } from '../../component/message/message.component';
 import { AppToastrService } from '../../service/toastr.service';
 import { TranslatePipe } from 'educats-translate';
+import { VideoComponent } from '../modal/video.component';
 
 @Component({
   selector: 'app-signup',
@@ -148,7 +149,7 @@ export class SignupComponent implements OnInit {
       });
   }
 
-  cancel() {
-    window.parent.location.href = '/login';
+  public open() {
+    const dialogRef = this.dialog.open(VideoComponent);
   }
 }

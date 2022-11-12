@@ -20,13 +20,15 @@ import * as dataRu from './translate/translations_ru.json';
 import * as dataEn from './translate/translations_en.json';
 import {TranslateModule, TranslatePipe} from 'educats-translate';
 import { ToastrModule } from 'ngx-toastr';
+import { VideoComponent } from './modules/modal/video.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MessageComponent,
     ChangePasswordComponent,
-    ResetPasswordModalComponent
+    ResetPasswordModalComponent,
+    VideoComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -58,7 +60,7 @@ import { ToastrModule } from 'ngx-toastr';
       positionClass: 'toast-bottom-right'
     })
   ],
-  entryComponents: [MessageComponent, ChangePasswordComponent, ResetPasswordModalComponent],
+  entryComponents: [MessageComponent, ChangePasswordComponent, ResetPasswordModalComponent, VideoComponent],
   providers: [TranslatePipe],
   bootstrap: [AppComponent]
 })

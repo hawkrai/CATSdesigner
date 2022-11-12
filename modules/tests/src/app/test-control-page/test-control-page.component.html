@@ -2,7 +2,7 @@
   <!--<app-header [text]="'Тестирование и отладка ПО'"
               [smallText]="'Управление тестами'"></app-header>-->
   <mat-tab-group class="container-table"
-                 [class.black]="black" (selectedTabChange)="onChange($event)">
+                 [class.black]="black" (selectedTabChange)="onChange($event)" [selectedIndex]="currentTabIndex">
     <mat-tab [label]="'text.test.theme.test' | translate: 'Темы тестов'">
       <ng-container *ngIf="currentTabIndex === 0">
         <app-main-page [allowChanges]="allowChanges"
