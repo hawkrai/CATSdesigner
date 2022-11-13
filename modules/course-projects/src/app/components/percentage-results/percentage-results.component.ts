@@ -10,7 +10,7 @@ import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-perce
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
-import { CoreGroup } from 'src/app/models/core-group.model';
+import {CoreGroup} from 'src/app/models/core-group.model';
 
 @Component({
   selector: 'app-percentage-results',
@@ -108,9 +108,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     return studentPercentageResults;
   }
 
-  setResult(pr: PercentageResult) {
+  setResult(pr: PercentageResult, student: string, lecturer: string) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
-      width: '400px',
+      width: '548px',
       data: {
         mark: pr.Mark !== '' ? pr.Mark : null,
         min: 0,
@@ -119,6 +119,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         errorMsg: 'Введите число от 0 до 100',
         label: 'Результат процентовки',
         symbol: '%',
+        student,
+        lecturer,
+        total: false,
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
         expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage
@@ -146,17 +149,18 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   setMark(student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
-      width: '400px',
+      width: '548px',
       data: {
         mark: student.Mark !== '' ? student.Mark : null,
         min: 1,
         max: 10,
         regex: '^[0-9]*$',
         errorMsg: 'Введите число от 1 до 10',
-        label: 'Оценка',
+        label: 'Оценка за курсовой проект',
         notEmpty: true,
         total: true,
         lecturer: student.LecturerName,
+        student: student.Name,
         date: student.MarkDate,
         comment: student.Comment,
         showForStudent: student.ShowForStudent,

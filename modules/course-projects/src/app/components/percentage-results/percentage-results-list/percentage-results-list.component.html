@@ -7,7 +7,8 @@
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Тема курсового проекта</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Руководитель</th>
-        <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let graph of percentageGraphs">
+        <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col"
+            *ngFor="let graph of percentageGraphs">
           <div class="header-date"
                [matTooltip]="graph.Name" matTooltipPosition="below">
             {{ graph.Date | date:'dd.MM.yyyy' }}
@@ -18,10 +19,10 @@
       </thead>
       <tbody *ngIf="percentageResults; else load">
       <tr class="mdc-data-table__row" *ngFor="let student of percentageResults; index as i">
-        <td class="mdc-data-table__cell">{{ i + 1 }}</td>
-        <td class="mdc-data-table__cell cell">{{ student.Name }}</td>
+        <td class="mdc-data-table__cell cell">{{ i + 1 }}</td>
+        <td class="mdc-data-table__cell">{{ student.Name }}</td>
         <td class="mdc-data-table__cell">{{ student.Group }}</td>
-        <td class="mdc-data-table__cell cell">{{ student.LecturerName ? student.LecturerName : student.Lecturer }}</td>
+        <td class="mdc-data-table__cell">{{ student.LecturerName ? student.LecturerName : student.Lecturer }}</td>
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
           <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">
             {{result.Mark}}
@@ -31,7 +32,7 @@
           </td>
         </ng-container>
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsLecturer">
-          <td class="mdc-data-table__cell data-cell clickable" (click)="percentageResultsComponent.setResult(result)"
+          <td class="mdc-data-table__cell data-cell clickable" (click)="percentageResultsComponent.setResult(result, student.Name, student.LecturerName)"
               *ngFor="let result of student.PercentageResults">
             {{ result.Mark }}
             <div class="comment" *ngIf="result && result.Comment">
@@ -41,11 +42,13 @@
         </ng-container>
         <td class="mdc-data-table__cell data-cell" *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
           {{ student.Mark }}
-          <div class="comment" *ngIf="student && student.Comment && student.ShowForStudent">
+          <div class="comment"
+               *ngIf="student && student.Comment && student.ShowForStudent && student.Id === percentageResultsComponent.getCourseUser().UserId">
             <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
           </div>
         </td>
-        <td class="mdc-data-table__cell data-cell clickable" *ngIf="percentageResultsComponent.getCourseUser().IsLecturer"
+        <td class="mdc-data-table__cell data-cell clickable"
+            *ngIf="percentageResultsComponent.getCourseUser().IsLecturer"
             (click)="percentageResultsComponent.setMark(student)">
           {{ student.Mark }}
           <div class="comment" *ngIf="student && student.Comment">

@@ -6,13 +6,10 @@
         <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">№</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Студент</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Тема курсового проекта</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Руководитель</th>
         <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let consultation of consultations">
           <div class="header-date">
-            <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)" matTooltip="Удалить дату"
-               *ngIf="visitStatsComponent.getCourseUser().IsLecturer">
-              {{consultation.Day | date:'dd.MM.yyyy'}}
-            </a>
-            <p *ngIf="visitStatsComponent.getCourseUser().IsStudent">
+            <p>
               {{consultation.Day | date:'dd.MM.yyyy'}}
             </p>
           </div>
@@ -21,9 +18,10 @@
       </thead>
       <tbody *ngIf="visitStatsList; else: load">
       <tr class="mdc-data-table__row" *ngFor="let stats of visitStatsList; index as i">
-        <td class="mdc-data-table__cell">{{ i + 1 }}</td>
+        <td class="mdc-data-table__cell cell">{{ i + 1 }}</td>
         <td class="mdc-data-table__cell">{{ stats.Name }}</td>
         <td class="mdc-data-table__cell">{{ stats.Group }}</td>
+        <td class="mdc-data-table__cell">{{ stats.Lecturer }}</td>
         <ng-container *ngIf="visitStatsComponent.getCourseUser().IsStudent">
           <td class="mdc-data-table__cell data-cell" *ngFor="let consultationMark of stats.CourseProjectConsultationMarks">
             {{consultationMark.Mark}}

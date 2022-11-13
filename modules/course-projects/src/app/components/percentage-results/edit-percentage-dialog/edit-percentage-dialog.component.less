@@ -1,21 +1,45 @@
-.dialog-content {
-  mat-form-field {
-    margin-bottom: 10px;
-  }
-}
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
-.dialog-button {
-  flex: auto;
-}
+  h1 {
+    font-weight: 400;
+  }
 
-.form-field {
-  width: 100%;
-  .commentInput{
-    height: 40px;
+  h5{
+    font-weight: 400;
+    margin: -10px 0 10px 0;
   }
-  .checkbox{
-    position: absolute;
-    top: 0;
-    right: 0;
+
+  .dialog-content {
+    height: 100%;
+
+    mat-form-field {
+      margin-bottom: 10px;
+    }
   }
+
+  .dialog__actions {
+    justify-content: flex-end;
+    margin-top: 100px;
+  }
+
+  .dialog-button {
+  }
+
+  .form-field {
+    width: 100%;
+
+    .commentInput {
+      height: 40px;
+    }
+
+    .checkbox {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+
 }
