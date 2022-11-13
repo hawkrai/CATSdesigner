@@ -76,14 +76,12 @@ export class LoginComponent implements OnInit {
             (error: HttpErrorResponse) => {
                 this.loading = false;
                 this.submitted = false;
-                if (error.message.includes('User hasn\'t verified yet!')){
+                if (error.error.error === 1){
                   this.toastr.addWarningFlashMessage(this.translatePipe.transform('text.login.NotVerified', 'Ваш аккаунт не подтвержден. Обратитесь к преподавателю для подтверждения аккаунта!'));
                 }
                 else{
                   this.toastr.addErrorFlashMessage(this.translatePipe.transform('text.login.WrongData', 'Неверный логин и (или) пароль!'));
                 }
-
-
             });
   }
 
