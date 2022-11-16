@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/service/userService';
+import { NgApexchartsModule } from "ng-apexcharts";
 
 @Component({
   selector: 'app-active-stats',
@@ -7,15 +8,26 @@ import { UserService } from 'src/app/service/userService';
   styleUrls: ['./active-stats.component.css']
 })
 export class ActiveStatsComponent implements OnInit {
-
-  users = [];
-  times = [];
-  type = 'PieChart';
-  options = {
-    legend: {position: 'left'}
-  };
   userActivity: any;
   isLoadActive = false;
+
+  usersSeries = [];
+  usersLabels = [];
+  
+  timesSeries = [];
+  timesLabels = [];
+
+  chartOptions = {
+    chart: {
+      width: 750,
+      height: 600,
+      type: 'pie'
+    },
+    legend: {
+      floating: true,
+      position: 'left'
+    }
+  }
 
   constructor(private userService: UserService) {
   }
@@ -26,11 +38,12 @@ export class ActiveStatsComponent implements OnInit {
 
   loadActivity() {
     this.userService.getUserActivity().subscribe(result => {
-      this.users = this.convertJsonToArray(['Аккаунты студентов', 'Аккаунты преподавателей', 'Сервисные аккаунты',],
-      [result.TotalStudentsCount, result.TotalLecturersCount, result.ServiceAccountsCount]);
+      this.usersSeries = [result.TotalStudentsCount, result.TotalLecturersCount, result.ServiceAccountsCount];
+      this.usersLabels = ['Аккаунты студентов', 'Аккаунты преподавателей', 'Сервисные аккаунты']
       this.userActivity = result;
       const obj = JSON.parse(result.UserActivityJson);
-      this.times = this.convertJsonToArray(Object.keys(obj), Object.values(obj));
+      this.timesSeries = Object.values(obj);
+      this.timesLabels = Object.keys(obj);
       this.isLoadActive = true;
     });
   }

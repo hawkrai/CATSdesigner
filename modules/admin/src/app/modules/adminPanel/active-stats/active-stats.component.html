@@ -15,9 +15,7 @@
         </div>
     </div>
     <div class="charts">
-        <google-chart [type]="type" [data]="this.times" [options]="options" [width]="750" [height]="600">
-        </google-chart>
-        <google-chart [type]="type" [data]="this.users" [options]="options" [width]="750" [height]="600">
-        </google-chart>
+        <apx-chart [series]="this.timesSeries" [labels]="this.timesLabels" [legend]="this.chartOptions.legend" [chart]="this.chartOptions.chart"></apx-chart>
+        <apx-chart [series]="this.usersSeries" [labels]="this.usersLabels" [legend]="this.chartOptions.legend" [chart]="this.chartOptions.chart"></apx-chart>
     </div>
 </div>
