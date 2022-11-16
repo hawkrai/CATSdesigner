@@ -1,4 +1,5 @@
 <h1 mat-dialog-title>{{data.label}}</h1>
+<h5 *ngIf="data.total">{{data.lecturer}}</h5>
 <div mat-dialog-content class="dialog-content">
   <mat-form-field class="form-field">
     <mat-label *ngIf="data.total">Оценка (от 1 до 10)</mat-label>
@@ -20,10 +21,11 @@
     <mat-checkbox class="checkbox" matTooltip="Показать комментарий студенту" matTooltipPosition="left" class="checkbox" (change)="showForStudentChange($event.checked)" [checked]="data.showForStudent" [color]="'primary'"></mat-checkbox>
     <textarea class="commentInput" matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
     <mat-error *ngIf="commentControl.invalid">До 255 символов</mat-error>
-    <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
+    <mat-hint *ngIf="data.lecturer && !data.total">Процент выставил {{data.lecturer}}</mat-hint>
+    <mat-hint *ngIf="data.lecturer && data.total">Оценку выставил {{data.lecturer}}</mat-hint>
   </mat-form-field>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions class="dialog__actions">
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
     Отмена
   </button>

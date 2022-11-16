@@ -1,7 +1,6 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div class="visiting-popover__header">
   <p>Редактируемая дата: </p>
-  <h2>{{data.body.date}}</h2>
 </div>
 <div class="visiting-popover__table" *ngIf="data.body">
   <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
