@@ -39,32 +39,6 @@ namespace LMPlatform.UI.Controllers
         private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
 
         [HttpPost]
-        public DataTablesResult<StudentViewModel> GetCollectionStudents(DataTablesParam dataTableParam)
-        {
-            try
-            {
-                var searchString = dataTableParam.GetSearchString();
-                this.ViewBag.Profile = "/Administration/Profile";
-                this.ViewBag.ListOfSubject = "/Administration/ListOfSubject";
-                this.ViewBag.EditActionLink = "/Administration/EditStudent";
-                this.ViewBag.DeleteActionLink = "/Administration/DeleteStudent";
-                this.ViewBag.StatActionLink = "/Administration/Attendance";
-                var students = this.StudentManagementService.GetStudentsPageable(pageInfo: dataTableParam.ToPageInfo(),
-                    searchString: searchString);
-                this.SetupSettings(dataTableParam);
-                return DataTableExtensions.GetResults(
-                    students.Items.Select(s =>
-                        StudentViewModel.FromStudent(s, this.PartialViewToString("_EditGlyphLinks", s.Id))),
-                    dataTableParam, students.TotalCount);
-            }
-            catch (Exception e)
-            {
-                return DataTableExtensions.GetResults(
-                    new List<StudentViewModel> {new StudentViewModel {UserName = e.StackTrace}}, dataTableParam, 1);
-            }
-        }
-
-        [HttpPost]
         public DataTablesResult<LecturerViewModel> GetCollectionLecturers(DataTablesParam dataTableParam)
         {
             var searchString = dataTableParam.GetSearchString();
