@@ -1,5 +1,6 @@
 
 {
+  "general.back": "Back",
   "chat.chats":"Chats",
   "chat.groups":"Groups",
   "chat.fio":"Name",
@@ -608,6 +609,14 @@
   "text.diplomProject.audience" : "Audience",
   "text.diplomProject.startConsultation" : "Start of the consultation",
   "text.diplomProject.endConsultation" : "End of consultation",
+
+  "text.changePassword.resetPassword": "Reset the password",
+  "text.changePassword.invalidData": "Data entered incorrectly",
+  "text.changePassword.login": "Login",
+  "text.changePassword.secretQuestion": "Secret Question",
+  "text.changePassword.answerOnSecretQuestion": "Answer to the secret question",
+  "text.changePassword.reset": "Reset",
+  "text.changePassword.cancel": "Cancel",
 
   "text.start.title":"Adaptive learning management system",
   "text.start.helpAbout":"What is the CATS system?",

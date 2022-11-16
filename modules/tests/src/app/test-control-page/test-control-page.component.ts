@@ -57,6 +57,8 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   ngOnInit() {
+    this.currentTabIndex = Number(localStorage.getItem("testsModule_tab")) || 0;
+
     if (localStorage.getItem("theme") === "white") {
       this.white = true;
     } else {
@@ -144,6 +146,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   }
 
   public onChange(event: any): void {
+    localStorage.setItem("testsModule_tab", String(event.index));
     this.currentTabIndex = event.index;
     switch (this.currentTabIndex) {
       case 0: {

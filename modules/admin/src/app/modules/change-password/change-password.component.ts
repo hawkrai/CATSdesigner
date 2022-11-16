@@ -4,6 +4,9 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { questions } from '../../shared/utils/questions';
 import { AccountService } from '../../service/account.service';
 import { ResetPasswordModalComponent } from '../reset-password-modal/reset-password-modal.component';
+import { Locale } from '../../../../../../container/src/app/shared/interfaces/locale.interface';
+import { VideoComponent } from '../modal/video.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-change-password',
@@ -17,6 +20,9 @@ export class ChangePasswordComponent implements OnInit {
   quest = questions;
   verifyValue: boolean;
 
+  public locales: Locale[] = [{ name: 'Ru', value: 'ru' }, { name: 'En', value: 'en' }];
+  public locale: Locale;
+
   constructor(
     private dialog: MatDialog,
     private accountService: AccountService,
@@ -29,9 +35,12 @@ export class ChangePasswordComponent implements OnInit {
       Username: new FormControl('', [Validators.required, Validators.pattern('^[A-Za-z0-9_.-@]{3,30}$'),
       Validators.minLength(3), Validators.maxLength(30)]),
       SecretQuestion: new FormControl('', [Validators.required]),
-      SecretAnswer: new FormControl('', [Validators.required,Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$'),
+      SecretAnswer: new FormControl('', [Validators.required, Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$'),
       Validators.minLength(1), Validators.maxLength(30)])
     });
+
+    const local: string = localStorage.getItem('locale');
+    this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
   }
 
   hasError = (controlName: string, errorName: string) => {
@@ -48,13 +57,19 @@ export class ChangePasswordComponent implements OnInit {
       this.submitEM.emit(this.form.value);
     }
   }
-  cancel(){
-    window.parent.location.href = "/login";
+  cancel() {
+    window.parent.location.href = '/login';
+  }
+
+  public onValueChange(value: any): void {
+    localStorage.setItem('locale', value.value.value);
+    window.location.reload();
   }
 
   deleteSpaces() {
-    if(this.form.controls.SecretAnswer != null)
-      this.form.controls.SecretAnswer.setValue(this.form.controls.SecretAnswer.value.replace(' ',''));
+    if (this.form.controls.SecretAnswer != null) {
+      this.form.controls.SecretAnswer.setValue(this.form.controls.SecretAnswer.value.replace(' ', ''));
+    }
   }
 
   verify() {
@@ -64,15 +79,22 @@ export class ChangePasswordComponent implements OnInit {
           if (res === 'OK') {
             document.getElementById('message').hidden = true;
 
-            var diagRef = this.dialog.open( ResetPasswordModalComponent, {
+            const diagRef = this.dialog.open(ResetPasswordModalComponent, {
               data: this.form.controls.Username.value
             });
-            diagRef.afterClosed().subscribe(res => {window.parent.location.href = "/login";});
+            diagRef.afterClosed().subscribe(() => { window.parent.location.href = '/login'; });
           } else {
             document.getElementById('message').hidden = false;
           }
         }
-    );
+      );
   }
 
+  public open() {
+    const dialogRef = this.dialog.open(VideoComponent);
+  }
+
+  routeToLogin() {
+    window.parent.location.href = '/login';
+  }
 }
