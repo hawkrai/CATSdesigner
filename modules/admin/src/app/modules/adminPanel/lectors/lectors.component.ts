@@ -164,4 +164,17 @@ export class LectorsComponent implements OnInit {
     });
   }
 
+  formatDate(dateString) {
+    if (dateString == '-') {
+      return '-';
+    }
+
+    let date = new Date(dateString);
+
+    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
+    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
+    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
+    let time = date.toLocaleTimeString('en-US', { hour12: false });
+    return `${day}-${month}-${year}, ${time}`;
+  }
 }

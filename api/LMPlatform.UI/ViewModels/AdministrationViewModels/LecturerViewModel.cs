@@ -63,7 +63,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				Login = lecturer.User.UserName,
 				HtmlLinks = new HtmlString(htmlLinks),
 				IsActive = lecturer.IsActive,
-				LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("dd/MM/yyyy HH:mm:ss") : "-",
+				LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("o") : "-",
 				Subjects = subjectsNumber.ToString() ,
 				OwnSubjectsNumber = ownSubjectsNumber.ToString(),
 				AttachedSubjectsNumber = (subjectsNumber - ownSubjectsNumber).ToString(),
