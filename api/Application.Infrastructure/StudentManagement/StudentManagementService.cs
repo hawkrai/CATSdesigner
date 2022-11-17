@@ -149,12 +149,12 @@ namespace Application.Infrastructure.StudentManagement
 		{
 			student.IsActive = true;
 
-            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-            await repositoriesContainer.StudentsRepository.SaveAsync(student);
-            await repositoriesContainer.ApplyChangesAsync();
+			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+			await repositoriesContainer.StudentsRepository.AddOrUpdateAsync(student);
+			await repositoriesContainer.ApplyChangesAsync();
 
-            new StudentSearchMethod().UpdateIndex(student);
-        }
+			new StudentSearchMethod().UpdateIndex(student);
+		}
 
         public async Task<bool> DeleteStudentAsync(int id)
         {

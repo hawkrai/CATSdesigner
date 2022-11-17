@@ -134,7 +134,7 @@ namespace Application.Core.Data
 			}
 		}
 
-		public async Task SaveAsync(TModel model, Func<TModel, bool> performUpdate = null) 
+		public async Task AddOrUpdateAsync(TModel model, Func<TModel, bool> performUpdate = null) 
 		{
             if (model != null)
             {
@@ -197,7 +197,7 @@ namespace Application.Core.Data
 		{
 			await ProcessMethod(async () =>
 			{
-				if (!(model is null)) 
+				if (model != null) 
 				{
 					await PerformUpdateAsync(model, _dataContext);
 				}

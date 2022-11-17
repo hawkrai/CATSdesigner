@@ -22,7 +22,7 @@ namespace Application.Core.Data
 
         void Save(TModel model, Func<TModel, bool> performUpdate = null);
 
-        Task SaveAsync(TModel model, Func<TModel, bool> performUpdate = null);
+        Task AddOrUpdateAsync(TModel model, Func<TModel, bool> performUpdate = null);
 
         void Delete(IEnumerable<TModel> models);
 

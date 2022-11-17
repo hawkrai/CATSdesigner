@@ -227,8 +227,12 @@ namespace LMPlatform.UI.Controllers
                 return StatusCode(HttpStatusCode.BadRequest);
             }
 
-            await StudentManagementService.RestoreStudentAsync(student);
-            await ElasticManagementService.ModifyStudentAsync(student);
+            student.IsActive = true;
+
+            var studentManagementTask = StudentManagementService.RestoreStudentAsync(student);
+            var elasticServiceTask = ElasticManagementService.ModifyStudentAsync(student);
+
+            await Task.WhenAll(studentManagementTask, elasticServiceTask);
 
             return StatusCode(HttpStatusCode.OK);
         }
