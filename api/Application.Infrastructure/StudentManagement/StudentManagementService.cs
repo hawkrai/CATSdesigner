@@ -145,9 +145,9 @@ namespace Application.Infrastructure.StudentManagement
 	        this.UpdateSubGroup(repositoriesContainer, student);
         }
 
-		public async Task RestoreStudentAsync(Student student) 
-		{
-			student.IsActive = true;
+	public async Task RestoreStudentAsync(Student student) 
+	{
+		student.IsActive = true;
 
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			await repositoriesContainer.StudentsRepository.AddOrUpdateAsync(student);
