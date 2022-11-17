@@ -145,16 +145,16 @@ namespace Application.Infrastructure.StudentManagement
 	        this.UpdateSubGroup(repositoriesContainer, student);
         }
 
-		public async Task RestoreStudentAsync(Student student) 
-		{
-			student.IsActive = true;
+	public async Task RestoreStudentAsync(Student student) 
+	{
+		student.IsActive = true;
 
-            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-            await repositoriesContainer.StudentsRepository.SaveAsync(student);
-            await repositoriesContainer.ApplyChangesAsync();
+		using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+		await repositoriesContainer.StudentsRepository.SaveAsync(student);
+		await repositoriesContainer.ApplyChangesAsync();
 
-            new StudentSearchMethod().UpdateIndex(student);
-        }
+		new StudentSearchMethod().UpdateIndex(student);
+	}
 
         public async Task<bool> DeleteStudentAsync(int id)
         {
