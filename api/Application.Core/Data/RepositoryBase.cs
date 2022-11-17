@@ -237,7 +237,7 @@ namespace Application.Core.Data
 		{
 		    var deletingEntity = await dataContext.Set<TModel>().FindAsync(model.Id);
 
-		    if (!(deletingEntity is null))
+		    if (deletingEntity != null)
 		    {
 			dataContext.Set<TModel>().Remove(deletingEntity);
 		    }

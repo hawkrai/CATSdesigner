@@ -222,7 +222,7 @@ namespace LMPlatform.UI.Controllers
         {
             var student = await StudentManagementService.GetStudentAsync(id);
 
-            if (student is null) 
+            if (student == null) 
             {
                 return StatusCode(HttpStatusCode.BadRequest);
             }
