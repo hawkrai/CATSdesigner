@@ -25,7 +25,7 @@
 
             <ng-container matColumnDef="lastLogin">
                 <th mat-header-cell *matHeaderCellDef> Последний вход </th>
-                <td mat-cell *matCellDef="let element"> {{ element.LastLogin }} </td>
+                <td mat-cell *matCellDef="let element"> {{ this.formatDate(element.LastLogin) }} </td>
             </ng-container>
 
             <ng-container matColumnDef="status">
