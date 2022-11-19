@@ -21,6 +21,8 @@ namespace Application.Infrastructure.StudentManagement
 
         void UpdateStudent(Student student);
 
+        Task RestoreStudentAsync(Student student);
+
         Task<bool> DeleteStudentAsync(int id);
 
         bool IsStudentActive(int userId);

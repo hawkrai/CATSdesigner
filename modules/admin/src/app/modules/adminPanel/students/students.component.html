@@ -28,7 +28,7 @@
 
     <ng-container matColumnDef="Confirmed">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Статус </th>
-      <td mat-cell *matCellDef="let element"> {{ getStudentStatus(element.Confirmed) }} </td>
+      <td mat-cell *matCellDef="let element"> {{ getStudentStatus(element) }} </td>
     </ng-container>
 
     <ng-container matColumnDef="Subjects">
@@ -53,8 +53,11 @@
         <button mat-button matTooltip="Профиль студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Profile" (click)="this.navigateToProfile(element.Id)">
           <mat-icon>account_circle</mat-icon>
         </button>
-        <button mat-button matTooltip="Удалить студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete" (click)="openDialogDelete(element.Id)">
+        <button *ngIf="this.isActive(element)" mat-button matTooltip="Удалить студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete " (click)="openDialogDelete(element.Id) ">
           <mat-icon>delete</mat-icon>
+        </button>
+        <button *ngIf="!this.isActive(element)" mat-button matTooltip="Восстановить студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Edit " (click)="restoreStudent(element.Id) ">
+            <mat-icon>rotate_right</mat-icon>
         </button>
       </td>
     </ng-container>

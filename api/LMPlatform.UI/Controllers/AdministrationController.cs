@@ -218,6 +218,26 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> RestoreStudentAsync(int id) 
+        {
+            var student = await StudentManagementService.GetStudentAsync(id);
+
+            if (student == null) 
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            student.IsActive = true;
+
+            var studentManagementTask = StudentManagementService.RestoreStudentAsync(student);
+            var elasticServiceTask = ElasticManagementService.ModifyStudentAsync(student);
+
+            await Task.WhenAll(studentManagementTask, elasticServiceTask);
+
+            return StatusCode(HttpStatusCode.OK);
+        }
+
+        [HttpPost]
         public ActionResult AddProfessorJson(RegisterViewModel model)
         {
             if (!this.ModelState.IsValid) return StatusCode(HttpStatusCode.BadRequest);

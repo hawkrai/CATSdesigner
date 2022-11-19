@@ -42,6 +42,8 @@ namespace Application.Infrastructure.ElasticManagement
         public void ModifyGroup(Group group);
         public void ModifyProject(Project project);
 
+        public Task ModifyStudentAsync(Student student);
+
         void ClearElastic();
         void InitElastic();
     }

@@ -22,6 +22,8 @@ namespace Application.Core.Data
 
         void Save(TModel model, Func<TModel, bool> performUpdate = null);
 
+        Task AddOrUpdateAsync(TModel model, Func<TModel, bool> performUpdate = null);
+
         void Delete(IEnumerable<TModel> models);
 
         void Save(IEnumerable<TModel> models, Func<TModel, bool> performUpdate = null);
