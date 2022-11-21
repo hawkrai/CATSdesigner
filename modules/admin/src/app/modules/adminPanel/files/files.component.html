@@ -1,7 +1,6 @@
 <div class="main">
   <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
   <div [hidden]="!this.isLoad" class="table">
-    <mat-paginator #myPaginator [length]="25" [pageSize]="20" [pageSizeOptions]="[20, 40, 60, 80]" showFirstLastButtons="true"></mat-paginator>
     <mat-form-field class="search">
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Поиск">
     </mat-form-field>
@@ -26,12 +25,12 @@
       </ng-container>
 
       <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef> Дата загрузки </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Дата загрузки </th>
         <td mat-cell *matCellDef="let element"> {{ this.getDate(element.CreationDateString)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="author">
-        <th mat-header-cell *matHeaderCellDef> Автор </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Автор </th>
         <td mat-cell *matCellDef="let element"> {{ this.getAuthor(element.AuthorName)}} </td>
       </ng-container>
 
@@ -48,5 +47,6 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    <mat-paginator #myPaginator [length]="25" [pageSize]="20" [pageSizeOptions]="[20, 40, 60, 80]" showFirstLastButtons="true"></mat-paginator>
   </div>
 </div>
