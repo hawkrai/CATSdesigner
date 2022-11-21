@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LMPlatform.Models;
 
 namespace Application.Infrastructure.FilesManagement
@@ -27,5 +28,7 @@ namespace Application.Infrastructure.FilesManagement
         void SaveFile(Attachment attachment, string folder);
 
         string GetFullPath(Attachment attachment);
+
+        long? GetFileSize(Attachment attachment);
     }
 }

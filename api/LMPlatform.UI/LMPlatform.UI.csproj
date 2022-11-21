@@ -711,6 +711,7 @@
     <Compile Include="ViewModels\AdministrationViewModels\ModifyLecturerViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\UserActivityViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\AttachmentViewModel.cs" />
     <Compile Include="ViewModels\BTSViewModels\AddOrEditBugViewModel.cs" />
     <Compile Include="ViewModels\BTSViewModels\AddOrEditProjectViewModel.cs" />
     <Compile Include="ViewModels\BTSViewModels\AssignUserViewModel.cs" />

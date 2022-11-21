@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Application.Core.Data;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
@@ -25,6 +26,18 @@ namespace Application.Infrastructure.FilesManagement
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			return repositoriesContainer.AttachmentRepository.GetBy(new Query<Attachment>(e => e.FileName == guid)).PathName;
 		}
+
+        public long? GetFileSize(Attachment attachment) 
+        {
+            var filePath = Path.Combine(_storageRoot, attachment.PathName, attachment.FileName);
+
+            if (File.Exists(filePath)) 
+            {
+                return new FileInfo(filePath).Length;
+            }
+
+            return null;
+        }
 
         public void SaveFiles(IEnumerable<Attachment> attachments, string folder = "")
         {
