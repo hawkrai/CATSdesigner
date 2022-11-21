@@ -11,6 +11,7 @@ using System.Linq;
 using System.IO;
 using System.Configuration;
 using Application.Infrastructure.KnowledgeTestsManagement;
+using Application.Core.Helpers;
 
 namespace Application.Infrastructure.ConceptManagement
 {
@@ -398,6 +399,8 @@ namespace Application.Infrastructure.ConceptManagement
                     if (attachment.Id == 0)
                     {
                         attachment.PathName = concept.Container;
+                        attachment.UserId = concept.UserId;
+                        attachment.CreationDate = DateTime.Now;
 
                         repositoriesContainer.AttachmentRepository.Save(attachment);
                     }
@@ -723,7 +726,9 @@ namespace Application.Infrastructure.ConceptManagement
                         AttachmentType = AttachmentType.Document,
                         Name = string.Format("{0}.pdf", friendlyFileName),
                         PathName = GetGuidFileName(),
-                        FileName = convertor.Convert(sourceFilePath)
+                        FileName = convertor.Convert(sourceFilePath),
+                        UserId = UserContext.CurrentUserId,
+                        CreationDate = DateTime.Now
                     });
                 }
 

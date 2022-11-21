@@ -14,6 +14,7 @@ using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.Export;
 using Application.Infrastructure.LecturerManagement;
+using Application.Core.Helpers;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -741,6 +742,8 @@ namespace Application.Infrastructure.CPManagement
                     if (attachment.Id == 0)
                     {
                         attachment.PathName = news.Attachments;
+                        attachment.UserId = UserContext.CurrentUserId;
+                        attachment.CreationDate = DateTime.Now;
                         repositoriesContainer.AttachmentRepository.Save(attachment);
                     }
                 }

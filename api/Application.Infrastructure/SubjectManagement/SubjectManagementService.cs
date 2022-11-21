@@ -11,7 +11,8 @@ using Application.Infrastructure.ConceptManagement;
 
 namespace Application.Infrastructure.SubjectManagement
 {
-    using Application.Infrastructure.Extensions;
+	using Application.Core.Helpers;
+	using Application.Infrastructure.Extensions;
     using Models;
 
 	public class SubjectManagementService : ISubjectManagementService
@@ -210,6 +211,8 @@ namespace Application.Infrastructure.SubjectManagement
 				if (attachment.Id == 0)
 				{
 					attachment.PathName = news.Attachments;
+					attachment.UserId = UserContext.CurrentUserId;
+					attachment.CreationDate = DateTime.Now;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
@@ -555,6 +558,8 @@ namespace Application.Infrastructure.SubjectManagement
 				if (attachment.Id == 0)
 				{
 					attachment.PathName = labs.Attachments;
+					attachment.UserId = UserContext.CurrentUserId;
+					attachment.CreationDate = DateTime.Now;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
@@ -595,6 +600,8 @@ namespace Application.Infrastructure.SubjectManagement
 				if (attachment.Id == 0)
 				{
 					attachment.PathName = userLabFiles.Attachments;
+					attachment.UserId = UserContext.CurrentUserId;
+					attachment.CreationDate = DateTime.Now;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
@@ -894,7 +901,9 @@ namespace Application.Infrastructure.SubjectManagement
 				if (attachment.Id == 0)
 				{
 					attachment.PathName = lectures.Attachments;
-					repositoriesContainer.AttachmentRepository.Save(attachment);
+                    attachment.UserId = UserContext.CurrentUserId;
+                    attachment.CreationDate = DateTime.Now;
+                    repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
 			repositoriesContainer.LecturesRepository.Save(lectures);
