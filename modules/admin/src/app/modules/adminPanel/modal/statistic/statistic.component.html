@@ -7,7 +7,16 @@
         </button>
     </div>
     <div mat-dialog-content>
-        <google-chart [title]="title" [type]="type" [data]="data" [columnNames]="columnNames" [options]="options" [width]="550" [height]="400">
-        </google-chart>
+        <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [yaxis]="chartOptions.yaxis"
+            [dataLabels]="chartOptions.dataLabels"
+            [grid]="chartOptions.grid"
+            [stroke]="chartOptions.stroke"
+            [title]="chartOptions.title"
+            [tooltip]="chartOptions.tooltip"
+        ></apx-chart>
     </div>
 </div>
