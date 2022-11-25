@@ -70,11 +70,18 @@ export class FilesComponent implements OnInit {
 
   getSize(size) {
     if (size != null) {
-      return size;
+      return this.toReadableFileSize(size);
     }
     else {
       return 'Нет данных';
     }
+  }
+
+  toReadableFileSize(size) {
+    const units = ['B', 'kB', 'MB', 'GB', 'TB'];
+
+    let i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+    return `${(size / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
   }
 
 }
