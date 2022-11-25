@@ -1,5 +1,7 @@
 export class ProfileProject {
     Name: string;
+    SubjectName: string;
+    SubjectFullName: string;
 }
 
 export class ProfileInfoSubject {

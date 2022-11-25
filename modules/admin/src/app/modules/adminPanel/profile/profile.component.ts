@@ -13,8 +13,9 @@ import { AccountService } from 'src/app/service/account.service';
 
 
 export class ProfileComponent implements OnInit {
-  displayedColumns = ['item'];
-  displayedColumnsSecond = ['item', 'complete'];
+  cpColumns = ['item', 'subjectName'];
+  dpColumns = ['item']
+  subjectsColumns = ['item', 'complete'];
   isLoad = false;
   defaultAvatar = "/assets/images/account.png";
   Name!: string;

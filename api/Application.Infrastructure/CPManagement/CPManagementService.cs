@@ -111,8 +111,8 @@ namespace Application.Infrastructure.CPManagement
                                      {
                                          Id = cp.CourseProjectId,
                                          Theme = cp.Theme,
-                                         Subject = cp.Subject.ShortName
-
+                                         Subject = cp.Subject.ShortName,
+                                         SubjectFullName = cp.Subject.Name
                                      };
 
             List<CourseProjectData> courseProjects = buf.ToList<CourseProjectData>();

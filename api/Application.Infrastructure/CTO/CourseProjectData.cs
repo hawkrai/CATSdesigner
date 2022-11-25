@@ -38,6 +38,8 @@ namespace Application.Infrastructure.CTO
 
         public int? SubjectId { get; set; }
 
+        public string SubjectFullName { get; set; }
+
         public IEnumerable<int> SelectedGroupsIds { get; set; }
     }
 }
