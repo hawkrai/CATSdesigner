@@ -29,7 +29,7 @@ export class SignupComponent implements OnInit {
   form: FormGroup;
   groups: any;
   isLoad = false;
-  selectedQuestion = this.quest[0].value;
+  selectedQuestion = questions[0].value;
 
   public locales: Locale[] = [{ name: 'Ru', value: 'ru' }, { name: 'En', value: 'en' }];
   public locale: Locale;
@@ -155,7 +155,9 @@ export class SignupComponent implements OnInit {
   }
 
   public open() {
-    const dialogRef = this.dialog.open(VideoComponent);
+    const dialogRef = this.dialog.open(VideoComponent, {
+      hasBackdrop: true,
+    });
   }
 
   cancel() {
