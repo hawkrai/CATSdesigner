@@ -11,6 +11,7 @@ import {CoreGroup} from 'src/app/models/core-group.model';
 import {Help} from '../../../models/help.model';
 import {HelpPopoverScheduleComponent} from '../../../shared/help-popover/help-popover-schedule.component';
 import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 
 interface DialogData {
   subjectId: string;
@@ -44,10 +45,10 @@ export class EditTaskSheetComponent implements OnInit {
   private selectedTemplate = 'data.taskSheetTemplate';
 
   constructor(private taskSheetService: TaskSheetService,
-              private snackBar: MatSnackBar,
               public dialogRef: MatDialogRef<EditTaskSheetComponent>,
               private projectsService: ProjectsService,
               private formBuilder: FormBuilder,
+              private toastr: ToastrService,
               private dialog: MatDialog,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
   }
@@ -61,33 +62,39 @@ export class EditTaskSheetComponent implements OnInit {
     this.onCreateGroupFormValueChange();
   }
 
+  close(): void {
+    this.dialogRef.close();
+  }
+
   private initForm(): void {
-    this.formGroup = this.formBuilder.group({
-      templateNameControl: new FormControl(null,
-        [Validators.maxLength(30), Validators.required]),
-      inputDataControl: new FormControl(this.data.taskSheet.InputData,
-        [Validators.maxLength(999)]),
-      contentControl: new FormControl(this.data.taskSheet.RpzContent,
-        [Validators.maxLength(999)]),
-      drawContentControl: new FormControl(this.data.taskSheet.DrawMaterials,
-        [Validators.maxLength(999)]),
-      univerControl: new FormControl(this.data.taskSheet.Univer,
-        [Validators.maxLength(255)]),
-      facultyControl: new FormControl(this.data.taskSheet.Faculty,
-        [Validators.maxLength(255)]),
-      departmentControl: new FormControl(this.data.taskSheet.Faculty,
-        [Validators.maxLength(255)]),
-      headCathedraControl: new FormControl(this.data.taskSheet.HeadCathedra,
-        [Validators.maxLength(255)]),
-      startDateControl: new FormControl(this.data.taskSheet.DateStart != null ? new Date(this.data.taskSheet.DateStart) : new Date()),
-      endDateControl: new FormControl(this.data.taskSheet.DateEnd)
-    });
+    if (!this.formGroup) {
+      this.formGroup = this.formBuilder.group({
+        templateNameControl: new FormControl(null,
+          [Validators.maxLength(30), Validators.required]),
+        inputDataControl: new FormControl(this.data.taskSheet.InputData,
+          [Validators.maxLength(999)]),
+        contentControl: new FormControl(this.data.taskSheet.RpzContent,
+          [Validators.maxLength(999)]),
+        drawContentControl: new FormControl(this.data.taskSheet.DrawMaterials,
+          [Validators.maxLength(999)]),
+        univerControl: new FormControl(this.data.taskSheet.Univer,
+          [Validators.maxLength(255)]),
+        facultyControl: new FormControl(this.data.taskSheet.Faculty,
+          [Validators.maxLength(255)]),
+        departmentControl: new FormControl(this.data.taskSheet.Faculty,
+          [Validators.maxLength(255)]),
+        headCathedraControl: new FormControl(this.data.taskSheet.HeadCathedra,
+          [Validators.maxLength(255)]),
+        startDateControl: new FormControl(this.data.taskSheet.DateStart != null ? new Date(this.data.taskSheet.DateStart) : new Date()),
+        endDateControl: new FormControl(this.data.taskSheet.DateEnd)
+      });
+
+    }
   }
 
   onCreateGroupFormValueChange() {
     const initialValue = this.formGroup.value;
     this.formGroup.valueChanges.subscribe(value => {
-      console.log(JSON.stringify(initialValue) !== JSON.stringify(value));
       this.hasChange = JSON.stringify(initialValue) !== JSON.stringify(value);
     });
   }
@@ -140,9 +147,7 @@ export class EditTaskSheetComponent implements OnInit {
     this.populateSheet(template);
     this.taskSheetService.editTemplate(template).subscribe(() => {
       this.ngOnInit();
-      this.snackBar.open('Шаблон успешно сохранен', null, {
-        duration: 2000
-      });
+      this.toastr.success('Шаблон успешно сохранен');
     });
   }
 
@@ -155,11 +160,8 @@ export class EditTaskSheetComponent implements OnInit {
           this.taskSheetService.editTaskSheet(taskSheet).subscribe();
         }
       }
-
-      this.snackBar.open('Шаблон успешно применен', null, {
-        duration: 2000
-      });
     });
+    this.toastr.success('Шаблон успешно применен');
   }
 
   getResultForm(): TaskSheet {

@@ -1,28 +1,35 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
-<div mat-dialog-content>
-  <mat-form-field class="form-field">
-    <mat-label>Название этапа</mat-label>
-    <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
-    <mat-error *ngIf="nameControl.invalid">От 3 до 100 символов</mat-error>
-  </mat-form-field>
-  <mat-form-field class="form-field">
-    <mat-label>Процент выполнения</mat-label>
-    <input matInput [formControl]="percentageControl" [(ngModel)]="data.percentage">
-    <span matSuffix>%</span>
-    <mat-error *ngIf="percentageControl.invalid">Введите число от 0 до 100</mat-error>
-  </mat-form-field>
-  <mat-form-field class="form-field">
-    <mat-label>Дата</mat-label>
-    <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)">
-    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-    <mat-datepicker #dp></mat-datepicker>
-    <mat-error *ngIf="dateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
-  </mat-form-field>
-</div>
-<div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
-  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data"
-          [disabled]="nameControl.invalid || percentageControl.invalid || dateControl.invalid">
-    Сохранить
-  </button>
+<div class="add-stage-dialog__container">
+  <div class="add-stage-dialog__header">
+    <h1 mat-dialog-title class="add-stage-dialog__title">{{data.title}}</h1>
+    <button mat-icon-button (click)="close()" class="add-stage-dialog__close-btn">
+      <mat-icon aria-hidden="false">close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <mat-form-field class="form-field">
+      <mat-label>Название этапа</mat-label>
+      <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
+      <mat-error *ngIf="nameControl.invalid">От 3 до 100 символов</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Процент выполнения</mat-label>
+      <input matInput [formControl]="percentageControl" [(ngModel)]="data.percentage">
+      <span matSuffix>%</span>
+      <mat-error *ngIf="percentageControl.invalid">Введите число от 0 до 100</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Дата</mat-label>
+      <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)">
+      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+      <mat-datepicker #dp></mat-datepicker>
+      <mat-error *ngIf="dateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions class="dialog-buttons">
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
+    <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data"
+            [disabled]="nameControl.invalid || percentageControl.invalid || dateControl.invalid">
+      Сохранить
+    </button>
+  </div>
 </div>

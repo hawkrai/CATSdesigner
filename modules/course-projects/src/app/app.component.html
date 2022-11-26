@@ -30,8 +30,6 @@
     >
           <span class="mdc-tab__content">
             <span class="mdc-tab__text-label">График процентовки</span>
-            <mat-icon color="primary" style="margin-left: 5px;">groups</mat-icon>
-
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -103,6 +101,7 @@
       </div>
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
         <app-help
+          *ngIf="courseUser.IsLecturer"
           [message]="'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
           [action]="'Понятно'"></app-help>
         <div class="excel-file" matTooltip="Загрузить документ Excel"

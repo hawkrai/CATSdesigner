@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {FormControl, Validators} from '@angular/forms';
 
 interface DialogData {
-  title: string,
+  title: string;
   name: string;
   percentage: number;
   date: any;
@@ -37,10 +37,14 @@ export class AddStageDialogComponent {
     this.dialogRef.close();
   }
 
+  close(): void {
+    this.dialogRef.close();
+  }
+
   public noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
-    return isValid ? null : { 'whitespace': true };
+    return isValid ? null : { whitespace: true };
   }
-  
+
 }

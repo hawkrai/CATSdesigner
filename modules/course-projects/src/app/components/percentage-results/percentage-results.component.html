@@ -1,7 +1,7 @@
 <div class="percentage-results-component" *ngIf="selectedGroup; else load">
   <div class="percentage-results-component__header">
     <ng-content select="[groupPicker]"></ng-content>
-    <div class="percentage-results-component__controls">
+    <div class="percentage-results-component__controls" *ngIf="courseUser.IsLecturer">
       <mat-form-field class="percentage-results-component__search">
         <mat-label>Поиск по теме, фамилии</mat-label>
         <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
