@@ -7,6 +7,7 @@ import { ResetPasswordModalComponent } from '../reset-password-modal/reset-passw
 import { Locale } from '../../../../../../container/src/app/shared/interfaces/locale.interface';
 import { VideoComponent } from '../modal/video.component';
 import { Router } from '@angular/router';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-change-password',
@@ -17,7 +18,7 @@ export class ChangePasswordComponent implements OnInit {
 
   @Output() submitEM = new EventEmitter();
   form: FormGroup;
-  quest = questions;
+  quest = [];
   verifyValue: boolean;
 
   public locales: Locale[] = [{ name: 'Ru', value: 'ru' }, { name: 'En', value: 'en' }];
@@ -27,7 +28,8 @@ export class ChangePasswordComponent implements OnInit {
     private dialog: MatDialog,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: string
+    private translatePipe: TranslatePipe,
+    @Inject(MAT_DIALOG_DATA) public data: string,
   ) { }
 
   ngOnInit() {
@@ -38,6 +40,11 @@ export class ChangePasswordComponent implements OnInit {
       SecretAnswer: new FormControl('', [Validators.required, Validators.pattern('^[А-Яа-яA-Za-z0-9ёЁ _-]{1,30}$'),
       Validators.minLength(1), Validators.maxLength(30)])
     });
+
+    this.quest = questions.map((x) => ({
+      value: x.value,
+      text: this.translatePipe.localization[x.text],
+    }));
 
     const local: string = localStorage.getItem('locale');
     this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
@@ -91,7 +98,9 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   public open() {
-    const dialogRef = this.dialog.open(VideoComponent);
+    const dialogRef = this.dialog.open(VideoComponent, {
+      hasBackdrop: true,
+    });
   }
 
   routeToLogin() {
