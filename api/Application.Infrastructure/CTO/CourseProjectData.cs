@@ -34,7 +34,7 @@ namespace Application.Infrastructure.CTO
 
         public int? LecturerId { get; set; }
 
-        public string Subject { get; set; }
+        public string SubjectShortName { get; set; }
 
         public int? SubjectId { get; set; }
 

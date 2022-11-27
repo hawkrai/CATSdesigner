@@ -338,7 +338,7 @@ namespace LMPlatform.UI.Controllers
             return this.Json(cpProject.Select(e => new
             {
                 Name = e.Theme,
-                SubjectName = e.Subject,
+                SubjectName = e.SubjectShortName,
                 SubjectFullName = e.SubjectFullName
             }), JsonRequestBehavior.AllowGet);
         }
