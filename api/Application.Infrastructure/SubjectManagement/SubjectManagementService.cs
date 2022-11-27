@@ -212,7 +212,7 @@ namespace Application.Infrastructure.SubjectManagement
 				{
 					attachment.PathName = news.Attachments;
 					attachment.UserId = UserContext.CurrentUserId;
-					attachment.CreationDate = DateTime.Now;
+					attachment.CreationDate = DateTime.UtcNow;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
@@ -559,7 +559,7 @@ namespace Application.Infrastructure.SubjectManagement
 				{
 					attachment.PathName = labs.Attachments;
 					attachment.UserId = UserContext.CurrentUserId;
-					attachment.CreationDate = DateTime.Now;
+					attachment.CreationDate = DateTime.UtcNow;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
@@ -601,7 +601,7 @@ namespace Application.Infrastructure.SubjectManagement
 				{
 					attachment.PathName = userLabFiles.Attachments;
 					attachment.UserId = UserContext.CurrentUserId;
-					attachment.CreationDate = DateTime.Now;
+					attachment.CreationDate = DateTime.UtcNow;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
@@ -902,7 +902,7 @@ namespace Application.Infrastructure.SubjectManagement
 				{
 					attachment.PathName = lectures.Attachments;
                     attachment.UserId = UserContext.CurrentUserId;
-                    attachment.CreationDate = DateTime.Now;
+                    attachment.CreationDate = DateTime.UtcNow;
                     repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}

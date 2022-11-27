@@ -49,7 +49,7 @@ namespace Application.Infrastructure.MessageManagement
                         if (attach.Id == 0) 
                         {
                             attach.UserId = UserContext.CurrentUserId;
-                            attach.CreationDate = DateTime.Now;
+                            attach.CreationDate = DateTime.UtcNow;
                         }
 
                         repositoriesContainer.AttachmentRepository.Save(attach);

@@ -368,7 +368,7 @@ namespace Application.Infrastructure.ProjectManagement
             if (attachment.Id == 0) 
             {
                 attachment.UserId = UserContext.CurrentUserId;
-                attachment.CreationDate = DateTime.Now;
+                attachment.CreationDate = DateTime.UtcNow;
             }
 
 	        attachment.PathName = project.Attachments;

@@ -110,7 +110,7 @@ namespace Application.Infrastructure.PracticalManagement
 				{
 					attachment.PathName = practical.Attachments;
 					attachment.UserId = UserContext.CurrentUserId;
-					attachment.CreationDate = DateTime.Now;
+					attachment.CreationDate = DateTime.UtcNow;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}

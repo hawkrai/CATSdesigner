@@ -728,7 +728,7 @@ namespace Application.Infrastructure.ConceptManagement
                         PathName = GetGuidFileName(),
                         FileName = convertor.Convert(sourceFilePath),
                         UserId = UserContext.CurrentUserId,
-                        CreationDate = DateTime.Now
+                        CreationDate = DateTime.UtcNow
                     });
                 }
 
