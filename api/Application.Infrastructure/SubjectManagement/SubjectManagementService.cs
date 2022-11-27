@@ -901,9 +901,9 @@ namespace Application.Infrastructure.SubjectManagement
 				if (attachment.Id == 0)
 				{
 					attachment.PathName = lectures.Attachments;
-                    attachment.UserId = UserContext.CurrentUserId;
-                    attachment.CreationDate = DateTime.UtcNow;
-                    repositoriesContainer.AttachmentRepository.Save(attachment);
+					attachment.UserId = UserContext.CurrentUserId;
+					attachment.CreationDate = DateTime.UtcNow;
+					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
 			repositoriesContainer.LecturesRepository.Save(lectures);
