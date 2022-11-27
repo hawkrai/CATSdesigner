@@ -2,7 +2,7 @@
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 1"
-            (click)="tab = 1"
+            (click)="onChangeTab(1)"
     >
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">Темы проектов</span>
@@ -14,7 +14,7 @@
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 2"
-            (click)="tab = 2"
+            (click)="onChangeTab(2)"
     >
           <span class="mdc-tab__content">
             <span class="mdc-tab__text-label">Лист задания</span>
@@ -26,12 +26,10 @@
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 3"
-            (click)="tab = 3"
+            (click)="onChangeTab(3)"
     >
           <span class="mdc-tab__content">
             <span class="mdc-tab__text-label">График процентовки</span>
-            <mat-icon color="primary" style="margin-left: 5px;">groups</mat-icon>
-
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -40,7 +38,7 @@
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 4"
-            (click)="tab = 4"
+            (click)="onChangeTab(4)"
     >
           <span class="mdc-tab__content">
             <span class="mdc-tab__text-label">Результаты процентовки</span>
@@ -52,7 +50,7 @@
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 5"
-            (click)="tab = 5"
+            (click)="onChangeTab(5)"
     >
           <span class="mdc-tab__content">
             <span class="mdc-tab__text-label">Посещение консультаций</span>
@@ -64,7 +62,7 @@
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
             [class.mdc-tab--active]="tab === 6"
-            (click)="tab = 6"
+            (click)="onChangeTab(6)"
     >
           <span class="mdc-tab__content">
             <span class="mdc-tab__text-label">Защита проектов</span>
@@ -103,6 +101,7 @@
       </div>
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
         <app-help
+          *ngIf="courseUser.IsLecturer"
           [message]="'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
           [action]="'Понятно'"></app-help>
         <div class="excel-file" matTooltip="Загрузить документ Excel"

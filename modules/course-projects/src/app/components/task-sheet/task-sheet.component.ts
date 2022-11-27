@@ -11,6 +11,7 @@ import {IAppState} from '../../store/state/app.state';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { Template } from 'src/app/models/template.model';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-task-sheet',
@@ -34,7 +35,7 @@ export class TaskSheetComponent implements OnInit {
   constructor(private projectThemeService: ProjectThemeService,
               private taskSheetService: TaskSheetService,
               private dialog: MatDialog,
-              private snackBar: MatSnackBar,
+              private toastr: ToastrService,
               private store: Store<IAppState>) {
   }
 
@@ -81,7 +82,7 @@ export class TaskSheetComponent implements OnInit {
   }
 
   getTaskSheetTemplate(taskSheet: any): object {
-    let checkTheme = this.templates.find((i) => i.InputData == taskSheet.InputData
+    const checkTheme = this.templates.find((i) => i.InputData == taskSheet.InputData
     && i.Faculty == i.Faculty
     && i.HeadCathedra == i.HeadCathedra
     && i.RpzContent == i.RpzContent
@@ -116,9 +117,7 @@ export class TaskSheetComponent implements OnInit {
         if (result != null) {
           this.taskSheetService.editTaskSheet(result).subscribe(() => {
             this.ngOnInit();
-            this.snackBar.open('Лист задания успешно сохранен', null, {
-              duration: 2000
-            });
+            this.toastr.success('Лист задания успешно сохранен');
           });
         } else {
           this.ngOnInit();

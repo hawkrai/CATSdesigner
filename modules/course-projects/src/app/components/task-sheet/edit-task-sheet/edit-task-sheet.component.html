@@ -1,115 +1,122 @@
-<h1 mat-dialog-title>Редактирование листа задания</h1>
-<div mat-dialog-content style="display: block" [formGroup]="formGroup">
-  <div class="choose-template">
-    <mat-form-field class="form-field">
-      <mat-label>Выберите готовый шаблон</mat-label>
-      <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
-        <mat-option *ngIf="data.taskSheetTemplate != undefined"
-                    value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
-        <mat-option *ngFor="let template of templates" [value]="template">
-          {{template.Name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <div class="help-icon">
-      <button class="mat-icon-button-help" mat-icon-button
-              [matTooltip]="'Помощь'" matTooltipPosition="below"
-              (click)="showHelp()">
-        <mat-icon color="primary">help_outline</mat-icon>
+<div class="edit-task-sheet-dialog__container">
+  <div class="edit-task-sheet-dialog__header">
+    <h1 mat-dialog-title class="edit-task-sheet-dialog__title">Редактирование листа задания</h1>
+    <button mat-icon-button (click)="close()" class="edit-task-sheet-dialog__close-btn">
+      <mat-icon aria-hidden="false">close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content style="display: block" [formGroup]="formGroup">
+    <div class="choose-template">
+      <mat-form-field class="form-field">
+        <mat-label>Выберите готовый шаблон</mat-label>
+        <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
+          <mat-option *ngIf="data.taskSheetTemplate != undefined"
+                      value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
+          <mat-option *ngFor="let template of templates" [value]="template">
+            {{template.Name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="help-icon">
+        <button class="mat-icon-button-help" mat-icon-button
+                [matTooltip]="'Помощь'" matTooltipPosition="below"
+                (click)="showHelp()">
+          <mat-icon color="primary">help_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="save-template">
+      <mat-form-field>
+        <mat-label>Название шаблона</mat-label>
+        <input matInput formControlName="templateNameControl">
+        <mat-error *ngIf="formGroup.controls.templateNameControl.invalid">До 30 символов</mat-error>
+      </mat-form-field>
+      <button mat-flat-button class="saveTemplateButton" color="primary"
+              [disabled]="formGroup.controls.templateNameControl.invalid || isFormInvalid"
+              (click)="saveTemplate()">Сохранить шаблон
       </button>
     </div>
+
+    <div class="apply-template">
+      <mat-form-field>
+        <mat-label>Группы</mat-label>
+        <mat-select multiple [(value)]="selectedGroups">
+          <mat-option *ngFor="let group of data.groups" [value]="group.GroupName">
+            {{group.GroupName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button class="applyButton" color="primary"
+              [disabled]="isSelectedGroupsInvalid() || formGroup.controls.templateNameControl.invalid || isFormInvalid"
+              (click)="applyTemplate()">Применить шаблон
+      </button>
+    </div>
+
+    <mat-tab-group dynamicHeight class="dialog-tab-content">
+      <mat-tab label="Входные данные">
+        <mat-form-field appearance="fill">
+          <textarea matInput style="height: 300px" formControlName="inputDataControl"></textarea>
+          <mat-error *ngIf="formGroup.controls.inputDataControl.invalid">До 999 символов</mat-error>
+        </mat-form-field>
+      </mat-tab>
+      <mat-tab label="Содержание">
+        <mat-form-field appearance="fill">
+          <textarea matInput style="height: 300px" formControlName="contentControl"></textarea>
+          <mat-error *ngIf="formGroup.controls.contentControl.invalid">До 999 символов</mat-error>
+        </mat-form-field>
+      </mat-tab>
+      <mat-tab label="Графические материалы">
+        <mat-form-field appearance="fill">
+          <textarea matInput style="height: 300px" formControlName="drawContentControl"></textarea>
+          <mat-error *ngIf="formGroup.controls.drawContentControl.invalid">До 999 символов</mat-error>
+        </mat-form-field>
+      </mat-tab>
+      <mat-tab label="Сведения о ВУЗе">
+        <mat-form-field appearance="fill">
+          <mat-label>Название учебного заведения</mat-label>
+          <textarea matInput style="height: 30px" formControlName="univerControl"></textarea>
+          <mat-error *ngIf="formGroup.controls.univerControl.invalid">До 255 символов</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Название факультета</mat-label>
+          <textarea matInput style="height: 30px" formControlName="facultyControl"></textarea>
+          <mat-error *ngIf="formGroup.controls.facultyControl.invalid">До 255 символов</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Название кафедры</mat-label>
+          <textarea matInput style="height: 30px" formControlName="departmentControl"></textarea>
+          <mat-error *ngIf="formGroup.controls.departmentControl.invalid">До 255 символов</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Фамилия, инициалы заведующего кафедры</mat-label>
+          <textarea matInput style="height: 30px" formControlName="headCathedraControl"></textarea>
+          <mat-error *ngIf="formGroup.controls.headCathedraControl.invalid">До 255 символов</mat-error>
+        </mat-form-field>
+      </mat-tab>
+      <mat-tab label="Даты">
+        <mat-form-field class="form-field" style="margin-top: 20px">
+          <mat-label>Дата выдачи задания</mat-label>
+          <input matInput [matDatepicker]="dp1" formControlName="startDateControl">
+          <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+          <mat-datepicker #dp1></mat-datepicker>
+          <mat-error *ngIf="formGroup.controls.startDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-field">
+          <mat-label>Сроки сдачи курсового проекта</mat-label>
+          <input matInput [matDatepicker]="dp2" formControlName="endDateControl">
+          <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+          <mat-datepicker #dp2></mat-datepicker>
+          <mat-error *ngIf="formGroup.controls.endDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
+        </mat-form-field>
+      </mat-tab>
+    </mat-tab-group>
+
   </div>
-  <div class="save-template">
-    <mat-form-field>
-      <mat-label>Название шаблона</mat-label>
-      <input matInput formControlName="templateNameControl">
-      <mat-error *ngIf="formGroup.controls.templateNameControl.invalid">До 30 символов</mat-error>
-    </mat-form-field>
-    <button mat-flat-button class="saveTemplateButton" color="primary"
-            [disabled]="formGroup.controls.templateNameControl.invalid || isFormInvalid"
-            (click)="saveTemplate()">Сохранить шаблон
+  <div mat-dialog-actions class="dialog-buttons">
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
+    <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()"
+            [disabled]="!hasChange || !selectedGroups?.length">
+      Сохранить
     </button>
   </div>
-
-  <div class="apply-template">
-    <mat-form-field>
-      <mat-label>Группы</mat-label>
-      <mat-select multiple [(value)]="selectedGroups">
-        <mat-option *ngFor="let group of data.groups" [value]="group.GroupName">
-          {{group.GroupName}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <button mat-flat-button class="applyButton" color="primary"
-            [disabled]="isSelectedGroupsInvalid() || formGroup.controls.templateNameControl.invalid || isFormInvalid"
-            (click)="applyTemplate()">Применить шаблон
-    </button>
-  </div>
-
-  <mat-tab-group dynamicHeight class="dialog-tab-content">
-    <mat-tab label="Входные данные">
-      <mat-form-field appearance="fill">
-        <textarea matInput style="height: 300px" formControlName="inputDataControl"></textarea>
-        <mat-error *ngIf="formGroup.controls.inputDataControl.invalid">До 999 символов</mat-error>
-      </mat-form-field>
-    </mat-tab>
-    <mat-tab label="Содержание">
-      <mat-form-field appearance="fill">
-        <textarea matInput style="height: 300px" formControlName="contentControl"></textarea>
-        <mat-error *ngIf="formGroup.controls.contentControl.invalid">До 999 символов</mat-error>
-      </mat-form-field>
-    </mat-tab>
-    <mat-tab label="Графические материалы">
-      <mat-form-field appearance="fill">
-        <textarea matInput style="height: 300px" formControlName="drawContentControl"></textarea>
-        <mat-error *ngIf="formGroup.controls.drawContentControl.invalid">До 999 символов</mat-error>
-      </mat-form-field>
-    </mat-tab>
-    <mat-tab label="Сведения о ВУЗе">
-      <mat-form-field appearance="fill">
-        <mat-label>Название учебного заведения</mat-label>
-        <textarea matInput style="height: 40px" formControlName="univerControl"></textarea>
-        <mat-error *ngIf="formGroup.controls.univerControl.invalid">До 255 символов</mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Название факультета</mat-label>
-        <textarea matInput style="height: 40px" formControlName="facultyControl"></textarea>
-        <mat-error *ngIf="formGroup.controls.facultyControl.invalid">До 255 символов</mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Название кафедры</mat-label>
-        <textarea matInput style="height: 40px" formControlName="departmentControl"></textarea>
-        <mat-error *ngIf="formGroup.controls.departmentControl.invalid">До 255 символов</mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Фамилия, инициалы заведующего кафедры</mat-label>
-        <textarea matInput style="height: 40px" formControlName="headCathedraControl"></textarea>
-        <mat-error *ngIf="formGroup.controls.headCathedraControl.invalid">До 255 символов</mat-error>
-      </mat-form-field>
-    </mat-tab>
-    <mat-tab label="Даты">
-      <mat-form-field class="form-field" style="margin-top: 20px">
-        <mat-label>Дата выдачи задания</mat-label>
-        <input matInput [matDatepicker]="dp1" formControlName="startDateControl">
-        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
-        <mat-datepicker #dp1></mat-datepicker>
-        <mat-error *ngIf="formGroup.controls.startDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
-      </mat-form-field>
-      <mat-form-field class="form-field">
-        <mat-label>Сроки сдачи курсового проекта</mat-label>
-        <input matInput [matDatepicker]="dp2" formControlName="endDateControl">
-        <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
-        <mat-datepicker #dp2></mat-datepicker>
-        <mat-error *ngIf="formGroup.controls.endDateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
-      </mat-form-field>
-    </mat-tab>
-  </mat-tab-group>
-
-</div>
-<div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
-  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()"
-          [disabled]="!hasChange">
-    Сохранить
-  </button>
 </div>

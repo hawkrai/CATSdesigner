@@ -32,12 +32,18 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.tab = Number(localStorage.getItem('courseProject_tab')) || 1;
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
 
       this.courseUserService.getUser().subscribe(res => this.courseUser = res);
       this.retrieveGroups(false);
     });
+  }
+
+  onChangeTab(tabNumber: number): void {
+    localStorage.setItem('courseProject_tab', String(tabNumber));
+    this.tab = tabNumber;
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
@@ -75,7 +81,7 @@ export class AppComponent implements OnInit {
   }
 
   getExcelFile() {
-    //const url = 'http://localhost:8080/Statistic/';
+    // const url = 'http://localhost:8080/Statistic/';
 
     if (this.tab === 4) {
       location.href = location.origin + '/api/CpStatistic?group=' + this.selectedGroup.GroupId + '&subjectId=' + this.subjectId;

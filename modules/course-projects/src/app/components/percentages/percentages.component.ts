@@ -57,8 +57,8 @@ export class PercentagesComponent implements OnInit {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '548px',
       data: {
-        title: 'Добавление этапа'
-       }
+        title: 'Добавление этапа процентовки'
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -70,10 +70,10 @@ export class PercentagesComponent implements OnInit {
           const date = new Date(result.date);
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
           this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
-          .subscribe(() => {
-            this.ngOnInit();
-            this.toastr.success('Этап успешно сохранен');
-          });
+            .subscribe(() => {
+              this.ngOnInit();
+              this.toastr.success('Этап успешно сохранен');
+            });
         } else {
           this.toastr.error('Этап с таким названием уже существует');
         }
@@ -95,7 +95,7 @@ export class PercentagesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
         result.name = result.name.replace('\n', '');
-        const checkTheme = this.percentages.find((i) => i.Name === result.name);
+        const checkTheme = this.percentages.find((i) => i.Name === result.name && i.Percentage === +result.percentage);
         if (checkTheme === undefined) {
           const date = new Date(result.date);
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());

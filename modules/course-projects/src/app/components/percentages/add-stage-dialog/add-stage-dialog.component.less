@@ -1,7 +1,30 @@
+:host {
+  .add-stage-dialog {
+    &__container {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      height: 100%;
+    }
+    &__header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__title {
+      font-weight: 400;
+    }
+
+    &__close-btn {
+
+    }
+  }
+}
+
 .form-field {
   width: 100%;
 }
 
 .dialog-buttons {
-  float: right;
+  justify-content: flex-end;
 }

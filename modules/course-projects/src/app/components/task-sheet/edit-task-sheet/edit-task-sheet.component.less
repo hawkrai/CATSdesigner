@@ -1,4 +1,27 @@
-.mat-dialog-content{
+:host {
+  .edit-task-sheet-dialog {
+    &__container {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      height: 100%;
+    }
+    &__header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__title {
+      font-weight: 400;
+    }
+
+    &__close-btn {
+
+    }
+  }
+}
+
+.mat-dialog-content {
   max-height: 750px;
 }
 
@@ -13,6 +36,7 @@
     flex: auto;
     padding-right: 10px;
   }
+
   .help-icon {
     width: 240px;
   }
@@ -59,14 +83,14 @@
 }
 
 .dialog-buttons {
-  float: right;
+  justify-content: flex-end;
   padding-top: 6.5px;
 }
 
-.applyButton{
+.applyButton {
   background-color: rgba(125, 75, 218, 0.96);
 }
 
-.saveTemplateButton{
+.saveTemplateButton {
   background-color: rgba(219, 114, 44, 0.96);
 }

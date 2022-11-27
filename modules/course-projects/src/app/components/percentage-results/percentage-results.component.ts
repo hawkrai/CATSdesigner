@@ -11,6 +11,7 @@ import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {CoreGroup} from 'src/app/models/core-group.model';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-percentage-results',
@@ -35,7 +36,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   constructor(private percentageResultsService: PercentageResultsService,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar,
+              private toastr: ToastrService,
               private store: Store<IAppState>) {
   }
 
@@ -183,9 +184,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
+    this.toastr.success(msg);
   }
 
 }

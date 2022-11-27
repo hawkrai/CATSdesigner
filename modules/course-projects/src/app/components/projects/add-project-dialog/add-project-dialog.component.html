@@ -15,7 +15,8 @@
       <mat-error *ngIf="nameControl.invalid">От 3 до 255 символов</mat-error>
     </mat-form-field>
     <div class="add-project-dialog__lecturer">
-      <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
+      <mat-hint
+        *ngIf="data.lecturer">{{data.lecturer.split(' ')[0]}} {{' ' + data.lecturer.split(' ')[1].slice(0, 1).toUpperCase() + '.'}} {{' ' + data.lecturer.split(' ')[2].slice(0, 1).toUpperCase() + '.'}} </mat-hint>
     </div>
     <mat-label class="form-field__groups">Группы:</mat-label>
     <div class="group-picker">
