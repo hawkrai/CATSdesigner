@@ -7,11 +7,16 @@ namespace LMPlatform.UI.Helpers
     {
         public static string GetAuthorName(Subject subject, int lecturerId) 
         {
+            if (subject.SubjectLecturers == null) 
+            {
+                return null;
+            }
+            
             var subjectLecturer = subject.SubjectLecturers.FirstOrDefault(sl => sl.Owner == lecturerId);
 
             if (subjectLecturer != null) 
             {
-                return subjectLecturer.OwnerLecturer.FullName;
+                return subjectLecturer.OwnerLecturer?.FullName;
             }
 
             return subject.SubjectLecturers.FirstOrDefault(sl => sl.Owner != null)?.OwnerLecturer?.FullName;
