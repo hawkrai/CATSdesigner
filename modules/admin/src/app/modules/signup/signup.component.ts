@@ -25,11 +25,11 @@ export class SignupComponent implements OnInit {
 
   hidePassword = true;
   hidePassword2 = true;
-  quest = questions;
+  quest = [];
   form: FormGroup;
   groups: any;
   isLoad = false;
-  selectedQuestion = this.quest[0].value;
+  selectedQuestion = questions[0].value;
 
   public locales: Locale[] = [{ name: 'Ru', value: 'ru' }, { name: 'En', value: 'en' }];
   public locale: Locale;
@@ -61,6 +61,11 @@ export class SignupComponent implements OnInit {
     }, {
       validator: MustMatch('Password', 'ConfirmPassword')
     });
+
+    this.quest = questions.map((x) => ({
+      value: x.value,
+      text: this.translatePipe.localization[x.text],
+    }));
 
     const local: string = localStorage.getItem('locale');
     this.locale = local ? this.locales.find((locale: Locale) => locale.value === local) : this.locales[0];
@@ -150,6 +155,12 @@ export class SignupComponent implements OnInit {
   }
 
   public open() {
-    const dialogRef = this.dialog.open(VideoComponent);
+    const dialogRef = this.dialog.open(VideoComponent, {
+      hasBackdrop: true,
+    });
+  }
+
+  cancel() {
+    window.parent.location.href = '/login';
   }
 }

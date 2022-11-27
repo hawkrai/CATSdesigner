@@ -565,5 +565,8 @@
   "text.help.popover.content.third": "Руководитель проекта: к.т.н., доцент Попова Ю.Б.",
   "text.help.popover.content.fourth": "БНТУ-2021",
   "text.help.popover.route.manual": "Перейти к руководству пользователя",
-  "text.help.popover.close": "Закрыть"
+  "text.help.popover.close": "Закрыть",
+  "other.secret_question_1": "Девичья фамилия матери?",
+  "other.secret_question_2": "Кличка любимого животного?",
+  "other.secret_question_3": "Ваше хобби?"
 }

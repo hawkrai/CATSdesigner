@@ -27,7 +27,7 @@
         <img class="logo" src="./../../../assets/images/logo.png" />
         <p>Care about the students</p>
         <h1>{{'text.start.title'| translate: 'Адаптивная обучающая система'}}</h1>
-        <a mat-fab (click)="this.cancel()">
+        <a mat-fab (click)="this.open()">
           <mat-icon class="icon_p">play_arrow</mat-icon>
         </a>
       </td>
@@ -232,7 +232,7 @@
               <button
                 mat-raised-button
                 color="basic"
-                (click)="this.cancel()"
+                (click)="cancel()"
                 href=""
               >
               {{'text.signup.cancel'| translate: 'Отмена'}}
