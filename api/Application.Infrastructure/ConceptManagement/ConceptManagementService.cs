@@ -400,7 +400,7 @@ namespace Application.Infrastructure.ConceptManagement
                     {
                         attachment.PathName = concept.Container;
                         attachment.UserId = concept.UserId;
-                        attachment.CreationDate = DateTime.Now;
+                        attachment.CreationDate = DateTime.UtcNow;
 
                         repositoriesContainer.AttachmentRepository.Save(attachment);
                     }
