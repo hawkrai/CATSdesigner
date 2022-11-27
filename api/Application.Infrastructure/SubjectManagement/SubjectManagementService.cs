@@ -902,7 +902,7 @@ namespace Application.Infrastructure.SubjectManagement
 				{
 					attachment.PathName = lectures.Attachments;
 					attachment.UserId = UserContext.CurrentUserId;
-					attachment.CreationDate = DateTime.Now;
+					attachment.CreationDate = DateTime.UtcNow;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}
