@@ -6847,7 +6847,16 @@ namespace Application.Infrastructure.Export
 
             runProperties148.Append(italic127);
             Text text136 = new Text();
-            text136.Text = dateStart ?? "";
+
+            if (dateStart is null)
+            {
+                text136.Text = string.Empty;
+            }
+            else
+            {
+                // Пустое место в строке ниже для подписи
+                text136.Text = $"{dateStart}        ";
+            }
 
             run151.Append(runProperties148);
             run151.Append(text136);
@@ -7180,7 +7189,7 @@ namespace Application.Infrastructure.Export
 
             Run run155 = new Run() { RsidRunProperties = "00FB35FE" };
             Text text140 = new Text();
-            text140.Text = "Подпись обучающегося";
+            text140.Text = "Обучающийся";
 
             run155.Append(text140);
 
@@ -7235,7 +7244,16 @@ namespace Application.Infrastructure.Export
 
             runProperties151.Append(italic129);
             Text text141 = new Text();
-            text141.Text = dateStart ?? "";
+
+            if (dateStart is null)
+            {
+                text141.Text = string.Empty;
+            }
+            else
+            {
+                // Пустое место в строке ниже для подписи.
+                text141.Text = $"{dateStart}        ";
+            }
 
             run156.Append(runProperties151);
             run156.Append(text141);
