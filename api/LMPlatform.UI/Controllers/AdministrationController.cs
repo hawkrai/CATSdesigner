@@ -20,6 +20,7 @@ using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.UserManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
+using LMPlatform.UI.Helpers;
 using LMPlatform.UI.ViewModels.AccountViewModels;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
 using Mvc.JQuery.Datatables;
@@ -508,13 +509,14 @@ namespace LMPlatform.UI.Controllers
             var lec = this.LecturerManagementService.GetLecturer(id);
             if (lec == null) return StatusCode(HttpStatusCode.BadRequest);
             var model = ListSubjectViewModel.FormSubjects(sub, lec.FullName);
+            
             var response = new
             {
                 Lecturer = model.Name,
                 Subjects = model.Subjects.Distinct().Select(s => new
                 {
                     SubjectName = s.Name,
-                    SubjectAuthorName = s.SubjectLecturers.First().OwnerLecturer != null ? s.SubjectLecturers.First().OwnerLecturer.FullName : model.Name,
+                    SubjectAuthorName = SubjectLecturerHelper.GetAuthorName(s, lec.Id) ?? model.Name,
                     Groups = s.SubjectGroups.Where(sg => sg.Group != null).Select(sg => new
                     {
                         GroupName = sg.Group.Name,

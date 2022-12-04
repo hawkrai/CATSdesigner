@@ -486,6 +486,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\SubjectLecturerHelper.cs" />
     <Compile Include="Helpers\TaskScheduler\TaskScheduler.cs" />
     <Compile Include="Helpers\TaskScheduler\Tasks\SearchTask.cs" />
     <Compile Include="Managers\JwtAuthorizationManager.cs" />
