@@ -431,7 +431,7 @@ namespace LMPlatform.UI.Controllers
             var attendances = user?.Attendances?.ToList();
             if (attendances == null) return StatusCode(HttpStatusCode.BadRequest);
             var data = attendances.GroupBy(e => e.Login.Date)
-                .Select(d => new {day = d.Key.ToString("d"), count = d.Count()});
+                .Select(d => new {day = d.Key.ToString("dd/MM/yyyy"), count = d.Count()});
 
             return JsonResponse(new {resultMessage = user.FullName, attendance = data});
         }
