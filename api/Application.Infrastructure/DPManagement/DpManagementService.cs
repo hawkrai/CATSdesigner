@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Application.Infrastructure.FilesManagement;
 using LMPlatform.Data.Repositories;
 using Application.Infrastructure.Export;
+using Application.Core.Helpers;
 
 namespace Application.Infrastructure.DPManagement
 {
@@ -726,6 +727,8 @@ namespace Application.Infrastructure.DPManagement
                     if (attachment.Id == 0)
                     {
                         attachment.PathName = news.Attachments;
+                        attachment.UserId = UserContext.CurrentUserId;
+                        attachment.CreationDate = DateTime.UtcNow;
                         repositoriesContainer.AttachmentRepository.Save(attachment);
                     }
                 }

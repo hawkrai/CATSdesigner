@@ -1,5 +1,6 @@
 ﻿using Application.Core;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.ConceptManagement;
 using Application.Infrastructure.Extensions;
 using Application.Infrastructure.FilesManagement;
@@ -108,6 +109,8 @@ namespace Application.Infrastructure.PracticalManagement
 				if (attachment.Id == 0)
 				{
 					attachment.PathName = practical.Attachments;
+					attachment.UserId = UserContext.CurrentUserId;
+					attachment.CreationDate = DateTime.UtcNow;
 					repositoriesContainer.AttachmentRepository.Save(attachment);
 				}
 			}

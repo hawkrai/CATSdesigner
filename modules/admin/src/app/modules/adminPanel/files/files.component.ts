@@ -14,7 +14,7 @@ export class FilesComponent implements OnInit {
 
   isLoad: boolean;
   file: any;
-  displayedColumns = ['id', 'Name', 'date', 'author','nameOnDisk', 'packageOnDisk'];
+  displayedColumns = ['id', 'Name', 'date', 'author', 'size', 'nameOnDisk', 'packageOnDisk'];
   dataSource = new MatTableDataSource<object>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -66,6 +66,22 @@ export class FilesComponent implements OnInit {
     else{
       return 'Нет данных'
     }
+  }
+
+  getSize(size) {
+    if (size != null) {
+      return this.toReadableFileSize(size);
+    }
+    else {
+      return 'Нет данных';
+    }
+  }
+
+  toReadableFileSize(size) {
+    const units = ['B', 'kB', 'MB', 'GB', 'TB'];
+
+    let i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+    return `${(size / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
   }
 
 }

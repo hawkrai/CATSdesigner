@@ -12,10 +12,6 @@ a:hover {
   font-weight: 500;
 }
 
-mat-form-field {
-  float: left;
-}
-
 .mat-paginator {
   display: flex;
   float: right;

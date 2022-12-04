@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Application.Core;
 using Application.Core.Constants;
 using Application.Core.Data;
+using Application.Core.Helpers;
 using Application.Infrastructure.FilesManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
@@ -44,6 +46,12 @@ namespace Application.Infrastructure.MessageManagement
 
                     foreach (var attach in message.Attachments)
                     {
+                        if (attach.Id == 0) 
+                        {
+                            attach.UserId = UserContext.CurrentUserId;
+                            attach.CreationDate = DateTime.UtcNow;
+                        }
+
                         repositoriesContainer.AttachmentRepository.Save(attach);
                     }
                 }

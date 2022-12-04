@@ -365,6 +365,12 @@ namespace Application.Infrastructure.ProjectManagement
 
 	        FilesManagementService.SaveFile(attachment, project.Attachments);
 
+            if (attachment.Id == 0) 
+            {
+                attachment.UserId = UserContext.CurrentUserId;
+                attachment.CreationDate = DateTime.UtcNow;
+            }
+
 	        attachment.PathName = project.Attachments;
 	        repositoriesContainer.AttachmentRepository.Save(attachment);
 	        return attachment;

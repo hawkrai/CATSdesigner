@@ -109,7 +109,10 @@ namespace LMPlatform.UI.Controllers
         {
             try
             {
-                var attachments = this.FilesManagementService.GetAttachments(null).ToList();
+                var attachments = this.FilesManagementService.GetAttachments(null)
+                    .Select(attachment => new AttachmentViewModel(attachment))
+                    .ToList();
+
                 var storageRoot = ConfigurationManager.AppSettings["FileUploadPath"];
                 var result = new 
                 {
