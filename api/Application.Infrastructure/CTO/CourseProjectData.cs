@@ -34,9 +34,11 @@ namespace Application.Infrastructure.CTO
 
         public int? LecturerId { get; set; }
 
-        public string Subject { get; set; }
+        public string SubjectShortName { get; set; }
 
         public int? SubjectId { get; set; }
+
+        public string SubjectFullName { get; set; }
 
         public IEnumerable<int> SelectedGroupsIds { get; set; }
     }
