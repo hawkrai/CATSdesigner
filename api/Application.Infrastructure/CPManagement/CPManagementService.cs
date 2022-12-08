@@ -19,9 +19,33 @@ namespace Application.Infrastructure.CPManagement
 {
     public class CPManagementService: ICPManagementService
     {
-        private readonly LazyDependency<ILecturerManagementService> lecturerManagementService = new();
+        private readonly LazyDependency<ILecturerManagementService> _lecturerManagementService;
 
-        public ILecturerManagementService LecturerManagementService => lecturerManagementService.Value;
+        private readonly LazyDependency<IFilesManagementService> _filesManagementService;
+
+        private readonly LazyDependency<IProjectManagementService> _projectManagementService;
+
+        private readonly LazyDependency<ICpContext> _context;
+
+        public ILecturerManagementService LecturerManagementService
+            => _lecturerManagementService.Value;
+
+        private ICpContext Context
+            => _context.Value;
+
+        private IFilesManagementService FilesManagementService
+            => _filesManagementService.Value;
+        
+        private IProjectManagementService ProjectManagementService
+            => _projectManagementService.Value;
+
+        public CPManagementService()
+        {
+            _lecturerManagementService = new LazyDependency<ILecturerManagementService>();
+            _filesManagementService = new LazyDependency<IFilesManagementService>();
+            _projectManagementService = new LazyDependency<IProjectManagementService>();
+            _context = new LazyDependency<ICpContext>();
+        }
 
         public PagedList<CourseProjectData> GetProjects(int userId, GetPagedListParams parms)
         {
@@ -37,9 +61,10 @@ namespace Application.Infrastructure.CPManagement
 
             if (user != null && user.Lecturer != null)
             {
-                var joinedLectorsIds = LecturerManagementService.GetJoinedLector(subjectId)
+                var joinedLecturerIds = LecturerManagementService.GetJoinedLector(subjectId)
                     .GroupBy(x => x.Id).Select(x => x.First().Id).ToList();
-                    query = query.Where(x => x.SubjectId == subjectId && joinedLectorsIds.Any(id => id == x.LecturerId));
+
+                    query = query.Where(x => x.SubjectId == subjectId && joinedLecturerIds.Any(id => id == x.LecturerId));
             }
 
             if (user != null && user.Student != null)
@@ -64,6 +89,7 @@ namespace Application.Infrastructure.CPManagement
                                          Group = acp.Student.Group.Name,
                                          ApproveDate = acp.ApproveDate
                                      };
+
                 return courseProjects.ApplyPaging(parms);
             }
             else
@@ -80,6 +106,7 @@ namespace Application.Infrastructure.CPManagement
                                          Group = acp.Student.Group.Name,
                                          ApproveDate = acp.ApproveDate
                                      };
+
                 return courseProjects.ApplyPaging(parms);
             }   
         }
@@ -93,7 +120,8 @@ namespace Application.Infrastructure.CPManagement
 
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
 
-            if(user != null) {
+            if(user != null)
+            {
                 if (user.Lecturer != null)
                 {
                     query = query.Where(x => x.LecturerId == userId);
@@ -105,7 +133,7 @@ namespace Application.Infrastructure.CPManagement
                 }
             }
            
-           var buf = from cp in query
+            var buf = from cp in query
                                      let acp = cp.AssignedCourseProjects.FirstOrDefault()
                                      select new CourseProjectData
                                      {
@@ -118,14 +146,15 @@ namespace Application.Infrastructure.CPManagement
             List<CourseProjectData> courseProjects = buf.ToList<CourseProjectData>();
 
             return courseProjects;
-            
         }
+
         public CourseProjectData GetProject(int id)
         {
             var cp = Context.CourseProjects
                 .AsNoTracking()
                 .Include(x => x.CourseProjectGroups)
                 .Single(x => x.CourseProjectId == id);
+
             return new CourseProjectData
             {
                 Id = cp.CourseProjectId,
@@ -144,11 +173,13 @@ namespace Application.Infrastructure.CPManagement
             AuthorizationHelper.ValidateLecturerAccess(Context, projectData.LecturerId.Value);
 
             CourseProject project;
+
             if (projectData.Id.HasValue)
             {   
                 project = Context.CourseProjects
                               .Include(x => x.CourseProjectGroups)
                               .Single(x => x.CourseProjectId == projectData.Id);
+
                 if (Context.CourseProjects.Any(x => x.Theme == projectData.Theme && x.SubjectId == projectData.SubjectId && x.CourseProjectId != projectData.Id))
                 {
                     throw new ApplicationException("Тема с таким названием уже есть!");
@@ -160,6 +191,7 @@ namespace Application.Infrastructure.CPManagement
                 {
                     throw new ApplicationException("Тема с таким названием уже есть!");
                 }
+
                 project = new CourseProject();
                 Context.CourseProjects.Add(project);
             }
@@ -203,9 +235,9 @@ namespace Application.Infrastructure.CPManagement
 
             var assignment = Context.AssignedCourseProjects.FirstOrDefault(x => x.CourseProjectId == projectId);
 
-            if ((isLecturer && assignment != null && assignment.ApproveDate.HasValue))
+            if (isLecturer && assignment != null && assignment.ApproveDate.HasValue)
             {
-                throw new ApplicationException("The selected Diplom Project has already been assigned!");
+                throw new ApplicationException("The selected Course Project has already been assigned!");
             }
 
             var studentAssignments = Context.AssignedCourseProjects.Where(x => x.StudentId == studentId);
@@ -279,6 +311,7 @@ namespace Application.Infrastructure.CPManagement
         public PagedList<StudentData> GetGraduateStudentsForUser(int userId, int subjectId, GetPagedListParams parms, bool getBySecretaryForStudent = true)
         {
             var secretaryId = 0;
+
             if (parms.Filters.ContainsKey("secretaryId"))
             {
                 int.TryParse(parms.Filters["secretaryId"], out secretaryId);
@@ -306,10 +339,12 @@ namespace Application.Infrastructure.CPManagement
             {
                 parms.SortExpression = "Name";
             }
+
             var query = Context.Students
                 .Where(x => isLecturerSecretary || (isStudent && getBySecretaryForStudent) || x.AssignedCourseProjects.Any(asd => asd.CourseProject.LecturerId == userId && asd.CourseProject.SubjectId == subjectId))
                 .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId)
                 .Where(x => x.AssignedCourseProjects.Any(a => a.CourseProject.SubjectId == subjectId));
+
             return (from s in query
                     let lecturer = s.AssignedCourseProjects.FirstOrDefault().CourseProject.Lecturer
                     select new StudentData
@@ -343,6 +378,7 @@ namespace Application.Infrastructure.CPManagement
         public PagedList<StudentData> GetGraduateStudentsForGroup(int userId, int groupId, int subjectId, GetPagedListParams parms, bool getBySecretaryForStudent = true)
         {
             var secretaryId = 0;
+
             if (parms.Filters.ContainsKey("secretaryId"))
             {
                 int.TryParse(parms.Filters["secretaryId"], out secretaryId);
@@ -365,10 +401,11 @@ namespace Application.Infrastructure.CPManagement
                      .Single() ?? 0;
             }
 
-                if (string.IsNullOrWhiteSpace(parms.SortExpression) || parms.SortExpression == "Id")
-                {
-                    parms.SortExpression = "Name";
-                }
+            if (string.IsNullOrWhiteSpace(parms.SortExpression) || parms.SortExpression == "Id")
+            {
+                parms.SortExpression = "Name";
+            }
+
             var query = Context.Students
                 .Where(x => x.GroupId == groupId)
                 .Where(x => x.AssignedCourseProjects.Any(a => a.CourseProject.SubjectId == subjectId))
@@ -449,7 +486,7 @@ namespace Application.Infrastructure.CPManagement
             }
         }
 
-        public void SetStudentDiplomMark(int lecturerId, CourseStudentMarkModel courseStudentMarkModel)
+        public void SetStudentCourseProjectMark(int lecturerId, CourseStudentMarkModel courseStudentMarkModel)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, lecturerId);
             var assignedCourseProject = Context.AssignedCourseProjects.Single(x => x.Id == courseStudentMarkModel.AssignedProjectId);
@@ -470,6 +507,7 @@ namespace Application.Infrastructure.CPManagement
         {
             var lecturerId = int.Parse(parms.Filters["lecturerId"]);
             var query = Context.CourseProjectTaskSheetTemplates.Where(x => x.LecturerId == lecturerId);
+            
             return query.ApplyPaging(parms);
         }
 
@@ -541,6 +579,7 @@ namespace Application.Infrastructure.CPManagement
                                      DateEnd = cp.DateEnd,
                                      DateStart = cp.DateStart
                                  };
+
                 return taskSheets.ToList();
             }
             else
@@ -560,6 +599,7 @@ namespace Application.Infrastructure.CPManagement
                                          DateEnd = cp.DateEnd,
                                          DateStart = cp.DateStart
                                      };
+
                 return taskSheets.ToList();
             }
         }
@@ -567,6 +607,7 @@ namespace Application.Infrastructure.CPManagement
         public TaskSheetData GetTaskSheet(int courseProjectId)
         {
             var dp = Context.CourseProjects.Single(x => x.CourseProjectId == courseProjectId);
+            
             return new TaskSheetData
             {
                 InputData = dp.InputData,
@@ -589,8 +630,6 @@ namespace Application.Infrastructure.CPManagement
             var courseProject =
                 new LmPlatformModelsContext().CourseProjects
                     .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
-                    //.Include(x=>x.Lecturer.CoursePercentagesGraphs)
-                    //.Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
                     .Single(x => x.CourseProjectId == courseProjectId);
 
             return courseProject.AssignedCourseProjects.Count == 1
@@ -631,13 +670,13 @@ namespace Application.Infrastructure.CPManagement
             sub.Name = subject.Name;
             sub.ShortName = subject.ShortName;
             sub.IsNeededCopyToBts = subject.IsNeededCopyToBts;
+
             return sub;
         }
 
         public List<Correlation> GetGroups(int subjectId)
         {
             var groups = Context.Groups.Where(s => s.SubjectGroups.Any(d => d.SubjectId == subjectId && d.IsActiveOnCurrentGroup));
-
 
             return groups.OrderBy(x => x.Name).Select(x => new Correlation
             {
@@ -664,12 +703,14 @@ namespace Application.Infrastructure.CPManagement
                 n.Attachments = FilesManagementService.GetAttachments(cp.Attachments);
                 list.Add(n);
             }
+
             return list;
         }
 
         public void SetSelectedGroupsToCourseProjects(int subjectId, List<int> groupIds)
         {
             var projects = Context.CourseProjects.Where(e => e.SubjectId == subjectId).Include(x => x.CourseProjectGroups);
+            
             foreach (var project in projects)
             {
                 foreach (int groupId in groupIds)
@@ -747,6 +788,7 @@ namespace Application.Infrastructure.CPManagement
             }
 
             var cpEditNews = Context.CourseProjectNewses.FirstOrDefault(x => x.Id == news.Id && x.SubjectId == news.SubjectId);
+            
             if (cpEditNews != null)
             {
                 CourseProjectNews cpnews = new CourseProjectNews();
@@ -757,9 +799,11 @@ namespace Application.Infrastructure.CPManagement
                 cpEditNews.Attachments = news.Attachments;
                 cpEditNews.Title = news.Title;
             }
-            else {
+            else 
+            {
                 Context.CourseProjectNewses.Add(news);
             }
+
             Context.SaveChanges();
 
             return news;
@@ -796,43 +840,23 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public void DeletePercenageAndVisitStatsForUser(int id)
+        public void DeletePercentageAndVisitStatsForUser(int id)
         {
             var cpPR = Context.CoursePercentagesResults.Where(e => e.StudentId == id);
+            
             foreach(var cp in cpPR)
             {
                 Context.CoursePercentagesResults.Remove(cp);
             }
 
             var cpVS = Context.CourseProjectConsultationMarks.Where(e => e.StudentId == id);
+            
             foreach (var cp in cpVS)
             {
                 Context.CourseProjectConsultationMarks.Remove(cp);
             }
+
             Context.SaveChanges();
-        }
-
-        private readonly LazyDependency<ICpContext> context = new LazyDependency<ICpContext>();
-
-        private ICpContext Context
-        {
-            get { return context.Value; }
-        }
-
-        private readonly LazyDependency<IFilesManagementService> _filesManagementService =
-            new LazyDependency<IFilesManagementService>();
-
-        public IFilesManagementService FilesManagementService
-        {
-            get { return _filesManagementService.Value; }
-        }
-
-        private readonly LazyDependency<IProjectManagementService> _projectManagementService =
-            new LazyDependency<IProjectManagementService>();
-
-        public IProjectManagementService ProjectManagementService
-        {
-            get { return _projectManagementService.Value; }
         }
     }
 }

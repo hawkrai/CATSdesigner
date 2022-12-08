@@ -308,7 +308,7 @@ namespace LMPlatform.UI.ViewModels.SubjectViewModels
                 {
                     Context.AssignedCourseProjects.Remove(a);
                 }
-                CPManagementService.DeletePercenageAndVisitStatsForUser(a.StudentId);
+                CPManagementService.DeletePercentageAndVisitStatsForUser(a.StudentId);
             }
 
             var cpg = Context.CourseProjectGroups.Where(x => x.CourseProject.SubjectId == subject.Id);

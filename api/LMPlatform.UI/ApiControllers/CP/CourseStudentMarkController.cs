@@ -19,7 +19,7 @@ namespace LMPlatform.UI.ApiControllers.CP
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }*/
 
-            CpManagementService.SetStudentDiplomMark(UserContext.CurrentUserId, courseStudentMarkModel);
+            CpManagementService.SetStudentCourseProjectMark(UserContext.CurrentUserId, courseStudentMarkModel);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 

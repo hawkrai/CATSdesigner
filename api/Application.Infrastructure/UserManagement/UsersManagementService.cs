@@ -255,7 +255,7 @@ namespace Application.Infrastructure.UserManagement
                     }
                 }
 
-                CPManagementService.DeletePercenageAndVisitStatsForUser(id);
+                CPManagementService.DeletePercentageAndVisitStatsForUser(id);
 
                 repositoriesContainer.ApplyChanges();
                 var result = AccountManagementService.DeleteAccount(user.UserName);
