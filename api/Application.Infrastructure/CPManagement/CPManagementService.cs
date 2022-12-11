@@ -641,17 +641,17 @@ namespace Application.Infrastructure.CPManagement
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
 
-            var dp = Context.CourseProjects.Single(x => x.CourseProjectId == taskSheet.CourseProjectId);
+            var courseProject = Context.CourseProjects.Single(x => x.CourseProjectId == taskSheet.CourseProjectId);
 
-            dp.InputData = taskSheet.InputData;
-            dp.RpzContent = taskSheet.RpzContent;
-            dp.DrawMaterials = taskSheet.DrawMaterials;
-            dp.Consultants = taskSheet.Consultants;
-            dp.HeadCathedra = taskSheet.HeadCathedra;
-            dp.Faculty = taskSheet.Faculty;
-            dp.Univer = taskSheet.Univer;
-            dp.DateStart = taskSheet.DateStart?.AddDays(1);
-            dp.DateEnd = taskSheet.DateEnd?.AddDays(1);
+            courseProject.InputData = taskSheet.InputData;
+            courseProject.RpzContent = taskSheet.RpzContent;
+            courseProject.DrawMaterials = taskSheet.DrawMaterials;
+            courseProject.Consultants = taskSheet.Consultants;
+            courseProject.HeadCathedra = taskSheet.HeadCathedra;
+            courseProject.Faculty = taskSheet.Faculty;
+            courseProject.Univer = taskSheet.Univer;
+            courseProject.DateStart = taskSheet.DateStart;
+            courseProject.DateEnd = taskSheet.DateEnd;
 
             Context.SaveChanges();
         }
