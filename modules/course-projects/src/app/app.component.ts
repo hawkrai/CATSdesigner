@@ -9,6 +9,7 @@ import {GroupService} from './services/group.service';
 import {ProjectGroupService} from './services/project-group.service';
 import {Observable} from 'rxjs';
 import { CoreGroup } from './models/core-group.model';
+import {switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   public groups: CoreGroup[];
   public selectedGroup: CoreGroup;
   public detachedGroup = false;
+  groupNumber: number;
 
   private subjectId: string;
   private courseUser: CourseUser;
@@ -35,8 +37,13 @@ export class AppComponent implements OnInit {
     this.tab = Number(localStorage.getItem('courseProject_tab')) || 1;
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-
-      this.courseUserService.getUser().subscribe(res => this.courseUser = res);
+      this.courseUserService.getUser().pipe(switchMap(res => {
+        this.courseUser = res;
+        return this.courseUserService.getUserInfo(res.UserId);
+      })).subscribe(res => {
+        this.groupNumber = res.Group;
+      });
+      // this.courseUserService.getUser().subscribe(res => this.courseUser = res);
       this.retrieveGroups(false);
     });
   }

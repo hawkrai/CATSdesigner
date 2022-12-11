@@ -115,7 +115,7 @@
   <div mat-dialog-actions class="dialog-buttons">
     <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
     <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()"
-            [disabled]="!hasChange || !selectedGroups?.length">
+            [disabled]="!hasChange">
       Сохранить
     </button>
   </div>
