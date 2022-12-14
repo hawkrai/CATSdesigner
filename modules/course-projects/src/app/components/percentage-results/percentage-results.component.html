@@ -1,6 +1,6 @@
 <div class="percentage-results-component" *ngIf="selectedGroup; else load">
   <div class="percentage-results-component__header">
-    <ng-content select="[groupPicker]"></ng-content>
+    <ng-content select="[groupPicker]" class="percentage-results-component__picker"></ng-content>
     <div class="percentage-results-component__controls" *ngIf="courseUser.IsLecturer">
       <mat-form-field class="percentage-results-component__search">
         <mat-label>Поиск по теме, фамилии</mat-label>

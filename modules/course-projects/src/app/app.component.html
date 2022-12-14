@@ -80,8 +80,8 @@
     <app-percentages *ngIf="tab === 3" [courseUser]="courseUser"></app-percentages>
     <app-percentage-results *ngIf="tab === 4 && selectedGroup" [courseUser]="courseUser"
                             [selectedGroup]="selectedGroup">
-      <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" groupPicker>
-        <mat-form-field>
+      <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" groupPicker class="picker">
+        <mat-form-field *ngIf="courseUser.IsLecturer">
           <mat-select [value]="groups ? groups[0].GroupId : ''">
             <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)"
                         [value]="group.GroupId">
@@ -89,6 +89,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <div *ngIf="courseUser.IsStudent">{{'Группа: ' + groupNumber}}</div>
         <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
           <mat-slide-toggle
             [color]="'primary'"
@@ -116,7 +117,7 @@
     </app-percentage-results>
     <app-visit-stats *ngIf="tab === 5 && selectedGroup" [courseUser]="courseUser" [selectedGroup]="selectedGroup">
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select" groupPicker>
-        <mat-form-field>
+        <mat-form-field *ngIf="courseUser.IsLecturer">
           <mat-select [value]="groups ? groups[0].GroupId : ''">
             <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)"
                         [value]="group.GroupId">
@@ -124,6 +125,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <div *ngIf="courseUser.IsStudent">{{'Группа: ' + groupNumber}}</div>
         <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
           <mat-slide-toggle
             [color]="'primary'"
