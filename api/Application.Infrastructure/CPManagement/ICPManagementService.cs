@@ -45,7 +45,7 @@ namespace Application.Infrastructure.CPManagement
 
         void SaveProject(CourseProjectData projectData);
 
-        void SetStudentDiplomMark(int lecturerId, CourseStudentMarkModel courseStudentMarkModel);
+        void SetStudentCourseProjectMark(int lecturerId, CourseStudentMarkModel courseStudentMarkModel);
 
         CourseProjectTaskSheetTemplate GetTaskSheetTemplate(int id);
 
@@ -55,7 +55,7 @@ namespace Application.Infrastructure.CPManagement
 
         void DeleteUserFromAcpProject(int id, int projectId);
 
-        void DeletePercenageAndVisitStatsForUser(int id);
+        void DeletePercentageAndVisitStatsForUser(int id);
 
         TaskSheetData GetTaskSheet(int courseProjectId);
 
