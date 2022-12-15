@@ -45,11 +45,11 @@
           <mat-hint>{{'text.test.hint.questions' | translate : 'Количество вопросов в тестовом наборе для каждого обучающегося'}}
           </mat-hint>
         </mat-form-field>
-  
+
         <mat-form-field>
           <input matInput type="number"
                  [placeholder]="!formGroup.controls.SetTimeForAllTest.value ? ('text.test.time.for.test' | translate : 'Время на тест (мин)') : ('text.test.time.for.question' | translate : 'Время на вопрос (сек)')"
-  
+
                  formControlName="TimeForCompleting">
           <mat-error *ngIf="formGroup.controls.TimeForCompleting.hasError('max')">
             {{'text.test.error.fewer.time' | translate : "Уменьшите время"}}
@@ -62,9 +62,10 @@
           </mat-error>
         </mat-form-field>
       </div>
-
-      <mat-checkbox class="example-margin" formControlName="SetTimeForAllTest">{{'text.test.enter.time.for.one.question' | translate : 'Задать время на 1 вопрос (сек)'}}
-      </mat-checkbox>
+      <div class="checkbox-wrapper">
+        <mat-checkbox class="example-margin" formControlName="SetTimeForAllTest">{{'text.test.enter.time.for.one.question' | translate : 'Задать время на 1 вопрос (сек)'}}
+        </mat-checkbox>
+      </div>
       <div class="test-form-type">
         <h3 class="test-form-type-text">{{'text.test.type' | translate:'Тип теста'}}</h3>
         <div class="edit-test-type-block">
@@ -85,7 +86,7 @@
     </form>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+    <button mat-raised-button (click)="onNoClick()">{{'button.cancel' | translate : 'Отмена'}}</button>
     <button mat-raised-button
             color="primary"
             [disabled]="formGroup && !formGroup.valid"

@@ -1,17 +1,18 @@
-import {ChangeDetectorRef, Component, OnInit} from "@angular/core";
-import {TestService} from "../service/test.service";
-import {MatDialog, MatSnackBar} from "@angular/material";
-import {EditTestPopupComponent} from "./components/edit-test-popup/edit-test-popup.component";
-import {DeleteConfirmationPopupComponent} from "./components/delete-confirmation-popup/delete-confirmation-popup.component";
-import {EditAvailabilityPopupComponent} from "./components/edit-availability-popup/edit-availability-popup.component";
-import {Router} from "@angular/router";
-import {Test} from "../models/test.model";
-import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
-import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
-import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
-import {Group} from "../models/group.model";
-import {TranslatePipe} from "educats-translate";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { TestService } from "../service/test.service";
+import { MatDialog, MatSnackBar } from "@angular/material";
+import { EditTestPopupComponent } from "./components/edit-test-popup/edit-test-popup.component";
+import { DeleteConfirmationPopupComponent } from "./components/delete-confirmation-popup/delete-confirmation-popup.component";
+import { EditAvailabilityPopupComponent } from "./components/edit-availability-popup/edit-availability-popup.component";
+import { Router } from "@angular/router";
+import { Test } from "../models/test.model";
+import { AutoUnsubscribe } from "../decorator/auto-unsubscribe";
+import { AutoUnsubscribeBase } from "../core/auto-unsubscribe-base";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { Group } from "../models/group.model";
+import { TranslatePipe } from "educats-translate";
+import { Help } from "../models/help.model";
 
 
 @AutoUnsubscribe
@@ -47,13 +48,26 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public white: boolean;
   public black: boolean;
 
+  help: Help = {
+    message: "",
+    action: "",
+  };
+
   constructor(private testService: TestService,
-              private router: Router,
-              private translatePipe: TranslatePipe,
-              private snackBar: MatSnackBar,
-              private cdr: ChangeDetectorRef,
-              public dialog: MatDialog) {
+    private router: Router,
+    private translatePipe: TranslatePipe,
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef,
+    public dialog: MatDialog) {
     super();
+    this.help = {
+      message: this.translatePipe.transform(
+        "text.help.tests",
+        // tslint:disable-next-line:max-line-length
+        "Чтобы подготовить тест, его необходимо создать, наполнить вопросами и ответами. Также необходимо указать время на прохождение теста и количество вопросов в нем. Для предварительного просмотра теста и открытия доступа к нему нажмите на соответствующие иконки ."
+      ),
+      action: this.translatePipe.transform("button.understand", "Понятно"),
+    };
   }
 
   ngOnInit() {
@@ -71,7 +85,8 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
 
   openDialog(event?: any): void {
     const dialogRef = this.dialog.open(EditTestPopupComponent, {
-      data: {event}
+      data: { event },
+      panelClass: "test-modal-container",
     });
 
     dialogRef.afterClosed()
@@ -86,7 +101,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public openAvailabilityDialog(event?: any): void {
     const dialogRef = this.dialog.open(EditAvailabilityPopupComponent, {
       width: "700px",
-      data: {event}
+      data: { event }
     });
 
     dialogRef.afterClosed()
@@ -101,7 +116,8 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public openConfirmationDialog(event: any): void {
     const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
       width: "500px",
-      data: {event}
+      data: { event },
+      panelClass: "test-modal-container",
     });
 
     dialogRef.afterClosed()
@@ -118,8 +134,8 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(() => {
         this.getTests(this.subject.id);
-      },error1 => {
-        this.openSnackBar(this.translatePipe.transform('text.test.error.delete.test',"Не удалось удалить тест"));
+      }, error1 => {
+        this.openSnackBar(this.translatePipe.transform("text.test.error.delete.test", "Не удалось удалить тест"));
       });
   }
 
@@ -136,11 +152,9 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
         return test.Title.includes(searchValue);
       });
       this.sortTests(filteredTests);
-    }
-    else if (this.currentTabIndex === 1) {
+    } else if (this.currentTabIndex === 1) {
       this.filterStudentsString = searchValue;
-    }
-    else if (this.currentTabIndex === 2) {
+    } else if (this.currentTabIndex === 2) {
       this.filterCompletingString = searchValue;
     }
   }

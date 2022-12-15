@@ -50,7 +50,7 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
     this.store.dispatch(newsActions.loadNews());
     this.state$ = combineLatest(
       this.store.select(subjectSelectors.getSubjectColor),
-      this.store.select(subjectSelectors.isTeacher), 
+      this.store.select(subjectSelectors.isTeacher),
       this.store.select(newsSelectors.getNews),
       this.store.select(newsSelectors.getSelectedNews)).pipe(
       map(([color, isTeacher, news, selectedNews]) => ({ color, isTeacher, news, selectedNews }))
