@@ -22,7 +22,6 @@ namespace LMPlatform.UI.ApiControllers.CP
             get { return _cpManagementService.Value; }
         }
 
-        [AllowAnonymous]
         public IEnumerable<AssignedCourseProjectViewModel> Get(int subjectId) 
         {
             return CpManagementService.GetAssignedCourseProjects(subjectId)
