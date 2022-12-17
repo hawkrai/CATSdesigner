@@ -1,10 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Web.Http;
 using Application.Core;
 using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
+using LMPlatform.Models.CP;
 using LMPlatform.UI.Attributes;
-using WebMatrix.WebData;
+using LMPlatform.UI.ViewModels.CPViewModels;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
@@ -17,6 +20,13 @@ namespace LMPlatform.UI.ApiControllers.CP
         private ICPManagementService CpManagementService
         {
             get { return _cpManagementService.Value; }
+        }
+
+        [AllowAnonymous]
+        public IEnumerable<AssignedCourseProjectViewModel> Get(int subjectId) 
+        {
+            return CpManagementService.GetAssignedCourseProjects(subjectId)
+                .Select(x => new AssignedCourseProjectViewModel(x));
         }
 
         public void Post([FromBody]AssignProjectUpdateModel updateModel)

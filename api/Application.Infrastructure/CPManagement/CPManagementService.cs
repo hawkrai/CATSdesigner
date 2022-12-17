@@ -228,20 +228,33 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
+        public IEnumerable<AssignedCourseProject> GetAssignedCourseProjects(int subjectId) 
+        {
+            return Context.AssignedCourseProjects
+                .Where(x => x.CourseProject != null && x.CourseProject.SubjectId == subjectId);
+        }
+
         public void AssignProject(int userId, int projectId, int studentId)
         {
             var isLecturer = AuthorizationHelper.IsLecturer(Context, userId);
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             studentId = isStudent ? userId : studentId;
 
+            var courseProject = Context.CourseProjects.FirstOrDefault(x => x.CourseProjectId == projectId);
+
+            if (courseProject == null || courseProject.SubjectId == null) 
+            {
+                throw new ApplicationException("Selected Cource Project can not be assigned!");
+            }
+
             var assignment = Context.AssignedCourseProjects.FirstOrDefault(x => x.CourseProjectId == projectId);
 
-            if (isLecturer && assignment != null && assignment.ApproveDate.HasValue)
+            if (isStudent && assignment != null)
             {
                 throw new ApplicationException("The selected Course Project has already been assigned!");
             }
 
-            var studentAssignments = Context.AssignedCourseProjects.Where(x => x.StudentId == studentId);
+            var studentAssignments = GetAssignedCourseProjects(courseProject.SubjectId.Value).Where(x => x.StudentId == studentId);
 
             if (isStudent && studentAssignments.Any(x => x.ApproveDate.HasValue))
             {
@@ -259,18 +272,20 @@ namespace Application.Infrastructure.CPManagement
                 {
                     CourseProjectId = projectId
                 };
+
                 Context.AssignedCourseProjects.Add(assignment);
             }
 
             assignment.StudentId = studentId == 0 ? assignment.StudentId : studentId;
-            assignment.ApproveDate = isLecturer ? (DateTime?)DateTime.Now : null;
-            var cp = Context.CourseProjects.FirstOrDefault(x => x.CourseProjectId == projectId);            
-            cp.DateStart = isLecturer ? (DateTime?)DateTime.Now : null;
+            assignment.ApproveDate = isLecturer ? DateTime.UtcNow : null;
+                      
+            courseProject.DateStart = isLecturer ? DateTime.UtcNow : null;
+            
             Context.SaveChanges();
 
-            if (cp.Subject.IsNeededCopyToBts)
+            if (courseProject.Subject.IsNeededCopyToBts)
             {
-                CreateBtsProject(cp, studentId);
+                CreateBtsProject(courseProject, studentId);
             }
         }
 

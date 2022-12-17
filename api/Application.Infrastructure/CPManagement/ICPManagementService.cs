@@ -4,9 +4,6 @@ using LMPlatform.Models;
 using LMPlatform.Models.CP;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -30,6 +27,8 @@ namespace Application.Infrastructure.CPManagement
         SubjectData GetSubject(int id);
 
         void DeleteProject(int userId, int id);
+
+        IEnumerable<AssignedCourseProject> GetAssignedCourseProjects(int subjectId);
 
         void AssignProject(int userId, int projectId, int studentId);
 
