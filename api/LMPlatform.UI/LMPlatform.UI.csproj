@@ -723,6 +723,7 @@
     <Compile Include="ViewModels\ChatViewModel\UserDetail.cs" />
     <Compile Include="ViewModels\ComplexMaterialsViewModel\AddOrEditRootConceptViewModel.cs" />
     <Compile Include="ViewModels\ComplexMaterialsViewModel\WatchingTimeViewModel.cs" />
+    <Compile Include="ViewModels\CPViewModels\AssignedCourseProjectViewModel.cs" />
     <Compile Include="ViewModels\DocumenViewModels\DocumentPreview.cs" />
     <Compile Include="ViewModels\DocumenViewModels\DocumentsTree.cs" />
     <Compile Include="ViewModels\DPViewModels\DiplomProjectViewModel.cs" />

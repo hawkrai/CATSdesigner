@@ -224,15 +224,27 @@ namespace LMPlatform.UI.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public JsonResult VerifySecretQuestion(string userName, string questionId, string answer)
+        public JsonResult VerifySecretQuestion(string userName, int questionId, string answer)
         {
             var user = this.UsersManagementService.GetUser(userName);
 
-            if (user == null) return this.Json("Пользователь не найден!", JsonRequestBehavior.AllowGet);
+            if (user == null)
+            {
+                return this.Json("Пользователь не найден!", JsonRequestBehavior.AllowGet);
+            }
 
-            if (user.QuestionId != int.Parse(questionId) || !string.Equals(user.Answer.ToLower(), answer.ToLower(),
-                StringComparison.Ordinal))
-                return this.Json("Введен неверный секретный ответ", JsonRequestBehavior.AllowGet);
+            if (user.QuestionId == null || user.Answer == null)
+            {
+                return this.Json("Пароль данного пользвателя не может быть восстановлен!", JsonRequestBehavior.AllowGet);
+            }
+
+            var isIdValid = user.QuestionId == questionId;
+            var isAnswerValid = isIdValid && string.Equals(user.Answer.ToLower(), answer.ToLower(), StringComparison.Ordinal);
+
+            if (!isAnswerValid)
+            {
+                return this.Json("Введен неверный секретный ответ!", JsonRequestBehavior.AllowGet);
+            }
 
             return this.Json("OK", JsonRequestBehavior.AllowGet);
         }
