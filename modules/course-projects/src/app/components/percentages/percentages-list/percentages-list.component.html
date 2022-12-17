@@ -4,11 +4,11 @@
       <thead>
       <tr class="mdc-data-table__header-row">
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Название этапа</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Процент выполнения, %</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Дата</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.percentages.list.stage.name' | translate: 'Название этапа'}}</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.percentages.list.stage.percentage' | translate : 'Процент выполнения'}}, %</th>
+        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.percentages.list.stage.date' | translate : 'Дата'}}</th>
         <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
-            *ngIf="percentagesComponent.getCourseUser().IsLecturer">Действие</th>
+            *ngIf="percentagesComponent.getCourseUser().IsLecturer">{{'text.course.percentages.list.stage.action' | translate: 'Действие'}}</th>
       </tr>
       </thead>
       <tbody>
@@ -18,10 +18,10 @@
         <td class="mdc-data-table__cell">{{ percentage.Percentage }}</td>
         <td class="mdc-data-table__cell">{{ percentage.Date | date:'dd.MM.yyyy' }}</td>
         <td class="mdc-data-table__cell" *ngIf="percentagesComponent.getCourseUser().IsLecturer">
-          <button mat-icon-button color="primary" matTooltip="Редактировать" (click)="percentagesComponent.editStage(percentage)">
+          <button mat-icon-button color="primary" matTooltip="{{'text.course.percentages.list.stage.icon.edit' | translate : 'Редактировать'}}" (click)="percentagesComponent.editStage(percentage)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="primary" matTooltip="Удалить" (click)="percentagesComponent.deleteStage(percentage.Id)">
+          <button mat-icon-button color="primary" matTooltip="{{'text.course.percentages.list.stage.icon.delete' | translate : 'Удалить'}}" (click)="percentagesComponent.deleteStage(percentage.Id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

@@ -5,13 +5,14 @@ import {StudentPercentageResults} from '../../models/student-percentage-results.
 import {PercentageGraph} from '../../models/percentage-graph.model';
 import {PercentageResult} from '../../models/percentage-result.model';
 import {CourseUser} from '../../models/course-user.model';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-percentage-dialog.component';
 import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {CoreGroup} from 'src/app/models/core-group.model';
-import {ToastrService} from "ngx-toastr";
+import {ToastrService} from 'ngx-toastr';
+import {TranslatePipe} from 'educats-translate';
 
 @Component({
   selector: 'app-percentage-results',
@@ -37,6 +38,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   constructor(private percentageResultsService: PercentageResultsService,
               public dialog: MatDialog,
               private toastr: ToastrService,
+              private translatePipe: TranslatePipe,
               private store: Store<IAppState>) {
   }
 
@@ -117,8 +119,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 0,
         max: 100,
         regex: '^[0-9]*$',
-        errorMsg: 'Введите число от 0 до 100',
-        label: 'Результат процентовки',
+        errorMsg: this.translatePipe.transform('text.course.percentage.result.result.error', 'Введите число от 0 до 100'),
+        label: this.translatePipe.transform('text.course.percentage.result.result.label', 'Результат процентовки'),
         symbol: '%',
         student,
         lecturer,
@@ -135,13 +137,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Процент успешно сохранен');
+              this.addFlashMessage(this.translatePipe.transform('text.course.percentage.result.result.save.success', 'Процент успешно сохранен'));
             });
         } else {
           this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage('Процент успешно изменен');
+              this.addFlashMessage(this.translatePipe.transform('text.course.percentage.result.result.change.success', 'Процент успешно изменен'));
             });
         }
       }
@@ -156,8 +158,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 1,
         max: 10,
         regex: '^[0-9]*$',
-        errorMsg: 'Введите число от 1 до 10',
-        label: 'Оценка за курсовой проект',
+        errorMsg: this.translatePipe.transform('text.course.percentage.result.result.error.mark', 'Введите число от 0 до 10'),
+        label: this.translatePipe.transform('text.course.percentage.result.result.label.mark', 'Оценка за курсовой проект'),
         notEmpty: true,
         total: true,
         lecturer: student.LecturerName,
@@ -177,7 +179,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         this.percentageResultsService.setMark(student.AssignedCourseProjectId, result.mark, student.Lecturer, result.comment, dateString, result.showForStudent)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('Оценка успешно сохранена');
+            this.addFlashMessage(this.translatePipe.transform('text.course.percentage.result.result.mark.save.success', 'Оценка успешно сохранена'));
           });
       }
     });

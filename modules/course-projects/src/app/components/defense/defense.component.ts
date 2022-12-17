@@ -13,7 +13,10 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {AddJobDialogComponent} from './add-project-dialog/add-job-dialog.component';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import {CheckPlagiarismStudentComponent} from './check-plagiarism-student/check-plagiarism-student.component';
-import {CheckPlagiarismPopoverComponent} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
+import {
+  CheckPlagiarismPopoverComponent
+} from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
+import {TranslatePipe} from 'educats-translate';
 
 @Component({
   selector: 'app-defense',
@@ -37,6 +40,7 @@ export class DefenseComponent implements OnInit {
               private labFilesService: LabFilesService,
               public dialog: MatDialog,
               private snackBar: MatSnackBar,
+              private translatePipe: TranslatePipe,
               private store: Store<IAppState>) {
   }
 
@@ -63,7 +67,11 @@ export class DefenseComponent implements OnInit {
 
   retrieveFiles() {
     this.studentFiles = null;
-    this.labFilesService.getCourseProjectFiles({isCp: true, subjectId: this.subjectId, groupId: this.selectedGroup.GroupId})
+    this.labFilesService.getCourseProjectFiles({
+      isCp: true,
+      subjectId: this.subjectId,
+      groupId: this.selectedGroup.GroupId
+    })
       .subscribe(res => this.studentFiles = res.Students);
   }
 
@@ -109,15 +117,18 @@ export class DefenseComponent implements OnInit {
   }
 
   addJob(userLabFile?: UserLabFile, studentId?: string) {
-    const body = userLabFile && this.courseUser.IsStudent ? {comments: userLabFile.Comments, attachments: userLabFile.Attachments}
+    const body = userLabFile && this.courseUser.IsStudent ? {
+        comments: userLabFile.Comments,
+        attachments: userLabFile.Attachments
+      }
       : {comments: '', attachments: []};
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
       width: '650px',
       data: {
-        title: 'На защиту курсового проекта',
-        buttonText: 'Отправить работу',
+        title: this.translatePipe.transform('text.course.defence.dialog.title', 'На защиту курсового проекта'),
+        buttonText: this.translatePipe.transform('text.course.defence.dialog.action', 'Отправить работу'),
         body,
-        model: 'Комментарий'
+        model: this.translatePipe.transform('text.course.defence.dialog.comment', 'Комментарий')
       }
     });
 
@@ -154,7 +165,9 @@ export class DefenseComponent implements OnInit {
           this.ngOnInit();
         }
         this.canAddJob = false;
-        this.addFlashMessage(isRet ? 'Работа отправлена для исправления' : 'Работа успешно добавлена');
+        this.addFlashMessage(isRet ?
+          this.translatePipe.transform('text.course.defence.dialog.correct', 'Работа отправлена для исправления') :
+          this.translatePipe.transform('text.course.defence.dialog.success', 'Работа успешно добавлена'));
       });
   }
 
@@ -168,9 +181,9 @@ export class DefenseComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
       data: {
-        label: 'Удаление работы',
-        message: 'Вы действительно хотите удалить работу?',
-        actionName: 'Удалить',
+        label: this.translatePipe.transform('text.course.defence.dialog.delete.label', 'Удаление работы'),
+        message: this.translatePipe.transform('text.course.defence.dialog.delete.message', 'Вы действительно хотите удалить работу?'),
+        actionName: this.translatePipe.transform('text.course.defence.dialog.delete.action', 'Удалить'),
         color: 'primary'
       }
     });
@@ -180,7 +193,7 @@ export class DefenseComponent implements OnInit {
         this.labFilesService.deleteJob(userLabFile.Id)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage('Работа удалена');
+            this.addFlashMessage(this.translatePipe.transform('text.course.defence.dialog.delete.success', 'Работа удалена'));
           });
       }
     });
@@ -190,7 +203,7 @@ export class DefenseComponent implements OnInit {
     this.labFilesService.approveJob(fileLab.Id)
       .subscribe(() => {
         this.updateStudentJobs(studentId);
-        this.addFlashMessage('Файл перемещен в архив');
+        this.addFlashMessage(this.translatePipe.transform('text.course.defence.dialog.approve.success', 'Файл перемещен в архив'));
       });
   }
 
@@ -198,7 +211,7 @@ export class DefenseComponent implements OnInit {
     this.labFilesService.restoreFromArchive(fileLab.Id)
       .subscribe(() => {
         this.updateStudentJobs(studentId);
-        this.addFlashMessage('Файл перемещен из архива');
+        this.addFlashMessage(this.translatePipe.transform('text.course.defence.dialog.restore.success', 'Файл перемещен из архива'));
       });
   }
 

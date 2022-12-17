@@ -5,7 +5,7 @@
             (click)="onChangeTab(1)"
     >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">Темы проектов</span>
+        <span class="mdc-tab__text-label">{{ 'text.course.projects' | translate : 'Темы проектов'}}</span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
         <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -17,7 +17,7 @@
             (click)="onChangeTab(2)"
     >
           <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Лист задания</span>
+            <span class="mdc-tab__text-label">{{'text.course.task.sheet' | translate : 'Лист задания'}}</span>
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -29,7 +29,7 @@
             (click)="onChangeTab(3)"
     >
           <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">График процентовки</span>
+            <span class="mdc-tab__text-label">{{'text.course.percentages' |translate : 'График процентовки'}}</span>
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -41,7 +41,8 @@
             (click)="onChangeTab(4)"
     >
           <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Результаты процентовки</span>
+            <span
+              class="mdc-tab__text-label">{{'text.course.percentage.results' | translate : 'Результаты процентовки'}}</span>
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 4">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -53,7 +54,8 @@
             (click)="onChangeTab(5)"
     >
           <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Посещение консультаций</span>
+            <span
+              class="mdc-tab__text-label">{{'text.course.consultation.visiting' |translate : 'Посещение консультаций'}}</span>
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 5">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -65,7 +67,7 @@
             (click)="onChangeTab(6)"
     >
           <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Защита проектов</span>
+            <span class="mdc-tab__text-label">{{'text.course.defence' | translate : 'Защита проектов'}}</span>
           </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 6">
             <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
@@ -89,27 +91,27 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <div *ngIf="courseUser.IsStudent">{{'Группа: ' + groupNumber}}</div>
+        <div *ngIf="courseUser.IsStudent">{{('text.group' | translate : 'Группа: ') + groupNumber}}</div>
         <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
           <mat-slide-toggle
             [color]="'primary'"
             [checked]="detachedGroup"
             (change)="groupStatusChange($event)"
           >
-            Открепленные группы
+            {{'text.groups.detached' | translate : 'Открепленные группы'}}
           </mat-slide-toggle>
         </div>
       </div>
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
         <app-help
           *ngIf="courseUser.IsLecturer"
-          [message]="'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
-          [action]="'Понятно'"></app-help>
-        <div class="excel-file" matTooltip="Загрузить документ Excel"
+          [message]="'text.course.percentage.help.message' | translate : 'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
+          [action]="'text.course.percentage.help.clear' | translate : 'Понятно'"></app-help>
+        <div class="excel-file" matTooltip="{{'text.download.excel' | translate : 'Загрузить документ Excel'}}"
              *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
           <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
         </div>
-        <div class="download-zip" matTooltip="Скачать архивом листы задания"
+        <div class="download-zip" matTooltip="{{'text.download.zip' | translate : 'Скачать архивом листы задания'}}"
              *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
           <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
         </div>
@@ -125,26 +127,26 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <div *ngIf="courseUser.IsStudent">{{'Группа: ' + groupNumber}}</div>
+        <div *ngIf="courseUser.IsStudent">{{('text.group' | translate : 'Группа: ') + groupNumber}}</div>
         <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
           <mat-slide-toggle
             [color]="'primary'"
             [checked]="detachedGroup"
             (change)="groupStatusChange($event)"
           >
-            Открепленные группы
+            {{'text.groups.detached' | translate : 'Открепленные группы'}}
           </mat-slide-toggle>
         </div>
       </div>
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
         <app-help
-          [message]="'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы отметить посещаемость и оставить комментарий'"
-          [action]="'Понятно'"></app-help>
-        <div class="excel-file" matTooltip="Загрузить документ Excel"
+          [message]="'text.course.percentage.help.message' | translate : 'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
+          [action]="'text.course.percentage.help.clear' | translate : 'Понятно'"></app-help>
+        <div class="excel-file" matTooltip="{{'text.download.excel' | translate : 'Загрузить документ Excel'}}"
              *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
           <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
         </div>
-        <div class="download-zip" matTooltip="Скачать архивом листы задания"
+        <div class="download-zip" matTooltip="{{'text.download.zip' | translate : 'Скачать архивом листы задания'}}"
              *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
           <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
         </div>

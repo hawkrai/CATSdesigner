@@ -9,6 +9,7 @@ import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {ToastrService} from 'ngx-toastr';
+import {TranslatePipe} from 'educats-translate';
 
 @Component({
   selector: 'app-percentages',
@@ -30,6 +31,7 @@ export class PercentagesComponent implements OnInit {
               public dialog: MatDialog,
               private snackBar: MatSnackBar,
               private toastr: ToastrService,
+              private translatePipe: TranslatePipe,
               private store: Store<IAppState>) {
   }
 
@@ -57,7 +59,7 @@ export class PercentagesComponent implements OnInit {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '548px',
       data: {
-        title: 'Добавление этапа процентовки'
+        title: this.translatePipe.transform('text.course.percentages.dialog.title.add', 'Добавление этапа процентовки')
       }
     });
 
@@ -72,10 +74,10 @@ export class PercentagesComponent implements OnInit {
           this.percentagesService.editStage(null, date.toISOString(), this.subjectId, result.name, result.percentage)
             .subscribe(() => {
               this.ngOnInit();
-              this.toastr.success('Этап успешно сохранен');
+              this.toastr.success(this.translatePipe.transform('text.course.percentages.dialog.save.success', 'Этап успешно сохранен'));
             });
         } else {
-          this.toastr.error('Этап с таким названием уже существует');
+          this.toastr.error(this.translatePipe.transform('text.course.percentages.dialog.save.error', 'Этап с таким названием уже существует'));
         }
       }
     });
@@ -85,7 +87,7 @@ export class PercentagesComponent implements OnInit {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '548px',
       data: {
-        title: 'Редактирование этапа',
+        title: this.translatePipe.transform('text.course.percentages.dialog.title.edit', 'Редактирование этапа'),
         name: stage.Name,
         percentage: stage.Percentage,
         date: stage.Date
@@ -102,10 +104,10 @@ export class PercentagesComponent implements OnInit {
           this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)
             .subscribe(() => {
               this.ngOnInit();
-              this.toastr.success('Этап успешно изменен');
+              this.toastr.success(this.translatePipe.transform('text.course.percentages.dialog.edit.success', 'Этап успешно изменен'));
             });
         } else {
-          this.toastr.error('Этап с таким названием уже существует');
+          this.toastr.error(this.translatePipe.transform('text.course.percentages.dialog.save.error', 'Этап с таким названием уже существует'));
         }
       }
     });
@@ -116,9 +118,9 @@ export class PercentagesComponent implements OnInit {
       autoFocus: false,
       width: '548px',
       data: {
-        label: 'Удаление этапа процентовки',
-        message: 'Вы действительно хотите удалить этап?',
-        actionName: 'Удалить',
+        label: this.translatePipe.transform('text.course.percentages.dialog.title.delete', 'Удаление этапа процентовки'),
+        message: this.translatePipe.transform('text.course.percentages.dialog.message.delete', 'Вы действительно хотите удалить этап?'),
+        actionName: this.translatePipe.transform('text.course.percentages.dialog.action.delete', 'Удалить'),
         color: 'primary'
       }
     });
@@ -127,7 +129,7 @@ export class PercentagesComponent implements OnInit {
       if (result != null && result) {
         this.percentagesService.deleteStage(id).subscribe(() => {
           this.ngOnInit();
-          this.toastr.success('Этап успешно удален');
+          this.toastr.success(this.translatePipe.transform('text.course.percentages.dialog.delete.success', 'Этап успешно удален'));
 
         });
       }

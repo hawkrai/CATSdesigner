@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef, MatSelectChange, MatSnackBar} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSelectChange} from '@angular/material';
 import {TaskSheet} from '../../../models/task-sheet.model';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Template} from '../../../models/template.model';
@@ -12,6 +12,7 @@ import {Help} from '../../../models/help.model';
 import {HelpPopoverScheduleComponent} from '../../../shared/help-popover/help-popover-schedule.component';
 import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
+import {TranslatePipe} from 'educats-translate';
 
 interface DialogData {
   subjectId: string;
@@ -28,8 +29,8 @@ interface DialogData {
 export class EditTaskSheetComponent implements OnInit {
 
   helpMessage: Help = {
-    message: 'Выберите готовый шаблон, чтобы применить его к листу задания. Шаблон можно изменить и применить к указанным группам',
-    action: 'Понятно'
+    message: this.translatePipe.transform('text.course.list.dialog.help.message', 'Выберите готовый шаблон, чтобы применить его к листу задания. Шаблон можно изменить и применить к указанным группам'),
+    action: this.translatePipe.transform('text.course.list.dialog.help.action', 'Понятно')
   };
 
   formGroup: FormGroup;
@@ -50,6 +51,7 @@ export class EditTaskSheetComponent implements OnInit {
               private formBuilder: FormBuilder,
               private toastr: ToastrService,
               private dialog: MatDialog,
+              private translatePipe: TranslatePipe,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
   }
 
@@ -147,7 +149,7 @@ export class EditTaskSheetComponent implements OnInit {
     this.populateSheet(template);
     this.taskSheetService.editTemplate(template).subscribe(() => {
       this.ngOnInit();
-      this.toastr.success('Шаблон успешно сохранен');
+      this.toastr.success(this.translatePipe.transform('text.course.list.dialog.template.save.success', 'Шаблон успешно сохранен'));
     });
   }
 
@@ -161,7 +163,7 @@ export class EditTaskSheetComponent implements OnInit {
         }
       }
     });
-    this.toastr.success('Шаблон успешно применен');
+    this.toastr.success(this.translatePipe.transform('text.course.list.dialog.template.apply.success', 'Шаблон успешно применен'));
   }
 
   getResultForm(): TaskSheet {
