@@ -7,37 +7,49 @@ using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
 using LMPlatform.UI.Attributes;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
     [JwtAuth]
     public class CourseProjectConsultationController : ApiController
     {
-        public object Get([System.Web.Http.ModelBinding.ModelBinder]GetPagedListParams parms)
+        private readonly LazyDependency<ICPManagementService> _courseProjectManagementService = new LazyDependency<ICPManagementService>();
+
+        private readonly LazyDependency<ICpPercentageGraphService> _percentageService = new LazyDependency<ICpPercentageGraphService>();
+
+        private ICPManagementService CpManagementService =>
+            _courseProjectManagementService.Value;
+
+        private ICpPercentageGraphService PercentageService =>
+            _percentageService.Value;
+
+        public CourseProjectConsultationData Get([System.Web.Http.ModelBinding.ModelBinder]GetPagedListParams parms)
         {
             var lecturerId = UserContext.CurrentUserId;
+
             if (parms.Filters.ContainsKey("lecturerId"))
             {
                 lecturerId = int.Parse(parms.Filters["lecturerId"]);
             }
 
             var subjectId = 0;
+
             if (parms.Filters.ContainsKey("subjectId"))
             {
                 subjectId = int.Parse(parms.Filters["subjectId"]);
             }
 
             var groupId = 0;
+
             if (parms.Filters.ContainsKey("groupId"))
             {
                 groupId = int.Parse(parms.Filters["groupId"]);
             }
 
-            return new
+            return new CourseProjectConsultationData
             {
                 Students = CpManagementService.GetGraduateStudentsForGroup(lecturerId, groupId, subjectId, parms, false),
-                CourseProjectConsultationDates = PercentageService.GetConsultationDatesForUser(lecturerId, subjectId)
+                Consultations = PercentageService.GetConsultationDatesForUser(lecturerId, subjectId)
             };
         }
 
@@ -49,21 +61,8 @@ namespace LMPlatform.UI.ApiControllers.CP
             }
 
             PercentageService.SaveConsultationMark(UserContext.CurrentUserId, consultationMark);
+
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
-
-        private ICPManagementService CpManagementService
-        {
-            get { return _courseProjectManagementService.Value; }
-        }
-
-        private ICpPercentageGraphService PercentageService
-        {
-            get { return _percentageService.Value; }
-        }
-
-        private readonly LazyDependency<ICPManagementService> _courseProjectManagementService = new LazyDependency<ICPManagementService>();
-
-        private readonly LazyDependency<ICpPercentageGraphService> _percentageService = new LazyDependency<ICpPercentageGraphService>();
     }
 }
