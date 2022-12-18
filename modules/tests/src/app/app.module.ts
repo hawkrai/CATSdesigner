@@ -51,6 +51,8 @@ import * as dataEn from './core/translate/translations_en.json';
 import * as dataRu from './core/translate/translations_ru.json';
 import { IsIntegerPipe } from "./pipes/is-integer.pipe";
 import { SharedModule } from "./shared/shared.module";
+import { HelpComponent } from "./help/help.component";
+import {PopoverModule} from 'ngx-smart-popover';
 
 @NgModule({
   declarations: [
@@ -88,7 +90,8 @@ import { SharedModule } from "./shared/shared.module";
     AutocompleteFormComponent,
     NeuralNetworkPopupComponent,
     IsIntegerPipe,
-    WhitespaceDirective
+    WhitespaceDirective,
+    HelpComponent,
   ],
   imports: [
     FormsModule,
@@ -106,7 +109,8 @@ import { SharedModule } from "./shared/shared.module";
         en: dataEn,
         ru: dataRu
       }
-    })
+    }),
+    PopoverModule,
   ],
   providers: [
     TestPassingService,

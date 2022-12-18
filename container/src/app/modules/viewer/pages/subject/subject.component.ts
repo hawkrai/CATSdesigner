@@ -24,7 +24,7 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
   public selectedModule: SafeResourceUrl;
   public clickedItem: string;
   public isLector:boolean = false;
-  private originalModule: string; 
+  private originalModule: string;
 
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: (event: MediaQueryListEvent) => void;
@@ -35,14 +35,14 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
   modules$: Observable<Module[]>;
 
   constructor(
-    private sanitizer: DomSanitizer, 
-    private coreService: CoreService, 
-    private router: Router, 
-    private location: Location, 
-    private activeRouter: ActivatedRoute, 
+    private sanitizer: DomSanitizer,
+    private coreService: CoreService,
+    private router: Router,
+    private location: Location,
+    private activeRouter: ActivatedRoute,
     private autService: AuthenticationService,
     private menuService: MenuService,
-    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher ) { 
+    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher ) {
       this.mobileQuery = media.matchMedia('(max-width: 970px)');
       this._mobileQueryListener = () => {
         changeDetectorRef.detectChanges();
@@ -120,7 +120,7 @@ export class SubjectComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.menuService.getSubjectInfo(type).translate;
   }
 
-  
+
   ngOnDestroy(): void {
     this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
   }

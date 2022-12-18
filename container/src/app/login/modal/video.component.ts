@@ -14,7 +14,6 @@ export class VideoComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<VideoComponent>,
               @Inject(MAT_DIALOG_DATA) private data: any ) { }
 
-
   ngOnInit() {
     const locale = localStorage.getItem('locale');
 

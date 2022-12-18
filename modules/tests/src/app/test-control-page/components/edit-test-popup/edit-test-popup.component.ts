@@ -36,12 +36,12 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     {
       name: "text.test.for.pre.eumk",
       value: TestType.BeforeEUMK,
-      tooltip: "Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное Обучение, доступен из модуля ЭУМК"
+      tooltip: "Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное обучение, доступен из модуля ЭУМК"
     },
     {
       name: "text.test.for.eumk",
       value: TestType.ForEUMK,
-      tooltip: "Позволяют реализовать адаптивное обучение по результатам предтеста"
+      tooltip: "Позволяет реализовать адаптивное обучение по результатам предтеста"
     },
     {
       name: "text.test.for.nn",
@@ -49,7 +49,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       tooltip: "Позволяет определять плохо изученные темы обучающимся"
     }];
 
-    
+
   public newTest: boolean = true;
   public formGroup: FormGroup;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
@@ -62,6 +62,9 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
               private translatePipe: TranslatePipe,
               private subjectService: SubjectService) {
     super();
+    if (this.data.event) {
+      this.newTest = false;
+    }
   }
 
   onNoClick(): void {
@@ -89,11 +92,12 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
           Validators.min(0),
           Validators.required
         ])),
-        SetTimeForAllTest: new FormControl(true),
+        SetTimeForAllTest: new FormControl(false),
         Type: new FormControl(null, [Validators.required, this.testTypeValidator(modules)]),
         SubjectId: new FormControl(subjectId)
       });
       if (this.data.event) {
+        this.newTest = false;
         this.loadTests();
       } else {
         this.isLoading = false;
@@ -116,6 +120,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   }
 
   public loadTests(): void {
+    this.newTest = false;
     this.testService.getTestById(this.data.event.Id)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((test) => {
