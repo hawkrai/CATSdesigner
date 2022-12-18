@@ -1,12 +1,8 @@
 ﻿using Application.Core;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using LMPlatform.UI.Attributes;
 

@@ -1,17 +1,12 @@
 ﻿using Application.Core;
-using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Core.SLExcel;
 using Application.Infrastructure.GroupManagement;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {

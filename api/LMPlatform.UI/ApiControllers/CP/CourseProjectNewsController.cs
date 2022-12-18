@@ -2,18 +2,12 @@
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
 using LMPlatform.Models;
-using LMPlatform.UI.Services.Modules;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using Application.Core.Helpers;
 using LMPlatform.UI.Attributes;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
@@ -76,7 +70,7 @@ namespace LMPlatform.UI.ApiControllers.CP
 
 
 
-        [System.Web.Http.HttpDelete]
+        [HttpDelete]
         public System.Web.Mvc.JsonResult Delete([FromBody]CourseProjectNews deleteData)
         {
             try

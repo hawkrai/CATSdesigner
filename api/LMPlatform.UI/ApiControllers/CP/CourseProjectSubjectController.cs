@@ -1,13 +1,7 @@
 ﻿using Application.Core;
 using Application.Infrastructure.CTO;
 using Application.Infrastructure.CPManagement;
-using LMPlatform.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using LMPlatform.UI.Attributes;
 
@@ -30,7 +24,5 @@ namespace LMPlatform.UI.ApiControllers.CP
             sub = CPManagementService.GetSubject(id);
             return sub;
         }
-
-     
     }
 }
