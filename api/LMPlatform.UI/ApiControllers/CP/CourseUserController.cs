@@ -10,17 +10,14 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CourseUserController : ApiController
     {
+        private readonly LazyDependency<ICPUserService> _userService = new LazyDependency<ICPUserService>();
+
+        private ICPUserService UserService
+            => _userService.Value;
+
         public UserData Get()
         {
             return UserService.GetUserInfo(UserContext.CurrentUserId);
         }
-
-        private readonly LazyDependency<ICPUserService> userService = new LazyDependency<ICPUserService>();
-
-        private ICPUserService UserService
-        {
-            get { return userService.Value; }
-        }
-
     }
 }

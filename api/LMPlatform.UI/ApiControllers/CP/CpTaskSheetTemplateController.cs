@@ -12,6 +12,10 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CpTaskSheetTemplateController : ApiController
     {
+        private readonly LazyDependency<ICPManagementService> _courseProjectManagementService = new LazyDependency<ICPManagementService>();
+        private ICPManagementService CpManagementService
+            => _courseProjectManagementService.Value;
+
         public CourseProjectTaskSheetTemplate Get(int templateId)
         {
             return CpManagementService.GetTaskSheetTemplate(templateId);
@@ -27,12 +31,5 @@ namespace LMPlatform.UI.ApiControllers.CP
             template.LecturerId = UserContext.CurrentUserId;
             CpManagementService.SaveTaskSheetTemplate(template);
         }
-
-        private ICPManagementService CpManagementService
-        {
-            get { return courseProjectManagementService.Value; }
-        }
-
-        private readonly LazyDependency<ICPManagementService> courseProjectManagementService = new LazyDependency<ICPManagementService>();
     }
 }

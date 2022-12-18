@@ -11,9 +11,7 @@ namespace LMPlatform.UI.ApiControllers.CP
         private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();
 
         private ICPManagementService CpManagementService
-        {
-            get { return _cpManagementService.Value; }
-        }
+            => _cpManagementService.Value;
 
         // GET api/<controller>/5
         public string Get(int courseProjectId)

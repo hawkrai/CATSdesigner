@@ -12,12 +12,10 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CpCorrelationController : ApiController
     {
-        private readonly LazyDependency<ICpCorrelationService> correlationService = new LazyDependency<ICpCorrelationService>();
+        private readonly LazyDependency<ICpCorrelationService> _correlationService = new LazyDependency<ICpCorrelationService>();
 
         private ICpCorrelationService CorrelationService
-        {
-            get { return correlationService.Value; }
-        }
+            => _correlationService.Value;
 
         // GET api/<controller>
         public List<Correlation> Get()
@@ -25,11 +23,13 @@ namespace LMPlatform.UI.ApiControllers.CP
             var entity = HttpUtility.ParseQueryString(Request.RequestUri.Query)["entity"];
           
             var subjectId = HttpUtility.ParseQueryString(Request.RequestUri.Query)["subjectId"];
-            if (subjectId == null)
+
+            if (subjectId is null)
             {
                 return CorrelationService.GetCorrelation(entity, 0, UserContext.CurrentUserId);
             }
-                return CorrelationService.GetCorrelation(entity, int.Parse(subjectId), UserContext.CurrentUserId);
+            
+            return CorrelationService.GetCorrelation(entity, int.Parse(subjectId), UserContext.CurrentUserId);
         }
     }
 }

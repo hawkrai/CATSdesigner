@@ -11,7 +11,6 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CourseProjectAssignmentController : ApiController
     {
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();
 
         private ICPManagementService CpManagementService 

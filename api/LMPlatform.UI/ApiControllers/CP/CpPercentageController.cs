@@ -17,9 +17,7 @@ namespace LMPlatform.UI.ApiControllers.CP
         private readonly LazyDependency<ICpPercentageGraphService> _percentageService = new LazyDependency<ICpPercentageGraphService>();
 
         private ICpPercentageGraphService PercentageService
-        {
-            get { return _percentageService.Value; }
-        }
+            => _percentageService.Value;
 
         public PagedList<PercentageGraphData> Get([ModelBinder]GetPagedListParams parms)
         {
@@ -54,6 +52,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             }
             
             PercentageService.SavePercentage(UserContext.CurrentUserId, percentage);
+
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
     }

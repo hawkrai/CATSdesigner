@@ -12,10 +12,11 @@ namespace LMPlatform.UI.ApiControllers.CP
 {
     public class CpStatisticController : ApiController
     {
-        private readonly LazyDependency<IGroupManagementService> groupManagementService =
-            new LazyDependency<IGroupManagementService>();
+        private readonly LazyDependency<IGroupManagementService> _groupManagementService = new LazyDependency<IGroupManagementService>();
 
-        public IGroupManagementService GroupManagementService => this.groupManagementService.Value;
+        public IGroupManagementService GroupManagementService 
+            => _groupManagementService.Value;
+
         // GET api/<controller>
         public HttpResponseMessage Get(int subjectId, int groupId)
         {

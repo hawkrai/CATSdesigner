@@ -14,61 +14,16 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CourseProjectNewsController : ApiController
     {
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();
 
         private ICPManagementService CpManagementService
-        {
-            get { return _cpManagementService.Value; }
-        }
+            => _cpManagementService.Value;
 
         [HttpGet]
         public List<NewsData> Get(int id)
         {
             return CpManagementService.GetNewses(UserContext.CurrentUserId, id);
         }
-
-        //[System.Web.Http.HttpPost]
-        //public System.Web.Mvc.JsonResult Save(string subjectId, string id, string title, string body, string disabled,
-        //    string isOldDate, string pathFile, string attachments)
-        //{
-        //    var attachmentsModel = JsonConvert.DeserializeObject<List<Attachment>>(attachments).ToList();
-        //    var subject = int.Parse(subjectId);
-        //    try
-        //    {
-        //        CpManagementService.SaveNews(new Models.CourseProjectNews
-        //        {
-        //            SubjectId = subject,
-        //            Id = int.Parse(id),
-        //            Attachments = pathFile,
-        //            Title = title,
-        //            Body = body,
-        //            Disabled = bool.Parse(disabled),
-        //            EditDate = DateTime.Now,
-        //        }, attachmentsModel, WebSecurity.CurrentUserId);
-        //        return new System.Web.Mvc.JsonResult()
-        //        {
-        //            Data = new
-        //            {
-        //                Message = "Новость успешно сохранена",
-        //                Error = false
-        //            }
-        //        };
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return new System.Web.Mvc.JsonResult()
-        //        {
-        //            Data = new
-        //            {
-        //                Message = "Произошла ошибка при сохранении новости",
-        //                Error = true
-        //            }
-        //        };
-        //    }
-        //}
-
-
 
         [HttpDelete]
         public System.Web.Mvc.JsonResult Delete([FromBody]CourseProjectNews deleteData)
@@ -77,6 +32,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             {
                 
                 CpManagementService.DeleteNews(deleteData);
+
                 return new System.Web.Mvc.JsonResult()
                 {
                     Data = new
