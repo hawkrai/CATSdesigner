@@ -192,6 +192,7 @@
     <Compile Include="CPManagement\ICpPercentageGraphService.cs" />
     <Compile Include="CPManagement\ICPUserService.cs" />
     <Compile Include="CTO\Correlation.cs" />
+    <Compile Include="CTO\CourseProjectConsultationData.cs" />
     <Compile Include="CTO\CourseProjectConsultationDateData.cs" />
     <Compile Include="CTO\CourseProjectConsultationMarkData.cs" />
     <Compile Include="CTO\CourseProjectData.cs" />
