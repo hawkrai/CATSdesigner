@@ -12,10 +12,16 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CourseProjectConsultationDateController : ApiController
     {
-        public HttpResponseMessage Post([FromBody]/*DateTime consultationDate, int subject*/CourseProjectConsultationDateData consultationDate)
+        private readonly LazyDependency<ICpPercentageGraphService> _percentageService = new LazyDependency<ICpPercentageGraphService>();
+
+        private ICpPercentageGraphService PercentageService
+            => _percentageService.Value;
+
+        public HttpResponseMessage Post([FromBody]CourseProjectConsultationDateData consultationDate)
         {
             PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.SubjectId, consultationDate.StartTime,
                 consultationDate.EndTime, consultationDate.Audience, consultationDate.Building);
+
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -23,12 +29,5 @@ namespace LMPlatform.UI.ApiControllers.CP
         {
             PercentageService.DeleteConsultationDate(UserContext.CurrentUserId, id);
         }
-
-        private ICpPercentageGraphService PercentageService
-        {
-            get { return _percentageService.Value; }
-        }
-
-        private readonly LazyDependency<ICpPercentageGraphService> _percentageService = new LazyDependency<ICpPercentageGraphService>();
     }
 }
