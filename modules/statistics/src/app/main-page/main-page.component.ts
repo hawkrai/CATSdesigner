@@ -51,7 +51,7 @@ export class MainPageComponent implements OnInit {
   isArchiveTeacher = false;
   charts: any[] = [];
 
-  colors: string [] = ['orange', 'red', 'blue', 'purple', 'green'];
+  colors: string [] = ['#FFA500', '#D32F2F', '#1976D2', '#7F00FF', '#388E3C'];
 
 
   public categoriesConst: string[] = [this.translatePipe.transform('text.statistics.avg.pract', 'Средний балл за практические занятия'),
@@ -343,7 +343,7 @@ export class MainPageComponent implements OnInit {
         height: Math.round(subjects.length * 35 + 90),
         stacked: true
       },
-      colors: ['#FFA500', '#ff0000', '#0000FF', '#7F00FF', '#006400'],
+      colors: ['#FFA500', '#D32F2F', '#1976D2', '#7F00FF', '#388E3C'],
       plotOptions: {
         bar: {
           horizontal: true
@@ -390,7 +390,7 @@ export class MainPageComponent implements OnInit {
         height: Math.round(subjects.length * 35 + 90),
         stacked: true
       },
-      colors: ['#FFA500', '#ff0000', '#0000FF', '#7F00FF', '#006400'],
+      colors: ['#FFA500', '#D32F2F', '#1976D2', '#7F00FF', '#388E3C'],
       plotOptions: {
         bar: {
           horizontal: true
