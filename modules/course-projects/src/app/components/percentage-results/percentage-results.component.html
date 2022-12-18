@@ -3,7 +3,7 @@
     <ng-content select="[groupPicker]" class="percentage-results-component__picker"></ng-content>
     <div class="percentage-results-component__controls" *ngIf="courseUser.IsLecturer">
       <mat-form-field class="percentage-results-component__search">
-        <mat-label>Поиск по теме, фамилии</mat-label>
+        <mat-label>{{'text.course.projects.search' | translate : 'Поиск по теме, фамилии'}}</mat-label>
         <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>

@@ -11,8 +11,8 @@ import {select, Store} from '@ngrx/store';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import {IAppState} from '../../store/state/app.state';
 import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-popover.component';
-import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
+import {TranslatePipe} from 'educats-translate';
 
 @Component({
   selector: 'app-visit-stats',
@@ -38,6 +38,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   constructor(private visitStatsService: VisitStatsService,
               public dialog: MatDialog,
               private snackBar: MatSnackBar,
+              private translatePipe: TranslatePipe,
               private store: Store<IAppState>) {
   }
 
@@ -122,8 +123,8 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
       width: '700px',
       data: {
-        title: 'Посещаемость студентов',
-        buttonText: 'Сохранить',
+        title: this.translatePipe.transform('text.course.visit.dialog.set.title', 'Посещаемость студентов'),
+        buttonText: this.translatePipe.transform('text.course.visit.dialog.set.action.save', 'Сохранить'),
         body: visits
       }
     });
@@ -159,7 +160,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       }
     } else if (hasChanges) {
       this.ngOnInit();
-      this.addFlashMessage('Посещаемость успешно обновлена');
+      this.addFlashMessage(this.translatePipe.transform('text.course.visit.dialog.set.action.save.success', 'Посещаемость успешно обновлена'));
     }
   }
 
@@ -174,31 +175,10 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       if (result != null) {
         const date = new Date(result.date);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        this.visitStatsService.addDate(date.toISOString(), this.subjectId, result.start, 
+        this.visitStatsService.addDate(date.toISOString(), this.subjectId, result.start,
         result.end, result.audience, result.building).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage('Дата консультации успешно добавлена');
-        });
-      }
-    });
-  }
-
-  deleteVisitDate(consultation: Consultation) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '400px',
-      data: {
-        label: 'Удаление даты консультации',
-        message: 'Вы действительно хотите удалить дату консультации?',
-        actionName: 'Удалить',
-        color: 'primary'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result != null && result) {
-        this.visitStatsService.deleteDate(consultation.Id).subscribe(() => {
-          this.ngOnInit();
-          this.addFlashMessage('Дата успешно удалена');
+          this.addFlashMessage(this.translatePipe.transform('text.course.visit.dialog.add.save.success', 'Дата консультации успешно добавлена'));
         });
       }
     });

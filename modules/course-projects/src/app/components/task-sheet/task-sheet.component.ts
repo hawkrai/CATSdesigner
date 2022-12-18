@@ -5,13 +5,14 @@ import {TaskSheetService} from '../../services/task-sheet.service';
 import {Subscription} from 'rxjs';
 import {CourseUser} from '../../models/course-user.model';
 import {EditTaskSheetComponent} from './edit-task-sheet/edit-task-sheet.component';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {select, Store} from '@ngrx/store';
 import {IAppState} from '../../store/state/app.state';
 import {getSubjectId} from '../../store/selectors/subject.selector';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { Template } from 'src/app/models/template.model';
 import {ToastrService} from 'ngx-toastr';
+import {TranslatePipe} from 'educats-translate';
 
 @Component({
   selector: 'app-task-sheet',
@@ -36,6 +37,7 @@ export class TaskSheetComponent implements OnInit {
               private taskSheetService: TaskSheetService,
               private dialog: MatDialog,
               private toastr: ToastrService,
+              private translatePipe: TranslatePipe,
               private store: Store<IAppState>) {
   }
 
@@ -117,7 +119,7 @@ export class TaskSheetComponent implements OnInit {
         if (result != null) {
           this.taskSheetService.editTaskSheet(result).subscribe(() => {
             this.ngOnInit();
-            this.toastr.success('Лист задания успешно сохранен');
+            this.toastr.success(this.translatePipe.transform('text.list.changed.successfully', 'Лист задания успешно сохранен'));
           });
         } else {
           this.ngOnInit();

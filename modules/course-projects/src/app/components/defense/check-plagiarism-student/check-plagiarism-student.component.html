@@ -1,5 +1,5 @@
 <div class="check-plagiarism" [ngClass]="{'result': result}">
-  <h1 mat-dialog-title>Проверка на плагиат</h1>
+  <h1 mat-dialog-title>{{'text.course.defence.plagiarism.title' | translate : 'Проверка на плагиат'}}</h1>
   <div *ngIf="!isLoad; else: load">
   </div>
   <div *ngIf="result">
@@ -8,27 +8,27 @@
              class="mat-elevation-z14 example-list">
 
         <ng-container matColumnDef="coeff">
-          <th mat-header-cell *matHeaderCellDef>Процент схожести, %</th>
+          <th mat-header-cell *matHeaderCellDef>{{'text.course.defence.plagiarism.percentage' | translate : 'Процент схожести'}}, %</th>
           <td mat-cell *matCellDef="let element"> {{element.coeff}}</td>
         </ng-container>
 
         <ng-container matColumnDef="author">
-          <th mat-header-cell *matHeaderCellDef>Автор</th>
+          <th mat-header-cell *matHeaderCellDef>{{'text.course.defence.plagiarism.author' | translate : 'Автор'}}</th>
           <td mat-cell *matCellDef="let element"> {{element.author}}</td>
         </ng-container>
 
         <ng-container matColumnDef="group">
-          <th mat-header-cell *matHeaderCellDef>Группа</th>
+          <th mat-header-cell *matHeaderCellDef>{{'text.course.defence.plagiarism.group' | translate : 'Группа'}}</th>
           <td mat-cell *matCellDef="let element"> {{element.groupName}}</td>
         </ng-container>
 
         <ng-container matColumnDef="subject">
-          <th mat-header-cell *matHeaderCellDef>Предмет</th>
+          <th mat-header-cell *matHeaderCellDef>{{'text.course.defence.plagiarism.subject' | translate : 'Предмет'}}</th>
           <td mat-cell *matCellDef="let element"> {{element.subjectName}}</td>
         </ng-container>
 
         <ng-container matColumnDef="file">
-          <th mat-header-cell *matHeaderCellDef>Файл</th>
+          <th mat-header-cell *matHeaderCellDef>{{'text.file' | translate : 'Файл'}}</th>
           <td mat-cell *matCellDef="let element"  class="link" (click)="downloadFile(element)"> {{element.doc}}</td>
         </ng-container>
 
@@ -37,7 +37,7 @@
       </table>
   </div>
   <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClick()">Закрыть</button>
+    <button mat-raised-button (click)="onClick()">{{'text.close' | translate : 'Закрыть'}}</button>
   </div>
 </div>
 <ng-template #load>

@@ -16,6 +16,7 @@ import {GroupService} from '../../services/group.service';
 import {ToastrService} from 'ngx-toastr';
 import {CourseUserService} from '../../services/course-user.service';
 import {switchMap, takeUntil} from 'rxjs/operators';
+import {TranslatePipe} from 'educats-translate';
 
 @Component({
   selector: 'app-projects',
@@ -46,6 +47,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
               private dialog: MatDialog,
               private store: Store<IAppState>,
               private toastr: ToastrService,
+              private translatePipe: TranslatePipe,
               private courseService: CourseUserService) {
   }
 
@@ -58,12 +60,12 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     });
 
     this.courseService.getUser().pipe(switchMap((res) => {
-      if (res.IsLecturer) {
-        return this.courseService.getUserInfo(res.UserId);
-      } else {
-        return of();
-      }
-    }), takeUntil(this.destroy$),
+        if (res.IsLecturer) {
+          return this.courseService.getUserInfo(res.UserId);
+        } else {
+          return of();
+        }
+      }), takeUntil(this.destroy$),
     ).subscribe(res => {
       this.lecturerName = res.Name;
     });
@@ -114,12 +116,12 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       autoFocus: false,
       width: '548px',
       data: {
-        label: 'Выбор темы курсового проекта',
-        message: 'Вы действительно хотите выбрать данную тему курсового проекта?',
-        alert: 'После выбора темы ожидайте подтверждение руководителя курсового проекта. ' +
+        label: this.translatePipe.transform('text.course.projects.selection.label', 'Выбор темы курсового проекта'),
+        message: this.translatePipe.transform('text.course.projects.selection.message', 'Вы действительно хотите выбрать данную тему курсового проекта?'),
+        alert: this.translatePipe.transform('text.course.projects.selection.alert', 'После выбора темы ожидайте подтверждение руководителя курсового проекта. ' +
           'Затем появится возможность скачать лист задания. Если выбранная тема будет отклонена ' +
-          'руководителем курсового проекта, она вновь станет доступной всем студентам.',
-        actionName: 'Выбрать',
+          'руководителем курсового проекта, она вновь станет доступной всем студентам.'),
+        actionName: this.translatePipe.transform('text.course.projects.selection.action', 'Выбрать'),
         color: 'primary',
         isConfirm: true,
         projectTheme: project.Theme
@@ -130,7 +132,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       if (result != null && result) {
         this.projectsService.chooseProject(project.Id).subscribe(() => {
           this.appComponent.ngOnInit();
-          this.toastr.success('Тема успешно выбрана');
+          this.toastr.success(this.translatePipe.transform('text.course.projects.selection.select.success', 'Тема успешно выбрана'));
         });
       }
     });
@@ -156,10 +158,10 @@ export class ProjectsComponent implements OnInit, OnDestroy {
           this.projectsService.editProject(null, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
-              this.toastr.success('Тема успешно сохранена');
+              this.toastr.success(this.translatePipe.transform('text.course.projects.selection.save.success', 'Тема успешно сохранена'));
             });
         } else {
-          this.toastr.error('Такая тема уже существует');
+          this.toastr.error(this.translatePipe.transform('text.course.projects.selection.save.error', 'Такая тема уже существует'));
         }
       }
     });
@@ -188,10 +190,10 @@ export class ProjectsComponent implements OnInit, OnDestroy {
             this.projectsService.editProject(project.Id, this.subjectId, result.name, result.selectedGroups.map(group => group.GroupId))
               .subscribe(() => {
                 this.ngOnInit();
-                this.toastr.success('Тема успешно сохранена');
+                this.toastr.success(this.translatePipe.transform('text.course.projects.selection.save.success', 'Тема успешно сохранена'));
               });
           } else {
-            this.toastr.error('Такая тема уже существует');
+            this.toastr.error(this.translatePipe.transform('text.course.projects.selection.save.error', 'Такая тема уже существует'));
           }
         }
       });
@@ -204,9 +206,9 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         autoFocus: false,
         width: '500px',
         data: {
-          label: 'Удаление темы курсового проекта',
-          message: 'Вы действительно хотите удалить тему курсового проекта?',
-          actionName: 'Удалить',
+          label: this.translatePipe.transform('text.course.projects.delete.label', 'Удаление темы курсового проекта'),
+          message: this.translatePipe.transform('text.course.projects.delete.message', 'Вы действительно хотите удалить тему курсового проекта?'),
+          actionName: this.translatePipe.transform('text.course.projects.delete.action', 'Удалить'),
           color: 'primary'
         }
       });
@@ -215,12 +217,12 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         if (result != null && result) {
           this.projectsService.deleteProject(project.Id).subscribe(() => {
             this.ngOnInit();
-            this.toastr.success('Тема успешно удалена');
+            this.toastr.success(this.translatePipe.transform('text.course.projects.delete.success', 'Тема успешно удалена'));
           });
         }
       });
     } else {
-      this.toastr.error('Отмените назначение темы');
+      this.toastr.error(this.translatePipe.transform('text.course.projects.delete.fail', 'Отмените назначение темы'));
     }
 
   }
@@ -243,7 +245,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
           if (result != null && result) {
             this.projectsService.assignProject(project.Id, result).subscribe(() => {
               this.ngOnInit();
-              this.toastr.success('Тема успешно назначена студенту');
+              this.toastr.success(this.translatePipe.transform('text.course.projects.assign.success', 'Тема успешно назначена студенту'));
             });
           }
         });
@@ -253,7 +255,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   approveChoice(project: Project) {
     this.projectsService.approveChoice(project.Id).subscribe(() => {
       this.ngOnInit();
-      this.toastr.success('Тема успешно подтверждена');
+      this.toastr.success(this.translatePipe.transform('text.course.projects.apply.success', 'Тема успешно подтверждена'));
     });
   }
 
@@ -262,9 +264,9 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       autoFocus: false,
       width: '548px',
       data: {
-        label: 'Отменить назначение темы курсового проекта',
-        message: 'Вы действительно хотите отменить назначение темы курсового проекта?',
-        actionName: 'Да',
+        label: this.translatePipe.transform('text.course.projects.assign.label', 'Отменить назначение темы курсового проекта'),
+        message: this.translatePipe.transform('text.course.projects.assign.message', 'Вы действительно хотите отменить назначение темы курсового проекта?'),
+        actionName: this.translatePipe.transform('text.course.projects.assign.action', 'Да'),
         color: 'primary'
       }
     });
@@ -273,7 +275,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       if (result != null && result) {
         this.projectsService.removeAssignment(project.Id).subscribe(() => {
           this.ngOnInit();
-          this.toastr.success('Назначение успешно отменено');
+          this.toastr.success(this.translatePipe.transform('text.course.projects.assign.remove.success', 'Назначение успешно отменено'));
         });
       }
     });
