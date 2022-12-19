@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Http;
 using Application.Core;
@@ -14,13 +13,10 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CourseProjectAssignmentController : ApiController
     {
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();
 
         private ICPManagementService CpManagementService
-        {
-            get { return _cpManagementService.Value; }
-        }
+            => _cpManagementService.Value;
 
         public IEnumerable<AssignedCourseProjectViewModel> Get(int subjectId) 
         {
@@ -36,13 +32,6 @@ namespace LMPlatform.UI.ApiControllers.CP
         public void Post(int id)
         {
             CpManagementService.DeleteAssignment(UserContext.CurrentUserId, id);
-        }
-
-        public class AssignProjectUpdateModel
-        {
-            public int ProjectId { get; set; }
-
-            public int StudentId { get; set; }
         }
     }
 }

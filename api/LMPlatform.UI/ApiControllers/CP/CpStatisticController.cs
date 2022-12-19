@@ -1,26 +1,22 @@
 ﻿using Application.Core;
-using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Core.SLExcel;
 using Application.Infrastructure.GroupManagement;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
     public class CpStatisticController : ApiController
     {
-        private readonly LazyDependency<IGroupManagementService> groupManagementService =
-            new LazyDependency<IGroupManagementService>();
+        private readonly LazyDependency<IGroupManagementService> _groupManagementService = new LazyDependency<IGroupManagementService>();
 
-        public IGroupManagementService GroupManagementService => this.groupManagementService.Value;
+        public IGroupManagementService GroupManagementService 
+            => _groupManagementService.Value;
+
         // GET api/<controller>
         public HttpResponseMessage Get(int subjectId, int groupId)
         {

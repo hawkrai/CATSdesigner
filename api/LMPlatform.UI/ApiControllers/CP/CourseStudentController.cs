@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Application.Core;
@@ -13,17 +12,14 @@ namespace LMPlatform.UI.ApiControllers.CP
     [JwtAuth]
     public class CourseStudentController : ApiController
     {
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
-        private readonly LazyDependency<ICPManagementService> cpManagementService = new LazyDependency<ICPManagementService>();
+        private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();
 
         private ICPManagementService CpManagementService
-        {
-            get { return cpManagementService.Value; }
-        }
+            => _cpManagementService.Value;
 
-        public PagedList<StudentData> Get([ModelBinder]GetPagedListParams parms)
+        public PagedList<StudentData> Get([ModelBinder]GetPagedListParams parameters)
         {
-            return CpManagementService.GetStudentsByCourseProjectId(parms);
+            return CpManagementService.GetStudentsByCourseProjectId(parameters);
         }
     }
 }

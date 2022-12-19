@@ -136,6 +136,7 @@
     <Compile Include="BugLog.cs" />
     <Compile Include="Concept.cs" />
     <Compile Include="CP\AssignedCourseProject.cs" />
+    <Compile Include="CP\AssignProjectUpdateModel.cs" />
     <Compile Include="CP\CoursePercentagesGraph.cs" />
     <Compile Include="CP\CoursePercentagesGraphToGroup.cs" />
     <Compile Include="CP\CoursePercentagesResult.cs" />

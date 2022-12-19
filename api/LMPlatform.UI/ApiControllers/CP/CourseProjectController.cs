@@ -9,21 +9,16 @@ using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
 using LMPlatform.UI.Attributes;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.ApiControllers.CP
 {
     [JwtAuth]
     public class CourseProjectController : ApiController
     {
-
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();
 
-        private ICPManagementService CpManagementService
-        {
-            get { return _cpManagementService.Value; }
-        }
+        private ICPManagementService CpManagementService 
+            => _cpManagementService.Value;
 
         public PagedList<CourseProjectData> Get([ModelBinder]GetPagedListParams parms)
         {
@@ -60,6 +55,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             project.LecturerId = UserContext.CurrentUserId;
             
             CpManagementService.SaveProject(project);
+
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
