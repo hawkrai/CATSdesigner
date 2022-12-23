@@ -10,6 +10,7 @@ using LMPlatform.Models.CP;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.Export;
@@ -827,11 +828,27 @@ namespace Application.Infrastructure.CPManagement
             return news;
         }
 
-        public void DeleteNews(CourseProjectNews news)
+        public async Task<DeleteNewsMessage> DeleteNewsAsync(CourseProjectNews news)
         {
-            var cpnews = Context.CourseProjectNewses.Single(x => x.Id == news.Id && x.SubjectId==news.SubjectId);
-            Context.CourseProjectNewses.Remove(cpnews);
+            var courseProjectNews = await Context.CourseProjectNewses.FirstOrDefaultAsync(x => x.Id == news.Id && x.SubjectId==news.SubjectId);
+
+            if (courseProjectNews is null)
+            {
+                return new DeleteNewsMessage()
+                {
+                    Message = "Новость не существует",
+                    IsError = true
+                };
+            }
+
+            Context.CourseProjectNewses.Remove(courseProjectNews);
             Context.SaveChanges();
+
+            return new DeleteNewsMessage()
+            {
+                Message = "Объявление успешно удалено",
+                IsError = false
+            };
         }
 
         public void DisableNews(int subjectId, bool disable)

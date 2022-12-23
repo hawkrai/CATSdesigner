@@ -4,6 +4,7 @@ using LMPlatform.Models;
 using LMPlatform.Models.CP;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -18,7 +19,7 @@ namespace Application.Infrastructure.CPManagement
 
         CourseProjectNews GetNews(int id);
 
-        void DeleteNews(CourseProjectNews news);
+        Task<DeleteNewsMessage> DeleteNewsAsync(CourseProjectNews news);
 
         CourseProjectNews SaveNews(CourseProjectNews news, IList<Attachment> attachments, Int32 userId);
 
