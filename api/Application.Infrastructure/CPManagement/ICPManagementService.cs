@@ -4,6 +4,7 @@ using LMPlatform.Models;
 using LMPlatform.Models.CP;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Application.Infrastructure.CPManagement
@@ -67,5 +68,8 @@ namespace Application.Infrastructure.CPManagement
 
         void SetSelectedGroupsToCourseProjects(int subjectId, List<int> groupIds);
 
+        HttpResponseMessage DownloadTaskSheet(int courseProjectId);
+
+        HttpResponseMessage DownloadTaskSheet(int groupId, int subjectId);
     }
 }

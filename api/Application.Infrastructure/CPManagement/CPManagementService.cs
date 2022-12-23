@@ -16,6 +16,7 @@ using Application.Infrastructure.ProjectManagement;
 using Application.Infrastructure.Export;
 using Application.Infrastructure.LecturerManagement;
 using Application.Core.Helpers;
+using System.Net.Http;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -741,6 +742,50 @@ namespace Application.Infrastructure.CPManagement
             }
 
             Context.SaveChanges();
+        }
+
+        public HttpResponseMessage DownloadTaskSheet(int courseProjectId)
+        {
+            var courseProject = Context.CourseProjects
+                .Include(x =>
+                    x.AssignedCourseProjects
+                        .Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
+                .Single(x => x.CourseProjectId == courseProjectId);
+
+            string docName;
+
+            if (courseProject.AssignedCourseProjects.Count == 1)
+            {
+                var stud = courseProject.AssignedCourseProjects.Single().Student;
+                docName = $"{stud.LastName}_{stud.FirstName}";
+            }
+            else
+            {
+                docName = $"{courseProject.Theme}";
+            }
+
+            return WordCourseProject.CourseProjectToWord(docName, courseProject);
+        }
+
+        public HttpResponseMessage DownloadTaskSheet(int groupId, int subjectId)
+        {
+            var courseProjects = new LmPlatformModelsContext().CourseProjects
+                .Where(x => x.SubjectId == subjectId && x.LecturerId == UserContext.CurrentUserId)
+                .Where(x => x.AssignedCourseProjects.Count() == 1)
+                .Include(x =>
+                    x.AssignedCourseProjects.Select(y => y.Student.Group.Secretary.CoursePercentagesGraphs))
+                .Where(x => x.AssignedCourseProjects.FirstOrDefault().Student.GroupId == groupId).ToList();
+
+            string fileName = "NoTaskSheet.zip";
+            if (courseProjects.Any())
+            {
+                fileName = courseProjects.FirstOrDefault().AssignedCourseProjects.FirstOrDefault().Student.Group.Name + ".zip";
+
+                return WordCourseProject.CourseProjectsToArchive(fileName, courseProjects);
+            }
+
+            return WordCourseProject.CourseProjectsToArchive(fileName, courseProjects);
+            
         }
 
         private void CreateBtsProject(CourseProject courseProject, int developerId)
