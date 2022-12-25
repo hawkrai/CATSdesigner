@@ -214,6 +214,6 @@ export class LectorsComponent implements OnInit {
     let month = date.toLocaleDateString('en-US', { month: '2-digit' });
     let day = date.toLocaleDateString('en-US', { day: '2-digit' });
     let time = date.toLocaleTimeString('en-US', { hour12: false });
-    return `${day}-${month}-${year}, ${time}`;
+    return `${day}/${month}/${year} ${time}`;
   }
 }
