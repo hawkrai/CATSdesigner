@@ -4,6 +4,8 @@ using LMPlatform.Models;
 using LMPlatform.Models.CP;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -18,7 +20,7 @@ namespace Application.Infrastructure.CPManagement
 
         CourseProjectNews GetNews(int id);
 
-        void DeleteNews(CourseProjectNews news);
+        Task<DeleteNewsMessage> DeleteNewsAsync(CourseProjectNews news);
 
         CourseProjectNews SaveNews(CourseProjectNews news, IList<Attachment> attachments, Int32 userId);
 
@@ -66,5 +68,8 @@ namespace Application.Infrastructure.CPManagement
 
         void SetSelectedGroupsToCourseProjects(int subjectId, List<int> groupIds);
 
+        HttpResponseMessage DownloadTaskSheet(int courseProjectId);
+
+        HttpResponseMessage DownloadTaskSheet(int groupId, int subjectId);
     }
 }
