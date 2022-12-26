@@ -9,7 +9,6 @@ using System.Web.Security;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.UI.Controllers;
-using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.ElasticManagement;
 using Application.Infrastructure.FilesManagement;
@@ -23,70 +22,32 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Helpers;
 using LMPlatform.UI.ViewModels.AccountViewModels;
 using LMPlatform.UI.ViewModels.AdministrationViewModels;
-using Mvc.JQuery.Datatables;
+
 
 namespace LMPlatform.UI.Controllers
 {
     [JwtAuth(Roles = "admin")]
     public class AdministrationController : BasicController
     {
+        private readonly LazyDependency<IFilesManagementService> _filesManagementService;
+        private readonly LazyDependency<IElasticManagementService> _elasticManagementService;
 
-            private readonly LazyDependency<IFilesManagementService> _filesManagementService =
-            new LazyDependency<IFilesManagementService>();
+        public IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
+        public IFilesManagementService FilesManagementService => _filesManagementService.Value;
+        public IStudentManagementService StudentManagementService => ApplicationService<IStudentManagementService>();
+        public ISubjectManagementService SubjectManagementService => ApplicationService<ISubjectManagementService>();
+        public IGroupManagementService GroupManagementService => ApplicationService<IGroupManagementService>();
+        public ILecturerManagementService LecturerManagementService => ApplicationService<ILecturerManagementService>();
+        public IUsersManagementService UsersManagementService => ApplicationService<IUsersManagementService>();
+        public IDpManagementService DpManagementService => ApplicationService<IDpManagementService>();
 
-        public IFilesManagementService FilesManagementService => this._filesManagementService.Value;
 
-        private readonly LazyDependency<IElasticManagementService> _elasticManagementService = new LazyDependency<IElasticManagementService>();
-        private IElasticManagementService ElasticManagementService => _elasticManagementService.Value;
-
-        [HttpPost]
-        public DataTablesResult<LecturerViewModel> GetCollectionLecturers(DataTablesParam dataTableParam)
+        public AdministrationController()
         {
-            var searchString = dataTableParam.GetSearchString();
-            this.ViewBag.Profile = "/Administration/Profile";
-            this.ViewBag.ListOfSubject = "/Administration/ListOfGroups";
-            this.ViewBag.EditActionLink = "/Administration/EditProfessor";
-            this.ViewBag.DeleteActionLink = "/Administration/DeleteLecturer";
-            this.ViewBag.StatActionLink = "/Administration/Attendance";
-            var lecturers = this.LecturerManagementService.GetLecturersPageable(pageInfo: dataTableParam.ToPageInfo(),
-                searchString: searchString);
-            this.SetupSettings(dataTableParam);
-            return DataTableExtensions.GetResults(
-                lecturers.Items.Select(l =>
-                    LecturerViewModel.FormLecturers(l, this.PartialViewToString("_EditGlyphLinks", l.Id, l.IsActive))),
-                dataTableParam, lecturers.TotalCount);
+            _filesManagementService = new LazyDependency<IFilesManagementService>();
+            _elasticManagementService = new LazyDependency<IElasticManagementService>();
         }
 
-        [HttpPost]
-        public DataTablesResult<GroupViewModel> GetCollectionGroups(DataTablesParam dataTableParam)
-        {
-            var searchString = dataTableParam.GetSearchString();
-            this.ViewBag.ListOfStudents = "/Administration/ListOfStudents";
-            this.ViewBag.EditActionLink = "/Administration/EditGroup";
-            this.ViewBag.DeleteActionLink = "/Administration/DeleteGroup";
-            var groups = this.GroupManagementService.GetGroupsPageable(pageInfo: dataTableParam.ToPageInfo(),
-                searchString: searchString);
-            this.SetupSettings(dataTableParam);
-            return DataTableExtensions.GetResults(
-                groups.Items.Select(g =>
-                    GroupViewModel.FormGroup(g, this.PartialViewToString("_EditGlyphLinks", g.Id))), dataTableParam,
-                groups.TotalCount);
-        }
-
-        private void SetupSettings(DataTablesParam dataTableParam)
-        {
-            var n = 20;
-
-            for (var i = 0; i < n; i++)
-            {
-                if (string.IsNullOrEmpty(this.HttpContext.Request.Form["iSortCol_" + i])) return;
-
-                dataTableParam.iSortCol.Add(int.Parse(this.HttpContext.Request.Form["iSortCol_" + i]));
-                dataTableParam.sSortDir.Add(this.HttpContext.Request.Form["sSortDir_" + i]);
-            }
-        }
-
-        #region Json actions
 
         [HttpGet]
         public ActionResult UserActivityJson()
@@ -428,13 +389,27 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public ActionResult AttendanceJson(int id)
         {
-            var user = this.UsersManagementService.GetUser(id);
-            var attendances = user?.Attendances?.ToList();
-            if (attendances == null) return StatusCode(HttpStatusCode.BadRequest);
-            var data = attendances.GroupBy(e => e.Login.Date)
-                .Select(d => new {day = d.Key.ToString("dd/MM/yyyy"), count = d.Count()});
+            var user = UsersManagementService.GetUser(id);
 
-            return JsonResponse(new {resultMessage = user.FullName, attendance = data});
+            if (user == null) 
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            if (user.Attendances == null)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var logins = user.Attendances.Select(a => a.Login.ToString("o"));
+
+            var viewModel = new AttendanceViewModel
+            {
+                FullName = user.FullName,
+                Logins = logins
+            };
+
+            return JsonResponse(viewModel);
         }
 
         [HttpGet]
@@ -637,26 +612,5 @@ namespace LMPlatform.UI.Controllers
                 return StatusCode(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
-        #endregion
-
-        #region Dependencies
-
-        public IStudentManagementService StudentManagementService =>
-            this.ApplicationService<IStudentManagementService>();
-
-        public ISubjectManagementService SubjectManagementService =>
-            this.ApplicationService<ISubjectManagementService>();
-
-        public IGroupManagementService GroupManagementService => this.ApplicationService<IGroupManagementService>();
-
-        public ILecturerManagementService LecturerManagementService =>
-            this.ApplicationService<ILecturerManagementService>();
-
-        public IUsersManagementService UsersManagementService => this.ApplicationService<IUsersManagementService>();
-
-        public IDpManagementService DpManagementService => this.ApplicationService<IDpManagementService>();
-
-        #endregion
     }
 }

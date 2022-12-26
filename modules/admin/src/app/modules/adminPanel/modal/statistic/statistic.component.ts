@@ -57,14 +57,26 @@ export class StatisticComponent implements OnInit {
       }
     },
     tooltip: {
-      y: {
-        formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
-          return `Кол-во: ${value}`
-        }
+      custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+        let date = this.parseDate(this.series.data[dataPointIndex].x);
+        let times = this.logins.get(date).map(val => this.formatTime(new Date(val)));
+    
+        let html =
+          '<div class="tooltip" style="margin-right:20px">' +
+            '<ol>' +
+              times
+                .map(val => `<li>${val}</li>`)
+                .join("\n") +
+            '</ol>' +
+          '</div>'
+    
+        return html;
       }
     }
   }
   isLoad = false;
+
+  logins: Map<number, number[]>;
 
   constructor(private statisticService: StatisticService, public dialogRef: MatDialogRef<object>,
               @Inject(MAT_DIALOG_DATA) public value: any) { }
@@ -75,33 +87,52 @@ export class StatisticComponent implements OnInit {
 
   async loadStatistic(userId) {
     await this.statisticService.getStatistics(userId).subscribe( result => {
-      if (result.attendance.length > 0) {
-        this.convertData(result.attendance);
+      if (result.Logins.length > 0) {
+        this.convertData(result.Logins);
+        this.initChart();
       }
       else {
         this.series.data.push({ x: "", y: 0 });
       }
-      this.chartOptions.title.text = result.resultMessage;
+
+      this.chartOptions.title.text = result.FullName;
       this.isLoad = true;
     });
   }
 
-  convertData(array) {
+  convertData(data) {
+    this.logins = new Map();
+
+    for (const item of data) {
+      let datetime = new Date(item);
+      let date = Date.parse(datetime.toDateString());
+      let time = datetime.getTime();
+
+      if (!this.logins.has(date)) {
+        this.logins.set(date, []);
+      }
+
+      this.logins.get(date).push(time);
+    }
+  }
+
+  initChart()
+  {
     const MAX_COUNT = 30;
 
     this.series.data = [];
     
-    for (const item of array) {
-      this.series.data.push({ x: item.day, y: item.count });
+    for (const item of this.logins.entries()) {
+      this.series.data.push({ x: this.formatDate(new Date(item[0])), y: item[1].length });
     }
     
-    const length = array.length;
+    const length = this.logins.size;
     
     if (length > 30) {
       this.series.data = this.series.data.slice(length - MAX_COUNT, length);
     }
 
-    let maxCount = array[0].count;
+    let maxCount = this.series.data[0].y;
 
     for (const item of this.series.data) {
       if (item.y > maxCount) {
@@ -112,4 +143,25 @@ export class StatisticComponent implements OnInit {
     this.chartOptions.yaxis.max = maxCount + 1;
   }
 
+  parseDate(dateString) {
+    let parts = dateString.split("/");
+
+    if (parts.length != 3) {
+      return NaN;
+    }
+
+    let [dd, mm, yyyy] = parts;
+    return Date.parse(`${mm}/${dd}/${yyyy}`);
+  }
+
+  formatDate(date) {
+    let yyyy = date.toLocaleDateString('en-US', { year: 'numeric' });
+    let mm = date.toLocaleDateString('en-US', { month: '2-digit' });
+    let dd = date.toLocaleDateString('en-US', { day: '2-digit' });
+    return `${dd}/${mm}/${yyyy}`;
+  }
+
+  formatTime(date) {
+    return date.toLocaleTimeString('en-US', { hour12: false });
+  }
 }
