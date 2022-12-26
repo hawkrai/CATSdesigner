@@ -52,6 +52,7 @@
   "text.test.questions.for.test": "Test question ",
   "text.test.question.text": "Question text",
   "text.test.error.max.length": "The length exceeds 255 characters",
+  "text.test.enter.question.required": "Field is required",
   "text.test.enter.question.name": "Enter the name of the question",
   "text.test.question.description": "Assignment to the question",
   "text.test.open.window": "Open description",

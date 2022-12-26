@@ -1,13 +1,13 @@
-import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {TestService} from "../../../service/test.service";
-import {Test} from "../../../models/test.model";
-import {Question} from "../../../models/question/question.model";
-import {map, startWith, takeUntil, tap} from "rxjs/operators";
-import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
-import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
-import {Observable, Subject} from "rxjs";
-import {FormControl} from "@angular/forms";
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
+import { TestService } from "../../../service/test.service";
+import { Test } from "../../../models/test.model";
+import { Question } from "../../../models/question/question.model";
+import { map, startWith, takeUntil, tap } from "rxjs/operators";
+import { AutoUnsubscribe } from "../../../decorator/auto-unsubscribe";
+import { AutoUnsubscribeBase } from "../../../core/auto-unsubscribe-base";
+import { Observable, Subject } from "rxjs";
+import { FormControl } from "@angular/forms";
 
 
 @AutoUnsubscribe
@@ -28,8 +28,8 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialogRef: MatDialogRef<QuestionOtherTestComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              private testService: TestService) {
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private testService: TestService) {
     super();
   }
 
@@ -52,14 +52,15 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
       .pipe(
         startWith(""),
         map(value => typeof value === "string" ? value : value.Title),
-        map(name =>{
-    if (name) {
-      console.log(this._filter(name));
-      return this._filter(name);
-    } else {
-      return this.tests.slice();
-    }}
-  ));
+        map(name => {
+          if (name) {
+            console.log(this._filter(name));
+            return this._filter(name);
+          } else {
+            return this.tests.slice();
+          }
+        }
+        ));
   }
 
   onNoClick(): void {
@@ -85,7 +86,7 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe(questions => {
         questions.forEach((question) => {
-          var sliced = question.Title.slice(0, 80);
+          let sliced = question.Title.slice(0, 80);
           if (sliced.length < question.Title.length) {
             sliced += "...";
           }
@@ -94,11 +95,16 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
 
         this.questions = questions;
         this.filteredQuestions = questions;
+        console.log('filteredQuestions', this.filteredQuestions);
+        this.filteredQuestions.sort((a, b) => a.tooltipTitle.toLocaleLowerCase().charCodeAt(0) - b.tooltipTitle.toLocaleLowerCase()[0].charCodeAt(0));
+        console.log('filteredQuestions', this.filteredQuestions);
       });
   }
 
   public filterQuestions(event): void {
     this.filteredQuestions = this.questions.filter((question) => question.Title.toLowerCase().includes(event.target.value.toLowerCase()));
+    console.log('filteredQuestions', this.filteredQuestions);
+    this.filteredQuestions.sort((a, b) => a.tooltipTitle.toLocaleLowerCase().charCodeAt(0) - b.tooltipTitle.toLocaleLowerCase()[0].charCodeAt(0));
   }
 
   displayFn(user: Test): string {

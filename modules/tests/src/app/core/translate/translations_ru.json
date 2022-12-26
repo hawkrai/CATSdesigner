@@ -45,6 +45,7 @@
   "text.test.question.text": "Текст вопроса",
   "text.test.error.max.length": "Длина превышает 255 символов",
   "text.test.enter.question.name": "Введите название вопроса",
+  "text.test.enter.question.required": "Поле обязательное",
   "text.test.question.description": "Задание к вопросу",
   "text.test.open.window": "Открыть описание",
   "text.test.answers": "Ответы",
