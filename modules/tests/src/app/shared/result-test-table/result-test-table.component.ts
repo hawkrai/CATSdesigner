@@ -132,7 +132,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
           let entire = [];
           const testSize =  pupil[1].test.filter(x => Number.isInteger(x.points)).length;
           entire.push(this.getShortName(pupil));
-          const averageMark = testSize > 0 ? (sumOfMarks / testSize).toFixed(2) : '0';
+          const averageMark = testSize > 0 ? (sumOfMarks / testSize).toFixed(1) : '0';
           entire.push(averageMark);
           mass.push(entire);
           pupil.push(averageMark);

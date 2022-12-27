@@ -94,14 +94,17 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .subscribe(result => {
         this.getTests(this.subject.id);
         this.cdr.detectChanges();
-        console.log(result);
       });
   }
 
-  public openAvailabilityDialog(event?: any): void {
+  public openAvailabilityDialog(tests: any[], event?: any): void {
+    let testsValue = tests.filter((a) => a.Id === event);
+    if (event !== undefined) {
+      testsValue = testsValue[0];
+    }
     const dialogRef = this.dialog.open(EditAvailabilityPopupComponent, {
-      width: "700px",
-      data: { event }
+      width: "548px",
+      data: { event, test: testsValue },
     });
 
     dialogRef.afterClosed()
@@ -109,7 +112,6 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .subscribe(result => {
         this.getTests(this.subject.id);
         this.cdr.detectChanges();
-        console.log(result);
       });
   }
 

@@ -1,16 +1,17 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {TestQuestion} from "../../../models/question/test-question.model";
-import {Answer} from "../../../models/question/answer.model";
-import {TestPassingService} from "../../../service/test-passing.service";
-import {Test} from "../../../models/test.model";
-import {catchError, takeUntil, tap} from "rxjs/operators";
-import {of, Subject} from "rxjs";
-import {Router} from "@angular/router";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
-import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
-import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
-import {MatSnackBar} from "@angular/material";
-import {TranslatePipe} from "educats-translate";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { TestQuestion } from "../../../models/question/test-question.model";
+import { Answer } from "../../../models/question/answer.model";
+import { TestPassingService } from "../../../service/test-passing.service";
+import { Test } from "../../../models/test.model";
+import { catchError, takeUntil, tap } from "rxjs/operators";
+import { of, Subject } from "rxjs";
+import { Router } from "@angular/router";
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import { AutoUnsubscribe } from "../../../decorator/auto-unsubscribe";
+import { AutoUnsubscribeBase } from "../../../core/auto-unsubscribe-base";
+import { MatSnackBar } from "@angular/material";
+import { TranslatePipe } from "educats-translate";
+import { AppToastrService } from "../../../service/toastr.service";
 
 
 @AutoUnsubscribe
@@ -42,9 +43,10 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   private answers: number = 0;
 
   constructor(private testPassingService: TestPassingService,
-              private snackBar: MatSnackBar,
-              private translatePipe: TranslatePipe,
-              private router: Router) {
+    private snackBar: MatSnackBar,
+    private toastr: AppToastrService,
+    private translatePipe: TranslatePipe,
+    private router: Router) {
     super();
   }
 
@@ -57,7 +59,6 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
       this.charsNeskolko[2] || this.charsNeskolko[3] || this.charsNeskolko[4] || this.charsNeskolko[5] ||
       this.charsNeskolko[6] || this.charsNeskolko[7] || this.charsNeskolko[8] || this.chosenAnswer || this.value) {
       const user = JSON.parse(localStorage.getItem("currentUser"));
-      console.log(this.chosenAnswer);
       const request = {
         answers: [],
         questionNumber: this.question.Number,
@@ -67,23 +68,23 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
       if (this.question.Question.QuestionType === 0) {
         this.question.Question.Answers.forEach((answer) => {
           if (answer.Id === this.chosenAnswer.Id) {
-            request.answers.push({Id: answer.Id.toString(), IsCorrect: 1});
+            request.answers.push({ Id: answer.Id.toString(), IsCorrect: 1 });
           }
           else {
-            request.answers.push({Id: answer.Id.toString(), IsCorrect: 0});
+            request.answers.push({ Id: answer.Id.toString(), IsCorrect: 0 });
           }
         });
       } else if (this.question.Question.QuestionType === 1) {
         this.question.Question.Answers.forEach((answer, index) => {
-          request.answers.push({Id: answer.Id.toString(), IsCorrect: this.charsNeskolko[index] ? 1 : 0});
+          request.answers.push({ Id: answer.Id.toString(), IsCorrect: this.charsNeskolko[index] ? 1 : 0 });
         });
 
       } else if (this.question.Question.QuestionType === 2) {
-        request.answers.push({Content: this.value, IsCorrect: 0});
+        request.answers.push({ Content: this.value, IsCorrect: 0 });
 
       } else if (this.question.Question.QuestionType === 3) {
         this.question.Question.Answers.forEach((answer, index) => {
-          request.answers.push({Id: answer.Id.toString(), IsCorrect: index});
+          request.answers.push({ Id: answer.Id.toString(), IsCorrect: index });
         });
       }
       if (this.test.ForSelfStudy) {
@@ -98,13 +99,13 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
           }),
           takeUntil(this.unsubscribeStream$),
           catchError(() => {
-            this.router.navigate(["/test-result"], {queryParams: {testId: this.test.Id}});
+            this.router.navigate(["/test-result"], { queryParams: { testId: this.test.Id } });
             return of(null);
           })
         )
         .subscribe();
     } else {
-      this.openSnackBar(this.translatePipe.transform("text.test.choose.variant", "Выберите вариант ответа"));
+      this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.test.choose.variant", "Выберите вариант ответа"));
     }
   }
 
@@ -117,12 +118,11 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
 
   public getOnNextQuestion(answered: boolean, isTrue = true): void {
     this.charsNeskolko = {};
-    this.goToNextQuestion.emit({answered, isTrue});
+    this.goToNextQuestion.emit({ answered, isTrue });
   }
 
   public onValueChange(event): void {
     this.value = event.currentTarget.value;
-    console.log(event);
   }
 
   drop(event: CdkDragDrop<string[]>) {

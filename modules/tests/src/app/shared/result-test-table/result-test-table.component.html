@@ -37,10 +37,10 @@
           <ng-container matColumnDef="average">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">{{'text.test.average.score'| translate:'Средний балл'}}</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-average"
-              [matTooltip]="getAverageTooltip(element)" 
-              matTooltipPosition="below" 
+              [matTooltip]="getAverageTooltip(element)"
+              matTooltipPosition="below"
               [matTooltipDisabled]="size && element[3]"
-                      [class.notAll]="size && !element[3]"> {{element[2]}}
+                      [class.notAll]="size && !element[3]"> {{element[2].slice()}}
             </mat-cell>
           </ng-container>
 
