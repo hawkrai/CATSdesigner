@@ -6,6 +6,7 @@ using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using Application.Core;
 using LMPlatform.Data.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Application.Infrastructure.GroupManagement
 {
@@ -54,6 +55,32 @@ namespace Application.Infrastructure.GroupManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 var groups = repositoriesContainer.GroupsRepository.GetPageableBy(query);
+                return groups;
+            }
+        }
+
+        public async Task<IPageableList<Group>> GetGroupsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null)
+        {
+            var query = new PageableQuery<Group>(pageInfo);
+            query
+                .Include(g => g.Students)
+                .Include(e => e.SubjectGroups);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query.AddFilterClause(e => 
+                    e.Name.ToLower().Contains(searchString)
+                );
+            }
+
+            if (sortCriteria != null)
+            {
+                query.OrderBy(sortCriteria);
+            }
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var groups = await repositoriesContainer.GroupsRepository.GetPageableByAsync(query);
                 return groups;
             }
         }

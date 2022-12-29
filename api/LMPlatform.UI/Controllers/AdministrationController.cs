@@ -134,6 +134,44 @@ namespace LMPlatform.UI.Controllers
 
         [HttpGet]
         public async Task<ActionResult> GetFilesPagedJsonAsync(int pageIndex, int pageSize, string? filter, string? orderBy, SortDirection sortDirection = SortDirection.Asc) 
+        {
+            var pageInfo = new PageInfo
+            {
+                PageNumber = pageIndex + 1,
+                PageSize = pageSize
+            };
+
+            var sortCriteria = !string.IsNullOrEmpty(orderBy) ? new SortCriteria
+            {
+                Name = orderBy,
+                SortDirection = sortDirection
+            } : null;
+
+            IPageableList<Attachment> attachments;
+
+            try
+            {
+                attachments = await FilesManagementService.GetAttachmentsPageableAsync(filter, pageInfo, sortCriteria);
+            }
+            catch (SortCriteriaException)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var items = attachments.Items.Select(a => new AttachmentViewModel(a));
+
+            var response = new FilesPageViewModel<AttachmentViewModel>
+            {
+                Items = items,
+                PageInfo = pageInfo,
+                TotalCount = attachments.TotalCount,
+                ServerPath = ConfigurationManager.AppSettings["FileUploadPath"]
+            };
+
+            return JsonResponse(response);
+        }
+
+        [HttpGet]
         public ActionResult StudentsJson()
         {
             var students = this.StudentManagementService.GetStudents();
@@ -197,14 +235,14 @@ namespace LMPlatform.UI.Controllers
         {
             var user = await this.UsersManagementService.GetUserAsync(userName);
 
-            if (user is null) 
+            if (user is null)
             {
                 return StatusCode(HttpStatusCode.BadRequest);
             }
 
             var student = await this.StudentManagementService.GetStudentAsync(user.Id);
 
-            if (student is null) 
+            if (student is null)
             {
                 return StatusCode(HttpStatusCode.BadRequest);
             }
@@ -236,11 +274,11 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> RestoreStudentAsync(int id) 
+        public async Task<ActionResult> RestoreStudentAsync(int id)
         {
             var student = await StudentManagementService.GetStudentAsync(id);
 
-            if (student == null) 
+            if (student == null)
             {
                 return StatusCode(HttpStatusCode.BadRequest);
             }
@@ -430,6 +468,45 @@ namespace LMPlatform.UI.Controllers
 
             return JsonResponse(responseModel);
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetGroupsPagedJsonAsync(int pageIndex, int pageSize, string? filter, string? orderBy, SortDirection sortDirection = SortDirection.Asc) 
+        {
+            var pageInfo = new PageInfo
+            {
+                PageNumber = pageIndex + 1,
+                PageSize = pageSize
+            };
+
+            var sortCriteria = !string.IsNullOrEmpty(orderBy) ? new SortCriteria
+            {
+                Name = orderBy,
+                SortDirection = sortDirection
+            } : null;
+
+            IPageableList<Group> groups;
+
+            try
+            {
+                groups = await GroupManagementService.GetGroupsPageableAsync(filter, pageInfo, sortCriteria);
+            }
+            catch (SortCriteriaException)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var items = groups.Items.Select(g => GroupViewModel.FormGroup(g, null));
+
+            var response = new PageViewModel<GroupViewModel>
+            {
+                Items = items,
+                PageInfo = pageInfo,
+                TotalCount = groups.TotalCount
+            };
+
+            return JsonResponse(response);
+        }
+
 
         [HttpGet]
         [AllowAnonymous]
