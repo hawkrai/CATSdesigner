@@ -143,6 +143,44 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> GetStudentsPagedJsonAsync(int pageIndex, int pageSize, string? filter, string? orderBy, SortDirection sortDirection = SortDirection.Asc)
+        {
+            var pageInfo = new PageInfo
+            {
+                PageNumber = pageIndex + 1,
+                PageSize = pageSize
+            };
+
+            var sortCriteria = !string.IsNullOrEmpty(orderBy) ? new SortCriteria
+            {
+                Name = orderBy,
+                SortDirection = sortDirection
+            } : null;
+
+            IPageableList<Student> students;
+
+            try
+            {
+                students = await StudentManagementService.GetStudentsPageableAsync(filter, pageInfo, sortCriteria);
+            }
+            catch (SortCriteriaException)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var items = students.Items.Select(s => StudentViewModel.FromStudent(s, null));
+
+            var response = new PageViewModel<StudentViewModel>
+            {
+                Items = items,
+                PageInfo = pageInfo,
+                TotalCount = students.TotalCount
+            };
+
+            return JsonResponse(response);
+        }
+
+        [HttpGet]
         public ActionResult GetStudentJson(int id)
         {
             var student = this.StudentManagementService.GetStudent(id);

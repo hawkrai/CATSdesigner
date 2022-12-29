@@ -74,6 +74,36 @@ namespace Application.Infrastructure.StudentManagement
             }
         }
 
+        public async Task<IPageableList<Student>> GetStudentsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null)
+        {
+            var query = new PageableQuery<Student>(pageInfo);
+            query
+				.Include(e => e.Group)
+				.Include(e => e.User);
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.Replace(" ", string.Empty);
+
+                query.AddFilterClause(
+                    e => (e.LastName + e.FirstName + e.MiddleName).Contains(searchString)
+                    || e.Group.Name.ToLower().Contains(searchString)
+                    || e.User.UserName.Contains(searchString)
+				);
+            }
+
+			if (sortCriteria != null)
+			{
+				query.OrderBy(sortCriteria);
+			}
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var students = await repositoriesContainer.StudentsRepository.GetPageableByAsync(query);
+                return students;
+            }
+        }
+
         public Student Save(Student student)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())

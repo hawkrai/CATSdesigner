@@ -8,8 +8,8 @@ import {EditStudentComponent} from '../modal/edit-student/edit-student.component
 import {StatisticComponent} from '../modal/statistic/statistic.component';
 import {SubjectListComponent} from '../modal/subject-list/subject-list.component';
 import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import {MatSort, Sort} from '@angular/material/sort';
 import {MatDialog} from '@angular/material/dialog';
 import { AppToastrService } from 'src/app/service/toastr.service';
 //import { AppToastrService } from 'src/app/service/toastr.service';
@@ -29,41 +29,119 @@ export class StudentsComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   isDelete = false;
 
+  filter: string = null;
+
+  orderBy: string = null;
+  sortDirection: number = 0;
+
+  pageIndexDelta: number = 0;
+  prevPageData: Student[] = null;
+  nextPageData: Student[] = null;
+
+  orderByMap = {
+    'FullName': 'LastName',
+    'UserName': 'User.UserName',
+    'GroupName': 'Group.Name',
+    'Confirmed': 'Confirmed'
+  }
+
   constructor(private dialog: MatDialog, private toastr: AppToastrService, private studentService: StudentService, private router: Router) { }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.dataSource.filterPredicate = (data, filter) => data.FullName.trim().toLowerCase().startsWith(filter.trim().toLowerCase());
-    this.loadStudent();
+    this.paginator.pageSize = 20;
+    
+    this.loadStudentsPaged(false);
+  }
 
+  applyFilter(filterValue: string) {
+    this.filter = filterValue.trim().toLowerCase();
+    
+    this.loadStudentsPaged(false);
+  }
+
+  applySort(sort: Sort) {
+    this.orderBy = null;
+
+    if (sort.direction != '') {
+      this.orderBy = this.orderByMap.hasOwnProperty(sort.active) ? this.orderByMap[sort.active] : null;
+    }
+
+    this.sortDirection = sort.direction == "desc" ? 1 : 0;
+
+    this.loadStudentsPaged(false);
+  }
+
+  pageChanged(event: PageEvent) {
+    this.pageIndexDelta = event.pageIndex - event.previousPageIndex;
+    this.loadStudentsPaged();
+  }
+
+  loadStudentsPaged(usePreloaded: boolean = true) {
+    let isDataLoaded = false;
+
+    if (usePreloaded) {
+      if (this.pageIndexDelta == -1 && this.prevPageData != null) {
+        this.loadPrevPagePreloaded();
+        isDataLoaded = true;
+      }
+      else if (this.pageIndexDelta == 1 && this.nextPageData != null) {
+        this.loadNextPagePreloaded();
+        isDataLoaded = true;
+      }
+    }
+
+    if (isDataLoaded) {
+      return;
+    }
+
+    this.dataSource.data = [];
+    this.isLoad = false;
+    
+    this.nextPageData = null;
+    this.prevPageData = null;
+
+    this.studentService.getStudentsPaged(this.paginator.pageIndex, this.paginator.pageSize, this.filter, this.orderBy, this.sortDirection).subscribe(items => {
+      this.dataSource.data = items.Items;
+      this.paginator.length = items.TotalCount;
+      this.isLoad = true;
+
+      this.preloadStudents();
+    });
+  }
+
+  preloadStudents(loadPrevPage: boolean = true, loadNextPage: boolean = true) {
+    if (loadPrevPage && this.paginator.hasPreviousPage()) {
+      this.studentService.getStudentsPaged(this.paginator.pageIndex - 1, this.paginator.pageSize, this.filter, this.orderBy, this.sortDirection).subscribe(items => {
+        this.prevPageData = items.Items;
+      });
+    }
+
+    if (loadNextPage && this.paginator.hasNextPage()) {
+      this.studentService.getStudentsPaged(this.paginator.pageIndex + 1, this.paginator.pageSize, this.filter, this.orderBy, this.sortDirection).subscribe(items => {
+        this.nextPageData = items.Items;
+      });
+    }
+  }
+
+  loadPrevPagePreloaded() {
+    this.nextPageData = this.dataSource.data;
+    this.dataSource.data = this.prevPageData;
+    this.prevPageData = null;
+
+    this.preloadStudents(true, false);
+  }
+
+  loadNextPagePreloaded() {
+    this.prevPageData = this.dataSource.data;
+    this.dataSource.data = this.nextPageData;
+    this.nextPageData = null;
+
+    this.preloadStudents(false, true);
   }
 
   navigateToProfile(id) {
     this.router.navigate(['profile', id]);
-  }
-
-  loadStudent() {
-    this.studentService.getStudents().subscribe(items => {
-      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
-      this.isLoad = true;
-    });
-  }
-
-  loadStudentByName(userName) {
-    this.studentService.getStudentByName(userName).subscribe(item => {
-      let data = this.dataSource.data;
-      let index = data.findIndex(value => value.Id == item.Id);
-
-      if (index == -1)
-      {
-        return;        
-      }
-
-      data[index] = item;
-      this.dataSource.data = data.sort((a, b) => this.sortFunc(a, b));
-      this.isLoad = true;
-    })
   }
 
   loadStudentById(id){
@@ -76,23 +154,15 @@ export class StudentsComponent implements OnInit {
       }
 
       data[index] = item;
-      this.dataSource.data = data.sort((a, b) => this.sortFunc(a, b));
       this.isLoad = true;
     })
   }
 
   editStudent(student): void {
     this.studentService.editStudents(student).subscribe(() => {
-      this.loadStudentByName(student.UserName);
+      this.loadStudentsPaged(false);
       this.dataStudent = new Student();
       this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
-    }, err => {
-      if ( err.status === 500) {
-        // we do it because db have some issue. After fixing, delete this function, please
-        this.loadStudentByName(student.UserName);
-        this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
-      } else {
-      }
     });
   }
 
@@ -106,16 +176,8 @@ export class StudentsComponent implements OnInit {
     });
   }
 
-  // applyFilter() {
-  //   this.dataSource.filterPredicate = (data, filter) => data.FullName.trim().toLowerCase().startsWith(filter.trim().toLowerCase());
-  // }
-
   isActive(student){
     return student.IsActive;
-  }
-
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   openDialogDelete(id) {
@@ -178,18 +240,4 @@ export class StudentsComponent implements OnInit {
 
     return "Не подтвержден"
   }
-
-  sortFunc(a, b) { 
-    if(a.FullName < b.FullName){
-      return -1;
-    }
-
-    else if(a.FullName > b.FullName){
-      return 1;
-    }
-    
-    return 0;
- } 
- 
-
 }
