@@ -41,6 +41,7 @@ export class NavComponent implements OnInit, OnDestroy {
   public userFullName;
   public themes: DropDownValue[] = [{ name: "White", value: "white" }, { name: "Dark", value: "dark" }];
   public theme: DropDownValue;
+  public isProgContol;
 
   valueForSearch!: string;
   showSearchResults = false;
@@ -68,13 +69,17 @@ export class NavComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute) {
   }
 
-  
+
   get logoWidth(): string {
     const width = this.menuService.getSideNavWidth();
     return width ? `${width - 16}px` : "auto";
   }
 
   public ngOnInit(): void {
+    this.isProgContol = false;
+    if (this.router.url == '/progControl') {
+      this.isProgContol = true;
+    }
 	  this.isLector = false;
     this.isAdmin = false;
     if (this.autService.currentUserValue != undefined) {
@@ -223,7 +228,7 @@ export class NavComponent implements OnInit, OnDestroy {
     this.router.navigate([relativePath]);
     location.reload();
   }
-  
+
 
   public routeToAboutPopover() {
 
