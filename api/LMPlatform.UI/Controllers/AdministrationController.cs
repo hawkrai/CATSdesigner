@@ -133,6 +133,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> GetFilesPagedJsonAsync(int pageIndex, int pageSize, string? filter, string? orderBy, SortDirection sortDirection = SortDirection.Asc) 
         public ActionResult StudentsJson()
         {
             var students = this.StudentManagementService.GetStudents();
