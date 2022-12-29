@@ -706,10 +706,13 @@
     <Compile Include="ViewModels\AccountViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\AccountViewModels\PersonalDataViewModel.cs" />
     <Compile Include="ViewModels\AccountViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\AttendanceViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\FilesPageViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\GroupViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\LecturerViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\ListSubjectViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\ModifyLecturerViewModel.cs" />
+    <Compile Include="ViewModels\AdministrationViewModels\PageViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\UserActivityViewModel.cs" />
     <Compile Include="ViewModels\AdministrationViewModels\AttachmentViewModel.cs" />

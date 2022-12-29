@@ -42,9 +42,9 @@ namespace Application.Core.Data
 			}
 
 			var pageItems = source
+				.ToList()
 				.Skip(newPageNumber * pageSize)
-				.Take(pageSize)
-				.ToList();
+				.Take(pageSize);
 
 			var hasNextPage = ((pageNumber + 1) * pageSize) < allItemsCount;
 
@@ -52,7 +52,7 @@ namespace Application.Core.Data
 			{
 				HasNext = hasNextPage,
 				HasPrevious = pageNumber > 0,
-				Items = pageItems,
+				Items = pageItems.ToList(),
                 PageInfo = new PageInfo
                 {
                     PageNumber = pageNumber,
@@ -62,7 +62,43 @@ namespace Application.Core.Data
 			};
 		}
 
-		public static void Add<TModel, TDataContext>(this TDataContext dataContext, TModel model)
+        public static async Task<IPageableList<TSource>> ToPageableListAsync<TSource>(this IOrderedQueryable<TSource> source, int pageNumber = 1, int pageSize = 0)
+        {
+            var totalCount = await source.CountAsync();
+
+            var pageIndex = Math.Max(0, pageNumber - 1);
+
+			// Hangs if ToListAsync is used
+            var pageItems = await Task.Run(() =>
+            {
+                return source
+                    .Skip(pageIndex * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            });
+
+            if (pageSize == 0)
+            {
+                pageSize = totalCount;
+            }
+
+            var hasNextPage = (pageIndex + 1) * pageSize < totalCount;
+
+            return new PageableList<TSource>
+            {
+                HasNext = hasNextPage,
+                HasPrevious = pageIndex > 0,
+                Items = pageItems,
+                PageInfo = new PageInfo
+                {
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                },
+                TotalCount = totalCount
+            };
+        }
+
+        public static void Add<TModel, TDataContext>(this TDataContext dataContext, TModel model)
 			where TDataContext : DbContext
 			where TModel : class
 		{

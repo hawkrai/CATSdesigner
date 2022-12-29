@@ -14,6 +14,8 @@ namespace Application.Core.Data
 
         IPageableList<TModel> GetPageableBy(IPageableQuery<TModel> query = null);
 
+        Task<IPageableList<TModel>> GetPageableByAsync(IPageableQuery<TModel> query = null);
+
         IQueryable<TModel> GetAll(IQuery<TModel> query = null);
 
         TModel GetBy(IQuery<TModel> query);

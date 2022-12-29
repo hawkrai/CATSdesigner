@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Exceptions;
 using Application.Core.UI.Controllers;
 using Application.Core.UI.HtmlHelpers;
 using Application.Infrastructure.DPManagement;
@@ -213,6 +214,44 @@ namespace LMPlatform.UI.Controllers
             await Task.WhenAll(studentManagementTask, elasticServiceTask);
 
             return StatusCode(HttpStatusCode.OK);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetProfessorsPagedJsonAsync(int pageIndex, int pageSize, string? filter, string? orderBy, SortDirection sortDirection = SortDirection.Asc) 
+        {
+            var pageInfo = new PageInfo
+            {
+                PageNumber = pageIndex + 1,
+                PageSize = pageSize
+            };
+
+            var sortCriteria = !string.IsNullOrEmpty(orderBy) ? new SortCriteria
+            {
+                Name = orderBy,
+                SortDirection = sortDirection
+            } : null;
+
+            IPageableList<Lecturer> lecturers;
+
+            try
+            {
+                lecturers = await LecturerManagementService.GetLecturersPageableAsync(filter, pageInfo, sortCriteria);
+            }
+            catch (SortCriteriaException) 
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            var items = lecturers.Items.Select(l => LecturerViewModel.FormLecturers(l, null));
+
+            var response = new PageViewModel<LecturerViewModel> 
+            {
+                Items = items,
+                PageInfo = pageInfo,
+                TotalCount = lecturers.TotalCount
+            };
+
+            return JsonResponse(response);
         }
 
         [HttpPost]

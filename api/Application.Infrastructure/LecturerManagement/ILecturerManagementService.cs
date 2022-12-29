@@ -18,6 +18,8 @@ namespace Application.Infrastructure.LecturerManagement
 
         IPageableList<Lecturer> GetLecturersPageable(string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null);
 
+        Task<IPageableList<Lecturer>> GetLecturersPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null);
+
         Lecturer Save(Lecturer lecturer);
 
         Lecturer UpdateLecturer(Lecturer lecturer);
