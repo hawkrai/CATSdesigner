@@ -42,9 +42,9 @@ namespace Application.Core.Data
 			}
 
 			var pageItems = source
-				.ToList()
 				.Skip(newPageNumber * pageSize)
-				.Take(pageSize);
+				.Take(pageSize)
+                .ToList();
 
 			var hasNextPage = ((pageNumber + 1) * pageSize) < allItemsCount;
 
@@ -52,7 +52,7 @@ namespace Application.Core.Data
 			{
 				HasNext = hasNextPage,
 				HasPrevious = pageNumber > 0,
-				Items = pageItems.ToList(),
+				Items = pageItems,
                 PageInfo = new PageInfo
                 {
                     PageNumber = pageNumber,
