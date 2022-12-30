@@ -2,11 +2,11 @@
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
 using LMPlatform.Models;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Application.Core.Helpers;
+using LMPlatform.Models.CP;
 using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
@@ -26,33 +26,9 @@ namespace LMPlatform.UI.ApiControllers.CP
         }
 
         [HttpDelete]
-        public System.Web.Mvc.JsonResult Delete([FromBody]CourseProjectNews deleteData)
+        public async Task<DeleteNewsMessage> Delete([FromBody]CourseProjectNews deleteData)
         {
-            try
-            {
-                
-                CpManagementService.DeleteNews(deleteData);
-
-                return new System.Web.Mvc.JsonResult()
-                {
-                    Data = new
-                    {
-                        Message = "Объявление успешно удалено",
-                        Error = false
-                    }
-                };
-            }
-            catch (Exception)
-            {
-                return new System.Web.Mvc.JsonResult()
-                {
-                    Data = new
-                    {
-                        Message = "Произошла ошибка при удалении новости",
-                        Error = true
-                    }
-                };
-            }
+            return await CpManagementService.DeleteNewsAsync(deleteData);
         }
     }
 }
