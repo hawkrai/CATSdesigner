@@ -26,7 +26,7 @@
 
       <ng-container matColumnDef="Date">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Дата загрузки </th>
-        <td mat-cell *matCellDef="let element"> {{ this.getDate(element.CreationDateString)}} </td>
+        <td mat-cell *matCellDef="let element"> {{ this.getDate(element.CreationDate)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Author">

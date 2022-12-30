@@ -51,6 +51,7 @@ export class LectorsComponent implements OnInit {
   
   applyFilter(filterValue: string) {
     this.filter = filterValue.trim().toLowerCase();
+    this.paginator.pageIndex = 0;
     
     this.loadLectorsPaged(false);
   }
@@ -277,12 +278,25 @@ export class LectorsComponent implements OnInit {
       return '-';
     }
 
-    let date = new Date(dateString);
+    let date = new Date(dateString + 'Z');
 
     let year = date.toLocaleDateString('en-US', { year: 'numeric' });
     let month = date.toLocaleDateString('en-US', { month: '2-digit' });
     let day = date.toLocaleDateString('en-US', { day: '2-digit' });
     let time = date.toLocaleTimeString('en-US', { hour12: false });
-    return `${day}-${month}-${year}, ${time}`;
+    return `${day}.${month}.${year}, ${time}`;
+  }
+
+  getStatusTooltip(lecturer: Professor) {
+    let tooltip = "";
+    
+    if (lecturer.IsActive) {
+      return;
+    }
+
+    if (lecturer.DeletionDate != null) {
+      return "Удален\r\n" +
+        `${this.formatDate(lecturer.DeletionDate)}\r\n`;
+    }
   }
 }

@@ -2,7 +2,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Student} from '../../../model/student';
 import {StudentService} from '../../../service/student.service';
 import {Router} from '@angular/router';
-import {MessageComponent} from '../../../component/message/message.component';
 import {DeleteItemComponent} from '../modal/delete-person/delete-person.component';
 import {EditStudentComponent} from '../modal/edit-student/edit-student.component';
 import {StatisticComponent} from '../modal/statistic/statistic.component';
@@ -12,7 +11,6 @@ import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatDialog} from '@angular/material/dialog';
 import { AppToastrService } from 'src/app/service/toastr.service';
-//import { AppToastrService } from 'src/app/service/toastr.service';
 
 @Component({
   selector: 'app-students',
@@ -56,6 +54,7 @@ export class StudentsComponent implements OnInit {
 
   applyFilter(filterValue: string) {
     this.filter = filterValue.trim().toLowerCase();
+    this.paginator.pageIndex = 0;
     
     this.loadStudentsPaged(false);
   }
@@ -154,6 +153,7 @@ export class StudentsComponent implements OnInit {
       }
 
       data[index] = item;
+      this.dataSource.data = data;
       this.isLoad = true;
     })
   }
@@ -239,5 +239,44 @@ export class StudentsComponent implements OnInit {
     }
 
     return "Не подтвержден"
+  }
+
+  formatDate(dateString) {
+    if (dateString == '-') {
+      return '-';
+    }
+
+    let date = new Date(dateString + 'Z');
+
+    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
+    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
+    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
+    let time = date.toLocaleTimeString('en-US', { hour12: false });
+    return `${day}.${month}.${year}, ${time}`;
+  }
+
+  getStatusTooltip(student: Student) {
+    let tooltip = "";
+    
+    if (!student.IsActive) {
+      if (student.DeletionDate != null) {
+        return "Удален\r\n" +
+          `${this.formatDate(student.DeletionDate)}\r\n`;
+      }
+
+      return;
+    }
+
+    if (student.Confirmed && student.ConfirmedBy != null && student.ConfirmationDate != '-') {
+      return "Подтвержден\r\n" +
+        `${this.formatDate(student.ConfirmationDate)}\r\n` +
+        `${student.ConfirmedBy}\r\n`
+    }
+
+    if (!student.Confirmed && student.ConfirmedBy != null && student.ConfirmationDate != '-') {
+      return "Подтверждение отменено\r\n" +
+        `${this.formatDate(student.ConfirmationDate)}\r\n` +
+        `${student.ConfirmedBy}\r\n`;
+    }
   }
 }

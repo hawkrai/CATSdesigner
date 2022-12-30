@@ -6,6 +6,7 @@ export class Professor {
     LastLogin: string;
     Subjects: string;
     IsActive: boolean;
+    DeletionDate: string;
     Id: number;
     Number: number;
     IsSecretary: boolean;

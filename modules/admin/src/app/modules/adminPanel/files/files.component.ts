@@ -46,6 +46,7 @@ export class FilesComponent implements OnInit {
 
   applyFilter(filterValue: string) {
     this.filter = filterValue.trim().toLowerCase();
+    this.paginator.pageIndex = 0;
     
     this.loadFilesPaged(false);
   }
@@ -156,15 +157,24 @@ export class FilesComponent implements OnInit {
     }
   }
 
-  getDate(CreationDateString){
-    if(CreationDateString != null)
+  getDate(dateString){
+    if(dateString != null)
     {
-      return CreationDateString;
+      return this.formatDate(dateString);
     }
 
     else{
       return 'Нет данных'
     }
+  }
+
+  formatDate(dateString) {
+    let date = new Date(dateString);
+
+    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
+    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
+    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
+    return `${day}.${month}.${year}`;
   }
 
   getSize(size) {
@@ -182,5 +192,4 @@ export class FilesComponent implements OnInit {
     let i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
     return `${(size / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
   }
-
 }
