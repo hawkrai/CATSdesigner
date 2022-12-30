@@ -7,6 +7,8 @@ using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using Application.SearchEngine.SearchMethods;
 using System.Threading.Tasks;
+using Application.Core.Helpers;
+using System;
 
 namespace Application.Infrastructure.StudentManagement
 {
@@ -77,9 +79,10 @@ namespace Application.Infrastructure.StudentManagement
         public async Task<IPageableList<Student>> GetStudentsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null)
         {
             var query = new PageableQuery<Student>(pageInfo);
-            query
+			query
 				.Include(e => e.Group)
-				.Include(e => e.User);
+				.Include(e => e.User)
+				.Include(e => e.ConfirmedBy);
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
@@ -275,8 +278,8 @@ namespace Application.Infrastructure.StudentManagement
 		{
 			var student = this.GetStudent(studentId);
 			student.Confirmed = false;
-			student.ConfirmedById = null;
-			student.ConfirmedAt = null;
+			student.ConfirmedById = UserContext.CurrentUserId;
+			student.ConfirmedAt = DateTime.UtcNow;
 			this.UpdateStudent(student);
 
 			RemoveFromSubGroups(student.Id, student.GroupId);

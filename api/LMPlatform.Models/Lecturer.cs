@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Application.Core.Data;
 using LMPlatform.Models.CP;
@@ -46,6 +47,8 @@ namespace LMPlatform.Models
 		public bool IsSecretary { get; set; }
 
 		public bool IsActive { get; set; }
+
+		public DateTime? DeletionDate { get; set; }
 
 		public bool IsLecturerHasGraduateStudents { get; set; }
 	}

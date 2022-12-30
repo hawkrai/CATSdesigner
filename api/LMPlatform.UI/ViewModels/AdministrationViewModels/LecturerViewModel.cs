@@ -30,6 +30,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         [DisplayName("Статус")]
         public bool IsActive { get; set; }
 
+        public string DeletionDate { get; set; }
+
         public bool IsSecretary { get; set; }
 
         public bool IsLecturerHasGraduateStudents { get; set; }
@@ -58,16 +60,17 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 s.SubjectLecturers.Any(sl => sl.Owner == lecturer.Id) ||
                 s.SubjectLecturers.All(sl => sl.Owner == null)
             ).Count();
-            
+
             return new LecturerViewModel
-			{
-				Id = lecturer.Id,
-				FirstName = lecturer.FirstName,
-				LastName = lecturer.LastName,
-				MiddleName = lecturer.MiddleName,
-				Login = lecturer.User.UserName,
-				HtmlLinks = new HtmlString(htmlLinks),
-				IsActive = lecturer.IsActive,
+            {
+                Id = lecturer.Id,
+                FirstName = lecturer.FirstName,
+                LastName = lecturer.LastName,
+                MiddleName = lecturer.MiddleName,
+                Login = lecturer.User.UserName,
+                HtmlLinks = new HtmlString(htmlLinks),
+                IsActive = lecturer.IsActive,
+                DeletionDate = lecturer.DeletionDate?.ToString("o"),
 				LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("o") : "-",
 				Subjects = subjectsCount.ToString() ,
 				OwnSubjectsNumber = ownSubjectsCount.ToString(),
