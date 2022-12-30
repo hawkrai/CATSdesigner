@@ -66,14 +66,14 @@ export class ProfileComponent implements OnInit {
   getCpProfileProjects(id: any) {
     this.profileService.getCpProfileProjects(id).subscribe((res: any) => {
       this.cpProfileProjects = res;
-      this.cpProfileProjects = this.cpProfileProjects.sort((a,b) =>  this.sortFunc(a, b));
+      this.cpProfileProjects = this.sortProjects(this.cpProfileProjects);
     });
   }
 
   getDpProfileProjects(id: any) {
     this.profileService.getDpProfileProjects(id).subscribe((res: any) => {
       this.dpProfileProjects = res;
-      this.dpProfileProjects = this.dpProfileProjects.sort((a,b) =>  this.sortFunc(a, b));
+      this.dpProfileProjects = this.sortProjects(this.dpProfileProjects);
     });
   }
   
@@ -108,6 +108,32 @@ export class ProfileComponent implements OnInit {
     }
  } 
 
+  compare(a, b) {
+    if (a > b) {
+      return 1;
+    }
+
+    if (a < b) {
+      return -1;
+    }
+
+    return 0;
+  }
+
+  compareByKey(a, b, key) {
+    return this.compare(key(a), key(b))
+  }
+
+  sortProjects(array) {
+    return Array.from(this.groupBy(array, (x) => x.SubjectName).entries())
+      .sort((a, b) => this.compare(a[0], b[0]))
+      .map((x) => x[1].sort((a, b) => this.compareByKey(a, b, x => x.Name.trim())))
+      .reduce((acc, value) => {
+        acc.push(...value);
+        return acc; 
+      }, []);
+  }
+
   currentFilter(element, index, array) { 
     return (element.IsActive); 
  } 
@@ -116,8 +142,22 @@ export class ProfileComponent implements OnInit {
    return (!element.IsActive); 
  } 
 
- 
+  groupBy(array, keyGetter) {
+    const map = new Map();
 
+    for (const item of array) {
+      let key = keyGetter(item);
+      let collection = map.get(key);
+
+      if (!collection) {
+          map.set(key, [item]);
+      } else {
+          collection.push(item);
+      }
+    }
+
+    return map;
+  }
 }
 
 

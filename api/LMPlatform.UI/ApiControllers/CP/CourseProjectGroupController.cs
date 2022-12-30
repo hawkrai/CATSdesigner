@@ -2,7 +2,6 @@
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Web.Http;
 using LMPlatform.UI.Attributes;
 
@@ -13,13 +12,13 @@ namespace LMPlatform.UI.ApiControllers.CP
     {
         private readonly LazyDependency<ICPManagementService> _cpManagementService = new LazyDependency<ICPManagementService>();
 
-        private ICPManagementService CPManagementService
+        private ICPManagementService CpManagementService
             => _cpManagementService.Value;
 
         [HttpGet]
         public List<Correlation> Get(int id)
         {
-            return CPManagementService.GetGroups(id);
+            return CpManagementService.GetGroups(id);
         }
     }
 }

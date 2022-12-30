@@ -146,6 +146,7 @@
     <Compile Include="CP\CourseProjectGroup.cs" />
     <Compile Include="CP\CourseProjectTaskSheetTemplate.cs" />
     <Compile Include="CP\CourseProjectNews.cs" />
+    <Compile Include="CP\DeleteNewsMessage.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentSubject.cs" />
     <Compile Include="DP\AssignedDiplomProject.cs" />
