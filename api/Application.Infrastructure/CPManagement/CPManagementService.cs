@@ -788,6 +788,18 @@ namespace Application.Infrastructure.CPManagement
             
         }
 
+        public async Task DeleteTaskSheetAsync(int taskSheetId)
+        {
+            // TODO
+            var taskSheet = await Context.CourseProjectTaskSheetTemplates.FirstOrDefaultAsync(x => x.Id == taskSheetId);
+
+            if (taskSheet is not null)
+            {
+                Context.CourseProjectTaskSheetTemplates.Remove(taskSheet);
+                Context.SaveChanges();
+            }
+        }
+
         private void CreateBtsProject(CourseProject courseProject, int developerId)
         {            
             int lecturerId = (int)courseProject.LecturerId;
