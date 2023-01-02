@@ -21,7 +21,7 @@ export class LectorsComponent implements OnInit {
 
   isLoad: boolean;
   dataLector = new Professor();
-  displayedColumns: string[] = ['position', 'FullName', 'Login', 'LastLogin', 'status', 'subjects', 'action'];
+  displayedColumns: string[] = ['position', 'FullName', 'Login', 'LastLogin', 'RegistrationDate', 'status', 'subjects', 'action'];
   dataSource = new MatTableDataSource<Professor>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -275,7 +275,7 @@ export class LectorsComponent implements OnInit {
 
   formatDate(dateString) {
     if (dateString == '-') {
-      return '-';
+      return '';
     }
 
     let date = new Date(dateString + 'Z');

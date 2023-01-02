@@ -50,6 +50,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public int ActiveSubjects { get; set; }
         public int NotActiveSubjects { get; set; }
 
+        public string RegistrationDate { get; set; }
 
 
         public static StudentViewModel FromStudent(Student student, string htmlLinks)
@@ -70,7 +71,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 DeletionDate = student.DeletionDate?.ToString("o"),
                 Confirmed = student.Confirmed,
                 ConfirmedBy = student.ConfirmedBy?.FullName,
-                ConfirmationDate = student.ConfirmedAt?.ToString("o") ?? "-"
+                ConfirmationDate = student.ConfirmedAt?.ToString("o") ?? "-",
+                RegistrationDate = student.User?.RegistrationDate?.ToString("o") ?? "-"
             };
         }
     }

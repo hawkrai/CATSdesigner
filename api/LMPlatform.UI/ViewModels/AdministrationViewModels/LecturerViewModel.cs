@@ -52,6 +52,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public string OwnSubjectsNumber { get; set; }
         public string AttachedSubjectsNumber { get; set; }
 
+        public string RegistrationDate { get; set; }
+
         public static LecturerViewModel FormLecturers(Lecturer lecturer, string htmlLinks)
         {
             var subjects = SubjectManagementService.GetSubjectsByLector(lecturer.Id);
@@ -71,13 +73,14 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 HtmlLinks = new HtmlString(htmlLinks),
                 IsActive = lecturer.IsActive,
                 DeletionDate = lecturer.DeletionDate?.ToString("o"),
-				LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("o") : "-",
-				Subjects = subjectsCount.ToString() ,
-				OwnSubjectsNumber = ownSubjectsCount.ToString(),
-				AttachedSubjectsNumber = (subjectsCount - ownSubjectsCount).ToString(),
-				IsSecretary = lecturer.IsSecretary,
-				IsLecturerHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
-                SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray()
+                LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("o") : "-",
+                Subjects = subjectsCount.ToString(),
+                OwnSubjectsNumber = ownSubjectsCount.ToString(),
+                AttachedSubjectsNumber = (subjectsCount - ownSubjectsCount).ToString(),
+                IsSecretary = lecturer.IsSecretary,
+                IsLecturerHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
+                SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray(),
+                RegistrationDate = lecturer.User?.RegistrationDate?.ToString("o") ?? "-"
             };
         }
     }

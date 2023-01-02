@@ -20,6 +20,7 @@ export class Student {
     Confirmed: boolean;
     ConfirmedBy: string;
     ConfirmationDate: string;
+    RegistrationDate: string;
 }
 
 export class EditStudent {

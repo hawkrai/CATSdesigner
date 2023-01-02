@@ -21,7 +21,7 @@ export class StudentsComponent implements OnInit {
 
   isLoad: boolean;
   dataStudent = new Student();
-  displayedColumns: string[] = ['position', 'FullName', 'GroupName', 'UserName', 'LastLogin', 'Confirmed', 'Subjects', 'action'];
+  displayedColumns: string[] = ['position', 'FullName', 'GroupName', 'UserName', 'LastLogin', 'RegistrationDate', 'Confirmed', 'Subjects', 'action'];
   dataSource = new MatTableDataSource<Student>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -243,7 +243,7 @@ export class StudentsComponent implements OnInit {
 
   formatDate(dateString) {
     if (dateString == '-') {
-      return '-';
+      return '';
     }
 
     let date = new Date(dateString + 'Z');

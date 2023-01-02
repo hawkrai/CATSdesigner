@@ -30,6 +30,7 @@ export class Professor {
     SecretaryGroupsIds: string[];
     QuestionId: string;
     Answer: string;
+    RegistrationDate: string;
 }
 
 export class AddProfessor  {
