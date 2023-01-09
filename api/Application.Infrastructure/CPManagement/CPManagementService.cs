@@ -17,6 +17,7 @@ using Application.Infrastructure.Export;
 using Application.Infrastructure.LecturerManagement;
 using Application.Core.Helpers;
 using System.Net.Http;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -788,9 +789,10 @@ namespace Application.Infrastructure.CPManagement
             
         }
 
-        public async Task DeleteTaskSheetAsync(int taskSheetId)
+        public async Task DeleteTaskSheetAsync(int taskSheetId, int userId)
         {
-            // TODO
+            AuthorizationHelper.ValidateLecturerAccess(Context, userId);
+
             var taskSheet = await Context.CourseProjectTaskSheetTemplates.FirstOrDefaultAsync(x => x.Id == taskSheetId);
 
             if (taskSheet is not null)

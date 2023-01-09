@@ -43,9 +43,9 @@ namespace LMPlatform.UI.ApiControllers.CP
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public async Task Delete(int taskSheetId)
+        public async Task Delete(int taskSheetId, int userId)
         {
-            await CpManagementService.DeleteTaskSheetAsync(taskSheetId);
+            await CpManagementService.DeleteTaskSheetAsync(taskSheetId, userId);
         }
     }
 }
