@@ -8,4 +8,5 @@ import { Component, Input } from "@angular/core";
 export class HelpComponent {
   @Input() message: string;
   @Input() action: string;
+  @Input() placement = "top-left";
 }

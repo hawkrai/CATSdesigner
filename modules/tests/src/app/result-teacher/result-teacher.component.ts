@@ -12,6 +12,7 @@ import {AutocompleteModel} from "../models/autocomplete.model";
 import {Results} from "../models/results.model";
 import {TranslatePipe} from "educats-translate";
 import {MatSlideToggleChange} from "@angular/material";
+import { Help } from "../models/help.model";
 
 
 @AutoUnsubscribe
@@ -50,12 +51,18 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   public subject: any;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   public showAsSubGroup: boolean;
+  help: Help;
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
               private translatePipe: TranslatePipe,
               private testPassingService: TestPassingService) {
     super();
+    this.help = {
+      // tslint:disable-next-line:max-line-length
+      message: this.translatePipe.transform("text.help.lectures", "Для добавления или удаления дат лекций нажмите на кнопку \"Управление расписанием\". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии."),
+      action: this.translatePipe.transform("button.understand", "Понятно")
+    };
   }
 
   public ngOnInit(): void {
