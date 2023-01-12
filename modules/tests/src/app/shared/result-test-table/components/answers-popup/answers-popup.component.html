@@ -5,11 +5,13 @@
     <div class="answers-popup-general-mark">
       {{'text.test.result.mark' | translate : ('Оценка: ' + mark + ' (' + percent + '%)') : {mark:mark, percent: percent} }}
     </div>
-    <div class="answers-popup-general-mark">
-      {{('text.test.date.completing' | translate : "Дата прохождения теста :") + startDate }}
-    </div>
-    <div class="answers-popup-general-mark">
-      {{('text.test.time.start' | translate : "Время начала теста :") + startTime }}
+    <div class="answers-popup-general-wrapper">
+      <div class="answers-popup-general-mark">
+        {{('text.test.date.completing' | translate : "Дата прохождения теста :") + startDate }}
+      </div>
+      <div class="answers-popup-general-mark">
+        {{('text.test.time.start' | translate : "Время начала теста :") + startTime }}
+      </div>
     </div>
   </div>
   <div class="answers-popup-content" *ngFor="let answer of answers, let i = index">
@@ -18,7 +20,7 @@
     <div>{{answer.Points === 0 ? ('text.test.popup.not.right' | translate: "Неверно") : ('text.test.popup.right' | translate: "Верно")}}</div>
   </div>
   <div mat-dialog-actions>
-    <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+    <button mat-raised-button color="white" (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
   </div>
 </div>
 <ng-template #loading>

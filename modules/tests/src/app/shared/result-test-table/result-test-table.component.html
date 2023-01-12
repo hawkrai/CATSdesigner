@@ -54,13 +54,14 @@
   </ng-container>
   <div class="result-test-table-chart" *ngIf="showChart">
     <div class="result-test-table-chart-name">
-      {{testName + ' ' +('text.test.res.group' | translate : "Группа ") + group}}
+      {{testName + ', ' + (('text.test.res.group' | translate : "группа ") | lowercase) + group}}
     </div>
     <canvas class="result-test-table-chart-graph"
             baseChart
             [datasets]="barChartData"
             [labels]="barChartLabels"
             [options]="barChartOptions"
+            [colors]="barChartColors"
             [plugins]="barChartPlugins"
             [legend]="barChartLegend"
             [chartType]="barChartType">

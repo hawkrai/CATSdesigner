@@ -1,15 +1,15 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
-import {MatDialog} from "@angular/material";
-import {AnswersPopupComponent} from "./components/answers-popup/answers-popup.component";
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import { MatDialog } from "@angular/material";
+import { AnswersPopupComponent } from "./components/answers-popup/answers-popup.component";
 import * as pluginDataLabels from "chartjs-plugin-datalabels";
-import {Label} from "ng2-charts";
-import {ChartDataSets, ChartOptions, ChartType} from "chart.js";
-import {AutoUnsubscribe} from "../../decorator/auto-unsubscribe";
-import {AutoUnsubscribeBase} from "../../core/auto-unsubscribe-base";
-import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
-import {TestPassingService} from "../../service/test-passing.service";
-import {TranslatePipe} from "educats-translate";
+import { Label } from "ng2-charts";
+import { ChartDataSets, ChartOptions, ChartType } from "chart.js";
+import { AutoUnsubscribe } from "../../decorator/auto-unsubscribe";
+import { AutoUnsubscribeBase } from "../../core/auto-unsubscribe-base";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { TestPassingService } from "../../service/test-passing.service";
+import { TranslatePipe } from "educats-translate";
 
 
 @AutoUnsubscribe
@@ -19,12 +19,15 @@ import {TranslatePipe} from "educats-translate";
   styleUrls: ["./result-test-table.component.less"]
 })
 export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
-
+  public barChartColors: any[] = [
+    { backgroundColor: "#3f51b5" },
+  ];
   public barChartOptions: ChartOptions = {
     responsive: true,
     // We use these empty structures as placeholders for dynamic theming.
     scales: {
-      xAxes: [{}], yAxes: [{
+      xAxes: [{
+      }], yAxes: [{
         ticks: {
           min: 0,
           max: 10,
@@ -75,16 +78,16 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialog: MatDialog,
-              private translatePipe: TranslatePipe,
-              private cdr: ChangeDetectorRef,
-              private testPassingService: TestPassingService,
-              private translate: TranslatePipe) {
+    private translatePipe: TranslatePipe,
+    private cdr: ChangeDetectorRef,
+    private testPassingService: TestPassingService,
+    private translate: TranslatePipe) {
     super();
   }
 
   ngOnInit() {
     this.barChartData = [
-      {data: [], label: this.translatePipe.transform("text.test.mark", "Оценка")}
+      { data: [], label: this.translatePipe.transform("text.test.average_mark", "Средняя оценка") }
     ];
     for (let i = 0; i < 3; i++) {
       this.scareThing.push(Array.from(this.tests[i].entries()));
@@ -104,8 +107,9 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     if (openDialog) {
       const dialogRef = this.dialog.open(AnswersPopupComponent, {
         width: "800px",
-        data: {event, id, name, testName}
-      });
+        data: { event, id, name, testName },
+        disableClose: false,
+    });
 
       dialogRef.afterClosed()
         .pipe(
@@ -130,7 +134,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
             sumOfMarks += test.points;
           }
           let entire = [];
-          const testSize =  pupil[1].test.filter(x => Number.isInteger(x.points)).length;
+          const testSize = pupil[1].test.filter(x => Number.isInteger(x.points)).length;
           entire.push(this.getShortName(pupil));
           const averageMark = testSize > 0 ? (sumOfMarks / testSize).toFixed(1) : '0';
           entire.push(averageMark);
@@ -163,7 +167,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
 
   getAverageTooltip(element) {
     const testsArray = element[1].test;
-    const testsCount =  testsArray.length;
+    const testsCount = testsArray.length;
     const passedTests = testsArray.filter(x => Number.isInteger(x.points)).length;
     return this.translate.transform('text.tests.written', `Написано ${passedTests} тестов из ${testsCount}`, { actualCount: passedTests.toString(), testsCount: testsCount.toString() });
   }
