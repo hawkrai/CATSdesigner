@@ -17,7 +17,7 @@
     </div>
   </div>
   <div mat-dialog-actions class="dialog-buttons">
-    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Нет</button>
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.no' | translate : 'Нет'}}</button>
     <button mat-flat-button class="dialog-button" color="{{data.color}}"
             [mat-dialog-close]="true">{{data.actionName}}</button>
   </div>

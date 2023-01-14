@@ -7,6 +7,18 @@
     <mat-datepicker #dp></mat-datepicker>
     <mat-error *ngIf="dateControl.invalid">Неправильный формат (ДД.ММ.ГГГГ)</mat-error>
   </mat-form-field>
+  
+  <div class="form-container">
+    <mat-form-field class="form-field">
+      <mat-label>Начало занятия</mat-label>
+      <input matInput type="time" [formControl]="startTimeControl" [(ngModel)]="data.start">
+    </mat-form-field>
+  
+    <mat-form-field class="form-field">
+      <mat-label>Конец занятия</mat-label>
+      <input matInput type="time" [formControl]="endTimeControl" [(ngModel)]="data.end">
+    </mat-form-field>
+  </div>  
 
   <div class="form-container">
     <mat-form-field class="form-field">
@@ -21,20 +33,30 @@
       <mat-error *ngIf="audienceControl.invalid">От 1 до 3 символов</mat-error>
     </mat-form-field>
   </div>
-  
-  <div class="form-container">
-    <mat-form-field class="form-field">
-      <mat-label>Начало занятия</mat-label>
-      <input matInput type="time" [formControl]="startTimeControl" [(ngModel)]="data.start">
-    </mat-form-field>
-  
-    <mat-form-field class="form-field">
-      <mat-label>Конец занятия</mat-label>
-      <input matInput type="time" [formControl]="endTimeControl" [(ngModel)]="data.end">
-    </mat-form-field>
-  </div>  
 </div>
-
+<button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data" 
+        [disabled]="audienceControl.invalid || buildingControl.invalid || dateControl.invalid 
+        || startTimeControl.invalid || endTimeControl.invalid">
+        Сохранить
+</button>
+<div class="add-date__content">
+  <p mat-dialog-title class="add-date__table-title">{{'date.selected' | translate:'Выбранные даты'}}</p>
+  <div class="mdc-data-table add-date__table-container mat-elevation-z8" *ngIf="data.consultations && data.consultations.length">
+    <table class="mdc-data-table__table">
+      <tbody class="mdc-data-table__content">
+       <tr class="mdc-data-table__row" *ngFor="let day of data.consultations">
+        <td class="mdc-data-table__cell">{{ day.Day | date: 'dd.MM.yyyy' }} <mat-hint *ngIf="day.StartTime && day.EndTime">{{day.StartTime.slice(0,5)}}-{{day.EndTime.slice(0,5)}}</mat-hint></td>
+        <td class="mdc-data-table__cell add-date__table-action">
+          <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate:'Удалить дату'">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- 
 <div mat-dialog-actions class="dialog-buttons">
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
   <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data" 
@@ -42,4 +64,4 @@
         || startTimeControl.invalid || endTimeControl.invalid">
         Сохранить
   </button>
-</div>
+</div> -->

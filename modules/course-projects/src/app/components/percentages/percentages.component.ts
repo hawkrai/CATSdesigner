@@ -83,7 +83,7 @@ export class PercentagesComponent implements OnInit {
     });
   }
 
-  editStage(stage: Percentage) {
+  editStage(stage: Percentage, itemIndex: number) {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       width: '548px',
       data: {
@@ -97,8 +97,9 @@ export class PercentagesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
         result.name = result.name.replace('\n', '');
-        const checkTheme = this.percentages.find((i) => i.Name === result.name && i.Percentage === +result.percentage);
-        if (checkTheme === undefined) {
+        const checkTheme = this.percentages.find((i, index) => i.Name === result.name && i.Percentage === +result.percentage && index !== itemIndex);
+        const checkName =  this.percentages.find((i, index) => i.Name === result.name && index !== itemIndex);
+        if (checkTheme === undefined && !checkName) {
           const date = new Date(result.date);
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
           this.percentagesService.editStage(stage.Id, date.toISOString(), this.subjectId, result.name, result.percentage)

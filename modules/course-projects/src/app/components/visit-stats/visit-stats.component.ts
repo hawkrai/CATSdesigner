@@ -66,8 +66,10 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       filter: '{"groupId":' + this.selectedGroup.GroupId + ',"subjectId":' + this.subjectId + ',"searchString":"' + this.searchString + '"}'
     })
       .subscribe(res => {
-        this.visitStatsList = this.assignResults(res.Students.Items, res.CourseProjectConsultationDates);
-        this.consultations = res.CourseProjectConsultationDates;
+        console.log(res);
+        
+        this.visitStatsList = this.assignResults(res.Students.Items, res.Consultations);
+        this.consultations = res.Consultations;
       });
   }
 
@@ -86,7 +88,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   assignResults(visitStats: VisitStats[], consultations: Consultation[]): VisitStats[] {
     for (const student of visitStats) {
       const results: ConsultationMark[] = [];
-      for (const consultation of consultations) {
+      consultations.map(consultation => {
         const result = student.CourseProjectConsultationMarks.find(cm => cm.ConsultationDateId === consultation.Id);
         if (result != null) {
           if (result.Mark != null) {
@@ -98,7 +100,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
           const cm: ConsultationMark = {StudentId: student.Id, ConsultationDateId: consultation.Id};
           results.push(cm);
         }
-      }
+      })
       student.CourseProjectConsultationMarks = results;
     }
     return visitStats;
@@ -166,8 +168,10 @@ export class VisitStatsComponent implements OnInit, OnChanges {
 
   addDate() {
     const dialogRef = this.dialog.open(AddDateDialogComponent, {
-      width: '450px',
+      width: '548px',
       data: {
+        consultations: this.consultations,
+        subjectId: this.subjectId
        }
     });
 
