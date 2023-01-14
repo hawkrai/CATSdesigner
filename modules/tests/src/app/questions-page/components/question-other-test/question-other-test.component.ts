@@ -95,15 +95,12 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
 
         this.questions = questions;
         this.filteredQuestions = questions;
-        console.log('filteredQuestions', this.filteredQuestions);
         this.filteredQuestions.sort((a, b) => a.tooltipTitle.toLocaleLowerCase().charCodeAt(0) - b.tooltipTitle.toLocaleLowerCase()[0].charCodeAt(0));
-        console.log('filteredQuestions', this.filteredQuestions);
       });
   }
 
   public filterQuestions(event): void {
     this.filteredQuestions = this.questions.filter((question) => question.Title.toLowerCase().includes(event.target.value.toLowerCase()));
-    console.log('filteredQuestions', this.filteredQuestions);
     this.filteredQuestions.sort((a, b) => a.tooltipTitle.toLocaleLowerCase().charCodeAt(0) - b.tooltipTitle.toLocaleLowerCase()[0].charCodeAt(0));
   }
 

@@ -51,7 +51,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
   public subject: any;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   public showAsSubGroup: boolean;
-  help: Help;
+  public help: Help;
 
   constructor(private testService: TestService,
               private cdr: ChangeDetectorRef,
