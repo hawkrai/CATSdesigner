@@ -80,10 +80,12 @@ export class MainPageComponent implements OnInit {
     } else {
       this.charts = [];
       this.serviceService.getTeacherStatistics().subscribe(res => {
+        let i = 0;
         res.SubjectStatistics.sort((a, b) => a.SubjectName.localeCompare(b.SubjectName));
         res.SubjectStatistics.forEach(subject => {
           this.serviceService.getGroupsBySubjectId(subject.SubjectId).subscribe(groups => {
             this.serviceService.getCheckedType(subject.SubjectId).subscribe(types => {
+              i += 1;
               this.isArchiveTeacher = false;
               if (groups.Groups.length == 0) {
                 this.isArchiveTeacher = true;
@@ -185,11 +187,12 @@ export class MainPageComponent implements OnInit {
                 this.ratingMarks[res.SubjectStatistics.indexOf(subject)] = rating;
                 this.temp.push(rating);
                 this.categoriesTemp.push(this.categoriesConst[4]);
+                this.colorsTemp.push(this.colors[4]);
                 if (this.isArchiveTeacher) {
-                   this.charts[res.SubjectStatistics.indexOf(subject)]
-                     = [this.temp, subject.SubjectName, this.categoriesTemp, subject.SubjectId,
+                  this.charts[res.SubjectStatistics.indexOf(subject)]
+                    = [this.temp, subject.SubjectName, this.categoriesTemp, subject.SubjectId,
                     this.listChartOptionsArchive, this.colorsTemp];
-                   this.subjectNameArchive[res.SubjectStatistics.indexOf(subject)] = subject.SubjectName;
+                  this.subjectNameArchive[res.SubjectStatistics.indexOf(subject)] = subject.SubjectName;
                 } else {
                   this.charts[res.SubjectStatistics.indexOf(subject)] = [this.temp, subject.SubjectName, this.categoriesTemp,
                     subject.SubjectId, this.listChartOptions, this.colorsTemp ];
@@ -202,7 +205,7 @@ export class MainPageComponent implements OnInit {
                 this.conMarks[res.SubjectStatistics.indexOf(subject)] = null;
                 this.ratingMarks[res.SubjectStatistics.indexOf(subject)] = null;
               }
-              if (res.SubjectStatistics.indexOf(subject) == res.SubjectStatistics.length - 1) {
+              if (i == res.SubjectStatistics.length ) {
                 this.practMarks = this.practMarks.filter(x => x !== null);
                 this.labMarks = this.labMarks.filter(x => x !== null);
                 this.testMarks = this.testMarks.filter(x => x !== null);
@@ -227,8 +230,6 @@ export class MainPageComponent implements OnInit {
                 // this.series.push({name: this.categoriesConst[4], data: [7.1, 6.9, 6.3, 6.8, 6.4 ]});
                 // this.addMarksChart(this.series, ['Базы данных', 'Модульное тестирование',
                 // 'Методы и алгоритмы принятия решений', 'Основы защиты информации', 'Английский язык в профдеятельности']);
-                console.log(this.series);
-                console.log(this.subjectName);
                 this.addMarksChart(this.series, this.subjectName);
                 this.addArchiveMarksChart(this.seriesArchive, this.subjectNameArchive);
                 this.charts.forEach(chart => {
@@ -336,7 +337,7 @@ export class MainPageComponent implements OnInit {
   }
 
   addMarksChart(seriesMarks: any, subjects: any) {
-     this.chartOptions1 = {
+    this.chartOptions1 = {
       series: seriesMarks,
       chart: {
         type: 'bar',
@@ -460,9 +461,11 @@ export class MainPageComponent implements OnInit {
     this.conMarks = [];
     this.ratingMarks = [];
     this.charts = [];
+    let i = 0;
 
     subjects.forEach(subject => {
       this.serviceService.getCheckedType(subject.Id).subscribe(types => {
+        i += 1;
         this.checked = [false, false, false, false];
         types.forEach(type => {
           if (type.ModuleId == 13) {
@@ -541,7 +544,7 @@ export class MainPageComponent implements OnInit {
         this.subjectName[subjects.indexOf(subject)] = subject.Name;
         this.categoriesTemp.push(this.categoriesConst[4]);
         this.charts[subjects.indexOf(subject)] = [this.temp, subject.Name, this.categoriesTemp, subject.Id, chartList1, this.colorsTemp];
-        if (subjects.indexOf(subject) == subjects.length - 1) {
+        if (i == subjects.length) {
           this.series.push({name: this.categoriesConst[0], data: this.practMarks});
           this.series.push({name: this.categoriesConst[1], data: this.labMarks});
           this.series.push({name: this.categoriesConst[2], data: this.testMarks});

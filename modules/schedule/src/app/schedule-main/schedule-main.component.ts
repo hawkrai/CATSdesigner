@@ -243,7 +243,7 @@ export class ScheduleMainComponent implements OnInit {
             meta: 'lesson'
           });
         } else if (result.type === 'note') {
-          if (result.note.note == undefined){
+          if (result.note.note == undefined) {
             result.note.note = '';
           }
           this.notes.push(result.note);
@@ -439,43 +439,47 @@ export class ScheduleMainComponent implements OnInit {
     this.events = [];
     this.lessonservice.getConsultations({
       count: 1000, page: 1}).subscribe(result => {
-      result.DiplomProjectConsultationDates.forEach(consultation => {
-        const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
-        const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
-        this.events.push({
-          id: consultation.Id,
-          start: startT,
-          end: endT,
-          title: this.getTitelConsultation(consultation),
-          color: colors.color,
-          resizable: {
-            beforeStart: false,
-            afterEnd: false,
-          },
-          draggable: false,
-          meta: 'lesson'
+      if (result.DiplomProjectConsultationDates != undefined) {
+        result.DiplomProjectConsultationDates.forEach(consultation => {
+          const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
+          const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
+          this.events.push({
+            id: consultation.Id,
+            start: startT,
+            end: endT,
+            title: this.getTitelConsultation(consultation),
+            color: colors.color,
+            resizable: {
+              beforeStart: false,
+              afterEnd: false,
+            },
+            draggable: false,
+            meta: 'lesson'
+          });
         });
-      });
+      }
     });
     this.lessonservice.getCourseConsultations({
       count: 1000, page: 1}).subscribe(result => {
-      result.CourseProjectConsultationDates.forEach(consultation => {
-        const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
-        const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
-        this.events.push({
-          id: consultation.Id,
-          start: startT,
-          end: endT,
-          title: this.getTitelConsultation(consultation),
-          color: colors.color,
-          resizable: {
-            beforeStart: false,
-            afterEnd: false,
-          },
-          draggable: false,
-          meta: 'lesson'
+      if (result.Consultations != undefined) {
+        result.Consultations.forEach(consultation => {
+          const startT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.StartTime);
+          const endT = new Date(consultation.Day.split('T')[0] + 'T' + consultation.EndTime);
+          this.events.push({
+            id: consultation.Id,
+            start: startT,
+            end: endT,
+            title: this.getTitelConsultation(consultation),
+            color: colors.color,
+            resizable: {
+              beforeStart: false,
+              afterEnd: false,
+            },
+            draggable: false,
+            meta: 'lesson'
+          });
         });
-      });
+      }
     });
     this.lessonservice.getLessonsByDates(startDate, endDate).subscribe(
       l => {
