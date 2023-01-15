@@ -30,7 +30,7 @@
             [allowChanges]="true"
             [tests]="knowledgeControlTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+            (onOpenAvailabilityPopup)="openAvailabilityDialog(knowledgeControlTests, $event)"
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
           ></app-main-table-tests>
@@ -44,9 +44,10 @@
             [allowChanges]="true"
             [tests]="selfControlTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+            (onOpenAvailabilityPopup)="openAvailabilityDialog(selfControlTests, $event)"
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
+            [isAvailabilityShown]="false"
           ></app-main-table-tests>
         </div>
         <div class="container-table-tests">
@@ -58,7 +59,7 @@
             [allowChanges]="true"
             [tests]="beforeEUMKTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+            (onOpenAvailabilityPopup)="openAvailabilityDialog(beforeEUMKTests, $event)"
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
           ></app-main-table-tests>
@@ -71,7 +72,7 @@
             [allowChanges]="true"
             [tests]="forEUMKTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+            (onOpenAvailabilityPopup)="openAvailabilityDialog(forEUMKTests, $event)"
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
           ></app-main-table-tests>
@@ -86,7 +87,7 @@
             [allowChanges]="true"
             [tests]="nNTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog($event)"
+            (onOpenAvailabilityPopup)="openAvailabilityDialog(nNTests, $event)"
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
           ></app-main-table-tests>

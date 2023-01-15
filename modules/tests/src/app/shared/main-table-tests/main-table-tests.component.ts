@@ -29,6 +29,8 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
   @Input()
   public tests: Test[];
 
+  @Input() isAvailabilityShown = true;
+
   @Output()
   public onOpenEditPopup: EventEmitter<any> = new EventEmitter();
 
@@ -40,6 +42,8 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
 
   @Output()
   public onNavigateQuestions: EventEmitter<any> = new EventEmitter();
+
+
 
   public test: any;
 

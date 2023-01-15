@@ -1,125 +1,254 @@
-<app-popover-dialog width="700">
+<app-popover-dialog>
   <ng-container title>
-    {{data.event ? ('text.test.questions.for.test' | translate : 'Вопрос для теста ') :
-    ('text.test.new.questions.for.test' | translate : ('Вопрос №' + data.questionLength) : {number:
-    data.questionLength + 1})}}
-    <div class="question-popup-container-small">{{data.title}}</div>
+    {{
+      data.event
+        ? ("text.test.questions.for.test" | translate : "Вопрос для теста ")
+        : ("text.test.new.questions.for.test"
+          | translate
+            : "Вопрос №" + data.questionLength
+            : { number: data.questionLength + 1 })
+    }}
+    <div class="question-popup-container-small">{{ data.title }}</div>
   </ng-container>
   <ng-container body>
     <form *ngIf="formGroup" [formGroup]="formGroup">
       <mat-form-field class="question-popup-full">
-        <textarea formControlName="Title" matInput
-          [placeholder]="'text.test.question.text' | translate : 'Текст вопроса'"></textarea>
+        <textarea
+          formControlName="Title"
+          matInput
+          [placeholder]="
+            'text.test.question.text' | translate : 'Текст вопроса'
+          "
+        ></textarea>
         <mat-error *ngIf="formGroup.controls.Title.hasError('maxlength')">
-          {{'text.test.error.max.length' | translate : "Длина превышает 255 символов"}}
+          {{
+            "text.test.error.max.length"
+              | translate : "Длина превышает 255 символов"
+          }}
         </mat-error>
         <mat-error *ngIf="formGroup.controls.Title.hasError('required')">
-          {{'text.test.enter.question.name' | translate : "Введите название вопроса"}}
+          {{
+            "text.test.enter.question.required"
+              | translate : "Поле обязательное"
+          }}
         </mat-error>
         <mat-error *ngIf="formGroup.controls.Title.hasError('whitespace')">
-          {{'validation.whitespace' | translate:'Поле не может содержать только пробелы'}}
+          {{
+            "validation.whitespace"
+              | translate : "Поле не может содержать только пробелы"
+          }}
         </mat-error>
       </mat-form-field>
       <div class="question-popup-description">
-        <p>{{'text.test.question.description' | translate : 'Задание к вопросу'}}</p>
-        <ckeditor formControlName="Description" [config]="ckConfig" debounce="400"></ckeditor>
+        <mat-accordion>
+          <mat-expansion-panel hideToggle>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{
+                  "text.test.question.description"
+                    | translate : "Задание к вопросу"
+                }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ckeditor
+              formControlName="Description"
+              [config]="ckConfig"
+              debounce="400"
+            ></ckeditor>
+          </mat-expansion-panel>
+        </mat-accordion>
       </div>
       <div class="basic-container" *ngIf="navItems?.length">
         <span *ngFor="let item of navItems">
-
           <span *ngIf="item.Children && item.Children.length > 0">
-            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu.childMenu"
-              (click)="selectConcept(item.Id)">
-              {{item.Name}}
+            <button
+              mat-raised-button
+              color="primary"
+              [matMenuTriggerFor]="menu.childMenu"
+              (click)="selectConcept(item.Id)"
+            >
+              {{ item.Name }}
               <mat-icon>expand_more</mat-icon>
             </button>
-            <app-menu-item #menu [items]="item.Children" (onSelectConcept)="selectConcept($event)"></app-menu-item>
+            <app-menu-item
+              #menu
+              [items]="item.Children"
+              (onSelectConcept)="selectConcept($event)"
+            ></app-menu-item>
           </span>
 
           <span *ngIf="!item.Children || item.Children.length === 0">
-            <button mat-button color="primary" [routerLink]="item.route" (click)="selectConcept(item.Id)">
-              {{item.Name}}
+            <button
+              mat-button
+              color="primary"
+              [routerLink]="item.route"
+              (click)="selectConcept(item.Id)"
+            >
+              {{ item.Name }}
             </button>
           </span>
         </span>
-        <div class="basic-container-text" *ngIf="selectedConcept">{{selectedConcept}}</div>
+        <div class="basic-container-text" *ngIf="selectedConcept">
+          {{ selectedConcept }}
+        </div>
       </div>
 
-      <p>{{'text.test.answers' | translate : 'Ответы'}}</p>
+      <p>{{ "text.test.answers" | translate : "Ответы" }}</p>
       <div class="question-popup-container__justify">
-        <button mat-raised-button class="question-popup-answer-button" (click)="addAnswer()">{{'text.test.add.answer' |
-          translate :
-          'Добавить ответ'}}
+        <button
+          mat-raised-button
+          class="question-popup-answer-button"
+          (click)="addAnswer()"
+        >
+          {{ "text.test.add.answer" | translate : "Добавить ответ" }}
         </button>
         <div class="question-popup-inputs">
           <mat-form-field class="question-popup-type">
-            <mat-label>{{'text.test.question.type' | translate : "Тип вопроса"}}</mat-label>
-            <mat-select (selectionChange)="onValueChange($event)" [value]="question.QuestionType || 0">
+            <mat-label>{{
+              "text.test.question.type" | translate : "Тип вопроса"
+            }}</mat-label>
+            <mat-select
+              (selectionChange)="onValueChange($event)"
+              [value]="question.QuestionType || 0"
+            >
               <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id">
-                {{type.label | translate : type.label}}
+                {{ type.label | translate : type.label }}
               </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="question-popup-complexity">
-            <input matInput formControlName="ComplexityLevel" type="number"
-              [placeholder]="'text.test.complexity.level' | translate : 'Уровень сложности'">
-            <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('max')">
-              {{'text.test.error.complexity.max' | translate : "Сложность вопроса не может быть больше 10"}}
+            <input
+              matInput
+              formControlName="ComplexityLevel"
+              type="number"
+              [placeholder]="
+                'text.test.complexity.level' | translate : 'Уровень сложности'
+              "
+            />
+            <mat-error
+              *ngIf="formGroup.controls.ComplexityLevel.hasError('max')"
+            >
+              {{
+                "text.test.error.complexity.max"
+                  | translate : "Сложность вопроса не может быть больше 10"
+              }}
             </mat-error>
-            <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('min')">
-              {{'text.test.error.complexity.min' | translate : "Сложность вопроса должна быть больше нуля"}}
+            <mat-error
+              *ngIf="formGroup.controls.ComplexityLevel.hasError('min')"
+            >
+              {{
+                "text.test.error.complexity.min"
+                  | translate : "Сложность вопроса должна быть больше нуля"
+              }}
             </mat-error>
-            <mat-error *ngIf="formGroup.controls.ComplexityLevel.hasError('required')">
-              {{'text.test.enter.complexity' | translate : "Введите сложность"}}
+            <mat-error
+              *ngIf="formGroup.controls.ComplexityLevel.hasError('required')"
+            >
+              {{
+                "text.test.enter.complexity" | translate : "Введите сложность"
+              }}
             </mat-error>
           </mat-form-field>
         </div>
       </div>
     </form>
     <ng-container *ngIf="chosenQuestionType === 0">
-      <mat-radio-group [(ngModel)]="chosenType" class="question-popup-answers-input">
-        <mat-radio-button class="question-popup-answers-item" *ngFor="let control of charsde, let i = index"
-          [value]="control">
-          <input class="question-popup-answers-item-input" matInput [(ngModel)]="chars[control]">
-          <mat-icon [matTooltip]="'text.test.delete.answer' | translate : 'Удалить ответ'"
-            (click)="deleteAnswer(control)" color="primary" matTooltipClass="mat-tooltip">delete
+      <mat-radio-group
+        [(ngModel)]="chosenType"
+        class="question-popup-answers-input"
+      >
+        <mat-radio-button
+          class="question-popup-answers-item"
+          *ngFor="let control of charsde; let i = index"
+          [value]="control"
+        >
+          <textarea
+            class="question-popup-answers-item-input"
+            matInput
+            [(ngModel)]="chars[control]"
+          ></textarea>
+          <mat-icon
+            [matTooltip]="
+              'text.test.delete.answer' | translate : 'Удалить ответ'
+            "
+            (click)="deleteAnswer(control)"
+            color="primary"
+            matTooltipClass="mat-tooltip"
+            >delete
           </mat-icon>
         </mat-radio-button>
       </mat-radio-group>
     </ng-container>
     <ng-container *ngIf="chosenQuestionType === 1">
       <section class="example-section">
-        <mat-checkbox class="example-margin question-popup-answers-input" [(ngModel)]="charsNeskolko[control][1]"
-          *ngFor="let control of charsde, let i = index">
-          <input class="question-popup-answers-item-input" matInput [(ngModel)]="charsNeskolko[control][0]">
-          <mat-icon [matTooltip]="'text.test.delete.answer' | translate : 'Удалить ответ'"
-            (click)="deleteAnswer(control)" color="primary" matTooltipClass="mat-tooltip">delete
+        <mat-checkbox
+          class="example-margin question-popup-answers-input"
+          [(ngModel)]="charsNeskolko[control][1]"
+          *ngFor="let control of charsde; let i = index"
+        >
+          <textarea
+            class="question-popup-answers-item-input"
+            matInput
+            [(ngModel)]="charsNeskolko[control][0]"
+          ></textarea>
+          <mat-icon
+            [matTooltip]="
+              'text.test.delete.answer' | translate : 'Удалить ответ'
+            "
+            (click)="deleteAnswer(control)"
+            color="primary"
+            matTooltipClass="mat-tooltip"
+            >delete
           </mat-icon>
         </mat-checkbox>
       </section>
     </ng-container>
     <ng-container *ngIf="chosenQuestionType === 2">
-      <div *ngFor="let control of charsde, let i = index">
-        {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
-          [(ngModel)]="charsWords[control]">
-        <mat-icon [matTooltip]="'text.test.delete.answer' | translate : 'Удалить ответ'" (click)="deleteAnswer(control)"
-          color="primary" matTooltipClass="mat-tooltip">delete
+      <div *ngFor="let control of charsde; let i = index">
+        {{ i + 1 + ". "
+        }}<textarea
+          class="question-popup-answers-item-input-only"
+          matInput
+          [(ngModel)]="charsWords[control]"
+        ></textarea>
+        <mat-icon
+          [matTooltip]="'text.test.delete.answer' | translate : 'Удалить ответ'"
+          (click)="deleteAnswer(control)"
+          color="primary"
+          matTooltipClass="mat-tooltip"
+          >delete
         </mat-icon>
       </div>
     </ng-container>
     <ng-container *ngIf="chosenQuestionType === 3">
-      <div *ngFor="let control of charsde, let i = index">
-        {{(i+1) + ". "}}<input class="question-popup-answers-item-input-only" matInput
-          [(ngModel)]="charsSequence[control]">
-        <mat-icon [matTooltip]="'text.test.delete.answer' | translate : 'Удалить ответ'" (click)="deleteAnswer(control)"
-          color="primary" matTooltipClass="mat-tooltip">delete
+      <div *ngFor="let control of charsde; let i = index">
+        {{ i + 1 + ". "
+        }}<textarea
+          class="question-popup-answers-item-input-only"
+          matInput
+          [(ngModel)]="charsSequence[control]"
+        ></textarea>
+        <mat-icon
+          [matTooltip]="'text.test.delete.answer' | translate : 'Удалить ответ'"
+          (click)="deleteAnswer(control)"
+          color="primary"
+          matTooltipClass="mat-tooltip"
+          >delete
         </mat-icon>
       </div>
     </ng-container>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onNoClick()">{{'button.cancel' | translate : 'Отменить'}}</button>
-    <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="formGroup.invalid">{{'button.save' | translate:'Сохранить'}}
+    <button mat-raised-button (click)="onNoClick()">
+      {{ "button.cancel" | translate : "Отменить" }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onYesClick()"
+      [disabled]="formGroup.invalid"
+    >
+      {{ "button.save" | translate : "Сохранить" }}
     </button>
   </ng-container>
 </app-popover-dialog>

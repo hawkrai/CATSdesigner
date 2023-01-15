@@ -47,12 +47,15 @@ import {SelectAutocompleteModule} from "mat-select-autocomplete";
 import {DeleteQuestionConfirmationPopupComponent} from "./questions-page/components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 import {MenuItemComponent} from "./questions-page/components/question-popup/components/menu-item/menu-item.component";
 import {NeuralNetworkPopupComponent} from "./questions-page/components/neural-network-popup/neural-network-popup.component";
-import * as dataEn from './core/translate/translations_en.json';
-import * as dataRu from './core/translate/translations_ru.json';
+import * as dataEn from "./core/translate/translations_en.json";
+import * as dataRu from "./core/translate/translations_ru.json";
 import { IsIntegerPipe } from "./pipes/is-integer.pipe";
 import { SharedModule } from "./shared/shared.module";
 import { HelpComponent } from "./help/help.component";
-import {PopoverModule} from 'ngx-smart-popover';
+import {PopoverModule} from "ngx-smart-popover";
+import {MatExpansionModule} from "@angular/material/expansion";
+import { AppToastrService } from "./service/toastr.service";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -111,12 +114,16 @@ import {PopoverModule} from 'ngx-smart-popover';
       }
     }),
     PopoverModule,
+    MatExpansionModule,
+    ToastrModule.forRoot({
+      positionClass: "toast-bottom-right",
+    }),
   ],
   providers: [
     TestPassingService,
     TestService,
     AngularEditorService,
-    TranslatePipe
+    TranslatePipe,
   ],
   entryComponents: [DeleteConfirmationPopupComponent,
     EditAvailabilityPopupComponent,

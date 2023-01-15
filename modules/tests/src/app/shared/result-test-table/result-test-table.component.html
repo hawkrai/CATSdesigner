@@ -3,7 +3,9 @@
     <div class="result-test-table-container"
          *ngIf="studentResults && studentResults[0] && studentResults[0][1].test.length != 0">
       <div class="result-test-table-subgroup">
-        {{('text.test.res.group' | translate : "Группа ") + group + (showAsSubGroup ? (('text.test.res.subgroup' | translate : ", Подгруппа ") + (iq+1)) : "")}}
+        <span>
+          {{('text.test.res.group' | translate : "Группа ") + group + (showAsSubGroup ? (('text.test.res.subgroup' | translate : ", Подгруппа ") + (iq+1)) : "")}}
+        </span>
         <div class="result-test-table-subgroup-load"
              (click)="downloadExcel()">
         </div>
@@ -35,12 +37,12 @@
           </ng-container>
 
           <ng-container matColumnDef="average">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">{{'text.test.average.score'| translate:'Средний балл'}}</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">{{'text.test.average.score'| translate:'Средняя оценка'}}</mat-header-cell>
             <mat-cell *matCellDef="let element" class="mat-header-cell-average"
-              [matTooltip]="getAverageTooltip(element)" 
-              matTooltipPosition="below" 
+              [matTooltip]="getAverageTooltip(element)"
+              matTooltipPosition="below"
               [matTooltipDisabled]="size && element[3]"
-                      [class.notAll]="size && !element[3]"> {{element[2]}}
+                      [class.notAll]="size && !element[3]"> {{element[2].slice()}}
             </mat-cell>
           </ng-container>
 
@@ -52,13 +54,14 @@
   </ng-container>
   <div class="result-test-table-chart" *ngIf="showChart">
     <div class="result-test-table-chart-name">
-      {{testName + ' ' +('text.test.res.group' | translate : "Группа ") + group}}
+      {{testName + ', ' + (('text.test.res.group' | translate : "группа ") | lowercase) + group}}
     </div>
     <canvas class="result-test-table-chart-graph"
             baseChart
             [datasets]="barChartData"
             [labels]="barChartLabels"
             [options]="barChartOptions"
+            [colors]="barChartColors"
             [plugins]="barChartPlugins"
             [legend]="barChartLegend"
             [chartType]="barChartType">
