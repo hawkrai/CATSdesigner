@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Application.Core;
@@ -20,7 +21,7 @@ namespace LMPlatform.UI.ApiControllers.CP
         private ICPManagementService CpManagementService
             => _courseProjectManagementService.Value;
 
-        public object Get(int courseProjectId)
+        public TaskSheetData Get(int courseProjectId)
         {
             return CpManagementService.GetTaskSheet(courseProjectId);
         }
@@ -40,6 +41,11 @@ namespace LMPlatform.UI.ApiControllers.CP
             CpManagementService.SaveTaskSheet(UserContext.CurrentUserId, taskSheet);
 
             return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
+        public async Task Delete(int taskSheetId, int userId)
+        {
+            await CpManagementService.DeleteTaskSheetAsync(taskSheetId, userId);
         }
     }
 }

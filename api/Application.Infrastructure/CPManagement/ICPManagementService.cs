@@ -71,5 +71,7 @@ namespace Application.Infrastructure.CPManagement
         HttpResponseMessage DownloadTaskSheet(int courseProjectId);
 
         HttpResponseMessage DownloadTaskSheet(int groupId, int subjectId);
+
+        Task DeleteTaskSheetAsync(int taskSheetId, int userId);
     }
 }
