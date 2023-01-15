@@ -75,6 +75,6 @@ namespace LMPlatform.Models
 
         	public int? QuestionId { get; set; }
 
-		public DateTime? RegistrationDate { get; set; }
+		public DateTime? AddedOn { get; set; }
     }
 }

@@ -48,7 +48,7 @@ namespace LMPlatform.Models
 
 		public bool IsActive { get; set; }
 
-		public DateTime? DeletionDate { get; set; }
+		public DateTime? DeletedOn { get; set; }
 
 		public bool IsLecturerHasGraduateStudents { get; set; }
 	}

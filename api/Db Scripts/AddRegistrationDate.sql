@@ -1,4 +1,4 @@
 USE LMPlatform
 
 ALTER TABLE Users
-ADD RegistrationDate DATETIME
+ADD AddedOn DATETIME

@@ -294,9 +294,9 @@ export class LectorsComponent implements OnInit {
       return;
     }
 
-    if (lecturer.DeletionDate != null) {
+    if (lecturer.DeletedOn != null) {
       return "Удален\r\n" +
-        `${this.formatDate(lecturer.DeletionDate)}\r\n`;
+        `${this.formatDate(lecturer.DeletedOn)}\r\n`;
     }
   }
 }

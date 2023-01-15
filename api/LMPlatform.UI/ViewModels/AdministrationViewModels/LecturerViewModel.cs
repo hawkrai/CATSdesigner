@@ -30,7 +30,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         [DisplayName("Статус")]
         public bool IsActive { get; set; }
 
-        public string DeletionDate { get; set; }
+        public string DeletedOn { get; set; }
 
         public bool IsSecretary { get; set; }
 
@@ -52,7 +52,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public string OwnSubjectsNumber { get; set; }
         public string AttachedSubjectsNumber { get; set; }
 
-        public string RegistrationDate { get; set; }
+        public string AddedOn { get; set; }
 
         public static LecturerViewModel FormLecturers(Lecturer lecturer, string htmlLinks)
         {
@@ -72,7 +72,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 Login = lecturer.User.UserName,
                 HtmlLinks = new HtmlString(htmlLinks),
                 IsActive = lecturer.IsActive,
-                DeletionDate = lecturer.DeletionDate?.ToString("o"),
+                DeletedOn = lecturer.DeletedOn?.ToString("o"),
                 LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("o") : "-",
                 Subjects = subjectsCount.ToString(),
                 OwnSubjectsNumber = ownSubjectsCount.ToString(),
@@ -80,7 +80,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 IsSecretary = lecturer.IsSecretary,
                 IsLecturerHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
                 SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray(),
-                RegistrationDate = lecturer.User?.RegistrationDate?.ToString("o") ?? "-"
+                AddedOn = lecturer.User?.AddedOn?.ToString("o") ?? "-"
             };
         }
     }

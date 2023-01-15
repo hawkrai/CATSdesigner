@@ -31,7 +31,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         [DisplayName("Статус")]
         public bool IsActive { get; set; }
 
-        public string? DeletionDate { get; set; }
+        public string? DeletedOn { get; set; }
 
         public bool? Confirmed { get; set; }
 
@@ -50,7 +50,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public int ActiveSubjects { get; set; }
         public int NotActiveSubjects { get; set; }
 
-        public string RegistrationDate { get; set; }
+        public string AddedOn { get; set; }
 
 
         public static StudentViewModel FromStudent(Student student, string htmlLinks)
@@ -68,11 +68,11 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 ActiveSubjects = SubjectManagementService.GetSubjectsCountByStudent(student.Id, true),
                 NotActiveSubjects = SubjectManagementService.GetSubjectsCountByStudent(student.Id, false),
                 IsActive = student.IsActive,
-                DeletionDate = student.DeletionDate?.ToString("o"),
+                DeletedOn = student.DeletedOn?.ToString("o"),
                 Confirmed = student.Confirmed,
                 ConfirmedBy = student.ConfirmedBy?.FullName,
                 ConfirmationDate = student.ConfirmedAt?.ToString("o") ?? "-",
-                RegistrationDate = student.User?.RegistrationDate?.ToString("o") ?? "-"
+                AddedOn = student.User?.AddedOn?.ToString("o") ?? "-"
             };
         }
     }

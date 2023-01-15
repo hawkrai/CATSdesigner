@@ -1,7 +1,7 @@
 USE LMPlatform
 
 ALTER TABLE Lecturers
-ADD DeletionDate DATETIME
+ADD DeletedOn DATETIME
 
 ALTER TABLE Students
-ADD DeletionDate DATETIME
+ADD DeletedOn DATETIME

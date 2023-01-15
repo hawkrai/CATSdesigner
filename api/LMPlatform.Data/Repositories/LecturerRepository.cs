@@ -33,7 +33,7 @@ namespace LMPlatform.Data.Repositories
                 if (deletedLecturer == null)
                     return;
                 deletedLecturer.IsActive = false;
-                deletedLecturer.DeletionDate = DateTime.UtcNow;
+                deletedLecturer.DeletedOn = DateTime.UtcNow;
                 context.Update(deletedLecturer);
                 context.SaveChanges();
             }
@@ -44,7 +44,7 @@ namespace LMPlatform.Data.Repositories
             using (var context = new LmPlatformModelsContext())
             {
                 lecturer.IsActive = false;
-                lecturer.DeletionDate = DateTime.UtcNow;
+                lecturer.DeletedOn = DateTime.UtcNow;
                 await context.UpdateAsync(lecturer);
                 await context.SaveChangesAsync();
             }

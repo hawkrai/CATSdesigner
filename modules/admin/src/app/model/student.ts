@@ -10,7 +10,7 @@ export class Student {
     Group: string;
     Email: string;
     IsActive: boolean;
-    DeletionDate: string;
+    DeletedOn: string;
     Id: number;
     FullName: string;
     SkypeContact: string;
@@ -20,7 +20,7 @@ export class Student {
     Confirmed: boolean;
     ConfirmedBy: string;
     ConfirmationDate: string;
-    RegistrationDate: string;
+    AddedOn: string;
 }
 
 export class EditStudent {

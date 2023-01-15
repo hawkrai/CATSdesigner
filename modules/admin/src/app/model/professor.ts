@@ -6,7 +6,7 @@ export class Professor {
     LastLogin: string;
     Subjects: string;
     IsActive: boolean;
-    DeletionDate: string;
+    DeletedOn: string;
     Id: number;
     Number: number;
     IsSecretary: boolean;
@@ -30,7 +30,7 @@ export class Professor {
     SecretaryGroupsIds: string[];
     QuestionId: string;
     Answer: string;
-    RegistrationDate: string;
+    AddedOn: string;
 }
 
 export class AddProfessor  {

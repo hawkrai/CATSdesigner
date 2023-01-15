@@ -259,9 +259,9 @@ export class StudentsComponent implements OnInit {
     let tooltip = "";
     
     if (!student.IsActive) {
-      if (student.DeletionDate != null) {
+      if (student.DeletedOn != null) {
         return "Удален\r\n" +
-          `${this.formatDate(student.DeletionDate)}\r\n`;
+          `${this.formatDate(student.DeletedOn)}\r\n`;
       }
 
       return;

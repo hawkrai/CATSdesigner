@@ -60,7 +60,7 @@ namespace LMPlatform.Data.Repositories
             using (var context = new LmPlatformModelsContext())
             {
                 student.IsActive = false;
-                student.DeletionDate = DateTime.UtcNow;
+                student.DeletedOn = DateTime.UtcNow;
                 await context.UpdateAsync(student);
                 await context.SaveChangesAsync();
             }
