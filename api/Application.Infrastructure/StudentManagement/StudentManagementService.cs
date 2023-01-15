@@ -7,6 +7,8 @@ using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using Application.SearchEngine.SearchMethods;
 using System.Threading.Tasks;
+using Application.Core.Helpers;
+using System;
 
 namespace Application.Infrastructure.StudentManagement
 {
@@ -70,6 +72,37 @@ namespace Application.Infrastructure.StudentManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 var students = repositoriesContainer.StudentsRepository.GetPageableBy(query);
+                return students;
+            }
+        }
+
+        public async Task<IPageableList<Student>> GetStudentsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null)
+        {
+            var query = new PageableQuery<Student>(pageInfo);
+			query
+				.Include(e => e.Group)
+				.Include(e => e.User)
+				.Include(e => e.ConfirmedBy);
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.Replace(" ", string.Empty);
+
+                query.AddFilterClause(
+                    e => (e.LastName + e.FirstName + e.MiddleName).Contains(searchString)
+                    || e.Group.Name.ToLower().Contains(searchString)
+                    || e.User.UserName.Contains(searchString)
+				);
+            }
+
+			if (sortCriteria != null)
+			{
+				query.OrderBy(sortCriteria);
+			}
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var students = await repositoriesContainer.StudentsRepository.GetPageableByAsync(query);
                 return students;
             }
         }
@@ -245,8 +278,8 @@ namespace Application.Infrastructure.StudentManagement
 		{
 			var student = this.GetStudent(studentId);
 			student.Confirmed = false;
-			student.ConfirmedById = null;
-			student.ConfirmedAt = null;
+			student.ConfirmedById = UserContext.CurrentUserId;
+			student.ConfirmedAt = DateTime.UtcNow;
 			this.UpdateStudent(student);
 
 			RemoveFromSubGroups(student.Id, student.GroupId);

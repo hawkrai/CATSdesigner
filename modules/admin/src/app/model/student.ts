@@ -10,12 +10,17 @@ export class Student {
     Group: string;
     Email: string;
     IsActive: boolean;
+    DeletedOn: string;
     Id: number;
     FullName: string;
     SkypeContact: string;
     Phone: string;
     About: string;
     LastLogin: string;
+    Confirmed: boolean;
+    ConfirmedBy: string;
+    ConfirmationDate: string;
+    AddedOn: string;
 }
 
 export class EditStudent {

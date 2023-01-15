@@ -30,6 +30,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         [DisplayName("Статус")]
         public bool IsActive { get; set; }
 
+        public string DeletedOn { get; set; }
+
         public bool IsSecretary { get; set; }
 
         public bool IsLecturerHasGraduateStudents { get; set; }
@@ -50,6 +52,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public string OwnSubjectsNumber { get; set; }
         public string AttachedSubjectsNumber { get; set; }
 
+        public string AddedOn { get; set; }
+
         public static LecturerViewModel FormLecturers(Lecturer lecturer, string htmlLinks)
         {
             var subjects = SubjectManagementService.GetSubjectsByLector(lecturer.Id);
@@ -58,23 +62,25 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 s.SubjectLecturers.Any(sl => sl.Owner == lecturer.Id) ||
                 s.SubjectLecturers.All(sl => sl.Owner == null)
             ).Count();
-            
+
             return new LecturerViewModel
-			{
-				Id = lecturer.Id,
-				FirstName = lecturer.FirstName,
-				LastName = lecturer.LastName,
-				MiddleName = lecturer.MiddleName,
-				Login = lecturer.User.UserName,
-				HtmlLinks = new HtmlString(htmlLinks),
-				IsActive = lecturer.IsActive,
-				LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("o") : "-",
-				Subjects = subjectsCount.ToString() ,
-				OwnSubjectsNumber = ownSubjectsCount.ToString(),
-				AttachedSubjectsNumber = (subjectsCount - ownSubjectsCount).ToString(),
-				IsSecretary = lecturer.IsSecretary,
-				IsLecturerHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
-                SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray()
+            {
+                Id = lecturer.Id,
+                FirstName = lecturer.FirstName,
+                LastName = lecturer.LastName,
+                MiddleName = lecturer.MiddleName,
+                Login = lecturer.User.UserName,
+                HtmlLinks = new HtmlString(htmlLinks),
+                IsActive = lecturer.IsActive,
+                DeletedOn = lecturer.DeletedOn?.ToString("o"),
+                LastLogin = lecturer.User.LastLogin.HasValue ? lecturer.User.LastLogin?.ToString("o") : "-",
+                Subjects = subjectsCount.ToString(),
+                OwnSubjectsNumber = ownSubjectsCount.ToString(),
+                AttachedSubjectsNumber = (subjectsCount - ownSubjectsCount).ToString(),
+                IsSecretary = lecturer.IsSecretary,
+                IsLecturerHasGraduateStudents = lecturer.IsLecturerHasGraduateStudents,
+                SecretaryGroupsIds = lecturer.SecretaryGroups.Select(sg => sg.Id).ToArray(),
+                AddedOn = lecturer.User?.AddedOn?.ToString("o") ?? "-"
             };
         }
     }

@@ -17,6 +17,8 @@ namespace Application.Infrastructure.StudentManagement
 
         IPageableList<Student> GetStudentsPageable(string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null);
 
+        Task<IPageableList<Student>> GetStudentsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null);
+
         Student Save(Student student);
 
         void UpdateStudent(Student student);

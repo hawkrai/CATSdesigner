@@ -77,7 +77,33 @@ namespace Application.Infrastructure.FilesManagement
 		        .ToList();
         }
 
+        public async Task<IPageableList<Attachment>> GetAttachmentsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null)
+        {
+            var query = new PageableQuery<Attachment>(pageInfo);
 
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.Replace(" ", string.Empty);
+
+                query.AddFilterClause(
+                    e => e.Name.ToLower().Contains(searchString)
+                    || (e.Author != null && e.Author.UserName.Contains(searchString))
+                    || e.FileName.ToLower().Contains(searchString)
+                    || e.PathName.ToLower().Contains(searchString)
+                );
+            }
+
+            if (sortCriteria != null)
+            {
+                query.OrderBy(sortCriteria);
+            }
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var attachments = await repositoriesContainer.AttachmentRepository.GetPageableByAsync(query);
+                return attachments;
+            }
+        }
 
         public void DeleteFileAttachment(Attachment attachment)
         {

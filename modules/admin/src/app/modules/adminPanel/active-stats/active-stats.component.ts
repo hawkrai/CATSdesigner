@@ -20,7 +20,7 @@ export class ActiveStatsComponent implements OnInit {
   chartOptions = {
     chart: {
       width: 750,
-      height: 600,
+      height: 400,
       type: 'pie'
     },
     legend: {

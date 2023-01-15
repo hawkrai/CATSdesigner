@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Core.Data;
 using LMPlatform.Models;
 
 namespace Application.Infrastructure.FilesManagement
@@ -22,6 +23,8 @@ namespace Application.Infrastructure.FilesManagement
         IList<Attachment> GetAttachmentsByIds(IEnumerable<int> ids);
 
         IList<Attachment> GetAttachments(string filter, int filesPerPage, int page);
+
+        Task<IPageableList<Attachment>> GetAttachmentsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null);
 
         string GetPathName(string guid);
 

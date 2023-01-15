@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatSort, MatPaginator, MatTableDataSource, Sort, PageEvent } from '@angular/material';
 import { AddGroupComponent } from '../modal/add-group/add-group.component';
 import { GroupService } from 'src/app/service/group.service';
 import { DeleteItemComponent } from '../modal/delete-person/delete-person.component';
@@ -18,17 +18,120 @@ export class GroupComponent implements OnInit {
 
   dataGroup  = new Group();
   displayedColumns: string[] = ['number',  'Name', 'StartYear', 'GraduationYear', 'studentsCount','subjectsCount', 's'];
-  dataSource = new MatTableDataSource<object>();
+  dataSource = new MatTableDataSource<Group>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   isLoad = false;
 
+  filter: string = null;
+
+  orderBy: string = null;
+  sortDirection: number = 0;
+
+  pageIndexDelta: number = 0;
+  prevPageData: Group[] = null;
+  nextPageData: Group[] = null;
+
+  orderByMap = {
+    'Name': 'Name',
+    'StartYear': 'StartYear',
+    'GraduationYear': 'GraduationYear'
+  }
+
   constructor(private groupService: GroupService, private dialog: MatDialog, private toastr: AppToastrService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.loadGroup();
+    this.paginator.pageSize = 20;
+    
+    this.loadGroupsPaged(false);
+  }
+  
+  applyFilter(filterValue: string) {
+    this.filter = filterValue.trim().toLowerCase();
+    this.paginator.pageIndex = 0;
+    
+    this.loadGroupsPaged(false);
+  }
+
+  applySort(sort: Sort) {
+    this.orderBy = null;
+
+    if (sort.direction != '') {
+      this.orderBy = this.orderByMap.hasOwnProperty(sort.active) ? this.orderByMap[sort.active] : null;
+    }
+
+    this.sortDirection = sort.direction == "desc" ? 1 : 0;
+
+    this.loadGroupsPaged(false);
+  }
+
+  pageChanged(event: PageEvent) {
+    this.pageIndexDelta = event.pageIndex - event.previousPageIndex;
+    this.loadGroupsPaged();
+  }
+
+  loadGroupsPaged(usePreloaded: boolean = true) {
+    let isDataLoaded = false;
+
+    if (usePreloaded) {
+      if (this.pageIndexDelta == -1 && this.prevPageData != null) {
+        this.loadPrevPagePreloaded();
+        isDataLoaded = true;
+      }
+      else if (this.pageIndexDelta == 1 && this.nextPageData != null) {
+        this.loadNextPagePreloaded();
+        isDataLoaded = true;
+      }
+    }
+
+    if (isDataLoaded) {
+      return;
+    }
+
+    this.dataSource.data = [];
+    this.isLoad = false;
+    
+    this.nextPageData = null;
+    this.prevPageData = null;
+
+    this.groupService.getGroupsPaged(this.paginator.pageIndex, this.paginator.pageSize, this.filter, this.orderBy, this.sortDirection).subscribe(items => {
+      this.dataSource.data = items.Items;
+      this.paginator.length = items.TotalCount;
+      this.isLoad = true;
+
+      this.preloadGroups();
+    });
+  }
+
+  preloadGroups(loadPrevPage: boolean = true, loadNextPage: boolean = true) {
+    if (loadPrevPage && this.paginator.hasPreviousPage()) {
+      this.groupService.getGroupsPaged(this.paginator.pageIndex - 1, this.paginator.pageSize, this.filter, this.orderBy, this.sortDirection).subscribe(items => {
+        this.prevPageData = items.Items;
+      });
+    }
+
+    if (loadNextPage && this.paginator.hasNextPage()) {
+      this.groupService.getGroupsPaged(this.paginator.pageIndex + 1, this.paginator.pageSize, this.filter, this.orderBy, this.sortDirection).subscribe(items => {
+        this.nextPageData = items.Items;
+      });
+    }
+  }
+
+  loadPrevPagePreloaded() {
+    this.nextPageData = this.dataSource.data;
+    this.dataSource.data = this.prevPageData;
+    this.prevPageData = null;
+
+    this.preloadGroups(true, false);
+  }
+
+  loadNextPagePreloaded() {
+    this.prevPageData = this.dataSource.data;
+    this.dataSource.data = this.nextPageData;
+    this.nextPageData = null;
+
+    this.preloadGroups(false, true);
   }
 
   openListOfSubject(group) {
@@ -38,34 +141,14 @@ export class GroupComponent implements OnInit {
     dialogRef.afterClosed();
   }
 
-
-  loadGroup() {
-    this.groupService.getGroups().subscribe(items => {
-      this.dataSource.data = items.sort((a,b) => this.sortFunc(a, b));
-      this.isLoad = true;
-    });
-  }
-
-  sortFunc(a, b) { 
-    if(a.Name < b.Name){
-      return -1;
-    }
-
-    else if(a.Name > b.Name){
-      return 1;
-    }
-    
-    return 0;
- } 
-
   saveGroup(group: Group) {
     this.groupService.addGroup(group).subscribe(() => {
-      this.loadGroup();
+      this.loadGroupsPaged(false);
       this.dataGroup = new Group();
       this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
     }, err => {
       if (err.status === 500) {
-        this.loadGroup();
+        this.loadGroupsPaged(false);
         this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
       } else {
         this.toastr.addErrorFlashMessage('Произошла ошибка при сохранении. Повторите попытку');
@@ -95,7 +178,7 @@ export class GroupComponent implements OnInit {
 
   removeGroup(id, subCount, studCount) {
     this.groupService.deleteGroup(id).subscribe(() => {
-      this.loadGroup();
+      this.loadGroupsPaged(false);
       this.toastr.addSuccessFlashMessage("Группа удалена!");
     }, 
     err => {
@@ -110,7 +193,7 @@ export class GroupComponent implements OnInit {
 
         this.toastr.addErrorFlashMessage(msg);
 
-        this.loadGroup();
+        this.loadGroupsPaged(false);
     });
   }
 
@@ -131,9 +214,4 @@ export class GroupComponent implements OnInit {
     );
     dialogRef.afterClosed();
   }
-
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
 }

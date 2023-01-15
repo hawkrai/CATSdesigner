@@ -114,6 +114,36 @@ namespace Application.Infrastructure.LecturerManagement
             }
         }
 
+        public async Task<IPageableList<Lecturer>> GetLecturersPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null) 
+        {
+            var query = new PageableQuery<Lecturer>(pageInfo);
+            query
+                .Include(l => l.SubjectLecturers.Select(t => t.Subject))
+                .Include(e => e.User)
+                .Include(l => l.SecretaryGroups);
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.Replace(" ", string.Empty);
+
+                query.AddFilterClause(
+                    e => (e.LastName + e.FirstName + e.MiddleName).Contains(searchString)
+                    || e.User.UserName.Contains(searchString)
+                );
+            }
+
+            if (sortCriteria != null)
+            {
+                query.OrderBy(sortCriteria);
+            }
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var lecturers = await repositoriesContainer.LecturerRepository.GetPageableByAsync(query);
+                return lecturers;
+            }
+        }
+
         public Lecturer Save(Lecturer lecturer)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
