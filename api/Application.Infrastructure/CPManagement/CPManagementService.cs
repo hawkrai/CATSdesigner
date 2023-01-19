@@ -17,6 +17,7 @@ using Application.Infrastructure.Export;
 using Application.Infrastructure.LecturerManagement;
 using Application.Core.Helpers;
 using System.Net.Http;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -786,6 +787,19 @@ namespace Application.Infrastructure.CPManagement
 
             return WordCourseProject.CourseProjectsToArchive(fileName, courseProjects);
             
+        }
+
+        public async Task DeleteTaskSheetAsync(int taskSheetId, int userId)
+        {
+            AuthorizationHelper.ValidateLecturerAccess(Context, userId);
+
+            var taskSheet = await Context.CourseProjectTaskSheetTemplates.FirstOrDefaultAsync(x => x.Id == taskSheetId);
+
+            if (taskSheet is not null)
+            {
+                Context.CourseProjectTaskSheetTemplates.Remove(taskSheet);
+                Context.SaveChanges();
+            }
         }
 
         private void CreateBtsProject(CourseProject courseProject, int developerId)

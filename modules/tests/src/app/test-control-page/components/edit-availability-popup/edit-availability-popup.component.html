@@ -1,6 +1,9 @@
 <ng-container *ngIf="groups;else loading">
   <div class="availability-popup">
-    <h1 mat-dialog-title class="availability-popup-container">{{'text.test.availability' | translate : 'Доступность теста'}}</h1>
+    <div class="availability-popup-description">
+      <h2 mat-dialog-title class="availability-popup-container">{{'text.test.availability' | translate : 'Доступность теста'}}</h2>
+      <span>{{data?.test?.Title}}</span>
+    </div>
     <button mat-icon-button
             (click)="onNoClick()">
       <mat-icon>close</mat-icon>

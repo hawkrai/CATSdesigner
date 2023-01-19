@@ -35,10 +35,10 @@
             </div>
           </div>
           <ng-container *ngIf="question?.Question?.QuestionType === 2">
-            <input class="question-answers-block-container-word"
+            <textarea class="question-answers-block-container-word"
                    matInput
                    [placeholder]="'text.enter.answer'| translate: 'Введите ответ'"
-                   (change)="onValueChange($event)">
+                   (change)="onValueChange($event)"></textarea>
           </ng-container>
           <ng-container *ngIf="question?.Question?.QuestionType === 3">
             <div cdkDropList class="example-list question-answers-sequence" (cdkDropListDropped)="drop($event)">

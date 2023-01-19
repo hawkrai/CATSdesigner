@@ -53,6 +53,9 @@ p {
 }
 
 .charts {
-  display: flex;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 3%;
 }

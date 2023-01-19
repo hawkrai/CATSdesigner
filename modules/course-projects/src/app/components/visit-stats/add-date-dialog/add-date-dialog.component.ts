@@ -31,7 +31,7 @@ export class AddDateDialogComponent {
   private dateControl = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
 
   constructor(public dialogRef: MatDialogRef<AddDateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {      
       this.data.date = this.dateControl.value;
   }
 

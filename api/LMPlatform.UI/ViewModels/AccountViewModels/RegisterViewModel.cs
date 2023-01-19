@@ -174,6 +174,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         private void SaveStudent()
         {
             var user = UsersManagementService.GetUser(UserName);
+            user.AddedOn = DateTime.UtcNow;
             user.Answer = Answer;
             int id;
             user.QuestionId = int.TryParse(QuestionId, out id) ? id : (int?)null;
@@ -198,6 +199,7 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         private void SaveLecturer()
         {
             var user = UsersManagementService.GetUser(UserName);
+            user.AddedOn = DateTime.UtcNow;
             var lecturer = LecturerManagementService.Save(new Lecturer
             {
                 Id = user.Id,

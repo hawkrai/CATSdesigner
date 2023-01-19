@@ -20,6 +20,10 @@ body {
   margin: 0;
 }
 
+.mat-tooltip  {
+  white-space: pre-line;
+}
+
 * {
   box-sizing: border-box;
 }

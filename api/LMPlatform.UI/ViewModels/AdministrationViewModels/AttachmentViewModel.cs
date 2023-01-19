@@ -18,13 +18,11 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         public AttachmentType AttachmentType { get; set; }
 
-        public string CreationDateString { get; set; }
-
-        public User? Author { get; set; }
+        public string CreationDate { get; set; }
 
         public long? FileSize { get; set; }
 
-        public string AuthorName => Author?.FullName;
+        public string? AuthorName { get; set; }
 
 
         private IFilesManagementService FilesManagementService => _filesManagementService.Value;
@@ -36,8 +34,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             FileName = attachment.FileName;
             PathName = attachment.PathName;
             AttachmentType = attachment.AttachmentType;
-            CreationDateString = attachment.CreationDate?.ToString("dd/MM/yyyy");
-            Author = attachment.Author;
+            CreationDate = attachment.CreationDate?.ToString("o");
+            AuthorName = attachment.Author?.UserName;
             FileSize = FilesManagementService.GetFileSize(attachment);
         }
     }

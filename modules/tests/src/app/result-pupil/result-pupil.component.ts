@@ -1,12 +1,13 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {TestPassingService} from "../service/test-passing.service";
-import {Test} from "../models/test.model";
-import {AutoUnsubscribe} from "../decorator/auto-unsubscribe";
-import {AutoUnsubscribeBase} from "../core/auto-unsubscribe-base";
-import {Subject} from "rxjs";
-import {takeUntil} from "rxjs/operators";
-import {AutocompleteModel} from "../models/autocomplete.model";
-import {TranslatePipe} from "educats-translate";
+import { Component, Input, OnInit } from "@angular/core";
+import { TestPassingService } from "../service/test-passing.service";
+import { Test } from "../models/test.model";
+import { AutoUnsubscribe } from "../decorator/auto-unsubscribe";
+import { AutoUnsubscribeBase } from "../core/auto-unsubscribe-base";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
+import { AutocompleteModel } from "../models/autocomplete.model";
+import { TranslatePipe } from "educats-translate";
+import { Help } from "../models/help.model";
 
 
 @AutoUnsubscribe
@@ -29,10 +30,19 @@ export class ResultPupilComponent extends AutoUnsubscribeBase implements OnInit 
   public options: AutocompleteModel[] = [];
   public visibleTests: string[];
   private unsubscribeStream$: Subject<void> = new Subject<void>();
+  help: Help;
 
-  constructor(private testPassingService: TestPassingService,
-              private translatePipe: TranslatePipe) {
+  constructor(
+    private testPassingService: TestPassingService,
+    private translatePipe: TranslatePipe,
+  ) {
     super();
+
+    this.help = {
+      // tslint:disable-next-line:max-line-length
+      message: this.translatePipe.transform("text.help.lectures", "Для добавления или удаления дат лекций нажмите на кнопку \"Управление расписанием\". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии."),
+      action: this.translatePipe.transform("button.understand", "Понятно")
+    };
   }
 
   ngOnInit() {
@@ -43,6 +53,8 @@ export class ResultPupilComponent extends AutoUnsubscribeBase implements OnInit 
         this.results = results;
         this.groupTests(results);
       });
+
+
   }
 
   /*public onValueChange(value: string): void {
@@ -69,27 +81,27 @@ export class ResultPupilComponent extends AutoUnsubscribeBase implements OnInit 
     results.forEach((result) => {
       if (result.ForSelfStudy) {
         if (this.selfControlTests.length === 0) {
-          this.options.push({display: this.translatePipe.transform('text.tests.for.self.control',"Тесты для самоконтроля"), value: "0"});
+          this.options.push({ display: this.translatePipe.transform("text.tests.for.self.control", "Тесты для самоконтроля"), value: "0" });
         }
         this.selfControlTests.push(result);
       } else if (result.ForNN) {
         if (this.nNTests.length === 0) {
-          this.options.push({display: this.translatePipe.transform('text.tests.for.nn',"Тесты для обучения с искусственной нейронной сетью"), value: "1"});
+          this.options.push({ display: this.translatePipe.transform("text.tests.for.nn", "Тесты для обучения с искусственной нейронной сетью"), value: "1" });
         }
         this.nNTests.push(result);
       } else if (result.BeforeEUMK) {
         if (this.beforeEUMKTests.length === 0) {
-          this.options.push({display: this.translatePipe.transform('text.tests.for.pre.eumk',"Предтест для обучения в ЭУМК"), value: "2"});
+          this.options.push({ display: this.translatePipe.transform("text.tests.for.pre.eumk", "Предтест для обучения в ЭУМК"), value: "2" });
         }
         this.beforeEUMKTests.push(result);
       } else if (result.ForEUMK) {
         if (this.forEUMKTests.length === 0) {
-          this.options.push({display: this.translatePipe.transform('text.tests.for.eumk',"Тесты для обучения в ЭУМК"), value: "3"});
+          this.options.push({ display: this.translatePipe.transform("text.tests.for.eumk", "Тесты для обучения в ЭУМК"), value: "3" });
         }
         this.forEUMKTests.push(result);
       } else {
         if (this.knowledgeControlTests.length === 0) {
-          this.options.push({display: this.translatePipe.transform('text.tests.for.control',"Тесты для контроля знаний"), value: "4"});
+          this.options.push({ display: this.translatePipe.transform("text.tests.for.control", "Тесты для контроля знаний"), value: "4" });
         }
         this.knowledgeControlTests.push(result);
       }

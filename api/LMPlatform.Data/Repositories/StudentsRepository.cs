@@ -9,6 +9,7 @@ namespace LMPlatform.Data.Repositories
     using LMPlatform.Data.Infrastructure;
     using LMPlatform.Data.Repositories.RepositoryContracts;
     using LMPlatform.Models;
+    using System;
     using System.Threading.Tasks;
 
     public class StudentsRepository : RepositoryBase<LmPlatformModelsContext, Student>, IStudentsRepository
@@ -59,6 +60,7 @@ namespace LMPlatform.Data.Repositories
             using (var context = new LmPlatformModelsContext())
             {
                 student.IsActive = false;
+                student.DeletedOn = DateTime.UtcNow;
                 await context.UpdateAsync(student);
                 await context.SaveChangesAsync();
             }

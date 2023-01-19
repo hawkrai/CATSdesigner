@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application.Core.Data;
 using LMPlatform.Models;
 
@@ -13,6 +14,8 @@ namespace Application.Infrastructure.GroupManagement
         Group GetGroupWithLiteStudents(int groupId);
 
         IPageableList<Group> GetGroupsPageable(string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null);
+
+        Task<IPageableList<Group>> GetGroupsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null);
 
         Group AddGroup(Group group);
 

@@ -31,7 +31,7 @@ export class StatsComponent implements OnInit {
   start: string;
   end: string;
   isArchive = false;
-  isArchiveEnable = true;
+  isArchiveEnable = false;
 
   constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
   }
@@ -52,8 +52,8 @@ export class StatsComponent implements OnInit {
           this.subjectService.getUserInfo(resArchive.Students[6].Id + '').subscribe(userInfo => {
             this.subjectService.getAllArchiveSubjects(userInfo.Login).subscribe(subjectResponseArchive => {
               this.subjectsArchive = subjectResponseArchive;
-              if (this.subjectsArchive.length == 0) {
-                this.isArchiveEnable = false;
+              if (this.subjectsArchive.length != 0) {
+                this.isArchiveEnable = true;
               }
             });
           });
@@ -221,6 +221,7 @@ export class StatsComponent implements OnInit {
   initData(groupName) {
     this.subjectService.getSubjects(groupName).subscribe(subjectResponse => {
       this.subjects = subjectResponse.Subjects;
+      this.subjects = this.subjects.sort((a, b) => a.Name.localeCompare(b.Name));
       this.groupId = subjectResponse.GroupId;
       this.getStatistic(this.groupId);
     });
