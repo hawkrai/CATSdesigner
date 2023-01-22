@@ -80,6 +80,7 @@ namespace Application.Infrastructure.FilesManagement
         public async Task<IPageableList<Attachment>> GetAttachmentsPageableAsync(string searchString = null, IPageInfo pageInfo = null, ISortCriteria sortCriteria = null)
         {
             var query = new PageableQuery<Attachment>(pageInfo);
+            query.Include(e => e.Author);
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
