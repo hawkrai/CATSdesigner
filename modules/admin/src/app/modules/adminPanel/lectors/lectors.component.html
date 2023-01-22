@@ -4,7 +4,10 @@
     <button mat-raised-button (click)="saveProfessor()">Добавить преподавателя</button>
     <div class="table">
         <mat-form-field class="search">
-            <input matInput (keydown.enter)="applyFilter($event.target.value)" placeholder="Поиск">
+            <input matInput [(ngModel)]="filter" (keydown.enter)="applyFilter()" placeholder="Поиск">
+            <button mat-icon-button matSuffix class="icon-button-search" (click)="applyFilter()">
+                <mat-icon>search</mat-icon>
+            </button>
         </mat-form-field>
 
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="applySort($event)" matSortStart="asc">

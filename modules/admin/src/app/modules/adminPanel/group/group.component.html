@@ -2,7 +2,10 @@
     <button mat-raised-button (click)="addGroup(this.dataGroup)">Добавить группу</button>
     <div [hidden]="!isLoad" class="table">
         <mat-form-field class="search">
-            <input matInput (keyup.enter)="applyFilter($event.target.value)" placeholder="Поиск">
+            <input matInput [(ngModel)]="filter" (keydown.enter)="applyFilter()" placeholder="Поиск">
+            <button mat-icon-button matSuffix class="icon-button-search" (click)="applyFilter()">
+                <mat-icon>search</mat-icon>
+            </button>
         </mat-form-field>
 
         <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>

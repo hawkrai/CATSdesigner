@@ -245,7 +245,7 @@ namespace Application.Infrastructure.StudentManagement
 
 		    student.Confirmed = true;
 			student.ConfirmedById = userId;
-			student.ConfirmedAt = System.DateTime.Now;
+			student.ConfirmedAt = DateTime.UtcNow;
 			this.UpdateStudent(student);
 
 		    var subjects = repositoriesContainer.SubjectRepository.GetSubjects(student.GroupId).Where(e => !e.IsArchive);
