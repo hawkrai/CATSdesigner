@@ -14,7 +14,7 @@ export class EditStudentComponent implements OnInit {
 
   groups: Group[];
   form: FormGroup;
-  student: Student
+  student: Student;
   @Output() submitEM = new EventEmitter();
   constructor(
     private formBuilder: FormBuilder,
@@ -27,14 +27,13 @@ export class EditStudentComponent implements OnInit {
     this.student = this.data;
     var nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-]*$';
     this.form = this.formBuilder.group({
-      Id: new FormControl(this.student.Id),
       Surname: new FormControl(this.student.Surname, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
       Name: new FormControl(this.student.Name, [Validators.required, Validators.minLength(1), Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
       Patronymic: new FormControl(this.student.Patronymic, [Validators.maxLength(30),
         Validators.pattern(nameRegExp)]),
-      Group: new FormControl(this.student.Group),
+      Group: new FormControl(this.student.GroupId),
     });
      console.log(this.data);
   }
