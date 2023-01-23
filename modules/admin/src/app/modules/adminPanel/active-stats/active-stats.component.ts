@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService } from "src/app/service/userService";
-import { NgApexchartsModule } from "ng-apexcharts";
+import { TranslatePipe } from "educats-translate";
 
 @Component({
   selector: "app-active-stats",
@@ -32,7 +32,11 @@ export class ActiveStatsComponent implements OnInit {
     },
   };
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private translatePipe: TranslatePipe) {}
+
+  t(value, defaultValue = value) {
+    return this.translatePipe.transform(value, defaultValue);
+  }
 
   ngOnInit() {
     this.loadActivity();
@@ -46,14 +50,19 @@ export class ActiveStatsComponent implements OnInit {
         result.ServiceAccountsCount,
       ];
       this.usersLabels = [
-        "Аккаунты студентов",
-        "Аккаунты преподавателей",
-        "Сервисные аккаунты",
+        this.t("text.adminPanel.activeStats.userActivity.usersLabels.students"),
+        this.t("text.adminPanel.activeStats.userActivity.usersLabels.lecturers"),
+        this.t("text.adminPanel.activeStats.userActivity.usersLabels.service")
       ];
       this.userActivity = result;
       const obj = JSON.parse(result.UserActivityJson);
       this.timesSeries = Object.values(obj);
-      this.timesLabels = Object.keys(obj);
+      this.timesLabels = [
+        this.t("text.adminPanel.activeStats.userActivity.timesLabels.day"),
+        this.t("text.adminPanel.activeStats.userActivity.timesLabels.week"),
+        this.t("text.adminPanel.activeStats.userActivity.timesLabels.month"),
+        this.t("text.adminPanel.activeStats.userActivity.timesLabels.earlier"),
+      ];
       this.isLoadActive = true;
     });
   }

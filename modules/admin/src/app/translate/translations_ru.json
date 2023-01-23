@@ -568,5 +568,19 @@
   "text.help.popover.close": "Закрыть",
   "other.secret_question_1": "Девичья фамилия матери?",
   "other.secret_question_2": "Кличка любимого животного?",
-  "other.secret_question_3": "Ваше хобби?"
+  "other.secret_question_3": "Ваше хобби?",
+
+  "text.adminPanel.activeStats.userActivity": "Активность пользователей",
+  "text.adminPanel.activeStats.userActivity.Description": "Показывает процентное соотношение пользователей, осуществивших свой последний вход в систему в последние сутки, от суток до недели и т.д., от общего числа пользователей.",
+  "text.adminPanel.activeStats.userActivity.totalUsers": "Всего пользователей",
+  "text.adminPanel.activeStats.userActivity.totalStudents": "Зарегистрировано студентов",
+  "text.adminPanel.activeStats.userActivity.totalLecturers": "Зарегистрировано преподавателей",
+  "text.adminPanel.activeStats.userActivity.totalServiceAccounts": "Сервисных аккаунтов",
+  "text.adminPanel.activeStats.userActivity.usersLabels.students": "Аккаунты студентов",
+  "text.adminPanel.activeStats.userActivity.usersLabels.lecturers": "Аккаунты преподавателей",
+  "text.adminPanel.activeStats.userActivity.usersLabels.service": "Сервисные аккаунты",
+  "text.adminPanel.activeStats.userActivity.timesLabels.day": "Сутки",
+  "text.adminPanel.activeStats.userActivity.timesLabels.week": "Неделя",
+  "text.adminPanel.activeStats.userActivity.timesLabels.month": "Месяц",
+  "text.adminPanel.activeStats.userActivity.timesLabels.earlier": "Ранее"
 }
