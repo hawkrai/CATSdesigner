@@ -336,6 +336,10 @@
   "text.generated automatically": "generated automatically",
   "text.lectures": "Lecture",
   "text.lectures.plural": "Lectures",
+  "text.lecturer": "Lecturer",
+  "text.lecturers": "Lecturers",
+  
+
 
   "text.attachments": "File",
   "text.attachments.plural": "Files",
