@@ -688,5 +688,14 @@
   "text.adminPanel.activeStats.userActivity.timesLabels.day": "Day",
   "text.adminPanel.activeStats.userActivity.timesLabels.week": "Week",
   "text.adminPanel.activeStats.userActivity.timesLabels.month": "Month",
-  "text.adminPanel.activeStats.userActivity.timesLabels.earlier": "Earlier"
+  "text.adminPanel.activeStats.userActivity.timesLabels.earlier": "Earlier",
+
+  "text.adminPanel.files.headers.name": "File name",
+  "text.adminPanel.files.headers.nameOnDisk": "Name on disk",
+  "text.adminPanel.files.headers.date": "Upload date",
+  "text.adminPanel.files.headers.author": "Author",
+  "text.adminPanel.files.headers.size": "File size",
+  "text.adminPanel.files.headers.packageOnDisk": "Folder on disk",
+
+  "noData": "No data"
 }

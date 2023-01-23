@@ -5,6 +5,7 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {FileService} from '../../../service/file.service';
 import {MatDialog} from '@angular/material/dialog';
 import { Attachment } from 'src/app/model/lecture';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-files',
@@ -35,13 +36,17 @@ export class FilesComponent implements OnInit {
     'Author': 'Author.UserName'
   }
 
-  constructor(private dialog: MatDialog, private fileService: FileService) { }
+  constructor(private dialog: MatDialog, private fileService: FileService, private translatePipe: TranslatePipe) { }
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
     this.paginator.pageSize = 20;
     
     this.loadFilesPaged(false);
+  }
+
+  t(value, defaultValue = value) {
+    return this.translatePipe.transform(value, defaultValue);
   }
 
   applyFilter(filterValue: string) {
@@ -153,7 +158,7 @@ export class FilesComponent implements OnInit {
     }
 
     else{
-      return 'Нет данных'
+      return this.t('noData');
     }
   }
 
@@ -164,7 +169,7 @@ export class FilesComponent implements OnInit {
     }
 
     else{
-      return 'Нет данных'
+      return this.t('noData');
     }
   }
 
@@ -182,7 +187,7 @@ export class FilesComponent implements OnInit {
       return this.toReadableFileSize(size);
     }
     else {
-      return 'Нет данных';
+      return this.t('noData');
     }
   }
 

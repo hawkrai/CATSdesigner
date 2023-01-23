@@ -584,5 +584,14 @@
   "text.adminPanel.activeStats.userActivity.timesLabels.day": "Сутки",
   "text.adminPanel.activeStats.userActivity.timesLabels.week": "Неделя",
   "text.adminPanel.activeStats.userActivity.timesLabels.month": "Месяц",
-  "text.adminPanel.activeStats.userActivity.timesLabels.earlier": "Ранее"
+  "text.adminPanel.activeStats.userActivity.timesLabels.earlier": "Ранее",
+
+  "text.adminPanel.files.headers.name": "Имя файла",
+  "text.adminPanel.files.headers.nameOnDisk": "Имя на диске",
+  "text.adminPanel.files.headers.date": "Дата загрузки",
+  "text.adminPanel.files.headers.author": "Автор",
+  "text.adminPanel.files.headers.size": "Размер",
+  "text.adminPanel.files.headers.packageOnDisk": "Папка на диске",
+
+  "noData": "Нет данных"
 }
