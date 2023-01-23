@@ -697,5 +697,23 @@
   "text.adminPanel.files.headers.size": "File size",
   "text.adminPanel.files.headers.packageOnDisk": "Folder on disk",
 
-  "noData": "No data"
+  "noData": "No data",
+
+  "text.adminPanel.group.add": "Add group",
+  "text.adminPanel.group.headers.name": "Group number",
+  "text.adminPanel.group.headers.startYear": "Entry year",
+  "text.adminPanel.group.headers.graduationYear": "Graduation year",
+  "text.adminPanel.group.headers.studentsCount": "Number of students (verified\\not verified)",
+  "text.adminPanel.group.headers.subjectsCount": "Number of subjects (ongoing\\completed)",
+  "text.adminPanel.group.headers.action": "Action",
+
+  "text.adminPanel.group.tooltips.studentsList": "List of students in the group",
+  "text.adminPanel.group.tooltips.subjectsList": "List of subjects",
+  "text.adminPanel.group.tooltips.edit": "Edit group",
+  "text.adminPanel.group.tooltips.delete": "Delete group",
+
+  "text.adminPanel.group.delete.success": "The group has been deleted!",
+  "text.adminPanel.group.delete.error": "An error has occured!",
+  "text.adminPanel.group.delete.error.stud": "Deletion of a group with students is not allowed!",
+  "text.adminPanel.group.delete.error.sub": "Deletion of a group with subjects assigned is not allowed!"
 }

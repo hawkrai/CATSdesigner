@@ -593,5 +593,27 @@
   "text.adminPanel.files.headers.size": "Размер",
   "text.adminPanel.files.headers.packageOnDisk": "Папка на диске",
 
-  "noData": "Нет данных"
+  "noData": "Нет данных",
+
+  "text.adminPanel.group.add": "Добавить группу",
+  "text.adminPanel.group.headers.name": "Номер группы",
+  "text.adminPanel.group.headers.startYear": "Год поступления",
+  "text.adminPanel.group.headers.graduationYear": "Год выпуска",
+  "text.adminPanel.group.headers.studentsCount": "Количество студентов (подтверждено\\не подтверждено)",
+  "text.adminPanel.group.headers.subjectsCount": "Количество предметов (текущие\\завершенные)",
+  "text.adminPanel.group.headers.action": "Действие",
+
+  "text.adminPanel.group.tooltips.studentsList": "Список студентов, состоящих в данной группе",
+  "text.adminPanel.group.tooltips.subjectsList": "Список предметов",
+  "text.adminPanel.group.tooltips.edit": "Редактировать группу",
+  "text.adminPanel.group.tooltips.delete": "Удалить группу",
+
+  "text.adminPanel.group.save.success": "Группа успешна сохранена!",
+  "text.adminPanel.group.save.error": "Произошла ошибка при сохранении. Повторите попытку",
+
+  "text.adminPanel.group.delete.success": "Группа удалена!",
+  "text.adminPanel.group.delete.error": "Произошла ошибка!",
+  "text.adminPanel.group.delete.error.stud": "Нельзя удалить группу со студентами!",
+  "text.adminPanel.group.delete.error.sub": "Нельзя удалить группу за которой закреплены предметы!"
+
 }

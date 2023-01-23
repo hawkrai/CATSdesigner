@@ -1,8 +1,8 @@
 <div class="main">
-    <button mat-raised-button (click)="addGroup(this.dataGroup)">Добавить группу</button>
+    <button mat-raised-button (click)="addGroup(this.dataGroup)">{{"text.adminPanel.group.add" | translate}}</button>
     <div [hidden]="!isLoad" class="table">
         <mat-form-field class="search">
-            <input matInput (keyup.enter)="applyFilter($event.target.value)" placeholder="Поиск">
+            <input matInput (keyup.enter)="applyFilter($event.target.value)" placeholder="{{'search' | translate}}">
         </mat-form-field>
 
         <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
@@ -14,43 +14,43 @@
             </ng-container>
 
             <ng-container matColumnDef="Name">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Номер группы</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{"text.adminPanel.group.headers.name" | translate}}</th>
                 <td mat-cell *matCellDef="let element"> {{ element.Name }} </td>
             </ng-container>
 
             <ng-container matColumnDef="StartYear">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Год поступления</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{"text.adminPanel.group.headers.startYear" | translate}}</th>
                 <td mat-cell *matCellDef="let element"> {{ element.StartYear }} </td>
             </ng-container>
 
             <ng-container matColumnDef="GraduationYear">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Год выпуска</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{"text.adminPanel.group.headers.graduationYear" | translate}}</th>
                 <td mat-cell *matCellDef="let element"> {{ element.GraduationYear }} </td>
             </ng-container>
 
             <ng-container matColumnDef="studentsCount">
-                <th mat-header-cell *matHeaderCellDef>Количество студентов (подтверждено\не подтверждено) </th>
+                <th mat-header-cell *matHeaderCellDef>{{"text.adminPanel.group.headers.studentsCount" | translate}}</th>
                 <td mat-cell *matCellDef="let element"> {{ element.StudentsConfirmedCount}}\{{element.StudentsNotConfirmedCount }} </td>
             </ng-container>
 
             <ng-container matColumnDef="subjectsCount">
-                <th mat-header-cell *matHeaderCellDef>Количество предметов (текущие\завершенные)  </th>
+                <th mat-header-cell *matHeaderCellDef>{{"text.adminPanel.group.headers.subjectsCount" | translate}}</th>
                 <td mat-cell *matCellDef="let element"> {{ element.SubjectsActiveCount}}\{{element.SubjectsNotActiveCount }} </td>
             </ng-container>
 
             <ng-container matColumnDef="s" class="actions">
-                <th mat-header-cell *matHeaderCellDef>Действиe</th>
+                <th mat-header-cell *matHeaderCellDef>{{"text.adminPanel.group.headers.action" | translate}}</th>
                 <td mat-cell *matCellDef="let element">
-                    <button mat-button matTooltip="Список студентов, состоящих в данной группе" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfStudents(element)">
+                    <button mat-button matTooltip="{{'text.adminPanel.group.tooltips.studentsList' | translate}}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfStudents(element)">
                         <mat-icon>supervised_user_circle</mat-icon>
                     </button>
-                    <button mat-button matTooltip="Список предметов" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfSubject(element)">
+                    <button mat-button matTooltip="{{'text.adminPanel.group.tooltips.subjectsList' | translate}}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfSubject(element)">
                         <mat-icon>list</mat-icon>
                       </button>
-                    <button mat-button matTooltip="Редактировать группу" [matTooltipPosition]="'above'" aria-label="Edit" matTooltipClass="tooltip" (click)="this.editGroup(element)">
+                    <button mat-button matTooltip="{{'text.adminPanel.group.tooltips.edit' | translate}}" [matTooltipPosition]="'above'" aria-label="Edit" matTooltipClass="tooltip" (click)="this.editGroup(element)">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-button matTooltip="Удалить группу" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete" (click)="deleteGroup(element.Id, element.SubjectsCount, element.StudentsCount)">
+                    <button mat-button matTooltip="{{'text.adminPanel.group.tooltips.delete' | translate}}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete" (click)="deleteGroup(element.Id, element.SubjectsCount, element.StudentsCount)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </td>
