@@ -715,5 +715,27 @@
   "text.adminPanel.group.delete.success": "The group has been deleted!",
   "text.adminPanel.group.delete.error": "An error has occured!",
   "text.adminPanel.group.delete.error.stud": "Deletion of a group with students is not allowed!",
-  "text.adminPanel.group.delete.error.sub": "Deletion of a group with subjects assigned is not allowed!"
+  "text.adminPanel.group.delete.error.sub": "Deletion of a group with subjects assigned is not allowed!",
+
+  "text.adminPanel.lectors.add": "Add lecturer",
+  "text.adminPanel.lectors.headers.fullName": "Full name",
+  "text.adminPanel.lectors.headers.login": "Login",
+  "text.adminPanel.lectors.headers.lastLogin": "Last logged in",
+  "text.adminPanel.lectors.headers.registrationDate": "Registration date",
+  "text.adminPanel.lectors.headers.status": "Status",
+  "text.adminPanel.lectors.headers.subjects": "Subjects (created\\attached)",
+  "text.adminPanel.lectors.headers.action": "Action",
+
+  "text.adminPanel.lectors.tooltips.stats": "System authorization statistics",
+  "text.adminPanel.lectors.tooltips.subjectsList": "List of subjects",
+  "text.adminPanel.lectors.tooltips.account": "Lecturer profile",
+  "text.adminPanel.lectors.tooltips.edit": "Edit lecturer",
+  "text.adminPanel.lectors.tooltips.delete": "Delete lecturer",
+  "text.adminPanel.lectors.tooltips.restore": "Restore lecturer",
+
+  "text.adminPanel.lectors.add.success": "The lecturer has been added!",
+  "text.adminPanel.lectors.edit.success": "The lecturer has been edited!",
+  "text.adminPanel.lectors.delete.success": "The lecturer has been deleted!",
+
+  "text.adminPanel.lectors.status.deleted": "Deleted"
 }

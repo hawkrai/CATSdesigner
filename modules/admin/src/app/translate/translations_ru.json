@@ -614,6 +614,27 @@
   "text.adminPanel.group.delete.success": "Группа удалена!",
   "text.adminPanel.group.delete.error": "Произошла ошибка!",
   "text.adminPanel.group.delete.error.stud": "Нельзя удалить группу со студентами!",
-  "text.adminPanel.group.delete.error.sub": "Нельзя удалить группу за которой закреплены предметы!"
+  "text.adminPanel.group.delete.error.sub": "Нельзя удалить группу за которой закреплены предметы!",
 
+  "text.adminPanel.lectors.add": "Добавить преподавателя",
+  "text.adminPanel.lectors.headers.fullName": "Полное имя",
+  "text.adminPanel.lectors.headers.login": "Логин",
+  "text.adminPanel.lectors.headers.lastLogin": "Последний вход",
+  "text.adminPanel.lectors.headers.registrationDate": "Дата регистрации",
+  "text.adminPanel.lectors.headers.status": "Статус",
+  "text.adminPanel.lectors.headers.subjects": "Предметы (созданные\\присоединенные)",
+  "text.adminPanel.lectors.headers.action": "Действиe",
+
+  "text.adminPanel.lectors.tooltips.stats": "Статистика авторизации в системе",
+  "text.adminPanel.lectors.tooltips.subjectsList": "Список предметов",
+  "text.adminPanel.lectors.tooltips.account": "Профиль преподавателя",
+  "text.adminPanel.lectors.tooltips.edit": "Редактировать преподавателя",
+  "text.adminPanel.lectors.tooltips.delete": "Удалить преподавателя",
+  "text.adminPanel.lectors.tooltips.restore": "Восстановить преподавателя",
+
+  "text.adminPanel.lectors.add.success": "Преподаватель добавлен!",
+  "text.adminPanel.lectors.edit.success": "Преподаватель изменён!",
+  "text.adminPanel.lectors.delete.success": "Преподаватель удалён!",
+
+  "text.adminPanel.lectors.status.deleted": "Удалён"
 }
