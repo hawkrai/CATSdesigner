@@ -737,5 +737,34 @@
   "text.adminPanel.lectors.edit.success": "The lecturer has been edited!",
   "text.adminPanel.lectors.delete.success": "The lecturer has been deleted!",
 
-  "text.adminPanel.lectors.status.deleted": "Deleted"
+  "text.adminPanel.lectors.status.deleted": "Deleted",
+  
+  "text.adminPanel.students.headers.groupName": "Group number",
+  "text.adminPanel.students.headers.fullName": "Full name",
+  "text.adminPanel.students.headers.login": "Login",
+  "text.adminPanel.students.headers.lastLogin": "Last logged in",
+  "text.adminPanel.students.headers.registrationDate": "Registration date",
+  "text.adminPanel.students.headers.status": "Status",
+  "text.adminPanel.students.headers.subjects": "Subjects (ongoing\\completed)",
+  "text.adminPanel.students.headers.action": "Action",
+
+  "text.adminPanel.students.tooltips.stats": "System authorization statistics",
+  "text.adminPanel.students.tooltips.subjectsList": "List of subjects",
+  "text.adminPanel.students.tooltips.account": "Student profile",
+  "text.adminPanel.students.tooltips.edit": "Edit student",
+  "text.adminPanel.students.tooltips.delete": "Delete student",
+  "text.adminPanel.students.tooltips.restore": "Restore student",
+  "text.adminPanel.students.tooltips.status.deletedOn": "Deleted on",
+  "text.adminPanel.students.tooltips.status.confirmedOn": "Confirmed on",
+  "text.adminPanel.students.tooltips.status.confirmationCancelledOn": "Confirmation cancelled in",
+
+  "text.adminPanel.students.edit.success": "The student has been edited successfully!",
+  "text.adminPanel.students.restore.success": "The student has been restored successfully!",
+  "text.adminPanel.students.restore.error": "Failed to restore the student!",
+  "text.adminPanel.students.delete.success": "The student has been deleted!",
+  "text.adminPanel.students.delete.error": "Deletion error! Try again later!",
+
+  "text.adminPanel.students.status.deleted": "Deleted",
+  "text.adminPanel.students.status.confirmed": "Confirmed",
+  "text.adminPanel.students.status.notConfirmed": "Not confirmed"
 }

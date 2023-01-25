@@ -636,5 +636,34 @@
   "text.adminPanel.lectors.edit.success": "Преподаватель изменён!",
   "text.adminPanel.lectors.delete.success": "Преподаватель удалён!",
 
-  "text.adminPanel.lectors.status.deleted": "Удалён"
+  "text.adminPanel.lectors.status.deleted": "Удалён",
+
+  "text.adminPanel.students.headers.groupName": "Номер группы",
+  "text.adminPanel.students.headers.fullName": "Полное имя",
+  "text.adminPanel.students.headers.login": "Логин",
+  "text.adminPanel.students.headers.lastLogin": "Последний вход",
+  "text.adminPanel.students.headers.registrationDate": "Дата регистрации",
+  "text.adminPanel.students.headers.status": "Статус",
+  "text.adminPanel.students.headers.subjects": "Предметы (текущие\\завершённые)",
+  "text.adminPanel.students.headers.action": "Действиe",
+
+  "text.adminPanel.students.tooltips.stats": "Статистика авторизации в системе",
+  "text.adminPanel.students.tooltips.subjectsList": "Список изучаемых предметов",
+  "text.adminPanel.students.tooltips.account": "Профиль студента",
+  "text.adminPanel.students.tooltips.edit": "Редактировать студента",
+  "text.adminPanel.students.tooltips.delete": "Удалить студента",
+  "text.adminPanel.students.tooltips.restore": "Восстановить студента",
+  "text.adminPanel.students.tooltips.status.deletedOn": "Удалён",
+  "text.adminPanel.students.tooltips.status.confirmedOn": "Подтверждён",
+  "text.adminPanel.students.tooltips.status.confirmationCancelledOn": "Подтверждение отменено",
+
+  "text.adminPanel.students.edit.success": "Студент успешно изменен!",
+  "text.adminPanel.students.restore.success": "Студент успешно восстановлен!",
+  "text.adminPanel.students.restore.error": "Не удалость восстановить студента!",
+  "text.adminPanel.students.delete.success": "Студент удален!",
+  "text.adminPanel.students.delete.error": "Ошибка удаления! Попробуйте позже!",
+
+  "text.adminPanel.students.status.deleted": "Удалён",
+  "text.adminPanel.students.status.confirmed": "Подтверждён",
+  "text.adminPanel.students.status.notConfirmed": "Не подтверждён"
 }
