@@ -1,24 +1,27 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef, MatSelectChange} from '@angular/material';
-import {TaskSheet} from '../../../models/task-sheet.model';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Template} from '../../../models/template.model';
-import {TaskSheetService} from '../../../services/task-sheet.service';
-import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
-import {Project} from 'src/app/models/project.model';
-import {ProjectsService} from 'src/app/services/projects.service';
-import {CoreGroup} from 'src/app/models/core-group.model';
-import {Help} from '../../../models/help.model';
-import {HelpPopoverScheduleComponent} from '../../../shared/help-popover/help-popover-schedule.component';
-import {MatDialog} from '@angular/material/dialog';
-import {ToastrService} from 'ngx-toastr';
-import {TranslatePipe} from 'educats-translate';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange } from '@angular/material';
+import { TaskSheet } from '../../../models/task-sheet.model';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Template } from '../../../models/template.model';
+import { TaskSheetService } from '../../../services/task-sheet.service';
+import { TaskSheetTemplate } from '../../../models/task-sheet-template.model';
+import { Project } from 'src/app/models/project.model';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { CoreGroup } from 'src/app/models/core-group.model';
+import { Help } from '../../../models/help.model';
+import { HelpPopoverScheduleComponent } from '../../../shared/help-popover/help-popover-schedule.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { TranslatePipe } from 'educats-translate';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface DialogData {
   subjectId: string;
   taskSheet: TaskSheet;
   groups: CoreGroup[];
   taskSheetTemplate: Template;
+  userId: number
 }
 
 @Component({
@@ -26,7 +29,8 @@ interface DialogData {
   templateUrl: './edit-task-sheet.component.html',
   styleUrls: ['./edit-task-sheet.component.less']
 })
-export class EditTaskSheetComponent implements OnInit {
+export class EditTaskSheetComponent implements OnInit, OnDestroy {
+  private readonly destroy$: Subject<void> = new Subject<void>();
 
   helpMessage: Help = {
     message: this.translatePipe.transform('text.course.list.dialog.help.message', 'Выберите готовый шаблон, чтобы применить его к листу задания. Шаблон можно изменить и применить к указанным группам'),
@@ -34,6 +38,7 @@ export class EditTaskSheetComponent implements OnInit {
   };
 
   formGroup: FormGroup;
+  templateId: number = undefined;
 
   private COUNT = 1000000;
   private PAGE = 1;
@@ -46,26 +51,38 @@ export class EditTaskSheetComponent implements OnInit {
   private selectedTemplate = 'data.taskSheetTemplate';
 
   constructor(private taskSheetService: TaskSheetService,
-              public dialogRef: MatDialogRef<EditTaskSheetComponent>,
-              private projectsService: ProjectsService,
-              private formBuilder: FormBuilder,
-              private toastr: ToastrService,
-              private dialog: MatDialog,
-              private translatePipe: TranslatePipe,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    public dialogRef: MatDialogRef<EditTaskSheetComponent>,
+    private projectsService: ProjectsService,
+    private formBuilder: FormBuilder,
+    private toastr: ToastrService,
+    private dialog: MatDialog,
+    private translatePipe: TranslatePipe,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
   }
 
   ngOnInit(): void {
     this.initForm();
-    this.taskSheetService.getTemplateList({entity: 'CourseProjectTaskSheetTemplate', subjectId: this.data.subjectId})
-      .subscribe(res => this.templates = res);
+    this.getTemplates();
     this.retrieveProjects();
     this.retrieveTaskSheets();
     this.onCreateGroupFormValueChange();
   }
 
+  ngOnDestroy(): void {
+    if (!this.destroy$.closed) {
+      this.destroy$.next();
+      this.destroy$.unsubscribe();
+    }
+  }
+
   close(): void {
     this.dialogRef.close();
+  }
+
+  getTemplates(): void {
+    this.taskSheetService.getTemplateList({ entity: 'CourseProjectTaskSheetTemplate', subjectId: this.data.subjectId })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(res => this.templates = res);
   }
 
   private initForm(): void {
@@ -123,7 +140,8 @@ export class EditTaskSheetComponent implements OnInit {
   }
 
   onTemplateChange(event: MatSelectChange) {
-    this.taskSheetService.getTemplate({templateId: event.value.Id}).subscribe(res => {
+    this.templateId = event.value.Id;
+    this.taskSheetService.getTemplate({ templateId: event.value.Id }).subscribe(res => {
       this.formGroup.controls.templateNameControl.setValue(event.value.Name);
       this.formGroup.controls.inputDataControl.setValue(res.InputData);
       this.formGroup.controls.contentControl.setValue(res.RpzContent);
@@ -153,12 +171,17 @@ export class EditTaskSheetComponent implements OnInit {
     });
   }
 
+  deleteTemplate() {
+    this.taskSheetService.deleteTemplate({ taskSheetId: this.templateId, userId: this.data.userId })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => { this.getTemplates(); })
+  }
+
   applyTemplate() {
     this.projects.forEach(element => {
       if (element.Group != null) {
         if (this.selectedGroups.includes(element.Group)) {
           const taskSheet = this.taskSheets.find(i => i.CourseProjectId === element.Id);
-          this.populateSheet(taskSheet);
           this.taskSheetService.editTaskSheet(taskSheet).subscribe();
         }
       }

@@ -34,10 +34,11 @@
     </mat-form-field>
   </div>
 </div>
-<button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data" 
+<button mat-flat-button class="dialog-button" color="primary"
         [disabled]="audienceControl.invalid || buildingControl.invalid || dateControl.invalid 
-        || startTimeControl.invalid || endTimeControl.invalid">
-        Сохранить
+        || startTimeControl.invalid || endTimeControl.invalid"
+        (click)="onAddClick()">
+        Добавить
 </button>
 <div class="add-date__content">
   <p mat-dialog-title class="add-date__table-title">{{'date.selected' | translate:'Выбранные даты'}}</p>
@@ -48,7 +49,7 @@
         <td class="mdc-data-table__cell">{{ day.Day | date: 'dd.MM.yyyy' }} <mat-hint *ngIf="day.StartTime && day.EndTime">{{day.StartTime.slice(0,5)}}-{{day.EndTime.slice(0,5)}}</mat-hint></td>
         <td class="mdc-data-table__cell add-date__table-action">
           <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate:'Удалить дату'">
-            <mat-icon>delete</mat-icon>
+            <mat-icon (click)="deleteDate(day.Id)">delete</mat-icon>
           </button>
         </td>
       </tr>

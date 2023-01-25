@@ -13,6 +13,8 @@ import { CoreGroup } from 'src/app/models/core-group.model';
 import { Template } from 'src/app/models/template.model';
 import {ToastrService} from 'ngx-toastr';
 import {TranslatePipe} from 'educats-translate';
+import { ProjectsService } from 'src/app/services/projects.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-sheet',
@@ -34,6 +36,7 @@ export class TaskSheetComponent implements OnInit {
   private tepmlate: Template;
 
   constructor(private projectThemeService: ProjectThemeService,
+    private projectsService: ProjectsService,
               private taskSheetService: TaskSheetService,
               private dialog: MatDialog,
               private toastr: ToastrService,
@@ -41,14 +44,22 @@ export class TaskSheetComponent implements OnInit {
               private store: Store<IAppState>) {
   }
 
+ 
+
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-      this.projectThemeService.getThemes({entity: 'CourseProject', subjectId: this.subjectId})
+      this.projectsService.getProjects(
+        'count=' + 1000000 +
+        '&page=' + 1 +
+        '&filter={"subjectId":"' + this.subjectId + '","searchString":""}' +
+        '&filter[subjectId]=' + this.subjectId +
+        '&sorting[Id]=' + 'desc'
+      ).pipe(map((responce: any) => responce.Items))
         .subscribe(res => {
           if (res.length > 0) {
             this.themes = res.sort((a, b) => {
-              return a.Name.localeCompare(b.Name, undefined, {
+              return a.Theme.localeCompare(b.Theme, undefined, {
                 numeric: true,
                 sensitivity: 'base'
               });
@@ -56,6 +67,7 @@ export class TaskSheetComponent implements OnInit {
             if (this.courseProjectId == null) {
               this.courseProjectId = res[0].Id;
             }
+            console.log(this.courseProjectId);
             this.retrieveTaskSheetHtml();
             this.retrieveTemplates();
           }
@@ -111,6 +123,7 @@ export class TaskSheetComponent implements OnInit {
           subjectId: this.subjectId,
           taskSheet: response,
           groups: this.groups,
+          userId: this.courseUser.UserId,
           taskSheetTemplate: this.getTaskSheetTemplate(response),
         }
       });

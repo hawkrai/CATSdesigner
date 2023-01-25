@@ -72,6 +72,7 @@
   "text.course.list.dialog.template.name": "Template name",
   "text.course.list.dialog.template.error": "To 30 symbols",
   "text.course.list.dialog.template.save": "Save template",
+  "text.course.list.dialog.template.delete": "Delete template",
   "text.course.list.dialog.template.apply": "Apply template",
   "text.course.list.dialog.template.save.success": "Template has been saved successfully",
   "text.course.list.dialog.template.apply.success": "Template has been applied successfully",

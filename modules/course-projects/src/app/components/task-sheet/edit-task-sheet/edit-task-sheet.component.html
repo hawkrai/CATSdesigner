@@ -1,17 +1,18 @@
 <div class="edit-task-sheet-dialog__container">
   <div class="edit-task-sheet-dialog__header">
-    <h1 mat-dialog-title class="edit-task-sheet-dialog__title">{{'text.course.list.dialog.title' | translate : 'Редактирование листа задания'}}</h1>
+    <h1 mat-dialog-title class="edit-task-sheet-dialog__title">{{'text.course.list.dialog.title' | translate :
+      'Редактирование листа задания'}}</h1>
     <button mat-icon-button (click)="close()" class="edit-task-sheet-dialog__close-btn">
       <mat-icon aria-hidden="false">close</mat-icon>
     </button>
   </div>
-  <div mat-dialog-content style="display: block" [formGroup]="formGroup">
+  <div mat-dialog-content style="display: block; overflow-x: hidden;" [formGroup]="formGroup">
     <div class="choose-template">
       <mat-form-field class="form-field">
         <mat-label>{{'text.course.list.dialog.template.select' | translate : 'Выберите готовый шаблон'}}</mat-label>
         <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
           <mat-option *ngIf="data.taskSheetTemplate != undefined"
-                      value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
+            value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
           <mat-option *ngFor="let template of templates" [value]="template">
             {{template.Name}}
           </mat-option>
@@ -19,8 +20,8 @@
       </mat-form-field>
       <div class="help-icon">
         <button class="mat-icon-button-help" mat-icon-button
-                [matTooltip]="'text.course.list.dialog.help' | translate : 'Помощь'" matTooltipPosition="below"
-                (click)="showHelp()">
+          [matTooltip]="'text.course.list.dialog.help' | translate : 'Помощь'" matTooltipPosition="below"
+          (click)="showHelp()">
           <mat-icon color="primary">help_outline</mat-icon>
         </button>
       </div>
@@ -29,12 +30,20 @@
       <mat-form-field>
         <mat-label>{{'text.course.list.dialog.template.name' | translate : 'Название шаблона'}}</mat-label>
         <input matInput formControlName="templateNameControl">
-        <mat-error *ngIf="formGroup.controls.templateNameControl.invalid">{{'text.course.list.dialog.template.error' | translate : 'До 30 символов'}}</mat-error>
+        <mat-error *ngIf="formGroup.controls.templateNameControl.invalid">{{'text.course.list.dialog.template.error' |
+          translate : 'До 30 символов'}}</mat-error>
       </mat-form-field>
-      <button mat-flat-button class="saveTemplateButton" color="primary"
-              [disabled]="formGroup.controls.templateNameControl.invalid || isFormInvalid"
-              (click)="saveTemplate()">{{'text.course.list.dialog.template.save' | translate : 'Сохранить шаблон'}}
-      </button>
+      <div>
+        <button mat-icon-button color="primary" [disabled]="formGroup.controls.templateNameControl.invalid"
+          (click)="saveTemplate()">
+          <mat-icon
+            matTooltip="{{'text.course.list.dialog.template.save' | translate : 'Сохранить шаблон'}}">save</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" [disabled]="!templateId" (click)="deleteTemplate()">
+          <mat-icon
+            matTooltip="{{'text.course.list.dialog.template.delete' | translate : 'Удалить шаблон'}}">delete_outline</mat-icon>
+        </button>
+      </div>
     </div>
 
     <div class="apply-template">
@@ -46,9 +55,10 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-flat-button class="applyButton" color="primary"
-              [disabled]="isSelectedGroupsInvalid() || formGroup.controls.templateNameControl.invalid || isFormInvalid"
-              (click)="applyTemplate()">{{'text.course.list.dialog.template.apply' | translate : 'Применить шаблон'}}
+      <button mat-icon-button color="primary" [disabled]="isSelectedGroupsInvalid() || isFormInvalid"
+        (click)="applyTemplate()">
+        <mat-icon
+          matTooltip="{{'text.course.list.dialog.template.apply' | translate : 'Применить шаблон'}}">group</mat-icon>
       </button>
     </div>
 
@@ -56,41 +66,51 @@
       <mat-tab label="{{'text.course.list.dialog.data.input' | translate : 'Входные данные'}}">
         <mat-form-field appearance="fill">
           <textarea matInput style="height: 300px" formControlName="inputDataControl"></textarea>
-          <mat-error *ngIf="formGroup.controls.inputDataControl.invalid">{{'text.course.list.dialog.data.error.large' | translate : 'До 999 символов'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.inputDataControl.invalid">{{'text.course.list.dialog.data.error.large' |
+            translate : 'До 999 символов'}}</mat-error>
         </mat-form-field>
       </mat-tab>
       <mat-tab label="{{'text.course.list.dialog.data.content' | translate : 'Содержание'}}">
         <mat-form-field appearance="fill">
           <textarea matInput style="height: 300px" formControlName="contentControl"></textarea>
-          <mat-error *ngIf="formGroup.controls.contentControl.invalid">{{'text.course.list.dialog.data.error.large' | translate : 'До 999 символов'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.contentControl.invalid">{{'text.course.list.dialog.data.error.large' |
+            translate : 'До 999 символов'}}</mat-error>
         </mat-form-field>
       </mat-tab>
       <mat-tab label="{{'text.course.list.dialog.data.materials' | translate : 'Графические материалы'}}">
         <mat-form-field appearance="fill">
           <textarea matInput style="height: 300px" formControlName="drawContentControl"></textarea>
-          <mat-error *ngIf="formGroup.controls.drawContentControl.invalid">{{'text.course.list.dialog.data.error.large' | translate : 'До 999 символов'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.drawContentControl.invalid">{{'text.course.list.dialog.data.error.large'
+            | translate : 'До 999 символов'}}</mat-error>
         </mat-form-field>
       </mat-tab>
       <mat-tab label="{{'text.course.list.dialog.data.university' | translate : 'Сведения о ВУЗе'}}">
         <mat-form-field appearance="fill">
           <mat-label>Название учебного заведения</mat-label>
           <textarea matInput style="height: 30px" formControlName="univerControl"></textarea>
-          <mat-error *ngIf="formGroup.controls.univerControl.invalid">{{'text.course.list.dialog.data.error.small' | translate : 'До 255 символов'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.univerControl.invalid">{{'text.course.list.dialog.data.error.small' |
+            translate : 'До 255 символов'}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
-          <mat-label>{{'text.course.list.dialog.data.university.facility.name' | translate : 'Название факультета'}}</mat-label>
+          <mat-label>{{'text.course.list.dialog.data.university.facility.name' | translate : 'Название
+            факультета'}}</mat-label>
           <textarea matInput style="height: 30px" formControlName="facultyControl"></textarea>
-          <mat-error *ngIf="formGroup.controls.facultyControl.invalid">{{'text.course.list.dialog.data.error.small' | translate : 'До 255 символов'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.facultyControl.invalid">{{'text.course.list.dialog.data.error.small' |
+            translate : 'До 255 символов'}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
-          <mat-label>{{'text.course.list.dialog.data.university.department.name' | translate : 'Название кафедры'}}</mat-label>
+          <mat-label>{{'text.course.list.dialog.data.university.department.name' | translate : 'Название
+            кафедры'}}</mat-label>
           <textarea matInput style="height: 30px" formControlName="departmentControl"></textarea>
-          <mat-error *ngIf="formGroup.controls.departmentControl.invalid">{{'text.course.list.dialog.data.error.small' | translate : 'До 255 символов'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.departmentControl.invalid">{{'text.course.list.dialog.data.error.small' |
+            translate : 'До 255 символов'}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
-          <mat-label>{{'text.course.list.dialog.data.university.dm.name' | translate : 'Фамилия, инициалы заведующего кафедры'}}</mat-label>
+          <mat-label>{{'text.course.list.dialog.data.university.dm.name' | translate : 'Фамилия, инициалы заведующего
+            кафедры'}}</mat-label>
           <textarea matInput style="height: 30px" formControlName="headCathedraControl"></textarea>
-          <mat-error *ngIf="formGroup.controls.headCathedraControl.invalid">{{'text.course.list.dialog.data.error.small' | translate : 'До 255 символов'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.headCathedraControl.invalid">{{'text.course.list.dialog.data.error.small'
+            | translate : 'До 255 символов'}}</mat-error>
         </mat-form-field>
       </mat-tab>
       <mat-tab label="Даты">
@@ -99,23 +119,27 @@
           <input matInput [matDatepicker]="dp1" formControlName="startDateControl">
           <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
           <mat-datepicker #dp1></mat-datepicker>
-          <mat-error *ngIf="formGroup.controls.startDateControl.invalid">{{'text.course.list.dialog.data.error.date' | translate : 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.startDateControl.invalid">{{'text.course.list.dialog.data.error.date' |
+            translate : 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
         </mat-form-field>
         <mat-form-field class="form-field">
-          <mat-label>{{'text.course.list.dialog.data.deadline.date' | translate : 'Сроки сдачи курсового проекта'}}</mat-label>
+          <mat-label>{{'text.course.list.dialog.data.deadline.date' | translate : 'Сроки сдачи курсового
+            проекта'}}</mat-label>
           <input matInput [matDatepicker]="dp2" formControlName="endDateControl">
           <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
           <mat-datepicker #dp2></mat-datepicker>
-          <mat-error *ngIf="formGroup.controls.endDateControl.invalid">{{'text.course.list.dialog.data.error.date' | translate : 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
+          <mat-error *ngIf="formGroup.controls.endDateControl.invalid">{{'text.course.list.dialog.data.error.date' |
+            translate : 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
         </mat-form-field>
       </mat-tab>
     </mat-tab-group>
 
   </div>
   <div mat-dialog-actions class="dialog-buttons">
-    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.course.list.dialog.actions.cancel' | translate : 'Отмена'}}</button>
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.course.list.dialog.actions.cancel'
+      | translate : 'Отмена'}}</button>
     <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()"
-            [disabled]="!hasChange">
+      [disabled]="!hasChange">
       {{'text.course.list.dialog.actions.save' | translate : 'Сохранить'}}
     </button>
   </div>
