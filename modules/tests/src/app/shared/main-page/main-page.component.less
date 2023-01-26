@@ -6,6 +6,13 @@
     @media only screen and (max-width: 768px) {
       display: block;
     }
+
+    .question-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
     &-search {
       &-wrapper {
         display: flex;
@@ -44,9 +51,12 @@
         }
       }
       &-wrapper {
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         display: flex;
+        padding-right: 20px;
+        width: 100%;
+
         @media only screen and (max-width: 768px) {
           justify-content: start;
         }

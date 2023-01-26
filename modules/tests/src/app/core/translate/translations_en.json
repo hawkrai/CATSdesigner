@@ -138,7 +138,7 @@
   "text.enter.answer": "Enter your answer",
   "text.test.answer": "Reply",
   "text.test.skip": "Skip",
-  "text.test.choose.variant": "Choose an answer option",
+  "text.test.choose.variant": "Choose an answer",
   "text.test.question.num": "Question #{number}",
   "text.test.theme.finished": "Test for theme «{title}» completed",
   "text.test.time.completing": "Time to pass: {start} - {end}",

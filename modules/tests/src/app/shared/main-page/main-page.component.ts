@@ -1,5 +1,7 @@
+import { TranslatePipe } from 'educats-translate';
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Group} from "../../models/group.model";
+import { Help } from '../../models/help.model';
 
 
 @Component({
@@ -54,7 +56,20 @@ export class MainPageComponent {
   @Output()
   public createNeuralNetworkEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
+  help: Help = {
+    message: "",
+    action: "",
+  };
+
+  constructor(private translatePipe: TranslatePipe) {
+    this.help = {
+      message: this.translatePipe.transform(
+        "text.help.tests",
+        // tslint:disable-next-line:max-line-length
+        "Чтобы подготовить тест, его необходимо создать, наполнить вопросами и ответами. Также необходимо указать время на прохождение теста и количество вопросов в нем. Для предварительного просмотра теста и открытия доступа к нему нажмите на соответствующие иконки ."
+      ),
+      action: this.translatePipe.transform("button.understand", "Понятно"),
+    };
   }
 
   public onValueChange(event): void {
