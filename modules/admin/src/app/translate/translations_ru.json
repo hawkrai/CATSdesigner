@@ -667,5 +667,12 @@
   "text.adminPanel.students.status.confirmed": "Подтверждён",
   "text.adminPanel.students.status.notConfirmed": "Не подтверждён",
 
-  "text.adminPanel.modal.statistic.title": "Статистика авторизации в системе"
+  "text.adminPanel.modal.statistic.title": "Статистика авторизации в системе",
+
+  "text.adminPanel.modal.subjectList.title": "Изучаемые предметы",
+  "text.adminPanel.modal.subjectList.name": "Название предмета",
+  "text.adminPanel.modal.subjectList.subjectStatus": "Статус предмета",
+  "text.adminPanel.modal.subjectList.lecturers": "Преподаватели",
+  "text.adminPanel.modal.subjectList.ongoing": "Текущий",
+  "text.adminPanel.modal.subjectList.completed": "Завершенный"
 }

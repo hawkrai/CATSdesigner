@@ -768,5 +768,12 @@
   "text.adminPanel.students.status.confirmed": "Confirmed",
   "text.adminPanel.students.status.notConfirmed": "Not confirmed",
 
-  "text.adminPanel.modal.statistic.title": "System authorization statistics"
+  "text.adminPanel.modal.statistic.title": "System authorization statistics",
+
+  "text.adminPanel.modal.subjectList.title": "Studied subjects",
+  "text.adminPanel.modal.subjectList.name": "Subject name",
+  "text.adminPanel.modal.subjectList.subjectStatus": "Subject status",
+  "text.adminPanel.modal.subjectList.lecturers": "Lecturers",
+  "text.adminPanel.modal.subjectList.ongoing": "Ongoing",
+  "text.adminPanel.modal.subjectList.completed": "Completed"
 }

@@ -1,7 +1,7 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div *ngIf="this.isLoad">
     <div class="container">
-        <p class="title">Изучаемые предметы</p>
+        <p class="title">{{ "text.adminPanel.modal.subjectList.title" | translate}}</p>
         <button mat-button class="close-icon" [mat-dialog-close]="true">
           <mat-icon>close</mat-icon>
         </button>
@@ -11,19 +11,19 @@
         <table mat-table [dataSource]="this.subjectInfo.Subjects">
 
             <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Название предмета</th>
+                <th mat-header-cell *matHeaderCellDef>{{ "text.adminPanel.modal.subjectList.name" | translate}}</th>
                 <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} </td>
             </ng-container>
 
             <ng-container matColumnDef="subjectStatus">
-                <th mat-header-cell *matHeaderCellDef> Статус предмета </th>
+                <th mat-header-cell *matHeaderCellDef>{{ "text.adminPanel.modal.subjectList.subjectStatus" | translate}}</th>
                 <td class="table-container" mat-cell *matCellDef="let element">
                     {{getSubjectStatus(element.IsActiveOnGroup)}}
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="lectures">
-                <th mat-header-cell *matHeaderCellDef>Преподаватели </th>
+                <th mat-header-cell *matHeaderCellDef>{{ "text.adminPanel.modal.subjectList.lecturers" | translate}} </th>
                 <td class="table-container" mat-cell *matCellDef="let element">
                     <p *ngFor="let lecture of element.Lecturers">{{ lecture }}</p>
                 </td>
