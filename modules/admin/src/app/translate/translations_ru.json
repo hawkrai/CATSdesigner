@@ -24,6 +24,7 @@
   "button.join": "Присоединить",
   "button.cancel": "Отмена",
   "button.send": "Отправить",
+  "button.edit": "Изменить",
   "kb": "КБ",
   "fio": "ФИО",
   "date": "Дата",
@@ -674,5 +675,13 @@
   "text.adminPanel.modal.subjectList.subjectStatus": "Статус предмета",
   "text.adminPanel.modal.subjectList.lecturers": "Преподаватели",
   "text.adminPanel.modal.subjectList.ongoing": "Текущий",
-  "text.adminPanel.modal.subjectList.completed": "Завершенный"
+  "text.adminPanel.modal.subjectList.completed": "Завершенный",
+
+  "text.adminPanel.modal.addGroup.title.add": "Добавление группы",
+  "text.adminPanel.modal.addGroup.title.edit": "Редактирование группы",
+  "text.adminPanel.modal.addGroup.name": "Номер группы",
+  "text.adminPanel.modal.addGroup.error.nameRequired": "Поле не может быть пустым",
+  "text.adminPanel.modal.addGroup.error.namePattern": "Используйте следующие символы",
+  "text.adminPanel.modal.addGroup.startYear": "Год поступления",
+  "text.adminPanel.modal.addGroup.graduationYear": "Год выпуска"
 }
