@@ -665,5 +665,7 @@
 
   "text.adminPanel.students.status.deleted": "Удалён",
   "text.adminPanel.students.status.confirmed": "Подтверждён",
-  "text.adminPanel.students.status.notConfirmed": "Не подтверждён"
+  "text.adminPanel.students.status.notConfirmed": "Не подтверждён",
+
+  "text.adminPanel.modal.statistic.title": "Статистика авторизации в системе"
 }

@@ -766,5 +766,7 @@
 
   "text.adminPanel.students.status.deleted": "Deleted",
   "text.adminPanel.students.status.confirmed": "Confirmed",
-  "text.adminPanel.students.status.notConfirmed": "Not confirmed"
+  "text.adminPanel.students.status.notConfirmed": "Not confirmed",
+
+  "text.adminPanel.modal.statistic.title": "System authorization statistics"
 }

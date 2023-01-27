@@ -1,7 +1,7 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div *ngIf="this.isLoad">
     <div class="container">
-        <p class="title">Статистика авторизации в системе</p>
+        <p class="title">{{ "text.adminPanel.modal.statistic.title" | translate }}</p>
         <button mat-button class="close-icon" [mat-dialog-close]="true">
           <mat-icon>close</mat-icon>
         </button>
