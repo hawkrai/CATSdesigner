@@ -277,6 +277,7 @@ namespace Application.Infrastructure.ConceptManagement
                 repositoriesContainer.ConceptRepository.Save(concept);
                 repositoriesContainer.ApplyChanges();
 
+                TryPublishParent(concept.ParentId, repositoriesContainer);
                 return concept;
             }
         }
@@ -435,7 +436,7 @@ namespace Application.Infrastructure.ConceptManagement
             {
                 var parent = GetById(parentId.Value);
                 var childs = GetElementsByParentId(parent.Id);
-                parent.Published = parent.Published ? parent.Published : childs.Any() && childs.All(c => c.Published);
+                parent.Published = parent.Published ? parent.Published : childs.Any(c => c.Published);
                 repoContainer.ConceptRepository.Save(parent);
                 repoContainer.ApplyChanges();
                 TryPublishParent(parent.ParentId, repoContainer);
