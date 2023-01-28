@@ -48,11 +48,6 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
   public white: boolean;
   public black: boolean;
 
-  help: Help = {
-    message: "",
-    action: "",
-  };
-
   constructor(private testService: TestService,
     private router: Router,
     private translatePipe: TranslatePipe,
@@ -60,14 +55,6 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     private cdr: ChangeDetectorRef,
     public dialog: MatDialog) {
     super();
-    this.help = {
-      message: this.translatePipe.transform(
-        "text.help.tests",
-        // tslint:disable-next-line:max-line-length
-        "Чтобы подготовить тест, его необходимо создать, наполнить вопросами и ответами. Также необходимо указать время на прохождение теста и количество вопросов в нем. Для предварительного просмотра теста и открытия доступа к нему нажмите на соответствующие иконки ."
-      ),
-      action: this.translatePipe.transform("button.understand", "Понятно"),
-    };
   }
 
   ngOnInit() {
