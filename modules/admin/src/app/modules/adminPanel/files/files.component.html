@@ -2,7 +2,10 @@
   <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
   <div [hidden]="!this.isLoad" class="table">
     <mat-form-field class="search">
-      <input matInput (keydown.enter)="applyFilter($event.target.value)" placeholder="{{'search' | translate}}">
+      <input matInput [(ngModel)]="filter" (keydown.enter)="applyFilter()" placeholder="{{'search' | translate}}">
+      <button mat-icon-button matSuffix class="icon-button-search" (click)="applyFilter()">
+          <mat-icon>search</mat-icon>
+      </button>
     </mat-form-field>
 
     <table mat-table [dataSource]="dataSource" matSort (matSortChange)="applySort($event)" matSortStart="asc">

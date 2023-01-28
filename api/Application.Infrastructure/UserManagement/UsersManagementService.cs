@@ -344,7 +344,7 @@ namespace Application.Infrastructure.UserManagement
             var user = repositoriesContainer.UsersRepository.GetBy(new Query<User>(e => e.UserName == userName).Include(e => e.Attendances));
             if (user != null)
             {
-                var now = DateTime.Now;
+                var now = DateTime.UtcNow;
                 user.LastLogin = now;
                 user.Attendances.Add(new Attendance{ Login = now }); 
                 repositoriesContainer.UsersRepository.Save(user, u => u.LastLogin == now);

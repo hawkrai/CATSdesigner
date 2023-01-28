@@ -52,8 +52,8 @@ export class GroupComponent implements OnInit {
     return this.translatePipe.transform(value, defaultValue);
   }
   
-  applyFilter(filterValue: string) {
-    this.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.filter = this.filter.trim().toLowerCase();
     this.paginator.pageIndex = 0;
     
     this.loadGroupsPaged(false);

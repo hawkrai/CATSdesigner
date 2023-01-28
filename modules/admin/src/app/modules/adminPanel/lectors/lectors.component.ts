@@ -55,8 +55,8 @@ export class LectorsComponent implements OnInit {
     this.loadLectorsPaged(false);
   }
   
-  applyFilter(filterValue: string) {
-    this.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.filter = this.filter.trim().toLowerCase();
     this.paginator.pageIndex = 0;
     
     this.loadLectorsPaged(false);
@@ -286,10 +286,10 @@ export class LectorsComponent implements OnInit {
 
     let date = new Date(dateString + 'Z');
 
-    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
-    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
-    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
-    let time = date.toLocaleTimeString('en-US', { hour12: false });
+    let year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+    let month = date.toLocaleDateString('en-GB', { month: '2-digit' });
+    let day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+    let time = date.toLocaleTimeString('en-GB');
     return `${day}.${month}.${year}, ${time}`;
   }
 

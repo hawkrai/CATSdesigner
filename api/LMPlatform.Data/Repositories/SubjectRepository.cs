@@ -46,13 +46,13 @@ namespace LMPlatform.Data.Repositories
 			using (var context = new LmPlatformModelsContext())
 			{
 				var subjectGroup = context.Set<SubjectGroup>().
-					Where(sg => sg.GroupId == groupId && sg.IsActiveOnCurrentGroup == isActive);
+					Where(sg => (sg.Subject == null || !sg.Subject.IsArchive) && sg.GroupId == groupId && sg.IsActiveOnCurrentGroup == isActive);
 
 				return subjectGroup.Select(sg => sg.Subject).Count();
 			}
 		}
 
-		public List<Subject> GetAllSubjectsForGroup(int groupId)
+		public List<Subject> GetAllSubjectsForGroup(int groupId, bool isArchive = false)
 		{
 			using var context = new LmPlatformModelsContext();
 			var subjectGroup = context.Set<SubjectGroup>()
@@ -64,7 +64,7 @@ namespace LMPlatform.Data.Repositories
 				.Include(e => e.Subject.SubjectGroups.Select(x => x.SubGroups.Select(v => v.SubjectStudents)))
 				.Include(e => e.Subject.SubjectLecturers.Select(x => x.Lecturer))
 				.Include(e => e.Subject.LecturesScheduleVisitings)
-				.Where(e => e.GroupId == groupId).ToList();
+				.Where(e => e.GroupId == groupId && (e.Subject == null || e.Subject.IsArchive == isArchive)).ToList();
 				return subjectGroup.Select(e => e.Subject).DistinctBy(x => x.Id).ToList();
 		}
 			public List<Subject> GetSubjects(int groupId = 0, int lecturerId = 0)

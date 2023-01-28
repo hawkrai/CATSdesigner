@@ -62,6 +62,8 @@ export class StatisticComponent implements OnInit {
     
         let html =
           '<div class="tooltip" style="margin-right:20px">' +
+            `<p style="margin-left:20px"><strong>Количество авторизаций:</strong> ${times.length}</p>` +
+            '<p style="margin-left:20px;line-height:0px"><strong>Время авторизаций:</strong></p>' +
             '<ol>' +
               times
                 .map(val => `<li>${val}</li>`)
@@ -143,7 +145,7 @@ export class StatisticComponent implements OnInit {
   }
 
   parseDate(dateString) {
-    let parts = dateString.split("/");
+    let parts = dateString.split(".");
 
     if (parts.length != 3) {
       return NaN;
@@ -154,13 +156,13 @@ export class StatisticComponent implements OnInit {
   }
 
   formatDate(date) {
-    let yyyy = date.toLocaleDateString('en-US', { year: 'numeric' });
-    let mm = date.toLocaleDateString('en-US', { month: '2-digit' });
-    let dd = date.toLocaleDateString('en-US', { day: '2-digit' });
-    return `${dd}/${mm}/${yyyy}`;
+    let yyyy = date.toLocaleDateString('en-GB', { year: 'numeric' });
+    let mm = date.toLocaleDateString('en-GB', { month: '2-digit' });
+    let dd = date.toLocaleDateString('en-GB', { day: '2-digit' });
+    return `${dd}.${mm}.${yyyy}`;
   }
 
   formatTime(date) {
-    return date.toLocaleTimeString('en-US', { hour12: false });
+    return date.toLocaleTimeString('en-GB');
   }
 }

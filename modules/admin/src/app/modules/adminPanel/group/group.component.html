@@ -2,7 +2,10 @@
     <button mat-raised-button (click)="addGroup(this.dataGroup)">{{"text.adminPanel.group.add" | translate}}</button>
     <div [hidden]="!isLoad" class="table">
         <mat-form-field class="search">
-            <input matInput (keyup.enter)="applyFilter($event.target.value)" placeholder="{{'search' | translate}}">
+            <input matInput [(ngModel)]="filter" (keydown.enter)="applyFilter()" placeholder="{{'search' | translate}}">
+            <button mat-icon-button matSuffix class="icon-button-search" (click)="applyFilter()">
+                <mat-icon>search</mat-icon>
+            </button>
         </mat-form-field>
 
         <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>

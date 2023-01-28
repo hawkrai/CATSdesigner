@@ -42,6 +42,9 @@
         </div>
       </div>
     </div>
+    <div class="question-wrapper">
+      <app-help [message]="help.message" [action]="help.action"></app-help>
+    </div>
   </div>
   <div class="main-page-container-search-wrapper" *ngIf="!hideSearch">
     <mat-form-field class="main-page-container-search-wrapper-field" appearance="outline">
