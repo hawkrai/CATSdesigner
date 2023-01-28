@@ -44,8 +44,8 @@ export class FilesComponent implements OnInit {
     this.loadFilesPaged(false);
   }
 
-  applyFilter(filterValue: string) {
-    this.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.filter = this.filter.trim().toLowerCase();
     this.paginator.pageIndex = 0;
     
     this.loadFilesPaged(false);
@@ -171,9 +171,9 @@ export class FilesComponent implements OnInit {
   formatDate(dateString) {
     let date = new Date(dateString);
 
-    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
-    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
-    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
+    let year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+    let month = date.toLocaleDateString('en-GB', { month: '2-digit' });
+    let day = date.toLocaleDateString('en-GB', { day: '2-digit' });
     return `${day}.${month}.${year}`;
   }
 

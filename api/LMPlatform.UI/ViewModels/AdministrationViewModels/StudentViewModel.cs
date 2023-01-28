@@ -13,11 +13,13 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public static ISubjectManagementService SubjectManagementService =>
             UnityWrapper.Resolve<ISubjectManagementService>();
 
+        public int GroupId { get; set; }
+
         [DisplayName("Номер группы")]
         public string GroupName { get; set; }
 
         [DisplayName("Полное имя")]
-        public string FullName => $"{LastName} {FirstName} {MiddleName}";
+        public string FullName => $"{Surname} {Name} {Patronymic}";
 
         [DisplayName("Логин")]
         public string UserName { get; set; }
@@ -41,11 +43,11 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 
         public int Id { get; set; }
 
-        private string FirstName { get; set; }
+        public string Name { get; set; }
 
-        private string LastName { get; set; }
+        public string Surname { get; set; }
 
-        private string MiddleName { get; set; }
+        public string Patronymic { get; set; }
 
         public int ActiveSubjects { get; set; }
         public int NotActiveSubjects { get; set; }
@@ -58,9 +60,10 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             return new StudentViewModel
             {
                 Id = student.Id,
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                MiddleName = student.MiddleName,
+                Name = student.FirstName,
+                Surname = student.LastName,
+                Patronymic = student.MiddleName,
+                GroupId = student.GroupId,
                 GroupName = student.Group.Name,
                 UserName = student.User.UserName,
                 HtmlLinks = new HtmlString(htmlLinks),
