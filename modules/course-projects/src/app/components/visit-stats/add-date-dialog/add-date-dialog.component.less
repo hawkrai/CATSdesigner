@@ -2,8 +2,21 @@
   width: 100%;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  &__close-btn {
+    width: 40px;
+  }
+}
+
 .dialog-buttons {
   float: right;
+}
+
+.dialog-button {
+  width: 100%;
 }
 
 .form-container {
@@ -11,6 +24,7 @@
   column-gap: 20px;
   justify-content: space-between;
 }
+
 .add-date {
 
   &__container {
@@ -30,17 +44,24 @@
 
   &__table {
     width: 100%;
+
     &-action {
       display: flex;
       justify-content: center;
       width: 0px;
     }
+
     &-title {
       font-size: 16px;
       margin-bottom: 5px;
     }
+
     &-container {
       border-top: 0;
+    }
+
+    &-detele-button {
+      width: 10px;
     }
   }
 
@@ -50,13 +71,10 @@
 
 }
 
-.mat-icon-button {
-  width: 10px;
-}
-
 .mdc-data-table {
   width: 100%;
 }
+
 .mat-elevation-z8 {
   box-shadow: none;
 }

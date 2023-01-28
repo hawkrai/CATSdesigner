@@ -3,7 +3,7 @@
     <mat-label>{{'text.course.list.select' | translate : 'Выберите тему курсового проекта'}}</mat-label>
     <mat-select panelClass="theme-panel" [(value)]="courseProjectId" (selectionChange)="onThemeChange($event.value)">
       <mat-option *ngFor="let theme of themes" [value]="theme.Id">
-        {{theme.Name}}
+        {{theme.Theme}}
       </mat-option>
     </mat-select>
   </mat-form-field>
