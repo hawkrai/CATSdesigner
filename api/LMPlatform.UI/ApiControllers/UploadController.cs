@@ -98,7 +98,10 @@ namespace LMPlatform.UI.ApiControllers
 				{
 					Content = new StreamContent(new FileStream(filePath, FileMode.Open, FileAccess.Read))
 				};
-				response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+				var extension = Path.GetExtension(fileName).ToLower();
+				var contentType = extension == ".pdf" ? "application/pdf" : "application/octet-stream";
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
                 if (HttpContext.Current.Request.Browser.Browser == "IE")
                 {
