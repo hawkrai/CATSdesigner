@@ -8,6 +8,7 @@ import { ListOfStudentsComponent } from '../modal/list-of-students/list-of-stude
 import {MessageComponent} from '../../../component/message/message.component';
 import { AppToastrService } from 'src/app/service/toastr.service';
 import { SubjectListComponent } from '../modal/subject-list/subject-list.component';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-group',
@@ -38,13 +39,17 @@ export class GroupComponent implements OnInit {
     'GraduationYear': 'GraduationYear'
   }
 
-  constructor(private groupService: GroupService, private dialog: MatDialog, private toastr: AppToastrService) { }
+  constructor(private groupService: GroupService, private dialog: MatDialog, private toastr: AppToastrService, private translatePipe: TranslatePipe) { }
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
     this.paginator.pageSize = 20;
     
     this.loadGroupsPaged(false);
+  }
+
+  t(value, defaultValue = value) {
+    return this.translatePipe.transform(value, defaultValue);
   }
   
   applyFilter() {
@@ -145,13 +150,13 @@ export class GroupComponent implements OnInit {
     this.groupService.addGroup(group).subscribe(() => {
       this.loadGroupsPaged(false);
       this.dataGroup = new Group();
-      this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
+      this.toastr.addSuccessFlashMessage(this.t("text.adminPanel.group.save.success"));
     }, err => {
       if (err.status === 500) {
         this.loadGroupsPaged(false);
-        this.toastr.addSuccessFlashMessage("Группа успешна сохранена!");
+        this.toastr.addSuccessFlashMessage(this.t("text.adminPanel.group.save.success"));
       } else {
-        this.toastr.addErrorFlashMessage('Произошла ошибка при сохранении. Повторите попытку');
+        this.toastr.addErrorFlashMessage(this.t("text.adminPanel.group.save.error"));
       }
     });
   }
@@ -179,16 +184,16 @@ export class GroupComponent implements OnInit {
   removeGroup(id, subCount, studCount) {
     this.groupService.deleteGroup(id).subscribe(() => {
       this.loadGroupsPaged(false);
-      this.toastr.addSuccessFlashMessage("Группа удалена!");
+      this.toastr.addSuccessFlashMessage(this.t("text.adminPanel.group.delete.success"));
     }, 
     err => {
-        var msg = 'Произошла ошибка!\n';
+        var msg = this.t("text.adminPanel.group.delete.error") + '\n';
         if (studCount != 0) {
-          msg = msg + 'Нельзя удалить группу со студентами!\n'
+          msg = msg + this.t("text.adminPanel.group.delete.error.stud") + '\n'
         } 
 
         if (subCount != 0) {
-          msg = msg + 'Нельзя удалить группу за которой закреплены предметы!\n'
+          msg = msg + this.t("text.adminPanel.group.delete.error.sub") + '\n'
         }
 
         this.toastr.addErrorFlashMessage(msg);

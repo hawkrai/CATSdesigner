@@ -2,7 +2,7 @@
   <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
   <div [hidden]="!this.isLoad" class="table">
     <mat-form-field class="search">
-      <input matInput [(ngModel)]="filter" (keydown.enter)="applyFilter()" placeholder="Поиск">
+      <input matInput [(ngModel)]="filter" (keydown.enter)="applyFilter()" placeholder="{{'search' | translate}}">
       <button mat-icon-button matSuffix class="icon-button-search" (click)="applyFilter()">
           <mat-icon>search</mat-icon>
       </button>
@@ -16,34 +16,34 @@
       </ng-container>
 
       <ng-container matColumnDef="Name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Имя файла</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{"text.adminPanel.files.headers.name" | translate}}</th>
         <td mat-cell *matCellDef="let element">
           <a mat-button (click)="this.downloadFile(element.PathName, element.FileName)"> {{ element.Name }} </a>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="NameOnDisk">
-        <th mat-header-cell *matHeaderCellDef> Имя на диске </th>
+        <th mat-header-cell *matHeaderCellDef> {{"text.adminPanel.files.headers.nameOnDisk" | translate}} </th>
         <td mat-cell *matCellDef="let element"> {{ element.FileName }} </td>
       </ng-container>
 
       <ng-container matColumnDef="Date">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Дата загрузки </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{"text.adminPanel.files.headers.date" | translate}} </th>
         <td mat-cell *matCellDef="let element"> {{ this.getDate(element.CreationDate)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Author">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Автор </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{"text.adminPanel.files.headers.author" | translate}} </th>
         <td mat-cell *matCellDef="let element"> {{ this.getAuthor(element.AuthorName)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Size">
-        <th mat-header-cell *matHeaderCellDef> Размер </th>
+        <th mat-header-cell *matHeaderCellDef> {{"text.adminPanel.files.headers.size" | translate}} </th>
         <td mat-cell *matCellDef="let element"> {{ this.getSize(element.FileSize)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="PackageOnDisk">
-        <th mat-header-cell *matHeaderCellDef> Папка на диске </th>
+        <th mat-header-cell *matHeaderCellDef> {{"text.adminPanel.files.headers.packageOnDisk" | translate}} </th>
         <td mat-cell *matCellDef="let element"> {{ element.PathName }} </td>
       </ng-container>
 

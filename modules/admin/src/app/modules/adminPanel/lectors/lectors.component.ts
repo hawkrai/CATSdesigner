@@ -10,6 +10,7 @@ import { ListOfGroupsComponent } from '../modal/list-of-groups/list-of-groups.co
 import { StatisticComponent } from '../modal/statistic/statistic.component';
 import { Router } from '@angular/router';
 import { last } from 'rxjs/operators';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-lectors',
@@ -40,7 +41,12 @@ export class LectorsComponent implements OnInit {
     'Login': 'User.UserName'
   }
 
-  constructor(private dialog: MatDialog, private professorService: ProfessorService, private router: Router, private toastr: AppToastrService) { }
+  constructor(
+    private dialog: MatDialog,
+    private professorService: ProfessorService,
+    private router: Router,
+    private toastr: AppToastrService,
+    private translatePipe: TranslatePipe) { }
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
@@ -247,7 +253,7 @@ export class LectorsComponent implements OnInit {
     this.professorService.addProfessor(professor).subscribe(() => {
       this.loadLectorsPaged(false);
       this.dataLector = new Professor();
-      this.toastr.addSuccessFlashMessage("Преподаватель добавлен!");}
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.add.success", ""));}
       );
   }
 
@@ -255,12 +261,12 @@ export class LectorsComponent implements OnInit {
     this.professorService.editProfessor(professor).subscribe(() => {
       this.loadChangedLector(professor.UserName);
       this.dataLector = new Professor();
-      this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.edit.success", ""));
     }, 
     err => {
       if ( err.status === 500) {
         this.loadChangedLector(professor.UserName);
-        this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
+        this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.edit.success", ""));
       } else {
       }
     });
@@ -269,7 +275,7 @@ export class LectorsComponent implements OnInit {
   deleteLector(id) {
     this.professorService.deleteProfessor(id).subscribe(() => {
       this.loadDeletedLector(id);
-      this.toastr.addSuccessFlashMessage("Преподаватель удален!");
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.delete.success", ""));
     });
   }
 
@@ -295,7 +301,7 @@ export class LectorsComponent implements OnInit {
     }
 
     if (lecturer.DeletedOn != null) {
-      return "Удален\r\n" +
+      return this.translatePipe.transform("text.adminPanel.lectors.status.deleted", "") + "\r\n" +
         `${this.formatDate(lecturer.DeletedOn)}\r\n`;
     }
   }

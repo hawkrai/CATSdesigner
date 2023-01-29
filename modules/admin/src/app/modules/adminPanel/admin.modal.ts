@@ -44,6 +44,7 @@ import { MessageDetailComponent } from './modal/message-detail/message-detail.co
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ActiveStatsComponent} from './active-stats/active-stats.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { TranslateModule, TranslatePipe } from 'educats-translate';
 
 @NgModule({
   declarations: [
@@ -99,14 +100,16 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     MatAutocompleteModule,
     MatChipsModule,
     MatTooltipModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    TranslateModule
   ],
   entryComponents: [LectorModalComponent, AddGroupComponent,
     DeleteItemComponent, EditLectorComponent, SubjectListComponent, ListOfGroupsComponent,
     ListOfStudentsComponent, EditStudentComponent, SendMessageComponent, StatisticComponent, MessageDetailComponent ],
   providers: [{provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'check'},
   {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {}},
-  { provide: MAT_TABS_CONFIG, useValue: { animationDuration: '200ms' } }],
+  { provide: MAT_TABS_CONFIG, useValue: { animationDuration: '200ms' } },
+  TranslatePipe],
   exports: [
     NavbarComponent,
     LectorsComponent,
