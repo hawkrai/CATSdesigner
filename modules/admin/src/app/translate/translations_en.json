@@ -794,5 +794,11 @@
   "text.adminPanel.modal.editLecturer.groupsSecretary": "State examination commission secretary groups",
   "text.adminPanel.modal.editLecturer.resetPassword": "Reset password",
   "fieldRequiered": "The field cannot be empty",  
-  "fieldPattern": "Use the following characters"  
+  "fieldPattern": "Use the following characters"  ,
+
+  "text.adminPanel.modal.editStudent.title": "Edit student",
+  "text.adminPanel.modal.editStudent.surnameMaxLength": "The surname must not exceed 30 characters",
+  "text.adminPanel.modal.editStudent.nameMaxLength": "The name must not exceed 30 characters",
+  "text.adminPanel.modal.editStudent.patronymicMaxLength": "The patronymic must not exceed 30 characters",
+  "text.adminPanel.modal.editStudent.resetPassword": "Reset password"
 }
