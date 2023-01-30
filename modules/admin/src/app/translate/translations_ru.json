@@ -372,6 +372,8 @@
   "text.personalAccount.middleName": "Отчество",
   "text.personalAccount.lastName": "Фамилия",
   "text.personalAccount.login": "Логин",
+  "text.personalAccount.password": "Пароль",
+  "text.personalAccount.repeatPassword": "Повторите пароль",
   "text.personalAccount.changePassword": "Изменить пароль",
   "text.personalAccount.followToChangePassword": "Перейдите, чтобы сменить пароль",
   "text.personalAccount.about": "О себе",
@@ -700,5 +702,18 @@
   "text.adminPanel.modal.editStudent.surnameMaxLength": "Фамилия не должна превышать 30 символов",
   "text.adminPanel.modal.editStudent.nameMaxLength": "Имя не должно превышать 30 символов",
   "text.adminPanel.modal.editStudent.patronymicMaxLength": "Отчество не должна превышать 30 символов",
-  "text.adminPanel.modal.editStudent.resetPassword": "Сбросить пароль"
+  "text.adminPanel.modal.editStudent.resetPassword": "Сбросить пароль",
+
+  "text.adminPanel.modal.lecturerModal.title": "Добавление преподавателя",
+  "text.adminPanel.modal.lecturerModal.usernameInvalid": "Логин должен содержать не меньше 3 символов, только латинские буквы и цифры.",
+  "text.adminPanel.modal.lecturerModal.usernameMinLength": "Вы ввели меньше 3 символов.",
+  "text.adminPanel.modal.lecturerModal.usernameUserExists": "Такой пользователь уже существует в системе.",
+  "text.adminPanel.modal.lecturerModal.passwordInvalid": "Пароль должен содержать хотя бы 1 маленькую и большую букву и 1 цифру",
+  "text.adminPanel.modal.lecturerModal.passwordMinLength": "Вы ввели меньше 6 символов.",
+  "text.adminPanel.modal.lecturerModal.passwordMaxLength": "Вы ввели больше 30 символов.",
+  "text.adminPanel.modal.lecturerModal.repeatPassword": "Повторите пароль",
+  "text.adminPanel.modal.lecturerModal.repeatPasswordInvalid": "Пароли не совпадают.",
+  "text.adminPanel.modal.lecturerModal.diplomaProjectSupervisor": "Руководитель дипломного проекта",
+  "text.adminPanel.modal.lecturerModal.secretary": "Секретарь ГЭК",
+  "text.adminPanel.modal.lecturerModal.groupsSecretary": "Группы секретаря ГЭК"
 }

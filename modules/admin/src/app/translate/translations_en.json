@@ -465,6 +465,8 @@
   "text.personalAccount.middleName": "Middle name",
   "text.personalAccount.lastName": "Last name",
   "text.personalAccount.login": "Login",
+  "text.personalAccount.password": "Password",
+  "text.personalAccount.repeatPassword": "Repeat password",
   "text.personalAccount.changePassword": "Change password",
   "text.personalAccount.followToChangePassword": "Follow to change password",
   "text.personalAccount.about": "About",
@@ -800,5 +802,18 @@
   "text.adminPanel.modal.editStudent.surnameMaxLength": "The surname must not exceed 30 characters",
   "text.adminPanel.modal.editStudent.nameMaxLength": "The name must not exceed 30 characters",
   "text.adminPanel.modal.editStudent.patronymicMaxLength": "The patronymic must not exceed 30 characters",
-  "text.adminPanel.modal.editStudent.resetPassword": "Reset password"
+  "text.adminPanel.modal.editStudent.resetPassword": "Reset password",
+
+  "text.adminPanel.modal.lecturerModal.title": "Add lecturer",
+  "text.adminPanel.modal.lecturerModal.usernameInvalid": "Login should contain at least 3 characters, only Latin letters and numbers.",
+  "text.adminPanel.modal.lecturerModal.usernameMinLength": "You have entered less than 3 characters.",
+  "text.adminPanel.modal.lecturerModal.usernameUserExists": "Such a user already exists in the system.",
+  "text.adminPanel.modal.lecturerModal.passwordInvalid": "The password must contain at least 1 small and capital letter and 1 number",
+  "text.adminPanel.modal.lecturerModal.passwordMinLength": "You have entered less than 6 characters.",
+  "text.adminPanel.modal.lecturerModal.passwordMaxLength": "You have entered more than 30 characters.",
+  "text.adminPanel.modal.lecturerModal.repeatPassword": "Repeat the password",
+  "text.adminPanel.modal.lecturerModal.repeatPasswordInvalid": "The passwords don't match.",
+  "text.adminPanel.modal.lecturerModal.diplomaProjectSupervisor": "Diploma project supervisor",
+  "text.adminPanel.modal.lecturerModal.secretary": "Secretary of state examination commission",
+  "text.adminPanel.modal.lecturerModal.groupsSecretary": "State examination commission secretary groups"
 }
