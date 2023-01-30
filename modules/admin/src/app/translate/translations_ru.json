@@ -683,5 +683,8 @@
   "text.adminPanel.modal.addGroup.error.nameRequired": "Поле не может быть пустым",
   "text.adminPanel.modal.addGroup.error.namePattern": "Используйте следующие символы",
   "text.adminPanel.modal.addGroup.startYear": "Год поступления",
-  "text.adminPanel.modal.addGroup.graduationYear": "Год выпуска"
+  "text.adminPanel.modal.addGroup.graduationYear": "Год выпуска",
+
+  "text.adminPanel.modal.deletePerson.title": "Подтверждение удаления",
+  "text.adminPanel.modal.deletePerson.sure": "Вы действительно хотите удалить?"
 }

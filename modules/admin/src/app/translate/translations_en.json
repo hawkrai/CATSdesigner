@@ -783,5 +783,8 @@
   "text.adminPanel.modal.addGroup.error.nameRequired": "The field cannot be empty",
   "text.adminPanel.modal.addGroup.error.namePattern": "Use the following characters",
   "text.adminPanel.modal.addGroup.startYear": "Start year",
-  "text.adminPanel.modal.addGroup.graduationYear": "Graduation year"
+  "text.adminPanel.modal.addGroup.graduationYear": "Graduation year",
+
+  "text.adminPanel.modal.deletePerson.title": "Confirm deletion",
+  "text.adminPanel.modal.deletePerson.sure": "Are you sure you want to delete?"
 }
