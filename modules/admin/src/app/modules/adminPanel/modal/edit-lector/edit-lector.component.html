@@ -4,7 +4,7 @@
         <mat-icon>close</mat-icon>
     </button>
 
-    <h1 mat-dialog-title>Редактирование преподавателя </h1>
+    <h1 mat-dialog-title>{{"text.adminPanel.modal.editLecturer.title" | translate}}</h1>
   
   <form [formGroup]="this.form" (ngSubmit)="submit()">
       <mat-dialog-content>
@@ -13,46 +13,46 @@
               <input matInput
                formControlName="Surname" 
                (blur)="this.trimFields()" 
-               placeholder="Фамилия" maxlength="30">
-              <mat-error *ngIf="hasError('Surname', 'required')">Поле не может быть пустым</mat-error>
-              <mat-error *ngIf="hasError('Surname', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
+               placeholder="{{'text.personalAccount.lastName' | translate}}" maxlength="30">
+              <mat-error *ngIf="hasError('Surname', 'required')">{{"fieldRequired" | translate}}</mat-error>
+              <mat-error *ngIf="hasError('Surname', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Name"  (blur)="this.trimFields()" placeholder="Имя" maxlength="30">
-              <mat-error *ngIf="hasError('Name', 'required')">Поле не может быть пустым</mat-error>
-              <mat-error *ngIf="hasError('Name', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
+              <input matInput formControlName="Name"  (blur)="this.trimFields()" placeholder="{{'text.personalAccount.firstName' | translate}}" maxlength="30">
+              <mat-error *ngIf="hasError('Name', 'required')">{{"fieldRequired" | translate}}</mat-error>
+              <mat-error *ngIf="hasError('Name', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
 
           <mat-form-field>
-              <input matInput formControlName="Patronymic"  (blur)="this.trimFields()" placeholder="Отчество" maxlength="30">
-              <mat-error *ngIf="hasError('Patronymic', 'pattern')">Допустимые символы: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
+              <input matInput formControlName="Patronymic"  (blur)="this.trimFields()" placeholder="{{'text.personalAccount.middleName' | translate}}" maxlength="30">
+              <mat-error *ngIf="hasError('Patronymic', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
           </mat-form-field>
           <div class="checkbox">
-            <mat-checkbox formControlName="IsLecturerHasGraduateStudents">Руководитель дипломного проекта</mat-checkbox>
+            <mat-checkbox formControlName="IsLecturerHasGraduateStudents">{{"text.adminPanel.modal.editLecturer.diplomaProjectSupervisor" | translate}}</mat-checkbox>
         </div>
           <div class="checkbox">
-              <mat-checkbox formControlName="IsSecretary">Секретарь ГЭК</mat-checkbox>
+              <mat-checkbox formControlName="IsSecretary">{{"text.adminPanel.modal.editLecturer.secretary" | translate}}</mat-checkbox>
           </div>
 
           
 
           <mat-form-field *ngIf ="this.form.controls.IsSecretary.value" appearance="fill">
-            <mat-label>Группы секретаря ГЭК</mat-label>
+            <mat-label>{{"text.adminPanel.modal.editLecturer.groupsSecretary" | translate}}</mat-label>
             <mat-select [formControl]="this.form.controls.SecGroupsIds" multiple>
               <mat-option *ngFor="let group of this.groups" [value]="group.Id">{{group.Name}}</mat-option>
             </mat-select>
           </mat-form-field>
 
           <div class="password">
-              <a [routerLink]="['resetPassword/lector', this.professor.Id]" (click)="onNoClick()">Сбросить пароль</a>
+              <a [routerLink]="['resetPassword/lector', this.professor.Id]" (click)="onNoClick()">{{"text.adminPanel.modal.editLecturer.resetPassword" | translate}}</a>
           </div>
 
       </mat-dialog-content>
       <div class="line"></div>
       <mat-dialog-actions>
-          <button mat-raised-button class="cancel" (click)="onNoClick()">Отмена</button>
-          <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">Изменить</button>
+          <button mat-raised-button class="cancel" (click)="onNoClick()">{{"button.cancel" | translate}}</button>
+          <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">{{"button.edit" | translate}}</button>
       </mat-dialog-actions>
   </form>
 </div>

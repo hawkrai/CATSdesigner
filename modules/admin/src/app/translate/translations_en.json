@@ -786,5 +786,13 @@
   "text.adminPanel.modal.addGroup.graduationYear": "Graduation year",
 
   "text.adminPanel.modal.deletePerson.title": "Confirm deletion",
-  "text.adminPanel.modal.deletePerson.sure": "Are you sure you want to delete?"
+  "text.adminPanel.modal.deletePerson.sure": "Are you sure you want to delete?",
+
+  "text.adminPanel.modal.editLecturer.title": "Edit lecturer",
+  "text.adminPanel.modal.editLecturer.diplomaProjectSupervisor": "Diploma project supervisor",
+  "text.adminPanel.modal.editLecturer.secretary": "Secretary of state examination commission",
+  "text.adminPanel.modal.editLecturer.groupsSecretary": "State examination commission secretary groups",
+  "text.adminPanel.modal.editLecturer.resetPassword": "Reset password",
+  "fieldRequiered": "The field cannot be empty",  
+  "fieldPattern": "Use the following characters"  
 }

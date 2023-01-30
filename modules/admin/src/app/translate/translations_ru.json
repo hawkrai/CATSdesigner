@@ -686,5 +686,13 @@
   "text.adminPanel.modal.addGroup.graduationYear": "Год выпуска",
 
   "text.adminPanel.modal.deletePerson.title": "Подтверждение удаления",
-  "text.adminPanel.modal.deletePerson.sure": "Вы действительно хотите удалить?"
+  "text.adminPanel.modal.deletePerson.sure": "Вы действительно хотите удалить?",
+
+  "text.adminPanel.modal.editLecturer.title": "Редактирование преподавателя",
+  "text.adminPanel.modal.editLecturer.diplomaProjectSupervisor": "Руководитель дипломного проекта",
+  "text.adminPanel.modal.editLecturer.secretary": "Секретарь ГЭК",
+  "text.adminPanel.modal.editLecturer.groupsSecretary": "Группы секретаря ГЭК",
+  "text.adminPanel.modal.editLecturer.resetPassword": "Сбросить пароль",
+  "fieldRequiered": "Поле не может быть пустым",  
+  "fieldPattern": "Допустимые символы"  
 }
