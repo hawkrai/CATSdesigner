@@ -500,7 +500,7 @@
   "text.profile.skill": "Skill",
   "text.profile.lastLogin": "Last login",
   "text.profile.currentSubjects": "Current subjects",
-  "text.profile.complitedSubjects": "Complited subjects",
+  "text.profile.complitedSubjects": "Completed subjects",
   "text.profile.cp": "Course projects",
   "text.profile.dp": "Graduation projects",
 
@@ -828,5 +828,8 @@
   "text.adminPanel.modal.listOfStudents.empty": "There are no students in this group",
   "text.adminPanel.modal.listOfStudents.headers.status": "Confirmation",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Confirmed",
-  "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed"
+  "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed",
+
+  "text.adminPanel.profile.dp": "Diploma project",
+  "text.adminPanel.profile.dp.plural": "Diploma projects"
 }

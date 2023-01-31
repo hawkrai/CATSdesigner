@@ -3,6 +3,7 @@ import { ProfileService } from 'src/app/service/profile.service';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileModel, ProfileInfo, ProfileInfoSubject, ProfileProject } from 'src/app/model/profile';
 import { AccountService } from 'src/app/service/account.service';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-profile',
@@ -29,7 +30,11 @@ export class ProfileComponent implements OnInit {
   archivedSubjects!: ProfileInfoSubject[];
 
 
-  constructor(private profileService: ProfileService, private route: ActivatedRoute) { }
+  constructor(
+    private profileService: ProfileService, 
+    private route: ActivatedRoute,
+    private translatePipe: TranslatePipe
+    ) { }
    
   ngOnInit(): void {
     const Id = this.route.snapshot.params.id;
@@ -47,10 +52,10 @@ export class ProfileComponent implements OnInit {
 
   getDpString(){
     if(this.isStudent()){
-      return "Дипломный проект пользователя"
+      return this.translatePipe.transform("text.adminPanel.profile.dp", "Дипломный проект пользователя");
     }
     else{
-      return "Дипломные проекты пользователя"
+      return this.translatePipe.transform("text.adminPanel.profile.dp.plural", "Дипломные проекты пользователя");
     }
   }
   getProfileInfo(id: any) {
