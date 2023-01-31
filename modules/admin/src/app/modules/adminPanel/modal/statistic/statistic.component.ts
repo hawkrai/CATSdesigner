@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { StatisticService } from 'src/app/service/statistic.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-statistic',
@@ -17,6 +18,9 @@ export class StatisticComponent implements OnInit {
   chartOptions = {
     series: [this.series],
     chart: {
+      animations: {
+        enabled: false
+      },
       width: 550,
       height: 400,
       type: 'line',
@@ -59,17 +63,17 @@ export class StatisticComponent implements OnInit {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => {
         let date = this.parseDate(this.series.data[dataPointIndex].x);
         let times = this.logins.get(date).map(val => this.formatTime(new Date(val)));
-    
-        let html =
-          '<div class="tooltip" style="margin-right:20px">' +
-            `<p style="margin-left:20px"><strong>Количество авторизаций:</strong> ${times.length}</p>` +
-            '<p style="margin-left:20px;line-height:0px"><strong>Время авторизаций:</strong></p>' +
-            '<ol>' +
-              times
-                .map(val => `<li>${val}</li>`)
-                .join("\n") +
-            '</ol>' +
-          '</div>'
+
+        const html =
+            `<div class="tooltip" style="margin-right:20px">
+                <p style="margin-left:20px"><strong>${this.translatePipe.transform("text.adminPanel.modal.statistic.count", "")}:</strong> ${times.length}</p>
+                <p style="margin-left:20px;line-height:0px"><strong>${this.translatePipe.transform("text.adminPanel.modal.statistic.times", "")}:</strong></p>
+                <ol>
+                  ${times
+                    .map(val => `<li>${val}</li>`)
+                    .join("\n")}
+                </ol>
+              </div>`
     
         return html;
       }
@@ -79,8 +83,12 @@ export class StatisticComponent implements OnInit {
 
   logins: Map<number, number[]>;
 
-  constructor(private statisticService: StatisticService, public dialogRef: MatDialogRef<object>,
-              @Inject(MAT_DIALOG_DATA) public value: any) { }
+  constructor(
+    private statisticService: StatisticService,
+    public dialogRef: MatDialogRef<object>,
+    @Inject(MAT_DIALOG_DATA) public value: any,
+    private translatePipe: TranslatePipe
+    ) { }
 
   ngOnInit() {
     this.loadStatistic(this.value);

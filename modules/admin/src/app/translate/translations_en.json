@@ -771,6 +771,8 @@
   "text.adminPanel.students.status.notConfirmed": "Not confirmed",
 
   "text.adminPanel.modal.statistic.title": "System authorization statistics",
+  "text.adminPanel.modal.statistic.count": "Number of authorizations",
+  "text.adminPanel.modal.statistic.times": "Time of authorizations",
 
   "text.adminPanel.modal.subjectList.title": "Studied subjects",
   "text.adminPanel.modal.subjectList.name": "Subject name",

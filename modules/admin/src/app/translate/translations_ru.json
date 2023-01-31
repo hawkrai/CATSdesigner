@@ -671,6 +671,8 @@
   "text.adminPanel.students.status.notConfirmed": "Не подтверждён",
 
   "text.adminPanel.modal.statistic.title": "Статистика авторизации в системе",
+  "text.adminPanel.modal.statistic.count": "Количество авторизаций",
+  "text.adminPanel.modal.statistic.times": "Время авторизаций",
 
   "text.adminPanel.modal.subjectList.title": "Изучаемые предметы",
   "text.adminPanel.modal.subjectList.name": "Название предмета",
