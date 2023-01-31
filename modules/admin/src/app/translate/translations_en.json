@@ -823,5 +823,10 @@
   "text.adminPanel.modal.listOfGroups.headers.countOfStudents": "Count of students",
   "text.adminPanel.modal.listOfGroups.headers.groupStatus": "Subject status",
   "text.adminPanel.modal.listOfGroups.groupStatus.ongoing": "Ongoing",
-  "text.adminPanel.modal.listOfGroups.groupStatus.completed": "Completed"
+  "text.adminPanel.modal.listOfGroups.groupStatus.completed": "Completed",
+
+  "text.adminPanel.modal.listOfStudents.empty": "There are no students in this group",
+  "text.adminPanel.modal.listOfStudents.headers.status": "Confirmation",
+  "text.adminPanel.modal.listOfStudents.status.confirmed": "Confirmed",
+  "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed"
 }
