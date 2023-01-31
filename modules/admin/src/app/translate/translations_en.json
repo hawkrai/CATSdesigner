@@ -815,5 +815,13 @@
   "text.adminPanel.modal.lecturerModal.repeatPasswordInvalid": "The passwords don't match.",
   "text.adminPanel.modal.lecturerModal.diplomaProjectSupervisor": "Diploma project supervisor",
   "text.adminPanel.modal.lecturerModal.secretary": "Secretary of state examination commission",
-  "text.adminPanel.modal.lecturerModal.groupsSecretary": "State examination commission secretary groups"
+  "text.adminPanel.modal.lecturerModal.groupsSecretary": "State examination commission secretary groups",
+
+  "text.adminPanel.modal.listOfGroups.title": "List of subjects",
+  "text.adminPanel.modal.listOfGroups.headers.subject": "Subject",
+  "text.adminPanel.modal.listOfGroups.headers.groups": "Group",
+  "text.adminPanel.modal.listOfGroups.headers.countOfStudents": "Count of students",
+  "text.adminPanel.modal.listOfGroups.headers.groupStatus": "Subject status",
+  "text.adminPanel.modal.listOfGroups.groupStatus.ongoing": "Ongoing",
+  "text.adminPanel.modal.listOfGroups.groupStatus.completed": "Completed"
 }

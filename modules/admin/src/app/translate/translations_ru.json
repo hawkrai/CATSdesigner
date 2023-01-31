@@ -715,5 +715,13 @@
   "text.adminPanel.modal.lecturerModal.repeatPasswordInvalid": "Пароли не совпадают.",
   "text.adminPanel.modal.lecturerModal.diplomaProjectSupervisor": "Руководитель дипломного проекта",
   "text.adminPanel.modal.lecturerModal.secretary": "Секретарь ГЭК",
-  "text.adminPanel.modal.lecturerModal.groupsSecretary": "Группы секретаря ГЭК"
+  "text.adminPanel.modal.lecturerModal.groupsSecretary": "Группы секретаря ГЭК",
+
+  "text.adminPanel.modal.listOfGroups.title": "Список предметов",
+  "text.adminPanel.modal.listOfGroups.headers.subject": "Предмет",
+  "text.adminPanel.modal.listOfGroups.headers.groups": "Группа",
+  "text.adminPanel.modal.listOfGroups.headers.countOfStudents": "Количество студентов",
+  "text.adminPanel.modal.listOfGroups.headers.groupStatus": "Статус предмета",
+  "text.adminPanel.modal.listOfGroups.groupStatus.ongoing": "Текущий",
+  "text.adminPanel.modal.listOfGroups.groupStatus.completed": "Завершенный"
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatTableDataSource, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { TranslatePipe } from 'educats-translate';
 import { GroupService } from 'src/app/service/group.service';
 
 @Component({
@@ -14,8 +15,12 @@ export class ListOfGroupsComponent implements OnInit {
   groupInfo;
   isLoad = false;
 
-  constructor(public dialogRef: MatDialogRef<ListOfGroupsComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
-              private groupService: GroupService) { }
+  constructor(
+    public dialogRef: MatDialogRef<ListOfGroupsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private groupService: GroupService,
+    private translatePipe: TranslatePipe
+    ) { }
 
   ngOnInit() {
     this.loadInfo(this.data);
@@ -30,9 +35,9 @@ export class ListOfGroupsComponent implements OnInit {
 
   getGroupStatus(status) {
     if(status == true){
-      return "Текущий"
+      return this.translatePipe.transform("text.adminPanel.modal.listOfGroups.groupStatus.ongoing", "Текущий");
     }
-    return "Завершенный"
+    return this.translatePipe.transform("text.adminPanel.modal.listOfGroups.groupStatus.completed", "Завершенный");
   }
 
 }
