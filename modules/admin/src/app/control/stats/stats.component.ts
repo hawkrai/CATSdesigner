@@ -90,6 +90,9 @@ export class StatsComponent implements OnInit {
     let userLabCount = 0;
     let userPracticalCount = 0;
     let userTestCount = 0;
+    let userLabCountTotal = 0;
+    let userPracticalCountTotal = 0;
+    let userTestCountTotal = 0;
     if (this.isArchive) {
       this.studentStatisticTemp = this.studentStatisticArchive;
       this.subjectsTemp = this.subjectsArchive;
@@ -124,14 +127,17 @@ export class StatsComponent implements OnInit {
         if (userLabCount != 0) {
           rating += userAvgLabMarks;
           typeCount += 1;
+          userLabCountTotal += 1;
         }
         if (userPracticalCount != 0) {
           rating += userPracticalMarks;
           typeCount += 1;
+          userPracticalCountTotal += 1;
         }
         if (userTestCount != 0) {
           rating += userAvgTestMarks;
           typeCount += 1;
+          userTestCountTotal += 1;
         }
         if (typeCount != 0) {
           rating = (rating / typeCount);
@@ -193,14 +199,17 @@ export class StatsComponent implements OnInit {
         if (userLabCount != 0) {
           rating += avgLabMarksTotal;
           typeCount += 1;
+          userLabCountTotal += 1;
         }
         if (userPracticalCount != 0) {
           rating += avgPracticalMarksTotal;
           typeCount += 1;
+          userPracticalCountTotal += 1;
         }
         if (userTestCount != 0) {
           rating += avgTestMarksTotal;
           typeCount += 1;
+          userTestCountTotal += 1;
         }
         if (typeCount != 0) {
           rating = (rating / typeCount);
@@ -226,9 +235,15 @@ export class StatsComponent implements OnInit {
     typeCount = 0;
     rating = 0;
     if (this.surname == undefined) {
-      labMarks = Math.round(labMarks / this.studentStatistic.length) ;
-      practMarks = Math.round(practMarks / this.studentStatistic.length) ;
-      testMarks = Math.round(testMarks / this.studentStatistic.length);
+      if (userLabCountTotal != 0) {
+        labMarks = Math.round(labMarks / userLabCountTotal) ;
+      }
+      if (userPracticalCountTotal != 0) {
+        practMarks = Math.round(practMarks / userPracticalCountTotal) ;
+      }
+      if (testMarks != 0) {
+        testMarks = Math.round(testMarks / userTestCountTotal);
+      }
 
       lectPass = Math.round(lectPass / this.studentStatistic.length) ;
       practPass = Math.round(practPass / this.studentStatistic.length);
