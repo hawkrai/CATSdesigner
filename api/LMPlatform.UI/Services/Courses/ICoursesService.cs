@@ -15,6 +15,6 @@ namespace LMPlatform.UI.Services.Courses
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "/GetFilesV2?subjectId={subjectId}&groupId={groupId}&IsCp={isCp}", RequestFormat = WebMessageFormat.Json)]
-        StudentsMarksResult GetFilesV2(int subjectId, int groupId, int isCp);
+        StudentsMarksResult GetFilesV2(int subjectId, int groupId, bool isCp);
     }
 }

@@ -62,7 +62,7 @@ namespace LMPlatform.UI.Services.Courses
 				};
 			}
 		}
-		public StudentsMarksResult GetFilesV2(int subjectId, int groupId, int isCp)
+		public StudentsMarksResult GetFilesV2(int subjectId, int groupId, bool isCp)
 		{
 			try
 			{
