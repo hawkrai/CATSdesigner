@@ -174,7 +174,9 @@ export class LectorsComponent implements OnInit {
   }
 
   deleteProfessor(id) {
-    const dialogRef = this.dialog.open(DeleteItemComponent);
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+      hasBackdrop: true
+    });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.deleteLector(id);
@@ -184,6 +186,7 @@ export class LectorsComponent implements OnInit {
 
   openDialogEdit(dataLector) {
     const dialogRef = this.dialog.open(EditLectorComponent, {
+      hasBackdrop: true,
       data: dataLector
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -196,6 +199,7 @@ export class LectorsComponent implements OnInit {
 
   openListOfGroup(lectorId) {
     const dialogRef = this.dialog.open(ListOfGroupsComponent, {
+      hasBackdrop: true,
       data: lectorId
     });
     dialogRef.afterClosed();
@@ -203,6 +207,7 @@ export class LectorsComponent implements OnInit {
 
   openDiagram(userId) {
     const dialogRef = this.dialog.open(StatisticComponent, {
+      hasBackdrop: true,
       data: userId
     });
     dialogRef.afterClosed();
@@ -210,6 +215,7 @@ export class LectorsComponent implements OnInit {
 
   saveProfessor() {
     const dialogRef = this.dialog.open(LectorModalComponent, {
+      hasBackdrop: true,
       data:  this.dataLector
     });
     dialogRef.afterClosed().subscribe(result => {

@@ -188,7 +188,9 @@ export class StudentsComponent implements OnInit {
   }
 
   openDialogDelete(id) {
-    const dialogRef = this.dialog.open(DeleteItemComponent);
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+      hasBackdrop: true,
+    });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.studentService.deleteStudent(id).subscribe(() => {
@@ -213,6 +215,7 @@ export class StudentsComponent implements OnInit {
   }
   openDialogEdit(person) {
     const dialogRef = this.dialog.open(EditStudentComponent, {
+      hasBackdrop: true,
       data: person
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -224,6 +227,7 @@ export class StudentsComponent implements OnInit {
 
   openDiagram(userId) {
     const dialogRef = this.dialog.open(StatisticComponent, {
+      hasBackdrop: true,
       data: userId
     });
     dialogRef.afterClosed();
@@ -231,6 +235,7 @@ export class StudentsComponent implements OnInit {
 
   openListOfSubject(studentId) {
     const dialogRef = this.dialog.open(SubjectListComponent, {
+      hasBackdrop: true,
       data: studentId
     });
     dialogRef.afterClosed();
