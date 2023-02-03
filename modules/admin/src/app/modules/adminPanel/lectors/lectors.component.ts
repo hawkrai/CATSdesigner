@@ -294,7 +294,7 @@ export class LectorsComponent implements OnInit {
 
     let year = date.getFullYear();
     let month = (date.getMonth() < 9) ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1); //months are 0 based
-    let day = (date.getDay() < 10) ? ("0" + date.getDay()) : date.getDay();
+    let day = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
     let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     return `${day}.${month}.${year}, ${time}`;
   }
