@@ -156,13 +156,13 @@ export class StatisticComponent implements OnInit {
   }
 
   formatDate(date) {
-    let yyyy = date.toLocaleDateString('en-GB', { year: 'numeric' });
-    let mm = date.toLocaleDateString('en-GB', { month: '2-digit' });
-    let dd = date.toLocaleDateString('en-GB', { day: '2-digit' });
+    let yyyy = date.getFullYear();
+    let mm = (date.getMonth() < 9) ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1); //months are 0 based
+    let dd = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
     return `${dd}.${mm}.${yyyy}`;
   }
 
   formatTime(date) {
-    return date.toLocaleTimeString('en-GB');
+    return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
   }
 }
