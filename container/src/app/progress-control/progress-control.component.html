@@ -1,61 +1,63 @@
 <app-nav></app-nav>
-<div class="container">
-    <div class="h1-container">
-      <table><th>
-        <tr>
-      <h2 class="backlink" style = "margin: -5px 0 1px;text-align: left;" (click)="logOut()"> {{'text.academic.performance.monitoring.start.page' | translate: '< На стартовую'}}</h2>
-        </tr>
-        <tr>
+<div class="container1">
+  <div class="h1-container">
+    <table><th>
+      <tr>
+        <h2 class="backlink" style = "margin: -5px 0 1px;text-align: left; color: #3F51B5;" (click)="logOut()"> {{'text.academic.performance.monitoring.start.page' | translate: '< На стартовую'}}</h2>
+      </tr>
+      <tr>
+        <div style = "margin-top: 20px; margin-bottom: 10px">
           <span class="h1"> {{'text.academic.performance.monitoring' | translate: 'Статистика успеваемости'}}</span>
-        <!--div style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" matTooltip="Помощь" matTooltipPosition="right" (click)="showHelp()">
-            <mat-icon>help_outline</mat-icon>
-        </button></div-->
-        </tr>
-      </th></table>
+          <!--div style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" matTooltip="Помощь" matTooltipPosition="right" (click)="showHelp()">
+              <mat-icon>help_outline</mat-icon>
+          </button></div-->
+        </div>
+      </tr>
+    </th></table>
+  </div>
+  <p></p>
+  <div style = "display: flex">
+    <div style="width: 78%; line-height: 1.8;font-size: 14px;color: #000000;font-family: Roboto, Helvetica Neue, sans-serif;">
+      <p>{{'text.academic.performance.monitoring.start.info.first' | translate: 'Для просмотра успеваемости студентов введите номер их группы. Если интересует успеваемость отдельного студента, то добавьте его фамилию.'}} </p>
+      <p>{{'text.academic.performance.monitoring.start.info.forth' | translate: 'Если интересует статистика успеваемости за определенный период, выберите соответствующие даты. '}} </p>
+      <p>{{'text.academic.performance.monitoring.start.info.second' | translate: 'Можно просмотреть суммарную статистику успеваемости по всем изучаемым в настоящее время предметам, а также выборочно по каждому предмету. Также можно ознакомиться со статистикой успеваемости по изученным ранее предметам.'}}</p>
+      <p>{{'text.academic.performance.monitoring.start.info.third' | translate: 'Полученную информацию можно распечатать либо экспортировать в MS Excel.'}}</p>
     </div>
-    <p></p>
-    <div style = "display: flex">
-      <div style="width: 78%;font-size: 14px;color: #000000;font-family: Roboto, Helvetica Neue, sans-serif;">
-        <p>{{'text.academic.performance.monitoring.start.info.first' | translate: 'Для просмотра успеваемости студентов введите номер их группы. Если интересует успеваемость отдельного студента, то добавьте его фамилию.'}} </p>
-        <p>{{'text.academic.performance.monitoring.start.info.forth' | translate: 'Если интересует статистика успеваемости за определенный период, выберите соответствующие даты. '}} </p>
-        <p>{{'text.academic.performance.monitoring.start.info.second' | translate: 'Можно просмотреть суммарную статистику успеваемости по всем изучаемым в настоящее время предметам, а также выборочно по каждому предмету. Также можно ознакомиться со статистикой успеваемости по изученным ранее предметам.'}}</p>
-        <p>{{'text.academic.performance.monitoring.start.info.third' | translate: 'Полученную информацию можно распечатать либо экспортировать в MS Excel.'}}</p>
-      </div>
 
-      <div style = "margin-right: 15px;float: right; margin-top: -15px;" >
-        <form [formGroup]="controlForm">
-          <table>
-            <tr>
-              <td>
-                <mat-form-field class="default" color="primary" style = "width: 200px;">
-                  <input matInput color="primary" formControlName="groupName" placeholder= "{{'text.academic.performance.monitoring.enter.group' | translate : 'Введите номер группы'}}" type="text">
-                </mat-form-field>
-              </td>
-              <td>
+    <div style = "margin-right: 15px;float: right; margin-top: -15px;" >
+      <form [formGroup]="controlForm">
+        <table>
+          <tr>
+            <td>
+              <mat-form-field class="default" color="primary" style = "width: 200px;">
+                <input matInput color="primary" formControlName="groupName" placeholder= "{{'text.academic.performance.monitoring.enter.group' | translate : 'Введите номер группы'}}" type="text">
+              </mat-form-field>
+            </td>
+            <td>
 
-                <mat-form-field class="default" color="primary" style = "width: 200px;">
-                  <input matInput color="primary" formControlName="surname" placeholder="{{'text.academic.performance.monitoring.enter.surname' | translate : 'Введите фамилию студента'}}" type="text">
-                </mat-form-field>
-              </td></tr>
-            <tr>
-              <td>
-                <mat-form-field class="default" color="primary" style = "width: 200px;">
-                  <input type = 'date' matInput formControlName="start"
-                         [placeholder]="'text.schedule.lesson.start' | translate:'C даты'">
-                </mat-form-field>
-              </td>
-              <td>
-                <mat-form-field class="default" color="primary"style = "width: 200px;">
-                  <input type = 'date' matInput formControlName="end"
-                         [placeholder]="'text.schedule.lesson.start' | translate:'По дату'">
-                </mat-form-field>
-              </td></tr>
-          </table>
-            <a mat-flat-button color="primary" (click)="enterGroup()">{{'search' | translate: 'Найти'}}</a>
-            <!--a mat-flat-button color="primary" href="/login">Выйти</a-->
-        </form>
-      </div>
+              <mat-form-field class="default" color="primary" style = "width: 200px;">
+                <input matInput color="primary" formControlName="surname" placeholder="{{'text.academic.performance.monitoring.enter.surname' | translate : 'Введите фамилию студента'}}" type="text">
+              </mat-form-field>
+            </td></tr>
+          <tr>
+            <td>
+              <mat-form-field class="default" color="primary" style = "width: 200px;">
+                <input type = 'date' matInput formControlName="start"
+                       [placeholder]="'text.schedule.lesson.start' | translate:'Введите начало занятий'">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field class="default" color="primary"style = "width: 200px;">
+                <input type = 'date' matInput formControlName="end"
+                       [placeholder]="'text.schedule.lesson.start' | translate:'Введите окончание занятий'">
+              </mat-form-field>
+            </td></tr>
+        </table>
+        <a mat-flat-button color="primary" (click)="enterGroup()">{{'search' | translate: 'Найти'}}</a>
+        <!--a mat-flat-button color="primary" href="/login">Выйти</a-->
+      </form>
     </div>
+  </div>
 </div>
 <iframe *ngIf="isLoad" [src]="selectedGroup"></iframe>
 
