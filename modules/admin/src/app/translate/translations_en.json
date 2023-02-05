@@ -465,6 +465,8 @@
   "text.personalAccount.middleName": "Middle name",
   "text.personalAccount.lastName": "Last name",
   "text.personalAccount.login": "Login",
+  "text.personalAccount.password": "Password",
+  "text.personalAccount.repeatPassword": "Repeat password",
   "text.personalAccount.changePassword": "Change password",
   "text.personalAccount.followToChangePassword": "Follow to change password",
   "text.personalAccount.about": "About",
@@ -498,7 +500,7 @@
   "text.profile.skill": "Skill",
   "text.profile.lastLogin": "Last login",
   "text.profile.currentSubjects": "Current subjects",
-  "text.profile.complitedSubjects": "Complited subjects",
+  "text.profile.complitedSubjects": "Completed subjects",
   "text.profile.cp": "Course projects",
   "text.profile.dp": "Graduation projects",
 
@@ -682,8 +684,8 @@
   "text.adminPanel.activeStats.userActivity.totalStudents": "Registered students",
   "text.adminPanel.activeStats.userActivity.totalLecturers": "Registered lecturers",
   "text.adminPanel.activeStats.userActivity.totalServiceAccounts": "Service accounts",
-  "text.adminPanel.activeStats.userActivity.usersLabels.students": "Student accounts",
-  "text.adminPanel.activeStats.userActivity.usersLabels.lecturers": "Lecturer accounts",
+  "text.adminPanel.activeStats.userActivity.usersLabels.students": "Students' accounts",
+  "text.adminPanel.activeStats.userActivity.usersLabels.lecturers": "Lecturers' accounts",
   "text.adminPanel.activeStats.userActivity.usersLabels.service": "Service accounts",
   "text.adminPanel.activeStats.userActivity.timesLabels.day": "Day",
   "text.adminPanel.activeStats.userActivity.timesLabels.week": "Week",
@@ -769,6 +771,8 @@
   "text.adminPanel.students.status.notConfirmed": "Not confirmed",
 
   "text.adminPanel.modal.statistic.title": "System authorization statistics",
+  "text.adminPanel.modal.statistic.count": "Number of authorizations",
+  "text.adminPanel.modal.statistic.times": "Time of authorizations",
 
   "text.adminPanel.modal.subjectList.title": "Studied subjects",
   "text.adminPanel.modal.subjectList.name": "Subject name",
@@ -783,5 +787,51 @@
   "text.adminPanel.modal.addGroup.error.nameRequired": "The field cannot be empty",
   "text.adminPanel.modal.addGroup.error.namePattern": "Use the following characters",
   "text.adminPanel.modal.addGroup.startYear": "Start year",
-  "text.adminPanel.modal.addGroup.graduationYear": "Graduation year"
+  "text.adminPanel.modal.addGroup.graduationYear": "Graduation year",
+
+  "text.adminPanel.modal.deletePerson.title": "Confirm deletion",
+  "text.adminPanel.modal.deletePerson.sure": "Are you sure you want to delete?",
+
+  "text.adminPanel.modal.editLecturer.title": "Edit lecturer",
+  "text.adminPanel.modal.editLecturer.diplomaProjectSupervisor": "Diploma project supervisor",
+  "text.adminPanel.modal.editLecturer.secretary": "Secretary of state examination commission",
+  "text.adminPanel.modal.editLecturer.groupsSecretary": "State examination commission secretary groups",
+  "text.adminPanel.modal.editLecturer.resetPassword": "Reset password",
+  "fieldRequiered": "The field cannot be empty",  
+  "fieldPattern": "Use the following characters"  ,
+
+  "text.adminPanel.modal.editStudent.title": "Edit student",
+  "text.adminPanel.modal.editStudent.surnameMaxLength": "The surname must not exceed 30 characters",
+  "text.adminPanel.modal.editStudent.nameMaxLength": "The name must not exceed 30 characters",
+  "text.adminPanel.modal.editStudent.patronymicMaxLength": "The patronymic must not exceed 30 characters",
+  "text.adminPanel.modal.editStudent.resetPassword": "Reset password",
+
+  "text.adminPanel.modal.lecturerModal.title": "Add lecturer",
+  "text.adminPanel.modal.lecturerModal.usernameInvalid": "Login should contain at least 3 characters, only Latin letters and numbers.",
+  "text.adminPanel.modal.lecturerModal.usernameMinLength": "You have entered less than 3 characters.",
+  "text.adminPanel.modal.lecturerModal.usernameUserExists": "Such a user already exists in the system.",
+  "text.adminPanel.modal.lecturerModal.passwordInvalid": "The password must contain at least 1 small and capital letter and 1 number",
+  "text.adminPanel.modal.lecturerModal.passwordMinLength": "You have entered less than 6 characters.",
+  "text.adminPanel.modal.lecturerModal.passwordMaxLength": "You have entered more than 30 characters.",
+  "text.adminPanel.modal.lecturerModal.repeatPassword": "Repeat the password",
+  "text.adminPanel.modal.lecturerModal.repeatPasswordInvalid": "The passwords don't match.",
+  "text.adminPanel.modal.lecturerModal.diplomaProjectSupervisor": "Diploma project supervisor",
+  "text.adminPanel.modal.lecturerModal.secretary": "Secretary of state examination commission",
+  "text.adminPanel.modal.lecturerModal.groupsSecretary": "State examination commission secretary groups",
+
+  "text.adminPanel.modal.listOfGroups.title": "List of subjects",
+  "text.adminPanel.modal.listOfGroups.headers.subject": "Subject",
+  "text.adminPanel.modal.listOfGroups.headers.groups": "Group",
+  "text.adminPanel.modal.listOfGroups.headers.countOfStudents": "Count of students",
+  "text.adminPanel.modal.listOfGroups.headers.groupStatus": "Subject status",
+  "text.adminPanel.modal.listOfGroups.groupStatus.ongoing": "Ongoing",
+  "text.adminPanel.modal.listOfGroups.groupStatus.completed": "Completed",
+
+  "text.adminPanel.modal.listOfStudents.empty": "There are no students in this group",
+  "text.adminPanel.modal.listOfStudents.headers.status": "Confirmation",
+  "text.adminPanel.modal.listOfStudents.status.confirmed": "Confirmed",
+  "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed",
+
+  "text.adminPanel.profile.dp": "Diploma project",
+  "text.adminPanel.profile.dp.plural": "Diploma projects"
 }
