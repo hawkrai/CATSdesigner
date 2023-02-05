@@ -141,6 +141,7 @@ export class GroupComponent implements OnInit {
 
   openListOfSubject(group) {
     const dialogRef = this.dialog.open(SubjectListComponent, {
+      hasBackdrop: true,
       data: group
     });
     dialogRef.afterClosed();
@@ -163,7 +164,8 @@ export class GroupComponent implements OnInit {
 
   addGroup(group) {
     const dialogRef = this.dialog.open( AddGroupComponent, {
-       data: group
+      hasBackdrop: true,
+      data: group
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -173,7 +175,9 @@ export class GroupComponent implements OnInit {
   }
 
   deleteGroup(id, subCount, studCount) {
-    const dialogRef = this.dialog.open(DeleteItemComponent);
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+      hasBackdrop: true
+    });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.removeGroup(id, subCount, studCount);
@@ -204,7 +208,8 @@ export class GroupComponent implements OnInit {
 
   editGroup(group: Group) {
     const dialogRef = this.dialog.open(AddGroupComponent, {
-        data: group
+      hasBackdrop: true,
+      data: group
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -214,8 +219,10 @@ export class GroupComponent implements OnInit {
   }
 
   async openListOfStudents(group) {
-    const dialogRef = this.dialog.open(ListOfStudentsComponent, 
-      {data: group},
+    const dialogRef = this.dialog.open(ListOfStudentsComponent, {
+      hasBackdrop: true,
+      data: group
+    },
     );
     dialogRef.afterClosed();
   }
