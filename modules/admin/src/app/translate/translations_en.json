@@ -770,6 +770,13 @@
   "text.adminPanel.students.status.confirmed": "Confirmed",
   "text.adminPanel.students.status.notConfirmed": "Not confirmed",
 
+  "text.adminPanel.messages.title": "Messages",
+  "text.adminPanel.messages.sendButton": "Write a message",
+  "text.adminPanel.messages.deleteButton": "Delete",
+  "text.adminPanel.messages.inbox.label": "Inbox",
+  "text.adminPanel.messages.outbox.label": "Outbox",
+  "text.adminPanel.messages.outbox.more": "more",
+
   "text.adminPanel.modal.statistic.title": "System authorization statistics",
   "text.adminPanel.modal.statistic.count": "Number of authorizations",
   "text.adminPanel.modal.statistic.times": "Time of authorizations",

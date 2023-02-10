@@ -1,9 +1,9 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div *ngIf="this.isLoad" class="main">
-    <h1>Сообщения</h1>
-    <button mat-raised-button (click)="this.sendMessage()">Написать сообщение</button>
+    <h1>{{ "text.adminPanel.messages.title" | translate }}</h1>
+    <button mat-raised-button (click)="this.sendMessage()">{{ "text.adminPanel.messages.sendButton" | translate }}</button>
     <mat-tab-group>
-        <mat-tab label="Входящие">
+        <mat-tab label="{{ 'text.adminPanel.inbox.label' | translate }}">
             <table class="message-table" mat-table [dataSource]="this.messages.InboxMessages">
 
                 <ng-container matColumnDef="icon">
@@ -36,7 +36,7 @@
                 <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td class="message-action" mat-cell *matCellDef="let element">
-                        <button mat-button matTooltip="Удалить " aria-label="Delete" (click)="this.deleteMessage(element.Id)">
+                        <button mat-button matTooltip="{{ 'text.adminPanel.messages.deleteButton' | translate }} " aria-label="Delete" (click)="this.deleteMessage(element.Id)">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </td>
@@ -47,7 +47,7 @@
             </table>
         </mat-tab>
 
-        <mat-tab label="Отправленные">
+        <mat-tab label="{{ 'text.adminPanel.messages.outbox.label' | translate }}">
             <table class="message-table" mat-table [dataSource]="this.messages.OutboxMessages">
 
                 <ng-container matColumnDef="icon">
@@ -85,7 +85,7 @@
                 <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td class="message-action" mat-cell *matCellDef="let element">
-                        <button mat-button matTooltip="Удалить " aria-label="Delete" (click)="this.deleteMessage(element.Id)">
+                        <button mat-button matTooltip="{{ 'text.adminPanel.messages.deleteButton' | translate }}" aria-label="Delete" (click)="this.deleteMessage(element.Id)">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </td>

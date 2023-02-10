@@ -670,6 +670,13 @@
   "text.adminPanel.students.status.confirmed": "Подтверждён",
   "text.adminPanel.students.status.notConfirmed": "Не подтверждён",
 
+  "text.adminPanel.messages.title": "Сообщения",
+  "text.adminPanel.messages.sendButton": "Написать сообщение",
+  "text.adminPanel.messages.deleteButton": "Удалить",
+  "text.adminPanel.messages.inbox.label": "Входящие",
+  "text.adminPanel.messages.outbox.label": "Отправленные",
+  "text.adminPanel.messages.outbox.more": "еще",
+
   "text.adminPanel.modal.statistic.title": "Статистика авторизации в системе",
   "text.adminPanel.modal.statistic.count": "Количество авторизаций",
   "text.adminPanel.modal.statistic.times": "Время авторизаций",
