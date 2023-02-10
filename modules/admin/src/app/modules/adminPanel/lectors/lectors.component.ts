@@ -174,7 +174,9 @@ export class LectorsComponent implements OnInit {
   }
 
   deleteProfessor(id) {
-    const dialogRef = this.dialog.open(DeleteItemComponent);
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+      hasBackdrop: true
+    });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.deleteLector(id);
@@ -184,6 +186,7 @@ export class LectorsComponent implements OnInit {
 
   openDialogEdit(dataLector) {
     const dialogRef = this.dialog.open(EditLectorComponent, {
+      hasBackdrop: true,
       data: dataLector
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -196,6 +199,7 @@ export class LectorsComponent implements OnInit {
 
   openListOfGroup(lectorId) {
     const dialogRef = this.dialog.open(ListOfGroupsComponent, {
+      hasBackdrop: true,
       data: lectorId
     });
     dialogRef.afterClosed();
@@ -203,6 +207,7 @@ export class LectorsComponent implements OnInit {
 
   openDiagram(userId) {
     const dialogRef = this.dialog.open(StatisticComponent, {
+      hasBackdrop: true,
       data: userId
     });
     dialogRef.afterClosed();
@@ -210,6 +215,7 @@ export class LectorsComponent implements OnInit {
 
   saveProfessor() {
     const dialogRef = this.dialog.open(LectorModalComponent, {
+      hasBackdrop: true,
       data:  this.dataLector
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -286,10 +292,10 @@ export class LectorsComponent implements OnInit {
 
     let date = new Date(dateString + 'Z');
 
-    let year = date.toLocaleDateString('en-GB', { year: 'numeric' });
-    let month = date.toLocaleDateString('en-GB', { month: '2-digit' });
-    let day = date.toLocaleDateString('en-GB', { day: '2-digit' });
-    let time = date.toLocaleTimeString('en-GB');
+    let year = date.getFullYear();
+    let month = (date.getMonth() < 9) ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1); //months are 0 based
+    let day = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
+    let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     return `${day}.${month}.${year}, ${time}`;
   }
 

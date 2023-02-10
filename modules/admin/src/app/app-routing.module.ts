@@ -22,8 +22,9 @@ const routes: Routes = [
   { path: 'profile/:id', component: ProfileComponent },
   {
     path: 'admin', component: AdminGenerateComponent, children: [
-      { path: '', redirectTo: 'main', pathMatch: 'full' },
-      { path: 'main', component: AdminGenerateComponent},
+      { path: '', redirectTo: 'main/0', pathMatch: 'full' },
+      { path: 'main', redirectTo: 'main/0', pathMatch: 'full' },
+      { path: 'main/:tab', component: AdminGenerateComponent},
     ]
   },
   {

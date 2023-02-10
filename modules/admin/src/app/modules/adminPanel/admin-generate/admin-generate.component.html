@@ -1,4 +1,4 @@
-<mat-tab-group animationDuration="1000ms">
+<mat-tab-group dynamicHeight animationDuration="1000ms" [(selectedIndex)]="this.selectedTab" (selectedTabChange)="this.onSelectedTabChange($event)">
   <mat-tab label="{{'text.adminPanel.activeStats.userActivity' | translate}}">
     <app-active-stats></app-active-stats>
   </mat-tab>
