@@ -22,8 +22,8 @@ export class LectorModalComponent implements OnInit {
   isLoad;
   professor : Professor;
 
-  hidePassword: boolean;
-  hideConfirmPassword: boolean;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
 
   constructor(
     private formBuilder: FormBuilder,

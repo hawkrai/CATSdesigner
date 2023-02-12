@@ -1,6 +1,5 @@
 .test-execution-block-progress {
-  position: absolute;
-  bottom: 20px;
+  margin-top: 20px;
   display: flex;
   width: 97%;
 }

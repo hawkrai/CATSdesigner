@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using LMPlatform.UI.Services.Modules.CoreModels;
+using LMPlatform.UI.Services.Modules.Labs;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Text;
-using LMPlatform.UI.Services.Modules.CoreModels;
-using LMPlatform.UI.Services.Modules.Labs;
 
 namespace LMPlatform.UI.Services.Courses
 {
@@ -19,7 +14,7 @@ namespace LMPlatform.UI.Services.Courses
         UserLabFilesResult GetFiles(int userId, int subjectId);
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "/GetFilesV2?subjectId={subjectId}&groupId={groupId}&IsCp={isCp}", RequestFormat = WebMessageFormat.Json, Method = "GET")]
-        StudentsMarksResult GetFilesV2(int subjectId, int groupId);
+        [WebInvoke(Method = "GET", UriTemplate = "/GetFilesV2?subjectId={subjectId}&groupId={groupId}&IsCp={isCp}", RequestFormat = WebMessageFormat.Json)]
+        StudentsMarksResult GetFilesV2(int subjectId, int groupId, bool isCp);
     }
 }

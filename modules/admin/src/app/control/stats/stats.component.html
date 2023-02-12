@@ -1,34 +1,34 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div class="main" *ngIf="isLoad">
-    <h1></h1>
-    <mat-form-field *ngIf = "!this.isArchive">
-        <mat-label>{{'text.statistics.select.subject' | translate:'Выберите предмет'}}</mat-label>
-        <mat-select [(ngModel)]="selectedItem" name="item" (ngModelChange)="this.statisticSubject()">
-            <mat-option *ngFor="let item of this.subjects" [value]="item.Id">{{item.Name}}</mat-option>
-            <mat-option [value]="-1">{{'text.statistics.total.statistics' | translate:'Суммарная статистика по всем предметам'}}</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field *ngIf = "this.isArchive">
-      <mat-label>{{'text.statistics.select.subject' | translate:'Выберите предмет'}}</mat-label>
-      <mat-select [(ngModel)]="selectedItem" name="item" (ngModelChange)="this.statisticSubject()">
-        <mat-option *ngFor="let item of this.subjectsArchive" [value]="item.Id">{{item.Name}}</mat-option>
-        <mat-option [value]="-1">{{'text.statistics.total.statistics' | translate:'Суммарная статистика по всем предметам'}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <h1></h1>
+  <mat-form-field *ngIf = "!this.isArchive">
+    <mat-label>{{'text.statistics.select.subject' | translate:'Выберите предмет'}}</mat-label>
+    <mat-select [(ngModel)]="selectedItem" name="item" (ngModelChange)="this.statisticSubject()">
+      <mat-option *ngFor="let item of this.subjects" [value]="item.Id">{{item.Name}}</mat-option>
+      <mat-option [value]="-1">{{'text.statistics.total.statistics' | translate:'Суммарная статистика по всем предметам'}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field *ngIf = "this.isArchive">
+    <mat-label>{{'text.statistics.select.subject' | translate:'Выберите предмет'}}</mat-label>
+    <mat-select [(ngModel)]="selectedItem" name="item" (ngModelChange)="this.statisticSubject()">
+      <mat-option *ngFor="let item of this.subjectsArchive" [value]="item.Id">{{item.Name}}</mat-option>
+      <mat-option [value]="-1">{{'text.statistics.total.statistics' | translate:'Суммарная статистика по всем предметам'}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <div>
-  <mat-slide-toggle *ngIf = "isArchiveEnable" class="example-margin" style = "margin-left: 50px;"
+  <mat-slide-toggle *ngIf = "isArchiveEnable" class="example-margin" style = "margin-left: 50px;float: left"
                     [color]="'primary'"
                     (change)="subjectsStatusChange($event)"
   >
     {{'text.statistics.inactive.subjects' | translate:'Завершенные предметы'}}
   </mat-slide-toggle>
 
-<div class="export-button">
-  <button mat-icon-button matTooltip="Распечатать"  (click)="this.captureScreen()"><mat-icon>print</mat-icon></button>
-  <button mat-icon-button matTooltip="Скачать Excel"  (click)="this.exportExcel()"><i class="fa fa-download"></i><mat-icon>get_app</mat-icon></button>
-</div>
+  <div class="export-button">
+    <button mat-icon-button matTooltip="Распечатать"  (click)="this.captureScreen()"><mat-icon>print</mat-icon></button>
+    <button mat-icon-button matTooltip="Скачать Excel"  (click)="this.exportExcel()"><i class="fa fa-download"></i><mat-icon>get_app</mat-icon></button>
+  </div>
 </div>
 <div *ngIf="this.selectedItem">
-    <app-table-for-stats-subject [data]="this.tableStats"></app-table-for-stats-subject>
+  <app-table-for-stats-subject [data]="this.tableStats"></app-table-for-stats-subject>
 </div>

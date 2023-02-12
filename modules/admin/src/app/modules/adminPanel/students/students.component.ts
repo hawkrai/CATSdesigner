@@ -11,6 +11,7 @@ import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatDialog} from '@angular/material/dialog';
 import { AppToastrService } from 'src/app/service/toastr.service';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-students',
@@ -43,7 +44,13 @@ export class StudentsComponent implements OnInit {
     'Confirmed': 'Confirmed'
   }
 
-  constructor(private dialog: MatDialog, private toastr: AppToastrService, private studentService: StudentService, private router: Router) { }
+  constructor(
+    private dialog: MatDialog,
+    private toastr: AppToastrService,
+    private studentService: StudentService,
+    private router: Router,
+    private translatePipe: TranslatePipe
+    ) { }
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
@@ -52,8 +59,8 @@ export class StudentsComponent implements OnInit {
     this.loadStudentsPaged(false);
   }
 
-  applyFilter(filterValue: string) {
-    this.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.filter = this.filter.trim().toLowerCase();
     this.paginator.pageIndex = 0;
     
     this.loadStudentsPaged(false);
@@ -162,17 +169,17 @@ export class StudentsComponent implements OnInit {
     this.studentService.editStudents(student).subscribe(() => {
       this.loadStudentsPaged(false);
       this.dataStudent = new Student();
-      this.toastr.addSuccessFlashMessage('Студент успешно изменен!');
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.students.edit.success", ""));
     });
   }
 
   restoreStudent(id): void {
     this.studentService.restoreStudent(id).subscribe(() => {
       this.loadStudentById(id);
-      this.toastr.addSuccessFlashMessage('Студент успешно восстановлен!');
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.students.restore.success", ""));
     },
     () => {
-      this.toastr.addErrorFlashMessage('Не удалость восстановить студента!');
+      this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.adminPanel.students.restore.error", ""));
     });
   }
 
@@ -181,15 +188,17 @@ export class StudentsComponent implements OnInit {
   }
 
   openDialogDelete(id) {
-    const dialogRef = this.dialog.open(DeleteItemComponent);
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+      hasBackdrop: true,
+    });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.studentService.deleteStudent(id).subscribe(() => {
           this.loadStudentById(id);
-          this.toastr.addSuccessFlashMessage("Студент удален!");
+          this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.students.delete.success", ""));
         },
         err => {
-          this.toastr.addErrorFlashMessage("Ошибка удаления! Попробуйте позже!");
+          this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.adminPanel.students.delete.error", ""));
         }
         );
       }
@@ -206,6 +215,7 @@ export class StudentsComponent implements OnInit {
   }
   openDialogEdit(person) {
     const dialogRef = this.dialog.open(EditStudentComponent, {
+      hasBackdrop: true,
       data: person
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -217,6 +227,7 @@ export class StudentsComponent implements OnInit {
 
   openDiagram(userId) {
     const dialogRef = this.dialog.open(StatisticComponent, {
+      hasBackdrop: true,
       data: userId
     });
     dialogRef.afterClosed();
@@ -224,6 +235,7 @@ export class StudentsComponent implements OnInit {
 
   openListOfSubject(studentId) {
     const dialogRef = this.dialog.open(SubjectListComponent, {
+      hasBackdrop: true,
       data: studentId
     });
     dialogRef.afterClosed();
@@ -231,14 +243,14 @@ export class StudentsComponent implements OnInit {
 
   getStudentStatus(student){
     if (!student.IsActive){
-      return "Удален"
+      return this.translatePipe.transform("text.adminPanel.students.status.deleted", "")
     }
     
     if(student.Confirmed){
-        return "Подтвержден"
+        return this.translatePipe.transform("text.adminPanel.students.status.confirmed", "")
     }
 
-    return "Не подтвержден"
+    return this.translatePipe.transform("text.adminPanel.students.status.notConfirmed", "")
   }
 
   formatDate(dateString) {
@@ -248,10 +260,10 @@ export class StudentsComponent implements OnInit {
 
     let date = new Date(dateString + 'Z');
 
-    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
-    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
-    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
-    let time = date.toLocaleTimeString('en-US', { hour12: false });
+    let year = date.getFullYear();
+    let month = (date.getMonth() < 9) ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1); //months are 0 based
+    let day = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
+    let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     return `${day}.${month}.${year}, ${time}`;
   }
 
@@ -260,7 +272,7 @@ export class StudentsComponent implements OnInit {
     
     if (!student.IsActive) {
       if (student.DeletedOn != null) {
-        return "Удален\r\n" +
+        return this.translatePipe.transform("text.adminPanel.students.tooltips.deletedOn", "") + "\r\n" +
           `${this.formatDate(student.DeletedOn)}\r\n`;
       }
 
@@ -268,13 +280,13 @@ export class StudentsComponent implements OnInit {
     }
 
     if (student.Confirmed && student.ConfirmedBy != null && student.ConfirmationDate != '-') {
-      return "Подтвержден\r\n" +
+      return this.translatePipe.transform("text.adminPanel.students.tooltips.confirmedOn", "") + "\r\n" +
         `${this.formatDate(student.ConfirmationDate)}\r\n` +
         `${student.ConfirmedBy}\r\n`
     }
 
     if (!student.Confirmed && student.ConfirmedBy != null && student.ConfirmationDate != '-') {
-      return "Подтверждение отменено\r\n" +
+      return this.translatePipe.transform("text.adminPanel.students.tooltips.confirmationCancelledOn", "") + "\r\n" +
         `${this.formatDate(student.ConfirmationDate)}\r\n` +
         `${student.ConfirmedBy}\r\n`;
     }

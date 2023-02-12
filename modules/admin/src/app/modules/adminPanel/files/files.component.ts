@@ -5,6 +5,7 @@ import {MatSort, Sort} from '@angular/material/sort';
 import {FileService} from '../../../service/file.service';
 import {MatDialog} from '@angular/material/dialog';
 import { Attachment } from 'src/app/model/lecture';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-files',
@@ -35,7 +36,7 @@ export class FilesComponent implements OnInit {
     'Author': 'Author.UserName'
   }
 
-  constructor(private dialog: MatDialog, private fileService: FileService) { }
+  constructor(private dialog: MatDialog, private fileService: FileService, private translatePipe: TranslatePipe) { }
 
   ngOnInit() {
     this.dataSource.sort = this.sort;
@@ -44,8 +45,13 @@ export class FilesComponent implements OnInit {
     this.loadFilesPaged(false);
   }
 
-  applyFilter(filterValue: string) {
-    this.filter = filterValue.trim().toLowerCase();
+  t(value, defaultValue = value) {
+    return this.translatePipe.transform(value, defaultValue);
+  }
+
+  applyFilter() {
+    this.filter = this.filter.trim().toLowerCase();
+
     this.paginator.pageIndex = 0;
     
     this.loadFilesPaged(false);
@@ -153,7 +159,7 @@ export class FilesComponent implements OnInit {
     }
 
     else{
-      return 'Нет данных'
+      return this.t('noData');
     }
   }
 
@@ -164,16 +170,16 @@ export class FilesComponent implements OnInit {
     }
 
     else{
-      return 'Нет данных'
+      return this.t('noData');
     }
   }
 
   formatDate(dateString) {
     let date = new Date(dateString);
 
-    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
-    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
-    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
+    let year = date.getFullYear();
+    let month = (date.getMonth() < 9) ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1); //months are 0 based
+    let day = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
     return `${day}.${month}.${year}`;
   }
 
@@ -182,7 +188,7 @@ export class FilesComponent implements OnInit {
       return this.toReadableFileSize(size);
     }
     else {
-      return 'Нет данных';
+      return this.t('noData');
     }
   }
 

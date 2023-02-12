@@ -109,6 +109,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
         width: "800px",
         data: { event, id, name, testName },
         disableClose: false,
+        autoFocus: false,
     });
 
       dialogRef.afterClosed()

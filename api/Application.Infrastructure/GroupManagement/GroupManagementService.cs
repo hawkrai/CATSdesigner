@@ -64,7 +64,8 @@ namespace Application.Infrastructure.GroupManagement
             var query = new PageableQuery<Group>(pageInfo);
             query
                 .Include(g => g.Students)
-                .Include(e => e.SubjectGroups);
+                .Include(e => e.SubjectGroups)
+                .Include(e => e.SubjectGroups.Select(e => e.Subject));
 
             if (!string.IsNullOrEmpty(searchString))
             {

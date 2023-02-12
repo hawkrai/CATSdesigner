@@ -423,6 +423,7 @@ namespace LMPlatform.UI.Controllers
             var groups = this.GroupManagementService.GetGroups(new Query<Group>()
                 .Include(e => e.Students)
                 .Include(e => e.SubjectGroups)
+                .Include(e => e.SubjectGroups.Select(e => e.Subject))
                 );
 
             var responseModel = groups.Select(l => GroupViewModel.FormGroup(l, null));

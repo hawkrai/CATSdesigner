@@ -130,7 +130,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
           Description: test.Description,
           CountOfQuestions: test.CountOfQuestions,
           TimeForCompleting: test.TimeForCompleting,
-          SetTimeForAllTest: test.SetTimeForAllTest,
+          SetTimeForAllTest: !test.SetTimeForAllTest,
           Type: test.ForNN ? TestType.ForNN : test.ForEUMK ? TestType.ForEUMK : test.BeforeEUMK ? TestType.BeforeEUMK : test.ForSelfStudy ? TestType.ForSelfStudy : TestType.Control
         });
         this.isLoading = false;
@@ -168,19 +168,22 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       }
     }
     delete test.Type;
-    this.testService.saveTest(test)
-    .pipe(
-      tap((message) => {
-        if (message && message.ErrorMessage) {
-          this.catsService.showMessage({ Message: message.ErrorMessage, Code: '500' });
-        } else {
-          this.catsService.showMessage({ Message: this.newTest ? this.translatePipe.transform("text.test.created", "Тест создан") : this.translatePipe.transform("text.test.edited", "Тест изменен"), Code: '200' });
-          this.dialogRef.close(true);
-        }
-      }),
-      takeUntil(this.unsubscribeStream$)
-    )
-    .subscribe();
+    this.testService.saveTest({
+      ...test,
+      SetTimeForAllTest: !test.SetTimeForAllTest,
+    })
+      .pipe(
+        tap((message) => {
+          if (message && message.ErrorMessage) {
+            this.catsService.showMessage({ Message: message.ErrorMessage, Code: '500' });
+          } else {
+            this.catsService.showMessage({ Message: this.newTest ? this.translatePipe.transform("text.test.created", "Тест создан") : this.translatePipe.transform("text.test.edited", "Тест изменен"), Code: '200' });
+            this.dialogRef.close(true);
+          }
+        }),
+        takeUntil(this.unsubscribeStream$)
+      )
+      .subscribe();
   }
 
 }

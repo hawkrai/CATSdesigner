@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
-using Application.Core;
+﻿using Application.Core;
 using Application.Core.Data;
 using Application.Infrastructure.FilesManagement;
 using Application.Infrastructure.GroupManagement;
@@ -12,61 +6,63 @@ using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using LMPlatform.UI.Services.Modules.Labs;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LMPlatform.UI.Services.Courses
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "CoursesService" in code, svc and config file together.
-    // NOTE: In order to launch WCF Test Client for testing this service, please select CoursesService.svc or CoursesService.svc.cs at the Solution Explorer and start debugging.
-    public class CoursesService : ICoursesService
-    {
-        private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
+	// NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "CoursesService" in code, svc and config file together.
+	// NOTE: In order to launch WCF Test Client for testing this service, please select CoursesService.svc or CoursesService.svc.cs at the Solution Explorer and start debugging.
+	public class CoursesService : ICoursesService
+	{
+		private readonly LazyDependency<ISubjectManagementService> subjectManagementService = new LazyDependency<ISubjectManagementService>();
 
-        public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
+		public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
 
-        private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
+		private readonly LazyDependency<IFilesManagementService> filesManagementService = new LazyDependency<IFilesManagementService>();
 
-        public IFilesManagementService FilesManagementService => filesManagementService.Value;
+		public IFilesManagementService FilesManagementService => filesManagementService.Value;
 
-        private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
+		private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
 
-        public IGroupManagementService GroupManagementService => groupManagementService.Value;
+		public IGroupManagementService GroupManagementService => groupManagementService.Value;
 
 		public UserLabFilesResult GetFiles(int userId, int subjectId)
-        {
-            try
-            {
+		{
+			try
+			{
 
-                var model = new List<UserLabFileViewData>();
-                var data = SubjectManagementService.GetUserCourseFiles(userId, subjectId);
-                model = data.Select(e => new UserLabFileViewData
-                {
-                    Comments = e.Comments,
-                    Id = e.Id,
-                    PathFile = e.Attachments,
-                    IsReceived = e.IsReceived,
-                    IsReturned = e.IsReturned,
-                    IsCoursProject = e.IsCoursProject,
-                    UserId = e.UserId,
-                    Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
-                    Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList(),
-                }).ToList();
-                return new UserLabFilesResult
-                {
-                    UserLabFiles = model,
-                    Message = "Данные получены",
-                    Code = "200"
-                };
-            }
-            catch
-            {
-                return new UserLabFilesResult
-                {
-                    Message = "Произошла ошибка при получении данных",
-                    Code = "500"
-                };
-            }
-        }
-		public StudentsMarksResult GetFilesV2(int subjectId, int groupId)
+				var model = new List<UserLabFileViewData>();
+				var data = SubjectManagementService.GetUserCourseFiles(userId, subjectId);
+				model = data.Select(e => new UserLabFileViewData
+				{
+					Comments = e.Comments,
+					Id = e.Id,
+					PathFile = e.Attachments,
+					IsReceived = e.IsReceived,
+					IsReturned = e.IsReturned,
+					IsCoursProject = e.IsCoursProject,
+					UserId = e.UserId,
+					Date = e.Date != null ? e.Date.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty,
+					Attachments = FilesManagementService.GetAttachments(e.Attachments).ToList(),
+				}).ToList();
+				return new UserLabFilesResult
+				{
+					UserLabFiles = model,
+					Message = "Данные получены",
+					Code = "200"
+				};
+			}
+			catch
+			{
+				return new UserLabFilesResult
+				{
+					Message = "Произошла ошибка при получении данных",
+					Code = "500"
+				};
+			}
+		}
+		public StudentsMarksResult GetFilesV2(int subjectId, int groupId, bool isCp)
 		{
 			try
 			{

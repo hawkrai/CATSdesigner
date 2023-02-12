@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource } from '@angular/material';
+import { TranslatePipe } from 'educats-translate';
 import { Group } from 'src/app/model/group';
 import { UserService } from 'src/app/service/userService';
 
@@ -15,8 +16,12 @@ export class SubjectListComponent implements OnInit {
   subjectInfo;
   isLoad = false;
 
-  constructor(private userService: UserService, public dialogRef: MatDialogRef<SubjectListComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(
+    private userService: UserService,
+    public dialogRef: MatDialogRef<SubjectListComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private transaltePipe: TranslatePipe
+    ) { }
 
   ngOnInit() {
     this.loadData(this.data);
@@ -24,10 +29,10 @@ export class SubjectListComponent implements OnInit {
 
   getSubjectStatus(status) {
     if(status == true){
-      return "Текущий"
+      return this.transaltePipe.transform("text.adminPanel.modal.subjectList.ongoing", "Текущий")
     }
     else{
-    return "Завершенный"
+    return this.transaltePipe.transform("text.adminPanel.modal.subjectList.completed", "Завершенный")
   }
   }
 

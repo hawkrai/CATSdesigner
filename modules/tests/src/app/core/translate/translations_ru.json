@@ -130,7 +130,7 @@
   "text.enter.answer": "Введите ответ",
   "text.test.answer": "Ответить",
   "text.test.skip": "Пропустить",
-  "text.test.choose.variant": "Выберите вариант ответа",
+  "text.test.choose.variant": "Введите ответ",
   "text.test.question.num": "Вопрос №{number}",
   "text.test.theme.finished": "Тест на тему «{title}» завершен",
   "text.test.time.completing": "Время прохождения: {start} - {end}",

@@ -105,7 +105,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
         )
         .subscribe();
     } else {
-      this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.test.choose.variant", "Выберите вариант ответа"));
+      this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.test.choose.variant", "Введите ответ"));
     }
   }
 

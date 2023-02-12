@@ -3,14 +3,14 @@
     <div class="main">
         <div class="inline">
             <div class="div1">
-                <p class="active">Активность пользователей</p>
-                <p> Показывает процентное соотношение пользователей, осуществивших свой последний вход в систему в последние сутки, от суток до недели и т.д., от общего числа пользователей.</p>
+                <p class="active">{{"text.adminPanel.activeStats.userActivity" | translate}}</p>
+                <p> {{ "text.adminPanel.activeStats.userActivity.Description" | translate}}</p>
             </div>
             <div class="div2">
-                <p>Всего пользователей: {{ userActivity.TotalUsersCount }} </p>
-                <p>Зарегистрировано студентов: {{ userActivity.TotalStudentsCount }} </p>
-                <p>Зарегистрировано преподавателей: {{ userActivity.TotalLecturersCount }} </p>
-                <p>Сервисных аккаунтов: {{ userActivity.ServiceAccountsCount }}</p>
+                <p>{{ "text.adminPanel.activeStats.userActivity.totalUsers" | translate}}: {{ userActivity.TotalUsersCount }} </p>
+                <p>{{ "text.adminPanel.activeStats.userActivity.totalStudents" | translate}}: {{ userActivity.TotalStudentsCount }} </p>
+                <p>{{ "text.adminPanel.activeStats.userActivity.totalLecturers" | translate}}: {{ userActivity.TotalLecturersCount }} </p>
+                <p>{{ "text.adminPanel.activeStats.userActivity.totalServiceAccounts" | translate}}: {{ userActivity.ServiceAccountsCount }}</p>
             </div>
         </div>
     </div>

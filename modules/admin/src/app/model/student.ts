@@ -7,6 +7,7 @@ export class Student {
     IsPasswordReset: boolean;
     Password: string;
     ConfirmPassword: string;
+    GroupId: number;
     Group: string;
     Email: string;
     IsActive: boolean;

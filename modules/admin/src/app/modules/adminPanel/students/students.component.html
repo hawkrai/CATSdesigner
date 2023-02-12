@@ -1,7 +1,10 @@
 <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
 <div [hidden]="!this.isLoad" class="main">
   <mat-form-field class="search">
-    <input matInput (keydown.enter)="applyFilter($event.target.value)" placeholder="Поиск">
+    <input matInput [(ngModel)]="filter" (keydown.enter)="applyFilter()" placeholder="{{'search' | translate}}">
+    <button mat-icon-button matSuffix class="icon-button-search" (click)="applyFilter()">
+        <mat-icon>search</mat-icon>
+    </button>
   </mat-form-field>
 
   <table mat-table [dataSource]="dataSource" matSort (matSortChange)="applySort($event)" matSortStart="asc">
@@ -12,61 +15,61 @@
     </ng-container>
 
     <ng-container matColumnDef="GroupName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Номер группы</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ "text.adminPanel.students.headers.groupName" | translate }} </th>
       <td mat-cell *matCellDef="let element"> {{ element.GroupName }} </td>
     </ng-container>
 
     <ng-container matColumnDef="FullName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Полное имя</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ "text.adminPanel.students.headers.fullName" | translate }} </th>
       <td mat-cell *matCellDef="let element"> {{ element.FullName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="UserName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Логин </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ "text.adminPanel.students.headers.login" | translate }} </th>
       <td mat-cell *matCellDef="let element"> {{ element.UserName }} </td>
     </ng-container>
 
     <ng-container matColumnDef="LastLogin">
-      <th mat-header-cell *matHeaderCellDef> Последний вход </th>
+      <th mat-header-cell *matHeaderCellDef> {{ "text.adminPanel.students.headers.lastLogin" | translate }} </th>
       <td mat-cell *matCellDef="let element"> {{ this.formatDate(element.LastLogin) }} </td>
   </ng-container>
 
     <ng-container matColumnDef="RegistrationDate">
-      <th mat-header-cell *matHeaderCellDef> Дата регистрации </th>
+      <th mat-header-cell *matHeaderCellDef> {{ "text.adminPanel.students.headers.registrationDate" | translate }} </th>
       <td mat-cell *matCellDef="let element"> {{ this.formatDate(element.AddedOn) }} </td>
     </ng-container>
 
     <ng-container matColumnDef="Confirmed">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Статус </th>
-      <td mat-cell *matCellDef="let element" matTooltip={{this.getStatusTooltip(element)}} matTooltipPosition="above"> {{ getStudentStatus(element) }} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ "text.adminPanel.students.headers.status" | translate }} </th>
+      <td mat-cell *matCellDef="let element" matTooltip={{this.getStatusTooltip(element)}} matTooltipPosition="above" matTooltipClass="tooltip"> {{ getStudentStatus(element) }} </td>
     </ng-container>
 
     <ng-container matColumnDef="Subjects">
-      <th mat-header-cell *matHeaderCellDef> Предметы (текущие\завершенные) </th>
+      <th mat-header-cell *matHeaderCellDef> {{ "text.adminPanel.students.headers.subjects" | translate }} </th>
       <td mat-cell *matCellDef="let element"> {{element.ActiveSubjects}}\{{element.NotActiveSubjects}} </td>
     </ng-container>
 
 
     
     <ng-container matColumnDef="action" class="actions">
-      <th mat-header-cell *matHeaderCellDef> Действиe </th>
+      <th mat-header-cell *matHeaderCellDef> {{ "text.adminPanel.students.headers.action" | translate }} </th>
       <td mat-cell *matCellDef="let element">
-        <button mat-button matTooltip="Статистика авторизации в системе" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Diagram" (click)="openDiagram(element.Id)">
+        <button mat-button matTooltip="{{ 'text.adminPanel.students.tooltips.stats' | translate }}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Diagram" (click)="openDiagram(element.Id)">
           <mat-icon>equalizer icon</mat-icon>
         </button>
-        <button mat-button matTooltip="Список изучаемых предметов" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfSubject(element)">
+        <button mat-button matTooltip="{{ 'text.adminPanel.students.tooltips.subjectsList' | translate }}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="listOfSubsject" (click)="openListOfSubject(element)">
           <mat-icon>list</mat-icon>
         </button>
-        <button mat-button matTooltip="Редактировать студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Edit " (click)="openDialogEdit(element) ">
+        <button mat-button matTooltip="{{ 'text.adminPanel.students.tooltips.edit' | translate }}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Edit " (click)="openDialogEdit(element) ">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-button matTooltip="Профиль студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Profile" (click)="this.navigateToProfile(element.Id)">
+        <button mat-button matTooltip="{{ 'text.adminPanel.students.tooltips.account' | translate }}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Profile" (click)="this.navigateToProfile(element.Id)">
           <mat-icon>account_circle</mat-icon>
         </button>
-        <button *ngIf="this.isActive(element)" mat-button matTooltip="Удалить студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete " (click)="openDialogDelete(element.Id) ">
+        <button *ngIf="this.isActive(element)" mat-button matTooltip="{{ 'text.adminPanel.students.tooltips.delete' | translate }}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Delete " (click)="openDialogDelete(element.Id) ">
           <mat-icon>delete</mat-icon>
         </button>
-        <button *ngIf="!this.isActive(element)" mat-button matTooltip="Восстановить студента" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Edit " (click)="restoreStudent(element.Id) ">
+        <button *ngIf="!this.isActive(element)" mat-button matTooltip="{{ 'text.adminPanel.students.tooltips.restore' | translate }}" [matTooltipPosition]="'above'" matTooltipClass="tooltip" aria-label="Edit " (click)="restoreStudent(element.Id) ">
             <mat-icon>rotate_right</mat-icon>
         </button>
       </td>

@@ -10,6 +10,7 @@ import { ListOfGroupsComponent } from '../modal/list-of-groups/list-of-groups.co
 import { StatisticComponent } from '../modal/statistic/statistic.component';
 import { Router } from '@angular/router';
 import { last } from 'rxjs/operators';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-lectors',
@@ -40,7 +41,12 @@ export class LectorsComponent implements OnInit {
     'Login': 'User.UserName'
   }
 
-  constructor(private dialog: MatDialog, private professorService: ProfessorService, private router: Router, private toastr: AppToastrService) { }
+  constructor(
+    private dialog: MatDialog,
+    private professorService: ProfessorService,
+    private router: Router,
+    private toastr: AppToastrService,
+    private translatePipe: TranslatePipe) { }
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
@@ -49,8 +55,8 @@ export class LectorsComponent implements OnInit {
     this.loadLectorsPaged(false);
   }
   
-  applyFilter(filterValue: string) {
-    this.filter = filterValue.trim().toLowerCase();
+  applyFilter() {
+    this.filter = this.filter.trim().toLowerCase();
     this.paginator.pageIndex = 0;
     
     this.loadLectorsPaged(false);
@@ -168,7 +174,9 @@ export class LectorsComponent implements OnInit {
   }
 
   deleteProfessor(id) {
-    const dialogRef = this.dialog.open(DeleteItemComponent);
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+      hasBackdrop: true
+    });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.deleteLector(id);
@@ -178,6 +186,7 @@ export class LectorsComponent implements OnInit {
 
   openDialogEdit(dataLector) {
     const dialogRef = this.dialog.open(EditLectorComponent, {
+      hasBackdrop: true,
       data: dataLector
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -190,6 +199,7 @@ export class LectorsComponent implements OnInit {
 
   openListOfGroup(lectorId) {
     const dialogRef = this.dialog.open(ListOfGroupsComponent, {
+      hasBackdrop: true,
       data: lectorId
     });
     dialogRef.afterClosed();
@@ -197,6 +207,7 @@ export class LectorsComponent implements OnInit {
 
   openDiagram(userId) {
     const dialogRef = this.dialog.open(StatisticComponent, {
+      hasBackdrop: true,
       data: userId
     });
     dialogRef.afterClosed();
@@ -204,6 +215,7 @@ export class LectorsComponent implements OnInit {
 
   saveProfessor() {
     const dialogRef = this.dialog.open(LectorModalComponent, {
+      hasBackdrop: true,
       data:  this.dataLector
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -247,7 +259,7 @@ export class LectorsComponent implements OnInit {
     this.professorService.addProfessor(professor).subscribe(() => {
       this.loadLectorsPaged(false);
       this.dataLector = new Professor();
-      this.toastr.addSuccessFlashMessage("Преподаватель добавлен!");}
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.add.success", ""));}
       );
   }
 
@@ -255,12 +267,12 @@ export class LectorsComponent implements OnInit {
     this.professorService.editProfessor(professor).subscribe(() => {
       this.loadChangedLector(professor.UserName);
       this.dataLector = new Professor();
-      this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.edit.success", ""));
     }, 
     err => {
       if ( err.status === 500) {
         this.loadChangedLector(professor.UserName);
-        this.toastr.addSuccessFlashMessage("Преподаватель изменен!");
+        this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.edit.success", ""));
       } else {
       }
     });
@@ -269,7 +281,7 @@ export class LectorsComponent implements OnInit {
   deleteLector(id) {
     this.professorService.deleteProfessor(id).subscribe(() => {
       this.loadDeletedLector(id);
-      this.toastr.addSuccessFlashMessage("Преподаватель удален!");
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.lectors.delete.success", ""));
     });
   }
 
@@ -280,10 +292,10 @@ export class LectorsComponent implements OnInit {
 
     let date = new Date(dateString + 'Z');
 
-    let year = date.toLocaleDateString('en-US', { year: 'numeric' });
-    let month = date.toLocaleDateString('en-US', { month: '2-digit' });
-    let day = date.toLocaleDateString('en-US', { day: '2-digit' });
-    let time = date.toLocaleTimeString('en-US', { hour12: false });
+    let year = date.getFullYear();
+    let month = (date.getMonth() < 9) ? ("0" + (date.getMonth() + 1)) : (date.getMonth() + 1); //months are 0 based
+    let day = (date.getDate() < 10) ? ("0" + date.getDate()) : date.getDate();
+    let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
     return `${day}.${month}.${year}, ${time}`;
   }
 
@@ -295,7 +307,7 @@ export class LectorsComponent implements OnInit {
     }
 
     if (lecturer.DeletedOn != null) {
-      return "Удален\r\n" +
+      return this.translatePipe.transform("text.adminPanel.lectors.status.deleted", "") + "\r\n" +
         `${this.formatDate(lecturer.DeletedOn)}\r\n`;
     }
   }
