@@ -14,6 +14,10 @@ export class ProjectsService {
         return this.http.get('api/courseProject', { params: new HttpParams({ fromString: params }) });
     }
 
+    public getReceivedProjects(subjectId: string): Observable<any> {
+      return this.http.get('api/courseProjectAssignment/?subjectId=' + subjectId);
+    }
+
     public getProject(id: string): Observable<any> {
       return this.http.get('api/courseProject/' + id);
     }
