@@ -743,6 +743,14 @@
   "text.adminPanel.modal.messageDetail.recepients": "Кому",
   "text.adminPanel.modal.messageDetail.reply": "Ответить",
 
+  "text.adminPanel.modal.sendMessage.title": "Отправка сообщения",
+  "text.adminPanel.modal.sendMessage.recepients": "Кому",
+  "text.adminPanel.modal.sendMessage.userInput": "Введите пользователя...",
+  "text.adminPanel.modal.sendMessage.subject": "Тема",
+  "text.adminPanel.modal.sendMessage.text": "Текст сообщения",
+  "text.adminPanel.modal.sendMessage.fileAttach": "Добавить файл",
+  "text.adminPanel.modal.sendMessage.send": "Отправить",
+
   "text.adminPanel.profile.dp": "Дипломный проект",
   "text.adminPanel.profile.dp.plural": "Дипломные проекты",
 

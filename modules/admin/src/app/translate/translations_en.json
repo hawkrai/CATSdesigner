@@ -843,6 +843,14 @@
   "text.adminPanel.modal.messageDetail.recepients": "Recepients",
   "text.adminPanel.modal.messageDetail.reply": "Reply",
 
+  "text.adminPanel.modal.sendMessage.title": "Sending a message",
+  "text.adminPanel.modal.sendMessage.recepients": "Recepients",
+  "text.adminPanel.modal.sendMessage.userInput": "Enter a user...",
+  "text.adminPanel.modal.sendMessage.subject": "Subject",
+  "text.adminPanel.modal.sendMessage.text": "Message text",
+  "text.adminPanel.modal.sendMessage.fileAttach": "Attach a file",
+  "text.adminPanel.modal.sendMessage.send": "Send",
+
   "text.adminPanel.profile.dp": "Diploma project",
   "text.adminPanel.profile.dp.plural": "Diploma projects",
 
