@@ -840,5 +840,15 @@
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed",
 
   "text.adminPanel.profile.dp": "Diploma project",
-  "text.adminPanel.profile.dp.plural": "Diploma projects"
+  "text.adminPanel.profile.dp.plural": "Diploma projects",
+
+  "text.adminPanel.resetPassword.password": "Password",
+  "text.adminPanel.resetPassword.invalid": "The password must contain at least 6 and no more than 30 characters, at least 1 small and capital letter, and at least one number.",
+  "text.adminPanel.resetPassword.minLength": "You have entered less than 6 characters.",
+  "text.adminPanel.resetPassword.allowedCharacters": "Allowed characters",
+  "text.adminPanel.resetPassword.maxLength": "You have entered more than 30 characters.",
+  "text.adminPanel.resetPassword.repeatPassword": "Repeat the password",
+  "text.adminPanel.resetPassword.repeatPasswordInvalid": "The passwords don't match.",
+  "text.adminPanel.resetPassword.success": "Password has been changed successfully!",
+  "text.adminPanel.resetPassword.error": "An error has occurred while changing the password. Try again!"
 }

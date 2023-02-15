@@ -740,5 +740,15 @@
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Не подтвержден",
 
   "text.adminPanel.profile.dp": "Дипломный проект",
-  "text.adminPanel.profile.dp.plural": "Дипломные проекты"
+  "text.adminPanel.profile.dp.plural": "Дипломные проекты",
+
+  "text.adminPanel.resetPassword.password": "Пароль",
+  "text.adminPanel.resetPassword.invalid": "Пароль должен содержать не меньше 6 и не больше 30 символов, хотя бы 1 маленькую и большую букву, и хотя бы одну цифру.",
+  "text.adminPanel.resetPassword.minLength": "Вы ввели меньше 6 символов.",
+  "text.adminPanel.resetPassword.allowedCharacters": "Допустимые символы",
+  "text.adminPanel.resetPassword.maxLength": "Вы ввели больше 30 символов.",
+  "text.adminPanel.resetPassword.repeatPassword": "Повторите пароль",
+  "text.adminPanel.resetPassword.repeatPasswordInvalid": "Пароли не совпадают.",
+  "text.adminPanel.resetPassword.success": "Пароль успешно изменен!",
+  "text.adminPanel.resetPassword.error": "Произошла ошибка при изменении пароля. Попробуйте заново!"
 }
