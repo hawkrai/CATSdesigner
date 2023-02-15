@@ -61,7 +61,7 @@
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td class="message-name" mat-cell *matCellDef="let element" (click)="this.openMessageDetails(element.Id, false)">
                         <p *ngIf="element.Recipients.length===1">{{ element.Recipients[0] }}</p>
-                        <p *ngIf="element.Recipients.length!==1">{{ element.Recipients[0] }}<a>+еще</a></p>
+                        <p *ngIf="element.Recipients.length!==1">{{ element.Recipients[0] }}<a>+{{ "text.adminPanel.messages.more" | translate }}</a></p>
                     </td>
                 </ng-container>
 
