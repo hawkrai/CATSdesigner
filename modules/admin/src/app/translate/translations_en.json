@@ -838,6 +838,10 @@
   "text.adminPanel.modal.listOfStudents.headers.status": "Confirmation",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Confirmed",
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed",
+  
+  "text.adminPanel.modal.messageDetail.sent": "Sent",
+  "text.adminPanel.modal.messageDetail.recepients": "Recepients",
+  "text.adminPanel.modal.messageDetail.reply": "Reply",
 
   "text.adminPanel.profile.dp": "Diploma project",
   "text.adminPanel.profile.dp.plural": "Diploma projects",

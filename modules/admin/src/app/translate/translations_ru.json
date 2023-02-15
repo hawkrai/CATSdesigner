@@ -738,6 +738,10 @@
   "text.adminPanel.modal.listOfStudents.headers.status": "Подтверждение",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Подтвержден",
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Не подтвержден",
+  
+  "text.adminPanel.modal.messageDetail.sent": "Отправлено",
+  "text.adminPanel.modal.messageDetail.recepients": "Кому",
+  "text.adminPanel.modal.messageDetail.reply": "Ответить",
 
   "text.adminPanel.profile.dp": "Дипломный проект",
   "text.adminPanel.profile.dp.plural": "Дипломные проекты",
