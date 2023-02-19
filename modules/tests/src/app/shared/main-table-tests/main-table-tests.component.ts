@@ -1,7 +1,7 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
-import {TestPassingService} from '../../service/test-passing.service';
-import {Router} from '@angular/router';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {TestPassingService} from "../../service/test-passing.service";
+import {Router} from "@angular/router";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {MatTable} from "@angular/material";
 import {TestService} from "../../service/test.service";
 import {NewOrderModel} from "../../models/newOrder.model";
@@ -14,9 +14,9 @@ import {takeUntil} from "rxjs/operators";
 
 @AutoUnsubscribe
 @Component({
-  selector: 'app-main-table-tests',
-  templateUrl: './main-table-tests.component.html',
-  styleUrls: ['./main-table-tests.component.less']
+  selector: "app-main-table-tests",
+  templateUrl: "./main-table-tests.component.html",
+  styleUrls: ["./main-table-tests.component.less"]
 })
 export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnInit, AfterViewChecked {
 
@@ -44,11 +44,11 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
   public onNavigateQuestions: EventEmitter<any> = new EventEmitter();
 
 
-
+  public isDraggable = true;
   public test: any;
 
-  displayedColumns: string[] = ['Id', 'Title', 'action'];
-  @ViewChild('table', {static: false})
+  displayedColumns: string[] = ["Id", "Title", "action"];
+  @ViewChild("table", {static: false})
   table: MatTable<any>;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   public white: boolean;
@@ -67,10 +67,16 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
     } else {
       this.black = true;
     }
+
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (user.role === "student") {
+      this.isDraggable = false;
+    }
   }
 
   public navigateToTest(Id: number): void {
-    this.router.navigate(['test/' + Id]);
+    this.router.navigate(["test/" + Id]);
   }
 
   public openEditPopup(element): void {

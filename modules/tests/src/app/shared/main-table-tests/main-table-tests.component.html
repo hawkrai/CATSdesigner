@@ -10,7 +10,9 @@
                [class.white]="white"
                cdkDropList #table
                [cdkDropListData]="tests"
-               (cdkDropListDropped)="dropTable($event)" >
+               (cdkDropListDropped)="dropTable($event)"
+               [cdkDropListDisabled]="!isDraggable"
+               >
 
       <!-- Position Column -->
       <ng-container matColumnDef="Id">

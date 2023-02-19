@@ -1,5 +1,9 @@
-<div mat-dialog-content>
+<div mat-dialog-content class="header">
   <div class="confirmation-text">{{'text.test.want.to.delete' | translate: 'Вы действительно хотите удалить вопрос?'}}</div>
+  <button mat-icon-button
+            (click)="onNoClick()" class="header-close-button">
+      <mat-icon>close</mat-icon>
+    </button>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Отмена'}}</button>

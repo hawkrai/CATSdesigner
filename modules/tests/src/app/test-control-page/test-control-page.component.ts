@@ -1,18 +1,21 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { TestService } from "../service/test.service";
-import { MatDialog, MatSnackBar } from "@angular/material";
-import { EditTestPopupComponent } from "./components/edit-test-popup/edit-test-popup.component";
-import { DeleteConfirmationPopupComponent } from "./components/delete-confirmation-popup/delete-confirmation-popup.component";
-import { EditAvailabilityPopupComponent } from "./components/edit-availability-popup/edit-availability-popup.component";
-import { Router } from "@angular/router";
-import { Test } from "../models/test.model";
-import { AutoUnsubscribe } from "../decorator/auto-unsubscribe";
-import { AutoUnsubscribeBase } from "../core/auto-unsubscribe-base";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { Group } from "../models/group.model";
-import { TranslatePipe } from "educats-translate";
-import { Help } from "../models/help.model";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
+import { TranslatePipe } from 'educats-translate';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { AutoUnsubscribeBase } from '../core/auto-unsubscribe-base';
+import { AutoUnsubscribe } from '../decorator/auto-unsubscribe';
+import { Group } from '../models/group.model';
+import { Test } from '../models/test.model';
+import { TestService } from '../service/test.service';
+import { AppToastrService } from '../service/toastr.service';
+import {
+  DeleteConfirmationPopupComponent,
+} from './components/delete-confirmation-popup/delete-confirmation-popup.component';
+import { EditAvailabilityPopupComponent } from './components/edit-availability-popup/edit-availability-popup.component';
+import { EditTestPopupComponent } from './components/edit-test-popup/edit-test-popup.component';
 
 
 @AutoUnsubscribe
@@ -53,7 +56,9 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     private translatePipe: TranslatePipe,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
-    public dialog: MatDialog) {
+    public dialog: MatDialog,
+    private toastr: AppToastrService,
+    ) {
     super();
   }
 
@@ -74,6 +79,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
     const dialogRef = this.dialog.open(EditTestPopupComponent, {
       data: { event },
       panelClass: "test-modal-container",
+      autoFocus: false,
     });
 
     dialogRef.afterClosed()
@@ -124,7 +130,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .subscribe(() => {
         this.getTests(this.subject.id);
       }, error1 => {
-        this.openSnackBar(this.translatePipe.transform("text.test.error.delete.test", "Не удалось удалить тест"));
+        this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.test.error.delete.test", "Не удалось удалить тест"));
       });
   }
 

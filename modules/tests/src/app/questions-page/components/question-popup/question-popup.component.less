@@ -74,6 +74,15 @@ textarea {
         width: 90%;
       }
 
+      ::ng-deep {
+        .mat-radio-label {
+          max-width: 480px;
+        }
+        .mat-radio-label-content {
+          padding-left: 12px;
+        }
+      }
+
       &-input {
         border-bottom: 1px solid;
         &-only {
@@ -81,6 +90,10 @@ textarea {
           border-bottom: 1px solid;
           width: 90%;
         }
+      }
+
+      mat-icon {
+        margin-left: 4px;
       }
     }
 
