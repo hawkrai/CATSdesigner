@@ -670,6 +670,13 @@
   "text.adminPanel.students.status.confirmed": "Подтверждён",
   "text.adminPanel.students.status.notConfirmed": "Не подтверждён",
 
+  "text.adminPanel.messages.title": "Сообщения",
+  "text.adminPanel.messages.sendButton": "Написать сообщение",
+  "text.adminPanel.messages.deleteButton": "Удалить",
+  "text.adminPanel.messages.inbox.label": "Входящие",
+  "text.adminPanel.messages.outbox.label": "Отправленные",
+  "text.adminPanel.messages.outbox.more": "еще",
+
   "text.adminPanel.modal.statistic.title": "Статистика авторизации в системе",
   "text.adminPanel.modal.statistic.count": "Количество авторизаций",
   "text.adminPanel.modal.statistic.times": "Время авторизаций",
@@ -731,7 +738,29 @@
   "text.adminPanel.modal.listOfStudents.headers.status": "Подтверждение",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Подтвержден",
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Не подтвержден",
+  
+  "text.adminPanel.modal.messageDetail.sent": "Отправлено",
+  "text.adminPanel.modal.messageDetail.recepients": "Кому",
+  "text.adminPanel.modal.messageDetail.reply": "Ответить",
+
+  "text.adminPanel.modal.sendMessage.title": "Отправка сообщения",
+  "text.adminPanel.modal.sendMessage.recepients": "Кому",
+  "text.adminPanel.modal.sendMessage.userInput": "Введите пользователя...",
+  "text.adminPanel.modal.sendMessage.subject": "Тема",
+  "text.adminPanel.modal.sendMessage.text": "Текст сообщения",
+  "text.adminPanel.modal.sendMessage.fileAttach": "Добавить файл",
+  "text.adminPanel.modal.sendMessage.send": "Отправить",
 
   "text.adminPanel.profile.dp": "Дипломный проект",
-  "text.adminPanel.profile.dp.plural": "Дипломные проекты"
+  "text.adminPanel.profile.dp.plural": "Дипломные проекты",
+
+  "text.adminPanel.resetPassword.password": "Пароль",
+  "text.adminPanel.resetPassword.invalid": "Пароль должен содержать не меньше 6 и не больше 30 символов, хотя бы 1 маленькую и большую букву, и хотя бы одну цифру.",
+  "text.adminPanel.resetPassword.minLength": "Вы ввели меньше 6 символов.",
+  "text.adminPanel.resetPassword.allowedCharacters": "Допустимые символы",
+  "text.adminPanel.resetPassword.maxLength": "Вы ввели больше 30 символов.",
+  "text.adminPanel.resetPassword.repeatPassword": "Повторите пароль",
+  "text.adminPanel.resetPassword.repeatPasswordInvalid": "Пароли не совпадают.",
+  "text.adminPanel.resetPassword.success": "Пароль успешно изменен!",
+  "text.adminPanel.resetPassword.error": "Произошла ошибка при изменении пароля. Попробуйте заново!"
 }
