@@ -200,6 +200,8 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         {
             var user = UsersManagementService.GetUser(UserName);
             user.AddedOn = DateTime.UtcNow;
+            UsersManagementService.UpdateUser(user);
+
             var lecturer = LecturerManagementService.Save(new Lecturer
             {
                 Id = user.Id,
