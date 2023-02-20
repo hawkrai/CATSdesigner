@@ -1,22 +1,22 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {of, Subject, Subscription} from 'rxjs';
-import {CourseUser} from '../../models/course-user.model';
-import {MatDialog} from '@angular/material';
-import {AddProjectDialogComponent} from './add-project-dialog/add-project-dialog.component';
-import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
-import {AssignProjectDialogComponent} from './assign-project-dialog/assign-project-dialog.component';
-import {ProjectsService} from '../../services/projects.service';
-import {Project} from '../../models/project.model';
-import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../store/selectors/subject.selector';
-import {IAppState} from '../../store/state/app.state';
-import {AppComponent} from '../../app.component';
-import {CoreGroup} from 'src/app/models/core-group.model';
-import {GroupService} from '../../services/group.service';
-import {ToastrService} from 'ngx-toastr';
-import {CourseUserService} from '../../services/course-user.service';
-import {switchMap, takeUntil} from 'rxjs/operators';
-import {TranslatePipe} from 'educats-translate';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { forkJoin, of, Subject, Subscription } from 'rxjs';
+import { CourseUser } from '../../models/course-user.model';
+import { MatDialog } from '@angular/material';
+import { AddProjectDialogComponent } from './add-project-dialog/add-project-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { AssignProjectDialogComponent } from './assign-project-dialog/assign-project-dialog.component';
+import { ProjectsService } from '../../services/projects.service';
+import { Project } from '../../models/project.model';
+import { select, Store } from '@ngrx/store';
+import { getSubjectId } from '../../store/selectors/subject.selector';
+import { IAppState } from '../../store/state/app.state';
+import { AppComponent } from '../../app.component';
+import { CoreGroup } from 'src/app/models/core-group.model';
+import { GroupService } from '../../services/group.service';
+import { ToastrService } from 'ngx-toastr';
+import { CourseUserService } from '../../services/course-user.service';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-projects',
@@ -42,30 +42,30 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   private lecturerName = '';
 
   constructor(private appComponent: AppComponent,
-              private groupService: GroupService,
-              private projectsService: ProjectsService,
-              private dialog: MatDialog,
-              private store: Store<IAppState>,
-              private toastr: ToastrService,
-              private translatePipe: TranslatePipe,
-              private courseService: CourseUserService) {
+    private groupService: GroupService,
+    private projectsService: ProjectsService,
+    private dialog: MatDialog,
+    private store: Store<IAppState>,
+    private toastr: ToastrService,
+    private translatePipe: TranslatePipe,
+    private courseService: CourseUserService) {
   }
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
       this.subjectId = subjectId;
-
       this.groupService.getGroups(this.subjectId).subscribe(res => this.groups = res.Groups);
       this.retrieveProjects();
     });
 
+
     this.courseService.getUser().pipe(switchMap((res) => {
-        if (res.IsLecturer) {
-          return this.courseService.getUserInfo(res.UserId);
-        } else {
-          return of();
-        }
-      }), takeUntil(this.destroy$),
+      if (res.IsLecturer) {
+        return this.courseService.getUserInfo(res.UserId);
+      } else {
+        return of();
+      }
+    }), takeUntil(this.destroy$),
     ).subscribe(res => {
       this.lecturerName = res.Name;
     });
@@ -79,14 +79,27 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   retrieveProjects() {
-    this.projectsSubscription = this.projectsService.getProjects(
+    forkJoin(this.projectsService.getProjects(
       'count=' + this.COUNT +
       '&page=' + this.PAGE +
       '&filter={"subjectId":"' + this.subjectId + '","searchString":"' + this.searchString + '"}' +
       '&filter[subjectId]=' + this.subjectId +
       '&sorting[' + this.sorting + ']=' + this.direction
+    ), this.projectsService.getReceivedProjects(this.subjectId)).pipe(takeUntil(this.destroy$)).subscribe(res => {
+      const items = res[0].Items.map(item => {
+        const courseProject = res[1].find(theme => theme.CourseProjectId === item.Id);
+        if (courseProject) {
+          item.ApproveDate = courseProject.ApproveDate;
+          item.StudentId = courseProject.StudentId;
+        } else {
+          item.ApproveDate = null;
+          item.StudentId = null;
+        }
+        return item;
+      })
+      this.projects = items;
+    }
     )
-      .subscribe(res => this.projects = res.Items);
   }
 
   onSearchChange(searchText: string) {
