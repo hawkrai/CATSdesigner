@@ -18,6 +18,11 @@ iframe {
   }
 }
 
+.container2{
+  display: flex;
+  width: 95%;
+}
+
 .backlink {
   cursor: pointer;
   color: grey;
@@ -56,4 +61,34 @@ iframe {
 .mat-icon-button-help:active,
 .mat-icon-button-help:focus {
   color: #3f51b5;
+}
+
+.form{
+  margin-right: 15px;
+  float: right;
+  margin-top: -15px;
+}
+
+.form-first-row{
+  display: flex;
+}
+
+@media (max-width:768px){
+  .container2{
+    display: block;
+  }
+  .form-first-row{
+    display: grid;
+  }
+  .form{
+    margin-top: 10px;
+    float: left;
+    width: 95%;
+  }
+  .container1{
+    margin-left: 5%;
+  }
+  .button-search{
+    float: right;
+  }
 }
