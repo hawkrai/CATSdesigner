@@ -317,7 +317,7 @@ namespace LMPlatform.UI.Controllers
                 var datas = new List<string>();
                 datas.Add(result.StudentName);
                 datas.AddRange(result.TestPassResults.Select(e =>
-                    e.Points != null ? $"{e.Points}({e.Percent}%)" : string.Empty));
+                    e.Points != null ? $"{e.Points} ({e.Percent}%)" : string.Empty));
                 if (result.TestPassResults.Count(e => e.Points != null) > 0)
                 {
                     var pointsSum =
@@ -336,7 +336,7 @@ namespace LMPlatform.UI.Controllers
             var index = 0;
             var total = new List<string>
             {
-                "Средний процен за тест"
+                "Средняя оценка (процент) за тест"
             };
 
             foreach (var testResultItemListViewModel in results[0].TestPassResults)
@@ -358,11 +358,14 @@ namespace LMPlatform.UI.Controllers
 
                 index += 1;
                 //total.Add((int)Math.Round(sumPoint/count, 0, MidpointRounding.AwayFromZero) + " (" + Math.Round(sum / count, 0) + "%)");
-                total.Add(Math.Round(sum / count, 0) + "%");
+                var percent = sum / count;
+                var mark = Math.Round(percent / 10, 0);
+                total.Add($"{mark} ({Math.Round(percent, 0)}%)");
             }
 
             data.Headers.Add("Студент");
             data.Headers.AddRange(results[0].TestPassResults.Select(e => e.TestName));
+            data.Headers.Add("Средняя оценка за тесты");
             data.DataRows.AddRange(rowsData);
             data.DataRows.Add(total);
 

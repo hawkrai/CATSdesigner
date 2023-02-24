@@ -1,18 +1,18 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Theme} from '../../models/theme.model';
-import {ProjectThemeService} from '../../services/project-theme.service';
-import {TaskSheetService} from '../../services/task-sheet.service';
-import {Subscription} from 'rxjs';
-import {CourseUser} from '../../models/course-user.model';
-import {EditTaskSheetComponent} from './edit-task-sheet/edit-task-sheet.component';
-import {MatDialog} from '@angular/material';
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
-import {getSubjectId} from '../../store/selectors/subject.selector';
+import { Component, Input, OnInit } from '@angular/core';
+import { Theme } from '../../models/theme.model';
+import { ProjectThemeService } from '../../services/project-theme.service';
+import { TaskSheetService } from '../../services/task-sheet.service';
+import { Subject, Subscription } from 'rxjs';
+import { CourseUser } from '../../models/course-user.model';
+import { EditTaskSheetComponent } from './edit-task-sheet/edit-task-sheet.component';
+import { MatDialog } from '@angular/material';
+import { select, Store } from '@ngrx/store';
+import { IAppState } from '../../store/state/app.state';
+import { getSubjectId } from '../../store/selectors/subject.selector';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { Template } from 'src/app/models/template.model';
-import {ToastrService} from 'ngx-toastr';
-import {TranslatePipe} from 'educats-translate';
+import { ToastrService } from 'ngx-toastr';
+import { TranslatePipe } from 'educats-translate';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { map } from 'rxjs/operators';
 
@@ -34,17 +34,16 @@ export class TaskSheetComponent implements OnInit {
   private courseProjectId: number;
   private templates: any[];
   private tepmlate: Template;
-
   constructor(private projectThemeService: ProjectThemeService,
     private projectsService: ProjectsService,
-              private taskSheetService: TaskSheetService,
-              private dialog: MatDialog,
-              private toastr: ToastrService,
-              private translatePipe: TranslatePipe,
-              private store: Store<IAppState>) {
+    private taskSheetService: TaskSheetService,
+    private dialog: MatDialog,
+    private toastr: ToastrService,
+    private translatePipe: TranslatePipe,
+    private store: Store<IAppState>) {
   }
 
- 
+
 
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
@@ -59,10 +58,7 @@ export class TaskSheetComponent implements OnInit {
         .subscribe(res => {
           if (res.length > 0) {
             this.themes = res.sort((a, b) => {
-              return a.Theme.localeCompare(b.Theme, undefined, {
-                numeric: true,
-                sensitivity: 'base'
-              });
+              return b - a;
             });
             if (this.courseProjectId == null) {
               this.courseProjectId = res[0].Id;
@@ -85,7 +81,7 @@ export class TaskSheetComponent implements OnInit {
 
   retrieveTaskSheetHtml() {
     this.taskSheetHtml = null;
-    this.taskSheetSubscription = this.taskSheetService.getTaskSheetHtml({courseProjectId: this.courseProjectId})
+    this.taskSheetSubscription = this.taskSheetService.getTaskSheetHtml({ courseProjectId: this.courseProjectId })
       .subscribe(res => {
         if (res != null) {
           this.taskSheetHtml = res;
@@ -97,13 +93,13 @@ export class TaskSheetComponent implements OnInit {
 
   getTaskSheetTemplate(taskSheet: any): object {
     const checkTheme = this.templates.find((i) => i.InputData == taskSheet.InputData
-    && i.Faculty == i.Faculty
-    && i.HeadCathedra == i.HeadCathedra
-    && i.RpzContent == i.RpzContent
-    && i.DrawMaterials == i.DrawMaterials
-    && i.Univer == i.Univer
-    && i.DateEnd == i.DateEnd
-    && i.DateStart == i.DateStart);
+      && i.Faculty == i.Faculty
+      && i.HeadCathedra == i.HeadCathedra
+      && i.RpzContent == i.RpzContent
+      && i.DrawMaterials == i.DrawMaterials
+      && i.Univer == i.Univer
+      && i.DateEnd == i.DateEnd
+      && i.DateStart == i.DateStart);
 
     if (checkTheme != undefined) {
       this.tepmlate = new Template();
@@ -116,7 +112,7 @@ export class TaskSheetComponent implements OnInit {
   }
 
   editTaskSheet() {
-    this.taskSheetService.getTaskSheet({courseProjectId: this.courseProjectId}).subscribe(response => {
+    this.taskSheetService.getTaskSheet({ courseProjectId: this.courseProjectId }).subscribe(response => {
       const dialogRef = this.dialog.open(EditTaskSheetComponent, {
         width: '548px',
         data: {
@@ -155,3 +151,7 @@ export class TaskSheetComponent implements OnInit {
     location.href = location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + this.courseProjectId;
   }
 }
+function takeUntil(destroy$: Subject<void>): import("rxjs").OperatorFunction<any, unknown> {
+  throw new Error('Function not implemented.');
+}
+
