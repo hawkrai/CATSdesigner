@@ -10,6 +10,7 @@ import { ResetPassword } from 'src/app/model/resetPassword';
 import { MatDialog } from '@angular/material';
 import {MessageComponent} from '../../../component/message/message.component';
 import { AppToastrService } from 'src/app/service/toastr.service';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-reset-the-password',
@@ -29,8 +30,16 @@ export class ResetThePasswordComponent implements OnInit {
   login =""
   @Output() submitEM = new EventEmitter();
 
-  constructor(private userService: UserService, private lectorService: ProfessorService , private studentService: StudentService,
-              private router: ActivatedRoute, private formBuilder: FormBuilder, private dialog: MatDialog, private toastr: AppToastrService) { }
+  constructor(
+    private userService: UserService,
+    private lectorService: ProfessorService,
+    private studentService: StudentService,
+    private router: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog,
+    private toastr: AppToastrService,
+    private translatePipe : TranslatePipe
+    ) { }
 
   ngOnInit() {
     const studentId = this.router.snapshot.params.studentId;
@@ -82,11 +91,11 @@ export class ResetThePasswordComponent implements OnInit {
 
   resetPassword(resetPasswordModel) {
     this.userService.resetPassword(resetPasswordModel).subscribe( () => {
-      this.toastr.addSuccessFlashMessage('Пароль успешно изменен!');
+      this.toastr.addSuccessFlashMessage(this.translatePipe.transform("text.adminPanel.resetPassword.success", "text.adminPanel.resetPassword.success"));
       window.history.back();
     },
     err => {
-      this.toastr.addErrorFlashMessage('Произошла ошибка при изменении пароля.Попробуйте заново!');
+      this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.adminPanel.resetPassword.error", "text.adminPanel.resetPassword.error"));
       window.history.back();
     });
   }

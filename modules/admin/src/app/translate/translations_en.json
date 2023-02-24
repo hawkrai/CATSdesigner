@@ -770,6 +770,13 @@
   "text.adminPanel.students.status.confirmed": "Confirmed",
   "text.adminPanel.students.status.notConfirmed": "Not confirmed",
 
+  "text.adminPanel.messages.title": "Messages",
+  "text.adminPanel.messages.sendButton": "Write a message",
+  "text.adminPanel.messages.deleteButton": "Delete",
+  "text.adminPanel.messages.inbox.label": "Inbox",
+  "text.adminPanel.messages.outbox.label": "Outbox",
+  "text.adminPanel.messages.outbox.more": "more",
+
   "text.adminPanel.modal.statistic.title": "System authorization statistics",
   "text.adminPanel.modal.statistic.count": "Number of authorizations",
   "text.adminPanel.modal.statistic.times": "Time of authorizations",
@@ -831,7 +838,29 @@
   "text.adminPanel.modal.listOfStudents.headers.status": "Confirmation",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Confirmed",
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed",
+  
+  "text.adminPanel.modal.messageDetail.sent": "Sent",
+  "text.adminPanel.modal.messageDetail.recepients": "Recepients",
+  "text.adminPanel.modal.messageDetail.reply": "Reply",
+
+  "text.adminPanel.modal.sendMessage.title": "Sending a message",
+  "text.adminPanel.modal.sendMessage.recepients": "Recepients",
+  "text.adminPanel.modal.sendMessage.userInput": "Enter a user...",
+  "text.adminPanel.modal.sendMessage.subject": "Subject",
+  "text.adminPanel.modal.sendMessage.text": "Message text",
+  "text.adminPanel.modal.sendMessage.fileAttach": "Attach a file",
+  "text.adminPanel.modal.sendMessage.send": "Send",
 
   "text.adminPanel.profile.dp": "Diploma project",
-  "text.adminPanel.profile.dp.plural": "Diploma projects"
+  "text.adminPanel.profile.dp.plural": "Diploma projects",
+
+  "text.adminPanel.resetPassword.password": "Password",
+  "text.adminPanel.resetPassword.invalid": "The password must contain at least 6 and no more than 30 characters, at least 1 small and capital letter, and at least one number.",
+  "text.adminPanel.resetPassword.minLength": "You have entered less than 6 characters.",
+  "text.adminPanel.resetPassword.allowedCharacters": "Allowed characters",
+  "text.adminPanel.resetPassword.maxLength": "You have entered more than 30 characters.",
+  "text.adminPanel.resetPassword.repeatPassword": "Repeat the password",
+  "text.adminPanel.resetPassword.repeatPasswordInvalid": "The passwords don't match.",
+  "text.adminPanel.resetPassword.success": "Password has been changed successfully!",
+  "text.adminPanel.resetPassword.error": "An error has occurred while changing the password. Try again!"
 }
