@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {IAppState} from './store/state/app.state';
-import {select, Store} from '@ngrx/store';
-import {MatOptionSelectionChange} from '@angular/material';
-import {getSubjectId} from './store/selectors/subject.selector';
-import {CourseUser} from './models/course-user.model';
-import {CourseUserService} from './services/course-user.service';
-import {GroupService} from './services/group.service';
-import {ProjectGroupService} from './services/project-group.service';
-import {Observable} from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { IAppState } from './store/state/app.state';
+import { select, Store } from '@ngrx/store';
+import { MatOptionSelectionChange } from '@angular/material';
+import { getSubjectId } from './store/selectors/subject.selector';
+import { CourseUser } from './models/course-user.model';
+import { CourseUserService } from './services/course-user.service';
+import { GroupService } from './services/group.service';
+import { ProjectGroupService } from './services/project-group.service';
+import { Observable } from 'rxjs';
 import { CoreGroup } from './models/core-group.model';
-import {switchMap} from "rxjs/operators";
+import { switchMap } from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -25,12 +25,11 @@ export class AppComponent implements OnInit {
   groupNumber: number;
 
   private subjectId: string;
-  private courseUser: CourseUser;
+  public courseUser: CourseUser;
 
   constructor(private courseUserService: CourseUserService,
-              private projectGroupService: ProjectGroupService,
-              private groupService: GroupService,
-              private store: Store<IAppState>) {
+    private groupService: GroupService,
+    private store: Store<IAppState>) {
   }
 
   ngOnInit() {

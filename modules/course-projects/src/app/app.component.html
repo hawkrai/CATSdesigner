@@ -1,9 +1,7 @@
 <div class="app-component" *ngIf="courseUser">
   <div class="mdc-tab-bar" role="tablist">
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 1"
-            (click)="onChangeTab(1)"
-    >
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 1"
+      (click)="onChangeTab(1)">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{ 'text.course.projects' | translate : 'Темы проектов'}}</span>
       </span>
@@ -12,66 +10,58 @@
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 2"
-            (click)="onChangeTab(2)"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">{{'text.course.task.sheet' | translate : 'Лист задания'}}</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 2"
+      (click)="onChangeTab(2)">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.course.task.sheet' | translate : 'Лист задания'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 3"
-            (click)="onChangeTab(3)"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">{{'text.course.percentages' |translate : 'График процентовки'}}</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 3"
+      (click)="onChangeTab(3)">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.course.percentages' |translate : 'График процентовки'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 4"
-            (click)="onChangeTab(4)"
-    >
-          <span class="mdc-tab__content">
-            <span
-              class="mdc-tab__text-label">{{'text.course.percentage.results' | translate : 'Результаты процентовки'}}</span>
-          </span>
+    <button class="mdc-tab button" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 4"
+      (click)="onChangeTab(4)">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.course.percentage.results' | translate : 'Результаты
+          процентовки'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 4">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
+      <mat-icon class="button__icon"
+        [ngClass]="{'button__icon_active-color': tab === 4, 'button__icon_unactive-color': tab !== 4}">cloud_download</mat-icon>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 5"
-            (click)="onChangeTab(5)"
-    >
-          <span class="mdc-tab__content">
-            <span
-              class="mdc-tab__text-label">{{'text.course.consultation.visiting' |translate : 'Посещение консультаций'}}</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 5"
+      (click)="onChangeTab(5)">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.course.consultation.visiting' |translate : 'Посещение
+          консультаций'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 5">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 6"
-            (click)="onChangeTab(6)"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">{{'text.course.defence' | translate : 'Защита проектов'}}</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 6"
+      (click)="onChangeTab(6)">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.course.defence' | translate : 'Защита проектов'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 6">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
   </div>
@@ -81,38 +71,33 @@
     <app-task-sheet *ngIf="tab === 2" [courseUser]="courseUser" [groups]="groups"></app-task-sheet>
     <app-percentages *ngIf="tab === 3" [courseUser]="courseUser"></app-percentages>
     <app-percentage-results *ngIf="tab === 4 && selectedGroup" [courseUser]="courseUser"
-                            [selectedGroup]="selectedGroup">
+      [selectedGroup]="selectedGroup">
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" groupPicker class="picker">
         <mat-form-field *ngIf="courseUser.IsLecturer">
           <mat-select [value]="groups ? groups[0].GroupId : ''">
             <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)"
-                        [value]="group.GroupId">
+              [value]="group.GroupId">
               {{group.GroupName}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <div *ngIf="courseUser.IsStudent">{{('text.group' | translate : 'Группа: ') + groupNumber}}</div>
         <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
-          <mat-slide-toggle
-            [color]="'primary'"
-            [checked]="detachedGroup"
-            (change)="groupStatusChange($event)"
-          >
+          <mat-slide-toggle [color]="'primary'" [checked]="detachedGroup" (change)="groupStatusChange($event)">
             {{'text.groups.detached' | translate : 'Открепленные группы'}}
           </mat-slide-toggle>
         </div>
       </div>
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" class="group-select">
-        <app-help
-          *ngIf="courseUser.IsLecturer"
+        <app-help *ngIf="courseUser.IsLecturer"
           [message]="'text.course.percentage.help.message' | translate : 'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
           [action]="'text.course.percentage.help.clear' | translate : 'Понятно'"></app-help>
         <div class="excel-file" matTooltip="{{'text.download.excel' | translate : 'Загрузить документ Excel'}}"
-             *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
+          *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
           <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
         </div>
         <div class="download-zip" matTooltip="{{'text.download.zip' | translate : 'Скачать архивом листы задания'}}"
-             *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
+          *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
           <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
         </div>
       </div>
@@ -122,18 +107,14 @@
         <mat-form-field *ngIf="courseUser.IsLecturer">
           <mat-select [value]="groups ? groups[0].GroupId : ''">
             <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)"
-                        [value]="group.GroupId">
+              [value]="group.GroupId">
               {{group.GroupName}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <div *ngIf="courseUser.IsStudent">{{('text.group' | translate : 'Группа: ') + groupNumber}}</div>
         <div class="detached-toggle" *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer">
-          <mat-slide-toggle
-            [color]="'primary'"
-            [checked]="detachedGroup"
-            (change)="groupStatusChange($event)"
-          >
+          <mat-slide-toggle [color]="'primary'" [checked]="detachedGroup" (change)="groupStatusChange($event)">
             {{'text.groups.detached' | translate : 'Открепленные группы'}}
           </mat-slide-toggle>
         </div>
@@ -143,11 +124,11 @@
           [message]="'text.course.percentage.help.message' | translate : 'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
           [action]="'text.course.percentage.help.clear' | translate : 'Понятно'"></app-help>
         <div class="excel-file" matTooltip="{{'text.download.excel' | translate : 'Загрузить документ Excel'}}"
-             *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
+          *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="getExcelFile()">
           <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
         </div>
         <div class="download-zip" matTooltip="{{'text.download.zip' | translate : 'Скачать архивом листы задания'}}"
-             *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
+          *ngIf="(tab === 4 || tab === 5) && courseUser.IsLecturer" (click)="downloadArchive()">
           <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
         </div>
       </div>

@@ -2,61 +2,77 @@
   <div class="mdc-data-table">
     <table class="mdc-data-table__table" matSort (matSortChange)="sortData($event)">
       <thead>
-      <tr class="mdc-data-table__header-row">
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
-        <th mat-sort-header="Theme" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.projects.list.project' | translate : 'Тема курсового проекта'}}</th>
-        <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.projects.list.student' | translate : 'Студент'}}</th>
-        <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.projects.list.group' | translate : 'Группа'}}</th>
-        <th mat-sort-header="ApproveDate" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.projects.list.date' | translate : 'Дата'}}</th>
-        <th mat-sort-header="Lecturer" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.projects.list.supervisor' | translate : 'Руководитель проекта'}}</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.projects.list.action' | translate : 'Действие'}}</th>
-      </tr>
+        <tr class="mdc-data-table__header-row">
+          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
+          <th mat-sort-header="Theme" class="mdc-data-table__header-cell" role="columnheader" scope="col">
+            {{'text.course.projects.list.project' | translate : 'Тема курсового проекта'}}</th>
+          <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">
+            {{'text.course.projects.list.student' | translate : 'Студент'}}</th>
+          <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">
+            {{'text.course.projects.list.group' | translate : 'Группа'}}</th>
+          <th mat-sort-header="ApproveDate" class="mdc-data-table__header-cell" role="columnheader" scope="col">
+            {{'text.course.projects.list.date' | translate : 'Дата'}}</th>
+          <th mat-sort-header="Lecturer" class="mdc-data-table__header-cell" role="columnheader" scope="col">
+            {{'text.course.projects.list.supervisor' | translate : 'Руководитель проекта'}}</th>
+          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.projects.list.action' |
+            translate : 'Действие'}}</th>
+        </tr>
       </thead>
       <tbody>
-      <tr class="mdc-data-table__row" *ngFor="let project of projects; index as i">
-        <td class="mdc-data-table__cell">{{ i + 1 }}</td>
-        <td class="mdc-data-table__cell">{{ project.Theme }}</td>
-        <td class="mdc-data-table__cell">{{ project.Student }}</td>
-        <td class="mdc-data-table__cell">{{ project.Group }}</td>
-        <td class="mdc-data-table__cell">{{ project.ApproveDate | date:'dd.MM.yyyy'}}</td>
-        <td class="mdc-data-table__cell">{{ project.Lecturer}}</td>
-        <td class="mdc-data-table__cell" *ngIf="courseUser.IsStudent">
-          <button mat-icon-button color="primary" matTooltip="{{'text.download.project.list' | translate : 'Скачать лист задания'}}"
-                  *ngIf="project.StudentId == courseUser.UserId && project.ApproveDate != null" (click)="projectsComponent.downloadTaskSheet(project)">
-            <mat-icon>cloud_download</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" matTooltip="{{'text.course.projects.select' | translate : 'Выбрать тему'}}"
-                  *ngIf="!(courseUser.HasAssignedDiplomProject || courseUser.HasChosenDiplomProject)
+        <tr class="mdc-data-table__row" *ngFor="let project of projects; index as i">
+          <td class="mdc-data-table__cell">{{ i + 1 }}</td>
+          <td class="mdc-data-table__cell mdc-data-table__wrap">{{ project.Theme }}</td>
+          <td class="mdc-data-table__cell">{{ project.Student }}</td>
+          <td class="mdc-data-table__cell">{{ project.Group }}</td>
+          <td class="mdc-data-table__cell">{{ project.ApproveDate | date:'dd.MM.yyyy'}}</td>
+          <td class="mdc-data-table__cell">{{ project.Lecturer}}</td>
+          <td class="mdc-data-table__cell" *ngIf="courseUser.IsStudent">
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.download.project.list' | translate : 'Скачать лист задания'}}"
+              *ngIf="project.StudentId == courseUser.UserId && project.ApproveDate != null"
+              (click)="projectsComponent.downloadTaskSheet(project)">
+              <mat-icon>cloud_download</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.course.projects.select' | translate : 'Выбрать тему'}}" *ngIf="!isUserHaveSubjectCourseProject
             && project.StudentId == null" (click)="projectsComponent.chooseCourseProject(project)">
-            <mat-icon>done</mat-icon>
-          </button>
-        </td>
-        <td class="mdc-data-table__cell" *ngIf="courseUser.IsLecturer">
-          <button mat-icon-button color="primary" matTooltip="{{'text.course.projects.edit' | translate : 'Редактировать тему'}}" (click)="projectsComponent.editProject(project)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" matTooltip="{{'text.course.projects.assign' | translate : 'Назначить тему'}}" (click)="projectsComponent.assignProject(project)"
-                  *ngIf="project.StudentId == null">
-            <mat-icon>assignment</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" matTooltip="{{'text.course.projects.assign.cancel' | translate : 'Отменить назначение темы'}}" (click)="projectsComponent.removeAssignment(project)"
-                  *ngIf="project.StudentId != null">
-            <mat-icon>remove_circle_outline</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" matTooltip="{{'text.download.project.list' | translate : 'Скачать лист задания'}}" (click)="projectsComponent.downloadTaskSheet(project)"
-                  *ngIf="project.StudentId != null">
-            <mat-icon>cloud_download</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" matTooltip="{{'text.course.projects.delete' | translate : 'Удалить тему'}}" (click)="projectsComponent.deleteProject(project)">
-            <mat-icon>delete</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" matTooltip="{{'text.course.projects.apply' | translate : 'Подтвердить выбранную тему'}}" (click)="projectsComponent.approveChoice(project)"
-                  *ngIf="project.StudentId && !project.ApproveDate">
-            <mat-icon>done</mat-icon>
-          </button>
-        </td>
-      </tr>
+              <mat-icon>done</mat-icon>
+            </button>
+          </td>
+          <td class="mdc-data-table__cell" *ngIf="courseUser.IsLecturer">
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.course.projects.edit' | translate : 'Редактировать тему'}}"
+              (click)="projectsComponent.editProject(project)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.course.projects.assign' | translate : 'Назначить тему'}}"
+              (click)="projectsComponent.assignProject(project)" *ngIf="project.StudentId == null">
+              <mat-icon>assignment</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.course.projects.assign.cancel' | translate : 'Отменить назначение темы'}}"
+              (click)="projectsComponent.removeAssignment(project)" *ngIf="project.StudentId != null">
+              <mat-icon>remove_circle_outline</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.download.project.list' | translate : 'Скачать лист задания'}}"
+              (click)="projectsComponent.downloadTaskSheet(project)" *ngIf="project.StudentId != null">
+              <mat-icon>cloud_download</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.course.projects.delete' | translate : 'Удалить тему'}}"
+              (click)="projectsComponent.deleteProject(project)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button color="primary"
+              matTooltip="{{'text.course.projects.apply' | translate : 'Подтвердить выбранную тему'}}"
+              (click)="projectsComponent.approveChoice(project)" *ngIf="project.StudentId && !project.ApproveDate">
+              <mat-icon>done</mat-icon>
+            </button>
+          </td>
+        </tr>
       </tbody>
-  </table>
+    </table>
   </div>
 </div>
