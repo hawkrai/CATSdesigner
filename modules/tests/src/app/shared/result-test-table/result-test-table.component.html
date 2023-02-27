@@ -7,42 +7,41 @@
           {{('text.test.res.group' | translate : "Группа ") + group + (showAsSubGroup ? (('text.test.res.subgroup' | translate : ", Подгруппа ") + (iq+1)) : "")}}
         </span>
         <div class="result-test-table-subgroup-load"
-             (click)="downloadExcel()">
+             (click)="downloadExcel()" [matTooltip]="'excel.export' | translate:'Экспорт в Эксель'">
         </div>
-
       </div>
       <div class="result-test-table-table">
         <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
           <!-- Position Column -->
           <ng-container matColumnDef="Id">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> №</mat-header-cell>
-            <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index+1}}</mat-cell>
+            <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index === studentResults.length - 1 ? null : index+1}}</mat-cell>
           </ng-container>
 
           <!-- Name Column -->
           <ng-container matColumnDef="Name">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.text.fio.student' | translate: 'ФИО студента'}}</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element[1].name}}
+            <mat-cell *matCellDef="let element; let index = index" class="mat-header-cell-description"> {{index === studentResults.length - 1 ? 'Средняя оценка (процент) за тест' : element[1].name}}
             </mat-cell>
           </ng-container>
 
           <ng-container *ngFor="let dummy of ' '.repeat(testSize).split(''), let i = index" [matColumnDef]="'test'+i">
             <mat-header-cell *matHeaderCellDef  class="mat-header-cell-action" [matTooltip]="studentResults[0][1].test[i].testName">{{("text.test" | translate : "Тест") + " " + (i+1)}}</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-action"
-                      (click)="openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
+            <mat-cell *matCellDef="let element; let index = index" class="mat-header-cell-action"
+                      (click)="index !== studentResults.length - 1 && openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
                       [matTooltip]="element[1].test[i].testName">
-              {{(element[1].test[i].points | isInteger) ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
-              ('text.test.not.passed' | translate: "тест не пройден")}}
+              {{index === studentResults.length - 1 ? averageMarkForTest[iq][element[1].test[i].testId]?.toFixed(1) : ((element[1].test[i].points | isInteger) ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
+              ('text.test.not.passed' | translate: "тест не пройден"))}}
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="average">
             <mat-header-cell *matHeaderCellDef class="mat-header-cell-average">{{'text.test.average.score'| translate:'Средняя оценка'}}</mat-header-cell>
-            <mat-cell *matCellDef="let element" class="mat-header-cell-average"
+            <mat-cell *matCellDef="let element; let index = index" class="mat-header-cell-average"
               [matTooltip]="getAverageTooltip(element)"
               matTooltipPosition="below"
               [matTooltipDisabled]="size && element[3]"
-                      [class.notAll]="size && !element[3]"> {{element[2].slice()}}
+                      [class.notAll]="size && !element[3]"> {{index === studentResults.length - 1 ? null : element[2].slice()}}
             </mat-cell>
           </ng-container>
 
@@ -64,7 +63,8 @@
             [colors]="barChartColors"
             [plugins]="barChartPlugins"
             [legend]="barChartLegend"
-            [chartType]="barChartType">
+            [chartType]="barChartType"
+            >
     </canvas>
   </div>
   <div class="result-test-table-warning" *ngIf="!showChart">

@@ -176,6 +176,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.testService.saveTest({
       ...test,
       SetTimeForAllTest: !test.SetTimeForAllTest,
+      Id: this.data.event.Id,
     })
       .pipe(
         tap((message) => {

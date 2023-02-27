@@ -24,6 +24,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   ];
   public barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     // We use these empty structures as placeholders for dynamic theming.
     scales: {
       xAxes: [{
@@ -35,11 +36,16 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
       }]
     },
     aspectRatio: 6,
+    tooltips: {
+      backgroundColor: '#fff',
+      bodyFontColor: '#000',
+      titleFontColor: '#000',
+    },
     plugins: {
       datalabels: {
         anchor: "end",
         align: "end",
-      }
+      },
     }
   };
   public barChartLabels: Label[] = [];
@@ -72,6 +78,8 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   @Input()
   public loading: boolean;
   public testSize: number;
+  public averageMarkForTest: any;
+
   displayedColumns: string[] = ["Id", "Name"];
   @Output()
   public sendAverageMarks: EventEmitter<any> = new EventEmitter();
@@ -87,7 +95,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
 
   ngOnInit() {
     this.barChartData = [
-      { data: [], label: this.translatePipe.transform("text.test.average_mark", "Средняя оценка") }
+      { data: [], label: this.translatePipe.transform("text.test.average_mark", " Средняя оценка") }
     ];
     for (let i = 0; i < 3; i++) {
       this.scareThing.push(Array.from(this.tests[i].entries()));
@@ -101,6 +109,13 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     }
     this.displayedColumns.push("average");
     this.getAverageMark();
+    this.averageMarkForTest = this.getAverageMarkForTest();
+
+    for (const subGroup of this.scareThing) {
+      if (subGroup.length) {
+        subGroup.push(subGroup[0]);
+      }
+    }
   }//todo average marks from backend
 
   public openAnswersDialog(openDialog: boolean, name: string, testName: string, event?: any, id?: any): void {
@@ -110,7 +125,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
         data: { event, id, name, testName },
         disableClose: false,
         autoFocus: false,
-    });
+      });
 
       dialogRef.afterClosed()
         .pipe(
@@ -155,6 +170,44 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
       this.barChartData[0].data.push(entire[1]);
     }
     this.showChart = (<number[]>this.barChartData[0]?.data).some(value => value.toString() != "NaN");
+  }
+
+  private getAverageMarkForTest(): any {
+    const result = [];
+    for (let subGroup of this.scareThing) {
+      if (subGroup.length !== 0) {
+        const sumOfMarks = {};
+        let countOfValidResults = {};
+        for (let pupil of subGroup) {
+          for (let test of pupil[1].test) {
+            if (test.percent === undefined && test.points === undefined ||
+              (test.percent === null && test.points === null)
+            ) {
+              continue;
+            }
+            if (sumOfMarks[test.testId] === undefined) {
+              sumOfMarks[test.testId] = 0;
+              countOfValidResults[test.testId] = 0;
+            }
+            countOfValidResults[test.testId]++;
+            // tslint:disable-next-line:no-magic-numbers
+            sumOfMarks[test.testId] += test.percent !== undefined ? test.percent / 10 : test.points;
+          }
+        }
+
+        for (let [testId, value] of Object.entries(sumOfMarks)) {
+          if (!countOfValidResults[testId]) {
+            sumOfMarks[testId] = null;
+          } else {
+            sumOfMarks[testId] = sumOfMarks[testId] / countOfValidResults[testId];
+          }
+        }
+
+        result.push(sumOfMarks);
+      }
+    }
+
+    return result;
   }
 
   private getShortName(pupil): string {
