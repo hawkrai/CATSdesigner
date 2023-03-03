@@ -125,6 +125,7 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
         data: { event, id, name, testName },
         disableClose: false,
         autoFocus: false,
+        panelClass: 'test-modal-container',
       });
 
       dialogRef.afterClosed()
