@@ -2,9 +2,18 @@
   padding: 8px;
 }
 
+::ng-deep {
+  .mat-tab-body-content {
+    overflow: initial !important;
+  }
+  .mat-tab-body.mat-tab-body-active {
+    overflow-y: hidden !important;
+  }
+}
+
 .container-table {
   &-tests {
-    margin: 20px 20px 0 15px;
+    margin: 20px 20px 0 23px;
     &-autocomplete {
       display: flex;
       &-item {

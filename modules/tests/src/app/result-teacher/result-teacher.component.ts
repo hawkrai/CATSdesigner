@@ -60,7 +60,7 @@ export class ResultTeacherComponent extends AutoUnsubscribeBase implements OnIni
     super();
     this.help = {
       // tslint:disable-next-line:max-line-length
-      message: this.translatePipe.transform("text.help.lectures", "Для добавления или удаления дат лекций нажмите на кнопку \"Управление расписанием\". Нажмите 2 раза на ячейку с нужной датой, чтобы отметить посещаемость и оставить комментарии."),
+      message: this.translatePipe.transform("text.help.lectures", "Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента."),
       action: this.translatePipe.transform("button.understand", "Понятно")
     };
   }

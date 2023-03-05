@@ -103,15 +103,16 @@
           {{ "text.test.add.answer" | translate : "Добавить ответ" }}
         </button>
         <div class="question-popup-inputs">
-          <mat-form-field class="question-popup-type">
+          <mat-form-field class="question-popup-type" >
             <mat-label>{{
               "text.test.question.type" | translate : "Тип вопроса"
             }}</mat-label>
             <mat-select
               (selectionChange)="onValueChange($event)"
               [value]="question.QuestionType || 0"
+              [matTooltip]="getPopupTypeTooltip()"
             >
-              <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id">
+              <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id" >
                 {{ type.label | translate : type.label }}
               </mat-option>
             </mat-select>

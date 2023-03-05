@@ -1,3 +1,9 @@
+<button mat-icon-button
+            (click)="onNoClick()"
+            class="close-button"
+            >
+      <mat-icon>close</mat-icon>
+    </button>
 <div *ngIf="answers;else loading">
   <div class="answers-popup-general">
     <div class="answers-popup-general-test">{{data.testName}}</div>
@@ -20,7 +26,7 @@
     <div>{{answer.Points === 0 ? ('text.test.popup.not.right' | translate: "Неверно") : ('text.test.popup.right' | translate: "Верно")}}</div>
   </div>
   <div mat-dialog-actions>
-    <button mat-raised-button color="white" (click)="onNoClick()">{{'button.cancel' | translate : 'Отмена'}}</button>
+    <button mat-raised-button color="white" (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
   </div>
 </div>
 <ng-template #loading>

@@ -1,17 +1,17 @@
-import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef, MatSlideToggleChange} from "@angular/material";
-import {TestService} from "../../../service/test.service";
-import {Question} from "../../../models/question/question.model";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Answer} from "../../../models/question/answer.model";
-import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
-import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
-import {combineLatest, of, Subject} from "rxjs";
-import {takeUntil, tap} from "rxjs/operators";
-import {Base64UploaderPlugin} from "../../../core/Base64Upload";
-import {FormUtils} from "../../../utils/form.utils";
-import {NavItem} from "../../../models/nav-item";
-import {TranslatePipe} from "educats-translate";
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogRef, MatSlideToggleChange } from "@angular/material";
+import { TestService } from "../../../service/test.service";
+import { Question } from "../../../models/question/question.model";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Answer } from "../../../models/question/answer.model";
+import { AutoUnsubscribe } from "../../../decorator/auto-unsubscribe";
+import { AutoUnsubscribeBase } from "../../../core/auto-unsubscribe-base";
+import { combineLatest, of, Subject } from "rxjs";
+import { takeUntil, tap } from "rxjs/operators";
+import { Base64UploaderPlugin } from "../../../core/Base64Upload";
+import { FormUtils } from "../../../utils/form.utils";
+import { NavItem } from "../../../models/nav-item";
+import { TranslatePipe } from "educats-translate";
 import { whitespace } from "src/app/shared/validators/whitespace.validator";
 import { CatsService } from "src/app/service/cats.service";
 
@@ -41,10 +41,10 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public charsde: any;
   public newCase: boolean;
   public readonly ANSWER_TYPES: any = [
-    {id: 0, label: "text.test.one.variant"},
-    {id: 1, label: "text.test.many.variant"},
-    {id: 2, label: "text.test.from.keyboard"},
-    {id: 3, label: "text.test.sequence"}]
+    { id: 0, label: "text.test.one.variant" },
+    { id: 1, label: "text.test.many.variant" },
+    { id: 2, label: "text.test.from.keyboard" },
+    { id: 3, label: "text.test.sequence" }]
     ;
   public formGroup: FormGroup;
   public concept: any;
@@ -54,10 +54,10 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public showDescription: boolean;
 
   constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              private testService: TestService,
-              private translatePipe: TranslatePipe,
-              private catsService: CatsService) {
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private testService: TestService,
+    private translatePipe: TranslatePipe,
+    private catsService: CatsService) {
     super();
   }
 
@@ -148,7 +148,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     } else if (this.chosenQuestionType === 3) {
       let num: any = Object.keys(this.charsSequence)[Object.keys(this.charsSequence).length - 1];
       num = Number(num.split("key")[1]);
-      this.charsSequence  ["key" + (num + 1)] = "";
+      this.charsSequence["key" + (num + 1)] = "";
       this.charsde = Object.keys(this.charsSequence);
     }
   }
@@ -206,7 +206,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
         this.question.Answers[num].IsCorrect = 1;
         this.question.Answers[0].QuestionId = 0;
       } else {
-        this.catsService.showMessage({ Message: this.translatePipe.transform('text.test.check.correctness',"Проверьте варианты ответов. Они не должны быть пустыми"), Code: '500' });
+        this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.check.correctness", "Проверьте варианты ответов. Они не должны быть пустыми"), Code: "500" });
         return;
       }
     } else if (this.chosenQuestionType === 1) {
@@ -254,15 +254,24 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((res) => {
         if (res.ErrorMessage) {
-          this.catsService.showMessage({ Message: res.ErrorMessage, Code: '500' });
+          this.catsService.showMessage({ Message: res.ErrorMessage, Code: "500" });
         } else {
-          this.catsService.showMessage({ Message: this.newCase ? this.translatePipe.transform('text.test.question.created',"Вопрос создан") : this.translatePipe.transform('text.test.question.changed',"Вопрос изменен"), Code: '200' });
+          this.catsService.showMessage({
+            Message: this.newCase
+              ? this.translatePipe.transform("text.test.question.created", "Вопрос создан")
+              : this.translatePipe.transform("text.test.question.changed", "Вопрос изменен"), Code: "200"
+          });
           this.dialogRef.close(true);
         }
 
       }, () => {
-        this.catsService.showMessage({ Message: this.translatePipe.transform('text.test.internal.server.error',"Ошибка ответа сервера"), Code: '500' });
+        this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.internal.server.error", "Ошибка ответа сервера"), Code: "500" });
       });
+  }
+
+  getPopupTypeTooltip() {
+    const answerType = this.ANSWER_TYPES.filter((x) => x.id === (this.question.QuestionType || 0))[0];
+    return answerType ? this.translatePipe.transform(answerType.label, answerType.label) : "";
   }
 
   selectConcept(Id: any) {
@@ -317,31 +326,31 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   private initExisting(answers: Answer[]) {
     if (this.chosenQuestionType === 0) {
       answers.forEach((answer, index) => {
-          this.chars["key" + index] = answer.Content;
-          if (answer.IsCorrect === 1) {
-            this.chosenType = "key" + index;
-          }
+        this.chars["key" + index] = answer.Content;
+        if (answer.IsCorrect === 1) {
+          this.chosenType = "key" + index;
         }
+      }
       );
       this.charsde = Object.keys(this.chars);
     } else if (this.chosenQuestionType === 1) {
       answers.forEach((answer, index) => {
-          this.charsNeskolko["key" + index] = [];
-          this.charsNeskolko["key" + index][0] = answer.Content;
-          this.charsNeskolko["key" + index][1] = answer.IsCorrect;
-        }
+        this.charsNeskolko["key" + index] = [];
+        this.charsNeskolko["key" + index][0] = answer.Content;
+        this.charsNeskolko["key" + index][1] = answer.IsCorrect;
+      }
       );
       this.charsde = Object.keys(this.charsNeskolko);
     } else if (this.chosenQuestionType === 2) {
       answers.forEach((answer, index) => {
-          this.charsWords["key" + index] = answer.Content;
-        }
+        this.charsWords["key" + index] = answer.Content;
+      }
       );
       this.charsde = Object.keys(this.charsWords);
     } else if (this.chosenQuestionType === 3) {
       answers.forEach((answer, index) => {
-          this.charsSequence["key" + index] = answer.Content;
-        }
+        this.charsSequence["key" + index] = answer.Content;
+      }
       );
       this.charsde = Object.keys(this.charsSequence);
     }
@@ -352,7 +361,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.selectedConcept = questionConcept.Name;
   }
 
-  public descriptionStateChange(event: MatSlideToggleChange):void {
+  public descriptionStateChange(event: MatSlideToggleChange): void {
     this.showDescription = event.checked;
   }
 }

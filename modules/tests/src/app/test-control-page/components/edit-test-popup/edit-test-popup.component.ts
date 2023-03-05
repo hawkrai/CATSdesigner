@@ -1,13 +1,13 @@
-import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {TestService} from "../../../service/test.service";
-import {TestType} from "../../../models/test.model";
-import {AutoUnsubscribe} from "../../../decorator/auto-unsubscribe";
-import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
-import {Subject} from "rxjs";
-import {takeUntil, tap} from "rxjs/operators";
-import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
-import {FormUtils} from "../../../utils/form.utils";
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
+import { TestService } from "../../../service/test.service";
+import { TestType } from "../../../models/test.model";
+import { AutoUnsubscribe } from "../../../decorator/auto-unsubscribe";
+import { AutoUnsubscribeBase } from "../../../core/auto-unsubscribe-base";
+import { Subject } from "rxjs";
+import { takeUntil, tap } from "rxjs/operators";
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
+import { FormUtils } from "../../../utils/form.utils";
 import { whitespace } from "src/app/shared/validators/whitespace.validator";
 import { CatsService } from "src/app/service/cats.service";
 import { TranslatePipe } from "educats-translate";
@@ -28,26 +28,26 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     value: TestType.Control,
     tooltip: "Необходимо открывать доступ обучающимся для каждого прохождения теста"
   },
-    {
-      name: "text.test.for.self.control",
-      value: TestType.ForSelfStudy,
-      tooltip: "Постоянно открыт для обучающихся"
-    },
-    {
-      name: "text.test.for.pre.eumk",
-      value: TestType.BeforeEUMK,
-      tooltip: "Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное обучение, доступен из модуля ЭУМК"
-    },
-    {
-      name: "text.test.for.eumk",
-      value: TestType.ForEUMK,
-      tooltip: "Позволяет реализовать адаптивное обучение по результатам предтеста"
-    },
-    {
-      name: "text.test.for.nn",
-      value: TestType.ForNN,
-      tooltip: "Позволяет определять плохо изученные темы обучающимся"
-    }];
+  {
+    name: "text.test.for.self.control",
+    value: TestType.ForSelfStudy,
+    tooltip: "Постоянно открыт для обучающихся"
+  },
+  {
+    name: "text.test.for.pre.eumk",
+    value: TestType.BeforeEUMK,
+    tooltip: "Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное обучение, доступен из модуля ЭУМК"
+  },
+  {
+    name: "text.test.for.eumk",
+    value: TestType.ForEUMK,
+    tooltip: "Позволяет реализовать адаптивное обучение по результатам предтеста"
+  },
+  {
+    name: "text.test.for.nn",
+    value: TestType.ForNN,
+    tooltip: "Позволяет определять плохо изученные темы обучающимся"
+  }];
 
 
   public newTest: boolean = true;
@@ -55,12 +55,12 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
   private unsubscribeStream$: Subject<void> = new Subject<void>();
   isLoading: boolean;
   constructor(private testService: TestService,
-              private formBuilder: FormBuilder,
-              public dialogRef: MatDialogRef<EditTestPopupComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              private catsService: CatsService,
-              private translatePipe: TranslatePipe,
-              private subjectService: SubjectService) {
+    private formBuilder: FormBuilder,
+    public dialogRef: MatDialogRef<EditTestPopupComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private catsService: CatsService,
+    private translatePipe: TranslatePipe,
+    private subjectService: SubjectService) {
     super();
     if (this.data.event) {
       this.newTest = false;
@@ -94,7 +94,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
         ])),
         SetTimeForAllTest: new FormControl(false),
         Type: new FormControl(null, [Validators.required, this.testTypeValidator(modules)]),
-        SubjectId: new FormControl(subjectId)
+        jectId: new FormControl(subjectId)
       });
       if (this.data.event) {
         this.newTest = false;
@@ -106,13 +106,18 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
 
   }
 
-   testTypeValidator(modules: Module[]): ValidatorFn {
+  testTypeValidator(modules: Module[]): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value == null) {
         return null;
       }
       const testType = +control.value;
-      if (Number.isInteger(testType) && ((testType === TestType.BeforeEUMK || testType === TestType.ForEUMK) && !modules.some(x => x.Type === ModuleType.ComplexMaterial))) {
+      if (
+        Number.isInteger(testType) && ((
+          testType === TestType.BeforeEUMK ||
+          testType === TestType.ForEUMK ||
+          testType === TestType.ForNN) &&
+          !modules.some(x => x.Type === ModuleType.ComplexMaterial))) {
         return { type: true };
       }
       return null;
@@ -171,6 +176,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.testService.saveTest({
       ...test,
       SetTimeForAllTest: !test.SetTimeForAllTest,
+      Id: this.data.event.Id,
     })
       .pipe(
         tap((message) => {

@@ -33,6 +33,7 @@
               <mat-option
                 *ngFor="let option of filteredOptions | async"
                 [value]="option"
+                [matTooltip]="option.Title"
               >
                 {{ option.Title }}
               </mat-option>

@@ -13,6 +13,7 @@ import {Observable, Subject, throwError} from "rxjs";
 import {DeleteQuestionConfirmationPopupComponent} from "./components/delete-question-confirmation-popup/delete-question-confirmation-popup.component";
 import {NeuralNetworkPopupComponent} from "./components/neural-network-popup/neural-network-popup.component";
 import {TranslatePipe} from "educats-translate";
+import { AppToastrService } from "../service/toastr.service";
 
 
 @AutoUnsubscribe
@@ -35,6 +36,7 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
               private router: Router,
               private translatePipe: TranslatePipe,
               private snackBar: MatSnackBar,
+              private toastr: AppToastrService,
               private cdr: ChangeDetectorRef,
               public dialog: MatDialog) {
     super();
@@ -68,23 +70,18 @@ export class QuestionsPageComponent extends AutoUnsubscribeBase implements OnIni
         switchMap(() => this.loadQuestions()),
         takeUntil(this.unsubscribeStream$),
         catchError(() => {
-          this.openSnackBar(this.translatePipe.transform('text.test.cant.delete.question',"Не удалось удалить вопрос"));
+          this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.test.cant.delete.question","Не удалось удалить вопрос"));
           return throwError(null);
         }))
       .subscribe();
     this.cdr.detectChanges();
   }
 
-  public openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    });
-  }
-
   public openConfirmationDialog(event: any): void {
     const dialogRef = this.dialog.open(DeleteQuestionConfirmationPopupComponent, {
       width: "500px",
-      data: {event}
+      data: {event},
+      panelClass: "test-modal-container",
     });
 
     dialogRef.afterClosed()

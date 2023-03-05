@@ -33,6 +33,11 @@ export class ResultTestTablePupilComponent implements OnChanges {
       }]
     },
     aspectRatio: 6,
+    tooltips: {
+      backgroundColor: '#fff',
+      bodyFontColor: '#000',
+      titleFontColor: '#000',
+    },
     plugins: {
       datalabels: {
         anchor: "end",
@@ -60,7 +65,7 @@ export class ResultTestTablePupilComponent implements OnChanges {
       if (sliced.length < test.Title.length) {
         sliced += "...";
       }
-      this.barChartLabels.push(sliced);
+      this.barChartLabels.push(` ${sliced}`);
       this.barChartData[0].data.push(test.Points);
     });
     this.loading = false;

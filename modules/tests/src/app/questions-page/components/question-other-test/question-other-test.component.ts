@@ -44,7 +44,7 @@ export class QuestionOtherTestComponent extends AutoUnsubscribeBase implements O
             }
             test.tooltipTitle = sliced;
           });
-          this.tests = tests.sort((n1, n2) => n1.Id - n2.Id);
+          this.tests = tests.sort((n1, n2) => n1.Title.toLowerCase() > n2.Title.toLowerCase() ? 1 : -1);
         }),
         takeUntil(this.unsubscribeStream$))
       .subscribe();

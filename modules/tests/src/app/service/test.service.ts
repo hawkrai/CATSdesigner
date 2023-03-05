@@ -45,7 +45,7 @@ export class TestService {
   }
 
   deleteTest(id: string): Observable<void> {
-    return this.http.delete<void>("/Tests/DeleteTest?id=" + id);
+    return this.http.post<void>("/Tests/DeleteTest?id=" + id, {});
   }
 
   changeAvailabilityForStudent(data: TestAvailabilityRequest): Observable<void> {
@@ -61,7 +61,7 @@ export class TestService {
   }
 
   deleteQuestion(id: any): Observable<void> {
-    return this.http.delete<void>("/Tests/DeleteQuestion?id=" + id);
+    return this.http.post<void>("/Tests/DeleteQuestion?id=" + id, {});
   }
 
   changeTestOrder(newOrder: any): Observable<void> {
