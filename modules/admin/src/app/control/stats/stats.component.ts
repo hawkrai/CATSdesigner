@@ -101,7 +101,6 @@ export class StatsComponent implements OnInit {
       this.subjectsTemp = this.subjects;
     }
     if (id && id !== -1) {
-      console.log(1);
       const subject = this.subjectsTemp.find(({Id}) => Id === id);
       this.tableStats = this.studentStatisticTemp.map((item) => {
         rating = 0;
@@ -111,10 +110,10 @@ export class StatsComponent implements OnInit {
         }
         const userLabPass = item.UserLabPass.find(({Key}) => Key === id).Value;
         const userLecturePass = item.UserLecturePass.find(({Key}) => Key === id).Value;
-        const userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
-        const userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
+        let userAvgLabMarks = item.UserAvgLabMarks.find(({Key}) => Key === id).Value;
+        let userAvgTestMarks = item.UserAvgTestMarks.find(({Key}) => Key === id).Value;
         const userPracticalPass = item.UserPracticalPass.find(({Key}) => Key === id).Value;
-        const userPracticalMarks = item.UserAvgPracticalMarks.find(({Key}) => Key === id).Value;
+        let userPracticalMarks = item.UserAvgPracticalMarks.find(({Key}) => Key === id).Value;
         labMarks += userAvgLabMarks;
         practMarks += userPracticalMarks;
         testMarks += userAvgTestMarks;
@@ -128,21 +127,27 @@ export class StatsComponent implements OnInit {
           rating += userAvgLabMarks;
           typeCount += 1;
           userLabCountTotal += 1;
+        } else {
+          userAvgLabMarks = -1;
         }
         if (userPracticalCount != 0) {
           rating += userPracticalMarks;
           typeCount += 1;
           userPracticalCountTotal += 1;
+        } else {
+          userPracticalMarks = -1;
         }
         if (userTestCount != 0) {
           rating += userAvgTestMarks;
           typeCount += 1;
           userTestCountTotal += 1;
+        } else {
+          userAvgTestMarks = -1;
         }
         if (typeCount != 0) {
           rating = (rating / typeCount);
         } else {
-          rating = 0;
+          rating = -1;
         }
         return {
           GroupName: groupName,
@@ -160,7 +165,6 @@ export class StatsComponent implements OnInit {
           UserPracticalPass: userPracticalPass};
       });
     } else if (id === -1) {
-      console.log(2);
       this.tableStats = this.studentStatisticTemp.map( item => {
         if (this.surname != undefined && !item.FIO.includes(this.surname)) {
           return ;
@@ -200,21 +204,27 @@ export class StatsComponent implements OnInit {
           rating += avgLabMarksTotal;
           typeCount += 1;
           userLabCountTotal += 1;
+        } else {
+          avgLabMarksTotal = -1;
         }
         if (userPracticalCount != 0) {
           rating += avgPracticalMarksTotal;
           typeCount += 1;
           userPracticalCountTotal += 1;
+        } else {
+          avgPracticalMarksTotal = -1;
         }
         if (userTestCount != 0) {
           rating += avgTestMarksTotal;
           typeCount += 1;
           userTestCountTotal += 1;
+        } else {
+          avgTestMarksTotal = -1;
         }
         if (typeCount != 0) {
           rating = (rating / typeCount);
         } else {
-          rating = 0;
+          rating = -1;
         }
         return {
           GroupName: groupName,
@@ -231,7 +241,6 @@ export class StatsComponent implements OnInit {
         };
       });
     }
-    console.log(3);
     typeCount = 0;
     rating = 0;
     if (this.surname == undefined) {
@@ -253,24 +262,29 @@ export class StatsComponent implements OnInit {
     labMarks = Math.round(labMarks  * 10) / 10;
     practMarks = Math.round(practMarks  * 10) / 10;
     testMarks = Math.round(testMarks * 10) / 10;
-
-    if (userLabCount != 0) {
+    if (userLabCountTotal != 0) {
       rating += labMarks;
       typeCount += 1;
+    } else {
+      labMarks = -1;
     }
-    if (userPracticalCount != 0) {
+    if (userPracticalCountTotal != 0) {
       rating += practMarks;
       typeCount += 1;
+    } else {
+      practMarks = -1;
     }
-    if (userTestCount != 0) {
+    if (userTestCountTotal != 0) {
       rating += testMarks;
       typeCount += 1;
+    } else {
+      testMarks = -1;
     }
 
     if (typeCount != 0) {
-      rating = Math.round((rating / typeCount) * 10) / 10
+      rating = Math.round((rating / typeCount) * 10) / 10;
     } else {
-      rating = 0;
+      rating = -1;
     }
 
     lectPass = Math.round(lectPass  * 10) / 10;

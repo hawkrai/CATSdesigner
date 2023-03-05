@@ -33,22 +33,22 @@
 
     <ng-container matColumnDef="UserAvgLabMarks">
       <th mat-header-cell class="column" *matHeaderCellDef> Лабораторные работы</th>
-      <td mat-cell class="user-lab-mark" *matCellDef="let element"> {{ element.UserAvgLabMarks }} </td>
+      <td mat-cell class="user-lab-mark" *matCellDef="let element"> <div *ngIf = "element.UserAvgLabMarks!='-1.0'">{{ element.UserAvgLabMarks }}</div> </td>
     </ng-container>
 
     <ng-container matColumnDef="UserAvgPracticalMarks">
       <th mat-header-cell class="column" *matHeaderCellDef> Практические занятия</th>
-      <td mat-cell *matCellDef="let element"> {{element.UserAvgPracticalMarks}} </td>
+      <td mat-cell *matCellDef="let element"> <div *ngIf = "element.UserAvgPracticalMarks!='-1.0'">{{ element.UserAvgPracticalMarks }}</div></td>
     </ng-container>
 
     <ng-container matColumnDef="UserAvgTestMarks">
       <th mat-header-cell class="column" *matHeaderCellDef> Тесты</th>
-      <td mat-cell *matCellDef="let element"> {{element.UserAvgTestMarks}} </td>
+      <td mat-cell *matCellDef="let element"><div *ngIf = "element.UserAvgTestMarks!='-1.0'">{{ element.UserAvgTestMarks }}</div> </td>
     </ng-container>
 
     <ng-container matColumnDef="Rating">
       <th mat-header-cell class="column" *matHeaderCellDef> Рейтинг</th>
-      <td mat-cell *matCellDef="let element"> {{element.Rating}} </td>
+      <td mat-cell *matCellDef="let element"><div *ngIf = "element.Rating!='-1.0'">{{ element.Rating }}</div></td>
     </ng-container>
 
     <!-- Headers -->
