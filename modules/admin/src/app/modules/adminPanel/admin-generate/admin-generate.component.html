@@ -1,17 +1,32 @@
-<mat-tab-group dynamicHeight animationDuration="1000ms" [(selectedIndex)]="this.selectedTab" (selectedTabChange)="this.onSelectedTabChange($event)">
-  <mat-tab label="{{'text.adminPanel.activeStats.userActivity' | translate}}">
-    <app-active-stats></app-active-stats>
+<mat-tab-group
+  dynamicHeight
+  animationDuration="1000ms"
+  [(selectedIndex)]="this.selectedTab"
+  (selectedTabChange)="this.onSelectedTabChange($event)"
+>
+  <mat-tab label="{{ 'text.adminPanel.activeStats.userActivity' | translate }}">
+    <ng-template matTabContent>
+      <app-active-stats></app-active-stats>
+    </ng-template>
   </mat-tab>
-  <mat-tab label="{{'text.lecturers' | translate}}">
-    <app-lectors></app-lectors>
+  <mat-tab label="{{ 'text.lecturers' | translate }}">
+    <ng-template matTabContent>
+      <app-lectors></app-lectors>
+    </ng-template>
   </mat-tab>
-  <mat-tab label="{{'text.students' | translate}}">
-    <app-students></app-students>
+  <mat-tab label="{{ 'text.students' | translate }}">
+    <ng-template matTabContent>
+      <app-students></app-students>
+    </ng-template>
   </mat-tab>
-  <mat-tab label="{{'group.plural' | translate}}">
-    <app-group></app-group>
+  <mat-tab label="{{ 'group.plural' | translate }}">
+    <ng-template matTabContent>
+      <app-group></app-group>
+    </ng-template>
   </mat-tab>
-  <mat-tab label="{{'text.attachments.plural' | translate}}">
-    <app-files></app-files>
+  <mat-tab label="{{ 'text.attachments.plural' | translate }}">
+    <ng-template matTabContent>
+      <app-files></app-files>
+    </ng-template>
   </mat-tab>
 </mat-tab-group>

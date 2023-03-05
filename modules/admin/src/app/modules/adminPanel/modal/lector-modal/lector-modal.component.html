@@ -15,7 +15,7 @@
           </mat-form-field>
 
           <mat-form-field class="example-full-width">
-            <input [type]="hidePassword ? 'password' : 'text'" matInput formControlName="Password" placeholder="{{'text.personalAccount.password' | translate}}">
+            <input [type]="hidePassword ? 'password' : 'text'" matInput formControlName="Password" placeholder="{{'text.personalAccount.password' | translate}}" autocomplete="new-password">
             <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
               <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
