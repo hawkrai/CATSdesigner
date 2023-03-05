@@ -1,22 +1,22 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {MatOptionSelectionChange} from '@angular/material/core';
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
-import {getSubjectId} from '../../store/selectors/subject.selector';
-import {CourseUser} from '../../models/course-user.model';
-import {UserLabFile} from '../../models/user-lab-file';
-import {LabFilesService} from '../../services/lab-files-service';
-import {StudentFilesModel} from '../../models/student-files.model';
-import {GroupService} from '../../services/group.service';
-import {CoreGroup} from '../../models/core-group.model';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {AddJobDialogComponent} from './add-project-dialog/add-job-dialog.component';
-import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
-import {CheckPlagiarismStudentComponent} from './check-plagiarism-student/check-plagiarism-student.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { MatOptionSelectionChange } from '@angular/material/core';
+import { select, Store } from '@ngrx/store';
+import { IAppState } from '../../store/state/app.state';
+import { getSubjectId } from '../../store/selectors/subject.selector';
+import { CourseUser } from '../../models/course-user.model';
+import { UserLabFile } from '../../models/user-lab-file';
+import { LabFilesService } from '../../services/lab-files-service';
+import { StudentFilesModel } from '../../models/student-files.model';
+import { GroupService } from '../../services/group.service';
+import { CoreGroup } from '../../models/core-group.model';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { AddJobDialogComponent } from './add-project-dialog/add-job-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
 import {
   CheckPlagiarismPopoverComponent
 } from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component';
-import {TranslatePipe} from 'educats-translate';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-defense',
@@ -32,16 +32,16 @@ export class DefenseComponent implements OnInit {
   public userLabFiles: UserLabFile[];
   public studentFiles: StudentFilesModel[];
   public detachedGroup = false;
-  private canAddJob = false;
+  public canAddJob = false;
 
   private subjectId: string;
 
   constructor(private groupService: GroupService,
-              private labFilesService: LabFilesService,
-              public dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private translatePipe: TranslatePipe,
-              private store: Store<IAppState>) {
+    private labFilesService: LabFilesService,
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private translatePipe: TranslatePipe,
+    private store: Store<IAppState>) {
   }
 
   ngOnInit() {
@@ -118,10 +118,10 @@ export class DefenseComponent implements OnInit {
 
   addJob(userLabFile?: UserLabFile, studentId?: string) {
     const body = userLabFile && this.courseUser.IsStudent ? {
-        comments: userLabFile.Comments,
-        attachments: userLabFile.Attachments
-      }
-      : {comments: '', attachments: []};
+      comments: userLabFile.Comments,
+      attachments: userLabFile.Attachments
+    }
+      : { comments: '', attachments: [] };
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
       width: '650px',
       data: {
@@ -226,7 +226,7 @@ export class DefenseComponent implements OnInit {
   checkPlagiarismFile(file) {
     this.dialog.open(CheckPlagiarismStudentComponent, {
       data: {
-        body: {subjectId: this.subjectId, userFileId: file.Id}
+        body: { subjectId: this.subjectId, userFileId: file.Id }
       }
     });
   }
