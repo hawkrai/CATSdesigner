@@ -18,7 +18,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="help-icon">
+      <div>
         <button class="mat-icon-button-help" mat-icon-button
           [matTooltip]="'text.course.list.dialog.help' | translate : 'Помощь'" matTooltipPosition="below"
           (click)="showHelp()">
@@ -86,7 +86,7 @@
       </mat-tab>
       <mat-tab label="{{'text.course.list.dialog.data.university' | translate : 'Сведения о ВУЗе'}}">
         <mat-form-field appearance="fill">
-          <mat-label>Название учебного заведения</mat-label>
+          <mat-label>{{'text.course.list.dialog.data.university.university.name' | translate : 'Название учебного заведения'}}</mat-label>
           <textarea matInput style="height: 30px" formControlName="univerControl"></textarea>
           <mat-error *ngIf="formGroup.controls.univerControl.invalid">{{'text.course.list.dialog.data.error.small' |
             translate : 'До 255 символов'}}</mat-error>
@@ -113,10 +113,10 @@
             | translate : 'До 255 символов'}}</mat-error>
         </mat-form-field>
       </mat-tab>
-      <mat-tab label="Даты">
+      <mat-tab label="{{'text.course.list.dialog.data.dates' | translate : 'Даты'}}">
         <mat-form-field class="form-field" style="margin-top: 20px">
           <mat-label>{{'text.course.list.dialog.data.assigment.date' | translate : 'Дата выдачи задания'}}</mat-label>
-          <input matInput [matDatepicker]="dp1" formControlName="startDateControl">
+          <input matInput [matDatepicker]="dp1" formControlName="startDateControl" readonly>
           <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
           <mat-datepicker #dp1></mat-datepicker>
           <mat-error *ngIf="formGroup.controls.startDateControl.invalid">{{'text.course.list.dialog.data.error.date' |
@@ -125,7 +125,7 @@
         <mat-form-field class="form-field">
           <mat-label>{{'text.course.list.dialog.data.deadline.date' | translate : 'Сроки сдачи курсового
             проекта'}}</mat-label>
-          <input matInput [matDatepicker]="dp2" formControlName="endDateControl">
+          <input matInput [matDatepicker]="dp2" formControlName="endDateControl" readonly>
           <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
           <mat-datepicker #dp2></mat-datepicker>
           <mat-error *ngIf="formGroup.controls.endDateControl.invalid">{{'text.course.list.dialog.data.error.date' |

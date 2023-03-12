@@ -2,9 +2,9 @@
   <div class="visit-stats-component__header">
     <div>
       <ng-content select="[groupPicker]"></ng-content>
-      <button mat-raised-button class="addDateBtn" color="primary" *ngIf="courseUser.IsLecturer" (click)="addDate()">{{'text.course.visit.dialog.add.title' | translate : 'Добавить дату'}}</button>
+      <button mat-raised-button class="addDateBtn" color="primary" *ngIf="courseUser.IsLecturer" (click)="addDate()">{{'text.course.visit.dialog.add.title' | translate : 'Управление датами'}}</button>
     </div>
-    <div class="visit-stats-component__controls">
+    <div class="visit-stats-component__controls" *ngIf="courseUser.IsLecturer">
       <mat-form-field class="visit-stats-component__search">
         <mat-label>{{'text.course.projects.search' | translate : 'Поиск по теме, фамилии'}}</mat-label>
         <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">

@@ -5,6 +5,7 @@ import { Time } from '@angular/common';
 import { VisitStatsService } from 'src/app/services/visit-stats.service';
 import { Consultation } from 'src/app/models/consultation.model';
 import { TranslatePipe } from 'educats-translate';
+import { ToastrService } from 'ngx-toastr';
 
 interface DialogData {
   consultations: Consultation[];
@@ -23,22 +24,22 @@ interface DialogData {
 })
 export class AddDateDialogComponent {
 
-  private audienceControl: FormControl = new FormControl(this.data.audience,
+  public audienceControl: FormControl = new FormControl(this.data.audience,
     [Validators.minLength(1), Validators.maxLength(3), Validators.required, this.noWhitespaceValidator]);
 
-  private buildingControl: FormControl = new FormControl(this.data.building,
+  public buildingControl: FormControl = new FormControl(this.data.building,
     [Validators.minLength(1), Validators.maxLength(3), Validators.required, this.noWhitespaceValidator]);
 
-  private startTimeControl: FormControl = new FormControl(this.data.start, [Validators.required, this.noWhitespaceValidator]);
+  public startTimeControl: FormControl = new FormControl(this.data.start, [Validators.required, this.noWhitespaceValidator]);
 
-  private endTimeControl: FormControl = new FormControl(this.data.end, [Validators.required, this.noWhitespaceValidator]);
+  public endTimeControl: FormControl = new FormControl(this.data.end, [Validators.required, this.noWhitespaceValidator]);
 
-  private dateControl = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
+  public dateControl = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
 
   constructor(public dialogRef: MatDialogRef<AddDateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private visitStatsService: VisitStatsService,
-    private snackBar: MatSnackBar,
+    private toastr: ToastrService,
     private translatePipe: TranslatePipe) {
     this.data.date = this.dateControl.value;
   }
@@ -48,7 +49,16 @@ export class AddDateDialogComponent {
   }
 
   onCancelClick(): void {
-    this.dialogRef.close();
+    const date = new Date(this.data.date);
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    const consultation: any = {
+      start: this.data.start,
+      end: this.data.end,
+      building: this.data.building,
+      audience: this.data.audience,
+      isClose: true
+    }
+    this.dialogRef.close(consultation);
   }
 
   onAddClick(): void {
@@ -75,9 +85,7 @@ export class AddDateDialogComponent {
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
+    this.toastr.success(msg);
   }
 
   deleteDate(id: string): void {
