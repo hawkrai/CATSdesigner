@@ -20,8 +20,9 @@ import { TranslatePipe } from "educats-translate";
 })
 export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
   public barChartColors: any[] = [
-    { backgroundColor: "#3f51b5" },
+    { backgroundColor: "#1976D2" },
   ];
+  // indigo #3f51b5
   public barChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
