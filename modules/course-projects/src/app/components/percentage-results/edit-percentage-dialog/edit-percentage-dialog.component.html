@@ -1,4 +1,9 @@
-<h1 mat-dialog-title>{{data.label}}</h1>
+<div class="edit-percentage-dialog__header">
+  <h1 mat-dialog-title class="edit-percentage-dialog__title">{{data.label}}</h1>
+  <button mat-icon-button (click)="onCancelClick()" class="edit-percentage-dialog__close-btn">
+    <mat-icon aria-hidden="false">close</mat-icon>
+  </button>
+</div>
 <h5 *ngIf="data.total">{{data.lecturer}}</h5>
 <div mat-dialog-content class="dialog-content">
   <mat-form-field class="form-field">
@@ -11,7 +16,7 @@
   </mat-form-field>
   <mat-form-field *ngIf="data.total">
     <mat-label>{{'text.course.percentage.result.dialog.edit.date' | translate : 'Дата выставления'}}</mat-label>
-    <input matInput [matDatepicker]="dp" [formControl]="date" (dateChange)="onDateChange()">
+    <input matInput [matDatepicker]="dp" [formControl]="date" (dateChange)="onDateChange()" readonly>
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
     <mat-error *ngIf="date.invalid">{{'text.course.percentage.result.dialog.error.date' | translate : 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>

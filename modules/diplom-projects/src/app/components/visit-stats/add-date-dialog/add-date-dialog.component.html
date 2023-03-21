@@ -5,7 +5,7 @@
 <div mat-dialog-content>
   <mat-form-field class="form-field">
     <mat-label>{{'text.diplomProject.stageDate' | translate: 'Дата'}}</mat-label>
-    <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)">
+    <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)" readonly>
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
     <mat-error *ngIf="dateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>

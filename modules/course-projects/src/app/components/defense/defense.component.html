@@ -27,7 +27,7 @@
         <mat-icon>cached</mat-icon>
       </button>
     </ng-container>
-    <button mat-raised-button color="primary" *ngIf="canAddJob" [disabled]="!courseUser.HasAssignedDiplomProject"
+    <button mat-raised-button color="primary" [disabled]="!courseUser.HasAssignedDiplomProject"
             (click)="addJob()">{{'text.course.defence.add' | translate : 'Добавить работу'}}
     </button>
   </div>

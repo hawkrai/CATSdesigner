@@ -74,14 +74,14 @@
     <mat-tab label="'text.diplomProject.dates' | translate: 'Даты'">
       <mat-form-field class="form-field" style="margin-top: 20px">
         <mat-label>{{'text.diplomProject.startDate' | translate: 'Дата выдачи задания'}}</mat-label>
-        <input matInput [matDatepicker]="dp1" [formControl]="startDateControl">
+        <input matInput [matDatepicker]="dp1" [formControl]="startDateControl" readonly>
         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
         <mat-datepicker #dp1></mat-datepicker>
         <mat-error *ngIf="startDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
       </mat-form-field>
       <mat-form-field class="form-field">
         <mat-label>{{'text.diplomProject.endDate' | translate: 'Сроки сдачи дипломного проекта'}}</mat-label>
-        <input matInput [matDatepicker]="dp2" [formControl]="endDateControl">
+        <input matInput [matDatepicker]="dp2" [formControl]="endDateControl" readonly>
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
         <mat-datepicker #dp2></mat-datepicker>
         <mat-error *ngIf="endDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
@@ -117,7 +117,7 @@
       </mat-form-field>
       <mat-form-field class="form-field">
         <mat-label>{{'text.diplomProject.decreeDate' | translate: 'Дата приказа'}}</mat-label>
-        <input matInput [matDatepicker]="dp3" [formControl]="decreeDateControl">
+        <input matInput [matDatepicker]="dp3" [formControl]="decreeDateControl" readonly>
         <mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
         <mat-datepicker #dp3></mat-datepicker>
         <mat-error *ngIf="decreeDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
