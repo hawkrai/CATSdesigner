@@ -20,7 +20,7 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="Name">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.text.fio.student' | translate: 'ФИО студента'}}</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.students' | translate: 'Студенты'}}</mat-header-cell>
             <mat-cell *matCellDef="let element; let index = index" class="mat-header-cell-description"> {{index === studentResults.length - 1 ? 'Средняя оценка (процент) за тест' : element[1].name}}
             </mat-cell>
           </ng-container>
