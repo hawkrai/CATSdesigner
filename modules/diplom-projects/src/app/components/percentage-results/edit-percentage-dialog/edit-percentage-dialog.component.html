@@ -1,12 +1,12 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
-  <mat-icon class="close-icon" color="warn">close</mat-icon>
+  <mat-icon class="close-icon">close</mat-icon>
 </button>
 <h1 mat-dialog-title>{{data.label}}</h1>
 <div mat-dialog-content class="dialog-content">
   <mat-form-field class="form-field">
     <mat-label *ngIf="data.total">{{'text.diplomProject.estimationData' | translate: 'Оценка (от 1 до 10)'}}</mat-label>
-    <input matInput [formControl]="percentageControl" [(ngModel)]="data.mark"
-           type="number" min="{{data.min}}" max="{{data.max}}" step="{{data.max > 10 ? 5 : 1}}">
+    <input matInput [formControl]="percentageControl" [(ngModel)]="data.mark" type="number" min="{{data.min}}"
+      max="{{data.max}}" step="{{data.max > 10 ? 5 : 1}}">
     <span matSuffix>{{data.symbol}}</span>
     <mat-hint *ngIf="data.expected && !percentageControl.value">Ожидаемый процент {{data.expected}}</mat-hint>
     <mat-error *ngIf="percentageControl.invalid">{{data.errorMsg}}</mat-error>
@@ -16,13 +16,18 @@
     <input matInput [matDatepicker]="dp" [formControl]="date" (dateChange)="onDateChange()" readonly>
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
-    <mat-error *ngIf="date.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
+    <mat-error *ngIf="date.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат
+      (ДД.ММ.ГГГГ)'}}</mat-error>
   </mat-form-field>
   <mat-form-field class="form-field">
     <mat-label>{{'text.diplomProject.comment' | translate: 'Комментарий'}}</mat-label>
-    <mat-checkbox class="checkbox" matTooltip="'text.diplomProject.showComment' | translate: 'Показать комментарий студенту'" matTooltipPosition="left" class="checkbox" (change)="showForStudentChange($event.checked)" [checked]="data.showForStudent" [color]="'primary'"></mat-checkbox>
+    <mat-checkbox class="checkbox"
+      matTooltip="{{'text.diplomProject.showComment' | translate: 'Показать комментарий студенту'}}"
+      matTooltipPosition="left" class="checkbox" (change)="showForStudentChange($event.checked)"
+      [checked]="data.showForStudent" [color]="'primary'"></mat-checkbox>
     <textarea class="commentInput" matInput [formControl]="commentControl" [(ngModel)]="data.comment"></textarea>
-    <mat-error *ngIf="commentControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+    <mat-error *ngIf="commentControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+      символов'}}</mat-error>
     <mat-hint *ngIf="data.lecturer">{{data.lecturer}}</mat-hint>
   </mat-form-field>
 </div>
@@ -30,8 +35,7 @@
   <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
     {{'text.diplomProject.cancel' | translate: 'Отмена'}}
   </button>
-  <button mat-flat-button class="dialog-button" color="primary" [disabled]="isFormInvalid()"
-          [mat-dialog-close]="data">
-          {{'text.diplomProject.save' | translate: 'Сохранить'}}
+  <button mat-flat-button class="dialog-button" color="primary" [disabled]="isFormInvalid()" [mat-dialog-close]="data">
+    {{'text.diplomProject.save' | translate: 'Сохранить'}}
   </button>
 </div>

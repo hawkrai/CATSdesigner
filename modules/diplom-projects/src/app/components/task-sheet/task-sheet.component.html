@@ -8,16 +8,18 @@
     </mat-select>
   </mat-form-field>
   <div class="task-sheet__header__actions">
-    <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'"
-            *ngIf="diplomProjectId != null" (click)="downloadTaskSheet()">
+    <button mat-icon-button color="primary"
+      matTooltip="{{'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'}}"
+      *ngIf="diplomProjectId != null" (click)="downloadTaskSheet()">
       <mat-icon>cloud_download</mat-icon>
     </button>
-    <button mat-icon-button color="primary" matTooltip="'text.diplomProject.downloadArchieveTaskSheet' | translate: 'Скачать листы задания архивом'"
-            *ngIf="diplomProjectId != null" (click)="downloadArchive()">
-            <mat-icon>get_app</mat-icon>
+    <button mat-icon-button color="primary"
+      matTooltip="{{'text.diplomProject.downloadArchieveTaskSheet' | translate: 'Скачать листы задания архивом'}}"
+      *ngIf="diplomProjectId != null" (click)="downloadArchive()">
+      <mat-icon>get_app</mat-icon>
     </button>
-    <button mat-icon-button color="primary" matTooltip="'text.diplomProject.edit' | translate: 'Редактировать'"
-            (click)="editTaskSheet()" *ngIf="diplomUser.IsLecturer && diplomProjectId != null">
+    <button mat-icon-button color="primary" matTooltip="{{'text.diplomProject.edit' | translate: 'Редактировать'}}"
+      (click)="editTaskSheet()" *ngIf="diplomUser.IsLecturer && diplomProjectId != null">
       <mat-icon>edit</mat-icon>
     </button>
   </div>
