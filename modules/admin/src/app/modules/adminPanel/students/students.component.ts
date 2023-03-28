@@ -254,7 +254,7 @@ export class StudentsComponent implements OnInit {
   }
 
   formatDate(dateString) {
-    if (dateString == '-') {
+    if (!dateString || dateString == '-') {
       return '';
     }
 
