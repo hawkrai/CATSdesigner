@@ -142,7 +142,8 @@ export class GroupComponent implements OnInit {
   openListOfSubject(group) {
     const dialogRef = this.dialog.open(SubjectListComponent, {
       hasBackdrop: true,
-      data: group
+      data: group,
+      height: "100%"
     });
     dialogRef.afterClosed();
   }
@@ -165,7 +166,8 @@ export class GroupComponent implements OnInit {
   addGroup(group) {
     const dialogRef = this.dialog.open( AddGroupComponent, {
       hasBackdrop: true,
-      data: group
+      data: group,
+      height: "100%"
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -209,7 +211,8 @@ export class GroupComponent implements OnInit {
   editGroup(group: Group) {
     const dialogRef = this.dialog.open(AddGroupComponent, {
       hasBackdrop: true,
-      data: group
+      data: group,
+      height: "100%"
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -221,7 +224,8 @@ export class GroupComponent implements OnInit {
   async openListOfStudents(group) {
     const dialogRef = this.dialog.open(ListOfStudentsComponent, {
       hasBackdrop: true,
-      data: group
+      data: group,
+      height: "100%"
     },
     );
     dialogRef.afterClosed();

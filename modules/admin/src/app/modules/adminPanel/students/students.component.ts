@@ -216,7 +216,8 @@ export class StudentsComponent implements OnInit {
   openDialogEdit(person) {
     const dialogRef = this.dialog.open(EditStudentComponent, {
       hasBackdrop: true,
-      data: person
+      data: person,
+      height: "100%"
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -228,7 +229,8 @@ export class StudentsComponent implements OnInit {
   openDiagram(userId) {
     const dialogRef = this.dialog.open(StatisticComponent, {
       hasBackdrop: true,
-      data: userId
+      data: userId,
+      height: "100%"
     });
     dialogRef.afterClosed();
   }
@@ -236,7 +238,8 @@ export class StudentsComponent implements OnInit {
   openListOfSubject(studentId) {
     const dialogRef = this.dialog.open(SubjectListComponent, {
       hasBackdrop: true,
-      data: studentId
+      data: studentId,
+      height: "100%"
     });
     dialogRef.afterClosed();
   }
