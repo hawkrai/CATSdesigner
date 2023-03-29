@@ -130,7 +130,7 @@ export class TestControlPageComponent extends AutoUnsubscribeBase implements OnI
       .subscribe(() => {
         this.getTests(this.subject.id);
       }, error1 => {
-        this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.test.error.delete.test", "Не удалось удалить тест"));
+        this.toastr.addErrorFlashMessage(this.translatePipe.transform("text.test.error.delete.test", "Закройте, пожалуйста, доступ к тесту и повторите удаление "));
       });
   }
 

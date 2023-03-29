@@ -22,7 +22,6 @@ import { SubjectService } from "src/app/service/subject.service";
   styleUrls: ["./edit-test-popup.component.less"]
 })
 export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnInit {
-
   public CATEGORIES = [{
     name: "text.test.for.control",
     value: TestType.Control,

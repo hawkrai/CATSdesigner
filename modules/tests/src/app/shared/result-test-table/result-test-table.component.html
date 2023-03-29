@@ -41,7 +41,7 @@
               [matTooltip]="getAverageTooltip(element)"
               matTooltipPosition="below"
               [matTooltipDisabled]="size && element[3]"
-                      [class.notAll]="size && !element[3]"> {{index === studentResults.length - 1 ? null : (element[2].slice() === '0' ? null : element[2].slice())}}
+                      [class.notAll]="size && !element[3]"> {{index === studentResults.length - 1 ? averageMarkForTest[iq].average?.toFixed(1) : (element[2].slice() === '0' ? null : element[2].slice())}}
             </mat-cell>
           </ng-container>
 

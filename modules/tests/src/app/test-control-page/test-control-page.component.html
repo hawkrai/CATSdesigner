@@ -44,7 +44,7 @@
             (onOpenAvailabilityPopup)="openAvailabilityDialog(selfControlTests, $event)"
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
-            [isAvailabilityShown]="false"
+            [isAvailabilityShown]="true"
           ></app-main-table-tests>
         </div>
         <div class="container-table-tests">
@@ -104,6 +104,7 @@
         'text.test.control.compleating.test'
           | translate : 'Контроль прохождения тестов'
       "
+      class="control-compleating"
     >
       <app-control-completing
         *ngIf="currentTabIndex === 2"
