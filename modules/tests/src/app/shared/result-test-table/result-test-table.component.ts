@@ -196,14 +196,19 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
             sumOfMarks[test.testId] += test.percent !== undefined ? test.percent / 10 : test.points;
           }
         }
-
+        let sumOfAverageMarks = 0;
+        let amountOfTests = 0;
         for (let [testId, value] of Object.entries(sumOfMarks)) {
           if (!countOfValidResults[testId]) {
             sumOfMarks[testId] = null;
           } else {
+            amountOfTests++;
+            sumOfAverageMarks += sumOfMarks[testId] / countOfValidResults[testId];
             sumOfMarks[testId] = sumOfMarks[testId] / countOfValidResults[testId];
           }
         }
+
+        sumOfMarks["average"] = sumOfAverageMarks / amountOfTests;
 
         result.push(sumOfMarks);
       }

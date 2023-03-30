@@ -22,7 +22,6 @@ import { SubjectService } from "src/app/service/subject.service";
   styleUrls: ["./edit-test-popup.component.less"]
 })
 export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnInit {
-
   public CATEGORIES = [{
     name: "text.test.for.control",
     value: TestType.Control,
@@ -173,11 +172,19 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
       }
     }
     delete test.Type;
-    this.testService.saveTest({
+    let saveTestDto = {
       ...test,
       SetTimeForAllTest: !test.SetTimeForAllTest,
-      Id: this.data.event.Id,
-    })
+    };
+
+    if (this.data.event) {
+      saveTestDto = {
+        ...saveTestDto,
+        Id: this.data.event.Id,
+      };
+    }
+
+    this.testService.saveTest(saveTestDto)
       .pipe(
         tap((message) => {
           if (message && message.ErrorMessage) {
