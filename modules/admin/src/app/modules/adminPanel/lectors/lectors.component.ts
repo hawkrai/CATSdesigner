@@ -187,7 +187,8 @@ export class LectorsComponent implements OnInit {
   openDialogEdit(dataLector) {
     const dialogRef = this.dialog.open(EditLectorComponent, {
       hasBackdrop: true,
-      data: dataLector
+      data: dataLector,
+      height: "100%"
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -200,7 +201,8 @@ export class LectorsComponent implements OnInit {
   openListOfGroup(lectorId) {
     const dialogRef = this.dialog.open(ListOfGroupsComponent, {
       hasBackdrop: true,
-      data: lectorId
+      data: lectorId,
+      height: "100%"
     });
     dialogRef.afterClosed();
   }
@@ -208,7 +210,8 @@ export class LectorsComponent implements OnInit {
   openDiagram(userId) {
     const dialogRef = this.dialog.open(StatisticComponent, {
       hasBackdrop: true,
-      data: userId
+      data: userId,
+      height: "100%"
     });
     dialogRef.afterClosed();
   }
@@ -216,7 +219,8 @@ export class LectorsComponent implements OnInit {
   saveProfessor() {
     const dialogRef = this.dialog.open(LectorModalComponent, {
       hasBackdrop: true,
-      data:  this.dataLector
+      data:  this.dataLector,
+      height: "100%"
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
