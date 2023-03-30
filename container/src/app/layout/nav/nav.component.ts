@@ -109,16 +109,18 @@ export class NavComponent implements OnInit, OnDestroy {
         this.unRead -= count
       })
 
-    this.chatService.loadChats().subscribe(chats =>
-      chats.forEach(chat => {
-        this.unRead += chat.unread;
-      }));
+    if (this.autService.currentUserValue != undefined) {
+      this.chatService.loadChats().subscribe(chats =>
+        chats.forEach(chat => {
+          this.unRead += chat.unread;
+        }));
 
-    this.chatService.loadGroups().subscribe(groups =>
-      groups.forEach(subjectGroup => {
-        this.unRead += subjectGroup.unread;
-        subjectGroup.groups.forEach(group => this.unRead += group.unread)
-      }));
+      this.chatService.loadGroups().subscribe(groups =>
+        groups.forEach(subjectGroup => {
+          this.unRead += subjectGroup.unread;
+          subjectGroup.groups.forEach(group => this.unRead += group.unread)
+        }));
+    }
     if (this.isLector) {
       this.confirmationService.getUncofirmedStudentsCount()
       .pipe(
