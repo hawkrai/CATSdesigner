@@ -1,16 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {DiplomUser} from '../../models/diplom-user.model';
-import {MatDialog, MatOptionSelectionChange, MatSnackBar} from '@angular/material';
-import {AddProjectDialogComponent} from './add-project-dialog/add-project-dialog.component';
-import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
-import {AssignProjectDialogComponent} from './assign-project-dialog/assign-project-dialog.component';
-import {ProjectsService} from '../../services/projects.service';
-import {Project} from '../../models/project.model';
-import {AppComponent} from '../../app.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { DiplomUser } from '../../models/diplom-user.model';
+import { MatDialog, MatOptionSelectionChange, MatSnackBar } from '@angular/material';
+import { AddProjectDialogComponent } from './add-project-dialog/add-project-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { AssignProjectDialogComponent } from './assign-project-dialog/assign-project-dialog.component';
+import { ProjectsService } from '../../services/projects.service';
+import { Project } from '../../models/project.model';
+import { AppComponent } from '../../app.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
-import {GroupService} from '../../services/group.service';
+import { GroupService } from '../../services/group.service';
 import { TranslatePipe } from 'educats-translate';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-projects',
@@ -36,16 +37,16 @@ export class ProjectsComponent implements OnInit {
   private direction = 'desc';
 
   constructor(private appComponent: AppComponent,
-              private groupService: GroupService,
-              private projectsService: ProjectsService,
-              private dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              public translatePipe: TranslatePipe) {
+    private groupService: GroupService,
+    private projectsService: ProjectsService,
+    private dialog: MatDialog,
+    private toastr: ToastrService,
+    public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
     console.log(this.diplomUser)
-    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => {this.groups = res.Groups; console.log(this.groups)});
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { this.groups = res.Groups; console.log(this.groups) });
     this.retrieveProjects();
   }
 
@@ -101,9 +102,9 @@ export class ProjectsComponent implements OnInit {
       autoFocus: false,
       width: '540px',
       data: {
-        label: this.translatePipe.transform('text.editor.edit.chooseTheme',"Выбор темы дипломного проекта"),
-        message: this.translatePipe.transform('text.editor.edit.check',"Вы действительно хотите выбрать данную тему дипломного проекта?"),
-        actionName: this.translatePipe.transform('text.editor.edit.choose',"Выбрать"),
+        label: this.translatePipe.transform('text.editor.edit.chooseTheme', "Выбор темы дипломного проекта"),
+        message: this.translatePipe.transform('text.editor.edit.check', "Вы действительно хотите выбрать данную тему дипломного проекта?"),
+        actionName: this.translatePipe.transform('text.editor.edit.choose', "Выбрать"),
         color: 'primary'
       }
     });
@@ -112,7 +113,7 @@ export class ProjectsComponent implements OnInit {
       if (result != null && result) {
         this.projectsService.chooseProject(projectId).subscribe(() => {
           this.appComponent.ngOnInit();
-          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.response',"Тема успешно выбрана"));
+          this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.response', "Тема успешно выбрана"));
         });
       }
     });
@@ -132,16 +133,16 @@ export class ProjectsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
         var checkTheme = this.projects.find((i) => i.Theme === result.name);
-        if (checkTheme == undefined){
+        if (checkTheme == undefined) {
           this.projectsService.editProject(null, result.name, result.selectedGroups.map(group => group.GroupId))
-          .subscribe(() => {
-            this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseSave',"Тема успешно сохранена"));
-          });
+            .subscribe(() => {
+              this.ngOnInit();
+              this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseSave', "Тема успешно сохранена"));
+            });
         }
-        else{
-          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseError',"Такая тема уже существует"));
-        } 
+        else {
+          this.addFlashMessageError(this.translatePipe.transform('text.editor.edit.responseError', "Такая тема уже существует"));
+        }
       }
     });
   }
@@ -165,7 +166,7 @@ export class ProjectsComponent implements OnInit {
           this.projectsService.editProject(project.Id, result.name, result.selectedGroups.map(group => group.GroupId))
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseSave',"Тема успешно сохранена"));
+              this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseSave', "Тема успешно сохранена"));
             });
         }
       });
@@ -173,31 +174,31 @@ export class ProjectsComponent implements OnInit {
   }
 
   deleteProject(project: Project) {
-    if(project.Student === null){
+    if (project.Student === null) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         autoFocus: false,
         width: '500px',
         data: {
-          label: this.translatePipe.transform('text.editor.edit.removeTheme',"Удаление темы дипломного проекта"),
-          message: this.translatePipe.transform('text.editor.edit.removeThemeQuestion',"Вы действительно хотите удалить тему дипломного проекта?"),
-          actionName: this.translatePipe.transform('text.editor.edit.remove',"Удалить"),
+          label: this.translatePipe.transform('text.editor.edit.removeTheme', "Удаление темы дипломного проекта"),
+          message: this.translatePipe.transform('text.editor.edit.removeThemeQuestion', "Вы действительно хотите удалить тему дипломного проекта?"),
+          actionName: this.translatePipe.transform('text.editor.edit.remove', "Удалить"),
           color: 'primary'
         }
       });
-  
+
       dialogRef.afterClosed().subscribe(result => {
         if (result != null && result) {
           this.projectsService.deleteProject(project.Id).subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseSave',"Тема успешно сохранена"));
+            this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseSave', "Тема успешно сохранена"));
           });
         }
       });
     }
-    else{
-      this.addFlashMessage(this.translatePipe.transform('text.editor.edit.cancelTheme',"Отмените назначение темы"));
+    else {
+      this.addFlashMessageError(this.translatePipe.transform('text.editor.edit.cancelTheme', "Отмените назначение темы"));
     }
-    
+
   }
 
   assignProject(project: Project) {
@@ -218,7 +219,7 @@ export class ProjectsComponent implements OnInit {
           if (result != null && result) {
             this.projectsService.assignProject(project.Id, result).subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.assignThemeForStudent',"Тема успешно назначена студенту"));
+              this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.assignThemeForStudent', "Тема успешно назначена студенту"));
             });
           }
         });
@@ -228,7 +229,7 @@ export class ProjectsComponent implements OnInit {
   approveChoice(project: Project) {
     this.projectsService.approveChoice(project.Id).subscribe(() => {
       this.ngOnInit();
-      this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseAssign',"Тема успешно подтверждена"));
+      this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseAssign', "Тема успешно подтверждена"));
     });
   }
 
@@ -237,9 +238,9 @@ export class ProjectsComponent implements OnInit {
       autoFocus: false,
       width: '540px',
       data: {
-        label: this.translatePipe.transform('text.editor.edit.cancelAssignTheme',"Отменить назначение темы дипломного проекта"),
-        message: this.translatePipe.transform('text.editor.edit.cancelAssignQuestion',"Вы действительно хотите отменить назначение темы дипломного проекта?"),
-        actionName: this.translatePipe.transform('text.editor.edit.removeAssign',"Убрать назначение"),
+        label: this.translatePipe.transform('text.editor.edit.cancelAssignTheme', "Отменить назначение темы дипломного проекта"),
+        message: this.translatePipe.transform('text.editor.edit.cancelAssignQuestion', "Вы действительно хотите отменить назначение темы дипломного проекта?"),
+        actionName: this.translatePipe.transform('text.editor.edit.removeAssign', "Убрать назначение"),
         color: 'primary'
       }
     });
@@ -248,7 +249,7 @@ export class ProjectsComponent implements OnInit {
       if (result != null && result) {
         this.projectsService.removeAssignment(project.Id).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.responseRemove',"Назначение успешно отменено"));
+          this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseRemove', "Назначение успешно отменено"));
         });
       }
     });
@@ -258,10 +259,12 @@ export class ProjectsComponent implements OnInit {
     location.href = location.origin + '/api/DpTaskSheetDownload?diplomProjectId=' + project.Id;
   }
 
-  addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
+  addFlashMessageSuccess(msg: string) {
+    this.toastr.success(msg);
+  }
+
+  addFlashMessageError(msg: string) {
+    this.toastr.error(msg);
   }
 
 }

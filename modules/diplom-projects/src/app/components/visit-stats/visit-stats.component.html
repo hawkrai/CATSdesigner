@@ -1,36 +1,38 @@
-<div class="visit-stats-component" >
+<div class="visit-stats-component">
   <div class="visit-stats-component__header">
     <mat-form-field class="visit-stats-component__lecturer-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
-      <mat-select [value]="lecturers ? lecturers[0] : ''" [(ngModel)]="lecturer" (valueChange)="selectedLecturer($event)" >
+      <mat-select [value]="lecturers ? lecturers[0] : ''" [(ngModel)]="lecturer"
+        (valueChange)="selectedLecturer($event)">
         <mat-option *ngFor="let lecturer of lecturers" [value]="lecturer">
           {{lecturer.Name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-slide-toggle class="detached-toggle" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && !isLecturer"
-                        [color]="'primary'"
-                        [checked]="isLecturer"
-                        (change)="lecturerStatusChange($event)"
-                        matTooltip="'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'"
-      >{{'text.diplomProject.head' | translate: 'Руководитель'}}</mat-slide-toggle>
+    <mat-slide-toggle class="detached-toggle"
+      *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && !isLecturer" [color]="'primary'"
+      [checked]="isLecturer" (change)="lecturerStatusChange($event)"
+      matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}">{{'text.diplomProject.head'
+      | translate: 'Руководитель'}}</mat-slide-toggle>
 
-    <button mat-raised-button class="addDateBtn" color="primary" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary" (click)="addDate()">{{'text.diplomProject.addedDate' | translate: 'Добавить дату'}}</button>
-    <button mat-raised-button class="addDateBtn" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer" (click)="addDate()">{{'text.diplomProject.addedDate' | translate: 'Добавить дату'}}</button>
-    <mat-slide-toggle class="detached-toggle-lecturer" *ngIf="isLecturer"
-                        [color]="'primary'"
-                        [checked]="isLecturer"
-                        (change)="lecturerStatusChange($event)"
-                        matTooltip="'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'"
-      >{{'text.diplomProject.head' | translate: 'Руководитель'}}</mat-slide-toggle>
+    <button mat-raised-button class="addDateBtn" color="primary"
+      *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary" (click)="addDate()">{{'text.diplomProject.addedDate' |
+      translate: 'Добавить дату'}}</button>
+    <button mat-raised-button class="addDateBtn" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer"
+      (click)="addDate()">{{'text.diplomProject.addedDate' | translate: 'Добавить дату'}}</button>
+    <mat-slide-toggle class="detached-toggle-lecturer" *ngIf="isLecturer" [color]="'primary'" [checked]="isLecturer"
+      (change)="lecturerStatusChange($event)"
+      matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}">{{'text.diplomProject.head'
+      | translate: 'Руководитель'}}</mat-slide-toggle>
     <mat-form-field class="visit-stats-component__search">
       <mat-label>{{'text.diplomProject.searchThemeAndName' | translate: 'Поиск по теме, фамилии'}}</mat-label>
       <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
   </div>
-  
+
   <div class="visit-stats-component__body">
-    <app-visit-stats-list [filteredVisitStatsList]="filteredVisitStatsList" [consultations]="consultations"></app-visit-stats-list>
+    <app-visit-stats-list [filteredVisitStatsList]="filteredVisitStatsList"
+      [consultations]="consultations"></app-visit-stats-list>
   </div>
 </div>
 <ng-template #load>

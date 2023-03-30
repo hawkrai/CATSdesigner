@@ -1,14 +1,15 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef, MatSelectChange, MatSnackBar} from '@angular/material';
-import {TaskSheet} from '../../../models/task-sheet.model';
-import {FormControl, Validators} from '@angular/forms';
-import {Template} from '../../../models/template.model';
-import {TaskSheetService} from '../../../services/task-sheet.service';
-import {TaskSheetTemplate} from '../../../models/task-sheet-template.model';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange, MatSnackBar } from '@angular/material';
+import { TaskSheet } from '../../../models/task-sheet.model';
+import { FormControl, Validators } from '@angular/forms';
+import { Template } from '../../../models/template.model';
+import { TaskSheetService } from '../../../services/task-sheet.service';
+import { TaskSheetTemplate } from '../../../models/task-sheet-template.model';
 import { Project } from 'src/app/models/project.model';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { Student } from 'src/app/models/student.model';
 import { TranslatePipe } from 'educats-translate';
+import { ToastrService } from 'ngx-toastr';
 
 interface DialogData {
   isSecretary: boolean;
@@ -58,11 +59,11 @@ export class EditTaskSheetComponent implements OnInit {
     [Validators.maxLength(255)]);
 
   private econimicsConsultantControl: FormControl = new FormControl(this.data.taskSheet.EconimicsConsultant,
-      [Validators.maxLength(255)]);
-    
+    [Validators.maxLength(255)]);
+
   private normocontrolConsultantControl: FormControl = new FormControl(this.data.taskSheet.NormocontrolConsultant,
-      [Validators.maxLength(255)]);
-      
+    [Validators.maxLength(255)]);
+
   private decreeNumberControl: FormControl = new FormControl(this.data.taskSheet.DecreeNumber,
     [Validators.maxLength(30)]);
 
@@ -79,17 +80,17 @@ export class EditTaskSheetComponent implements OnInit {
   private selectedTemplate = "data.taskSheetTemplate";
 
   constructor(private taskSheetService: TaskSheetService,
-              private snackBar: MatSnackBar,
-              public dialogRef: MatDialogRef<EditTaskSheetComponent>,
-              private projectsService: ProjectsService,
-              public translatePipe: TranslatePipe,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    private toastr: ToastrService,
+    public dialogRef: MatDialogRef<EditTaskSheetComponent>,
+    private projectsService: ProjectsService,
+    public translatePipe: TranslatePipe,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
-    this.taskSheetService.getTemplateList({entity: 'DiplomProjectTaskSheetTemplate'})
+    this.taskSheetService.getTemplateList({ entity: 'DiplomProjectTaskSheetTemplate' })
       .subscribe(res => this.templates = res);
-      this.retrieveProjects();
-      this.retrieveTaskSheets();
+    this.retrieveProjects();
+    this.retrieveTaskSheets();
   }
 
   onCancelClick(): void {
@@ -97,7 +98,7 @@ export class EditTaskSheetComponent implements OnInit {
   }
 
   onTemplateChange(event: MatSelectChange) {
-    this.taskSheetService.getTemplate({templateId: event.value.Id}).subscribe(res => {
+    this.taskSheetService.getTemplate({ templateId: event.value.Id }).subscribe(res => {
       this.templateNameControl.setValue(event.value.Name);
       this.inputDataControl.setValue(res.InputData);
       this.contentControl.setValue(res.RpzContent);
@@ -123,8 +124,8 @@ export class EditTaskSheetComponent implements OnInit {
       this.normocontrolConsultantControl.invalid || this.decreeNumberControl.invalid || this.decreeDateControl.invalid;
   }
 
-  isSelectedGroupsInvalid(): boolean{
-    if(this.selectedStudents == undefined){
+  isSelectedGroupsInvalid(): boolean {
+    if (this.selectedStudents == undefined) {
       return true
     }
     return this.selectedStudents.length < 1;
@@ -136,25 +137,21 @@ export class EditTaskSheetComponent implements OnInit {
     this.populateSheet(template);
     this.taskSheetService.editTemplate(template).subscribe(() => {
       this.ngOnInit();
-      this.snackBar.open(this.translatePipe.transform('text.editor.edit.patternSave',"Шаблон успешно сохранен"), null, {
-        duration: 2000
-      });
+      this.toastr.success(this.translatePipe.transform('text.editor.edit.patternSave', "Шаблон успешно сохранен"));
     });
   }
 
-  applyTemplate(){
+  applyTemplate() {
     this.projects.forEach(element => {
-      if (element.Id != null){
-        if (this.selectedStudents.includes(element.Student)){
+      if (element.Id != null) {
+        if (this.selectedStudents.includes(element.Student)) {
           let taskSheet = this.taskSheets.find(i => i.DiplomProjectId === element.Id);
           this.populateSheet(taskSheet);
           this.taskSheetService.editTaskSheet(taskSheet).subscribe();
         }
       }
 
-      this.snackBar.open(this.translatePipe.transform('text.editor.edit.patternApply',"Шаблон успешно применен"), null, {
-        duration: 2000
-      });
+      this.toastr.success(this.translatePipe.transform('text.editor.edit.patternApply', "Шаблон успешно применен"));
     });
   }
 
@@ -187,7 +184,7 @@ export class EditTaskSheetComponent implements OnInit {
       '&filter={"isSecretary":"' + "true" + '","searchString":"' + this.searchString + '"}' +
       '&sorting[' + this.sorting + ']=' + this.direction
     )
-    .subscribe(res => this.projects = res.Items);
+      .subscribe(res => this.projects = res.Items);
   }
 
   retrieveTaskSheets() {

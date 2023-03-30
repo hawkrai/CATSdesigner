@@ -460,6 +460,11 @@
 
   "text.login.WrongData": "Wrong login and(or) password!",
 
+  "text.diplomProject.tab.projectsThemes": "Projects themes",
+  "text.diplomProject.tab.taskSheet": "Task sheet",
+  "text.diplomProject.tab.percentages": "Percentages",
+  "text.diplomProject.tab.percentageResults": "Percentage results",
+  "text.diplomProject.tab.consultationsVisiting": "Consultations visiting",
   "text.diplomProject.addTheme" : "Add theme",
   "text.diplomProject.head" : "Head",
   "text.diplomProject.search" : "Search for a topic, student, or group",
