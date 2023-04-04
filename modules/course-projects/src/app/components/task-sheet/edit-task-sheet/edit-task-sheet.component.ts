@@ -89,7 +89,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     if (!this.formGroup) {
       this.formGroup = this.formBuilder.group({
         templateNameControl: new FormControl(null,
-          [Validators.maxLength(30), Validators.required]),
+          [Validators.maxLength(30), Validators.required, this.noWhitespaceValidator]),
         inputDataControl: new FormControl(this.data.taskSheet.InputData,
           [Validators.maxLength(999)]),
         contentControl: new FormControl(this.data.taskSheet.RpzContent,
@@ -109,6 +109,12 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
       });
 
     }
+  }
+
+  noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
   }
 
   onCreateGroupFormValueChange() {

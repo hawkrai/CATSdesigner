@@ -150,7 +150,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     });
   }
 
-  setMark(student: StudentPercentageResults) {
+  setMark(student: StudentPercentageResults, lecturer: string) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       width: '548px',
       data: {
@@ -162,7 +162,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         label: this.translatePipe.transform('text.course.percentage.result.result.label.mark', 'Оценка за курсовой проект'),
         notEmpty: true,
         total: true,
-        lecturer: student.LecturerName,
+        lecturer,
         student: student.Name,
         date: student.MarkDate,
         comment: student.Comment,

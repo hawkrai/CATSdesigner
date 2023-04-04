@@ -59,9 +59,7 @@ export class TaskSheetComponent implements OnInit {
       ).pipe(map((responce: any) => responce.Items))
         .subscribe(res => {
           if (res.length > 0) {
-            this.themes = res.sort((a, b) => {
-              return b - a;
-            });
+            this.themes = res.sort((a, b) => a.Theme < b.Theme ? -1 : 1);
             this.courseProjectId = res[0].Id;
             if (this.courseUser.IsStudent) {
               const project = res.find((item) => item.StudentId === this.courseUser.UserId)
@@ -74,7 +72,6 @@ export class TaskSheetComponent implements OnInit {
           }
         });
     });
-    console.log(this.courseUser)
   }
 
   onThemeChange(themeId: number) {

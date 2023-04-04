@@ -21,7 +21,7 @@
       <tr class="mdc-data-table__row" *ngFor="let student of percentageResults; index as i">
         <td class="mdc-data-table__cell cell">{{ i + 1 }}</td>
         <td class="mdc-data-table__cell">{{ student.Name }}</td>
-        <td class="mdc-data-table__cell">{{ student.Group }}</td>
+        <td class="mdc-data-table__cell mdc-data-table__wrap">{{ student.Group }}</td>
         <td class="mdc-data-table__cell">{{ student.LecturerName ? student.LecturerName : student.Lecturer }}</td>
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsStudent">
           <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">
@@ -49,7 +49,7 @@
         </td>
         <td class="mdc-data-table__cell data-cell clickable"
             *ngIf="percentageResultsComponent.getCourseUser().IsLecturer"
-            (click)="percentageResultsComponent.setMark(student)">
+            (click)="percentageResultsComponent.setMark(student, student.Lecturer)">
           {{ student.Mark }}
           <div class="comment" *ngIf="student && student.Comment">
             <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>

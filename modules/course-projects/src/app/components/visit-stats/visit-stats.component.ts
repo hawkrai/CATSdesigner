@@ -69,8 +69,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       filter: '{"groupId":' + this.selectedGroup.GroupId + ',"subjectId":' + this.subjectId + ',"searchString":"' + this.searchString + '"}'
     })
       .subscribe(res => {
-        console.log(res);
-
         this.visitStatsList = this.assignResults(res.Students.Items, res.Consultations);
         this.consultations = res.Consultations;
       });
@@ -135,7 +133,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
       if (result) {
         this.processDialogResult(result, false);
       }

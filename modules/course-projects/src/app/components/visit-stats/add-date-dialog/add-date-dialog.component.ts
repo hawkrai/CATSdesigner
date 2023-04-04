@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { Time } from '@angular/common';
@@ -22,7 +22,7 @@ interface DialogData {
   templateUrl: './add-date-dialog.component.html',
   styleUrls: ['./add-date-dialog.component.less']
 })
-export class AddDateDialogComponent {
+export class AddDateDialogComponent implements OnInit {
 
   public audienceControl: FormControl = new FormControl(this.data.audience,
     [Validators.minLength(1), Validators.maxLength(3), Validators.required, this.noWhitespaceValidator]);
@@ -42,6 +42,21 @@ export class AddDateDialogComponent {
     private toastr: ToastrService,
     private translatePipe: TranslatePipe) {
     this.data.date = this.dateControl.value;
+    this.initControls();
+  }
+
+  ngOnInit(): void {
+  }
+
+  initControls(): void {
+    const data = this.data.consultations;
+    if (data) {
+      console.log(data)
+      this.audienceControl.patchValue(data[0].Audience);
+      this.buildingControl.setValue(data[0].Building);
+      this.startTimeControl .setValue(data[0].StartTime);
+      this.endTimeControl.setValue(data[0].EndTime);
+    }
   }
 
   onDateChange(date: any) {
@@ -91,7 +106,6 @@ export class AddDateDialogComponent {
   deleteDate(id: string): void {
     const index: number = this.data.consultations.map(item => +item.Id).indexOf(+id);
     this.data.consultations.splice(index, 1);
-    console.log(id, index);
     this.visitStatsService.deleteDate(id).subscribe(() => { });
   }
 
