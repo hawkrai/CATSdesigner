@@ -42,12 +42,15 @@
             <td>
               <div class="form-first-row">
                 <mat-form-field class="default" color="primary" style = "width: 100%;float: left">
-                  <input type = 'date' matInput formControlName="start"
-                         [placeholder]="'text.schedule.lesson.start' | translate:'Введите начало занятий'">
+                  <input matInput [placeholder]="'text.schedule.lesson.start' | translate:'Введите начало занятий'" [matDatepicker]="picker" formControlName="start">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+
                 </mat-form-field>
                 <mat-form-field class="default" color="primary"style = "width: 100%;float: right">
-                  <input type = 'date' matInput formControlName="end"
-                         [placeholder]="'text.schedule.lesson.start' | translate:'Введите окончание занятий'">
+                  <input matInput [placeholder]="'text.schedule.lesson.end' | translate:'Введите окончание занятий'" [matDatepicker]="picker1" formControlName="end">
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
               </div>
             </td></tr>

@@ -45,6 +45,7 @@ import { AboutSystemComponent } from './about-system/about-system.component';
 import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component';
 import { SharedModule } from './shared/shared.module';
 import { OrderByPipe } from './pipe/order-by.pipe';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -96,7 +97,8 @@ import { OrderByPipe } from './pipe/order-by.pipe';
   ],
   providers: [
     LayoutService,
-    MenuService
+    MenuService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
