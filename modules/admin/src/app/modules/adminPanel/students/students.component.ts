@@ -159,7 +159,7 @@ export class StudentsComponent implements OnInit {
         return;
       }
 
-      data[index] = item;
+      data[index] = {...data[index], ...item};      
       this.dataSource.data = data;
       this.isLoad = true;
     })
