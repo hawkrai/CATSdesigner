@@ -45,6 +45,7 @@ import { AboutSystemComponent } from './about-system/about-system.component';
 import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component';
 import { SharedModule } from './shared/shared.module';
 import { OrderByPipe } from './pipe/order-by.pipe';
+import { SafePipe } from './core/safePipe';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { OrderByPipe } from './pipe/order-by.pipe';
     LectorManualComponent,
     StudentManualComponent,
     HelpPopoverProgressControlComponent,
-    OrderByPipe
+    OrderByPipe,
+    SafePipe
   ],
   imports: [
   BrowserModule,
