@@ -201,8 +201,13 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     taskSheet.Univer = this.formGroup.get('univerControl').value;
     taskSheet.Faculty = this.formGroup.get('facultyControl').value;
     taskSheet.HeadCathedra = this.formGroup.get('headCathedraControl').value;
-    taskSheet.DateStart = this.formGroup.get('startDateControl').value;
-    taskSheet.DateEnd = this.formGroup.get('endDateControl').value;
+    taskSheet.DateStart = this.getDate(this.formGroup.get('startDateControl').value);
+    taskSheet.DateEnd = this.getDate(this.formGroup.get('endDateControl').value);
+  }
+
+  getDate(date: string): string {
+    const startDate: Date = new Date(date)
+    return new Date(startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())).toISOString();
   }
 
   retrieveProjects() {

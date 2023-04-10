@@ -32,7 +32,10 @@ export class TableQuestionsComponent implements OnInit {
     this.onDeleteQuestion.emit(event);
   }
 
-  public openEditPopup(event): void {
-    this.onOpenEditPopup.emit(event);
+  public openEditPopup(event, index: number): void {
+    this.onOpenEditPopup.emit({
+      event,
+      index,
+    });
   }
 }

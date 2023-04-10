@@ -1,14 +1,15 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {PercentageResultsService} from '../../services/percentage-results.service';
-import {Subscription} from 'rxjs';
-import {StudentPercentageResults} from '../../models/student-percentage-results.model';
-import {PercentageGraph} from '../../models/percentage-graph.model';
-import {PercentageResult} from '../../models/percentage-result.model';
-import {DiplomUser} from '../../models/diplom-user.model';
-import {MatDialog, MatOptionSelectionChange, MatSnackBar} from '@angular/material';
-import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-percentage-dialog.component';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { PercentageResultsService } from '../../services/percentage-results.service';
+import { Subscription } from 'rxjs';
+import { StudentPercentageResults } from '../../models/student-percentage-results.model';
+import { PercentageGraph } from '../../models/percentage-graph.model';
+import { PercentageResult } from '../../models/percentage-result.model';
+import { DiplomUser } from '../../models/diplom-user.model';
+import { MatDialog, MatOptionSelectionChange, MatSnackBar } from '@angular/material';
+import { EditPercentageDialogComponent } from './edit-percentage-dialog/edit-percentage-dialog.component';
 import { TranslatePipe } from 'educats-translate';
 import { CoreGroup } from 'src/app/models/core-group.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-percentage-results',
@@ -35,9 +36,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   public isLecturer = false
 
   constructor(private percentageResultsService: PercentageResultsService,
-              public dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              public translatePipe: TranslatePipe) {
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
@@ -104,7 +105,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   assignResults(studentPercentageResults: StudentPercentageResults[], percentageGraphs: PercentageGraph[]): StudentPercentageResults[] {
-   this.groups = studentPercentageResults.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);
+    this.groups = studentPercentageResults.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);
     for (const student of studentPercentageResults) {
       const results: PercentageResult[] = [];
       for (const percentageGraph of percentageGraphs) {
@@ -116,7 +117,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           results.push(result);
         } else {
           // @ts-ignore
-          const pr: PercentageResult = {StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '-'};
+          const pr: PercentageResult = { StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '-' };
           results.push(pr);
         }
       }
@@ -137,8 +138,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 0,
         max: 100,
         regex: '^[0-9]*$',
-        errorMsg: this.translatePipe.transform('text.editor.edit.percentageControl',"Введите число от 0 до 100"),
-        label: this.translatePipe.transform('text.editor.edit.percentageResult',"Результат процентовки"),
+        errorMsg: this.translatePipe.transform('text.editor.edit.percentageControl', "Введите число от 0 до 100"),
+        label: this.translatePipe.transform('text.editor.edit.percentageResult', "Результат процентовки"),
         symbol: '%',
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
@@ -152,13 +153,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesAlert',"Процент успешно сохранен"));
+              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesAlert', "Процент успешно сохранен"));
             });
         } else {
           this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesEditAlert',"Процент успешно изменен"));
+              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesEditAlert', "Процент успешно изменен"));
             });
         }
       }
@@ -174,8 +175,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 1,
         max: 10,
         regex: '^[0-9]*$',
-        errorMsg: this.translatePipe.transform('text.editor.edit.estimationControl',"Введите число от 0 до 10"),
-        label: this.translatePipe.transform('text.editor.edit.estimation',"Оценка"),
+        errorMsg: this.translatePipe.transform('text.editor.edit.estimationControl', "Введите число от 0 до 10"),
+        label: this.translatePipe.transform('text.editor.edit.estimation', "Оценка"),
         notEmpty: true,
         total: true,
         lecturer: student.LecturerName,
@@ -194,7 +195,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         this.percentageResultsService.setMark(student.AssignedDiplomProjectId, result.mark, student.Lecturer, result.comment, dateString, result.showForStudent)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.estimationAlert',"Оценка успешно сохранена"));
+            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.estimationAlert', "Оценка успешно сохранена"));
           });
       }
     });
@@ -205,9 +206,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
+    this.toastr.success(msg);
   }
 
 }

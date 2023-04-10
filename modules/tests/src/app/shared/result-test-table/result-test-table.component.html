@@ -20,7 +20,7 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="Name">
-            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.text.fio.student' | translate: 'ФИО студента'}}</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">{{'text.students' | translate: 'Студенты'}}</mat-header-cell>
             <mat-cell *matCellDef="let element; let index = index" class="mat-header-cell-description"> {{index === studentResults.length - 1 ? 'Средняя оценка (процент) за тест' : element[1].name}}
             </mat-cell>
           </ng-container>
@@ -41,7 +41,7 @@
               [matTooltip]="getAverageTooltip(element)"
               matTooltipPosition="below"
               [matTooltipDisabled]="size && element[3]"
-                      [class.notAll]="size && !element[3]"> {{index === studentResults.length - 1 ? null : (element[2].slice() === '0' ? null : element[2].slice())}}
+                      [class.notAll]="size && !element[3]"> {{index === studentResults.length - 1 ? averageMarkForTest[iq].average?.toFixed(1) : (element[2].slice() === '0' ? null : element[2].slice())}}
             </mat-cell>
           </ng-container>
 

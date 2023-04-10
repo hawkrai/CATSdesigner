@@ -1,64 +1,58 @@
 <div class="app-component" *ngIf="diplomUser">
   <div class="mdc-tab-bar" role="tablist">
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 1"
-            (click)="tab = 1"
-    >
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 1"
+      (click)="tab = 1">
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">Темы проектов</span>
+        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.projectsThemes'
+          | translate: 'Темы проектов'}}</span>
       </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
         <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 2"
-            (click)="tab = 2"
-           
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Лист задания</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 2"
+      (click)="tab = 2">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.taskSheet'
+          | translate: 'Лист задания'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 3"
-            (click)="tab = 3"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">График процентовки</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 3"
+      (click)="tab = 3">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.percentages'
+          | translate: 'График процентовки'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 4"
-            (click)="tab = 4"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Результаты процентовки</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 4"
+      (click)="tab = 4">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.percentageResults'
+          | translate: 'Результаты процентовки'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 4">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0"
-            [class.mdc-tab--active]="tab === 5"
-            (click)="tab = 5"
-    >
-          <span class="mdc-tab__content">
-            <span class="mdc-tab__text-label">Посещение консультаций</span>
-          </span>
+    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 5"
+      (click)="tab = 5">
+      <span class="mdc-tab__content">
+        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.consultationsVisiting'
+          | translate: 'Посещение консультаций'}}</span>
+      </span>
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 5">
-            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-          </span>
+        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      </span>
       <span class="mdc-tab__ripple"></span>
     </button>
   </div>

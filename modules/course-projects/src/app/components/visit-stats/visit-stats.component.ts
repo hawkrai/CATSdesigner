@@ -1,18 +1,19 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {VisitStats} from '../../models/visit-stats.model';
-import {VisitStatsService} from '../../services/visit-stats.service';
-import {Subscription} from 'rxjs';
-import {Consultation} from '../../models/consultation.model';
-import {ConsultationMark} from '../../models/consultation-mark.model';
-import {CourseUser} from '../../models/course-user.model';
-import {AddDateDialogComponent} from './add-date-dialog/add-date-dialog.component';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../store/selectors/subject.selector';
-import {IAppState} from '../../store/state/app.state';
-import {VisitingPopoverComponent} from '../../shared/visiting-popover/visiting-popover.component';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { VisitStats } from '../../models/visit-stats.model';
+import { VisitStatsService } from '../../services/visit-stats.service';
+import { Subscription } from 'rxjs';
+import { Consultation } from '../../models/consultation.model';
+import { ConsultationMark } from '../../models/consultation-mark.model';
+import { CourseUser } from '../../models/course-user.model';
+import { AddDateDialogComponent } from './add-date-dialog/add-date-dialog.component';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { select, Store } from '@ngrx/store';
+import { getSubjectId } from '../../store/selectors/subject.selector';
+import { IAppState } from '../../store/state/app.state';
+import { VisitingPopoverComponent } from '../../shared/visiting-popover/visiting-popover.component';
 import { CoreGroup } from 'src/app/models/core-group.model';
-import {TranslatePipe} from 'educats-translate';
+import { TranslatePipe } from 'educats-translate';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-visit-stats',
@@ -35,11 +36,13 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   private subjectId: string;
   private searchString = '';
 
+  private preSavedData: Consultation = null;
+
   constructor(private visitStatsService: VisitStatsService,
-              public dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private translatePipe: TranslatePipe,
-              private store: Store<IAppState>) {
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    private translatePipe: TranslatePipe,
+    private store: Store<IAppState>) {
   }
 
   ngOnInit() {
@@ -67,7 +70,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     })
       .subscribe(res => {
         console.log(res);
-        
+
         this.visitStatsList = this.assignResults(res.Students.Items, res.Consultations);
         this.consultations = res.Consultations;
       });
@@ -97,7 +100,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
           results.push(result);
         } else {
           // @ts-ignore
-          const cm: ConsultationMark = {StudentId: student.Id, ConsultationDateId: consultation.Id};
+          const cm: ConsultationMark = { StudentId: student.Id, ConsultationDateId: consultation.Id };
           results.push(cm);
         }
       })
@@ -108,7 +111,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
 
   setVisitMarks(consultationDateId: string) {
     const date = new Date(this.consultations.find(consultation => consultation.Id === consultationDateId).Day).toLocaleDateString();
-    const visits = {date, students: []};
+    const visits = { date, students: [] };
     this.visitStatsList.forEach(stats => {
       const mark = stats.CourseProjectConsultationMarks.find(stat => stat.ConsultationDateId === consultationDateId);
       const visit = {
@@ -132,6 +135,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
       if (result) {
         this.processDialogResult(result, false);
       }
@@ -144,7 +148,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       if (visit.id == null) {
         if (visit.mark || visit.comment || visit.comment !== '') {
           hasChanges = true;
-          this.visitStatsService.setMark(visit.studentId, visit.consultationDateId, visit.mark, visit.comment)
+          this.visitStatsService.setMark(visit.studentId, visit.consultationDateId, visit.mark, visit.comment, visit.isShow)
             .subscribe(() => this.processDialogResult(result, hasChanges));
         } else {
           this.processDialogResult(result, hasChanges);
@@ -154,7 +158,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
           .find(mark => mark.Id === visit.id);
         if (origin.Mark !== visit.mark || origin.Comments !== visit.comment) {
           hasChanges = true;
-          this.visitStatsService.editMark(visit.id, visit.studentId, visit.consultationDateId, visit.mark, visit.comment)
+          this.visitStatsService.editMark(visit.id, visit.studentId, visit.consultationDateId, visit.mark, visit.comment, visit.isShow)
             .subscribe(() => this.processDialogResult(result, hasChanges));
         } else {
           this.processDialogResult(result, hasChanges);
@@ -170,28 +174,30 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(AddDateDialogComponent, {
       width: '548px',
       data: {
+        ...this.preSavedData,
         consultations: this.consultations,
         subjectId: this.subjectId
-       }
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
+      if (result != null && !result.isClose) {
         const date = new Date(result.date);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         this.visitStatsService.addDate(date.toISOString(), this.subjectId, result.start,
-        result.end, result.audience, result.building).subscribe(() => {
-          this.ngOnInit();
-          this.addFlashMessage(this.translatePipe.transform('text.course.visit.dialog.add.save.success', 'Дата консультации успешно добавлена'));
-        });
+          result.end, result.audience, result.building).subscribe(() => {
+            this.ngOnInit();
+            this.addFlashMessage(this.translatePipe.transform('text.course.visit.dialog.add.save.success', 'Дата консультации успешно добавлена'));
+          });
+      }
+      if (result.isClose) {
+        this.preSavedData = result;
       }
     });
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
+    this.toastr.success(msg);
   }
 
 }

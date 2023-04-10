@@ -31,4 +31,5 @@ export class VisitingPopoverComponent {
   onMarkChange(mark: number) {
     this.invalid = mark != null && mark < 0;
   }
+  
 }

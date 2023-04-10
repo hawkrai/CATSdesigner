@@ -29,11 +29,11 @@
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> {{'text.test.action' | translate: 'Действие'}}</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-action" [class.right]="!isAvailabilityShown && !(element.HasQuestions || !allowChanges)">
+        <mat-cell *matCellDef="let element; let ind = index" class="mat-header-cell-action" [class.right]="!isAvailabilityShown && !(element.HasQuestions || !allowChanges)">
           <mat-icon *ngIf="element.HasQuestions || !allowChanges" color="primary" class="main-table-tests-icon" (click)="navigateToTest(element.Id)" [matTooltip]="'text.test.pass.test' | translate: 'Пройти тест'"
                     matTooltipClass="example-tooltip-blue">play_circle_outline
           </mat-icon>
-          <mat-icon class="main-table-tests-icon" color="primary" (click)="openEditPopup(element)" *ngIf="allowChanges" [matTooltip]="'text.test.edit' | translate: 'Редактировать тест'"
+          <mat-icon class="main-table-tests-icon" color="primary" (click)="openEditPopup(element, ind)" *ngIf="allowChanges" [matTooltip]="'text.test.edit' | translate: 'Редактировать тест'"
                     matTooltipClass="example-tooltip-blue">edit
           </mat-icon>
           <mat-icon class="main-table-tests-icon" color="primary" (click)="deleteTest(element.Id)" *ngIf="allowChanges" [matTooltip]="'text.test.delete.test' | translate: 'Удалить тест'"

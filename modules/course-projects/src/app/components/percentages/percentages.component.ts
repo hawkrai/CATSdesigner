@@ -1,15 +1,15 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Percentage} from '../../models/percentage.model';
-import {PercentagesService} from '../../services/percentages.service';
-import {CourseUser} from '../../models/course-user.model';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
-import {AddStageDialogComponent} from './add-stage-dialog/add-stage-dialog.component';
-import {select, Store} from '@ngrx/store';
-import {IAppState} from '../../store/state/app.state';
-import {getSubjectId} from '../../store/selectors/subject.selector';
-import {ToastrService} from 'ngx-toastr';
-import {TranslatePipe} from 'educats-translate';
+import { Component, Input, OnInit } from '@angular/core';
+import { Percentage } from '../../models/percentage.model';
+import { PercentagesService } from '../../services/percentages.service';
+import { CourseUser } from '../../models/course-user.model';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { AddStageDialogComponent } from './add-stage-dialog/add-stage-dialog.component';
+import { select, Store } from '@ngrx/store';
+import { IAppState } from '../../store/state/app.state';
+import { getSubjectId } from '../../store/selectors/subject.selector';
+import { ToastrService } from 'ngx-toastr';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-percentages',
@@ -28,11 +28,10 @@ export class PercentagesComponent implements OnInit {
   private subjectId: string;
 
   constructor(private percentagesService: PercentagesService,
-              public dialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private toastr: ToastrService,
-              private translatePipe: TranslatePipe,
-              private store: Store<IAppState>) {
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    private translatePipe: TranslatePipe,
+    private store: Store<IAppState>) {
   }
 
   ngOnInit() {
@@ -98,7 +97,7 @@ export class PercentagesComponent implements OnInit {
       if (result != null && result.name != null) {
         result.name = result.name.replace('\n', '');
         const checkTheme = this.percentages.find((i, index) => i.Name === result.name && i.Percentage === +result.percentage && index !== itemIndex);
-        const checkName =  this.percentages.find((i, index) => i.Name === result.name && index !== itemIndex);
+        const checkName = this.percentages.find((i, index) => i.Name === result.name && index !== itemIndex);
         if (checkTheme === undefined && !checkName) {
           const date = new Date(result.date);
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());

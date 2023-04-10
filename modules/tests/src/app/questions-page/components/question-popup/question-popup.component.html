@@ -1,12 +1,10 @@
 <app-popover-dialog>
-  <ng-container title>
+  <ng-container title *ngIf="data.event">
     {{
-      data.event
-        ? ("text.test.questions.for.test" | translate : "Вопрос для теста ")
-        : ("text.test.new.questions.for.test"
-          | translate
-            : "Вопрос №" + data.questionLength
-            : { number: data.questionLength + 1 })
+      "text.test.new.questions.for.test"
+        | translate
+          : "Вопрос №" + data.questionLength
+          : { number: data.event ? questionIndex : data.questionLength + 1 }
     }}
     <div class="question-popup-container-small">{{ data.title }}</div>
   </ng-container>
@@ -103,7 +101,7 @@
           {{ "text.test.add.answer" | translate : "Добавить ответ" }}
         </button>
         <div class="question-popup-inputs">
-          <mat-form-field class="question-popup-type" >
+          <mat-form-field class="question-popup-type">
             <mat-label>{{
               "text.test.question.type" | translate : "Тип вопроса"
             }}</mat-label>
@@ -112,7 +110,7 @@
               [value]="question.QuestionType || 0"
               [matTooltip]="getPopupTypeTooltip()"
             >
-              <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id" >
+              <mat-option *ngFor="let type of ANSWER_TYPES" [value]="type.id">
                 {{ type.label | translate : type.label }}
               </mat-option>
             </mat-select>
@@ -239,7 +237,7 @@
       </div>
     </ng-container>
   </ng-container>
-  <ng-container actions>
+  <ng-container actions *ngIf="formGroup">
     <button mat-raised-button (click)="onNoClick()">
       {{ "button.cancel" | translate : "Отменить" }}
     </button>
@@ -248,6 +246,7 @@
       color="primary"
       (click)="onYesClick()"
       [disabled]="formGroup.invalid"
+      color="white"
     >
       {{ "button.save" | translate : "Сохранить" }}
     </button>

@@ -16,7 +16,7 @@ export class ResultTestTablePupilComponent implements OnChanges {
   public loading: boolean = true;
 
   public barChartColors: any[] = [
-    { backgroundColor: "#3f51b5" },
+    { backgroundColor: "#1976D2" },
   ];
 
   displayedColumns: string[] = ["Id", "Title", "action"];
