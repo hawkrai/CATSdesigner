@@ -7,7 +7,8 @@
 <div mat-dialog-content>
   <mat-form-field class="form-field">
     <mat-label>{{'text.course.percentages.list.stage.date' | translate : 'Дата'}}</mat-label>
-    <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)">
+    <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)"
+      readonly>
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
     <mat-error *ngIf="dateControl.invalid">{{'text.course.list.dialog.data.error.date' | translate : 'Неправильный
@@ -67,12 +68,8 @@
     </table>
   </div>
 </div>
-<!-- 
+
 <div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
-  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data" 
-        [disabled]="audienceControl.invalid || buildingControl.invalid || dateControl.invalid 
-        || startTimeControl.invalid || endTimeControl.invalid">
-        Сохранить
-  </button>
-</div> -->
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()"> {{'text.close' | translate :
+    'Закрыть'}}</button>
+</div>

@@ -1,7 +1,36 @@
 :host {
+
+  .form-field {
+    width: 100%;
+
+    .commentInput {
+      height: 40px;
+    }
+
+    input {
+      max-width: 150px;
+    }
+
+    .checkbox {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+
   h3 {
     font-weight: 400;
   }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    &__close-btn {
+      width: 40px;
+    }
+  }
+
   .visiting-popover {
 
     &__header {
@@ -35,7 +64,8 @@
     }
   }
 
-  .mat-cell, .mat-header-cell {
+  .mat-cell,
+  .mat-header-cell {
     padding-right: 10px;
   }
 

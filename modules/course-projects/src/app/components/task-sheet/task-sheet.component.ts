@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslatePipe } from 'educats-translate';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { map } from 'rxjs/operators';
+import { CourseUserService } from 'src/app/services/course-user.service';
 
 @Component({
   selector: 'app-task-sheet',
@@ -40,7 +41,8 @@ export class TaskSheetComponent implements OnInit {
     private dialog: MatDialog,
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
-    private store: Store<IAppState>) {
+    private store: Store<IAppState>,
+    private courseService: CourseUserService) {
   }
 
 
@@ -60,15 +62,19 @@ export class TaskSheetComponent implements OnInit {
             this.themes = res.sort((a, b) => {
               return b - a;
             });
-            if (this.courseProjectId == null) {
-              this.courseProjectId = res[0].Id;
+            this.courseProjectId = res[0].Id;
+            if (this.courseUser.IsStudent) {
+              const project = res.find((item) => item.StudentId === this.courseUser.UserId)
+              if (project) {
+                this.courseProjectId = project.Id
+              }
             }
-            console.log(this.courseProjectId);
             this.retrieveTaskSheetHtml();
             this.retrieveTemplates();
           }
         });
     });
+    console.log(this.courseUser)
   }
 
   onThemeChange(themeId: number) {
@@ -149,6 +155,10 @@ export class TaskSheetComponent implements OnInit {
 
   downloadTaskSheet() {
     location.href = location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + this.courseProjectId;
+  }
+
+  get isSelectDisabled(): boolean {
+    return this.courseUser.IsStudent && !this.courseUser.IsLecturer
   }
 }
 function takeUntil(destroy$: Subject<void>): import("rxjs").OperatorFunction<any, unknown> {

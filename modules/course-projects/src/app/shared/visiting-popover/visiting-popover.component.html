@@ -1,6 +1,8 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
-<div class="visiting-popover__header">
-  <p>Редактируемая дата: </p>
+<div class="header">
+  <h1 mat-dialog-title>{{data.title}}</h1>
+  <button mat-icon-button (click)="onClick()" class="header__close-btn">
+    <mat-icon aria-hidden="false">close</mat-icon>
+  </button>
 </div>
 <div class="visiting-popover__table" *ngIf="data.body">
   <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
@@ -11,36 +13,44 @@
     </ng-container>
 
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> ФИО</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{'text.course.visit.dialog.set.title' | translate :
+        'ФИО'}}</mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="mark">
-      <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{'text.missed.hours' | translate :
+        'Пропущено часов'}}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <mat-form-field class="example-full-width" >
+        <mat-form-field class="example-full-width">
           <input name="mark" type="number" min="0" pattern="\d*" matInput [(ngModel)]="element.mark" #mark="ngModel"
-                 (change)="onMarkChange($event.target.value)">
-          <mat-error *ngIf="mark.invalid">Больше 0</mat-error>
+            (change)="onMarkChange($event.target.value)">
+          <mat-error *ngIf="mark.invalid">{{'text.more.zero' | translate :
+            'Больше 0'}}</mat-error>
         </mat-form-field>
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="comment">
-      <mat-header-cell *matHeaderCellDef> Комментарий</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{'text.course.percentage.result.dialog.comment' | translate :
+        'Комментарий'}}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width form-field">
           <input name="comment" matInput [(ngModel)]="element.comment">
+          <mat-checkbox class="checkbox" [(ngModel)]="element.isShow" matTooltip="{{'text.course.percentage.result.dialog.comment.show' | translate : 'Показать комментарий студенту'}}" matTooltipPosition="left" class="checkbox" [checked]="element.isShow" [color]="'primary'"></mat-checkbox>
         </mat-form-field>
       </mat-cell>
     </ng-container>
+
+    
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button (click)="onClick()">{{'text.course.list.dialog.actions.cancel' | translate :
+    'Отмена'}}</button>
   <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary" [disabled]="invalid">
     {{data.buttonText}}
   </button>

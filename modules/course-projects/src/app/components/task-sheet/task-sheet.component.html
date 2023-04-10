@@ -1,20 +1,25 @@
 <div *ngIf="courseUser; else load" class="task-sheet__header">
   <mat-form-field class="task-sheet__header__theme">
     <mat-label>{{'text.course.list.select' | translate : 'Выберите тему курсового проекта'}}</mat-label>
-    <mat-select panelClass="theme-panel" [(value)]="courseProjectId" (selectionChange)="onThemeChange($event.value)">
+    <mat-select panelClass="theme-panel" [(value)]="courseProjectId" (selectionChange)="onThemeChange($event.value)"
+      [disabled]="isSelectDisabled">
       <mat-option *ngFor="let theme of themes" [value]="theme.Id">
         {{theme.Theme}}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <div class="task-sheet__header__actions">
-    <button mat-icon-button color="primary" matTooltip="{{'text.download.project.list' | translate : 'Скачать лист задания'}}"
-            *ngIf="courseProjectId != null" (click)="downloadTaskSheet()">
-      <mat-icon>cloud_download</mat-icon>
-    </button>
+    <app-help *ngIf="courseUser.IsLecturer"
+      [message]="'text.course.list.help' | translate : 'В листе задания фамилии обучающегося и руководителя, а также тема курсового проекта заполняются автоматически. Данные для пункта 7 будут отображены после заполнения информации на вкладке “График процентовки”. Остальные пункты листа задания заполняются посредством его редактирования'"
+      [action]="'text.course.percentage.help.clear' | translate : 'Понятно'"></app-help>
     <button mat-icon-button color="primary" matTooltip="{{'text.course.list.edit' | translate : 'Редактировать'}}"
-            (click)="editTaskSheet()" *ngIf="courseUser.IsLecturer && courseProjectId != null">
+      (click)="editTaskSheet()" *ngIf="courseUser.IsLecturer && courseProjectId != null">
       <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="primary"
+      matTooltip="{{'text.download.project.list' | translate : 'Скачать лист задания'}}" *ngIf="courseProjectId != null"
+      (click)="downloadTaskSheet()">
+      <mat-icon>cloud_download</mat-icon>
     </button>
   </div>
 </div>

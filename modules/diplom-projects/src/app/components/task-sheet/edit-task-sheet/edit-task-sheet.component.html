@@ -1,12 +1,13 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
-  <mat-icon class="close-icon" color="warn">close</mat-icon>
+  <mat-icon class="close-icon">close</mat-icon>
 </button>
 <h1 mat-dialog-title>{{'text.diplomProject.editTaskSheet' | translate: 'Редактирование листа задания'}}</h1>
 <div mat-dialog-content style="display: block">
   <mat-form-field class="form-field">
     <mat-label>{{'text.diplomProject.choosePattern' | translate: 'Выберите готовый шаблон'}}</mat-label>
     <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
-      <mat-option *ngIf="data.taskSheetTemplate != undefined" value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
+      <mat-option *ngIf="data.taskSheetTemplate != undefined"
+        value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
       <mat-option *ngFor="let template of templates" [value]="template">
         {{template.Name}}
       </mat-option>
@@ -16,10 +17,12 @@
     <mat-form-field>
       <mat-label>{{'text.diplomProject.patternName' | translate: 'Название шаблона'}}</mat-label>
       <input matInput [formControl]="templateNameControl">
-      <mat-error *ngIf="templateNameControl.invalid">{{'text.diplomProject.templateNameControl' | translate: 'До 30 символов'}}</mat-error>
+      <mat-error *ngIf="templateNameControl.invalid">{{'text.diplomProject.templateNameControl' | translate: 'До 30
+        символов'}}</mat-error>
     </mat-form-field>
-    <button mat-flat-button class="saveTemplateButton" color="primary" [disabled]="templateNameControl.invalid || isFormInvalid()"
-            (click)="saveTemplate()">{{'text.diplomProject.createPattern' | translate: 'Создать шаблон'}}</button>
+    <button mat-flat-button class="saveTemplateButton" color="primary"
+      [disabled]="templateNameControl.invalid || isFormInvalid()"
+      (click)="saveTemplate()">{{'text.diplomProject.createPattern' | translate: 'Создать шаблон'}}</button>
   </div>
 
   <div class="apply-template">
@@ -31,103 +34,125 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-flat-button class="applyButton" color="primary" [disabled]="isSelectedGroupsInvalid() || templateNameControl.invalid || isFormInvalid()"
-            (click)="applyTemplate()">{{'text.diplomProject.applyPattern' | translate: 'Применить шаблон'}}</button>
+    <button mat-flat-button class="applyButton" color="primary"
+      [disabled]="isSelectedGroupsInvalid() || templateNameControl.invalid || isFormInvalid()"
+      (click)="applyTemplate()">{{'text.diplomProject.applyPattern' | translate: 'Применить шаблон'}}</button>
   </div>
 
   <mat-tab-group dynamicHeight class="dialog-tab-content">
-    <mat-tab label="'text.diplomProject.inputData' | translate: 'Входные данные'">
+    <mat-tab label="{{'text.diplomProject.inputData' | translate: 'Входные данные'}}">
       <mat-form-field appearance="fill">
         <textarea matInput style="height: 300px" [formControl]="inputDataControl"></textarea>
-        <mat-error *ngIf="inputDataControl.invalid">{{'text.diplomProject.inputDataControl' | translate: 'До 999 символов'}}</mat-error>
+        <mat-error *ngIf="inputDataControl.invalid">{{'text.diplomProject.inputDataControl' | translate: 'До 999
+          символов'}}</mat-error>
       </mat-form-field>
     </mat-tab>
-    <mat-tab label="'text.diplomProject.content' | translate: 'Содержание'">
+    <mat-tab label="{{'text.diplomProject.content' | translate: 'Содержание'}}">
       <mat-form-field appearance="fill">
         <textarea matInput style="height: 300px" [formControl]="contentControl"></textarea>
-        <mat-error *ngIf="contentControl.invalid">{{'text.diplomProject.inputDataControl' | translate: 'До 999 символов'}}</mat-error>
+        <mat-error *ngIf="contentControl.invalid">{{'text.diplomProject.inputDataControl' | translate: 'До 999
+          символов'}}</mat-error>
       </mat-form-field>
     </mat-tab>
-    <mat-tab label="'text.diplomProject.drawContent' | translate: 'Графические материалы'">
+    <mat-tab label="{{'text.diplomProject.drawContent' | translate: 'Графические материалы'}}">
       <mat-form-field appearance="fill">
         <textarea matInput style="height: 300px" [formControl]="drawContentControl"></textarea>
-        <mat-error *ngIf="drawContentControl.invalid">{{'text.diplomProject.inputDataControl' | translate: 'До 999 символов'}}</mat-error>
+        <mat-error *ngIf="drawContentControl.invalid">{{'text.diplomProject.inputDataControl' | translate: 'До 999
+          символов'}}</mat-error>
       </mat-form-field>
     </mat-tab>
-    <mat-tab label="'text.diplomProject.univer' | translate: 'Сведения о ВУЗе'">
+    <mat-tab label="{{'text.diplomProject.univer' | translate: 'Сведения о ВУЗе'}}">
       <mat-form-field appearance="fill">
         <mat-label>{{'text.diplomProject.univerName' | translate: 'Название учебного заведения'}}</mat-label>
         <textarea matInput style="height: 58px" [formControl]="univerControl"></textarea>
-        <mat-error *ngIf="univerControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+        <mat-error *ngIf="univerControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+          символов'}}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>{{'text.diplomProject.facultyName' | translate: 'Название кафедры'}}</mat-label>
         <textarea matInput style="height: 58px" [formControl]="facultyControl"></textarea>
-        <mat-error *ngIf="facultyControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+        <mat-error *ngIf="facultyControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+          символов'}}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>{{'text.diplomProject.headCathedra' | translate: 'Фамилия, инициалы заведующего кафедры'}}</mat-label>
+        <mat-label>{{'text.diplomProject.headCathedra' | translate: 'Фамилия, инициалы заведующего
+          кафедры'}}</mat-label>
         <textarea matInput style="height: 58px" [formControl]="headCathedraControl"></textarea>
-        <mat-error *ngIf="headCathedraControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+        <mat-error *ngIf="headCathedraControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+          символов'}}</mat-error>
       </mat-form-field>
     </mat-tab>
-    <mat-tab label="'text.diplomProject.dates' | translate: 'Даты'">
+    <mat-tab label="{{'text.diplomProject.dates' | translate: 'Даты'}}">
       <mat-form-field class="form-field" style="margin-top: 20px">
         <mat-label>{{'text.diplomProject.startDate' | translate: 'Дата выдачи задания'}}</mat-label>
-        <input matInput [matDatepicker]="dp1" [formControl]="startDateControl">
+        <input matInput [matDatepicker]="dp1" [formControl]="startDateControl" readonly>
         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
         <mat-datepicker #dp1></mat-datepicker>
-        <mat-error *ngIf="startDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
+        <mat-error *ngIf="startDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат
+          (ДД.ММ.ГГГГ)'}}</mat-error>
       </mat-form-field>
       <mat-form-field class="form-field">
         <mat-label>{{'text.diplomProject.endDate' | translate: 'Сроки сдачи дипломного проекта'}}</mat-label>
-        <input matInput [matDatepicker]="dp2" [formControl]="endDateControl">
+        <input matInput [matDatepicker]="dp2" [formControl]="endDateControl" readonly>
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
         <mat-datepicker #dp2></mat-datepicker>
-        <mat-error *ngIf="endDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
+        <mat-error *ngIf="endDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат
+          (ДД.ММ.ГГГГ)'}}</mat-error>
       </mat-form-field>
     </mat-tab>
-    <mat-tab label="'text.diplomProject.consultants' | translate: 'Консультанты'">
+    <mat-tab label="{{'text.diplomProject.consultants' | translate: 'Консультанты'}}">
       <mat-form-field appearance="fill">
-        <mat-label>{{'text.diplomProject.computerConsultant' | translate: 'Фамилия, инициалы консультанта по компьютерному проектированию'}}</mat-label>
+        <mat-label>{{'text.diplomProject.computerConsultant' | translate: 'Фамилия, инициалы консультанта по
+          компьютерному проектированию'}}</mat-label>
         <textarea matInput style="height: 50px" [formControl]="computerConsultantControl"></textarea>
-        <mat-error *ngIf="computerConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+        <mat-error *ngIf="computerConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+          символов'}}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>{{'text.diplomProject.healthAndSafetyConsultant' | translate: 'Фамилия, инициалы консультанта по охране труда'}}</mat-label>
+        <mat-label>{{'text.diplomProject.healthAndSafetyConsultant' | translate: 'Фамилия, инициалы консультанта по
+          охране труда'}}</mat-label>
         <textarea matInput style="height: 50px" [formControl]="healthAndSafetyConsultantControl"></textarea>
-        <mat-error *ngIf="healthAndSafetyConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+        <mat-error *ngIf="healthAndSafetyConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+          символов'}}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>{{'text.diplomProject.econimicsConsultant' | translate: 'Фамилия, инициалы консультанта по вопросам экономики'}}</mat-label>
+        <mat-label>{{'text.diplomProject.econimicsConsultant' | translate: 'Фамилия, инициалы консультанта по вопросам
+          экономики'}}</mat-label>
         <textarea matInput style="height: 50px" [formControl]="econimicsConsultantControl"></textarea>
-        <mat-error *ngIf="econimicsConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+        <mat-error *ngIf="econimicsConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+          символов'}}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>{{'text.diplomProject.normocontrolConsultant' | translate: 'Фамилия, инициалы консультанта по нормоконтролю'}}</mat-label>
+        <mat-label>{{'text.diplomProject.normocontrolConsultant' | translate: 'Фамилия, инициалы консультанта по
+          нормоконтролю'}}</mat-label>
         <textarea matInput style="height: 50px" [formControl]="normocontrolConsultantControl"></textarea>
-        <mat-error *ngIf="normocontrolConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255 символов'}}</mat-error>
+        <mat-error *ngIf="normocontrolConsultantControl.invalid">{{'text.diplomProject.control' | translate: 'До 255
+          символов'}}</mat-error>
       </mat-form-field>
     </mat-tab>
-    <mat-tab label="'text.diplomProject.decree' | translate: 'Приказ'">
+    <mat-tab label="{{'text.diplomProject.decree' | translate: 'Приказ'}}">
       <mat-form-field appearance="fill">
         <mat-label>{{'text.diplomProject.decreeNumber' | translate: '№ приказа'}}</mat-label>
         <textarea matInput style="height: 20px" [formControl]="decreeNumberControl"></textarea>
-        <mat-error *ngIf="decreeNumberControl.invalid">{{'text.diplomProject.templateNameControl' | translate: 'До 30 символов'}}</mat-error>
+        <mat-error *ngIf="decreeNumberControl.invalid">{{'text.diplomProject.templateNameControl' | translate: 'До 30
+          символов'}}</mat-error>
       </mat-form-field>
       <mat-form-field class="form-field">
         <mat-label>{{'text.diplomProject.decreeDate' | translate: 'Дата приказа'}}</mat-label>
-        <input matInput [matDatepicker]="dp3" [formControl]="decreeDateControl">
+        <input matInput [matDatepicker]="dp3" [formControl]="decreeDateControl" readonly>
         <mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
         <mat-datepicker #dp3></mat-datepicker>
-        <mat-error *ngIf="decreeDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
+        <mat-error *ngIf="decreeDateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный
+          формат (ДД.ММ.ГГГГ)'}}</mat-error>
       </mat-form-field>
     </mat-tab>
   </mat-tab-group>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.diplomProject.cancel' | translate: 'Отмена'}}</button>
-  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()" [disabled]="isFormInvalid()">
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.diplomProject.cancel' | translate:
+    'Отмена'}}</button>
+  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="getResultForm()"
+    [disabled]="isFormInvalid()">
     {{'text.diplomProject.save' | translate: 'Сохранить'}}
   </button>
 </div>

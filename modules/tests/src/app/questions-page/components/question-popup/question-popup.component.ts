@@ -26,6 +26,8 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public question: Question = new Question();
   public chosenQuestionType: any = 0;
   public chosenType: any;
+  public titleQuestionIndex = "Вопрос ";
+  public questionIndex = 0;
   navItems: NavItem[] = [];
 
   ckconfig = {
@@ -57,8 +59,12 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     @Inject(MAT_DIALOG_DATA) public data: any,
     private testService: TestService,
     private translatePipe: TranslatePipe,
-    private catsService: CatsService) {
+    private catsService: CatsService,
+    ) {
     super();
+    if (this.data.event) {
+      this.questionIndex = Number(this.data.event.index);
+    }
   }
 
   ngOnInit() {

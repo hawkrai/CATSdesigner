@@ -6,6 +6,7 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 import {AddStageDialogComponent} from './add-stage-dialog/add-stage-dialog.component';
 import { TranslatePipe } from 'educats-translate';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-percentages',
@@ -23,7 +24,7 @@ export class PercentagesComponent implements OnInit {
 
   constructor(private percentagesService: PercentagesService,
               public dialog: MatDialog,
-              private snackBar: MatSnackBar,
+              private toastr: ToastrService,
               public translatePipe: TranslatePipe) {
   }
 
@@ -121,9 +122,7 @@ export class PercentagesComponent implements OnInit {
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000
-    });
+    this.toastr.success(msg);
   }
 
 }

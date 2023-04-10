@@ -79,8 +79,8 @@ export class MainTableTestsComponent extends AutoUnsubscribeBase implements OnIn
     this.router.navigate(["test/" + Id]);
   }
 
-  public openEditPopup(element): void {
-    this.onOpenEditPopup.emit(element);
+  public openEditPopup(element, index: number): void {
+    this.onOpenEditPopup.emit({...element, index});
   }
 
   public deleteTest(testId): void {
