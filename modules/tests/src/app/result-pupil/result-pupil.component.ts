@@ -106,6 +106,7 @@ export class ResultPupilComponent extends AutoUnsubscribeBase implements OnInit 
         this.knowledgeControlTests.push(result);
       }
     });
+    this.visibleTests = this.options.map((x) => x.value);
     this.loading = false;
   }
 }
