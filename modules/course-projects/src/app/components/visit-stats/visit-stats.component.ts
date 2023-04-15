@@ -118,13 +118,14 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         comment: mark.Comments,
         id: mark.Id,
         consultationDateId: mark.ConsultationDateId,
-        studentId: mark.StudentId
+        studentId: mark.StudentId,
+        date: date
       };
       visits.students.push(visit);
     });
 
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
-      width: '700px',
+      width: '538px',
       data: {
         title: this.translatePipe.transform('text.course.visit.dialog.set.title', 'Посещаемость студентов'),
         buttonText: this.translatePipe.transform('text.course.visit.dialog.set.action.save', 'Сохранить'),

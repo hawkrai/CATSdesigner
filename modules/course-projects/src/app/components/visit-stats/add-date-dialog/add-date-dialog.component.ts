@@ -49,13 +49,12 @@ export class AddDateDialogComponent implements OnInit {
   }
 
   initControls(): void {
-    const data = this.data.consultations;
+    const data = this.data.consultations[0];
     if (data) {
-      console.log(data)
-      this.audienceControl.patchValue(data[0].Audience);
-      this.buildingControl.setValue(data[0].Building);
-      this.startTimeControl .setValue(data[0].StartTime);
-      this.endTimeControl.setValue(data[0].EndTime);
+      this.data.audience = data.Audience;
+      this.data.building = data.Building;
+      this.data.end = data.EndTime;
+      this.data.start = data.StartTime;
     }
   }
 

@@ -32,7 +32,7 @@
           </td>
         </ng-container>
         <ng-container *ngIf="percentageResultsComponent.getCourseUser().IsLecturer">
-          <td class="mdc-data-table__cell data-cell clickable" (click)="percentageResultsComponent.setResult(result, student.Name, student.Lecturer)"
+          <td class="mdc-data-table__cell data-cell clickable" (click)="percentageResultsComponent.setResult(result, student.Name, student.Lecturer, percentageGraphs[i])"
               *ngFor="let result of student.PercentageResults">
             {{ result.Mark }}
             <div class="comment" *ngIf="result && result.Comment">

@@ -111,7 +111,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     return studentPercentageResults;
   }
 
-  setResult(pr: PercentageResult, student: string, lecturer: string) {
+  setResult(pr: PercentageResult, student: string, lecturer: string, date) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       width: '548px',
       data: {
@@ -127,7 +127,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         total: false,
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
-        expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage
+        expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage,
+        additionalData: date
       }
     });
 

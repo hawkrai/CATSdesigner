@@ -53,6 +53,7 @@
   "text.course.projects.apply.success": "Theme has been applied successfully",
   "text.course.projects.list.project": "Course project theme",
   "text.course.projects.list.student": "Student",
+  "text.course.projects.list.students": "Students",
   "text.course.projects.list.group": "Group",
   "text.course.projects.list.date": "Date",
   "text.course.projects.list.grade": "Grade",
@@ -131,7 +132,7 @@
   "text.course.percentage.result.result.label": "Percentages result",
   "text.course.percentage.result.result.save.success": "Percentage has been saved successfully",
   "text.course.percentage.result.result.change.success": "Percentage has been changed successfully",
-  "text.course.percentage.result.dialog.edit.mark": "Mark (form 0 to 10)",
+  "text.course.percentage.result.dialog.edit.mark": "Mark (from 0 to 10)",
   "text.course.percentage.result.dialog.edit.expected.percentage": "Expected percentage ",
   "text.course.percentage.result.dialog.edit.date": "Issue date",
   "text.course.percentage.result.dialog.error.date": "Incorrect date format (dd.MM.YYYY)",
@@ -142,7 +143,7 @@
   "text.course.percentage.result.dialog.mark.set": "Mark was set by ",
   "text.course.percentage.result.dialog.action.cancel": "Cancel",
   "text.course.percentage.result.dialog.action.save": "Save",
-  "text.course.visit.dialog.set.title": "Consultation attendance",
+  "text.course.visit.dialog.set.title": "Consultation visit",
   "text.course.visit.dialog.set.action.save": "Save",
   "text.course.visit.dialog.set.action.save.success": "Attendance has been changed successfully",
   "text.course.visit.dialog.add.header.title": "Add consultation date",
@@ -186,6 +187,7 @@
   "text.course.consultation.visiting": "Consultation visit",
   "text.course.defence": "Defence",
   "text.course.percentage.help.message": "Click on the cell next to the student on the desired date to mark the percentage and leave a comment",
+  "text.course.consultation.help.message": "Click on the cell next to the student on the desired date to mark the consultation visit and leave a comment",
   "text.course.percentage.help.clear": "Clear",
   "text.course.add.theme": "Add theme"
 }

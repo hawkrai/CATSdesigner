@@ -148,6 +148,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   onTemplateChange(event: MatSelectChange) {
     this.templateId = event.value.Id;
     this.taskSheetService.getTemplate({ templateId: event.value.Id }).subscribe(res => {
+      console.log(res)
       this.formGroup.controls.templateNameControl.setValue(event.value.Name);
       this.formGroup.controls.inputDataControl.setValue(res.InputData);
       this.formGroup.controls.contentControl.setValue(res.RpzContent);
