@@ -1,5 +1,8 @@
 <div class="header">
-  <h1 mat-dialog-title>{{data.title}}</h1>
+  <div>
+    <h1 mat-dialog-title>{{data.title}}</h1>
+    <span class="header-date__color">{{data.body.date | date: 'dd.MM.yyyy'}}</span>
+  </div>
   <button mat-icon-button (click)="onClick()" class="header__close-btn">
     <mat-icon aria-hidden="false">close</mat-icon>
   </button>
@@ -13,7 +16,7 @@
     </ng-container>
 
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef>{{'text.course.visit.dialog.set.title' | translate :
+      <mat-header-cell *matHeaderCellDef>{{'text.course.projects.list.students' | translate :
         'ФИО'}}</mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
     </ng-container>
@@ -37,12 +40,14 @@
       <mat-cell *matCellDef="let element">
         <mat-form-field class="example-full-width form-field">
           <input name="comment" matInput [(ngModel)]="element.comment">
-          <mat-checkbox class="checkbox" [(ngModel)]="element.isShow" matTooltip="{{'text.course.percentage.result.dialog.comment.show' | translate : 'Показать комментарий студенту'}}" matTooltipPosition="left" class="checkbox" [checked]="element.isShow" [color]="'primary'"></mat-checkbox>
+          <mat-checkbox class="checkbox" [(ngModel)]="element.isShow"
+            matTooltip="{{'text.course.percentage.result.dialog.comment.show' | translate : 'Показать комментарий студенту'}}"
+            matTooltipPosition="left" class="checkbox" [checked]="element.isShow" [color]="'primary'"></mat-checkbox>
         </mat-form-field>
       </mat-cell>
     </ng-container>
 
-    
+
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

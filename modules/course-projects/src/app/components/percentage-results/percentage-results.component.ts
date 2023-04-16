@@ -111,7 +111,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     return studentPercentageResults;
   }
 
-  setResult(pr: PercentageResult, student: string, lecturer: string) {
+  setResult(pr: PercentageResult, student: string, lecturer: string, date) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       width: '548px',
       data: {
@@ -127,7 +127,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         total: false,
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
-        expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage
+        expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage,
+        additionalData: date
       }
     });
 
@@ -150,7 +151,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     });
   }
 
-  setMark(student: StudentPercentageResults) {
+  setMark(student: StudentPercentageResults, lecturer: string) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       width: '548px',
       data: {
@@ -162,7 +163,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         label: this.translatePipe.transform('text.course.percentage.result.result.label.mark', 'Оценка за курсовой проект'),
         notEmpty: true,
         total: true,
-        lecturer: student.LecturerName,
+        lecturer,
         student: student.Name,
         date: student.MarkDate,
         comment: student.Comment,
