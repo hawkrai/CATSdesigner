@@ -89,7 +89,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     if (!this.formGroup) {
       this.formGroup = this.formBuilder.group({
         templateNameControl: new FormControl(null,
-          [Validators.maxLength(30), Validators.required]),
+          [Validators.maxLength(30), Validators.required, this.noWhitespaceValidator]),
         inputDataControl: new FormControl(this.data.taskSheet.InputData,
           [Validators.maxLength(999)]),
         contentControl: new FormControl(this.data.taskSheet.RpzContent,
@@ -109,6 +109,12 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
       });
 
     }
+  }
+
+  noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
   }
 
   onCreateGroupFormValueChange() {
@@ -142,6 +148,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   onTemplateChange(event: MatSelectChange) {
     this.templateId = event.value.Id;
     this.taskSheetService.getTemplate({ templateId: event.value.Id }).subscribe(res => {
+      console.log(res)
       this.formGroup.controls.templateNameControl.setValue(event.value.Name);
       this.formGroup.controls.inputDataControl.setValue(res.InputData);
       this.formGroup.controls.contentControl.setValue(res.RpzContent);

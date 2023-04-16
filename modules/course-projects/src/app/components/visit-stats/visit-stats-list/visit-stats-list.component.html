@@ -20,7 +20,7 @@
       <tr class="mdc-data-table__row" *ngFor="let stats of visitStatsList; index as i">
         <td class="mdc-data-table__cell cell">{{ i + 1 }}</td>
         <td class="mdc-data-table__cell">{{ stats.Name }}</td>
-        <td class="mdc-data-table__cell">{{ stats.Group }}</td>
+        <td class="mdc-data-table__cell mdc-data-table__wrap">{{ stats.Group }}</td>
         <td class="mdc-data-table__cell">{{ stats.Lecturer }}</td>
         <ng-container *ngIf="visitStatsComponent.getCourseUser().IsStudent">
           <td class="mdc-data-table__cell data-cell" *ngFor="let consultationMark of stats.CourseProjectConsultationMarks">

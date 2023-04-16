@@ -46,6 +46,7 @@ import { LectorManualComponent } from './about-system/lector-manual/lector-manua
 import { SharedModule } from './shared/shared.module';
 import { OrderByPipe } from './pipe/order-by.pipe';
 import { SafePipe } from './core/safePipe';
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { SafePipe } from './core/safePipe';
   ],
   providers: [
     LayoutService,
-    MenuService
+    MenuService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
