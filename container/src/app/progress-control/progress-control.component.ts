@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {first} from 'rxjs/operators';
 import {AuthenticationService} from '../core/services/auth.service';
 import {Router} from '@angular/router';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-progress-control',
@@ -22,7 +23,7 @@ export class ProgressControlComponent implements OnInit {
   isLoad = false;
 
   constructor(private coreService: CoreService, private router: Router ,  private autService: AuthenticationService,
-              private formBuilder: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog) { }
+              private formBuilder: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
     this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/0`);
@@ -47,11 +48,17 @@ export class ProgressControlComponent implements OnInit {
         this.f.end.setValue(a);
       }
     }
-    console.log(this.f.start.value);
-    console.log(this.f.end.value);
-    this.url = `/control/main/${this.f.groupName.value}/${this.f.start.value}/${this.f.end.value}`;
+    let start = this.formatDate(this.f.start.value);
+    let end = this.formatDate(this.f.end.value);
+    if (start == null){
+      start = '';
+    }
+    if (end == null){
+      end = '';
+    }
+    this.url = `/control/main/${this.f.groupName.value}/${start}/${end}`;
     if (this.f.surname.value != undefined && this.f.surname.value != ''){
-      this.url = `/control/main/${this.f.groupName.value}/${this.f.surname.value}/${this.f.start.value}/${this.f.end.value}`;
+      this.url = `/control/main/${this.f.groupName.value}/${this.f.surname.value}/${start}/${end}`;
     }
     this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
     this.isLoad = true;
@@ -67,18 +74,22 @@ export class ProgressControlComponent implements OnInit {
 
     const dialogRef = this.dialog.open(HelpPopoverProgressControlComponent,
       {
-      width: '370px',
-      height: '320px',
-      position: {top: '2vh', left: '42vw'},
-      disableClose: true,
-      hasBackdrop: true,
-      backdropClass: 'backdrop-help'
-    });
+        width: '370px',
+        height: '320px',
+        position: {top: '2vh', left: '42vw'},
+        disableClose: true,
+        hasBackdrop: true,
+        backdropClass: 'backdrop-help'
+      });
 
     dialogRef.afterClosed().subscribe(result => {
     });
 
 
-}
+  }
+
+  formatDate(date: Date): string {
+    return this.datePipe.transform(date, 'yyyy-MM-dd');
+  }
 
 }
