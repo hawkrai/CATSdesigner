@@ -76,7 +76,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     };
     this.initForm();
     if (this.data.event) {
-      combineLatest([this.testService.getQuestion(this.data.event), (this.data.isEUMKTest ? this.testService.getConcepts(subject.id) : of(null))])
+      combineLatest([this.testService.getQuestion(this.data.event.event), (this.data.isEUMKTest ? this.testService.getConcepts(subject.id) : of(null))])
         .pipe(takeUntil(this.unsubscribeStream$))
         .subscribe(([question, concept]) => {
           this.question = question;

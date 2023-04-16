@@ -13,6 +13,7 @@
   "group": "Group",
   "lecturer": "Lecturer",
   "student": "Student",
+  "text.students": "Students",
   "excel.export": "Export to Excel",
   "button.understand": "Clear",
   "text.test.delete.title": "Deleting test",
