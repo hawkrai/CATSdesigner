@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -6,10 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./admin.component.less']
 })
 export class AdminComponent implements OnInit {
+  @ViewChild('frame') iframeRef: ElementRef;
 
-  constructor() { }
+  subUrl = sessionStorage.getItem('iframeUrl') || '/admin'
 
-  ngOnInit(): void {
+  constructor() {  }
+
+  @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
+    const fragment = this.iframeRef.nativeElement.contentWindow.location.href;
+    sessionStorage.setItem('iframeUrl', this.iframeRef.nativeElement.contentWindow.location.pathname);
   }
 
+  ngOnInit() {
+    
+  }
 }

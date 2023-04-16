@@ -1,5 +1,3 @@
 <!-- Navigation menu (toolbar) -->
 <app-nav></app-nav>
-<iframe src="/admin"></iframe>
-
-
+<iframe #frame [src]="subUrl | safe"></iframe>
