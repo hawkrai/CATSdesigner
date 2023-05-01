@@ -409,7 +409,7 @@
   "text.login.WrongData": "Неверный логин и(или) пароль!",
 
   "text.diplomProject.addTheme" : "Добавить тему",
-  "text.diplomProject.head" : "Руководитель",
+  "text.diplomProject.head" : "Руководитель проекта",
   "text.diplomProject.search" : "Поиск темы, студента, группы",
   "text.diplomProject.student" : "Студент",
   "text.diplomProject.group" : "Группа",

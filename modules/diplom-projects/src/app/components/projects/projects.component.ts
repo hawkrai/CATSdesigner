@@ -45,8 +45,8 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.diplomUser)
-    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { this.groups = res.Groups; console.log(this.groups) });
+    this.isLecturer = Boolean(localStorage.getItem('toggle')) || false;
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { this.groups = res.Groups });
     this.retrieveProjects();
   }
 
@@ -80,6 +80,7 @@ export class ProjectsComponent implements OnInit {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.checked;
+    localStorage.setItem('toggle', String(event.checked));
     this.retrieveProjects()
   }
 
@@ -123,7 +124,8 @@ export class ProjectsComponent implements OnInit {
     const dialogRef = this.dialog.open(AddProjectDialogComponent, {
       autoFocus: false,
       width: '500px',
-      height: '600px',
+      height: '100%',
+      position: { top: '0%' },
       data: {
         groups: this.groups,
         selectedGroups: this.groups.slice()
@@ -152,7 +154,8 @@ export class ProjectsComponent implements OnInit {
       const dialogRef = this.dialog.open(AddProjectDialogComponent, {
         autoFocus: false,
         width: '500px',
-        height: '600px',
+        height: '100%',
+        position: { top: '0%' },
         data: {
           name: project.Theme,
           groups: this.groups,
@@ -179,9 +182,9 @@ export class ProjectsComponent implements OnInit {
         autoFocus: false,
         width: '500px',
         data: {
-          label: this.translatePipe.transform('text.editor.edit.removeTheme', "Удаление темы дипломного проекта"),
-          message: this.translatePipe.transform('text.editor.edit.removeThemeQuestion', "Вы действительно хотите удалить тему дипломного проекта?"),
-          actionName: this.translatePipe.transform('text.editor.edit.remove', "Удалить"),
+          label: this.translatePipe.transform('text.diplomProject.removeTheme', "Удаление темы дипломного проекта"),
+          message: this.translatePipe.transform('text.diplomProject.removeThemeQuestion', "Вы действительно хотите удалить тему дипломного проекта?"),
+          actionName: this.translatePipe.transform('text.diplomProject.removeButton', "Удалить"),
           color: 'primary'
         }
       });
@@ -190,7 +193,7 @@ export class ProjectsComponent implements OnInit {
         if (result != null && result) {
           this.projectsService.deleteProject(project.Id).subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseSave', "Тема успешно сохранена"));
+            this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseDelete', "Тема успешно удалена"));
           });
         }
       });
@@ -209,7 +212,8 @@ export class ProjectsComponent implements OnInit {
         const dialogRef = this.dialog.open(AssignProjectDialogComponent, {
           autoFocus: false,
           width: '720px',
-          height: '700px',
+          height: '100%',
+          position: { top: '0%' },
           data: {
             students: response.Items
           }
@@ -238,9 +242,9 @@ export class ProjectsComponent implements OnInit {
       autoFocus: false,
       width: '540px',
       data: {
-        label: this.translatePipe.transform('text.editor.edit.cancelAssignTheme', "Отменить назначение темы дипломного проекта"),
-        message: this.translatePipe.transform('text.editor.edit.cancelAssignQuestion', "Вы действительно хотите отменить назначение темы дипломного проекта?"),
-        actionName: this.translatePipe.transform('text.editor.edit.removeAssign', "Убрать назначение"),
+        label: this.translatePipe.transform('text.diplomProject.cancelAssignTheme', "Отменить назначение темы дипломного проекта"),
+        message: this.translatePipe.transform('text.diplomProject.cancelAssignQuestion', "Вы действительно хотите отменить назначение темы дипломного проекта?"),
+        actionName: this.translatePipe.transform('text.diplomProject.removeAssign', "Убрать назначение"),
         color: 'primary'
       }
     });
