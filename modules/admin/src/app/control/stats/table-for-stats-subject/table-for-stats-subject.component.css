@@ -1,5 +1,5 @@
 table {
-    width: 100%;
+  width: 100%;
 }
 
 .stats-table {
@@ -7,29 +7,28 @@ table {
 }
 
 .main-header {
-    text-align: left;
-    display: flex;
-    font-size: 16px;
+  text-align: left;
+  display: flex;
+  font-size: 16px;
 }
 
 .main-header p {
-    font-weight: bold;
-    margin-left: 10px;
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 th.mat-header-cell,
 td.mat-cell {
-    text-align: center;
-    border: 1px solid #CCC;
-    padding: 0 !important;
+  border: 1px solid #CCC;
+  padding: 0 !important;
 }
 
 .column {
-    width: 10%;
+  width: 10%;
 }
 
 .all {
-    background: antiquewhite;
+  background: antiquewhite;
 }
 
 .diagram {

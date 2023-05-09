@@ -6,6 +6,7 @@ import * as xlsx from 'xlsx';
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import {GroupStatsStudent} from '../../model/group.stats';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-stats',
@@ -33,7 +34,7 @@ export class StatsComponent implements OnInit {
   isArchive = false;
   isArchiveEnable = false;
 
-  constructor(private subjectService: SubjectService, private route: ActivatedRoute) {
+  constructor(private subjectService: SubjectService, private route: ActivatedRoute, private translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
@@ -229,7 +230,7 @@ export class StatsComponent implements OnInit {
         return {
           GroupName: groupName,
           FIO: item.FIO,
-          Subject: 'Все предметы',
+          Subject: this.translatePipe.transform ('text.all.subjects', 'Все предметы'),
           Rating: rating.toFixed(1),
           AllPass: labPassTotal + lecturePassTotal + practicalPassTotal,
           UserAvgLabMarks: avgLabMarksTotal.toFixed(1),
@@ -293,8 +294,8 @@ export class StatsComponent implements OnInit {
 
     this.tableStats.push({
       GroupName: groupName,
-      FIO: 'Средние значения',
-      Subject: 'Все предметы',
+      FIO: this.translatePipe.transform ('text.average.values', 'Средние значения'),
+      Subject: this.translatePipe.transform ('text.all.subjects', 'Все предметы'),
       Rating: rating,
       AllPass: lectPass + practPass + labPass,
       UserAvgLabMarks: labMarks,
