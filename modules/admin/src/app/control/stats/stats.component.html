@@ -25,8 +25,8 @@
   </mat-slide-toggle>
 
   <div class="export-button">
-    <button mat-icon-button matTooltip="Распечатать"  (click)="this.captureScreen()"><mat-icon>print</mat-icon></button>
-    <button mat-icon-button matTooltip="Скачать Excel"  (click)="this.exportExcel()"><i class="fa fa-download"></i><mat-icon>get_app</mat-icon></button>
+    <button mat-icon-button matTooltip="{{'ext.print' | translate:'Распечатать'}}" (click)="this.captureScreen()"><mat-icon>print</mat-icon></button>
+    <button mat-icon-button matTooltip="{{'text.download.excel' | translate:'Скачать Excel'}}"  (click)="this.exportExcel()"><i class="fa fa-download"></i><mat-icon>get_app</mat-icon></button>
   </div>
 </div>
 <div *ngIf="this.selectedItem">
