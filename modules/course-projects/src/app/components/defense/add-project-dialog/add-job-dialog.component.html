@@ -1,4 +1,11 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
+<div class="job-protection__header">
+  <div>
+    <h1 mat-dialog-title class="job-protection__title">{{data.title}}</h1>
+  </div>
+  <button mat-icon-button (click)="onCancelClick()" class="job-protection__close-btn">
+    <mat-icon aria-hidden="false">close</mat-icon>
+  </button>
+</div>
 <div class="job-protection__popover" #popoverContent>
   <form class="example-form">
     <mat-form-field class="example-full-width">

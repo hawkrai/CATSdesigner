@@ -1,7 +1,7 @@
 <div class="app-component" *ngIf="diplomUser">
   <div class="mdc-tab-bar" role="tablist">
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 1"
-      (click)="tab = 1">
+      (click)="onChangeTab(1)">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{'text.diplomProject.tab.projectsThemes'
           | translate: 'Темы проектов'}}</span>
@@ -12,7 +12,7 @@
       <span class="mdc-tab__ripple"></span>
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 2"
-      (click)="tab = 2">
+      (click)="onChangeTab(2)">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{'text.diplomProject.tab.taskSheet'
           | translate: 'Лист задания'}}</span>
@@ -23,7 +23,7 @@
       <span class="mdc-tab__ripple"></span>
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 3"
-      (click)="tab = 3">
+      (click)="onChangeTab(3)">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{'text.diplomProject.tab.percentages'
           | translate: 'График процентовки'}}</span>
@@ -34,7 +34,7 @@
       <span class="mdc-tab__ripple"></span>
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 4"
-      (click)="tab = 4">
+      (click)="onChangeTab(4)">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{'text.diplomProject.tab.percentageResults'
           | translate: 'Результаты процентовки'}}</span>
@@ -45,7 +45,7 @@
       <span class="mdc-tab__ripple"></span>
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 5"
-      (click)="tab = 5">
+      (click)="onChangeTab(5)">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{'text.diplomProject.tab.consultationsVisiting'
           | translate: 'Посещение консультаций'}}</span>

@@ -23,7 +23,13 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.tab = Number(localStorage.getItem('diplomProject_tab')) || 1;
     this.diplomUserService.getUser().subscribe(res => {this.diplomUser = res; this.retrieveGroups();});
+  }
+
+  onChangeTab(tabNumber: number): void {
+    localStorage.setItem('diplomProject_tab', String(tabNumber));
+    this.tab = tabNumber;
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {

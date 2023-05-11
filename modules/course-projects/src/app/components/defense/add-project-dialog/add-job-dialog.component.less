@@ -1,38 +1,55 @@
-.popup-file-button {
-  background: #388E3C;
-  color: white;
-}
+:host {
+  .job-protection {
+    &__header {
+      display: flex;
+      justify-content: space-between;
+    }
 
-.example-form {
-  min-width: 150px;
-  width: 100%;
-  margin-bottom: 25px;
+    &__title {
+      font-weight: 400;
+    }
 
-  .example-full-width {
+    &__popover {
+      height: calc(100vh - 175px);
+    }
+  }
+
+  .popup-file-button {
+    background: #388E3C;
+    color: white;
+  }
+
+  .example-form {
+    min-width: 150px;
+    width: 100%;
+    margin-bottom: 25px;
+
+    .example-full-width {
+      width: 100%;
+    }
+  }
+
+  .mat-dialog {
+    &-actions {
+      justify-content: flex-end;
+    }
+  }
+
+  .file-table {
     width: 100%;
   }
-}
 
-.mat-dialog {
-  &-actions {
-    justify-content: flex-end;
+  .mdc-data-table tr {
+    border-top-width: 0;
   }
-}
 
-.file-table {
-  width: 100%;
-}
+  .mdc-data-table td {
+    padding-right: 0;
+  }
 
-.mdc-data-table tr {
-  border-top-width: 0;
-}
-
-.mdc-data-table td {
-  padding-right: 0;
-}
-
-.mdc-data-table .example-content {
-  max-width: 100px;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  .mdc-data-table .example-content {
+    max-width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
