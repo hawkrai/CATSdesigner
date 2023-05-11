@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Inject, OnInit} from "@angular/core";
 import {AutoUnsubscribeBase} from "../../../core/auto-unsubscribe-base";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Question} from "../../../models/question/question.model";
@@ -19,7 +19,7 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
   public showTable: boolean = false;
   public generateDisabled: boolean;
   public trainHidden: boolean = true;
-  public trainDisabled: boolean;
+  public trainDisabled: boolean = true;
   public saveHidden: boolean = true;
   public saveDisabled: boolean;
   public questions: Question[];
@@ -33,7 +33,9 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
               @Inject(MAT_DIALOG_DATA) public data: any,
               private translatePipe: TranslatePipe,
               private testPassingService: TestPassingService,
-              private catsService: CatsService) {
+              private catsService: CatsService,
+              private cd: ChangeDetectorRef,
+              ) {
     super();
   }
 
@@ -49,6 +51,7 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
     this.generateDisabled = state;
     this.trainDisabled = state;
     this.saveDisabled = state;
+    this.cd.detectChanges();
   }
 
   public generate(): void {
@@ -106,17 +109,17 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
   }
 
   public cartesian(value): any {
-    let r = [], arg = value, max = arg.length - 1;
-
+    const r = [], arg = value, max = arg.length - 1;
 
     function helper(arr, i) {
       for (let j = 0, l = arg[i].length; j < l; j++) {
         let a = arr.slice(0); // clone arr
         a.push(arg[i][j]);
-        if (i == max)
+        if (i == max) {
           r.push(a);
-        else
+        } else {
           helper(a, i + 1);
+        }
       }
     }
 
@@ -127,17 +130,21 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
 
   public train(): void {
     this.disableButtons(true);
-    let data = [];
+    this.cd.detectChanges();
+    setTimeout(() => {
+      const data = [];
 
-    this.savedDataAnswersValue.forEach((value, index) => {
-      let temp = {input: value, output: this.savedTopicsValue[index]};
-      data.push(temp);
-    });
-    neuralNetworkV2.neuralNetworkV2.train(data, {log: true});
-    this.saveHidden = false;
-    this.showThirdStep = true;
-    this.disableButtons(false);
-    this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.network.teach","Сеть обучена"), Code: '200' });
+      this.savedDataAnswersValue.forEach((value, index) => {
+        const temp = {input: value, output: this.savedTopicsValue[index]};
+        data.push(temp);
+      });
+      neuralNetworkV2.neuralNetworkV2.train(data, {log: true});
+      this.saveHidden = false;
+      this.showThirdStep = true;
+      this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.network.teach", "Сеть обучена"), Code: "200" });
+      this.disableButtons(false);
+    // tslint:disable-next-line:no-magic-numbers
+    }, 500);
   }
 
   public save(): void {
@@ -160,6 +167,7 @@ export class NeuralNetworkPopupComponent extends AutoUnsubscribeBase implements 
           return throwError(null);
         }))
       .subscribe();
+    this.onNoClick();
   }
 
   onNoClick(): void {

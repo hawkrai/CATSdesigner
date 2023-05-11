@@ -57,35 +57,40 @@
         </mat-accordion>
       </div>
       <div class="basic-container" *ngIf="navItems?.length">
-        <span *ngFor="let item of navItems">
-          <span *ngIf="item.Children && item.Children.length > 0">
-            <button
-              mat-raised-button
-              color="primary"
-              [matMenuTriggerFor]="menu.childMenu"
-              (click)="selectConcept(item.Id)"
-            >
-              {{ item.Name }}
-              <mat-icon>expand_more</mat-icon>
-            </button>
-            <app-menu-item
-              #menu
-              [items]="item.Children"
-              (onSelectConcept)="selectConcept($event)"
-            ></app-menu-item>
-          </span>
+        <p class="basic-container__title">
+          {{ "text.question.topic" | translate : "Раздел" }}
+        </p>
+        <div class="basic-container__selection">
+          <span *ngFor="let item of navItems">
+            <span *ngIf="item.Children && item.Children.length > 0">
+              <button
+                mat-stroked-button
+                color="primary"
+                [matMenuTriggerFor]="menu.childMenu"
+                (click)="selectConcept(item.Id)"
+              >
+                {{ item.Name }}
+                <mat-icon>expand_more</mat-icon>
+              </button>
+              <app-menu-item
+                #menu
+                [items]="item.Children"
+                (onSelectConcept)="selectConcept($event)"
+              ></app-menu-item>
+            </span>
 
-          <span *ngIf="!item.Children || item.Children.length === 0">
-            <button
-              mat-button
-              color="primary"
-              [routerLink]="item.route"
-              (click)="selectConcept(item.Id)"
-            >
-              {{ item.Name }}
-            </button>
+            <span *ngIf="!item.Children || item.Children.length === 0">
+              <button
+                mat-button
+                color="primary"
+                [routerLink]="item.route"
+                (click)="selectConcept(item.Id)"
+              >
+                {{ item.Name }}
+              </button>
+            </span>
           </span>
-        </span>
+        </div>
         <div class="basic-container-text" *ngIf="selectedConcept">
           {{ selectedConcept }}
         </div>

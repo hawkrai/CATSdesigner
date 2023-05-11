@@ -1,6 +1,9 @@
 <app-popover-dialog>
   <ng-container title>
-    <div class="neural-network-popup-title">{{'text.test.create.nn' | translate: "Создание нейронной сети"}}</div>
+    <h2 class="neural-network-popup-title">{{'text.test.create.nn' | translate: "Создание искусственной нейронной сети"}}</h2>
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
   </ng-container>
   <ng-container body>
     <div class="neural-network-popup-block">
@@ -20,13 +23,14 @@
         </div>
       </div>
     </div>
-  
+
     <div class="neural-network-popup-block" *ngIf="showSecondStep">
-      <div class="neural-network-popup-block-title">{{'text.test.step.second' | translate: "Этап 2: Обучение ИНС"}}</div>
+      <div class="neural-network-popup-block-title">{{'text.test.step.second' | translate: "Этап 2: Обучение искусственной нейронной сети"}}</div>
       <div>
         <button *ngIf="!trainHidden"
                 class="neural-network-popup-block-button"
                 [class.disabled]="trainDisabled"
+                [class.spinner]="trainDisabled"
                 mat-raised-button
                 [disabled]="trainDisabled"
                 (click)="train()">
@@ -48,7 +52,7 @@
       </ng-container>
     </div>
     <div class="neural-network-popup-block" *ngIf="showThirdStep">
-      <div class="neural-network-popup-block-title">{{'text.test.step.third' | translate: "Этап 3: Сохранение"}}</div>
+      <div class="neural-network-popup-block-title">{{'text.test.step.third' | translate: "Этап 3: Сохранение искусственной нейронной сети"}}</div>
       <div>
         <button class="neural-network-popup-block-button"
                 [class.disabled]="saveDisabled"
@@ -75,6 +79,6 @@
     </div>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onNoClick()">{{'button.cancel' | translate : 'Отмена'}}</button>
+    <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
   </ng-container>
 </app-popover-dialog>

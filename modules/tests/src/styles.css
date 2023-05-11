@@ -3,6 +3,10 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import '~ngx-toastr/toastr.css';
 
+.menu-item-tooltip {
+  margin-top: 0 !important;
+}
+
 textarea {
   box-sizing: border-box;
 }

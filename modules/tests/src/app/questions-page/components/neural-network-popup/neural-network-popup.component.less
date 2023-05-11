@@ -1,9 +1,41 @@
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+::ng-deep {
+  .mat-dialog-title {
+    display: flex;
+    justify-content: space-between;
+    .mat-button-focus-overlay {
+      background-color: transparent!important;
+  }
+  }
+  .spinner:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    border-top-color: #000000;
+    animation: spinner .8s linear infinite;
+  }
+}
+
+
 .neural-network-popup {
 
   &-title {
-    font-size: 16px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #dddddd;
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
   }
   &-block {
     margin-top: 16px;
@@ -16,9 +48,6 @@
       &.disabled{
         background-color: #dddddd;
       }
-    }
-    &-title {
-
     }
     &-table {
       margin-top: 16px;
