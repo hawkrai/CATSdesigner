@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { StudentService } from 'src/app/service/student.service';
 import { Student } from 'src/app/model/student';
 import { FormGroup, Validators, FormControl, FormBuilder, ValidationErrors } from '@angular/forms';
@@ -34,16 +35,17 @@ export class ResetThePasswordComponent implements OnInit {
     private userService: UserService,
     private lectorService: ProfessorService,
     private studentService: StudentService,
-    private router: ActivatedRoute,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private toastr: AppToastrService,
-    private translatePipe : TranslatePipe
+    private translatePipe : TranslatePipe,
+    private location: Location
     ) { }
 
   ngOnInit() {
-    const studentId = this.router.snapshot.params.studentId;
-    const lectorId = this.router.snapshot.params.lectorId;
+    const studentId = this.route.snapshot.params.studentId;
+    const lectorId = this.route.snapshot.params.lectorId;
     if (studentId) {
       this.getStudent(studentId);
     }
@@ -123,6 +125,10 @@ export class ResetThePasswordComponent implements OnInit {
     passwordModel.ConfirmPassword = this.form.controls.confirmPassword.value;
     console.log(passwordModel);
     this.resetPassword(passwordModel);
+  }
+
+  back(): void {
+    this.location.back();
   }
 
 }
