@@ -22,7 +22,7 @@ export class LectorsComponent implements OnInit {
 
   isLoad: boolean;
   dataLector = new Professor();
-  displayedColumns: string[] = ['position', 'FullName', 'Login', 'LastLogin', 'RegistrationDate', 'status', 'subjects', 'action'];
+  displayedColumns: string[] = ['position', 'FullName', 'Login', 'LastLogin', 'RegistrationDate', 'status', 'subjects', 'secretary', 'action'];
   dataSource = new MatTableDataSource<Professor>();
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
