@@ -8,15 +8,6 @@
     </mat-form-field>
   </div>
 </div>-->
-<div class="result-pupil-autocomplete">
-  <app-autocomplete-form class="result-pupil-autocomplete-item"
-                         *ngIf="options?.length"
-                         [options]="options"
-                         [preselected]="true"
-                         [placeholder]="'text.test.choose.test' | translate : 'Выберите тест'"
-                         (onSelectionChange)="optionChange($event)"
-  ></app-autocomplete-form>
-</div>
 <div class="result-pupil-table">
   <div class="result-pupil-table-item" label="Тесты для контроля знаний" *ngIf="visibleTests?.includes('4')">
     <div class="result-pupil-table-name">{{'text.tests.for.control' | translate : "Тесты для контроля знаний"}}</div>

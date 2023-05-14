@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Theme } from '../../models/theme.model';
-import { ProjectThemeService } from '../../services/project-theme.service';
 import { TaskSheetService } from '../../services/task-sheet.service';
 import { Subject, Subscription } from 'rxjs';
 import { CourseUser } from '../../models/course-user.model';
@@ -15,7 +14,6 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslatePipe } from 'educats-translate';
 import { ProjectsService } from 'src/app/services/projects.service';
 import { map } from 'rxjs/operators';
-import { CourseUserService } from 'src/app/services/course-user.service';
 
 @Component({
   selector: 'app-task-sheet',
@@ -35,14 +33,12 @@ export class TaskSheetComponent implements OnInit {
   private courseProjectId: number;
   private templates: any[];
   private tepmlate: Template;
-  constructor(private projectThemeService: ProjectThemeService,
-    private projectsService: ProjectsService,
+  constructor(private projectsService: ProjectsService,
     private taskSheetService: TaskSheetService,
     private dialog: MatDialog,
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
-    private store: Store<IAppState>,
-    private courseService: CourseUserService) {
+    private store: Store<IAppState>) {
   }
 
 
@@ -59,10 +55,10 @@ export class TaskSheetComponent implements OnInit {
       ).pipe(map((responce: any) => responce.Items))
         .subscribe(res => {
           if (res.length > 0) {
-            this.themes = res.sort((a, b) => {
-              return b - a;
-            });
-            this.courseProjectId = res[0].Id;
+            this.themes = res.sort((a, b) => a.Theme < b.Theme ? -1 : 1);
+            if (!this.courseProjectId) {
+              this.courseProjectId = res[0].Id;
+            }
             if (this.courseUser.IsStudent) {
               const project = res.find((item) => item.StudentId === this.courseUser.UserId)
               if (project) {
@@ -74,7 +70,6 @@ export class TaskSheetComponent implements OnInit {
           }
         });
     });
-    console.log(this.courseUser)
   }
 
   onThemeChange(themeId: number) {

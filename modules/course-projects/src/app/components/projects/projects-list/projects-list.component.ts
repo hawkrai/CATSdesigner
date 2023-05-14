@@ -35,4 +35,8 @@ export class ProjectsListComponent implements OnInit {
     return this._isUserHaveSubjectCourseProject;
   }
 
+  set isUserHaveSubjectCourseProject(value) {
+    this._isUserHaveSubjectCourseProject = value;
+  }
+
 }

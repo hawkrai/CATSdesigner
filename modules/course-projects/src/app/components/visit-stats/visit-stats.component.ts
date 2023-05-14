@@ -69,8 +69,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       filter: '{"groupId":' + this.selectedGroup.GroupId + ',"subjectId":' + this.subjectId + ',"searchString":"' + this.searchString + '"}'
     })
       .subscribe(res => {
-        console.log(res);
-
         this.visitStatsList = this.assignResults(res.Students.Items, res.Consultations);
         this.consultations = res.Consultations;
       });
@@ -120,13 +118,14 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         comment: mark.Comments,
         id: mark.Id,
         consultationDateId: mark.ConsultationDateId,
-        studentId: mark.StudentId
+        studentId: mark.StudentId,
+        date: date
       };
       visits.students.push(visit);
     });
 
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
-      width: '700px',
+      width: '538px',
       data: {
         title: this.translatePipe.transform('text.course.visit.dialog.set.title', 'Посещаемость студентов'),
         buttonText: this.translatePipe.transform('text.course.visit.dialog.set.action.save', 'Сохранить'),
@@ -135,7 +134,6 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
       if (result) {
         this.processDialogResult(result, false);
       }

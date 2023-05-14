@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import { CourseUser } from '../../models/course-user.model';
 import { MatDialog } from '@angular/material';
@@ -15,8 +15,9 @@ import { CoreGroup } from 'src/app/models/core-group.model';
 import { GroupService } from '../../services/group.service';
 import { ToastrService } from 'ngx-toastr';
 import { CourseUserService } from '../../services/course-user.service';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { delay, switchMap, takeUntil } from 'rxjs/operators';
 import { TranslatePipe } from 'educats-translate';
+import { ProjectsListComponent } from './projects-list/projects-list.component';
 
 @Component({
   selector: 'app-projects',
@@ -26,6 +27,9 @@ import { TranslatePipe } from 'educats-translate';
 export class ProjectsComponent implements OnInit, OnDestroy {
 
   @Input() courseUser: CourseUser;
+
+  @ViewChild(ProjectsListComponent, { static: false })
+  primarySampleComponent: ProjectsListComponent;
 
   private COUNT = 1000000;
   private PAGE = 1;
@@ -85,8 +89,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       '&filter={"subjectId":"' + this.subjectId + '","searchString":"' + this.searchString + '"}' +
       '&filter[subjectId]=' + this.subjectId +
       '&sorting[' + this.sorting + ']=' + this.direction
-    ), this.projectsService.getReceivedProjects(this.subjectId)).pipe(takeUntil(this.destroy$)).subscribe(res => {
-      const items = res[0].Items.map(item => {
+    ), this.projectsService.getReceivedProjects(this.subjectId)).pipe(delay(500), takeUntil(this.destroy$)).subscribe(res => {
+      let items = res[0].Items.map(item => {
         const courseProject = res[1].find(theme => theme.CourseProjectId === item.Id);
         if (courseProject) {
           item.ApproveDate = courseProject.ApproveDate;
@@ -97,6 +101,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         }
         return item;
       })
+      items = items.sort((a, b) => a.Theme < b.Theme ? -1 : 1)
       this.projects = items;
     }
     )
@@ -144,7 +149,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result) {
         this.projectsService.chooseProject(project.Id).subscribe(() => {
-          this.appComponent.ngOnInit();
+          this.primarySampleComponent.isUserHaveSubjectCourseProject = true;
+          this.retrieveProjects();
           this.toastr.success(this.translatePipe.transform('text.course.projects.selection.select.success', 'Тема успешно выбрана'));
         });
       }
