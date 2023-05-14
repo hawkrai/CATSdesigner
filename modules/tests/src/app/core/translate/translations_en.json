@@ -16,6 +16,7 @@
   "text.students": "Students",
   "excel.export": "Export to Excel",
   "button.understand": "Clear",
+  "text.question.topic": "Topic",
   "text.test.delete.title": "Deleting test",
   "text.help": "Help",
   "text.help.lectures": "To view test results, select the desired group and test type. You can also see the results of tests by subgroups and each individual student",

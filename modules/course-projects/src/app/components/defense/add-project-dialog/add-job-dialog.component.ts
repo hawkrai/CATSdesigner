@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {LabFilesService} from '../../../services/lab-files-service';
-import {FileInfo} from '../../../models/file-info.model';
-import {Attachment} from '../../../models/attachment.model';
+import { AfterViewInit, Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { LabFilesService } from '../../../services/lab-files-service';
+import { FileInfo } from '../../../models/file-info.model';
+import { Attachment } from '../../../models/attachment.model';
 
 export interface DialogData {
   title: string;
@@ -31,9 +31,11 @@ export class AddJobDialogComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const attachment = this.data.body.attachments[0];
     if (attachment) {
-      this.labFilesService.getAttachment({values: '["' + attachment.Name + '/' + attachment.Id + '/' + attachment.PathName + '/' +
+      this.labFilesService.getAttachment({
+        values: '["' + attachment.Name + '/' + attachment.Id + '/' + attachment.PathName + '/' +
           attachment.FileName + '"]',
-        deleteValues: 'DELETE'})
+        deleteValues: 'DELETE'
+      })
         .subscribe(res => this.data.body.uploadedFile = res[0]);
     }
   }
@@ -65,6 +67,10 @@ export class AddJobDialogComponent implements AfterViewInit {
       this.labFilesService.uploadFile(clipboardData.files[0])
         .subscribe(res => this.data.body.uploadedFile = res[0]);
     }
+  }
+
+  onCancelClick(): void {
+    this.dialogRef.close();
   }
 
 }

@@ -11,10 +11,7 @@
       *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && !isLecturer" [color]="'primary'"
       [checked]="isLecturer" (change)="lecturerStatusChange($event)"
       matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}">{{'text.diplomProject.head'
-      | translate: 'Руководитель'}}</mat-slide-toggle>
-
-
-
+      | translate: 'Руководитель проекта'}}</mat-slide-toggle>
     <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer"
       (click)="addProject()">{{'text.diplomProject.addTheme' | translate: 'Добавить тему'}}</button>
 
