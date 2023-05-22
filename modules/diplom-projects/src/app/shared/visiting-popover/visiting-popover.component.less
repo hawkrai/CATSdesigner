@@ -1,50 +1,65 @@
-.visiting-popover {
+:host {
+  h1 {
+    margin-bottom: 0;
+  }
 
-  &__header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    p {
-      margin-right: 5px;
-      font-size: 18px;
+  .visiting-popover {
+
+    &__header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      p {
+        margin-right: 5px;
+      }
+    }
+
+    &__table {
+      height: 460px;
+      overflow: auto;
     }
   }
 
-  &__table {
-    height: 500px;
-    overflow: auto;
+  .mat-column-position {
+    flex: 0 0 5% !important;
+    width: 5% !important;
   }
-}
-.mat-column-position {
-  flex: 0 0 5% !important;
-  width: 5% !important;
-}
 
-.mat-column-mark {
-  flex: 0 0 15% !important;
-  width: 15% !important;
-  mat-form-field{
-    width: 70% !important;
+  .mat-column-mark {
+    flex: 0 0 15% !important;
+    width: 15% !important;
+
+    mat-form-field {
+      width: 70% !important;
+    }
   }
-}
 
-.mat-cell, .mat-header-cell {
-  padding-right: 10px;
-}
+  .mat-column-comment {
+    flex: 0 0 30% !important;
+    width: 30% !important;
+  }
 
-.mat-column-comment {
-  flex: 0 0 30% !important;
-  width: 30% !important;
-}
-
-.mat-column-name {
-  flex: 0 0 40% !important;
-  width: 40% !important;
-}
+  .mat-column-name {
+    flex: 0 0 40% !important;
+    width: 40% !important;
+  }
 
 
-.mat-dialog {
-  &-actions {
-    justify-content: flex-end;
+  .mat-dialog {
+    &-actions {
+      justify-content: flex-end;
+    }
+  }
+
+
+  .close-button {
+    float: right;
+  }
+
+  .checkbox {
+    position: absolute;
+    top: 0;
+    right: 10px;
   }
 }

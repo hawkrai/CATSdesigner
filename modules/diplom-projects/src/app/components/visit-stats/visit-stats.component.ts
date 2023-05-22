@@ -35,6 +35,8 @@ export class VisitStatsComponent implements OnInit {
   private lecturer: Lecturer;
   public isLecturer = false;
 
+  private preSavedData: Consultation = null;
+
   private searchString = '';
 
   constructor(private visitStatsService: VisitStatsService,
@@ -44,6 +46,7 @@ export class VisitStatsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
     this.retrieveVisitStats();
   }
 
@@ -61,7 +64,7 @@ export class VisitStatsComponent implements OnInit {
       console.log("this.diplomUser.IsSecretary")
       this.visitStatsService.getLecturerDiplomGroups({ entity: 'LecturerForSecretary', id: this.diplomUser.UserId })
         .subscribe(res => {
-          this.lecturers = res
+          this.lecturers = res.sort((a, b) => a.Name < b.Name ? -1 : 1)
           this.lecturer = res[this.index]
           this.visitStatsList = null;
           this.visitStatsSubscription = this.visitStatsService.getVisitStats({
@@ -96,6 +99,7 @@ export class VisitStatsComponent implements OnInit {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.checked;
+    localStorage.setItem('toggle', event.checked);
     this.retrieveVisitStats()
   }
 
@@ -146,10 +150,11 @@ export class VisitStatsComponent implements OnInit {
 
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
       autoFocus: false,
-      width: '700px',
+      width: '548px',
+      height: '100%',
       data: {
-        title: this.translatePipe.transform('text.editor.edit.studentAttendance', "Посещаемость студентов"),
-        buttonText: this.translatePipe.transform('text.editor.edit.save', "Сохранить"),
+        title: this.translatePipe.transform('text.diplomProject.studentAttendance', "Посещение консультации"),
+        buttonText: this.translatePipe.transform('button.save', "Сохранить"),
         body: visits
       }
     });
@@ -167,7 +172,7 @@ export class VisitStatsComponent implements OnInit {
       if (visit.id == null) {
         if (visit.mark || visit.comment || visit.comment !== '') {
           hasChanges = true;
-          this.visitStatsService.setMark(visit.studentId, visit.consultationDateId, visit.mark, visit.comment)
+          this.visitStatsService.setMark(visit.studentId, visit.consultationDateId, visit.mark, visit.comment, visit.showForStudent)
             .subscribe(() => this.processDialogResult(result, hasChanges));
         } else {
           this.processDialogResult(result, hasChanges);
@@ -177,7 +182,7 @@ export class VisitStatsComponent implements OnInit {
           .find(mark => mark.Id === visit.id);
         if (origin.Mark !== visit.mark || origin.Comments !== visit.comment) {
           hasChanges = true;
-          this.visitStatsService.editMark(visit.id, visit.studentId, visit.consultationDateId, visit.mark, visit.comment)
+          this.visitStatsService.editMark(visit.id, visit.studentId, visit.consultationDateId, visit.mark, visit.comment, visit.showForStudent)
             .subscribe(() => this.processDialogResult(result, hasChanges));
         } else {
           this.processDialogResult(result, hasChanges);
@@ -192,20 +197,26 @@ export class VisitStatsComponent implements OnInit {
   addDate() {
     const dialogRef = this.dialog.open(AddDateDialogComponent, {
       autoFocus: false,
-      width: '450px',
+      width: '548px',
+      height: '100%',
       data: {
+        ...this.preSavedData,
+        consultations: this.consultations,
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
+      if (result != null && !result.isClose) {
         const date = new Date(result.date);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         this.visitStatsService.addDate(date.toISOString(), result.start,
           result.end, result.audience, result.building).subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.consultationDateAlert', "Дата консультации успешно добавлена"));
+            this.addFlashMessage(this.translatePipe.transform('text.course.visit.dialog.add.save.success', 'Дата консультации успешно добавлена'));
           });
+      }
+      if (result.isClose) {
+        this.preSavedData = result;
       }
     });
   }
@@ -234,6 +245,14 @@ export class VisitStatsComponent implements OnInit {
 
   addFlashMessage(msg: string) {
     this.toastr.success(msg);
+  }
+
+  getExcelFile() {
+    location.href = location.origin + '/api/DpStatistic' + `?isLecturer=${this.isLecturer}` + `&lecturerId=${this.lecturer.Id}` + `&id=${this.diplomUser.UserId}`;
+  }
+
+  downloadArchive() {
+    location.href = location.origin + '/api/DpTaskSheetDownload' + `?isLecturer=${this.isLecturer}` + `&id=${this.diplomUser.UserId}`;
   }
 
 }

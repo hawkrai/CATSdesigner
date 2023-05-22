@@ -27,6 +27,7 @@ export class AddProjectDialogComponent {
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
               public translatePipe: TranslatePipe) {
     this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId));
+    this.includeNone();
   }
 
   onCancelClick(): void {

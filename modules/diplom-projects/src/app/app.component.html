@@ -33,7 +33,7 @@
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 4"
+    <button class="mdc-tab icon-button" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 4"
       (click)="onChangeTab(4)">
       <span class="mdc-tab__content">
         <span class="mdc-tab__text-label">{{'text.diplomProject.tab.percentageResults'
@@ -42,6 +42,8 @@
       <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 4">
         <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
       </span>
+      <mat-icon class="button__icon" *ngIf="diplomUser.IsLecturer"
+        [ngClass]="{'button__icon_active-color': tab === 4, 'button__icon_unactive-color': tab !== 4}">file_download</mat-icon>
       <span class="mdc-tab__ripple"></span>
     </button>
     <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 5"

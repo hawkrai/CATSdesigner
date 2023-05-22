@@ -25,7 +25,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private percentageResults: StudentPercentageResults[];
   private filteredPercentageResults: StudentPercentageResults[];
   private percentageGraphs: PercentageGraph[];
-  private groups: String[]
+  public groups: String[]
 
   private percentageResultsSubscription: Subscription;
 
@@ -42,6 +42,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
     if (this.diplomUser.IsSecretary == false) {
       this.isLecturer = true
     }
@@ -56,6 +57,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.checked;
+    localStorage.setItem('toggle', event.checked);
     this.retrievePercentageResults();
   }
 
@@ -89,7 +91,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.selectedGroup = event.source.value
-      this.filteredPercentageResults = this.percentageResults.filter(x => x.Group == event.source.value)
+      if (this.percentageResults) {
+        this.filteredPercentageResults = this.percentageResults.filter(x => x.Group == event.source.value)
+      }
     }
   }
 
@@ -105,7 +109,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   assignResults(studentPercentageResults: StudentPercentageResults[], percentageGraphs: PercentageGraph[]): StudentPercentageResults[] {
-    this.groups = studentPercentageResults.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);
+    this.groups = studentPercentageResults.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a < b ? -1 : 1);
     for (const student of studentPercentageResults) {
       const results: PercentageResult[] = [];
       for (const percentageGraph of percentageGraphs) {
@@ -138,8 +142,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 0,
         max: 100,
         regex: '^[0-9]*$',
-        errorMsg: this.translatePipe.transform('text.editor.edit.percentageControl', "Введите число от 0 до 100"),
-        label: this.translatePipe.transform('text.editor.edit.percentageResult', "Результат процентовки"),
+        errorMsg: this.translatePipe.transform('text.diplomProject.percentageControl', "Введите число от 0 до 100"),
+        label: this.translatePipe.transform('text.diplomProject.percentageResult', "Результат процентовки"),
         symbol: '%',
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
@@ -153,13 +157,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesAlert', "Процент успешно сохранен"));
+              this.addFlashMessage(this.translatePipe.transform('text.diplomProject.percentagesAlert', "Процент успешно сохранен"));
             });
         } else {
           this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesEditAlert', "Процент успешно изменен"));
+              this.addFlashMessage(this.translatePipe.transform('text.diplomProject.percentagesEditAlert', "Процент успешно изменен"));
             });
         }
       }
@@ -175,8 +179,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         min: 1,
         max: 10,
         regex: '^[0-9]*$',
-        errorMsg: this.translatePipe.transform('text.editor.edit.estimationControl', "Введите число от 0 до 10"),
-        label: this.translatePipe.transform('text.editor.edit.estimation', "Оценка"),
+        errorMsg: this.translatePipe.transform('text.diplomProject.estimationControl', "Введите число от 0 до 10"),
+        label: this.translatePipe.transform('mark', "Оценка"),
         notEmpty: true,
         total: true,
         lecturer: student.LecturerName,
@@ -195,7 +199,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         this.percentageResultsService.setMark(student.AssignedDiplomProjectId, result.mark, student.Lecturer, result.comment, dateString, result.showForStudent)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.estimationAlert', "Оценка успешно сохранена"));
+            this.addFlashMessage(this.translatePipe.transform('text.diplomProject.estimationAlert', "Оценка успешно сохранена"));
           });
       }
     });
@@ -203,6 +207,10 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   getExcelFile() {
     location.href = location.origin + '/api/DpStatistic?count=1000' + '&page=1&filter=' + '{"group":"' + this.selectedGroup + '"}';
+  }
+
+  downloadArchive() {
+    location.href = location.origin + '/api/DpTaskSheetDownload';
   }
 
   addFlashMessage(msg: string) {

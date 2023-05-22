@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSelectChange, MatSnackBar } from '@angular/material';
 import { TaskSheet } from '../../../models/task-sheet.model';
 import { FormControl, Validators } from '@angular/forms';
 import { Template } from '../../../models/template.model';
@@ -10,6 +10,9 @@ import { ProjectsService } from 'src/app/services/projects.service';
 import { Student } from 'src/app/models/student.model';
 import { TranslatePipe } from 'educats-translate';
 import { ToastrService } from 'ngx-toastr';
+import { HelpPopoverScheduleComponent } from 'src/app/shared/help-popover/help-popover-schedule.component';
+import { PercentageResultsService } from 'src/app/services/percentage-results.service';
+import { Subject } from 'rxjs';
 
 interface DialogData {
   isSecretary: boolean;
@@ -18,18 +21,29 @@ interface DialogData {
   taskSheetTemplate: Template;
 }
 
+interface Help {
+  message: string;
+  action: string;
+}
+
 @Component({
   selector: 'app-edit-task-sheet',
   templateUrl: './edit-task-sheet.component.html',
   styleUrls: ['./edit-task-sheet.component.less']
 })
 export class EditTaskSheetComponent implements OnInit {
+  private readonly destroy$: Subject<void> = new Subject<void>();
 
   private COUNT = 1000000;
   private PAGE = 1;
   private searchString = '';
   private sorting = 'Id';
   private direction = 'desc';
+
+  helpMessage: Help = {
+    message: this.translatePipe.transform('text.diplomProject.list.help.message', 'Выберите готовый шаблон, чтобы применить его к листу задания. Шаблон можно изменить и применить к указанным группам'),
+    action: this.translatePipe.transform('text.diplomProject.help.clear', 'Понятно')
+  };
 
   private templateNameControl: FormControl = new FormControl(null,
     [Validators.maxLength(30), Validators.required]);
@@ -79,11 +93,14 @@ export class EditTaskSheetComponent implements OnInit {
   private taskSheets: TaskSheet[];
   private selectedTemplate = "data.taskSheetTemplate";
 
+  templateId: number = undefined;
+
   constructor(private taskSheetService: TaskSheetService,
     private toastr: ToastrService,
     public dialogRef: MatDialogRef<EditTaskSheetComponent>,
     private projectsService: ProjectsService,
     public translatePipe: TranslatePipe,
+    private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
@@ -97,7 +114,25 @@ export class EditTaskSheetComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  showHelp(): void {
+    const dialogRef = this.dialog.open(HelpPopoverScheduleComponent,
+      {
+        data: {
+          message: this.helpMessage.message,
+          action: this.helpMessage.action
+        },
+        disableClose: true,
+        hasBackdrop: true,
+        backdropClass: 'backdrop-help',
+        panelClass: 'help-popover'
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
   onTemplateChange(event: MatSelectChange) {
+    this.templateId = event.value.Id;
     this.taskSheetService.getTemplate({ templateId: event.value.Id }).subscribe(res => {
       this.templateNameControl.setValue(event.value.Name);
       this.inputDataControl.setValue(res.InputData);
@@ -160,6 +195,12 @@ export class EditTaskSheetComponent implements OnInit {
     return this.data.taskSheet;
   }
 
+  deleteTemplate() {
+    this.taskSheetService.deleteTemplate({ taskSheetId: this.templateId })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => { this.retrieveTaskSheets(); })
+  }
+
   populateSheet(taskSheet: TaskSheet): void {
     taskSheet.InputData = this.inputDataControl.value;
     taskSheet.RpzContent = this.contentControl.value;
@@ -198,3 +239,7 @@ export class EditTaskSheetComponent implements OnInit {
   }
 
 }
+function takeUntil(destroy$: any): import("rxjs").OperatorFunction<any, unknown> {
+  throw new Error('Function not implemented.');
+}
+
