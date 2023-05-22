@@ -22,7 +22,7 @@ export class ActiveStatsComponent implements OnInit {
       animations: {
         enabled: false,
       },
-      width: 750,
+      width: 600,
       height: 400,
       type: "pie",
     },
