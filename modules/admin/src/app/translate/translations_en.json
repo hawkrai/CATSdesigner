@@ -338,7 +338,7 @@
   "text.lectures.plural": "Lectures",
   "text.lecturer": "Lecturer",
   "text.lecturers": "Lecturers",
-  
+
 
 
   "text.attachments": "File",
@@ -741,7 +741,7 @@
   "text.adminPanel.lectors.delete.success": "The lecturer has been deleted!",
 
   "text.adminPanel.lectors.status.deleted": "Deleted",
-  
+
   "text.adminPanel.students.headers.groupName": "Group number",
   "text.adminPanel.students.headers.fullName": "Full name",
   "text.adminPanel.students.headers.login": "Login",
@@ -805,7 +805,7 @@
   "text.adminPanel.modal.editLecturer.secretary": "Secretary of state examination commission",
   "text.adminPanel.modal.editLecturer.groupsSecretary": "State examination commission secretary groups",
   "text.adminPanel.modal.editLecturer.resetPassword": "Reset password",
-  "fieldRequiered": "The field cannot be empty",  
+  "fieldRequiered": "The field cannot be empty",
   "fieldPattern": "Use the following characters"  ,
 
   "text.adminPanel.modal.editStudent.title": "Edit student",
@@ -839,7 +839,7 @@
   "text.adminPanel.modal.listOfStudents.headers.status": "Confirmation",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Confirmed",
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Not confirmed",
-  
+
   "text.adminPanel.modal.messageDetail.sent": "Sent",
   "text.adminPanel.modal.messageDetail.recepients": "Recepients",
   "text.adminPanel.modal.messageDetail.reply": "Reply",
@@ -863,5 +863,14 @@
   "text.adminPanel.resetPassword.repeatPassword": "Repeat the password",
   "text.adminPanel.resetPassword.repeatPasswordInvalid": "The passwords don't match.",
   "text.adminPanel.resetPassword.success": "Password has been changed successfully!",
-  "text.adminPanel.resetPassword.error": "An error has occurred while changing the password. Try again!"
+  "text.adminPanel.resetPassword.error": "An error has occurred while changing the password. Try again!",
+
+  "text.statistics.total": "Total",
+  "text.statistics.total.hours.skipped": "Total hours skipped, h",
+  "text.statistics.student.performance": "Student performance, mark",
+  "text.subject": "Subjects",
+  "text.all.subjects": "All subjects",
+  "text.average.values": "Average values",
+  "text.print": "Print",
+  "text.download.excel": "Download Excel"
 }

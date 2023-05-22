@@ -102,7 +102,7 @@
     </span>
   </button>
 
-  <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h">
+  <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h" *ngIf="!isProgContol">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
@@ -235,7 +235,7 @@
         </span>
       </button>
 
-      <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h points">
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="icon-h points" *ngIf="!isProgContol">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">

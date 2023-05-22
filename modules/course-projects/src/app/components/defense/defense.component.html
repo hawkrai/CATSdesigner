@@ -1,34 +1,39 @@
 <div class="defense-component" *ngIf="courseUser; else: load">
   <div class="defense-component__header">
     <ng-container *ngIf="courseUser.IsLecturer">
-      <mat-form-field class="defense-component__group-select" *ngIf="selectedGroup">
-        <mat-select [value]="selectedGroup.GroupId">
-          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group.GroupId">
-            {{group.GroupName}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-slide-toggle class="detached-toggle"
-                        [color]="'primary'"
-                        [checked]="detachedGroup"
-                        (change)="groupStatusChange($event)"
-      >
-        {{'text.groups.detached' | translate : 'Открепленные группы'}}
-      </mat-slide-toggle>
-      <button mat-icon-button color="primary" matTooltip="{{'text.download.zip' | translate : 'Скачать архивом'}}"
-              (click)="downloadArchive()">
-        <mat-icon>get_app</mat-icon>
-      </button>
-      <button mat-icon-button color="primary" matTooltip="{{'text.check.plagiarism' | translate : 'Проверка на плагиат всех работ'}}"
-              *ngIf="!detachedGroup" (click)="checkPlagiarism()">
-        <mat-icon>visibility</mat-icon>
-      </button>
-      <button mat-icon-button color="primary" matTooltip="{{'text.update.data' | translate : 'Обновить данные'}}" (click)="retrieveFiles()">
-        <mat-icon>cached</mat-icon>
-      </button>
+      <div>
+        <mat-form-field class="defense-component__group-select" *ngIf="selectedGroup">
+          <mat-select [value]="selectedGroup.GroupId">
+            <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)"
+              [value]="group.GroupId">
+              {{group.GroupName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-slide-toggle class="detached-toggle" [color]="'primary'" [checked]="detachedGroup"
+          (change)="groupStatusChange($event)">
+          {{'text.groups.detached' | translate : 'Открепленные группы'}}
+        </mat-slide-toggle>
+      </div>
+      <div>
+        <button mat-icon-button color="primary" matTooltip="{{'text.download.zip' | translate : 'Скачать архивом'}}"
+          (click)="downloadArchive()">
+          <mat-icon>get_app</mat-icon>
+        </button>
+        <button mat-icon-button color="primary"
+          matTooltip="{{'text.check.plagiarism' | translate : 'Проверка на плагиат всех работ'}}" *ngIf="!detachedGroup"
+          (click)="checkPlagiarism()">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="{{'text.update.data' | translate : 'Обновить данные'}}"
+          (click)="retrieveFiles()">
+          <mat-icon>cached</mat-icon>
+        </button>
+      </div>
     </ng-container>
-    <button mat-raised-button color="primary" [disabled]="!courseUser.HasAssignedDiplomProject"
-            (click)="addJob()">{{'text.course.defence.add' | translate : 'Добавить работу'}}
+    <button mat-raised-button color="primary" *ngIf="!courseUser.IsLecturer"
+      [disabled]="!courseUser.HasAssignedDiplomProject" (click)="addJob()">{{'text.course.defence.add' | translate :
+      'Добавить работу'}}
     </button>
   </div>
   <div class="defense-component__body">
@@ -36,35 +41,39 @@
       <div class="mdc-data-table">
         <table class="mdc-data-table__table">
           <thead>
-          <tr class="mdc-data-table__header-row">
-            <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.file' | translate : 'Файл'}}</th>
-            <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.comment' | translate : 'Комментарий'}}</th>
-            <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.action' | translate : 'Действие'}}</th>
-          </tr>
+            <tr class="mdc-data-table__header-row">
+              <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.file' | translate :
+                'Файл'}}</th>
+              <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.comment' | translate :
+                'Комментарий'}}</th>
+              <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.action' | translate :
+                'Действие'}}</th>
+            </tr>
           </thead>
           <tbody>
-          <tr class="mdc-data-table__row" *ngFor="let studentFile of userLabFiles"
+            <tr class="mdc-data-table__row" *ngFor="let studentFile of userLabFiles"
               [ngClass]="{'sticky': studentFile.IsReceived, 'fix': studentFile.IsReturned}">
-            <td class="mdc-data-table__cell">
-              <a href="api/Upload?filename={{studentFile.Attachments[0].PathName}}//{{studentFile.Attachments[0].FileName}}" color="primary">
-                {{ studentFile.Attachments[0].Name }}
-              </a>
-            </td>
-            <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
-            <td class="mdc-data-table__cell">
-              <ng-container *ngIf="!studentFile.IsReturned">
-                <button mat-icon-button color="primary" matTooltip="{{'text.edit' | translate : 'Редактировать'}}"
-                        (click)="addJob(studentFile)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="primary" matTooltip="{{'text.delete' | translate : 'Удалить'}}"
-                        (click)="deleteJob(studentFile)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </ng-container>
-              <p *ngIf="studentFile.IsReturned">{{'text.correct' | translate : 'Исправить'}}</p>
-            </td>
-          </tr>
+              <td class="mdc-data-table__cell">
+                <a href="api/Upload?filename={{studentFile.Attachments[0].PathName}}//{{studentFile.Attachments[0].FileName}}"
+                  color="primary">
+                  {{ studentFile.Attachments[0].Name }}
+                </a>
+              </td>
+              <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
+              <td class="mdc-data-table__cell">
+                <ng-container *ngIf="!studentFile.IsReturned">
+                  <button mat-icon-button color="primary" matTooltip="{{'text.edit' | translate : 'Редактировать'}}"
+                    (click)="addJob(studentFile)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="primary" matTooltip="{{'text.delete' | translate : 'Удалить'}}"
+                    (click)="deleteJob(studentFile)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </ng-container>
+                <p *ngIf="studentFile.IsReturned">{{'text.correct' | translate : 'Исправить'}}</p>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -80,44 +89,53 @@
           <div class="mdc-data-table">
             <table class="mdc-data-table__table">
               <thead>
-              <tr class="mdc-data-table__header-row">
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.file' | translate : 'Файл'}}</th>
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.comment' | translate : 'Комментарий'}}</th>
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.date' | translate : 'Дата'}}</th>
-                <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.action' | translate : 'Действие'}}</th>
-              </tr>
+                <tr class="mdc-data-table__header-row">
+                  <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.file' | translate :
+                    'Файл'}}</th>
+                  <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.comment' | translate :
+                    'Комментарий'}}</th>
+                  <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.date' | translate :
+                    'Дата'}}</th>
+                  <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.action' | translate :
+                    'Действие'}}</th>
+                </tr>
               </thead>
               <tbody *ngIf="student.FileLabs">
-              <tr class="mdc-data-table__row" *ngFor="let fileLab of student.FileLabs"
+                <tr class="mdc-data-table__row" *ngFor="let fileLab of student.FileLabs"
                   [ngClass]="{'sticky': fileLab.IsReceived, 'fix': fileLab.IsReturned}">
-                <td class="mdc-data-table__cell">
-                  <a href="api/Upload?filename={{fileLab.Attachments[0].PathName}}//{{fileLab.Attachments[0].FileName}}" color="primary">
-                    {{ fileLab.Attachments[0].Name }}
-                  </a>
-                </td>
-                <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
-                <td class="mdc-data-table__cell">{{ fileLab.Date }}</td>
-                <td class="mdc-data-table__cell">
-                  <ng-container *ngIf="!fileLab.IsReturned && !fileLab.IsReceived">
-                    <button mat-icon-button color="primary" matTooltip="{{'text.accept' | translate : 'Принять работу'}}"
-                            (click)="approveJob(fileLab, student.StudentId)">
-                      <mat-icon>thumb_up</mat-icon>
+                  <td class="mdc-data-table__cell">
+                    <a href="api/Upload?filename={{fileLab.Attachments[0].PathName}}//{{fileLab.Attachments[0].FileName}}"
+                      color="primary">
+                      {{ fileLab.Attachments[0].Name }}
+                    </a>
+                  </td>
+                  <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
+                  <td class="mdc-data-table__cell">{{ fileLab.Date }}</td>
+                  <td class="mdc-data-table__cell">
+                    <ng-container *ngIf="!fileLab.IsReturned && !fileLab.IsReceived">
+                      <button mat-icon-button color="primary"
+                        matTooltip="{{'text.accept' | translate : 'Принять работу'}}"
+                        (click)="approveJob(fileLab, student.StudentId)">
+                        <mat-icon>thumb_up</mat-icon>
+                      </button>
+                      <button mat-icon-button color="primary"
+                        matTooltip="{{'text.return' | translate : 'Вернуть работу'}}"
+                        (click)="addJob(fileLab, student.StudentId)">
+                        <mat-icon>call_missed_outgoing</mat-icon>
+                      </button>
+                      <button mat-icon-button color="primary"
+                        matTooltip="{{'text.check' | translate : 'Проверить на плагиат'}}"
+                        (click)="checkPlagiarismFile(fileLab)">
+                        <mat-icon>visibility</mat-icon>
+                      </button>
+                    </ng-container>
+                    <button mat-icon-button color="primary"
+                      matTooltip="{{'text.reject' | translate : 'Отклонить работу'}}" *ngIf="fileLab.IsReceived"
+                      (click)="restoreFromArchive(fileLab, student.StudentId)">
+                      <mat-icon>thumb_down</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="{{'text.return' | translate : 'Вернуть работу'}}"
-                            (click)="addJob(fileLab, student.StudentId)">
-                      <mat-icon>call_missed_outgoing</mat-icon>
-                    </button>
-                    <button mat-icon-button color="primary" matTooltip="{{'text.check' | translate : 'Проверить на плагиат'}}"
-                            (click)="checkPlagiarismFile(fileLab)">
-                      <mat-icon>visibility</mat-icon>
-                    </button>
-                  </ng-container>
-                  <button mat-icon-button color="primary" matTooltip="{{'text.reject' | translate : 'Отклонить работу'}}"
-                          *ngIf="fileLab.IsReceived" (click)="restoreFromArchive(fileLab, student.StudentId)">
-                    <mat-icon>thumb_down</mat-icon>
-                  </button>
-                </td>
-              </tr>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
