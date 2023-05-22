@@ -202,7 +202,8 @@ export class LectorsComponent implements OnInit {
     const dialogRef = this.dialog.open(ListOfGroupsComponent, {
       hasBackdrop: true,
       data: lectorId,
-      height: "100%"
+      height: "100%",
+      width: "max(600px, 60%)"
     });
     dialogRef.afterClosed();
   }

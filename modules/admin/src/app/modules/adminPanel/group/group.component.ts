@@ -143,7 +143,8 @@ export class GroupComponent implements OnInit {
     const dialogRef = this.dialog.open(SubjectListComponent, {
       hasBackdrop: true,
       data: group,
-      height: "100%"
+      height: "100%",
+      width: "max(600px, 50%)"
     });
     dialogRef.afterClosed();
   }

@@ -239,7 +239,8 @@ export class StudentsComponent implements OnInit {
     const dialogRef = this.dialog.open(SubjectListComponent, {
       hasBackdrop: true,
       data: studentId,
-      height: "100%"
+      height: "100%",
+      width: "max(600px, 50%)"
     });
     dialogRef.afterClosed();
   }
