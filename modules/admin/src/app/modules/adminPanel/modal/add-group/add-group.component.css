@@ -23,3 +23,11 @@ h2 {
   margin-bottom: 10px;
   font-weight: lighter;
 }
+
+.close-icon {
+  float: right;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+}

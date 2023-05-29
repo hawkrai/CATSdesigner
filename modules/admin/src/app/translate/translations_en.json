@@ -726,6 +726,7 @@
   "text.adminPanel.lectors.headers.registrationDate": "Registration date",
   "text.adminPanel.lectors.headers.status": "Status",
   "text.adminPanel.lectors.headers.subjects": "Subjects (created\\attached)",
+  "text.adminPanel.lectors.headers.secretary": "SEC Secretary",
   "text.adminPanel.lectors.headers.action": "Action",
 
   "text.adminPanel.lectors.tooltips.stats": "System authorization statistics",

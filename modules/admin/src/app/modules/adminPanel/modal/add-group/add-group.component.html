@@ -1,4 +1,9 @@
-<h1 mat-dialog-title>{{ (this.group.Name ? "text.adminPanel.modal.addGroup.title.edit" : "text.adminPanel.modal.addGroup.title.add") | translate }}</h1>
+<div class="container">
+    <p class="title">{{ (this.group.Name ? "text.adminPanel.modal.addGroup.title.edit" : "text.adminPanel.modal.addGroup.title.add") | translate }}</p>
+    <button mat-button class="close-icon" (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+</div>
 <form [formGroup]="this.form" (ngSubmit)="submit()">
     <mat-dialog-content>
         <h2 *ngIf="this.group.Name"> {{ "group" | translate }} {{ this.group.Name }}</h2>
