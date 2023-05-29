@@ -2,7 +2,11 @@
 
   &__header {
     overflow: auto;
-    .iconify { 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .iconify {
       width: 30px;
       height: 30px;
       color: rgb(61, 80, 182);
@@ -15,12 +19,34 @@
 
   &__group-select {
     width: 100px;
+    margin-right: 10px;
   }
 
   &__search {
     float: right;
-    width: 30%;
     margin-bottom: 3px;
   }
 
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 240px;
+  }
+
+}
+
+.group-select {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.excel {
+  margin-right: 13px;
+}
+
+.help {
+  margin-right: 10px;
 }

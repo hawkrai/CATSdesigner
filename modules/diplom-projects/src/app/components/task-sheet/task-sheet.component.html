@@ -8,6 +8,9 @@
     </mat-select>
   </mat-form-field>
   <div class="task-sheet__header__actions">
+    <app-help *ngIf="diplomUser.IsLecturer"
+      [message]="'text.diplomProject.taskList.help.message' | translate : 'В листе задания фамилии обучающегося и руководителя, а также тема дипломного проекта заполняются автоматически. Данные для пункта 8 будут отображены после заполнения информации на вкладке “График процентовки” секретарем ГЭК. Остальные пункты листа задания заполняются посредством его редактирования'"
+      [action]="'text.diplomProject.help.clear' | translate : 'Понятно'"></app-help>
     <button mat-icon-button color="primary"
       matTooltip="{{'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'}}"
       *ngIf="diplomProjectId != null" (click)="downloadTaskSheet()">
@@ -25,6 +28,6 @@
   </div>
 </div>
 <div id="task-sheet" class="task-sheet__body"></div>
-<div class="spinner" *ngIf="taskSheetHtml == null">
+<div class="spinner" *ngIf="taskSheetHtml == null && !isEmpty">
   <mat-spinner></mat-spinner>
 </div>

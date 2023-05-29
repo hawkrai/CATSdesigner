@@ -10,6 +10,7 @@ import { Template } from 'src/app/models/template.model';
 import { Student } from 'src/app/models/student.model';
 import { TranslatePipe } from 'educats-translate';
 import { ToastrService } from 'ngx-toastr';
+import { PercentageResultsService } from 'src/app/services/percentage-results.service';
 
 @Component({
   selector: 'app-task-sheet',
@@ -19,6 +20,8 @@ import { ToastrService } from 'ngx-toastr';
 export class TaskSheetComponent implements OnInit {
 
   @Input() diplomUser: DiplomUser;
+
+  public isEmpty = false;
 
   private COUNT = 1000;
   private PAGE = 1;
@@ -37,6 +40,7 @@ export class TaskSheetComponent implements OnInit {
 
   constructor(private projectThemeService: ProjectThemeService,
     private taskSheetService: TaskSheetService,
+    private percentageResultsService: PercentageResultsService,
     private dialog: MatDialog,
     private toastr: ToastrService,
     public translatePipe: TranslatePipe) {
@@ -47,7 +51,7 @@ export class TaskSheetComponent implements OnInit {
     this.projectThemeService.getThemes({ entity: 'DiplomProject' })
       .subscribe(res => {
         this.themes = res;
-        if (this.diplomProjectId == null) {
+        if (this.diplomProjectId == null && res[0]) {
           this.diplomProjectId = res[0].Id;
         }
         this.retrieveTaskSheetHtml();
@@ -65,11 +69,17 @@ export class TaskSheetComponent implements OnInit {
 
   retrieveTaskSheetHtml() {
     this.taskSheetHtml = null;
+    this.isEmpty = false;
     this.taskSheetSubscription = this.taskSheetService.getTaskSheetHtml({ diplomProjectId: this.diplomProjectId })
       .subscribe(res => {
+        if (!res) {
+          this.isEmpty = true;
+        }
         this.taskSheetHtml = res;
         const div = document.getElementById('task-sheet');
         div.innerHTML = res;
+      }, () => {
+        this.isEmpty = true;
       });
   }
 
@@ -98,7 +108,7 @@ export class TaskSheetComponent implements OnInit {
     this.taskSheetService.getTaskSheet({ diplomProjectId: this.diplomProjectId }).subscribe(response => {
       const dialogRef = this.dialog.open(EditTaskSheetComponent, {
         autoFocus: false,
-        width: '700px',
+        width: '548px',
         height: '750px',
         position: {
           top: "0px"
@@ -126,17 +136,13 @@ export class TaskSheetComponent implements OnInit {
   }
 
   getStudents() {
-    if (this.diplomUser.IsLecturer && this.diplomUser.IsSecretary == false) {
-      this.taskSheetService.getStudents({
-        userId: this.diplomUser.UserId,
-        count: this.COUNT,
-        page: this.PAGE,
-        filter: '{"searchString":""}',
-        // filter: '{"secretaryId":' + 6653 + ',' +
-        //  '"searchString":"' + this.searchString + '"}',
-      }).subscribe(res => {
-        this.students = res.Items
-      })
+    if (this.diplomUser.IsLecturer) {
+      this.percentageResultsService.getPercentageResults(
+        'count=' + this.COUNT +
+        '&page=' + this.PAGE +
+        '&filter={"isSecretary":"' + true + '","searchString":"' + '' + '"}' +
+        '&sorting[' + 'Id' + ']=' + 'desc'
+      ).subscribe(res => { this.students = res.Students.Items.sort((a, b) => a.Name < b.Name ? -1 : 1) })
     }
   }
 

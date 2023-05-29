@@ -1,27 +1,41 @@
 <div class="percentage-results-component">
   <div class="percentage-results-component__header">
-    <mat-form-field class="percentage-results-component__group-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
-      <mat-select [value]="groups ? groups[0] : ''">
-        <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group">
-          {{group}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <button mat-icon-button color="primary"
-      matTooltip="{{'text.diplomProject.downloadExcel' | translate: 'Загрузить документ Excel'}}"
-      *ngIf="diplomUser.IsSecretary && !isLecturer" (click)="getExcelFile()">
-      <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
-    </button>
-    <mat-slide-toggle class="detached-toggle" *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents"
-      [color]="'primary'" [checked]="isLecturer" (change)="lecturerStatusChange($event)"
-      matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}">{{'text.diplomProject.head'
-      | translate: 'Руководитель'}}</mat-slide-toggle>
-
-    <mat-form-field class="percentage-results-component__search">
-      <mat-label>{{'text.diplomProject.searchThemeAndName' | translate: 'Поиск по теме, фамилии'}}</mat-label>
-      <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div>
+      <mat-form-field class="percentage-results-component__group-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
+        <mat-select [value]="groups ? groups[0] : ''">
+          <mat-option *ngFor="let group of groups" (onSelectionChange)="_selectedGroup($event)" [value]="group">
+            {{group}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-slide-toggle class="detached-toggle"
+        *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents" [color]="'primary'"
+        [checked]="isLecturer" (change)="lecturerStatusChange($event)"
+        matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}">{{'text.diplomProject.head'
+        | translate: 'Руководитель'}}</mat-slide-toggle>
+    </div>
+    <div class="percentage-results-component__controls">
+      <mat-form-field class="percentage-results-component__search">
+        <mat-label>{{'text.diplomProject.searchThemeAndName' | translate: 'Поиск по теме, фамилии'}}</mat-label>
+        <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <div class="group-select">
+        <app-help *ngIf="diplomUser.IsLecturer" class="help"
+          [message]="'text.diplomProject.percentage.help.message' | translate : 'Нажмите на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
+          [action]="'text.diplomProject.help.clear' | translate : 'Понятно'"></app-help>
+        <button mat-icon-button color="primary" class="excel"
+          matTooltip="{{'text.diplomProject.downloadExcel' | translate: 'Загрузить документ Excel'}}"
+          *ngIf="diplomUser.IsSecretary && !isLecturer" (click)="getExcelFile()">
+          <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+        </button>
+        <button mat-icon-button color="primary"
+          matTooltip="{{'text.diplomProject.downloadArchive' | translate: 'Загрузить архивом листы задания'}}"
+          *ngIf="diplomUser.IsSecretary && !isLecturer" (click)="downloadArchive()">
+          <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
+        </button>
+      </div>
+    </div>
   </div>
   <div class="percentage-results-component__body">
     <app-percentage-results-list [filteredPercentageResults]="filteredPercentageResults"

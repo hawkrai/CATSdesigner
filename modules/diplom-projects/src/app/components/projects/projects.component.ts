@@ -45,7 +45,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isLecturer = Boolean(localStorage.getItem('toggle')) || false;
+    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
     this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { this.groups = res.Groups });
     this.retrieveProjects();
   }
@@ -80,7 +80,7 @@ export class ProjectsComponent implements OnInit {
 
   lecturerStatusChange(event) {
     this.isLecturer = event.checked;
-    localStorage.setItem('toggle', String(event.checked));
+    localStorage.setItem('toggle', event.checked);
     this.retrieveProjects()
   }
 

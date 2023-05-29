@@ -3,16 +3,25 @@
 </button>
 <h1 mat-dialog-title>{{'text.diplomProject.editTaskSheet' | translate: 'Редактирование листа задания'}}</h1>
 <div mat-dialog-content style="display: block">
-  <mat-form-field class="form-field">
-    <mat-label>{{'text.diplomProject.choosePattern' | translate: 'Выберите готовый шаблон'}}</mat-label>
-    <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
-      <mat-option *ngIf="data.taskSheetTemplate != undefined"
-        value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
-      <mat-option *ngFor="let template of templates" [value]="template">
-        {{template.Name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div class="choose-template">
+    <mat-form-field class="form-field">
+      <mat-label>{{'text.diplomProject.choosePattern' | translate: 'Выберите готовый шаблон'}}</mat-label>
+      <mat-select [(value)]="selectedTemplate" (selectionChange)="onTemplateChange($event)">
+        <mat-option *ngIf="data.taskSheetTemplate != undefined"
+          value="data.taskSheetTemplate">{{data.taskSheetTemplate.Name}}</mat-option>
+        <mat-option *ngFor="let template of templates" [value]="template">
+          {{template.Name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div>
+      <button class="mat-icon-button-help" mat-icon-button
+        [matTooltip]="'text.help' | translate : 'Помощь'" matTooltipPosition="below"
+        (click)="showHelp()">
+        <mat-icon color="primary">help_outline</mat-icon>
+      </button>
+    </div>
+  </div>
   <div class="save-template">
     <mat-form-field>
       <mat-label>{{'text.diplomProject.patternName' | translate: 'Название шаблона'}}</mat-label>
@@ -20,9 +29,16 @@
       <mat-error *ngIf="templateNameControl.invalid">{{'text.diplomProject.templateNameControl' | translate: 'До 30
         символов'}}</mat-error>
     </mat-form-field>
-    <button mat-flat-button class="saveTemplateButton" color="primary"
-      [disabled]="templateNameControl.invalid || isFormInvalid()"
-      (click)="saveTemplate()">{{'text.diplomProject.createPattern' | translate: 'Создать шаблон'}}</button>
+    <div>
+      <button mat-icon-button color="primary" [disabled]="templateNameControl.invalid || isFormInvalid()"
+        (click)="saveTemplate()">
+        <mat-icon matTooltip="{{'text.diplomProject.createPattern' | translate: 'Создать шаблон'}}">save</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" [disabled]="!templateId" (click)="deleteTemplate()">
+        <mat-icon
+          matTooltip="{{'text.diplomProject.list.dialog.template.delete' | translate : 'Удалить шаблон'}}">delete_outline</mat-icon>
+      </button>
+    </div>
   </div>
 
   <div class="apply-template">
@@ -34,9 +50,11 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-flat-button class="applyButton" color="primary"
+    <button mat-icon-button color="primary"
       [disabled]="isSelectedGroupsInvalid() || templateNameControl.invalid || isFormInvalid()"
-      (click)="applyTemplate()">{{'text.diplomProject.applyPattern' | translate: 'Применить шаблон'}}</button>
+      (click)="applyTemplate()">
+      <mat-icon matTooltip="{{'text.diplomProject.applyPattern' | translate: 'Применить шаблон'}}">group</mat-icon>
+    </button>
   </div>
 
   <mat-tab-group dynamicHeight class="dialog-tab-content">

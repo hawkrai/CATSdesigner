@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,26 +12,28 @@ export class VisitStatsService {
   }
 
   public getVisitStats(params: any): Observable<any> {
-    return this.http.get('api/DiplomProjectConsultation', {params: new HttpParams({fromObject: params})});
+    return this.http.get('api/DiplomProjectConsultation', { params: new HttpParams({ fromObject: params }) });
   }
 
   public getLecturerDiplomGroups(params: any): Observable<any> {
-    return this.http.get('api/DpCorrelation', {params: new HttpParams({fromObject: params})});
+    return this.http.get('api/DpCorrelation', { params: new HttpParams({ fromObject: params }) });
   }
 
-  public setMark(studentId: string, consultationDateId: string, mark: string, comment: string): Observable<any> {
+  public setMark(studentId: string, consultationDateId: string, mark: string, comment: string, isShow: boolean): Observable<any> {
     return this.http.post('api/DiplomProjectConsultation',
-      {StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark, Comment: comment});
+      { StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark, Comment: comment, ShowForStudent: isShow });
   }
 
-  public editMark(id: string, studentId: string, consultationDateId: string, mark: string, comment: string): Observable<any> {
+  public editMark(id: string, studentId: string, consultationDateId: string, mark: string, comment: string, isShow: boolean): Observable<any> {
     return this.http.post('api/DiplomProjectConsultation',
-      {Id: id, StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark, Comment: comment});
+      { Id: id, StudentId: studentId, ConsultationDateId: consultationDateId, Mark: mark, Comment: comment, ShowForStudent: isShow });
   }
 
   public addDate(date: string, startTime: string, endTime: string, audience: string, building: string): Observable<any> {
-    return this.http.post('api/DiplomProjectConsultationDate', {Day: date, StartTime: startTime,
-      EndTime: endTime, Building: building, Audience: audience});
+    return this.http.post('api/DiplomProjectConsultationDate', {
+      Day: date, StartTime: startTime,
+      EndTime: endTime, Building: building, Audience: audience
+    });
   }
 
   public deleteDate(id: string): Observable<any> {

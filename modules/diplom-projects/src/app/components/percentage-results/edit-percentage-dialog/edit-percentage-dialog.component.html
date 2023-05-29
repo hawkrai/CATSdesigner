@@ -8,7 +8,8 @@
     <input matInput [formControl]="percentageControl" [(ngModel)]="data.mark" type="number" min="{{data.min}}"
       max="{{data.max}}" step="{{data.max > 10 ? 5 : 1}}">
     <span matSuffix>{{data.symbol}}</span>
-    <mat-hint *ngIf="data.expected && !percentageControl.value">Ожидаемый процент {{data.expected}}</mat-hint>
+    <mat-hint *ngIf="data.expected && !percentageControl.value">{{'text.expectedProcent' | translate:'Ожидаемый процент
+      '}} {{data.expected}}</mat-hint>
     <mat-error *ngIf="percentageControl.invalid">{{data.errorMsg}}</mat-error>
   </mat-form-field>
   <mat-form-field *ngIf="data.total">
