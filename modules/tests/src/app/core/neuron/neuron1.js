@@ -1,4 +1,4 @@
-var _ = require('underscore');
+import _ from 'underscore';
 
 
 /* Functions for turning sparse hashes into arrays and vice versa */

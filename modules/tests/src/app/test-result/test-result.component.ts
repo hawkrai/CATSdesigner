@@ -10,7 +10,18 @@ import moment from "moment";
 import {ClosedTestResult} from "../models/closed-test-result.model";
 import {DataValues} from "../models/data-values.model";
 import {Constants} from "../models/constanst/DataConstants";
+import * as neuralNetworkV2 from "../core/neuron/neuron1.js";
 
+interface Theme {
+  name: string;
+  id: number;
+}
+
+interface NNItem {
+  theme: string;
+  status: boolean;
+  score: number;
+}
 
 @AutoUnsubscribe
 @Component({
@@ -28,6 +39,10 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
   public startTime: string;
   public percent: number;
   public endDate: string;
+  public isNN: boolean;
+  public themes: Theme[];
+  public displayedColumns = ["theme", "status", "score"];
+  public nnDatasource: NNItem[] = [];
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(private testPassingService: TestPassingService,
@@ -48,8 +63,27 @@ export class TestResultComponent extends AutoUnsubscribeBase implements OnInit {
         this.startTime = moment(result.Data.find((res: DataValues) => res.Key === Constants.START_TIME).Value).format("HH:mm:ss");
         this.endTime = moment(result.Data.find((res: DataValues) => res.Key === Constants.END_TIME).Value).format("HH:mm:ss");
         this.endDate = moment(result.Data.find((res: DataValues) => res.Key === Constants.END_TIME).Value).format("DD.MM.YYYY");
-      });
+        this.themes = result.Data.find((res: DataValues) => res.Key === Constants.THEMS).Value.reduce(
+          (old, item: Theme) =>
+            old.find((x) => x.id === item.id) ? old : [...old, item],
+            [],
+        );
+        this.isNN = !!result.Data.find((res: DataValues) => res.Key === Constants.FO_NN).Value;
 
+        neuralNetworkV2.neuralNetworkV2.fromJSON(JSON.parse(result.Data.find((res: DataValues) => res.Key === Constants.NEURAL_DATA).Value));
+        const nnResult = neuralNetworkV2.neuralNetworkV2.run(this.result.map((x) => x.Points !== 0 ? 1 : 0));
+        for (const [index, value] of nnResult.entries()) {
+          const status = !(parseFloat(value) > 0.7);
+          const score = value;
+          const theme = this.themes[index].name;
+
+          this.nnDatasource.push({
+            status,
+            score,
+            theme,
+          });
+        }
+      });
   }
 
   public navigate(): void {

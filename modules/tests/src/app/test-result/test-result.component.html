@@ -8,7 +8,7 @@
     <div class="test-result-text__title" *ngIf="testName">
       {{'text.test.theme.finished' | translate : ("Тест на тему «" + testName + "» завершен") : {title: testName} }}
     </div>
-  
+
     <div class="test-result-text">
       {{'text.test.your.mark' | translate: ("Ваша оценка: " + mark + "(" + percent + ")") : {mark: mark + '', percent: percent + ''} }}
     </div>
@@ -36,5 +36,32 @@
       ></div>
     </div>
   </div>
+  <div *ngIf="isNN" class="nn">
+    <h4>{{'text.test.result.nn' | translate : "Анализ ответов от обученной нейронной сети"}}.</h4>
+    <table mat-table [dataSource]="this.nnDatasource" class="nn__table">
+      <ng-container matColumnDef="theme">
+        <th mat-header-cell *matHeaderCellDef>{{ 'text.test.result.nn.theme' | translate : "Тема" }}</th>
+        <td mat-cell *matCellDef="let element ">{{element.theme}}</td>
+      </ng-container>
 
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>{{ 'text.test.result.nn.status' | translate : "Статус" }}</th>
+        <td mat-cell *matCellDef="let element ">{{element.status ?
+          ('text.test.result.nn.status.valid' | translate : "Изучено")
+          : 'text.test.result.nn.status.invalid' | translate : "Изучить"
+        }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef>{{ 'text.test.result.nn.score' | translate : "Оценка сети" }}</th>
+        <td mat-cell *matCellDef="let element ">{{element.score}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; " [ngClass]="{
+        'valid': row.status,
+        'invalid': !row.status
+      }"></tr>
+    </table>
+  </div>
 </div>

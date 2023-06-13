@@ -623,6 +623,7 @@
 
   "text.changePassword.resetPassword": "Reset the password",
   "text.changePassword.invalidData": "Data entered incorrectly",
+  "text.changePassword.questionIsUndefined": "Password reset option not available",
   "text.changePassword.login": "Login",
   "text.changePassword.secretQuestion": "Secret Question",
   "text.changePassword.answerOnSecretQuestion": "Answer to the secret question",

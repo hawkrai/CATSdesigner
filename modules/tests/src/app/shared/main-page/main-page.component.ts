@@ -56,17 +56,17 @@ export class MainPageComponent {
   @Output()
   public createNeuralNetworkEvent: EventEmitter<any> = new EventEmitter();
 
-  help: Help = {
+  adminTestsHelp: Help = {
     message: "",
     action: "",
   };
 
   constructor(private translatePipe: TranslatePipe) {
-    this.help = {
+    this.adminTestsHelp = {
       message: this.translatePipe.transform(
-        "text.help.tests",
+        "text.help.themes",
         // tslint:disable-next-line:max-line-length
-        "На данной странице можно наблюдать за процессом прохождения тестов для контроля знаний. Верно отвеченные вопросы отображены зеленым цветом, а неверно отвеченные – красным."
+        "Чтобы подготовить тест, его необходимо создать, наполнить вопросами и ответами. Также необходимо указать время на прохождение теста и количество вопросов в нем. Для предварительного просмотра теста и открытия доступа к нему нажмите на соответствующие иконки."
       ),
       action: this.translatePipe.transform("button.understand", "Понятно"),
     };
