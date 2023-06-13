@@ -10,6 +10,7 @@ import { EditPercentageDialogComponent } from './edit-percentage-dialog/edit-per
 import { TranslatePipe } from 'educats-translate';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { ToastrService } from 'ngx-toastr';
+import { GroupService } from 'src/app/services/group.service';
 
 @Component({
   selector: 'app-percentage-results',
@@ -26,6 +27,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private filteredPercentageResults: StudentPercentageResults[];
   private percentageGraphs: PercentageGraph[];
   public groups: String[]
+  public themes = [{ name: this.translatePipe.transform('text.diplomProject.head', "Руководитель проекта"), value: true }, { name: this.translatePipe.transform('text.diplomProject.secretary', "Секретарь ГЭК"), value: false }];
+  public theme = undefined;
 
   private percentageResultsSubscription: Subscription;
 
@@ -38,11 +41,14 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   constructor(private percentageResultsService: PercentageResultsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private groupService: GroupService,
     public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
     this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { res.isLecturer ? this.isLecturer = true : this.isLecturer = false });
     if (this.diplomUser.IsSecretary == false) {
       this.isLecturer = true
     }
@@ -56,8 +62,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   lecturerStatusChange(event) {
-    this.isLecturer = event.checked;
-    localStorage.setItem('toggle', event.checked);
+    this.isLecturer = event.value.value;
+    localStorage.setItem('toggle', event.value.value);
     this.retrievePercentageResults();
   }
 
@@ -116,27 +122,28 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         const result = student.PercentageResults.find(pr => pr.PercentageGraphId === percentageGraph.Id);
         if (result != null) {
           if (result.Mark == null) {
-            result.Mark = '-';
+            result.Mark = '';
           }
           results.push(result);
         } else {
           // @ts-ignore
-          const pr: PercentageResult = { StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '-' };
+          const pr: PercentageResult = { StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '' };
           results.push(pr);
         }
       }
       student.PercentageResults = results;
       if (student.Mark == null) {
-        student.Mark = '-';
+        student.Mark = '';
       }
     }
     return studentPercentageResults;
   }
 
-  setResult(pr: PercentageResult) {
+  setResult(pr: PercentageResult, student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       autoFocus: false,
-      width: '400px',
+      height: '100%',
+      width: '600px',
       data: {
         mark: pr.Mark !== '-' ? pr.Mark : null,
         min: 0,
@@ -145,6 +152,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         errorMsg: this.translatePipe.transform('text.diplomProject.percentageControl', "Введите число от 0 до 100"),
         label: this.translatePipe.transform('text.diplomProject.percentageResult', "Результат процентовки"),
         symbol: '%',
+        lecturer: student.Lecturer,
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
         expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage
@@ -173,17 +181,18 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   setMark(student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       autoFocus: false,
-      width: '400px',
+      height: '100%',
+      width: '600px',
       data: {
-        mark: student.Mark !== '-' ? student.Mark : null,
+        mark: student.Mark !== '' ? student.Mark : null,
         min: 1,
         max: 10,
         regex: '^[0-9]*$',
         errorMsg: this.translatePipe.transform('text.diplomProject.estimationControl', "Введите число от 0 до 10"),
-        label: this.translatePipe.transform('mark', "Оценка"),
+        label: this.translatePipe.transform('mark', "Выставление оценки"),
         notEmpty: true,
         total: true,
-        lecturer: student.LecturerName,
+        lecturer: student.Lecturer,
         date: student.MarkDate,
         comment: student.Comment,
         showForStudent: student.ShowForStudent

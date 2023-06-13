@@ -31,6 +31,12 @@ export class ProjectsComponent implements OnInit {
   private projectGroups: String[];
   private filteredProjects: Project[] = [];
   public isLecturer = false;
+  public themes = [{ name: this.translatePipe.transform('text.diplomProject.head', "Руководитель проекта"), value: true }, { name: this.translatePipe.transform('text.diplomProject.secretary', "Секретарь ГЭК"), value: false }];
+  public theme = undefined;
+  
+
+  public toggleNameForTranslate: string = 'text.diplomProject.head';
+  public toggleNameTranslate: string = 'Руководитель проекта';
 
   private searchString = '';
   private sorting = 'Id';
@@ -45,8 +51,9 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
-    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { this.groups = res.Groups });
+    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true);
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { res.isLecturer ? this.isLecturer = true : this.isLecturer = false; this.groups = res.Groups });
     this.retrieveProjects();
   }
 
@@ -73,14 +80,15 @@ export class ProjectsComponent implements OnInit {
   }
 
   _selectedGroup(event: MatOptionSelectionChange) {
+    console.log(event)
     if (event.isUserInput) {
       this.filteredProjects = this.projects.filter(x => x.Group == event.source.value)
     }
   }
 
   lecturerStatusChange(event) {
-    this.isLecturer = event.checked;
-    localStorage.setItem('toggle', event.checked);
+    this.isLecturer = event.value.value;
+    localStorage.setItem('toggle', event.value.value);
     this.retrieveProjects()
   }
 
@@ -140,7 +148,7 @@ export class ProjectsComponent implements OnInit {
             .subscribe(() => {
               this.ngOnInit();
               this.addFlashMessageSuccess(this.translatePipe.transform('text.editor.edit.responseSave', "Тема успешно сохранена"));
-            });
+            }, () => this.addFlashMessageError(this.translatePipe.transform('text.editor.edit.responseError', "Такая тема уже существует")));
         }
         else {
           this.addFlashMessageError(this.translatePipe.transform('text.editor.edit.responseError', "Такая тема уже существует"));
@@ -211,7 +219,7 @@ export class ProjectsComponent implements OnInit {
       .subscribe(response => {
         const dialogRef = this.dialog.open(AssignProjectDialogComponent, {
           autoFocus: false,
-          width: '720px',
+          width: '600px',
           height: '100%',
           position: { top: '0%' },
           data: {

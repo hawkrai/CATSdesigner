@@ -13,6 +13,7 @@ import { CoreGroup } from 'src/app/models/core-group.model';
 import { Lecturer } from 'src/app/models/lecturer.model';
 import { TranslatePipe } from 'educats-translate';
 import { ToastrService } from 'ngx-toastr';
+import { GroupService } from 'src/app/services/group.service';
 
 @Component({
   selector: 'app-visit-stats',
@@ -35,6 +36,9 @@ export class VisitStatsComponent implements OnInit {
   private lecturer: Lecturer;
   public isLecturer = false;
 
+  public themes = [{ name: this.translatePipe.transform('text.diplomProject.head', "Руководитель проекта"), value: true }, { name: this.translatePipe.transform('text.diplomProject.secretary', "Секретарь ГЭК"), value: false }];
+  public theme = undefined;
+
   private preSavedData: Consultation = null;
 
   private searchString = '';
@@ -42,11 +46,14 @@ export class VisitStatsComponent implements OnInit {
   constructor(private visitStatsService: VisitStatsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private groupService: GroupService,
     public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
     this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { res.isLecturer ? this.isLecturer = true : this.isLecturer = false });
     this.retrieveVisitStats();
   }
 
@@ -69,7 +76,7 @@ export class VisitStatsComponent implements OnInit {
           this.visitStatsList = null;
           this.visitStatsSubscription = this.visitStatsService.getVisitStats({
             count: this.COUNT, page: this.PAGE,
-            filter: '{"isSecretary":"' + this.isLecturer + '","lecturerId":"' + this.lecturers[this.index].Id + '"}'
+            filter: '{"isSecretary":"' + this.isLecturer + '","lecturerId":"' + this.lecturers[this.index].Id + '","searchString":"' + this.searchString + '"}'
           })
             .subscribe(res => {
               this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
@@ -82,7 +89,7 @@ export class VisitStatsComponent implements OnInit {
       this.visitStatsList = null;
       this.visitStatsSubscription = this.visitStatsService.getVisitStats({
         count: this.COUNT, page: this.PAGE,
-        filter: '{"isSecretary":"' + false + '"}'
+        filter: '{"isSecretary":"' + false + '","searchString":"' + this.searchString + '"}'
       })
         .subscribe(res => {
           this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);
@@ -98,8 +105,8 @@ export class VisitStatsComponent implements OnInit {
   }
 
   lecturerStatusChange(event) {
-    this.isLecturer = event.checked;
-    localStorage.setItem('toggle', event.checked);
+    this.isLecturer = event.value.value;
+    localStorage.setItem('toggle', event.value.value);
     this.retrieveVisitStats()
   }
 

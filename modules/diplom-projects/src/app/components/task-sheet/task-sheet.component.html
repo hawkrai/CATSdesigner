@@ -19,9 +19,10 @@
     <button mat-icon-button color="primary"
       matTooltip="{{'text.diplomProject.downloadArchieveTaskSheet' | translate: 'Скачать листы задания архивом'}}"
       *ngIf="diplomProjectId != null" (click)="downloadArchive()">
-      <mat-icon>get_app</mat-icon>
+      <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
     </button>
-    <button mat-icon-button color="primary" matTooltip="{{'text.diplomProject.edit' | translate: 'Редактировать'}}"
+    <button mat-icon-button color="primary"
+      matTooltip="{{'text.diplomProject.editTaskSheet' | translate: 'Редактировать лист задания'}}"
       (click)="editTaskSheet()" *ngIf="diplomUser.IsLecturer && diplomProjectId != null">
       <mat-icon>edit</mat-icon>
     </button>

@@ -12,12 +12,12 @@
           <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col"
             *ngFor="let consultation of consultations">
             <div class="header-date">
-              <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)"
+              <a class="clickable" (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
                 matTooltip="{{'text.diplomProject.dateRemove' | translate: 'Удалить дату'}}"
                 *ngIf="visitStatsComponent.getDiplomUser().IsLecturer && !visitStatsComponent.getDiplomUser().IsSecretary">
                 {{consultation.Day | date:'dd.MM.yyyy'}}
               </a>
-              <a class="clickable" (click)="visitStatsComponent.deleteVisitDate(consultation)"
+              <a class="clickable" (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
                 matTooltip="{{'text.diplomProject.dateRemove' | translate: 'Удалить дату'}}"
                 *ngIf="visitStatsComponent.isLecturer">
                 {{consultation.Day | date:'dd.MM.yyyy'}}

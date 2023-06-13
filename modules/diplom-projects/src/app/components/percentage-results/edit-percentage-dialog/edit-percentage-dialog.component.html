@@ -1,7 +1,8 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
   <mat-icon class="close-icon">close</mat-icon>
 </button>
-<h1 mat-dialog-title>{{data.label}}</h1>
+<h1 class="title" mat-dialog-title>{{data.label}}</h1>
+<mat-hint *ngIf="data.date">{{data.date | date:'dd.MM.yyyy'}}</mat-hint>
 <div mat-dialog-content class="dialog-content">
   <mat-form-field class="form-field">
     <mat-label *ngIf="data.total">{{'text.diplomProject.estimationData' | translate: 'Оценка (от 1 до 10)'}}</mat-label>
