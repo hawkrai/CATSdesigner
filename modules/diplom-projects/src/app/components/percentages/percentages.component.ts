@@ -47,9 +47,10 @@ export class PercentagesComponent implements OnInit {
   addStage() {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       autoFocus: false,
+      height: '100%',
       width: '600px',
       data: {
-        title: this.translatePipe.transform('text.diplomProject.addedStage', "Добавление этапа"),
+        title: this.translatePipe.transform('text.diplomProject.addedStage', "Добавление этапа процентовки"),
       }
     });
 
@@ -61,7 +62,7 @@ export class PercentagesComponent implements OnInit {
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage(this.translatePipe.transform('text.diplomProject.chartSave', "График успешно сохранен"));
-          });
+          }, () => this.addFlashMessage(this.translatePipe.transform('text.diplomProject.stageExists', "Этап с такими данными уже существует")));
       }
     });
   }
@@ -69,9 +70,10 @@ export class PercentagesComponent implements OnInit {
   editStage(stage: Percentage) {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       autoFocus: false,
+      height: '100%',
       width: '600px',
       data: {
-        title: this.translatePipe.transform('text.diplomProject.editStage', "Редактирование этапа"),
+        title: this.translatePipe.transform('text.diplomProject.editStage', "Редактирование этапа процентовки"),
         name: stage.Name,
         percentage: stage.Percentage,
         date: stage.Date

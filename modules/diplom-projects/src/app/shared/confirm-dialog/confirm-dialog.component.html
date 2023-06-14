@@ -8,7 +8,8 @@
   <p>{{data.message}}</p>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">Отмена</button>
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'button.cancel' | translate:
+    'Отмена'}}</button>
   <button mat-flat-button class="dialog-button" color="{{data.color}}"
     [mat-dialog-close]="true">{{data.actionName}}</button>
 </div>

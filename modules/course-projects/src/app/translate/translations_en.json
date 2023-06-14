@@ -187,7 +187,7 @@
   "text.course.consultation.visiting": "Consultation visit",
   "text.course.defence": "Defence",
   "text.course.percentage.help.message": "Click on the cell next to the student on the desired date to mark the percentage and leave a comment",
-  "text.course.consultation.help.message": "Click on the cell next to the student on the desired date to mark the consultation visit and leave a comment",
+  "text.course.consultation.help.message": "Click twise on the cell next to the student on the desired date to mark the consultation visit and leave a comment",
   "text.course.percentage.help.clear": "Clear",
   "text.course.add.theme": "Add theme"
 }

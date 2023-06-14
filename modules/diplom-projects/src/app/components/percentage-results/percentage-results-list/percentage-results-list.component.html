@@ -35,7 +35,7 @@
           <!-- !visitStatsComponent.isLecturer && visitStatsComponent.getDiplomUser().IsSecretary -->
           <ng-container *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer">
             <td class="mdc-data-table__cell data-cell clickable"
-              (click)="percentageResultsComponent.setResult(result)"
+              (dblclick)="percentageResultsComponent.setResult(result, student)"
               *ngFor="let result of student.PercentageResults">
               {{ result.Mark }}
               <div class="comment" *ngIf="result && result.Comment">
@@ -51,7 +51,7 @@
           </td>
           <td class="mdc-data-table__cell data-cell clickable"
             *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer"
-            (click)="percentageResultsComponent.setMark(student)">
+            (dblclick)="percentageResultsComponent.setMark(student)">
             {{ student.Mark }}
             <div class="comment" *ngIf="student && student.Comment">
               <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
