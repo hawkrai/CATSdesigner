@@ -1,12 +1,14 @@
 <app-popover-dialog>
-  <ng-container title *ngIf="data.event">
+  <ng-container title>
     {{
-      "text.test.new.questions.for.test"
-        | translate
-          : "Вопрос №" + data.questionLength
-          : { number: data.event ? questionIndex : data.questionLength + 1 }
+      !data.event ? ("text.test.questions.for.test" | translate : 'Вопрос для теста ') : (
+        "text.test.new.questions.for.test"  | translate
+        : "Вопрос №" + (data.questionLength + 1)
+        : { number: data.event ? questionIndex : data.questionLength + 1 }
+      )
+
     }}
-    <div class="question-popup-container-small">{{ data.title }}</div>
+    <div class="question-popup-container-text-small">{{ data.title }}</div>
   </ng-container>
   <ng-container body>
     <form *ngIf="formGroup" [formGroup]="formGroup">
@@ -49,10 +51,16 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
             <ckeditor
+              [editor]="editor"
+              formControlName="Description"
+              [config]="model.config"
+          ></ckeditor>
+            <!-- <ckeditor
               formControlName="Description"
               [config]="ckConfig"
               debounce="400"
-            ></ckeditor>
+              (namespaceLoaded)="onNamespaceLoaded($event)"
+            ></ckeditor> -->
           </mat-expansion-panel>
         </mat-accordion>
       </div>
@@ -100,7 +108,7 @@
       <div class="question-popup-container__justify">
         <button
           mat-raised-button
-          class="question-popup-answer-button"
+          class="question-popup-answer-button desktop"
           (click)="addAnswer()"
         >
           {{ "text.test.add.answer" | translate : "Добавить ответ" }}
@@ -154,6 +162,13 @@
             </mat-error>
           </mat-form-field>
         </div>
+        <button
+          mat-raised-button
+          class="question-popup-answer-button mobile"
+          (click)="addAnswer()"
+        >
+          {{ "text.test.add.answer" | translate : "Добавить ответ" }}
+        </button>
       </div>
     </form>
     <ng-container *ngIf="chosenQuestionType === 0">
@@ -251,7 +266,7 @@
       color="primary"
       (click)="onYesClick()"
       [disabled]="formGroup.invalid"
-      color="white"
+      color="primary"
     >
       {{ "button.save" | translate : "Сохранить" }}
     </button>

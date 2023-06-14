@@ -83,15 +83,20 @@ export class ChangePasswordComponent implements OnInit {
     this.accountService.verifySecretQuestion(this.form.controls.Username.value,
       this.form.controls.SecretQuestion.value, this.form.controls.SecretAnswer.value).subscribe(
         res => {
-          if (res === 'OK') {
-            document.getElementById('message').hidden = true;
+          document.getElementById('secretQuestionIsInvalid').hidden = true;
+          document.getElementById('secretQuestionIsUndefined').hidden = true;
 
+          if (res === 'OK') {
             const diagRef = this.dialog.open(ResetPasswordModalComponent, {
               data: this.form.controls.Username.value
             });
             diagRef.afterClosed().subscribe(() => { window.parent.location.href = '/login'; });
           } else {
-            document.getElementById('message').hidden = false;
+            if (res === 'Пароль данного пользвателя не может быть восстановлен!') {
+              document.getElementById('secretQuestionIsUndefined').hidden = false;
+            } else {
+              document.getElementById('secretQuestionIsInvalid').hidden = false;
+            }
           }
         }
       );

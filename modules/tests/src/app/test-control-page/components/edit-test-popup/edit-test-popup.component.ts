@@ -93,7 +93,7 @@ export class EditTestPopupComponent extends AutoUnsubscribeBase implements OnIni
         ])),
         SetTimeForAllTest: new FormControl(false),
         Type: new FormControl(null, [Validators.required, this.testTypeValidator(modules)]),
-        jectId: new FormControl(subjectId)
+        SubjectId: new FormControl(subjectId)
       });
       if (this.data.event) {
         this.newTest = false;

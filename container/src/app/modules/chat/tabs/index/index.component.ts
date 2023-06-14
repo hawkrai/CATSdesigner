@@ -20,7 +20,7 @@ import { VideoChatService } from './../../../video-chat/services/video-chat.serv
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  // encapsulation: ViewEncapsulation.None
 })
 
 export class IndexComponent implements OnInit {

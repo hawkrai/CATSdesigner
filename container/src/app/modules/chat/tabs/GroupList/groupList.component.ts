@@ -8,7 +8,7 @@ import { Chat } from '../../shared/models/entities/chats.model';
   selector: 'app-group-list',
   templateUrl: './groupList.component.html',
   styleUrls: ['./groupList.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  // encapsulation: ViewEncapsulation.None
 })
 export class GroupListComponent {
   public users:Chat[];
@@ -17,7 +17,7 @@ export class GroupListComponent {
     public dialogRef: MatDialogRef<GroupListComponent>,
     @Inject(MAT_DIALOG_DATA) public data: number) {
   }
-  
+
   ngOnInit() {
     if (this.data) {
       this.users=this.contactService.contacts.getValue().filter(x=>x.groupId==this.data);

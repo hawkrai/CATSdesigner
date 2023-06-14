@@ -34,9 +34,9 @@ export class ResultTestTablePupilComponent implements OnChanges {
     },
     aspectRatio: 6,
     tooltips: {
-      backgroundColor: '#fff',
-      bodyFontColor: '#000',
-      titleFontColor: '#000',
+      backgroundColor: "#fff",
+      bodyFontColor: "#000",
+      titleFontColor: "#000",
     },
     plugins: {
       datalabels: {
@@ -60,14 +60,17 @@ export class ResultTestTablePupilComponent implements OnChanges {
       {data: [] }
     ];
     this.barChartData[0].data = [];
-    this.tests && this.tests.forEach((test: Test) => {
-      var sliced = test.Title.slice(0, 40);
-      if (sliced.length < test.Title.length) {
-        sliced += "...";
-      }
-      this.barChartLabels.push(` ${sliced}`);
-      this.barChartData[0].data.push(test.Points);
-    });
+    if (this.tests) {
+      this.tests.forEach((test: Test) => {
+        // tslint:disable-next-line:no-magic-numbers
+        let sliced = test.Title.slice(0, 40);
+        if (sliced.length < test.Title.length) {
+          sliced += "...";
+        }
+        this.barChartLabels.push(` ${sliced}`);
+        this.barChartData[0].data.push(test.Points);
+      });
+    }
     this.loading = false;
   }
 
