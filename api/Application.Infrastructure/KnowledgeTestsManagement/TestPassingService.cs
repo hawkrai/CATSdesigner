@@ -375,7 +375,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 availableTests = repositoriesContainer.TestsRepository.GetAll(
                     new Query<Test>(
                         test =>
-                            test.SubjectId == subjectId && (((test.ForNN || (!test.ForEUMK && !test.BeforeEUMK && !test.ForSelfStudy)) && test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == studentId)) || test.ForSelfStudy)))
+                            test.SubjectId == subjectId && (test.ForNN || test.ForSelfStudy || (!test.ForEUMK && !test.BeforeEUMK)) && test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == studentId) && test.Questions.Count > 0))
                     .ToList();
             }
 
