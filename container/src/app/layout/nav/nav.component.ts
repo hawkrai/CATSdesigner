@@ -31,6 +31,7 @@ interface DropDownValue {
 })
 export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean;
+  public isStudent: boolean;
   public isAdmin: boolean;
   public unRead: number = 0;
   public unconfirmedStudents: number = 0;
@@ -85,6 +86,7 @@ export class NavComponent implements OnInit, OnDestroy {
     if (this.autService.currentUserValue != undefined) {
       const authRole = this.autService.currentUserValue.role;
 	  this.isLector = authRole === "lector";
+    this.isStudent = authRole === "student";
 	  this.isAdmin = authRole === "admin";
     }
     this.route.params
