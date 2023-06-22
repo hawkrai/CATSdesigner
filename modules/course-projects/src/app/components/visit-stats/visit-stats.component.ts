@@ -108,7 +108,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
   }
 
   setVisitMarks(consultationDateId: string) {
-    const date = new Date(this.consultations.find(consultation => consultation.Id === consultationDateId).Day).toLocaleDateString();
+    const date = new Date(this.consultations.find(consultation => consultation.Id === consultationDateId).Day);
     const visits = { date, students: [] };
     this.visitStatsList.forEach(stats => {
       const mark = stats.CourseProjectConsultationMarks.find(stat => stat.ConsultationDateId === consultationDateId);
@@ -127,7 +127,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
       width: '538px',
       data: {
-        title: this.translatePipe.transform('text.course.visit.dialog.set.title', 'Посещаемость студентов'),
+        title: this.translatePipe.transform('text.course.visit.dialog.set.title', 'Посещение консультации'),
         buttonText: this.translatePipe.transform('text.course.visit.dialog.set.action.save', 'Сохранить'),
         body: visits
       }

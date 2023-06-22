@@ -124,7 +124,7 @@ export class DefenseComponent implements OnInit {
     }
       : { comments: '', attachments: [] };
     const dialogRef = this.dialog.open(AddJobDialogComponent, {
-      width: '650px',
+      width: '550px',
       data: {
         title: this.translatePipe.transform('text.course.defence.dialog.title', 'На защиту курсового проекта'),
         buttonText: this.translatePipe.transform('text.course.defence.dialog.action', 'Отправить работу'),

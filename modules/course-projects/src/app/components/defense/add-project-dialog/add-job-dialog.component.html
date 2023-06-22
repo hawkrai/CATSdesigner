@@ -33,7 +33,7 @@
           <td class="mdc-data-table__cell example-content">{{data.body.uploadedFile.Type}}</td>
           <td class="mdc-data-table__cell example-content">{{(data.body.uploadedFile.Size / 1024).toFixed(2)}} КБ</td>
           <td class="mdc-data-table__cell" style="color: red" *ngIf="data.body.uploadedFile.IdFile === -1; else attached">
-            Загруженный файл
+            {{'text.course.defence.dialog.status' | translate : 'Загруженный файл'}}
           </td>
           <ng-template #attached>
             <td class="mdc-data-table__cell" style="color: blue" *ngIf="data.body.uploadedFile.IdFile !== -1">{{'text.course.defence.dialog.added' | translate : 'Прикрепленный файл'}}
