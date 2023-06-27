@@ -6,6 +6,7 @@
                (onValueChangeSearch)="filterStudents($event)"
                [adminTests]="false"
                [groupDropdown]="false"
+               [controlCompleting]="true"
                [adminQuestions]="false"></app-main-page>
 <div class="control-completing-container">
   <div class="control-completing-container-test" *ngFor="let test of filteredControlItems">

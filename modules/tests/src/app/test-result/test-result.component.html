@@ -37,7 +37,7 @@
     </div>
   </div>
   <div *ngIf="isNN" class="nn">
-    <h4>{{'text.test.result.nn' | translate : "Анализ ответов от обученной нейронной сети"}}.</h4>
+    <h4>{{'text.test.result.nn' | translate : "Анализ ответов от искусственной нейронной сети"}}.</h4>
     <table mat-table [dataSource]="this.nnDatasource" class="nn__table">
       <ng-container matColumnDef="theme">
         <th mat-header-cell *matHeaderCellDef>{{ 'text.test.result.nn.theme' | translate : "Тема" }}</th>
