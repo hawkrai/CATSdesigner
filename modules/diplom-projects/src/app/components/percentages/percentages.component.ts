@@ -1,10 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Percentage} from '../../models/percentage.model';
-import {PercentagesService} from '../../services/percentages.service';
-import {DiplomUser} from '../../models/diplom-user.model';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
-import {AddStageDialogComponent} from './add-stage-dialog/add-stage-dialog.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { Percentage } from '../../models/percentage.model';
+import { PercentagesService } from '../../services/percentages.service';
+import { DiplomUser } from '../../models/diplom-user.model';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { AddStageDialogComponent } from './add-stage-dialog/add-stage-dialog.component';
 import { TranslatePipe } from 'educats-translate';
 import { ToastrService } from 'ngx-toastr';
 
@@ -23,9 +23,9 @@ export class PercentagesComponent implements OnInit {
   private percentages: Percentage[];
 
   constructor(private percentagesService: PercentagesService,
-              public dialog: MatDialog,
-              private toastr: ToastrService,
-              public translatePipe: TranslatePipe) {
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
@@ -47,10 +47,11 @@ export class PercentagesComponent implements OnInit {
   addStage() {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       autoFocus: false,
+      height: '100%',
       width: '600px',
       data: {
-        title: this.translatePipe.transform('text.editor.edit.addedStage',"Добавление этапа"),
-       }
+        title: this.translatePipe.transform('text.diplomProject.addedStage', "Добавление этапа процентовки"),
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -60,8 +61,8 @@ export class PercentagesComponent implements OnInit {
         this.percentagesService.editStage(null, date.toISOString(), result.name, result.percentage)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.addedStage',"График успешно сохранен"));
-          });
+            this.addFlashMessage(this.translatePipe.transform('text.diplomProject.chartSave', "График успешно сохранен"));
+          }, () => this.addFlashMessage(this.translatePipe.transform('text.diplomProject.stageExists', "Этап с такими данными уже существует")));
       }
     });
   }
@@ -69,9 +70,10 @@ export class PercentagesComponent implements OnInit {
   editStage(stage: Percentage) {
     const dialogRef = this.dialog.open(AddStageDialogComponent, {
       autoFocus: false,
+      height: '100%',
       width: '600px',
       data: {
-        title: this.translatePipe.transform('text.editor.edit.editStage',"Редактирование этапа"),
+        title: this.translatePipe.transform('text.diplomProject.editStage', "Редактирование этапа процентовки"),
         name: stage.Name,
         percentage: stage.Percentage,
         date: stage.Date
@@ -80,7 +82,7 @@ export class PercentagesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null && result.name != null) {
-        result.name = result.name.replace("\n","");
+        result.name = result.name.replace("\n", "");
         var checkTheme = this.percentages.find((i) => i.Name === result.name);
         const date = new Date(result.date)
         var stageDate = new Date(stage.Date)
@@ -89,12 +91,12 @@ export class PercentagesComponent implements OnInit {
           this.percentagesService.editStage(stage.Id, date.toISOString(), result.name, result.percentage)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.editStageAlert',"Этап успешно изменен"));
-          });
+              this.addFlashMessage(this.translatePipe.transform('text.diplomProject.editStageAlert', "Этап успешно изменен"));
+            });
         }
-        else{
-          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.stageExists',"Этап с такими данными уже существует"));
-        } 
+        else {
+          this.addFlashMessage(this.translatePipe.transform('text.diplomProject.stageExists', "Этап с такими данными уже существует"));
+        }
       }
     });
   }
@@ -104,9 +106,9 @@ export class PercentagesComponent implements OnInit {
       autoFocus: false,
       width: '400px',
       data: {
-        label: this.translatePipe.transform('text.editor.edit.removeStage',"Удаление этапа процентовки"),
-        message: this.translatePipe.transform('text.editor.edit.removeStageQuestion',"Вы действительно хотите удалить этап?"),
-        actionName: this.translatePipe.transform('text.editor.edit.remove',"Удалить"),
+        label: this.translatePipe.transform('text.diplomProject.removeStage', "Удаление этапа процентовки"),
+        message: this.translatePipe.transform('text.diplomProject.removeStageQuestion', "Вы действительно хотите удалить этап?"),
+        actionName: this.translatePipe.transform('text.diplomProject.remove', "Удалить"),
         color: 'primary'
       }
     });
@@ -115,7 +117,7 @@ export class PercentagesComponent implements OnInit {
       if (result != null && result) {
         this.percentagesService.deleteStage(id).subscribe(() => {
           this.ngOnInit();
-          this.addFlashMessage(this.translatePipe.transform('text.editor.edit.removeAlert',"Этап успешно удален"));
+          this.addFlashMessage(this.translatePipe.transform('text.diplomProject.removeAlert', "Этап успешно удален"));
         });
       }
     });

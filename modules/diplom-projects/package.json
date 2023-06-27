@@ -34,6 +34,7 @@
     "@ngrx/store": "^8.2.0",
     "@ngrx/store-devtools": "^8.2.0",
     "bootstrap": "^4.4.1",
+    "ngx-smart-popover": "^1.4.0",
     "educats-common": "^2.0.0",
     "educats-translate": "^1.0.0",
     "material-design-icons": "^3.0.1",

@@ -1,11 +1,12 @@
 .visit-stats-component {
 
   &__header {
-    position: relative;
     overflow: auto;
+    display: flex;
+    justify-content: space-between;
   }
 
-  .addDateBtn{
+  .addDateBtn {
     float: left;
     margin-top: 9px;
   }
@@ -25,11 +26,50 @@
 
   &__search {
     float: right;
-    width: 30%;
   }
 
   &__body {
     margin-top: 3px;
   }
 
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 240px;
+  }
+
+}
+
+.mselect{
+  margin-top: 5px;
+  margin-right: 10px;
+  margin-left: 10px;
+  font-weight: 300;
+  background-color: #ffffff00;
+  border: 0px;
+  color: #fff;
+  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-size: 14px;
+  width: 120px;
+}
+
+.group-select {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.excel {
+  margin-right: 13px;
+  font-size: 30px;
+}
+
+.archive {
+  font-size: 30px;
+}
+
+.help {
+  margin-right: 10px;
 }

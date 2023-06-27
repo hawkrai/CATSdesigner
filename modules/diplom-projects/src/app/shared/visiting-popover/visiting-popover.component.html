@@ -1,7 +1,9 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <mat-icon class="close-icon">close</mat-icon>
+</button>
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div class="visiting-popover__header">
-  <p>Редактируемая дата: </p>
-  <h2>{{data.body.date}}</h2>
+  <p>{{data.body.date}}</p>
 </div>
 <div class="visiting-popover__table" *ngIf="data.body">
   <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
@@ -12,26 +14,29 @@
     </ng-container>
 
     <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> ФИО</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{'fio'| translate: 'ФИО'}} </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="mark">
-      <mat-header-cell *matHeaderCellDef> Пропущено часов</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{'text.number.hours.missed'| translate: 'Пропущено часов'}}</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <mat-form-field class="example-full-width" >
+        <mat-form-field class="example-full-width">
           <input name="mark" type="number" min="0" pattern="\d*" matInput [(ngModel)]="element.mark" #mark="ngModel"
-                 (change)="onMarkChange($event.target.value)">
+            (change)="onMarkChange($event.target.value)">
           <mat-error *ngIf="mark.invalid">Больше 0</mat-error>
         </mat-form-field>
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="comment">
-      <mat-header-cell *matHeaderCellDef> Комментарий</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>{{'comment'| translate: 'Комментарий'}} </mat-header-cell>
       <mat-cell *matCellDef="let element">
         <mat-form-field class="example-full-width">
           <input name="comment" matInput [(ngModel)]="element.comment">
+          <mat-checkbox class="checkbox" [(ngModel)]="element.isShow"
+            matTooltip="{{'text.diplomProject.showComment' | translate: 'Показать комментарий студенту'}}"
+            matTooltipPosition="left" class="checkbox" [checked]="element.isShow" [color]="'primary'"></mat-checkbox>
         </mat-form-field>
       </mat-cell>
     </ng-container>
@@ -41,7 +46,7 @@
   </mat-table>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onClick()">Отмена</button>
+  <button mat-raised-button (click)="onClick()">{{'chat.cancle'| translate: 'Отмена'}}</button>
   <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary" [disabled]="invalid">
     {{data.buttonText}}
   </button>

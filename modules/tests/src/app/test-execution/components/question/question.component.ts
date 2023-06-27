@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { TestQuestion } from "../../../models/question/test-question.model";
 import { Answer } from "../../../models/question/answer.model";
 import { TestPassingService } from "../../../service/test-passing.service";
@@ -21,9 +21,18 @@ import { AppToastrService } from "../../../service/toastr.service";
   styleUrls: ["./question.component.less"]
 })
 export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
-
-  @Input()
-  public question: TestQuestion;
+  @ViewChild("description") descriptionElement: ElementRef<HTMLDivElement>;
+  private _question;
+  public get question(): TestQuestion {
+    return this._question;
+  }
+  @Input("question")
+  public set question(value: TestQuestion) {
+    if (this.descriptionElement) {
+      this.descriptionElement.nativeElement.innerHTML = value?.Question?.Description;
+    }
+    this._question = value;
+  }
 
   @Input()
   public questionNumber: string;
@@ -42,6 +51,7 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   private isTrue: boolean;
   private answers: number = 0;
 
+
   constructor(private testPassingService: TestPassingService,
     private snackBar: MatSnackBar,
     private toastr: AppToastrService,
@@ -51,7 +61,9 @@ export class QuestionComponent extends AutoUnsubscribeBase implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.question);
+    if (this.descriptionElement) {
+      this.descriptionElement.nativeElement.innerHTML = this.question?.Question?.Description;
+    }
   }
 
   public answerQuestion(): void {

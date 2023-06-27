@@ -54,6 +54,9 @@ import { TranslateModule, TranslatePipe } from 'educats-translate';
 import * as dataEn from './data/translations_en.json';
 import * as dataRu from './data/translations_ru.json';
 import { ToastrModule } from 'ngx-toastr';
+import { HelpPopoverScheduleComponent } from './shared/help-popover/help-popover-schedule.component';
+import { HelpComponent } from './shared/help/help.component';
+import { PopoverModule } from 'ngx-smart-popover';
 
 @NgModule({
   declarations: [
@@ -75,6 +78,8 @@ import { ToastrModule } from 'ngx-toastr';
     AssignProjectDialogComponent,
     EditTaskSheetComponent,
     VisitingPopoverComponent,
+    HelpComponent,
+    HelpPopoverScheduleComponent
   ],
   imports: [
     BrowserModule,
@@ -110,6 +115,7 @@ import { ToastrModule } from 'ngx-toastr';
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right'
     }),
+    PopoverModule,
     TranslateModule.forRoot({
       localizationMap: {
         en: dataEn,
@@ -123,7 +129,7 @@ import { ToastrModule } from 'ngx-toastr';
     TranslatePipe
   ],
   entryComponents: [EditPercentageDialogComponent, AddDateDialogComponent, ConfirmDialogComponent, AddStageDialogComponent,
-    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent],
+    AddProjectDialogComponent, AssignProjectDialogComponent, EditTaskSheetComponent, VisitingPopoverComponent, HelpComponent, HelpPopoverScheduleComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

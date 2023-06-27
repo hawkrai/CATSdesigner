@@ -5,4 +5,5 @@ export class PercentageResult {
   Mark: string;
   Comment: string;
   ShowForStudent: boolean;
+  stageName: string;
 }

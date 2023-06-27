@@ -1,36 +1,60 @@
-.mat-dialog-content{
+.mat-dialog-content {
   max-height: 750px;
+  overflow-x: hidden;
 }
 
 .form-field {
   width: 100%;
 }
 
-.close-button{
+.close-button {
   float: right;
 }
 
-.save-template {
+.choose-template {
   display: flex;
+  justify-content: space-between;
 
   mat-form-field {
     flex: auto;
     padding-right: 10px;
+    max-width: 350px;
+  }
+
+  button {
+    align-self: end;
+    float: right;
+  }
+}
+
+.save-template {
+  display: flex;
+  justify-content: space-between;
+
+  div {
+    display: flex;
+  }
+
+  mat-form-field {
+    flex: auto;
+    padding-right: 10px;
+    max-width: 350px;
   }
 
   button {
     align-self: center;
     float: right;
-    width: 161px;
   }
 }
 
 .apply-template {
   display: flex;
+  justify-content: space-between;
 
   mat-form-field {
     flex: auto;
     padding-right: 10px;
+    max-width: 350px;
   }
 
   button {
@@ -50,10 +74,10 @@
   padding-top: 6.5px;
 }
 
-.applyButton{
+.applyButton {
   background-color: rgba(125, 75, 218, 0.96);
 }
 
-.saveTemplateButton{
+.saveTemplateButton {
   background-color: rgba(219, 114, 44, 0.96);
 }

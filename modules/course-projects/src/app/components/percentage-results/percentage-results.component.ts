@@ -99,7 +99,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           results.push(result);
         } else {
           // @ts-ignore
-          const pr: PercentageResult = {StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: ''};
+          const pr: PercentageResult = {StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '', stageName: percentageGraph.Name};
           results.push(pr);
         }
       }
@@ -127,6 +127,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         total: false,
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
+        stageName: pr.stageName,
         expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage,
         additionalData: date
       }

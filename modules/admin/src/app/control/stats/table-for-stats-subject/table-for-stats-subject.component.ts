@@ -1,5 +1,6 @@
 import {Component, Input, OnInit, SimpleChanges, OnChanges} from '@angular/core';
 import { StatisticService } from 'src/app/service/statistic.service';
+import {TranslatePipe} from 'educats-translate';
 
 
 @Component({
@@ -28,7 +29,7 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
   public chartOptions1: any;
   @Input() data: any;
 
-  constructor(private statisticsService: StatisticService) {}
+  constructor(private statisticsService: StatisticService, private translatePipe: TranslatePipe) {}
 
   ngOnInit() {
     this.dataSource = this.data;
@@ -43,7 +44,7 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
     this.dataSource.forEach(student => {
       this.surnames.push(this.statisticsService.cutName(student.FIO));
       this.passes.push(student.AllPass);
-      this.marksChart.push(+student.Rating);
+      this.marksChart.push(+student.RatingChart);
     });
     this.addPassAndMarksChart(this.marksChart, this.passes, this.surnames);
   }
@@ -52,11 +53,11 @@ export class TableForStatsSubjectComponent implements OnInit, OnChanges {
     this.chartOptions1 = {
       series: [
         {
-          name: 'Пропуски, ч.',
+          name: this.translatePipe.transform ('text.statistics.total.hours.skipped', 'Пропуски, ч.'),
           data: passes
         },
         {
-          name: 'Рейтинг',
+          name: this.translatePipe.transform ('text.rating', 'Рейтинг'),
           data: marks
         }
       ],

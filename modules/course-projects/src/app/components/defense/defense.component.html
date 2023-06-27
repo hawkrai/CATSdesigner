@@ -16,9 +16,9 @@
         </mat-slide-toggle>
       </div>
       <div>
-        <button mat-icon-button color="primary" matTooltip="{{'text.download.zip' | translate : 'Скачать архивом'}}"
-          (click)="downloadArchive()">
-          <mat-icon>get_app</mat-icon>
+        <button mat-icon-button color="primary"
+          matTooltip="{{'text.tab.percentages' | translate : 'Скачать листы задания архивом'}}">
+          <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
         </button>
         <button mat-icon-button color="primary"
           matTooltip="{{'text.check.plagiarism' | translate : 'Проверка на плагиат всех работ'}}" *ngIf="!detachedGroup"
@@ -33,8 +33,11 @@
     </ng-container>
     <button mat-raised-button color="primary" *ngIf="!courseUser.IsLecturer"
       [disabled]="!courseUser.HasAssignedDiplomProject" (click)="addJob()">{{'text.course.defence.add' | translate :
-      'Добавить работу'}}
+      'Загрузить проект'}}
     </button>
+    <app-help *ngIf="!courseUser.IsLecturer"
+    [message]="'text.course.defence.dialog.help' | translate : 'Нажмите на кнопку «Загрузить проект», чтобы отправить его на проверку '"
+    [action]="'text.course.percentage.help.clear' | translate : 'Понятно'"></app-help>
   </div>
   <div class="defense-component__body">
     <ng-container *ngIf="courseUser.IsStudent">

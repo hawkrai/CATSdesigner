@@ -2,8 +2,10 @@
   <div class="question-question" *ngIf="question?.Question?.Title">
     <div class="question-question-text">{{question?.Question?.Title}}</div>
   </div>
-  <div class="question-description" *ngIf="question?.Question?.Description">
-    <div class="question-description-text" [innerHTML]="question?.Question?.Description"></div>
+  <div class="question-description" [ngClass]="{
+    'active': question?.Question?.Description ? 'active' : ''
+  }">
+    <div class="question-description-text" #description></div>
   </div>
   <div class="question-block">
     <div class="question-answer-block">

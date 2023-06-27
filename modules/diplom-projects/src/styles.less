@@ -15,20 +15,23 @@
 html {
   background-color: #f5f5f5;
 }
+
 body {
   font-family: 'Roboto', 'Helvetica Neue', sans-serif;
   color: #363636;
   font-size: 14px;
 }
+
 :root {
   --mdc-theme-primary: #3f51b5;
 }
+
 .mdc-drawer .mdc-list-item--activated {
   color: var(--mdc-theme-primary, #3f51b5);
 }
 
 .mat-tooltip {
-  font-size: 14px;
+  font-size: 16px;
   white-space: pre-line;
 }
 
@@ -71,8 +74,8 @@ body {
 //   min-width: auto;
 // }
 
-.mat-dialog-container{
-	border-radius: unset !important;
+.mat-dialog-container {
+  border-radius: unset !important;
 }
 
 p {
@@ -88,10 +91,11 @@ h2 {
 }
 
 .mdc-data-table__header-cell {
-  color:#363636;
+  color: #363636;
 }
+
 .mdc-data-table__cell {
-  color:#363636;
+  color: #363636;
 }
 
 .mat-snack-bar-container {
@@ -107,5 +111,35 @@ h2 {
 }
 
 .mat-header-cell {
-  color:#363636;
+  color: #363636;
+}
+
+.backdrop-help {
+  background-color: transparent;
+}
+
+.help-popover .mat-dialog-container {
+  width: 370px;
+  height: 185px;
+  position: fixed !important;
+  top: 10px;
+  left: 40%;
+
+}
+
+popover-content {
+  .popover {
+    position: absolute;
+    z-index: 1000001;
+  }
+}
+
+@media (max-width: 657px) {
+  .help-popover .mat-dialog-container {
+    position: fixed !important;
+    top: 2%;
+    right: 0;
+    width: 100%;
+    left: 0;
+  }
 }

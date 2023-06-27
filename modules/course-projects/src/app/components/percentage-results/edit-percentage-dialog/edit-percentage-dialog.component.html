@@ -1,7 +1,7 @@
 <div class="edit-percentage-dialog__header">
   <div>
     <h1 mat-dialog-title class="edit-percentage-dialog__title">{{data.label}}</h1>
-    <span>{{this.data.additionalData.Date | date:'dd.MM.yyyy'}}</span>
+    <span class="edit-percentage-dialog__subtitle" *ngIf="data.additionalData.Date">{{data.stageName}}</span>
   </div>
   <button mat-icon-button (click)="onCancelClick()" class="edit-percentage-dialog__close-btn">
     <mat-icon aria-hidden="false">close</mat-icon>

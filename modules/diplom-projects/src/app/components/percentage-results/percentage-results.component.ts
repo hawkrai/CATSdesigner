@@ -10,6 +10,7 @@ import { EditPercentageDialogComponent } from './edit-percentage-dialog/edit-per
 import { TranslatePipe } from 'educats-translate';
 import { CoreGroup } from 'src/app/models/core-group.model';
 import { ToastrService } from 'ngx-toastr';
+import { GroupService } from 'src/app/services/group.service';
 
 @Component({
   selector: 'app-percentage-results',
@@ -25,7 +26,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private percentageResults: StudentPercentageResults[];
   private filteredPercentageResults: StudentPercentageResults[];
   private percentageGraphs: PercentageGraph[];
-  private groups: String[]
+  public groups: String[]
+  public themes = [{ name: this.translatePipe.transform('text.diplomProject.head', "Руководитель проекта"), value: true }, { name: this.translatePipe.transform('text.diplomProject.secretary', "Секретарь ГЭК"), value: false }];
+  public theme = undefined;
 
   private percentageResultsSubscription: Subscription;
 
@@ -38,10 +41,14 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   constructor(private percentageResultsService: PercentageResultsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private groupService: GroupService,
     public translatePipe: TranslatePipe) {
   }
 
   ngOnInit() {
+    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { res.isLecturer ? this.isLecturer = true : this.isLecturer = false });
     if (this.diplomUser.IsSecretary == false) {
       this.isLecturer = true
     }
@@ -55,7 +62,8 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   lecturerStatusChange(event) {
-    this.isLecturer = event.checked;
+    this.isLecturer = event.value.value;
+    localStorage.setItem('toggle', event.value.value);
     this.retrievePercentageResults();
   }
 
@@ -89,7 +97,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   _selectedGroup(event: MatOptionSelectionChange) {
     if (event.isUserInput) {
       this.selectedGroup = event.source.value
-      this.filteredPercentageResults = this.percentageResults.filter(x => x.Group == event.source.value)
+      if (this.percentageResults) {
+        this.filteredPercentageResults = this.percentageResults.filter(x => x.Group == event.source.value)
+      }
     }
   }
 
@@ -105,42 +115,44 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   assignResults(studentPercentageResults: StudentPercentageResults[], percentageGraphs: PercentageGraph[]): StudentPercentageResults[] {
-    this.groups = studentPercentageResults.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);
+    this.groups = studentPercentageResults.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a < b ? -1 : 1);
     for (const student of studentPercentageResults) {
       const results: PercentageResult[] = [];
       for (const percentageGraph of percentageGraphs) {
         const result = student.PercentageResults.find(pr => pr.PercentageGraphId === percentageGraph.Id);
         if (result != null) {
           if (result.Mark == null) {
-            result.Mark = '-';
+            result.Mark = '';
           }
           results.push(result);
         } else {
           // @ts-ignore
-          const pr: PercentageResult = { StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '-' };
+          const pr: PercentageResult = { StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '' };
           results.push(pr);
         }
       }
       student.PercentageResults = results;
       if (student.Mark == null) {
-        student.Mark = '-';
+        student.Mark = '';
       }
     }
     return studentPercentageResults;
   }
 
-  setResult(pr: PercentageResult) {
+  setResult(pr: PercentageResult, student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       autoFocus: false,
-      width: '400px',
+      height: '100%',
+      width: '600px',
       data: {
         mark: pr.Mark !== '-' ? pr.Mark : null,
         min: 0,
         max: 100,
         regex: '^[0-9]*$',
-        errorMsg: this.translatePipe.transform('text.editor.edit.percentageControl', "Введите число от 0 до 100"),
-        label: this.translatePipe.transform('text.editor.edit.percentageResult', "Результат процентовки"),
+        errorMsg: this.translatePipe.transform('text.diplomProject.percentageControl', "Введите число от 0 до 100"),
+        label: this.translatePipe.transform('text.diplomProject.percentageResult', "Результат процентовки"),
         symbol: '%',
+        lecturer: student.Lecturer,
         comment: pr.Comment,
         showForStudent: pr.ShowForStudent,
         expected: this.percentageGraphs.find(pg => pg.Id === pr.PercentageGraphId).Percentage
@@ -153,13 +165,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           this.percentageResultsService.setPercentage(pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesAlert', "Процент успешно сохранен"));
+              this.addFlashMessage(this.translatePipe.transform('text.diplomProject.percentagesAlert', "Процент успешно сохранен"));
             });
         } else {
           this.percentageResultsService.editPercentage(pr.Id, pr.StudentId, pr.PercentageGraphId, result.mark, result.comment, result.showForStudent)
             .subscribe(() => {
               this.ngOnInit();
-              this.addFlashMessage(this.translatePipe.transform('text.editor.edit.percentagesEditAlert', "Процент успешно изменен"));
+              this.addFlashMessage(this.translatePipe.transform('text.diplomProject.percentagesEditAlert', "Процент успешно изменен"));
             });
         }
       }
@@ -169,17 +181,18 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   setMark(student: StudentPercentageResults) {
     const dialogRef = this.dialog.open(EditPercentageDialogComponent, {
       autoFocus: false,
-      width: '400px',
+      height: '100%',
+      width: '600px',
       data: {
-        mark: student.Mark !== '-' ? student.Mark : null,
+        mark: student.Mark !== '' ? student.Mark : null,
         min: 1,
         max: 10,
         regex: '^[0-9]*$',
-        errorMsg: this.translatePipe.transform('text.editor.edit.estimationControl', "Введите число от 0 до 10"),
-        label: this.translatePipe.transform('text.editor.edit.estimation', "Оценка"),
+        errorMsg: this.translatePipe.transform('text.diplomProject.estimationControl', "Введите число от 0 до 10"),
+        label: this.translatePipe.transform('mark', "Выставление оценки"),
         notEmpty: true,
         total: true,
-        lecturer: student.LecturerName,
+        lecturer: student.Lecturer,
         date: student.MarkDate,
         comment: student.Comment,
         showForStudent: student.ShowForStudent
@@ -195,7 +208,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
         this.percentageResultsService.setMark(student.AssignedDiplomProjectId, result.mark, student.Lecturer, result.comment, dateString, result.showForStudent)
           .subscribe(() => {
             this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.editor.edit.estimationAlert', "Оценка успешно сохранена"));
+            this.addFlashMessage(this.translatePipe.transform('text.diplomProject.estimationAlert', "Оценка успешно сохранена"));
           });
       }
     });
@@ -203,6 +216,10 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   getExcelFile() {
     location.href = location.origin + '/api/DpStatistic?count=1000' + '&page=1&filter=' + '{"group":"' + this.selectedGroup + '"}';
+  }
+
+  downloadArchive() {
+    location.href = location.origin + '/api/DpTaskSheetDownload';
   }
 
   addFlashMessage(msg: string) {

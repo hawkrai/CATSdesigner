@@ -23,7 +23,7 @@
           <td class="mdc-data-table__cell">{{ percentage.Date | date:'dd.MM.yyyy' }}</td>
           <td class="mdc-data-table__cell" *ngIf="percentagesComponent.getDiplomUser().IsSecretary">
             <button mat-icon-button color="primary"
-              matTooltip="{{'text.diplomProject.edit' | translate: 'Редактировать'}}"
+              matTooltip="{{'text.diplomProject.editStage' | translate: 'Редактировать этап'}}"
               (click)="percentagesComponent.editStage(percentage)">
               <mat-icon>edit</mat-icon>
             </button>

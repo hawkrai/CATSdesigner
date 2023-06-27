@@ -2,10 +2,27 @@
 
   &__body {
     margin: 30px 15px;
-    .iconify { 
+
+    .iconify {
       width: 25px;
       height: 30px;
-      color: rgb(61, 80, 182);
+    }
+  }
+
+  .button {
+    display: flex;
+    align-items: center;
+
+    &__icon {
+      padding-left: 10px;
+
+      &_active-color {
+        color: #3f51b5;
+      }
+
+      &_unactive-color {
+        color: rgba(0, 0, 0, .6);
+      }
     }
   }
 
@@ -16,6 +33,16 @@
     margin-bottom: 14px;
     width: 98%;
   }
+}
+
+.iconify {
+  width: 30px;
+  height: 30px;
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
 }
 
 .group-select {
@@ -31,10 +58,10 @@
   margin-left: 10px;
 }
 
-._excel-file{
+._excel-file {
   margin-right: 10px;
 }
 
-.mdc-tab__text-label{
+.mdc-tab__text-label {
   text-transform: none;
 }

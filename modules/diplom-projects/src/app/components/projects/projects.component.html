@@ -7,20 +7,15 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-slide-toggle class="detached-toggle"
-      *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents && !isLecturer" [color]="'primary'"
-      [checked]="isLecturer" (change)="lecturerStatusChange($event)"
-      matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}">{{'text.diplomProject.head'
-      | translate: 'Руководитель проекта'}}</mat-slide-toggle>
-    <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer"
+    <button mat-raised-button class="actions" color="primary" *ngIf="isLecturer"
       (click)="addProject()">{{'text.diplomProject.addTheme' | translate: 'Добавить тему'}}</button>
 
-    <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary"
-      (click)="addProject()">{{'text.diplomProject.addTheme' | translate: 'Добавить тему'}}</button>
-    <mat-slide-toggle class="detached-toggle-lecturer" *ngIf="isLecturer" [color]="'primary'" [checked]="isLecturer"
-      (change)="lecturerStatusChange($event)"
-      matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}">{{'text.diplomProject.head'
-      | translate: 'Руководитель'}}</mat-slide-toggle>
+    <mat-select matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}" class="mselect" [value]="theme" (selectionChange)="lecturerStatusChange($event)"
+      *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents">
+      <mat-option *ngFor="let theme of themes" [value]="theme">
+        {{theme.name}}
+      </mat-option>
+    </mat-select>
     <mat-form-field class="projects-component__search">
       <mat-label>{{'text.diplomProject.search' | translate: 'Поиск темы, студента, группы'}}</mat-label>
       <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">

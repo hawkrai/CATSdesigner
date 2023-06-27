@@ -10,6 +10,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { TestPassingService } from "../../service/test-passing.service";
 import { TranslatePipe } from "educats-translate";
+import { Help } from "../../models/help.model";
 
 
 @AutoUnsubscribe
@@ -80,10 +81,12 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
   public loading: boolean;
   public testSize: number;
   public averageMarkForTest: any;
+  public averagePercentForTest: any;
 
   displayedColumns: string[] = ["Id", "Name"];
   @Output()
   public sendAverageMarks: EventEmitter<any> = new EventEmitter();
+  public help: Help;
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(public dialog: MatDialog,
@@ -92,6 +95,11 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     private testPassingService: TestPassingService,
     private translate: TranslatePipe) {
     super();
+    this.help = {
+      // tslint:disable-next-line:max-line-length
+      message: this.translatePipe.transform("text.help.lectures", "Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента."),
+      action: this.translatePipe.transform("button.understand", "Понятно")
+    };
   }
 
   ngOnInit() {
@@ -110,7 +118,10 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     }
     this.displayedColumns.push("average");
     this.getAverageMark();
-    this.averageMarkForTest = this.getAverageMarkForTest();
+    const getAverageResult = this.getAverageMarkForTest();
+
+    this.averageMarkForTest = getAverageResult[0];
+    this.averagePercentForTest = getAverageResult[1];
 
     for (const subGroup of this.scareThing) {
       if (subGroup.length) {
@@ -176,9 +187,11 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
 
   private getAverageMarkForTest(): any {
     const result = [];
+    const resultPercent = [];
     for (let subGroup of this.scareThing) {
       if (subGroup.length !== 0) {
         const sumOfMarks = {};
+        const sumOfPercents = {};
         let countOfValidResults = {};
         for (let pupil of subGroup) {
           for (let test of pupil[1].test) {
@@ -190,31 +203,40 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
             if (sumOfMarks[test.testId] === undefined) {
               sumOfMarks[test.testId] = 0;
               countOfValidResults[test.testId] = 0;
+              sumOfPercents[test.testId] = 0;
             }
             countOfValidResults[test.testId]++;
             // tslint:disable-next-line:no-magic-numbers
-            sumOfMarks[test.testId] += test.percent !== undefined ? test.percent / 10 : test.points;
+            sumOfMarks[test.testId] += test.points !== undefined ? test.points : (test.percent / 10);
+            sumOfPercents[test.testId] += test.percent !== undefined ? test.percent : test.points * 10;
           }
         }
         let sumOfAverageMarks = 0;
+        let sumOfAveragePercents = 0;
         let amountOfTests = 0;
-        for (let [testId, value] of Object.entries(sumOfMarks)) {
+        for (const [testId, value] of Object.entries(sumOfMarks)) {
           if (!countOfValidResults[testId]) {
             sumOfMarks[testId] = null;
+            sumOfPercents[testId] = null;
           } else {
             amountOfTests++;
             sumOfAverageMarks += sumOfMarks[testId] / countOfValidResults[testId];
             sumOfMarks[testId] = sumOfMarks[testId] / countOfValidResults[testId];
+
+            sumOfAveragePercents += sumOfPercents[testId] / countOfValidResults[testId];
+            sumOfPercents[testId] = sumOfPercents[testId] / countOfValidResults[testId];
           }
         }
 
         sumOfMarks["average"] = sumOfAverageMarks / amountOfTests;
+        sumOfMarks["averagePercent"] = sumOfAveragePercents / amountOfTests;
 
         result.push(sumOfMarks);
+        resultPercent.push(sumOfPercents);
       }
     }
 
-    return result;
+    return [result, resultPercent];
   }
 
   private getShortName(pupil): string {

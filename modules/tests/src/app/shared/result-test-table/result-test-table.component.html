@@ -6,9 +6,15 @@
         <span>
           {{('text.test.res.group' | translate : "Группа ") + group + (showAsSubGroup ? (('text.test.res.subgroup' | translate : ", Подгруппа ") + (iq+1)) : "")}}
         </span>
-        <div class="result-test-table-subgroup-load"
-             (click)="downloadExcel()" [matTooltip]="'excel.export' | translate:'Экспорт в Эксель'">
+        <div class="result-test-table-subgroup__right-side">
+          <div class="help">
+            <app-help [message]="help.message" [action]="help.action" [placement]="'bottom-left'"></app-help>
+          </div>
+          <div class="result-test-table-subgroup-load"
+          (click)="downloadExcel()" [matTooltip]="'excel.export' | translate:'Экспорт в Эксель'">
+     </div>
         </div>
+
       </div>
       <div class="result-test-table-table">
         <mat-table [dataSource]="studentResults" class="mat-elevation-z8 table-test-bg">
@@ -30,7 +36,7 @@
             <mat-cell *matCellDef="let element; let index = index" class="mat-header-cell-action"
                       (click)="index !== studentResults.length - 1 && openAnswersDialog(element[1].test[i].points,element[1].name,element[1].test[i].testName, element[1].test[i].testId,  element[1].id)"
                       [matTooltip]="element[1].test[i].testName">
-              {{index === studentResults.length - 1 ? averageMarkForTest[iq][element[1].test[i].testId]?.toFixed(1) : ((element[1].test[i].points | isInteger) ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
+              {{index === studentResults.length - 1 ? (averageMarkForTest[iq][element[1].test[i].testId]?.toFixed(1) + " (" + averagePercentForTest[iq][element[1].test[i].testId].toFixed(0) + "%)")  : ((element[1].test[i].points | isInteger) ? element[1].test[i].points + " (" + element[1].test[i].percent + "%)" :
               ('text.test.not.passed' | translate: "тест не пройден"))}}
             </mat-cell>
           </ng-container>

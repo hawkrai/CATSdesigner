@@ -40,6 +40,7 @@ export class EditPercentageDialogComponent {
     if (this.data.regex != null) { validators.push(Validators.pattern(this.data.regex)); }
     if (this.data.notEmpty) { validators.push(Validators.required); }
     this.percentageControl.setValidators(validators);
+    console.log(data)
     this.data.date = this.date.value;
   }
 

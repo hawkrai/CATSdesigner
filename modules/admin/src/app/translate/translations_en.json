@@ -623,6 +623,7 @@
 
   "text.changePassword.resetPassword": "Reset the password",
   "text.changePassword.invalidData": "Data entered incorrectly",
+  "text.changePassword.questionIsUndefined": "Password reset option not available",
   "text.changePassword.login": "Login",
   "text.changePassword.secretQuestion": "Secret Question",
   "text.changePassword.answerOnSecretQuestion": "Answer to the secret question",
@@ -675,7 +676,7 @@
 
   "text.statistics.inactive.subjects": "Inactive subjects",
   "text.statistics.select.subject": "Select subject",
-  "text.statistics.total.statistics": "Total statistics for all subjects",
+  "text.statistics.total.statistics": "Total statistics for all courses",
   "text.statistics.no.group.info": "No information for entered group",
 
   "text.adminPanel.activeStats.userActivity": "User activity",
@@ -872,5 +873,6 @@
   "text.all.subjects": "All subjects",
   "text.average.values": "Average values",
   "text.print": "Print",
-  "text.download.excel": "Download Excel"
+  "text.download.excel": "Download Excel",
+  "text.surname": "Surname"
 }
