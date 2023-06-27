@@ -36,13 +36,11 @@ p {
 
 .div1 {
   font-weight: 400;
-  width: 50%;
-  padding-left: 60px;
+  width: 80%;
 }
 
 .div2 {
   font-weight: 400;
-  width: 50%;
   margin-top: 30px;
   display: grid;
   justify-content: center;
