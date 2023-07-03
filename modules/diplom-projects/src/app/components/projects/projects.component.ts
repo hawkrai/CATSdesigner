@@ -33,7 +33,7 @@ export class ProjectsComponent implements OnInit {
   public isLecturer = false;
   public themes = [{ name: this.translatePipe.transform('text.diplomProject.head', "Руководитель проекта"), value: true }, { name: this.translatePipe.transform('text.diplomProject.secretary', "Секретарь ГЭК"), value: false }];
   public theme = undefined;
-  
+
 
   public toggleNameForTranslate: string = 'text.diplomProject.head';
   public toggleNameTranslate: string = 'Руководитель проекта';
@@ -51,9 +51,14 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true);
+    const toggleValue: string = localStorage.getItem('toggle');
+    if (toggleValue && this.diplomUser.IsLecturer) {
+      this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true);
+    } else {
+      this.isLecturer = this.diplomUser.IsLecturer;
+    }
+    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { this.groups = res.Groups });
     this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
-    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { res.isLecturer ? this.isLecturer = true : this.isLecturer = false; this.groups = res.Groups });
     this.retrieveProjects();
   }
 
