@@ -16,12 +16,9 @@
         </mat-option>
       </mat-select>
 
-
       <button mat-raised-button class="addDateBtn" color="primary"
-        *ngIf="diplomUser.IsLecturer && !diplomUser.IsSecretary" (click)="addDate()">{{'text.diplomProject.addedDate' |
+        *ngIf="diplomUser.IsLecturer" (click)="addDate()">{{'text.diplomProject.addedDate' |
         translate: 'Управление датами'}}</button>
-      <button mat-raised-button class="addDateBtn" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer"
-        (click)="addDate()">{{'text.diplomProject.addedDate' | translate: 'Управление датами'}}</button>
     </div>
     <div class="visit-stats-component__controls">
       <mat-form-field class="visit-stats-component__search">
@@ -31,16 +28,16 @@
       </mat-form-field>
       <div class="group-select">
         <app-help *ngIf="diplomUser.IsLecturer" class="help"
-          [message]="'text.diplomProject.percentage.help.message' | translate : 'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы отметить процентовку и оставить комментарий'"
+          [message]="'text.diplomProject.percentage.help.message' | translate : 'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы отметить пропущенные часы и оставить комментарий'"
           [action]="'text.diplomProject.help.clear' | translate : 'Понятно'"></app-help>
         <button mat-icon-button color="primary" class="excel"
           matTooltip="{{'text.diplomProject.downloadExcel' | translate: 'Загрузить документ Excel'}}"
-          *ngIf="diplomUser.IsSecretary || isLecturer" (click)="getExcelFile()">
+          *ngIf="diplomUser.IsSecretary || diplomUser.IsLecturer" (click)="getExcelFile()">
           <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
         </button>
         <button mat-icon-button color="primary" class="archive"
           matTooltip="{{'text.diplomProject.downloadArchive' | translate: 'Загрузить архивом листы задания'}}"
-          *ngIf="diplomUser.IsSecretary || isLecturer" (click)="downloadArchive()">
+          *ngIf="diplomUser.IsSecretary || diplomUser.IsLecturer" (click)="downloadArchive()">
           <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
         </button>
       </div>

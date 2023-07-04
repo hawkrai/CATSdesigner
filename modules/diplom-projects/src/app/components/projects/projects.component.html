@@ -7,7 +7,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-raised-button class="actions" color="primary" *ngIf="isLecturer"
+    <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsLecturer && isLecturer"
       (click)="addProject()">{{'text.diplomProject.addTheme' | translate: 'Добавить тему'}}</button>
 
     <mat-select matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}" class="mselect" [value]="theme" (selectionChange)="lecturerStatusChange($event)"
