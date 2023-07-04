@@ -669,7 +669,7 @@
   "text.help.popover.header": "About system",
   "text.help.popover.content.first": "The CATS training system is designed to improve the quality of training for full-time and part-time specialists, as well as for independent work. In terms of functionality, it supports 4 roles: administrator, teacher, student, and observer.",
   "text.help.popover.content.second": "The first 3 roles are subject to authentication.",
-  "text.help.popover.content.third": "Project manager: candidate of technical sciences, associate professor Popova Y.B.",
+  "text.help.popover.content.third": "Project manager: PhD, Associate Professor Popova Yu.B.",
   "text.help.popover.content.fourth": "BNTU-2021",
   "text.help.popover.route.manual": "Go to user manual",
   "text.help.popover.close": "Close",

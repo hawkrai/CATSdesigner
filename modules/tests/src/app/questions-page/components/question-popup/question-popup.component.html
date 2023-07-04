@@ -4,7 +4,7 @@
       !data.event ? ("text.test.questions.for.test" | translate : 'Вопрос для теста ') : (
         "text.test.new.questions.for.test"  | translate
         : "Вопрос №" + (data.questionLength + 1)
-        : { number: data.event ? questionIndex : data.questionLength + 1 }
+        : { number: data.event ? questionIndex + 1 : data.questionLength + 1 }
       )
 
     }}

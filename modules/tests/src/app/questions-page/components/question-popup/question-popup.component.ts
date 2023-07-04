@@ -38,7 +38,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public model = {
     editorData: "",
     config: {
-      placeholder: this.translatePipe.transform("text.editor.hint.enter.content.here", "Введите содержимое здесь..."),
+      placeholder: "",
       removePlugins: "",
       toolbar: [ "heading",
         "|", "bold", "italic", "link", "alignment",

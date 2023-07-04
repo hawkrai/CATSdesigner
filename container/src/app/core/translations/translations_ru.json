@@ -11,7 +11,7 @@
   "chat.edit":"Редактировать",
   "chat.delete":"Удалить",
   "chat.attachFile":"Прикрепить файл",
-  "chat.send":"Отправить", 
+  "chat.send":"Отправить",
   "chat.cancle" :"Отмена",
   "chat.listStudent":"Список студентов",
   "chat.filter":"Поиск сообщений",
@@ -411,7 +411,7 @@
   "text.profile.skill": "Должность",
   "text.profile.lastLogin": "Последний визит",
   "text.profile.currentSubjects": "Текущие предметы",
-  
+
   "text.profile.complitedSubjects": "Завершенные предметы",
   "text.profile.cp": "Курсовые проекты",
   "text.profile.dpOne": "Дипломный проект",
@@ -546,7 +546,7 @@
   "text.start.helpEnter":"Нажмите, чтобы войти в систему",
   "text.start.signIn": "Войти в систему",
   "text.start.helpControl": "Нажмите, чтобы просмотреть успеваемость студентов",
-  "text.start.btnControl": "Контроль успеваемости",
+  "text.start.btnControl": "Статистика успеваемости",
   "text.start.newUser": "Новый пользователь?",
   "text.start.helpRegister": "Перейдите, чтобы зарегистрироваться",
   "text.start.register": "Регистрация",
@@ -584,5 +584,5 @@
   "text.group.totalStatistics":"Суммарная статистика",
   "text.group.text.group.print":"Печать"
 
-  
+
 }

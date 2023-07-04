@@ -12,6 +12,9 @@ import { Help } from '../../models/help.model';
 export class MainPageComponent {
 
   @Input()
+  public controlCompleting: boolean = false;
+
+  @Input()
   public allowChanges: boolean;
 
   @Input()
@@ -61,12 +64,40 @@ export class MainPageComponent {
     action: "",
   };
 
+  adminQuestionsHelp: Help = {
+    message: "",
+    action: "",
+  };
+
+  controlCompletingHelp: Help = {
+    message: "",
+    action: "",
+  };
+
   constructor(private translatePipe: TranslatePipe) {
     this.adminTestsHelp = {
       message: this.translatePipe.transform(
         "text.help.themes",
         // tslint:disable-next-line:max-line-length
         "Чтобы подготовить тест, его необходимо создать, наполнить вопросами и ответами. Также необходимо указать время на прохождение теста и количество вопросов в нем. Для предварительного просмотра теста и открытия доступа к нему нажмите на соответствующие иконки."
+      ),
+      action: this.translatePipe.transform("button.understand", "Понятно"),
+    };
+
+    this.adminQuestionsHelp = {
+      message: this.translatePipe.transform(
+        "text.help.questions",
+        // tslint:disable-next-line:max-line-length
+        "На данной странице можно добавить новый вопрос в тест. Для этого заполните все поля вопроса и выберите тип ответа. Также можно добавить вопрос из существующего теста."
+      ),
+      action: this.translatePipe.transform("button.understand", "Понятно"),
+    };
+
+    this.controlCompletingHelp = {
+      message: this.translatePipe.transform(
+        "text.help.viewRealTime",
+        // tslint:disable-next-line:max-line-length
+        "На данной странице можно наблюдать за процессом прохождения тестов для контроля знаний. Если на вопрос был дан верный ответ, он отображен зеленым цветом. Если был дан неверный ответ, он отображен красным цветом."
       ),
       action: this.translatePipe.transform("button.understand", "Понятно"),
     };
