@@ -62,7 +62,7 @@ export class PercentagesComponent implements OnInit {
           .subscribe(() => {
             this.ngOnInit();
             this.addFlashMessage(this.translatePipe.transform('text.diplomProject.chartSave', "График успешно сохранен"));
-          }, () => this.addFlashMessage(this.translatePipe.transform('text.diplomProject.stageExists', "Этап с такими данными уже существует")));
+          }, () => this.addFlashErrorMessage(this.translatePipe.transform('text.diplomProject.stageExists', "Этап с такими данными уже существует")));
       }
     });
   }
@@ -95,7 +95,7 @@ export class PercentagesComponent implements OnInit {
             });
         }
         else {
-          this.addFlashMessage(this.translatePipe.transform('text.diplomProject.stageExists', "Этап с такими данными уже существует"));
+          this.addFlashErrorMessage(this.translatePipe.transform('text.diplomProject.stageExists', "Этап с такими данными уже существует"));
         }
       }
     });
@@ -125,6 +125,10 @@ export class PercentagesComponent implements OnInit {
 
   addFlashMessage(msg: string) {
     this.toastr.success(msg);
+  }
+
+  addFlashErrorMessage(msg: string) {
+    this.toastr.error(msg);
   }
 
 }

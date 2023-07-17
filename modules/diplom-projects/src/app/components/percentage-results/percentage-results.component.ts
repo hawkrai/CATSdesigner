@@ -46,12 +46,13 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true) || false;
-    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
-    this.groupService.getGroupsByUser(this.diplomUser.UserId).subscribe(res => { res.isLecturer ? this.isLecturer = true : this.isLecturer = false });
-    if (this.diplomUser.IsSecretary == false) {
-      this.isLecturer = true
+    const toggleValue: string = localStorage.getItem('toggle');
+    if (toggleValue && this.diplomUser.IsLecturer) {
+      this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true);
+    } else {
+      this.isLecturer = this.diplomUser.IsLecturer;
     }
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
     this.retrievePercentageResults();
   }
 
