@@ -17,6 +17,10 @@ export class PercentagesComponent implements OnInit {
 
   @Input() diplomUser: DiplomUser;
 
+  public isLecturer = false;
+  public themes = [{ name: this.translatePipe.transform('text.diplomProject.head', "Руководитель проекта"), value: true }, { name: this.translatePipe.transform('text.diplomProject.secretary', "Секретарь ГЭК"), value: false }];
+  public theme = undefined;
+
   private COUNT = 1000;
   private PAGE = 1;
 
@@ -30,6 +34,13 @@ export class PercentagesComponent implements OnInit {
 
   ngOnInit() {
     this.retrievePercentages();
+    const toggleValue: string = localStorage.getItem('toggle');
+    if (toggleValue && this.diplomUser.IsLecturer) {
+      this.isLecturer = (localStorage.getItem('toggle') === 'false' ? false : true);
+    } else {
+      this.isLecturer = this.diplomUser.IsLecturer;
+    }
+    this.theme = this.isLecturer ? this.themes[0] : this.themes[1]
   }
 
   retrievePercentages() {
@@ -38,6 +49,11 @@ export class PercentagesComponent implements OnInit {
       page: this.PAGE,
     })
       .subscribe(res => this.percentages = res.Items);
+  }
+
+  lecturerStatusChange(event) {
+    this.isLecturer = event.value.value;
+    localStorage.setItem('toggle', event.value.value);
   }
 
   public getDiplomUser() {
@@ -73,6 +89,7 @@ export class PercentagesComponent implements OnInit {
       height: '100%',
       width: '600px',
       data: {
+        id: stage.Id,
         title: this.translatePipe.transform('text.diplomProject.editStage', "Редактирование этапа процентовки"),
         name: stage.Name,
         percentage: stage.Percentage,
@@ -86,7 +103,7 @@ export class PercentagesComponent implements OnInit {
         var checkTheme = this.percentages.find((i) => i.Name === result.name);
         const date = new Date(result.date)
         var stageDate = new Date(stage.Date)
-        if (checkTheme == undefined || stage.Percentage != result.percentage || date.toISOString() != stageDate.toISOString()) {
+        if (result.Id || checkTheme == undefined || stage.Percentage != result.percentage || date.toISOString() != stageDate.toISOString()) {
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
           this.percentagesService.editStage(stage.Id, date.toISOString(), result.name, result.percentage)
             .subscribe(() => {

@@ -68,6 +68,17 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
     this.retrievePercentageResults();
   }
 
+  sort(field: string, direction: string) {
+    if (!direction) {
+      this.sorting = 'Id';
+      this.direction = 'desc';
+    } else {
+      this.sorting = field;
+      this.direction = direction;
+    }
+    this.retrievePercentageResults();
+  }
+
   retrievePercentageResults() {
     this.percentageResults = null;
     this.percentageResultsSubscription = this.percentageResultsService.getPercentageResults(

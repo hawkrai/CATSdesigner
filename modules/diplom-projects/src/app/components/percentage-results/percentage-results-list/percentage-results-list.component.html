@@ -1,13 +1,15 @@
 <div class="percentage-results-list-component">
   <div class="mdc-data-table">
-    <table class="mdc-data-table__table">
+    <table class="mdc-data-table__table" matSort (matSortChange)="sortData($event)">
       <thead>
         <tr class="mdc-data-table__header-row">
           <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">№
           </th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.student' |
+          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
+            {{'text.diplomProject.themeDP' | translate: 'Темa дипломного проекта'}}</th>
+          <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.student' |
             translate: 'Студент'}}</th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.group' |
+          <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.group' |
             translate: 'Группа'}}</th>
           <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col"
             *ngFor="let graph of percentageGraphs">
@@ -22,6 +24,7 @@
       <tbody *ngIf="filteredPercentageResults; else load">
         <tr class="mdc-data-table__row" *ngFor="let student of filteredPercentageResults; index as i">
           <td class="mdc-data-table__cell">{{ i + 1 }}</td>
+          <td class="mdc-data-table__cell">{{ student.Theme ? student.Theme : '-' }}</td>
           <td class="mdc-data-table__cell">{{ student.Name }}</td>
           <td class="mdc-data-table__cell">{{ student.Group }}</td>
           <ng-container *ngIf="percentageResultsComponent.getDiplomUser().IsStudent">

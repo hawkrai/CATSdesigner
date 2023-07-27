@@ -1,8 +1,15 @@
 <div class="percentages-component" *ngIf="percentages; else load">
-  <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsSecretary"
+  <button mat-raised-button class="actions" color="primary" *ngIf="diplomUser.IsSecretary && !isLecturer"
     (click)="addStage()">{{'text.diplomProject.addStage' | translate: 'Добавить этап'}}</button>
+  <mat-select matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}" class="mselect"
+    [value]="theme" (selectionChange)="lecturerStatusChange($event)"
+    *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents">
+    <mat-option *ngFor="let theme of themes" [value]="theme">
+      {{theme.name}}
+    </mat-option>
+  </mat-select>
   <div class="percentages-component__body">
-    <app-percentages-list [percentages]="percentages"></app-percentages-list>
+    <app-percentages-list [percentages]="percentages" [isLecturerMode]="isLecturer"></app-percentages-list>
   </div>
 </div>
 <ng-template #load>

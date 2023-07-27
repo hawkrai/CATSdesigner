@@ -10,8 +10,8 @@
             translate: 'Процент выполнения'}}</th>
           <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.stageDate' |
             translate: 'Дата'}}</th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col"
-            *ngIf="percentagesComponent.getDiplomUser().IsSecretary">{{'text.diplomProject.action' | translate:
+          <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="!isLecturerMode">
+            {{'text.diplomProject.action' | translate:
             'Действие'}}</th>
         </tr>
       </thead>
@@ -21,7 +21,7 @@
           <td class="mdc-data-table__cell">{{ percentage.Name }}</td>
           <td class="mdc-data-table__cell">{{ percentage.Percentage }}</td>
           <td class="mdc-data-table__cell">{{ percentage.Date | date:'dd.MM.yyyy' }}</td>
-          <td class="mdc-data-table__cell" *ngIf="percentagesComponent.getDiplomUser().IsSecretary">
+          <td class="mdc-data-table__cell" *ngIf="!isLecturerMode">
             <button mat-icon-button color="primary"
               matTooltip="{{'text.diplomProject.editStage' | translate: 'Редактировать этап'}}"
               (click)="percentagesComponent.editStage(percentage)">
