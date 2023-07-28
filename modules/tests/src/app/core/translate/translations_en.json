@@ -158,7 +158,7 @@
   "text.test.result.nn.theme": "Theme",
   "text.test.result.nn.status": "Status",
   "text.test.result.nn.score": "Network evaluation",
-  "text.test.control.compleating.test": "Progress statistics",
+  "text.test.control.compleating.test": "Test passing monitoring",
   "text.test.theme.test": "Test Themes",
   "text.test.date.completing": "Date passing test: ",
   "text.test.time.start": "Test start time: ",
