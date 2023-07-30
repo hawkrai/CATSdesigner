@@ -37,7 +37,7 @@ import {ResultTestTablePupilComponent} from "./shared/result-test-table-pupil/re
 import {AnswersPopupComponent} from "./shared/result-test-table/components/answers-popup/answers-popup.component";
 import {ControlCompletingComponent} from "./control-completing/control-completing.component";
 import {ChartsModule} from "ng2-charts";
-import {CKEditorModule} from "ckeditor4-angular";
+import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import {QuestionOtherTestComponent} from "./questions-page/components/question-other-test/question-other-test.component";
 import {TestResultComponent} from "./test-result/test-result.component";
 import {TranslateModule, TranslatePipe} from "educats-translate";

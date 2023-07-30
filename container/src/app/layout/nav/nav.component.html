@@ -108,11 +108,11 @@
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="routeToAboutPopover()">
       <mat-icon>info</mat-icon>
-      <span>О системе</span>
+      <span>{{'header.menu.aboutSystem' | translate:'О системе'}}</span>
     </button>
     <button mat-menu-item (click)="logOut()">
       <mat-icon>exit_to_app</mat-icon>
-      <span>Выйти</span>
+      <span>{{'header.menu.signOut' | translate:'Выйти'}}</span>
     </button>
   </mat-menu>
 </mat-toolbar>
@@ -168,10 +168,10 @@
   <div class="second-line">
     <div class="menu-subject">
       <div *ngIf="!isAdmin && !isProgContol">
-        <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
+        <a mat-button [routerLink]="'/web/viewer'">{{'header.menu.subjects' | translate:'Предметы'}}</a>
       </div>
       <div *ngIf="isLector">
-        <a mat-button [routerLink]="'/web/diplom'">Дипломное проектирование</a>
+        <a mat-button [routerLink]="'/web/diplom'">{{'header.menu.diplomCreating' | translate:'Дипломное проектирование'}}</a>
       </div>
     </div>
 
@@ -184,10 +184,10 @@
     </button>
     <mat-menu #menu1="matMenu">
       <div *ngIf="!isAdmin" class="dropdown">
-        <a mat-button [routerLink]="'/web/viewer'">Предметы</a>
+        <a mat-button [routerLink]="'/web/viewer'">{{'header.menu.subjects' | translate:'Предметы'}}</a>
       </div>
       <div *ngIf="isLector">
-        <a mat-button [routerLink]="'/web/diplom'">Дипломное проектирование</a>
+        <a mat-button [routerLink]="'/web/diplom'">{{'header.menu.diplomCreating' | translate:'Дипломное проектирование'}}</a>
       </div>
     </mat-menu>
 
@@ -241,11 +241,11 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item class="dropdown" (click)="routeToAboutPopover()">
           <mat-icon> info</mat-icon>
-          <span> О системе</span>
+          <span>{{'header.menu.aboutSystem' | translate:'О системе'}}</span>
         </button>
         <button mat-menu-item class="dropdown" (click)="logOut()">
           <mat-icon>exit_to_app</mat-icon>
-          <span>Выйти</span>
+          <span>{{'header.menu.signOut' | translate:'Выйти'}}</span>
         </button>
       </mat-menu>
     </div>

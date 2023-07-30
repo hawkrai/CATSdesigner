@@ -623,6 +623,7 @@
 
   "text.changePassword.resetPassword": "Reset the password",
   "text.changePassword.invalidData": "Data entered incorrectly",
+  "text.changePassword.questionIsUndefined": "Password reset option not available",
   "text.changePassword.login": "Login",
   "text.changePassword.secretQuestion": "Secret Question",
   "text.changePassword.answerOnSecretQuestion": "Answer to the secret question",
@@ -668,14 +669,14 @@
   "text.help.popover.header": "About system",
   "text.help.popover.content.first": "The CATS training system is designed to improve the quality of training for full-time and part-time specialists, as well as for independent work. In terms of functionality, it supports 4 roles: administrator, teacher, student, and observer.",
   "text.help.popover.content.second": "The first 3 roles are subject to authentication.",
-  "text.help.popover.content.third": "Project manager: candidate of technical sciences, associate professor Popova Y.B.",
+  "text.help.popover.content.third": "Project manager: PhD, Associate Professor Popova Yu.B.",
   "text.help.popover.content.fourth": "BNTU-2021",
   "text.help.popover.route.manual": "Go to user manual",
   "text.help.popover.close": "Close",
 
   "text.statistics.inactive.subjects": "Inactive subjects",
   "text.statistics.select.subject": "Select subject",
-  "text.statistics.total.statistics": "Total statistics for all subjects",
+  "text.statistics.total.statistics": "Total statistics for all courses",
   "text.statistics.no.group.info": "No information for entered group",
 
   "text.adminPanel.activeStats.userActivity": "User activity",
@@ -726,6 +727,7 @@
   "text.adminPanel.lectors.headers.registrationDate": "Registration date",
   "text.adminPanel.lectors.headers.status": "Status",
   "text.adminPanel.lectors.headers.subjects": "Subjects (created\\attached)",
+  "text.adminPanel.lectors.headers.secretary": "SEC Secretary",
   "text.adminPanel.lectors.headers.action": "Action",
 
   "text.adminPanel.lectors.tooltips.stats": "System authorization statistics",
@@ -871,5 +873,6 @@
   "text.all.subjects": "All subjects",
   "text.average.values": "Average values",
   "text.print": "Print",
-  "text.download.excel": "Download Excel"
+  "text.download.excel": "Download Excel",
+  "text.surname": "Surname"
 }

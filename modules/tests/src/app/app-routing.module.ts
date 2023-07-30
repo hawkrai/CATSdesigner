@@ -14,8 +14,8 @@ import {RedirectTeacherGuard} from "./core/guard/redirect-teacher.guard";
 
 
 const routes: Routes = [
-  {path: '', redirectTo: '/page', pathMatch: 'full'},
-  {path: 'testsModule', redirectTo: '/page', pathMatch: 'full'},
+  {path: "", redirectTo: "/page", pathMatch: "full"},
+  {path: "testsModule", redirectTo: "/page", pathMatch: "full"},
   {path: "page", component: PageComponent, canActivate: [RedirectPupilGuard]},
   {path: "test/:id", component: TestComponent},
   {path: "test-passing/:id", component: TestExecutionComponent},

@@ -6,11 +6,6 @@
                 (click)="onOpenAddingPopup()">{{'text.test.add.test' | translate : 'Добавить тест'}}
         </button>
       </div>
-      <div class="main-page-container-buttons-item" *ngIf="adminTests">
-        <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'resources'"
-                (click)="onOpenAddingPopup()">{{'text.test.resources' | translate : 'Ресурсы'}}
-        </button>
-      </div>
       <div class="main-page-container-buttons-item" *ngIf="adminQuestions">
         <button mat-raised-button class="main-page-container-buttons-item" [ngClass]="'add'"
                 (click)="onAddNewQuestion()">{{'text.test.add.questions' | translate : 'Добавить вопрос'}}
@@ -43,7 +38,9 @@
       </div>
     </div>
     <div class="question-wrapper">
-      <app-help [message]="help.message" [action]="help.action" [placement]="'bottom-left'"></app-help>
+      <app-help *ngIf="controlCompleting" [message]="controlCompletingHelp.message" [action]="controlCompletingHelp.action" [placement]="'bottom-left'"></app-help>
+      <app-help *ngIf="adminQuestions" [message]="adminQuestionsHelp.message" [action]="adminQuestionsHelp.action" [placement]="'bottom-left'"></app-help>
+      <app-help *ngIf="adminTests" [message]="adminTestsHelp.message" [action]="adminTestsHelp.action" [placement]="'bottom-left'"></app-help>
     </div>
   </div>
   <div class="main-page-container-search-wrapper" *ngIf="!hideSearch">

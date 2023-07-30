@@ -12,6 +12,7 @@ h1 {
 
 .inline {
   display: flex;
+  flex-wrap: wrap;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
@@ -35,13 +36,11 @@ p {
 
 .div1 {
   font-weight: 400;
-  width: 100%;
-  padding-left: 60px;
+  width: 80%;
 }
 
 .div2 {
   font-weight: 400;
-  width: 100%;
   margin-top: 30px;
   display: grid;
   justify-content: center;
@@ -55,6 +54,7 @@ p {
 .charts {
   margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   padding-top: 3%;

@@ -626,6 +626,7 @@
   "text.adminPanel.lectors.headers.registrationDate": "Дата регистрации",
   "text.adminPanel.lectors.headers.status": "Статус",
   "text.adminPanel.lectors.headers.subjects": "Предметы (созданные\\присоединенные)",
+  "text.adminPanel.lectors.headers.secretary": "Секретарь ГЭК",
   "text.adminPanel.lectors.headers.action": "Действиe",
 
   "text.adminPanel.lectors.tooltips.stats": "Статистика авторизации в системе",

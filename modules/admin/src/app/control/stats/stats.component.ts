@@ -87,6 +87,7 @@ export class StatsComponent implements OnInit {
     let practPass = 0;
     let labPass = 0;
     let rating = 0;
+    let ratingChart = 0;
     let typeCount = 0;
     let userLabCount = 0;
     let userPracticalCount = 0;
@@ -147,14 +148,20 @@ export class StatsComponent implements OnInit {
         }
         if (typeCount != 0) {
           rating = (rating / typeCount);
+          ratingChart = rating;
         } else {
           rating = -1;
+          ratingChart = 0;
         }
         return {
           GroupName: groupName,
+          display: 'revert',
+          FIOColspan: 1,
+          isBold: false,
           FIO: item.FIO,
           Subject: subject.Name,
           Rating: rating.toFixed(1),
+          RatingChart: ratingChart.toFixed(1),
           AllPass: userLabPass + userLecturePass + userPracticalPass,
           UserAvgLabMarks: userAvgLabMarks.toFixed(1),
           UserAvgTestMarks: userAvgTestMarks.toFixed(1),
@@ -177,6 +184,7 @@ export class StatsComponent implements OnInit {
         let avgTestMarksTotal = 0;
         let avgPracticalMarksTotal = 0;
         rating = 0;
+        ratingChart = 0;
         typeCount = 0;
         userLabCount = 0;
         userPracticalCount = 0;
@@ -224,14 +232,20 @@ export class StatsComponent implements OnInit {
         }
         if (typeCount != 0) {
           rating = (rating / typeCount);
+          ratingChart = rating;
         } else {
           rating = -1;
+          ratingChart = 0;
         }
         return {
           GroupName: groupName,
+          display: 'revert',
+          FIOColspan: 1,
           FIO: item.FIO,
+          isBold: false,
           Subject: this.translatePipe.transform ('text.all.subjects', 'Все предметы'),
           Rating: rating.toFixed(1),
+          RatingChart: ratingChart.toFixed(1),
           AllPass: labPassTotal + lecturePassTotal + practicalPassTotal,
           UserAvgLabMarks: avgLabMarksTotal.toFixed(1),
           UserAvgTestMarks: avgTestMarksTotal.toFixed(1),
@@ -284,8 +298,10 @@ export class StatsComponent implements OnInit {
 
     if (typeCount != 0) {
       rating = Math.round((rating / typeCount) * 10) / 10;
+      ratingChart = rating;
     } else {
       rating = -1;
+      ratingChart = 0;
     }
 
     lectPass = Math.round(lectPass  * 10) / 10;
@@ -294,9 +310,13 @@ export class StatsComponent implements OnInit {
 
     this.tableStats.push({
       GroupName: groupName,
+      isBold: true,
+      display: 'none',
+      FIOColspan: 2,
       FIO: this.translatePipe.transform ('text.average.values', 'Средние значения'),
       Subject: this.translatePipe.transform ('text.all.subjects', 'Все предметы'),
       Rating: rating,
+      RatingChart: ratingChart.toFixed(1),
       AllPass: lectPass + practPass + labPass,
       UserAvgLabMarks: labMarks,
       UserAvgTestMarks: testMarks,
@@ -361,10 +381,11 @@ export class StatsComponent implements OnInit {
       pdf.save('StatsPdf.pdf');
     });
 
-    const objFra = document.createElement('iframe');
+    /*const objFra = document.createElement('iframe');
     document.body.appendChild(objFra);
     objFra.contentWindow.focus();
     objFra.contentWindow.print();
-    objFra.remove();
+    objFra.remove();*/
+    window.print();
   }
 }

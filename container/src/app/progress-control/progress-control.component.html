@@ -42,15 +42,15 @@
             <td>
               <div class="form-first-row">
                 <mat-form-field class="default" color="primary" style = "margin-left:5px;width: 100%;float: left">
-                  <input matInput [placeholder]="'text.academic.performance.monitoring.period.begin' | translate:'Начало периода'" [matDatepicker]="picker" formControlName="start">
-                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
+                  <input disabled matInput [placeholder]="'text.academic.performance.monitoring.period.begin' | translate:'Начало периода'" [matDatepicker]="picker" formControlName="start">
+                  <mat-datepicker-toggle [disabled] = "false" matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker [disabled] = "false" #picker></mat-datepicker>
 
                 </mat-form-field>
                 <mat-form-field class="default" color="primary"style = "margin-left:5px;width: 100%;float: right">
-                  <input matInput [placeholder]="'text.academic.performance.monitoring.period.end' | translate:'Окончание периода'" [matDatepicker]="picker1" formControlName="end">
-                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                  <mat-datepicker #picker1></mat-datepicker>
+                  <input disabled matInput [placeholder]="'text.academic.performance.monitoring.period.end' | translate:'Окончание периода'" [matDatepicker]="picker1" formControlName="end">
+                  <mat-datepicker-toggle [disabled] = "false" matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker [disabled] = "false" #picker1></mat-datepicker>
                 </mat-form-field>
               </div>
             </td></tr>

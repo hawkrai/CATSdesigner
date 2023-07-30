@@ -14,6 +14,10 @@ import { NavItem } from "../../../models/nav-item";
 import { TranslatePipe } from "educats-translate";
 import { whitespace } from "src/app/shared/validators/whitespace.validator";
 import { CatsService } from "src/app/service/cats.service";
+import "ckeditor5-custom-build/build/translations/ru";
+import "ckeditor5-custom-build/build/translations/en-gb";
+
+import * as Editor from "ckeditor5-custom-build/build/ckeditor";
 
 
 @AutoUnsubscribe
@@ -30,11 +34,21 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   public questionIndex = 0;
   navItems: NavItem[] = [];
 
-  ckconfig = {
-    extraPlugins: [Base64UploaderPlugin]
+  public editor = Editor;
+  public model = {
+    editorData: "",
+    config: {
+      placeholder: "",
+      removePlugins: "",
+      toolbar: [ "heading",
+        "|", "bold", "italic", "link", "alignment",
+        "|", "fontBackgroundColor", "fontColor", "fontSize", "fontFamily",
+        "|", "indent", "outdent",
+        "|", "blockQuote",
+        "|", "MathType",
+        "|", "undo", "redo" ],
+    }
   };
-
-  ckConfig: any;
 
   public chars: { [key: string]: string } = {};
   public charsNeskolko: { [key: string]: any[] } = {};
@@ -67,13 +81,10 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     }
   }
 
+
   ngOnInit() {
     const subject = JSON.parse(localStorage.getItem("currentSubject"));
-    this.ckConfig = {
-      allowedContent: true,
-      extraPlugins: "divarea",
-      forcePasteAsPlainText: false
-    };
+
     this.initForm();
     if (this.data.event) {
       combineLatest([this.testService.getQuestion(this.data.event.event), (this.data.isEUMKTest ? this.testService.getConcepts(subject.id) : of(null))])
@@ -128,6 +139,13 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       });
     }
   }
+
+//   public onNamespaceLoaded( event: CKEditor4.EventInfo ) {
+//     // Add external `placeholder` plugin which will be available for each
+//     // editor instance on the page.
+//     console.log('CKEDITOR', '!!!!!!!!!!!!!!!');
+//     CKEDITOR.plugins.addExternal( "ckeditor_wiris", "http://localhost:3000/assets/ckeditor/", "22plugin.js" );
+// }
 
   onNoClick(): void {
     this.dialogRef.close();

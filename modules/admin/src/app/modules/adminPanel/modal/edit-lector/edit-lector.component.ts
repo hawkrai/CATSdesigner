@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { EditProfessor, Professor } from 'src/app/model/professor';
 import { GroupService } from 'src/app/service/group.service';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-lector',
@@ -39,8 +39,15 @@ export class EditLectorComponent implements OnInit {
       IsLecturerHasGraduateStudents: new FormControl(this.professor.IsLecturerHasGraduateStudents),
       Groups: new FormControl(this.professor.Groups),
       SecGroupsIds: new FormControl(this.professor.SecretaryGroupsIds)
-    });
-    console.log(this.data);
+    }, {validators: (control: AbstractControl) => {
+      const isSecretary = control.get('IsSecretary');
+      const secGroupsIds = control.get('SecGroupsIds');
+      if (!isSecretary.value) return null;
+      
+      if (secGroupsIds.value.length > 0) return null;
+      
+      return { secretaryShouldHaveGroups: true }
+    }});
   }
 
   trimFields() {
