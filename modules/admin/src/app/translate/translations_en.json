@@ -870,9 +870,9 @@
   "text.statistics.total.hours.skipped": "Total hours skipped, h",
   "text.statistics.student.performance": "Student performance, mark",
   "text.subject": "Subjects",
-  "text.all.subjects": "All subjects",
+  "text.all.subjects": "All courses",
   "text.average.values": "Average values",
   "text.print": "Print",
   "text.download.excel": "Download Excel",
-  "text.surname": "Surname"
+  "text.surname": "Student"
 }

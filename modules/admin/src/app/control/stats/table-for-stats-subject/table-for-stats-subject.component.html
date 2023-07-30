@@ -3,12 +3,12 @@
   <table mat-table id="excel-table" [dataSource]="this.data">
     <ng-container matColumnDef="position">
       <th id="position" mat-header-cell *matHeaderCellDef [hidden]="true"> No.</th>
-      <td [style.display] = "element.display"  mat-cell *matCellDef="let element;let i=index"> <div *ngIf = "!element.isBold"> {{ (i + 1) }} </div> </td>
+      <td [id] ="element.isBold" [style.display] = "element.display"  mat-cell *matCellDef="let element;let i=index"> <div *ngIf = "!element.isBold"> {{ (i + 1) }} </div> </td>
     </ng-container>
 
     <ng-container matColumnDef="FIO">
       <th id="surname" mat-header-cell *matHeaderCellDef [hidden]="true"> Name</th>
-      <td [attr.colspan]="element.FIOColspan" mat-cell *matCellDef="let element"> <div style = "font-weight: bold; text-align: center" *ngIf = "element.isBold">{{element.FIO}}</div> <div style="text-align: left" *ngIf = "!element.isBold">{{element.FIO}}</div>  </td>
+      <td [attr.colspan]="element.FIOColspan" mat-cell *matCellDef="let element"> <div style = "font-weight: bold; text-align: center" *ngIf = "element.isBold">{{element.FIO}}</div> <div style="text-align: left;margin-left: 5px;" *ngIf = "!element.isBold">{{element.FIO}}</div>  </td>
     </ng-container>
 
     <ng-container matColumnDef="UserLecturePass">
