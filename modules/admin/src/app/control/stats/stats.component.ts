@@ -355,6 +355,9 @@ export class StatsComponent implements OnInit {
     if (document.getElementById('surname')) {
       document.getElementById('surname').remove();
     }
+    if (document.getElementById('true')) {
+      document.getElementById('true').remove();
+    }
     const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
     const wb: xlsx.WorkBook = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
@@ -362,7 +365,7 @@ export class StatsComponent implements OnInit {
   }
 
   public captureScreen() {
-    const data = document.getElementById('excel-table');
+    let data = document.getElementById('excel-table');
     if (document.getElementById('position')) {
       document.getElementById('position').remove();
     }
@@ -387,5 +390,6 @@ export class StatsComponent implements OnInit {
     objFra.contentWindow.print();
     objFra.remove();*/
     window.print();
+    data = document.getElementById('excel-table');
   }
 }

@@ -9,6 +9,8 @@ import {first} from 'rxjs/operators';
 import {AuthenticationService} from '../core/services/auth.service';
 import {Router} from '@angular/router';
 import {DatePipe} from '@angular/common';
+import {DateAdapter} from '@angular/material/core';
+import {TranslatePipe} from 'educats-translate';
 
 @Component({
   selector: 'app-progress-control',
@@ -23,7 +25,10 @@ export class ProgressControlComponent implements OnInit {
   isLoad = false;
 
   constructor(private coreService: CoreService, private router: Router ,  private autService: AuthenticationService,
-              private formBuilder: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog, private datePipe: DatePipe) { }
+              private formBuilder: FormBuilder, private sanitizer: DomSanitizer, public dialog: MatDialog, private datePipe: DatePipe,
+              private dateAdapter: DateAdapter<Date>, private translatePipe: TranslatePipe) {
+    this.dateAdapter.setLocale(this.translatePipe.transform ('text.schedule.locale.en', 'ru'));
+  }
 
   ngOnInit(): void {
     this.selectedGroup = this.sanitizer.bypassSecurityTrustResourceUrl(`/control/main/0`);
