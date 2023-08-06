@@ -1,5 +1,9 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialogRef, MatSlideToggleChange } from "@angular/material";
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatSlideToggleChange,
+} from "@angular/material";
 import { TestService } from "../../../service/test.service";
 import { Question } from "../../../models/question/question.model";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -19,14 +23,16 @@ import "ckeditor5-custom-build/build/translations/en-gb";
 
 import * as Editor from "ckeditor5-custom-build/build/ckeditor";
 
-
 @AutoUnsubscribe
 @Component({
   selector: "app-question-popup",
   templateUrl: "./question-popup.component.html",
-  styleUrls: ["./question-popup.component.less"]
+  styleUrls: ["./question-popup.component.less"],
 })
-export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnInit {
+export class QuestionPopupComponent
+  extends AutoUnsubscribeBase
+  implements OnInit
+{
   public question: Question = new Question();
   public chosenQuestionType: any = 0;
   public chosenType: any;
@@ -40,14 +46,41 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     config: {
       placeholder: "",
       removePlugins: "",
-      toolbar: [ "heading",
-        "|", "bold", "italic", "link", "alignment",
-        "|", "fontBackgroundColor", "fontColor", "fontSize", "fontFamily",
-        "|", "indent", "outdent",
-        "|", "blockQuote",
-        "|", "MathType",
-        "|", "undo", "redo" ],
-    }
+      toolbar: {
+        items: [
+          "undo",
+          "redo",
+          "|",
+          "heading",
+          "|",
+          "fontfamily",
+          "fontsize",
+          "fontColor",
+          "fontBackgroundColor",
+          "|",
+          "bold",
+          "italic",
+          "strikethrough",
+          "subscript",
+          "superscript",
+          "code",
+          "|",
+          "link",
+          "uploadImage",
+          "blockQuote",
+          "codeBlock",
+          "|",
+          "alignment",
+          "|",
+          "bulletedList",
+          "numberedList",
+          "todoList",
+          "outdent",
+          "indent",
+        ],
+        shouldNotGroupWhenFull: true,
+      },
+    },
   };
 
   public chars: { [key: string]: string } = {};
@@ -60,8 +93,8 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     { id: 0, label: "text.test.one.variant" },
     { id: 1, label: "text.test.many.variant" },
     { id: 2, label: "text.test.from.keyboard" },
-    { id: 3, label: "text.test.sequence" }]
-    ;
+    { id: 3, label: "text.test.sequence" },
+  ];
   public formGroup: FormGroup;
   public concept: any;
   public selectedConcept: string;
@@ -69,12 +102,13 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
   private conceptId: any;
   public showDescription: boolean;
 
-  constructor(public dialogRef: MatDialogRef<QuestionPopupComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<QuestionPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private testService: TestService,
     private translatePipe: TranslatePipe,
-    private catsService: CatsService,
-    ) {
+    private catsService: CatsService
+  ) {
     super();
     if (this.data.event) {
       this.questionIndex = Number(this.data.event.index);
@@ -82,13 +116,17 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     this.model.config.placeholder = this.translatePipe.transform("question.edit.placeholder", "Введите содержимое...");
   }
 
-
   ngOnInit() {
     const subject = JSON.parse(localStorage.getItem("currentSubject"));
 
     this.initForm();
     if (this.data.event) {
-      combineLatest([this.testService.getQuestion(this.data.event.event), (this.data.isEUMKTest ? this.testService.getConcepts(subject.id) : of(null))])
+      combineLatest([
+        this.testService.getQuestion(this.data.event.event),
+        this.data.isEUMKTest
+          ? this.testService.getConcepts(subject.id)
+          : of(null),
+      ])
         .pipe(takeUntil(this.unsubscribeStream$))
         .subscribe(([question, concept]) => {
           this.question = question;
@@ -99,17 +137,26 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
           }
           this.newCase = false;
           this.formGroup = new FormGroup({
-            Title: new FormControl(this.question.Title, Validators.compose([
-              Validators.maxLength(255), Validators.required, whitespace
-            ])),
-            Description: new FormControl(this.question.Description, Validators.compose([
-              Validators.maxLength(1000)
-            ])),
-            ComplexityLevel: new FormControl(this.question.ComplexityLevel, Validators.compose([
-              Validators.max(10),
-              Validators.min(1),
-              Validators.required
-            ]))
+            Title: new FormControl(
+              this.question.Title,
+              Validators.compose([
+                Validators.maxLength(255),
+                Validators.required,
+                whitespace,
+              ])
+            ),
+            Description: new FormControl(
+              this.question.Description,
+              Validators.compose([Validators.maxLength(1000)])
+            ),
+            ComplexityLevel: new FormControl(
+              this.question.ComplexityLevel,
+              Validators.compose([
+                Validators.max(10),
+                Validators.min(1),
+                Validators.required,
+              ])
+            ),
           });
           this.chosenQuestionType = question.QuestionType;
           this.initExisting(this.question.Answers);
@@ -117,36 +164,47 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     } else {
       this.newCase = true;
       if (this.data.isEUMKTest) {
-        this.testService.getConcepts(subject.id)
+        this.testService
+          .getConcepts(subject.id)
           .pipe(
-            tap((concept) => this.navItems = concept),
+            tap((concept) => (this.navItems = concept)),
             takeUntil(this.unsubscribeStream$)
-          ).subscribe();
+          )
+          .subscribe();
       }
       this.question.ComlexityLevel = 1;
       this.question.ComplexityLevel = 1;
       this.formGroup = new FormGroup({
-        Title: new FormControl("", Validators.compose([
-          Validators.maxLength(255), Validators.required, whitespace
-        ])),
-        Description: new FormControl("", Validators.compose([
-          Validators.maxLength(1000)
-        ])),
-        ComplexityLevel: new FormControl(1, Validators.compose([
-          Validators.max(10),
-          Validators.min(1),
-          Validators.required
-        ]))
+        Title: new FormControl(
+          "",
+          Validators.compose([
+            Validators.maxLength(255),
+            Validators.required,
+            whitespace,
+          ])
+        ),
+        Description: new FormControl(
+          "",
+          Validators.compose([Validators.maxLength(1000)])
+        ),
+        ComplexityLevel: new FormControl(
+          1,
+          Validators.compose([
+            Validators.max(10),
+            Validators.min(1),
+            Validators.required,
+          ])
+        ),
       });
     }
   }
 
-//   public onNamespaceLoaded( event: CKEditor4.EventInfo ) {
-//     // Add external `placeholder` plugin which will be available for each
-//     // editor instance on the page.
-//     console.log('CKEDITOR', '!!!!!!!!!!!!!!!');
-//     CKEDITOR.plugins.addExternal( "ckeditor_wiris", "http://localhost:3000/assets/ckeditor/", "22plugin.js" );
-// }
+  //   public onNamespaceLoaded( event: CKEditor4.EventInfo ) {
+  //     // Add external `placeholder` plugin which will be available for each
+  //     // editor instance on the page.
+  //     console.log('CKEDITOR', '!!!!!!!!!!!!!!!');
+  //     CKEDITOR.plugins.addExternal( "ckeditor_wiris", "http://localhost:3000/assets/ckeditor/", "22plugin.js" );
+  // }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -154,24 +212,32 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
 
   public addAnswer(): void {
     if (this.chosenQuestionType === 0) {
-      let num: any = Object.keys(this.chars)[Object.keys(this.chars).length - 1];
+      let num: any = Object.keys(this.chars)[
+        Object.keys(this.chars).length - 1
+      ];
       num = Number(num.split("key")[1]);
       this.chars["key" + (num + 1)] = "";
       this.charsde = Object.keys(this.chars);
     } else if (this.chosenQuestionType === 1) {
-      let num: any = Object.keys(this.charsNeskolko)[Object.keys(this.charsNeskolko).length - 1];
+      let num: any = Object.keys(this.charsNeskolko)[
+        Object.keys(this.charsNeskolko).length - 1
+      ];
       num = Number(num.split("key")[1]);
       this.charsNeskolko["key" + (num + 1)] = [];
       this.charsNeskolko["key" + (num + 1)][0] = "";
       this.charsNeskolko["key" + (num + 1)][1] = false;
       this.charsde = Object.keys(this.charsNeskolko);
     } else if (this.chosenQuestionType === 2) {
-      let num: any = Object.keys(this.charsWords)[Object.keys(this.charsWords).length - 1];
+      let num: any = Object.keys(this.charsWords)[
+        Object.keys(this.charsWords).length - 1
+      ];
       num = Number(num.split("key")[1]);
       this.charsWords["key" + (num + 1)] = "";
       this.charsde = Object.keys(this.charsWords);
     } else if (this.chosenQuestionType === 3) {
-      let num: any = Object.keys(this.charsSequence)[Object.keys(this.charsSequence).length - 1];
+      let num: any = Object.keys(this.charsSequence)[
+        Object.keys(this.charsSequence).length - 1
+      ];
       num = Number(num.split("key")[1]);
       this.charsSequence["key" + (num + 1)] = "";
       this.charsde = Object.keys(this.charsSequence);
@@ -231,7 +297,13 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
         this.question.Answers[num].IsCorrect = 1;
         this.question.Answers[0].QuestionId = 0;
       } else {
-        this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.check.correctness", "Проверьте варианты ответов. Они не должны быть пустыми"), Code: "500" });
+        this.catsService.showMessage({
+          Message: this.translatePipe.transform(
+            "text.test.check.correctness",
+            "Проверьте варианты ответов. Они не должны быть пустыми"
+          ),
+          Code: "500",
+        });
         return;
       }
     } else if (this.chosenQuestionType === 1) {
@@ -243,7 +315,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       });
       this.question.Answers[0].QuestionId = 0;
 
-
       this.charsde = Object.keys(this.charsNeskolko);
     } else if (this.chosenQuestionType === 2) {
       Object.values(this.charsWords).forEach((value) => {
@@ -253,11 +324,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
         this.question.Answers.push(question);
       });
       this.question.Answers[0].QuestionId = 0;
-    }
-
-
-    else if (this.chosenQuestionType === 3) {
-
+    } else if (this.chosenQuestionType === 3) {
       Object.values(this.charsSequence).forEach((value) => {
         let question = new Answer();
         question["Content"] = value;
@@ -267,7 +334,6 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
       this.question.Answers[0].QuestionId = 0;
     }
 
-
     this.question["TestId"] = this.data.test;
     /*this.question['QuestionType'] = 0;
     this.question['Id'] = 0;
@@ -275,28 +341,51 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     if (this.data.isEUMKTest) {
       this.question.ConceptId = this.conceptId;
     }
-    this.testService.saveQuestion(this.question)
+    this.testService
+      .saveQuestion(this.question)
       .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((res) => {
-        if (res.ErrorMessage) {
-          this.catsService.showMessage({ Message: res.ErrorMessage, Code: "500" });
-        } else {
+      .subscribe(
+        (res) => {
+          if (res.ErrorMessage) {
+            this.catsService.showMessage({
+              Message: res.ErrorMessage,
+              Code: "500",
+            });
+          } else {
+            this.catsService.showMessage({
+              Message: this.newCase
+                ? this.translatePipe.transform(
+                    "text.test.question.created",
+                    "Вопрос создан"
+                  )
+                : this.translatePipe.transform(
+                    "text.test.question.changed",
+                    "Вопрос изменен"
+                  ),
+              Code: "200",
+            });
+            this.dialogRef.close(true);
+          }
+        },
+        () => {
           this.catsService.showMessage({
-            Message: this.newCase
-              ? this.translatePipe.transform("text.test.question.created", "Вопрос создан")
-              : this.translatePipe.transform("text.test.question.changed", "Вопрос изменен"), Code: "200"
+            Message: this.translatePipe.transform(
+              "text.test.internal.server.error",
+              "Ошибка ответа сервера"
+            ),
+            Code: "500",
           });
-          this.dialogRef.close(true);
         }
-
-      }, () => {
-        this.catsService.showMessage({ Message: this.translatePipe.transform("text.test.internal.server.error", "Ошибка ответа сервера"), Code: "500" });
-      });
+      );
   }
 
   getPopupTypeTooltip() {
-    const answerType = this.ANSWER_TYPES.filter((x) => x.id === (this.question.QuestionType || 0))[0];
-    return answerType ? this.translatePipe.transform(answerType.label, answerType.label) : "";
+    const answerType = this.ANSWER_TYPES.filter(
+      (x) => x.id === (this.question.QuestionType || 0)
+    )[0];
+    return answerType
+      ? this.translatePipe.transform(answerType.label, answerType.label)
+      : "";
   }
 
   selectConcept(Id: any) {
@@ -355,34 +444,33 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
         if (answer.IsCorrect === 1) {
           this.chosenType = "key" + index;
         }
-      }
-      );
+      });
       this.charsde = Object.keys(this.chars);
     } else if (this.chosenQuestionType === 1) {
       answers.forEach((answer, index) => {
         this.charsNeskolko["key" + index] = [];
         this.charsNeskolko["key" + index][0] = answer.Content;
         this.charsNeskolko["key" + index][1] = answer.IsCorrect;
-      }
-      );
+      });
       this.charsde = Object.keys(this.charsNeskolko);
     } else if (this.chosenQuestionType === 2) {
       answers.forEach((answer, index) => {
         this.charsWords["key" + index] = answer.Content;
-      }
-      );
+      });
       this.charsde = Object.keys(this.charsWords);
     } else if (this.chosenQuestionType === 3) {
       answers.forEach((answer, index) => {
         this.charsSequence["key" + index] = answer.Content;
-      }
-      );
+      });
       this.charsde = Object.keys(this.charsSequence);
     }
   }
 
   private getConceptName() {
-    const questionConcept = this.getChildById(this.navItems, this.question.ConceptId);
+    const questionConcept = this.getChildById(
+      this.navItems,
+      this.question.ConceptId
+    );
     this.selectedConcept = questionConcept?.Name;
   }
 
