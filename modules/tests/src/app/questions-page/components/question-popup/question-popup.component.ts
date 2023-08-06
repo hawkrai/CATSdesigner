@@ -79,6 +79,7 @@ export class QuestionPopupComponent extends AutoUnsubscribeBase implements OnIni
     if (this.data.event) {
       this.questionIndex = Number(this.data.event.index);
     }
+    this.model.config.placeholder = this.translatePipe.transform("question.edit.placeholder", "Введите содержимое...");
   }
 
 

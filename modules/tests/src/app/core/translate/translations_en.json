@@ -24,6 +24,7 @@
   "text.help.themes": "To prepare a test, you need to create it, fill it with questions and answers. It is also necessary to indicate the time for passing the test and the number of questions in it. To preview the test and open access to it, click on the corresponding icons.",
   "text.help.questions": "On this page, you can add a new question to the test. To do this, fill in all the fields of the question and select the type of answer. You can also add a question from an existing test.",
   "text.help.viewRealTime": "On this page, you can observe the process of passing tests to control knowledge. Correctly answered questions are displayed in green, and incorrectly answered in red.",
+  "question.edit.placeholder": "Enter content...",
   "subject.abbreviation": "Subject abbreviation",
   "symbols.min.length": "Minimum number of characters",
   "symbols.max.length": "Maximum number of characters",
