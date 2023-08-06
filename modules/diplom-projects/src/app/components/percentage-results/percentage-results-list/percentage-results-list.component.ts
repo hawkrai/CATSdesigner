@@ -3,6 +3,7 @@ import {StudentPercentageResults} from '../../../models/student-percentage-resul
 import {PercentageGraph} from '../../../models/percentage-graph.model';
 import {PercentageResultsComponent} from '../percentage-results.component';
 import { TranslatePipe } from 'educats-translate';
+import {Sort} from '@angular/material';
 
 @Component({
   selector: 'app-percentage-results-list',
@@ -13,10 +14,15 @@ export class PercentageResultsListComponent implements OnInit {
 
   @Input() filteredPercentageResults: StudentPercentageResults[];
   @Input() percentageGraphs: PercentageGraph[];
+  @Input() isLecturer: boolean = false;
 
   constructor(private percentageResultsComponent: PercentageResultsComponent, public translatePipe: TranslatePipe) { }
 
   ngOnInit() {
+  }
+
+  sortData(sort: Sort) {
+    this.percentageResultsComponent.sort(sort.active, sort.direction);
   }
 
 }

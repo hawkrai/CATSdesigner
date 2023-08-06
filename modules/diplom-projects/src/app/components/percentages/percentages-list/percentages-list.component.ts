@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Percentage} from '../../../models/percentage.model';
-import {PercentagesComponent} from '../percentages.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { Percentage } from '../../../models/percentage.model';
+import { PercentagesComponent } from '../percentages.component';
 import { TranslatePipe } from 'educats-translate';
 
 @Component({
@@ -11,6 +11,8 @@ import { TranslatePipe } from 'educats-translate';
 export class PercentagesListComponent implements OnInit {
 
   @Input() percentages: Percentage[];
+  @Input() isLecturerMode: boolean = false;
+
 
   constructor(private percentagesComponent: PercentagesComponent, public translatePipe: TranslatePipe) { }
 
@@ -20,5 +22,4 @@ export class PercentagesListComponent implements OnInit {
   isLecturer(): boolean {
     return this.percentagesComponent.getDiplomUser().IsLecturer;
   }
-
 }
