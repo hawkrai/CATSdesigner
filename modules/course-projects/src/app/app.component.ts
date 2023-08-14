@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   public selectedGroup: CoreGroup;
   public detachedGroup = false;
   groupNumber: number;
+  groupId: number | null = null;
 
   private subjectId: string;
   public courseUser: CourseUser;
@@ -41,6 +42,7 @@ export class AppComponent implements OnInit {
         return this.courseUserService.getUserInfo(res.UserId);
       })).subscribe(res => {
         this.groupNumber = res.Group;
+        this.groupId = res.GroupId !== 0 ? res.GroupId : null
       });
       // this.courseUserService.getUser().subscribe(res => this.courseUser = res);
       this.retrieveGroups(false);

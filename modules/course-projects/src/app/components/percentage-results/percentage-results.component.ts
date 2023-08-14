@@ -1,18 +1,18 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {PercentageResultsService} from '../../services/percentage-results.service';
-import {Subscription} from 'rxjs';
-import {StudentPercentageResults} from '../../models/student-percentage-results.model';
-import {PercentageGraph} from '../../models/percentage-graph.model';
-import {PercentageResult} from '../../models/percentage-result.model';
-import {CourseUser} from '../../models/course-user.model';
-import {MatDialog} from '@angular/material';
-import {EditPercentageDialogComponent} from './edit-percentage-dialog/edit-percentage-dialog.component';
-import {select, Store} from '@ngrx/store';
-import {getSubjectId} from '../../store/selectors/subject.selector';
-import {IAppState} from '../../store/state/app.state';
-import {CoreGroup} from 'src/app/models/core-group.model';
-import {ToastrService} from 'ngx-toastr';
-import {TranslatePipe} from 'educats-translate';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { PercentageResultsService } from '../../services/percentage-results.service';
+import { Subscription } from 'rxjs';
+import { StudentPercentageResults } from '../../models/student-percentage-results.model';
+import { PercentageGraph } from '../../models/percentage-graph.model';
+import { PercentageResult } from '../../models/percentage-result.model';
+import { CourseUser } from '../../models/course-user.model';
+import { MatDialog } from '@angular/material';
+import { EditPercentageDialogComponent } from './edit-percentage-dialog/edit-percentage-dialog.component';
+import { select, Store } from '@ngrx/store';
+import { getSubjectId } from '../../store/selectors/subject.selector';
+import { IAppState } from '../../store/state/app.state';
+import { CoreGroup } from 'src/app/models/core-group.model';
+import { ToastrService } from 'ngx-toastr';
+import { TranslatePipe } from 'educats-translate';
 
 @Component({
   selector: 'app-percentage-results',
@@ -23,6 +23,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   @Input() selectedGroup: CoreGroup;
   @Input() courseUser: CourseUser;
+  @Input() studentGroup: string | null = null;
 
   private COUNT = 1000;
   private PAGE = 1;
@@ -36,10 +37,10 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
   private searchString = '';
 
   constructor(private percentageResultsService: PercentageResultsService,
-              public dialog: MatDialog,
-              private toastr: ToastrService,
-              private translatePipe: TranslatePipe,
-              private store: Store<IAppState>) {
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    private translatePipe: TranslatePipe,
+    private store: Store<IAppState>) {
   }
 
   ngOnInit() {
@@ -57,10 +58,11 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
 
   retrievePercentageResults() {
     this.percentageResults = null;
+    const groupId: string = this.studentGroup ? this.studentGroup : this.selectedGroup.GroupId;
     this.percentageResultsSubscription = this.percentageResultsService.getPercentageResults({
       count: this.COUNT,
       page: this.PAGE,
-      filter: '{"groupId":' + this.selectedGroup.GroupId +
+      filter: '{"groupId":' + groupId +
         ',"subjectId":"' + this.subjectId + '",' +
         '"secretaryId":' + this.selectedGroup.GroupId + ',' +
         '"searchString":"' + this.searchString + '"}',
@@ -99,7 +101,7 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
           results.push(result);
         } else {
           // @ts-ignore
-          const pr: PercentageResult = {StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '', stageName: percentageGraph.Name};
+          const pr: PercentageResult = { StudentId: student.Id, PercentageGraphId: percentageGraph.Id, Mark: '', stageName: percentageGraph.Name };
           results.push(pr);
         }
       }
