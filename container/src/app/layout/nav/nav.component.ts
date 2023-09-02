@@ -138,7 +138,9 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   public logOut(): void {
-    this.autService.logout().pipe(first()).subscribe();
+    this.autService.logout().pipe(first()).subscribe(
+      () => location.reload());
+    this.router.navigate(['/login']);
   }
 
   public onValueChange(value: any): void {
