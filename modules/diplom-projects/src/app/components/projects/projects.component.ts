@@ -140,7 +140,7 @@ export class ProjectsComponent implements OnInit {
       height: '100%',
       position: { top: '0%' },
       data: {
-        groups: this.groups,
+        groups: this.groups.sort((a, b) => a.GroupName.localeCompare(b.GroupName)),
         selectedGroups: this.groups.slice()
       }
     });

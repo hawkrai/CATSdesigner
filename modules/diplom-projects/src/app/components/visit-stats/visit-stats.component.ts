@@ -72,15 +72,15 @@ export class VisitStatsComponent implements OnInit {
 
   retrieveVisitStats() {
     if (this.diplomUser.IsSecretary && !this.isLecturer) {
-      console.log("this.diplomUser.IsSecretary")
       this.visitStatsService.getLecturerDiplomGroups({ entity: 'LecturerForSecretary', id: this.diplomUser.UserId })
         .subscribe(res => {
           this.lecturers = res.sort((a, b) => a.Name < b.Name ? -1 : 1)
           this.lecturer = res[this.index]
           this.visitStatsList = null;
+          const lecturerId: string = this.lecturers[this.index] ? this.lecturers[this.index].Id : '0';
           this.visitStatsSubscription = this.visitStatsService.getVisitStats({
             count: this.COUNT, page: this.PAGE,
-            filter: '{"isSecretary":"' + this.isLecturer + '","lecturerId":"' + this.lecturers[this.index].Id + '","searchString":"' + this.searchString + '"}'
+            filter: '{"isSecretary":"' + this.isLecturer + '","lecturerId":"' + lecturerId + '","searchString":"' + this.searchString + '"}'
           })
             .subscribe(res => {
               this.visitStatsList = this.assignResults(res.Students.Items, res.DiplomProjectConsultationDates);

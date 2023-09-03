@@ -464,6 +464,11 @@ namespace Application.Infrastructure.DPManagement
             {
                 parms.SortExpression = "Name";
             }
+
+               if (string.IsNullOrWhiteSpace(parms.SortExpression) || parms.SortExpression == "Group")
+            {
+                parms.SortExpression = "Group";
+            }
             var query = Context.GetGraduateStudents()
                 .Where(x => isLecturerSecretary || (isStudent && getBySecretaryForStudent) || x.AssignedDiplomProjects.Any(asd => asd.DiplomProject.LecturerId == userId))
                 .Where(x => secretaryId == 0 || x.Group.SecretaryId == secretaryId);

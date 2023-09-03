@@ -74,6 +74,9 @@ export class PercentageResultsComponent implements OnInit, OnChanges {
       this.direction = 'desc';
     } else {
       this.sorting = field;
+      if (field === 'Student') {
+        this.sorting = 'Id';
+      }
       this.direction = direction;
     }
     this.retrievePercentageResults();

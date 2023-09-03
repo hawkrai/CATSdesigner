@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { Time } from '@angular/common';
@@ -6,6 +6,7 @@ import { VisitStatsService } from 'src/app/services/visit-stats.service';
 import { Consultation } from 'src/app/models/consultation.model';
 import { TranslatePipe } from 'educats-translate';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 interface DialogData {
   consultations: Consultation[];
@@ -15,6 +16,7 @@ interface DialogData {
   start: any;
   end: any;
   date: any;
+  lecturerId?: string;
 }
 
 @Component({
@@ -22,7 +24,7 @@ interface DialogData {
   templateUrl: './add-date-dialog.component.html',
   styleUrls: ['./add-date-dialog.component.less']
 })
-export class AddDateDialogComponent implements OnInit {
+export class AddDateDialogComponent implements OnInit, OnDestroy {
 
   public audienceControl: FormControl = new FormControl(this.data.audience,
     [Validators.minLength(1), Validators.maxLength(3), Validators.required, this.noWhitespaceValidator]);
@@ -36,6 +38,16 @@ export class AddDateDialogComponent implements OnInit {
 
   public dateControl = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
 
+  public lecturerIdControl = new FormControl(this.data.lecturerId, [Validators.required]);
+
+  public lectors: {
+    LectorId: number;
+    UserName: string;
+    FullName: string;
+  }[] = []
+
+  private readonly subscription: Subscription = new Subscription();
+
   constructor(public dialogRef: MatDialogRef<AddDateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private visitStatsService: VisitStatsService,
@@ -46,6 +58,15 @@ export class AddDateDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.subscription.add(this.visitStatsService.getJoinedLector(this.data.subjectId).subscribe((lectors: {
+      LectorId: number;
+      UserName: string;
+      FullName: string;
+    }[]) => this.lectors = lectors))
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   initControls(): void {
@@ -55,6 +76,7 @@ export class AddDateDialogComponent implements OnInit {
       this.data.building = data.Building;
       this.data.end = data.EndTime;
       this.data.start = data.StartTime;
+      this.data.lecturerId = data.LecturerId;
     }
   }
 
@@ -80,8 +102,8 @@ export class AddDateDialogComponent implements OnInit {
       const date = new Date(this.data.date);
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
       const consultation: Consultation = {
-        Id: this.data.consultations[this.data.consultations.length - 1].Id + 1,
-        LecturerId: this.data.consultations[this.data.consultations.length - 1].LecturerId,
+        Id: this.data.consultations[this.data.consultations.length - 1] ? this.data.consultations[this.data.consultations.length - 1].Id + 1 : '0',
+        LecturerId: this.data.lecturerId,
         Day: date.toISOString(),
         SubjectId: this.data.subjectId,
         StartTime: this.data.start,
