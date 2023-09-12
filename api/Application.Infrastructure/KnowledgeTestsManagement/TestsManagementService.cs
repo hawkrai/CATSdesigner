@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Application.Core.Data;
+using Application.Infrastructure.CPManagement;
 using LMPlatform.Data.Repositories;
 using LMPlatform.Models;
 using LMPlatform.Models.KnowledgeTesting;
@@ -60,12 +61,28 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 				CheckForTestIsNotLocked(test.Id);
 				ValidateTest(test);
 			}
-			
-			using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
 			{
 				repositoriesContainer.TestsRepository.Save(test);
-				repositoriesContainer.ApplyChanges();
-				return test;
+
+				if (test.BeforeEUMK || test.ForEUMK || test.ForSelfStudy)
+				{
+					var cPManagementService = new CPManagementService();
+					var groupIds = cPManagementService.GetGroups(test.SubjectId);
+					IEnumerable<Student> students;
+					foreach (var groupId in groupIds)
+					{
+						students = repositoriesContainer.StudentsRepository.GetAll(new Query<Student>(student => student.GroupId == groupId.Id && (student.Confirmed == null || student.Confirmed.Value))
+						.Include(student => student.User))
+						.ToList();
+						int[] studentsIds = students.Select(students => students.Id).ToArray();
+						UnlockTest(studentsIds, test.Id, true);
+					}
+				}
+                repositoriesContainer.ApplyChanges();
+
+                return test;
 			}
 		}
 
