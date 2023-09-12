@@ -26,7 +26,7 @@ export class AddProjectDialogComponent {
   constructor(public dialogRef: MatDialogRef<AddProjectDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
               public translatePipe: TranslatePipe) {
-    this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId)).sort((a, b) => a.GroupName.localeCompare(b.GroupName));
+    this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId));
     this.includeNone();
   }
 

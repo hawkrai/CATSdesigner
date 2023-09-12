@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,18 @@ export class VisitStatsService {
 
   public getVisitStats(params: any): Observable<any> {
     return this.http.get('api/DiplomProjectConsultation', { params: new HttpParams({ fromObject: params }) });
+  }
+
+  public getJoinedLector(subjectId: string, loadSelf: boolean = false): Observable<{
+    LectorId: number;
+    UserName: string;
+    FullName: string;
+  }[]> {
+    const params = new HttpParams()
+      .set('loadSelf', loadSelf + '');
+    return this.http.get('Services/CoreService.svc/GetJoinedLector/' + subjectId, { params }).pipe(
+      map(res => res['Lectors'])
+    );
   }
 
   public getLecturerDiplomGroups(params: any): Observable<any> {

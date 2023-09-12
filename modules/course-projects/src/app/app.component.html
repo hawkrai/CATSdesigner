@@ -73,7 +73,7 @@
     <app-task-sheet *ngIf="tab === 2" [courseUser]="courseUser" [groups]="groups"></app-task-sheet>
     <app-percentages *ngIf="tab === 3" [courseUser]="courseUser"></app-percentages>
     <app-percentage-results *ngIf="tab === 4 && selectedGroup" [courseUser]="courseUser"
-      [selectedGroup]="selectedGroup">
+      [selectedGroup]="selectedGroup" [studentGroup]="groupId">
       <div [ngStyle]="{'display': (tab === 4 || tab === 5) ? 'flex' : 'none'}" groupPicker class="picker">
         <mat-form-field *ngIf="courseUser.IsLecturer">
           <mat-select [value]="groups ? groups[0].GroupId : ''">

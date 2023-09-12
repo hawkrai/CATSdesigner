@@ -49,7 +49,7 @@
     <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.course.list.dialog.actions.cancel' | translate : 'Отмена'}}</button>
     <button mat-flat-button class="dialog-button" id="saveButton" color="primary"
             (click)="saveTheme()"
-            [disabled]="(nameControl.invalid && !data.edit) || ((data.edit && originName === nameControl.value) && areGroupsNotChanged)"
+            [disabled]="(nameControl.invalid && !data.edit) || ((data.edit && originName === nameControl.value))"
     >
       {{'text.course.list.dialog.actions.save' | translate : 'Сохранить'}}
     </button>

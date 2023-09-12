@@ -127,7 +127,7 @@ export class DefenseComponent implements OnInit {
       width: '550px',
       data: {
         title: this.translatePipe.transform('text.course.defence.dialog.title', 'На защиту курсового проекта'),
-        buttonText: this.translatePipe.transform('text.course.defence.dialog.action', 'Отправить работу'),
+        buttonText: this.translatePipe.transform('text.course.defence.dialog.action', 'Отправить'),
         body,
         model: this.translatePipe.transform('text.course.defence.dialog.comment', 'Комментарий')
       }

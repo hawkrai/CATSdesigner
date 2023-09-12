@@ -5,15 +5,28 @@
   </button>
 </div>
 <div mat-dialog-content>
-  <mat-form-field class="form-field">
-    <mat-label>{{'text.course.percentages.list.stage.date' | translate : 'Дата'}}</mat-label>
-    <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)"
-      readonly>
-    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-    <mat-datepicker #dp></mat-datepicker>
-    <mat-error *ngIf="dateControl.invalid">{{'text.course.list.dialog.data.error.date' | translate : 'Неправильный
-      формат (ДД.ММ.ГГГГ)'}}</mat-error>
-  </mat-form-field>
+  <div class="form-container">
+    <mat-form-field class="form-field">
+      <mat-label>{{'text.course.percentages.list.stage.date' | translate : 'Дата'}}</mat-label>
+      <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)"
+        readonly>
+      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+      <mat-datepicker #dp></mat-datepicker>
+      <mat-error *ngIf="dateControl.invalid">{{'text.course.list.dialog.data.error.date' | translate : 'Неправильный
+        формат (ДД.ММ.ГГГГ)'}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>{{'text.course.percentages.list.stage.lecturer' | translate : 'Лектор'}}</mat-label>
+      <mat-select [formControl]="lecturerIdControl">
+        <mat-option *ngFor="let lector of lectors" [value]="lector.LectorId">
+          <span class="icon-container">
+            {{ lector.FullName }}
+          </span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <div class="form-container">
     <mat-form-field class="form-field">
