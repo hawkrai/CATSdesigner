@@ -3,4 +3,4 @@
 /build
 /ChatServer
 /cicd
-/node_modules
+**/node_modules
