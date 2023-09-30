@@ -1,6 +1,5 @@
 /.vscode
 /api
-/build
 /ChatServer
 /cicd
 **/node_modules
