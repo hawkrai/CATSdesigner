@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
     "prettier": "prettier ./src --write"
   },
   "devDependencies": {
