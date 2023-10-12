@@ -1,8 +1,8 @@
-import { PageInfo } from "./page";
+import { PageInfo } from './page'
 
 export class FilesPage<T> {
-    Items: T[];
-    PageInfo: PageInfo;
-    TotalCount: number;
-    ServerPath: string;
+  Items: T[]
+  PageInfo: PageInfo
+  TotalCount: number
+  ServerPath: string
 }

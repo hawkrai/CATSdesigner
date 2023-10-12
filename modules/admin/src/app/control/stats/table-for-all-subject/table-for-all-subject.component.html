@@ -1,54 +1,68 @@
 <div class="stats-table">
-    <table mat-table id="excel-table" [dataSource]="dataSource">
-        <ng-container matColumnDef="position">
-            <th id="position" mat-header-cell *matHeaderCellDef [hidden]="true"> No. </th>
-            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-        </ng-container>
+  <table mat-table id="excel-table" [dataSource]="dataSource">
+    <ng-container matColumnDef="position">
+      <th id="position" mat-header-cell *matHeaderCellDef [hidden]="true">
+        No.
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="surname">
-            <th id="surname" mat-header-cell *matHeaderCellDef [hidden]="true"> Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.surname}} </td>
-        </ng-container>
+    <ng-container matColumnDef="surname">
+      <th id="surname" mat-header-cell *matHeaderCellDef [hidden]="true">
+        Name
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.surname }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="omissions">
-            <th mat-header-cell *matHeaderCellDef> Пропуски, ч </th>
-            <td mat-cell *matCellDef="let element"> {{element.omissions}} </td>
-        </ng-container>
+    <ng-container matColumnDef="omissions">
+      <th mat-header-cell *matHeaderCellDef>Пропуски, ч</th>
+      <td mat-cell *matCellDef="let element">{{ element.omissions }}</td>
+    </ng-container>
 
-        <ng-container matColumnDef="rating">
-            <th mat-header-cell *matHeaderCellDef> Рейтинг </th>
-            <td mat-cell *matCellDef="let element"> {{element.rating}} </td>
-        </ng-container>
+    <ng-container matColumnDef="rating">
+      <th mat-header-cell *matHeaderCellDef>Рейтинг</th>
+      <td mat-cell *matCellDef="let element">{{ element.rating }}</td>
+    </ng-container>
 
-        <!-- Headers -->
-        <ng-container matColumnDef="main-header">
-            <th mat-header-cell *matHeaderCellDef [attr.colspan]="6">
-                <div class="main-header">
-                    <p>Группа: 10702115</p>
-                    <p>Предмет: Все предметы</p>
-                </div>
-            </th>
-        </ng-container>
+    <!-- Headers -->
+    <ng-container matColumnDef="main-header">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="6">
+        <div class="main-header">
+          <p>Группа: 10702115</p>
+          <p>Предмет: Все предметы</p>
+        </div>
+      </th>
+    </ng-container>
 
-        <ng-container matColumnDef="family-header">
-            <th mat-header-cell *matHeaderCellDef [attr.colspan]="1" [attr.rowspan]="2">
-                #
-            </th>
-        </ng-container>
+    <ng-container matColumnDef="family-header">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        [attr.colspan]="1"
+        [attr.rowspan]="2"
+      >
+        #
+      </th>
+    </ng-container>
 
-        <ng-container matColumnDef="option-header">
-            <th mat-header-cell *matHeaderCellDef [attr.colspan]="1" [attr.rowspan]="2">
-                Фамилия
-            </th>
-        </ng-container>
+    <ng-container matColumnDef="option-header">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        [attr.colspan]="1"
+        [attr.rowspan]="2"
+      >
+        Фамилия
+      </th>
+    </ng-container>
 
-        <ng-container matColumnDef="subject-header-row0">
-            <th mat-header-cell *matHeaderCellDef [attr.colspan]="2"> Second group </th>
-        </ng-container>
+    <ng-container matColumnDef="subject-header-row0">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">Second group</th>
+    </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['main-header']"></tr>
-        <tr mat-header-row *matHeaderRowDef="this.headerRow"></tr>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+    <tr mat-header-row *matHeaderRowDef="['main-header']"></tr>
+    <tr mat-header-row *matHeaderRowDef="this.headerRow"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
 </div>

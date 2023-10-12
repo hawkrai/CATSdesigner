@@ -1,17 +1,17 @@
 /deep/ th {
-    width: 100px;
+  width: 100px;
 }
 
 /deep/ tr {
-    height: 60px;
+  height: 60px;
 }
 
 /deep/ mat-paginator {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 /deep/ .mat-paginator-page-size-label {
-    display: none;
+  display: none;
 }
 
 /deep/ .mat-header-cell {
@@ -45,7 +45,8 @@
 
 /deep/ table {
   border: 1px solid lavender;
-  box-shadow: 0 5px 5px -3px rgba(0,0,0,0), 0 8px 10px 1px rgba(0,0,0,0), 0 3px 14px 2px rgba(0,0,0,0);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0), 0 8px 10px 1px rgba(0, 0, 0, 0),
+    0 3px 14px 2px rgba(0, 0, 0, 0);
   width: 100%;
 }
 
@@ -78,7 +79,8 @@
   top: 50%;
 }
 
-/deep/ .mat-raised-button, .mat-button {
+/deep/ .mat-raised-button,
+.mat-button {
   font-size: 14px;
   display: block;
   position: relative;

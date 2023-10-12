@@ -1,34 +1,34 @@
 h1 {
-    width: 100%;
-    margin-bottom: 20px;
-    font-size: 33px;
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 33px;
 }
 
 .mat-dialog-title {
-    display: flex;
-    border-bottom: 1px;
+  display: flex;
+  border-bottom: 1px;
 }
 
 mat-dialog-content {
-    width: 450px;
+  width: 450px;
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 .checkbox {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .btn {
-    background-color: cornflowerblue;
-    color: white;
-    border: white;
+  background-color: cornflowerblue;
+  color: white;
+  border: white;
 }
 
 mat-dialog-actions {
-    float: right;
+  float: right;
 }
 
 .close-icon {

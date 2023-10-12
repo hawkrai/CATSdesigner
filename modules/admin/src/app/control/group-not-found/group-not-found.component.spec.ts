@@ -1,25 +1,24 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { GroupNotFoundComponent } from './group-not-found.component';
+import { GroupNotFoundComponent } from './group-not-found.component'
 
 describe('GroupNotFoundComponent', () => {
-  let component: GroupNotFoundComponent;
-  let fixture: ComponentFixture<GroupNotFoundComponent>;
+  let component: GroupNotFoundComponent
+  let fixture: ComponentFixture<GroupNotFoundComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupNotFoundComponent ]
-    })
-    .compileComponents();
-  }));
+      declarations: [GroupNotFoundComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GroupNotFoundComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(GroupNotFoundComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})
