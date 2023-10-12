@@ -1,8 +1,13 @@
 <div class="modal-header">
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon class="mat-icon-rtl-mirror" color="basic" [matTooltip]="'text.editor.close' | translate: 'Закрыть'">close</mat-icon>
+    <mat-icon
+      class="mat-icon-rtl-mirror"
+      color="basic"
+      [matTooltip]="'text.editor.close' | translate: 'Закрыть'"
+      >close</mat-icon
+    >
   </button>
 </div>
 <div mat-dialog-content>
-  <app-test-execution testId="{{data.Id}}"></app-test-execution>
+  <app-test-execution testId="{{ data.Id }}"></app-test-execution>
 </div>

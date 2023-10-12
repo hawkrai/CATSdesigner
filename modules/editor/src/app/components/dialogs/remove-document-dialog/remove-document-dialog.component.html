@@ -1,13 +1,35 @@
 <div class="modal-header">
-  <h1 mat-dialog-title>{{'text.editor.confirmation' | translate: 'Подтверждение'}}</h1>
+  <h1 mat-dialog-title>
+    {{ 'text.editor.confirmation' | translate: 'Подтверждение' }}
+  </h1>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon class="mat-icon-rtl-mirror" color="basic" [matTooltip]="'text.editor.close' | translate: 'Закрыть'">close</mat-icon>
+    <mat-icon
+      class="mat-icon-rtl-mirror"
+      color="basic"
+      [matTooltip]="'text.editor.close' | translate: 'Закрыть'"
+      >close</mat-icon
+    >
   </button>
 </div>
 <div mat-dialog-content>
-  <p>{{'text.editor.remove.confirmation.text' | translate: 'Вы уверены, что хотите удалить'}} "{{sanitizeHtml(data.Name)}}"?</p>
+  <p>
+    {{
+      'text.editor.remove.confirmation.text'
+        | translate: 'Вы уверены, что хотите удалить'
+    }}
+    "{{ sanitizeHtml(data.Name) }}"?
+  </p>
 </div>
 <div mat-dialog-actions align="right">
-  <button mat-raised-button (click)="onNoClick()">{{'text.editor.no' | translate: 'Нет'}}</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data.Id" cdkFocusInitial>{{'text.editor.yes' | translate: 'Да'}}</button>
+  <button mat-raised-button (click)="onNoClick()">
+    {{ 'text.editor.no' | translate: 'Нет' }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [mat-dialog-close]="data.Id"
+    cdkFocusInitial
+  >
+    {{ 'text.editor.yes' | translate: 'Да' }}
+  </button>
 </div>
