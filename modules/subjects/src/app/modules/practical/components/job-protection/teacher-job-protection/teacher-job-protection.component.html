@@ -2,40 +2,79 @@
   <ng-container *ngIf="groupJobProtection">
     <div class="job-protection__accordion">
       <mat-accordion>
-        <mat-expansion-panel *ngFor="let studentJobProtection of groupJobProtection.StudentsJobProtections"
+        <mat-expansion-panel
+          *ngFor="
+            let studentJobProtection of groupJobProtection.StudentsJobProtections
+          "
           (opened)="onSelectStudent(studentJobProtection.StudentId)"
-          [expanded]="selectedStudentId === studentJobProtection.StudentId" (closed)="onSelectStudent(0)">
+          [expanded]="selectedStudentId === studentJobProtection.StudentId"
+          (closed)="onSelectStudent(0)"
+        >
           <mat-expansion-panel-header>
-            <mat-panel-title style="display: flex; align-items: flex-end;">
-              {{studentJobProtection.StudentName}}
-              <mat-icon class="priority" *ngIf="studentJobProtection.HasProtection" [color]="'warn'"
-                [matTooltip]="'text.subjects.practicals.unverified' | translate:'Имеются непроверенные практические работы'"
-                matTooltipPosition="below">priority_high</mat-icon>
+            <mat-panel-title style="display: flex; align-items: flex-end">
+              {{ studentJobProtection.StudentName }}
+              <mat-icon
+                class="priority"
+                *ngIf="studentJobProtection.HasProtection"
+                [color]="'warn'"
+                [matTooltip]="
+                  'text.subjects.practicals.unverified'
+                    | translate: 'Имеются непроверенные практические работы'
+                "
+                matTooltipPosition="below"
+                >priority_high</mat-icon
+              >
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <app-job-protection-content [practicalFiles]="practicalFiles$ | async" [actionsTemplate]="actionsTemplate">
+          <app-job-protection-content
+            [practicalFiles]="practicalFiles$ | async"
+            [actionsTemplate]="actionsTemplate"
+          >
           </app-job-protection-content>
           <ng-template let-file="file" #actionsTemplate>
-            <button mat-icon-button color="primary" *ngIf="file.Attachments.length"
-              [matTooltip]="'text.subjects.plagiarism.check' | translate:'Проверить на плагиат'"
-              (click)="checkPlagiarism(file.Id)">
+            <button
+              mat-icon-button
+              color="primary"
+              *ngIf="file.Attachments.length"
+              [matTooltip]="
+                'text.subjects.plagiarism.check'
+                  | translate: 'Проверить на плагиат'
+              "
+              (click)="checkPlagiarism(file.Id)"
+            >
               <mat-icon>visibility</mat-icon>
             </button>
             <ng-container *ngIf="!file.IsReturned && !file.IsReceived">
-              <button mat-icon-button color="primary"
-                [matTooltip]="'text.subjects.accept' | translate:'Принять работу'"
-                (click)="receivePractical(file.Id, file.UserId)">
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="
+                  'text.subjects.accept' | translate: 'Принять работу'
+                "
+                (click)="receivePractical(file.Id, file.UserId)"
+              >
                 <mat-icon>thumb_up_alt</mat-icon>
               </button>
-              <button mat-icon-button color="primary"
-                [matTooltip]="'text.subjects.return' | translate:'Отправить на доработку'"
-                (click)="addPractical(file.UserId, file.PracticalId, file.Id)">
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="
+                  'text.subjects.return' | translate: 'Отправить на доработку'
+                "
+                (click)="addPractical(file.UserId, file.PracticalId, file.Id)"
+              >
                 <mat-icon>arrow_forward</mat-icon>
               </button>
             </ng-container>
-            <button *ngIf="file.IsReceived" mat-icon-button color="primary"
-              [matTooltip]="'text.subjects.reject' | translate:'Отклонить работу'"
-              (click)="cancelPractical(file.Id, file.UserId)">
+            <button
+              *ngIf="file.IsReceived"
+              mat-icon-button
+              color="primary"
+              [matTooltip]="
+                'text.subjects.reject' | translate: 'Отклонить работу'
+              "
+              (click)="cancelPractical(file.Id, file.UserId)"
+            >
               <mat-icon>thumb_down_alt</mat-icon>
             </button>
           </ng-template>

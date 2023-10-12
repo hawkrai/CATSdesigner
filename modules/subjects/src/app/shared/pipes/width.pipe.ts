@@ -1,10 +1,10 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core'
 
 @Pipe({
-    name: 'width'
+  name: 'width',
 })
 export class WidthPipe implements PipeTransform {
-    transform(elem: HTMLElement): number {
-       return elem.getBoundingClientRect().width;
-    }
+  transform(elem: HTMLElement): number {
+    return elem.getBoundingClientRect().width
+  }
 }

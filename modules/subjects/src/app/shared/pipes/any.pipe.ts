@@ -1,11 +1,10 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core'
 
 @Pipe({
-    name: 'any'
+  name: 'any',
 })
 export class AnyPipe implements PipeTransform {
-    transform(array: any[], field: string = null): boolean {
-        return array.some(v => field ? !!v[field] : !!v);
-    }
-    
+  transform(array: any[], field: string = null): boolean {
+    return array.some((v) => (field ? !!v[field] : !!v))
+  }
 }

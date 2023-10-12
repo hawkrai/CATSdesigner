@@ -1,3 +1,3 @@
 export class HasJobProtection {
-    HasJobProtection: boolean;
+  HasJobProtection: boolean
 }

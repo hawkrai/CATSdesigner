@@ -1,7 +1,7 @@
-import { ScheduleProtection } from "./schedule-protection.model";
+import { ScheduleProtection } from './schedule-protection.model'
 
 export class ScheduleProtectionLab extends ScheduleProtection {
-    ScheduleProtectionLabId: number;
-    SubGroup: number;
-    SubGroupId: number;
+  ScheduleProtectionLabId: number
+  SubGroup: number
+  SubGroupId: number
 }

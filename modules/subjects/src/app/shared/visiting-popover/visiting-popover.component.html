@@ -1,53 +1,77 @@
 <app-popover-dialog [width]="800">
   <ng-container title>
-    {{data.title}}
-    <span class="title-date">{{data.body.date | date:'dd.MM.yyyy'}}</span>
+    {{ data.title }}
+    <span class="title-date">{{ data.body.date | date: 'dd.MM.yyyy' }}</span>
   </ng-container>
   <ng-container body>
-    <div class="visiting-popover__table" *ngIf="data.body" style="margin-top: 4%;">
+    <div
+      class="visiting-popover__table"
+      *ngIf="data.body"
+      style="margin-top: 4%"
+    >
       <mat-table [dataSource]="data.body.students" class="mat-elevation-z8">
-    
         <ng-container matColumnDef="position">
           <mat-header-cell *matHeaderCellDef> №</mat-header-cell>
-          <mat-cell *matCellDef="let i = index"> {{i + 1}} </mat-cell>
+          <mat-cell *matCellDef="let i = index"> {{ i + 1 }} </mat-cell>
         </ng-container>
-    
+
         <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef> {{'fio' | translate:'ФИО'}} </mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef>
+            {{ 'fio' | translate: 'ФИО' }}
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
         </ng-container>
-    
+
         <ng-container matColumnDef="mark">
-          <mat-header-cell *matHeaderCellDef> {{'text.number.hours.missed' | translate:'Пропущено часов'}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>
+            {{
+              'text.number.hours.missed' | translate: 'Пропущено часов'
+            }}</mat-header-cell
+          >
           <mat-cell *matCellDef="let element">
             <mat-form-field>
               <mat-select [(ngModel)]="+element.mark" name="mark">
                 <mat-option></mat-option>
                 <mat-option *ngFor="let mark of possibleMarks" [value]="mark">
-                  {{mark}}
+                  {{ mark }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
           </mat-cell>
         </ng-container>
-    
+
         <ng-container matColumnDef="comment">
-          <mat-header-cell *matHeaderCellDef> {{'comment' | translate:'Комментарий'}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>
+            {{ 'comment' | translate: 'Комментарий' }}</mat-header-cell
+          >
           <mat-cell *matCellDef="let element">
-            <mat-form-field style="margin-right: 20px;">
-              <input name="comment" matInput [(ngModel)]="element.comment">
+            <mat-form-field style="margin-right: 20px">
+              <input name="comment" matInput [(ngModel)]="element.comment" />
             </mat-form-field>
-            <mat-checkbox [matTooltip]="'comment.for.student' | translate:'Показать комментарий студенту'" matTooltipPosition="left"  name="showForStudent" [(ngModel)]="element.showForStudent" [color]="'primary'"></mat-checkbox>
+            <mat-checkbox
+              [matTooltip]="
+                'comment.for.student'
+                  | translate: 'Показать комментарий студенту'
+              "
+              matTooltipPosition="left"
+              name="showForStudent"
+              [(ngModel)]="element.showForStudent"
+              [color]="'primary'"
+            ></mat-checkbox>
           </mat-cell>
         </ng-container>
-    
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
       </mat-table>
     </div>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClick()">{{'button.cancel' | translate:'Отмена'}}</button>
-    <button mat-raised-button (click)="onSave()" color="primary">{{data.buttonText}}</button>
+    <button mat-raised-button (click)="onClick()">
+      {{ 'button.cancel' | translate: 'Отмена' }}
+    </button>
+    <button mat-raised-button (click)="onSave()" color="primary">
+      {{ data.buttonText }}
+    </button>
   </ng-container>
 </app-popover-dialog>

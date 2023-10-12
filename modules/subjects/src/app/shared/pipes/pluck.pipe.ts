@@ -1,11 +1,10 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core'
 
 @Pipe({
-    name: 'pluck'
+  name: 'pluck',
 })
 export class PluckPipe implements PipeTransform {
-
-    transform(array: any[],  key: string) {
-        return array.map(v => v[key]);
-    }
+  transform(array: any[], key: string) {
+    return array.map((v) => v[key])
+  }
 }

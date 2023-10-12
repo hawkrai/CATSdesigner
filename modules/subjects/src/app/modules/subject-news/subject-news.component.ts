@@ -1,121 +1,160 @@
-import { DialogService } from './../../services/dialog.service';
-import { map } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
-import { Observable } from 'rxjs';
-import {Component, OnDestroy, OnInit } from '@angular/core';
-import {News} from '../../models/news.model';
-import {DeletePopoverComponent} from "../../shared/delete-popover/delete-popover.component";
-import {IAppState} from "../../store/state/app.state";
-import {Store} from '@ngrx/store';
-import {NewsPopoverComponent} from './news-popover/news-popover.component';
-import {DialogData} from '../../models/dialog-data.model';
-import {Attachment} from '../../models/file/attachment.model';
-import * as subjectSelectors from '../../store/selectors/subject.selector';
-import * as newsSelectors from '../../store/selectors/news.selectors';
-import * as newsActions from '../../store/actions/news.actions';
-import * as filesActions from '../../store/actions/files.actions';
-import {SubSink} from 'subsink';
-import { Help } from 'src/app/models/help.model';
-import { MediaMatcher } from '@angular/cdk/layout';
-import { TranslatePipe } from 'educats-translate';
+import { DialogService } from './../../services/dialog.service'
+import { map } from 'rxjs/operators'
+import { combineLatest } from 'rxjs'
+import { Observable } from 'rxjs'
+import { Component, OnDestroy, OnInit } from '@angular/core'
+import { News } from '../../models/news.model'
+import { DeletePopoverComponent } from '../../shared/delete-popover/delete-popover.component'
+import { IAppState } from '../../store/state/app.state'
+import { Store } from '@ngrx/store'
+import { NewsPopoverComponent } from './news-popover/news-popover.component'
+import { DialogData } from '../../models/dialog-data.model'
+import { Attachment } from '../../models/file/attachment.model'
+import * as subjectSelectors from '../../store/selectors/subject.selector'
+import * as newsSelectors from '../../store/selectors/news.selectors'
+import * as newsActions from '../../store/actions/news.actions'
+import * as filesActions from '../../store/actions/files.actions'
+import { SubSink } from 'subsink'
+import { Help } from 'src/app/models/help.model'
+import { MediaMatcher } from '@angular/cdk/layout'
+import { TranslatePipe } from 'educats-translate'
 
 interface NewsState {
   color: string
-  isTeacher: boolean;
-  news: News[];
+  isTeacher: boolean
+  news: News[]
   selectedNews: News
 }
 
 @Component({
   selector: 'app-subject-news',
   templateUrl: './subject-news.component.html',
-  styleUrls: ['./subject-news.component.less']
+  styleUrls: ['./subject-news.component.less'],
 })
 export class SubjectNewsComponent implements OnInit, OnDestroy {
-
-  state$: Observable<NewsState>;
-  private subs = new SubSink();
-  tabletMatcher: MediaQueryList;
+  state$: Observable<NewsState>
+  private subs = new SubSink()
+  tabletMatcher: MediaQueryList
 
   constructor(
     private dialogService: DialogService,
     private translate: TranslatePipe,
     private store: Store<IAppState>,
-    private mediaMatcher: MediaMatcher) {
-  }
+    private mediaMatcher: MediaMatcher
+  ) {}
 
   ngOnInit() {
-    this.tabletMatcher = this.mediaMatcher.matchMedia('(max-width: 650px)');
-    this.tabletMatcher.addEventListener('change', this.emptyListener);
-    this.store.dispatch(newsActions.loadNews());
+    this.tabletMatcher = this.mediaMatcher.matchMedia('(max-width: 650px)')
+    this.tabletMatcher.addEventListener('change', this.emptyListener)
+    this.store.dispatch(newsActions.loadNews())
     this.state$ = combineLatest(
       this.store.select(subjectSelectors.getSubjectColor),
       this.store.select(subjectSelectors.isTeacher),
       this.store.select(newsSelectors.getNews),
-      this.store.select(newsSelectors.getSelectedNews)).pipe(
-      map(([color, isTeacher, news, selectedNews]) => ({ color, isTeacher, news, selectedNews }))
-    );
+      this.store.select(newsSelectors.getSelectedNews)
+    ).pipe(
+      map(([color, isTeacher, news, selectedNews]) => ({
+        color,
+        isTeacher,
+        news,
+        selectedNews,
+      }))
+    )
   }
 
   private emptyListener() {}
 
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
-    this.store.dispatch(newsActions.resetNews());
-    this.tabletMatcher.removeEventListener('change', this.emptyListener);
+    this.subs.unsubscribe()
+    this.store.dispatch(newsActions.resetNews())
+    this.tabletMatcher.removeEventListener('change', this.emptyListener)
   }
 
   disableNews(disable: boolean): void {
-    this.store.dispatch(disable ? newsActions.disableAllNews() : newsActions.enableAllNews());
+    this.store.dispatch(
+      disable ? newsActions.disableAllNews() : newsActions.enableAllNews()
+    )
   }
 
   onSelectNews(news: News): void {
-    this.store.dispatch(newsActions.setSelectedNews({ news }));
+    this.store.dispatch(newsActions.setSelectedNews({ news }))
   }
 
   constructorNews(news: News): void {
-    const newNews = this.createNews(news);
+    const newNews = this.createNews(news)
     const dialogData: DialogData = {
-      title: news ? this.translate.transform('text.subjects.news.editing', 'Редактирование новости') : this.translate.transform('text.subjects.news.adding', 'Добавление новости'),
+      title: news
+        ? this.translate.transform(
+            'text.subjects.news.editing',
+            'Редактирование новости'
+          )
+        : this.translate.transform(
+            'text.subjects.news.adding',
+            'Добавление новости'
+          ),
       buttonText: this.translate.transform('button.save', 'Сохранить'),
-      model: newNews
-    };
-    const dialogRef = this.dialogService.openDialog(NewsPopoverComponent, dialogData);
+      model: newNews,
+    }
+    const dialogRef = this.dialogService.openDialog(
+      NewsPopoverComponent,
+      dialogData
+    )
 
     this.subs.add(
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe((result) => {
         if (result) {
-          result.attachments = JSON.stringify(result.attachments);
-          this.store.dispatch(newsActions.saveNews({ news: result }));
+          result.attachments = JSON.stringify(result.attachments)
+          this.store.dispatch(newsActions.saveNews({ news: result }))
         }
       })
-    );
+    )
   }
 
   deleteNews(news: News) {
     const dialogData: DialogData = {
-      title: this.translate.transform('text.subjects.news.deleting', 'Удаление новости'),
-      body: `${this.translate.transform('text.news.accusative', 'Новость').toLowerCase()} "` + news.Title + '"',
+      title: this.translate.transform(
+        'text.subjects.news.deleting',
+        'Удаление новости'
+      ),
+      body:
+        `${this.translate
+          .transform('text.news.accusative', 'Новость')
+          .toLowerCase()} "` +
+        news.Title +
+        '"',
       buttonText: this.translate.transform('button.delete', 'Удалить'),
-      model: news.NewsId
-    };
-    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
+      model: news.NewsId,
+    }
+    const dialogRef = this.dialogService.openDialog(
+      DeletePopoverComponent,
+      dialogData
+    )
 
     this.subs.add(
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe((result) => {
         if (result) {
-          this.store.dispatch(newsActions.deleteNewsById({ id: news.NewsId }));
+          this.store.dispatch(newsActions.deleteNewsById({ id: news.NewsId }))
         }
       })
-    );
+    )
   }
 
   fileDownload(attachment: Attachment) {
-    this.store.dispatch(filesActions.downloadFile({ pathName: attachment.PathName, fileName: attachment.FileName }));
+    this.store.dispatch(
+      filesActions.downloadFile({
+        pathName: attachment.PathName,
+        fileName: attachment.FileName,
+      })
+    )
   }
 
   private createNews(news: News) {
-    const nowDate = new Date().toISOString().split('T')[0].split('-').reverse().join('.');
+    const nowDate = new Date()
+      .toISOString()
+      .split('T')[0]
+      .split('-')
+      .reverse()
+      .join('.')
     const newNews = {
       id: news ? news.NewsId : '0',
       title: news ? news.Title : '',
@@ -124,13 +163,16 @@ export class SubjectNewsComponent implements OnInit, OnDestroy {
       isOldDate: false,
       dateCreate: news ? news.DateCreate : nowDate,
       pathFile: news ? news.PathFile : '',
-      attachments: news ? news.Attachments : []
-    };
-    return newNews;
+      attachments: news ? news.Attachments : [],
+    }
+    return newNews
   }
 
   help: Help = {
-    message: this.translate.transform('text.help.news','Чтобы скрыть или показать все новости нажмите одноимённую кнопку. Для редактирования или удаления новости наведите курсор на нужную новость и нажмите на нужную иконку.'),
-    action: this.translate.transform('button.understand','Понятно')
-  };
+    message: this.translate.transform(
+      'text.help.news',
+      'Чтобы скрыть или показать все новости нажмите одноимённую кнопку. Для редактирования или удаления новости наведите курсор на нужную новость и нажмите на нужную иконку.'
+    ),
+    action: this.translate.transform('button.understand', 'Понятно'),
+  }
 }

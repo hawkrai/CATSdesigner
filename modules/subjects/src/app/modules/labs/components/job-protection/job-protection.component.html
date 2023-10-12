@@ -1,11 +1,15 @@
 <div class="job-protection">
-  <app-student-job-protection *ngIf="!isTeacher" 
-  (onAddFile)="addLab($event)" 
-  (onDeleteFile)="deleteLab($event)">
-</app-student-job-protection>
+  <app-student-job-protection
+    *ngIf="!isTeacher"
+    (onAddFile)="addLab($event)"
+    (onDeleteFile)="deleteLab($event)"
+  >
+  </app-student-job-protection>
 
-<app-teacher-job-protection *ngIf="isTeacher" 
-  (onCheckPlugiarism)="checkPlagiarism($event)" 
-  (onAddFile)="addLab($event)">
-</app-teacher-job-protection>
+  <app-teacher-job-protection
+    *ngIf="isTeacher"
+    (onCheckPlugiarism)="checkPlagiarism($event)"
+    (onAddFile)="addLab($event)"
+  >
+  </app-teacher-job-protection>
 </div>

@@ -1,21 +1,30 @@
 <app-popover-dialog width="400">
   <ng-container title>
-    {{data.title}}
+    {{ data.title }}
   </ng-container>
   <ng-container body>
     <section class="example-section">
-      <mat-checkbox *ngFor="let attachment of attachments"
-                    class="example-margin"
-                    [color]="'primary'"
-                    [(ngModel)]="attachment.isDownload"
+      <mat-checkbox
+        *ngFor="let attachment of attachments"
+        class="example-margin"
+        [color]="'primary'"
+        [(ngModel)]="attachment.isDownload"
       >
-        
-        <span class="text-ow">{{attachment.Name}}</span>
+        <span class="text-ow">{{ attachment.Name }}</span>
       </mat-checkbox>
     </section>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button mat-dialog-close>{{'button.cancel' | translate:'Отмена'}}</button>
-    <button mat-raised-button (click)="download()" color="primary" [disabled]="downloadDisabled">{{data.buttonText}}</button>
+    <button mat-raised-button mat-dialog-close>
+      {{ 'button.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-raised-button
+      (click)="download()"
+      color="primary"
+      [disabled]="downloadDisabled"
+    >
+      {{ data.buttonText }}
+    </button>
   </ng-container>
 </app-popover-dialog>

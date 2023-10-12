@@ -1,11 +1,11 @@
-import { AttachedFile } from './../../models/file/attached-file.model';
+import { AttachedFile } from './../../models/file/attached-file.model'
 
 export interface IFilesState {
-    files: AttachedFile[],
-    isDownloading: boolean
+  files: AttachedFile[]
+  isDownloading: boolean
 }
 
 export const filesInitialState: IFilesState = {
-    files: [],
-    isDownloading: false
+  files: [],
+  isDownloading: false,
 }

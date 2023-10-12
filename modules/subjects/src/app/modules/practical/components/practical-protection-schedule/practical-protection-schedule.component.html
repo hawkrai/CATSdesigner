@@ -1,38 +1,70 @@
-<div class="protection-schedule-component" *ngIf="state$ | async as state; else: load">
-    <div class="protection-schedule-component__body">
-      <div class="protection-schedule-component__actions" *ngIf="state.isTeacher">
-        <button mat-raised-button color="primary" (click)="settingVisitDate()">{{'text.schedule.management.dates' | translate:'Управление датами'}}</button>
-      </div>
-      <div class="protection-schedule-component-table">
-        <table mat-table [dataSource]="state.practicals" class="mat-elevation-z14">
-          <ng-container matColumnDef="position">
-            <th mat-header-cell *matHeaderCellDef>№</th>
-            <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
-          </ng-container>
+<div
+  class="protection-schedule-component"
+  *ngIf="state$ | async as state; else load"
+>
+  <div class="protection-schedule-component__body">
+    <div class="protection-schedule-component__actions" *ngIf="state.isTeacher">
+      <button mat-raised-button color="primary" (click)="settingVisitDate()">
+        {{ 'text.schedule.management.dates' | translate: 'Управление датами' }}
+      </button>
+    </div>
+    <div class="protection-schedule-component-table">
+      <table
+        mat-table
+        [dataSource]="state.practicals"
+        class="mat-elevation-z14"
+      >
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>№</th>
+          <td mat-cell *matCellDef="let i = index">{{ i + 1 }}</td>
+        </ng-container>
 
-          <ng-container matColumnDef="theme">
-            <th mat-header-cell *matHeaderCellDef>{{'text.subjects.practicals' | translate:'Практическое занятие'}}</th>
-            <td mat-cell *matCellDef="let element"> {{element.Theme}}</td>
-          </ng-container>
+        <ng-container matColumnDef="theme">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'text.subjects.practicals' | translate: 'Практическое занятие' }}
+          </th>
+          <td mat-cell *matCellDef="let element">{{ element.Theme }}</td>
+        </ng-container>
 
-          <ng-container *ngFor="let scheduleProtectionPractical of state.schedule; let i = index"
-                        matColumnDef="{{scheduleProtectionPractical.Date + scheduleProtectionPractical.ScheduleProtectionPracticalId}}"
+        <ng-container
+          *ngFor="
+            let scheduleProtectionPractical of state.schedule;
+            let i = index
+          "
+          matColumnDef="{{
+            scheduleProtectionPractical.Date +
+              scheduleProtectionPractical.ScheduleProtectionPracticalId
+          }}"
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            [matTooltip]="scheduleProtectionPractical.Lector.FullName"
+            matTooltipPosition="above"
           >
-            <th mat-header-cell *matHeaderCellDef [matTooltip]="scheduleProtectionPractical.Lector.FullName" matTooltipPosition="above">
-              <div class="header-date">{{scheduleProtectionPractical.Date}}</div>
-            </th>
-            <td mat-cell *matCellDef="let element"
-                style="text-align: center;">{{element.ScheduleProtectionPracticalsRecommended[i].Mark}}</td>
-          </ng-container>
+            <div class="header-date">
+              {{ scheduleProtectionPractical.Date }}
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let element" style="text-align: center">
+            {{ element.ScheduleProtectionPracticalsRecommended[i].Mark }}
+          </td>
+        </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="getDisplayedColumns(state.schedule)"></tr>
-          <tr mat-row *matRowDef="let row; columns: getDisplayedColumns(state.schedule)"></tr>
-        </table>
-      </div>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="getDisplayedColumns(state.schedule)"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: getDisplayedColumns(state.schedule)"
+        ></tr>
+      </table>
     </div>
   </div>
-  <ng-template #load>
-    <div class="spinner">
-      <mat-spinner></mat-spinner>
-    </div>
-  </ng-template>
+</div>
+<ng-template #load>
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

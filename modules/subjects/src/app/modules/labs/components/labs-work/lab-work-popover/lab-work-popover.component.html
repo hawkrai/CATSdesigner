@@ -1,31 +1,66 @@
 <app-popover-dialog *var="files$ | async as files">
   <ng-container title>
-    {{data.title}}
+    {{ data.title }}
   </ng-container>
   <ng-container body>
     <form class="form" [formGroup]="labForm">
       <mat-form-field class="full-width">
-        <mat-label>{{'text.subjects.labs.name' | translate:'Название практического занятия'}}</mat-label>
-        <textarea  matInput formControlName="theme"></textarea>
+        <mat-label>{{
+          'text.subjects.labs.name'
+            | translate: 'Название практического занятия'
+        }}</mat-label>
+        <textarea matInput formControlName="theme"></textarea>
       </mat-form-field>
       <mat-form-field class="full-width">
-        <mat-label>{{'short.name' | translate:'Краткое название'}} ({{'text.generated automatically' | translate:'создаётся автоматически'}})</mat-label>
-        <input matInput [placeholder]="'abbreviation' | translate:'Сокращенное название'" formControlName="shortName" readonly>
+        <mat-label
+          >{{ 'short.name' | translate: 'Краткое название' }} ({{
+            'text.generated automatically'
+              | translate: 'создаётся автоматически'
+          }})</mat-label
+        >
+        <input
+          matInput
+          [placeholder]="'abbreviation' | translate: 'Сокращенное название'"
+          formControlName="shortName"
+          readonly
+        />
       </mat-form-field>
       <mat-form-field class="full-width">
-        <mat-label>{{'text.number.hours' | translate:'Количество часов'}} (1-36)</mat-label>
-        <input formControlName="duration" type="number" matInput [placeholder]="'text.number.hours' | translate:'Количество часов'">
+        <mat-label
+          >{{
+            'text.number.hours' | translate: 'Количество часов'
+          }}
+          (1-36)</mat-label
+        >
+        <input
+          formControlName="duration"
+          type="number"
+          matInput
+          [placeholder]="'text.number.hours' | translate: 'Количество часов'"
+        />
       </mat-form-field>
-      <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="filesArray.value" (upload)="uploadFile($event)"></app-file-uploader>
+      <app-file-uploader
+        [header]="
+          'text.subjects.attachments.material'
+            | translate: 'Прикрепленный материал'
+        "
+        (delete)="deleteFile($event)"
+        [files]="filesArray.value"
+        (upload)="uploadFile($event)"
+      ></app-file-uploader>
     </form>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClose(false)">{{'button.cancel' | translate:'Отмена'}}</button>
-    <button mat-raised-button
-            (click)="onSave()"
-            color="primary"
-            [disabled]="labForm.invalid"
+    <button mat-raised-button (click)="onClose(false)">
+      {{ 'button.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-raised-button
+      (click)="onSave()"
+      color="primary"
+      [disabled]="labForm.invalid"
     >
-      {{data.buttonText}}</button>
+      {{ data.buttonText }}
+    </button>
   </ng-container>
 </app-popover-dialog>

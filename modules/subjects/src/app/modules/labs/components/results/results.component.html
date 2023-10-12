@@ -1,90 +1,195 @@
-<div class="results-component" *ngIf="state$ | async as state; else: load">
-  <div class="results-component__subGroup" *ngFor="let subGroup of state.subGroups">
-    <ng-container *ngIf="(state.students | filter:'SubGroup': subGroup).length">
+<div class="results-component" *ngIf="state$ | async as state; else load">
+  <div
+    class="results-component__subGroup"
+    *ngFor="let subGroup of state.subGroups"
+  >
+    <ng-container *ngIf="(state.students | filter: 'SubGroup':subGroup).length">
       <div class="results-component__subGroup-title">
-        <span class="results-component__subGroup-title-text">{{'subgroup' | translate:'Подгруппа'}} {{subGroup}}</span>
+        <span class="results-component__subGroup-title-text"
+          >{{ 'subgroup' | translate: 'Подгруппа' }} {{ subGroup }}</span
+        >
       </div>
-      <div class="results-component__subGroup-table" *var="state.labs | filter:'SubGroup':subGroup as subGroupLabs">
-        <table mat-table [dataSource]="state.students | filter:'SubGroup': subGroup" class="mat-elevation-z14" 
-        *var="state.schedule | filter:'SubGroup':subGroup as subGroupSchedule">
+      <div
+        class="results-component__subGroup-table"
+        *var="state.labs | filter: 'SubGroup':subGroup as subGroupLabs"
+      >
+        <table
+          mat-table
+          [dataSource]="state.students | filter: 'SubGroup':subGroup"
+          class="mat-elevation-z14"
+          *var="
+            state.schedule | filter: 'SubGroup':subGroup as subGroupSchedule
+          "
+        >
           <ng-container matColumnDef="position">
             <th mat-header-cell *matHeaderCellDef>№</th>
-            <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>
+            <td mat-cell *matCellDef="let i = index">{{ i + 1 }}</td>
           </ng-container>
-  
+
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>{{'text.students' | translate:'Студенты'}}</th>
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'text.students' | translate: 'Студенты' }}
+            </th>
             <td mat-cell *matCellDef="let element">
-              <span class="navigation-link" (click)="navigateToProfile(element)">{{element.FullName}}</span>
+              <span
+                class="navigation-link"
+                (click)="navigateToProfile(element)"
+                >{{ element.FullName }}</span
+              >
             </td>
           </ng-container>
-  
-          <ng-container *ngFor="let scheduleLab of getHeaders(subGroupLabs); let i = index"
-                        matColumnDef="{{scheduleLab.head}}"
+
+          <ng-container
+            *ngFor="let scheduleLab of getHeaders(subGroupLabs); let i = index"
+            matColumnDef="{{ scheduleLab.head }}"
           >
-            <th mat-header-cell *matHeaderCellDef
-            [matTooltip]="scheduleLab.tooltip"
-            matTooltipPosition="above" 
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              [matTooltip]="scheduleLab.tooltip"
+              matTooltipPosition="above"
             >
-              <div>{{scheduleLab.text}}</div>
+              <div>{{ scheduleLab.text }}</div>
             </th>
-            <td mat-cell
-                *matCellDef="let element"
-                [ngStyle]="{ padding: 0, position: 'relative'}"
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [ngStyle]="{ padding: 0, position: 'relative' }"
             >
-              <div *ngIf="element | markProperty:+scheduleLab.head:subGroupLabs:subGroupSchedule as markProperty;"
-                   (dblclick)="state.isTeacher && setMark(element, scheduleLab.head, markProperty.recommendedMark);"
-                   class="mark">
+              <div
+                *ngIf="
+                  element
+                    | markProperty
+                      : +scheduleLab.head
+                      : subGroupLabs
+                      : subGroupSchedule as markProperty
+                "
+                (dblclick)="
+                  state.isTeacher &&
+                    setMark(
+                      element,
+                      scheduleLab.head,
+                      markProperty.recommendedMark
+                    )
+                "
+                class="mark"
+              >
                 <div *ngIf="markProperty.mark">
-                  {{markProperty.mark.Mark}}
-                  <div *ngIf="markProperty.mark.Mark && markProperty.mark.Comment && (state.isTeacher || (markProperty.mark.ShowForStudent && markProperty.mark.StudentId === state.userId))" class="comment" [matTooltip]="markProperty.mark.Comment" matTooltipPosition="above">
-                    <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
+                  {{ markProperty.mark.Mark }}
+                  <div
+                    *ngIf="
+                      markProperty.mark.Mark &&
+                      markProperty.mark.Comment &&
+                      (state.isTeacher ||
+                        (markProperty.mark.ShowForStudent &&
+                          markProperty.mark.StudentId === state.userId))
+                    "
+                    class="comment"
+                    [matTooltip]="markProperty.mark.Comment"
+                    matTooltipPosition="above"
+                  >
+                    <mat-icon class="comment-icon"
+                      >chat_bubble_outline</mat-icon
+                    >
                   </div>
                 </div>
                 <div *ngIf="markProperty.recommendedMark" style="opacity: 0.3">
-                  {{markProperty.recommendedMark}}
+                  {{ markProperty.recommendedMark }}
                 </div>
-                <ng-container *var="(element | checkVisit: scheduleLab.head: subGroupLabs) as marks">
-                  <div *ngIf="marks.length"
+                <ng-container
+                  *var="
+                    element | checkVisit: scheduleLab.head:subGroupLabs as marks
+                  "
+                >
+                  <div
+                    *ngIf="marks.length"
                     matTooltipClass="tooltip"
-                   [matTooltip]="getMissingTooltip(marks, subGroupSchedule)" matTooltipPosition="above" class="not-visit">
-                  </div>
+                    [matTooltip]="getMissingTooltip(marks, subGroupSchedule)"
+                    matTooltipPosition="above"
+                    class="not-visit"
+                  ></div>
                 </ng-container>
-
               </div>
             </td>
           </ng-container>
-  
+
           <ng-container matColumnDef="total-lab" *ngIf="subGroupLabs.length">
-            <th mat-header-cell *matHeaderCellDef>{{'text.average.labs.mark' | translate:'Средний балл'}}</th>
-            <td mat-cell
-                *matCellDef="let element"
-                [class.not-all]="element | isNotAll" [matTooltip]="getAverageTooltip(element)" matTooltipPosition="below" [matTooltipDisabled]="!(element | isNotAll)">
-              <p>{{element.LabsMarkTotal}}</p></td>
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'text.average.labs.mark' | translate: 'Средний балл' }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [class.not-all]="element | isNotAll"
+              [matTooltip]="getAverageTooltip(element)"
+              matTooltipPosition="below"
+              [matTooltipDisabled]="!(element | isNotAll)"
+            >
+              <p>{{ element.LabsMarkTotal }}</p>
+            </td>
           </ng-container>
-  
+
           <ng-container matColumnDef="total-test" *ngIf="state.testsCount">
-            <th mat-header-cell *matHeaderCellDef>{{'text.average.test' | translate:'Средний балл за тесты'}}</th>
-            <td mat-cell *matCellDef="let element" [class.not-all]="!element.AllTestsPassed"  [matTooltip]="getTestsPassedTooltip(element, state.testsCount)" matTooltipPosition="below" 
-            [matTooltipDisabled]="element.AllTestsPassed"><p>{{element.TestMark}}</p></td>
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'text.average.test' | translate: 'Средний балл за тесты' }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              [class.not-all]="!element.AllTestsPassed"
+              [matTooltip]="getTestsPassedTooltip(element, state.testsCount)"
+              matTooltipPosition="below"
+              [matTooltipDisabled]="element.AllTestsPassed"
+            >
+              <p>{{ element.TestMark }}</p>
+            </td>
           </ng-container>
-          
-  
-          <ng-container matColumnDef="total" *ngIf="state.testsCount || subGroupLabs.length">
-            <th mat-header-cell *matHeaderCellDef>{{'text.rating' | translate:'Рейтинговая оценка'}}</th>
-            <td mat-cell
-                [matTooltip]="'text.sbjects.preliminary.rating' | translate:'Предварительная рейтинговая оценка'" matTooltipPosition="below" [matTooltipDisabled]="!(element | isNotAll) && (state.testsCount ? element.AllTestsPassed : true)"
-                *matCellDef="let element"
-                [ngClass]="{'not-all': (element | isNotAll) || (state.testsCount && !element.AllTestsPassed)}">
-              <p>{{getTotal(element, state.testsCount)}}</p></td>
+
+          <ng-container
+            matColumnDef="total"
+            *ngIf="state.testsCount || subGroupLabs.length"
+          >
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'text.rating' | translate: 'Рейтинговая оценка' }}
+            </th>
+            <td
+              mat-cell
+              [matTooltip]="
+                'text.sbjects.preliminary.rating'
+                  | translate: 'Предварительная рейтинговая оценка'
+              "
+              matTooltipPosition="below"
+              [matTooltipDisabled]="
+                !(element | isNotAll) &&
+                (state.testsCount ? element.AllTestsPassed : true)
+              "
+              *matCellDef="let element"
+              [ngClass]="{
+                'not-all':
+                  (element | isNotAll) ||
+                  (state.testsCount && !element.AllTestsPassed)
+              }"
+            >
+              <p>{{ getTotal(element, state.testsCount) }}</p>
+            </td>
           </ng-container>
-  
-          <tr mat-header-row *matHeaderRowDef="getSubGroupDisplayColumns(subGroupLabs, state.testsCount)"></tr>
-          <tr mat-row *matRowDef="let row; columns: getSubGroupDisplayColumns(subGroupLabs, state.testsCount)"></tr>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="
+              getSubGroupDisplayColumns(subGroupLabs, state.testsCount)
+            "
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="
+              let row;
+              columns: getSubGroupDisplayColumns(subGroupLabs, state.testsCount)
+            "
+          ></tr>
         </table>
       </div>
     </ng-container>
-
   </div>
 </div>
 <ng-template #load>

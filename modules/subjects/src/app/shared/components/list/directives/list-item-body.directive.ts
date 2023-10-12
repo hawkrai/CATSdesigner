@@ -1,10 +1,8 @@
-import { Directive, TemplateRef } from '@angular/core';
+import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[appListItemBody]'
+  selector: '[appListItemBody]',
 })
 export class ListItemBodyDirective {
-
-  constructor(public templateRef: TemplateRef<any>) { }
-
+  constructor(public templateRef: TemplateRef<any>) {}
 }

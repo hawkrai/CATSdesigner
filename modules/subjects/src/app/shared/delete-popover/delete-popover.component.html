@@ -1,12 +1,25 @@
 <app-popover-dialog>
   <ng-container title>
-    {{data.title}}
+    {{ data.title }}
   </ng-container>
   <ng-container body>
-    <p class="mat-typography text">{{'text.delete.question' | translate:'Вы действительно хотите удалить'}} {{data.body}}?</p>
+    <p class="mat-typography text">
+      {{
+        'text.delete.question' | translate: 'Вы действительно хотите удалить'
+      }}
+      {{ data.body }}?
+    </p>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button mat-dialog-close>{{'button.cancel' | translate:'Отмена'}}</button>
-    <button mat-raised-button [mat-dialog-close]="data.model || data.body" color="primary">{{data.buttonText}}</button>
+    <button mat-raised-button mat-dialog-close>
+      {{ 'button.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-raised-button
+      [mat-dialog-close]="data.model || data.body"
+      color="primary"
+    >
+      {{ data.buttonText }}
+    </button>
   </ng-container>
 </app-popover-dialog>
