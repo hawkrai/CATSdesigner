@@ -1,35 +1,79 @@
 <div class="add-stage-dialog__container">
   <div class="add-stage-dialog__header">
-    <h1 mat-dialog-title class="add-stage-dialog__title">{{data.title}}</h1>
-    <button mat-icon-button (click)="close()" class="add-stage-dialog__close-btn">
+    <h1 mat-dialog-title class="add-stage-dialog__title">{{ data.title }}</h1>
+    <button
+      mat-icon-button
+      (click)="close()"
+      class="add-stage-dialog__close-btn"
+    >
       <mat-icon aria-hidden="false">close</mat-icon>
     </button>
   </div>
   <div mat-dialog-content>
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.percentages.dialog.stage.name' | translate : 'Название этапа'}}</mat-label>
-      <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
-      <mat-error *ngIf="nameControl.invalid">{{'text.course.percentages.dialog.stage.error' | translate : 'От 3 до 100 символов'}}</mat-error>
+      <mat-label>{{
+        'text.course.percentages.dialog.stage.name'
+          | translate: 'Название этапа'
+      }}</mat-label>
+      <textarea
+        matInput
+        [formControl]="nameControl"
+        [(ngModel)]="data.name"
+      ></textarea>
+      <mat-error *ngIf="nameControl.invalid">{{
+        'text.course.percentages.dialog.stage.error'
+          | translate: 'От 3 до 100 символов'
+      }}</mat-error>
     </mat-form-field>
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.percentages.dialog.stage.percentage' | translate : 'Процент выполнения'}}</mat-label>
-      <input matInput [formControl]="percentageControl" [(ngModel)]="data.percentage">
+      <mat-label>{{
+        'text.course.percentages.dialog.stage.percentage'
+          | translate: 'Процент выполнения'
+      }}</mat-label>
+      <input
+        matInput
+        [formControl]="percentageControl"
+        [(ngModel)]="data.percentage"
+      />
       <span matSuffix>%</span>
-      <mat-error *ngIf="percentageControl.invalid">{{'text.course.percentages.dialog.stage.error.small' | translate : 'Введите число от 0 до 100'}}</mat-error>
+      <mat-error *ngIf="percentageControl.invalid">{{
+        'text.course.percentages.dialog.stage.error.small'
+          | translate: 'Введите число от 0 до 100'
+      }}</mat-error>
     </mat-form-field>
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.percentages.list.stage.date' | translate : 'Дата'}}</mat-label>
-      <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)" readonly>
+      <mat-label>{{
+        'text.course.percentages.list.stage.date' | translate: 'Дата'
+      }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dp"
+        [formControl]="dateControl"
+        (dateChange)="onDateChange(dateControl.value)"
+        readonly
+      />
       <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
       <mat-datepicker #dp></mat-datepicker>
-      <mat-error *ngIf="dateControl.invalid">{{'text.course.percentages.dialog.stage.error.date' | translate : 'Неправильный формат (ДД.ММ.ГГГГ)'}}</mat-error>
+      <mat-error *ngIf="dateControl.invalid">{{
+        'text.course.percentages.dialog.stage.error.date'
+          | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'
+      }}</mat-error>
     </mat-form-field>
   </div>
   <div mat-dialog-actions class="dialog-buttons">
-    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.course.percentages.dialog.stage.cancel' | translate : 'Отмена'}}</button>
-    <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data"
-            [disabled]="nameControl.invalid || percentageControl.invalid || dateControl.invalid">
-      {{'text.course.percentages.dialog.stage.save' | translate : 'Сохранить'}}
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
+      {{ 'text.course.percentages.dialog.stage.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-flat-button
+      class="dialog-button"
+      color="primary"
+      [mat-dialog-close]="data"
+      [disabled]="
+        nameControl.invalid || percentageControl.invalid || dateControl.invalid
+      "
+    >
+      {{ 'text.course.percentages.dialog.stage.save' | translate: 'Сохранить' }}
     </button>
   </div>
 </div>

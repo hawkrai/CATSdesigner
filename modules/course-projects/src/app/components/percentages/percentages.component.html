@@ -1,10 +1,19 @@
 <div class="percentages-component" *ngIf="percentages; else load">
   <div class="percentages-component__header" *ngIf="courseUser.IsLecturer">
-    <button mat-raised-button class="actions" color="primary" *ngIf="courseUser.IsLecturer" (click)="addStage()">
-      {{'text.course.percentages.button.add' | translate : 'Добавить этап'}}
+    <button
+      mat-raised-button
+      class="actions"
+      color="primary"
+      *ngIf="courseUser.IsLecturer"
+      (click)="addStage()"
+    >
+      {{ 'text.course.percentages.button.add' | translate: 'Добавить этап' }}
     </button>
   </div>
-  <div class="percentages-component__body" [ngClass]="{'percentages-component__body_margin': !courseUser.IsLecturer}">
+  <div
+    class="percentages-component__body"
+    [ngClass]="{ 'percentages-component__body_margin': !courseUser.IsLecturer }"
+  >
     <app-percentages-list [percentages]="percentages"></app-percentages-list>
   </div>
 </div>

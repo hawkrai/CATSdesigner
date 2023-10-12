@@ -1,117 +1,149 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { VisitStats } from '../../models/visit-stats.model';
-import { VisitStatsService } from '../../services/visit-stats.service';
-import { Subscription } from 'rxjs';
-import { Consultation } from '../../models/consultation.model';
-import { ConsultationMark } from '../../models/consultation-mark.model';
-import { CourseUser } from '../../models/course-user.model';
-import { AddDateDialogComponent } from './add-date-dialog/add-date-dialog.component';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { select, Store } from '@ngrx/store';
-import { getSubjectId } from '../../store/selectors/subject.selector';
-import { IAppState } from '../../store/state/app.state';
-import { VisitingPopoverComponent } from '../../shared/visiting-popover/visiting-popover.component';
-import { CoreGroup } from 'src/app/models/core-group.model';
-import { TranslatePipe } from 'educats-translate';
-import { ToastrService } from 'ngx-toastr';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core'
+import { VisitStats } from '../../models/visit-stats.model'
+import { VisitStatsService } from '../../services/visit-stats.service'
+import { Subscription } from 'rxjs'
+import { Consultation } from '../../models/consultation.model'
+import { ConsultationMark } from '../../models/consultation-mark.model'
+import { CourseUser } from '../../models/course-user.model'
+import { AddDateDialogComponent } from './add-date-dialog/add-date-dialog.component'
+import { MatDialog, MatSnackBar } from '@angular/material'
+import { select, Store } from '@ngrx/store'
+import { getSubjectId } from '../../store/selectors/subject.selector'
+import { IAppState } from '../../store/state/app.state'
+import { VisitingPopoverComponent } from '../../shared/visiting-popover/visiting-popover.component'
+import { CoreGroup } from 'src/app/models/core-group.model'
+import { TranslatePipe } from 'educats-translate'
+import { ToastrService } from 'ngx-toastr'
 
 @Component({
   selector: 'app-visit-stats',
   templateUrl: './visit-stats.component.html',
-  styleUrls: ['./visit-stats.component.less']
+  styleUrls: ['./visit-stats.component.less'],
 })
 export class VisitStatsComponent implements OnInit, OnChanges {
+  @Input() selectedGroup: CoreGroup
+  @Input() courseUser: CourseUser
 
-  @Input() selectedGroup: CoreGroup;
-  @Input() courseUser: CourseUser;
+  private COUNT = 1000
+  private PAGE = 1
 
-  private COUNT = 1000;
-  private PAGE = 1;
+  private visitStatsSubscription: Subscription
 
-  private visitStatsSubscription: Subscription;
+  private visitStatsList: VisitStats[]
+  private consultations: Consultation[]
 
-  private visitStatsList: VisitStats[];
-  private consultations: Consultation[];
+  private subjectId: string
+  private searchString = ''
 
-  private subjectId: string;
-  private searchString = '';
+  private preSavedData: Consultation = null
 
-  private preSavedData: Consultation = null;
-
-  constructor(private visitStatsService: VisitStatsService,
+  constructor(
+    private visitStatsService: VisitStatsService,
     public dialog: MatDialog,
     private toastr: ToastrService,
     private translatePipe: TranslatePipe,
-    private store: Store<IAppState>) {
-  }
+    private store: Store<IAppState>
+  ) {}
 
   ngOnInit() {
-    this.store.pipe(select(getSubjectId)).subscribe(subjectId => {
-      this.subjectId = subjectId;
-      this.retrieveVisitStats();
-    });
+    this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
+      this.subjectId = subjectId
+      this.retrieveVisitStats()
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.selectedGroup && !changes.selectedGroup.firstChange) {
-      this.retrieveVisitStats();
+      this.retrieveVisitStats()
     }
   }
 
   public getCourseUser() {
-    return this.courseUser;
+    return this.courseUser
   }
 
   retrieveVisitStats() {
-    this.visitStatsList = null;
-    this.visitStatsSubscription = this.visitStatsService.getVisitStats({
-      count: this.COUNT, page: this.PAGE,
-      filter: '{"groupId":' + this.selectedGroup.GroupId + ',"subjectId":' + this.subjectId + ',"searchString":"' + this.searchString + '"}'
-    })
-      .subscribe(res => {
-        this.visitStatsList = this.assignResults(res.Students.Items, res.Consultations);
-        this.consultations = res.Consultations;
-      });
+    this.visitStatsList = null
+    this.visitStatsSubscription = this.visitStatsService
+      .getVisitStats({
+        count: this.COUNT,
+        page: this.PAGE,
+        filter:
+          '{"groupId":' +
+          this.selectedGroup.GroupId +
+          ',"subjectId":' +
+          this.subjectId +
+          ',"searchString":"' +
+          this.searchString +
+          '"}',
+      })
+      .subscribe((res) => {
+        this.visitStatsList = this.assignResults(
+          res.Students.Items,
+          res.Consultations
+        )
+        this.consultations = res.Consultations
+      })
   }
 
   onSearchChange(searchText: string) {
-    this.searchString = searchText;
-    this.updateStats();
+    this.searchString = searchText
+    this.updateStats()
   }
 
   updateStats() {
     if (this.visitStatsSubscription) {
-      this.visitStatsSubscription.unsubscribe();
+      this.visitStatsSubscription.unsubscribe()
     }
-    this.retrieveVisitStats();
+    this.retrieveVisitStats()
   }
 
-  assignResults(visitStats: VisitStats[], consultations: Consultation[]): VisitStats[] {
+  assignResults(
+    visitStats: VisitStats[],
+    consultations: Consultation[]
+  ): VisitStats[] {
     for (const student of visitStats) {
-      const results: ConsultationMark[] = [];
-      consultations.map(consultation => {
-        const result = student.CourseProjectConsultationMarks.find(cm => cm.ConsultationDateId === consultation.Id);
+      const results: ConsultationMark[] = []
+      consultations.map((consultation) => {
+        const result = student.CourseProjectConsultationMarks.find(
+          (cm) => cm.ConsultationDateId === consultation.Id
+        )
         if (result != null) {
           if (result.Mark != null) {
-            result.Mark = result.Mark.trim();
+            result.Mark = result.Mark.trim()
           }
-          results.push(result);
+          results.push(result)
         } else {
           // @ts-ignore
-          const cm: ConsultationMark = { StudentId: student.Id, ConsultationDateId: consultation.Id };
-          results.push(cm);
+          const cm: ConsultationMark = {
+            StudentId: student.Id,
+            ConsultationDateId: consultation.Id,
+          }
+          results.push(cm)
         }
       })
-      student.CourseProjectConsultationMarks = results;
+      student.CourseProjectConsultationMarks = results
     }
-    return visitStats;
+    return visitStats
   }
 
   setVisitMarks(consultationDateId: string) {
-    const date = new Date(this.consultations.find(consultation => consultation.Id === consultationDateId).Day);
-    const visits = { date, students: [] };
-    this.visitStatsList.forEach(stats => {
-      const mark = stats.CourseProjectConsultationMarks.find(stat => stat.ConsultationDateId === consultationDateId);
+    const date = new Date(
+      this.consultations.find(
+        (consultation) => consultation.Id === consultationDateId
+      ).Day
+    )
+    const visits = { date, students: [] }
+    this.visitStatsList.forEach((stats) => {
+      const mark = stats.CourseProjectConsultationMarks.find(
+        (stat) => stat.ConsultationDateId === consultationDateId
+      )
       const visit = {
         name: stats.Name,
         mark: mark.Mark,
@@ -119,52 +151,79 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         id: mark.Id,
         consultationDateId: mark.ConsultationDateId,
         studentId: mark.StudentId,
-        date: date
-      };
-      visits.students.push(visit);
-    });
+        date: date,
+      }
+      visits.students.push(visit)
+    })
 
     const dialogRef = this.dialog.open(VisitingPopoverComponent, {
       width: '538px',
       data: {
-        title: this.translatePipe.transform('text.course.visit.dialog.set.title', 'Посещение консультации'),
-        buttonText: this.translatePipe.transform('text.course.visit.dialog.set.action.save', 'Сохранить'),
-        body: visits
-      }
-    });
+        title: this.translatePipe.transform(
+          'text.course.visit.dialog.set.title',
+          'Посещение консультации'
+        ),
+        buttonText: this.translatePipe.transform(
+          'text.course.visit.dialog.set.action.save',
+          'Сохранить'
+        ),
+        body: visits,
+      },
+    })
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.processDialogResult(result, false);
+        this.processDialogResult(result, false)
       }
-    });
+    })
   }
 
   processDialogResult(result: any, hasChanges: boolean) {
-    const visit = result.students.pop();
+    const visit = result.students.pop()
     if (visit != null) {
       if (visit.id == null) {
         if (visit.mark || visit.comment || visit.comment !== '') {
-          hasChanges = true;
-          this.visitStatsService.setMark(visit.studentId, visit.consultationDateId, visit.mark, visit.comment, visit.isShow)
-            .subscribe(() => this.processDialogResult(result, hasChanges));
+          hasChanges = true
+          this.visitStatsService
+            .setMark(
+              visit.studentId,
+              visit.consultationDateId,
+              visit.mark,
+              visit.comment,
+              visit.isShow
+            )
+            .subscribe(() => this.processDialogResult(result, hasChanges))
         } else {
-          this.processDialogResult(result, hasChanges);
+          this.processDialogResult(result, hasChanges)
         }
       } else {
-        const origin = this.visitStatsList.find(stats => stats.Id === visit.studentId).CourseProjectConsultationMarks
-          .find(mark => mark.Id === visit.id);
+        const origin = this.visitStatsList
+          .find((stats) => stats.Id === visit.studentId)
+          .CourseProjectConsultationMarks.find((mark) => mark.Id === visit.id)
         if (origin.Mark !== visit.mark || origin.Comments !== visit.comment) {
-          hasChanges = true;
-          this.visitStatsService.editMark(visit.id, visit.studentId, visit.consultationDateId, visit.mark, visit.comment, visit.isShow)
-            .subscribe(() => this.processDialogResult(result, hasChanges));
+          hasChanges = true
+          this.visitStatsService
+            .editMark(
+              visit.id,
+              visit.studentId,
+              visit.consultationDateId,
+              visit.mark,
+              visit.comment,
+              visit.isShow
+            )
+            .subscribe(() => this.processDialogResult(result, hasChanges))
         } else {
-          this.processDialogResult(result, hasChanges);
+          this.processDialogResult(result, hasChanges)
         }
       }
     } else if (hasChanges) {
-      this.ngOnInit();
-      this.addFlashMessage(this.translatePipe.transform('text.course.visit.dialog.set.action.save.success', 'Посещаемость успешно обновлена'));
+      this.ngOnInit()
+      this.addFlashMessage(
+        this.translatePipe.transform(
+          'text.course.visit.dialog.set.action.save.success',
+          'Посещаемость успешно обновлена'
+        )
+      )
     }
   }
 
@@ -174,28 +233,40 @@ export class VisitStatsComponent implements OnInit, OnChanges {
       data: {
         ...this.preSavedData,
         consultations: this.consultations,
-        subjectId: this.subjectId
-      }
-    });
+        subjectId: this.subjectId,
+      },
+    })
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result != null && !result.isClose) {
-        const date = new Date(result.date);
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        this.visitStatsService.addDate(date.toISOString(), this.subjectId, result.start,
-          result.end, result.audience, result.building).subscribe(() => {
-            this.ngOnInit();
-            this.addFlashMessage(this.translatePipe.transform('text.course.visit.dialog.add.save.success', 'Дата консультации успешно добавлена'));
-          });
+        const date = new Date(result.date)
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+        this.visitStatsService
+          .addDate(
+            date.toISOString(),
+            this.subjectId,
+            result.start,
+            result.end,
+            result.audience,
+            result.building
+          )
+          .subscribe(() => {
+            this.ngOnInit()
+            this.addFlashMessage(
+              this.translatePipe.transform(
+                'text.course.visit.dialog.add.save.success',
+                'Дата консультации успешно добавлена'
+              )
+            )
+          })
       }
       if (result.isClose) {
-        this.preSavedData = result;
+        this.preSavedData = result
       }
-    });
+    })
   }
 
   addFlashMessage(msg: string) {
-    this.toastr.success(msg);
+    this.toastr.success(msg)
   }
-
 }

@@ -1,11 +1,11 @@
-import {Attachment} from './attachment.model';
+import { Attachment } from './attachment.model'
 
 export class UserLabFile {
-  Id: string;
-  Date: string;
-  Comments: string;
-  Attachments: Attachment[];
-  PathFile: string;
-  IsReceived: boolean;
-  IsReturned: boolean;
+  Id: string
+  Date: string
+  Comments: string
+  Attachments: Attachment[]
+  PathFile: string
+  IsReceived: boolean
+  IsReturned: boolean
 }

@@ -2,38 +2,94 @@
   <div class="mdc-data-table">
     <table class="mdc-data-table__table">
       <thead>
-      <tr class="mdc-data-table__header-row">
-        <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">№</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.visit.list.column.student' | translate : 'Студент'}}</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.visit.list.column.theme' | translate : 'Тема курсового проекта'}}</th>
-        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.course.visit.list.column.manager' | translate : 'Руководитель'}}</th>
-        <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col" *ngFor="let consultation of consultations">
-          <div class="header-date">
-            <p>
-              {{consultation.Day | date:'dd.MM.yyyy'}}
-            </p>
-          </div>
-        </th>
-      </tr>
+        <tr class="mdc-data-table__header-row">
+          <th
+            class="
+              mdc-data-table__header-cell mdc-data-table__header-cell--numeric
+            "
+            role="columnheader"
+            scope="col"
+          >
+            №
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.course.visit.list.column.student' | translate: 'Студент' }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{
+              'text.course.visit.list.column.theme'
+                | translate: 'Тема курсового проекта'
+            }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{
+              'text.course.visit.list.column.manager'
+                | translate: 'Руководитель'
+            }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell data-cell"
+            role="columnheader"
+            scope="col"
+            *ngFor="let consultation of consultations"
+          >
+            <div class="header-date">
+              <p>
+                {{ consultation.Day | date: 'dd.MM.yyyy' }}
+              </p>
+            </div>
+          </th>
+        </tr>
       </thead>
-      <tbody *ngIf="visitStatsList; else: load">
-      <tr class="mdc-data-table__row" *ngFor="let stats of visitStatsList; index as i">
-        <td class="mdc-data-table__cell cell">{{ i + 1 }}</td>
-        <td class="mdc-data-table__cell">{{ stats.Name }}</td>
-        <td class="mdc-data-table__cell mdc-data-table__wrap">{{ stats.Group }}</td>
-        <td class="mdc-data-table__cell">{{ stats.Lecturer }}</td>
-        <ng-container *ngIf="visitStatsComponent.getCourseUser().IsStudent">
-          <td class="mdc-data-table__cell data-cell" *ngFor="let consultationMark of stats.CourseProjectConsultationMarks">
-            {{consultationMark.Mark}}
+      <tbody *ngIf="visitStatsList; else load">
+        <tr
+          class="mdc-data-table__row"
+          *ngFor="let stats of visitStatsList; index as i"
+        >
+          <td class="mdc-data-table__cell cell">{{ i + 1 }}</td>
+          <td class="mdc-data-table__cell">{{ stats.Name }}</td>
+          <td class="mdc-data-table__cell mdc-data-table__wrap">
+            {{ stats.Group }}
           </td>
-        </ng-container>
-        <ng-container *ngIf="visitStatsComponent.getCourseUser().IsLecturer">
-          <td class="mdc-data-table__cell data-cell" *ngFor="let consultationMark of stats.CourseProjectConsultationMarks"
-              (dblclick)="visitStatsComponent.setVisitMarks(consultationMark.ConsultationDateId)">
-            {{consultationMark.Mark}}
-          </td>
-        </ng-container>
-      </tr>
+          <td class="mdc-data-table__cell">{{ stats.Lecturer }}</td>
+          <ng-container *ngIf="visitStatsComponent.getCourseUser().IsStudent">
+            <td
+              class="mdc-data-table__cell data-cell"
+              *ngFor="
+                let consultationMark of stats.CourseProjectConsultationMarks
+              "
+            >
+              {{ consultationMark.Mark }}
+            </td>
+          </ng-container>
+          <ng-container *ngIf="visitStatsComponent.getCourseUser().IsLecturer">
+            <td
+              class="mdc-data-table__cell data-cell"
+              *ngFor="
+                let consultationMark of stats.CourseProjectConsultationMarks
+              "
+              (dblclick)="
+                visitStatsComponent.setVisitMarks(
+                  consultationMark.ConsultationDateId
+                )
+              "
+            >
+              {{ consultationMark.Mark }}
+            </td>
+          </ng-container>
+        </tr>
       </tbody>
     </table>
   </div>

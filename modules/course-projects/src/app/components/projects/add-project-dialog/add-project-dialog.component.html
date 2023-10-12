@@ -1,57 +1,124 @@
 <div class="add-project-dialog__container">
   <div class="add-project-dialog__title-container">
-    <h1 class="add-project-dialog__title add-project-dialog__title_add-title" mat-dialog-title *ngIf="data.edit">
-      {{'text.course.projects.dialog.edit.title' | translate :'Редактирование темы курсового проекта'}}</h1>
-    <h1 class="add-project-dialog__title add-project-dialog__title_add-title" mat-dialog-title *ngIf="!data.edit">
-      {{'text.course.projects.dialog.add.title' | translate :'Добавление темы курсового проекта'}}</h1>
-    <button mat-icon-button (click)="close()" class="add-project-dialog__close-btn">
+    <h1
+      class="add-project-dialog__title add-project-dialog__title_add-title"
+      mat-dialog-title
+      *ngIf="data.edit"
+    >
+      {{
+        'text.course.projects.dialog.edit.title'
+          | translate: 'Редактирование темы курсового проекта'
+      }}
+    </h1>
+    <h1
+      class="add-project-dialog__title add-project-dialog__title_add-title"
+      mat-dialog-title
+      *ngIf="!data.edit"
+    >
+      {{
+        'text.course.projects.dialog.add.title'
+          | translate: 'Добавление темы курсового проекта'
+      }}
+    </h1>
+    <button
+      mat-icon-button
+      (click)="close()"
+      class="add-project-dialog__close-btn"
+    >
       <mat-icon aria-hidden="false">close</mat-icon>
     </button>
   </div>
   <div>
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.projects.dialog.add.theme' | translate :'Тема курсового проекта'}}</mat-label>
+      <mat-label>{{
+        'text.course.projects.dialog.add.theme'
+          | translate: 'Тема курсового проекта'
+      }}</mat-label>
       <textarea matInput [formControl]="nameControl"></textarea>
-      <mat-error *ngIf="nameControl.invalid">{{'text.course.projects.dialog.add.error' | translate :'От 3 до 255 символов'}}</mat-error>
+      <mat-error *ngIf="nameControl.invalid">{{
+        'text.course.projects.dialog.add.error'
+          | translate: 'От 3 до 255 символов'
+      }}</mat-error>
     </mat-form-field>
     <div class="add-project-dialog__lecturer">
-      <mat-hint
-        *ngIf="data.lecturer">{{data.lecturer.split(' ')[0]}} {{' ' + data.lecturer.split(' ')[1].slice(0, 1).toUpperCase() + '.'}} {{' ' + data.lecturer.split(' ')[2].slice(0, 1).toUpperCase() + '.'}} </mat-hint>
+      <mat-hint *ngIf="data.lecturer"
+        >{{ data.lecturer.split(' ')[0] }}
+        {{ ' ' + data.lecturer.split(' ')[1].slice(0, 1).toUpperCase() + '.' }}
+        {{ ' ' + data.lecturer.split(' ')[2].slice(0, 1).toUpperCase() + '.' }}
+      </mat-hint>
     </div>
-    <mat-label class="form-field__groups">{{'text.course.projects.dialog.add.groups' | translate :'Группы:'}}</mat-label>
+    <mat-label class="form-field__groups">{{
+      'text.course.projects.dialog.add.groups' | translate: 'Группы:'
+    }}</mat-label>
     <div class="group-picker">
       <div class="group-container">
-        <button mat-raised-button [matTooltip]="'text.course.projects.dialog.add.move.available' | translate : 'Переместить в доступные для темы группы'" matTooltipPosition="below"
-                (click)="includeAll()">>>
+        <button
+          mat-raised-button
+          [matTooltip]="
+            'text.course.projects.dialog.add.move.available'
+              | translate: 'Переместить в доступные для темы группы'
+          "
+          matTooltipPosition="below"
+          (click)="includeAll()"
+        >
+          >>
         </button>
         <mat-list>
-          <mat-list-item matRipple class="mat-list-option" *ngFor="let group of groups; index as i; trackBy: trackByFn"
-                         (click)="move(i, groups, data.selectedGroups)">
-            {{group.GroupName}}
+          <mat-list-item
+            matRipple
+            class="mat-list-option"
+            *ngFor="let group of groups; index as i; trackBy: trackByFn"
+            (click)="move(i, groups, data.selectedGroups)"
+          >
+            {{ group.GroupName }}
           </mat-list-item>
         </mat-list>
       </div>
       <div class="group-container">
-        <button mat-raised-button [matTooltip]="'text.course.projects.dialog.add.move.unavailable' | translate : 'Переместить в недоступные для темы группы'" matTooltipPosition="below"
-                (click)="includeNone()"><<
+        <button
+          mat-raised-button
+          [matTooltip]="
+            'text.course.projects.dialog.add.move.unavailable'
+              | translate: 'Переместить в недоступные для темы группы'
+          "
+          matTooltipPosition="below"
+          (click)="includeNone()"
+        >
+          <<
         </button>
         <mat-list>
-          <mat-list-item matRipple class="mat-list-option"
-                         *ngFor="let group of data.selectedGroups; index as i; trackBy: trackByFn"
-                         (click)="move(i, data.selectedGroups, groups)">
-            {{group.GroupName}}
+          <mat-list-item
+            matRipple
+            class="mat-list-option"
+            *ngFor="
+              let group of data.selectedGroups;
+              index as i;
+              trackBy: trackByFn
+            "
+            (click)="move(i, data.selectedGroups, groups)"
+          >
+            {{ group.GroupName }}
           </mat-list-item>
         </mat-list>
       </div>
     </div>
   </div>
   <div mat-dialog-actions class="dialog-buttons">
-    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.course.list.dialog.actions.cancel' | translate : 'Отмена'}}</button>
-    <button mat-flat-button class="dialog-button" id="saveButton" color="primary"
-            (click)="saveTheme()"
-            [disabled]="(nameControl.invalid && !data.edit) || ((data.edit && originName === nameControl.value))"
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
+      {{ 'text.course.list.dialog.actions.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-flat-button
+      class="dialog-button"
+      id="saveButton"
+      color="primary"
+      (click)="saveTheme()"
+      [disabled]="
+        (nameControl.invalid && !data.edit) ||
+        (data.edit && originName === nameControl.value)
+      "
     >
-      {{'text.course.list.dialog.actions.save' | translate : 'Сохранить'}}
+      {{ 'text.course.list.dialog.actions.save' | translate: 'Сохранить' }}
     </button>
   </div>
 </div>
