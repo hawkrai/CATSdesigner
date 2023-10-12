@@ -4,18 +4,33 @@
       <a class="main-anchor" routerLink="/main">< К списку ЭУМК</a>
     </tr>
     <tr>
-      <b style="font-size: 30px; padding-left:800px">{{complexName}}</b>
+      <b style="font-size: 30px; padding-left: 800px">{{ complexName }}</b>
     </tr>
     <tr>
-      <td style="display:flex">
-        <button *ngIf="isLector" mat-raised-button class="add-button" (click)="openAddPopup()">Добавить элемент</button>      
-        <button mat-raised-button class="add-button" (click)="openAdaptivePopup()">Адаптивное обучение</button>
-      </td>      
+      <td style="display: flex">
+        <button
+          *ngIf="isLector"
+          mat-raised-button
+          class="add-button"
+          (click)="openAddPopup()"
+        >
+          Добавить элемент
+        </button>
+        <button
+          mat-raised-button
+          class="add-button"
+          (click)="openAdaptivePopup()"
+        >
+          Адаптивное обучение
+        </button>
+      </td>
     </tr>
   </table>
-  <app-material-tree class="material" [complexId]="complexID"></app-material-tree>
+  <app-material-tree
+    class="material"
+    [complexId]="complexID"
+  ></app-material-tree>
 </div>
-
 
 <!--<mat-tab-group>
   <mat-tab label="ЭУМК">
@@ -24,4 +39,4 @@
     </div>
   </mat-tab>
   <mat-tab label="Адаптивное обучение"></mat-tab>
- </mat-tab-group>-->  
+ </mat-tab-group>-->

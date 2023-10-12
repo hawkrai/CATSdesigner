@@ -1,35 +1,35 @@
-import { Adaptivity } from "./Adaptivity";
+import { Adaptivity } from './Adaptivity'
 
 export interface DialogData {
-  width?: string;
-  title?: string;  
-  body?: any;
-  buttonText?: string;
-  model?: any;
-  id?: string;
+  width?: string
+  title?: string
+  body?: any
+  buttonText?: string
+  model?: any
+  id?: string
 
-  name?: string;
-  subjectName?: string;
-  isPublished?: boolean;
+  name?: string
+  subjectName?: string
+  isPublished?: boolean
 
-  includeLabs?: boolean;
-  includeLectures?: boolean;
-  includeTests?: boolean;
+  includeLabs?: boolean
+  includeLectures?: boolean
+  includeTests?: boolean
 
-  url?: string;
+  url?: string
 
-  isNew?: boolean;
+  isNew?: boolean
 
-  nodeId?: string;
+  nodeId?: string
 
-  attachments?: any[];
-  documents?: string[];
+  attachments?: any[]
+  documents?: string[]
 
   //Adaptive Learning
-  isAdaptive?: boolean;
-  adaptivityType?: number;
-  adaptivity?: Adaptivity;
+  isAdaptive?: boolean
+  adaptivityType?: number
+  adaptivity?: Adaptivity
 
-  isGroup?: boolean;
-  parentId?: number;
+  isGroup?: boolean
+  parentId?: number
 }

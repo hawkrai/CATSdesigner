@@ -1,28 +1,68 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
+<h1 mat-dialog-title>{{ data.title }}</h1>
 <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
   <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
       <mat-label>Название</mat-label>
-      <textarea class="lab-work-component__news-text" maxlength="256" required name="body" placeholder="Название" matInput [(ngModel)]="data.name"></textarea>
+      <textarea
+        class="lab-work-component__news-text"
+        maxlength="256"
+        required
+        name="body"
+        placeholder="Название"
+        matInput
+        [(ngModel)]="data.name"
+      ></textarea>
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Предмет</mat-label>
-      <input name="shortName" maxlength="100" placeholder="Название предмета" matInput [(ngModel)]="data.subjectName" [disabled]=true>
+      <input
+        name="shortName"
+        maxlength="100"
+        placeholder="Название предмета"
+        matInput
+        [(ngModel)]="data.subjectName"
+        [disabled]="true"
+      />
     </mat-form-field>
-   <mat-checkbox name="isPublishedCheckBox" matInput [(ngModel)]="data.isPublished">Открыть доступ</mat-checkbox>
-   <span>
-     <mat-checkbox [disabled]='!data.isNew' name="includeLabs" matInput [(ngModel)]="data.includeLabs">Включить лабораторные</mat-checkbox>
-     <mat-checkbox [disabled]='!data.isNew' name="includeLectures" matInput [(ngModel)]="data.includeLectures">Включить лекции</mat-checkbox>
-     <mat-checkbox [disabled]='!data.isNew' name="includeTests" matInput [(ngModel)]="data.includeTests">Включить тесты</mat-checkbox>
-   </span>
+    <mat-checkbox
+      name="isPublishedCheckBox"
+      matInput
+      [(ngModel)]="data.isPublished"
+      >Открыть доступ</mat-checkbox
+    >
+    <span>
+      <mat-checkbox
+        [disabled]="!data.isNew"
+        name="includeLabs"
+        matInput
+        [(ngModel)]="data.includeLabs"
+        >Включить лабораторные</mat-checkbox
+      >
+      <mat-checkbox
+        [disabled]="!data.isNew"
+        name="includeLectures"
+        matInput
+        [(ngModel)]="data.includeLectures"
+        >Включить лекции</mat-checkbox
+      >
+      <mat-checkbox
+        [disabled]="!data.isNew"
+        name="includeTests"
+        matInput
+        [(ngModel)]="data.includeTests"
+        >Включить тесты</mat-checkbox
+      >
+    </span>
   </form>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onClick()">Отмена</button>
-  <button mat-raised-button
-          (click)="onSave(data || data.body)"
-          color="primary"
-          [disabled]="!formElement.checkValidity()">
+  <button
+    mat-raised-button
+    (click)="onSave(data || data.body)"
+    color="primary"
+    [disabled]="!formElement.checkValidity()"
+  >
     Сохранить
   </button>
 </div>

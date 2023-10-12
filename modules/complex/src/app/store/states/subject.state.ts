@@ -1,11 +1,11 @@
-import { User } from '../../models/User';
+import { User } from '../../models/User'
 
 export interface ISubjectState {
-  subject: any;
-  user: User;
+  subject: any
+  user: User
 }
 
 export const initialSubjectState: ISubjectState = {
   subject: { id: '', Name: '' },
-  user: null
-};
+  user: null,
+}

@@ -1,8 +1,12 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { DialogData } from '../../../../models/DialogData';
-import { MaterialsPopoverComponent } from '../materials-popover/materials-popover.component';
-import { AdaptivityService } from '../../../../service/adaptivity.service';
+import { Component, Inject } from '@angular/core'
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialog,
+} from '@angular/material/dialog'
+import { DialogData } from '../../../../models/DialogData'
+import { MaterialsPopoverComponent } from '../materials-popover/materials-popover.component'
+import { AdaptivityService } from '../../../../service/adaptivity.service'
 
 /**
  * @title Basic use of `<table mat-table>`
@@ -17,38 +21,38 @@ export class AdaptivePopupComponent {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<AdaptivePopupComponent>,
     private adaptivityService: AdaptivityService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {}
 
-   onNoClick(): void {
-    this.dialogRef.close();
+  onNoClick(): void {
+    this.dialogRef.close()
   }
 
   openAdaptivityPopup(adaptivityType: number): void {
-
     this.adaptivityService
       .getFirstThema(adaptivityType)
-      .subscribe(themaRes => {
-        const path = '/api/Upload?fileName=' + (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0]);
-        const diaogData: DialogData =
-        {
+      .subscribe((themaRes) => {
+        const path =
+          '/api/Upload?fileName=' +
+          (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0])
+        const diaogData: DialogData = {
           name: `${themaRes.nextThemaId}`,
           url: path,
           adaptivityType: adaptivityType,
           isAdaptive: true,
-          adaptivity: themaRes
-        };
+          adaptivity: themaRes,
+        }
 
-        this.dialogRef.close();
+        this.dialogRef.close()
 
         const dialogRefNew = this.dialog.open(MaterialsPopoverComponent, {
           width: '1200px',
-          data: diaogData
-        });
+          data: diaogData,
+        })
 
-        dialogRefNew.afterClosed().subscribe(result => {
-          console.log('The dialog was closed');
-        });
-
-      });
-  };
+        dialogRefNew.afterClosed().subscribe((result) => {
+          console.log('The dialog was closed')
+        })
+      })
+  }
 }

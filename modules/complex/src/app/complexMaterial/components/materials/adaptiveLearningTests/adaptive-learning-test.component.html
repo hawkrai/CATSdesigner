@@ -1,16 +1,21 @@
 <!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Доступные тесты'"></app-header>-->
-  <div class="test-execution-container">
-    <div class="test-execution-block-time">
-      <div class="test-execution-block-time-value">
-        {{counter$ | async}}
-      </div>
-    </div>
-    <div class="test-execution-block-question" *ngIf="showTest">
-      <app-question *ngIf="question" [question]="question" [questionNumber]="questionNumber"
-                    (goToNextQuestion)="nextQuestion($event)" [test]="test"></app-question>
-    </div>
-    <div class="test-execution-block-question" *ngIf="!showTest">
-     <p>Для перехода к обучению нажмите кнопку Завершить</p>
+<div class="test-execution-container">
+  <div class="test-execution-block-time">
+    <div class="test-execution-block-time-value">
+      {{ counter$ | async }}
     </div>
   </div>
+  <div class="test-execution-block-question" *ngIf="showTest">
+    <app-question
+      *ngIf="question"
+      [question]="question"
+      [questionNumber]="questionNumber"
+      (goToNextQuestion)="nextQuestion($event)"
+      [test]="test"
+    ></app-question>
+  </div>
+  <div class="test-execution-block-question" *ngIf="!showTest">
+    <p>Для перехода к обучению нажмите кнопку Завершить</p>
+  </div>
+</div>
