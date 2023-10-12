@@ -15,7 +15,7 @@
       *ngIf="groupsList && groupsList.length"
       [options]="groupsList"
       [preselected]="true"
-      [placeholder]="'text.test.choose.group' | translate : 'Выберите группу'"
+      [placeholder]="'text.test.choose.group' | translate: 'Выберите группу'"
       (onSelectionChange)="groupChange($event)"
     ></app-autocomplete-form>
     <app-autocomplete-form
@@ -23,7 +23,7 @@
       *ngIf="testsList && testsList.length"
       [options]="testsList"
       [preselected]="true"
-      [placeholder]="'text.test.choose.test' | translate : 'Выберите тест'"
+      [placeholder]="'text.test.choose.test' | translate: 'Выберите тест'"
       (onSelectionChange)="testsChange($event)"
     ></app-autocomplete-form>
     <app-autocomplete-form
@@ -31,7 +31,7 @@
       *ngIf="studentList && studentList.length"
       [options]="studentList"
       [placeholder]="
-        'text.test.choose.student' | translate : 'Выберите студентов'
+        'text.test.choose.student' | translate: 'Выберите студентов'
       "
       (onSelectionChange)="studentChange($event)"
     ></app-autocomplete-form>
@@ -41,17 +41,21 @@
       [checked]="showAsSubGroup"
       (change)="toggleStateChange($event)"
     >
-      {{ "Показать по подгруппам" }}
+      {{ 'Показать по подгруппам' }}
     </mat-slide-toggle>
   </div>
   <div class="help">
-    <app-help [message]="help.message" [action]="help.action" [placement]="'bottom-left'"></app-help>
+    <app-help
+      [message]="help.message"
+      [action]="help.action"
+      [placement]="'bottom-left'"
+    ></app-help>
   </div>
 </div>
 <div>
   <div *ngIf="testChangeCheckBoxes.includes('0')">
     <div class="result-teacher-group">
-      {{ "text.tests.for.control" | translate : "Тесты для контроля знаний" }}
+      {{ 'text.tests.for.control' | translate: 'Тесты для контроля знаний' }}
     </div>
     <div *ngFor="let test of knowledgeControlTestsMass">
       <div
@@ -69,7 +73,7 @@
           [tests]="test.res"
           [name]="'knowledgeControlTests'"
           [testName]="
-            'text.tests.for.control' | translate : 'Тесты для контроля знаний'
+            'text.tests.for.control' | translate: 'Тесты для контроля знаний'
           "
           [groupId]="test.groupId"
           [showAsSubGroup]="showAsSubGroup"
@@ -80,7 +84,7 @@
   </div>
   <div *ngIf="testChangeCheckBoxes.includes('1')">
     <div class="result-teacher-group">
-      {{ "text.tests.for.self.control" | translate : "Тесты для самоконтроля" }}
+      {{ 'text.tests.for.self.control' | translate: 'Тесты для самоконтроля' }}
     </div>
     <div *ngFor="let test of selfControlTestsMass">
       <div
@@ -98,7 +102,7 @@
           [group]="test.group"
           [groupId]="test.groupId"
           [testName]="
-            'text.tests.for.self.control' | translate : 'Тесты для самоконтроля'
+            'text.tests.for.self.control' | translate: 'Тесты для самоконтроля'
           "
           [forSelf]="true"
           [showAsSubGroup]="showAsSubGroup"
@@ -110,7 +114,7 @@
   <div *ngIf="testChangeCheckBoxes.includes('2')">
     <div class="result-teacher-group">
       {{
-        "text.tests.for.pre.eumk" | translate : "Предтест для обучения в ЭУМК"
+        'text.tests.for.pre.eumk' | translate: 'Предтест для обучения в ЭУМК'
       }}
     </div>
     <div *ngFor="let test of beforeEUMKTestsMass">
@@ -129,7 +133,7 @@
           [group]="test.group"
           [testName]="
             'text.tests.for.pre.eumk'
-              | translate : 'Предтест для обучения в ЭУМК'
+              | translate: 'Предтест для обучения в ЭУМК'
           "
           [groupId]="test.groupId"
           [showAsSubGroup]="showAsSubGroup"
@@ -140,7 +144,7 @@
   </div>
   <div *ngIf="testChangeCheckBoxes.includes('3')">
     <div class="result-teacher-group">
-      {{ "text.tests.for.eumk" | translate : "Тесты для обучения в ЭУМК" }}
+      {{ 'text.tests.for.eumk' | translate: 'Тесты для обучения в ЭУМК' }}
     </div>
     <div *ngFor="let test of forEUMKTestsMass">
       <div
@@ -158,7 +162,7 @@
           [group]="test.group"
           [groupId]="test.groupId"
           [testName]="
-            'text.tests.for.eumk' | translate : 'Тесты для обучения в ЭУМК'
+            'text.tests.for.eumk' | translate: 'Тесты для обучения в ЭУМК'
           "
           [showAsSubGroup]="showAsSubGroup"
           [name]="'forEUMKTests'"
@@ -169,8 +173,8 @@
   <div *ngIf="testChangeCheckBoxes.includes('4')">
     <div class="result-teacher-group">
       {{
-        "text.tests.for.nn"
-          | translate : "Тесты для обучения с искусственной нейронной сетью"
+        'text.tests.for.nn'
+          | translate: 'Тесты для обучения с искусственной нейронной сетью'
       }}
     </div>
     <div *ngFor="let test of forEUMKTestsMass">
@@ -188,7 +192,7 @@
           [groupId]="test.groupId"
           [testName]="
             'text.tests.for.nn'
-              | translate : 'Тесты для обучения с искусственной нейронной сетью'
+              | translate: 'Тесты для обучения с искусственной нейронной сетью'
           "
           [group]="test.group"
           [tests]="test.res"

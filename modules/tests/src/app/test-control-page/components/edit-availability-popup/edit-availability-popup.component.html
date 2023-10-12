@@ -1,11 +1,12 @@
-<ng-container *ngIf="groups;else loading">
+<ng-container *ngIf="groups; else loading">
   <div class="availability-popup">
     <div class="availability-popup-description">
-      <h2 mat-dialog-title class="availability-popup-container">{{'text.test.availability' | translate : 'Доступность теста'}}</h2>
-      <span>{{data?.test?.Title}}</span>
+      <h2 mat-dialog-title class="availability-popup-container">
+        {{ 'text.test.availability' | translate: 'Доступность теста' }}
+      </h2>
+      <span>{{ data?.test?.Title }}</span>
     </div>
-    <button mat-icon-button
-            (click)="onNoClick()">
+    <button mat-icon-button (click)="onNoClick()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -13,43 +14,59 @@
     <div class="availability-popup-content-blocks">
       <div class="availability-popup-content-blocks-item">
         <mat-form-field>
-          <mat-label>{{'text.test.group' | translate : "Группа"}}</mat-label>
-          <mat-select [value]="groups[0]?.Id" (selectionChange)="onValueChange($event)">
+          <mat-label>{{ 'text.test.group' | translate: 'Группа' }}</mat-label>
+          <mat-select
+            [value]="groups[0]?.Id"
+            (selectionChange)="onValueChange($event)"
+          >
             <mat-option *ngFor="let group of groups" [value]="group.Id">
-              {{group.Name}}
+              {{ group.Name }}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div class="availability-popup-content-blocks-item">
         <mat-form-field>
-          <mat-label>{{'text.test.search' | translate : "Поиск"}}</mat-label>
-          <input matInput [placeholder]="'text.test.search' | translate :'Поиск'" (keyup)="onSearchValueChange($event)">
+          <mat-label>{{ 'text.test.search' | translate: 'Поиск' }}</mat-label>
+          <input
+            matInput
+            [placeholder]="'text.test.search' | translate: 'Поиск'"
+            (keyup)="onSearchValueChange($event)"
+          />
         </mat-form-field>
       </div>
     </div>
   </div>
 
-  <div mat-dialog-content class="availability-popup-content" *ngIf="subGroups;else loadingSubGroups">
+  <div
+    mat-dialog-content
+    class="availability-popup-content"
+    *ngIf="subGroups; else loadingSubGroups"
+  >
     <!--TOdo bad naming of subgroup-->
-    <app-students-table *ngFor="let subGroup of subGroups, let i = index"
-                        [subGroup]="subGroup"
-                        [title]="('text.test.popup.subgroup' | translate :'Подгруппа ')+ (i+1)"
-                        (onChangeAvailability)="changeTestAvailability($event)"
-                        (onChangeAvailabilityForAll)="changeTestAvailabilityForAll($event)"></app-students-table>
+    <app-students-table
+      *ngFor="let subGroup of subGroups; let i = index"
+      [subGroup]="subGroup"
+      [title]="('text.test.popup.subgroup' | translate: 'Подгруппа ') + (i + 1)"
+      (onChangeAvailability)="changeTestAvailability($event)"
+      (onChangeAvailabilityForAll)="changeTestAvailabilityForAll($event)"
+    ></app-students-table>
   </div>
   <ng-template #loadingSubGroups>
     <div class="availability-popup-loader">
       <mat-progress-spinner
         class="availability-popup-loader-margin"
         [color]="'primary'"
-        [mode]="'indeterminate'">
+        [mode]="'indeterminate'"
+      >
       </mat-progress-spinner>
     </div>
   </ng-template>
 
   <div mat-dialog-actions>
-    <button mat-raised-button (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+    <button mat-raised-button (click)="onNoClick()">
+      {{ 'button.close' | translate: 'Закрыть' }}
+    </button>
   </div>
 </ng-container>
 <ng-template #loading>
@@ -57,7 +74,8 @@
     <mat-progress-spinner
       class="availability-popup-loader-margin"
       [color]="'primary'"
-      [mode]="'indeterminate'">
+      [mode]="'indeterminate'"
+    >
     </mat-progress-spinner>
   </div>
 </ng-template>

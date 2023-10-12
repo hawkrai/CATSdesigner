@@ -1,63 +1,121 @@
-<div class="main-table-title"
-     [class.blackTitle]="black"
-     *ngIf="title">
-  {{title}}
+<div class="main-table-title" [class.blackTitle]="black" *ngIf="title">
+  {{ title }}
 </div>
 <ng-container *ngIf="tests; else loading">
   <div>
-    <mat-table [dataSource]="tests" class="mat-elevation-z8 table-test-bg"
-               [class.black]="black"
-               [class.white]="white"
-               cdkDropList #table
-               [cdkDropListData]="tests"
-               (cdkDropListDropped)="dropTable($event)"
-               [cdkDropListDisabled]="!isDraggable"
-               >
-
+    <mat-table
+      [dataSource]="tests"
+      class="mat-elevation-z8 table-test-bg"
+      [class.black]="black"
+      [class.white]="white"
+      cdkDropList
+      #table
+      [cdkDropListData]="tests"
+      (cdkDropListDropped)="dropTable($event)"
+      [cdkDropListDisabled]="!isDraggable"
+    >
       <!-- Position Column -->
       <ng-container matColumnDef="Id">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> №</mat-header-cell>
-        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> <div >{{index+1}}</div></mat-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-id">
+          №</mat-header-cell
+        >
+        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id">
+          <div>{{ index + 1 }}</div></mat-cell
+        >
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> {{'text.test.name' | translate: 'Название теста'}}</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">
+          {{ 'text.test.name' | translate: 'Название теста' }}</mat-header-cell
+        >
+        <mat-cell *matCellDef="let element" class="mat-header-cell-description">
+          {{ element.Title }}</mat-cell
+        >
       </ng-container>
 
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> {{'text.test.action' | translate: 'Действие'}}</mat-header-cell>
-        <mat-cell *matCellDef="let element; let ind = index" class="mat-header-cell-action" [class.right]="!isAvailabilityShown && !(element.HasQuestions || !allowChanges)">
-          <mat-icon *ngIf="element.HasQuestions || !allowChanges" color="primary" class="main-table-tests-icon" (click)="navigateToTest(element.Id)" [matTooltip]="'text.test.pass.test' | translate: 'Пройти тест'"
-                    matTooltipClass="example-tooltip-blue">play_circle_outline
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">
+          {{ 'text.test.action' | translate: 'Действие' }}</mat-header-cell
+        >
+        <mat-cell
+          *matCellDef="let element; let ind = index"
+          class="mat-header-cell-action"
+          [class.right]="
+            !isAvailabilityShown && !(element.HasQuestions || !allowChanges)
+          "
+        >
+          <mat-icon
+            *ngIf="element.HasQuestions || !allowChanges"
+            color="primary"
+            class="main-table-tests-icon"
+            (click)="navigateToTest(element.Id)"
+            [matTooltip]="'text.test.pass.test' | translate: 'Пройти тест'"
+            matTooltipClass="example-tooltip-blue"
+            >play_circle_outline
           </mat-icon>
-          <mat-icon class="main-table-tests-icon" color="primary" (click)="openEditPopup(element, ind)" *ngIf="allowChanges" [matTooltip]="'text.test.edit' | translate: 'Редактировать тест'"
-                    matTooltipClass="example-tooltip-blue">edit
+          <mat-icon
+            class="main-table-tests-icon"
+            color="primary"
+            (click)="openEditPopup(element, ind)"
+            *ngIf="allowChanges"
+            [matTooltip]="'text.test.edit' | translate: 'Редактировать тест'"
+            matTooltipClass="example-tooltip-blue"
+            >edit
           </mat-icon>
-          <mat-icon class="main-table-tests-icon" color="primary" (click)="deleteTest(element.Id)" *ngIf="allowChanges" [matTooltip]="'text.test.delete.test' | translate: 'Удалить тест'"
-                    matTooltipClass="example-tooltip-blue">delete
+          <mat-icon
+            class="main-table-tests-icon"
+            color="primary"
+            (click)="deleteTest(element.Id)"
+            *ngIf="allowChanges"
+            [matTooltip]="'text.test.delete.test' | translate: 'Удалить тест'"
+            matTooltipClass="example-tooltip-blue"
+            >delete
           </mat-icon>
-          <mat-icon class="main-table-tests-icon" color="primary" (click)="navigateToQuestions(element.Id)" *ngIf="allowChanges" [matTooltip]="'text.test.go.to.test' | translate: 'Перейти к вопросам'"
-                    matTooltipClass="example-tooltip-blue">help
+          <mat-icon
+            class="main-table-tests-icon"
+            color="primary"
+            (click)="navigateToQuestions(element.Id)"
+            *ngIf="allowChanges"
+            [matTooltip]="
+              'text.test.go.to.test' | translate: 'Перейти к вопросам'
+            "
+            matTooltipClass="example-tooltip-blue"
+            >help
           </mat-icon>
           <ng-container *ngIf="isAvailabilityShown">
-            <mat-icon class="main-table-tests-icon" color="primary" (click)="openAvailabilityPopup(element.Id)" *ngIf="!element.Unlocked && allowChanges"
-                      [matTooltip]="'text.test.availability' | translate: 'Доступность теста'"
-                      matTooltipClass="example-tooltip-blue">lock
+            <mat-icon
+              class="main-table-tests-icon"
+              color="primary"
+              (click)="openAvailabilityPopup(element.Id)"
+              *ngIf="!element.Unlocked && allowChanges"
+              [matTooltip]="
+                'text.test.availability' | translate: 'Доступность теста'
+              "
+              matTooltipClass="example-tooltip-blue"
+              >lock
             </mat-icon>
-            <mat-icon class="main-table-tests-icon" color="primary" (click)="openAvailabilityPopup(element.Id)" *ngIf="element.Unlocked && allowChanges"
-                      [matTooltip]="'text.test.availability' | translate: 'Доступность теста'"
-                      matTooltipClass="example-tooltip-blue">lock_open
+            <mat-icon
+              class="main-table-tests-icon"
+              color="primary"
+              (click)="openAvailabilityPopup(element.Id)"
+              *ngIf="element.Unlocked && allowChanges"
+              [matTooltip]="
+                'text.test.availability' | translate: 'Доступность теста'
+              "
+              matTooltipClass="example-tooltip-blue"
+              >lock_open
             </mat-icon>
           </ng-container>
-
         </mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        cdkDrag
+      ></mat-row>
     </mat-table>
   </div>
 </ng-container>
@@ -68,7 +126,8 @@
         <mat-progress-bar
           class="example-margin"
           [color]="'primary'"
-          [mode]="'indeterminate'">
+          [mode]="'indeterminate'"
+        >
         </mat-progress-bar>
       </section>
     </mat-card-content>

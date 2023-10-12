@@ -1,31 +1,38 @@
 <!--<app-header [text]="'Тестирование и отладка ПО'"
             [smallText]="'Управление тестами'"></app-header>-->
 <div class="question-page__backlink main-anchor" (click)="navigate()">
-  {{'text.test.back.to.test' | translate : "< К тестам"}}
+  {{ 'text.test.back.to.test' | translate: '< К тестам' }}
 </div>
 <div class="question-page-container">
   <div class="question-page-description-title">
     <div class="question-page-description-title-text">
-      {{'text.test.questions' | translate : 'Вопросы'}}
+      {{ 'text.test.questions' | translate: 'Вопросы' }}
     </div>
-    <div class="question-page-description-title-text" [ngClass]="'small'" *ngIf="test">
-      {{test.Title}}
+    <div
+      class="question-page-description-title-text"
+      [ngClass]="'small'"
+      *ngIf="test"
+    >
+      {{ test.Title }}
     </div>
   </div>
 </div>
-<app-main-page [allowChanges]="true"
-               [adminTests]="false"
-               [adminQuestions]="true"
-               [forNN]="test?.ForNN"
-               [hideSearch]="true"
-               (addNewQuestion)="addNewQuestion(null)"
-               (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest($event)"
-               (createNeuralNetworkEvent)="createNeuralNetwork()"
-               (onValueChangeSearch)="filterQuestions($event)"></app-main-page>
+<app-main-page
+  [allowChanges]="true"
+  [adminTests]="false"
+  [adminQuestions]="true"
+  [forNN]="test?.ForNN"
+  [hideSearch]="true"
+  (addNewQuestion)="addNewQuestion(null)"
+  (addQuestionFromOtherTestEvent)="addQuestionFromOtherTest($event)"
+  (createNeuralNetworkEvent)="createNeuralNetwork()"
+  (onValueChangeSearch)="filterQuestions($event)"
+></app-main-page>
 <div class="question-page-container-table-tests">
   <app-table-questions
     [questions]="questions"
     (onDeleteQuestion)="openConfirmationDialog($event)"
-    (onOpenEditPopup)="addNewQuestion($event)">
+    (onOpenEditPopup)="addNewQuestion($event)"
+  >
   </app-table-questions>
 </div>

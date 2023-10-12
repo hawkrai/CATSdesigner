@@ -1,13 +1,15 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-  <mat-select-autocomplete class="autocomplete-form"
-                           [placeholder]="placeholder"
-                           [selectPlaceholder]="placeholder"
-                           [options]="options"
-                           [multiple]='true'
-                           name="optionsSelector"
-                           ngDefaultControl
-                           [formControl]="profileForm.controls['selected']"
-                           (selectionChange)="selectionChange($event)">
+  <mat-select-autocomplete
+    class="autocomplete-form"
+    [placeholder]="placeholder"
+    [selectPlaceholder]="placeholder"
+    [options]="options"
+    [multiple]="true"
+    name="optionsSelector"
+    ngDefaultControl
+    [formControl]="profileForm.controls['selected']"
+    (selectionChange)="selectionChange($event)"
+  >
     <!-- To use formControl within formGroup, provide [formControl] = formGroupName.controls[‘formControlName’] otherwise just [formControl] = ‘formControlName’ -->
   </mat-select-autocomplete>
 </form>

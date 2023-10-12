@@ -1,11 +1,24 @@
 <div mat-dialog-content class="header">
-  <div class="confirmation-text">{{'text.test.want.to.delete' | translate: 'Вы действительно хотите удалить вопрос?'}}</div>
-  <button mat-icon-button
-            (click)="onNoClick()" class="header-close-button">
-      <mat-icon>close</mat-icon>
-    </button>
+  <div class="confirmation-text">
+    {{
+      'text.test.want.to.delete'
+        | translate: 'Вы действительно хотите удалить вопрос?'
+    }}
+  </div>
+  <button mat-icon-button (click)="onNoClick()" class="header-close-button">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onNoClick()">{{'button.cancel' | translate : 'Отмена'}}</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>{{'text.test.yes' | translate : 'Да'}}</button>
+  <button mat-raised-button (click)="onNoClick()">
+    {{ 'button.cancel' | translate: 'Отмена' }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [mat-dialog-close]="true"
+    cdkFocusInitial
+  >
+    {{ 'text.test.yes' | translate: 'Да' }}
+  </button>
 </div>

@@ -1,5 +1,7 @@
 @keyframes spinner {
-  to {transform: rotate(360deg);}
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 ::ng-deep {
@@ -7,8 +9,8 @@
     display: flex;
     justify-content: space-between;
     .mat-button-focus-overlay {
-      background-color: transparent!important;
-  }
+      background-color: transparent !important;
+    }
   }
   .spinner:before {
     content: '';
@@ -23,13 +25,11 @@
     border-radius: 50%;
     border: 2px solid #ffffff;
     border-top-color: #000000;
-    animation: spinner .8s linear infinite;
+    animation: spinner 0.8s linear infinite;
   }
 }
 
-
 .neural-network-popup {
-
   &-title {
     font-size: 20px;
     line-height: 32px;
@@ -45,7 +45,7 @@
       color: white;
       background-color: #00a10c;
 
-      &.disabled{
+      &.disabled {
         background-color: #dddddd;
       }
     }

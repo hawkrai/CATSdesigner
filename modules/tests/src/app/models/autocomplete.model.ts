@@ -1,4 +1,4 @@
 export class AutocompleteModel {
-  display: string;
-  value: string;
+  display: string
+  value: string
 }

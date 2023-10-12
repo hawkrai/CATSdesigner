@@ -1,4 +1,4 @@
 export class TestDescription {
-  Description: string;
-  Title: string;
+  Description: string
+  Title: string
 }

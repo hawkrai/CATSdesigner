@@ -9,24 +9,69 @@
   </div>
 </div>-->
 <div class="result-pupil-table">
-  <div class="result-pupil-table-item" label="Тесты для контроля знаний" *ngIf="visibleTests?.includes('4')">
-    <div class="result-pupil-table-name">{{'text.tests.for.control' | translate : "Тесты для контроля знаний"}}</div>
-    <app-result-test-table-pupil [tests]="knowledgeControlTests"></app-result-test-table-pupil>
+  <div
+    class="result-pupil-table-item"
+    label="Тесты для контроля знаний"
+    *ngIf="visibleTests?.includes('4')"
+  >
+    <div class="result-pupil-table-name">
+      {{ 'text.tests.for.control' | translate: 'Тесты для контроля знаний' }}
+    </div>
+    <app-result-test-table-pupil
+      [tests]="knowledgeControlTests"
+    ></app-result-test-table-pupil>
   </div>
-  <div class="result-pupil-table-item" label="Тесты для самоконтроля" *ngIf="visibleTests?.includes('0')">
-    <div class="result-pupil-table-name">{{'text.tests.for.self.control' | translate : "Тесты для самоконтроля"}}</div>
-    <app-result-test-table-pupil [tests]="selfControlTests"></app-result-test-table-pupil>
+  <div
+    class="result-pupil-table-item"
+    label="Тесты для самоконтроля"
+    *ngIf="visibleTests?.includes('0')"
+  >
+    <div class="result-pupil-table-name">
+      {{ 'text.tests.for.self.control' | translate: 'Тесты для самоконтроля' }}
+    </div>
+    <app-result-test-table-pupil
+      [tests]="selfControlTests"
+    ></app-result-test-table-pupil>
   </div>
-  <div class="result-pupil-table-item" label="Тесты для обучения с искусственной нейронной сетью" *ngIf="visibleTests?.includes('1')">
-    <div class="result-pupil-table-name">{{'text.tests.for.nn' | translate : "Тесты для обучения с искусственной нейронной сетью"}}</div>
-    <app-result-test-table-pupil [tests]="nNTests"></app-result-test-table-pupil>
+  <div
+    class="result-pupil-table-item"
+    label="Тесты для обучения с искусственной нейронной сетью"
+    *ngIf="visibleTests?.includes('1')"
+  >
+    <div class="result-pupil-table-name">
+      {{
+        'text.tests.for.nn'
+          | translate: 'Тесты для обучения с искусственной нейронной сетью'
+      }}
+    </div>
+    <app-result-test-table-pupil
+      [tests]="nNTests"
+    ></app-result-test-table-pupil>
   </div>
-  <div class="result-pupil-table-item" label="Предтест для обучения в ЭУМК" *ngIf="visibleTests?.includes('2')">
-    <div class="result-pupil-table-name">{{'text.tests.for.pre.eumk' | translate : "Предтест для обучения в ЭУМК"}}</div>
-    <app-result-test-table-pupil [tests]="beforeEUMKTests"></app-result-test-table-pupil>
+  <div
+    class="result-pupil-table-item"
+    label="Предтест для обучения в ЭУМК"
+    *ngIf="visibleTests?.includes('2')"
+  >
+    <div class="result-pupil-table-name">
+      {{
+        'text.tests.for.pre.eumk' | translate: 'Предтест для обучения в ЭУМК'
+      }}
+    </div>
+    <app-result-test-table-pupil
+      [tests]="beforeEUMKTests"
+    ></app-result-test-table-pupil>
   </div>
-  <div class="result-pupil-table-item" label="Тесты для обучения в ЭУМК" *ngIf="visibleTests?.includes('3')">
-    <div class="result-pupil-table-name">{{'text.tests.for.eumk' | translate : "Тесты для обучения в ЭУМК"}}</div>
-    <app-result-test-table-pupil [tests]="forEUMKTests"></app-result-test-table-pupil>
+  <div
+    class="result-pupil-table-item"
+    label="Тесты для обучения в ЭУМК"
+    *ngIf="visibleTests?.includes('3')"
+  >
+    <div class="result-pupil-table-name">
+      {{ 'text.tests.for.eumk' | translate: 'Тесты для обучения в ЭУМК' }}
+    </div>
+    <app-result-test-table-pupil
+      [tests]="forEUMKTests"
+    ></app-result-test-table-pupil>
   </div>
 </div>

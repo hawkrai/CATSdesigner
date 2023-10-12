@@ -1,4 +1,4 @@
-import {Subject} from "rxjs";
+import { Subject } from 'rxjs'
 
 // If use this decorator in component then necessary
 // to implement OnDestroy interface
@@ -6,16 +6,16 @@ import {Subject} from "rxjs";
 // or to extend PortletComponentBase class
 // (AOT specific problem)
 export function AutoUnsubscribe(target) {
-  const destroyFn = target.prototype.ngOnDestroy;
+  const destroyFn = target.prototype.ngOnDestroy
 
   target.prototype.ngOnDestroy = function () {
-    const unsubscribeStream$: Subject<void> = this.unsubscribeStream$;
+    const unsubscribeStream$: Subject<void> = this.unsubscribeStream$
     if (unsubscribeStream$) {
-      unsubscribeStream$.next();
-      unsubscribeStream$.complete();
+      unsubscribeStream$.next()
+      unsubscribeStream$.complete()
     }
-    if (destroyFn && typeof destroyFn === "function") {
-      destroyFn.apply(this, arguments);
+    if (destroyFn && typeof destroyFn === 'function') {
+      destroyFn.apply(this, arguments)
     }
-  };
+  }
 }

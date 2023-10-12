@@ -1,18 +1,18 @@
 <app-popover-dialog [width]="'100%'">
   <ng-container title>
-    {{'text.test.delete.title' | translate : 'Удаление теста'}}
+    {{ 'text.test.delete.title' | translate: 'Удаление теста' }}
   </ng-container>
   <ng-container body>
     <div class="confirmation-text">
       {{
-        "text.test.want.to.delete.test"
-          | translate : "Вы действительно хотите удалить тест?"
+        'text.test.want.to.delete.test'
+          | translate: 'Вы действительно хотите удалить тест?'
       }}
     </div>
   </ng-container>
   <ng-container actions>
     <button mat-raised-button (click)="onNoClick()">
-      {{ "button.cancel" | translate : "Закрыть" }}
+      {{ 'button.cancel' | translate: 'Закрыть' }}
     </button>
     <button
       mat-raised-button
@@ -20,7 +20,7 @@
       [mat-dialog-close]="true"
       cdkFocusInitial
     >
-      {{ "text.test.yes" | translate : "Да" }}
+      {{ 'text.test.yes' | translate: 'Да' }}
     </button>
   </ng-container>
 </app-popover-dialog>
