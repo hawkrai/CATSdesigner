@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import '~educats-common/assets/styles/bootstrap.min.css';
 @import '~educats-common/assets/styles/fontawesome.css';
 @import '~educats-common/assets/styles/angular-calendar.css';
@@ -7,8 +7,7 @@
 @import '~educats-common/index.css';
 @import '../node_modules/flatpickr/dist/flatpickr.min.css';
 
-
-.flatpickr-time{
+.flatpickr-time {
   height: 18%;
 }
 
@@ -16,19 +15,18 @@
   height: 100%;
 }
 
-
-.cal-week-view .cal-starts-within-day .cal-event{
+.cal-week-view .cal-starts-within-day .cal-event {
   border-left-width: 3px;
   border-radius: 0px;
-  border-bottom-width: 0px ;
+  border-bottom-width: 0px;
   border-bottom-color: grey;
-  border-top-width: 0px ;
+  border-top-width: 0px;
   border-top-color: grey;
-  border-right-width: 0px ;
+  border-right-width: 0px;
   border-right-color: grey;
 }
 
-.cal-week-view .cal-time-events .cal-event table{
+.cal-week-view .cal-time-events .cal-event table {
   width: 92%;
 }
 
@@ -36,30 +34,30 @@
   display: block;
 }
 
-.cal-week-view .cal-hour-segment{
+.cal-week-view .cal-hour-segment {
   background-color: white;
 }
 
 .cal-week-view .cal-header.cal-weekend span {
-  color:  #808080;
+  color: #808080;
   font-family: Roboto, Helvetica Neue, sans-serif;
 }
 
 .cal-week-view .cal-day-headers span {
-  color:  #808080;
+  color: #808080;
   font-family: Roboto, Helvetica Neue, sans-serif;
   opacity: 100%;
 }
 
 .cal-week-view .cal-header.cal-weekend b {
   font-weight: initial;
-  color:  #363636;
+  color: #363636;
 }
 
 .cal-week-view .cal-day-headers b {
   font-family: Roboto, Helvetica Neue, sans-serif;
   font-weight: initial;
-  color:  #363636;
+  color: #363636;
 }
 
 .cal-week-view .cal-time {
@@ -71,49 +69,48 @@
   cursor: auto;
 }
 
-
-
 @media only screen and (min-width: 768px) {
   .cal-week-view {
     min-width: 1000px;
   }
 }
 
-.cal-time-events{
+.cal-time-events {
   line-height: normal;
 }
 
-.cal-week-view .cal-hour:not(:last-child) .cal-hour-segment, .cal-week-view .cal-hour:last-child :not(:last-child) .cal-hour-segment{
-  background: #FCFCFC;
+.cal-week-view .cal-hour:not(:last-child) .cal-hour-segment,
+.cal-week-view .cal-hour:last-child :not(:last-child) .cal-hour-segment {
+  background: #fcfcfc;
 }
 
-.cal-week-view .cal-hour-segment{
-  background: #FCFCFC;
+.cal-week-view .cal-hour-segment {
+  background: #fcfcfc;
 }
 
-.text-center{
-  box-shadow: 0px 4px 4px rgba(0,0,0,0.1);
+.text-center {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
 }
 
-.cal-week-view .cal-day-headers .cal-header.cal-past{
-  border: #FCFCFC;
+.cal-week-view .cal-day-headers .cal-header.cal-past {
+  border: #fcfcfc;
   padding-top: 20px;
   font-size: 12px;
 }
 
-.cal-week-view .cal-day-headers .cal-header.cal-today{
-  border: #FCFCFC;
+.cal-week-view .cal-day-headers .cal-header.cal-today {
+  border: #fcfcfc;
   padding-top: 20px;
   font-size: 12px;
 }
 
-.cal-week-view .cal-day-headers .cal-header.cal-future{
-  border: #FCFCFC;
+.cal-week-view .cal-day-headers .cal-header.cal-future {
+  border: #fcfcfc;
   padding-top: 20px;
   font-size: 12px;
 }
 
-.cal-week-view .cal-header.cal-today{
+.cal-week-view .cal-header.cal-today {
   background-color: #3f51b533;
 }
 
@@ -121,15 +118,14 @@
   height: 80px;
 }
 
-.cal-week-view .cal-time{
+.cal-week-view .cal-time {
   padding-top: 32px;
   font-size: 12px;
   font-family: Roboto, Helvetica Neue, sans-serif;
 }
 
-
-.mat-menu-panel{
-  box-shadow: 0px 4px 4px rgba(0,0,0,0.1);
+.mat-menu-panel {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
 }
 
 .mat-dialog-container {
@@ -137,13 +133,13 @@
 }
 
 .mat-tab-label {
-  font-size: .875rem;
+  font-size: 0.875rem;
   font-weight: 600;
   width: 50%;
 }
 
-.mat-tab-label.mat-tab-label-active{
-  color: #3F51B5;
+.mat-tab-label.mat-tab-label-active {
+  color: #3f51b5;
 }
 
 .remove-border-bottom .mat-tab-header {
@@ -151,28 +147,26 @@
 }
 
 .backdrop-help {
-    background-color: transparent;
+  background-color: transparent;
 }
 
-.help-popover .mat-dialog-container{
+.help-popover .mat-dialog-container {
   width: 370px;
   height: 185px;
   position: fixed !important;
   top: 10px;
   left: 55%;
-
 }
 
-@media (max-width: 657px){
-  .help-popover .mat-dialog-container{
-  position: fixed !important;
-  top: 2%;
-  right: 0px;
-  width: 100%;
+@media (max-width: 657px) {
+  .help-popover .mat-dialog-container {
+    position: fixed !important;
+    top: 2%;
+    right: 0px;
+    width: 100%;
   }
 }
 
 .mat-tooltip {
   font-size: 14px;
 }
-

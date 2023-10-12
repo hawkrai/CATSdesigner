@@ -1,5 +1,3 @@
-
-
 export const news1: any = {
   Attachments: null,
   Body: '<p>Ликвидация академической задолженности состоится по четвергам в 14.30  в ауд. 217.</p>',
@@ -33,4 +31,6 @@ export const news1: any = {
     SubjectModules: null,
     SubjectNewses: null,
     SubjectTests: null,
-    SubjectId: 3}};
+    SubjectId: 3,
+  },
+}
