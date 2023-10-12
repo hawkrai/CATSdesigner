@@ -1,15 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
 @Component({
   selector: 'app-diplom',
   templateUrl: './diplom.component.html',
-  styleUrls: ['./diplom.component.less']
+  styleUrls: ['./diplom.component.less'],
 })
 export class DiplomComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

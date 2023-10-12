@@ -1,20 +1,17 @@
 @import '../../../../../assets/scss/app.scss';
 
-.chat-group-list
-{
-    background: white;
-    height: calc(100vh - 280px) !important;
-    padding-top: 0px;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;    
+.chat-group-list {
+  background: white;
+  height: calc(100vh - 280px) !important;
+  padding-top: 0px;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
-.p-4
-{
-    padding: 0.5rem !important;
+.p-4 {
+  padding: 0.5rem !important;
 }
 
-.shortName
-{
-    max-width: 70%;
+.shortName {
+  max-width: 70%;
 }

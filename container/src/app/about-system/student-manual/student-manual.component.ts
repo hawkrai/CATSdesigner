@@ -1,36 +1,34 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { AuthenticationService } from 'src/app/core/services/auth.service';
+import { Component, Input, OnInit } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { first } from 'rxjs/operators'
+import { AuthenticationService } from 'src/app/core/services/auth.service'
 
 @Component({
   templateUrl: './student-manual.component.html',
   styleUrls: ['./student-manual.component.less'],
-  selector: 'app-student-manual'
+  selector: 'app-student-manual',
 })
 export class StudentManualComponent implements OnInit {
-  loginForm: FormGroup;
-  loading = false;
-  submitted = false;
-  returnUrl: string;
-  hide=true;
-
+  loginForm: FormGroup
+  loading = false
+  submitted = false
+  returnUrl: string
+  hide = true
 
   constructor(
-        private formBuilder: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router,
-    ) {
-      
-    }
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-    panelOpenState = false;
+  panelOpenState = false
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  get f() {
+    return this.loginForm.controls
   }
-
-  get f() { return this.loginForm.controls; }
 
   /*onSubmit() {
     this.submitted = true;
@@ -54,5 +52,4 @@ export class StudentManualComponent implements OnInit {
   routeToLogin() {
     this.router.navigate(['/']);
     }*/
-
 }

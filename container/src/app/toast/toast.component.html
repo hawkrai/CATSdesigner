@@ -1,7 +1,14 @@
-<div class="toast toast-{{data.type}}"
-     [@fadeAnimation]="{value: animationState, params:
-        { fadeIn: toastConfig.animation.fadeIn, fadeOut: toastConfig.animation.fadeOut }}"
-     (@fadeAnimation.done)="onFadeFinished($event)">
-  <mat-icon style="color: #fff;">{{ iconType }}</mat-icon>
+<div
+  class="toast toast-{{ data.type }}"
+  [@fadeAnimation]="{
+    value: animationState,
+    params: {
+      fadeIn: toastConfig.animation.fadeIn,
+      fadeOut: toastConfig.animation.fadeOut
+    }
+  }"
+  (@fadeAnimation.done)="onFadeFinished($event)"
+>
+  <mat-icon style="color: #fff">{{ iconType }}</mat-icon>
   <div>{{ data.text }}</div>
 </div>

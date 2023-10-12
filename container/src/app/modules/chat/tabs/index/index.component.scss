@@ -1,90 +1,73 @@
 //@import '~bootstrap/scss/bootstrap';
 @import '../../../../../assets/scss/app.scss';
 
-.form-control
-{
-    border-radius: 0px !important;
-    border: none;
+.form-control {
+  border-radius: 0px !important;
+  border: none;
 }
 
-.mat-typography
-{
-    background: white;
+.mat-typography {
+  background: white;
 }
 
-.list-inline-item
-{
-    padding-left: 5px !important;
-    padding-right: 5px !important;
+.list-inline-item {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
 }
 
-.app-wrapper
-{
-    height: -webkit-fill-available;
+.app-wrapper {
+  height: -webkit-fill-available;
 }
 
-@media (max-width: 991.98px)
-{
-    .ng-star-inserted
-    {
-        height: 100%;
-    }
+@media (max-width: 991.98px) {
+  .ng-star-inserted {
+    height: 100%;
+  }
 }
 
-.groupName
-{
-        max-width: calc(100vw - 160px) !important;
+.groupName {
+  max-width: calc(100vw - 160px) !important;
 }
 
-.msgs
-{
-    @media (max-width: 991.98px)
-    {
-        height: calc(100% - 130px) !important;
-    }
-    @media (max-width: 3000px)
-    {   
-        height: calc(100% - 70px)
-    }
+.msgs {
+  @media (max-width: 991.98px) {
+    height: calc(100% - 130px) !important;
+  }
+  @media (max-width: 3000px) {
+    height: calc(100% - 70px);
+  }
 }
 .form-control-lg {
-    height: calc(1.5em + 1rem + 13px) !important;
+  height: calc(1.5em + 1rem + 13px) !important;
 }
-.layout-wrapper
-{
-    height: inherit;
-    padding: 10px;
-    background-color: white;
-}
-
-.d-lg-flex
-{
-    height: 100%;
+.layout-wrapper {
+  height: inherit;
+  padding: 10px;
+  background-color: white;
 }
 
-.user-chat
-{
-    height: initial;
+.d-lg-flex {
+  height: 100%;
 }
 
-.chat-leftsidebar
-{
-    height: inherit;
+.user-chat {
+  height: initial;
 }
 
-.w-100
-{
-    height: inherit;
+.chat-leftsidebar {
+  height: inherit;
 }
 
-.p-lg-4
-{
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+.w-100 {
+  height: inherit;
 }
 
-.p-3
-{
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+.p-lg-4 {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+.p-3 {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
 }

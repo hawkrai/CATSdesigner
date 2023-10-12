@@ -1,13 +1,11 @@
 @import '../../../../../assets/scss/app.scss';
 
-.cdk-global-overlay-wrapper
-{
-    margin-top: 64px !important;
-    height: calc(100% - 64px);
-    align-items: inherit !important;
+.cdk-global-overlay-wrapper {
+  margin-top: 64px !important;
+  height: calc(100% - 64px);
+  align-items: inherit !important;
 }
 
-.cdk-overlay-container
-{
-    height: 100vh;
+.cdk-overlay-container {
+  height: 100vh;
 }

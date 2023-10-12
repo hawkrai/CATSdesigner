@@ -1,5 +1,20 @@
-
 <div class="container">
-  <div class="remote"><video *ngIf="remoteAudio" class="stream-handler" [srcObject]="remoteAudio" autoplay></video></div>
-  <div class="self"><video controls [muted]="'muted'" *ngIf="selfMedia" class="stream-handler" [srcObject]="selfMedia" autoplay></video></div>
+  <div class="remote">
+    <video
+      *ngIf="remoteAudio"
+      class="stream-handler"
+      [srcObject]="remoteAudio"
+      autoplay
+    ></video>
+  </div>
+  <div class="self">
+    <video
+      controls
+      [muted]="'muted'"
+      *ngIf="selfMedia"
+      class="stream-handler"
+      [srcObject]="selfMedia"
+      autoplay
+    ></video>
+  </div>
 </div>

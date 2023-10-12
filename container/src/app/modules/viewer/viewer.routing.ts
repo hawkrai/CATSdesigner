@@ -1,18 +1,18 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { SubjectComponent } from './pages/subject/subject.component';
-import { ViewerComponent } from './pages/viewer/viewer.component';
-import { SubjectsNavComponent } from '../../layout/subjects-nav/subjects-nav.component';
-import { NoAuthGuard } from '../../core/no-auth.guard';
-import { SubjectsComponent } from './pages/subjects/subjects.component';
-import { UserAssignedToSubjectGuard } from 'src/app/core/guards/user-assigned-to-subject.guard';
-import { UserLecturerGuard } from 'src/app/core/guards/user-lecturer.guard';
+import { NgModule } from '@angular/core'
+import { Routes, RouterModule } from '@angular/router'
+import { SubjectComponent } from './pages/subject/subject.component'
+import { ViewerComponent } from './pages/viewer/viewer.component'
+import { SubjectsNavComponent } from '../../layout/subjects-nav/subjects-nav.component'
+import { NoAuthGuard } from '../../core/no-auth.guard'
+import { SubjectsComponent } from './pages/subjects/subjects.component'
+import { UserAssignedToSubjectGuard } from 'src/app/core/guards/user-assigned-to-subject.guard'
+import { UserLecturerGuard } from 'src/app/core/guards/user-lecturer.guard'
 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'main',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '',
@@ -21,25 +21,24 @@ export const routes: Routes = [
     children: [
       {
         path: 'main',
-        component: ViewerComponent
+        component: ViewerComponent,
       },
       {
         path: 'subject/:id',
         component: SubjectComponent,
-        canActivate: [UserAssignedToSubjectGuard]
+        canActivate: [UserAssignedToSubjectGuard],
       },
       {
         path: 'subjects',
         component: SubjectsComponent,
-        canActivate: [UserLecturerGuard]
-      }
-    ]
+        canActivate: [UserLecturerGuard],
+      },
+    ],
   },
-    
-];
+]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class ViewerRoutingModule {}

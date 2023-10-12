@@ -1,585 +1,585 @@
 {
-    "login": {
-        "title": "войти в систему",
-        "message": "Войдите, чтобы продолжить в Chatvia.",
-        "form": {
-            "email": {
-                "label": "Эл. адрес",
-                "placeholder": "Введите адрес электронной почты",
-                "validation": {
-                    "required": "Электронная почта является обязательной.",
-                    "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
-                }
-            },
-            "password": {
-                "label": "пароль",
-                "placeholder": "Введите ваш пароль",
-                "validation": {
-                    "required": "Пароль обязателен."
-                }
-            },
-            "remebertext": "Запомни меня",
-            "button": {
-                "text": "Войти в систему"
-            },
-            "forgotlink": "Забыли Ваш пароль?"
-        },
-        "signuptext": "Нет учетной записи?",
-        "signuplink": "Зарегистрироваться сейчас"
-    },
-    "signup": {
-        "title": "зарегистрироваться",
-        "message": "Получите свою учетную запись Chatvia прямо сейчас.",
-        "form": {
-            "username": {
-                "label": "имя пользователя",
-                "placeholder": "Введите имя пользователя",
-                "validation": {
-                    "required": "Имя пользователя обязательно."
-                }
-            },
-            "email": {
-                "label": "Эл. адрес",
-                "placeholder": "Введите адрес электронной почты",
-                "validation": {
-                    "required": "Электронная почта является обязательной.",
-                    "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
-                }
-            },
-            "password": {
-                "label": "пароль",
-                "placeholder": "Enter your password",
-                "validation": {
-                    "required": "Пароль обязателен."
-                }
-            },
-            "button": {
-                "text": "Зарегистрироваться"
-            },
-            "notice": "Регистрируясь, вы соглашаетесь с Chatvia",
-            "term-text": "Условия эксплуатации"
-        },
-        "signintext": "Уже есть аккаунт?",
-        "signinlink": "Войти в систему"
-    },
-    "resetpassword": {
-        "title": "Сброс пароля",
-        "message": "Сбросить пароль с помощью Chatvia.",
-        "form": {
-            "email": {
-                "label": "Эл. адрес",
-                "placeholder": "Введите адрес электронной почты",
-                "validation": {
-                    "required": "Электронная почта является обязательной.",
-                    "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
-                }
-            },
-            "button": {
-                "text": "Сброс"
-            }
-        },
-        "signintext": " Помни это ?",
-        "signinlink": "Войти в систему"
-    },
-    "lockscreen": {
-        "title": "Экран блокировки",
-        "message": "Введите свой пароль, чтобы разблокировать экран!",
-        "name": "Patricia Smith",
-        "form": {
-            "password": {
-                "label": "пароль",
-                "placeholder": "Введите пароль",
-                "validation": {
-                    "required": "Пароль обязателен."
-                }
-            },
-            "button": {
-                "text": "разблокировка"
-            }
-        },
-        "signintext": "Не вы ? возвращение",
-        "signinlink": "Войти в систему"
-    },
-    "chat": {
-        "tabs": {
-            "profile": {
-                "title": "Мой профайл",
-                "dropdown": {
-                    "edit": "редактировать",
-                    "action": "действие",
-                    "another": "Другое действие"
-                },
-                "user": "Patricia Smith",
-                "status": "активный",
-                "message": "Если несколько языков объединяются, грамматика полученного языка более проста и правильна, чем грамматика отдельного человека.",
-                "about": {
-                    "text": "Текст",
-                    "name": {
-                        "text": "название",
-                        "value": "Patricia Smith"
-                    },
-                    "email": {
-                        "text": "Эл. адрес",
-                        "value": "abc@123.com"
-                    },
-                    "time": {
-                        "text": "Время",
-                        "value": "11:40 AM"
-                    },
-                    "location": {
-                        "text": "Расположение",
-                        "value": "California, USA"
-                    }
-                },
-                "attachedfile": {
-                    "text": "Прикрепленные файлы",
-                    "file1": {
-                        "name": "Admin-A.zip",
-                        "size": "12.5 MB"
-                    },
-                    "file2": {
-                        "name": "Image-1.jpg",
-                        "size": "4.2 MB"
-                    },
-                    "file3": {
-                        "name": "Image-2.jpg",
-                        "size": "3.1 MB"
-                    },
-                    "file4": {
-                        "name": "Landing-A.zip",
-                        "size": "6.7 MB"
-                    },
-                    "dropdown": {
-                        "action": "действие",
-                        "another": "Другое действие",
-                        "delete": "Delete"
-                    }
-                }
-            },
-            "chats": {
-                "title": "Чаты",
-                "search": {
-                    "placeholder": "Искать сообщения или пользователей"
-                },
-                "users": {
-                    "1": "Patrick",
-                    "2": "Doris",
-                    "3": "Emily",
-                    "4": "Steve",
-                    "5": "Teresa"
-                },
-                "recent": {
-                    "title": "последний",
-                    "userslist": {
-                        "user1": {
-                            "name": "Patrick Hendricks",
-                            "message": "Привет! там я доступен",
-                            "time": "05 min"
-                        },
-                        "user2": {
-                            "name": "Mark Messer",
-                            "message": "Изображений",
-                            "time": "12 min"
-                        },
-                        "user3": {
-                            "name": "General",
-                            "message": "Эта тема потрясающая!",
-                            "time": "20 min"
-                        },
-                        "user4": {
-                            "name": "Doris Brown",
-                            "message": "Рад встрече",
-                            "time": "10:12 AM"
-                        },
-                        "user5": {
-                            "name": "Designer",
-                            "message": "Следующая встреча завтра в 10:00",
-                            "time": "12:01 PM"
-                        },
-                        "user6": {
-                            "name": "Steve Walker",
-                            "message": "Admin-A.zip",
-                            "time": "03:20 PM"
-                        },
-                        "user7": {
-                            "name": "Albert Rodarte",
-                            "message": "типирование...",
-                            "time": "04:56 PM"
-                        },
-                        "user8": {
-                            "name": "Mirta George",
-                            "message": "Да все хорошо",
-                            "time": "12/07"
-                        },
-                        "user9": {
-                            "name": "Paul Haynes",
-                            "message": "Доброе утро",
-                            "time": "12/07"
-                        },
-                        "user10": {
-                            "name": "Jonathan Miller",
-                            "message": "Привет, как ты?",
-                            "time": "12/07"
-                        },
-                        "user11": {
-                            "name": "Ossie Wilson",
-                            "message": "Я закончил! Увидимся так",
-                            "time": "11/07"
-                        },
-                        "user12": {
-                            "name": "Sara Muller",
-                            "message": "Wow that's great",
-                            "time": "11/07"
-                        }
-                    }
-                },
-                "modal": {
-                    "title": "Добавить участников",
-                    "form": {
-                        "name": {
-                            "label": "название",
-                            "placeholder": "Введите имя",
-                            "validation": {
-                                "required": "Имя обязательно."
-                            }
-                        },
-                        "buttons": {
-                            "close": "близко",
-                            "save": "Сохранить"
-                        }
-                    }
-                }
-            },
-            "groups": {
-                "title": "группы",
-                "search": {
-                    "placeholder": "Поисковые группы..."
-                },
-                "list": {
-                    "general": "Общее",
-                    "reporting": "Составление отчетов",
-                    "designers": "Конструкторы",
-                    "developer": "Разработчики",
-                    "projectalpha": "Проект-альфа",
-                    "snacks": "Закуски"
-                },
-                "modal": {
-                    "title": "Создать новую группу",
-                    "form": {
-                        "name": {
-                            "label": "Название группы",
-                            "placeholder": "Введите название группы",
-                            "validaion": {
-                                "required": "Название группы не обязательно."
-                            }
-                        },
-                        "members": {
-                            "label": "Участники группы",
-                            "button": {
-                                "text": "Выбрать участников"
-                            }
-                        },
-                        "description": {
-                            "label": "Описание",
-                            "placeholder": "Введите описание"
-                        },
-                        "button": {
-                            "close": "близко",
-                            "create": "Создать группы"
-                        }
-                    }
-                }
-            },
-            "contacts": {
-                "title": "контакты",
-                "search": {
-                    "placeholder": "Искать пользователей..."
-                },
-                "list": {
-                    "A": {
-                        "text": "A",
-                        "name": "Albert Rodarte",
-                        "name2": "Allison Etter"
-                    },
-                    "C": {
-                        "text": "C",
-                        "name": "Craig Smiley"
-                    },
-                    "D": {
-                        "text": "D",
-                        "name": "Daniel Clay",
-                        "name2": "Doris Brown"
-                    },
-                    "H": {
-                        "text": "H",
-                        "name": "Hanah Mile"
-                    },
-                    "I": {
-                        "text": "I",
-                        "name": "Iris Wells"
-                    },
-                    "J": {
-                        "text": "J",
-                        "name": "Juan Flakes",
-                        "name2": "John Hall",
-                        "name3": "Joy Southern"
-                    },
-                    "M": {
-                        "text": "M",
-                        "name": "Mary Farmer",
-                        "name2": "Mark Messer",
-                        "name3": "Michael Hinton"
-                    },
-                    "O": {
-                        "text": "O",
-                        "name": "Ossie Wilson"
-                    },
-                    "P": {
-                        "text": "P",
-                        "name": "Phillis Griffin",
-                        "name2": "Paul Haynes"
-                    },
-                    "R": {
-                        "text": "R",
-                        "name": "Rocky Jackson"
-                    },
-                    "S": {
-                        "text": "S",
-                        "name": "Sara Muller",
-                        "name2": "Simon Velez",
-                        "name3": "Steve Walker"
-                    },
-                    "dropdown": {
-                        "item1": "Share",
-                        "item2": "Block",
-                        "item3": "Remove"
-                    }
-                },
-                "modal": {
-                    "title": "Добавить контакт",
-                    "form": {
-                        "email": {
-                            "label": "Эл. адрес",
-                            "placeholder": "Введите адрес электронной почты"
-                        },
-                        "message": {
-                            "label": "Сообщение-приглашение",
-                            "placeholder": "Введите сообщение"
-                        },
-                        "button": {
-                            "close": "близко",
-                            "contact": "Пригласить контакт"
-                        }
-                    }
-                }
-            },
-            "settings": {
-                "title": "настройки",
-                "name": "Patrick Smith",
-                "status": {
-                    "text": "Доступный",
-                    "dropdown": {
-                        "available": "Доступный",
-                        "busy": "Занятый"
-                    }
-                },
-                "info": {
-                    "title": "Личная информация",
-                    "name": {
-                        "text": "название",
-                        "value": "Patricia Smith"
-                    },
-                    "email": {
-                        "text": "Эл. адрес",
-                        "value": "abc@123.com"
-                    },
-                    "time": {
-                        "text": "Время",
-                        "value": "11:40 AM"
-                    },
-                    "location": {
-                        "text": "Расположение",
-                        "value": "California, USA"
-                    },
-                    "edit": "редактировать"
-                },
-                "privacy": {
-                    "title": "Конфиденциальность",
-                    "photo": "Аватар",
-                    "dropdowntext": "Все",
-                    "dropdown": {
-                        "everyone": "Все",
-                        "selected": "выбранный",
-                        "nobody": "Никто"
-                    },
-                    "seen": "Последний раз видели",
-                    "status": "Положение дел",
-                    "receipt": "Уведомления о прочтении",
-                    "groups": "группы"
-                },
-                "security": {
-                    "title": "Безопасность",
-                    "text": "Показать уведомление о безопасности"
-                },
-                "help": {
-                    "title": "Помогите",
-                    "faqs": "Вопросы и ответы",
-                    "contact": "контакт",
-                    "policy": "Условия и политика конфиденциальности"
-                },
-                "modal": {
-                    "title": "Изменить профиль",
-                    "form": {
-                        "profile": {
-                            "label": "Профиль"
-                        },
-                        "name": {
-                            "label": "название",
-                            "placeholder": "Введите имя",
-                            "validation": {
-                                "required": "Имя изменчивое."
-                            }
-                        },
-                        "email": {
-                            "label": "Эл. адрес",
-                            "placeholder": "Введите адрес электронной почты",
-                            "validation": {
-                                "required": "Электронная почта является обязательной.",
-                                "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
-                            }
-                        },
-                        "location": {
-                            "label": "Расположение",
-                            "placeholder": "Укажите местоположение",
-                            "validation": {
-                                "required": "Местоположение является условным."
-                            }
-                        },
-                        "button": {
-                            "close": "близко",
-                            "save": "Сохранить"
-                        }
-                    }
-                }
-            }
-        },
-        "profiledropdown": {
-            "profile": "Профиль",
-            "setting": "настройка",
-            "logout": "Выйти"
-        },
-        "chatpanelheader": {
-            "name": "Doris Brown",
-            "search": {
-                "placeholder": "Поиск.."
-            },
-            "dropdown": {
-                "viewprofile": "Просмотреть профиль",
-                "archive": "Архив",
-                "muted": "приглушенный",
-                "delete": "Удалить"
-            }
-        },
-        "messages": {
-            "1": {
-                "name": "Dorsin Brown",
-                "message": "Доброе утро",
-                "time": "10:00"
-            },
-            "2": {
-                "name": "Patricia Smith",
-                "message": "Доброе утро! Как вы? А как насчет нашей следующей встречи?",
-                "time": "10:02"
-            },
-            "3": {
-                "name": "Doris Brown",
-                "message": "Да все хорошо",
-                "time": "10:05"
-            },
-            "8": {
-                "name": "Doris Brown",
-                "message": "& Следующее собрание завтра в 10.00",
-                "time": "10:05"
-            },
-            "4": {
-                "name": "Patricia Smith",
-                "message": "Ух ты, здорово",
-                "time": "10:06"
-            },
-            "5": {
-                "name": "Doris Brown",
-                "time": "10:09"
-            },
-            "6": {
-                "name": "Patricia Smith",
-                "time": "10:16"
-            },
-            "7": {
-                "name": "Doris Brown",
-                "message": "типирование"
-            },
-            "dropdown": {
-                "copy": "копия",
-                "save": "Сохранить",
-                "forward": "Вперед",
-                "delete": "Удалить"
-            },
-            "filedropdown": {
-                "share": "доля",
-                "delete": "Удалить"
-            }
-        },
-        "rightpanel": {
-            "name": "Dorsin Brown",
-            "status": "активный",
-            "message": "Если несколько языков сливаются, грамматика полученного языка более проста и правильна, чем грамматика отдельного человека.",
-            "about": {
-                "text": "Текст",
-                "name": {
-                    "text": "название",
-                    "value": "Dorsin Brown"
-                },
-                "email": {
-                    "text": "Эл. адрес",
-                    "value": "abc@123.com"
-                },
-                "time": {
-                    "text": "Время",
-                    "value": "11:40 AM"
-                },
-                "location": {
-                    "text": "Расположение",
-                    "value": "California, USA"
-                }
-            },
-            "attachedfile": {
-                "text": "Прикрепленные файлы",
-                "file1": {
-                    "name": "admin_v1.0.zip",
-                    "size": "12.5 MB"
-                },
-                "file2": {
-                    "name": "Image-1.jpg",
-                    "size": "4.2 MB"
-                },
-                "file3": {
-                    "name": "Image-2.jpg",
-                    "size": "3.1 MB"
-                },
-                "file4": {
-                    "name": "Landing-A.zip",
-                    "size": "6.7 MB"
-                },
-                "dropdown": {
-                    "action": "действие",
-                    "another": "Другое действие",
-                    "delete": "Delete"
-                }
-            }
+  "login": {
+    "title": "войти в систему",
+    "message": "Войдите, чтобы продолжить в Chatvia.",
+    "form": {
+      "email": {
+        "label": "Эл. адрес",
+        "placeholder": "Введите адрес электронной почты",
+        "validation": {
+          "required": "Электронная почта является обязательной.",
+          "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
         }
+      },
+      "password": {
+        "label": "пароль",
+        "placeholder": "Введите ваш пароль",
+        "validation": {
+          "required": "Пароль обязателен."
+        }
+      },
+      "remebertext": "Запомни меня",
+      "button": {
+        "text": "Войти в систему"
+      },
+      "forgotlink": "Забыли Ваш пароль?"
     },
-    "footer": {
-        "name": "Chatvia. Создано с",
-        "text": " автор: Themesbrand"
+    "signuptext": "Нет учетной записи?",
+    "signuplink": "Зарегистрироваться сейчас"
+  },
+  "signup": {
+    "title": "зарегистрироваться",
+    "message": "Получите свою учетную запись Chatvia прямо сейчас.",
+    "form": {
+      "username": {
+        "label": "имя пользователя",
+        "placeholder": "Введите имя пользователя",
+        "validation": {
+          "required": "Имя пользователя обязательно."
+        }
+      },
+      "email": {
+        "label": "Эл. адрес",
+        "placeholder": "Введите адрес электронной почты",
+        "validation": {
+          "required": "Электронная почта является обязательной.",
+          "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
+        }
+      },
+      "password": {
+        "label": "пароль",
+        "placeholder": "Enter your password",
+        "validation": {
+          "required": "Пароль обязателен."
+        }
+      },
+      "button": {
+        "text": "Зарегистрироваться"
+      },
+      "notice": "Регистрируясь, вы соглашаетесь с Chatvia",
+      "term-text": "Условия эксплуатации"
+    },
+    "signintext": "Уже есть аккаунт?",
+    "signinlink": "Войти в систему"
+  },
+  "resetpassword": {
+    "title": "Сброс пароля",
+    "message": "Сбросить пароль с помощью Chatvia.",
+    "form": {
+      "email": {
+        "label": "Эл. адрес",
+        "placeholder": "Введите адрес электронной почты",
+        "validation": {
+          "required": "Электронная почта является обязательной.",
+          "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
+        }
+      },
+      "button": {
+        "text": "Сброс"
+      }
+    },
+    "signintext": " Помни это ?",
+    "signinlink": "Войти в систему"
+  },
+  "lockscreen": {
+    "title": "Экран блокировки",
+    "message": "Введите свой пароль, чтобы разблокировать экран!",
+    "name": "Patricia Smith",
+    "form": {
+      "password": {
+        "label": "пароль",
+        "placeholder": "Введите пароль",
+        "validation": {
+          "required": "Пароль обязателен."
+        }
+      },
+      "button": {
+        "text": "разблокировка"
+      }
+    },
+    "signintext": "Не вы ? возвращение",
+    "signinlink": "Войти в систему"
+  },
+  "chat": {
+    "tabs": {
+      "profile": {
+        "title": "Мой профайл",
+        "dropdown": {
+          "edit": "редактировать",
+          "action": "действие",
+          "another": "Другое действие"
+        },
+        "user": "Patricia Smith",
+        "status": "активный",
+        "message": "Если несколько языков объединяются, грамматика полученного языка более проста и правильна, чем грамматика отдельного человека.",
+        "about": {
+          "text": "Текст",
+          "name": {
+            "text": "название",
+            "value": "Patricia Smith"
+          },
+          "email": {
+            "text": "Эл. адрес",
+            "value": "abc@123.com"
+          },
+          "time": {
+            "text": "Время",
+            "value": "11:40 AM"
+          },
+          "location": {
+            "text": "Расположение",
+            "value": "California, USA"
+          }
+        },
+        "attachedfile": {
+          "text": "Прикрепленные файлы",
+          "file1": {
+            "name": "Admin-A.zip",
+            "size": "12.5 MB"
+          },
+          "file2": {
+            "name": "Image-1.jpg",
+            "size": "4.2 MB"
+          },
+          "file3": {
+            "name": "Image-2.jpg",
+            "size": "3.1 MB"
+          },
+          "file4": {
+            "name": "Landing-A.zip",
+            "size": "6.7 MB"
+          },
+          "dropdown": {
+            "action": "действие",
+            "another": "Другое действие",
+            "delete": "Delete"
+          }
+        }
+      },
+      "chats": {
+        "title": "Чаты",
+        "search": {
+          "placeholder": "Искать сообщения или пользователей"
+        },
+        "users": {
+          "1": "Patrick",
+          "2": "Doris",
+          "3": "Emily",
+          "4": "Steve",
+          "5": "Teresa"
+        },
+        "recent": {
+          "title": "последний",
+          "userslist": {
+            "user1": {
+              "name": "Patrick Hendricks",
+              "message": "Привет! там я доступен",
+              "time": "05 min"
+            },
+            "user2": {
+              "name": "Mark Messer",
+              "message": "Изображений",
+              "time": "12 min"
+            },
+            "user3": {
+              "name": "General",
+              "message": "Эта тема потрясающая!",
+              "time": "20 min"
+            },
+            "user4": {
+              "name": "Doris Brown",
+              "message": "Рад встрече",
+              "time": "10:12 AM"
+            },
+            "user5": {
+              "name": "Designer",
+              "message": "Следующая встреча завтра в 10:00",
+              "time": "12:01 PM"
+            },
+            "user6": {
+              "name": "Steve Walker",
+              "message": "Admin-A.zip",
+              "time": "03:20 PM"
+            },
+            "user7": {
+              "name": "Albert Rodarte",
+              "message": "типирование...",
+              "time": "04:56 PM"
+            },
+            "user8": {
+              "name": "Mirta George",
+              "message": "Да все хорошо",
+              "time": "12/07"
+            },
+            "user9": {
+              "name": "Paul Haynes",
+              "message": "Доброе утро",
+              "time": "12/07"
+            },
+            "user10": {
+              "name": "Jonathan Miller",
+              "message": "Привет, как ты?",
+              "time": "12/07"
+            },
+            "user11": {
+              "name": "Ossie Wilson",
+              "message": "Я закончил! Увидимся так",
+              "time": "11/07"
+            },
+            "user12": {
+              "name": "Sara Muller",
+              "message": "Wow that's great",
+              "time": "11/07"
+            }
+          }
+        },
+        "modal": {
+          "title": "Добавить участников",
+          "form": {
+            "name": {
+              "label": "название",
+              "placeholder": "Введите имя",
+              "validation": {
+                "required": "Имя обязательно."
+              }
+            },
+            "buttons": {
+              "close": "близко",
+              "save": "Сохранить"
+            }
+          }
+        }
+      },
+      "groups": {
+        "title": "группы",
+        "search": {
+          "placeholder": "Поисковые группы..."
+        },
+        "list": {
+          "general": "Общее",
+          "reporting": "Составление отчетов",
+          "designers": "Конструкторы",
+          "developer": "Разработчики",
+          "projectalpha": "Проект-альфа",
+          "snacks": "Закуски"
+        },
+        "modal": {
+          "title": "Создать новую группу",
+          "form": {
+            "name": {
+              "label": "Название группы",
+              "placeholder": "Введите название группы",
+              "validaion": {
+                "required": "Название группы не обязательно."
+              }
+            },
+            "members": {
+              "label": "Участники группы",
+              "button": {
+                "text": "Выбрать участников"
+              }
+            },
+            "description": {
+              "label": "Описание",
+              "placeholder": "Введите описание"
+            },
+            "button": {
+              "close": "близко",
+              "create": "Создать группы"
+            }
+          }
+        }
+      },
+      "contacts": {
+        "title": "контакты",
+        "search": {
+          "placeholder": "Искать пользователей..."
+        },
+        "list": {
+          "A": {
+            "text": "A",
+            "name": "Albert Rodarte",
+            "name2": "Allison Etter"
+          },
+          "C": {
+            "text": "C",
+            "name": "Craig Smiley"
+          },
+          "D": {
+            "text": "D",
+            "name": "Daniel Clay",
+            "name2": "Doris Brown"
+          },
+          "H": {
+            "text": "H",
+            "name": "Hanah Mile"
+          },
+          "I": {
+            "text": "I",
+            "name": "Iris Wells"
+          },
+          "J": {
+            "text": "J",
+            "name": "Juan Flakes",
+            "name2": "John Hall",
+            "name3": "Joy Southern"
+          },
+          "M": {
+            "text": "M",
+            "name": "Mary Farmer",
+            "name2": "Mark Messer",
+            "name3": "Michael Hinton"
+          },
+          "O": {
+            "text": "O",
+            "name": "Ossie Wilson"
+          },
+          "P": {
+            "text": "P",
+            "name": "Phillis Griffin",
+            "name2": "Paul Haynes"
+          },
+          "R": {
+            "text": "R",
+            "name": "Rocky Jackson"
+          },
+          "S": {
+            "text": "S",
+            "name": "Sara Muller",
+            "name2": "Simon Velez",
+            "name3": "Steve Walker"
+          },
+          "dropdown": {
+            "item1": "Share",
+            "item2": "Block",
+            "item3": "Remove"
+          }
+        },
+        "modal": {
+          "title": "Добавить контакт",
+          "form": {
+            "email": {
+              "label": "Эл. адрес",
+              "placeholder": "Введите адрес электронной почты"
+            },
+            "message": {
+              "label": "Сообщение-приглашение",
+              "placeholder": "Введите сообщение"
+            },
+            "button": {
+              "close": "близко",
+              "contact": "Пригласить контакт"
+            }
+          }
+        }
+      },
+      "settings": {
+        "title": "настройки",
+        "name": "Patrick Smith",
+        "status": {
+          "text": "Доступный",
+          "dropdown": {
+            "available": "Доступный",
+            "busy": "Занятый"
+          }
+        },
+        "info": {
+          "title": "Личная информация",
+          "name": {
+            "text": "название",
+            "value": "Patricia Smith"
+          },
+          "email": {
+            "text": "Эл. адрес",
+            "value": "abc@123.com"
+          },
+          "time": {
+            "text": "Время",
+            "value": "11:40 AM"
+          },
+          "location": {
+            "text": "Расположение",
+            "value": "California, USA"
+          },
+          "edit": "редактировать"
+        },
+        "privacy": {
+          "title": "Конфиденциальность",
+          "photo": "Аватар",
+          "dropdowntext": "Все",
+          "dropdown": {
+            "everyone": "Все",
+            "selected": "выбранный",
+            "nobody": "Никто"
+          },
+          "seen": "Последний раз видели",
+          "status": "Положение дел",
+          "receipt": "Уведомления о прочтении",
+          "groups": "группы"
+        },
+        "security": {
+          "title": "Безопасность",
+          "text": "Показать уведомление о безопасности"
+        },
+        "help": {
+          "title": "Помогите",
+          "faqs": "Вопросы и ответы",
+          "contact": "контакт",
+          "policy": "Условия и политика конфиденциальности"
+        },
+        "modal": {
+          "title": "Изменить профиль",
+          "form": {
+            "profile": {
+              "label": "Профиль"
+            },
+            "name": {
+              "label": "название",
+              "placeholder": "Введите имя",
+              "validation": {
+                "required": "Имя изменчивое."
+              }
+            },
+            "email": {
+              "label": "Эл. адрес",
+              "placeholder": "Введите адрес электронной почты",
+              "validation": {
+                "required": "Электронная почта является обязательной.",
+                "invalid": "Электронная почта недействительна. Пожалуйста, укажите действующий адрес электронной почты."
+              }
+            },
+            "location": {
+              "label": "Расположение",
+              "placeholder": "Укажите местоположение",
+              "validation": {
+                "required": "Местоположение является условным."
+              }
+            },
+            "button": {
+              "close": "близко",
+              "save": "Сохранить"
+            }
+          }
+        }
+      }
+    },
+    "profiledropdown": {
+      "profile": "Профиль",
+      "setting": "настройка",
+      "logout": "Выйти"
+    },
+    "chatpanelheader": {
+      "name": "Doris Brown",
+      "search": {
+        "placeholder": "Поиск.."
+      },
+      "dropdown": {
+        "viewprofile": "Просмотреть профиль",
+        "archive": "Архив",
+        "muted": "приглушенный",
+        "delete": "Удалить"
+      }
+    },
+    "messages": {
+      "1": {
+        "name": "Dorsin Brown",
+        "message": "Доброе утро",
+        "time": "10:00"
+      },
+      "2": {
+        "name": "Patricia Smith",
+        "message": "Доброе утро! Как вы? А как насчет нашей следующей встречи?",
+        "time": "10:02"
+      },
+      "3": {
+        "name": "Doris Brown",
+        "message": "Да все хорошо",
+        "time": "10:05"
+      },
+      "8": {
+        "name": "Doris Brown",
+        "message": "& Следующее собрание завтра в 10.00",
+        "time": "10:05"
+      },
+      "4": {
+        "name": "Patricia Smith",
+        "message": "Ух ты, здорово",
+        "time": "10:06"
+      },
+      "5": {
+        "name": "Doris Brown",
+        "time": "10:09"
+      },
+      "6": {
+        "name": "Patricia Smith",
+        "time": "10:16"
+      },
+      "7": {
+        "name": "Doris Brown",
+        "message": "типирование"
+      },
+      "dropdown": {
+        "copy": "копия",
+        "save": "Сохранить",
+        "forward": "Вперед",
+        "delete": "Удалить"
+      },
+      "filedropdown": {
+        "share": "доля",
+        "delete": "Удалить"
+      }
+    },
+    "rightpanel": {
+      "name": "Dorsin Brown",
+      "status": "активный",
+      "message": "Если несколько языков сливаются, грамматика полученного языка более проста и правильна, чем грамматика отдельного человека.",
+      "about": {
+        "text": "Текст",
+        "name": {
+          "text": "название",
+          "value": "Dorsin Brown"
+        },
+        "email": {
+          "text": "Эл. адрес",
+          "value": "abc@123.com"
+        },
+        "time": {
+          "text": "Время",
+          "value": "11:40 AM"
+        },
+        "location": {
+          "text": "Расположение",
+          "value": "California, USA"
+        }
+      },
+      "attachedfile": {
+        "text": "Прикрепленные файлы",
+        "file1": {
+          "name": "admin_v1.0.zip",
+          "size": "12.5 MB"
+        },
+        "file2": {
+          "name": "Image-1.jpg",
+          "size": "4.2 MB"
+        },
+        "file3": {
+          "name": "Image-2.jpg",
+          "size": "3.1 MB"
+        },
+        "file4": {
+          "name": "Landing-A.zip",
+          "size": "6.7 MB"
+        },
+        "dropdown": {
+          "action": "действие",
+          "another": "Другое действие",
+          "delete": "Delete"
+        }
+      }
     }
+  },
+  "footer": {
+    "name": "Chatvia. Создано с",
+    "text": " автор: Themesbrand"
+  }
 }
