@@ -136,7 +136,8 @@
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button color="primary" [matTooltip]="'subject.delete' | translate:'Удалить предмет'"
-            (click)="deleteSubject(item)">
+            (click)="deleteSubject(item)"
+            *ngIf="state.isTeacher">
             <mat-icon>delete</mat-icon>
           </button>
           </div>
