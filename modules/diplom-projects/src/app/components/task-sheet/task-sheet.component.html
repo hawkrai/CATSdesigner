@@ -1,29 +1,67 @@
 <div *ngIf="diplomUser; else load" class="task-sheet__header">
   <mat-form-field class="task-sheet__header__theme">
-    <mat-label>{{'text.diplomProject.chooseThemeDP' | translate: 'Выберите тему дипломного проекта'}}</mat-label>
-    <mat-select panelClass="theme-panel" [(value)]="diplomProjectId" (selectionChange)="onThemeChange($event.value)">
+    <mat-label>{{
+      'text.diplomProject.chooseThemeDP'
+        | translate: 'Выберите тему дипломного проекта'
+    }}</mat-label>
+    <mat-select
+      panelClass="theme-panel"
+      [(value)]="diplomProjectId"
+      (selectionChange)="onThemeChange($event.value)"
+    >
       <mat-option *ngFor="let theme of themes" [value]="theme.Id">
-        {{theme.Name}}
+        {{ theme.Name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <div class="task-sheet__header__actions">
-    <app-help *ngIf="diplomUser.IsLecturer"
-      [message]="'text.diplomProject.taskList.help.message' | translate : 'В листе задания фамилии обучающегося и руководителя, а также тема дипломного проекта заполняются автоматически. Данные для пункта 8 будут отображены после заполнения информации на вкладке “График процентовки” секретарем ГЭК. Остальные пункты листа задания заполняются посредством его редактирования'"
-      [action]="'text.diplomProject.help.clear' | translate : 'Понятно'"></app-help>
-    <button mat-icon-button color="primary"
-      matTooltip="{{'text.diplomProject.downloadTaskSheet' | translate: 'Скачать лист задания'}}"
-      *ngIf="diplomProjectId != null" (click)="downloadTaskSheet()">
+    <app-help
+      *ngIf="diplomUser.IsLecturer"
+      [message]="
+        'text.diplomProject.taskList.help.message'
+          | translate
+            : 'В листе задания фамилии обучающегося и руководителя, а также тема дипломного проекта заполняются автоматически. Данные для пункта 8 будут отображены после заполнения информации на вкладке “График процентовки” секретарем ГЭК. Остальные пункты листа задания заполняются посредством его редактирования'
+      "
+      [action]="'text.diplomProject.help.clear' | translate: 'Понятно'"
+    ></app-help>
+    <button
+      mat-icon-button
+      color="primary"
+      matTooltip="{{
+        'text.diplomProject.downloadTaskSheet'
+          | translate: 'Скачать лист задания'
+      }}"
+      *ngIf="diplomProjectId != null"
+      (click)="downloadTaskSheet()"
+    >
       <mat-icon>cloud_download</mat-icon>
     </button>
-    <button mat-icon-button color="primary"
-      matTooltip="{{'text.diplomProject.downloadArchieveTaskSheet' | translate: 'Скачать листы задания архивом'}}"
-      *ngIf="diplomProjectId != null" (click)="downloadArchive()">
-      <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
+    <button
+      mat-icon-button
+      color="primary"
+      matTooltip="{{
+        'text.diplomProject.downloadArchieveTaskSheet'
+          | translate: 'Скачать листы задания архивом'
+      }}"
+      *ngIf="diplomProjectId != null"
+      (click)="downloadArchive()"
+    >
+      <span
+        class="iconify"
+        data-icon="mdi-folder-download"
+        data-inline="false"
+      ></span>
     </button>
-    <button mat-icon-button color="primary"
-      matTooltip="{{'text.diplomProject.editTaskSheet' | translate: 'Редактировать лист задания'}}"
-      (click)="editTaskSheet()" *ngIf="diplomUser.IsLecturer && diplomProjectId != null">
+    <button
+      mat-icon-button
+      color="primary"
+      matTooltip="{{
+        'text.diplomProject.editTaskSheet'
+          | translate: 'Редактировать лист задания'
+      }}"
+      (click)="editTaskSheet()"
+      *ngIf="diplomUser.IsLecturer && diplomProjectId != null"
+    >
       <mat-icon>edit</mat-icon>
     </button>
   </div>

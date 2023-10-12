@@ -3,32 +3,77 @@
     <table class="mdc-data-table__table">
       <thead>
         <tr class="mdc-data-table__header-row">
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">№</th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.stageName' |
-            translate: 'Название этапа'}}</th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.stagePercent' |
-            translate: 'Процент выполнения'}}</th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.stageDate' |
-            translate: 'Дата'}}</th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col" *ngIf="!isLecturerMode">
-            {{'text.diplomProject.action' | translate:
-            'Действие'}}</th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            №
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.diplomProject.stageName' | translate: 'Название этапа' }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{
+              'text.diplomProject.stagePercent'
+                | translate: 'Процент выполнения'
+            }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.diplomProject.stageDate' | translate: 'Дата' }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+            *ngIf="!isLecturerMode"
+          >
+            {{ 'text.diplomProject.action' | translate: 'Действие' }}
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr class="mdc-data-table__row" *ngFor="let percentage of percentages; index as i">
+        <tr
+          class="mdc-data-table__row"
+          *ngFor="let percentage of percentages; index as i"
+        >
           <td class="mdc-data-table__cell">{{ i + 1 }}</td>
           <td class="mdc-data-table__cell">{{ percentage.Name }}</td>
           <td class="mdc-data-table__cell">{{ percentage.Percentage }}</td>
-          <td class="mdc-data-table__cell">{{ percentage.Date | date:'dd.MM.yyyy' }}</td>
+          <td class="mdc-data-table__cell">
+            {{ percentage.Date | date: 'dd.MM.yyyy' }}
+          </td>
           <td class="mdc-data-table__cell" *ngIf="!isLecturerMode">
-            <button mat-icon-button color="primary"
-              matTooltip="{{'text.diplomProject.editStage' | translate: 'Редактировать этап'}}"
-              (click)="percentagesComponent.editStage(percentage)">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="{{
+                'text.diplomProject.editStage' | translate: 'Редактировать этап'
+              }}"
+              (click)="percentagesComponent.editStage(percentage)"
+            >
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="primary" matTooltip="{{'text.diplomProject.remove' | translate: 'Удалить'}}"
-              (click)="percentagesComponent.deleteStage(percentage.Id)">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="{{
+                'text.diplomProject.remove' | translate: 'Удалить'
+              }}"
+              (click)="percentagesComponent.deleteStage(percentage.Id)"
+            >
               <mat-icon>delete</mat-icon>
             </button>
           </td>

@@ -1,67 +1,73 @@
-import {Component, Inject} from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import { CoreGroup } from 'src/app/models/core-group.model';
-import { TranslatePipe } from 'educats-translate';
+import { Component, Inject } from '@angular/core'
+import { FormControl, Validators } from '@angular/forms'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material'
+import { CoreGroup } from 'src/app/models/core-group.model'
+import { TranslatePipe } from 'educats-translate'
 
 interface DialogData {
-  name: string;
-  groups: CoreGroup[];
-  selectedGroups: CoreGroup[];
-  edit: boolean;
+  name: string
+  groups: CoreGroup[]
+  selectedGroups: CoreGroup[]
+  edit: boolean
 }
 
 @Component({
   selector: 'app-add-project-dialog',
   templateUrl: './add-project-dialog.component.html',
-  styleUrls: ['./add-project-dialog.component.less']
+  styleUrls: ['./add-project-dialog.component.less'],
 })
 export class AddProjectDialogComponent {
+  private nameControl: FormControl = new FormControl(this.data.name, [
+    Validators.minLength(3),
+    Validators.maxLength(255),
+    Validators.required,
+    this.noWhitespaceValidator,
+  ])
 
-  private nameControl: FormControl = new FormControl(this.data.name,
-    [Validators.minLength(3), Validators.maxLength(255), Validators.required, this.noWhitespaceValidator]);
+  private groups: CoreGroup[]
 
-  private groups: CoreGroup[];
-
-  constructor(public dialogRef: MatDialogRef<AddProjectDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
-              public translatePipe: TranslatePipe) {
-    this.groups = data.groups.filter(g => !data.selectedGroups.find(sg => sg.GroupId === g.GroupId));
-    this.includeNone();
+  constructor(
+    public dialogRef: MatDialogRef<AddProjectDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public translatePipe: TranslatePipe
+  ) {
+    this.groups = data.groups.filter(
+      (g) => !data.selectedGroups.find((sg) => sg.GroupId === g.GroupId)
+    )
+    this.includeNone()
   }
 
   onCancelClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close()
   }
 
   move(i: number, origin: CoreGroup[], dest: CoreGroup[]) {
-    const group = origin.splice(i, 1)[0];
-    const destIndex = dest.findIndex(g => g.GroupName > group.GroupName);
+    const group = origin.splice(i, 1)[0]
+    const destIndex = dest.findIndex((g) => g.GroupName > group.GroupName)
     if (destIndex < 0) {
-      dest.push(group);
+      dest.push(group)
     } else {
-      dest.splice(destIndex, 0, group);
+      dest.splice(destIndex, 0, group)
     }
   }
 
   includeAll() {
-    this.data.selectedGroups = this.data.groups.slice();
-    this.groups = [];
+    this.data.selectedGroups = this.data.groups.slice()
+    this.groups = []
   }
 
   includeNone() {
-    this.data.selectedGroups = [];
-    this.groups = this.data.groups.slice();
+    this.data.selectedGroups = []
+    this.groups = this.data.groups.slice()
   }
 
   trackByFn(index, item) {
-    return item.Id;
+    return item.Id
   }
 
   public noWhitespaceValidator(control: FormControl) {
-    const isWhitespace = (control.value || '').trim().length === 0;
-    const isValid = !isWhitespace;
-    return isValid ? null : { 'whitespace': true };
+    const isWhitespace = (control.value || '').trim().length === 0
+    const isValid = !isWhitespace
+    return isValid ? null : { whitespace: true }
   }
-
 }
