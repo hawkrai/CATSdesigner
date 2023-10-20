@@ -1,50 +1,50 @@
 {
   "web": {
-    "path": "d:/CatsProject/apps/container",
+    "path": "../.temp/apps/container",
     "entryPoint": "index.html"
   },
   "subject": {
-    "path": "d:/CatsProject/apps/subject",
+    "path": "../.temp/apps/subject",
     "entryPoint": "index.html"
   },
   "testsModule": {
-    "path": "d:/CatsProject/apps/testsModule",
+    "path": "../.temp/apps/testsModule",
     "entryPoint": "index.html"
   },
   "course": {
-    "path": "d:/CatsProject/apps/course",
+    "path": "../.temp/apps/course",
     "entryPoint": "index.html"
   },
   "diplom": {
-    "path": "d:/CatsProject/apps/diplom",
+    "path": "../.temp/apps/diplom",
     "entryPoint": "index.html"
   },
   "admin": {
-    "path": "d:/CatsProject/apps/admin",
+    "path": "../.temp/apps/admin",
     "entryPoint": "index.html"
   },
   "control": {
-    "path": "d:/CatsProject/apps/admin",
+    "path": "../.temp/apps/admin",
     "entryPoint": "index.html"
   },
   "confirmation": {
-    "path": "d:/CatsProject/apps/confirmation",
+    "path": "../.temp/apps/confirmation",
     "entryPoint": "index.html"
   },
   "libBook": {
-    "path": "d:/CatsProject/apps/libBook",
+    "path": "../.temp/apps/libBook",
     "entryPoint": "index.html"
   },
   "complex": {
-    "path": "d:/CatsProject/apps/complex",
+    "path": "../.temp/apps/complex",
     "entryPoint": "index.html"
   },
   "calendar": {
-    "path": "d:/CatsProject/apps/calendar",
+    "path": "../.temp/apps/calendar",
     "entryPoint": "index.html"
   },
   "statistics": {
-    "path": "d:/CatsProject/apps/statistics",
+    "path": "../.temp/apps/statistics",
     "entryPoint": "index.html"
   }
 }
