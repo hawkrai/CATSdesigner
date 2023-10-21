@@ -1,4 +1,4 @@
 export class CoreGroup {
-  GroupId: string;
-  GroupName: string;
+  GroupId: string
+  GroupName: string
 }

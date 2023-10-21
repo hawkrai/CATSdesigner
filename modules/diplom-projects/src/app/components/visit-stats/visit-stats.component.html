@@ -1,52 +1,113 @@
 <div class="visit-stats-component">
   <div class="visit-stats-component__header">
     <div>
-      <mat-form-field class="visit-stats-component__lecturer-select" *ngIf="diplomUser.IsSecretary && !isLecturer">
-        <mat-select [value]="lecturers ? lecturers[0] : ''" [(ngModel)]="lecturer"
-          (valueChange)="selectedLecturer($event)">
+      <mat-form-field
+        class="visit-stats-component__lecturer-select"
+        *ngIf="diplomUser.IsSecretary && !isLecturer"
+      >
+        <mat-select
+          [value]="lecturers ? lecturers[0] : ''"
+          [(ngModel)]="lecturer"
+          (valueChange)="selectedLecturer($event)"
+        >
           <mat-option *ngFor="let lecturer of lecturers" [value]="lecturer">
-            {{lecturer.Name}}
+            {{ lecturer.Name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-select matTooltip="{{'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'}}" class="mselect" [value]="theme" (selectionChange)="lecturerStatusChange($event)"
-        *ngIf="diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents">
+      <mat-select
+        matTooltip="{{
+          'text.diplomProject.tap' | translate: 'Нажмите для выбора другой роли'
+        }}"
+        class="mselect"
+        [value]="theme"
+        (selectionChange)="lecturerStatusChange($event)"
+        *ngIf="
+          diplomUser.IsSecretary && diplomUser.IsLecturerHasGraduateStudents
+        "
+      >
         <mat-option *ngFor="let theme of themes" [value]="theme">
-          {{theme.name}}
+          {{ theme.name }}
         </mat-option>
       </mat-select>
 
-      <button mat-raised-button class="addDateBtn" color="primary"
-        *ngIf="diplomUser.IsLecturer" (click)="addDate()">{{'text.diplomProject.addedDate' |
-        translate: 'Управление датами'}}</button>
+      <button
+        mat-raised-button
+        class="addDateBtn"
+        color="primary"
+        *ngIf="diplomUser.IsLecturer"
+        (click)="addDate()"
+      >
+        {{ 'text.diplomProject.addedDate' | translate: 'Управление датами' }}
+      </button>
     </div>
     <div class="visit-stats-component__controls">
       <mat-form-field class="visit-stats-component__search">
-        <mat-label>{{'text.diplomProject.searchThemeAndName' | translate: 'Поиск по теме, фамилии'}}</mat-label>
-        <input matInput [value]="searchString" (input)="onSearchChange($event.target.value)">
+        <mat-label>{{
+          'text.diplomProject.searchThemeAndName'
+            | translate: 'Поиск по теме, фамилии'
+        }}</mat-label>
+        <input
+          matInput
+          [value]="searchString"
+          (input)="onSearchChange($event.target.value)"
+        />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
       <div class="group-select">
-        <app-help *ngIf="diplomUser.IsLecturer" class="help"
-          [message]="'text.diplomProject.percentage.help.message' | translate : 'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы отметить пропущенные часы и оставить комментарий'"
-          [action]="'text.diplomProject.help.clear' | translate : 'Понятно'"></app-help>
-        <button mat-icon-button color="primary" class="excel"
-          matTooltip="{{'text.diplomProject.downloadExcel' | translate: 'Загрузить документ Excel'}}"
-          *ngIf="diplomUser.IsSecretary || diplomUser.IsLecturer" (click)="getExcelFile()">
-          <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+        <app-help
+          *ngIf="diplomUser.IsLecturer"
+          class="help"
+          [message]="
+            'text.diplomProject.percentage.help.message'
+              | translate
+                : 'Нажмите 2 раза на ячейку напротив студента в нужную дату, чтобы отметить пропущенные часы и оставить комментарий'
+          "
+          [action]="'text.diplomProject.help.clear' | translate: 'Понятно'"
+        ></app-help>
+        <button
+          mat-icon-button
+          color="primary"
+          class="excel"
+          matTooltip="{{
+            'text.diplomProject.downloadExcel'
+              | translate: 'Загрузить документ Excel'
+          }}"
+          *ngIf="diplomUser.IsSecretary || diplomUser.IsLecturer"
+          (click)="getExcelFile()"
+        >
+          <span
+            class="iconify"
+            data-icon="mdi-file-excel"
+            data-inline="false"
+          ></span>
         </button>
-        <button mat-icon-button color="primary" class="archive"
-          matTooltip="{{'text.diplomProject.downloadArchive' | translate: 'Загрузить архивом листы задания'}}"
-          *ngIf="diplomUser.IsSecretary || diplomUser.IsLecturer" (click)="downloadArchive()">
-          <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
+        <button
+          mat-icon-button
+          color="primary"
+          class="archive"
+          matTooltip="{{
+            'text.diplomProject.downloadArchive'
+              | translate: 'Загрузить архивом листы задания'
+          }}"
+          *ngIf="diplomUser.IsSecretary || diplomUser.IsLecturer"
+          (click)="downloadArchive()"
+        >
+          <span
+            class="iconify"
+            data-icon="mdi-folder-download"
+            data-inline="false"
+          ></span>
         </button>
       </div>
     </div>
   </div>
 
   <div class="visit-stats-component__body">
-    <app-visit-stats-list [filteredVisitStatsList]="filteredVisitStatsList"
-      [consultations]="consultations"></app-visit-stats-list>
+    <app-visit-stats-list
+      [filteredVisitStatsList]="filteredVisitStatsList"
+      [consultations]="consultations"
+    ></app-visit-stats-list>
   </div>
 </div>
 <ng-template #load>

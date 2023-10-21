@@ -1,6 +1,6 @@
-import {Student} from './student.model';
-import {ConsultationMark} from './consultation-mark.model';
+import { Student } from './student.model'
+import { ConsultationMark } from './consultation-mark.model'
 
 export class VisitStats extends Student {
-  DiplomProjectConsultationMarks: ConsultationMark[];
+  DiplomProjectConsultationMarks: ConsultationMark[]
 }
