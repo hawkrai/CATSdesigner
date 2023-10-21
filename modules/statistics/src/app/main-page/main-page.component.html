@@ -1,17 +1,30 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<mat-slide-toggle style="margin-top: 15px;float: right; margin-right: 20px" class="example-margin"
-                  [color]="'primary'"
-                  (change)="subjectsStatusChange($event)"
+<mat-slide-toggle
+  style="margin-top: 15px; float: right; margin-right: 20px"
+  class="example-margin"
+  [color]="'primary'"
+  (change)="subjectsStatusChange($event)"
 >
-  {{'text.statistics.inactive.subjects' | translate:'Завершенные предметы'}}
+  {{ 'text.statistics.inactive.subjects' | translate: 'Завершенные предметы' }}
 </mat-slide-toggle>
 <div *ngIf="!isArchived">
   <table style="width: 100%">
     <tr>
       <div *ngFor="let chart of this.listChartOptions" class="diagram">
-        <h6 (click)="rerouteToSubject(chart.subject)" style="cursor:pointer;font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
-  margin-left: 12%; margin-top: 10px; text-align: center">
-          {{chart.title.text}}</h6>
+        <h6
+          (click)="rerouteToSubject(chart.subject)"
+          style="
+            cursor: pointer;
+            font-size: 16px;
+            font-family: Roboto, Helvetica Neue, sans-serif;
+            width: 75%;
+            margin-left: 12%;
+            margin-top: 10px;
+            text-align: center;
+          "
+        >
+          {{ chart.title.text }}
+        </h6>
         <div class="radar">
           <apx-chart
             [series]="chart.series"
@@ -26,19 +39,42 @@
           ></apx-chart>
         </div>
 
-        <table style="margin-top: -10%;margin-left: 10%">
-          <tr *ngFor="let i of [0,1,2,3,4]">
-            <td [ngStyle]="{ 'color': chart.colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif',
-      'font-size': '16px', 'padding-right': '10px'}">{{chart.series[0].data[i]}}</td>
-            <td *ngIf="chart.categories[i] != '0'" style="font-size: 14px;
-      font-family: Roboto, Helvetica Neue, sans-serif;">{{chart.categories[i]}}</td>
+        <table style="margin-top: -10%; margin-left: 10%">
+          <tr *ngFor="let i of [0, 1, 2, 3, 4]">
+            <td
+              [ngStyle]="{
+                color: chart.colors[i],
+                'font-family': 'Roboto, Helvetica Neue, sans-serif',
+                'font-size': '16px',
+                'padding-right': '10px'
+              }"
+            >
+              {{ chart.series[0].data[i] }}
+            </td>
+            <td
+              *ngIf="chart.categories[i] != '0'"
+              style="
+                font-size: 14px;
+                font-family: Roboto, Helvetica Neue, sans-serif;
+              "
+            >
+              {{ chart.categories[i] }}
+            </td>
           </tr>
         </table>
       </div>
     </tr>
     <tr>
-      <div *ngIf="chartOptions1 != undefined" id="chart"
-           style="position: relative; width: 100%; margin-top: 30px; margin-left: 2%;">
+      <div
+        *ngIf="chartOptions1 != undefined"
+        id="chart"
+        style="
+          position: relative;
+          width: 100%;
+          margin-top: 30px;
+          margin-left: 2%;
+        "
+      >
         <apx-chart
           [series]="chartOptions1.series"
           [chart]="chartOptions1.chart"
@@ -62,9 +98,19 @@
   <table style="width: 100%">
     <tr>
       <div *ngFor="let chart of this.listChartOptionsArchive" class="diagram">
-        <h6 (click)="rerouteToSubject(chart.subject)" style="font-size: 16px;font-family: Roboto, Helvetica Neue, sans-serif;width: 75%;
-  margin-left: 12%; margin-top: 10px; text-align: center">
-          {{chart.title.text}}</h6>
+        <h6
+          (click)="rerouteToSubject(chart.subject)"
+          style="
+            font-size: 16px;
+            font-family: Roboto, Helvetica Neue, sans-serif;
+            width: 75%;
+            margin-left: 12%;
+            margin-top: 10px;
+            text-align: center;
+          "
+        >
+          {{ chart.title.text }}
+        </h6>
         <div class="radar">
           <apx-chart
             [series]="chart.series"
@@ -79,19 +125,37 @@
           ></apx-chart>
         </div>
 
-        <table style="margin-top: -10%;margin-left: 10%">
-          <tr *ngFor="let i of [0,1,2,3,4]">
-            <td [ngStyle]="{ 'color': colors[i],'font-family': 'Roboto, Helvetica Neue, sans-serif',
-      'font-size': '16px', 'padding-right': '10px'}">{{chart.series[0].data[i]}}</td>
-            <td *ngIf="chart.categories[i] != '0'" style="font-size: 14px;
-      font-family: Roboto, Helvetica Neue, sans-serif;">{{chart.categories[i]}}</td>
+        <table style="margin-top: -10%; margin-left: 10%">
+          <tr *ngFor="let i of [0, 1, 2, 3, 4]">
+            <td
+              [ngStyle]="{
+                color: colors[i],
+                'font-family': 'Roboto, Helvetica Neue, sans-serif',
+                'font-size': '16px',
+                'padding-right': '10px'
+              }"
+            >
+              {{ chart.series[0].data[i] }}
+            </td>
+            <td
+              *ngIf="chart.categories[i] != '0'"
+              style="
+                font-size: 14px;
+                font-family: Roboto, Helvetica Neue, sans-serif;
+              "
+            >
+              {{ chart.categories[i] }}
+            </td>
           </tr>
         </table>
       </div>
     </tr>
     <tr>
-      <div *ngIf="chartOptionsArchive != undefined" id="chartArchive"
-           style="width: 100%; margin-top: 30px; margin-left: 2%;">
+      <div
+        *ngIf="chartOptionsArchive != undefined"
+        id="chartArchive"
+        style="width: 100%; margin-top: 30px; margin-left: 2%"
+      >
         <apx-chart
           [series]="chartOptionsArchive.series"
           [chart]="chartOptionsArchive.chart"
@@ -110,4 +174,3 @@
     </tr>
   </table>
 </div>
-
