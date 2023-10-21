@@ -1,59 +1,68 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Student, EditStudent } from '../model/student';
-import { Observable } from 'rxjs';
-import { UserActivity } from '../model/userActivity';
-import { Page } from '../model/page';
+import { HttpClient } from '@angular/common/http'
+import { Injectable } from '@angular/core'
+import { Student, EditStudent } from '../model/student'
+import { Observable } from 'rxjs'
+import { UserActivity } from '../model/userActivity'
+import { Page } from '../model/page'
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class StudentService {
+  api = '/Administration/'
 
-    api = '/Administration/';
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {
+  getStudents(): Observable<Student[]> {
+    return this.http.get<Student[]>(this.api + 'StudentsJson')
+  }
+
+  getStudentsPaged(
+    pageIndex: number,
+    pageSize: number,
+    filter: string = null,
+    orderBy: string = null,
+    sortDirection: number = 0
+  ): Observable<Page<Student>> {
+    let params = {
+      pageIndex: pageIndex.toString(),
+      pageSize: pageSize.toString(),
     }
 
-    getStudents(): Observable<Student[]> {
-        return this.http.get<Student[]>(this.api + 'StudentsJson');
+    if (filter != null && filter.trim() != '') {
+      params['filter'] = filter
     }
 
-    getStudentsPaged(pageIndex: number, pageSize: number, filter: string = null, orderBy: string = null, sortDirection: number = 0): Observable<Page<Student>> {
-        let params = {
-            'pageIndex': pageIndex.toString(),
-            'pageSize': pageSize.toString()
-        }
-
-        if (filter != null && filter.trim() != '') {
-            params['filter'] = filter;
-        }
-
-        if (orderBy != null && orderBy.trim() != '') {
-            params['orderBy'] = orderBy;
-            params['sortDirection'] = sortDirection.toString();
-        }
-
-        return this.http.get<Page<Student>>(this.api + 'GetStudentsPagedJsonAsync', {params: params});
-    } 
-
-    getStudentById(studentId): Observable<Student> {
-        return this.http.get<Student>(this.api + 'GetStudentJson/' + studentId);
+    if (orderBy != null && orderBy.trim() != '') {
+      params['orderBy'] = orderBy
+      params['sortDirection'] = sortDirection.toString()
     }
 
-    getStudentByName(userName): Observable<Student> {
-        return this.http.get<Student>(this.api + 'GetStudentByNameJsonAsync/?userName=' + userName);
-    }
+    return this.http.get<Page<Student>>(
+      this.api + 'GetStudentsPagedJsonAsync',
+      { params: params }
+    )
+  }
 
-    editStudents(student): Observable<EditStudent> {
-        return this.http.post<Student>(this.api + 'EditStudentJson', student);
-    }
+  getStudentById(studentId): Observable<Student> {
+    return this.http.get<Student>(this.api + 'GetStudentJson/' + studentId)
+  }
 
-    deleteStudent(studentId): Observable<void> {
-        return this.http.get<void>(this.api + 'DeleteStudentJson/' + studentId);
-    }
+  getStudentByName(userName): Observable<Student> {
+    return this.http.get<Student>(
+      this.api + 'GetStudentByNameJsonAsync/?userName=' + userName
+    )
+  }
 
-    restoreStudent(id): Observable<void> {
-        return this.http.post<void>(this.api + 'RestoreStudentAsync', {id: id});
-    }
+  editStudents(student): Observable<EditStudent> {
+    return this.http.post<Student>(this.api + 'EditStudentJson', student)
+  }
+
+  deleteStudent(studentId): Observable<void> {
+    return this.http.get<void>(this.api + 'DeleteStudentJson/' + studentId)
+  }
+
+  restoreStudent(id): Observable<void> {
+    return this.http.post<void>(this.api + 'RestoreStudentAsync', { id: id })
+  }
 }

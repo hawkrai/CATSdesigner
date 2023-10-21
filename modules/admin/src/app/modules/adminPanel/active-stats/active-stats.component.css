@@ -1,19 +1,19 @@
 h1 {
   font-weight: 400;
   font-size: 28px;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 /deep/ text {
   font-weight: 400;
   font-size: 14px;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .inline {
   display: flex;
   flex-wrap: wrap;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 p {

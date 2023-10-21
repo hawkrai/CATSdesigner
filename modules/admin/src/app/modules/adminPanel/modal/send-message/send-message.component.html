@@ -1,58 +1,98 @@
 <div class="container">
-    <h4>{{ "text.adminPanel.modal.sendMessage.title" | translate }}</h4>
-    <button mat-button class="close-button" [mat-dialog-close]="false">
-        <mat-icon>close</mat-icon>
-    </button>
+  <h4>{{ 'text.adminPanel.modal.sendMessage.title' | translate }}</h4>
+  <button mat-button class="close-button" [mat-dialog-close]="false">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
 <form [formGroup]="this.form" (ngSubmit)="submit()" class="form">
-    <mat-form-field class="full-width">
-        <mat-label>{{ "text.adminPanel.modal.sendMessage.recepients" | translate }}</mat-label>
-        <mat-chip-list #chipList>
-            <mat-chip *ngFor="let user of selectedUsers;" color="primary" [selectable]="selectable" [removable]="removable" (removed)="deleteUser(user)">
-                {{user.text}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
-            <input placeholder="{{ 'text.adminPanel.modal.sendMessage.userInput' | translate }}" #userInput formControlName="users" [matAutocomplete]="auto" [matChipInputFor]="chipList" (input)="searchRecipients($event.target.value)">
-        </mat-chip-list>
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor=" let user of userList" [value]="selectedUsers ">
-                    <div (click)="optionClicked($event, user)">
-                        <mat-checkbox [checked]="user.selected" (change)="toggleSelection(user)" (click)="$event.stopPropagation()">
-                            {{ user.text }}
-                        </mat-checkbox>
-                    </div>
-                </mat-option>
-            </mat-autocomplete>
-        </mat-autocomplete>
-    </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>{{
+      'text.adminPanel.modal.sendMessage.recepients' | translate
+    }}</mat-label>
+    <mat-chip-list #chipList>
+      <mat-chip
+        *ngFor="let user of selectedUsers"
+        color="primary"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="deleteUser(user)"
+      >
+        {{ user.text }}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+        placeholder="{{
+          'text.adminPanel.modal.sendMessage.userInput' | translate
+        }}"
+        #userInput
+        formControlName="users"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        (input)="searchRecipients($event.target.value)"
+      />
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let user of userList" [value]="selectedUsers">
+          <div (click)="optionClicked($event, user)">
+            <mat-checkbox
+              [checked]="user.selected"
+              (change)="toggleSelection(user)"
+              (click)="$event.stopPropagation()"
+            >
+              {{ user.text }}
+            </mat-checkbox>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-autocomplete>
+  </mat-form-field>
 
-    <mat-form-field class="full-width">
-        <mat-label>{{ "text.adminPanel.modal.sendMessage.subject" | translate }}</mat-label>
-        <input matInput formControlName="theme" maxlength="30">
-    </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>{{
+      'text.adminPanel.modal.sendMessage.subject' | translate
+    }}</mat-label>
+    <input matInput formControlName="theme" maxlength="30" />
+  </mat-form-field>
 
-    <mat-form-field class="full-width">
-        <mat-label>{{ "text.adminPanel.modal.sendMessage.text" | translate }}</mat-label>
-        <textarea matInput formControlName="text"></textarea>
-    </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>{{
+      'text.adminPanel.modal.sendMessage.text' | translate
+    }}</mat-label>
+    <textarea matInput formControlName="text"></textarea>
+  </mat-form-field>
 </form>
 <div style="display: table">
-    <span class="fileinput-button">
-        <i class="icon-plus icon-white"></i>
-        <span>{{ "text.adminPanel.modal.sendMessage.fileAttach" | translate }}</span>
-    <input type="file" multiple (change)="onFileChange($event)">
-    </span>
+  <span class="fileinput-button">
+    <i class="icon-plus icon-white"></i>
+    <span>{{
+      'text.adminPanel.modal.sendMessage.fileAttach' | translate
+    }}</span>
+    <input type="file" multiple (change)="onFileChange($event)" />
+  </span>
 </div>
-<div class="attachment ">
-    <mat-card class="attachment-card" *ngFor="let file of this.files; let i=index ">
-        <p class="attachment-name ">{{ file.name }}</p>
-        <button mat-button matTooltip="{{ 'button.delete' | translate }}" class="delete-button " aria-label="Delete " (click)="this.deleteAttachment(i) ">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </mat-card>
+<div class="attachment">
+  <mat-card
+    class="attachment-card"
+    *ngFor="let file of this.files; let i = index"
+  >
+    <p class="attachment-name">{{ file.name }}</p>
+    <button
+      mat-button
+      matTooltip="{{ 'button.delete' | translate }}"
+      class="delete-button"
+      aria-label="Delete "
+      (click)="this.deleteAttachment(i)"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </mat-card>
 </div>
-<div mat-dialog-actions style="float: right;">
-    <button mat-button [mat-dialog-close]="false">{{ "button.cancel" | translate }}</button>
-    <button mat-button [disabled]='this.form.invalid' (click)="this.file()">{{ "text.adminPanel.modal.sendMessage.send" | translate }}</button>
+<div mat-dialog-actions style="float: right">
+  <button mat-button [mat-dialog-close]="false">
+    {{ 'button.cancel' | translate }}
+  </button>
+  <button mat-button [disabled]="this.form.invalid" (click)="this.file()">
+    {{ 'text.adminPanel.modal.sendMessage.send' | translate }}
+  </button>
 </div>

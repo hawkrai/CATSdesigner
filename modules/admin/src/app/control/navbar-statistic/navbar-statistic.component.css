@@ -1,18 +1,18 @@
 .spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
 }
 
-.tabs-container{
-    margin-left: 40px;
+.tabs-container {
+  margin-left: 40px;
 }
 
-button{
-    margin-right: 10px;
+button {
+  margin-right: 10px;
 }
 
-.h1{
+.h1 {
   width: 100%;
   font-size: 28px;
   color: red;

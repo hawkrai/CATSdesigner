@@ -1,75 +1,197 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<mat-spinner
+  mode="indeterminate"
+  *ngIf="!this.isLoad"
+  class="spinner"
+  color="primary"
+></mat-spinner>
 <div *ngIf="this.isLoad">
-  <button mat-button class="close-icon"(click)="onNoClick()">
-        <mat-icon>close</mat-icon>
+  <button mat-button class="close-icon" (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
   </button>
-  <h1 mat-dialog-title>{{"text.adminPanel.modal.lecturerModal.title" | translate}}</h1>
+  <h1 mat-dialog-title>
+    {{ 'text.adminPanel.modal.lecturerModal.title' | translate }}
+  </h1>
   <form [formGroup]="this.form" (ngSubmit)="submit()" autocomplete="off">
-      <mat-dialog-content>
-          <mat-form-field class="example-full-width">
-              <input matInput formControlName="Username" [(ngModel)]="this.professor.Username" (blur)="this.trimFields()" placeholder="{{'text.personalAccount.login' | translate}}">
-              <mat-hint *ngIf="this.isControlInvalid('Username')">{{"text.adminPanel.modal.lecturerModal.usernameInvalid" | translate}}</mat-hint>
-              <mat-error *ngIf="hasError('Username', 'minlength')">{{"text.adminPanel.modal.lecturerModal.usernameMinLength" | translate}}</mat-error>
-              <mat-error *ngIf="hasError('Username', 'userExist')">{{"text.adminPanel.modal.lecturerModal.usernameUserExists" | translate}}</mat-error>
-              <mat-error *ngIf="hasError('Username', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Z(z)", "0-9", "-", "@", "_", "."</mat-error>
-          </mat-form-field>
+    <mat-dialog-content>
+      <mat-form-field class="example-full-width">
+        <input
+          matInput
+          formControlName="Username"
+          [(ngModel)]="this.professor.Username"
+          (blur)="this.trimFields()"
+          placeholder="{{ 'text.personalAccount.login' | translate }}"
+        />
+        <mat-hint *ngIf="this.isControlInvalid('Username')">{{
+          'text.adminPanel.modal.lecturerModal.usernameInvalid' | translate
+        }}</mat-hint>
+        <mat-error *ngIf="hasError('Username', 'minlength')">{{
+          'text.adminPanel.modal.lecturerModal.usernameMinLength' | translate
+        }}</mat-error>
+        <mat-error *ngIf="hasError('Username', 'userExist')">{{
+          'text.adminPanel.modal.lecturerModal.usernameUserExists' | translate
+        }}</mat-error>
+        <mat-error *ngIf="hasError('Username', 'pattern')"
+          >{{ 'fieldPattern' | translate }}: "A(a)-Z(z)", "0-9", "-", "@", "_",
+          "."</mat-error
+        >
+      </mat-form-field>
 
-          <mat-form-field class="example-full-width">
-            <input [type]="hidePassword ? 'password' : 'text'" matInput formControlName="Password" placeholder="{{'text.personalAccount.password' | translate}}" autocomplete="new-password">
-            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
-              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-            <mat-hint *ngIf="this.isControlInvalid('Password') && !hasError('Password', 'minlength') && !hasError('Password', 'required') && !hasError('Password', 'pattern')">{{"text.adminPanel.modal.lecturerModal.passwordInvalid" | translate}}</mat-hint>
-            <mat-error *ngIf="hasError('Password', 'required')">{{"fieldRequired" | translate}}</mat-error>
-            <mat-error *ngIf="hasError('Password', 'minlength')">{{"text.adminPanel.modal.lecturerModal.passwordMinLength" | translate}}</mat-error>
-            <mat-error *ngIf="hasError('Password', 'maxlength')">{{"text.adminPanel.modal.lecturerModal.passwordMaxLength" | translate}}</mat-error>
-            <mat-error *ngIf="hasError('Password', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Z(z)", "0-9", "_"</mat-error>    
-          </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input
+          [type]="hidePassword ? 'password' : 'text'"
+          matInput
+          formControlName="Password"
+          placeholder="{{ 'text.personalAccount.password' | translate }}"
+          autocomplete="new-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hidePassword"
+        >
+          <mat-icon>{{
+            hidePassword ? 'visibility_off' : 'visibility'
+          }}</mat-icon>
+        </button>
+        <mat-hint
+          *ngIf="
+            this.isControlInvalid('Password') &&
+            !hasError('Password', 'minlength') &&
+            !hasError('Password', 'required') &&
+            !hasError('Password', 'pattern')
+          "
+          >{{
+            'text.adminPanel.modal.lecturerModal.passwordInvalid' | translate
+          }}</mat-hint
+        >
+        <mat-error *ngIf="hasError('Password', 'required')">{{
+          'fieldRequired' | translate
+        }}</mat-error>
+        <mat-error *ngIf="hasError('Password', 'minlength')">{{
+          'text.adminPanel.modal.lecturerModal.passwordMinLength' | translate
+        }}</mat-error>
+        <mat-error *ngIf="hasError('Password', 'maxlength')">{{
+          'text.adminPanel.modal.lecturerModal.passwordMaxLength' | translate
+        }}</mat-error>
+        <mat-error *ngIf="hasError('Password', 'pattern')"
+          >{{ 'fieldPattern' | translate }}: "A(a)-Z(z)", "0-9", "_"</mat-error
+        >
+      </mat-form-field>
 
-          <mat-form-field class="example-full-width">
-              <input [type]="hideConfirmPassword ? 'password' : 'text'" matInput formControlName="ConfirmPassword" placeholder="{{'text.personalAccount.repeatPassword' | translate}}">
-              <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
-                <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-              </button>
-              <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')">{{"text.adminPanel.modal.lecturerModal.repeatPasswordInvalid" | translate}}</mat-error>
-          </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input
+          [type]="hideConfirmPassword ? 'password' : 'text'"
+          matInput
+          formControlName="ConfirmPassword"
+          placeholder="{{ 'text.personalAccount.repeatPassword' | translate }}"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="hideConfirmPassword = !hideConfirmPassword"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hidePassword"
+        >
+          <mat-icon>{{
+            hideConfirmPassword ? 'visibility_off' : 'visibility'
+          }}</mat-icon>
+        </button>
+        <mat-error *ngIf="this.isControlInvalid('ConfirmPassword')">{{
+          'text.adminPanel.modal.lecturerModal.repeatPasswordInvalid'
+            | translate
+        }}</mat-error>
+      </mat-form-field>
 
-          <mat-form-field>
-              <input matInput formControlName="Surname" [(ngModel)]="this.professor.LastName" (blur)="this.trimFields()" placeholder="{{'text.personalAccount.lastName' | translate}}" maxlength="30">
-              <mat-error *ngIf="hasError('Surname', 'minlength')">{{"fieldRequired" | translate}}</mat-error>
-              <mat-error *ngIf="hasError('Surname', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
-          </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          formControlName="Surname"
+          [(ngModel)]="this.professor.LastName"
+          (blur)="this.trimFields()"
+          placeholder="{{ 'text.personalAccount.lastName' | translate }}"
+          maxlength="30"
+        />
+        <mat-error *ngIf="hasError('Surname', 'minlength')">{{
+          'fieldRequired' | translate
+        }}</mat-error>
+        <mat-error *ngIf="hasError('Surname', 'pattern')"
+          >{{ 'fieldPattern' | translate }}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9",
+          "-", "_", " "</mat-error
+        >
+      </mat-form-field>
 
-          <mat-form-field>
-              <input matInput formControlName="Name" [(ngModel)]="this.professor.FirstName" (blur)="this.trimFields()" placeholder="{{'text.personalAccount.firstName' | translate}}" maxlength="30">
-              <mat-error *ngIf="hasError('Name', 'minlength')">{{"fieldRequired" | translate}}</mat-error>
-              <mat-error *ngIf="hasError('Name', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
-          </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          formControlName="Name"
+          [(ngModel)]="this.professor.FirstName"
+          (blur)="this.trimFields()"
+          placeholder="{{ 'text.personalAccount.firstName' | translate }}"
+          maxlength="30"
+        />
+        <mat-error *ngIf="hasError('Name', 'minlength')">{{
+          'fieldRequired' | translate
+        }}</mat-error>
+        <mat-error *ngIf="hasError('Name', 'pattern')"
+          >{{ 'fieldPattern' | translate }}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9",
+          "-", "_", " "</mat-error
+        >
+      </mat-form-field>
 
-          <mat-form-field>
-              <input matInput formControlName="Patronymic" [(ngModel)]="this.professor.MiddleName" (blur)="this.trimFields()" placeholder="{{'text.personalAccount.middleName' | translate}}" maxlength="30">
-              <mat-error *ngIf="hasError('Patronymic', 'pattern')">{{"fieldPattern" | translate}}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9", "-", "_", " "</mat-error>
-          </mat-form-field>
-          
-          <div class="checkbox">
-            <mat-checkbox formControlName="IsLecturerHasGraduateStudents">{{"text.adminPanel.modal.lecturerModal.diplomaProjectSupervisor" | translate}}</mat-checkbox>
-        </div>
-          <div class="checkbox">
-              <mat-checkbox formControlName="IsSecretary">{{"text.adminPanel.modal.lecturerModal.secretary" | translate}}</mat-checkbox>
-          </div>
-          
+      <mat-form-field>
+        <input
+          matInput
+          formControlName="Patronymic"
+          [(ngModel)]="this.professor.MiddleName"
+          (blur)="this.trimFields()"
+          placeholder="{{ 'text.personalAccount.middleName' | translate }}"
+          maxlength="30"
+        />
+        <mat-error *ngIf="hasError('Patronymic', 'pattern')"
+          >{{ 'fieldPattern' | translate }}: "A(a)-Я(я)", "A(a)-Z(z)", "0-9",
+          "-", "_", " "</mat-error
+        >
+      </mat-form-field>
 
-          <mat-form-field *ngIf ="this.form.controls.IsSecretary.value" appearance="fill">
-            <mat-label>{{"text.adminPanel.modal.lecturerModal.groupsSecretary" | translate}}</mat-label>
-            <mat-select [formControl]="this.form.controls.SecGroupsIds" multiple>
-              <mat-option *ngFor="let group of this.groups" [value]="group.Id">{{group.Name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+      <div class="checkbox">
+        <mat-checkbox formControlName="IsLecturerHasGraduateStudents">{{
+          'text.adminPanel.modal.lecturerModal.diplomaProjectSupervisor'
+            | translate
+        }}</mat-checkbox>
+      </div>
+      <div class="checkbox">
+        <mat-checkbox formControlName="IsSecretary">{{
+          'text.adminPanel.modal.lecturerModal.secretary' | translate
+        }}</mat-checkbox>
+      </div>
 
-      </mat-dialog-content>
-      <mat-dialog-actions>
-          <button mat-raised-button class="cancel" (click)="onNoClick()">{{"button.cancel" | translate}}</button>
-          <button mat-raised-button [disabled]='this.form.invalid' (click)="onYesClick()">{{"button.save" | translate}}</button>
-      </mat-dialog-actions>
+      <mat-form-field
+        *ngIf="this.form.controls.IsSecretary.value"
+        appearance="fill"
+      >
+        <mat-label>{{
+          'text.adminPanel.modal.lecturerModal.groupsSecretary' | translate
+        }}</mat-label>
+        <mat-select [formControl]="this.form.controls.SecGroupsIds" multiple>
+          <mat-option *ngFor="let group of this.groups" [value]="group.Id">{{
+            group.Name
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-raised-button class="cancel" (click)="onNoClick()">
+        {{ 'button.cancel' | translate }}
+      </button>
+      <button
+        mat-raised-button
+        [disabled]="this.form.invalid"
+        (click)="onYesClick()"
+      >
+        {{ 'button.save' | translate }}
+      </button>
+    </mat-dialog-actions>
   </form>
 </div>

@@ -1,20 +1,39 @@
 <mat-card>
-    <mat-card-title>
-        <mat-icon>assignment_ind</mat-icon>
-    </mat-card-title>
-    <mat-card-content>
-        <form [formGroup]="this.form" (ngSubmit)="submit()">
-            <mat-form-field>
-                <input type="text" matInput placeholder="Логин" formControlName="username" maxlength="30">
-            </mat-form-field>
-            <mat-form-field>
-                <input type="password" matInput placeholder="Пароль" formControlName="password" maxlength="30">
-            </mat-form-field>
-            <button mat-raised-button (click)="this.login()" >Войти</button>
-            <a mat-button (click)="this.changePassword()">Забыли пароль?</a>
-            <a mat-button matTooltip="Модуль 'Контроль успеваемости' позволяет получить информацию об усвоении учёбной программы группы в целом,
-            узнать подробную информацию по каждому студенту и просмотреть учебный план по каждому предмету." [matTooltipPosition]="'above'" matTooltipClass="tooltip" (click)="this.openControlGroupDialog()" >Контроль успеваемости</a>
-            <a mat-button routerLink='/register'>Регистрация</a>
-        </form>
-    </mat-card-content>
+  <mat-card-title>
+    <mat-icon>assignment_ind</mat-icon>
+  </mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="this.form" (ngSubmit)="submit()">
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Логин"
+          formControlName="username"
+          maxlength="30"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          type="password"
+          matInput
+          placeholder="Пароль"
+          formControlName="password"
+          maxlength="30"
+        />
+      </mat-form-field>
+      <button mat-raised-button (click)="this.login()">Войти</button>
+      <a mat-button (click)="this.changePassword()">Забыли пароль?</a>
+      <a
+        mat-button
+        matTooltip="Модуль 'Контроль успеваемости' позволяет получить информацию об усвоении учёбной программы группы в целом,
+            узнать подробную информацию по каждому студенту и просмотреть учебный план по каждому предмету."
+        [matTooltipPosition]="'above'"
+        matTooltipClass="tooltip"
+        (click)="this.openControlGroupDialog()"
+        >Контроль успеваемости</a
+      >
+      <a mat-button routerLink="/register">Регистрация</a>
+    </form>
+  </mat-card-content>
 </mat-card>

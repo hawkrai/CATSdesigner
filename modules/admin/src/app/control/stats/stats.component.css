@@ -1,37 +1,37 @@
 .main {
-    font-weight: lighter;
-    margin-left: 50px;
-    margin-top: 0px;
+  font-weight: lighter;
+  margin-left: 50px;
+  margin-top: 0px;
 }
 
 h1 {
-    font-weight: lighter;
-    font-size: 28px;
-    width: 100%;
-    padding-bottom: 20px;
-    border-bottom: 1px solid lavender;
+  font-weight: lighter;
+  font-size: 28px;
+  width: 100%;
+  padding-bottom: 20px;
+  border-bottom: 1px solid lavender;
 }
 
 mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 .export-button {
-    float: right;
-    margin-right: 30px;
+  float: right;
+  margin-right: 30px;
 }
 
 .btn {
-    padding: 7px 35px;
-    font-size: 14px;
-    background: green;
-    border: 0px;
-    color: white;
-    margin-right: 10px;
+  padding: 7px 35px;
+  font-size: 14px;
+  background: green;
+  border: 0px;
+  color: white;
+  margin-right: 10px;
 }
 
 .spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
 }

@@ -1,15 +1,28 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoadSubject" class="spinner" color="primary"></mat-spinner>
+<mat-spinner
+  mode="indeterminate"
+  *ngIf="!this.isLoadSubject"
+  class="spinner"
+  color="primary"
+></mat-spinner>
 <div *ngIf="this.isLoadSubject">
-    <h1>Статистика</h1>
+  <h1>Статистика</h1>
   <div class="choose-item">
-    <div class="btn" >
+    <div class="btn">
       <button mat-raised-button (click)="this.captureScreen()">Печать</button>
     </div>
     <mat-form-field>
       <mat-label>Выберите предмет</mat-label>
-      <mat-select [(ngModel)]="selectedItem" name="item" (ngModelChange)="this.statisticSubject()">
-        <mat-option *ngFor="let item of this.subjects" [value]="item.Id">{{ item.Name }}</mat-option>
-        <mat-option [value]="-1">Суммарная статистика по всем предметам</mat-option>
+      <mat-select
+        [(ngModel)]="selectedItem"
+        name="item"
+        (ngModelChange)="this.statisticSubject()"
+      >
+        <mat-option *ngFor="let item of this.subjects" [value]="item.Id">{{
+          item.Name
+        }}</mat-option>
+        <mat-option [value]="-1"
+          >Суммарная статистика по всем предметам</mat-option
+        >
       </mat-select>
     </mat-form-field>
     <button mat-button (click)="this.exportExcel()">
@@ -17,9 +30,16 @@
     </button>
   </div>
   <div *ngIf="this.selectedItem">
-      <mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+    <mat-spinner
+      mode="indeterminate"
+      *ngIf="!this.isLoad"
+      class="spinner"
+      color="primary"
+    ></mat-spinner>
     <div *ngIf="this.isLoad">
-      <app-table-for-stats-subject [data]="this.tableStats"></app-table-for-stats-subject>
+      <app-table-for-stats-subject
+        [data]="this.tableStats"
+      ></app-table-for-stats-subject>
     </div>
   </div>
 </div>

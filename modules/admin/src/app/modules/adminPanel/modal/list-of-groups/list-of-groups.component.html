@@ -1,43 +1,67 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<mat-spinner
+  mode="indeterminate"
+  *ngIf="!this.isLoad"
+  class="spinner"
+  color="primary"
+></mat-spinner>
 <div *ngIf="isLoad">
-    <div class="container">
-        <p class="title">{{"text.adminPanel.modal.listOfGroups.title" | translate}}</p>
-        <button mat-button class="close-icon" [mat-dialog-close]="true">
-          <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <p class="lector-info">{{ this.groupInfo.Lecturer }}</p>
-    <div mat-dialog-content class="list-of-groups">
-        <table mat-table [dataSource]="this.groupInfo.Subjects">
+  <div class="container">
+    <p class="title">
+      {{ 'text.adminPanel.modal.listOfGroups.title' | translate }}
+    </p>
+    <button mat-button class="close-icon" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <p class="lector-info">{{ this.groupInfo.Lecturer }}</p>
+  <div mat-dialog-content class="list-of-groups">
+    <table mat-table [dataSource]="this.groupInfo.Subjects">
+      <ng-container matColumnDef="subject">
+        <th mat-header-cell style="width: 150px" *matHeaderCellDef>
+          {{ 'text.adminPanel.modal.listOfGroups.headers.subject' | translate }}
+        </th>
+        <td class="table-container" mat-cell *matCellDef="let element">
+          {{ element.SubjectName }} <br />
+          ({{ element.SubjectAuthorName }})
+        </td>
+      </ng-container>
 
-            <ng-container matColumnDef="subject">
-                <th mat-header-cell style="width: 150px;" *matHeaderCellDef> {{"text.adminPanel.modal.listOfGroups.headers.subject" | translate}} </th>
-                <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} <br> ({{element.SubjectAuthorName}}) </td>
-            </ng-container>
+      <ng-container matColumnDef="groups">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'text.adminPanel.modal.listOfGroups.headers.groups' | translate }}
+        </th>
+        <td class="table-container" mat-cell *matCellDef="let element">
+          <p *ngFor="let group of element.Groups">{{ group.GroupName }}</p>
+        </td>
+      </ng-container>
 
-            <ng-container matColumnDef="groups">
-                <th mat-header-cell *matHeaderCellDef> {{"text.adminPanel.modal.listOfGroups.headers.groups" | translate}} </th>
-                <td class="table-container" mat-cell *matCellDef="let element">
-                    <p *ngFor="let group of element.Groups">{{ group.GroupName }}</p>
-                </td>
-            </ng-container>
+      <ng-container matColumnDef="countOfStudents">
+        <th mat-header-cell *matHeaderCellDef>
+          {{
+            'text.adminPanel.modal.listOfGroups.headers.countOfStudents'
+              | translate
+          }}
+        </th>
+        <td class="table-container" mat-cell *matCellDef="let element">
+          <p *ngFor="let count of element.Groups">{{ count.StudentsCount }}</p>
+        </td>
+      </ng-container>
 
-            <ng-container matColumnDef="countOfStudents">
-                <th mat-header-cell *matHeaderCellDef> {{"text.adminPanel.modal.listOfGroups.headers.countOfStudents" | translate}} </th>
-                <td class="table-container" mat-cell *matCellDef="let element">
-                    <p *ngFor="let count of element.Groups">{{ count.StudentsCount }}</p>   
-                </td>
-            </ng-container>
+      <ng-container matColumnDef="groupStatus">
+        <th mat-header-cell *matHeaderCellDef>
+          {{
+            'text.adminPanel.modal.listOfGroups.headers.groupStatus' | translate
+          }}
+        </th>
+        <td class="table-container" mat-cell *matCellDef="let element">
+          <p *ngFor="let count of element.Groups">
+            {{ getGroupStatus(count.IsActive) }}
+          </p>
+        </td>
+      </ng-container>
 
-            <ng-container matColumnDef="groupStatus">
-                <th mat-header-cell *matHeaderCellDef> {{"text.adminPanel.modal.listOfGroups.headers.groupStatus" | translate}} </th>
-                <td class="table-container" mat-cell *matCellDef="let element">
-                    <p *ngFor="let count of element.Groups">{{ getGroupStatus(count.IsActive) }}</p>   
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-    </div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
 </div>

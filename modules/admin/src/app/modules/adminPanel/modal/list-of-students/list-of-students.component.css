@@ -1,11 +1,11 @@
 .container {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .mat-dialog-title {
   margin: 0px;
-  font: 400 20px/12px Roboto,"Helvetica Neue",sans-serif;
+  font: 400 20px/12px Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .mat-progress-spinner {

@@ -1,36 +1,50 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<mat-spinner
+  mode="indeterminate"
+  *ngIf="!this.isLoad"
+  class="spinner"
+  color="primary"
+></mat-spinner>
 <div *ngIf="this.isLoad">
-    <div class="container">
-        <p class="title">{{ "text.adminPanel.modal.subjectList.title" | translate}}</p>
-        <button mat-button class="close-icon" [mat-dialog-close]="true">
-          <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <p class="student-name">{{ this.subjectInfo.Owner }}</p>
-    <div mat-dialog-content>
-        <table mat-table [dataSource]="this.subjectInfo.Subjects">
+  <div class="container">
+    <p class="title">
+      {{ 'text.adminPanel.modal.subjectList.title' | translate }}
+    </p>
+    <button mat-button class="close-icon" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <p class="student-name">{{ this.subjectInfo.Owner }}</p>
+  <div mat-dialog-content>
+    <table mat-table [dataSource]="this.subjectInfo.Subjects">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'text.adminPanel.modal.subjectList.name' | translate }}
+        </th>
+        <td class="table-container" mat-cell *matCellDef="let element">
+          {{ element.SubjectName }}
+        </td>
+      </ng-container>
 
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>{{ "text.adminPanel.modal.subjectList.name" | translate}}</th>
-                <td class="table-container" mat-cell *matCellDef="let element"> {{ element.SubjectName }} </td>
-            </ng-container>
+      <ng-container matColumnDef="subjectStatus">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'text.adminPanel.modal.subjectList.subjectStatus' | translate }}
+        </th>
+        <td class="table-container" mat-cell *matCellDef="let element">
+          {{ getSubjectStatus(element.IsActiveOnGroup) }}
+        </td>
+      </ng-container>
 
-            <ng-container matColumnDef="subjectStatus">
-                <th mat-header-cell *matHeaderCellDef>{{ "text.adminPanel.modal.subjectList.subjectStatus" | translate}}</th>
-                <td class="table-container" mat-cell *matCellDef="let element">
-                    {{getSubjectStatus(element.IsActiveOnGroup)}}
-                </td>
-            </ng-container>
+      <ng-container matColumnDef="lectures">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'text.adminPanel.modal.subjectList.lecturers' | translate }}
+        </th>
+        <td class="table-container" mat-cell *matCellDef="let element">
+          <p *ngFor="let lecture of element.Lecturers">{{ lecture }}</p>
+        </td>
+      </ng-container>
 
-            <ng-container matColumnDef="lectures">
-                <th mat-header-cell *matHeaderCellDef>{{ "text.adminPanel.modal.subjectList.lecturers" | translate}} </th>
-                <td class="table-container" mat-cell *matCellDef="let element">
-                    <p *ngFor="let lecture of element.Lecturers">{{ lecture }}</p>
-                </td>
-            </ng-container>
-            
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-    </div>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
 </div>

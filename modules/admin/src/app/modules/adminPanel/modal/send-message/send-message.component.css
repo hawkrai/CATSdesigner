@@ -1,78 +1,78 @@
 .form {
-    min-width: 150px;
-    max-width: 500px;
-    width: 100%;
-    max-height: 900px;
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 900px;
 }
 
 .full-width {
-    width: 100%;
+  width: 100%;
 }
 
 .textarea {
-    height: 300px;
+  height: 300px;
 }
 
 h4 {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .container {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 2px solid lavender;
-    margin-bottom: 35px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid lavender;
+  margin-bottom: 35px;
 }
 
 .close-button {
-    height: 3em;
-    background: white;
-    border: 0px;
-    margin-top: 16px;
+  height: 3em;
+  background: white;
+  border: 0px;
+  margin-top: 16px;
 }
 
 .fileinput-button {
-    position: relative;
-    overflow: hidden;
-    float: left;
-    margin-right: 4px;
-    padding: 10px;
-    background-color: #73b27d;
+  position: relative;
+  overflow: hidden;
+  float: left;
+  margin-right: 4px;
+  padding: 10px;
+  background-color: #73b27d;
 }
 
 .fileinput-button input {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    border: solid transparent;
-    border-width: 0 0 100px 200px;
-    opacity: 0;
-    filter: alpha(opacity=0);
-    -moz-transform: translate(-300px, 0) scale(4);
-    direction: ltr;
-    cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  border: solid transparent;
+  border-width: 0 0 100px 200px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -moz-transform: translate(-300px, 0) scale(4);
+  direction: ltr;
+  cursor: pointer;
 }
 
-input[type="file"] {
-    display: block;
+input[type='file'] {
+  display: block;
 }
 
 .attachment {
-    overflow: auto;
-    max-height: 200px;
+  overflow: auto;
+  max-height: 200px;
 }
 
 .attachment-card {
-    display: -webkit-box;
-    justify-content: space-between;
+  display: -webkit-box;
+  justify-content: space-between;
 }
 
 .attachment-name {
-    max-width: 200px;
+  max-width: 200px;
 }
 
 .delete-button {
-    border: 0px;
-    background: white;
+  border: 0px;
+  background: white;
 }

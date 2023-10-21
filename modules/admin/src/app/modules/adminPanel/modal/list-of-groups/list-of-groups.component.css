@@ -1,7 +1,7 @@
 .container {
   display: flex;
   justify-content: space-between;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .close-icon {
@@ -24,7 +24,7 @@ th {
 .lector-info {
   text-align: center;
   padding: 10px;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .list-of-groups {
