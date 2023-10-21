@@ -1,23 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { Component, Input, OnInit } from '@angular/core'
+import { MatDialogRef } from '@angular/material'
 
 @Component({
   selector: 'app-popover-dialog',
   templateUrl: './popover-dialog.component.html',
-  styleUrls: ['./popover-dialog.component.less']
+  styleUrls: ['./popover-dialog.component.less'],
 })
 export class PopoverDialogComponent implements OnInit {
+  @Input() width: number = 500
 
-  @Input() width: number = 500;
+  constructor(private dialogRef: MatDialogRef<PopoverDialogComponent>) {}
 
-  constructor(
-    private dialogRef: MatDialogRef<PopoverDialogComponent>
-  ) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close(): void {
-    this.dialogRef.close();
+    this.dialogRef.close()
   }
 }

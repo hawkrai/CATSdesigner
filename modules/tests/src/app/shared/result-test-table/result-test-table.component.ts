@@ -1,41 +1,52 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
-import { MatDialog } from "@angular/material";
-import { AnswersPopupComponent } from "./components/answers-popup/answers-popup.component";
-import * as pluginDataLabels from "chartjs-plugin-datalabels";
-import { Label } from "ng2-charts";
-import { ChartDataSets, ChartOptions, ChartType } from "chart.js";
-import { AutoUnsubscribe } from "../../decorator/auto-unsubscribe";
-import { AutoUnsubscribeBase } from "../../core/auto-unsubscribe-base";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { TestPassingService } from "../../service/test-passing.service";
-import { TranslatePipe } from "educats-translate";
-import { Help } from "../../models/help.model";
-
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core'
+import { MatDialog } from '@angular/material'
+import { AnswersPopupComponent } from './components/answers-popup/answers-popup.component'
+import * as pluginDataLabels from 'chartjs-plugin-datalabels'
+import { Label } from 'ng2-charts'
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js'
+import { AutoUnsubscribe } from '../../decorator/auto-unsubscribe'
+import { AutoUnsubscribeBase } from '../../core/auto-unsubscribe-base'
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
+import { TestPassingService } from '../../service/test-passing.service'
+import { TranslatePipe } from 'educats-translate'
+import { Help } from '../../models/help.model'
 
 @AutoUnsubscribe
 @Component({
-  selector: "app-result-test-table",
-  templateUrl: "./result-test-table.component.html",
-  styleUrls: ["./result-test-table.component.less"]
+  selector: 'app-result-test-table',
+  templateUrl: './result-test-table.component.html',
+  styleUrls: ['./result-test-table.component.less'],
 })
-export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnInit, OnChanges {
-  public barChartColors: any[] = [
-    { backgroundColor: "#1976D2" },
-  ];
+export class ResultTestTableComponent
+  extends AutoUnsubscribeBase
+  implements OnInit, OnChanges
+{
+  public barChartColors: any[] = [{ backgroundColor: '#1976D2' }]
   // indigo #3f51b5
   public barChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     // We use these empty structures as placeholders for dynamic theming.
     scales: {
-      xAxes: [{
-      }], yAxes: [{
-        ticks: {
-          min: 0,
-          max: 10,
-        }
-      }]
+      xAxes: [{}],
+      yAxes: [
+        {
+          ticks: {
+            min: 0,
+            max: 10,
+          },
+        },
+      ],
     },
     aspectRatio: 6,
     tooltips: {
@@ -45,213 +56,272 @@ export class ResultTestTableComponent extends AutoUnsubscribeBase implements OnI
     },
     plugins: {
       datalabels: {
-        anchor: "end",
-        align: "end",
+        anchor: 'end',
+        align: 'end',
       },
-    }
-  };
-  public barChartLabels: Label[] = [];
-  public barChartType: ChartType = "bar";
-  public barChartLegend = true;
-  public barChartPlugins = [pluginDataLabels];
-  public barChartData: ChartDataSets[];
-  public showChart: boolean = false;
+    },
+  }
+  public barChartLabels: Label[] = []
+  public barChartType: ChartType = 'bar'
+  public barChartLegend = true
+  public barChartPlugins = [pluginDataLabels]
+  public barChartData: ChartDataSets[]
+  public showChart: boolean = false
   @Input()
-  public tests: any;
+  public tests: any
   @Input()
-  public size: number;
+  public size: number
 
   @Input()
-  public group: string;
+  public group: string
 
   @Input()
-  public groupId: string;
+  public groupId: string
   @Input()
-  public forSelf: boolean = false;
+  public forSelf: boolean = false
 
   @Input()
-  public showAsSubGroup: boolean;
+  public showAsSubGroup: boolean
   @Input()
-  public name: string;
+  public name: string
 
   @Input()
-  public testName: string;
-  public scareThing: any = [];
+  public testName: string
+  public scareThing: any = []
   @Input()
-  public loading: boolean;
-  public testSize: number;
-  public averageMarkForTest: any;
-  public averagePercentForTest: any;
+  public loading: boolean
+  public testSize: number
+  public averageMarkForTest: any
+  public averagePercentForTest: any
 
-  displayedColumns: string[] = ["Id", "Name"];
+  displayedColumns: string[] = ['Id', 'Name']
   @Output()
-  public sendAverageMarks: EventEmitter<any> = new EventEmitter();
-  public help: Help;
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public sendAverageMarks: EventEmitter<any> = new EventEmitter()
+  public help: Help
+  private unsubscribeStream$: Subject<void> = new Subject<void>()
 
-  constructor(public dialog: MatDialog,
+  constructor(
+    public dialog: MatDialog,
     private translatePipe: TranslatePipe,
     private cdr: ChangeDetectorRef,
     private testPassingService: TestPassingService,
-    private translate: TranslatePipe) {
-    super();
+    private translate: TranslatePipe
+  ) {
+    super()
     this.help = {
       // tslint:disable-next-line:max-line-length
-      message: this.translatePipe.transform("text.help.lectures", "Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента."),
-      action: this.translatePipe.transform("button.understand", "Понятно")
-    };
+      message: this.translatePipe.transform(
+        'text.help.lectures',
+        'Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента.'
+      ),
+      action: this.translatePipe.transform('button.understand', 'Понятно'),
+    }
   }
 
   ngOnInit() {
     this.barChartData = [
-      { data: [], label: this.translatePipe.transform("text.test.average_mark", " Средняя оценка") }
-    ];
+      {
+        data: [],
+        label: this.translatePipe.transform(
+          'text.test.average_mark',
+          ' Средняя оценка'
+        ),
+      },
+    ]
     for (let i = 0; i < 3; i++) {
-      this.scareThing.push(Array.from(this.tests[i].entries()));
+      this.scareThing.push(Array.from(this.tests[i].entries()))
     }
-    this.testSize = this.scareThing &&
-      ((this.scareThing[0] && this.scareThing[0][0] && this.scareThing[0][0][1] && this.scareThing[0][0][1].test && this.scareThing[0][0][1].test.length) ||
-        (this.scareThing[1] && this.scareThing[1][0] && this.scareThing[1][0][1] && this.scareThing[1][0][1].test && this.scareThing[1][0][1].test.length) ||
-        (this.scareThing[2] && this.scareThing[2][0] && this.scareThing[2][0][1] && this.scareThing[2][0][1].test && this.scareThing[2][0][1].test.length));
+    this.testSize =
+      this.scareThing &&
+      ((this.scareThing[0] &&
+        this.scareThing[0][0] &&
+        this.scareThing[0][0][1] &&
+        this.scareThing[0][0][1].test &&
+        this.scareThing[0][0][1].test.length) ||
+        (this.scareThing[1] &&
+          this.scareThing[1][0] &&
+          this.scareThing[1][0][1] &&
+          this.scareThing[1][0][1].test &&
+          this.scareThing[1][0][1].test.length) ||
+        (this.scareThing[2] &&
+          this.scareThing[2][0] &&
+          this.scareThing[2][0][1] &&
+          this.scareThing[2][0][1].test &&
+          this.scareThing[2][0][1].test.length))
     for (let i = 0; i < this.testSize; i++) {
-      this.displayedColumns.push("test" + i);
+      this.displayedColumns.push('test' + i)
     }
-    this.displayedColumns.push("average");
-    this.getAverageMark();
-    const getAverageResult = this.getAverageMarkForTest();
+    this.displayedColumns.push('average')
+    this.getAverageMark()
+    const getAverageResult = this.getAverageMarkForTest()
 
-    this.averageMarkForTest = getAverageResult[0];
-    this.averagePercentForTest = getAverageResult[1];
+    this.averageMarkForTest = getAverageResult[0]
+    this.averagePercentForTest = getAverageResult[1]
 
     for (const subGroup of this.scareThing) {
       if (subGroup.length) {
-        subGroup.push(subGroup[0]);
+        subGroup.push(subGroup[0])
       }
     }
-  }//todo average marks from backend
+  } //todo average marks from backend
 
-  public openAnswersDialog(openDialog: boolean, name: string, testName: string, event?: any, id?: any): void {
+  public openAnswersDialog(
+    openDialog: boolean,
+    name: string,
+    testName: string,
+    event?: any,
+    id?: any
+  ): void {
     if (openDialog) {
       const dialogRef = this.dialog.open(AnswersPopupComponent, {
-        width: "800px",
+        width: '800px',
         data: { event, id, name, testName },
         disableClose: false,
         autoFocus: false,
         panelClass: 'test-modal-container',
-      });
+      })
 
-      dialogRef.afterClosed()
-        .pipe(
-          takeUntil(this.unsubscribeStream$)
-        )
-        .subscribe();
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe()
     }
   }
 
   public downloadExcel(): void {
-    const subject = JSON.parse(localStorage.getItem("currentSubject"));
-    this.testPassingService.downloadExcel(this.groupId, subject.id, this.forSelf).pipe(takeUntil(this.unsubscribeStream$)).subscribe();
+    const subject = JSON.parse(localStorage.getItem('currentSubject'))
+    this.testPassingService
+      .downloadExcel(this.groupId, subject.id, this.forSelf)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe()
   }
 
   private getAverageMark(): void {
-    let mass = [];
+    let mass = []
     for (let subGroup of this.scareThing) {
       if (subGroup.length != 0) {
         for (let pupil of subGroup) {
-          let sumOfMarks: number = 0;
+          let sumOfMarks: number = 0
           for (let test of pupil[1].test) {
-            sumOfMarks += test.points;
+            sumOfMarks += test.points
           }
-          let entire = [];
-          const testSize = pupil[1].test.filter(x => Number.isInteger(x.points)).length;
-          entire.push(this.getShortName(pupil));
-          const averageMark = testSize > 0 ? (sumOfMarks / testSize).toFixed(1) : '0';
-          entire.push(averageMark);
-          mass.push(entire);
-          pupil.push(averageMark);
+          let entire = []
+          const testSize = pupil[1].test.filter((x) =>
+            Number.isInteger(x.points)
+          ).length
+          entire.push(this.getShortName(pupil))
+          const averageMark =
+            testSize > 0 ? (sumOfMarks / testSize).toFixed(1) : '0'
+          entire.push(averageMark)
+          mass.push(entire)
+          pupil.push(averageMark)
           if (this.size) {
-            pupil.push(pupil[1].test.length === this.size && pupil[1].test.every((test) => test.percent));
+            pupil.push(
+              pupil[1].test.length === this.size &&
+                pupil[1].test.every((test) => test.percent)
+            )
           }
         }
       }
     }
     let sortedDescPoints = mass.sort((a, b) => {
-      return b[1] - a[1];
-    });
+      return b[1] - a[1]
+    })
     for (let entire of sortedDescPoints) {
-      this.barChartLabels.push(entire[0]);
-      this.barChartData[0].data.push(entire[1]);
+      this.barChartLabels.push(entire[0])
+      this.barChartData[0].data.push(entire[1])
     }
-    this.showChart = (<number[]>this.barChartData[0]?.data).some(value => value.toString() != "NaN");
+    this.showChart = (<number[]>this.barChartData[0]?.data).some(
+      (value) => value.toString() != 'NaN'
+    )
   }
 
   private getAverageMarkForTest(): any {
-    const result = [];
-    const resultPercent = [];
+    const result = []
+    const resultPercent = []
     for (let subGroup of this.scareThing) {
       if (subGroup.length !== 0) {
-        const sumOfMarks = {};
-        const sumOfPercents = {};
-        let countOfValidResults = {};
+        const sumOfMarks = {}
+        const sumOfPercents = {}
+        let countOfValidResults = {}
         for (let pupil of subGroup) {
           for (let test of pupil[1].test) {
-            if (test.percent === undefined && test.points === undefined ||
+            if (
+              (test.percent === undefined && test.points === undefined) ||
               (test.percent === null && test.points === null)
             ) {
-              continue;
+              continue
             }
             if (sumOfMarks[test.testId] === undefined) {
-              sumOfMarks[test.testId] = 0;
-              countOfValidResults[test.testId] = 0;
-              sumOfPercents[test.testId] = 0;
+              sumOfMarks[test.testId] = 0
+              countOfValidResults[test.testId] = 0
+              sumOfPercents[test.testId] = 0
             }
-            countOfValidResults[test.testId]++;
+            countOfValidResults[test.testId]++
             // tslint:disable-next-line:no-magic-numbers
-            sumOfMarks[test.testId] += test.points !== undefined ? test.points : (test.percent / 10);
-            sumOfPercents[test.testId] += test.percent !== undefined ? test.percent : test.points * 10;
+            sumOfMarks[test.testId] +=
+              test.points !== undefined ? test.points : test.percent / 10
+            sumOfPercents[test.testId] +=
+              test.percent !== undefined ? test.percent : test.points * 10
           }
         }
-        let sumOfAverageMarks = 0;
-        let sumOfAveragePercents = 0;
-        let amountOfTests = 0;
+        let sumOfAverageMarks = 0
+        let sumOfAveragePercents = 0
+        let amountOfTests = 0
         for (const [testId, value] of Object.entries(sumOfMarks)) {
           if (!countOfValidResults[testId]) {
-            sumOfMarks[testId] = null;
-            sumOfPercents[testId] = null;
+            sumOfMarks[testId] = null
+            sumOfPercents[testId] = null
           } else {
-            amountOfTests++;
-            sumOfAverageMarks += sumOfMarks[testId] / countOfValidResults[testId];
-            sumOfMarks[testId] = sumOfMarks[testId] / countOfValidResults[testId];
+            amountOfTests++
+            sumOfAverageMarks +=
+              sumOfMarks[testId] / countOfValidResults[testId]
+            sumOfMarks[testId] =
+              sumOfMarks[testId] / countOfValidResults[testId]
 
-            sumOfAveragePercents += sumOfPercents[testId] / countOfValidResults[testId];
-            sumOfPercents[testId] = sumOfPercents[testId] / countOfValidResults[testId];
+            sumOfAveragePercents +=
+              sumOfPercents[testId] / countOfValidResults[testId]
+            sumOfPercents[testId] =
+              sumOfPercents[testId] / countOfValidResults[testId]
           }
         }
 
-        sumOfMarks["average"] = sumOfAverageMarks / amountOfTests;
-        sumOfMarks["averagePercent"] = sumOfAveragePercents / amountOfTests;
+        sumOfMarks['average'] = sumOfAverageMarks / amountOfTests
+        sumOfMarks['averagePercent'] = sumOfAveragePercents / amountOfTests
 
-        result.push(sumOfMarks);
-        resultPercent.push(sumOfPercents);
+        result.push(sumOfMarks)
+        resultPercent.push(sumOfPercents)
       }
     }
 
-    return [result, resultPercent];
+    return [result, resultPercent]
   }
 
   private getShortName(pupil): string {
-    const pupilName: string[] = pupil[1].name.split(" ");
-    return pupilName[0] + " " + pupilName[1][0] + "." + (pupilName[2] ? (pupilName[2][0] + ".") : "");
+    const pupilName: string[] = pupil[1].name.split(' ')
+    return (
+      pupilName[0] +
+      ' ' +
+      pupilName[1][0] +
+      '.' +
+      (pupilName[2] ? pupilName[2][0] + '.' : '')
+    )
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    this.cdr.detectChanges();
+    this.cdr.detectChanges()
   }
 
   getAverageTooltip(element) {
-    const testsArray = element[1].test;
-    const testsCount = testsArray.length;
-    const passedTests = testsArray.filter(x => Number.isInteger(x.points)).length;
-    return this.translate.transform('text.tests.written', `Написано ${passedTests} тестов из ${testsCount}`, { actualCount: passedTests.toString(), testsCount: testsCount.toString() });
+    const testsArray = element[1].test
+    const testsCount = testsArray.length
+    const passedTests = testsArray.filter((x) =>
+      Number.isInteger(x.points)
+    ).length
+    return this.translate.transform(
+      'text.tests.written',
+      `Написано ${passedTests} тестов из ${testsCount}`,
+      { actualCount: passedTests.toString(), testsCount: testsCount.toString() }
+    )
   }
 }

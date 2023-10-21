@@ -3,8 +3,8 @@
     <div class="question-other-test-title">
       <h2 mat-dialog-title class="question-other-test-container">
         {{
-          "text.test.add.question.from.other"
-            | translate : "Добавление вопросов из другого теста"
+          'text.test.add.question.from.other'
+            | translate: 'Добавление вопросов из другого теста'
         }}
       </h2>
       <button mat-icon-button (click)="onNoClick()">
@@ -17,7 +17,7 @@
         <form class="example-form">
           <mat-form-field class="example-full-width">
             <mat-label>{{
-              "text.test.name" | translate : "Название теста"
+              'text.test.name' | translate: 'Название теста'
             }}</mat-label>
             <input
               type="text"
@@ -44,7 +44,7 @@
           <input
             matInput
             [placeholder]="
-              'text.test.search.question' | translate : 'Поиск вопроса'
+              'text.test.search.question' | translate: 'Поиск вопроса'
             "
             (keyup)="filterQuestions($event)"
           />
@@ -65,7 +65,7 @@
 
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onNoClick()">
-      {{ "button.close" | translate : "Отмена" }}
+      {{ 'button.close' | translate: 'Отмена' }}
     </button>
     <button
       mat-raised-button
@@ -73,7 +73,7 @@
       (click)="onYesClick()"
       cdkFocusInitial
     >
-      {{ "button.save" | translate : "Сохранить" }}
+      {{ 'button.save' | translate: 'Сохранить' }}
     </button>
   </div>
 </ng-container>

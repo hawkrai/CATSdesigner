@@ -1,7 +1,6 @@
-import {Student} from "./student.model";
-
+import { Student } from './student.model'
 
 export class ControlItems {
-  public Test: string;
-  public Students: Student[];
+  public Test: string
+  public Students: Student[]
 }

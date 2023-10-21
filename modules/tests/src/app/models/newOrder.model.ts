@@ -1,5 +1,3 @@
 export class NewOrderModel {
-  public newOrder: { [key: number]: number; }
-
+  public newOrder: { [key: number]: number }
 }
-

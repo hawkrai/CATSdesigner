@@ -1,12 +1,10 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core'
 
 @Pipe({
-    name: 'isInteger'
+  name: 'isInteger',
 })
 export class IsIntegerPipe implements PipeTransform {
-
-    transform(value: number) {
-        return Number.isInteger(value);
-    }
-
+  transform(value: number) {
+    return Number.isInteger(value)
+  }
 }

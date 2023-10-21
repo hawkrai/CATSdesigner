@@ -9,7 +9,6 @@
 }
 
 .test-execution-block-progress-value {
-
 }
 
 .test-execution-block-question {
@@ -62,7 +61,6 @@
 }
 
 .test-execution-container {
-
 }
 
 .test-execution-block-progress-block {
@@ -72,7 +70,7 @@
 }
 
 .test-execution-block-progress-block-item {
-  border: 1px solid #a0a0a0;;
+  border: 1px solid #a0a0a0;
   display: flex;
   width: inherit;
   color: white;

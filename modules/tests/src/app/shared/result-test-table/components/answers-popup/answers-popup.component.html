@@ -1,32 +1,62 @@
-<button mat-icon-button
-            (click)="onNoClick()"
-            class="close-button"
-            >
-      <mat-icon>close</mat-icon>
-    </button>
-<div *ngIf="answers;else loading">
+<button mat-icon-button (click)="onNoClick()" class="close-button">
+  <mat-icon>close</mat-icon>
+</button>
+<div *ngIf="answers; else loading">
   <div class="answers-popup-general">
-    <div class="answers-popup-general-test">{{data.testName}}</div>
-    <div class="answers-popup-general-name">{{data.name}}</div>
+    <div class="answers-popup-general-test">{{ data.testName }}</div>
+    <div class="answers-popup-general-name">{{ data.name }}</div>
     <div class="answers-popup-general-mark">
-      {{'text.test.result.mark' | translate : ('Оценка: ' + mark + ' (' + percent + '%)') : {mark:mark, percent: percent} }}
+      {{
+        'text.test.result.mark'
+          | translate
+            : 'Оценка: ' + mark + ' (' + percent + '%)'
+            : { mark: mark, percent: percent }
+      }}
     </div>
     <div class="answers-popup-general-wrapper">
       <div class="answers-popup-general-mark">
-        {{('text.test.date.completing' | translate : "Дата прохождения теста :") + startDate }}
+        {{
+          ('text.test.date.completing'
+            | translate: 'Дата прохождения теста :') + startDate
+        }}
       </div>
       <div class="answers-popup-general-mark">
-        {{('text.test.time.start' | translate : "Время начала теста :") + startTime }}
+        {{
+          ('text.test.time.start' | translate: 'Время начала теста :') +
+            startTime
+        }}
       </div>
     </div>
   </div>
-  <div class="answers-popup-content" *ngFor="let answer of answers, let i = index">
-    <div>{{('text.test.popup.question' | translate: "Вопрос ") + (i+1) + ": " + answer.QuestionTitle}}</div>
-    <div>{{('text.test.popup.answer' | translate: "Ответ: ") + answer.AnswerString}}</div>
-    <div>{{answer.Points === 0 ? ('text.test.popup.not.right' | translate: "Неверно") : ('text.test.popup.right' | translate: "Верно")}}</div>
+  <div
+    class="answers-popup-content"
+    *ngFor="let answer of answers; let i = index"
+  >
+    <div>
+      {{
+        ('text.test.popup.question' | translate: 'Вопрос ') +
+          (i + 1) +
+          ': ' +
+          answer.QuestionTitle
+      }}
+    </div>
+    <div>
+      {{
+        ('text.test.popup.answer' | translate: 'Ответ: ') + answer.AnswerString
+      }}
+    </div>
+    <div>
+      {{
+        answer.Points === 0
+          ? ('text.test.popup.not.right' | translate: 'Неверно')
+          : ('text.test.popup.right' | translate: 'Верно')
+      }}
+    </div>
   </div>
   <div mat-dialog-actions>
-    <button mat-raised-button color="white" (click)="onNoClick()">{{'button.close' | translate : 'Закрыть'}}</button>
+    <button mat-raised-button color="white" (click)="onNoClick()">
+      {{ 'button.close' | translate: 'Закрыть' }}
+    </button>
   </div>
 </div>
 <ng-template #loading>
@@ -34,7 +64,8 @@
     <mat-progress-spinner
       class="availability-popup-loader-margin"
       [color]="'primary'"
-      [mode]="'indeterminate'">
+      [mode]="'indeterminate'"
+    >
     </mat-progress-spinner>
   </div>
 </ng-template>

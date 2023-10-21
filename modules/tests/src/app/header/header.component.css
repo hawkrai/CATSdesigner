@@ -5,13 +5,13 @@
   box-shadow: 0 8px 6px -6px #bab3f1;
   height: 100%;
 }
-.header-text{
+.header-text {
   font-size: 24px;
   margin-left: 40px;
   margin-top: 5px;
   margin-bottom: 10px;
 }
-.header-text-small{
+.header-text-small {
   font-size: 15px;
   display: inline-block;
   padding-left: 4px;
