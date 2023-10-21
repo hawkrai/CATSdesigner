@@ -9,7 +9,7 @@ mat-icon {
 }
 
 .shadow {
-  color:rgba(0,0,0,0.3);
+  color: rgba(0, 0, 0, 0.3);
   font-size: 16px;
   width: 16px;
   height: 16px;
@@ -41,14 +41,16 @@ mat-icon {
 }
 
 .mat-tree-node {
-  background-color: transparent;//#fafafa
+  background-color: transparent; //#fafafa
   user-select: none;
   min-height: 30px;
   cursor: move;
-  &.cdk-drag-preview { // while dragging
+  &.cdk-drag-preview {
+    // while dragging
     @include mat-elevation(12);
   }
-  &.cdk-drag-placeholder { // potential drop area
+  &.cdk-drag-placeholder {
+    // potential drop area
     opacity: 0;
   }
 
@@ -58,10 +60,10 @@ mat-icon {
   }
 
   label:hover {
-    background: rgba(0,0,0,.04);
+    background: rgba(0, 0, 0, 0.04);
   }
 
   .highlight {
-    background: rgba(0,0,0,.2);
+    background: rgba(0, 0, 0, 0.2);
   }
 }

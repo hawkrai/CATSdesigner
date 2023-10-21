@@ -1,7 +1,14 @@
 <div class="modal-header">
-  <h1 mat-dialog-title>{{'text.editor.adding' | translate: 'Добавление'}} {{description}}</h1>
+  <h1 mat-dialog-title>
+    {{ 'text.editor.adding' | translate: 'Добавление' }} {{ description }}
+  </h1>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon class="mat-icon-rtl-mirror" color="basic" [matTooltip]="'text.editor.close' | translate: 'Закрыть'">close</mat-icon>
+    <mat-icon
+      class="mat-icon-rtl-mirror"
+      color="basic"
+      [matTooltip]="'text.editor.close' | translate: 'Закрыть'"
+      >close</mat-icon
+    >
   </button>
 </div>
 <div mat-dialog-content>
@@ -10,9 +17,18 @@
     [(ngModel)]="model.editorData"
     (ngModelChange)="onModelChanged(model)"
     [config]="model.config"
-></ckeditor>
+  ></ckeditor>
 </div>
 <div mat-dialog-actions align="right">
-  <button mat-raised-button (click)="onNoClick()">{{'text.editor.cancel' | translate: 'Отмена'}}</button>
-  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="!isEnableToSave">{{'text.editor.save' | translate: 'Сохранить'}}</button>
+  <button mat-raised-button (click)="onNoClick()">
+    {{ 'text.editor.cancel' | translate: 'Отмена' }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onYesClick()"
+    [disabled]="!isEnableToSave"
+  >
+    {{ 'text.editor.save' | translate: 'Сохранить' }}
+  </button>
 </div>
