@@ -1,5 +1,5 @@
 export class ComplexGrid {
-  id: string;
-  name: string;
-  fullname: string;
+  id: string
+  name: string
+  fullname: string
 }
