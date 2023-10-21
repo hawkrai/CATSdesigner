@@ -19,8 +19,6 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'prettier', 'only-warn'],
   rules: {
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'react/no-unescaped-entities': 'off',
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
   },
 }

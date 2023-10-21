@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint . --ext .js,.ts --max-warnings=0",
-    "lint:fix": "eslint . --ext .js,.ts --max-warnings=0 --fix",
+    "lint:fix": "npm run lint --fix",
     "prettier": "prettier . --write"
   },
   "devDependencies": {
@@ -20,5 +20,10 @@
     "husky": "7.0.4",
     "lint-staged": "12.1.2",
     "prettier": "2.4.1"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "npm run lint:fix"
+    ]
   }
 }
