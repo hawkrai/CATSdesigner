@@ -1,53 +1,62 @@
 <app-popover-dialog>
-    <ng-container title>
-      {{ data.title }}
-    </ng-container>
-    <ng-container body>
-      <form class="form" [formGroup]="jobProtectionForm">
-        <mat-form-field
-          class="example-full-width"
-          *ngIf="!data.body.isTeacher"
+  <ng-container title>
+    {{ data.title }}
+  </ng-container>
+  <ng-container body>
+    <form class="form" [formGroup]="jobProtectionForm">
+      <mat-form-field class="example-full-width" *ngIf="!data.body.isTeacher">
+        <mat-select
+          formControlName="practicalId"
+          [placeholder]="
+            'text.subjects.practicals.choose.practical'
+              | translate: 'Выберите практическое занятие'
+          "
         >
-          <mat-select formControlName="practicalId" [placeholder]="'text.subjects.practicals.choose.practical'
-          | translate: 'Выберите практическое занятие'">
-            <mat-option *ngFor="let practical of practicals$ | async" [value]="practical.PracticalId">
-              {{ practical.ShortName }}. {{ practical.Theme }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="example-full-width">
-          <mat-label>{{'comment' | translate:'Комментарий'}}</mat-label>
-          <textarea
-            class="lab-work-component__news-text"
-            matInput
-            formControlName="comments"
-            (paste)="onPaste($event.clipboardData)"
+          <mat-option
+            *ngFor="let practical of practicals$ | async"
+            [value]="practical.PracticalId"
           >
-          </textarea>
-        </mat-form-field>
-        <app-file-uploader
-          [disabled]="filesArray.length > 0"
-  
-          [header]="
-          ('text.subjects.attachments.material' | translate:'Прикрепленный материал') + ' (' + ('text.subjects.attachments.material.single' | translate:'Можно добавить только один файл') + ')'"
-          (delete)="deleteFile($event)"
-          [files]="filesArray.value"
-          (upload)="uploadFile($event)"
-        ></app-file-uploader>
-      </form>
-    </ng-container>
-    <ng-container actions>
-      <button mat-raised-button (click)="onClose(false)">
-        {{ "button.cancel" | translate: "Отмена" }}
-      </button>
-      <button
-        mat-raised-button
-        (click)="onSave()"
-        color="primary"
-        [disabled]="jobProtectionForm.invalid || !isValid()"
-      >
-        {{ data.buttonText }}
-      </button>
-    </ng-container>
-  </app-popover-dialog>
-  
+            {{ practical.ShortName }}. {{ practical.Theme }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>{{ 'comment' | translate: 'Комментарий' }}</mat-label>
+        <textarea
+          class="lab-work-component__news-text"
+          matInput
+          formControlName="comments"
+          (paste)="onPaste($event.clipboardData)"
+        >
+        </textarea>
+      </mat-form-field>
+      <app-file-uploader
+        [disabled]="filesArray.length > 0"
+        [header]="
+          ('text.subjects.attachments.material'
+            | translate: 'Прикрепленный материал') +
+          ' (' +
+          ('text.subjects.attachments.material.single'
+            | translate: 'Можно добавить только один файл') +
+          ')'
+        "
+        (delete)="deleteFile($event)"
+        [files]="filesArray.value"
+        (upload)="uploadFile($event)"
+      ></app-file-uploader>
+    </form>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onClose(false)">
+      {{ 'button.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-raised-button
+      (click)="onSave()"
+      color="primary"
+      [disabled]="jobProtectionForm.invalid || !isValid()"
+    >
+      {{ data.buttonText }}
+    </button>
+  </ng-container>
+</app-popover-dialog>

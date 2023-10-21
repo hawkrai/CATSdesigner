@@ -1,21 +1,19 @@
-import { IFilesState } from './files.state';
-import { ISubjectState } from "./subject.state";
-import { INewsState } from "./news.state";
-import { IGroupsState } from './groups.state';
-import { ILecturesState } from './lectures.state';
-import { ILabsState } from './labs.state';
-import { IPracticalsState } from './practicals.state';
-import { ITestsState } from './tests.state';
-
+import { IFilesState } from './files.state'
+import { ISubjectState } from './subject.state'
+import { INewsState } from './news.state'
+import { IGroupsState } from './groups.state'
+import { ILecturesState } from './lectures.state'
+import { ILabsState } from './labs.state'
+import { IPracticalsState } from './practicals.state'
+import { ITestsState } from './tests.state'
 
 export interface IAppState {
-  subject: ISubjectState;
-  news: INewsState;
-  groups: IGroupsState;
-  lectures: ILecturesState;
-  labs: ILabsState,
-  practicals: IPracticalsState,
-  files: IFilesState,
+  subject: ISubjectState
+  news: INewsState
+  groups: IGroupsState
+  lectures: ILecturesState
+  labs: ILabsState
+  practicals: IPracticalsState
+  files: IFilesState
   tests: ITestsState
-};
-
+}

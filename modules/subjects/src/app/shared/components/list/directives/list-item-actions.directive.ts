@@ -1,10 +1,8 @@
-import { Directive, TemplateRef } from '@angular/core';
+import { Directive, TemplateRef } from '@angular/core'
 
 @Directive({
-  selector: '[appListItemActions]'
+  selector: '[appListItemActions]',
 })
 export class ListItemActionsDirective {
-
-  constructor(public templateRef: TemplateRef<any>) { }
-
+  constructor(public templateRef: TemplateRef<any>) {}
 }

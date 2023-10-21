@@ -1,6 +1,6 @@
-import { createAction, props } from "@ngrx/store";
+import { createAction, props } from '@ngrx/store'
 
 export const loadedTestsCount = createAction(
-    '[Tests] Loaded Tests Count',
-    props<{ testsCount: number }>()
-);
+  '[Tests] Loaded Tests Count',
+  props<{ testsCount: number }>()
+)

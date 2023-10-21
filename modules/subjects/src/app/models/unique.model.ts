@@ -1,3 +1,3 @@
 export class UniqueViewData {
-    IsUnique: boolean;
+  IsUnique: boolean
 }

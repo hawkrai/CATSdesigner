@@ -1,47 +1,80 @@
-<ng-container >
+<ng-container>
   <app-popover-dialog>
     <ng-container title>
-      {{data.title}}
-      <span class="title-subject">{{data.body.subjectName}}</span>
+      {{ data.title }}
+      <span class="title-subject">{{ data.body.subjectName }}</span>
     </ng-container>
     <ng-container body *ngIf="allLectors && allLectors.length">
       <mat-form-field class="subject-lector__body">
-        <mat-select [value]="selectedLector ? selectedLector.LectorId : ''" [placeholder]="'text.subjects.lector.choose' | translate:'Выберите преподавателя'">
-          <mat-option *ngFor="let lector of allLectors | filter:'LectorId':userId:'neq'"
-                      (onSelectionChange)="selectLector(lector)"
-                      [value]="lector.LectorId"
+        <mat-select
+          [value]="selectedLector ? selectedLector.LectorId : ''"
+          [placeholder]="
+            'text.subjects.lector.choose' | translate: 'Выберите преподавателя'
+          "
+        >
+          <mat-option
+            *ngFor="let lector of allLectors | filter: 'LectorId':userId:'neq'"
+            (onSelectionChange)="selectLector(lector)"
+            [value]="lector.LectorId"
           >
-            {{lector.FullName}}
+            {{ lector.FullName }}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <div mat-dialog-actions>
-        <button mat-raised-button
-                class="subject-lector__action"
-                color="primary"
-                [disabled]="!selectedLector"
-                (click)="joinLector()">{{'button.join' | translate:'Присоединить'}}</button>
+        <button
+          mat-raised-button
+          class="subject-lector__action"
+          color="primary"
+          [disabled]="!selectedLector"
+          (click)="joinLector()"
+        >
+          {{ 'button.join' | translate: 'Присоединить' }}
+        </button>
       </div>
-      <p mat-dialog-title class="subject-lector__table-title" *ngIf="joinedLectors?.length">{{'text.subjects.lector.joined' | translate:'Присоединенные преподаватели'}}</p>
+      <p
+        mat-dialog-title
+        class="subject-lector__table-title"
+        *ngIf="joinedLectors?.length"
+      >
+        {{
+          'text.subjects.lector.joined'
+            | translate: 'Присоединенные преподаватели'
+        }}
+      </p>
       <div class="mdc-data-table example-container mat-elevation-z8">
         <table class="mdc-data-table__table">
           <tbody class="mdc-data-table__content">
-          <tr class="mdc-data-table__row" *ngFor="let joinedLector of joinedLectors | filter:'LectorId':userId:'neq'">
-            <td class="mdc-data-table__cell">{{ joinedLector.FullName }}</td>
-            <td class="mdc-data-table__cell subject-lector__table-action">
-              <button mat-icon-button color="primary" [matTooltip]="'text.subjects.lector.disjoin' | translate: 'Открепить преподавателя'" (click)="disjoinLector(joinedLector)">
-                <span class="material-icons">
-                  keyboard_tab
-                  </span>
-              </button>
-            </td>
-          </tr>
+            <tr
+              class="mdc-data-table__row"
+              *ngFor="
+                let joinedLector of joinedLectors
+                  | filter: 'LectorId':userId:'neq'
+              "
+            >
+              <td class="mdc-data-table__cell">{{ joinedLector.FullName }}</td>
+              <td class="mdc-data-table__cell subject-lector__table-action">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  [matTooltip]="
+                    'text.subjects.lector.disjoin'
+                      | translate: 'Открепить преподавателя'
+                  "
+                  (click)="disjoinLector(joinedLector)"
+                >
+                  <span class="material-icons"> keyboard_tab </span>
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </ng-container>
     <ng-container actions>
-      <button mat-raised-button (click)="onClick()">{{'button.close' | translate:'Закрыть'}}</button>
+      <button mat-raised-button (click)="onClick()">
+        {{ 'button.close' | translate: 'Закрыть' }}
+      </button>
     </ng-container>
   </app-popover-dialog>
 </ng-container>

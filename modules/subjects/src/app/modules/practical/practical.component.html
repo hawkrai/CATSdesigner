@@ -1,21 +1,53 @@
 <div class="practical-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
-    <button class="mdc-tab" role="tab" aria-selected="true" *ngFor="let tab of tabs; let idx = index" [tabindex]="idx"
-      [routerLink]="tab.route" routerLinkActive="mdc-tab--active" queryParamsHandling="merge"
-      [matTooltip]="state.isTeacher && tab.route === 'schedule' ? ('subdivision' | translate:'Разделение на подгруппы') : ''"
-      matTooltipPosition="below" #rla="routerLinkActive">
+    <button
+      class="mdc-tab"
+      role="tab"
+      aria-selected="true"
+      *ngFor="let tab of tabs; let idx = index"
+      [tabindex]="idx"
+      [routerLink]="tab.route"
+      routerLinkActive="mdc-tab--active"
+      queryParamsHandling="merge"
+      [matTooltip]="
+        state.isTeacher && tab.route === 'schedule'
+          ? ('subdivision' | translate: 'Разделение на подгруппы')
+          : ''
+      "
+      matTooltipPosition="below"
+      #rla="routerLinkActive"
+    >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{tab.tab | firstLetterUppercase}}
-          <mat-icon style="margin-left: 5px;" *ngIf="state.isTeacher && idx === 1">groups</mat-icon>
-          <mat-icon class="priority-icon" style="margin-top: -5px" *ngIf="
-          state.isTeacher &&
-            tab.route === 'job-protection' &&
-            (state.hasJobProtections | any: 'HasJobProtection')
-          " class="priority" [color]="'warn'">priority_high</mat-icon>
+        <span class="mdc-tab__text-label"
+          >{{ tab.tab | firstLetterUppercase }}
+          <mat-icon
+            style="margin-left: 5px"
+            *ngIf="state.isTeacher && idx === 1"
+            >groups</mat-icon
+          >
+          <mat-icon
+            class="priority-icon"
+            style="margin-top: -5px"
+            *ngIf="
+              state.isTeacher &&
+              tab.route === 'job-protection' &&
+              (state.hasJobProtections | any: 'HasJobProtection')
+            "
+            class="priority"
+            [color]="'warn'"
+            >priority_high</mat-icon
+          >
         </span>
       </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="rla.isActive">
-        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      <span
+        class="mdc-tab-indicator"
+        [class.mdc-tab-indicator--active]="rla.isActive"
+      >
+        <span
+          class="
+            mdc-tab-indicator__content mdc-tab-indicator__content--underline
+          "
+        ></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
@@ -23,78 +55,183 @@
   <div class="practical-component-body">
     <div class="practical-component__controls">
       <ng-container *ngIf="state.isTeacher">
-        <div class="practical-component__select-group" *ngIf="!(router.url | startWith:'/practical/list')">
+        <div
+          class="practical-component__select-group"
+          *ngIf="!(router.url | startWith: '/practical/list')"
+        >
           <mat-form-field>
             <mat-select
-              [value]="state.group ? state.group.GroupId : state.groups.length ? state.groups[0].GroupId : ''">
-              <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)"
-                [value]="group.GroupId">
+              [value]="
+                state.group
+                  ? state.group.GroupId
+                  : state.groups.length
+                  ? state.groups[0].GroupId
+                  : ''
+              "
+            >
+              <mat-option
+                *ngFor="let group of state.groups"
+                (onSelectionChange)="selectedGroup($event)"
+                [value]="group.GroupId"
+              >
                 <div class="icon-container">
-                  {{group.GroupName}}
-                  <mat-icon style="font-size: 17px; height: 17px" data-icon="priority" *ngIf="
-                  (router.url | startWith:'/practical/job-protection') &&
-                    groupHasJobProtection(state.hasJobProtections, group)
-                  " [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
-                    matTooltipPosition="below" [color]="'warn'">priority_high</mat-icon>
+                  {{ group.GroupName }}
+                  <mat-icon
+                    style="font-size: 17px; height: 17px"
+                    data-icon="priority"
+                    *ngIf="
+                      (router.url | startWith: '/practical/job-protection') &&
+                      groupHasJobProtection(state.hasJobProtections, group)
+                    "
+                    [matTooltip]="
+                      'text.subjects.labs.unverified'
+                        | translate: 'Имеются непроверенные лабораторные работы'
+                    "
+                    matTooltipPosition="below"
+                    [color]="'warn'"
+                    >priority_high</mat-icon
+                  >
                 </div>
               </mat-option>
               <mat-select-trigger *ngIf="state.group">
                 <span #name class="icon-container">
                   {{ state.group.GroupName }}
-                  <mat-icon style="font-size: 17px; height: 17px" data-icon="priority" *ngIf="
-                    (router.url | startWith:'/practical/job-protection') &&
-                    groupHasJobProtection(state.hasJobProtections, state.group)
-                  " [matTooltip]="'text.subjects.labs.unverified' | translate:'Имеются непроверенные лабораторные работы'"
-                    matTooltipPosition="below" class="priority-icon" [color]="'warn'">priority_high</mat-icon>
+                  <mat-icon
+                    style="font-size: 17px; height: 17px"
+                    data-icon="priority"
+                    *ngIf="
+                      (router.url | startWith: '/practical/job-protection') &&
+                      groupHasJobProtection(
+                        state.hasJobProtections,
+                        state.group
+                      )
+                    "
+                    [matTooltip]="
+                      'text.subjects.labs.unverified'
+                        | translate: 'Имеются непроверенные лабораторные работы'
+                    "
+                    matTooltipPosition="below"
+                    class="priority-icon"
+                    [color]="'warn'"
+                    >priority_high</mat-icon
+                  >
                 </span>
               </mat-select-trigger>
             </mat-select>
           </mat-form-field>
-          <mat-slide-toggle class="example-margin" [color]="'primary'" [checked]="state.detachedGroup"
-            (change)="groupStatusChange($event)" [disabled]="!state.hasInactiveGroups">
-            {{'text.groups.detached' | translate:'Открепленные группы'}}
+          <mat-slide-toggle
+            class="example-margin"
+            [color]="'primary'"
+            [checked]="state.detachedGroup"
+            (change)="groupStatusChange($event)"
+            [disabled]="!state.hasInactiveGroups"
+          >
+            {{ 'text.groups.detached' | translate: 'Открепленные группы' }}
           </mat-slide-toggle>
         </div>
         <div class="practical-component-actions">
           <div class="actions-group">
-            <ng-container *ngIf="router.url | startWith:'/practical/schedule'">
-              <app-help [message]="protectionScheduleHelp.message" [action]="protectionScheduleHelp.action"></app-help>
+            <ng-container *ngIf="router.url | startWith: '/practical/schedule'">
+              <app-help
+                [message]="protectionScheduleHelp.message"
+                [action]="protectionScheduleHelp.action"
+              ></app-help>
             </ng-container>
-            <ng-container *ngIf="router.url | startWith:'/practical/visit-statistics'">
-              <app-help [message]="visitingHelp.message" [action]="visitingHelp.action" class="help"></app-help>
-              <div class="_excel-file" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'"
-                matTooltipPosition="below" (click)="getVisitingExcelFile()">
-                <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+            <ng-container
+              *ngIf="router.url | startWith: '/practical/visit-statistics'"
+            >
+              <app-help
+                [message]="visitingHelp.message"
+                [action]="visitingHelp.action"
+                class="help"
+              ></app-help>
+              <div
+                class="_excel-file"
+                [matTooltip]="
+                  'text.excel.export' | translate: 'Экспорт в Эксель'
+                "
+                matTooltipPosition="below"
+                (click)="getVisitingExcelFile()"
+              >
+                <span
+                  class="iconify"
+                  data-icon="mdi-file-excel"
+                  data-inline="false"
+                ></span>
               </div>
             </ng-container>
-            <ng-container *ngIf="router.url | startWith:'/practical/results'">
-              <app-help [message]="resultsHelp.message" [action]="resultsHelp.action" class="help"></app-help>
-              <div class="_excel-file" [matTooltip]="'text.excel.export' | translate:'Экспорт в Эксель'"
-                matTooltipPosition="below" (click)="getResultsExcelFile()">
-                <span class="iconify" data-icon="mdi-file-excel" data-inline="false"></span>
+            <ng-container *ngIf="router.url | startWith: '/practical/results'">
+              <app-help
+                [message]="resultsHelp.message"
+                [action]="resultsHelp.action"
+                class="help"
+              ></app-help>
+              <div
+                class="_excel-file"
+                [matTooltip]="
+                  'text.excel.export' | translate: 'Экспорт в Эксель'
+                "
+                matTooltipPosition="below"
+                (click)="getResultsExcelFile()"
+              >
+                <span
+                  class="iconify"
+                  data-icon="mdi-file-excel"
+                  data-inline="false"
+                ></span>
               </div>
             </ng-container>
             <button
-              *ngIf="(router.url | startWith:'/practical/schedule') || (router.url | startWith:'/practical/visit-statistics') || (router.url | startWith:'/practical/results')"
-              class="mat-icon-button-groups" mat-icon-button
-              [matTooltip]="'subdivision' | translate:'Разделение на подгруппы'" matTooltipPosition="below"
-              (click)="subdivision(state.group.GroupId)">
+              *ngIf="
+                (router.url | startWith: '/practical/schedule') ||
+                (router.url | startWith: '/practical/visit-statistics') ||
+                (router.url | startWith: '/practical/results')
+              "
+              class="mat-icon-button-groups"
+              mat-icon-button
+              [matTooltip]="
+                'subdivision' | translate: 'Разделение на подгруппы'
+              "
+              matTooltipPosition="below"
+              (click)="subdivision(state.group.GroupId)"
+            >
               <mat-icon color="primary">groups</mat-icon>
             </button>
-            <ng-container *ngIf="router.url | startWith:'/practical/job-protection'">
-              <button mat-icon-button color="primary" [matTooltip]="
-                'text.download.archive' | translate: 'Скачать архивом'
-              " matTooltipPosition="below" (click)="downloadAll()">
+            <ng-container
+              *ngIf="router.url | startWith: '/practical/job-protection'"
+            >
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="
+                  'text.download.archive' | translate: 'Скачать архивом'
+                "
+                matTooltipPosition="below"
+                (click)="downloadAll()"
+              >
                 <mat-icon>get_app</mat-icon>
               </button>
-              <button mat-icon-button color="primary" [matTooltip]="
-                'text.check.plagiarism.all'
-                  | translate: 'Проверить на плагиат все работы'
-              " matTooltipPosition="below" (click)="checkPlagiarism(state.subjectId)">
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="
+                  'text.check.plagiarism.all'
+                    | translate: 'Проверить на плагиат все работы'
+                "
+                matTooltipPosition="below"
+                (click)="checkPlagiarism(state.subjectId)"
+              >
                 <mat-icon>visibility</mat-icon>
               </button>
-              <button mat-icon-button color="primary" [matTooltip]="'text.refresh.data' | translate: 'Обновить данные'"
-                (click)="refreshJobProtection()" matTooltipPosition="below">
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="
+                  'text.refresh.data' | translate: 'Обновить данные'
+                "
+                (click)="refreshJobProtection()"
+                matTooltipPosition="below"
+              >
                 <mat-icon>cached</mat-icon>
               </button>
             </ng-container>
@@ -103,19 +240,24 @@
       </ng-container>
       <ng-container *ngIf="!state.isTeacher">
         <div>
-          <ng-container *ngIf="!(router.url | startWith:'/practical/list')">
-            {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
+          <ng-container *ngIf="!(router.url | startWith: '/practical/list')">
+            {{ 'group' | translate: 'Группа' }}:
+            {{ state.group && state.group.GroupName }}
           </ng-container>
         </div>
         <div class="practical-component-actions">
           <div class="actions-group">
-            <ng-container *ngIf="router.url | startWith:'/practical/job-protection'">
-              <app-help [message]="protectionStudentHelp.message" [action]="protectionStudentHelp.action"></app-help>
+            <ng-container
+              *ngIf="router.url | startWith: '/practical/job-protection'"
+            >
+              <app-help
+                [message]="protectionStudentHelp.message"
+                [action]="protectionStudentHelp.action"
+              ></app-help>
             </ng-container>
           </div>
         </div>
       </ng-container>
-
     </div>
     <router-outlet></router-outlet>
   </div>

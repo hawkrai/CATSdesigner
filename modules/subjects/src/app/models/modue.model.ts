@@ -1,10 +1,10 @@
 export class Module {
-  Name: string;
-  ModuleId: number;
-  Checked: boolean;
-  Type: ModuleType;
-  Order: number;
-  Required: boolean;
+  Name: string
+  ModuleId: number
+  Checked: boolean
+  Type: ModuleType
+  Order: number
+  Required: boolean
 }
 
 export enum ModuleType {
@@ -22,5 +22,5 @@ export enum ModuleType {
   StatisticsVisits = 13,
   Practical = 10,
   ComplexMaterial = 14,
-  InteractiveTutorial = 15
+  InteractiveTutorial = 15,
 }
