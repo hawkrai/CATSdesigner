@@ -1,24 +1,36 @@
 <div class="confirm-dialog__container">
   <div class="confirm-dialog__title-container">
-    <h1 class="confirm-dialog__title" mat-dialog-title>{{data.label}}</h1>
+    <h1 class="confirm-dialog__title" mat-dialog-title>{{ data.label }}</h1>
     <ng-container title *ngIf="data.projectTheme">
-      <span class="theme-name">{{data.projectTheme}}</span>
+      <span class="theme-name">{{ data.projectTheme }}</span>
     </ng-container>
-    <button mat-icon-button (click)="onCancelClick()" class="confirm-dialog__close-btn">
+    <button
+      mat-icon-button
+      (click)="onCancelClick()"
+      class="confirm-dialog__close-btn"
+    >
       <mat-icon aria-hidden="false">close</mat-icon>
     </button>
   </div>
   <div>
     <div mat-dialog-content>
-      <p>{{data.message}}</p>
+      <p>{{ data.message }}</p>
     </div>
     <div mat-dialog-content *ngIf="data.isConfirm">
-      <p>{{data.alert}}</p>
+      <p>{{ data.alert }}</p>
     </div>
   </div>
   <div mat-dialog-actions class="dialog-buttons">
-    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.no' | translate : 'Нет'}}</button>
-    <button mat-flat-button class="dialog-button" color="{{data.color}}"
-            [mat-dialog-close]="true">{{data.actionName}}</button>
+    <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
+      {{ 'text.no' | translate: 'Нет' }}
+    </button>
+    <button
+      mat-flat-button
+      class="dialog-button"
+      color="{{ data.color }}"
+      [mat-dialog-close]="true"
+    >
+      {{ data.actionName }}
+    </button>
   </div>
 </div>

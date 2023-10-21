@@ -1,5 +1,5 @@
-import {initialSubjectState, ISubjectState} from '../state/subject.state';
-import {ESubjectActions, SubjectActions} from '../actions/subject.actions';
+import { initialSubjectState, ISubjectState } from '../state/subject.state'
+import { ESubjectActions, SubjectActions } from '../actions/subject.actions'
 
 export const subjectReducers = (
   state = initialSubjectState,
@@ -9,10 +9,10 @@ export const subjectReducers = (
     case ESubjectActions.SetSubjectId: {
       return {
         ...state,
-        subjectId: action.payload
-      };
+        subjectId: action.payload,
+      }
     }
     default:
-      return state;
+      return state
   }
-};
+}
