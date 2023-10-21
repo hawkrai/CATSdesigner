@@ -1,25 +1,24 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { DiplomComponent } from './diplom.component';
+import { DiplomComponent } from './diplom.component'
 
 describe('DiplomComponent', () => {
-  let component: DiplomComponent;
-  let fixture: ComponentFixture<DiplomComponent>;
+  let component: DiplomComponent
+  let fixture: ComponentFixture<DiplomComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DiplomComponent ]
-    })
-    .compileComponents();
-  }));
+      declarations: [DiplomComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DiplomComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(DiplomComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

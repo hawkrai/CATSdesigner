@@ -4,7 +4,7 @@
 
 .custom-accordion {
   .card {
-    +.card {
+    + .card {
       margin-top: 0.5rem;
     }
   }
@@ -17,7 +17,7 @@
     &.collapsed {
       i.accor-plus-icon {
         &:before {
-          content: "\F0142";
+          content: '\F0142';
         }
       }
     }

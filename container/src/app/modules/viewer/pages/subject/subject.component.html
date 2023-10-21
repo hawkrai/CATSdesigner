@@ -1,36 +1,46 @@
-
-
 <mat-sidenav-container class="app-sidenav-subject" autosize="true">
-    <mat-sidenav #sidenav [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'" class="app-sidenav-menu-subject" [autoFocus]="false">
-        <mat-nav-list style="padding-top: 0;" *ngIf="modules$ | async as modules; else load">
-            <a mat-list-item
-            *ngFor="let module of modules"
-            [ngClass]="{active: clickedItem === getModuleItem(module.Type)}"
-            (click)="navigateToModule(module.Type)">
-                <div mat-line style="display: flex; justify-content: center;">
-                    <img [src]="getModuleIcon(module.Type)" alt="Icon" class="icon">
-                </div>
-                <div mat-line>{{getModuleTranslate(module.Type) | translate:module.Name}}</div>
-            </a>
-            <!-- <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')">
+  <mat-sidenav
+    #sidenav
+    [opened]="!mobileQuery.matches"
+    [mode]="mobileQuery.matches ? 'over' : 'side'"
+    class="app-sidenav-menu-subject"
+    [autoFocus]="false"
+  >
+    <mat-nav-list
+      style="padding-top: 0"
+      *ngIf="modules$ | async as modules; else load"
+    >
+      <a
+        mat-list-item
+        *ngFor="let module of modules"
+        [ngClass]="{ active: clickedItem === getModuleItem(module.Type) }"
+        (click)="navigateToModule(module.Type)"
+      >
+        <div mat-line style="display: flex; justify-content: center">
+          <img [src]="getModuleIcon(module.Type)" alt="Icon" class="icon" />
+        </div>
+        <div mat-line>
+          {{ getModuleTranslate(module.Type) | translate: module.Name }}
+        </div>
+      </a>
+      <!-- <a *ngIf="isLector" mat-list-item [ngClass]="{active: clickedItem === 'settings'}" (click)="openModule('settings', 'subject', 'settings')">
                 <div mat-line>
                     <mat-icon class="white-icon">settings</mat-icon>
                 </div>
                 <div mat-line>Настройки</div>
                 </a> -->
-              </mat-nav-list>
-        </mat-sidenav>
-        <mat-sidenav-content>
-          <div class="app-sidenav-content-subject">
-            <div class="subject-frame">
-              <iframe [src]="selectedModule"></iframe>
-            </div>
-          </div>
-        </mat-sidenav-content>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="app-sidenav-content-subject">
+      <div class="subject-frame">
+        <iframe [src]="selectedModule"></iframe>
+      </div>
+    </div>
+  </mat-sidenav-content>
 </mat-sidenav-container>
 <ng-template #load>
-    <div style="display: flex; justify-content: center;" class="spinner">
-      <mat-spinner></mat-spinner>
-    </div>
+  <div style="display: flex; justify-content: center" class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
 </ng-template>
-

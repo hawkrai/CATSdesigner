@@ -1,29 +1,28 @@
 export class ProfileData {
+  Name!: string
 
-  Name!: string;
+  Surname!: string
 
-  Surname!: string;
+  Patronymic!: string
+  UserName!: string
 
-  Patronymic!: string;
-  UserName!: string;
+  Avatar!: string
 
-  Avatar!: string;
+  SkypeContact!: string
 
-  SkypeContact!: string;
+  Email!: string
 
-  Email!: string;
+  Phone!: string
 
-  Phone!: string;
+  About!: string
 
-  About!: string;
+  Skill!: string
 
-  Skill!: string;
+  IsSecretary!: boolean
 
-  IsSecretary!: boolean;
+  IsActive!: boolean
 
-  IsActive!: boolean;
+  IsLecturerHasGraduateStudents!: boolean
 
-  IsLecturerHasGraduateStudents!: boolean;
-
-  GroupName!: string;
+  GroupName!: string
 }

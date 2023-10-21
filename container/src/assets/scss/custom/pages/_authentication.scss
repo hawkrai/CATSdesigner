@@ -1,18 +1,17 @@
-// 
+//
 // authentication.scss
 //
 
-.auth-logo{
-    .logo{
-        margin: 0px auto;
-    }
+.auth-logo {
+  .logo {
+    margin: 0px auto;
+  }
 
-    .logo-dark{
-        display: $display-block;
-    }
+  .logo-dark {
+    display: $display-block;
+  }
 
-    .logo-light{
-        display: $display-none;
-    }
+  .logo-light {
+    display: $display-none;
+  }
 }
-

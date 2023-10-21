@@ -1,19 +1,31 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { Message } from '../../shared/models/entities/message.model';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core'
+import { Router } from '@angular/router'
+import { MatDialog } from '@angular/material/dialog'
+import { Message } from '../../shared/models/entities/message.model'
 
-import { Chat } from '../../shared/models/entities/chats.model';
-import { SignalRService } from '../../shared/services/signalRSerivce';
-import { PerfectScrollbarComponent, PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
-import { FileService } from '../../shared/services/files.service';
-import { ContactService } from '../../shared/services/contactService';
-import { GroupListComponent } from '../GroupList/groupList.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ClipboardService } from 'ngx-clipboard';
-import { MessageCto } from '../../shared/models/dto/messageCto';
-import { DataService } from '../../shared/services/dataService';
-import { VideoChatService } from './../../../video-chat/services/video-chat.service';
+import { Chat } from '../../shared/models/entities/chats.model'
+import { SignalRService } from '../../shared/services/signalRSerivce'
+import {
+  PerfectScrollbarComponent,
+  PerfectScrollbarDirective,
+} from 'ngx-perfect-scrollbar'
+import { FileService } from '../../shared/services/files.service'
+import { ContactService } from '../../shared/services/contactService'
+import { GroupListComponent } from '../GroupList/groupList.component'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { ClipboardService } from 'ngx-clipboard'
+import { MessageCto } from '../../shared/models/dto/messageCto'
+import { DataService } from '../../shared/services/dataService'
+import { VideoChatService } from './../../../video-chat/services/video-chat.service'
 
 @Component({
   selector: 'app-index',
@@ -22,216 +34,252 @@ import { VideoChatService } from './../../../video-chat/services/video-chat.serv
   changeDetection: ChangeDetectionStrategy.OnPush,
   // encapsulation: ViewEncapsulation.None
 })
-
 export class IndexComponent implements OnInit {
-  activetab = 2;
-  currentMsg: MessageCto = new MessageCto();
-  chat: Chat;
-  filterValue: string;
-  isfilter: boolean;
-  messages: Message[];
-  messagesAll: Message[];
-  isEdit: boolean;
-  editedMsg: Message;
-  unreadChat:number=0;
-  unreadGroup:number=0;
+  activetab = 2
+  currentMsg: MessageCto = new MessageCto()
+  chat: Chat
+  filterValue: string
+  isfilter: boolean
+  messages: Message[]
+  messagesAll: Message[]
+  isEdit: boolean
+  editedMsg: Message
+  unreadChat: number = 0
+  unreadGroup: number = 0
 
-  constructor(private cdr: ChangeDetectorRef, private clipboardApi: ClipboardService, private snackBar: MatSnackBar, private contactService: ContactService, private router: Router, public dialog: MatDialog, public signalRService: SignalRService, public dataService: DataService, public fileService: FileService, public videoChatService:VideoChatService) { }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private clipboardApi: ClipboardService,
+    private snackBar: MatSnackBar,
+    private contactService: ContactService,
+    private router: Router,
+    public dialog: MatDialog,
+    public signalRService: SignalRService,
+    public dataService: DataService,
+    public fileService: FileService,
+    public videoChatService: VideoChatService
+  ) {}
 
-  @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent;
-  @ViewChild(PerfectScrollbarDirective) directiveRef?: PerfectScrollbarDirective;
+  @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent
+  @ViewChild(PerfectScrollbarDirective) directiveRef?: PerfectScrollbarDirective
 
   ngOnInit(): void {
-    this.contactService.openChatComand.subscribe(x=>this.activetab=2);
-    this.contactService.loadContacts('*');
-    this.dataService.readMessageChatCount.subscribe(x=>{ this.unreadChat=x; this.cdr.detectChanges();});
-    this.dataService.readMessageGroupCount.subscribe(x=>{ this.unreadGroup=x; this.cdr.detectChanges();});
-    this.dataService.LoadGroup();
-    this.dataService.LoadChats();
+    this.contactService.openChatComand.subscribe((x) => (this.activetab = 2))
+    this.contactService.loadContacts('*')
+    this.dataService.readMessageChatCount.subscribe((x) => {
+      this.unreadChat = x
+      this.cdr.detectChanges()
+    })
+    this.dataService.readMessageGroupCount.subscribe((x) => {
+      this.unreadGroup = x
+      this.cdr.detectChanges()
+    })
+    this.dataService.LoadGroup()
+    this.dataService.LoadChats()
     this.dataService.messages.subscribe((msgs: Message[]) => {
-      this.messages = msgs;
-      this.messagesAll = msgs;
-      this.cdr.detectChanges();
-      if (this.messages.length)
-        this.componentRef.directiveRef.scrollToBottom();
-    });
+      this.messages = msgs
+      this.messagesAll = msgs
+      this.cdr.detectChanges()
+      if (this.messages.length) this.componentRef.directiveRef.scrollToBottom()
+    })
 
-    this.currentMsg.text = "";
+    this.currentMsg.text = ''
   }
 
   openFilter() {
-    this.isfilter = !this.isfilter;
+    this.isfilter = !this.isfilter
     if (!this.isfilter) {
-      this.filterValue = "";
-      this.messages = this.dataService.messages.getValue();
-      this.cdr.detectChanges();
-      if (this.messages.length)
-        this.componentRef.directiveRef.scrollToBottom();
+      this.filterValue = ''
+      this.messages = this.dataService.messages.getValue()
+      this.cdr.detectChanges()
+      if (this.messages.length) this.componentRef.directiveRef.scrollToBottom()
     }
   }
 
   copyText(text: string) {
-    this.clipboardApi.copyFromContent(text);
+    this.clipboardApi.copyFromContent(text)
   }
 
   edit(msg: Message) {
-    this.isEdit = true;
-    this.editedMsg = msg;
-    this.currentMsg.text = msg.text;
+    this.isEdit = true
+    this.editedMsg = msg
+    this.currentMsg.text = msg.text
   }
 
   stopEdit() {
-    this.isEdit = false;
-    this.currentMsg=new MessageCto();
-    this.currentMsg.text="";
-    this.editedMsg = null;
+    this.isEdit = false
+    this.currentMsg = new MessageCto()
+    this.currentMsg.text = ''
+    this.editedMsg = null
   }
 
   filter() {
-    this.messages = this.messagesAll.filter(x => x.text?.includes(this.filterValue));
-    this.cdr.detectChanges();
-    if (this.messages.length)
-      this.componentRef.directiveRef.scrollToBottom();
+    this.messages = this.messagesAll.filter((x) =>
+      x.text?.includes(this.filterValue)
+    )
+    this.cdr.detectChanges()
+    if (this.messages.length) this.componentRef.directiveRef.scrollToBottom()
   }
 
   openStudentsList() {
     if (this.dataService.isGroupChat && this.dataService.activChat.groupId) {
       const dialogRef = this.dialog.open(GroupListComponent, {
-        width: "700px",
-        data: this.dataService.activChat.groupId
-      });
+        width: '700px',
+        data: this.dataService.activChat.groupId,
+      })
     }
   }
 
-  attachFileClick(fileInput:any){
-    if(!this.dataService.activChat){
-      this.openSnackBar("Не выбран чат!");
-      return false;
+  attachFileClick(fileInput: any) {
+    if (!this.dataService.activChat) {
+      this.openSnackBar('Не выбран чат!')
+      return false
     }
-    fileInput.click();
+    fileInput.click()
   }
   uploadFiles(event) {
-    if(!this.dataService.activChat){
-      this.openSnackBar("Не выбран чат!");
-      return false;
+    if (!this.dataService.activChat) {
+      this.openSnackBar('Не выбран чат!')
+      return false
     }
-    if (event.files)
-      this.fileService.UploadFile(event.files)
+    if (event.files) this.fileService.UploadFile(event.files)
   }
 
   download(filename: string) {
-    this.fileService.DownloadFile(filename);
+    this.fileService.DownloadFile(filename)
   }
 
   remove(id: any) {
-    this.signalRService.remove(id);
+    this.signalRService.remove(id)
   }
 
   sendMsg() {
-    if(!this.dataService.activChat){
-      this.openSnackBar("Не выбран чат!");
-      return false;
+    if (!this.dataService.activChat) {
+      this.openSnackBar('Не выбран чат!')
+      return false
     }
 
-    if(!this.currentMsg?.text || this.currentMsg.text == "" || this.currentMsg.text.length > 25000){
-      this.openSnackBar("Сообщение пустое или превышает разрешенный размер!");
-      return;
+    if (
+      !this.currentMsg?.text ||
+      this.currentMsg.text == '' ||
+      this.currentMsg.text.length > 25000
+    ) {
+      this.openSnackBar('Сообщение пустое или превышает разрешенный размер!')
+      return
     }
 
-    if (this.isEdit && this.currentMsg?.text && this.currentMsg.text != "" && this.currentMsg.text.length < 25000) {
+    if (
+      this.isEdit &&
+      this.currentMsg?.text &&
+      this.currentMsg.text != '' &&
+      this.currentMsg.text.length < 25000
+    ) {
       if (this.dataService.isGroupChat) {
-        this.signalRService.updateGroupMessage(this.editedMsg.id, this.currentMsg.text, this.dataService.activChatId)
-        .then(
-          res => {
-            this.currentMsg.text = "";
-            this.stopEdit();
-            this.cdr.detectChanges();
-            this.openSnackBar("Сообщение изменено");
-          },
-          err => {
-            this.openSnackBar("Ошибка отправки");
-            this.signalRService.connect();
-          })
-      }
-      else {
-        this.signalRService.updateChatMessage(this.editedMsg.id, this.currentMsg.text, this.dataService.activChatId)
+        this.signalRService
+          .updateGroupMessage(
+            this.editedMsg.id,
+            this.currentMsg.text,
+            this.dataService.activChatId
+          )
           .then(
-            res => {
-              this.currentMsg.text = "";
-              this.cdr.detectChanges();
-              this.openSnackBar("Сообщение изменено");
+            (res) => {
+              this.currentMsg.text = ''
+              this.stopEdit()
+              this.cdr.detectChanges()
+              this.openSnackBar('Сообщение изменено')
             },
-            err => {
-              this.openSnackBar("Ошибка отправки");
-              this.signalRService.connect();
-            })
+            (err) => {
+              this.openSnackBar('Ошибка отправки')
+              this.signalRService.connect()
+            }
+          )
+      } else {
+        this.signalRService
+          .updateChatMessage(
+            this.editedMsg.id,
+            this.currentMsg.text,
+            this.dataService.activChatId
+          )
+          .then(
+            (res) => {
+              this.currentMsg.text = ''
+              this.cdr.detectChanges()
+              this.openSnackBar('Сообщение изменено')
+            },
+            (err) => {
+              this.openSnackBar('Ошибка отправки')
+              this.signalRService.connect()
+            }
+          )
       }
-    }
-    else {
-      if (this.currentMsg?.text && this.currentMsg.text != "" && this.currentMsg.text.length < 25000) {
-        this.currentMsg.userId = this.dataService.user.id;
-        this.currentMsg.chatId = this.dataService.activChatId;
+    } else {
+      if (
+        this.currentMsg?.text &&
+        this.currentMsg.text != '' &&
+        this.currentMsg.text.length < 25000
+      ) {
+        this.currentMsg.userId = this.dataService.user.id
+        this.currentMsg.chatId = this.dataService.activChatId
         if (this.dataService.isGroupChat) {
           this.signalRService.sendGroupMessage(this.currentMsg).then(
-            res => {
-              this.currentMsg.text = "";
-              this.cdr.detectChanges();
+            (res) => {
+              this.currentMsg.text = ''
+              this.cdr.detectChanges()
             },
-            err => {
-              this.openSnackBar("Ошибка отправки");
-              this.signalRService.connect();
-            })
-          this.dataService.groupRead();
-        }
-        else {
+            (err) => {
+              this.openSnackBar('Ошибка отправки')
+              this.signalRService.connect()
+            }
+          )
+          this.dataService.groupRead()
+        } else {
           this.signalRService.sendMessage(this.currentMsg).then(
-            res => {
-              this.currentMsg.text = "";
-              this.cdr.detectChanges();
+            (res) => {
+              this.currentMsg.text = ''
+              this.cdr.detectChanges()
             },
-            err => {
-              this.openSnackBar("Ошибка отправки");
-              this.signalRService.connect();
-            })
-          this.dataService.updateRead();
+            (err) => {
+              this.openSnackBar('Ошибка отправки')
+              this.signalRService.connect()
+            }
+          )
+          this.dataService.updateRead()
         }
       }
     }
   }
 
   closeUserChat() {
-    document.getElementById('chat-room').classList.remove('user-chat-show');
+    document.getElementById('chat-room').classList.remove('user-chat-show')
   }
 
   startCall() {
-    if(!this.dataService.activChat){
-      this.openSnackBar("Не выбран чат");
-      return false;
+    if (!this.dataService.activChat) {
+      this.openSnackBar('Не выбран чат')
+      return false
     }
     this.signalRService.sendCallRequest(this.dataService.activChatId)
   }
 
-  isAllowedForUser(){
-    if(!this.videoChatService.isSecureConnection())
-      {
-        this.openSnackBar("Видео-чат не доступен в небезопасном режиме");
-        return false;
-      }
-
-    if(this.dataService?.activChat?.groupId){
-      return false;
+  isAllowedForUser() {
+    if (!this.videoChatService.isSecureConnection()) {
+      this.openSnackBar('Видео-чат не доступен в небезопасном режиме')
+      return false
     }
 
-    if(this.dataService.user.role === "lector"){
-      return true;
+    if (this.dataService?.activChat?.groupId) {
+      return false
     }
-    return false;
+
+    if (this.dataService.user.role === 'lector') {
+      return true
+    }
+    return false
   }
 
   public openSnackBar(message: string, action?: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
-    });
+    })
   }
-
 }
