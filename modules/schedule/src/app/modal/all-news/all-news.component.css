@@ -2,13 +2,13 @@
   border-style: solid;
   border-left-width: 3px;
   border-radius: 0px;
-  border-bottom-width: 0px ;
+  border-bottom-width: 0px;
   border-top-width: 1px;
-  border-right-width: 0px ;
+  border-right-width: 0px;
   margin: -10px;
   padding: 15px 20px 10px;
   margin-bottom: 20px;
-  box-shadow: 5px 5px 5px rgba(187,187,187,0.25);
+  box-shadow: 5px 5px 5px rgba(187, 187, 187, 0.25);
   border-top-color: aliceblue;
 }
 
