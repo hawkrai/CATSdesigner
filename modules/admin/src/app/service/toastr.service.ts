@@ -1,24 +1,21 @@
-import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+import { Injectable } from '@angular/core'
+import { ToastrService } from 'ngx-toastr'
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class AppToastrService {
-
-  constructor(private toastr: ToastrService) {
-  }
+  constructor(private toastr: ToastrService) {}
 
   addSuccessFlashMessage(msg: string) {
-    this.toastr.success(msg);
+    this.toastr.success(msg)
   }
 
   addErrorFlashMessage(msg: string) {
-    this.toastr.error(msg);
+    this.toastr.error(msg)
   }
 
   addWarningFlashMessage(msg: string) {
-    this.toastr.warning(msg);
+    this.toastr.warning(msg)
   }
 }

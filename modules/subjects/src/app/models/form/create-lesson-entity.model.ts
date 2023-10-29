@@ -1,5 +1,5 @@
-import { CreateLectureEntity } from './create-lecture-entity.model';
+import { CreateLectureEntity } from './create-lecture-entity.model'
 
 export class CreateLessonEntity extends CreateLectureEntity {
-    shortName: string;
+  shortName: string
 }

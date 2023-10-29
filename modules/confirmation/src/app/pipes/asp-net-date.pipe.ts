@@ -1,11 +1,11 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import * as  moment from 'moment';
+import { Pipe, PipeTransform } from '@angular/core'
+import * as moment from 'moment'
 
 @Pipe({
-    name: 'aspNetDate'
+  name: 'aspNetDate',
 })
 export class AspNetDatePipe implements PipeTransform {
-    transform(value: any): Date {
-        return moment(value).toDate();
-    }
+  transform(value: any): Date {
+    return moment(value).toDate()
+  }
 }

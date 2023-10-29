@@ -1,63 +1,136 @@
 <div class="percentage-results-list-component">
   <div class="mdc-data-table">
-    <table class="mdc-data-table__table" matSort (matSortChange)="sortData($event)">
+    <table
+      class="mdc-data-table__table"
+      matSort
+      (matSortChange)="sortData($event)"
+    >
       <thead>
         <tr class="mdc-data-table__header-row">
-          <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">№
+          <th
+            class="
+              mdc-data-table__header-cell mdc-data-table__header-cell--numeric
+            "
+            role="columnheader"
+            scope="col"
+          >
+            №
           </th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">
-            {{'text.diplomProject.themeDP' | translate: 'Темa дипломного проекта'}}</th>
-          <th mat-sort-header="Student" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.student' |
-            translate: 'Студент'}}</th>
-          <th mat-sort-header="Group" class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.group' |
-            translate: 'Группа'}}</th>
-          <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col"
-            *ngFor="let graph of percentageGraphs">
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{
+              'text.diplomProject.themeDP'
+                | translate: 'Темa дипломного проекта'
+            }}
+          </th>
+          <th
+            mat-sort-header="Student"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.diplomProject.student' | translate: 'Студент' }}
+          </th>
+          <th
+            mat-sort-header="Group"
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.diplomProject.group' | translate: 'Группа' }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell data-cell"
+            role="columnheader"
+            scope="col"
+            *ngFor="let graph of percentageGraphs"
+          >
             <div class="header-date">
-              {{ graph.Date | date:'dd.MM.yyyy' }}
+              {{ graph.Date | date: 'dd.MM.yyyy' }}
             </div>
           </th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.estimation' |
-            translate: 'Оценка'}}</th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.diplomProject.estimation' | translate: 'Оценка' }}
+          </th>
         </tr>
       </thead>
       <tbody *ngIf="filteredPercentageResults; else load">
-        <tr class="mdc-data-table__row" *ngFor="let student of filteredPercentageResults; index as i">
+        <tr
+          class="mdc-data-table__row"
+          *ngFor="let student of filteredPercentageResults; index as i"
+        >
           <td class="mdc-data-table__cell">{{ i + 1 }}</td>
-          <td class="mdc-data-table__cell">{{ student.Theme ? student.Theme : '-' }}</td>
+          <td class="mdc-data-table__cell">
+            {{ student.Theme ? student.Theme : '-' }}
+          </td>
           <td class="mdc-data-table__cell">{{ student.Name }}</td>
           <td class="mdc-data-table__cell">{{ student.Group }}</td>
-          <ng-container *ngIf="percentageResultsComponent.getDiplomUser().IsStudent">
-            <td class="mdc-data-table__cell data-cell" *ngFor="let result of student.PercentageResults">
-              {{result.Mark}}
-              <div class="comment" *ngIf="result && result.Comment && result.ShowForStudent">
-                <mat-icon class="comment-icon" matTooltip={{result.Comment}}>chat_bubble_outline</mat-icon>
+          <ng-container
+            *ngIf="percentageResultsComponent.getDiplomUser().IsStudent"
+          >
+            <td
+              class="mdc-data-table__cell data-cell"
+              *ngFor="let result of student.PercentageResults"
+            >
+              {{ result.Mark }}
+              <div
+                class="comment"
+                *ngIf="result && result.Comment && result.ShowForStudent"
+              >
+                <mat-icon class="comment-icon" matTooltip="{{ result.Comment }}"
+                  >chat_bubble_outline</mat-icon
+                >
               </div>
             </td>
           </ng-container>
           <!-- !visitStatsComponent.isLecturer && visitStatsComponent.getDiplomUser().IsSecretary -->
-          <ng-container *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer">
-            <td class="mdc-data-table__cell data-cell clickable"
+          <ng-container
+            *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer"
+          >
+            <td
+              class="mdc-data-table__cell data-cell clickable"
               (dblclick)="percentageResultsComponent.setResult(result, student)"
-              *ngFor="let result of student.PercentageResults">
+              *ngFor="let result of student.PercentageResults"
+            >
               {{ result.Mark }}
               <div class="comment" *ngIf="result && result.Comment">
-                <mat-icon class="comment-icon" matTooltip={{result.Comment}}>chat_bubble_outline</mat-icon>
+                <mat-icon class="comment-icon" matTooltip="{{ result.Comment }}"
+                  >chat_bubble_outline</mat-icon
+                >
               </div>
             </td>
           </ng-container>
-          <td class="mdc-data-table__cell data-cell" *ngIf="percentageResultsComponent.getDiplomUser().IsStudent">
+          <td
+            class="mdc-data-table__cell data-cell"
+            *ngIf="percentageResultsComponent.getDiplomUser().IsStudent"
+          >
             {{ student.Mark }}
-            <div class="comment" *ngIf="student && student.Comment && student.ShowForStudent">
-              <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
+            <div
+              class="comment"
+              *ngIf="student && student.Comment && student.ShowForStudent"
+            >
+              <mat-icon class="comment-icon" matTooltip="{{ student.Comment }}"
+                >chat_bubble_outline</mat-icon
+              >
             </div>
           </td>
-          <td class="mdc-data-table__cell data-cell clickable"
+          <td
+            class="mdc-data-table__cell data-cell clickable"
             *ngIf="percentageResultsComponent.getDiplomUser().IsLecturer"
-            (dblclick)="percentageResultsComponent.setMark(student)">
+            (dblclick)="percentageResultsComponent.setMark(student)"
+          >
             {{ student.Mark }}
             <div class="comment" *ngIf="student && student.Comment">
-              <mat-icon class="comment-icon" matTooltip={{student.Comment}}>chat_bubble_outline</mat-icon>
+              <mat-icon class="comment-icon" matTooltip="{{ student.Comment }}"
+                >chat_bubble_outline</mat-icon
+              >
             </div>
           </td>
         </tr>

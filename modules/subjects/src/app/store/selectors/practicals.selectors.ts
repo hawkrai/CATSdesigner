@@ -1,38 +1,47 @@
-import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { IAppState } from '../state/app.state';
-import { getUserId } from './subject.selector';
-import { IPracticalsState } from '../state/practicals.state';
+import { createFeatureSelector, createSelector } from '@ngrx/store'
+import { IAppState } from '../state/app.state'
+import { getUserId } from './subject.selector'
+import { IPracticalsState } from '../state/practicals.state'
 
-const practicalsSelector = createFeatureSelector<IAppState, IPracticalsState>('practicals');
+const practicalsSelector = createFeatureSelector<IAppState, IPracticalsState>(
+  'practicals'
+)
 
 export const selectPracticals = createSelector(
   practicalsSelector,
-  state => state.practicals
-);
+  (state) => state.practicals
+)
 
 export const selectSchedule = createSelector(
   practicalsSelector,
-  state => state.schedule
-);
+  (state) => state.schedule
+)
 
 export const selectMarks = createSelector(
   practicalsSelector,
-  state => state.students
-);
+  (state) => state.students
+)
 
 export const hasJobProtections = createSelector(
   practicalsSelector,
-  state => state.hasJobProtections
-);
+  (state) => state.hasJobProtections
+)
 
 export const getStudentFiles = createSelector(
   practicalsSelector,
   getUserId,
-  (state: IPracticalsState, userId: number, { studentId }: { studentId?: number }) => state.studentsPracticalsFiles ? state.studentsPracticalsFiles[studentId ? studentId : userId] : null
-);
+  (
+    state: IPracticalsState,
+    userId: number,
+    { studentId }: { studentId?: number }
+  ) =>
+    state.studentsPracticalsFiles
+      ? state.studentsPracticalsFiles[studentId ? studentId : userId]
+      : null
+)
 
 export const getGroupJobProtection = createSelector(
   practicalsSelector,
-  
-  state => state.groupJobProtection
-);
+
+  (state) => state.groupJobProtection
+)

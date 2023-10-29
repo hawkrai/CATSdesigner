@@ -1,6 +1,12 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
+<h1 mat-dialog-title>{{ data.title }}</h1>
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
-  <pdf-viewer [src]="pdfSrc" [render-text]="true" [(page)]="page" [show-all]="true" style="display:block"></pdf-viewer>
+  <pdf-viewer
+    [src]="pdfSrc"
+    [render-text]="true"
+    [(page)]="page"
+    [show-all]="true"
+    style="display: block"
+  ></pdf-viewer>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">Отмена</button>

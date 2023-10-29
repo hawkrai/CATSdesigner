@@ -1,4 +1,4 @@
 export class Message {
-    Type: string;
-    Value: string;
+  Type: string
+  Value: string
 }

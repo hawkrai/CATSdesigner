@@ -1,4 +1,4 @@
 export class Template {
-  Id: string;
-  Name: string;
+  Id: string
+  Name: string
 }

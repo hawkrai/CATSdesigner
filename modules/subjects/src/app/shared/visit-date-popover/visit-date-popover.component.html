@@ -1,117 +1,211 @@
 <app-popover-dialog>
   <ng-container title>
-    {{data.title}}
+    {{ data.title }}
   </ng-container>
   <ng-container body>
     <form [formGroup]="dateForm" class="form">
       <div class="form-container">
         <div class="form-group">
           <mat-form-field class="full-width">
-            <mat-label>{{'date' | translate:'Дата'}}</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="date" readonly>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-label>{{ 'date' | translate: 'Дата' }}</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="date"
+              readonly
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
-          <div *ngIf="(dateForm.get('date').touched || dateForm.get('date').dirty) && dateForm.get('date').errors" class="form-error">
-            <mat-error *ngIf="dateForm.get('date').hasError('required')">{{'date.required' | translate:'Дата обязательна'}}</mat-error>
+          <div
+            *ngIf="
+              (dateForm.get('date').touched || dateForm.get('date').dirty) &&
+              dateForm.get('date').errors
+            "
+            class="form-error"
+          >
+            <mat-error *ngIf="dateForm.get('date').hasError('required')">{{
+              'date.required' | translate: 'Дата обязательна'
+            }}</mat-error>
           </div>
         </div>
         <div class="form-group">
           <mat-form-field class="full-width">
-            <mat-label>{{'text.subjecs.lector' | translate:'Преподаватель'}}</mat-label>
-            <mat-select
-            formControlName="lecturerId"
-          >
-            <mat-option
-              *ngFor="let lector of lectors"              
-              [value]="lector.LectorId"
-            >
-              <span class="icon-container">
-                {{ lector.FullName }}
-              </span>
-            </mat-option>
-            <!-- <mat-select-trigger *ngIf="state.group">
+            <mat-label>{{
+              'text.subjecs.lector' | translate: 'Преподаватель'
+            }}</mat-label>
+            <mat-select formControlName="lecturerId">
+              <mat-option
+                *ngFor="let lector of lectors"
+                [value]="lector.LectorId"
+              >
+                <span class="icon-container">
+                  {{ lector.FullName }}
+                </span>
+              </mat-option>
+              <!-- <mat-select-trigger *ngIf="state.group">
             </mat-select-trigger> -->
-          </mat-select>
+            </mat-select>
           </mat-form-field>
-          <div *ngIf="(dateForm.get('lecturerId').touched || dateForm.get('lecturerId').dirty) && dateForm.get('lecturerId').errors" class="form-error">
-            <mat-error *ngIf="dateForm.get('lecturerId').hasError('lecturerId')">{{'lecturer.required' | translate:'Выберете преподавателя'}}</mat-error>
+          <div
+            *ngIf="
+              (dateForm.get('lecturerId').touched ||
+                dateForm.get('lecturerId').dirty) &&
+              dateForm.get('lecturerId').errors
+            "
+            class="form-error"
+          >
+            <mat-error
+              *ngIf="dateForm.get('lecturerId').hasError('lecturerId')"
+              >{{
+                'lecturer.required' | translate: 'Выберете преподавателя'
+              }}</mat-error
+            >
           </div>
         </div>
       </div>
       <div class="form-container">
         <div class="form-group">
           <mat-form-field class="full-width">
-            <mat-label>{{'lesson.start' | translate:'Начало занятия'}}</mat-label>
-            <input
-            matInput
-            formControlName="startTime"
-            type="time"
-            />
+            <mat-label>{{
+              'lesson.start' | translate: 'Начало занятия'
+            }}</mat-label>
+            <input matInput formControlName="startTime" type="time" />
           </mat-form-field>
-          <div *ngIf="(dateForm.get('startTime').touched || dateForm.get('startTime').dirty) && dateForm.get('startTime').errors" class="form-error">
-            <mat-error *ngIf="dateForm.get('startTime').hasError('required')">{{'lesson.start.required' | translate:'Начало занятия обязательно'}}</mat-error>
+          <div
+            *ngIf="
+              (dateForm.get('startTime').touched ||
+                dateForm.get('startTime').dirty) &&
+              dateForm.get('startTime').errors
+            "
+            class="form-error"
+          >
+            <mat-error *ngIf="dateForm.get('startTime').hasError('required')">{{
+              'lesson.start.required' | translate: 'Начало занятия обязательно'
+            }}</mat-error>
           </div>
         </div>
 
         <div class="form-group">
           <mat-form-field class="full-width">
-            <mat-label>{{'lesson.end' | translate:'Конец занятия'}}</mat-label>
-            <input
-            matInput
-            type="time"
-            formControlName="endTime"
-            />
+            <mat-label>{{
+              'lesson.end' | translate: 'Конец занятия'
+            }}</mat-label>
+            <input matInput type="time" formControlName="endTime" />
           </mat-form-field>
-          <div *ngIf="(dateForm.get('endTime').touched || dateForm.get('endTime').dirty) && dateForm.get('endTime').errors" class="form-error">
-            <mat-error *ngIf="dateForm.get('endTime').hasError('required')">{{'lesson.end.required' | translate:'Конец занятия обязательно'}}</mat-error>
+          <div
+            *ngIf="
+              (dateForm.get('endTime').touched ||
+                dateForm.get('endTime').dirty) &&
+              dateForm.get('endTime').errors
+            "
+            class="form-error"
+          >
+            <mat-error *ngIf="dateForm.get('endTime').hasError('required')">{{
+              'lesson.end.required' | translate: 'Конец занятия обязательно'
+            }}</mat-error>
           </div>
         </div>
-    </div>
-    <div class="form-container">
-      <div class="form-group">
-        <mat-form-field class="full-width">
-          <mat-label>{{'lesson.building' | translate:'Корпус'}}</mat-label>
-          <input formControlName="building" type="text" matInput [placeholder]="'lesson.building' | translate:'Корпус'">
-        </mat-form-field>
-        <div *ngIf="(dateForm.get('building').touched || dateForm.get('building').dirty) && dateForm.get('building').errors" class="form-error">
-          <mat-error *ngIf="dateForm.get('building').hasError('building')">{{'building.required' | translate:'Корпус обязателен'}}</mat-error>
-          <mat-error *ngIf="dateForm.get('building').hasError('minLength')">{{'sybmols.min.length' | translate: 'Минимальное количество символов'}}: 1</mat-error>
-          <mat-error *ngIf="dateForm.get('building').hasError('maxLength')">{{'sybmols.max.length' | translate: 'Максимальное количество символов'}}: 5</mat-error>
+      </div>
+      <div class="form-container">
+        <div class="form-group">
+          <mat-form-field class="full-width">
+            <mat-label>{{ 'lesson.building' | translate: 'Корпус' }}</mat-label>
+            <input
+              formControlName="building"
+              type="text"
+              matInput
+              [placeholder]="'lesson.building' | translate: 'Корпус'"
+            />
+          </mat-form-field>
+          <div
+            *ngIf="
+              (dateForm.get('building').touched ||
+                dateForm.get('building').dirty) &&
+              dateForm.get('building').errors
+            "
+            class="form-error"
+          >
+            <mat-error *ngIf="dateForm.get('building').hasError('building')">{{
+              'building.required' | translate: 'Корпус обязателен'
+            }}</mat-error>
+            <mat-error *ngIf="dateForm.get('building').hasError('minLength')"
+              >{{
+                'sybmols.min.length'
+                  | translate: 'Минимальное количество символов'
+              }}: 1</mat-error
+            >
+            <mat-error *ngIf="dateForm.get('building').hasError('maxLength')"
+              >{{
+                'sybmols.max.length'
+                  | translate: 'Максимальное количество символов'
+              }}: 5</mat-error
+            >
+          </div>
+        </div>
+        <div class="form-group">
+          <mat-form-field class="full-width">
+            <mat-label>{{
+              'lesson.audience' | translate: 'Аудитория'
+            }}</mat-label>
+            <input
+              formControlName="audience"
+              type="text"
+              matInput
+              [placeholder]="'lesson.audience' | translate: 'Аудитория'"
+            />
+          </mat-form-field>
         </div>
       </div>
-      <div class="form-group">
-        <mat-form-field class="full-width">
-          <mat-label>{{'lesson.audience' | translate:'Аудитория'}}</mat-label>
-          <input formControlName="audience" type="text" matInput [placeholder]="'lesson.audience' | translate:'Аудитория'">
-        </mat-form-field>
-      </div>
-    </div>
-      <button mat-raised-button
-      class="visit-date__action"
-      color="primary"
-      [disabled]="dateForm.invalid"
-      (click)="onCreateDate()">{{data.buttonText}}</button>
+      <button
+        mat-raised-button
+        class="visit-date__action"
+        color="primary"
+        [disabled]="dateForm.invalid"
+        (click)="onCreateDate()"
+      >
+        {{ data.buttonText }}
+      </button>
     </form>
     <div class="visit-date__content">
-      <p mat-dialog-title class="visit-date__table-title">{{'date.selected' | translate:'Выбранные даты'}}</p>
-      <div class="mdc-data-table visit-date__table-container mat-elevation-z8" *ngIf="schedule && schedule.length">
+      <p mat-dialog-title class="visit-date__table-title">
+        {{ 'date.selected' | translate: 'Выбранные даты' }}
+      </p>
+      <div
+        class="mdc-data-table visit-date__table-container mat-elevation-z8"
+        *ngIf="schedule && schedule.length"
+      >
         <table class="mdc-data-table__table">
           <tbody class="mdc-data-table__content">
-           <tr class="mdc-data-table__row" *ngFor="let day of schedule">
-            <td class="mdc-data-table__cell">{{ day.Date }} <mat-hint *ngIf="day.StartTime && day.EndTime">{{day.StartTime}}-{{day.EndTime}}</mat-hint></td>
-            <td class="mdc-data-table__cell visit-date__table-action">
-              <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate:'Удалить дату'" (click)="deletePopover(day)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </tr>
+            <tr class="mdc-data-table__row" *ngFor="let day of schedule">
+              <td class="mdc-data-table__cell">
+                {{ day.Date }}
+                <mat-hint *ngIf="day.StartTime && day.EndTime"
+                  >{{ day.StartTime }}-{{ day.EndTime }}</mat-hint
+                >
+              </td>
+              <td class="mdc-data-table__cell visit-date__table-action">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  [matTooltip]="'date.delete' | translate: 'Удалить дату'"
+                  (click)="deletePopover(day)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClick()">{{'button.close' | translate:'Закрыть'}}</button>
+    <button mat-raised-button (click)="onClick()">
+      {{ 'button.close' | translate: 'Закрыть' }}
+    </button>
   </ng-container>
 </app-popover-dialog>

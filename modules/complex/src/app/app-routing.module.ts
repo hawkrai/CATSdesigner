@@ -1,25 +1,23 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core'
+import { Routes, RouterModule } from '@angular/router'
 
-import { ComplexGridComponent } from "./complexGrid/complexGrid.component";
-import { LoginComponent } from "./login/login.component";
-import { ComplexMaterialComponent } from "./complexMaterial/complexMaterial.component";
-
-
+import { ComplexGridComponent } from './complexGrid/complexGrid.component'
+import { LoginComponent } from './login/login.component'
+import { ComplexMaterialComponent } from './complexMaterial/complexMaterial.component'
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'main',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   { path: 'main', component: ComplexGridComponent },
-  { path: 'cMaterial', component: ComplexMaterialComponent }
+  { path: 'cMaterial', component: ComplexMaterialComponent },
   // { path: '**', component: NotFoundComponent }
-];
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

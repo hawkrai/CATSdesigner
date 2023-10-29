@@ -1,23 +1,42 @@
 <div *ngIf="this.isLoad" class="message-main">
-    <div class="message-detail-title">
-        <p class="message-detail-subject">
-            <mat-icon class="message-icon">email</mat-icon>{{ this.message.Subject}}</p>
-        <button mat-button class="close-icon" [mat-dialog-close]="true">
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <div class="message-body">
-        <a class="message-detail-author">{{ this.message.AthorName }}</a>
-        <div class="message-send">
-            <label class="message-label">{{ "text.adminPanel.modal.messageDetail.sent" | translate }}:</label>{{this.message.Date }}
-        </div>
-        <div class="message-send">
-            <label class="message-label">{{ "text.adminPanel.modal.messageDetail.recepients" | translate }}:</label>
-            <div class="message-name" *ngFor='let recipients of this.message.Recipients'>{{ recipients }}</div>
-        </div>
-    </div>
-    <p class="message-text">
-        {{ this.message.PreviewText }}
+  <div class="message-detail-title">
+    <p class="message-detail-subject">
+      <mat-icon class="message-icon">email</mat-icon>{{ this.message.Subject }}
     </p>
-    <button *ngIf="this.data.mode" mat-button class="message-button" (click)="this.sendMessage()">{{ "text.adminPanel.modal.messageDetail.reply" | translate }}</button>
+    <button mat-button class="close-icon" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="message-body">
+    <a class="message-detail-author">{{ this.message.AthorName }}</a>
+    <div class="message-send">
+      <label class="message-label"
+        >{{ 'text.adminPanel.modal.messageDetail.sent' | translate }}:</label
+      >{{ this.message.Date }}
+    </div>
+    <div class="message-send">
+      <label class="message-label"
+        >{{
+          'text.adminPanel.modal.messageDetail.recepients' | translate
+        }}:</label
+      >
+      <div
+        class="message-name"
+        *ngFor="let recipients of this.message.Recipients"
+      >
+        {{ recipients }}
+      </div>
+    </div>
+  </div>
+  <p class="message-text">
+    {{ this.message.PreviewText }}
+  </p>
+  <button
+    *ngIf="this.data.mode"
+    mat-button
+    class="message-button"
+    (click)="this.sendMessage()"
+  >
+    {{ 'text.adminPanel.modal.messageDetail.reply' | translate }}
+  </button>
 </div>

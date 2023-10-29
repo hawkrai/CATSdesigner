@@ -8,38 +8,36 @@ File: Main Css File
 */
 
 //Fonts
-@import "custom/fonts/fonts";
+@import 'custom/fonts/fonts';
 
 //Core files
-@import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/variables";
-@import "variables";
-@import "node_modules/bootstrap/scss/mixins.scss";
-@import "./bootstrap.scss";
+@import 'node_modules/bootstrap/scss/functions';
+@import 'node_modules/bootstrap/scss/variables';
+@import 'variables';
+@import 'node_modules/bootstrap/scss/mixins.scss';
+@import './bootstrap.scss';
 
 // Components
-@import "custom/components/waves";
-@import "custom/components/avatar";
-@import "custom/components/helper";
-@import "custom/components/accordion";
-@import "custom/components/forms";
-
+@import 'custom/components/waves';
+@import 'custom/components/avatar';
+@import 'custom/components/helper';
+@import 'custom/components/accordion';
+@import 'custom/components/forms';
 
 // Plugins
-@import "custom/plugins/custom-scrollbar";
-@import "custom/plugins/carousel";
+@import 'custom/plugins/custom-scrollbar';
+@import 'custom/plugins/carousel';
 
 // structure
-@import "custom/structure/sidemenu";
+@import 'custom/structure/sidemenu';
 
 // Pages
-@import "custom/pages/chat-leftsidebar";
-@import "custom/pages/user-chat";
-@import "custom/pages/user-profile-details";
-@import "custom/pages/authentication";
+@import 'custom/pages/chat-leftsidebar';
+@import 'custom/pages/user-chat';
+@import 'custom/pages/user-profile-details';
+@import 'custom/pages/authentication';
 
-@import "./icons.scss";
-
+@import './icons.scss';
 
 // @import "custom/rtl/general-rtl";
 // @import "custom/rtl/bootstrap-rtl";

@@ -1,21 +1,19 @@
-import {HttpParameterCodec} from "@angular/common/http";
+import { HttpParameterCodec } from '@angular/common/http'
 
 export class CustomEncoder implements HttpParameterCodec {
+  public encodeKey(key: string): string {
+    return encodeURIComponent(key)
+  }
 
-    public encodeKey(key: string): string {
-        return encodeURIComponent(key);
-    }
+  public encodeValue(value: string): string {
+    return encodeURIComponent(value)
+  }
 
-    public encodeValue(value: string): string {
-        return encodeURIComponent(value);
-    }
+  public decodeKey(key: string): string {
+    return decodeURIComponent(key)
+  }
 
-    public decodeKey(key: string): string {
-        return decodeURIComponent(key);
-    }
-
-    public decodeValue(value: string): string {
-        return decodeURIComponent(value);
-    }
-
+  public decodeValue(value: string): string {
+    return decodeURIComponent(value)
+  }
 }

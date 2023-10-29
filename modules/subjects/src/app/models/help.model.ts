@@ -1,4 +1,4 @@
 export class Help {
-  message: string;
-  action: string;
+  message: string
+  action: string
 }

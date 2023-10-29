@@ -1,60 +1,136 @@
 <div class="app-component" *ngIf="diplomUser">
   <div class="mdc-tab-bar" role="tablist">
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 1"
-      (click)="onChangeTab(1)">
+    <button
+      class="mdc-tab"
+      role="tab"
+      aria-selected="true"
+      tabindex="0"
+      [class.mdc-tab--active]="tab === 1"
+      (click)="onChangeTab(1)"
+    >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.projectsThemes'
-          | translate: 'Темы проектов'}}</span>
+        <span class="mdc-tab__text-label">{{
+          'text.diplomProject.tab.projectsThemes' | translate: 'Темы проектов'
+        }}</span>
       </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 1">
-        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      <span
+        class="mdc-tab-indicator"
+        [class.mdc-tab-indicator--active]="tab === 1"
+      >
+        <span
+          class="
+            mdc-tab-indicator__content mdc-tab-indicator__content--underline
+          "
+        ></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 2"
-      (click)="onChangeTab(2)">
+    <button
+      class="mdc-tab"
+      role="tab"
+      aria-selected="true"
+      tabindex="0"
+      [class.mdc-tab--active]="tab === 2"
+      (click)="onChangeTab(2)"
+    >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.taskSheet'
-          | translate: 'Лист задания'}}</span>
+        <span class="mdc-tab__text-label">{{
+          'text.diplomProject.tab.taskSheet' | translate: 'Лист задания'
+        }}</span>
       </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 2">
-        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      <span
+        class="mdc-tab-indicator"
+        [class.mdc-tab-indicator--active]="tab === 2"
+      >
+        <span
+          class="
+            mdc-tab-indicator__content mdc-tab-indicator__content--underline
+          "
+        ></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 3"
-      (click)="onChangeTab(3)">
+    <button
+      class="mdc-tab"
+      role="tab"
+      aria-selected="true"
+      tabindex="0"
+      [class.mdc-tab--active]="tab === 3"
+      (click)="onChangeTab(3)"
+    >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.percentages'
-          | translate: 'График процентовки'}}</span>
+        <span class="mdc-tab__text-label">{{
+          'text.diplomProject.tab.percentages' | translate: 'График процентовки'
+        }}</span>
       </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 3">
-        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      <span
+        class="mdc-tab-indicator"
+        [class.mdc-tab-indicator--active]="tab === 3"
+      >
+        <span
+          class="
+            mdc-tab-indicator__content mdc-tab-indicator__content--underline
+          "
+        ></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab icon-button" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 4"
-      (click)="onChangeTab(4)">
+    <button
+      class="mdc-tab icon-button"
+      role="tab"
+      aria-selected="true"
+      tabindex="0"
+      [class.mdc-tab--active]="tab === 4"
+      (click)="onChangeTab(4)"
+    >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.percentageResults'
-          | translate: 'Результаты процентовки'}}</span>
+        <span class="mdc-tab__text-label">{{
+          'text.diplomProject.tab.percentageResults'
+            | translate: 'Результаты процентовки'
+        }}</span>
       </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 4">
-        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      <span
+        class="mdc-tab-indicator"
+        [class.mdc-tab-indicator--active]="tab === 4"
+      >
+        <span
+          class="
+            mdc-tab-indicator__content mdc-tab-indicator__content--underline
+          "
+        ></span>
       </span>
       <button mat-icon-button color="primary">
-        <span class="iconify" data-icon="mdi-folder-download" data-inline="false"></span>
+        <span
+          class="iconify"
+          data-icon="mdi-folder-download"
+          data-inline="false"
+        ></span>
       </button>
       <span class="mdc-tab__ripple"></span>
     </button>
-    <button class="mdc-tab" role="tab" aria-selected="true" tabindex="0" [class.mdc-tab--active]="tab === 5"
-      (click)="onChangeTab(5)">
+    <button
+      class="mdc-tab"
+      role="tab"
+      aria-selected="true"
+      tabindex="0"
+      [class.mdc-tab--active]="tab === 5"
+      (click)="onChangeTab(5)"
+    >
       <span class="mdc-tab__content">
-        <span class="mdc-tab__text-label">{{'text.diplomProject.tab.consultationsVisiting'
-          | translate: 'Посещение консультаций'}}</span>
+        <span class="mdc-tab__text-label">{{
+          'text.diplomProject.tab.consultationsVisiting'
+            | translate: 'Посещение консультаций'
+        }}</span>
       </span>
-      <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="tab === 5">
-        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+      <span
+        class="mdc-tab-indicator"
+        [class.mdc-tab-indicator--active]="tab === 5"
+      >
+        <span
+          class="
+            mdc-tab-indicator__content mdc-tab-indicator__content--underline
+          "
+        ></span>
       </span>
       <span class="mdc-tab__ripple"></span>
     </button>
@@ -81,9 +157,21 @@
       </div>
     </div> -->
     <app-projects *ngIf="tab === 1" [diplomUser]="diplomUser"></app-projects>
-    <app-task-sheet *ngIf="tab === 2" [diplomUser]="diplomUser"></app-task-sheet>
-    <app-percentages *ngIf="tab === 3" [diplomUser]="diplomUser"></app-percentages>
-    <app-percentage-results *ngIf="tab === 4" [diplomUser]="diplomUser"></app-percentage-results>
-    <app-visit-stats *ngIf="tab === 5" [diplomUser]="diplomUser"></app-visit-stats>
+    <app-task-sheet
+      *ngIf="tab === 2"
+      [diplomUser]="diplomUser"
+    ></app-task-sheet>
+    <app-percentages
+      *ngIf="tab === 3"
+      [diplomUser]="diplomUser"
+    ></app-percentages>
+    <app-percentage-results
+      *ngIf="tab === 4"
+      [diplomUser]="diplomUser"
+    ></app-percentage-results>
+    <app-visit-stats
+      *ngIf="tab === 5"
+      [diplomUser]="diplomUser"
+    ></app-visit-stats>
   </div>
 </div>

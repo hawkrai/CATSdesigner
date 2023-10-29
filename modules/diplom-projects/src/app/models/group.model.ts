@@ -1,4 +1,4 @@
 export class Group {
-  Id: string;
-  Name: string;
+  Id: string
+  Name: string
 }

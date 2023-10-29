@@ -1,35 +1,57 @@
 <app-popover-dialog *var="files$ | async as files">
   <ng-container title>
-    {{data.title}}
+    {{ data.title }}
   </ng-container>
   <ng-container body>
     <form class="form" [formGroup]="newsForm">
       <mat-form-field class="full-width">
-        <mat-label>{{'text.subjects.news.title' | translate:'Название новости'}}</mat-label>
-        <input matInput placeholder="Название" formControlName="title">
+        <mat-label>{{
+          'text.subjects.news.title' | translate: 'Название новости'
+        }}</mat-label>
+        <input matInput placeholder="Название" formControlName="title" />
       </mat-form-field>
-      <mat-label>{{'text.subjects.news.text' | translate:'Текст новости'}}</mat-label>
-      <ckeditor formControlName="body" [editor]="Editor" style="overflow: hidden;"></ckeditor>
+      <mat-label>{{
+        'text.subjects.news.text' | translate: 'Текст новости'
+      }}</mat-label>
+      <ckeditor
+        formControlName="body"
+        [editor]="Editor"
+        style="overflow: hidden"
+      ></ckeditor>
 
       <div class="form-container form-container__column">
         <mat-checkbox formControlName="isOldDate" [color]="'primary'">
-          {{'text.subjects.news.date.leave' | translate:'Оставить старую дату новости'}}
+          {{
+            'text.subjects.news.date.leave'
+              | translate: 'Оставить старую дату новости'
+          }}
         </mat-checkbox>
         <mat-checkbox formControlName="disabled" [color]="'primary'">
-          {{'text.subjects.news.hide' | translate:'Скрыть новость'}}
+          {{ 'text.subjects.news.hide' | translate: 'Скрыть новость' }}
         </mat-checkbox>
       </div>
-      <app-file-uploader [header]="'text.subjects.attachments.material' | translate:'Прикрепленный материал'" (delete)="deleteFile($event)" [files]="filesArray.value" (upload)="uploadFile($event)"></app-file-uploader>
+      <app-file-uploader
+        [header]="
+          'text.subjects.attachments.material'
+            | translate: 'Прикрепленный материал'
+        "
+        (delete)="deleteFile($event)"
+        [files]="filesArray.value"
+        (upload)="uploadFile($event)"
+      ></app-file-uploader>
     </form>
   </ng-container>
   <ng-container actions>
-    <button mat-raised-button (click)="onClose(false)">{{'button.cancel' | translate:'Отмена'}}</button>
-    <button mat-raised-button
-            (click)="onSave()"
-            color="primary"
-            [disabled]="newsForm.invalid"
+    <button mat-raised-button (click)="onClose(false)">
+      {{ 'button.cancel' | translate: 'Отмена' }}
+    </button>
+    <button
+      mat-raised-button
+      (click)="onSave()"
+      color="primary"
+      [disabled]="newsForm.invalid"
     >
-      {{data.buttonText}}
+      {{ data.buttonText }}
     </button>
   </ng-container>
 </app-popover-dialog>

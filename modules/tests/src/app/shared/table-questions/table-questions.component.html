@@ -3,32 +3,57 @@
     <mat-table [dataSource]="questions" class="mat-elevation-z8 table-test-bg">
       <!-- Position Column -->
       <ng-container matColumnDef="Id">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-id"> №</mat-header-cell>
-        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id"> {{index+1}}</mat-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-id">
+          №</mat-header-cell
+        >
+        <mat-cell *matCellDef="let index = index" class="mat-header-cell-id">
+          {{ index + 1 }}</mat-cell
+        >
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="Title">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description"> {{'text.test.question' | translate: 'Вопрос'}}</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="mat-header-cell-description"> {{element.Title}}</mat-cell>
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-description">
+          {{ 'text.test.question' | translate: 'Вопрос' }}</mat-header-cell
+        >
+        <mat-cell *matCellDef="let element" class="mat-header-cell-description">
+          {{ element.Title }}</mat-cell
+        >
       </ng-container>
 
       <!-- Weight Column -->
       <ng-container matColumnDef="action">
-        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action"> {{'text.test.action' | translate: 'Действие'}}</mat-header-cell>
-        <mat-cell *matCellDef="let element; let ind = index" class="mat-header-cell-action">
-          <mat-icon (click)="openEditPopup(element.Id, ind)" color="primary" class="table-question-icon"
-                    [matTooltip]="'text.test.edit.question' | translate : 'Редактировать вопрос'"
-                    matTooltipClass="example-tooltip-blue">edit
+        <mat-header-cell *matHeaderCellDef class="mat-header-cell-action">
+          {{ 'text.test.action' | translate: 'Действие' }}</mat-header-cell
+        >
+        <mat-cell
+          *matCellDef="let element; let ind = index"
+          class="mat-header-cell-action"
+        >
+          <mat-icon
+            (click)="openEditPopup(element.Id, ind)"
+            color="primary"
+            class="table-question-icon"
+            [matTooltip]="
+              'text.test.edit.question' | translate: 'Редактировать вопрос'
+            "
+            matTooltipClass="example-tooltip-blue"
+            >edit
           </mat-icon>
-          <mat-icon (click)="deleteQuestion(element.Id)" color="primary" [matTooltip]="'text.test.delete.question' | translate : 'Удалить вопрос'"
-                    matTooltipClass="example-tooltip-blue">delete
+          <mat-icon
+            (click)="deleteQuestion(element.Id)"
+            color="primary"
+            [matTooltip]="
+              'text.test.delete.question' | translate: 'Удалить вопрос'
+            "
+            matTooltipClass="example-tooltip-blue"
+            >delete
           </mat-icon>
         </mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
   </div>
 </ng-container>
@@ -39,7 +64,8 @@
         <mat-progress-bar
           class="example-margin"
           [color]="'primary'"
-          [mode]="'indeterminate'">
+          [mode]="'indeterminate'"
+        >
         </mat-progress-bar>
       </section>
     </mat-card-content>

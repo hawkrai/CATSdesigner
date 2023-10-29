@@ -20,7 +20,7 @@ table {
 th.mat-header-cell,
 td.mat-cell {
   text-align: center;
-  border: 1px solid #CCC;
+  border: 1px solid #ccc;
   padding: 0 !important;
 }
 
@@ -36,7 +36,7 @@ td.mat-cell {
   float: left;
   height: 400px;
   width: 400px;
-  box-shadow: 5px 5px 5px rgba(187,187,187,0.25);
+  box-shadow: 5px 5px 5px rgba(187, 187, 187, 0.25);
   border: 1px solid aliceblue;
   margin-bottom: 30px;
 }
@@ -44,5 +44,3 @@ td.mat-cell {
   width: 50%;
   margin-left: 20%;
 }
-
-

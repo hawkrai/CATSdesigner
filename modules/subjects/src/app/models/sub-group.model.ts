@@ -1,6 +1,6 @@
 export class SubGroup {
-    Id: number;
-    Name: string;
-    SubjectGroupId: number;
-    SubGroupValue: number;
+  Id: number
+  Name: string
+  SubjectGroupId: number
+  SubGroupValue: number
 }

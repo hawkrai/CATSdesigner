@@ -1,13 +1,18 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter } from '@angular/material';
-import { FormControl, Validators } from '@angular/forms';
-
+import { Component, Inject } from '@angular/core'
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MAT_DATE_LOCALE,
+  MAT_DATE_FORMATS,
+  DateAdapter,
+} from '@angular/material'
+import { FormControl, Validators } from '@angular/forms'
 
 interface DialogData {
-  title: string;
-  name: string;
-  percentage: number;
-  date: any;
+  title: string
+  name: string
+  percentage: number
+  date: any
 }
 
 export const MY_FORMATS = {
@@ -20,7 +25,7 @@ export const MY_FORMATS = {
     dateA11yLabel: 'LL',
     monthYearA11yLabel: 'YYYY',
   },
-};
+}
 
 @Component({
   selector: 'app-add-stage-dialog',
@@ -32,38 +37,51 @@ export const MY_FORMATS = {
   ],
 })
 export class AddStageDialogComponent {
+  private nameControl: FormControl = new FormControl(this.data.name, [
+    Validators.minLength(3),
+    Validators.maxLength(100),
+    Validators.required,
+    this.noWhitespaceValidator,
+  ])
 
-  private nameControl: FormControl = new FormControl(this.data.name,
-    [Validators.minLength(3), Validators.maxLength(100), Validators.required, this.noWhitespaceValidator]);
+  private percentageControl: FormControl = new FormControl(
+    this.data.percentage,
+    [
+      Validators.min(0),
+      Validators.max(100),
+      Validators.pattern('^\\d*$'),
+      Validators.required,
+    ]
+  )
 
-  private percentageControl: FormControl = new FormControl(this.data.percentage,
-    [Validators.min(0), Validators.max(100), Validators.pattern('^\\d*$'), Validators.required]);
+  private dateControl = new FormControl(
+    this.data.date != null ? new Date(this.data.date) : new Date()
+  )
 
-  private dateControl = new FormControl(this.data.date != null ? new Date(this.data.date) : new Date());
-
-  constructor(public dialogRef: MatDialogRef<AddStageDialogComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<AddStageDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    dateAdapter: DateAdapter<any>) {
-      dateAdapter.setLocale(localStorage.getItem("locale") || "ru");
-    this.data.date = this.dateControl.value;
-      }
+    dateAdapter: DateAdapter<any>
+  ) {
+    dateAdapter.setLocale(localStorage.getItem('locale') || 'ru')
+    this.data.date = this.dateControl.value
+  }
 
   onDateChange(date: any) {
-    this.data.date = date;
+    this.data.date = date
   }
 
   onCancelClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close()
   }
 
   close(): void {
-    this.dialogRef.close();
+    this.dialogRef.close()
   }
 
   public noWhitespaceValidator(control: FormControl) {
-    const isWhitespace = (control.value || '').trim().length === 0;
-    const isValid = !isWhitespace;
-    return isValid ? null : { whitespace: true };
+    const isWhitespace = (control.value || '').trim().length === 0
+    const isValid = !isWhitespace
+    return isValid ? null : { whitespace: true }
   }
-
 }

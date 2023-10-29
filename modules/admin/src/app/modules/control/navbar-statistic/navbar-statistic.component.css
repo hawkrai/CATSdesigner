@@ -1,12 +1,12 @@
 .main-button {
-    margin-left: 10px;
-    margin-right: 20px;
+  margin-left: 10px;
+  margin-right: 20px;
 }
 
 .mat-button {
-    text-decoration: none;
-    color: white;
-    font-size: 14px;
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
 }
 
 .mat-icon-button {
@@ -16,72 +16,72 @@
 }
 
 .nav-flex {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .mat-icon.icon {
-    color: white;
-    vertical-align: bottom;
-    margin-right: 0px;
-    padding-bottom: 12px;
+  color: white;
+  vertical-align: bottom;
+  margin-right: 0px;
+  padding-bottom: 12px;
 }
 
 button.mat-menu-item {
-    font-size: 14px;
-    color: white;
+  font-size: 14px;
+  color: white;
 }
 
 .mat-menu-item:hover {
-    background: #9a82d2;
+  background: #9a82d2;
 }
 
 .material-icons {
-    color: white;
-    font-size: 28px;
-    border-top: 20px;
-    margin-right: 3px;
+  color: white;
+  font-size: 28px;
+  border-top: 20px;
+  margin-right: 3px;
 }
 
 .main-icon {
-    vertical-align: bottom;
-    padding-bottom: 10px;
-    font-size: 28px;
+  vertical-align: bottom;
+  padding-bottom: 10px;
+  font-size: 28px;
 }
 
 a {
-    text-decoration: none;
-    color: white;
+  text-decoration: none;
+  color: white;
 }
 
 a:hover,
 a:active {
-    color: lightgray;
+  color: lightgray;
 }
 
 .navigation-items {
-    list-style-type: none;
-    padding: 0;
-    margin: 100px;
+  list-style-type: none;
+  padding: 0;
+  margin: 100px;
 }
 
 /deep/ .mat-menu-content {
-    background-color: #673ab7;
+  background-color: #673ab7;
 }
 
 mat-toolbar {
-    margin-top: -8px;
-    border-radius: 0px;
-    background-color: #673ab7;
-    box-sizing: content-box;
-    position: relative;
-    margin-left: -24px;
-    overflow: hidden;
+  margin-top: -8px;
+  border-radius: 0px;
+  background-color: #673ab7;
+  box-sizing: content-box;
+  position: relative;
+  margin-left: -24px;
+  overflow: hidden;
 }
 
 .spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
 }

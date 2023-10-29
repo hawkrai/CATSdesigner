@@ -31,12 +31,11 @@
               "projects/translate/tsconfig.lib.json",
               "projects/translate/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "translate"
 }

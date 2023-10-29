@@ -1,9 +1,14 @@
-import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { CoreService } from '../services/core.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AuthenticationService } from '../services/auth.service';
+import { Injectable } from '@angular/core'
+import {
+  Router,
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from '@angular/router'
+import { CoreService } from '../services/core.service'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { AuthenticationService } from '../services/auth.service'
 
 @Injectable()
 export class UserLecturerGuard implements CanActivate {
@@ -12,17 +17,18 @@ export class UserLecturerGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) : Observable<boolean> | boolean {
-
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | boolean {
     return this.authService.currentUser.pipe(
-        map((user) => {
-            const isLector = user.role === 'lector';
-            if (!isLector) {
-              this.router.navigateByUrl('/web');
-            }
-            return isLector;
-        })
-    );
+      map((user) => {
+        const isLector = user.role === 'lector'
+        if (!isLector) {
+          this.router.navigateByUrl('/web')
+        }
+        return isLector
+      })
+    )
   }
-
 }

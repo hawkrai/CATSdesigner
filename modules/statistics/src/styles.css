@@ -4,9 +4,8 @@
 @import '~educats-common/assets/styles/angular-calendar.css';
 @import '~educats-common/assets/styles/flatpickr.css';
 @import '~educats-common/index.css';
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 .mat-tab-label.mat-tab-label-active {
-  color: #3F51B5;
+  color: #3f51b5;
 }

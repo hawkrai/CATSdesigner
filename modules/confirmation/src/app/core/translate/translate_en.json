@@ -1,11 +1,11 @@
 {
-    "students.search": "Search for students",
-    "student": "Student",
-    "confirm": "Confirm",
-    "block": "Block access",
-    "no-data": "No data matching the filter",
-    "confirmation.title": "Students confirmation",
-    "new.students": "New students",
-    "confirm.at": "Date, time confirmation",
-    "confirm.by": "Lector"
+  "students.search": "Search for students",
+  "student": "Student",
+  "confirm": "Confirm",
+  "block": "Block access",
+  "no-data": "No data matching the filter",
+  "confirmation.title": "Students confirmation",
+  "new.students": "New students",
+  "confirm.at": "Date, time confirmation",
+  "confirm.by": "Lector"
 }

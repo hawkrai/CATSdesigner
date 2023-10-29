@@ -1,39 +1,78 @@
-<mat-spinner *ngIf="isLoadActive" diameter="150" mode="indeterminate" color="primary" class="spinner">
+<mat-spinner
+  *ngIf="isLoadActive"
+  diameter="150"
+  mode="indeterminate"
+  color="primary"
+  class="spinner"
+>
 </mat-spinner>
 
 <div *ngIf="!isLoadActive">
-  <div class="schedule" [ngStyle]="{ 'width': scheduleWidth}">
-    <div class="row text-center" style="margin-right: 0px;">
+  <div class="schedule" [ngStyle]="{ width: scheduleWidth }">
+    <div class="row text-center" style="margin-right: 0px">
       <div class="col-md-4" style="margin-top: 33px">
         <h3
-          style="font-size: 16px;color: #808080;font-family: Roboto, Helvetica Neue, sans-serif;">{{ viewDate | calendarDate:(view + 'ViewTitle'):locale: 1 }}</h3>
+          style="
+            font-size: 16px;
+            color: #808080;
+            font-family: Roboto, Helvetica Neue, sans-serif;
+          "
+        >
+          {{ viewDate | calendarDate: view + 'ViewTitle':locale:1 }}
+        </h3>
       </div>
-      <div class="col-md-4" style="margin-top: 24px;font-family: Roboto, Helvetica Neue, sans-serif; align-items: center;">
-        <div style="display:inline-block"><h6 style="color:#3F51B5;font-size: 1.5rem;">{{'text.schedule'| translate: 'Расписание занятий'}}</h6></div>
+      <div
+        class="col-md-4"
+        style="
+          margin-top: 24px;
+          font-family: Roboto, Helvetica Neue, sans-serif;
+          align-items: center;
+        "
+      >
+        <div style="display: inline-block">
+          <h6 style="color: #3f51b5; font-size: 1.5rem">
+            {{ 'text.schedule' | translate: 'Расписание занятий' }}
+          </h6>
+        </div>
       </div>
-      <div class="col-md-4" style="margin-top: 17px;margin-bottom: 1%;padding-right: 0px">
-        <div class="btn-group" style="line-height: 0; justify-content: space-between;">
-          <div class="container-date" style="display: flex;">
+      <div
+        class="col-md-4"
+        style="margin-top: 17px; margin-bottom: 1%; padding-right: 0px"
+      >
+        <div
+          class="btn-group"
+          style="line-height: 0; justify-content: space-between"
+        >
+          <div class="container-date" style="display: flex">
             <div
-              style="color: #3F51B5;cursor: pointer; "
+              style="color: #3f51b5; cursor: pointer"
               class="btn btn-light"
               mwlCalendarPreviousView
               [view]="view"
               [(viewDate)]="viewDate"
               (viewDateChange)="closeOpenMonthViewDay()"
               (click)="changeDate()"
-            >&lt;
+            >
+              &lt;
             </div>
             <div
-              style="margin-left: -5px; padding-top: 10px; font-size: 16px; background-color: #f8f9fa; cursor: pointer;font-family:Roboto, Helvetica Neue, sans-serif; color: #808080"
+              style="
+                margin-left: -5px;
+                padding-top: 10px;
+                font-size: 16px;
+                background-color: #f8f9fa;
+                cursor: pointer;
+                font-family: Roboto, Helvetica Neue, sans-serif;
+                color: #808080;
+              "
               class="btn"
               mwlCalendarToday
               [(viewDate)]="viewDate"
             >
-              {{'text.schedule.today'| translate: 'Сегодня'}}
+              {{ 'text.schedule.today' | translate: 'Сегодня' }}
             </div>
             <div
-              style="color: #3F51B5; cursor: pointer; margin-left: -5px;"
+              style="color: #3f51b5; cursor: pointer; margin-left: -5px"
               class="btn btn-light"
               mwlCalendarNextView
               [view]="view"
@@ -44,19 +83,68 @@
               >
             </div>
           </div>
-          <div *ngIf="!isStudent" style="display:inline-block; padding-top: 0px;"><button mat-icon-button #helpButton class="mat-icon-button-help" [matTooltip]="'text.help' | translate : 'Помощь'" (click)="showHelp()">
-            <mat-icon style="color: #3F51B5;">help_outline</mat-icon>
-          </button></div>
-          <button [matTooltip]="'text.statistic.help' | translate : 'Статистика учебной нагрузки'" style = "color: #3F51B5;" mat-icon-button [disabled] ="events.length == 0" (click)="this.openStatisitcs()"><mat-icon>bar_chart</mat-icon></button>
-          <div *ngIf="hideButton.length != 0" style="margin-left: 5%; margin-top: 18px; display: flex" class="desktopNews">
-            <p matTooltipClass="example-tooltip-blue" (click)="hideNews()"
-               style="cursor: pointer;background-color:white;font-size: 24px;color: #3F51B5">{{hideButton}}</p>
-            <p style = "float: left; font-family:Roboto, Helvetica Neue, sans-serif; color: #808080; padding-top: 3px;"> {{'text.schedule.news'| translate: 'Новости'}}</p>
+          <div
+            *ngIf="!isStudent"
+            style="display: inline-block; padding-top: 0px"
+          >
+            <button
+              mat-icon-button
+              #helpButton
+              class="mat-icon-button-help"
+              [matTooltip]="'text.help' | translate: 'Помощь'"
+              (click)="showHelp()"
+            >
+              <mat-icon style="color: #3f51b5">help_outline</mat-icon>
+            </button>
+          </div>
+          <button
+            [matTooltip]="
+              'text.statistic.help' | translate: 'Статистика учебной нагрузки'
+            "
+            style="color: #3f51b5"
+            mat-icon-button
+            [disabled]="events.length == 0"
+            (click)="this.openStatisitcs()"
+          >
+            <mat-icon>bar_chart</mat-icon>
+          </button>
+          <div
+            *ngIf="hideButton.length != 0"
+            style="margin-left: 5%; margin-top: 18px; display: flex"
+            class="desktopNews"
+          >
+            <p
+              matTooltipClass="example-tooltip-blue"
+              (click)="hideNews()"
+              style="
+                cursor: pointer;
+                background-color: white;
+                font-size: 24px;
+                color: #3f51b5;
+              "
+            >
+              {{ hideButton }}
+            </p>
+            <p
+              style="
+                float: left;
+                font-family: Roboto, Helvetica Neue, sans-serif;
+                color: #808080;
+                padding-top: 3px;
+              "
+            >
+              {{ 'text.schedule.news' | translate: 'Новости' }}
+            </p>
           </div>
         </div>
       </div>
     </div>
-    <div *ngIf="!isMobile()" class="deskShedular" style="margin-bottom: 2px" [ngSwitch]="view">
+    <div
+      *ngIf="!isMobile()"
+      class="deskShedular"
+      style="margin-bottom: 2px"
+      [ngSwitch]="view"
+    >
       <mwl-calendar-week-view
         *ngSwitchCase="CalendarView.Week"
         [locale]="locale"
@@ -97,77 +185,252 @@
         <div *ngIf="lessonservice.isLesson(event)">
           <table style="margin: 0 4%">
             <thead>
-            <tr>
-              <div style="display: flex;justify-content: space-between;margin-top: 10px;">
-                <h6
-                  style="background: #3F51B5;-webkit-background-clip: text;-webkit-text-fill-color:
-                          transparent;font-size: 12px; left: 0%; float: left;font-family: Roboto, Helvetica Neue, sans-serif">
-                  {{lessonservice.getTitelPart(event.title, 0)}}</h6>
-                <p
-                  style="padding-top: 1px; margin-bottom: 10px;font-family: Roboto, Helvetica Neue, sans-serif;
-                        line-height: 100%;font-size: 12px;float:right;color: #808080">{{lessonservice.getLocation(event.title)}}</p>
-              </div>
-            </tr>
-            <tr>
-              <div style="display: flex;justify-content: space-between;">
-                <h6 matTooltip="{{getToolTip(event?.title)}}" matTooltipClass="example-tooltip-blue"
+              <tr>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 10px;
+                  "
+                >
+                  <h6
+                    style="
+                      background: #3f51b5;
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                      font-size: 12px;
+                      left: 0%;
+                      float: left;
+                      font-family: Roboto, Helvetica Neue, sans-serif;
+                    "
+                  >
+                    {{ lessonservice.getTitelPart(event.title, 0) }}
+                  </h6>
+                  <p
+                    style="
+                      padding-top: 1px;
+                      margin-bottom: 10px;
+                      font-family: Roboto, Helvetica Neue, sans-serif;
+                      line-height: 100%;
+                      font-size: 12px;
+                      float: right;
+                      color: #808080;
+                    "
+                  >
+                    {{ lessonservice.getLocation(event.title) }}
+                  </p>
+                </div>
+              </tr>
+              <tr>
+                <div style="display: flex; justify-content: space-between">
+                  <h6
+                    matTooltip="{{ getToolTip(event?.title) }}"
+                    matTooltipClass="example-tooltip-blue"
                     (click)="rerouteToSubject(event.title)"
-                    style="margin-top: 3px;cursor: pointer; left: 0%;font-size: 14px; color: black; float: left; color: #383838; font-family: Roboto, Helvetica Neue, sans-serif;">{{lessonservice.getTitelPart(event.title,  3)}}</h6>
-                <h6
-                  style="padding: 3px 8px; font-family: Roboto, Helvetica Neue, sans-serif; overflow: hidden;font-size: 12px;float:right;border-style: solid; border-width: 1px;border-color: #3f51b55e; color: #3F51B5">{{lessonservice.getType(event.title)}}</h6>
+                    style="
+                      margin-top: 3px;
+                      cursor: pointer;
+                      left: 0%;
+                      font-size: 14px;
+                      color: black;
+                      float: left;
+                      color: #383838;
+                      font-family: Roboto, Helvetica Neue, sans-serif;
+                    "
+                  >
+                    {{ lessonservice.getTitelPart(event.title, 3) }}
+                  </h6>
+                  <h6
+                    style="
+                      padding: 3px 8px;
+                      font-family: Roboto, Helvetica Neue, sans-serif;
+                      overflow: hidden;
+                      font-size: 12px;
+                      float: right;
+                      border-style: solid;
+                      border-width: 1px;
+                      border-color: #3f51b55e;
+                      color: #3f51b5;
+                    "
+                  >
+                    {{ lessonservice.getType(event.title) }}
+                  </h6>
+                </div>
+              </tr>
+              <tr>
+                <div style="display: flex; justify-content: space-between">
+                  <p
+                    style="
+                      margin-top: 3px;
+                      font-family: Roboto, Helvetica Neue, sans-serif;
+                      white-space: pre-wrap;
+                      font-size: 12px;
+                      color: #808080;
+                      line-height: 100%;
+                    "
+                  >
+                    {{ lessonservice.getTitelPart(event.title, 5) }}
+                  </p>
+                  <button
+                    style="
+                      color: #383838;
+                      padding: 0px;
+                      outline: none;
+                      min-width: 20px;
+                      margin-top: -6px;
+                      float: right;
+                      background: white;
+                      border-width: 0px;
+                    "
+                    mat-button
+                    [matMenuTriggerFor]="menu"
+                  >
+                    &bull;&bull;&bull;
+                    <mat-menu #menu="matMenu">
+                      <button
+                        style="outline: none"
+                        (click)="changeLesson(event)"
+                        mat-menu-item
+                      >
+                        <mat-icon>edit</mat-icon
+                        ><span>{{
+                          'button.edit' | translate: 'Редактировать'
+                        }}</span>
+                      </button>
+                      <button
+                        [disabled]="isStudent"
+                        style="outline: none"
+                        (click)="deleteEvent(event)"
+                        mat-menu-item
+                      >
+                        <mat-icon>delete</mat-icon
+                        ><span>{{
+                          'button.delete' | translate: 'Удалить'
+                        }}</span>
+                      </button>
+                    </mat-menu>
+                  </button>
+                </div>
+              </tr>
+              <div *ngIf="lessonservice.getMemo(event.title)">
+                <p
+                  style="
+                    padding-top: 5px;
+                    font-family: Roboto, Helvetica Neue sans-serif;
+                    border-top: 1px double silver;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    color: #808080;
+                    line-height: 100%;
+                    white-space: pre-wrap;
+                  "
+                >
+                  {{ lessonservice.getMemo(event.title) }}
+                </p>
               </div>
-            </tr>
-            <tr>
-              <div style="display: flex;justify-content: space-between;">
-                <p style="margin-top: 3px ; font-family: Roboto, Helvetica Neue,
-                          sans-serif; white-space: pre-wrap; font-size: 12px;color: #808080; line-height: 100%; ">{{lessonservice.getTitelPart(event.title, 5)}}</p>
-                <button
-                  style="color: #383838; padding: 0px; outline: none; min-width: 20px; margin-top: -6px;float: right;background: white;border-width: 0px"
-                  mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
-                  <mat-menu #menu="matMenu">
-                    <button style="outline: none;" (click)="changeLesson(event)" mat-menu-item><mat-icon>edit</mat-icon><span>{{'button.edit'| translate:'Редактировать'}}</span></button>
-                    <button [disabled] = 'isStudent' style="outline: none;" (click)="deleteEvent(event)" mat-menu-item><mat-icon>delete</mat-icon><span>{{'button.delete' | translate: 'Удалить'}}</span></button>
-                  </mat-menu>
-                </button>
-              </div>
-            </tr>
-            <div *ngIf = "lessonservice.getMemo(event.title)">
-              <p style="padding-top: 5px ; font-family: Roboto, Helvetica Neue
-                          sans-serif; border-top: 1px double silver; margin-bottom: 5px; font-size: 12px;color: #808080; line-height: 100%;white-space: pre-wrap ">{{lessonservice.getMemo(event.title)}}</p>
-            </div>
             </thead>
           </table>
         </div>
       </div>
       <div *ngIf="isNote(event)">
-        <div matTooltip="{{event.title}}" matTooltipClass="example-tooltip-blue">
+        <div
+          matTooltip="{{ event.title }}"
+          matTooltipClass="example-tooltip-blue"
+        >
           <table>
             <thead>
-            <tr>
-              <div style="display: flex;justify-content: space-between;margin-top: 17px;">
-                <h6
-                  style="background: #3F51B5;-webkit-background-clip: text;-webkit-text-fill-color:
-                  transparent;font-size: 12px; left: 0%;  float: left;font-family: Roboto, Helvetica Neue, sans-serif">{{getTimeNote(event)}}</h6>
-              </div>
-            </tr>
-            <tr><p
-              style="margin-top: 9px ; margin-bottom: 0px ; padding-bottom: 5px; font-family: Roboto, Helvetica Neue, sans-serif; font-size: 14px;color: #383838; line-height: 100%; white-space: pre-wrap">{{noteService.getTitle(event.title)}}</p>
-            </tr>
-            <tr>
-              <div *ngIf="noteService.getNote(event.title).length != 0">
-                <p style="padding-top: 5px ;margin-bottom: 0px; border-top: 1px double silver; font-family: Roboto, Helvetica Neue, sans-serif; font-size: 12px;color: #383838; line-height: 100%; white-space: pre-wrap">{{noteService.getNote(event.title)}}</p>
-              </div>
-            </tr>
+              <tr>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 17px;
+                  "
+                >
+                  <h6
+                    style="
+                      background: #3f51b5;
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                      font-size: 12px;
+                      left: 0%;
+                      float: left;
+                      font-family: Roboto, Helvetica Neue, sans-serif;
+                    "
+                  >
+                    {{ getTimeNote(event) }}
+                  </h6>
+                </div>
+              </tr>
+              <tr>
+                <p
+                  style="
+                    margin-top: 9px;
+                    margin-bottom: 0px;
+                    padding-bottom: 5px;
+                    font-family: Roboto, Helvetica Neue, sans-serif;
+                    font-size: 14px;
+                    color: #383838;
+                    line-height: 100%;
+                    white-space: pre-wrap;
+                  "
+                >
+                  {{ noteService.getTitle(event.title) }}
+                </p>
+              </tr>
+              <tr>
+                <div *ngIf="noteService.getNote(event.title).length != 0">
+                  <p
+                    style="
+                      padding-top: 5px;
+                      margin-bottom: 0px;
+                      border-top: 1px double silver;
+                      font-family: Roboto, Helvetica Neue, sans-serif;
+                      font-size: 12px;
+                      color: #383838;
+                      line-height: 100%;
+                      white-space: pre-wrap;
+                    "
+                  >
+                    {{ noteService.getNote(event.title) }}
+                  </p>
+                </div>
+              </tr>
             </thead>
           </table>
         </div>
         <div>
-          <button style="color: black; outline: none;line-height: 18px;float: right;background: white;border-width: 0px"
-                  mat-button [matMenuTriggerFor]="menu">&bull;&bull;&bull;
+          <button
+            style="
+              color: black;
+              outline: none;
+              line-height: 18px;
+              float: right;
+              background: white;
+              border-width: 0px;
+            "
+            mat-button
+            [matMenuTriggerFor]="menu"
+          >
+            &bull;&bull;&bull;
           </button>
           <mat-menu #menu="matMenu">
-            <button style="outline: none;" (click)="changeNote(event)" mat-menu-item><mat-icon>edit</mat-icon><span>{{'button.edit'| translate:'Редактировать'}}</span></button>
-            <button style="outline: none;" (click)="deleteEvent(event)" mat-menu-item><mat-icon>delete</mat-icon>{{'button.delete' | translate: 'Удалить'}}</button>
+            <button
+              style="outline: none"
+              (click)="changeNote(event)"
+              mat-menu-item
+            >
+              <mat-icon>edit</mat-icon
+              ><span>{{ 'button.edit' | translate: 'Редактировать' }}</span>
+            </button>
+            <button
+              style="outline: none"
+              (click)="deleteEvent(event)"
+              mat-menu-item
+            >
+              <mat-icon>delete</mat-icon
+              >{{ 'button.delete' | translate: 'Удалить' }}
+            </button>
           </mat-menu>
         </div>
       </div>
@@ -175,31 +438,39 @@
     <ng-template
       #eventTemplateCustom
       let-weekEvent="weekEvent"
-      let-eventClicked="eventClicked">
+      let-eventClicked="eventClicked"
+    >
       <div
         class="cal-event"
-        style="box-shadow: 5px 5px 5px rgba(187,187,187,0.25); overflow: auto; "
-
-        [ngStyle]="{ 'border-left-color': lessonservice.getColorLesson(weekEvent.event)}"
+        style="
+          box-shadow: 5px 5px 5px rgba(187, 187, 187, 0.25);
+          overflow: auto;
+        "
+        [ngStyle]="{
+          'border-left-color': lessonservice.getColorLesson(weekEvent.event)
+        }"
         [style.backgroundColor]="weekEvent.event.color?.primary"
-        (mwlClick)="eventClicked.emit({
-                    event: weekEvent.event,
-                    sourceEvent: weekEvent.event
-                  })">
-        <mwl-calendar-event-actions
-          [event]="weekEvent.event">
+        (mwlClick)="
+          eventClicked.emit({
+            event: weekEvent.event,
+            sourceEvent: weekEvent.event
+          })
+        "
+      >
+        <mwl-calendar-event-actions [event]="weekEvent.event">
         </mwl-calendar-event-actions>
         &ngsp;
         <mwl-calendar-event-title
           [event]="weekEvent.event"
           [customTemplate]="eventTemplate"
-          view="week">
+          view="week"
+        >
         </mwl-calendar-event-title>
       </div>
     </ng-template>
   </div>
 
-  <div class="news" [ngStyle]="{ 'width': newsWidth, 'left':newsLeft}">
+  <div class="news" [ngStyle]="{ width: newsWidth, left: newsLeft }">
     <app-news></app-news>
   </div>
 </div>

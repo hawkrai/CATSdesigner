@@ -1,22 +1,29 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoad" class="spinner" color="primary"></mat-spinner>
+<mat-spinner
+  mode="indeterminate"
+  *ngIf="!this.isLoad"
+  class="spinner"
+  color="primary"
+></mat-spinner>
 <div *ngIf="this.isLoad">
-    <div class="container">
-        <p class="title">{{ "text.adminPanel.modal.statistic.title" | translate }}</p>
-        <button mat-button class="close-icon" [mat-dialog-close]="true">
-          <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <div>
-        <apx-chart
-            [series]="chartOptions.series"
-            [chart]="chartOptions.chart"
-            [xaxis]="chartOptions.xaxis"
-            [yaxis]="chartOptions.yaxis"
-            [dataLabels]="chartOptions.dataLabels"
-            [grid]="chartOptions.grid"
-            [stroke]="chartOptions.stroke"
-            [title]="chartOptions.title"
-            [tooltip]="chartOptions.tooltip"
-        ></apx-chart>
-    </div>
+  <div class="container">
+    <p class="title">
+      {{ 'text.adminPanel.modal.statistic.title' | translate }}
+    </p>
+    <button mat-button class="close-icon" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div>
+    <apx-chart
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [xaxis]="chartOptions.xaxis"
+      [yaxis]="chartOptions.yaxis"
+      [dataLabels]="chartOptions.dataLabels"
+      [grid]="chartOptions.grid"
+      [stroke]="chartOptions.stroke"
+      [title]="chartOptions.title"
+      [tooltip]="chartOptions.tooltip"
+    ></apx-chart>
+  </div>
 </div>

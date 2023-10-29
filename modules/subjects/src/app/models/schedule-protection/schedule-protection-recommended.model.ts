@@ -1,4 +1,4 @@
 export class ScheduleProtectionRecommended {
-    Mark: string;
-    ScheduleProtectionId: number;
+  Mark: string
+  ScheduleProtectionId: number
 }

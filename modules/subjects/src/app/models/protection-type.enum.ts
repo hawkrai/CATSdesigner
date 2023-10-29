@@ -1,4 +1,4 @@
 export enum ProtectionType {
-    Lab,
-    Practical
+  Lab,
+  Practical,
 }

@@ -7,7 +7,7 @@
     (selectedTabChange)="onChange($event)"
     [selectedIndex]="currentTabIndex"
   >
-    <mat-tab [label]="'text.test.theme.test' | translate : 'Темы тестов'">
+    <mat-tab [label]="'text.test.theme.test' | translate: 'Темы тестов'">
       <ng-container *ngIf="currentTabIndex === 0">
         <app-main-page
           [allowChanges]="allowChanges"
@@ -22,12 +22,14 @@
         <div class="container-table-tests">
           <app-main-table-tests
             [title]="
-              'text.tests.for.control' | translate : 'Тесты для контроля знаний'
+              'text.tests.for.control' | translate: 'Тесты для контроля знаний'
             "
             [allowChanges]="true"
             [tests]="knowledgeControlTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog(knowledgeControlTests, $event)"
+            (onOpenAvailabilityPopup)="
+              openAvailabilityDialog(knowledgeControlTests, $event)
+            "
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
           ></app-main-table-tests>
@@ -36,12 +38,14 @@
           <app-main-table-tests
             [title]="
               'text.tests.for.self.control'
-                | translate : 'Тесты для самоконтроля'
+                | translate: 'Тесты для самоконтроля'
             "
             [allowChanges]="true"
             [tests]="selfControlTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog(selfControlTests, $event)"
+            (onOpenAvailabilityPopup)="
+              openAvailabilityDialog(selfControlTests, $event)
+            "
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
             [isAvailabilityShown]="true"
@@ -51,12 +55,14 @@
           <app-main-table-tests
             [title]="
               'text.tests.for.pre.eumk'
-                | translate : 'Предтесты для обучения в ЭУМК'
+                | translate: 'Предтесты для обучения в ЭУМК'
             "
             [allowChanges]="true"
             [tests]="beforeEUMKTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog(beforeEUMKTests, $event)"
+            (onOpenAvailabilityPopup)="
+              openAvailabilityDialog(beforeEUMKTests, $event)
+            "
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
           ></app-main-table-tests>
@@ -64,12 +70,14 @@
         <div class="container-table-tests">
           <app-main-table-tests
             [title]="
-              'text.tests.for.eumk' | translate : 'Тесты для обучения в ЭУМК'
+              'text.tests.for.eumk' | translate: 'Тесты для обучения в ЭУМК'
             "
             [allowChanges]="true"
             [tests]="forEUMKTests"
             (onOpenEditPopup)="openDialog($event)"
-            (onOpenAvailabilityPopup)="openAvailabilityDialog(forEUMKTests, $event)"
+            (onOpenAvailabilityPopup)="
+              openAvailabilityDialog(forEUMKTests, $event)
+            "
             (onNavigateQuestions)="navigateToQuestions($event)"
             (onDeleteTest)="openConfirmationDialog($event)"
           ></app-main-table-tests>
@@ -92,7 +100,7 @@
       </ng-container>
     </mat-tab>
     <mat-tab
-      [label]="'text.test.result.test' | translate : 'Результаты тестировния'"
+      [label]="'text.test.result.test' | translate: 'Результаты тестировния'"
     >
       <app-result-teacher
         *ngIf="currentTabIndex === 1"
@@ -102,7 +110,7 @@
     <mat-tab
       [label]="
         'text.test.control.compleating.test'
-          | translate : 'Мониторинг прохождения тестов'
+          | translate: 'Мониторинг прохождения тестов'
       "
       class="control-compleating"
     >

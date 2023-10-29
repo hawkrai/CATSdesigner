@@ -2,18 +2,52 @@
   <!-- start chat-leftsidebar -->
   <div class="chat-leftsidebar mr-lg-1">
     <!-- Start side-menu nav -->
-    <div class="flex-lg-column my-auto" style="height: 64px;">
-      <ul class="nav nav-pills side-menu-nav justify-content-center" role="tablist">
-        <li class="nav-item" matTooltip="{{'chat.chats'| translate: 'Чаты'}}">
-          <a class="nav-link active" id="pills-chat-tab" (click)="activetab=2" [ngClass]="{'active': activetab === 2}">
-            <mat-icon matBadge={{unreadChat}} [matBadgeHidden]="unreadChat<1" matBadgeOverlap="true"
-              matBadgePosition="above" matBadgeColor="warn" matBadgeSize="small"> chat</mat-icon>
+    <div class="flex-lg-column my-auto" style="height: 64px">
+      <ul
+        class="nav nav-pills side-menu-nav justify-content-center"
+        role="tablist"
+      >
+        <li
+          class="nav-item"
+          matTooltip="{{ 'chat.chats' | translate: 'Чаты' }}"
+        >
+          <a
+            class="nav-link active"
+            id="pills-chat-tab"
+            (click)="activetab = 2"
+            [ngClass]="{ active: activetab === 2 }"
+          >
+            <mat-icon
+              matBadge="{{ unreadChat }}"
+              [matBadgeHidden]="unreadChat < 1"
+              matBadgeOverlap="true"
+              matBadgePosition="above"
+              matBadgeColor="warn"
+              matBadgeSize="small"
+            >
+              chat</mat-icon
+            >
           </a>
         </li>
-        <li class="nav-item" matTooltip="{{'chat.groups'| translate: 'Группы'}}">
-          <a class="nav-link" id="pills-groups-tab" (click)="activetab=3" [ngClass]="{'active': activetab === 3}">
-            <mat-icon matBadge={{unreadGroup}} [matBadgeHidden]="unreadGroup<1" matBadgeOverlap="true"
-              matBadgePosition="above" matBadgeColor="warn" matBadgeSize="small">group</mat-icon>
+        <li
+          class="nav-item"
+          matTooltip="{{ 'chat.groups' | translate: 'Группы' }}"
+        >
+          <a
+            class="nav-link"
+            id="pills-groups-tab"
+            (click)="activetab = 3"
+            [ngClass]="{ active: activetab === 3 }"
+          >
+            <mat-icon
+              matBadge="{{ unreadGroup }}"
+              [matBadgeHidden]="unreadGroup < 1"
+              matBadgeOverlap="true"
+              matBadgePosition="above"
+              matBadgeColor="warn"
+              matBadgeSize="small"
+              >group</mat-icon
+            >
           </a>
         </li>
       </ul>
@@ -22,58 +56,108 @@
 
     <div class="tab-content">
       <!-- Start chats tab-pane -->
-      <div id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab" *ngIf="activetab === 2">
+      <div
+        id="pills-chat"
+        role="tabpanel"
+        aria-labelledby="pills-chat-tab"
+        *ngIf="activetab === 2"
+      >
         <app-chats></app-chats>
       </div>
       <!-- End chats tab-pane -->
 
       <!-- Start groups tab-pane -->
-      <div id="pills-groups" role="tabpanel" aria-labelledby="pills-groups-tab" *ngIf="activetab === 3">
+      <div
+        id="pills-groups"
+        role="tabpanel"
+        aria-labelledby="pills-groups-tab"
+        *ngIf="activetab === 3"
+      >
         <app-groups></app-groups>
       </div>
       <!-- End groups tab-pane -->
     </div>
-
   </div>
 
   <!-- Start User chat -->
   <div class="user-chat w-100" id="chat-room">
-    <div class="d-lg-flex" style="height: 100%;">
-
+    <div class="d-lg-flex" style="height: 100%">
       <!-- start chat conversation section -->
       <div class="w-100">
-        <div class="p-3 p-lg-4 border-bottom" style="padding:0.72rem !important;">
+        <div
+          class="p-3 p-lg-4 border-bottom"
+          style="padding: 0.72rem !important"
+        >
           <div class="row align-items-center">
             <div class="col-sm-4 col-8">
-              <div *ngIf="dataService.activChat" class="media align-items-center" style="width: min-content;">
+              <div
+                *ngIf="dataService.activChat"
+                class="media align-items-center"
+                style="width: min-content"
+              >
                 <div class="d-block d-lg-none mr-2">
-                  <a href="javascript: void(0);" class="user-chat-remove text-muted font-size-16 p-2"
-                    (click)="closeUserChat()">
+                  <a
+                    href="javascript: void(0);"
+                    class="user-chat-remove text-muted font-size-16 p-2"
+                    (click)="closeUserChat()"
+                  >
                     <mat-icon>keyboard_arrow_left</mat-icon>
                   </a>
                 </div>
-                <div *ngIf="!dataService.isGroupChat && dataService.activChatId" class="media"
-                  style="align-items: center;">
+                <div
+                  *ngIf="!dataService.isGroupChat && dataService.activChatId"
+                  class="media"
+                  style="align-items: center"
+                >
                   <div class="chat-user-img align-self-center mr-3">
-                    <img style="height: 36px !important;" *ngIf="dataService.activChat.img"
-                      src="{{dataService.activChat.img}}" class="rounded-circle avatar-xs" alt="">
+                    <img
+                      style="height: 36px !important"
+                      *ngIf="dataService.activChat.img"
+                      src="{{ dataService.activChat.img }}"
+                      class="rounded-circle avatar-xs"
+                      alt=""
+                    />
                     <div class="avatar-xs" *ngIf="!dataService.activChat.img">
-                      <span style="height: 36px !important;"
-                        class="avatar-title rounded-circle bg-soft-primary text-primary">
-                        {{dataService.activChat.name.split(' ')[0].charAt(0)+dataService.activChat.name.split('
-                        ')[1].charAt(0)}}
+                      <span
+                        style="height: 36px !important"
+                        class="
+                          avatar-title
+                          rounded-circle
+                          bg-soft-primary
+                          text-primary
+                        "
+                      >
+                        {{
+                          dataService.activChat.name.split(' ')[0].charAt(0) +
+                            dataService.activChat.name
+                              .split('
+                        ')[1]
+                              .charAt(0)
+                        }}
                       </span>
                     </div>
                   </div>
-                  <div class="groupName media-body overflow-hidden" matTooltip={{dataService.activChat.name}}>
-                    <h5 class="text-truncate font-size-15 mb-1">{{dataService.activChat.name}}</h5>
-                    <p class="chat-user-message text-truncate mb-0">{{dataService.activChat.lastMessage}}</p>
+                  <div
+                    class="groupName media-body overflow-hidden"
+                    matTooltip="{{ dataService.activChat.name }}"
+                  >
+                    <h5 class="text-truncate font-size-15 mb-1">
+                      {{ dataService.activChat.name }}
+                    </h5>
+                    <p class="chat-user-message text-truncate mb-0">
+                      {{ dataService.activChat.lastMessage }}
+                    </p>
                   </div>
                 </div>
-                <div *ngIf="dataService.isGroupChat && dataService.activChatId"
-                  matTooltip={{dataService.activChat.name}} class="groupName media-body overflow-hidden">
+                <div
+                  *ngIf="dataService.isGroupChat && dataService.activChatId"
+                  matTooltip="{{ dataService.activChat.name }}"
+                  class="groupName media-body overflow-hidden"
+                >
                   <h5 class="font-size-16 mb-0 text-truncate">
-                    <a class="text-reset user-profile-show">{{dataService.activChat.name}}</a>
+                    <a class="text-reset user-profile-show">{{
+                      dataService.activChat.name
+                    }}</a>
                   </h5>
                 </div>
               </div>
@@ -82,18 +166,52 @@
               <ul class="list-inline user-chat-nav text-right mb-0">
                 <li class="liųt-inline-item">
                   <div class="dropdown" ngbDropdown>
-                    <button *ngIf="dataService.isLecturer && dataService.isGroupChat" class="btn nav-btn dropdown-toggle" (click)="openStudentsList()">
-                      <mat-icon matTooltip="{{'chat.listStudent'| translate: 'Список студентов'}}">list_alt</mat-icon>
+                    <button
+                      *ngIf="dataService.isLecturer && dataService.isGroupChat"
+                      class="btn nav-btn dropdown-toggle"
+                      (click)="openStudentsList()"
+                    >
+                      <mat-icon
+                        matTooltip="{{
+                          'chat.listStudent' | translate: 'Список студентов'
+                        }}"
+                        >list_alt</mat-icon
+                      >
                     </button>
-                    <button class="btn nav-btn dropdown-toggle" ngbDropdownToggle type="button" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false" (click)="openFilter()">
-                      <mat-icon matTooltip="{{'chat.filter'| translate: 'Поиск сообщений'}}">search</mat-icon>
+                    <button
+                      class="btn nav-btn dropdown-toggle"
+                      ngbDropdownToggle
+                      type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      (click)="openFilter()"
+                    >
+                      <mat-icon
+                        matTooltip="{{
+                          'chat.filter' | translate: 'Поиск сообщений'
+                        }}"
+                        >search</mat-icon
+                      >
                     </button>
-                    <div class="dropdown-menu p-0 dropdown-menu-right dropdown-menu-md" ngbDropdownMenu>
+                    <div
+                      class="
+                        dropdown-menu
+                        p-0
+                        dropdown-menu-right dropdown-menu-md
+                      "
+                      ngbDropdownMenu
+                    >
                       <div class="search-box p-2">
-                        <input type="text" class="form-control bg-light border-0"
-                          placeholder="{{'chat.enterMsg'| translate: 'Введите сообщение'}}" [(ngModel)]="filterValue"
-                          (ngModelChange)="filter()">
+                        <input
+                          type="text"
+                          class="form-control bg-light border-0"
+                          placeholder="{{
+                            'chat.enterMsg' | translate: 'Введите сообщение'
+                          }}"
+                          [(ngModel)]="filterValue"
+                          (ngModelChange)="filter()"
+                        />
                       </div>
                     </div>
                   </div>
@@ -105,35 +223,57 @@
         <!-- end chat user head -->
 
         <!-- start chat conversation -->
-        <perfect-scrollbar id="scroll" class="msgs chat-conversation p-3 p-lg-4">
-          <ul class="list-unstyled mb-0" style="height: 90% !important;">
-            <li *ngFor="let data of messages" [ngClass]="{'right': data.align === 'right'}" style="height: 90%;">
+        <perfect-scrollbar
+          id="scroll"
+          class="msgs chat-conversation p-3 p-lg-4"
+        >
+          <ul class="list-unstyled mb-0" style="height: 90% !important">
+            <li
+              *ngFor="let data of messages"
+              [ngClass]="{ right: data.align === 'right' }"
+              style="height: 90%"
+            >
               <div class="conversation-list" *ngIf="!data.isToday">
                 <div class="chat-avatar">
-                  <img src="{{data.profile}}" alt="">
+                  <img src="{{ data.profile }}" alt="" />
                 </div>
 
                 <div class="user-chat-content">
                   <div class="ctext-wrap">
-                    <div style="width: -webkit-fill-available;" class="ctext-wrap-content">
+                    <div
+                      style="width: -webkit-fill-available"
+                      class="ctext-wrap-content"
+                    >
                       <p class="mb-0">
-                        {{data.text}}
+                        {{ data.text }}
                         <span class="animate-typing" *ngIf="data.istyping">
                           <span class="dot ml-1"></span>
                           <span class="dot ml-1"></span>
                           <span class="dot ml-1"></span>
                         </span>
                       </p>
-                      <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span
-                          class="align-middle">{{data.time}}</span></p>
+                      <p class="chat-time mb-0">
+                        <i class="ri-time-line align-middle"></i>
+                        <span class="align-middle">{{ data.time }}</span>
+                      </p>
 
-                      <ul class="list-inline message-img mb-0" *ngIf="data.isimage">
+                      <ul
+                        class="list-inline message-img mb-0"
+                        *ngIf="data.isimage"
+                      >
                         <div>
-                          <a class="popup-img d-inline-block m-1" (click)="download(data.fileContent)"
-                            title="Project 1">
+                          <a
+                            class="popup-img d-inline-block m-1"
+                            (click)="download(data.fileContent)"
+                            title="Project 1"
+                          >
                             <img
-                              :src="catService/file/Download?chatId={{dataService.activChatId}}&file={{data.fileContent}}"
-                              alt="" class="rounded border">
+                              :src="catService/file/Download?chatId={{
+                                dataService.activChatId
+                              }}&file={{ data.fileContent }}"
+                              alt=""
+                              class="rounded border"
+                            />
                           </a>
                         </div>
                       </ul>
@@ -142,15 +282,22 @@
                         <div class="media align-items-center">
                           <div class="media-body">
                             <div class="text-left">
-                              <h5 class="font-size-14 mb-1">{{data.fileContent}}</h5>
-                              <p class="text-muted font-size-13 mb-0">{{data.fileSize}}</p>
+                              <h5 class="font-size-14 mb-1">
+                                {{ data.fileContent }}
+                              </h5>
+                              <p class="text-muted font-size-13 mb-0">
+                                {{ data.fileSize }}
+                              </p>
                             </div>
                           </div>
 
                           <div class="ml-4">
                             <ul class="list-inline mb-0 font-size-20">
                               <li class="list-inline-item">
-                                <a (click)="download(data.fileContent)" class="text-muted">
+                                <a
+                                  (click)="download(data.fileContent)"
+                                  class="text-muted"
+                                >
                                   <mat-icon>cloud_download</mat-icon>
                                 </a>
                               </li>
@@ -161,52 +308,99 @@
                     </div>
 
                     <div class="dropdown align-self-start" ngbDropdown>
-                      <a class="dropdown-toggle" role="button" ngbDropdownToggle data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
+                      <a
+                        class="dropdown-toggle"
+                        role="button"
+                        ngbDropdownToggle
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
                         <mat-icon>more_vert</mat-icon>
                       </a>
                       <div class="dropdown-menu" ngbDropdownMenu>
-                        <a class="dropdown-item" style="width: min-content;" (click)="copyText(data.text)">
-                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">file_copy</mat-icon>{{'chat.copy'|
-                          translate: 'Копировать'}}
+                        <a
+                          class="dropdown-item"
+                          style="width: min-content"
+                          (click)="copyText(data.text)"
+                        >
+                          <mat-icon
+                            style="color: rgba(0, 0, 0, 0.54) !important"
+                            >file_copy</mat-icon
+                          >{{ 'chat.copy' | translate: 'Копировать' }}
                         </a>
-                        <a *ngIf="data.align" class="dropdown-item" (click)="edit(data)">
-                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">edit</mat-icon> {{'chat.edit'|
-                          translate: 'Изменить'}}
+                        <a
+                          *ngIf="data.align"
+                          class="dropdown-item"
+                          (click)="edit(data)"
+                        >
+                          <mat-icon
+                            style="color: rgba(0, 0, 0, 0.54) !important"
+                            >edit</mat-icon
+                          >
+                          {{ 'chat.edit' | translate: 'Изменить' }}
                         </a>
-                        <a *ngIf="dataService.user.role=='lector'" class="dropdown-item" (click)="remove(data.id)">
-                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">delete_forever</mat-icon>
-                          {{'chat.delete'| translate: 'Удалить'}}
+                        <a
+                          *ngIf="dataService.user.role == 'lector'"
+                          class="dropdown-item"
+                          (click)="remove(data.id)"
+                        >
+                          <mat-icon
+                            style="color: rgba(0, 0, 0, 0.54) !important"
+                            >delete_forever</mat-icon
+                          >
+                          {{ 'chat.delete' | translate: 'Удалить' }}
                         </a>
                       </div>
                     </div>
                   </div>
                   <div class="ctext-wrap" *ngIf="data.message2">
-                    <div style="width: -webkit-fill-available;" class="ctext-wrap-content">
+                    <div
+                      style="width: -webkit-fill-available"
+                      class="ctext-wrap-content"
+                    >
                       <p class="mb-0">
-                        {{data.message2}}
+                        {{ data.message2 }}
                       </p>
-                      <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span
-                          class="align-middle">{{data.time}}</span></p>
+                      <p class="chat-time mb-0">
+                        <i class="ri-time-line align-middle"></i>
+                        <span class="align-middle">{{ data.time }}</span>
+                      </p>
                     </div>
                     <div class="dropdown align-self-start" ngbDropdown>
-                      <a class="dropdown-toggle" href="#" role="button" ngbDropdownToggle data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
+                      <a
+                        class="dropdown-toggle"
+                        href="#"
+                        role="button"
+                        ngbDropdownToggle
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
                         <mat-icon>more_vert</mat-icon>
                       </a>
                       <div class="dropdown-menu" ngbDropdownMenu>
                         <a class="dropdown-item" (click)="copyText(data.text)">
-                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">file_copy</mat-icon>{{'chat.copy'|
-                          translate: 'Копировать'}}
+                          <mat-icon
+                            style="color: rgba(0, 0, 0, 0.54) !important"
+                            >file_copy</mat-icon
+                          >{{ 'chat.copy' | translate: 'Копировать' }}
                         </a>
-                        <a *ngIf="dataService.user.role=='lector'" class="dropdown-item" (click)="remove(data.id)">
-                          <mat-icon style="color: rgba(0,0,0,.54)  !important;">delete_forever</mat-icon>
-                          {{'chat.delete'| translate: 'Удалить'}}
+                        <a
+                          *ngIf="dataService.user.role == 'lector'"
+                          class="dropdown-item"
+                          (click)="remove(data.id)"
+                        >
+                          <mat-icon
+                            style="color: rgba(0, 0, 0, 0.54) !important"
+                            >delete_forever</mat-icon
+                          >
+                          {{ 'chat.delete' | translate: 'Удалить' }}
                         </a>
                       </div>
                     </div>
                   </div>
-                  <div class="conversation-name">{{data.name}}</div>
+                  <div class="conversation-name">{{ data.name }}</div>
                 </div>
               </div>
               <div class="chat-day-title" *ngIf="data.isToday">
@@ -218,52 +412,107 @@
         <!-- end chat conversation end -->
 
         <!-- start chat input section -->
-        <div class="p-3 p-lg-4 mb-0"
-          style="padding-left: 0px !important;padding-right: 0px !important;padding-top: 1rem !important; padding-bottom: 0px !important;">
+        <div
+          class="p-3 p-lg-4 mb-0"
+          style="
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+            padding-top: 1rem !important;
+            padding-bottom: 0px !important;
+          "
+        >
           <div class="row no-gutters">
             <div class="col">
               <div>
-                <input type="text" [(ngModel)]="currentMsg.text" (keyup.enter)="sendMsg()"
+                <input
+                  type="text"
+                  [(ngModel)]="currentMsg.text"
+                  (keyup.enter)="sendMsg()"
                   class="form-control form-control-lg bg-light border-light"
-                  placeholder="{{'chat.enterMsg'| translate: 'Введите сообщение'}}">
+                  placeholder="{{
+                    'chat.enterMsg' | translate: 'Введите сообщение'
+                  }}"
+                />
               </div>
             </div>
             <div class="col-auto">
               <div class="chat-input-links ml-md-2">
                 <ul class="list-inline mb-0">
                   <li *ngIf="isEdit" class="list-inline-item">
-                    <button type="button" (click)="stopEdit()"
-                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
-                      matTooltip="{{'chat.cancle'| translate: 'Отменить'}}">
+                    <button
+                      type="button"
+                      (click)="stopEdit()"
+                      class="
+                        btn btn-primary
+                        font-size-16
+                        btn-lg
+                        chat-send
+                        waves-effect waves-light
+                      "
+                      matTooltip="{{ 'chat.cancle' | translate: 'Отменить' }}"
+                    >
                       <mat-icon> cancel</mat-icon>
                     </button>
                   </li>
                   <li *ngIf="!isEdit" class="list-inline-item">
-                    <input #fileInput hidden="true" type="file" (change)="uploadFiles($event.target)" />
-                    <button type="button" (click)="attachFileClick(fileInput)"
-                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
-                      matTooltip="{{ 'chat.attachFile' | translate: 'Прикрепить файл'}}"
-                      ng-reflect-tooltip-class="tooltip">
+                    <input
+                      #fileInput
+                      hidden="true"
+                      type="file"
+                      (change)="uploadFiles($event.target)"
+                    />
+                    <button
+                      type="button"
+                      (click)="attachFileClick(fileInput)"
+                      class="
+                        btn btn-primary
+                        font-size-16
+                        btn-lg
+                        chat-send
+                        waves-effect waves-light
+                      "
+                      matTooltip="{{
+                        'chat.attachFile' | translate: 'Прикрепить файл'
+                      }}"
+                      ng-reflect-tooltip-class="tooltip"
+                    >
                       <mat-icon> attach_file</mat-icon>
                     </button>
                   </li>
-                  <li class="list-inline-item" *ngIf='isAllowedForUser()'>
-                    <button type="submit" (click)="startCall()"
-                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
-                      matTooltip="{{'chat.call'| translate: 'Позвонить'}}">
+                  <li class="list-inline-item" *ngIf="isAllowedForUser()">
+                    <button
+                      type="submit"
+                      (click)="startCall()"
+                      class="
+                        btn btn-primary
+                        font-size-16
+                        btn-lg
+                        chat-send
+                        waves-effect waves-light
+                      "
+                      matTooltip="{{ 'chat.call' | translate: 'Позвонить' }}"
+                    >
                       <mat-icon>phone</mat-icon>
                     </button>
                   </li>
                   <li class="list-inline-item">
-                    <button type="submit" (click)="sendMsg()"
-                      class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light"
-                      matTooltip="{{'chat.send'| translate: 'Отправить'}}">
+                    <button
+                      type="submit"
+                      (click)="sendMsg()"
+                      class="
+                        btn btn-primary
+                        font-size-16
+                        btn-lg
+                        chat-send
+                        waves-effect waves-light
+                      "
+                      matTooltip="{{ 'chat.send' | translate: 'Отправить' }}"
+                    >
                       <mat-icon>send</mat-icon>
                     </button>
                   </li>
                 </ul>
               </div>
-
             </div>
           </div>
         </div>

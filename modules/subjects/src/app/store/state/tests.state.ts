@@ -1,7 +1,7 @@
 export interface ITestsState {
-    testsCount: number;
+  testsCount: number
 }
 
 export const initialTestsState: ITestsState = {
-    testsCount: 0
-};
+  testsCount: 0,
+}

@@ -7,7 +7,21 @@
   position: fixed;
   top: 0;
   left: 0;
-  background-image: linear-gradient(to bottom, rgb(52, 66, 219), rgb(63, 94, 212), rgb(74, 122, 205), rgb(84, 151, 197), rgb(95, 179, 190), rgb(106, 207, 183), rgba(131, 215, 195, 0.99), rgba(156, 223, 207, 0.98), rgba(181, 231, 219, 0.98), rgba(205, 239, 231, 0.97), rgba(230, 247, 243, 0.96), rgba(255, 255, 255, 0.95));
+  background-image: linear-gradient(
+    to bottom,
+    rgb(52, 66, 219),
+    rgb(63, 94, 212),
+    rgb(74, 122, 205),
+    rgb(84, 151, 197),
+    rgb(95, 179, 190),
+    rgb(106, 207, 183),
+    rgba(131, 215, 195, 0.99),
+    rgba(156, 223, 207, 0.98),
+    rgba(181, 231, 219, 0.98),
+    rgba(205, 239, 231, 0.97),
+    rgba(230, 247, 243, 0.96),
+    rgba(255, 255, 255, 0.95)
+  );
   min-width: 100%;
 }
 
@@ -41,7 +55,8 @@ mat-card-content {
   width: 380px;
 }
 
-.mat-button, .mat-raised-button {
+.mat-button,
+.mat-raised-button {
   display: block;
   margin: 10px auto;
 }

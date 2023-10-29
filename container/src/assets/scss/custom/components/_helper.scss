@@ -72,12 +72,11 @@
   color: $gray-500;
   text-align: center;
   transition: all 0.4s;
-  &:hover{
+  &:hover {
     color: $gray-600;
     background-color: $gray-200;
   }
 }
-
 
 .w-xs {
   min-width: 80px;

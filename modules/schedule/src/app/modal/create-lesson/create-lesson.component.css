@@ -12,7 +12,7 @@
   width: 100%;
 }
 
-.mat-select-value{
+.mat-select-value {
   color: #383838;
 }
 
@@ -20,20 +20,19 @@
   color: #383838;
 }
 
-.mat-dialog-content{
-  margin:0;
+.mat-dialog-content {
+  margin: 0;
   padding: 0 6px;
 }
 
-.mat-select{
+.mat-select {
   border: 0px;
   height: 0px;
   padding: 0px;
 }
 
-.mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after, .mat-input-element:disabled {
+.mat-form-field-type-mat-native-select.mat-form-field-disabled
+  .mat-form-field-infix::after,
+.mat-input-element:disabled {
   color: black;
 }
-
-
-

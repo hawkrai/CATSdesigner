@@ -1,9 +1,8 @@
-
-export function Base64UploaderPlugin( editor ) {
-  editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+export function Base64UploaderPlugin(editor) {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     // Configure the URL to the upload script in your back-end here!
-    return new UploadAdapter(loader, editor.t);
-  };
+    return new UploadAdapter(loader, editor.t)
+  }
 }
 
 /**
@@ -25,14 +24,14 @@ class UploadAdapter {
      *
      * @member {module:upload/filerepository~FileLoader} #loader
      */
-    this.loader = loader;
+    this.loader = loader
 
     /**
      * Locale translation method.
      *
      * @member {module:utils/locale~Locale#t} #t
      */
-    this.t = t;
+    this.t = t
   }
 
   /**
@@ -43,24 +42,24 @@ class UploadAdapter {
    */
   upload() {
     return new Promise((resolve, reject) => {
-      const reader = this.reader = new FileReader();
+      const reader = (this.reader = new FileReader())
 
-    reader.onload = function () {
-      resolve({ default: reader.result });
-    };
+      reader.onload = function () {
+        resolve({ default: reader.result })
+      }
 
-    reader.onerror = function (error) {
-      reject(error);
-    };
+      reader.onerror = function (error) {
+        reject(error)
+      }
 
-    reader.onabort = function () {
-      reject();
-    };
+      reader.onabort = function () {
+        reject()
+      }
 
-    this.loader.file.then(file => {
-      reader.readAsDataURL(file);
-  });
-  });
+      this.loader.file.then((file) => {
+        reader.readAsDataURL(file)
+      })
+    })
   }
 
   /**
@@ -71,7 +70,7 @@ class UploadAdapter {
    */
   abort() {
     if (this.reader) {
-      this.reader.abort();
+      this.reader.abort()
     }
   }
 }

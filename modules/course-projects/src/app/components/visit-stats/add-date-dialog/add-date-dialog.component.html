@@ -1,5 +1,10 @@
 <div class="header">
-  <h1 mat-dialog-title>{{'text.course.visit.dialog.add.header.title' | translate : 'Добавление даты консультации'}}</h1>
+  <h1 mat-dialog-title>
+    {{
+      'text.course.visit.dialog.add.header.title'
+        | translate: 'Добавление даты консультации'
+    }}
+  </h1>
   <button mat-icon-button (click)="onCancelClick()" class="header__close-btn">
     <mat-icon aria-hidden="false">close</mat-icon>
   </button>
@@ -7,17 +12,29 @@
 <div mat-dialog-content>
   <div class="form-container">
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.percentages.list.stage.date' | translate : 'Дата'}}</mat-label>
-      <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)"
-        readonly>
+      <mat-label>{{
+        'text.course.percentages.list.stage.date' | translate: 'Дата'
+      }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dp"
+        [formControl]="dateControl"
+        (dateChange)="onDateChange(dateControl.value)"
+        readonly
+      />
       <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
       <mat-datepicker #dp></mat-datepicker>
-      <mat-error *ngIf="dateControl.invalid">{{'text.course.list.dialog.data.error.date' | translate : 'Неправильный
-        формат (ДД.ММ.ГГГГ)'}}</mat-error>
+      <mat-error *ngIf="dateControl.invalid">{{
+        'text.course.list.dialog.data.error.date'
+          | translate: 'Неправильный
+        формат (ДД.ММ.ГГГГ)'
+      }}</mat-error>
     </mat-form-field>
 
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.percentages.list.stage.lecturer' | translate : 'Лектор'}}</mat-label>
+      <mat-label>{{
+        'text.course.percentages.list.stage.lecturer' | translate: 'Лектор'
+      }}</mat-label>
       <mat-select [formControl]="lecturerIdControl">
         <mat-option *ngFor="let lector of lectors" [value]="lector.LectorId">
           <span class="icon-container">
@@ -30,49 +47,106 @@
 
   <div class="form-container">
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.visit.dialog.add.lesson.start' | translate : 'Начало занятия'}}</mat-label>
-      <input matInput type="time" [formControl]="startTimeControl" [(ngModel)]="data.start">
+      <mat-label>{{
+        'text.course.visit.dialog.add.lesson.start'
+          | translate: 'Начало занятия'
+      }}</mat-label>
+      <input
+        matInput
+        type="time"
+        [formControl]="startTimeControl"
+        [(ngModel)]="data.start"
+      />
     </mat-form-field>
 
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.visit.dialog.add.lesson.end' | translate : 'Конец занятия'}}</mat-label>
-      <input matInput type="time" [formControl]="endTimeControl" [(ngModel)]="data.end">
+      <mat-label>{{
+        'text.course.visit.dialog.add.lesson.end' | translate: 'Конец занятия'
+      }}</mat-label>
+      <input
+        matInput
+        type="time"
+        [formControl]="endTimeControl"
+        [(ngModel)]="data.end"
+      />
     </mat-form-field>
   </div>
 
   <div class="form-container">
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.visit.dialog.add.block' | translate : 'Корпус'}}</mat-label>
-      <input matInput [formControl]="buildingControl" [(ngModel)]="data.building">
-      <mat-error *ngIf="buildingControl.invalid">{{'text.course.visit.dialog.add.error.small' | translate : 'От 1 до 3
-        символов'}}</mat-error>
+      <mat-label>{{
+        'text.course.visit.dialog.add.block' | translate: 'Корпус'
+      }}</mat-label>
+      <input
+        matInput
+        [formControl]="buildingControl"
+        [(ngModel)]="data.building"
+      />
+      <mat-error *ngIf="buildingControl.invalid">{{
+        'text.course.visit.dialog.add.error.small'
+          | translate: 'От 1 до 3
+        символов'
+      }}</mat-error>
     </mat-form-field>
 
     <mat-form-field class="form-field">
-      <mat-label>{{'text.course.visit.dialog.add.audience' | translate : 'Аудитория'}}</mat-label>
-      <input matInput [formControl]="audienceControl" [(ngModel)]="data.audience">
-      <mat-error *ngIf="audienceControl.invalid">{{'text.course.visit.dialog.add.error.small' | translate : 'От 1 до 3
-        символов'}}</mat-error>
+      <mat-label>{{
+        'text.course.visit.dialog.add.audience' | translate: 'Аудитория'
+      }}</mat-label>
+      <input
+        matInput
+        [formControl]="audienceControl"
+        [(ngModel)]="data.audience"
+      />
+      <mat-error *ngIf="audienceControl.invalid">{{
+        'text.course.visit.dialog.add.error.small'
+          | translate: 'От 1 до 3
+        символов'
+      }}</mat-error>
     </mat-form-field>
   </div>
 </div>
-<button mat-flat-button class="dialog-button" color="primary" [disabled]="audienceControl.invalid || buildingControl.invalid || dateControl.invalid 
-        || startTimeControl.invalid || endTimeControl.invalid" (click)="onAddClick()">
-  {{'text.course.visit.dialog.add' | translate : 'Добавить'}}
+<button
+  mat-flat-button
+  class="dialog-button"
+  color="primary"
+  [disabled]="
+    audienceControl.invalid ||
+    buildingControl.invalid ||
+    dateControl.invalid ||
+    startTimeControl.invalid ||
+    endTimeControl.invalid
+  "
+  (click)="onAddClick()"
+>
+  {{ 'text.course.visit.dialog.add' | translate: 'Добавить' }}
 </button>
 <div class="add-date__content">
-  <p mat-dialog-title class="add-date__table-title">{{'date.selected' | translate:'Выбранные даты'}}</p>
-  <div class="mdc-data-table add-date__table-container mat-elevation-z8"
-    *ngIf="data.consultations && data.consultations.length">
+  <p mat-dialog-title class="add-date__table-title">
+    {{ 'date.selected' | translate: 'Выбранные даты' }}
+  </p>
+  <div
+    class="mdc-data-table add-date__table-container mat-elevation-z8"
+    *ngIf="data.consultations && data.consultations.length"
+  >
     <table class="mdc-data-table__table">
       <tbody class="mdc-data-table__content">
         <tr class="mdc-data-table__row" *ngFor="let day of data.consultations">
-          <td class="mdc-data-table__cell">{{ day.Day | date: 'dd.MM.yyyy' }} <mat-hint
-              *ngIf="day.StartTime && day.EndTime">{{day.StartTime.slice(0,5)}}-{{day.EndTime.slice(0,5)}}</mat-hint>
+          <td class="mdc-data-table__cell">
+            {{ day.Day | date: 'dd.MM.yyyy' }}
+            <mat-hint *ngIf="day.StartTime && day.EndTime"
+              >{{ day.StartTime.slice(0, 5) }}-{{
+                day.EndTime.slice(0, 5)
+              }}</mat-hint
+            >
           </td>
           <td class="mdc-data-table__cell add-date__table-action">
-            <button mat-icon-button color="primary" class="add-date__table-detele-button"
-              [matTooltip]="'date.delete' | translate:'Удалить дату'">
+            <button
+              mat-icon-button
+              color="primary"
+              class="add-date__table-detele-button"
+              [matTooltip]="'date.delete' | translate: 'Удалить дату'"
+            >
               <mat-icon (click)="deleteDate(day.Id)">delete</mat-icon>
             </button>
           </td>
@@ -83,6 +157,7 @@
 </div>
 
 <div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()"> {{'text.close' | translate :
-    'Закрыть'}}</button>
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
+    {{ 'text.close' | translate: 'Закрыть' }}
+  </button>
 </div>

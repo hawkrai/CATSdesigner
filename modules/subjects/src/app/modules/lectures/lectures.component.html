@@ -1,26 +1,43 @@
 <div class="lectures-component content" *ngIf="state$ | async as state">
   <div class="mdc-tab-bar" role="tablist">
     <ng-container>
-      <button class="mdc-tab" role="tab" aria-selected="true" [tabindex]="idx" *ngFor="let tab of tabs; let idx = index"
+      <button
+        class="mdc-tab"
+        role="tab"
+        aria-selected="true"
+        [tabindex]="idx"
+        *ngFor="let tab of tabs; let idx = index"
         [routerLink]="tab.route"
         routerLinkActive="mdc-tab--active"
         queryParamsHandling="merge"
         #rla="routerLinkActive"
-        >
+      >
         <span class="mdc-tab__content">
-          <span class="mdc-tab__text-label">{{ tab.tab | firstLetterUppercase }}</span>
+          <span class="mdc-tab__text-label">{{
+            tab.tab | firstLetterUppercase
+          }}</span>
         </span>
-        <span class="mdc-tab-indicator" [class.mdc-tab-indicator--active]="rla.isActive">
-          <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+        <span
+          class="mdc-tab-indicator"
+          [class.mdc-tab-indicator--active]="rla.isActive"
+        >
+          <span
+            class="
+              mdc-tab-indicator__content mdc-tab-indicator__content--underline
+            "
+          ></span>
         </span>
         <span class="mdc-tab__ripple"></span>
       </button>
     </ng-container>
 
     <ng-template #selectView>
-      <mat-form-field style="width: 100%;">
+      <mat-form-field style="width: 100%">
         <mat-select [(ngModel)]="selectedTab">
-          <mat-option *ngFor="let tab of tabs; let idx = index" [value]="idx"> <span class="mdc-tab__text-label">{{tab | firstLetterUppercase}}</span> 
+          <mat-option *ngFor="let tab of tabs; let idx = index" [value]="idx">
+            <span class="mdc-tab__text-label">{{
+              tab | firstLetterUppercase
+            }}</span>
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -29,19 +46,40 @@
   <div class="lectures-component-body">
     <div class="lectures-component-controls">
       <ng-container *ngIf="state.isTeacher">
-        <div class="lectures-component__select-group"  *ngIf="!(router.url | startWith:'/lectures/list')">
+        <div
+          class="lectures-component__select-group"
+          *ngIf="!(router.url | startWith: '/lectures/list')"
+        >
           <mat-form-field>
-            <mat-select [value]="state.group ? state.group.GroupId : state.groups.length ? state.groups[0].GroupId : ''">
-              <mat-option *ngFor="let group of state.groups" (onSelectionChange)="selectedGroup($event)"
-                [value]="group.GroupId">
-                {{group.GroupName}}
+            <mat-select
+              [value]="
+                state.group
+                  ? state.group.GroupId
+                  : state.groups.length
+                  ? state.groups[0].GroupId
+                  : ''
+              "
+            >
+              <mat-option
+                *ngFor="let group of state.groups"
+                (onSelectionChange)="selectedGroup($event)"
+                [value]="group.GroupId"
+              >
+                {{ group.GroupName }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
       </ng-container>
-      <ng-container *ngIf="!state.isTeacher && !(router.url | startWith:'/lectures/list') && state.group">
-        {{'group' | translate:'Группа'}}: {{state.group && state.group.GroupName}}
+      <ng-container
+        *ngIf="
+          !state.isTeacher &&
+          !(router.url | startWith: '/lectures/list') &&
+          state.group
+        "
+      >
+        {{ 'group' | translate: 'Группа' }}:
+        {{ state.group && state.group.GroupName }}
       </ng-container>
     </div>
     <router-outlet></router-outlet>

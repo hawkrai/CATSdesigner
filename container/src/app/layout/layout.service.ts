@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core'
+import { BehaviorSubject } from 'rxjs'
 
 @Injectable()
 export class LayoutService {
-  public sideNavToggleSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  public sideNavToggleSubject: BehaviorSubject<any> = new BehaviorSubject(null)
 
-  constructor() { }
+  constructor() {}
 
   public toggle() {
-    return this.sideNavToggleSubject.next(null);
-  } 
+    return this.sideNavToggleSubject.next(null)
+  }
 }

@@ -1,72 +1,180 @@
 <div class="page-wrap">
-	<div class="container">
-		<table>
-			<td class="col-first">
-					<mat-select class="mselect"  (selectionChange)="onValueChange($event)" [value]="locale">
-						<mat-option *ngFor="let locale of locales" [value]="locale">
-						{{locale.name}}
-						</mat-option>
-					</mat-select>
+  <div class="container">
+    <table>
+      <td class="col-first">
+        <mat-select
+          class="mselect"
+          (selectionChange)="onValueChange($event)"
+          [value]="locale"
+        >
+          <mat-option *ngFor="let locale of locales" [value]="locale">
+            {{ locale.name }}
+          </mat-option>
+        </mat-select>
 
-					<a class="cat" href="#">
-						<img id="mascot-body" src="./../../assets/images/mascot-body.svg" />
-						<img id="mascot-tail" src="./../../assets/images/mascot-tail.svg" />
-					</a>
-					<br>
-					<img src="./../../assets/images/logo.png" class="logo" />
-					<p>Care about the students </p>
+        <a class="cat" href="#">
+          <img id="mascot-body" src="./../../assets/images/mascot-body.svg" />
+          <img id="mascot-tail" src="./../../assets/images/mascot-tail.svg" />
+        </a>
+        <br />
+        <img src="./../../assets/images/logo.png" class="logo" />
+        <p>Care about the students</p>
 
-					<h1><a routerLink="/about" class = "aboutlink" title= "{{'text.start.helpAbout'| translate: 'Что из себя представляет система CATS?'}}">{{'text.start.title'| translate: 'Адаптивная обучающая система'}}</a></h1>
-					<a mat-fab  color="primary" title= "{{'text.start.helpPlay'| translate: 'Просмотреть ролик о системе CATS'}}" (click)="open()" class="link">
-						<mat-icon class="icon_p">play_arrow</mat-icon>
-					</a>
-			</td>
-		</table>
-		<table>
-			<td class="col-second">
-				<form [formGroup]="loginForm">
-					<h1 class="title">{{'text.start.welcome'| translate: 'Добро пожаловать!'}}</h1>
-					<div class="fields">
-						<mat-form-field class="default" color="primary">
-							<input matInput color="primary" formControlName="userName" placeholder="{{'text.start.login'| translate: 'Имя пользователя'}}" type="text" maxlength="30">
-						</mat-form-field>
-						<mat-form-field>
-							<input matInput [type]="hide ? 'password' : 'text'" color="primary" type="password" placeholder="{{'text.start.password'| translate: 'Пароль'}}" formControlName="password" maxlength="30">
-							<a mat-icon-button matSuffix (click)="hide = !hide">
-								<mat-icon> {{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-							</a>
-						</mat-form-field>
-					</div>
+        <h1>
+          <a
+            routerLink="/about"
+            class="aboutlink"
+            title="{{
+              'text.start.helpAbout'
+                | translate: 'Что из себя представляет система CATS?'
+            }}"
+            >{{
+              'text.start.title' | translate: 'Адаптивная обучающая система'
+            }}</a
+          >
+        </h1>
+        <a
+          mat-fab
+          color="primary"
+          title="{{
+            'text.start.helpPlay'
+              | translate: 'Просмотреть ролик о системе CATS'
+          }}"
+          (click)="open()"
+          class="link"
+        >
+          <mat-icon class="icon_p">play_arrow</mat-icon>
+        </a>
+      </td>
+    </table>
+    <table>
+      <td class="col-second">
+        <form [formGroup]="loginForm">
+          <h1 class="title">
+            {{ 'text.start.welcome' | translate: 'Добро пожаловать!' }}
+          </h1>
+          <div class="fields">
+            <mat-form-field class="default" color="primary">
+              <input
+                matInput
+                color="primary"
+                formControlName="userName"
+                placeholder="{{
+                  'text.start.login' | translate: 'Имя пользователя'
+                }}"
+                type="text"
+                maxlength="30"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <input
+                matInput
+                [type]="hide ? 'password' : 'text'"
+                color="primary"
+                type="password"
+                placeholder="{{ 'text.start.password' | translate: 'Пароль' }}"
+                formControlName="password"
+                maxlength="30"
+              />
+              <a mat-icon-button matSuffix (click)="hide = !hide">
+                <mat-icon>
+                  {{ hide ? 'visibility_off' : 'visibility' }}</mat-icon
+                >
+              </a>
+            </mat-form-field>
+          </div>
 
-					<div class="remember">
-						<a routerLink="/forgot" title= "{{'text.start.forgot'| translate: 'Перейдите, чтобы восстановить пароль'}}" href="">{{'text.start.btnForgot'| translate: 'Забыли пароль?'}}</a>
-					</div>
+          <div class="remember">
+            <a
+              routerLink="/forgot"
+              title="{{
+                'text.start.forgot'
+                  | translate: 'Перейдите, чтобы восстановить пароль'
+              }}"
+              href=""
+              >{{ 'text.start.btnForgot' | translate: 'Забыли пароль?' }}</a
+            >
+          </div>
 
-					<div class="loginbtn">
-						<button  mat-raised-button title= "{{'text.start.helpEnter'| translate: 'Нажмите, чтобы войти в систему'}}" color="primary" [class.spinner]="loading" [disabled]="submitted" type=submit (click)="onSubmit()">{{'text.start.signIn'| translate: 'Войти в систему'}}</button>
-					</div>
+          <div class="loginbtn">
+            <button
+              mat-raised-button
+              title="{{
+                'text.start.helpEnter'
+                  | translate: 'Нажмите, чтобы войти в систему'
+              }}"
+              color="primary"
+              [class.spinner]="loading"
+              [disabled]="submitted"
+              type="submit"
+              (click)="onSubmit()"
+            >
+              {{ 'text.start.signIn' | translate: 'Войти в систему' }}
+            </button>
+          </div>
 
-					<div class="btn_w">
-						<button mat-raised-button title= "{{'text.start.helpControl'| translate: 'Нажмите, чтобы просмотреть успеваемость студентов'}}" color="basic" routerLink="/progControl" type=button href="">{{'text.start.btnControl'| translate: 'Статистика успеваемости'}}</button>
-					</div>
+          <div class="btn_w">
+            <button
+              mat-raised-button
+              title="{{
+                'text.start.helpControl'
+                  | translate
+                    : 'Нажмите, чтобы просмотреть успеваемость студентов'
+              }}"
+              color="basic"
+              routerLink="/progControl"
+              type="button"
+              href=""
+            >
+              {{
+                'text.start.btnControl' | translate: 'Статистика успеваемости'
+              }}
+            </button>
+          </div>
 
-					<div class="sign-up">
-						<p>{{'text.start.newUser'| translate: 'Новый пользователь?'}}</p>
-						<a routerLink="/register" title= "{{'text.start.helpRegister'| translate: 'Перейдите, чтобы зарегистрироваться'}}" href="">{{'text.start.register'| translate: 'Регистрация'}}</a>
-					</div>
+          <div class="sign-up">
+            <p>{{ 'text.start.newUser' | translate: 'Новый пользователь?' }}</p>
+            <a
+              routerLink="/register"
+              title="{{
+                'text.start.helpRegister'
+                  | translate: 'Перейдите, чтобы зарегистрироваться'
+              }}"
+              href=""
+              >{{ 'text.start.register' | translate: 'Регистрация' }}</a
+            >
+          </div>
 
-					<div class="flex-center">
-						<a href="https://play.google.com/store/apps/details?id=by.bntu.educats" title= "{{'text.start.helpGoogle'| translate: 'Перейдите,чтобы загрузить приложение в Google play'}}">
-							<img src="./../../assets/images/play-market-icon.png" />
-							<p>{{'text.start.google'| translate: 'Доступно в Google Play'}}</p>
-						</a>
-						<a href="https://apps.apple.com/by/app/educats/id1505738731" title= "{{'text.start.helpApp'| translate: 'Перейдите,чтобы загрузить приложение в Apple store'}}">
-							<img src="./../../assets/images/app-store-icone.png" />
-							<p>{{'text.start.AppStore'| translate: 'Загрузите в App Store'}}</p>
-						</a>
-					</div>
-				</form>
-			</td>
-		</table>
-	</div>
+          <div class="flex-center">
+            <a
+              href="https://play.google.com/store/apps/details?id=by.bntu.educats"
+              title="{{
+                'text.start.helpGoogle'
+                  | translate
+                    : 'Перейдите,чтобы загрузить приложение в Google play'
+              }}"
+            >
+              <img src="./../../assets/images/play-market-icon.png" />
+              <p>
+                {{ 'text.start.google' | translate: 'Доступно в Google Play' }}
+              </p>
+            </a>
+            <a
+              href="https://apps.apple.com/by/app/educats/id1505738731"
+              title="{{
+                'text.start.helpApp'
+                  | translate
+                    : 'Перейдите,чтобы загрузить приложение в Apple store'
+              }}"
+            >
+              <img src="./../../assets/images/app-store-icone.png" />
+              <p>
+                {{ 'text.start.AppStore' | translate: 'Загрузите в App Store' }}
+              </p>
+            </a>
+          </div>
+        </form>
+      </td>
+    </table>
+  </div>
 </div>

@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
 
-import { VideoChatService } from './video-chat.service';
+import { VideoChatService } from './video-chat.service'
 
 describe('VideoChatService', () => {
-  let service: VideoChatService;
+  let service: VideoChatService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(VideoChatService);
-  });
+    TestBed.configureTestingModule({})
+    service = TestBed.inject(VideoChatService)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    expect(service).toBeTruthy()
+  })
+})

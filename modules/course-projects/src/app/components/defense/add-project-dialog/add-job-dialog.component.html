@@ -1,57 +1,136 @@
 <div class="job-protection__header">
   <div>
-    <h1 mat-dialog-title class="job-protection__title">{{data.title}}</h1>
+    <h1 mat-dialog-title class="job-protection__title">{{ data.title }}</h1>
   </div>
-  <button mat-icon-button (click)="onCancelClick()" class="job-protection__close-btn">
+  <button
+    mat-icon-button
+    (click)="onCancelClick()"
+    class="job-protection__close-btn"
+  >
     <mat-icon aria-hidden="false">close</mat-icon>
   </button>
 </div>
 <div class="job-protection__popover" #popoverContent>
   <form class="example-form">
     <mat-form-field class="example-full-width">
-      <mat-label>{{data.model}}</mat-label>
-      <textarea name="body" matInput [(ngModel)]="data.body.comments" (paste)="onPaste($event.clipboardData)"></textarea>
+      <mat-label>{{ data.model }}</mat-label>
+      <textarea
+        name="body"
+        matInput
+        [(ngModel)]="data.body.comments"
+        (paste)="onPaste($event.clipboardData)"
+      ></textarea>
     </mat-form-field>
-    <p class="mat-typography">{{'text.course.defence.dialog.add' | translate : 'Прикрепленный материал (Можно добавить только один файл)'}}</p>
-    <button mat-raised-button class="popup-file-button" (click)="addFile()" *ngIf="!data.body.uploadedFile">{{'text.course.defence.dialog.add.button' | translate : 'Добавить файл'}}</button>
+    <p class="mat-typography">
+      {{
+        'text.course.defence.dialog.add'
+          | translate
+            : 'Прикрепленный материал (Можно добавить только один файл)'
+      }}
+    </p>
+    <button
+      mat-raised-button
+      class="popup-file-button"
+      (click)="addFile()"
+      *ngIf="!data.body.uploadedFile"
+    >
+      {{ 'text.course.defence.dialog.add.button' | translate: 'Добавить файл' }}
+    </button>
     <div class="mdc-data-table file-table" *ngIf="data.body.uploadedFile">
       <table class="mdc-data-table__table">
         <tbody>
-        <tr class="mdc-data-table__row">
-          <td class="mdc-data-table__cell example-content">
-            <a href="{{data.body.uploadedFile.IdFile === -1 ? '#' : data.body.uploadedFile.Url}}">
-              <img *ngIf="data.body.uploadedFile.Type === 'Image'" src="{{data.body.uploadedFile.ThumbnailUrl}}">
-			  <i *ngIf="data.body.uploadedFile.Type !== 'Image'" class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i>
-            </a>
-          </td>
-          <td class="mdc-data-table__cell example-content">
-            <a matTooltip="{{data.body.uploadedFile.Name}}"
-               href="{{data.body.uploadedFile.IdFile === -1 ? '#' : data.body.uploadedFile.Url}}">
-              {{data.body.uploadedFile.Name}}
-            </a>
-          </td>
-          <td class="mdc-data-table__cell example-content">{{data.body.uploadedFile.Type}}</td>
-          <td class="mdc-data-table__cell example-content">{{(data.body.uploadedFile.Size / 1024).toFixed(2)}} КБ</td>
-          <td class="mdc-data-table__cell" style="color: red" *ngIf="data.body.uploadedFile.IdFile === -1; else attached">
-            {{'text.course.defence.dialog.status' | translate : 'Загруженный файл'}}
-          </td>
-          <ng-template #attached>
-            <td class="mdc-data-table__cell" style="color: blue" *ngIf="data.body.uploadedFile.IdFile !== -1">{{'text.course.defence.dialog.added' | translate : 'Прикрепленный файл'}}
+          <tr class="mdc-data-table__row">
+            <td class="mdc-data-table__cell example-content">
+              <a
+                href="{{
+                  data.body.uploadedFile.IdFile === -1
+                    ? '#'
+                    : data.body.uploadedFile.Url
+                }}"
+              >
+                <img
+                  *ngIf="data.body.uploadedFile.Type === 'Image'"
+                  src="{{ data.body.uploadedFile.ThumbnailUrl }}"
+                />
+                <i
+                  *ngIf="data.body.uploadedFile.Type !== 'Image'"
+                  class="material-icons mdc-list-item__graphic"
+                  aria-hidden="true"
+                  >description</i
+                >
+              </a>
             </td>
-          </ng-template>
-          <td class="mdc-data-table__cell" style="padding-left: 0">
-            <button mat-icon-button color="primary" matTooltip="{{'text.course.defence.dialog.delete.button' | translate : 'Удалить файл'}}" (click)="deleteFile()">
-              <mat-icon>clear</mat-icon>
-            </button>
-          </td>
-        </tr>
+            <td class="mdc-data-table__cell example-content">
+              <a
+                matTooltip="{{ data.body.uploadedFile.Name }}"
+                href="{{
+                  data.body.uploadedFile.IdFile === -1
+                    ? '#'
+                    : data.body.uploadedFile.Url
+                }}"
+              >
+                {{ data.body.uploadedFile.Name }}
+              </a>
+            </td>
+            <td class="mdc-data-table__cell example-content">
+              {{ data.body.uploadedFile.Type }}
+            </td>
+            <td class="mdc-data-table__cell example-content">
+              {{ (data.body.uploadedFile.Size / 1024).toFixed(2) }} КБ
+            </td>
+            <td
+              class="mdc-data-table__cell"
+              style="color: red"
+              *ngIf="data.body.uploadedFile.IdFile === -1; else attached"
+            >
+              {{
+                'text.course.defence.dialog.status'
+                  | translate: 'Загруженный файл'
+              }}
+            </td>
+            <ng-template #attached>
+              <td
+                class="mdc-data-table__cell"
+                style="color: blue"
+                *ngIf="data.body.uploadedFile.IdFile !== -1"
+              >
+                {{
+                  'text.course.defence.dialog.added'
+                    | translate: 'Прикрепленный файл'
+                }}
+              </td>
+            </ng-template>
+            <td class="mdc-data-table__cell" style="padding-left: 0">
+              <button
+                mat-icon-button
+                color="primary"
+                matTooltip="{{
+                  'text.course.defence.dialog.delete.button'
+                    | translate: 'Удалить файл'
+                }}"
+                (click)="deleteFile()"
+              >
+                <mat-icon>clear</mat-icon>
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onClick()">{{'text.course.percentage.result.dialog.action.cancel' | translate : 'Отмена'}}</button>
-  <button mat-raised-button [mat-dialog-close]="data.body" color="primary"
-          [disabled]="!data.body.uploadedFile">{{data.buttonText}}</button>
+  <button mat-raised-button (click)="onClick()">
+    {{
+      'text.course.percentage.result.dialog.action.cancel' | translate: 'Отмена'
+    }}
+  </button>
+  <button
+    mat-raised-button
+    [mat-dialog-close]="data.body"
+    color="primary"
+    [disabled]="!data.body.uploadedFile"
+  >
+    {{ data.buttonText }}
+  </button>
 </div>

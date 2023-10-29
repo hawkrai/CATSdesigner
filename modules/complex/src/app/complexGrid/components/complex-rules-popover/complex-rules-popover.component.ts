@@ -1,29 +1,29 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 
 interface DialogData {
-  title?: string;
-  body?: any;
-  buttonText?: string;
-  model?: any;
+  title?: string
+  body?: any
+  buttonText?: string
+  model?: any
 }
 
 @Component({
   selector: 'app-complex-rules-popover',
   templateUrl: './complex-rules-popover.component.html',
-  styleUrls: ['./complex-rules-popover.component.less']
+  styleUrls: ['./complex-rules-popover.component.less'],
 })
 export class ComplexRulesPopoverComponent {
-
-  public files = [];
+  public files = []
   page: number = 1
-  pdfSrc: string = '../complex/assets/Polozhenie_New.pdf';
+  pdfSrc: string = '../complex/assets/Polozhenie_New.pdf'
 
   constructor(
     public dialogRef: MatDialogRef<ComplexRulesPopoverComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {}
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close()
   }
 }

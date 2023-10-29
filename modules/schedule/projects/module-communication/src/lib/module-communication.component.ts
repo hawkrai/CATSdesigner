@@ -1,19 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
 @Component({
   selector: 'lib-moduleCommunication',
-  template: `
-    <p>
-      module-communication works!
-    </p>
-  `,
-  styles: []
+  template: ` <p>module-communication works!</p> `,
+  styles: [],
 })
 export class ModuleCommunicationComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

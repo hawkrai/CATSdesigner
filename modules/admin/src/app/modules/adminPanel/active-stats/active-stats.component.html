@@ -1,21 +1,61 @@
-<mat-spinner mode="indeterminate" *ngIf="!this.isLoadActive" class="spinner" color="primary"></mat-spinner>
-<div *ngIf='this.isLoadActive'>
-    <div class="main">
-        <div class="inline">
-            <div class="div1">
-                <p class="active">{{"text.adminPanel.activeStats.userActivity" | translate}}</p>
-                <p> {{ "text.adminPanel.activeStats.userActivity.Description" | translate}}</p>
-            </div>
-            <div class="div2">
-                <p>{{ "text.adminPanel.activeStats.userActivity.totalUsers" | translate}}: {{ userActivity.TotalUsersCount }} </p>
-                <p>{{ "text.adminPanel.activeStats.userActivity.totalStudents" | translate}}: {{ userActivity.TotalStudentsCount }} </p>
-                <p>{{ "text.adminPanel.activeStats.userActivity.totalLecturers" | translate}}: {{ userActivity.TotalLecturersCount }} </p>
-                <p>{{ "text.adminPanel.activeStats.userActivity.totalServiceAccounts" | translate}}: {{ userActivity.ServiceAccountsCount }}</p>
-            </div>
-        </div>
+<mat-spinner
+  mode="indeterminate"
+  *ngIf="!this.isLoadActive"
+  class="spinner"
+  color="primary"
+></mat-spinner>
+<div *ngIf="this.isLoadActive">
+  <div class="main">
+    <div class="inline">
+      <div class="div1">
+        <p class="active">
+          {{ 'text.adminPanel.activeStats.userActivity' | translate }}
+        </p>
+        <p>
+          {{
+            'text.adminPanel.activeStats.userActivity.Description' | translate
+          }}
+        </p>
+      </div>
+      <div class="div2">
+        <p>
+          {{
+            'text.adminPanel.activeStats.userActivity.totalUsers' | translate
+          }}: {{ userActivity.TotalUsersCount }}
+        </p>
+        <p>
+          {{
+            'text.adminPanel.activeStats.userActivity.totalStudents'
+              | translate
+          }}: {{ userActivity.TotalStudentsCount }}
+        </p>
+        <p>
+          {{
+            'text.adminPanel.activeStats.userActivity.totalLecturers'
+              | translate
+          }}: {{ userActivity.TotalLecturersCount }}
+        </p>
+        <p>
+          {{
+            'text.adminPanel.activeStats.userActivity.totalServiceAccounts'
+              | translate
+          }}: {{ userActivity.ServiceAccountsCount }}
+        </p>
+      </div>
     </div>
-    <div class="charts">
-        <apx-chart [series]="this.timesSeries" [labels]="this.timesLabels" [legend]="this.chartOptions.legend" [chart]="this.chartOptions.chart"></apx-chart>
-        <apx-chart [series]="this.usersSeries" [labels]="this.usersLabels" [legend]="this.chartOptions.legend" [chart]="this.chartOptions.chart"></apx-chart>
-    </div>
+  </div>
+  <div class="charts">
+    <apx-chart
+      [series]="this.timesSeries"
+      [labels]="this.timesLabels"
+      [legend]="this.chartOptions.legend"
+      [chart]="this.chartOptions.chart"
+    ></apx-chart>
+    <apx-chart
+      [series]="this.usersSeries"
+      [labels]="this.usersLabels"
+      [legend]="this.chartOptions.legend"
+      [chart]="this.chartOptions.chart"
+    ></apx-chart>
+  </div>
 </div>

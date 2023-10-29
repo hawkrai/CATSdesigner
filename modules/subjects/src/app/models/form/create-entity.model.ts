@@ -1,6 +1,6 @@
 export class CreateEntity {
-    id: number;
-    subjectId: number;
-    pathFile: string;
-    attachments: string;
+  id: number
+  subjectId: number
+  pathFile: string
+  attachments: string
 }

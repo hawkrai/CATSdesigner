@@ -1,25 +1,24 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { StreamHandlerComponent } from './stream-handler.component';
+import { StreamHandlerComponent } from './stream-handler.component'
 
 describe('StreamHandlerComponent', () => {
-  let component: StreamHandlerComponent;
-  let fixture: ComponentFixture<StreamHandlerComponent>;
+  let component: StreamHandlerComponent
+  let fixture: ComponentFixture<StreamHandlerComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StreamHandlerComponent ]
-    })
-    .compileComponents();
-  }));
+      declarations: [StreamHandlerComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StreamHandlerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(StreamHandlerComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

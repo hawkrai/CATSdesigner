@@ -1,44 +1,64 @@
 <ng-container *ngIf="practicalFiles">
   <table mat-table [dataSource]="practicalFiles">
     <ng-container matColumnDef="practical">
-      <th mat-header-cell *matHeaderCellDef>{{'text.subjects.practicals' | translate:'text.subjects.practicals'}}</th>
-      <td mat-cell *matCellDef="let element" [matTooltip]="element.PracticalTheme">
-        {{element.PracticalShortName}}
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'text.subjects.practicals' | translate: 'text.subjects.practicals' }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        [matTooltip]="element.PracticalTheme"
+      >
+        {{ element.PracticalShortName }}
       </td>
     </ng-container>
     <ng-container matColumnDef="file">
-      <th mat-header-cell *matHeaderCellDef>{{'text.attachments' | translate:'Файл'}}</th>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'text.attachments' | translate: 'Файл' }}
+      </th>
       <td mat-cell *matCellDef="let element">
-        <button class="link"
-           *ngFor="let attachment of element.Attachments"
-           (click)="downloadFile(attachment)"
+        <button
+          class="link"
+          *ngFor="let attachment of element.Attachments"
+          (click)="downloadFile(attachment)"
         >
-          {{attachment.Name}}
+          {{ attachment.Name }}
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="comments">
-      <th mat-header-cell *matHeaderCellDef>{{'comment' | translate:'Комментарий'}}</th>
-      <td mat-cell *matCellDef="let element"
-      > {{element.Comments}}</td>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'comment' | translate: 'Комментарий' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.Comments }}</td>
     </ng-container>
 
     <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef>{{'date.and.time' | translate:'Дата, время'}}</th>
-      <td mat-cell *matCellDef="let element"
-      > {{element.Date}}</td>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'date.and.time' | translate: 'Дата, время' }}
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.Date }}</td>
     </ng-container>
 
     <ng-container matColumnDef="action">
-      <th mat-header-cell *matHeaderCellDef>{{'text.action' | translate:'Действие'}}</th>
-      <td mat-cell *matCellDef="let element"
-      >
-        <ng-container [ngTemplateOutlet]="actionsTemplate" [ngTemplateOutletContext]="{ file: element }"></ng-container>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'text.action' | translate: 'Действие' }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <ng-container
+          [ngTemplateOutlet]="actionsTemplate"
+          [ngTemplateOutletContext]="{ file: element }"
+        ></ng-container>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.fix]="row.IsReturned" [class.sticky]="row.IsReceived"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      [class.fix]="row.IsReturned"
+      [class.sticky]="row.IsReceived"
+    ></tr>
   </table>
 </ng-container>

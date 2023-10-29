@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~educats-common/index.css";
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import '~educats-common/index.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import '~ngx-toastr/toastr.css';
 
 .menu-item-tooltip {
@@ -23,7 +23,7 @@ h2,
 mat-label,
 p,
 div {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   color: #363636;
 }
 
@@ -138,7 +138,9 @@ html {
   border-color: #3f51b5;
 }
 .mat-radio-button.mat-accent .mat-radio-inner-circle,
-.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),
+.mat-radio-button.mat-accent
+  .mat-radio-ripple
+  .mat-ripple-element:not(.mat-radio-persistent-ripple),
 .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple,
 .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
   background-color: #3f51b5;

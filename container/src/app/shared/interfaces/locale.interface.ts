@@ -1,4 +1,4 @@
 export interface Locale {
-  name: string;
-  value: string;
+  name: string
+  value: string
 }

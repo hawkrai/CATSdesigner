@@ -2,66 +2,109 @@
             [smallText]="'Доступные тесты'"></app-header>-->
 <div class="test-result__container">
   <div class="test-result__backlink main-anchor" (click)="navigate()">
-    {{'text.test.back.to.test' | translate: "< К тестам"}}
+    {{ 'text.test.back.to.test' | translate: '< К тестам' }}
   </div>
   <div class="test-result-list">
     <div class="test-result-text__title" *ngIf="testName">
-      {{'text.test.theme.finished' | translate : ("Тест на тему «" + testName + "» завершен") : {title: testName} }}
+      {{
+        'text.test.theme.finished'
+          | translate
+            : 'Тест на тему «' + testName + '» завершен'
+            : { title: testName }
+      }}
     </div>
 
     <div class="test-result-text">
-      {{'text.test.your.mark' | translate: ("Ваша оценка: " + mark + "(" + percent + ")") : {mark: mark + '', percent: percent + ''} }}
+      {{
+        'text.test.your.mark'
+          | translate
+            : 'Ваша оценка: ' + mark + '(' + percent + ')'
+            : { mark: mark + '', percent: percent + '' }
+      }}
     </div>
     <div class="test-result-text">
-      {{('text.test.date.completing' | translate : "Дата прохождения теста :") + endDate }}
+      {{
+        ('text.test.date.completing' | translate: 'Дата прохождения теста :') +
+          endDate
+      }}
     </div>
     <div class="test-result-text">
-      {{('text.test.time.start' | translate : "Время начала теста :") + startTime }}
+      {{
+        ('text.test.time.start' | translate: 'Время начала теста :') + startTime
+      }}
     </div>
     <div class="test-result-text">
-      {{('text.test.time.end' | translate : "Время окончания теста :") + endTime }}
+      {{
+        ('text.test.time.end' | translate: 'Время окончания теста :') + endTime
+      }}
     </div>
   </div>
 
   <div class="test-result__results">
     <div class="test-result__results-line" *ngFor="let question of result">
       <div class="test-result__results-line-mark">
-        <p>{{'text.test.question.num' | translate : ("Вопрос №" + question.Number) : {number: question.Number} }}</p>
+        <p>
+          {{
+            'text.test.question.num'
+              | translate
+                : 'Вопрос №' + question.Number
+                : { number: question.Number }
+          }}
+        </p>
       </div>
-      <div class="test-result__results-line-color"
-           [class.right]="question.Points !== 0"
-           [class.fail]="question.Points === 0"
-           matTooltipClass="example-tooltip-blue"
-           [matTooltip]="question.QuestionTitle"
+      <div
+        class="test-result__results-line-color"
+        [class.right]="question.Points !== 0"
+        [class.fail]="question.Points === 0"
+        matTooltipClass="example-tooltip-blue"
+        [matTooltip]="question.QuestionTitle"
       ></div>
     </div>
   </div>
   <div *ngIf="isNN" class="nn">
-    <h4>{{'text.test.result.nn' | translate : "Анализ ответов от искусственной нейронной сети"}}:</h4>
+    <h4>
+      {{
+        'text.test.result.nn'
+          | translate: 'Анализ ответов от искусственной нейронной сети'
+      }}:
+    </h4>
     <table mat-table [dataSource]="this.nnDatasource" class="nn__table">
       <ng-container matColumnDef="theme">
-        <th mat-header-cell *matHeaderCellDef>{{ 'text.test.result.nn.theme' | translate : "Тема" }}</th>
-        <td mat-cell *matCellDef="let element ">{{element.theme}}</td>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'text.test.result.nn.theme' | translate: 'Тема' }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.theme }}</td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>{{ 'text.test.result.nn.status' | translate : "Статус" }}</th>
-        <td mat-cell *matCellDef="let element ">{{element.status ?
-          ('text.test.result.nn.status.valid' | translate : "Изучено")
-          : 'text.test.result.nn.status.invalid' | translate : "Изучить"
-        }}</td>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'text.test.result.nn.status' | translate: 'Статус' }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element.status
+              ? ('text.test.result.nn.status.valid' | translate: 'Изучено')
+              : ('text.test.result.nn.status.invalid' | translate: 'Изучить')
+          }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="score">
-        <th mat-header-cell *matHeaderCellDef>{{ 'text.test.result.nn.score' | translate : "Оценка сети" }}</th>
-        <td mat-cell *matCellDef="let element ">{{element.score}}</td>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'text.test.result.nn.score' | translate: 'Оценка сети' }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.score }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns; " [ngClass]="{
-        'valid': row.status,
-        'invalid': !row.status
-      }"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [ngClass]="{
+          valid: row.status,
+          invalid: !row.status
+        }"
+      ></tr>
     </table>
   </div>
 </div>

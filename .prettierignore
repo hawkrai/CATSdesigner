@@ -1,0 +1,6 @@
+/.vscode
+/api
+/ChatServer
+/cicd
+**/node_modules
+**/build

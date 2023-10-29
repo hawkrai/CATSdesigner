@@ -1,38 +1,34 @@
-import {Inject, Injectable} from '@angular/core';
-import {HttpClient, HttpEvent} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {DOCUMENT} from '@angular/common';
-import {CustomClass} from './config';
+import { Inject, Injectable } from '@angular/core'
+import { HttpClient, HttpEvent } from '@angular/common/http'
+import { Observable } from 'rxjs'
+import { DOCUMENT } from '@angular/common'
+import { CustomClass } from './config'
 
 export interface UploadResponse {
-  imageUrl: string;
+  imageUrl: string
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AngularEditorService {
+  savedSelection: Range | null
+  selectedText: string
+  uploadUrl: string
 
-  savedSelection: Range | null;
-  selectedText: string;
-  uploadUrl: string;
-
-  constructor(
-    private http: HttpClient,
-    @Inject(DOCUMENT) private doc: any
-  ) { }
+  constructor(private http: HttpClient, @Inject(DOCUMENT) private doc: any) {}
 
   /**
    * Executed command from editor header buttons exclude toggleEditorMode
    * @param command string from triggerCommand
    */
   executeCommand(command: string) {
-    const commands = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre'];
+    const commands = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre']
     if (commands.includes(command)) {
-      this.doc.execCommand('formatBlock', false, command);
-      return;
+      this.doc.execCommand('formatBlock', false, command)
+      return
     }
-    this.doc.execCommand(command, false, null);
+    this.doc.execCommand(command, false, null)
   }
 
   /**
@@ -41,10 +37,11 @@ export class AngularEditorService {
    */
   createLink(url: string) {
     if (!url.includes('http')) {
-      this.doc.execCommand('createlink', false, url);
+      this.doc.execCommand('createlink', false, url)
     } else {
-      const newUrl = '<a href="' + url + '" target="_blank">' + this.selectedText + '</a>';
-      this.insertHtml(newUrl);
+      const newUrl =
+        '<a href="' + url + '" target="_blank">' + this.selectedText + '</a>'
+      this.insertHtml(newUrl)
     }
   }
 
@@ -55,12 +52,12 @@ export class AngularEditorService {
    * @param where where the color has to be inserted either text/background
    */
   insertColor(color: string, where: string): void {
-    const restored = this.restoreSelection();
+    const restored = this.restoreSelection()
     if (restored) {
       if (where === 'textColor') {
-        this.doc.execCommand('foreColor', false, color);
+        this.doc.execCommand('foreColor', false, color)
       } else {
-        this.doc.execCommand('hiliteColor', false, color);
+        this.doc.execCommand('hiliteColor', false, color)
       }
     }
   }
@@ -70,7 +67,7 @@ export class AngularEditorService {
    * @param fontName string
    */
   setFontName(fontName: string) {
-    this.doc.execCommand('fontName', false, fontName);
+    this.doc.execCommand('fontName', false, fontName)
   }
 
   /**
@@ -78,7 +75,7 @@ export class AngularEditorService {
    * @param fontSize string
    */
   setFontSize(fontSize: string) {
-    this.doc.execCommand('fontSize', false, fontSize);
+    this.doc.execCommand('fontSize', false, fontSize)
   }
 
   /**
@@ -86,11 +83,10 @@ export class AngularEditorService {
    * @param html HTML string
    */
   insertHtml(html: string): void {
-
-    const isHTMLInserted = this.doc.execCommand('insertHTML', false, html);
+    const isHTMLInserted = this.doc.execCommand('insertHTML', false, html)
 
     if (!isHTMLInserted) {
-      throw new Error('Unable to perform the operation');
+      throw new Error('Unable to perform the operation')
     }
   }
 
@@ -99,15 +95,15 @@ export class AngularEditorService {
    */
   public saveSelection = (): void => {
     if (this.doc.getSelection) {
-      const sel = this.doc.getSelection();
+      const sel = this.doc.getSelection()
       if (sel.getRangeAt && sel.rangeCount) {
-        this.savedSelection = sel.getRangeAt(0);
-        this.selectedText = sel.toString();
+        this.savedSelection = sel.getRangeAt(0)
+        this.selectedText = sel.toString()
       }
     } else if (this.doc.getSelection && this.doc.createRange) {
-      this.savedSelection = document.createRange();
+      this.savedSelection = document.createRange()
     } else {
-      this.savedSelection = null;
+      this.savedSelection = null
     }
   }
 
@@ -119,35 +115,37 @@ export class AngularEditorService {
   restoreSelection(): boolean {
     if (this.savedSelection) {
       if (this.doc.getSelection) {
-        const sel = this.doc.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(this.savedSelection);
-        return true;
+        const sel = this.doc.getSelection()
+        sel.removeAllRanges()
+        sel.addRange(this.savedSelection)
+        return true
       } else if (this.doc.getSelection /*&& this.savedSelection.select*/) {
         // this.savedSelection.select();
-        return true;
+        return true
       }
     } else {
-      return false;
+      return false
     }
   }
 
   /**
    * setTimeout used for execute 'saveSelection' method in next event loop iteration
    */
-  public executeInNextQueueIteration(callbackFn: (...args: any[]) => any, timeout = 1e2): void {
-    setTimeout(callbackFn, timeout);
+  public executeInNextQueueIteration(
+    callbackFn: (...args: any[]) => any,
+    timeout = 1e2
+  ): void {
+    setTimeout(callbackFn, timeout)
   }
 
   /** check any selection is made or not */
   private checkSelection(): any {
-
-    const selectedText = this.savedSelection.toString();
+    const selectedText = this.savedSelection.toString()
 
     if (selectedText.length === 0) {
-      throw new Error('No Selection Made');
+      throw new Error('No Selection Made')
     }
-    return true;
+    return true
   }
 
   /**
@@ -155,15 +153,14 @@ export class AngularEditorService {
    * @param file The file
    */
   uploadImage(file: File): Observable<HttpEvent<UploadResponse>> {
+    const uploadData: FormData = new FormData()
 
-    const uploadData: FormData = new FormData();
-
-    uploadData.append('file', file, file.name);
+    uploadData.append('file', file, file.name)
 
     return this.http.post<UploadResponse>(this.uploadUrl, uploadData, {
       reportProgress: true,
       observe: 'events',
-    });
+    })
   }
 
   /**
@@ -171,34 +168,43 @@ export class AngularEditorService {
    * @param imageUrl The imageUrl.
    */
   insertImage(imageUrl: string) {
-    this.doc.execCommand('insertImage', false, imageUrl);
+    this.doc.execCommand('insertImage', false, imageUrl)
   }
 
   setDefaultParagraphSeparator(separator: string) {
-    this.doc.execCommand('defaultParagraphSeparator', false, separator);
+    this.doc.execCommand('defaultParagraphSeparator', false, separator)
   }
 
   createCustomClass(customClass: CustomClass) {
-    let newTag = this.selectedText;
+    let newTag = this.selectedText
     if (customClass) {
-      const tagName = customClass.tag ? customClass.tag : 'span';
-      newTag = '<' + tagName + ' class="' + customClass.class + '">' + this.selectedText + '</' + tagName + '>';
+      const tagName = customClass.tag ? customClass.tag : 'span'
+      newTag =
+        '<' +
+        tagName +
+        ' class="' +
+        customClass.class +
+        '">' +
+        this.selectedText +
+        '</' +
+        tagName +
+        '>'
     }
-    this.insertHtml(newTag);
+    this.insertHtml(newTag)
   }
 
   insertVideo(videoUrl: string) {
     if (videoUrl.match('www.youtube.com')) {
-      this.insertYouTubeVideoTag(videoUrl);
+      this.insertYouTubeVideoTag(videoUrl)
     }
     if (videoUrl.match('vimeo.com')) {
-      this.insertVimeoVideoTag(videoUrl);
+      this.insertVimeoVideoTag(videoUrl)
     }
   }
 
   private insertYouTubeVideoTag(videoUrl: string): void {
-    const id = videoUrl.split('v=')[1];
-    const imageUrl = `https://img.youtube.com/vi/${id}/0.jpg`;
+    const id = videoUrl.split('v=')[1]
+    const imageUrl = `https://img.youtube.com/vi/${id}/0.jpg`
     const thumbnail = `
       <div style='position: relative'>
         <img style='position: absolute; left:200px; top:140px'
@@ -206,98 +212,105 @@ export class AngularEditorService {
         <a href='${videoUrl}' target='_blank'>
           <img src="${imageUrl}" alt="click to watch"/>
         </a>
-      </div>`;
-    this.insertHtml(thumbnail);
+      </div>`
+    this.insertHtml(thumbnail)
   }
 
   private insertVimeoVideoTag(videoUrl: string): void {
-    const sub = this.http.get<any>(`https://vimeo.com/api/oembed.json?url=${videoUrl}`).subscribe(data => {
-      const imageUrl = data.thumbnail_url_with_play_button;
-      const thumbnail = `<div>
+    const sub = this.http
+      .get<any>(`https://vimeo.com/api/oembed.json?url=${videoUrl}`)
+      .subscribe((data) => {
+        const imageUrl = data.thumbnail_url_with_play_button
+        const thumbnail = `<div>
         <a href='${videoUrl}' target='_blank'>
           <img src="${imageUrl}" alt="${data.title}"/>
         </a>
-      </div>`;
-      this.insertHtml(thumbnail);
-      sub.unsubscribe();
-    });
+      </div>`
+        this.insertHtml(thumbnail)
+        sub.unsubscribe()
+      })
   }
 
   nextNode(node) {
     if (node.hasChildNodes()) {
-      return node.firstChild;
+      return node.firstChild
     } else {
       while (node && !node.nextSibling) {
-        node = node.parentNode;
+        node = node.parentNode
       }
       if (!node) {
-        return null;
+        return null
       }
-      return node.nextSibling;
+      return node.nextSibling
     }
   }
 
   getRangeSelectedNodes(range, includePartiallySelectedContainers) {
-    let node = range.startContainer;
-    const endNode = range.endContainer;
-    let rangeNodes = [];
+    let node = range.startContainer
+    const endNode = range.endContainer
+    let rangeNodes = []
 
     // Special case for a range that is contained within a single node
     if (node === endNode) {
-      rangeNodes = [node];
+      rangeNodes = [node]
     } else {
       // Iterate nodes until we hit the end container
       while (node && node !== endNode) {
-        rangeNodes.push( node = this.nextNode(node) );
+        rangeNodes.push((node = this.nextNode(node)))
       }
 
       // Add partially selected nodes at the start of the range
-      node = range.startContainer;
+      node = range.startContainer
       while (node && node !== range.commonAncestorContainer) {
-        rangeNodes.unshift(node);
-        node = node.parentNode;
+        rangeNodes.unshift(node)
+        node = node.parentNode
       }
     }
 
     // Add ancestors of the range container, if required
     if (includePartiallySelectedContainers) {
-      node = range.commonAncestorContainer;
+      node = range.commonAncestorContainer
       while (node) {
-        rangeNodes.push(node);
-        node = node.parentNode;
+        rangeNodes.push(node)
+        node = node.parentNode
       }
     }
 
-    return rangeNodes;
+    return rangeNodes
   }
 
   getSelectedNodes() {
-    const nodes = [];
+    const nodes = []
     if (this.doc.getSelection) {
-      const sel = this.doc.getSelection();
+      const sel = this.doc.getSelection()
       for (let i = 0, len = sel.rangeCount; i < len; ++i) {
-        nodes.push.apply(nodes, this.getRangeSelectedNodes(sel.getRangeAt(i), true));
+        nodes.push.apply(
+          nodes,
+          this.getRangeSelectedNodes(sel.getRangeAt(i), true)
+        )
       }
     }
-    return nodes;
+    return nodes
   }
 
   replaceWithOwnChildren(el) {
-    const parent = el.parentNode;
+    const parent = el.parentNode
     while (el.hasChildNodes()) {
-      parent.insertBefore(el.firstChild, el);
+      parent.insertBefore(el.firstChild, el)
     }
-    parent.removeChild(el);
+    parent.removeChild(el)
   }
 
   removeSelectedElements(tagNames) {
-    const tagNamesArray = tagNames.toLowerCase().split(',');
+    const tagNamesArray = tagNames.toLowerCase().split(',')
     this.getSelectedNodes().forEach((node) => {
-      if (node.nodeType === 1 &&
-        tagNamesArray.indexOf(node.tagName.toLowerCase()) > -1) {
+      if (
+        node.nodeType === 1 &&
+        tagNamesArray.indexOf(node.tagName.toLowerCase()) > -1
+      ) {
         // Remove the node and replace it with its children
-        this.replaceWithOwnChildren(node);
+        this.replaceWithOwnChildren(node)
       }
-    });
+    })
   }
 }

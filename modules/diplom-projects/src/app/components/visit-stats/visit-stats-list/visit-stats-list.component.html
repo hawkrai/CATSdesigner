@@ -3,65 +3,140 @@
     <table class="mdc-data-table__table">
       <thead>
         <tr class="mdc-data-table__header-row">
-          <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">№
+          <th
+            class="
+              mdc-data-table__header-cell mdc-data-table__header-cell--numeric
+            "
+            role="columnheader"
+            scope="col"
+          >
+            №
           </th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.student' |
-            translate: 'Студент'}}</th>
-          <th class="mdc-data-table__header-cell" role="columnheader" scope="col">{{'text.diplomProject.group' |
-            translate: 'Группа'}}</th>
-          <th class="mdc-data-table__header-cell data-cell" role="columnheader" scope="col"
-            *ngFor="let consultation of consultations">
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.diplomProject.student' | translate: 'Студент' }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell"
+            role="columnheader"
+            scope="col"
+          >
+            {{ 'text.diplomProject.group' | translate: 'Группа' }}
+          </th>
+          <th
+            class="mdc-data-table__header-cell data-cell"
+            role="columnheader"
+            scope="col"
+            *ngFor="let consultation of consultations"
+          >
             <div class="header-date">
-              <a class="clickable" (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
-                matTooltip="{{'text.diplomProject.dateRemove' | translate: 'Удалить дату'}}"
-                *ngIf="visitStatsComponent.getDiplomUser().IsLecturer && !visitStatsComponent.getDiplomUser().IsSecretary">
-                {{consultation.Day | date:'dd.MM.yyyy'}}
+              <a
+                class="clickable"
+                (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
+                matTooltip="{{
+                  'text.diplomProject.dateRemove' | translate: 'Удалить дату'
+                }}"
+                *ngIf="
+                  visitStatsComponent.getDiplomUser().IsLecturer &&
+                  !visitStatsComponent.getDiplomUser().IsSecretary
+                "
+              >
+                {{ consultation.Day | date: 'dd.MM.yyyy' }}
               </a>
-              <a class="clickable" (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
-                matTooltip="{{'text.diplomProject.dateRemove' | translate: 'Удалить дату'}}"
-                *ngIf="visitStatsComponent.isLecturer">
-                {{consultation.Day | date:'dd.MM.yyyy'}}
+              <a
+                class="clickable"
+                (dblclick)="visitStatsComponent.deleteVisitDate(consultation)"
+                matTooltip="{{
+                  'text.diplomProject.dateRemove' | translate: 'Удалить дату'
+                }}"
+                *ngIf="visitStatsComponent.isLecturer"
+              >
+                {{ consultation.Day | date: 'dd.MM.yyyy' }}
               </a>
               <p *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
-                {{consultation.Day | date:'dd.MM.yyyy'}}
+                {{ consultation.Day | date: 'dd.MM.yyyy' }}
               </p>
-              <p *ngIf="!visitStatsComponent.isLecturer && visitStatsComponent.getDiplomUser().IsSecretary">
-                {{consultation.Day | date:'dd.MM.yyyy'}}
+              <p
+                *ngIf="
+                  !visitStatsComponent.isLecturer &&
+                  visitStatsComponent.getDiplomUser().IsSecretary
+                "
+              >
+                {{ consultation.Day | date: 'dd.MM.yyyy' }}
               </p>
             </div>
           </th>
         </tr>
       </thead>
-      <tbody *ngIf="filteredVisitStatsList; else: load">
-        <tr class="mdc-data-table__row" *ngFor="let stats of filteredVisitStatsList; index as i">
+      <tbody *ngIf="filteredVisitStatsList; else load">
+        <tr
+          class="mdc-data-table__row"
+          *ngFor="let stats of filteredVisitStatsList; index as i"
+        >
           <td class="mdc-data-table__cell">{{ i + 1 }}</td>
           <td class="mdc-data-table__cell">{{ stats.Name }}</td>
           <td class="mdc-data-table__cell">{{ stats.Group }}</td>
           <ng-container *ngIf="visitStatsComponent.getDiplomUser().IsStudent">
-            <td class="mdc-data-table__cell data-cell"
-              *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks">
-              {{consultationMark.Mark}}
-            </td>
-          </ng-container>
-          <ng-container *ngIf="!visitStatsComponent.isLecturer && visitStatsComponent.getDiplomUser().IsSecretary">
-            <td class="mdc-data-table__cell data-cell"
-              *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks">
-              {{consultationMark.Mark}}
+            <td
+              class="mdc-data-table__cell data-cell"
+              *ngFor="
+                let consultationMark of stats.DiplomProjectConsultationMarks
+              "
+            >
+              {{ consultationMark.Mark }}
             </td>
           </ng-container>
           <ng-container
-            *ngIf="visitStatsComponent.getDiplomUser().IsLecturer && !visitStatsComponent.getDiplomUser().IsSecretary">
-            <td class="mdc-data-table__cell data-cell"
-              *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks"
-              (dblclick)="visitStatsComponent.setVisitMarks(consultationMark.ConsultationDateId)">
-              {{consultationMark.Mark}}
+            *ngIf="
+              !visitStatsComponent.isLecturer &&
+              visitStatsComponent.getDiplomUser().IsSecretary
+            "
+          >
+            <td
+              class="mdc-data-table__cell data-cell"
+              *ngFor="
+                let consultationMark of stats.DiplomProjectConsultationMarks
+              "
+            >
+              {{ consultationMark.Mark }}
+            </td>
+          </ng-container>
+          <ng-container
+            *ngIf="
+              visitStatsComponent.getDiplomUser().IsLecturer &&
+              !visitStatsComponent.getDiplomUser().IsSecretary
+            "
+          >
+            <td
+              class="mdc-data-table__cell data-cell"
+              *ngFor="
+                let consultationMark of stats.DiplomProjectConsultationMarks
+              "
+              (dblclick)="
+                visitStatsComponent.setVisitMarks(
+                  consultationMark.ConsultationDateId
+                )
+              "
+            >
+              {{ consultationMark.Mark }}
             </td>
           </ng-container>
           <ng-container *ngIf="visitStatsComponent.isLecturer">
-            <td class="mdc-data-table__cell data-cell"
-              *ngFor="let consultationMark of stats.DiplomProjectConsultationMarks"
-              (dblclick)="visitStatsComponent.setVisitMarks(consultationMark.ConsultationDateId)">
-              {{consultationMark.Mark}}
+            <td
+              class="mdc-data-table__cell data-cell"
+              *ngFor="
+                let consultationMark of stats.DiplomProjectConsultationMarks
+              "
+              (dblclick)="
+                visitStatsComponent.setVisitMarks(
+                  consultationMark.ConsultationDateId
+                )
+              "
+            >
+              {{ consultationMark.Mark }}
             </td>
           </ng-container>
         </tr>

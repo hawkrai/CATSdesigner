@@ -1,13 +1,16 @@
 <div class="question-container">
   <div class="question-title">
-    <div class="question-title-big">Вопрос №{{question.Number}}</div>
-    <div class="question-title-small" *ngIf="test">{{test.Title}}</div>
+    <div class="question-title-big">Вопрос №{{ question.Number }}</div>
+    <div class="question-title-small" *ngIf="test">{{ test.Title }}</div>
   </div>
   <div class="question-question" *ngIf="question?.Question?.Title">
-    <div class="question-question-text">{{question?.Question?.Title}}</div>
+    <div class="question-question-text">{{ question?.Question?.Title }}</div>
   </div>
   <div class="question-description" *ngIf="question?.Question?.Description">
-    <div class="question-description-text" [innerHTML]="question?.Question?.Description"></div>
+    <div
+      class="question-description-text"
+      [innerHTML]="question?.Question?.Description"
+    ></div>
   </div>
   <div class="question-block">
     <div class="question-answer-block">
@@ -17,34 +20,62 @@
       <div class="question-answers-block">
         <div class="question-answers-block-container">
           <!--<div class="question-answers-block-container-values">фрагменты фрагменты</div>-->
-          <mat-radio-group *ngIf="question.Question.QuestionType === 0"
-                           aria-labelledby="example-radio-group-label"
-                           class="question-example-radio-group"
-                           [(ngModel)]="chosenAnswer">
-            <mat-radio-button class="question-example-radio-button" *ngFor="let answer of question?.Question?.Answers"
-                              [value]="answer">
-              {{answer.Content}}
+          <mat-radio-group
+            *ngIf="question.Question.QuestionType === 0"
+            aria-labelledby="example-radio-group-label"
+            class="question-example-radio-group"
+            [(ngModel)]="chosenAnswer"
+          >
+            <mat-radio-button
+              class="question-example-radio-button"
+              *ngFor="let answer of question?.Question?.Answers"
+              [value]="answer"
+            >
+              {{ answer.Content }}
             </mat-radio-button>
           </mat-radio-group>
-          <div class="question-answers-block-container-checkboxes" *ngIf="question.Question.QuestionType === 1">
-            <div *ngFor="let answer of question?.Question?.Answers, let i = index"
-                 class="question-answers-block-container-checkboxes-container">
-              <mat-checkbox class="question-answers-block-container-checkboxes-item" [(ngModel)]="charsNeskolko[i]">
+          <div
+            class="question-answers-block-container-checkboxes"
+            *ngIf="question.Question.QuestionType === 1"
+          >
+            <div
+              *ngFor="let answer of question?.Question?.Answers; let i = index"
+              class="question-answers-block-container-checkboxes-container"
+            >
+              <mat-checkbox
+                class="question-answers-block-container-checkboxes-item"
+                [(ngModel)]="charsNeskolko[i]"
+              >
               </mat-checkbox>
-              <div class="question-answers-block-container-checkboxes-container-text">
-                {{answer.Content}}
+              <div
+                class="
+                  question-answers-block-container-checkboxes-container-text
+                "
+              >
+                {{ answer.Content }}
               </div>
             </div>
           </div>
           <ng-container *ngIf="question.Question.QuestionType === 2">
-            <input class="question-answers-block-container-word" matInput placeholder="Введите ответ"
-                   (change)="onValueChange($event)">
+            <input
+              class="question-answers-block-container-word"
+              matInput
+              placeholder="Введите ответ"
+              (change)="onValueChange($event)"
+            />
           </ng-container>
           <ng-container *ngIf="question.Question.QuestionType === 3">
-            <div cdkDropList class="example-list question-answers-sequence" (cdkDropListDropped)="drop($event)">
-              <div class="example-box question-answers-sequence-item" *ngFor="let answer of question?.Question?.Answers"
-                   cdkDrag>
-                {{answer.Content}}
+            <div
+              cdkDropList
+              class="example-list question-answers-sequence"
+              (cdkDropListDropped)="drop($event)"
+            >
+              <div
+                class="example-box question-answers-sequence-item"
+                *ngFor="let answer of question?.Question?.Answers"
+                cdkDrag
+              >
+                {{ answer.Content }}
               </div>
             </div>
           </ng-container>
@@ -62,7 +93,11 @@
       </div>
       <div class="question-button-container">
         <div class="question-button-container-item">
-          <button mat-raised-button color="primary" (click)="getOnNextQuestion(false)">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="getOnNextQuestion(false)"
+          >
             <mat-icon>arrow_forward_ios</mat-icon>
             Пропустить
           </button>

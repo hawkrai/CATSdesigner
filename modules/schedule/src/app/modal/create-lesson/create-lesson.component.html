@@ -1,53 +1,128 @@
 <div>
-  <h2 mat-dialog-title class="visit-date__title" style = "margin: 0px; float: left; width: 94%">{{'text.schedule.add.event.to.schedule' | translate: 'Добавление занятия/события в расписание'}}</h2>
-  <mat-icon (click)="onCancelClick()" style="cursor: pointer;position: relative; margin-left: 1%">close</mat-icon>
-  <h5 style = "float: left;font-size: 14px; color: #808080">{{date}}</h5>
+  <h2
+    mat-dialog-title
+    class="visit-date__title"
+    style="margin: 0px; float: left; width: 94%"
+  >
+    {{
+      'text.schedule.add.event.to.schedule'
+        | translate: 'Добавление занятия/события в расписание'
+    }}
+  </h2>
+  <mat-icon
+    (click)="onCancelClick()"
+    style="cursor: pointer; position: relative; margin-left: 1%"
+    >close</mat-icon
+  >
+  <h5 style="float: left; font-size: 14px; color: #808080">{{ date }}</h5>
 </div>
 
-<mat-tab-group class="remove-border-bottom" [selectedIndex]="selectedIndex" style = "float: left; margin-top: 4%;">
-  <mat-tab [label]="'text.schedule.lesson' | translate: 'Занятие'" [disabled]="disableLesson" >
-    <div class="example-container" style="margin-top: 5%; width: 99%;" >
-        <form [formGroup]="formGroup">
-          <mat-form-field >
-              <mat-select [(ngModel)]="lesson.SubjectId" [ngModel]="lesson.SubjectId" (selectionChange)="subjectChange($event)"
-                          formControlName="subjectF" [placeholder]="'text.schedule.select.subject' | translate: 'Выберите предмет или дипломное проектироание'">
+<mat-tab-group
+  class="remove-border-bottom"
+  [selectedIndex]="selectedIndex"
+  style="float: left; margin-top: 4%"
+>
+  <mat-tab
+    [label]="'text.schedule.lesson' | translate: 'Занятие'"
+    [disabled]="disableLesson"
+  >
+    <div class="example-container" style="margin-top: 5%; width: 99%">
+      <form [formGroup]="formGroup">
+        <mat-form-field>
+          <mat-select
+            [(ngModel)]="lesson.SubjectId"
+            [ngModel]="lesson.SubjectId"
+            (selectionChange)="subjectChange($event)"
+            formControlName="subjectF"
+            [placeholder]="
+              'text.schedule.select.subject'
+                | translate: 'Выберите предмет или дипломное проектироание'
+            "
+          >
+            <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{
+              subject.Name
+            }}</mat-option>
+            <mat-divider></mat-divider>
+            <mat-option *ngIf="isDiplomAvailable" [value]="0"
+              >Дипломное проектирование</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="subjectF.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select
+            [ngModel]="changedType"
+            formControlName="type"
+            (selectionChange)="typeChange($event)"
+            [placeholder]="
+              'text.schedule.select.type.lesson'
+                | translate: 'Выберите тип занятия'
+            "
+          >
+            <mat-option
+              [disabled]
+              *ngFor="let type of lessonTypesFull"
+              [value]="type[0]"
+              >{{ type[1] }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="type.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+        </mat-form-field>
 
-                <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{subject.Name}}</mat-option>
-                <mat-divider></mat-divider>
-                <mat-option *ngIf = "isDiplomAvailable" [value]="0">Дипломное проектирование</mat-option>
-              </mat-select>
-              <mat-error *ngIf="subjectF.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-select [ngModel]="changedType" formControlName="type" (selectionChange)="typeChange($event)"
-                        [placeholder]="'text.schedule.select.type.lesson' | translate: 'Выберите тип занятия'">
-              <mat-option [disabled] *ngFor="let type of lessonTypesFull" [value]="type[0]">{{type[1]}}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="type.hasError('required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          </mat-form-field>
+        <mat-form-field style="width: 48%">
+          <mat-select
+            formControlName="group"
+            (selectionChange)="groupChange($event)"
+            [(ngModel)]="stageValue"
+            [placeholder]="
+              'text.schedule.select.group' | translate: 'Выберите группу'
+            "
+          >
+            <mat-option *ngFor="let group of groups" [value]="group.GroupId">{{
+              group.GroupName
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="type.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+        </mat-form-field>
 
-          <mat-form-field style="width: 48%;">
-            <mat-select formControlName="group" (selectionChange)="groupChange($event)"  [(ngModel)]="stageValue"
-                        [placeholder]="'text.schedule.select.group' | translate: 'Выберите группу'">
-              <mat-option *ngFor="let group of groups" [value]="group.GroupId">{{group.GroupName}}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="type.hasError('required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          </mat-form-field>
+        <mat-form-field style="width: 48%; margin-left: 4%">
+          <mat-select
+            formControlName="subGroup"
+            [(ngModel)]="stageValueSub"
+            [placeholder]="
+              'text.schedule.select.subgroup' | translate: 'Выберите подгруппу'
+            "
+          >
+            <mat-option [value]="currentGroup?.SubGroupsOne?.SubGroupId">{{
+              currentGroup?.SubGroupsOne?.Name
+            }}</mat-option>
+            <mat-option [value]="currentGroup?.SubGroupsTwo?.SubGroupId">{{
+              currentGroup?.SubGroupsTwo?.Name
+            }}</mat-option>
+            <mat-option [value]="currentGroup?.SubGroupsThird?.SubGroupId">{{
+              currentGroup?.SubGroupsThird?.Name
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="type.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+        </mat-form-field>
 
-          <mat-form-field style="width: 48%; margin-left: 4%;">
-            <mat-select formControlName="subGroup" [(ngModel)]="stageValueSub" [placeholder]="'text.schedule.select.subgroup' | translate: 'Выберите подгруппу'">
-              <mat-option [value]="currentGroup?.SubGroupsOne?.SubGroupId">{{currentGroup?.SubGroupsOne?.Name}}</mat-option>
-              <mat-option [value]="currentGroup?.SubGroupsTwo?.SubGroupId">{{currentGroup?.SubGroupsTwo?.Name}}</mat-option>
-              <mat-option [value]="currentGroup?.SubGroupsThird?.SubGroupId">{{currentGroup?.SubGroupsThird?.Name}}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="type.hasError('required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          </mat-form-field>
-
-          <!--mat-form-field [formGroup]="formGroup">
+        <!--mat-form-field [formGroup]="formGroup">
             <input [ngModel]="teacherSubject" id="teacher" formControlName="teacher" matInput placeholder="Преподаватель">
             <mat-error *ngIf="teacher.hasError('required')"> Поле должно быть заполнено</mat-error>
           </mat-form-field-->
-          <!--mat-form-field>
+        <!--mat-form-field>
             <input
               matInput
               formControlName="dayEvent"
@@ -61,57 +136,153 @@
               altFormat="d.m.Y"
               [placeholder]="'text.schedule.lesson.date' | translate: 'Дата'"
             /-->
-            <!--input matInput [matDatepicker]="picker" formControlName="dayEvent">
+        <!--input matInput [matDatepicker]="picker" formControlName="dayEvent">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="dayEvent.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
           </mat-form-field-->
-          <mat-form-field style="width: 48%;">
-            <input type = 'time' matInput formControlName="startEvent" [(ngModel)]="startTimeOfLesson"
-                   [ngModel]="startTimeOfLesson"  [placeholder]="'text.schedule.lesson.start' | translate:'Начало занятия'">
-            <mat-error *ngIf="startEvent.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-            <mat-error *ngIf="startEvent.hasError( 'min')">{{'text.schedule.field.must.be.more' | translate: 'Время должно превышать 08:00'}}</mat-error>
-          </mat-form-field>
-          <mat-form-field style="width: 48%;margin-left: 4%; z-index: 4">
-            <input matInput type = 'time' min="16:00"  formControlName="endEvent" [(ngModel)]="endTimeOfLesson"
-                   [ngModel]="endTimeOfLesson" [placeholder]="'text.schedule.lesson.end' | translate:'Конец занятия'">
-            <mat-error *ngIf="endEvent.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-            <mat-error *ngIf="endEvent.hasError( 'min')">{{'text.schedule.field.must.be.more' | translate: 'Время должно превышать 08:00'}}</mat-error>
-          </mat-form-field>
-          <mat-form-field  style="width: 48%;">
-            <input type="text" [ngModel]="lesson.Building" [(ngModel)]="lesson.Building" id="building"
-                   formControlName="building"
-                   matInput [placeholder]="'text.schedule.lesson.building' | translate:'Корпус'">
-            <mat-error *ngIf="building.hasError('maxlength')">{{'text.schedule.building.length' | translate: 'Номер корпуса должен быть мньше 4 символов'}}</mat-error>
-            <mat-error *ngIf="building.hasError('required')"> {{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          </mat-form-field>
+        <mat-form-field style="width: 48%">
+          <input
+            type="time"
+            matInput
+            formControlName="startEvent"
+            [(ngModel)]="startTimeOfLesson"
+            [ngModel]="startTimeOfLesson"
+            [placeholder]="
+              'text.schedule.lesson.start' | translate: 'Начало занятия'
+            "
+          />
+          <mat-error *ngIf="startEvent.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+          <mat-error *ngIf="startEvent.hasError('min')">{{
+            'text.schedule.field.must.be.more'
+              | translate: 'Время должно превышать 08:00'
+          }}</mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 48%; margin-left: 4%; z-index: 4">
+          <input
+            matInput
+            type="time"
+            min="16:00"
+            formControlName="endEvent"
+            [(ngModel)]="endTimeOfLesson"
+            [ngModel]="endTimeOfLesson"
+            [placeholder]="
+              'text.schedule.lesson.end' | translate: 'Конец занятия'
+            "
+          />
+          <mat-error *ngIf="endEvent.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+          <mat-error *ngIf="endEvent.hasError('min')">{{
+            'text.schedule.field.must.be.more'
+              | translate: 'Время должно превышать 08:00'
+          }}</mat-error>
+        </mat-form-field>
+        <mat-form-field style="width: 48%">
+          <input
+            type="text"
+            [ngModel]="lesson.Building"
+            [(ngModel)]="lesson.Building"
+            id="building"
+            formControlName="building"
+            matInput
+            [placeholder]="
+              'text.schedule.lesson.building' | translate: 'Корпус'
+            "
+          />
+          <mat-error *ngIf="building.hasError('maxlength')">{{
+            'text.schedule.building.length'
+              | translate: 'Номер корпуса должен быть мньше 4 символов'
+          }}</mat-error>
+          <mat-error *ngIf="building.hasError('required')">
+            {{
+              'text.schedule.field.must.be.not.empty'
+                | translate: 'Поле не может быть пустым'
+            }}</mat-error
+          >
+        </mat-form-field>
 
-          <mat-form-field style="width: 48%;margin-left: 4%">
-            <input type="text" [ngModel]="lesson.Audience" [(ngModel)]="lesson.Audience" id="audience"
-                   formControlName="audience"
-                   matInput [placeholder]="'text.schedule.lesson.audience' | translate: 'Аудитория'">
-            <mat-error *ngIf="audience.hasError('maxlength')">{{'text.schedule.audience.length' | translate: 'Номер аудитории должен быть мньше 6 символов'}}</mat-error>
-            <mat-error *ngIf="audience.hasError('required')"> {{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <textarea rows="6" matInput formControlName="memo"  [placeholder]="'text.schedule.note' | translate:'Заметка'"
-                      [(ngModel)]="memo" [ngModel]="memo"></textarea>
-          </mat-form-field>
-          <p></p>
-          <div style="display: flex; padding-bottom: 10px; float: right">
-            <button mat-raised-button color="basic" (click)=onCancelClick()>{{'text.editor.cancel' | translate: 'Отмена'}}</button>
-            <button mat-raised-button color="primary" (click)="addLesson()" style = 'margin-left: 10px' [disabled]="formGroup.invalid">{{'button.save' | translate: 'Сохранить'}}</button>
-          </div>
-        </form>
+        <mat-form-field style="width: 48%; margin-left: 4%">
+          <input
+            type="text"
+            [ngModel]="lesson.Audience"
+            [(ngModel)]="lesson.Audience"
+            id="audience"
+            formControlName="audience"
+            matInput
+            [placeholder]="
+              'text.schedule.lesson.audience' | translate: 'Аудитория'
+            "
+          />
+          <mat-error *ngIf="audience.hasError('maxlength')">{{
+            'text.schedule.audience.length'
+              | translate: 'Номер аудитории должен быть мньше 6 символов'
+          }}</mat-error>
+          <mat-error *ngIf="audience.hasError('required')">
+            {{
+              'text.schedule.field.must.be.not.empty'
+                | translate: 'Поле не может быть пустым'
+            }}</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field>
+          <textarea
+            rows="6"
+            matInput
+            formControlName="memo"
+            [placeholder]="'text.schedule.note' | translate: 'Заметка'"
+            [(ngModel)]="memo"
+            [ngModel]="memo"
+          ></textarea>
+        </mat-form-field>
+        <p></p>
+        <div style="display: flex; padding-bottom: 10px; float: right">
+          <button mat-raised-button color="basic" (click)="onCancelClick()">
+            {{ 'text.editor.cancel' | translate: 'Отмена' }}
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="addLesson()"
+            style="margin-left: 10px"
+            [disabled]="formGroup.invalid"
+          >
+            {{ 'button.save' | translate: 'Сохранить' }}
+          </button>
+        </div>
+      </form>
     </div>
   </mat-tab>
-  <mat-tab [label] = "'text.schedule.event' | translate:'Событие'" [disabled]="disableNote">
-    <div class="example-container" style="margin-top: 5%;width: 99%;"xmlns:position="http://www.w3.org/1999/xhtml">
-      <form [formGroup]="formGroupNote" style="width: 99%;">
+  <mat-tab
+    [label]="'text.schedule.event' | translate: 'Событие'"
+    [disabled]="disableNote"
+  >
+    <div
+      class="example-container"
+      style="margin-top: 5%; width: 99%"
+      xmlns:position="http://www.w3.org/1999/xhtml"
+    >
+      <form [formGroup]="formGroupNote" style="width: 99%">
         <mat-form-field>
-          <textarea matInput rows="3" type="text"  formControlName="title" [placeholder]="'text.schedule.note.text' | translate:'Название события'"
-                    [(ngModel)]="note.title"> </textarea>
-          <mat-error *ngIf="title.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
+          <textarea
+            matInput
+            rows="3"
+            type="text"
+            formControlName="title"
+            [placeholder]="
+              'text.schedule.note.text' | translate: 'Название события'
+            "
+            [(ngModel)]="note.title"
+          >
+          </textarea>
+          <mat-error *ngIf="title.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
         </mat-form-field>
         <!--mat-form-field>
           <input
@@ -129,28 +300,72 @@
           />
           <mat-error *ngIf="dayNote.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
         </mat-form-field-->
-        <mat-form-field style="width:48%;">
-          <input matInput formControlName="startNote" [(ngModel)]="startTimeOfNote"
-                 [ngModel]="startTimeOfNote" type="time" [placeholder]="'text.schedule.note.start'| translate:'Начало'">
-          <mat-error *ngIf="startNote.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          <mat-error *ngIf="startNote.hasError( 'min')">{{'text.schedule.field.must.be.more' | translate: 'Время должно превышать 08:00'}}</mat-error>
+        <mat-form-field style="width: 48%">
+          <input
+            matInput
+            formControlName="startNote"
+            [(ngModel)]="startTimeOfNote"
+            [ngModel]="startTimeOfNote"
+            type="time"
+            [placeholder]="'text.schedule.note.start' | translate: 'Начало'"
+          />
+          <mat-error *ngIf="startNote.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+          <mat-error *ngIf="startNote.hasError('min')">{{
+            'text.schedule.field.must.be.more'
+              | translate: 'Время должно превышать 08:00'
+          }}</mat-error>
         </mat-form-field>
-        <mat-form-field style="width: 48%;margin-left: 4%">
-          <input matInput formControlName="endNote" [(ngModel)]="endTimeOfNote"
-                 [ngModel]="endTimeOfNote" type="time" [placeholder]="'text.schedule.note.end'| translate:'Конец'">
-          <mat-error *ngIf="endNote.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
-          <mat-error *ngIf="endNote.hasError( 'min')">{{'text.schedule.field.must.be.more' | translate: 'Время должно превышать 08:00'}}</mat-error>
+        <mat-form-field style="width: 48%; margin-left: 4%">
+          <input
+            matInput
+            formControlName="endNote"
+            [(ngModel)]="endTimeOfNote"
+            [ngModel]="endTimeOfNote"
+            type="time"
+            [placeholder]="'text.schedule.note.end' | translate: 'Конец'"
+          />
+          <mat-error *ngIf="endNote.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+          <mat-error *ngIf="endNote.hasError('min')">{{
+            'text.schedule.field.must.be.more'
+              | translate: 'Время должно превышать 08:00'
+          }}</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <textarea matInput rows="6" type="text"  formControlName="note" [placeholder]="'text.schedule.note' | translate:'Заметка'"
-                    [(ngModel)]="note.note"> </textarea>
-          <mat-error *ngIf="title.hasError( 'required')">{{'text.schedule.field.must.be.not.empty' | translate: 'Поле не может быть пустым'}}</mat-error>
+          <textarea
+            matInput
+            rows="6"
+            type="text"
+            formControlName="note"
+            [placeholder]="'text.schedule.note' | translate: 'Заметка'"
+            [(ngModel)]="note.note"
+          >
+          </textarea>
+          <mat-error *ngIf="title.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
         </mat-form-field>
       </form>
     </div>
     <div style="display: flex; padding-bottom: 10px; float: right">
-      <button mat-raised-button color="basic" (click)=onCancelClick()>{{'text.editor.cancel' | translate: 'Отмена'}}</button>
-      <button style = 'margin-left: 10px' mat-raised-button color="primary" [disabled]="formGroupNote.invalid" (click)="addNote()">{{'button.save' | translate: 'Сохранить'}}</button>
+      <button mat-raised-button color="basic" (click)="onCancelClick()">
+        {{ 'text.editor.cancel' | translate: 'Отмена' }}
+      </button>
+      <button
+        style="margin-left: 10px"
+        mat-raised-button
+        color="primary"
+        [disabled]="formGroupNote.invalid"
+        (click)="addNote()"
+      >
+        {{ 'button.save' | translate: 'Сохранить' }}
+      </button>
     </div>
   </mat-tab>
 </mat-tab-group>

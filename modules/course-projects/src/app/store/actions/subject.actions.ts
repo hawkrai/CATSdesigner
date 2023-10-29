@@ -1,4 +1,4 @@
-import {Action} from '@ngrx/store';
+import { Action } from '@ngrx/store'
 
 export enum ESubjectActions {
   GetSubjectId = '[Subject] Get Subject Id',
@@ -6,13 +6,13 @@ export enum ESubjectActions {
 }
 
 export class GetSubjectId implements Action {
-  public readonly type = ESubjectActions.GetSubjectId;
+  public readonly type = ESubjectActions.GetSubjectId
 }
 
 export class SetSubjectId implements Action {
-  public readonly type = ESubjectActions.SetSubjectId;
+  public readonly type = ESubjectActions.SetSubjectId
 
   constructor(public payload: string) {}
 }
 
-export type SubjectActions = GetSubjectId | SetSubjectId;
+export type SubjectActions = GetSubjectId | SetSubjectId

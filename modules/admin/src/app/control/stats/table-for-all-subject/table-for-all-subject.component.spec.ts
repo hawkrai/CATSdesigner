@@ -1,25 +1,24 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TableForAllSubjectComponent } from './table-for-all-subject.component';
+import { TableForAllSubjectComponent } from './table-for-all-subject.component'
 
 describe('TableForAllSubjectComponent', () => {
-  let component: TableForAllSubjectComponent;
-  let fixture: ComponentFixture<TableForAllSubjectComponent>;
+  let component: TableForAllSubjectComponent
+  let fixture: ComponentFixture<TableForAllSubjectComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableForAllSubjectComponent ]
-    })
-    .compileComponents();
-  }));
+      declarations: [TableForAllSubjectComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TableForAllSubjectComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(TableForAllSubjectComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

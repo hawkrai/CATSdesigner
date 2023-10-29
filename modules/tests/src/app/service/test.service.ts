@@ -1,91 +1,104 @@
-import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {Group} from "../models/group.model";
-import {SubGroup} from "../models/sub-group.model";
-import {TestAvailabilityRequest} from "../models/testAvailabilityRequest.model";
-import {Question} from "../models/question/question.model";
-import {Test} from "../models/test.model";
-
+import { Injectable } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { Observable } from 'rxjs'
+import { Group } from '../models/group.model'
+import { SubGroup } from '../models/sub-group.model'
+import { TestAvailabilityRequest } from '../models/testAvailabilityRequest.model'
+import { Question } from '../models/question/question.model'
+import { Test } from '../models/test.model'
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root',
 })
 export class TestService {
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getAllTestBySubjectId(subjectId: string): Observable<Test[]> {
-    return this.http.get<Test[]>("/Tests/GetTests?subjectId=" + subjectId);
+    return this.http.get<Test[]>('/Tests/GetTests?subjectId=' + subjectId)
   }
 
   getConcepts(subjectId: string): Observable<any> {
-    return this.http.get<any>("/Tests/GetConcepts?subjectId=" + subjectId);
+    return this.http.get<any>('/Tests/GetConcepts?subjectId=' + subjectId)
   }
 
   getQuestionsByTest(testId: string): Observable<Question[]> {
-    return this.http.get<Question[]>("/Tests/GetQuestions?testId=" + testId);
+    return this.http.get<Question[]>('/Tests/GetQuestions?testId=' + testId)
   }
 
   getQuestion(testId: string): Observable<Question> {
-    return this.http.get<Question>("/Tests/GetQuestion?id=" + testId);
+    return this.http.get<Question>('/Tests/GetQuestion?id=' + testId)
   }
 
   getTestById(id: string): Observable<Test> {
-    return this.http.get<Test>("/Tests/GetTest?id=" + id);
+    return this.http.get<Test>('/Tests/GetTest?id=' + id)
   }
 
   getGroupsBySubjectId(id: string): Observable<Group[]> {
-    return this.http.get<Group[]>("/Tests/GetGroups?subjectId=" + id);
+    return this.http.get<Group[]>('/Tests/GetGroups?subjectId=' + id)
   }
 
-  getSubGroupsBySubjectIdGroupIdTestId(subjectId: string, testId: string, groupId: number): Observable<SubGroup[]> {
-    return this.http.get<SubGroup[]>("/Tests/GetSubGroups?groupId=" + groupId + "&subjectId=" + subjectId + "&testId=" + testId);
+  getSubGroupsBySubjectIdGroupIdTestId(
+    subjectId: string,
+    testId: string,
+    groupId: number
+  ): Observable<SubGroup[]> {
+    return this.http.get<SubGroup[]>(
+      '/Tests/GetSubGroups?groupId=' +
+        groupId +
+        '&subjectId=' +
+        subjectId +
+        '&testId=' +
+        testId
+    )
   }
 
   deleteTest(id: string): Observable<void> {
-    return this.http.post<void>("/Tests/DeleteTest?id=" + id, {});
+    return this.http.post<void>('/Tests/DeleteTest?id=' + id, {})
   }
 
-  changeAvailabilityForStudent(data: TestAvailabilityRequest): Observable<void> {
-    return this.http.post<void>("/Tests/ChangeLockForUserForStudent", data);
+  changeAvailabilityForStudent(
+    data: TestAvailabilityRequest
+  ): Observable<void> {
+    return this.http.post<void>('/Tests/ChangeLockForUserForStudent', data)
   }
 
-  changeAvailabilityForAllStudents(data: TestAvailabilityRequest): Observable<void> {
-    return this.http.post<void>("/Tests/UnlockTests", data);
+  changeAvailabilityForAllStudents(
+    data: TestAvailabilityRequest
+  ): Observable<void> {
+    return this.http.post<void>('/Tests/UnlockTests', data)
   }
 
   getFiles(): Observable<any> {
-    return this.http.get<any>("/Tests/GetFiles");
+    return this.http.get<any>('/Tests/GetFiles')
   }
 
   deleteQuestion(id: any): Observable<void> {
-    return this.http.post<void>("/Tests/DeleteQuestion?id=" + id, {});
+    return this.http.post<void>('/Tests/DeleteQuestion?id=' + id, {})
   }
 
   changeTestOrder(newOrder: any): Observable<void> {
-    return this.http.patch<void>("/Tests/OrderTests/", newOrder);
+    return this.http.patch<void>('/Tests/OrderTests/', newOrder)
   }
 
   saveTest(test: Test): Observable<any> {
-    return this.http.post<any>("/Tests/SaveTest", test);
+    return this.http.post<any>('/Tests/SaveTest', test)
   }
 
   saveQuestion(question: Question): Observable<any> {
-    return this.http.post<any>("/Tests/SaveQuestion", question);
+    return this.http.post<any>('/Tests/SaveQuestion', question)
   }
 
   AddQuestionsFromAnotherTest(question: Question): Observable<void> {
-    return this.http.post<void>("/Tests/AddQuestionsFromAnotherTest", question);
+    return this.http.post<void>('/Tests/AddQuestionsFromAnotherTest', question)
   }
 
   getQuestionsFromOtherTest(testId: string): Observable<Question[]> {
-    return this.http.get<Question[]>("/Tests/GetQuestionsFromAnotherTests?testId=" + testId);
+    return this.http.get<Question[]>(
+      '/Tests/GetQuestionsFromAnotherTests?testId=' + testId
+    )
   }
 
   getTestForLector(): Observable<Test[]> {
-    return this.http.get<Test[]>("/Tests/GetTestForLector");
+    return this.http.get<Test[]>('/Tests/GetTestForLector')
   }
-
 }

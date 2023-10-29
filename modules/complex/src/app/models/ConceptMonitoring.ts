@@ -1,4 +1,4 @@
 export class ConceptMonitoring {
-  name: string;
-  seconds: string;
+  name: string
+  seconds: string
 }

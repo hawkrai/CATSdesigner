@@ -1,5 +1,5 @@
-import { Action } from "@ngrx/store";
-import { User } from '../../models/User';
+import { Action } from '@ngrx/store'
+import { User } from '../../models/User'
 
 export enum ESubjectActions {
   SET_SUBJECT = '[Subject] Set Subject',
@@ -7,15 +7,15 @@ export enum ESubjectActions {
 }
 
 export class SetSubject implements Action {
-  public readonly type = ESubjectActions.SET_SUBJECT;
+  public readonly type = ESubjectActions.SET_SUBJECT
 
-  constructor(public payload: { id: '', Name: '' }) { }
+  constructor(public payload: { id: ''; Name: '' }) {}
 }
 
 export class SetUser implements Action {
-  public readonly type = ESubjectActions.SET_USER;
+  public readonly type = ESubjectActions.SET_USER
 
-  constructor(public payload: User) { }
+  constructor(public payload: User) {}
 }
 
-export type SubjectActions = SetSubject | SetUser;
+export type SubjectActions = SetSubject | SetUser

@@ -1,12 +1,24 @@
 <div mat-dialog-container>
   <div class="help-popover">
-    <div mat-dialog-content style="font-size: 14px;color: #000000;font-family: Roboto, Helvetica Neue, sans-serif;">
-        {{data.message}}
+    <div
+      mat-dialog-content
+      style="
+        font-size: 14px;
+        color: #000000;
+        font-family: Roboto, Helvetica Neue, sans-serif;
+      "
+    >
+      {{ data.message }}
     </div>
     <div mat-dialog-actions align="right">
-      <button mat-raised-button color="primary" class="mat-icon-button-close" mat-dialog-close>{{data.action}}</button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="mat-icon-button-close"
+        mat-dialog-close
+      >
+        {{ data.action }}
+      </button>
     </div>
+  </div>
 </div>
-</div>
-
-  

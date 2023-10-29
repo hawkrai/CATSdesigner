@@ -1,26 +1,43 @@
 <div class="modal-header">
-  <h1 mat-dialog-title>{{'text.editor.copy' | translate: 'Копирование'}}</h1>
+  <h1 mat-dialog-title>{{ 'text.editor.copy' | translate: 'Копирование' }}</h1>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon class="mat-icon-rtl-mirror" color="basic" [matTooltip]="'text.editor.close' | translate: 'Закрыть'">close</mat-icon>
+    <mat-icon
+      class="mat-icon-rtl-mirror"
+      color="basic"
+      [matTooltip]="'text.editor.close' | translate: 'Закрыть'"
+      >close</mat-icon
+    >
   </button>
 </div>
 <div mat-dialog-content>
-  <mat-label>{{'text.editor.choose.document' | translate: 'Выберите документ'}}</mat-label>
-  <mat-spinner
-    *ngIf="showSpinner"
-    style="margin:0 auto;"
-    mode="indeterminate">
+  <mat-label>{{
+    'text.editor.choose.document' | translate: 'Выберите документ'
+  }}</mat-label>
+  <mat-spinner *ngIf="showSpinner" style="margin: 0 auto" mode="indeterminate">
   </mat-spinner>
   <div *ngIf="documents && !documents.length && !showSpinner" class="empty">
-    <label>{{'text.editor.list.is.empty' | translate: 'Список пуст'}}</label>
+    <label>{{ 'text.editor.list.is.empty' | translate: 'Список пуст' }}</label>
   </div>
-  <mat-select *ngIf="documents && documents.length" [(ngModel)]="selectedDocumentId" name="subject">
+  <mat-select
+    *ngIf="documents && documents.length"
+    [(ngModel)]="selectedDocumentId"
+    name="subject"
+  >
     <mat-option *ngFor="let document of documents" [value]="document.Id">
-      {{StringHelper.helper.sanitizeHtml(document.Name)}}
+      {{ StringHelper.helper.sanitizeHtml(document.Name) }}
     </mat-option>
   </mat-select>
 </div>
 <div mat-dialog-footer mat-dialog-actions align="right">
-  <button mat-raised-button (click)="onNoClick()">{{'text.editor.cancel' | translate: 'Отмена'}}</button>
-  <button mat-raised-button color="primary" (click)="onYesClick()" [disabled]="selectedDocumentId == 0">{{'text.editor.save' | translate: 'Сохранить'}}</button>
+  <button mat-raised-button (click)="onNoClick()">
+    {{ 'text.editor.cancel' | translate: 'Отмена' }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onYesClick()"
+    [disabled]="selectedDocumentId == 0"
+  >
+    {{ 'text.editor.save' | translate: 'Сохранить' }}
+  </button>
 </div>

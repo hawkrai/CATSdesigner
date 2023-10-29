@@ -1,35 +1,68 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
   <mat-icon class="close-icon">close</mat-icon>
 </button>
-<h1 mat-dialog-title>{{data.title}}</h1>
+<h1 mat-dialog-title>{{ data.title }}</h1>
 <div mat-dialog-content>
   <mat-form-field class="form-field">
-    <mat-label>{{'text.diplomProject.stageName' | translate: 'Название этапа'}}</mat-label>
-    <textarea matInput [formControl]="nameControl" [(ngModel)]="data.name"></textarea>
+    <mat-label>{{
+      'text.diplomProject.stageName' | translate: 'Название этапа'
+    }}</mat-label>
+    <textarea
+      matInput
+      [formControl]="nameControl"
+      [(ngModel)]="data.name"
+    ></textarea>
     <mat-error *ngIf="nameControl.invalid">От 3 до 100 символов</mat-error>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>{{'text.diplomProject.stagePercent' | translate: 'Процент выполнения'}}</mat-label>
-    <input matInput [formControl]="percentageControl" [(ngModel)]="data.percentage">
+    <mat-label>{{
+      'text.diplomProject.stagePercent' | translate: 'Процент выполнения'
+    }}</mat-label>
+    <input
+      matInput
+      [formControl]="percentageControl"
+      [(ngModel)]="data.percentage"
+    />
     <span matSuffix>%</span>
-    <mat-error *ngIf="percentageControl.invalid">{{'text.diplomProject.percentageControl' | translate: 'Введите число от
-      0 до 100'}}</mat-error>
+    <mat-error *ngIf="percentageControl.invalid">{{
+      'text.diplomProject.percentageControl'
+        | translate: 'Введите число от
+      0 до 100'
+    }}</mat-error>
   </mat-form-field>
   <mat-form-field class="form-field">
-    <mat-label>{{'text.diplomProject.stageDate' | translate: 'Дата'}}</mat-label>
-    <input matInput [matDatepicker]="dp" [formControl]="dateControl" (dateChange)="onDateChange(dateControl.value)"
-      readonly>
+    <mat-label>{{
+      'text.diplomProject.stageDate' | translate: 'Дата'
+    }}</mat-label>
+    <input
+      matInput
+      [matDatepicker]="dp"
+      [formControl]="dateControl"
+      (dateChange)="onDateChange(dateControl.value)"
+      readonly
+    />
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker #dp></mat-datepicker>
-    <mat-error *ngIf="dateControl.invalid">{{'text.diplomProject.dateControl' | translate: 'Неправильный формат
-      (ДД.ММ.ГГГГ)'}}</mat-error>
+    <mat-error *ngIf="dateControl.invalid">{{
+      'text.diplomProject.dateControl'
+        | translate: 'Неправильный формат
+      (ДД.ММ.ГГГГ)'
+    }}</mat-error>
   </mat-form-field>
 </div>
 <div mat-dialog-actions class="dialog-buttons">
-  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">{{'text.diplomProject.cancel' | translate:
-    'Отмена'}}</button>
-  <button mat-flat-button class="dialog-button" color="primary" [mat-dialog-close]="data"
-    [disabled]="nameControl.invalid || percentageControl.invalid || dateControl.invalid">
-    {{'text.diplomProject.save' | translate: 'Сохранить'}}
+  <button mat-raised-button class="dialog-button" (click)="onCancelClick()">
+    {{ 'text.diplomProject.cancel' | translate: 'Отмена' }}
+  </button>
+  <button
+    mat-flat-button
+    class="dialog-button"
+    color="primary"
+    [mat-dialog-close]="data"
+    [disabled]="
+      nameControl.invalid || percentageControl.invalid || dateControl.invalid
+    "
+  >
+    {{ 'text.diplomProject.save' | translate: 'Сохранить' }}
   </button>
 </div>
