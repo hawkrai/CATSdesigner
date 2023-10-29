@@ -4,3 +4,4 @@
 /cicd
 **/node_modules
 **/build
+.temp
