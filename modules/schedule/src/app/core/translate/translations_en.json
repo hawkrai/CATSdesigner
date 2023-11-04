@@ -623,7 +623,5 @@
   "text.help.labs.protection.schedule": "Click on the 'Dates management' button to add or remove lab dates.",
   "text.help.practicals.protection.schedule": "Click on the 'Dates management' button to add or remove workshop dates.",
   "text.help.settings": "Select a group, mark the required students and select a subgroup to which you want to assign them.",
-  "text.help.schedule": "To add a lecture, practice, lab, consultation or other event, click on the desired cell. You can also add dates of classes using similar modules via menu item Subjects.",
-  "text.help.popover.route.manual": "Go to user manual",
-  "text.help.popover.close": "Close"
+  "text.help.schedule": "To add a lecture, practice, lab, consultation or other event, click on the desired cell. You can also add dates of classes using similar modules via menu item Subjects."
 }
