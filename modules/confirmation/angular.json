@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "watch": true,
             "outputPath": "../../.temp/apps/confirmation",
             "baseHref": "/confirmation/",
             "index": "src/index.html",
