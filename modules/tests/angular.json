@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "watch": true,
             "outputPath": "../../.temp/apps/testsModule",
             "baseHref": "/testsModule/",
             "index": "src/index.html",

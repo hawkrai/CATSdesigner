@@ -16,6 +16,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "watch": true,
             "outputPath": "../../.temp/apps/calendar",
             "baseHref": "/calendar/",
             "index": "src/index.html",
