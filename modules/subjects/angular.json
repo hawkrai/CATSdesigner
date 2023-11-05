@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "watch": true,
             "baseHref": "/subject/",
             "outputPath": "../../.temp/apps/subject",
             "index": "src/index.html",
