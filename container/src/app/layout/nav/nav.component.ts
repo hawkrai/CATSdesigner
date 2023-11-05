@@ -35,8 +35,8 @@ export class NavComponent implements OnInit, OnDestroy {
   public isLector: boolean
   public isStudent: boolean
   public isAdmin: boolean
-  public unRead: number = 0
-  public unconfirmedStudents: number = 0
+  public unRead = 0
+  public unconfirmedStudents = 0
   private unsubscribeStream$: Subject<void> = new Subject<void>()
   public locales: DropDownValue[] = [
     { name: 'Ru', value: 'ru' },
@@ -255,8 +255,6 @@ export class NavComponent implements OnInit, OnDestroy {
 
   public routeToAboutPopover() {
     const dialogRef = this.dialog.open(AboutSystemPopoverComponent, {
-      width: '600px',
-      height: '350px',
       position: { top: '128px' },
     })
 
@@ -272,7 +270,7 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   public getUserInitials() {
-    var initials =
+    const initials =
       this.userFullName?.split(' ')[0]?.charAt(0) +
       this.userFullName?.split(' ')[1]?.charAt(0)
     if (initials != null) {

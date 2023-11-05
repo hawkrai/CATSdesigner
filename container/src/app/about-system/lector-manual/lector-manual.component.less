@@ -4,11 +4,10 @@
 }
 
 .col-second {
+  width: 100vw;
   vertical-align: middle;
-  text-align: justify;
   padding: 0px 50px 50px 50px;
   color: black;
-  width: 100vw;
   margin-bottom: 50px;
 
   > h2 {
@@ -70,9 +69,19 @@
   }
 
   @media (max-width: 657px) {
+    .container {
+      flex-direction: column;
+    }
+
+    .col-first,
+    .col-second {
+      width: auto;
+      padding: 0px 25px;
+    }
+
     .mat-expansion-panel {
-      min-height: 80px;
-      padding-top: 25px;
+      min-height: 48px;
+      padding: 10px 5px;
     }
   }
 }
