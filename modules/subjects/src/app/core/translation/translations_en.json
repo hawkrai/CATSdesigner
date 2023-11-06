@@ -187,7 +187,7 @@
 
   "text.subjects.tests.written": "Written {actualCount} tests out of {testsCount}",
   "text.sbjects.preliminary.rating": "Preliminary rating assessment",
-  "schedule.protection": "Schedule protection",
+  "schedule.protection": "Submission protection",
   "visit.statistics": "Visit statistics",
   "results": "Results",
   "works.protection": "Protection of works",
