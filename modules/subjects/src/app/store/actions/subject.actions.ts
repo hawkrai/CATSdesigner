@@ -1,7 +1,7 @@
-import { SubjectForm } from '../../models/form/subject-form.model'
 import { createAction, props } from '@ngrx/store'
-import { User } from '../../models/user.model'
+import { SubjectForm } from '../../models/form/subject-form.model'
 import { Subject } from '../../models/subject.model'
+import { User } from '../../models/user.model'
 
 export const setSubject = createAction(
   '[Subject] Set Subject',
@@ -25,7 +25,7 @@ export const loadSubjectsSuccess = createAction(
   props<{ subjects: Subject[] }>()
 )
 
-export const deleteSubejctById = createAction(
+export const deleteSubjectById = createAction(
   '[Subject] Delete Subject By Id',
   props<{ subjectId: number }>()
 )
