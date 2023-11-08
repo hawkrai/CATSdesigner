@@ -1,27 +1,27 @@
-import { DialogService } from 'src/app/services/dialog.service'
-import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { Store } from '@ngrx/store'
-import { combineLatest, Observable } from 'rxjs'
+import { Observable, combineLatest } from 'rxjs'
+import { DialogService } from 'src/app/services/dialog.service'
 
+import { MediaMatcher } from '@angular/cdk/layout'
+import { TranslatePipe } from 'educats-translate'
+import { map, take } from 'rxjs/operators'
+import { Group } from 'src/app/models/group.model'
+import { Help } from 'src/app/models/help.model'
+import { Message } from 'src/app/models/message.model'
+import { SubjectLector } from 'src/app/models/subject-letor.model'
+import { User } from 'src/app/models/user.model'
+import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component'
+import { FilterOp } from 'src/app/shared/pipes/filter.pipe'
+import { SubSink } from 'subsink'
+import { DialogData } from '../../models/dialog-data.model'
+import { Subject } from '../../models/subject.model'
+import * as catsActions from '../../store/actions/cats.actions'
 import * as subjectActions from '../../store/actions/subject.actions'
 import * as subjectSelectors from '../../store/selectors/subject.selector'
-import { Subject } from '../../models/subject.model'
 import { IAppState } from '../../store/state/app.state'
-import { DeletePopoverComponent } from '../../shared/delete-popover/delete-popover.component'
 import { SubjectLectorComponent } from './subject-lector/subject-lector.component'
 import { SubjectManagementComponent } from './subject-managment/subject-management.component'
-import { DialogData } from '../../models/dialog-data.model'
-import { SubSink } from 'subsink'
-import * as catsActions from '../../store/actions/cats.actions'
-import { Message } from 'src/app/models/message.model'
-import { Group } from 'src/app/models/group.model'
-import { User } from 'src/app/models/user.model'
-import { map, take } from 'rxjs/operators'
-import { MediaMatcher } from '@angular/cdk/layout'
-import { FilterOp } from 'src/app/shared/pipes/filter.pipe'
-import { TranslatePipe } from 'educats-translate'
-import { Help } from 'src/app/models/help.model'
-import { SubjectLector } from 'src/app/models/subject-letor.model'
 
 @Component({
   selector: 'app-subject',
@@ -130,30 +130,24 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   deleteSubject(subject : Subject) {
-    if (!subject.Groups) {
-      const cancelDialogData: DialogData = {
-        title: this.translate.transform('subject.cancel.deleting', 'Не удалось удалить предмет'),
-        body: "this.translate.transform('subject.cancel.deleting.text', 'Предмет не может быть удален, т.к. к нему присоединены группы').",
-        buttonText: this.translate.transform('button.close', 'Закрыть')
-      }
+    // Если subject.GroupCount <= 0, тогда можно удалять
+    // Иначе сообщить пользователю о том, что это сделать нельзя
 
-      this.dialogService.openDialog(DeletePopoverComponent, cancelDialogData)
-    } else {
-      const dialogData: DialogData = {
-        title: this.translate.transform('subject.deleting', 'Удаление предмета'),
-        body: `${this.translate.transform('subject.singular', 'предмет').toLowerCase()} "${subject.DisplayName}"`,
-        buttonText: this.translate.transform('button.delete', 'Удалить')
-      };
-      const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
+    const dialogData: DialogData = {
+      title: this.translate.transform('subject.deleting', 'Удаление предмета'),
+      body: `${this.translate.transform('subject.singular', 'предмет').toLowerCase()} "${subject.DisplayName}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить')
+    };
 
-      this.subs.add(
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.store.dispatch(subjectActions.deleteSubejctById({ subjectId: subject.SubjectId }));
-          }
-        })
-      );
-    }
+    const dialogRef = this.dialogService.openDialog(DeletePopoverComponent, dialogData);
+
+    this.subs.add(
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.store.dispatch(subjectActions.deleteSubejctById({ subjectId: subject.SubjectId }));
+        }
+      })
+    );
   }
 
   navigateToSubject(subjectId: number): void {
