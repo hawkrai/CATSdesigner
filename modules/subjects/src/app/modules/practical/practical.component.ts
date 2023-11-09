@@ -95,7 +95,7 @@ export class PracticalComponent implements OnInit {
       },
       {
         tab: this.translate.transform(
-          'visit.statistics',
+          'lesson.attendance',
           'Статистика посещения'
         ),
         route: 'visit-statistics',

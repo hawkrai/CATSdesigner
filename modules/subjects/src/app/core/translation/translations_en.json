@@ -188,7 +188,7 @@
   "text.subjects.tests.written": "Written {actualCount} tests out of {testsCount}",
   "text.sbjects.preliminary.rating": "Preliminary rating assessment",
   "submission.protection": "Submission protection",
-  "visit.statistics": "Lesson attendance",
+  "lesson.attendance": "Lesson attendance",
   "results": "Results",
   "works.protection": "Works submission",
   "text.check.plagiarism": "",

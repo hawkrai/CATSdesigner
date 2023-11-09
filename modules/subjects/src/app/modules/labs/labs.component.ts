@@ -72,7 +72,7 @@ export class LabsComponent implements OnInit, OnDestroy {
       },
       {
         tab: this.translate.transform(
-          'visit.statistics',
+          'lesson.attendance',
           'Статистика посещения'
         ),
         route: 'visit-statistics',
