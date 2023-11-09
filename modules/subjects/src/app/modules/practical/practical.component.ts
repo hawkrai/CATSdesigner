@@ -105,7 +105,7 @@ export class PracticalComponent implements OnInit {
         route: 'results',
       },
       {
-        tab: this.translate.transform('works.protection', 'Защита работ'),
+        tab: this.translate.transform('works.submission', 'Защита работ'),
         route: 'job-protection',
       },
     ]
