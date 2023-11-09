@@ -90,7 +90,7 @@ export class PracticalComponent implements OnInit {
         route: 'list',
       },
       {
-        tab: this.translate.transform('schedule.protection', 'График защиты'),
+        tab: this.translate.transform('submission.protection', 'График защиты'),
         route: 'schedule',
       },
       {
