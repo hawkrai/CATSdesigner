@@ -1,4 +1,4 @@
-<app-popover-dialog [width]="800">
+<app-popover-dialog [width]="500">
   <ng-container title>
     {{ data.title }}
     <span class="title-date">{{ data.body.date | date: 'dd.MM.yyyy' }}</span>
@@ -45,8 +45,8 @@
             {{ 'comment' | translate: 'Комментарий' }}</mat-header-cell
           >
           <mat-cell *matCellDef="let element">
-            <mat-form-field style="margin-right: 20px">
-              <input name="comment" matInput [(ngModel)]="element.comment" />
+            <mat-form-field style="margin-right: 20px; width: 75%;">
+              <input name="comment" matInput [(ngModel)]="element.comment">
             </mat-form-field>
             <mat-checkbox
               [matTooltip]="
