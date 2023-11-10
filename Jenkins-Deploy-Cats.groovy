@@ -33,7 +33,7 @@ pipeline {
 				bat  'npx rimraf ./node_modules'
                 bat  'npx rimraf ./package-lock.json'
                 bat  'npm install --force'
-                bat  'npm run build:prod'
+                bat  'npm run build'
             }
             dir('./build') {
                 bat  "chmod +x -R ${env.WORKSPACE}"

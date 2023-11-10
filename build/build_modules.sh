@@ -14,58 +14,58 @@ cd /d $admin_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $tests_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $subjects_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $cp_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $dp_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $confirmation_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $complex_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $editor_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $schedule_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
 
 cd $statistics_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i
-npm run build:qa
+npm run build
