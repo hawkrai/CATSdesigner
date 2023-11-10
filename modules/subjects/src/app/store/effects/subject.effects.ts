@@ -1,11 +1,11 @@
-import { Actions, createEffect, ofType } from '@ngrx/effects'
 import { Injectable } from '@angular/core'
+import { Actions, createEffect, ofType } from '@ngrx/effects'
 
-import { SubjectService } from '../../services/subject.service'
-import * as subjectActions from '../actions/subject.actions'
 import { map, switchMap } from 'rxjs/operators'
-import * as catsActions from '../actions/cats.actions'
 import { Message } from 'src/app/models/message.model'
+import { SubjectService } from '../../services/subject.service'
+import * as catsActions from '../actions/cats.actions'
+import * as subjectActions from '../actions/subject.actions'
 
 @Injectable()
 export class SubjectEffect {
@@ -48,7 +48,7 @@ export class SubjectEffect {
 
   deleteSubject$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(subjectActions.deleteSubejctById),
+      ofType(subjectActions.deleteSubjectById),
       switchMap(({ subjectId }) =>
         this.subjectService
           .deleteSubject(subjectId)
