@@ -1,0 +1,4 @@
+{
+  "watch": ["../.temp/apps/", "../server/"],
+  "ext": "*"
+}
