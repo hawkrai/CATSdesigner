@@ -14,61 +14,61 @@ cd $admin_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
 
 cd $tests_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
 
 cd $subjects_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
 
 cd $cp_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
 
 cd $confirmation_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
 
 cd $complex_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..' 
 
 cd $editor_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
 
 cd $schedule_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
 
 cd $statistics_path
 npx rimraf ./node_modules
 npx rimraf ./package-lock.json
 npm i --force
-npm run build:prod
+npm run build
 cd '..'
