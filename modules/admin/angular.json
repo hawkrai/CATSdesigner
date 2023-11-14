@@ -20,15 +20,12 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.css"],
             "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"]
           },
           "configurations": {
-            "stage": {
-              "watch": false
-            },
             "production": {
               "watch": false,
               "fileReplacements": [
@@ -42,6 +39,7 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
+              "aot": false,
               "extractLicenses": true,
               "vendorChunk": false
             }
