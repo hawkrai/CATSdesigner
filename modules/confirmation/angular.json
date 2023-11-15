@@ -30,6 +30,9 @@
             "scripts": []
           },
           "configurations": {
+            "stage": {
+              "watch": false
+            },
             "production": {
               "watch": false,
               "fileReplacements": [

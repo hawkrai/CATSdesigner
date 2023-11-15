@@ -26,6 +26,9 @@
             "scripts": ["node_modules/jquery/dist/jquery.min.js"]
           },
           "configurations": {
+            "stage": {
+              "watch": false
+            },
             "production": {
               "watch": false,
               "fileReplacements": [

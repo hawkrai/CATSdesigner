@@ -30,6 +30,9 @@
             "scripts": ["node_modules/educats-common/scripts/iconify.min.js"]
           },
           "configurations": {
+            "stage": {
+              "watch": false
+            },
             "production": {
               "watch": false,
               "fileReplacements": [
