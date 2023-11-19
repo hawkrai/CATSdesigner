@@ -56,9 +56,15 @@ dependencies:
   '@material/menu':
     specifier: ^5.0.0
     version: 5.1.0
+  '@material/tab':
+    specifier: ^14.0.0
+    version: 14.0.0
   '@material/tab-bar':
     specifier: ^5.0.0
     version: 5.1.0
+  '@material/tab-indicator':
+    specifier: ^14.0.0
+    version: 14.0.0
   '@ngrx/store':
     specifier: ^8.6.0
     version: 8.6.1(@angular/core@8.2.14)(rxjs@6.4.0)
@@ -1363,6 +1369,12 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
+  /@material/animation@14.0.0:
+    resolution: {integrity: sha512-VlYSfUaIj/BBVtRZI8Gv0VvzikFf+XgK0Zdgsok5c1v5DDnNz5tpB8mnGrveWz0rHbp1X4+CWLKrTwNmjrw3Xw==}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
   /@material/animation@3.1.0:
     resolution: {integrity: sha512-ZfP95awrPBLhpaCTPNx+xKYPp2D88fzf5p5YNVp6diUAGRpq3g12Aq7qJfIHDXAFo5CtrYhgOKRqIKxUVcFisQ==}
     dependencies:
@@ -1373,6 +1385,12 @@ packages:
     resolution: {integrity: sha512-qZuPCZkTsCQCzx5EtY2eNBcmYOMGMbFVq6VTmvQztDCYDykT8JfP8Hpk55Y5bGORHvBbIasUXzoAhfQs6w/Bdg==}
     dependencies:
       tslib: 1.14.1
+    dev: false
+
+  /@material/base@14.0.0:
+    resolution: {integrity: sha512-Ou7vS7n1H4Y10MUZyYAbt6H0t67c6urxoCgeVT7M38aQlaNUwFMODp7KT/myjYz2YULfhu3PtfSV3Sltgac9mA==}
+    dependencies:
+      tslib: 2.6.2
     dev: false
 
   /@material/base@3.1.0:
@@ -1452,6 +1470,13 @@ packages:
       tslib: 1.14.1
     dev: false
 
+  /@material/dom@14.0.0:
+    resolution: {integrity: sha512-8t88XyacclTj8qsIw9q0vEj4PI2KVncLoIsIMzwuMx49P2FZg6TsLjor262MI3Qs00UWAifuLMrhnOnfyrbe7Q==}
+    dependencies:
+      '@material/feature-targeting': 14.0.0
+      tslib: 2.6.2
+    dev: false
+
   /@material/dom@3.1.0:
     resolution: {integrity: sha512-RtBLSkrBjMfHwknaGBifAIC8cBWF9pXjz2IYqfI2braB6SfQI4vhdJviwyiA5BmA/psn3cKpBUZbHI0ym0O0SQ==}
     dependencies:
@@ -1481,6 +1506,17 @@ packages:
       tslib: 1.14.1
     dev: false
 
+  /@material/elevation@14.0.0:
+    resolution: {integrity: sha512-Di3tkxTpXwvf1GJUmaC8rd+zVh5dB2SWMBGagL4+kT8UmjSISif/OPRGuGnXs3QhF6nmEjkdC0ijdZLcYQkepw==}
+    dependencies:
+      '@material/animation': 14.0.0
+      '@material/base': 14.0.0
+      '@material/feature-targeting': 14.0.0
+      '@material/rtl': 14.0.0
+      '@material/theme': 14.0.0
+      tslib: 2.6.2
+    dev: false
+
   /@material/elevation@3.1.0:
     resolution: {integrity: sha512-e45LqiG6LfbR1M52YkSLA7pQPeYJOuOVzLp27xy2072TnLuJexMxhEaG4O1novEIjsTtMjqfrfJ/koODU5vEew==}
     dependencies:
@@ -1498,12 +1534,26 @@ packages:
       '@material/theme': 5.1.0
     dev: false
 
+  /@material/feature-targeting@14.0.0:
+    resolution: {integrity: sha512-a5WGgHEq5lJeeNL5yevtgoZjBjXWy6+klfVWQEh8oyix/rMJygGgO7gEc52uv8fB8uAIoYEB3iBMOv8jRq8FeA==}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
   /@material/feature-targeting@3.1.0:
     resolution: {integrity: sha512-aXAa1Pv6w32URacE9LfMsl9zI6hFwx1K0Lp3Xpyf4rAkmaAB6z0gOkhicOrVFc0f64YheJgHjE7hJFieVenQdw==}
     dev: false
 
   /@material/feature-targeting@5.1.0:
     resolution: {integrity: sha512-z3JNWF7lP9WOzw1xBwul/HAOu4qC6EpK/8MkhjLNI9APvdYML82PWS1V0k0MiqA6Jk6uxm8DiVAk9VUqBa9/YA==}
+    dev: false
+
+  /@material/focus-ring@14.0.0:
+    resolution: {integrity: sha512-fqqka6iSfQGJG3Le48RxPCtnOiaLGPDPikhktGbxlyW9srBVMgeCiONfHM7IT/1eu80O0Y67Lh/4ohu5+C+VAQ==}
+    dependencies:
+      '@material/dom': 14.0.0
+      '@material/feature-targeting': 14.0.0
+      '@material/rtl': 14.0.0
     dev: false
 
   /@material/form-field@3.2.0:
@@ -1561,6 +1611,18 @@ packages:
       tslib: 1.14.1
     dev: false
 
+  /@material/ripple@14.0.0:
+    resolution: {integrity: sha512-9XoGBFd5JhFgELgW7pqtiLy+CnCIcV2s9cQ2BWbOQeA8faX9UZIDUx/g76nHLZ7UzKFtsULJxZTwORmsEt2zvw==}
+    dependencies:
+      '@material/animation': 14.0.0
+      '@material/base': 14.0.0
+      '@material/dom': 14.0.0
+      '@material/feature-targeting': 14.0.0
+      '@material/rtl': 14.0.0
+      '@material/theme': 14.0.0
+      tslib: 2.6.2
+    dev: false
+
   /@material/ripple@3.2.0:
     resolution: {integrity: sha512-GtwkfNakALmfGLs6TpdFIVeAWjRqbyT7WfEw9aU7elUokABfHES+O0KoSKQSMQiSQ8Vjl90MONzNsN1Evi/1YQ==}
     dependencies:
@@ -1581,6 +1643,13 @@ packages:
       '@material/feature-targeting': 5.1.0
       '@material/theme': 5.1.0
       tslib: 1.14.1
+    dev: false
+
+  /@material/rtl@14.0.0:
+    resolution: {integrity: sha512-xl6OZYyRjuiW2hmbjV2omMV8sQtfmKAjeWnD1RMiAPLCTyOW9Lh/PYYnXjxUrNa0cRwIIbOn5J7OYXokja8puA==}
+    dependencies:
+      '@material/theme': 14.0.0
+      tslib: 2.6.2
     dev: false
 
   /@material/rtl@3.2.0:
@@ -1616,6 +1685,16 @@ packages:
       tslib: 1.14.1
     dev: false
 
+  /@material/tab-indicator@14.0.0:
+    resolution: {integrity: sha512-wfq136fsJGqtCIW8x1wFQHgRr7dIQ9SWqp6WG4FQGHpSzliNDA23/bdBUjh3lX2U+mfbdsFmZWEPy06jg2uc5g==}
+    dependencies:
+      '@material/animation': 14.0.0
+      '@material/base': 14.0.0
+      '@material/feature-targeting': 14.0.0
+      '@material/theme': 14.0.0
+      tslib: 2.6.2
+    dev: false
+
   /@material/tab-indicator@5.1.0:
     resolution: {integrity: sha512-vy/oBsvRQaQ2EscsgFp9xu7tZM6UBECmNxcC1k2eQGhNjy7olkoL9bX/ymiN4xAjQYqvP6BnC3LN3IywvKMTxQ==}
     dependencies:
@@ -1637,6 +1716,21 @@ packages:
       tslib: 1.14.1
     dev: false
 
+  /@material/tab@14.0.0:
+    resolution: {integrity: sha512-jGSQdp6BvZOVnvGbv0DvNDJL2lHYVFtKGehV0gSZ7FrjHK6gZnKZjWOVwt1NPu9ig9zy85vPRFpvFTeje1KZpg==}
+    dependencies:
+      '@material/base': 14.0.0
+      '@material/elevation': 14.0.0
+      '@material/feature-targeting': 14.0.0
+      '@material/focus-ring': 14.0.0
+      '@material/ripple': 14.0.0
+      '@material/rtl': 14.0.0
+      '@material/tab-indicator': 14.0.0
+      '@material/theme': 14.0.0
+      '@material/typography': 14.0.0
+      tslib: 2.6.2
+    dev: false
+
   /@material/tab@5.1.0:
     resolution: {integrity: sha512-awur1Yv2QjJ8ghNyZ/oF6MThxczGDdGqimrzcgS0wI04sg2eTiU5Ed6KV3VILVsD9fA8kKR/e5XEh0CXjqhUYQ==}
     dependencies:
@@ -1648,6 +1742,13 @@ packages:
       '@material/theme': 5.1.0
       '@material/typography': 5.1.0
       tslib: 1.14.1
+    dev: false
+
+  /@material/theme@14.0.0:
+    resolution: {integrity: sha512-6/SENWNIFuXzeHMPHrYwbsXKgkvCtWuzzQ3cUu4UEt3KcQ5YpViazIM6h8ByYKZP8A9d8QpkJ0WGX5btGDcVoA==}
+    dependencies:
+      '@material/feature-targeting': 14.0.0
+      tslib: 2.6.2
     dev: false
 
   /@material/theme@3.1.0:
@@ -1667,6 +1768,14 @@ packages:
     dependencies:
       '@material/base': 5.1.0
       '@material/feature-targeting': 5.1.0
+    dev: false
+
+  /@material/typography@14.0.0:
+    resolution: {integrity: sha512-/QtHBYiTR+TPMryM/CT386B2WlAQf/Ae32V324Z7P40gHLKY/YBXx7FDutAWZFeOerq/two4Nd2aAHBcMM2wMw==}
+    dependencies:
+      '@material/feature-targeting': 14.0.0
+      '@material/theme': 14.0.0
+      tslib: 2.6.2
     dev: false
 
   /@material/typography@3.1.0:
@@ -8584,6 +8693,10 @@ packages:
 
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
+
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: false
 
   /tslint@5.15.0(typescript@3.5.3):
     resolution: {integrity: sha512-6bIEujKR21/3nyeoX2uBnE8s+tMXCQXhqMmaIPJpHmXJoBJPTLcI7/VHRtUwMhnLVdwLqqY3zmd8Dxqa5CVdJA==}
