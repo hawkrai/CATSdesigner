@@ -55,6 +55,7 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public HttpResponseMessage Post([FromBody]CourseProjectConsultationMarkData consultationMark)
         {
+            System.Diagnostics.Debugger.Launch();
             if (!ModelState.IsValid)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);

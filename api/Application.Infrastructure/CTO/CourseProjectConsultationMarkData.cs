@@ -10,6 +10,6 @@
 
         public string Mark { get; set; }
 
-        public string Comments { get; set; }
+        public string Comment { get; set; }
     }
 }

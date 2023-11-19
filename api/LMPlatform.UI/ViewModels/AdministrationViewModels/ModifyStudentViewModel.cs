@@ -58,7 +58,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				this.Confirmed = student.Confirmed;
 				this.ActiveSubjects = this.SubjectManagementService.GetSubjectsCountByStudent(student.Id, true);
 				this.NotActiveSubjects = this.SubjectManagementService.GetSubjectsCountByStudent(student.Id, false);
-				this.IsActive = student.IsActive;
+				this.IsActive = student.IsActive.HasValue ? student.IsActive.Value : true;
 			}
 		}
 
