@@ -45,6 +45,8 @@ import { MenuService } from './core/services/menu.service'
 import { HelpPopoverProgressControlComponent } from './progress-control/help-popover-progress-control/help-popover-progress-control.component'
 import { AboutSystemComponent } from './about-system/about-system.component'
 import { LectorManualComponent } from './about-system/lector-manual/lector-manual.component'
+import { LectorManualComponentRu } from './about-system/lector-manual/ru/lector-manual-ru.component'
+import { LectorManualComponentEn } from './about-system/lector-manual/en/lector-manual-en.component'
 import { SharedModule } from './shared/shared.module'
 import { OrderByPipe } from './pipe/order-by.pipe'
 import { SafePipe } from './core/safePipe'
@@ -75,6 +77,8 @@ import { DatePipe } from '@angular/common'
     AboutSystemPopoverComponent,
     AboutSystemComponent,
     LectorManualComponent,
+    LectorManualComponentRu,
+    LectorManualComponentEn,
     StudentManualComponent,
     StudentManualComponentRu,
     StudentManualComponentEn,
