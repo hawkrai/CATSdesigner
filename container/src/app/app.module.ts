@@ -39,6 +39,8 @@ import { ToastrModule } from 'ngx-toastr'
 import { DiplomComponent } from './diplom/diplom.component'
 import { AboutSystemPopoverComponent } from './about-system/about-popover/about-popover.component'
 import { StudentManualComponent } from './about-system/student-manual/student-manual.component'
+import { StudentManualComponentRu } from './about-system/student-manual/ru/student-manual-ru.component'
+import { StudentManualComponentEn } from './about-system/student-manual/en/student-manual-en.component'
 import { MenuService } from './core/services/menu.service'
 import { HelpPopoverProgressControlComponent } from './progress-control/help-popover-progress-control/help-popover-progress-control.component'
 import { AboutSystemComponent } from './about-system/about-system.component'
@@ -78,6 +80,8 @@ import { DatePipe } from '@angular/common'
     LectorManualComponentRu,
     LectorManualComponentEn,
     StudentManualComponent,
+    StudentManualComponentRu,
+    StudentManualComponentEn,
     HelpPopoverProgressControlComponent,
     OrderByPipe,
     SafePipe,
