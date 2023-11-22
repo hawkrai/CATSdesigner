@@ -1,0 +1,21 @@
+[modules]
+relative_modules_directories = [
+    "../",
+    "../modules"
+]
+
+exclude_directories = [
+    "CATSdesigner",
+    ".git",
+    ".husky",
+    ".temp",
+    ".vscode",
+    "api",
+    "build",
+    "ChatServer",
+    "cicd",
+    "cli",
+    "common",
+    "modules",
+    "node_modules"
+]
