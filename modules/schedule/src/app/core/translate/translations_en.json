@@ -253,6 +253,9 @@
   "text.schedule.educational.load.subject.per.week": "Courses per week",
   "text.schedule.educational.load.types.week": "Courses per day",
 
+  "text.schedule.delete.event": "Delete lesson/event?",
+  "text.schedule.edit.event": "Are you sure you want to confirm the change?",
+
   "text.statistics.avg.lab": "Average laboratory works rating",
   "text.statistics.avg.test": "Average tests rating",
   "text.statistics.avg.pract": "Average practical works rating",
@@ -262,7 +265,6 @@
   "button.delete": "Delete",
   "button.edit": "Edit",
   "button.no": "No",
-  "text.schedule.delete.event": "Delete lesson/event?",
   "text.schedule.locale.en": "en",
   "text.editor.yes": "Yes",
   "text.editor.no": "No",

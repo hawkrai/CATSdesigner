@@ -253,6 +253,9 @@
   "text.subjects.attendance.students": "Посещаемость студентов",
   "text.subjects.attendance.lesson": "Посещаемость занятий",
 
+  "text.schedule.delete.event": "Удалить занятие/событие?",
+  "text.schedule.edit.event": "Вы уверены, что хотите подтвердить изменение?",
+
   "text.schedule.management": "Управление расписанием",
   "text.schedule.management.dates": "Управление датами",
   "text.schedule.management.delete.all": "Удалить все даты",
