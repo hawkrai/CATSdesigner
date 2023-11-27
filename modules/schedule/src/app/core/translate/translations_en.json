@@ -250,7 +250,7 @@
 
   "text.schedule.educational.load.per.week": "Lessons per week",
   "text.schedule.educational.load.day.per.week": "Lessons per day",
-  "text.schedule.educational.load.subject.per.week": "Courses per week",
+  "text.schedule.educational.study.types.per.week": "Lessons per week",
   "text.schedule.educational.load.types.week": "Courses per day",
 
   "text.schedule.delete.event": "Delete lesson/event?",

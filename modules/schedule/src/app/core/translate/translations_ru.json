@@ -265,6 +265,9 @@
   "text.schedule.dates.deleting": "Удаление дат",
   "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
 
+  "text.schedule.educational.study.types.per.week": "Виды учебной нагрузки в неделю",
+  "text.schedule.educational.load.per.week": "Нагрузка по предметам ежедневно",
+
   "text.visiting.date.editing": "Редактируемая дата",
 
   "text.average.mark": "Средняя оценка",
