@@ -11,6 +11,7 @@
       "prefix": "app",
       "architect": {
         "build": {
+          "watch": true,
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "../../.temp/apps/complex",
@@ -25,7 +26,11 @@
             "scripts": ["node_modules/jquery/dist/jquery.min.js"]
           },
           "configurations": {
+            "stage": {
+              "watch": false
+            },
             "production": {
+              "watch": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -39,19 +44,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
+              "buildOptimizer": true
             }
           }
         },

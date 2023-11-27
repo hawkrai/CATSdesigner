@@ -90,12 +90,12 @@ export class PracticalComponent implements OnInit {
         route: 'list',
       },
       {
-        tab: this.translate.transform('schedule.protection', 'График защиты'),
+        tab: this.translate.transform('submission.protection', 'График защиты'),
         route: 'schedule',
       },
       {
         tab: this.translate.transform(
-          'visit.statistics',
+          'lesson.attendance',
           'Статистика посещения'
         ),
         route: 'visit-statistics',
@@ -105,7 +105,7 @@ export class PracticalComponent implements OnInit {
         route: 'results',
       },
       {
-        tab: this.translate.transform('works.protection', 'Защита работ'),
+        tab: this.translate.transform('works.submission', 'Защита работ'),
         route: 'job-protection',
       },
     ]

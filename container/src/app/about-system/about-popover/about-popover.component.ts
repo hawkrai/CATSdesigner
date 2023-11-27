@@ -7,6 +7,8 @@ import { MatDialogRef } from '@angular/material/dialog'
   styleUrls: ['./about-popover.component.less'],
 })
 export class AboutSystemPopoverComponent {
+  year = new Date().getFullYear()
+
   constructor(private dialogRef: MatDialogRef<AboutSystemPopoverComponent>) {
     dialogRef.disableClose = true
   }

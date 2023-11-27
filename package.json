@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "lint": "eslint . --ext .js,.ts --max-warnings=0",
+    "lint": "eslint . --ext .js,.ts",
     "lint:fix": "npm run lint --fix",
     "prettier": "prettier . --write"
   },

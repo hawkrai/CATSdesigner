@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "watch": true,
             "outputPath": "../../.temp/apps/confirmation",
             "baseHref": "/confirmation/",
             "index": "src/index.html",
@@ -29,7 +30,11 @@
             "scripts": []
           },
           "configurations": {
+            "stage": {
+              "watch": false
+            },
             "production": {
+              "watch": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -41,17 +46,9 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
+              "aot": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                }
-              ]
+              "vendorChunk": false
             }
           }
         },

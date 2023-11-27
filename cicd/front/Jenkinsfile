@@ -15,7 +15,7 @@ pipeline {
             dir('./container') {
                sh '''
 			          npm install --force
-                npm run build:prod
+                npm run build
 		          '''
             }
         }
