@@ -38,28 +38,28 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
         [Display(Name = "Логин")]
         public string UserName { get; set; }
 
-		public string Avatar { get; set; }
+        public string Avatar { get; set; }
 
-		[Display(Name = "Skype")]
-		public string SkypeContact { get; set; }
+        [Display(Name = "Skype")]
+        public string SkypeContact { get; set; }
 
-		[Display(Name = "Почта")]
-		public string Email { get; set; }
+        [Display(Name = "Почта")]
+        public string Email { get; set; }
 
-		[Display(Name = "Телефон")]
-		public string Phone { get; set; }
+        [Display(Name = "Телефон")]
+        public string Phone { get; set; }
 
-		[Display(Name = "О себе")]
-		public string About { get; set; }
+        [Display(Name = "О себе")]
+        public string About { get; set; }
 
-		[Display(Name = "Должность")]
-		public string Skill { get; set; }
+        [Display(Name = "Должность")]
+        public string Skill { get; set; }
 
-		public bool IsSecretary { get; set; }
+        public bool IsSecretary { get; set; }
 
-		public bool IsActive { get; set; }
+        public bool IsActive { get; set; }
 
-		public bool IsLecturerHasGraduateStudents { get; set; }
+        public bool IsLecturerHasGraduateStudents { get; set; }
 
         public string GroupName { get; set; }
 
@@ -69,31 +69,31 @@ namespace LMPlatform.UI.ViewModels.AccountViewModels
             {
                 var user = LecturerManagementService.GetLecturer(UserContext.CurrentUserId);
                 Name = user.FirstName;
-	            Skill = user.Skill;
-				Surname = user.LastName;
-				Patronymic = user.MiddleName;
+                Skill = user.Skill;
+                Surname = user.LastName;
+                Patronymic = user.MiddleName;
                 UserName = user.User.UserName;
-	            Avatar = user.User.Avatar;
-	            IsSecretary = user.IsSecretary;
-				About = user.User.About;
-				SkypeContact = user.User.SkypeContact;
-				Phone = user.User.Phone;
-				Email = user.User.Email;
-	            IsActive = user.IsActive;
-	            IsLecturerHasGraduateStudents = user.IsLecturerHasGraduateStudents;
+                Avatar = user.User.Avatar;
+                IsSecretary = user.IsSecretary;
+                About = user.User.About;
+                SkypeContact = user.User.SkypeContact;
+                Phone = user.User.Phone;
+                Email = user.User.Email;
+                IsActive = user.IsActive;
+                IsLecturerHasGraduateStudents = user.IsLecturerHasGraduateStudents;
             }
             else if (StudentManagementService.GetStudent(UserContext.CurrentUserId) != null)
             {
                 var user = StudentManagementService.GetStudent(UserContext.CurrentUserId);
                 Name = user.FirstName;
-				Patronymic = user.MiddleName;
-				Surname = user.LastName;
+                Patronymic = user.MiddleName;
+                Surname = user.LastName;
                 UserName = user.User.UserName;
-				Avatar = user.User.Avatar;
-				About = user.User.About;
-				SkypeContact = user.User.SkypeContact;
-				Phone = user.User.Phone;
-				Email = user.User.Email;
+                Avatar = user.User.Avatar;
+                About = user.User.About;
+                SkypeContact = user.User.SkypeContact;
+                Phone = user.User.Phone;
+                Email = user.User.Email;
                 GroupName = user.Group.Name;
                 IsActive = user.IsActive.HasValue ? user.IsActive.Value : true;
             }

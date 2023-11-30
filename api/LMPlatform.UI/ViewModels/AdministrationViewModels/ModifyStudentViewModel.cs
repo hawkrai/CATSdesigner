@@ -135,8 +135,8 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 				Confirmed = true,
 				GroupId = this.Group,
 				Group = this.GroupManagementService.GetGroup(this.Group),
-                IsActive = IsActive,
-                User = new User
+				IsActive = IsActive,
+				User = new User
 				{
 					Avatar = this.Avatar,
 					UserName = this.UserName,
@@ -151,9 +151,9 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
 			var dbStudent = this.StudentManagementService.GetStudent(student.Id, true);
 
 			if (dbStudent.GroupId != student.GroupId)
-            {
+			{
 				StudentManagementService.RemoveFromSubGroups(student.Id, dbStudent.GroupId);
-            }
+			}
 
 			this.StudentManagementService.UpdateStudent(student);
 			this.ElasticManagementService.ModifyStudent(student);

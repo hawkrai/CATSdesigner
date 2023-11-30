@@ -53,16 +53,14 @@ export class PracticalsEffects {
         this.store.select(subjectSelectors.getSubjectId)
       ),
       switchMap(([_, groupId, subjectId]) =>
-        this.rest
-          .getProtectionSchedule(subjectId, groupId)
-          .pipe(
-            switchMap(({ practicals, scheduleProtectionPracticals }) => [
-              practicalsActions.loadScheduleSuccess({
-                schedule: scheduleProtectionPracticals,
-              }),
-              practicalsActions.loadPracticalsSuccess({ practicals }),
-            ])
-          )
+        this.rest.getProtectionSchedule(subjectId, groupId).pipe(
+          switchMap(({ practicals, scheduleProtectionPracticals }) => [
+            practicalsActions.loadScheduleSuccess({
+              schedule: scheduleProtectionPracticals,
+            }),
+            practicalsActions.loadPracticalsSuccess({ practicals }),
+          ])
+        )
       )
     )
   )
@@ -249,15 +247,13 @@ export class PracticalsEffects {
         this.store.select(groupsSelectors.getCurrentGroupId)
       ),
       switchMap(([_, subjectId, groupId]) =>
-        this.rest
-          .getGroupJobProtection(subjectId, groupId)
-          .pipe(
-            map((groupJobProtection) =>
-              practicalsActions.loadGroupJobProtectionSuccess({
-                groupJobProtection,
-              })
-            )
+        this.rest.getGroupJobProtection(subjectId, groupId).pipe(
+          map((groupJobProtection) =>
+            practicalsActions.loadGroupJobProtectionSuccess({
+              groupJobProtection,
+            })
           )
+        )
       )
     )
   )
@@ -267,19 +263,17 @@ export class PracticalsEffects {
       ofType(practicalsActions.sendUserFile),
       withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
       switchMap(([{ sendFile, fileId }, subjectId]) =>
-        this.userFilesService
-          .sendUserFile({ ...sendFile, subjectId })
-          .pipe(
-            switchMap((body) => [
-              ...(!body.IsReturned ? [catsActions.showMessage({ body })] : []),
-              practicalsActions.sendUserFileSuccess({
-                userLabFile: body,
-                isReturned: sendFile.isRet,
-                fileId,
-                userId: sendFile.userId,
-              }),
-            ])
-          )
+        this.userFilesService.sendUserFile({ ...sendFile, subjectId }).pipe(
+          switchMap((body) => [
+            ...(!body.IsReturned ? [catsActions.showMessage({ body })] : []),
+            practicalsActions.sendUserFileSuccess({
+              userLabFile: body,
+              isReturned: sendFile.isRet,
+              fileId,
+              userId: sendFile.userId,
+            }),
+          ])
+        )
       )
     )
   )
@@ -480,15 +474,13 @@ export class PracticalsEffects {
         this.store.select(groupsSelectors.getCurrentGroupId)
       ),
       switchMap(([{ studentId }, subjectId, groupId]) =>
-        this.rest
-          .getStudentJobProtection(subjectId, groupId, studentId)
-          .pipe(
-            map((studentJobProtection) =>
-              practicalsActions.loadStudentJobProtectionSuccess({
-                studentJobProtection,
-              })
-            )
+        this.rest.getStudentJobProtection(subjectId, groupId, studentId).pipe(
+          map((studentJobProtection) =>
+            practicalsActions.loadStudentJobProtectionSuccess({
+              studentJobProtection,
+            })
           )
+        )
       )
     )
   )

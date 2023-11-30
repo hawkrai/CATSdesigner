@@ -130,38 +130,33 @@ export class SubjectComponent implements OnInit, OnDestroy {
       })
   }
 
-  deleteSubject(subject : Subject) {
+  deleteSubject(subject: Subject) {
     // Создаем данные диалогового окна для удаления предмета
     const deleteDialogData: DialogData = {
-      title: this.translate.transform(
-        'subject.deleting',
-        'Удаление предмета'
-      ),
-      body: `${this.translate.transform(
-        'subject.singular',
-        'предмет'
-      ).toLowerCase()} "${subject.DisplayName}"`,
-      buttonText: this.translate.transform(
-        'button.delete',
-        'Удалить'
-      )
-    };
+      title: this.translate.transform('subject.deleting', 'Удаление предмета'),
+      body: `${this.translate
+        .transform('subject.singular', 'предмет')
+        .toLowerCase()} "${subject.DisplayName}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить'),
+    }
 
     // Создаем ссылку на открытое диалоговое окно
     const deleteDialogRef = this.dialogService.openDialog(
       DeletePopoverComponent,
       deleteDialogData
-    );
+    )
 
     // Добавляем обработчики событий
     this.subs.add(
-      deleteDialogRef.afterClosed().subscribe(result => {
+      deleteDialogRef.afterClosed().subscribe((result) => {
         // Если была нажата кнопка удалить и кол-во групп > 0
         if (result && subject.GroupsCount > 0) {
           // Значит можно удалять
-          this.store.dispatch(subjectActions.deleteSubjectById({
-            subjectId: subject.SubjectId
-          }));
+          this.store.dispatch(
+            subjectActions.deleteSubjectById({
+              subjectId: subject.SubjectId,
+            })
+          )
         } else {
           // Если же есть хотя бы 1 группа
           // Тогда мы создаем данные под новое диалоговое окно
@@ -177,7 +172,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
             buttonText: this.translate.transform(
               'subject.cancel.deleting.button.close',
               'ОК'
-            )
+            ),
           }
 
           // И просто показываем его без обработки событий
@@ -187,7 +182,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
           )
         }
       })
-    );
+    )
   }
 
   navigateToSubject(subjectId: number): void {

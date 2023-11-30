@@ -131,22 +131,20 @@ export class LabsEffects {
       ofType(labsActions.createDateVisit),
       withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
       switchMap(([{ obj }, subjectId]) =>
-        this.scheduleService
-          .createLabDateVisit({ ...obj, subjectId })
-          .pipe(
-            switchMap((body) => [
-              catsActions.showMessage({
-                body: {
-                  ...body,
-                  Message:
-                    body.Code === '200'
-                      ? body.Message
-                      : generateCreateDateException(body),
-                },
-              }),
-              labsActions.loadLabsSchedule(),
-            ])
-          )
+        this.scheduleService.createLabDateVisit({ ...obj, subjectId }).pipe(
+          switchMap((body) => [
+            catsActions.showMessage({
+              body: {
+                ...body,
+                Message:
+                  body.Code === '200'
+                    ? body.Message
+                    : generateCreateDateException(body),
+              },
+            }),
+            labsActions.loadLabsSchedule(),
+          ])
+        )
       )
     )
   )
@@ -265,19 +263,17 @@ export class LabsEffects {
       ofType(labsActions.sendUserFile),
       withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
       switchMap(([{ sendFile, fileId }, subjectId]) =>
-        this.userFilesService
-          .sendUserFile({ ...sendFile, subjectId })
-          .pipe(
-            switchMap((body) => [
-              ...(!body.IsReturned ? [catsActions.showMessage({ body })] : []),
-              labsActions.sendUserFileSuccess({
-                userLabFile: body,
-                isReturned: sendFile.isRet,
-                fileId,
-                userId: sendFile.userId,
-              }),
-            ])
-          )
+        this.userFilesService.sendUserFile({ ...sendFile, subjectId }).pipe(
+          switchMap((body) => [
+            ...(!body.IsReturned ? [catsActions.showMessage({ body })] : []),
+            labsActions.sendUserFileSuccess({
+              userLabFile: body,
+              isReturned: sendFile.isRet,
+              fileId,
+              userId: sendFile.userId,
+            }),
+          ])
+        )
       )
     )
   )
@@ -497,15 +493,13 @@ export class LabsEffects {
         this.store.select(groupsSelectors.getCurrentGroupId)
       ),
       switchMap(([{ studentId }, subjectId, groupId]) =>
-        this.rest
-          .getStudentJobProtection(subjectId, groupId, studentId)
-          .pipe(
-            map((studentJobProtection) =>
-              labsActions.loadStudentJobProtectionSuccess({
-                studentJobProtection,
-              })
-            )
+        this.rest.getStudentJobProtection(subjectId, groupId, studentId).pipe(
+          map((studentJobProtection) =>
+            labsActions.loadStudentJobProtectionSuccess({
+              studentJobProtection,
+            })
           )
+        )
       )
     )
   )

@@ -67,15 +67,13 @@ export class FilesEffects {
     this.actions$.pipe(
       ofType(filesActions.deleteFile),
       switchMap(({ file }) =>
-        this.filesService
-          .deleteFile(file.DeleteUrl)
-          .pipe(
-            map(() =>
-              filesActions.deleteFileSuccess({
-                guidFileName: file.GuidFileName,
-              })
-            )
+        this.filesService.deleteFile(file.DeleteUrl).pipe(
+          map(() =>
+            filesActions.deleteFileSuccess({
+              guidFileName: file.GuidFileName,
+            })
           )
+        )
       )
     )
   )

@@ -18,17 +18,15 @@ export class SubjectEffect {
     this.actions$.pipe(
       ofType(subjectActions.saveSubject),
       switchMap(({ subject }) =>
-        this.subjectService
-          .saveSubject(subject)
-          .pipe(
-            switchMap((body) => [
-              catsActions.showMessage({ body }),
-              catsActions.sendMessage({
-                message: new Message('UpdateSubjects', ''),
-              }),
-              subjectActions.loadSubjects(),
-            ])
-          )
+        this.subjectService.saveSubject(subject).pipe(
+          switchMap((body) => [
+            catsActions.showMessage({ body }),
+            catsActions.sendMessage({
+              message: new Message('UpdateSubjects', ''),
+            }),
+            subjectActions.loadSubjects(),
+          ])
+        )
       )
     )
   )
@@ -50,16 +48,14 @@ export class SubjectEffect {
     this.actions$.pipe(
       ofType(subjectActions.deleteSubjectById),
       switchMap(({ subjectId }) =>
-        this.subjectService
-          .deleteSubject(subjectId)
-          .pipe(
-            switchMap(() => [
-              catsActions.sendMessage({
-                message: new Message('UpdateSubjects', ''),
-              }),
-              subjectActions.loadSubjects(),
-            ])
-          )
+        this.subjectService.deleteSubject(subjectId).pipe(
+          switchMap(() => [
+            catsActions.sendMessage({
+              message: new Message('UpdateSubjects', ''),
+            }),
+            subjectActions.loadSubjects(),
+          ])
+        )
       )
     )
   )

@@ -6,6 +6,7 @@ using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules.CoreModels;
 using LMPlatform.UI.Services.Modules.Labs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -67,7 +68,8 @@ namespace LMPlatform.UI.Services.Courses
 			try
 			{
 				var group = GroupManagementService.GetGroups(new Query<Group>(e => e.SubjectGroups.Any(x => x.SubjectId == subjectId && x.GroupId == groupId))
-					.Include(e => e.Students.Select(x => x.User))).FirstOrDefault();
+										.Include(e => e.Students.Select(s => s.User)))
+										.FirstOrDefault();
 				IList<SubGroup> subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
 				var students = new List<StudentMark>();
 
