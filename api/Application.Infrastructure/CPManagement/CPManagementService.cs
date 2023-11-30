@@ -389,7 +389,7 @@ namespace Application.Infrastructure.CPManagement
                             ConsultationDateId = cm.ConsultationDateId,
                             StudentId = cm.StudentId,
                             Mark = cm.Mark,
-                            Comments = cm.Comments,
+                            Comment = cm.Comments,
                         })
                     }).ApplyPaging(parms);
         }
@@ -461,7 +461,7 @@ namespace Application.Infrastructure.CPManagement
                                 ConsultationDateId = cm.ConsultationDateId,
                                 StudentId = cm.StudentId,
                                 Mark = cm.Mark,
-                                Comments = cm.Comments
+                                Comment = cm.Comments
                             })
                         }).ApplyPaging(parms);
             }
@@ -497,7 +497,7 @@ namespace Application.Infrastructure.CPManagement
                                 ConsultationDateId = cm.ConsultationDateId,
                                 StudentId = cm.StudentId,
                                 Mark = cm.Mark,
-                                Comments = cm.Comments
+                                Comment = cm.Comments
                             })
                         }).ApplyPaging(parms);
             }

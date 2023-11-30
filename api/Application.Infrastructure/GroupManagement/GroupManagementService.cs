@@ -14,11 +14,11 @@ namespace Application.Infrastructure.GroupManagement
     {
         public Group GetGroup(int groupId)
         {
-	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-	        return repositoriesContainer.GroupsRepository.GetBy(
-		        new Query<Group>(e => e.Id == groupId)
-					.Include(e => e.Students.Select(x => x.LecturesVisitMarks))
-					.Include(e => e.Students.Select(x => x.User)));
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.GroupsRepository.GetBy(
+                new Query<Group>(e => e.Id == groupId)
+                    .Include(e => e.Students.Select(x => x.LecturesVisitMarks))
+                    .Include(e => e.Students.Select(x => x.User)));
         }
 
         public Group GetGroup(IQuery<Group> query = null)
@@ -29,16 +29,17 @@ namespace Application.Infrastructure.GroupManagement
 
         public Group GetGroupWithLiteStudents(int groupId)
         {
-	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-	        return repositoriesContainer.GroupsRepository.GetBy(
-		        new Query<Group>(e => e.Id == groupId)
-			        .Include(e => e.Students));
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.GroupsRepository.GetBy(
+                new Query<Group>(e => e.Id == groupId)
+                    .Include(e => e.Students));
         }
 
         public List<Group> GetGroups(IQuery<Group> query = null)
         {
-	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-	        return repositoriesContainer.GroupsRepository.GetAll(query).OrderBy(x => x.Name).ToList();
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            List<Group> groups = repositoriesContainer.GroupsRepository.GetAll(query).OrderBy(x => x.Name).ToList();
+            return groups;
         }
 
         public IPageableList<Group> GetGroupsPageable(string searchString = null, IPageInfo pageInfo = null, IEnumerable<ISortCriteria> sortCriterias = null)
@@ -69,7 +70,7 @@ namespace Application.Infrastructure.GroupManagement
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                query.AddFilterClause(e => 
+                query.AddFilterClause(e =>
                     e.Name.ToLower().Contains(searchString)
                 );
             }
@@ -118,8 +119,8 @@ namespace Application.Infrastructure.GroupManagement
             }
         }
 
-		public List<string> GetLabsScheduleVisitings(int subjectId, int groupId, int subGorupId)
-	    {
+        public List<string> GetLabsScheduleVisitings(int subjectId, int groupId, int subGorupId)
+        {
             var data = new List<string>();
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
@@ -137,11 +138,11 @@ namespace Application.Infrastructure.GroupManagement
             }
 
             return data;
-	    }
+        }
 
-	    public List<List<string>> GetLabsScheduleMarks(int subjectId, int groupId)
-	    {
-		    var data = new List<List<string>>();
+        public List<List<string>> GetLabsScheduleMarks(int subjectId, int groupId)
+        {
+            var data = new List<List<string>>();
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
@@ -183,7 +184,8 @@ namespace Application.Infrastructure.GroupManagement
                                         mark = marks.Mark;
                                         comment = marks.Comment;
                                         break;
-                                    } else
+                                    }
+                                    else
                                     {
                                         mark = "";
                                         comment = "";
@@ -200,7 +202,7 @@ namespace Application.Infrastructure.GroupManagement
                 }
             }
             return data;
-	    }
+        }
 
         public List<string> GetCpScheduleVisitings(int subjectId, int groupId, int lecturerId)
         {
@@ -208,10 +210,10 @@ namespace Application.Infrastructure.GroupManagement
 
             var subject = Context.CourseProjectConsultationDates.Where(x => x.SubjectId == subjectId && x.LecturerId == lecturerId);
 
-                foreach (var cp in subject)
-                {
-                    data.Add(cp.Day.ToString("dd/MM/yyyy"));
-                }
+            foreach (var cp in subject)
+            {
+                data.Add(cp.Day.ToString("dd/MM/yyyy"));
+            }
 
             return data;
         }
@@ -219,11 +221,11 @@ namespace Application.Infrastructure.GroupManagement
         public List<List<string>> GetCpScheduleMarks(int subjectId, int groupId, int lecturerId)
         {
             var data = new List<List<string>>();
-            var groups = Context.Groups.Include("Students").Single(x=>x.Id == groupId);
+            var groups = Context.Groups.Include("Students").Single(x => x.Id == groupId);
 
             foreach (var student in groups.Students.OrderBy(e => e.FullName))
             {
-                if (student.AssignedCourseProjects.Any(x=> x.CourseProject.SubjectId == subjectId && x.CourseProject.LecturerId == lecturerId))
+                if (student.AssignedCourseProjects.Any(x => x.CourseProject.SubjectId == subjectId && x.CourseProject.LecturerId == lecturerId))
                 {
                     var rows = new List<string>();
                     rows.Add(student.FullName);
@@ -275,7 +277,8 @@ namespace Application.Infrastructure.GroupManagement
                                 mark = marks.Mark;
                                 comment = marks.Comment;
                                 break;
-                            } else
+                            }
+                            else
                             {
                                 mark = "";
                                 comment = "";
@@ -458,25 +461,25 @@ namespace Application.Infrastructure.GroupManagement
             return data;
         }
 
-	    public List<Group> GetLecturesGroups(int id, bool activeOnly = false)
-	    {
-		    using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-		    var subjects = repositoriesContainer.RepositoryFor<SubjectLecturer>()
-			    .GetAll(new Query<SubjectLecturer>(e => e.LecturerId == id)
-				    .Include(e => e.Subject.SubjectGroups
-					    .Select(x => x.Group)))
+        public List<Group> GetLecturesGroups(int id, bool activeOnly = false)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            var subjects = repositoriesContainer.RepositoryFor<SubjectLecturer>()
+                .GetAll(new Query<SubjectLecturer>(e => e.LecturerId == id)
+                    .Include(e => e.Subject.SubjectGroups
+                        .Select(x => x.Group)))
                 .Where(x => activeOnly ? !x.Subject.IsArchive : true)
                 .ToList();
 
-		    var groups = new List<Group>();
+            var groups = new List<Group>();
 
-		    foreach (var subject in subjects)
-		    {
-			    groups.AddRange(subject.Subject.SubjectGroups.Where(e => activeOnly ? e.IsActiveOnCurrentGroup : true).Select(e => e.Group));
-		    }
+            foreach (var subject in subjects)
+            {
+                groups.AddRange(subject.Subject.SubjectGroups.Where(e => activeOnly ? e.IsActiveOnCurrentGroup : true).Select(e => e.Group));
+            }
 
-		    return groups;
-	    }
+            return groups;
+        }
 
         public List<string> GetPracticalsScheduleVisitings(int subjectId, int groupId)
         {

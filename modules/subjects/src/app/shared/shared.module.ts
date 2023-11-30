@@ -44,7 +44,7 @@ import * as dataRu from '../core/translation/translations_ru.json'
 import { SomePipe } from './pipes/some.pipe'
 import { StartWithPipe } from './pipes/start-with.pipe'
 import { FirstLetterPipe } from './pipes/first-letter.pipe'
-import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component';
+import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component'
 import { WarningPopoverComponent } from './warning-popover/warning-popover.component'
 
 @NgModule({

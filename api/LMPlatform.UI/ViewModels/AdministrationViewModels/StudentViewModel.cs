@@ -70,7 +70,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 LastLogin = student.User.LastLogin.HasValue ? student.User.LastLogin?.ToString("o") : "-",
                 ActiveSubjects = SubjectManagementService.GetSubjectsCountByStudent(student.Id, true),
                 NotActiveSubjects = SubjectManagementService.GetSubjectsCountByStudent(student.Id, false),
-                IsActive = student.IsActive,
+                IsActive = student.IsActive.HasValue ? student.IsActive.Value : true,
                 DeletedOn = student.DeletedOn?.ToString("o"),
                 Confirmed = student.Confirmed,
                 ConfirmedBy = student.ConfirmedBy?.FullName,

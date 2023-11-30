@@ -130,22 +130,15 @@ export class SubjectComponent implements OnInit, OnDestroy {
       })
   }
 
-  deleteSubject(subject : Subject) {
+  deleteSubject(subject: Subject) {
     // Создаем данные диалогового окна для удаления предмета
     const deleteDialogData: DialogData = {
-      title: this.translate.transform(
-        'subject.deleting',
-        'Удаление предмета'
-      ),
-      body: `${this.translate.transform(
-        'subject.singular',
-        'предмет'
-      ).toLowerCase()} "${subject.DisplayName}"`,
-      buttonText: this.translate.transform(
-        'button.delete',
-        'Удалить'
-      )
-    };
+      title: this.translate.transform('subject.deleting', 'Удаление предмета'),
+      body: `${this.translate
+        .transform('subject.singular', 'предмет')
+        .toLowerCase()} "${subject.DisplayName}"`,
+      buttonText: this.translate.transform('button.delete', 'Удалить'),
+    }
 
     // Создаем ссылку на открытое диалоговое окно
     const deleteDialogRef = this.dialogService.openDialog(
@@ -189,7 +182,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
           )
         }
       })
-    );
+    )
   }
 
   navigateToSubject(subjectId: number): void {

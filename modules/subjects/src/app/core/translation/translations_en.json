@@ -25,7 +25,7 @@
   "short.name": "Short name",
   "subject.choose": "Choose course",
   "subject.deleting": "Deleting a course",
-  "subject.cancel.deleting":"Failed to delete subject",
+  "subject.cancel.deleting": "Failed to delete subject",
   "subject.cancel.deleting.text": "The subject cannot be deleted because groups are attached to it",
   "subject.cancel.deleting.button.close": "OK",
   "subject.singular": "Course",

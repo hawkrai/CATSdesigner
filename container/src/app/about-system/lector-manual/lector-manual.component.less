@@ -3,7 +3,7 @@
   padding-top: 0px;
 }
 
-.col-second {
+.manual-column {
   width: 100vw;
   vertical-align: middle;
   padding: 0px 50px 50px 50px;
@@ -20,27 +20,7 @@
   }
 
   .mat-expansion-panel-header-title {
-    flex-basis: 0;
-  }
-}
-
-.col-first {
-  width: 100vw;
-  vertical-align: middle;
-  padding: 0px 50px 50px 50px;
-  color: black;
-  margin-bottom: 50px;
-
-  > h2 {
-    padding: 30px 0px 5px 0px;
-    text-align: center;
-  }
-
-  .p {
-    font-size: 14px;
-  }
-
-  .mat-expansion-panel-header-title {
+    display: block;
     flex-basis: 0;
   }
 }
@@ -57,7 +37,7 @@
 }
 
 @media (max-width: 1024px) {
-  .col-first {
+  .manual-column {
     > h1 {
       font-size: 2.7vw;
     }
@@ -73,8 +53,7 @@
       flex-direction: column;
     }
 
-    .col-first,
-    .col-second {
+    .manual-column {
       width: auto;
       padding: 0px 25px;
     }
