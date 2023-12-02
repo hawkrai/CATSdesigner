@@ -1,21 +1,29 @@
 [modules]
-relative_modules_directories = [
-    "../",
-    "../modules"
+relative_modules_path_list = [
+    "../container",
+    "../server",
+    "../modules/admin",
+    "../modules/complex",
+    "../modules/confirmation",
+    "../modules/course-projects",
+    "../modules/diplom-projects",
+    "../modules/editor",
+    "../modules/schedule",
+    "../modules/statistics",
+    "../modules/subjects",
+    "../modules/tests",
 ]
 
-exclude_directories = [
-    "CATSdesigner",
-    ".git",
-    ".husky",
-    ".temp",
-    ".vscode",
-    "api",
-    "build",
-    "ChatServer",
-    "cicd",
-    "cli",
-    "common",
-    "modules",
-    "node_modules"
+exclude_modules_for_install = []
+
+exclude_modules_for_uninstall = []
+
+exclude_modules_for_reinstall = []
+
+exclude_modules_for_build = [
+    '../server',
+]
+
+exclude_modules_for_rebuild = [
+    '../server',
 ]
