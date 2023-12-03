@@ -35,7 +35,7 @@
   "lesson.start": "Начало занятия",
   "lesson.start.required": "Начало занятия обязательно",
   "lesson.end": "Конец занятия",
-  "lesson.end.required": "Конец зантия обязательно",
+  "lesson.end.required": "Конец занятия обязательно",
   "lesson.building": "Корпус",
   "lesson.audience": "Аудитория",
   "lesson.audience.required": "Аудитория обязательно",
@@ -45,6 +45,7 @@
   "subgroup": "Подгруппа",
   "subdivision": "Разделение на подгруппы",
   "subgroup.management": "Управление подгруппами",
+  "subject.adding.error": "Не удалось добавить занятие",
   "subject.management": "Управление предметами",
   "subject.choose": "Выберите предмет",
   "subject.deleting": "Удаление предмета",
@@ -253,6 +254,9 @@
   "text.subjects.attendance.students": "Посещаемость студентов",
   "text.subjects.attendance.lesson": "Посещаемость занятий",
 
+  "text.schedule.delete.event": "Удалить занятие/событие?",
+  "text.schedule.edit.event": "Вы уверены, что хотите подтвердить изменение?",
+
   "text.schedule.management": "Управление расписанием",
   "text.schedule.management.dates": "Управление датами",
   "text.schedule.management.delete.all": "Удалить все даты",
@@ -260,6 +264,9 @@
   "text.schedule.dates": "Даты занятий",
   "text.schedule.dates.deleting": "Удаление дат",
   "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
+
+  "text.schedule.educational.study.types.per.week": "Виды учебной нагрузки в неделю",
+  "text.schedule.educational.load.per.week": "Нагрузка по предметам ежедневно",
 
   "text.visiting.date.editing": "Редактируемая дата",
 
