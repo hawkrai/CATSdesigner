@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core'
-import { NewsService } from '../service/news.service'
-import { LessonService } from '../service/lesson.service'
 import { MatDialog } from '@angular/material/dialog'
-import { NewsInfoComponent } from '../modal/news-info/news-info.component'
-import { Message } from '../../../../../container/src/app/core/models/message'
 import { ModuleCommunicationService } from 'test-mipe-bntu-schedule'
+import { Message } from '../../../../../container/src/app/core/models/message'
 import { AllNewsComponent } from '../modal/all-news/all-news.component'
+import { NewsInfoComponent } from '../modal/news-info/news-info.component'
 import { ScheduleMainComponent } from '../schedule-main/schedule-main.component'
-import { Subject } from 'rxjs'
+import { LessonService } from '../service/lesson.service'
+import { NewsService } from '../service/news.service'
 
 @Component({
   selector: 'app-news',
@@ -22,11 +21,13 @@ export class NewsComponent implements OnInit {
 
   constructor(
     private newsService: NewsService,
-    private lessonservice: LessonService,
-    private modulecommunicationservice: ModuleCommunicationService,
+    private lessonService: LessonService,
+    private moduleCommunicationService: ModuleCommunicationService,
     private dialog: MatDialog,
     private schedule: ScheduleMainComponent
-  ) {}
+  ) {
+    this.schedule.hideNews()
+  }
 
   ngOnInit() {
     // localStorage.setItem('currentUser', JSON.stringify({id: 10031, role: 'lector', userName: 'popova'}));
@@ -58,7 +59,7 @@ export class NewsComponent implements OnInit {
     const message: Message = new Message()
     message.Value = '/web/viewer/subject/' + item.SubjectId
     message.Type = 'Route'
-    this.modulecommunicationservice.sendMessage(window.parent, message)
+    this.moduleCommunicationService.sendMessage(window.parent, message)
   }
 
   public calcColor(subject: any): any {
