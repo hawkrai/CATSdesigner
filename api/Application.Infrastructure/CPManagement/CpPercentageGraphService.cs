@@ -241,7 +241,8 @@ namespace Application.Infrastructure.CPManagement
             }
 
             consultationMark.Mark = string.IsNullOrWhiteSpace(consultationMarkData.Mark) ? null : consultationMarkData.Mark;
-            consultationMark.Comments = string.IsNullOrWhiteSpace(consultationMarkData.Comment) ? null : consultationMarkData.Comment>>>>>>> develop
+            consultationMark.Comments = string.IsNullOrWhiteSpace(consultationMarkData.Comment) ? null : consultationMarkData.Comment;
+            
             Context.SaveChanges();
         }
 
