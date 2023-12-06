@@ -1,5 +1,6 @@
 [modules]
 relative_modules_path_list = [
+    "../",
     "../container",
     "../server",
     "../modules/admin",
