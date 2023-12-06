@@ -1,12 +1,12 @@
 <div class="materials-body">
-  <table>
+  <table class="materials-table">
     <tr>
       <a class="main-anchor" routerLink="/main"
         >< {{ 'complex.complexes' | translate }}</a
       >
     </tr>
     <tr>
-      <b style="font-size: 30px; padding-left: 800px">{{ complexName }}</b>
+      <b class="complex-name">{{ complexName }}</b>
     </tr>
     <tr>
       <td style="display: flex">
@@ -29,7 +29,7 @@
     </tr>
   </table>
   <app-material-tree
-    class="material"
+    class="material-tree material"
     [complexId]="complexID"
   ></app-material-tree>
 </div>
