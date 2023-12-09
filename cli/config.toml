@@ -22,9 +22,11 @@ exclude_modules_for_uninstall = []
 exclude_modules_for_reinstall = []
 
 exclude_modules_for_build = [
-    '../server',
+    "../",
+    "../server",
 ]
 
 exclude_modules_for_rebuild = [
-    '../server',
+    "../",
+    "../server",
 ]
