@@ -24,8 +24,9 @@ export class AddProjectDialogComponent {
     this.noWhitespaceValidator,
   ])
 
+  public areGroupsChanged = true
   private groups: CoreGroup[]
-  private originSelectedGroups: string[]
+  private originSelectedGroups: string
   originName = ''
 
   constructor(
@@ -35,11 +36,13 @@ export class AddProjectDialogComponent {
     this.groups = data.groups.filter(
       (g) => !data.selectedGroups.find((sg) => sg.GroupId === g.GroupId)
     )
-    this.originSelectedGroups = data.groups
-      .map((a) => a.GroupId)
-      .sort((a: any, b: any) => {
-        return a - b
-      })
+    this.originSelectedGroups = JSON.stringify(
+      data.selectedGroups
+        .map((a) => a.GroupId)
+        .sort((a: any, b: any) => {
+          return a - b
+        })
+    )
     this.originName = data.name
     this.nameControl.setValue(data.name)
   }
@@ -61,6 +64,7 @@ export class AddProjectDialogComponent {
     } else {
       dest.splice(destIndex, 0, group)
     }
+    this.areGroupsChanged = this.areGroupsNotChanged()
   }
 
   includeAll() {
@@ -87,15 +91,12 @@ export class AddProjectDialogComponent {
     return isValid ? null : { whitespace: true }
   }
 
-  get areGroupsNotChanged(): boolean {
+  private areGroupsNotChanged(): boolean {
     const selectedGroups = this.data.selectedGroups
       .map((a) => a.GroupId)
       .sort((a: any, b: any) => {
         return a - b
       })
-    return (
-      JSON.stringify(this.originSelectedGroups) ===
-      JSON.stringify(selectedGroups)
-    )
+    return this.originSelectedGroups === JSON.stringify(selectedGroups)
   }
 }

@@ -149,22 +149,20 @@ export class LecturesEffects {
       ofType(lecturesActions.createDateVisit),
       withLatestFrom(this.store.select(subjectSelectors.getSubjectId)),
       switchMap(([{ obj }, subjectId]) =>
-        this.scheduleService
-          .createLectureDateVisit({ ...obj, subjectId })
-          .pipe(
-            switchMap((body) => [
-              catsActions.showMessage({
-                body: {
-                  ...body,
-                  Message:
-                    body.Code === '200'
-                      ? body.Message
-                      : generateCreateDateException(body),
-                },
-              }),
-              lecturesActions.loadCalendar(),
-            ])
-          )
+        this.scheduleService.createLectureDateVisit({ ...obj, subjectId }).pipe(
+          switchMap((body) => [
+            catsActions.showMessage({
+              body: {
+                ...body,
+                Message:
+                  body.Code === '200'
+                    ? body.Message
+                    : generateCreateDateException(body),
+              },
+            }),
+            lecturesActions.loadCalendar(),
+          ])
+        )
       )
     )
   )

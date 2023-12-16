@@ -45,8 +45,8 @@
             {{ 'comment' | translate: 'Комментарий' }}</mat-header-cell
           >
           <mat-cell *matCellDef="let element">
-            <mat-form-field style="margin-right: 20px; width: 75%;">
-              <input name="comment" matInput [(ngModel)]="element.comment">
+            <mat-form-field style="margin-right: 20px; width: 75%">
+              <input name="comment" matInput [(ngModel)]="element.comment" />
             </mat-form-field>
             <mat-checkbox
               [matTooltip]="
