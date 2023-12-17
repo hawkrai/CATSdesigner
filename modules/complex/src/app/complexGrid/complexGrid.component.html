@@ -4,7 +4,9 @@
   rowHeight="1:1"
   class="sub-settings"
 >
-  <a class="main-anchor" (click)="openPDF()">Положение об ЭУМК</a>
+  <a class="main-anchor" (click)="openPDF()">
+    {{ 'complex.regulations' | translate }}
+  </a>
   <div *ngFor="let complex of complexes">
     <mat-grid-tile>
       <div class="ripple-container mat-elevation-z6" matRipple>

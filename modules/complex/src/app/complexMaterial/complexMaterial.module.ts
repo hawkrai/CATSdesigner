@@ -17,6 +17,10 @@ import { FileUploaderComponent } from './components/materials/add-material-popov
 import { LoaderComponent } from './components/materials/add-material-popover/components/loader/loader.component'
 import { VarDirective } from './components/materials/add-material-popover/directives/var.directive'
 
+import * as dataRu from '../translate/translations_ru.json'
+import * as dataEn from '../translate/translations_en.json'
+import { TranslateModule, TranslatePipe } from 'educats-translate'
+
 @NgModule({
   declarations: [
     MaterialComponent,
@@ -39,7 +43,14 @@ import { VarDirective } from './components/materials/add-material-popover/direct
     PdfViewerModule,
     FormsModule,
     ReactiveFormsModule,
+    TranslateModule.forRoot({
+      localizationMap: {
+        ru: dataRu,
+        en: dataEn,
+      },
+    }),
   ],
+  providers: [TranslatePipe],
   exports: [VarDirective],
   entryComponents: [
     MaterialsPopoverComponent,
