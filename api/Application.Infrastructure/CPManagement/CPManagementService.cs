@@ -397,6 +397,7 @@ namespace Application.Infrastructure.CPManagement
         public PagedList<StudentData> GetGraduateStudentsForGroup(int userId, int groupId, int subjectId, GetPagedListParams parms, bool getBySecretaryForStudent = true)
         {
             var secretaryId = 0;
+            var studentId = 0;
 
             if (parms.Filters.ContainsKey("secretaryId"))
             {
@@ -415,6 +416,7 @@ namespace Application.Infrastructure.CPManagement
 
             if (isStudent)
             {
+                studentId = userId;
                 userId = Context.Users.Where(x => x.Id == userId)
                      .Select(x => x.Student.AssignedCourseProjects.FirstOrDefault().CourseProject.LecturerId)
                      .Single() ?? 0;
@@ -452,7 +454,7 @@ namespace Application.Infrastructure.CPManagement
                                 PercentageGraphId = pr.CoursePercentagesGraphId,
                                 StudentId = pr.StudentId,
                                 Mark = pr.Mark,
-                                Comment = pr.Comments,
+                                Comment = isStudent ? studentId.Equals(s.Id) ? pr.Comments : "" : pr.Comments,
                                 ShowForStudent = pr.ShowForStudent,
                             }),
                             CourseProjectConsultationMarks = s.CourseProjectConsultationMarks.Select(cm => new CourseProjectConsultationMarkData
@@ -488,7 +490,7 @@ namespace Application.Infrastructure.CPManagement
                                 PercentageGraphId = pr.CoursePercentagesGraphId,
                                 StudentId = pr.StudentId,
                                 Mark = pr.Mark,
-                                Comment = pr.Comments,
+                                Comment = isStudent ? studentId.Equals(s.Id) ? pr.Comments : "" : pr.Comments,
                                 ShowForStudent = pr.ShowForStudent,
                             }),
                             CourseProjectConsultationMarks = s.CourseProjectConsultationMarks.Select(cm => new CourseProjectConsultationMarkData
