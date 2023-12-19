@@ -1,10 +1,12 @@
 <div class="materials-body">
-  <table>
+  <table class="materials-table">
     <tr>
-      <a class="main-anchor" routerLink="/main">< К списку ЭУМК</a>
+      <a class="main-anchor" routerLink="/main"
+        >< {{ 'complex.complexes' | translate }}</a
+      >
     </tr>
     <tr>
-      <b style="font-size: 30px; padding-left: 800px">{{ complexName }}</b>
+      <b class="complex-name">{{ complexName }}</b>
     </tr>
     <tr>
       <td style="display: flex">
@@ -14,29 +16,20 @@
           class="add-button"
           (click)="openAddPopup()"
         >
-          Добавить элемент
+          {{ 'complex.addComponent' | translate }}
         </button>
         <button
           mat-raised-button
           class="add-button"
           (click)="openAdaptivePopup()"
         >
-          Адаптивное обучение
+          {{ 'complex.adaptiveLearning' | translate }}
         </button>
       </td>
     </tr>
   </table>
   <app-material-tree
-    class="material"
+    class="material-tree material"
     [complexId]="complexID"
   ></app-material-tree>
 </div>
-
-<!--<mat-tab-group>
-  <mat-tab label="ЭУМК">
-    <div class="labs-component__body">
-      
-    </div>
-  </mat-tab>
-  <mat-tab label="Адаптивное обучение"></mat-tab>
- </mat-tab-group>-->

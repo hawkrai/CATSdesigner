@@ -11,9 +11,9 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "watch": true,
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "watch": true,
             "outputPath": "../../.temp/apps/complex",
             "baseHref": "/complex/",
             "index": "src/index.html",
