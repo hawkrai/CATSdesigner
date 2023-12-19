@@ -120,6 +120,7 @@
             <button
               mat-icon-button
               color="primary"
+              *ngIf="+state.user.id === element.Owner"
               [matTooltip]="'subject.edit' | translate: 'Редактировать предмет'"
               (click)="constructorSubject(state.subjects, element.SubjectId)"
             >
@@ -128,6 +129,7 @@
             <button
               mat-icon-button
               color="primary"
+              *ngIf="+state.user.id === element.Owner"
               [matTooltip]="'subject.delete' | translate: 'Удалить предмет'"
               (click)="deleteSubject(element)"
             >
