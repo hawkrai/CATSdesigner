@@ -397,6 +397,7 @@ namespace Application.Infrastructure.CPManagement
         public PagedList<StudentData> GetGraduateStudentsForGroup(int userId, int groupId, int subjectId, GetPagedListParams parms, bool getBySecretaryForStudent = true)
         {
             var secretaryId = 0;
+            var studentId = 0;
 
             if (parms.Filters.ContainsKey("secretaryId"))
             {
@@ -415,6 +416,7 @@ namespace Application.Infrastructure.CPManagement
 
             if (isStudent)
             {
+                studentId = userId;
                 userId = Context.Users.Where(x => x.Id == userId)
                      .Select(x => x.Student.AssignedCourseProjects.FirstOrDefault().CourseProject.LecturerId)
                      .Single() ?? 0;
@@ -452,7 +454,7 @@ namespace Application.Infrastructure.CPManagement
                                 PercentageGraphId = pr.CoursePercentagesGraphId,
                                 StudentId = pr.StudentId,
                                 Mark = pr.Mark,
-                                Comment = pr.Comments,
+                                Comment = isStudent ? studentId.Equals(s.Id) ? pr.Comments : "" : pr.Comments,
                                 ShowForStudent = pr.ShowForStudent,
                             }),
                             CourseProjectConsultationMarks = s.CourseProjectConsultationMarks.Select(cm => new CourseProjectConsultationMarkData
@@ -488,7 +490,7 @@ namespace Application.Infrastructure.CPManagement
                                 PercentageGraphId = pr.CoursePercentagesGraphId,
                                 StudentId = pr.StudentId,
                                 Mark = pr.Mark,
-                                Comment = pr.Comments,
+                                Comment = isStudent ? studentId.Equals(s.Id) ? pr.Comments : "" : pr.Comments,
                                 ShowForStudent = pr.ShowForStudent,
                             }),
                             CourseProjectConsultationMarks = s.CourseProjectConsultationMarks.Select(cm => new CourseProjectConsultationMarkData
@@ -643,11 +645,35 @@ namespace Application.Infrastructure.CPManagement
 
         public string GetTasksSheetHtml(int courseProjectId)
         {
-            // TODO
+            var userId = 0;
+            userId = UserContext.CurrentUserId;
+            var isStudent = AuthorizationHelper.IsStudent(Context, userId);
+
+            if (isStudent)
+            {
+                userId = Context.Users.Where(x => x.Id == userId)
+                     .Select(x => x.Student.AssignedCourseProjects.Where(acp => acp.CourseProjectId == courseProjectId).FirstOrDefault().CourseProject.LecturerId)
+                     .Single() ?? 0;
+            }
+
             var courseProject =
                 new LmPlatformModelsContext().CourseProjects
                     .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
                     .Single(x => x.CourseProjectId == courseProjectId);
+            courseProject.Subject.CoursePersentagesGraphs = courseProject.Subject.CoursePersentagesGraphs.Select(s => new CoursePercentagesGraph
+            {
+                Id = s.Id,
+                LecturerId = s.LecturerId,
+                SubjectId = s.SubjectId,
+                Name = s.Name,
+                Percentage = s.Percentage,
+                Date = s.Date,
+                CoursePercentagesResults = s.CoursePercentagesResults,
+                CoursePercentagesGraphToGroups = s.CoursePercentagesGraphToGroups,
+                Lecturer = s.Lecturer
+            }).Where(cpg => cpg.LecturerId == userId).ToList();
+
+
 
             return courseProject.AssignedCourseProjects.Count == 1
                 ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First())
