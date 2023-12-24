@@ -40,7 +40,7 @@ namespace Application.Infrastructure.CPManagement
             var isLecturer = user.Lecturer != null;
             var isStudent = user.Student != null;
             var isSecretary = isLecturer && user.Lecturer.IsSecretary;
-            
+
             var secretaryId = isStudent ? user.Student.Group.SecretaryId : userId;
             if (isStudent)
             {
@@ -95,7 +95,7 @@ namespace Application.Infrastructure.CPManagement
                 .ToList();
         }
 
-         public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId)
+        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId)
         {
             if (AuthorizationHelper.IsStudent(Context, userId))
             {
@@ -137,7 +137,7 @@ namespace Application.Infrastructure.CPManagement
         /// <returns></returns>
         private IQueryable<PercentageGraphData> GetPercentageGraphDataForLecturerQuery(int lecturer, int secretaryId, int subjectId)
         {
-            IQueryable<PercentageGraphData> p = Context.CoursePercentagesGraphs.Where(x => x.LecturerId == secretaryId).Where(x=>x.SubjectId == subjectId).
+            IQueryable<PercentageGraphData> p = Context.CoursePercentagesGraphs.Where(x => x.LecturerId == secretaryId).Where(x => x.SubjectId == subjectId).
                 Select(ToPercentageDataPlain);
 
             return p;
@@ -168,7 +168,7 @@ namespace Application.Infrastructure.CPManagement
             }
             else
             {
-				if (Context.CoursePercentagesGraphs.Any(x => x.SubjectId == percentageData.SubjectId && x.Name == percentageData.Name))
+                if (Context.CoursePercentagesGraphs.Any(x => x.SubjectId == percentageData.SubjectId && x.Name == percentageData.Name))
                 {
                     throw new ApplicationException("Этап с таким названием уже есть!");
                 }
@@ -241,6 +241,7 @@ namespace Application.Infrastructure.CPManagement
             }
 
             consultationMark.Mark = string.IsNullOrWhiteSpace(consultationMarkData.Mark) ? null : consultationMarkData.Mark;
+            consultationMark.Comments = string.IsNullOrWhiteSpace(consultationMarkData.Comment) ? null : consultationMarkData.Comment;
 
             Context.SaveChanges();
         }
@@ -258,7 +259,7 @@ namespace Application.Infrastructure.CPManagement
                 EndTime = endTime,
                 Audience = audience,
                 Building = buildingNumber
-             
+
             });
 
             Context.SaveChanges();
@@ -272,25 +273,25 @@ namespace Application.Infrastructure.CPManagement
             Context.CourseProjectConsultationDates.Remove(consultation);
             Context.SaveChanges();
         }
-        
+
         private static readonly Expression<Func<CoursePercentagesGraph, PercentageGraphData>> ToPercentageData =
             x => new PercentageGraphData
-        {
-            Id = x.Id,
-            Date = x.Date,
-            Name = x.Name,
-            Percentage = x.Percentage,
-            SelectedGroupsIds = x.CoursePercentagesGraphToGroups.Select(dpg => dpg.GroupId)
-        };
+            {
+                Id = x.Id,
+                Date = x.Date,
+                Name = x.Name,
+                Percentage = x.Percentage,
+                SelectedGroupsIds = x.CoursePercentagesGraphToGroups.Select(dpg => dpg.GroupId)
+            };
 
         private static readonly Expression<Func<CoursePercentagesGraph, PercentageGraphData>> ToPercentageDataPlain =
             x => new PercentageGraphData
-        {
-            Id = x.Id,
-            Date = x.Date,
-            Name = x.Name,
-            Percentage = x.Percentage,
-        };
+            {
+                Id = x.Id,
+                Date = x.Date,
+                Name = x.Name,
+                Percentage = x.Percentage,
+            };
 
         private readonly DateTime _currentAcademicYearStartDate = DateTime.Now.Month < 9
             ? new DateTime(DateTime.Now.Year - 1, 9, 1)

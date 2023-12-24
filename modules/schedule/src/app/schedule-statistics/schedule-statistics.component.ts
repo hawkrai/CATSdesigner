@@ -1,21 +1,20 @@
 import { Component, Inject, OnInit } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
-import { LessonService } from '../service/lesson.service'
 import { TranslatePipe } from 'educats-translate'
 import {
-  ApexChart,
   ApexAxisChartSeries,
-  ChartComponent,
+  ApexChart,
   ApexDataLabels,
-  ApexPlotOptions,
-  ApexYAxis,
-  ApexLegend,
+  ApexFill,
   ApexGrid,
+  ApexLegend,
+  ApexPlotOptions,
   ApexStroke,
   ApexTitleSubtitle,
   ApexTooltip,
-  ApexFill,
+  ApexYAxis,
 } from 'ng-apexcharts'
+import { LessonService } from '../service/lesson.service'
 
 interface ApexXAxis {
   type?: 'category' | 'datetime' | 'numeric'
@@ -176,7 +175,7 @@ export class ScheduleStatisticsComponent implements OnInit {
             this.saturdayCount += 1
           }
           let lessonType = this.lessonservice
-            .getTitelPart(event.title, 3)
+            .getTitlePart(event.title, 3)
             .replaceAll(' ', '')
           let color = this.lessonservice.getColorLesson(event)
           if (lessonType == '') {

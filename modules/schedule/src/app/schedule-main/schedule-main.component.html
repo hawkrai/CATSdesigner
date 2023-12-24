@@ -131,6 +131,7 @@
                 font-family: Roboto, Helvetica Neue, sans-serif;
                 color: #808080;
                 padding-top: 3px;
+                padding-left: 3px;
               "
             >
               {{ 'text.schedule.news' | translate: 'Новости' }}
@@ -204,7 +205,7 @@
                       font-family: Roboto, Helvetica Neue, sans-serif;
                     "
                   >
-                    {{ lessonservice.getTitelPart(event.title, 0) }}
+                    {{ lessonservice.getTitlePart(event.title, 0) }}
                   </h6>
                   <p
                     style="
@@ -238,7 +239,7 @@
                       font-family: Roboto, Helvetica Neue, sans-serif;
                     "
                   >
-                    {{ lessonservice.getTitelPart(event.title, 3) }}
+                    {{ lessonservice.getTitlePart(event.title, 3) }}
                   </h6>
                   <h6
                     style="
@@ -269,7 +270,7 @@
                       line-height: 100%;
                     "
                   >
-                    {{ lessonservice.getTitelPart(event.title, 5) }}
+                    {{ lessonservice.getTitlePart(event.title, 5) }}
                   </p>
                   <button
                     style="

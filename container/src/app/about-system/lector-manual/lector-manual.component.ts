@@ -9,7 +9,7 @@ export class LectorManualComponent implements OnInit {
   language: string
 
   ngOnInit() {
-    const language = localStorage.getItem('locale')
+    const language = localStorage.getItem('locale') || 'ru'
 
     this.language = language
   }

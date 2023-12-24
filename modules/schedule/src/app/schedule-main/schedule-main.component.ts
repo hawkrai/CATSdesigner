@@ -1,24 +1,24 @@
+import { DatePipe } from '@angular/common'
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
-import { Subject } from 'rxjs'
+import { MatDialog } from '@angular/material'
 import {
   CalendarEvent,
   CalendarEventTimesChangedEvent,
   CalendarView,
 } from 'angular-calendar'
-import { Lesson } from '../model/lesson.model'
-import { LessonService } from '../service/lesson.service'
-import { Note } from '../model/note.model'
-import { NoteService } from '../service/note.service'
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { Message } from '../../../../../container/src/app/core/models/message'
-import { CreateLessonComponent } from '../modal/create-lesson/create-lesson.component'
-import { ConfirmationComponent } from '../modal/confirmation/confirmation.component'
-import { DatePipe } from '@angular/common'
-import { ModuleCommunicationService } from 'test-mipe-bntu-schedule'
-import { TranslatePipe } from 'educats-translate'
-import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component'
-import { ScheduleStatisticsComponent } from '../schedule-statistics/schedule-statistics.component'
 import { NotifierService } from 'angular-notifier'
+import { TranslatePipe } from 'educats-translate'
+import { Subject } from 'rxjs'
+import { ModuleCommunicationService } from 'test-mipe-bntu-schedule'
+import { Message } from '../../../../../container/src/app/core/models/message'
+import { ConfirmationComponent } from '../modal/confirmation/confirmation.component'
+import { CreateLessonComponent } from '../modal/create-lesson/create-lesson.component'
+import { Lesson } from '../model/lesson.model'
+import { Note } from '../model/note.model'
+import { ScheduleStatisticsComponent } from '../schedule-statistics/schedule-statistics.component'
+import { LessonService } from '../service/lesson.service'
+import { NoteService } from '../service/note.service'
+import { HelpPopoverScheduleComponent } from './help-popover/help-popover-schedule.component'
 
 const colors: any = {
   color: {
@@ -229,8 +229,8 @@ export class ScheduleMainComponent implements OnInit {
   }
 
   getToolTip(title: string): any {
-    let group = this.lessonservice.getTitelPart(title, 12)
-    let subGroup = this.lessonservice.getTitelPart(title, 13)
+    let group = this.lessonservice.getTitlePart(title, 12)
+    let subGroup = this.lessonservice.getTitlePart(title, 13)
     if (group != 'null') {
       group += ' \n'
     } else {
@@ -242,7 +242,7 @@ export class ScheduleMainComponent implements OnInit {
     } else {
       subGroup = ''
     }
-    return this.lessonservice.getTitelPart(title, 7) + group + subGroup
+    return this.lessonservice.getTitlePart(title, 7) + group + subGroup
   }
 
   isNote(event): boolean {
@@ -406,7 +406,7 @@ export class ScheduleMainComponent implements OnInit {
               this.lessonservice
                 .deleteLecture(
                   eventToDelete.id,
-                  +this.lessonservice.getTitelPart(eventToDelete.title, 8)
+                  +this.lessonservice.getTitlePart(eventToDelete.title, 8)
                 )
                 .subscribe((res) => {
                   console.log(res)
@@ -416,7 +416,7 @@ export class ScheduleMainComponent implements OnInit {
               this.lessonservice
                 .deleteLab(
                   eventToDelete.id,
-                  +this.lessonservice.getTitelPart(eventToDelete.title, 8)
+                  +this.lessonservice.getTitlePart(eventToDelete.title, 8)
                 )
                 .subscribe((res) => {
                   console.log(res)
@@ -426,7 +426,7 @@ export class ScheduleMainComponent implements OnInit {
               this.lessonservice
                 .deletePractical(
                   eventToDelete.id,
-                  +this.lessonservice.getTitelPart(eventToDelete.title, 8)
+                  +this.lessonservice.getTitlePart(eventToDelete.title, 8)
                 )
                 .subscribe((res) => {
                   console.log(res)
