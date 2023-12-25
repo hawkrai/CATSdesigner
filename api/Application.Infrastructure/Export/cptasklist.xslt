@@ -100,7 +100,7 @@ div.Section1
                             <td width="135px" valign="top">
                                 <p class="MsoNormal" style='line-height:normal;text-align:left;'>
                                     <span style='font-size:10.0pt'>Заведующий кафедрой</span>
-                                </p>
+								</p>
                             </td>
                             <td width="auto" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
                                 <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
@@ -543,7 +543,7 @@ div.Section1
                             </td>
                             <td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
                                 <p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
-                                    <span style='font-size:8.0pt'>(подпись)</span>
+                                    <span style='font-size:8.0pt'>дата, подпись</span>
                                 </p>
                             </td>
                             <td width="10%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
@@ -584,7 +584,7 @@ div.Section1
                         <tr style='height:17.55pt'>
                             <td width="50%" valign="bottom" style='border:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
                                 <p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-                                    <span>Подпись обучающегося</span>
+                                    <span>Обучающийся</span>
                                 </p>
                             </td>
                             <td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
@@ -609,7 +609,7 @@ div.Section1
                             </td>
                             <td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
                                 <p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
-                                    <span style='font-size:8.0pt'>(подпись)</span>
+                                    <span style='font-size:8.0pt'>дата, подпись</span>
                                 </p>
                             </td>
                             <td width="10%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
@@ -628,25 +628,6 @@ div.Section1
                         <span lang="EN-US"><![CDATA[ ]]></span>
                     </p>
                   <br></br>
-                <table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
-                     style='border-collapse:collapse'>
-                        <tr style='height:17.55pt'>
-                            <td width="30px" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-                                <p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-                                    <span>Дата</span>
-                                </p>
-                            </td>
-                            <td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-                                <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
-                            </td>
-                            <td width="auto" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-                                <p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-                                    
-                                </p>
-                            </td>
-                        </tr>
-                       </table>
-
                 </div>
 
             </body>
