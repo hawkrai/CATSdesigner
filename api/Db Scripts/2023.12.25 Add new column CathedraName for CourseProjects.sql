@@ -1,2 +1,2 @@
 ALTER TABLE dbo.CourseProjects
-ADD CathedraName NVARCHAR(MAX) NULL
+ADD CathedraName NVARCHAR(100) NULL
