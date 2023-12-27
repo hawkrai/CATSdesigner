@@ -1,13 +1,13 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core'
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { Lesson } from '../../model/lesson.model'
-import { LessonService } from '../../service/lesson.service'
-import { Note } from '../../model/note.model'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import flatpickr from 'flatpickr'
 import { Russian } from 'flatpickr/dist/l10n/ru'
-import { NoteService } from '../../service/note.service'
 import { pairwise, startWith } from 'rxjs/operators'
+import { Lesson } from '../../model/lesson.model'
+import { Note } from '../../model/note.model'
+import { LessonService } from '../../service/lesson.service'
+import { NoteService } from '../../service/note.service'
 
 export function flatpickrFactory() {
   flatpickr.localize(Russian)
@@ -134,16 +134,16 @@ export class CreateLessonComponent implements OnInit {
         this.subjects.sort((a, b) => a.Name.localeCompare(b.Name))
         if (this.data.lesson != null) {
           this.lesson.Id = this.data.lesson.id
-          this.lesson.SubjectId = this.lessonservice.getTitelPart(
+          this.lesson.SubjectId = this.lessonservice.getTitlePart(
             this.data.lesson.title,
             8
           )
 
-          this.lesson.GroupId = +this.lessonservice.getTitelPart(
+          this.lesson.GroupId = +this.lessonservice.getTitlePart(
             this.data.lesson.title,
             10
           )
-          this.lesson.SubGroupId = +this.lessonservice.getTitelPart(
+          this.lesson.SubGroupId = +this.lessonservice.getTitlePart(
             this.data.lesson.title,
             11
           )
@@ -181,11 +181,11 @@ export class CreateLessonComponent implements OnInit {
       this.startTimeOfLesson = this.startHour + ':' + this.startMin
       this.endTimeOfLesson = this.endHour + ':' + this.endMin
       this.memo = this.lessonservice.getMemo(this.data.lesson.title)
-      this.lesson.Audience = this.lessonservice.getTitelPart(
+      this.lesson.Audience = this.lessonservice.getTitlePart(
         this.data.lesson.title,
         1
       )
-      this.lesson.Building = this.lessonservice.getTitelPart(
+      this.lesson.Building = this.lessonservice.getTitlePart(
         this.data.lesson.title,
         2
       )

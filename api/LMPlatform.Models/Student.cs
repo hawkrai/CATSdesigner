@@ -10,15 +10,15 @@ namespace LMPlatform.Models
 {
     public class Student : ModelBase
     {
-	    public string Email { get; set; }
+        public string Email { get; set; }
 
-	    public string FirstName { get; set; }
+        public string FirstName { get; set; }
 
-	    public string LastName { get; set; }
+        public string LastName { get; set; }
 
-	    public string MiddleName { get; set; }
+        public string MiddleName { get; set; }
 
-	    public bool? Confirmed { get; set; }
+        public bool? Confirmed { get; set; }
 
         public int? ConfirmedById { get; set; }
 
@@ -26,11 +26,11 @@ namespace LMPlatform.Models
 
         public DateTime? ConfirmedAt { get; set; }
 
-	    public User User { get; set; }
+        public User User { get; set; }
 
-	    public int GroupId { get; set; }
+        public int GroupId { get; set; }
 
-	    public Group Group { get; set; }
+        public Group Group { get; set; }
 
         [NotMapped]
         public string FullName => $"{LastName?.Trim()} {FirstName?.Trim()} {MiddleName?.Trim()}";
@@ -51,17 +51,17 @@ namespace LMPlatform.Models
 
         public virtual ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
 
-        public ICollection<LecturesVisitMark> LecturesVisitMarks { get; set; } 
+        public ICollection<LecturesVisitMark> LecturesVisitMarks { get; set; }
 
-        public ICollection<ScheduleProtectionLabMark> ScheduleProtectionLabMarks { get; set; } 
+        public ICollection<ScheduleProtectionLabMark> ScheduleProtectionLabMarks { get; set; }
 
-        public ICollection<StudentLabMark> StudentLabMarks { get; set; } 
+        public ICollection<StudentLabMark> StudentLabMarks { get; set; }
 
         public ICollection<ScheduleProtectionPracticalMark> ScheduleProtectionPracticalMarks { get; set; }
 
-        public ICollection<StudentPracticalMark> StudentPracticalMarks { get; set; } 
+        public ICollection<StudentPracticalMark> StudentPracticalMarks { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         public DateTime? DeletedOn { get; set; }
     }

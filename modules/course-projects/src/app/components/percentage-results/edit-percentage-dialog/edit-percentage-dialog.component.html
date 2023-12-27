@@ -22,8 +22,7 @@
   <mat-form-field class="form-field">
     <mat-label *ngIf="data.total">{{
       'text.course.percentage.result.dialog.edit.mark'
-        | translate: 'Оценка (от 1 до
-      10)'
+        | translate: 'Оценка (от 1 до 10)'
     }}</mat-label>
     <input
       matInput
@@ -60,8 +59,7 @@
     <mat-datepicker #dp></mat-datepicker>
     <mat-error *ngIf="date.invalid">{{
       'text.course.percentage.result.dialog.error.date'
-        | translate: 'Неправильный
-      формат (ДД.ММ.ГГГГ)'
+        | translate: 'Неправильный формат (ДД.ММ.ГГГГ)'
     }}</mat-error>
   </mat-form-field>
   <mat-form-field class="form-field">
@@ -88,8 +86,7 @@
     ></textarea>
     <mat-error *ngIf="commentControl.invalid">{{
       'text.course.percentage.result.dialog.comment.error'
-        | translate: 'До
-      255 символов'
+        | translate: 'До 255 символов'
     }}</mat-error>
     <mat-hint *ngIf="data.lecturer && !data.total"
       >{{

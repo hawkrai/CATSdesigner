@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core'
-import { HttpClient, HttpParams } from '@angular/common/http'
-import { Observable } from 'rxjs'
 import { DatePipe } from '@angular/common'
+import { HttpClient, HttpParams } from '@angular/common/http'
+import { Injectable } from '@angular/core'
 import { TranslatePipe } from 'educats-translate'
+import { Observable } from 'rxjs'
 
 @Injectable({
   providedIn: 'root',
@@ -207,7 +207,7 @@ export class LessonService {
     return 'к.' + splitted[2] + a
   }
 
-  getTitelPart(title: string, i: number): any {
+  getTitlePart(title: string, i: number): any {
     const splitted = title.split('|', 14)
     return splitted[i]
   }
