@@ -109,7 +109,7 @@
             <button
               mat-icon-button
               color="primary"
-              *ngIf="+state.user.id === element.Owner"
+              *ngIf="Number(state.user.id) === element.Owner"
               [matTooltip]="
                 'subject.lector.join' | translate: 'Присоединить преподавателя'
               "
@@ -120,7 +120,7 @@
             <button
               mat-icon-button
               color="primary"
-              *ngIf="+state.user.id === element.Owner"
+	      *ngIf="+state.user.id === element.Owner"
               [matTooltip]="'subject.edit' | translate: 'Редактировать предмет'"
               (click)="constructorSubject(state.subjects, element.SubjectId)"
             >
@@ -129,7 +129,7 @@
             <button
               mat-icon-button
               color="primary"
-              *ngIf="+state.user.id === element.Owner"
+              *ngIf="Number(state.user.id) === element.Owner"
               [matTooltip]="'subject.delete' | translate: 'Удалить предмет'"
               (click)="deleteSubject(element)"
             >
@@ -147,8 +147,8 @@
             <mat-menu #subjectActionsMenu="matMenu">
               <button
                 mat-menu-item
+                *ngIf="Number(state.user.id) === element.Owner"
                 (click)="lector(element.SubjectId, element.DisplayName)"
-                *ngIf="+state.user.id === element.Owner"
               >
                 <mat-icon>person_add</mat-icon>
                 <span>{{
