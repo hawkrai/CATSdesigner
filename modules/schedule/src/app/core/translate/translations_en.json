@@ -248,10 +248,10 @@
   "text.schedule.sunday": "Sunday",
   "text.schedule.count": "Count",
 
-  "text.schedule.educational.load.per.week": "Lessons per week",
-  "text.schedule.educational.load.day.per.week": "Lessons per day",
-  "text.schedule.educational.study.types.per.week": "Lessons per week",
-  "text.schedule.educational.load.types.week": "Courses per day",
+  "text.schedule.educational.study.types.per.week": "Types of study load per week",
+  "text.schedule.educational.load.each.day.per.week": "Workload for every day of the week",
+  "text.schedule.educational.load.each.subject.per.week": "The workload for each subject per week",
+  "text.schedule.educational.load.subject.per.week": "Daily workload in subjects",
 
   "text.schedule.delete.event": "Delete lesson/event?",
   "text.schedule.edit.event": "Are you sure you want to confirm the change?",

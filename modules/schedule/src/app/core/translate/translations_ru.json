@@ -266,7 +266,9 @@
   "text.schedule.date.and.connected.data": "дату и все связанные с ней данные",
 
   "text.schedule.educational.study.types.per.week": "Виды учебной нагрузки в неделю",
-  "text.schedule.educational.load.per.week": "Нагрузка по предметам ежедневно",
+  "text.schedule.educational.load.each.day.per.week": "Нагрузка по каждому дню в неделю",
+  "text.schedule.educational.load.each.subject.per.week": "Нагрузка по каждому предмету в неделю",
+  "text.schedule.educational.load.subject.per.week": "Нагрузка по предметам ежедневно",
 
   "text.visiting.date.editing": "Редактируемая дата",
 
