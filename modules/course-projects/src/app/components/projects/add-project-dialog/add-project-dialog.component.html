@@ -115,7 +115,7 @@
       (click)="saveTheme()"
       [disabled]="
         (nameControl.invalid && !data.edit) ||
-        (data.edit && originName === nameControl.value)
+        (data.edit && originName === nameControl.value && areGroupsChanged)
       "
     >
       {{ 'text.course.list.dialog.actions.save' | translate: 'Сохранить' }}
