@@ -1,8 +1,12 @@
 <button mat-menu-item (click)="openAdaptivityPopup(1)">
   <mat-icon>stars</mat-icon>
-  <span>{{ 'complex.algorithm.advanced' | translate }}</span>
+  <span>{{
+    'complex.algorithm.advanced' | translate: 'Углубленный алгоритм обучения'
+  }}</span>
 </button>
 <button mat-menu-item (click)="openAdaptivityPopup(2)">
   <mat-icon>voicemail</mat-icon>
-  <span>{{ 'complex.algorithm.base' | translate }}</span>
+  <span>{{
+    'complex.algorithm.base' | translate: 'Базовый алгоритм обучения'
+  }}</span>
 </button>
