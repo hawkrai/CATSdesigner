@@ -6,6 +6,7 @@ import { ComplexService } from '../../../../service/complex.service'
 import { ComplexCascade } from '../../../../models/ComplexCascade'
 import { BaseFileManagementComponent } from './base-file-management.component'
 import { IAppState } from '../../../../store/states/app.state'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'add-app-materials-popover',
@@ -25,7 +26,8 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     public dialogRef: MatDialogRef<AddMaterialPopoverComponent>,
     private complexService: ComplexService,
     public store: Store<IAppState>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private translatePipe: TranslatePipe
   ) {
     super(dialogRef, store, data)
     this.isFile = false
@@ -53,8 +55,14 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         }
         this.editMode = this.data.id !== null && this.data.id !== '0'
         this.popupTitle = this.editMode
-          ? 'Редактировать ЭУМК'
-          : 'Добавить элемент ЭУМК'
+          ? this.translatePipe.transform(
+              'complex.editComplexes',
+              'Редактировать ЭУМК'
+            )
+          : this.translatePipe.transform(
+              'complex.addComplexesComponent',
+              'Добавить элемент ЭУМК'
+            )
       })
   }
 

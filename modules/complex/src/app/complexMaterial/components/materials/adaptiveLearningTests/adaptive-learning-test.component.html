@@ -16,6 +16,11 @@
     ></app-question>
   </div>
   <div class="test-execution-block-question" *ngIf="!showTest">
-    <p>Для перехода к обучению нажмите кнопку Завершить</p>
+    <p>
+      {{
+        'complex.finish'
+          | translate: 'Для перехода к обучению нажмите кнопку Завершить'
+      }}
+    </p>
   </div>
 </div>
