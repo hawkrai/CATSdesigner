@@ -5,7 +5,7 @@
   class="sub-settings"
 >
   <a class="main-anchor" (click)="openPDF()">
-    {{ 'complex.regulations' | translate }}
+    {{ 'complex.regulations' | translate: 'Положение об ЭУМК' }}
   </a>
   <div *ngFor="let complex of complexes">
     <mat-grid-tile>
