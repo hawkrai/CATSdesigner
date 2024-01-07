@@ -9,30 +9,34 @@
   </a>
   <div *ngFor="let complex of complexes">
     <mat-grid-tile>
-      <div class="ripple-container mat-elevation-z6" matRipple>
-        <div>
-          <a routerLink="/cMaterial" state="{{ complex.id }}">
-            <div
-              class="tooltip material-icons mdc-list-item__graphic"
-              aria-hidden="true"
-            >
-              {{ adjustNameLength(complex.name) }}
-            </div>
-          </a>
-        </div>
+      <div class="complex-item mat-elevation-z6" matRipple>
+        <a routerLink="/cMaterial" state="{{ complex.id }}">
+          <div
+            class="tooltip complex-text"
+            aria-hidden="true"
+            [matTooltip]="complex.fullname"
+            matTooltipPosition="right"
+          >
+            {{ adjustNameLength(complex.name) }}
+          </div>
+        </a>
         <grid-menu-icon
           class="bottom-menu"
           complexId="{{ complex.id }}"
           *ngIf="isLucturer"
         ></grid-menu-icon>
       </div>
-      <span class="tooltiptext">{{ complex.fullname }}</span>
     </mat-grid-tile>
   </div>
   <mat-grid-tile *ngIf="isLucturer">
-    <div class="button-ripple-container" matRipple (click)="onAddButtonClick()">
-      <div>
-        <i class="material-icons" aria-hidden="true">+</i>
+    <div class="complex-item" matRipple (click)="onAddButtonClick()">
+      <div
+        class="complex-plus"
+        aria-hidden="true"
+        [matTooltip]="'complex.addComplexes' | translate: 'Добавить ЭУМК'"
+        matTooltipPosition="right"
+      >
+        +
       </div>
     </div>
   </mat-grid-tile>
