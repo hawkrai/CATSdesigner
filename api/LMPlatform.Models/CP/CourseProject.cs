@@ -31,6 +31,8 @@ namespace LMPlatform.Models.CP
 
         public string HeadCathedra { get; set; }
 
+        public string CathedraName { get; set; }
+
         public string RpzContent { get; set; }
 
         public string DrawMaterials { get; set; }

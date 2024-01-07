@@ -18,6 +18,8 @@ namespace Application.Infrastructure.CTO
 
         public string Univer { get; set; }
 
+        public string CathedraName { get; set; }
+
         public DateTime? DateEnd { get; set; }
 
         public string DateEndString
