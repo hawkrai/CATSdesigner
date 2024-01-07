@@ -594,6 +594,7 @@ namespace Application.Infrastructure.CPManagement
                                      RpzContent = cp.RpzContent,
                                      Faculty = cp.Faculty,
                                      HeadCathedra = cp.HeadCathedra,
+                                     CathedraName = cp.CathedraName,
                                      Univer = cp.Univer,
                                      DateEnd = cp.DateEnd,
                                      DateStart = cp.DateStart
@@ -614,6 +615,7 @@ namespace Application.Infrastructure.CPManagement
                                      RpzContent = cp.RpzContent,
                                      Faculty = cp.Faculty,
                                      HeadCathedra = cp.HeadCathedra,
+                                     CathedraName = cp.CathedraName,
                                      Univer = cp.Univer,
                                      DateEnd = cp.DateEnd,
                                      DateStart = cp.DateStart
@@ -636,6 +638,7 @@ namespace Application.Infrastructure.CPManagement
                 RpzContent = dp.RpzContent,
                 Faculty = dp.Faculty,
                 HeadCathedra = dp.HeadCathedra,
+                CathedraName = dp.CathedraName,
                 Univer = dp.Univer,
                 DateEnd = dp.DateEnd,
                 DateStart = dp.DateStart
@@ -691,6 +694,7 @@ namespace Application.Infrastructure.CPManagement
             courseProject.DrawMaterials = taskSheet.DrawMaterials;
             courseProject.Consultants = taskSheet.Consultants;
             courseProject.HeadCathedra = taskSheet.HeadCathedra;
+            courseProject.CathedraName = taskSheet.CathedraName;
             courseProject.Faculty = taskSheet.Faculty;
             courseProject.Univer = taskSheet.Univer;
             courseProject.DateStart = taskSheet.DateStart;
