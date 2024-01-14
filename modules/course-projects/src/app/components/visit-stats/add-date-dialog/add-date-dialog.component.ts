@@ -17,6 +17,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 interface DialogData {
   consultations: Consultation[]
   subjectId: string
+  groupId: string
   building: string
   audience: string
   start: any
@@ -109,7 +110,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.data.end = data.EndTime
       this.data.start = data.StartTime
       this.data.lecturerId = data.LecturerId
-      this.lecturerIdControl.setValue(this.data.lecturerId);
+      this.lecturerIdControl.setValue(this.data.lecturerId)
     }
   }
 
@@ -154,6 +155,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
         .addDate(
           date.toISOString(),
           this.data.subjectId,
+          this.data.groupId,
           this.data.start,
           this.data.end,
           this.data.audience,

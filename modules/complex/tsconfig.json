@@ -18,7 +18,7 @@
     "paths": {
       "module-communication": ["dist/module-communication"],
       "module-communication/*": ["dist/module-communication/*"]
-    },
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
