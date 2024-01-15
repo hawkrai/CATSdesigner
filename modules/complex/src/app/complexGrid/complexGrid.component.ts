@@ -10,6 +10,7 @@ import { ComplexRulesPopoverComponent } from './components/complex-rules-popover
 import { ComplexService } from '../service/complex.service'
 import { DialogData } from '../models/DialogData'
 import { Complex } from '../models/Complex'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'complex-grid',
@@ -28,7 +29,8 @@ export class ComplexGridComponent implements OnInit {
     public dialog: MatDialog,
     private complexService: ComplexService,
     private store: Store<IAppState>,
-    private router: Router
+    private router: Router,
+    private translatePipe: TranslatePipe
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -55,9 +57,12 @@ export class ComplexGridComponent implements OnInit {
   }
   onAddButtonClick() {
     const dialogData: DialogData = {
-      buttonText: 'Сохранить',
+      buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
       width: '400px',
-      title: 'Создание ЭУМК',
+      title: this.translatePipe.transform(
+        'complex.createComplexes',
+        'Создать ЭУМК'
+      ),
       name: '',
       subjectName: this.subjectName,
       isNew: true,

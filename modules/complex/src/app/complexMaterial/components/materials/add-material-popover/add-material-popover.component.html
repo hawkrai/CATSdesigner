@@ -32,29 +32,30 @@
         </div>
       </div>
 
-      <mat-radio-group
-        aria-label="Выберите тип добавляемого элемента"
-        style="display: block"
-        [disabled]="editMode"
-      >
+      <mat-radio-group style="display: block" [disabled]="editMode">
         <mat-radio-button
           value="1"
           [checked]="isFolder"
           style="padding-right: 20px"
           (click)="switchFormTo(1)"
-          >Папка</mat-radio-button
+          >{{ 'common.folder' | translate: 'Папка' }}</mat-radio-button
         >
-        <mat-radio-button value="2" [checked]="isFile" (click)="switchFormTo(2)"
-          >Файл</mat-radio-button
+        <mat-radio-button
+          value="2"
+          [checked]="isFile"
+          (click)="switchFormTo(2)"
+          >{{ 'common.file' | translate: 'Файл' }}</mat-radio-button
         >
       </mat-radio-group>
 
       <mat-form-field *ngIf="isFolder">
-        <mat-label>Введите имя папки</mat-label>
+        <mat-label>{{
+          'common.inputFolderName' | translate: 'Введите имя папки'
+        }}</mat-label>
         <input
           name="foderName"
           maxlength="100"
-          placeholder="Имя папки"
+          placeholder="{{ 'common.folderName' | translate: 'Имя папки' }}"
           [(ngModel)]="data.name"
           matInput
         />
@@ -62,17 +63,21 @@
 
       <div *ngIf="isFile">
         <mat-form-field>
-          <mat-label>Введите имя файла</mat-label>
+          <mat-label>{{
+            'common.inputFileName' | translate: 'Введите имя файла'
+          }}</mat-label>
           <input
             name="fileName"
             maxlength="100"
-            placeholder="Имя файла"
+            placeholder="{{ 'common.fileName' | translate: 'Имя файла' }}"
             [(ngModel)]="data.name"
             matInput
           />
         </mat-form-field>
         <app-file-uploader
-          header="Прикрепленный документ"
+          header="{{
+            'common.pinnedDoc' | translate: 'Прикрепленный документ'
+          }}"
           (delete)="deleteFile($event)"
           [files]="files"
           [disabled]="files.length > 0"
@@ -83,14 +88,16 @@
   </div>
 
   <div mat-dialog-actions>
-    <button mat-raised-button (click)="onClose(files, false)">Отмена</button>
+    <button mat-raised-button (click)="onClose(files, false)">
+      {{ 'common.cancel' | translate: 'Отмена' }}
+    </button>
     <button
       mat-raised-button
       (click)="onClose(files, true)"
       color="primary"
       [disabled]="!formElement.checkValidity()"
     >
-      Сохранить
+      {{ 'common.save' | translate: 'Сохранить' }}
     </button>
   </div>
 </ng-container>
