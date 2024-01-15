@@ -7,6 +7,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../models/DialogData'
 import { ComplexService } from '../../../service/complex.service'
 import { Complex } from '../../../models/Complex'
+import { TranslatePipe } from 'educats-translate'
 
 /**
  * @title Menu with icons
@@ -23,7 +24,8 @@ export class GridMenuComponent {
   constructor(
     public dialog: MatDialog,
     private complexService: ComplexService,
-    private router: Router
+    private router: Router,
+    private translatePipe: TranslatePipe
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -34,9 +36,9 @@ export class GridMenuComponent {
   openEditPopup(): void {
     this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
       const dialogData: DialogData = {
-        buttonText: 'Сохранить',
+        buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
         width: '400px',
-        title: 'Редактирование',
+        title: this.translatePipe.transform('common.editing', 'Редактирование'),
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,

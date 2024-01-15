@@ -20,7 +20,7 @@
         </button>
         <button
           mat-raised-button
-          class="add-button"
+          class="add-button adaptive-learning"
           (click)="openAdaptivePopup()"
         >
           {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
@@ -29,7 +29,7 @@
     </tr>
   </table>
   <app-material-tree
-    class="material-tree material"
+    class="material"
     [complexId]="complexID"
   ></app-material-tree>
 </div>

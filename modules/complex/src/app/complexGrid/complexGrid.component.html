@@ -30,12 +30,7 @@
     </mat-grid-tile>
   </div>
   <mat-grid-tile *ngIf="isLucturer">
-    <div
-      class="button-ripple-container"
-      matRipple
-      opentip-title="Добавить ЭУМК"
-      (click)="onAddButtonClick()"
-    >
+    <div class="button-ripple-container" matRipple (click)="onAddButtonClick()">
       <div>
         <i class="material-icons" aria-hidden="true">+</i>
       </div>

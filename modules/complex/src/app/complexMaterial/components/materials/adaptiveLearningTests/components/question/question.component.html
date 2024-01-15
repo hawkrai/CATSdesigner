@@ -1,6 +1,8 @@
 <div class="question-container">
   <div class="question-title">
-    <div class="question-title-big">Вопрос №{{ question.Number }}</div>
+    <div class="question-title-big">
+      {{ 'common.question' | translate: 'Вопрос' }} №{{ question.Number }}
+    </div>
     <div class="question-title-small" *ngIf="test">{{ test.Title }}</div>
   </div>
   <div class="question-question" *ngIf="question?.Question?.Title">
@@ -15,7 +17,9 @@
   <div class="question-block">
     <div class="question-answer-block">
       <div class="question-answer-block-container">
-        <div class="question-answer-block-container-text">Ваш ответ:</div>
+        <div class="question-answer-block-container-text">
+          {{ 'common.answer' | translate: 'Ваш ответ' }}:
+        </div>
       </div>
       <div class="question-answers-block">
         <div class="question-answers-block-container">
@@ -60,7 +64,9 @@
             <input
               class="question-answers-block-container-word"
               matInput
-              placeholder="Введите ответ"
+              placeholder="{{
+                'common.inputAnswer' | translate: 'Введите ответ'
+              }}"
               (change)="onValueChange($event)"
             />
           </ng-container>
@@ -87,7 +93,7 @@
         <div class="question-button-container-item">
           <button mat-raised-button color="primary" (click)="answerQuestion()">
             <mat-icon>done_outline</mat-icon>
-            Ответить
+            {{ 'common.send' | translate: 'Отправить' }}
           </button>
         </div>
       </div>
@@ -99,7 +105,7 @@
             (click)="getOnNextQuestion(false)"
           >
             <mat-icon>arrow_forward_ios</mat-icon>
-            Пропустить
+            {{ 'common.skip' | translate: 'Пропустить' }}
           </button>
         </div>
       </div>

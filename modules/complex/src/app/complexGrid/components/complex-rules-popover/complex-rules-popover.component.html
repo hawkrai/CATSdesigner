@@ -9,5 +9,7 @@
   ></pdf-viewer>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onNoClick()">Отмена</button>
+  <button mat-raised-button (click)="onNoClick()">
+    {{ 'common.cancel' | translate: 'Отмена' }}
+  </button>
 </div>
