@@ -212,7 +212,7 @@ namespace Application.Infrastructure.Export
 
             var children = new List<XmlElement>();
 
-            children.AddRange(CreateStringNodes(doc, "Theme", awork.CourseProject.Theme, 523, 638, 5));
+            children.AddRange(CreateStringNodes(doc, "Theme", awork.CourseProject.Theme, 1256, 638, 5));
 
             var student = doc.CreateElement("item");
             student.SetAttribute("name", "Student");
@@ -303,12 +303,16 @@ namespace Application.Infrastructure.Export
 
             var shortStudentName = doc.CreateElement("item");
             shortStudentName.SetAttribute("name", "ShortStudentName");
-            shortStudentName.InnerText = string.Format("{0}.{1}. {2}", awork.Student.FirstName[0], awork.Student.MiddleName[0], awork.Student.LastName);
+            shortStudentName.InnerText = string.Format("{0}.{1}. {2}", awork.Student.FirstName == null ? "" : awork.Student.FirstName[0], 
+                awork.Student.MiddleName == null ? "" : awork.Student.MiddleName[0], 
+                awork.Student.LastName);
             children.Add(shortStudentName);
 
             var shortLecturerName = doc.CreateElement("item");
             shortLecturerName.SetAttribute("name", "ShortLecturerName");
-            shortLecturerName.InnerText = string.Format("{0}.{1}. {2}", awork.CourseProject.Lecturer.FirstName[0], awork.CourseProject.Lecturer.MiddleName[0], awork.CourseProject.Lecturer.LastName);
+            shortLecturerName.InnerText = string.Format("{0}.{1}. {2}", awork.CourseProject.Lecturer.FirstName == null ? "" : awork.CourseProject.Lecturer.FirstName[0],
+                awork.CourseProject.Lecturer.MiddleName == null ? "" : awork.CourseProject.Lecturer.MiddleName[0], 
+                awork.CourseProject.Lecturer.LastName);
             children.Add(shortLecturerName);
 
             foreach (var item in children)

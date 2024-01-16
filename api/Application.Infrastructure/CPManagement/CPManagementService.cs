@@ -18,6 +18,7 @@ using Application.Infrastructure.LecturerManagement;
 using Application.Core.Helpers;
 using System.Net.Http;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Group = LMPlatform.Models.Group;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -55,12 +56,14 @@ namespace Application.Infrastructure.CPManagement
         {
             var subjectId = int.Parse(parms.Filters["subjectId"]);
             var searchString = parms.Filters["searchString"];
-
-            var query = Context.CourseProjects.AsNoTracking()
-                .Include(x => x.Lecturer)
-                .Include(x => x.AssignedCourseProjects.Select(asp => asp.Student.Group))
-                .Include(x => x.Subject);
-
+            var isStudent = AuthorizationHelper.IsStudent(Context, userId);
+            IQueryable<CourseProject> query;
+            
+            query = Context.CourseProjects.AsNoTracking()
+              .Include(x => x.Lecturer)
+              .Include(x => x.AssignedCourseProjects.Select(asp => asp.Student.Group))
+              .Include(x => x.Subject);
+            
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
 
             if (user != null && user.Lecturer != null)
@@ -649,15 +652,18 @@ namespace Application.Infrastructure.CPManagement
         public string GetTasksSheetHtml(int courseProjectId)
         {
             var userId = 0;
+            int studentId = 0;
             userId = UserContext.CurrentUserId;
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
 
             if (isStudent)
             {
+                studentId = userId;
                 userId = Context.Users.Where(x => x.Id == userId)
                      .Select(x => x.Student.AssignedCourseProjects.Where(acp => acp.CourseProjectId == courseProjectId).FirstOrDefault().CourseProject.LecturerId)
                      .Single() ?? 0;
             }
+
 
             var courseProject =
                 new LmPlatformModelsContext().CourseProjects
@@ -676,7 +682,18 @@ namespace Application.Infrastructure.CPManagement
                 Lecturer = s.Lecturer
             }).Where(cpg => cpg.LecturerId == userId).ToList();
 
-
+            if(isStudent && !courseProject.AssignedCourseProjects.Any(acp => acp.Student.Id == studentId))
+            {
+                courseProject = new CourseProject();
+                AssignedCourseProject assignedCourseProject = new AssignedCourseProject();
+                assignedCourseProject.CourseProject = new CourseProject();
+                assignedCourseProject.Student = new Student();
+                assignedCourseProject.Student.Group = new Group();
+                assignedCourseProject.CourseProject.Subject = new Subject();
+                assignedCourseProject.CourseProject.Subject.CoursePersentagesGraphs = new List<CoursePercentagesGraph> { };
+                assignedCourseProject.CourseProject.Lecturer = new Lecturer();
+                courseProject.AssignedCourseProjects = new List<AssignedCourseProject> { assignedCourseProject };
+            }
 
             return courseProject.AssignedCourseProjects.Count == 1
                 ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First())
