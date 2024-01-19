@@ -7,6 +7,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../models/DialogData'
 import { ComplexService } from '../../../service/complex.service'
 import { Complex } from '../../../models/Complex'
+import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { TranslatePipe } from 'educats-translate'
 
 /**
@@ -25,7 +26,8 @@ export class GridMenuComponent {
     public dialog: MatDialog,
     private complexService: ComplexService,
     private router: Router,
-    private translatePipe: TranslatePipe
+    private translatePipe: TranslatePipe,
+    private catsService: CatsService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -77,6 +79,14 @@ export class GridMenuComponent {
     }
     this.complexService.deleteConcept(complex).subscribe((result) => {
       if (result['Code'] === '200') {
+        this.catsService.showMessage({
+          Message: `${this.translatePipe.transform(
+            'common.success.operation',
+            'Успешно удалено'
+          )}.`,
+          Type: CodeType.success,
+        })
+
         this.router.navigateByUrl('/main')
       }
     })
