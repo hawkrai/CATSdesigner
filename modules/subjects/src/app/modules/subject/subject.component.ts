@@ -149,10 +149,8 @@ export class SubjectComponent implements OnInit, OnDestroy {
     // Добавляем обработчики событий
     this.subs.add(
       deleteDialogRef.afterClosed().subscribe((result) => {
-
         // Если была нажата кнопка удалить и кол-во групп <= 0
         if (result && subject.GroupsCount <= 0) {
-
           // Значит можно удалять
           this.store.dispatch(
             subjectActions.deleteSubjectById({

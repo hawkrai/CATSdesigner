@@ -234,6 +234,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         ...this.preSavedData,
         consultations: this.consultations,
         subjectId: this.subjectId,
+        groupId: this.selectedGroup.GroupId,
       },
     })
 
@@ -245,6 +246,7 @@ export class VisitStatsComponent implements OnInit, OnChanges {
           .addDate(
             date.toISOString(),
             this.subjectId,
+            this.selectedGroup.GroupId,
             result.start,
             result.end,
             result.audience,
