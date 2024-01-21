@@ -1,4 +1,5 @@
 {
+  "common.success.operation": "Операция выполнена успешно",
   "common.kb": "КБ",
   "common.addFile": "Добавить файл",
   "common.uploadedFile": "Загруженный файл",
