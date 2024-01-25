@@ -8,14 +8,14 @@
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="openEditPopup()">
     <mat-icon>build</mat-icon>
-    <span>Редактировать</span>
+    <span>{{ 'common.edit' | translate: 'Редактировать' }}</span>
   </button>
   <button mat-menu-item (click)="onDeleteClick()">
     <mat-icon>delete</mat-icon>
-    <span>Удалить</span>
+    <span>{{ 'common.delete' | translate: 'Удалить' }}</span>
   </button>
   <button mat-menu-item (click)="openMap()">
     <mat-icon>map</mat-icon>
-    <span>{{ 'complex.map' | translate }}</span>
+    <span>{{ 'complex.map' | translate: 'Карта ЭУМК' }}</span>
   </button>
 </mat-menu>

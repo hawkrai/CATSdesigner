@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { select, Store } from '@ngrx/store'
 import { IAppState } from '../store/states/app.state'
 import { getSubjectId } from '../store/selectors/subject.selector'
-import { Router, ActivatedRoute, ParamMap } from '@angular/router'
+import { Router } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { ComponentType } from '@angular/cdk/typings/portal'
 import { ComplexGridEditPopupComponent } from './components/edit-popup/edit-popup.component'
@@ -10,7 +10,7 @@ import { ComplexRulesPopoverComponent } from './components/complex-rules-popover
 import { ComplexService } from '../service/complex.service'
 import { DialogData } from '../models/DialogData'
 import { Complex } from '../models/Complex'
-import { LoaderComponent } from '../complexMaterial/components/materials/add-material-popover/components/loader/loader.component'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'complex-grid',
@@ -29,7 +29,8 @@ export class ComplexGridComponent implements OnInit {
     public dialog: MatDialog,
     private complexService: ComplexService,
     private store: Store<IAppState>,
-    private router: Router
+    private router: Router,
+    private translatePipe: TranslatePipe
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -56,9 +57,12 @@ export class ComplexGridComponent implements OnInit {
   }
   onAddButtonClick() {
     const dialogData: DialogData = {
-      buttonText: 'Сохранить',
+      buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
       width: '400px',
-      title: 'Создание ЭУМК',
+      title: this.translatePipe.transform(
+        'complex.createComplexes',
+        'Создать ЭУМК'
+      ),
       name: '',
       subjectName: this.subjectName,
       isNew: true,

@@ -1,11 +1,18 @@
 .mat-tree-node {
   min-height: 0px !important;
 }
+
+.mat-tree-node, .mat-nested-tree-node {
+    padding-bottom: 4px;
+}
+
 .example-tree-invisible {
   display: none;
 }
 
 .example-tree {
+  background: unset;
+
   padding-top: 20px;
 }
 
@@ -58,4 +65,32 @@ a.clickable:hover {
 
 .mat-tree-node:hover .work-icons {
   visibility: visible;
+}
+
+.complex-three-title {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.complex-three-title-button {
+  line-height: unset;
+  padding: unset;
+  width: unset;
+  height: unset;
+
+  margin-right: 10px;
+}
+
+.complex-three-title-prefix {
+  position: relative;
+  right: 3px;
+  display: inline-block;
+  font-size: 18px;
+  margin-left: 6px;
+  width: 10px;
+}
+
+.complex-three-title-icon {
+  padding: unset;
+  font-size: 28px;
 }

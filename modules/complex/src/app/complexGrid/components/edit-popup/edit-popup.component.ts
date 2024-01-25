@@ -1,7 +1,8 @@
 import { Component, Inject } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { DialogData } from '../../../models/DialogData'
-import { ComplexService } from '../../../service/complex.service'
+import { CatsService, CodeType } from 'src/app/service/cats.service'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'grid-edit-popup',
@@ -14,7 +15,8 @@ export class ComplexGridEditPopupComponent {
   constructor(
     public dialogRef: MatDialogRef<ComplexGridEditPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private complexService: ComplexService
+    private catsService: CatsService,
+    private translatePipe: TranslatePipe
   ) {
     this.dialogRef.disableClose = true
   }
@@ -25,5 +27,13 @@ export class ComplexGridEditPopupComponent {
 
   onSave(data): void {
     this.dialogRef.close(data)
+
+    this.catsService.showMessage({
+      Message: `${this.translatePipe.transform(
+        'common.success.operation',
+        'Успешно сохранено'
+      )}.`,
+      Type: CodeType.success,
+    })
   }
 }

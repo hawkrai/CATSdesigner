@@ -10,13 +10,18 @@ import { DialogData } from '../../../../models/DialogData'
 import * as filesActions from '../../../../store/actions/files.actions'
 import * as filesSelectors from '../../../../store/selectors/files.selector'
 
+import { CatsService, CodeType } from 'src/app/service/cats.service'
+import { TranslatePipe } from 'educats-translate'
+
 export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
   public files$: Observable<AttachedFile[]>
 
   constructor(
     protected dialogRef: MatDialogRef<T>,
     protected store: Store<IAppState>,
-    @Inject(MAT_DIALOG_DATA) protected data: DialogData
+    @Inject(MAT_DIALOG_DATA) protected data: DialogData,
+    protected translatePipe: TranslatePipe,
+    protected catsService: CatsService
   ) {
     dialogRef.disableClose = true
   }
@@ -39,6 +44,14 @@ export class BaseFileManagementComponent<T> implements OnInit, OnDestroy {
   }
 
   onSave(files: AttachedFile[]): void {
+    this.catsService.showMessage({
+      Message: `${this.translatePipe.transform(
+        'common.success.operation',
+        'Успешно сохранено'
+      )}.`,
+      Type: CodeType.success,
+    })
+
     this.data.attachments = files.map((f) => ({
       id: f.IdFile > 0 ? f.IdFile : 0,
       name: f.Name,

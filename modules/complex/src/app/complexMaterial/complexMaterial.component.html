@@ -2,7 +2,7 @@
   <table class="materials-table">
     <tr>
       <a class="main-anchor" routerLink="/main"
-        >< {{ 'complex.complexes' | translate }}</a
+        >< {{ 'complex.complexes' | translate: 'К списку ЭУМК' }}</a
       >
     </tr>
     <tr>
@@ -16,20 +16,20 @@
           class="add-button"
           (click)="openAddPopup()"
         >
-          {{ 'complex.addComponent' | translate }}
+          {{ 'complex.addComponent' | translate: 'Добавить элемент' }}
         </button>
         <button
           mat-raised-button
-          class="add-button"
+          class="add-button adaptive-learning"
           (click)="openAdaptivePopup()"
         >
-          {{ 'complex.adaptiveLearning' | translate }}
+          {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
         </button>
       </td>
     </tr>
   </table>
   <app-material-tree
-    class="material-tree material"
+    class="material"
     [complexId]="complexID"
   ></app-material-tree>
 </div>

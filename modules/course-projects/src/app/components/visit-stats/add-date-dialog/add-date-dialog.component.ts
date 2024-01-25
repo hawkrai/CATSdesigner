@@ -1,5 +1,10 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material'
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+  MatSnackBar,
+} from '@angular/material'
 import { FormControl, Validators } from '@angular/forms'
 import { Time } from '@angular/common'
 import { VisitStatsService } from 'src/app/services/visit-stats.service'
@@ -7,10 +12,12 @@ import { Consultation } from 'src/app/models/consultation.model'
 import { TranslatePipe } from 'educats-translate'
 import { ToastrService } from 'ngx-toastr'
 import { Subscription } from 'rxjs'
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component'
 
 interface DialogData {
   consultations: Consultation[]
   subjectId: string
+  groupId: string
   building: string
   audience: string
   start: any
@@ -70,7 +77,8 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private visitStatsService: VisitStatsService,
     private toastr: ToastrService,
-    private translatePipe: TranslatePipe
+    private translatePipe: TranslatePipe,
+    public dialog: MatDialog
   ) {
     this.data.date = this.dateControl.value
     this.initControls()
@@ -102,6 +110,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.data.end = data.EndTime
       this.data.start = data.StartTime
       this.data.lecturerId = data.LecturerId
+      this.lecturerIdControl.setValue(this.data.lecturerId)
     }
   }
 
@@ -146,6 +155,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
         .addDate(
           date.toISOString(),
           this.data.subjectId,
+          this.data.groupId,
           this.data.start,
           this.data.end,
           this.data.audience,
@@ -167,11 +177,42 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }
 
   deleteDate(id: string): void {
-    const index: number = this.data.consultations
-      .map((item) => +item.Id)
-      .indexOf(+id)
-    this.data.consultations.splice(index, 1)
-    this.visitStatsService.deleteDate(id).subscribe(() => {})
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      autoFocus: false,
+      width: '548px',
+      data: {
+        label: this.translatePipe.transform(
+          'text.course.percentages.dialog.title.delete',
+          'Удалить дату'
+        ),
+        message: this.translatePipe.transform(
+          'text.course.percentages.dialog.message.delete',
+          'Вы действительно хотите удалить дату и все связанные с ней данные?'
+        ),
+        actionName: this.translatePipe.transform(
+          'text.course.percentages.dialog.action.delete',
+          'Удалить'
+        ),
+        color: 'primary',
+      },
+    })
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result != null && result) {
+        const index: number = this.data.consultations
+          .map((item) => +item.Id)
+          .indexOf(+id)
+        this.data.consultations.splice(index, 1)
+        this.visitStatsService.deleteDate(id).subscribe(() => {
+          this.toastr.success(
+            this.translatePipe.transform(
+              'text.course.percentages.dialog.delete.success',
+              'Этап успешно удален'
+            )
+          )
+        })
+      }
+    })
   }
 
   public noWhitespaceValidator(control: FormControl) {

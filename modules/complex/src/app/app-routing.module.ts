@@ -2,18 +2,28 @@ import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
 
 import { ComplexGridComponent } from './complexGrid/complexGrid.component'
-import { LoginComponent } from './login/login.component'
 import { ComplexMaterialComponent } from './complexMaterial/complexMaterial.component'
+
+const path = {
+  empty: '',
+  complex: 'complex',
+  main: 'main',
+  complexMaterial: 'cMaterial',
+}
 
 const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'main',
+    path: path.empty,
+    redirectTo: path.main,
     pathMatch: 'full',
   },
-  { path: 'main', component: ComplexGridComponent },
-  { path: 'cMaterial', component: ComplexMaterialComponent },
-  // { path: '**', component: NotFoundComponent }
+  {
+    path: path.complex,
+    redirectTo: path.main,
+    pathMatch: 'full',
+  },
+  { path: path.main, component: ComplexGridComponent },
+  { path: path.complexMaterial, component: ComplexMaterialComponent },
 ]
 
 @NgModule({

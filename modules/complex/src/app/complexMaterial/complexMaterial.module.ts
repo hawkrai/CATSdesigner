@@ -17,8 +17,8 @@ import { FileUploaderComponent } from './components/materials/add-material-popov
 import { LoaderComponent } from './components/materials/add-material-popover/components/loader/loader.component'
 import { VarDirective } from './components/materials/add-material-popover/directives/var.directive'
 
-import * as dataRu from '../translate/translations_ru.json'
-import * as dataEn from '../translate/translations_en.json'
+import * as dataRu from '../core/translate/translations_ru.json'
+import * as dataEn from '../core/translate/translations_en.json'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
 
 @NgModule({

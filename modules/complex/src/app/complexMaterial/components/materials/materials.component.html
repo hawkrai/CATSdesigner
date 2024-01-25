@@ -15,13 +15,30 @@
         {{ node.Name }}
       </a>
       <div class="work-icons" *ngIf="isLucturer">
-        <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)">
+        <a
+          class="btn clickable"
+          (click)="openMonitoring(node.Id, node.Name)"
+          [matTooltip]="
+            'complex.adaptiveTopic' | translate: 'Мониторинг по теме'
+          "
+          matTooltipPosition="left"
+        >
           <mat-icon class="icon">access_time</mat-icon>
         </a>
-        <a class="btn clickable" (click)="openEditPopup(node)">
+        <a
+          class="btn clickable"
+          (click)="openEditPopup(node)"
+          [matTooltip]="'common.edit' | translate: 'Редактировать'"
+          matTooltipPosition="left"
+        >
           <mat-icon class="icon">edit</mat-icon>
         </a>
-        <a class="btn clickable" (click)="onDeleteClick(node.Id)">
+        <a
+          class="btn clickable"
+          (click)="onDeleteClick(node.Id)"
+          [matTooltip]="'common.delete' | translate: 'Удалить'"
+          matTooltipPosition="right"
+        >
           <mat-icon class="icon">delete</mat-icon>
         </a>
       </div>
@@ -35,13 +52,21 @@
           mat-icon-button
           matTreeNodeToggle
           [attr.aria-label]="'toggle ' + node.name"
+          class="complex-three-title-button"
         >
-          <mat-icon class="mat-icon-rtl-mirror expandable folder_file_icons">
+          <span class="complex-three-title-prefix">
             {{ treeControl.isExpanded(node) ? '-' : '+' }}
+          </span>
+          <mat-icon
+            class="complex-three-title-icon mat-icon-rtl-mirror expandable folder_file_icons"
+          >
             folder
           </mat-icon>
         </button>
-        <a class="btn clickable" (click)="openFolderPDF(node.Id)">
+        <a
+          class="complex-three-title btn clickable"
+          (click)="openFolderPDF(node.Id)"
+        >
           {{ node.Name }}
         </a>
       </div>

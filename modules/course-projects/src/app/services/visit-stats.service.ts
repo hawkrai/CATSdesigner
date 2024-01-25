@@ -68,6 +68,7 @@ export class VisitStatsService {
   public addDate(
     date: string,
     subjectId: string,
+    groupId: string,
     startTime: string,
     endTime: string,
     audience: string,
@@ -76,6 +77,7 @@ export class VisitStatsService {
     return this.http.post('api/CourseProjectConsultationDate', {
       Day: date,
       SubjectId: subjectId,
+      GroupId: groupId,
       StartTime: startTime,
       EndTime: endTime,
       Building: building,

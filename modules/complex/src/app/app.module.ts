@@ -17,8 +17,8 @@ import { AppRoutingModule } from './app-routing.module'
 import { MatModule } from './mat.module'
 import { FilesEffects } from './store/effects/files.effects'
 
-import * as dataRu from './translate/translations_ru.json'
-import * as dataEn from './translate/translations_en.json'
+import * as dataRu from './core/translate/translations_ru.json'
+import * as dataEn from './core/translate/translations_en.json'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
 
 @NgModule({

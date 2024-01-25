@@ -1,7 +1,7 @@
 import { NestedTreeControl } from '@angular/cdk/tree'
 import { Component, Input, OnInit } from '@angular/core'
 import { MatTreeNestedDataSource } from '@angular/material/tree'
-import { MatDialog, MatDialogRef } from '@angular/material/dialog'
+import { MatDialog } from '@angular/material/dialog'
 import { MaterialsPopoverComponent } from './materials-popover/materials-popover.component'
 import { MonitoringPopoverComponent } from './monitoring-popover/monitoring-popover.component'
 import { AddMaterialPopoverComponent } from '../../components/materials/add-material-popover/add-material-popover.component'
@@ -12,6 +12,8 @@ import { ConvertedAttachment } from '../../../models/ConvertedAttachment'
 import { Concept } from '../../../models/Concept'
 import { Router } from '@angular/router'
 import { Complex } from '../../../models/Complex'
+import { TranslatePipe } from 'educats-translate'
+import { CatsService, CodeType } from 'src/app/service/cats.service'
 
 @Component({
   selector: 'app-material-tree',
@@ -35,7 +37,9 @@ export class MaterialComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private router: Router,
-    private complexService: ComplexService
+    private complexService: ComplexService,
+    private translatePipe: TranslatePipe,
+    private catsService: CatsService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -138,6 +142,14 @@ export class MaterialComponent implements OnInit {
     }
     this.complexService.deleteConcept(complex).subscribe((result) => {
       if (result['Code'] === '200') {
+        this.catsService.showMessage({
+          Message: `${this.translatePipe.transform(
+            'common.success.operation',
+            'Успешно удалено'
+          )}.`,
+          Type: CodeType.success,
+        })
+
         this.router.navigateByUrl('/cMaterial')
       }
     })

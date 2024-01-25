@@ -1,11 +1,27 @@
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
   <div *ngIf="needToGetInitialTest" class="need-pred-test">
-    <p>Вы впервые работаете с адаптивным обучением на этом предмете!</p>
-    <p>Для старта процесса обучения пожалуйста пройдите предтест...</p>
+    <p>
+      {{
+        'complex.firstTime'
+          | translate
+            : 'Вы впервые работаете с адаптивным обучением на этом предмете'
+      }}!
+    </p>
+    <p>
+      {{
+        'complex.forStart'
+          | translate
+            : 'Для старта процесса обучения пожалуйста пройдите предтест'
+      }}...
+    </p>
   </div>
 
   <span *ngIf="showTimer"
-    >Переход к тестам будет доступен через {{ time }}</span
+    >{{
+      'complex.availableTests'
+        | translate: 'Переход к тестам будет доступен через'
+    }}
+    {{ time }}</span
   >
   <pdf-viewer
     *ngIf="showMaterial"
@@ -21,33 +37,37 @@
   </div>
 
   <div *ngIf="isEndLearning">
-    <p>Процесс обучения завершён</p>
-    <p>Для выхода нажмите Отмена...</p>
+    <p>
+      {{ 'complex.finishProcess' | translate: 'Процесс обучения завершён' }}
+    </p>
+    <p>{{ 'complex.exit' | translate: 'Для выхода нажмите Отмена' }}...</p>
   </div>
 </div>
 
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onNoClick()">Отмена</button>
+  <button mat-raised-button (click)="onNoClick()">
+    {{ 'common.cancel' | translate: 'Отмена' }}
+  </button>
   <button
     *ngIf="needToGetInitialTest"
     mat-raised-button
     (click)="goToPredTest()"
   >
-    Пройти предтест
+    {{ 'complex.pretest' | translate: 'Пройти предтест' }}
   </button>
   <button
     *ngIf="prevButtonVisible"
     mat-raised-button
     (click)="goToPrevMaterial()"
   >
-    Предыдущий документ
+    {{ 'complex.prevDocument' | translate: 'Предыдущий документ' }}
   </button>
   <button
     *ngIf="nextButtonVisible"
     mat-raised-button
     (click)="goToNextMaterial()"
   >
-    Следующий документ
+    {{ 'common.nextDocument' | translate: 'Следующий документ' }}
   </button>
   <button
     *ngIf="toTestButtonVisible"
@@ -55,7 +75,7 @@
     [disabled]="!toTestButtonEnabled"
     (click)="goToTests()"
   >
-    К тестам
+    {{ 'complex.toTests' | translate: 'К тестам' }}
   </button>
   <button
     id="continueButton"
@@ -64,6 +84,6 @@
     [disabled]="true"
     (click)="processsTest()"
   >
-    Завершить тест
+    {{ 'complex.finishTest' | translate: 'Завершить тест' }}
   </button>
 </div>
