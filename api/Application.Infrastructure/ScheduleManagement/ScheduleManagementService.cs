@@ -58,14 +58,16 @@ namespace Application.Infrastructure.ScheduleManagement
 			{
 				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date >= startDate && x.Date <= endDate)
 					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes)))
-					.ToList()
+					.Include(x => x.Lecturer.User)
+                    .ToList()
 					.Select(x => LectureScheduleToModel(x))
 					.ToList();
 
 				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date >= startDate && x.Date <= endDate)
 					.Include(x => x.Subject.ScheduleProtectionPracticals.Select(x => x.Notes))
 					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group)))
-					.ToList()
+					.Include(x => x.Lecturer.User)
+                    .ToList()
 					.Select(PracticalScheduleToModel)
 					.ToList();
 
@@ -73,7 +75,8 @@ namespace Application.Infrastructure.ScheduleManagement
 					.Include(x => x.Subject.ScheduleProtectionLabs.Select(x => x.Notes))
 					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))
 					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups)))
-					.ToList()
+                    .Include(x => x.Lecturer.User)
+                    .ToList()
 					.Select(x => LabScheduleToModel(x))
 					.ToList();
 
@@ -204,7 +207,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				Start = labSchedule.StartTime,
 				Name = labSchedule.Subject?.Name ?? string.Empty,
 				ShortName = labSchedule.Subject?.ShortName ?? string.Empty,
-				Teacher = labSchedule.Lecturer ?? (labSchedule.SubjectId.HasValue ? SubjectManagementService.GetSubjectOwner((int)labSchedule.SubjectId) : null),
+				Teacher = labSchedule.Lecturer ?? SubjectManagementService.GetSubjectOwner((int)labSchedule.SubjectId),
 				SubjectId = labSchedule.SubjectId,
 				Type = ClassType.Lab,
 				Date = labSchedule.Date,
