@@ -1,94 +1,49 @@
 <div style="margin-bottom: 20px">
-  <h2
-    mat-dialog-title
-    class="visit-date__title"
-    style="margin: 0px; padding-left: 2%; float: left; width: 94%"
-  >
+  <h2 mat-dialog-title class="visit-date__title" style="margin: 0px; padding-left: 2%; float: left; width: 94%">
     {{ 'text.statistic.help' | translate: 'Статистика учебной нагрузки' }}
   </h2>
-  <mat-icon
-    class="icon"
-    (click)="onCancelClick()"
-    style="cursor: pointer; position: relative; margin-left: 1%"
-    >close</mat-icon
-  >
+  <mat-icon class="icon" (click)="onCancelClick()"
+    style="cursor: pointer; position: relative; margin-left: 1%">close</mat-icon>
 </div>
 <mat-tab-group class="remove-border-bottom">
-  <mat-tab
-    [label]="
+  <mat-tab [label]="
       'text.schedule.educational.study.types.per.week'
         | translate: 'Виды учебной нагрузки в неделю'
-    "
-  >
+    ">
     <div id="chart">
-      <apx-chart
-        [series]="chartOptions.series"
-        [chart]="chartOptions.chart"
-        [labels]="chartOptions.labels"
-        [responsive]="chartOptions.responsive"
-        [colors]="chartOptions.colors"
-      ></apx-chart>
+      <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
+        [responsive]="chartOptions.responsive" [colors]="chartOptions.colors"></apx-chart>
     </div>
   </mat-tab>
-  <mat-tab
-    [label]="
-      'text.schedule.educational.load.each.day.per.week'
+  <mat-tab [label]="
+    'text.schedule.educational.load.day.per.week'
         | translate: 'Нагрузка по каждому дню в неделю'
-    "
-  >
+    ">
     <div id="chart1">
-      <apx-chart
-        [series]="chartOptions1.series"
-        [chart]="chartOptions1.chart"
-        [xaxis]="chartOptions1.xaxis"
-        [dataLabels]="chartOptions1.dataLabels"
-        [grid]="chartOptions1.grid"
-        [stroke]="chartOptions1.stroke"
-        [title]="chartOptions1.title"
-      ></apx-chart>
+      <apx-chart [series]="chartOptions1.series" [chart]="chartOptions1.chart" [xaxis]="chartOptions1.xaxis"
+        [dataLabels]="chartOptions1.dataLabels" [grid]="chartOptions1.grid" [stroke]="chartOptions1.stroke"
+        [title]="chartOptions1.title"></apx-chart>
     </div>
   </mat-tab>
-  <mat-tab
-    [label]="
-      'text.schedule.educational.load.each.subject.per.week'
+  <mat-tab [label]="
+    'text.schedule.educational.load.per.week'
         | translate: 'Нагрузка по каждому предмету в неделю'
-    "
-  >
+    ">
     <div id="chart2">
-      <apx-chart
-        [series]="chartOptions2.series"
-        [chart]="chartOptions2.chart"
-        [dataLabels]="chartOptions2.dataLabels"
-        [plotOptions]="chartOptions2.plotOptions"
-        [yaxis]="chartOptions2.yaxis"
-        [xaxis]="chartOptions2.xaxis"
-        [legend]="chartOptions2.legend"
-        [colors]="chartOptions2.colors"
-        [grid]="chartOptions2.grid"
-      ></apx-chart>
+      <apx-chart [series]="chartOptions2.series" [chart]="chartOptions2.chart" [dataLabels]="chartOptions2.dataLabels"
+        [plotOptions]="chartOptions2.plotOptions" [yaxis]="chartOptions2.yaxis" [xaxis]="chartOptions2.xaxis"
+        [legend]="chartOptions2.legend" [colors]="chartOptions2.colors" [grid]="chartOptions2.grid"></apx-chart>
     </div>
   </mat-tab>
-  <mat-tab
-    [label]="
-      'text.schedule.educational.load.subject.per.week'
+  <mat-tab [label]="
+      'text.schedule.educational.load.per.week'
         | translate: 'Нагрузка по предметам ежедневно'
-    "
-  >
+    ">
     <div id="chart3">
-      <apx-chart
-        [series]="chartOptions3.series"
-        [chart]="chartOptions3.chart"
-        [dataLabels]="chartOptions3.dataLabels"
-        [plotOptions]="chartOptions3.plotOptions"
-        [xaxis]="chartOptions3.xaxis"
-        [stroke]="chartOptions3.stroke"
-        [fill]="chartOptions3.fill"
-        [yaxis]="chartOptions3.yaxis"
-        [title]="chartOptions3.title"
-        [tooltip]="chartOptions3.tooltip"
-        [colors]="chartOptions3.colors"
-        [legend]="chartOptions3.legend"
-      ></apx-chart>
+      <apx-chart [series]="chartOptions3.series" [chart]="chartOptions3.chart" [dataLabels]="chartOptions3.dataLabels"
+        [plotOptions]="chartOptions3.plotOptions" [xaxis]="chartOptions3.xaxis" [stroke]="chartOptions3.stroke"
+        [fill]="chartOptions3.fill" [yaxis]="chartOptions3.yaxis" [title]="chartOptions3.title"
+        [tooltip]="chartOptions3.tooltip" [colors]="chartOptions3.colors" [legend]="chartOptions3.legend"></apx-chart>
     </div>
   </mat-tab>
 </mat-tab-group>

@@ -13,7 +13,6 @@ import { SubjectLector } from 'src/app/models/subject-letor.model'
 import { User } from 'src/app/models/user.model'
 import { DeletePopoverComponent } from 'src/app/shared/delete-popover/delete-popover.component'
 import { FilterOp } from 'src/app/shared/pipes/filter.pipe'
-import { WarningPopoverComponent } from 'src/app/shared/warning-popover/warning-popover.component'
 import { SubSink } from 'subsink'
 import { DialogData } from '../../models/dialog-data.model'
 import { Subject } from '../../models/subject.model'
@@ -131,8 +130,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   deleteSubject(subject: Subject) {
-    // Создаем данные диалогового окна для удаления предмета
-    const deleteDialogData: DialogData = {
+    const dialogData: DialogData = {
       title: this.translate.transform('subject.deleting', 'Удаление предмета'),
       body: `${this.translate
         .transform('subject.singular', 'предмет')
@@ -140,45 +138,16 @@ export class SubjectComponent implements OnInit, OnDestroy {
       buttonText: this.translate.transform('button.delete', 'Удалить'),
     }
 
-    // Создаем ссылку на открытое диалоговое окно
-    const deleteDialogRef = this.dialogService.openDialog(
+    const dialogRef = this.dialogService.openDialog(
       DeletePopoverComponent,
-      deleteDialogData
+      dialogData
     )
 
-    // Добавляем обработчики событий
     this.subs.add(
-      deleteDialogRef.afterClosed().subscribe((result) => {
-        // Если была нажата кнопка удалить и кол-во групп <= 0
-        if (result && subject.GroupsCount <= 0) {
-          // Значит можно удалять
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
           this.store.dispatch(
-            subjectActions.deleteSubjectById({
-              subjectId: subject.SubjectId,
-            })
-          )
-        } else {
-          // Если же есть хотя бы 1 группа
-          // Тогда мы создаем данные под новое диалоговое окно
-          const warningDialogData: DialogData = {
-            title: this.translate.transform(
-              'subject.cancel.deleting',
-              'Не удалось удалить предмет'
-            ),
-            body: `${this.translate.transform(
-              'subject.cancel.deleting.text',
-              'Предмет не может быть удален, т.к. к нему присоединены группы'
-            )}.`,
-            buttonText: this.translate.transform(
-              'subject.cancel.deleting.button.close',
-              'ОК'
-            ),
-          }
-
-          // И просто показываем его без обработки событий
-          this.dialogService.openDialog(
-            WarningPopoverComponent,
-            warningDialogData
+            subjectActions.deleteSubjectById({ subjectId: subject.SubjectId })
           )
         }
       })

@@ -33,7 +33,6 @@
   "subject.deleting": "Удаление предмета",
   "subject.cancel.deleting": "Не удалось удалить предмет",
   "subject.cancel.deleting.text": "Предмет не может быть удален, т.к. к нему присоединены группы",
-  "subject.cancel.deleting.button.close": "ОК",
   "subject.singular": "Предмет",
   "subject.add": "Добавить предмет",
   "subject.name": "Название предмета",
