@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Application.Core.Data;
 using Application.Infrastructure.CTO;
+using LMPlatform.Models.CP;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -13,7 +14,7 @@ namespace Application.Infrastructure.CPManagement
 
         List<PercentageGraphData> GetPercentageGraphsForLecturerAll(int userId, GetPagedListParams parms);
 
-        List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId);
+        List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId);
 
         void SavePercentage(int userId, PercentageGraphData percentageData);
 
@@ -25,7 +26,7 @@ namespace Application.Infrastructure.CPManagement
 
         void SaveConsultationMark(int userId, CourseProjectConsultationMarkData consultationMarkData);
 
-        void SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber);
+        CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId);
 
         void DeleteConsultationDate(int userId, int id);
     }

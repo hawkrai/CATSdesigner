@@ -44,5 +44,7 @@ namespace LMPlatform.Models.CP
         public string Audience { get; set; }
 
         public virtual ICollection<CourseProjectConsultationMark> CourseProjectConsultationMarks { get; set; }
+
+        public int? GroupId { get; set; }
     }
 }

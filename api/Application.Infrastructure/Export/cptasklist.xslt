@@ -343,7 +343,7 @@ div.Section1
                           </td>
                           <td width="100%" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
                             <p class="MsoNormal" align="left" style='text-align:center;line-height:normal'>
-                              <span style='font-size:8.0pt'>(указать: курсового проекта или курсовой работы</span>
+                              <span style='font-size:8.0pt'>(указать: курсового проекта или курсовой работы)</span>
                             </p>
                           </td>
                         
