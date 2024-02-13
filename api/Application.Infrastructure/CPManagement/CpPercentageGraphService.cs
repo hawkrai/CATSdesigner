@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using Application.Core;
 using Application.Core.Data;
@@ -50,7 +51,6 @@ namespace Application.Infrastructure.CPManagement
             }
             return Context.CoursePercentagesGraphs
                 .AsNoTracking()
-                .Where(x => x.LecturerId == secretaryId)
                 .Where(x => x.SubjectId == subjectId)
                 .Select(ToPercentageDataPlain)
                 .ApplyPaging(parms);
@@ -95,7 +95,7 @@ namespace Application.Infrastructure.CPManagement
                 .ToList();
         }
 
-        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId)
+        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId)
         {
             if (AuthorizationHelper.IsStudent(Context, userId))
             {
@@ -114,6 +114,7 @@ namespace Application.Infrastructure.CPManagement
                 .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
                 .Where(x => x.LecturerId == userId)
                 .Where(x => x.SubjectId == subjectId)
+                .Where(x => x.GroupId.HasValue ? x.GroupId.Value == groupId : false)
                 .OrderBy(x => x.Day)
                 .Select(x => new CourseProjectConsultationDateData
                 {
@@ -124,7 +125,8 @@ namespace Application.Infrastructure.CPManagement
                     StartTime = x.StartTime,
                     EndTime = x.EndTime,
                     Audience = x.Audience,
-                    Building = x.Building
+                    Building = x.Building,
+                    GroupId = x.GroupId.HasValue ? x.GroupId.Value : 0
                 })
                 .ToList();
         }
@@ -246,23 +248,36 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public void SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber)
+        public CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId)
         {
-            AuthorizationHelper.ValidateLecturerAccess(Context, userId);
+            AuthorizationHelper.ValidateLecturerAccess(Context, userId);;
 
-            Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
+            CourseProjectConsultationDate courseProjectConsultationDate = Context.CourseProjectConsultationDates
+                .Where(x => x.EndTime.HasValue && x.StartTime.HasValue && x.GroupId != null)
+                .Where(x => TimeSpan.Compare(x.StartTime.Value, startTime.Value) <= 0 && TimeSpan.Compare(x.EndTime.Value, startTime.Value) >= 0)
+                .Where(x => x.Day.Day == date.Day && x.Day.Month == date.Month && x.Day.Year == date.Year)
+                .Where(x => x.Audience == audience)
+                .FirstOrDefault();
+
+            if (courseProjectConsultationDate == null)
             {
-                Day = date,
-                LecturerId = userId,
-                SubjectId = subjectId,
-                StartTime = startTime,
-                EndTime = endTime,
-                Audience = audience,
-                Building = buildingNumber
+                Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
+                {
+                    Day = date,
+                    LecturerId = userId,
+                    SubjectId = subjectId,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    Audience = audience,
+                    Building = buildingNumber,
+                    GroupId = groupId
 
-            });
+                });
 
-            Context.SaveChanges();
+                Context.SaveChanges();
+            }
+
+            return courseProjectConsultationDate;
         }
 
         public void DeleteConsultationDate(int userId, int id)

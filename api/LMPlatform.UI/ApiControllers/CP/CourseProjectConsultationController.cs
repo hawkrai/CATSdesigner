@@ -49,7 +49,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             return new CourseProjectConsultationData
             {
                 Students = CpManagementService.GetGraduateStudentsForGroup(lecturerId, groupId, subjectId, parms, false),
-                Consultations = PercentageService.GetConsultationDatesForUser(lecturerId, subjectId)
+                Consultations = PercentageService.GetConsultationDatesForUser(lecturerId, subjectId, groupId)
             };
         }
 

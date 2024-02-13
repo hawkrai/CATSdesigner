@@ -431,7 +431,8 @@ namespace Application.Infrastructure.CPManagement
             }
 
             var query = Context.Students
-                .Where(x => x.GroupId == groupId);
+                .Where(x => x.GroupId == groupId)
+                .Where(x => x.IsActive == true);
 
             if (searchString.Length > 0)
             {
@@ -659,28 +660,13 @@ namespace Application.Infrastructure.CPManagement
             if (isStudent)
             {
                 studentId = userId;
-                userId = Context.Users.Where(x => x.Id == userId)
-                     .Select(x => x.Student.AssignedCourseProjects.Where(acp => acp.CourseProjectId == courseProjectId).FirstOrDefault().CourseProject.LecturerId)
-                     .Single() ?? 0;
+                
             }
-
 
             var courseProject =
                 new LmPlatformModelsContext().CourseProjects
                     .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
                     .Single(x => x.CourseProjectId == courseProjectId);
-            courseProject.Subject.CoursePersentagesGraphs = courseProject.Subject.CoursePersentagesGraphs.Select(s => new CoursePercentagesGraph
-            {
-                Id = s.Id,
-                LecturerId = s.LecturerId,
-                SubjectId = s.SubjectId,
-                Name = s.Name,
-                Percentage = s.Percentage,
-                Date = s.Date,
-                CoursePercentagesResults = s.CoursePercentagesResults,
-                CoursePercentagesGraphToGroups = s.CoursePercentagesGraphToGroups,
-                Lecturer = s.Lecturer
-            }).Where(cpg => cpg.LecturerId == userId).ToList();
 
             if(isStudent && !courseProject.AssignedCourseProjects.Any(acp => acp.Student.Id == studentId))
             {

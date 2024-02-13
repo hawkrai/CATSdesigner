@@ -19,5 +19,7 @@ namespace Application.Infrastructure.CTO
         public string Building { get; set; }
 
         public string Audience { get; set; }
+
+        public int GroupId { get; set; }
     }
 }
