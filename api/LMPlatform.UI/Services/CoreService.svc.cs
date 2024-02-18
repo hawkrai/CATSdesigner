@@ -424,20 +424,20 @@ namespace LMPlatform.UI.Services
 						GroupId = @group.Id,
 						GroupName = @group.Name,
 						SubGroupsOne = subGroups.Any(x => x.Name == "first") ? new SubGroupsViewData
-							               {
-											   Name = "Подгруппа 1",
-											   SubGroupId = subGroups.First(e => e.Name == "first").Id
-							               } : new SubGroupsViewData(),
+						{
+						    Name = "Подгруппа 1",
+						    SubGroupId = subGroups.First(e => e.Name == "first").Id
+						} : null,
 						SubGroupsTwo = subGroups.Any(x => x.Name == "second") ? new SubGroupsViewData
 						{
 							Name = "Подгруппа 2",
 							SubGroupId = subGroups.First(e => e.Name == "second").Id
-						} : new SubGroupsViewData(),
+						} : null,
 						SubGroupsThird = subGroups.Any(x => x.Name == "third") ? new SubGroupsViewData
 						{
 							Name = "Подгруппа 3",
 							SubGroupId = subGroups.First(e => e.Name == "third").Id
-						} : new SubGroupsViewData(),
+						} : null
 					});
 				}
 
@@ -476,17 +476,17 @@ namespace LMPlatform.UI.Services
 					{
 						Name = "Подгруппа 1",
 						SubGroupId = subGroups.First(e => e.Name == "first").Id
-					} : new SubGroupsViewData(),
+					} : null,
 					SubGroupsTwo = subGroups.Any(x => x.Name == "second") ? new SubGroupsViewData
 					{
 						Name = "Подгруппа 2",
 						SubGroupId = subGroups.First(e => e.Name == "second").Id
-					} : new SubGroupsViewData(),
+					} : null,
 					SubGroupsThird = subGroups.Any(x => x.Name == "third") ? new SubGroupsViewData
 					{
 						Name = "Подгруппа 3",
 						SubGroupId = subGroups.First(e => e.Name == "third").Id
-					} : new SubGroupsViewData(),
+					} : null
 				}
 			};
 
@@ -513,17 +513,17 @@ namespace LMPlatform.UI.Services
                         {
                             Name = "Подгруппа 1",
                             SubGroupId = subGroups.First(e => e.Name == "first").Id
-                        } : new SubGroupsViewData(),
+                        } : null,
                         SubGroupsTwo = subGroups.Any(x => x.Name == "second") ? new SubGroupsViewData
                         {
                             Name = "Подгруппа 2",
                             SubGroupId = subGroups.First(e => e.Name == "second").Id
-                        } : new SubGroupsViewData(),
+                        } : null,
                         SubGroupsThird = subGroups.Any(x => x.Name == "third") ? new SubGroupsViewData
                         {
                             Name = "Подгруппа 3",
                             SubGroupId = subGroups.First(e => e.Name == "third").Id
-                        } : new SubGroupsViewData(),
+                        } : null
                     });
                 }
 
