@@ -2,20 +2,16 @@
 using Application.Core.Helpers;
 using Application.Infrastructure.LecturerManagement;
 using Application.Infrastructure.Models;
-using Application.Infrastructure.NoteManagement;
 using Application.Infrastructure.PracticalManagement;
 using Application.Infrastructure.ScheduleManagement;
 using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules;
-using LMPlatform.UI.Services.Modules.Notes;
 using LMPlatform.UI.Services.Modules.Schedule;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Services.Schedule
 {
@@ -67,11 +63,10 @@ namespace LMPlatform.UI.Services.Schedule
             {
                 var lecturesSchedule = SaveDateValidate(id, subjectId, date, startTime, endTime, building, audience,
                     note, lecturerId);
-                var schedule = ScheduleManagementService.SaveDateLectures(new LecturesScheduleVisiting(lecturesSchedule)
-                    { SubjectId = subjectId });
+                var schedule = ScheduleManagementService.SaveDateLectures(new LecturesScheduleVisiting(lecturesSchedule) {Id = id, SubjectId = subjectId });
                 return new ScheduleViewResultSingle
                 {
-                    Message = "Дата успешно добавлена",
+                    Message = id == 0 ? "Дата успешно добавлена" : "Дата успешно отредактирована",
                     Code = "200",
                     Schedule = new ScheduleViewData(
                         ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lecture))
@@ -104,10 +99,10 @@ namespace LMPlatform.UI.Services.Schedule
             try
 			{
                 var labsSchedule = SaveDateValidate(id, subjectId, date, startTime, endTime, building, audience, note, lecturerId);
-                var schedule = ScheduleManagementService.SaveScheduleProtectionLabsDate(new ScheduleProtectionLabs(labsSchedule) { SuGroupId = subGroupId, SubjectId = subjectId });
+                var schedule = ScheduleManagementService.SaveScheduleProtectionLabsDate(new ScheduleProtectionLabs(labsSchedule) {Id = id, SuGroupId = subGroupId, SubjectId = subjectId });
 				return new ScheduleViewResultSingle
 				{
-					Message = "Дата успешно добавлена",
+					Message = id == 0 ? "Дата успешно добавлена" : "Дата успешно отредактирована",
 					Code = "200",
                     Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Lab))
 
@@ -139,10 +134,10 @@ namespace LMPlatform.UI.Services.Schedule
             try
             {
                 var practicalsSchedule = SaveDateValidate(id, subjectId, date, startTime, endTime, building, audience, note, lecturerId);
-                var schedule = ScheduleManagementService.SaveDatePractical(new ScheduleProtectionPractical(practicalsSchedule) { GroupId = groupId, SubjectId = subjectId });
+                var schedule = ScheduleManagementService.SaveDatePractical(new ScheduleProtectionPractical(practicalsSchedule) {Id = id, GroupId = groupId, SubjectId = subjectId });
                 return new ScheduleViewResultSingle
                 {
-                    Message = "Дата успешно добавлена",
+                    Message = id == 0 ? "Дата успешно добавлена" : "Дата успешно отредактирована",
                     Code = "200",
                     Schedule = new ScheduleViewData(ScheduleManagementService.GetScheduleById(schedule.Id, ClassType.Practical))
 
