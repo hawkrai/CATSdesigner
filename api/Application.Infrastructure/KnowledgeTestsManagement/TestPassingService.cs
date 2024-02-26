@@ -639,7 +639,8 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             int percent = GetPoints(testAnswers);
             testPassResult.Points = points;
             testPassResult.Percent = percent;
-            testPassResult.EndTime = DateTime.UtcNow;
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");            
+            testPassResult.EndTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
@@ -818,8 +819,8 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 StudentId = userId
             };
 
-            testPassResult.StartTime = DateTime.UtcNow;
-
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
+            testPassResult.StartTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 var toDelete = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>().GetAll(new Query<AnswerOnTestQuestion>(x => x.TestId == testId && x.UserId == userId));
