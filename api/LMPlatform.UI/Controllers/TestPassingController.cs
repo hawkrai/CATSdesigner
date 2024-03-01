@@ -53,8 +53,6 @@ namespace LMPlatform.UI.Controllers
             int idUser = UserContext.CurrentUserId;
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
-            user.OngoingTest = null;
-            _context.UpdateUser(user);
             if (user.OngoingTest != null)
             {
                 description = new
