@@ -23,12 +23,12 @@
         <grid-menu-icon
           class="bottom-menu"
           complexId="{{ complex.id }}"
-          *ngIf="isLucturer"
+          *ngIf="isLecturer"
         ></grid-menu-icon>
       </div>
     </mat-grid-tile>
   </div>
-  <mat-grid-tile *ngIf="isLucturer">
+  <mat-grid-tile *ngIf="isLecturer">
     <div class="complex-item" matRipple (click)="onAddButtonClick()">
       <div
         class="complex-plus"

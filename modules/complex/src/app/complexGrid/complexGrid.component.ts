@@ -22,7 +22,7 @@ export class ComplexGridComponent implements OnInit {
   subjectName
   subjectId
 
-  isLucturer: boolean
+  isLecturer: boolean
   showLoader: boolean
 
   constructor(
@@ -38,7 +38,7 @@ export class ComplexGridComponent implements OnInit {
     this.router.onSameUrlNavigation = 'reload'
 
     const user = JSON.parse(localStorage.getItem('currentUser'))
-    this.isLucturer = user.role === 'lector'
+    this.isLecturer = user.role === 'lector'
     this.showLoader = false
   }
 
@@ -55,13 +55,37 @@ export class ComplexGridComponent implements OnInit {
         })
     })
   }
+
+  adjustNameLength(componentName: string): string {
+    if (componentName.length <= 9) {
+      return componentName
+    }
+
+    return `${componentName.substring(0, 8)}...`
+  }
+
+  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
+    return this.dialog.open(popover, { data })
+  }
+
+  openPDF() {
+    const dialogRef = this.dialog.open(ComplexRulesPopoverComponent, {
+      width: '800px',
+      data: { name: 'name' },
+    })
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed')
+    })
+  }
+
   onAddButtonClick() {
     const dialogData: DialogData = {
       buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
       width: '400px',
       title: this.translatePipe.transform(
-        'complex.createComplexes',
-        'Создать ЭУМК'
+        'complex.addComplexes',
+        'Добавить ЭУМК'
       ),
       name: '',
       subjectName: this.subjectName,
@@ -87,28 +111,5 @@ export class ComplexGridComponent implements OnInit {
         }
       })
     })
-  }
-
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, { data })
-  }
-
-  openPDF() {
-    const dialogRef = this.dialog.open(ComplexRulesPopoverComponent, {
-      width: '800px',
-      data: { name: 'name' },
-    })
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed')
-    })
-  }
-
-  adjustNameLength(componentName: string): string {
-    if (componentName.length <= 9) {
-      return componentName
-    }
-
-    return `${componentName.substring(0, 8)}...`
   }
 }
