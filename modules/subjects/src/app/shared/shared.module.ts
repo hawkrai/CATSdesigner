@@ -45,7 +45,7 @@ import { SomePipe } from './pipes/some.pipe'
 import { StartWithPipe } from './pipes/start-with.pipe'
 import { FirstLetterPipe } from './pipes/first-letter.pipe'
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component'
-import { WarningPopoverComponent } from './warning-popover/warning-popover.component'
+
 
 @NgModule({
   declarations: [
@@ -87,7 +87,7 @@ import { WarningPopoverComponent } from './warning-popover/warning-popover.compo
     StartWithPipe,
     FirstLetterPipe,
     CheckPlagiarismStudentComponent,
-    WarningPopoverComponent,
+  /*  WarningPopoverComponent,*/
   ],
   imports: [
     CommonModule,

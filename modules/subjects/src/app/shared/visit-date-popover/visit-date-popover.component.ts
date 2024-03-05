@@ -23,6 +23,7 @@ import { timeValidator } from '../validators/time.validator'
 import { TranslatePipe } from 'educats-translate'
 import { Lector } from 'src/app/models/lector.model'
 
+
 export const MY_FORMATS = {
   parse: {
     dateInput: 'LL',
@@ -36,7 +37,7 @@ export const MY_FORMATS = {
 }
 
 @Component({
-  selector: 'app-visit-date-popover',
+  selector: '  app-visit-date-popover',
   templateUrl: 'visit-date-popover.component.html',
   styleUrls: ['./visit-date-popover.component.less'],
   providers: [
@@ -156,6 +157,8 @@ export class VisitDatePopoverComponent {
       }
     })
   }
+
+
 
   validateLector(control: AbstractControl) {
     if (
