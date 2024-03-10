@@ -14,10 +14,13 @@ using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.SubjectManagement;
 using Application.Infrastructure.TestQuestionPassingManagement;
+using Application.Infrastructure.UserManagement;
 using Bootstrap;
 using LMPlatform.Models.KnowledgeTesting;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.KnowledgeTestingViewModels;
+using Nest;
+using Newtonsoft.Json;
 using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
@@ -43,9 +46,22 @@ namespace LMPlatform.UI.Controllers
             var test = this.TestsManagementService.GetTest(testId);
             var description = new
             {
+              
                 test.Title, test.Description
+               
             };
-
+            int idUser = UserContext.CurrentUserId;
+            var _context = new UsersManagementService();
+            var user = _context.GetUserById(idUser);
+            if (user.OngoingTest != null)
+            {
+                description = new
+                {
+                    Title = "Тест " + test.Title + " уже запущен в Вашей учетной записи",
+                    Description = "Завершите тест и попробуйте еще раз"
+                };
+            }                      
+            
             return JsonResponse(description) as JsonResult;
         }
 
@@ -149,6 +165,12 @@ namespace LMPlatform.UI.Controllers
         {
             (int mark, int percent) = this.TestPassingService.SimpleTestCloseById(testId, UserContext.CurrentUserId);
             var closeTestRes = GetCloseTestResult(testId, mark, percent, GetAnswersAsUserAnswer, true);
+
+            int idUser = UserContext.CurrentUserId;
+            var _context = new UsersManagementService();
+            var user = _context.GetUserById(idUser);
+            user.OngoingTest = null;
+            _context.UpdateUser(user);
             return JsonResponse(closeTestRes) as JsonResult;
         }
 
