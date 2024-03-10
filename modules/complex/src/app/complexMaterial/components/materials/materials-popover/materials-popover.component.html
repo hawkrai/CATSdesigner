@@ -53,7 +53,7 @@
     mat-raised-button
     (click)="goToPredTest()"
   >
-    {{ 'complex.pretest' | translate: 'Пройти предтест' }}
+    {{ 'common.pretest' | translate: 'Пройти предтест' }}
   </button>
   <button
     *ngIf="prevButtonVisible"
@@ -84,6 +84,6 @@
     [disabled]="true"
     (click)="processsTest()"
   >
-    {{ 'complex.finishTest' | translate: 'Завершить тест' }}
+    {{ 'common.finishTest' | translate: 'Завершить тест' }}
   </button>
 </div>
