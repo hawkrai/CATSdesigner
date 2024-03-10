@@ -44,17 +44,6 @@ export class ComplexMaterialComponent implements OnInit {
 
   ngOnInit() {}
 
-  openAdaptivePopup(): void {
-    const dialogRef = this.dialog.open(AdaptivePopupComponent, {
-      width: '600px',
-      data: {},
-    })
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed')
-    })
-  }
-
   openAddPopup(): void {
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',
@@ -78,6 +67,17 @@ export class ComplexMaterialComponent implements OnInit {
           }
         })
       }
+    })
+  }
+
+  openAdaptivePopup(): void {
+    const dialogRef = this.dialog.open(AdaptivePopupComponent, {
+      width: '600px',
+      data: {},
+    })
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed')
     })
   }
 }
