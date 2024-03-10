@@ -40,7 +40,10 @@ export class GridMenuComponent {
       const dialogData: DialogData = {
         buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
         width: '400px',
-        title: this.translatePipe.transform('common.editing', 'Редактирование'),
+        title: this.translatePipe.transform(
+          'complex.editComplexes',
+          'Редактировать ЭУМК'
+        ),
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,

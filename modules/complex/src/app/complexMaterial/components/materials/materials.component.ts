@@ -22,7 +22,7 @@ import { CatsService, CodeType } from 'src/app/service/cats.service'
 })
 export class MaterialComponent implements OnInit {
   @Input() complexId: string
-  isLucturer: boolean
+  isLecturer: boolean
   treeControl = new NestedTreeControl<ComplexCascade>((node) => node.children)
   dataSource = new MatTreeNestedDataSource<ComplexCascade>()
 
@@ -47,11 +47,8 @@ export class MaterialComponent implements OnInit {
     this.router.onSameUrlNavigation = 'reload'
 
     const user = JSON.parse(localStorage.getItem('currentUser'))
-    this.isLucturer = user.role === 'lector'
+    this.isLecturer = user.role === 'lector'
   }
-
-  hasChild = (_: number, node: ComplexCascade) =>
-    node.IsGroup || (!!node.children && node.children.length > 0)
 
   ngOnInit() {
     this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
@@ -135,6 +132,9 @@ export class MaterialComponent implements OnInit {
       }
     })
   }
+
+  hasChild = (_: number, node: ComplexCascade) =>
+    node.IsGroup || (!!node.children && node.children.length > 0)
 
   onDeleteClick(conceptId: number): void {
     const complex: Complex = {
