@@ -30,20 +30,20 @@
               'text.adminPanel.modal.listOfStudents.headers.status' | translate
             }}
           </th>
-          <td class="table-container" mat-cell *matCellDef="let element">
+          <td class="table-container" mat-cell *matCellDef="let element" id="name">
             <p *ngIf="this.isConfimed(element.Confirmed) && this.isActive(element.isActive)">
               {{
                 'text.adminPanel.modal.listOfStudents.status.confirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="!this.isConfimed(element.Confirmed) && this.isActive(element.isActive)">
+            <p *ngIf="!this.isConfimed(element.Confirmed) && this.isActive(element.isActive)" id="name">
               {{
                 'text.adminPanel.modal.listOfStudents.status.notConfirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="!this.isActive(element.isActive)">
+            <p *ngIf="!this.isActive(element.isActive)" id="name">
               {{
               'text.adminPanel.modal.listOfStudents.status.deleted'
                  | translate

@@ -13,11 +13,14 @@
   position: initial;
 }
 
-.mat-dialog-content {
-  overflow: visible;
-}
-
 .mat-table {
   height:max-content;
 }
 
+.mat-dialog-content{
+    overflow: visible;
+}
+
+#name{
+    padding-left: 2px;
+}
