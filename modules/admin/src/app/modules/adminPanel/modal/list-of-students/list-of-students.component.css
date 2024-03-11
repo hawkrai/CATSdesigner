@@ -13,20 +13,11 @@
   position: initial;
 }
 
+.mat-dialog-content {
+  overflow: visible;
+}
+
 .mat-table {
   height:max-content;
 }
 
-.mat-dialog-content{
-    
-}
-
-#name{
-    padding-left: 2px;
-}
-
-mat-dialog-actions {
-  position: absolute;
-  bottom: 20px;
-  margin-left: 370px;
-}
