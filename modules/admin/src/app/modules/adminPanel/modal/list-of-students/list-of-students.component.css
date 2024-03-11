@@ -1,6 +1,7 @@
 .container {
   display: flex;
   justify-content: space-between;
+  width: 450px;
 }
 
 .mat-dialog-title {
@@ -11,3 +12,12 @@
 .mat-progress-spinner {
   position: initial;
 }
+
+.mat-dialog-content {
+  overflow: visible;
+}
+
+.mat-table {
+  height:max-content;
+}
+
