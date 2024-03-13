@@ -73,7 +73,7 @@
               </a>
             </td>
             <td class="mdc-data-table__cell example-content">
-              {{ data.body.uploadedFile.Type }}
+              {{ data.body.uploadedFile.CreationDate.slice(0, 10) }}
             </td>
             <td class="mdc-data-table__cell example-content">
               {{ (data.body.uploadedFile.Size / 1024).toFixed(2) }} КБ
@@ -85,7 +85,7 @@
             >
               {{
                 'text.course.defence.dialog.status'
-                  | translate: 'Загруженный файл'
+                  | translate: 'Прикрепленный файл'
               }}
             </td>
             <ng-template #attached>
