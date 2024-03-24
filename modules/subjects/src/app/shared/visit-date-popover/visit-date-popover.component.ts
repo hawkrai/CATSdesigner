@@ -76,7 +76,16 @@ export class VisitDatePopoverComponent {
   onClick(): void {
     this.close.emit()
   }
+  private timeInRange(control: AbstractControl): { [key: string]: boolean } | null {
+    const startTime = moment(control.value, 'HH:mm');
+    const forbiddenStartTime = moment('00:00', 'HH:mm');
+    const forbiddenEndTime = moment('07:59', 'HH:mm');
 
+    if (startTime.isBetween(forbiddenStartTime, forbiddenEndTime, undefined, '[]')) {
+      return { 'timeRange': true };
+    }
+    return null;
+  }
   private time = (control: AbstractControl) => {
     return timeValidator(
       this.dateForm ? this.dateForm.get('startTime').value : null,
@@ -86,10 +95,10 @@ export class VisitDatePopoverComponent {
 
   dateForm: FormGroup = new FormGroup({
     date: new FormControl(moment(), [Validators.required]),
-    startTime: new FormControl(moment().format('HH:mm'), [Validators.required]),
+    startTime: new FormControl(moment().format('HH:mm'), [Validators.required, this.timeInRange]),
     endTime: new FormControl(
       moment().add(1, 'hour').add(30, 'minutes').format('HH:mm'),
-      [Validators.required, this.time]
+      [Validators.required,this.timeInRange,this.time]
     ),
     building: new FormControl('', [
       Validators.required,
