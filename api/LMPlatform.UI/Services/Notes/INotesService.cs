@@ -36,5 +36,9 @@ namespace LMPlatform.UI.Services.Notes
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetPersonalNotes")]
         UserNoteViewResult GetPersonalNotes();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, UriTemplate = "/GetPersonalNotesBetweenDates?dateStart={dateStart}&dateEnd={dateEnd}")]
+        UserNoteViewResult GetPersonalNotesBetweenDates(string dateStart, string dateEnd);
     }
 }

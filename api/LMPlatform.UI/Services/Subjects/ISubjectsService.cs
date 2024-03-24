@@ -24,6 +24,10 @@ namespace LMPlatform.UI.Services.Subjects
         IEnumerable<ModulesViewModel> GetSubjectModules(string subjectId);
 
         [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/ModulesForSchedule/{subjectId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
+        IEnumerable<ModulesViewModel> GetSubjectModulesForSchedule(string subjectId);
+
+        [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "/Assigned/{subjectId}", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         UserAssignedViewData UserAssigned(string subjectId);
 

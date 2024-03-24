@@ -125,6 +125,16 @@ namespace LMPlatform.UI.Services.Notes
             };
         }
 
+        public UserNoteViewResult GetPersonalNotesBetweenDates(string dateStart, string dateEnd)
+        {
+            var dateTimeStart = DateTime.ParseExact(dateStart, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+            var dateTimeEnd = DateTime.ParseExact(dateEnd, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+            return new UserNoteViewResult
+            {
+                Notes = NoteManagementService.GetPersonalNotes(UserContext.CurrentUserId).Where(x => x.Date >= dateTimeStart && x.Date <= dateTimeEnd).Select(x => new UserNoteViewData(x))
+            };
+        }
+
 
         public ResultViewData SavePersonalNote(int id, string text, string date, string startTime, string endTime)
         {
