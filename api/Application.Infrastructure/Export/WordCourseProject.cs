@@ -174,6 +174,11 @@ namespace Application.Infrastructure.Export
             head.InnerText = work.HeadCathedra;
             children.Add(head);
 
+            var cathedra = doc.CreateElement("item");
+            cathedra.SetAttribute("name", "CathedraName");
+            cathedra.InnerText = work.CathedraName;
+            children.Add(cathedra);
+
             children.AddRange(CreateStringNodes(doc, "InputData", work.InputData, 30, 638,8));
 
             children.AddRange(CreateStringNodes(doc, "RPZContent", work.RpzContent, 30, 638, 16));
@@ -262,6 +267,11 @@ namespace Application.Infrastructure.Export
             head.SetAttribute("name", "HeadCathedra");
             head.InnerText = awork.CourseProject.HeadCathedra;
             children.Add(head);
+
+            var cathedra = doc.CreateElement("item");
+            cathedra.SetAttribute("name", "CathedraName");
+            cathedra.InnerText = awork.CourseProject.CathedraName;
+            children.Add(cathedra);
 
             children.AddRange(CreateStringNodes(doc, "InputData", awork.CourseProject.InputData, 30, 638, 8));
 

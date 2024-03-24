@@ -255,5 +255,11 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
 			get;
 			set;
 		}
+        [DataMember]
+        public bool? isActive
+        {
+            get;
+            set;
+        }
     }
 }

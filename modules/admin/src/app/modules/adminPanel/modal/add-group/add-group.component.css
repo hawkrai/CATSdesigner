@@ -15,7 +15,9 @@ mat-dialog-actions {
 }
 
 mat-dialog-actions {
-  float: right;
+  position: absolute;
+  bottom: 20px;
+  margin-left: 220px;
 }
 
 h2 {
