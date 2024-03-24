@@ -76,7 +76,7 @@
       <span class="mdc-tab__ripple"></span>
     </button>
     <button
-      class="mdc-tab button"
+      class="mdc-tab button "
       role="tab"
       aria-selected="true"
       tabindex="0"
@@ -86,10 +86,11 @@
           ? ('text.tab.percentages'
             | translate: 'Скачать листы задания архивом')
           : ''
-      "
+      " 
+      
       (click)="onChangeTab(4)"
     >
-      <span class="mdc-tab__content">
+      <span class="mdc-tab__content persentage-results-but">
         <span class="mdc-tab__text-label">{{
           'text.course.percentage.results' | translate: 'Результаты процентовки'
         }}</span>
@@ -104,7 +105,7 @@
           "
         ></span>
       </span>
-      <button mat-icon-button color="primary">
+      <button mat-icon-button color="primary" *ngIf="courseUser.IsLecturer">
         <span
           class="iconify"
           data-icon="mdi-folder-download"
