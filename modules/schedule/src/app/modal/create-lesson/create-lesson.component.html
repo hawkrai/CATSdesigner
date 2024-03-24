@@ -158,7 +158,7 @@
           }}</mat-error>
           <mat-error *ngIf="startEvent.hasError('min')">{{
             'text.schedule.field.must.be.more'
-              | translate: 'Время должно превышать 08:00'
+              | translate: 'Время может быть выбрано с 08:00 до 23:00'
           }}</mat-error>
         </mat-form-field>
         <mat-form-field style="width: 48%; margin-left: 4%; z-index: 4">
@@ -179,7 +179,7 @@
           }}</mat-error>
           <mat-error *ngIf="endEvent.hasError('min')">{{
             'text.schedule.field.must.be.more'
-              | translate: 'Время должно превышать 08:00'
+              | translate: 'Время может быть выбрано с 08:00 до 23:00'
           }}</mat-error>
         </mat-form-field>
         <mat-form-field style="width: 48%">
@@ -196,7 +196,7 @@
           />
           <mat-error *ngIf="building.hasError('maxlength')">{{
             'text.schedule.building.length'
-              | translate: 'Номер корпуса должен быть мньше 4 символов'
+              | translate: 'Номер корпуса должен быть меньше 4 символов'
           }}</mat-error>
           <mat-error *ngIf="building.hasError('required')">
             {{
@@ -220,7 +220,7 @@
           />
           <mat-error *ngIf="audience.hasError('maxlength')">{{
             'text.schedule.audience.length'
-              | translate: 'Номер аудитории должен быть мньше 6 символов'
+              | translate: 'Номер аудитории должен быть меньше 6 символов'
           }}</mat-error>
           <mat-error *ngIf="audience.hasError('required')">
             {{
@@ -315,7 +315,7 @@
           }}</mat-error>
           <mat-error *ngIf="startNote.hasError('min')">{{
             'text.schedule.field.must.be.more'
-              | translate: 'Время должно превышать 08:00'
+              | translate: 'Время может быть выбрано с 08:00 до 23:00'
           }}</mat-error>
         </mat-form-field>
         <mat-form-field style="width: 48%; margin-left: 4%">
@@ -333,7 +333,7 @@
           }}</mat-error>
           <mat-error *ngIf="endNote.hasError('min')">{{
             'text.schedule.field.must.be.more'
-              | translate: 'Время должно превышать 08:00'
+              | translate: 'Время может быть выбрано с 08:00 до 23:00'
           }}</mat-error>
         </mat-form-field>
         <mat-form-field>
@@ -350,6 +350,10 @@
             'text.schedule.field.must.be.not.empty'
               | translate: 'Поле не может быть пустым'
           }}</mat-error>
+          <mat-error *ngIf="endNote.hasError('min')">{{
+            'text.schedule.field.must.be.more'
+              | translate: 'Время может быть выбрано с 08:00 до 23:00'
+            }}</mat-error>
         </mat-form-field>
       </form>
     </div>

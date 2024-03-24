@@ -238,7 +238,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
       comment: mark.Comment,
       mark: mark.Mark,
       date: mark.Date
-        ? new Date(+dateValues[2], +dateValues[1], +dateValues[1])
+        ? new Date(+dateValues[2], +dateValues[1]-1, +dateValues[0])
         : new Date(),
       labId: mark.LabId,
       studentId: studentId,

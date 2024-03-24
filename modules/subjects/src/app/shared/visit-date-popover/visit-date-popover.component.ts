@@ -23,6 +23,7 @@ import { timeValidator } from '../validators/time.validator'
 import { TranslatePipe } from 'educats-translate'
 import { Lector } from 'src/app/models/lector.model'
 
+
 export const MY_FORMATS = {
   parse: {
     dateInput: 'LL',
@@ -36,7 +37,7 @@ export const MY_FORMATS = {
 }
 
 @Component({
-  selector: 'app-visit-date-popover',
+  selector: '  app-visit-date-popover',
   templateUrl: 'visit-date-popover.component.html',
   styleUrls: ['./visit-date-popover.component.less'],
   providers: [
@@ -75,7 +76,16 @@ export class VisitDatePopoverComponent {
   onClick(): void {
     this.close.emit()
   }
+  private timeInRange(control: AbstractControl): { [key: string]: boolean } | null {
+    const startTime = moment(control.value, 'HH:mm');
+    const forbiddenStartTime = moment('00:00', 'HH:mm');
+    const forbiddenEndTime = moment('07:59', 'HH:mm');
 
+    if (startTime.isBetween(forbiddenStartTime, forbiddenEndTime, undefined, '[]')) {
+      return { 'timeRange': true };
+    }
+    return null;
+  }
   private time = (control: AbstractControl) => {
     return timeValidator(
       this.dateForm ? this.dateForm.get('startTime').value : null,
@@ -85,10 +95,10 @@ export class VisitDatePopoverComponent {
 
   dateForm: FormGroup = new FormGroup({
     date: new FormControl(moment(), [Validators.required]),
-    startTime: new FormControl(moment().format('HH:mm'), [Validators.required]),
+    startTime: new FormControl(moment().format('HH:mm'), [Validators.required, this.timeInRange]),
     endTime: new FormControl(
       moment().add(1, 'hour').add(30, 'minutes').format('HH:mm'),
-      [Validators.required, this.time]
+      [Validators.required,this.timeInRange,this.time]
     ),
     building: new FormControl('', [
       Validators.required,
@@ -156,6 +166,8 @@ export class VisitDatePopoverComponent {
       }
     })
   }
+
+
 
   validateLector(control: AbstractControl) {
     if (
