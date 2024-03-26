@@ -9,7 +9,7 @@
     <form class="example-form" #formElement>
       <div class="basic-container" *ngIf="navItems?.length">
         <span *ngFor="let item of navItems">
-          <!-- Handle branch node buttons here -->
+          <!-- Handle branch node buttons here  -->
           <span *ngIf="item.children && item.children.length > 0">
             <button
               mat-raised-button
@@ -60,7 +60,6 @@
           matInput
         />
       </mat-form-field>
-
       <div *ngIf="isFile">
         <mat-form-field>
           <mat-label>{{
@@ -69,7 +68,7 @@
           <input
             name="fileName"
             maxlength="100"
-            placeholder="{{ 'common.fileName' | translate: 'Имя файла' }}"
+            placeholder="{{ 'common.fileName' | translate: 'Введите название элемента' }}"
             [(ngModel)]="data.name"
             matInput
           />
