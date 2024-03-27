@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core'
+// import {trigger, transition, style, animate, keyframes } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router'
 import { first } from 'rxjs/operators'
 import {
@@ -22,6 +23,17 @@ interface Locale {
 }
 
 @Component({
+  // selector: '#mascot-tail',
+  // animations: [
+  //   trigger('forwards', [
+  //     animate("3s", keyframes([//барабарабара
+  //       style({ backgroundColor: "red", offset: 0 }),
+  //       style({ backgroundColor: "blue", offset: 0.2 }),
+  //       style({ backgroundColor: "orange", offset: 0.3 }),
+  //       style({ backgroundColor: "black", offset: 1 })
+  //     ]))
+  //   ])
+  // ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.less'],
   encapsulation: ViewEncapsulation.None,
@@ -73,6 +85,7 @@ export class LoginComponent implements OnInit {
       ? this.locales.find((locale: Locale) => locale.value === local)
       : this.locales[0]
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/'
+    this.mascotTailAnimation();
   }
 
   get f() {
@@ -137,5 +150,17 @@ export class LoginComponent implements OnInit {
 
   public open() {
     const dialogRef = this.dialog.open(VideoComponent)
+  }
+
+  mascotTailAnimation(): void {
+    let catsTail = document.getElementById('mascot-tail');
+    catsTail.classList.add('mascot-tail-animation');
+    
+    catsTail.addEventListener("animationend", removeTailAnimation, false);
+    
+    function removeTailAnimation () {
+      catsTail.classList.remove('mascot-tail-animation');
+      
+    }
   }
 }
