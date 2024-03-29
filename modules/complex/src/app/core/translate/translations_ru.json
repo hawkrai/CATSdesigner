@@ -37,6 +37,8 @@
   "common.save": "Сохранить",
   "common.edit": "Редактировать",
   "common.delete": "Удалить",
+  "common.zoomIn": "Увеличить",
+  "common.zoomOut": "Уменьшить",
   "complex.regulations": "Положение об ЭУМК",
   "complex.map": "Карта ЭУМК",
   "complex.complexes": "К списку ЭУМК",
