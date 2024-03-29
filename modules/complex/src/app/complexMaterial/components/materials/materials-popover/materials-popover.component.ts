@@ -17,6 +17,7 @@ export class MaterialsPopoverComponent {
   path: string
   currentPathIndex: number
   materialPathes: string[]
+  zoom: number = 1
 
   themaId: string
   adaptivityType: number
@@ -213,5 +214,15 @@ export class MaterialsPopoverComponent {
 
   onNoClick(): void {
     this.dialogRef.close(this.studentSeconds)
+  }
+
+  zoomIn(){
+    this.zoom = this.zoom + 0.25;
+  }
+
+  zoomOut(){
+    if (this.zoom > 1) {
+      this.zoom = this.zoom - 0.25;
+   }
   }
 }
