@@ -18,6 +18,7 @@ export class MaterialsPopoverComponent {
   currentPathIndex: number
   materialPathes: string[]
   zoom: number = 1
+  isDragging: boolean
 
   themaId: string
   adaptivityType: number
@@ -225,4 +226,22 @@ export class MaterialsPopoverComponent {
       this.zoom = this.zoom - 0.25;
    }
   }
+
+  onDrag(event: MouseEvent, pdfViewer: any) {
+    if (this.isDragging && !this.isTextSelected()) {
+      const x = pdfViewer.element.nativeElement.children[0].scrollLeft - event.movementX;
+      const y = pdfViewer.element.nativeElement.children[0].scrollTop - event.movementY;
+      pdfViewer.element.nativeElement.children[0].scrollTo(x, y);
+    }
+  }
+  onDragStarted(event: MouseEvent) {
+    this.isDragging = true;
+  }
+  onDragEnded(event: MouseEvent, note: 'up' | 'leave') {
+    this.isDragging = false;
+  }
+
+  isTextSelected() {
+    return window.getSelection().toString().length > 0;
+}
 }
