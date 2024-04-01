@@ -50,6 +50,10 @@ export class ListOfStudentsComponent implements OnInit {
   onNoClick(): void {
     this.dialogRef.close()
   }
+
+  onNoClick(): void {
+    this.dialogRef.close()
+  }
 }
 
 
