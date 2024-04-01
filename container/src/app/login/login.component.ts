@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core'
-// import {trigger, transition, style, animate, keyframes } from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router'
 import { first } from 'rxjs/operators'
 import {
@@ -23,17 +22,6 @@ interface Locale {
 }
 
 @Component({
-  // selector: '#mascot-tail',
-  // animations: [
-  //   trigger('forwards', [
-  //     animate("3s", keyframes([//барабарабара
-  //       style({ backgroundColor: "red", offset: 0 }),
-  //       style({ backgroundColor: "blue", offset: 0.2 }),
-  //       style({ backgroundColor: "orange", offset: 0.3 }),
-  //       style({ backgroundColor: "black", offset: 1 })
-  //     ]))
-  //   ])
-  // ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.less'],
   encapsulation: ViewEncapsulation.None,
@@ -153,7 +141,7 @@ export class LoginComponent implements OnInit {
   }
 
   mascotTailAnimation(): void {
-    let catsTail = document.getElementById('mascot-tail');
+    const catsTail = document.getElementById('mascot-tail');
     catsTail.classList.add('mascot-tail-animation');
     
     catsTail.addEventListener("animationend", removeTailAnimation, false);
