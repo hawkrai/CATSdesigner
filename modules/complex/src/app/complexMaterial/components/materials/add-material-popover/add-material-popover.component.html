@@ -1,13 +1,20 @@
 <ng-container *var="files$ | async as files">
-  <button class="close" mat-button (click)="onClose(files, false)">X</button>
-  <h1 mat-dialog-title>{{ popupTitle }}</h1>
   <div
     mat-dialog-content
     class="complex-grid-component__popover"
     #popoverContent
   >
+    <div class="head-container">
+      <h1 mat-dialog-title>{{ popupTitle }}</h1>
+      <button class="close" (click)="onClose(files, false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     <form class="example-form" #formElement>
       <div class="basic-container" *ngIf="navItems?.length">
+        <div class="basic-container-text" *ngIf="selectedConcept">
+          {{ selectedConcept }}
+        </div>
         <span *ngFor="let item of navItems">
           <!-- Handle branch node buttons here -->
           <span *ngIf="item.children && item.children.length > 0">
@@ -27,31 +34,31 @@
             (onSelectConcept)="selectConcept($event)"
           ></app-menu-item>
         </span>
-        <div class="basic-container-text" *ngIf="selectedConcept">
-          {{ selectedConcept }}
-        </div>
       </div>
-
-      <mat-radio-group style="display: block" [disabled]="editMode">
-        <mat-radio-button
-          value="1"
-          [checked]="isFolder"
-          style="padding-right: 20px"
-          (click)="switchFormTo(1)"
-          >{{ 'common.folder' | translate: 'Папка' }}</mat-radio-button
-        >
-        <mat-radio-button
-          value="2"
-          [checked]="isFile"
-          (click)="switchFormTo(2)"
-          >{{ 'common.file' | translate: 'Файл' }}</mat-radio-button
-        >
-      </mat-radio-group>
-
+      <div class="rad-button">
+        <mat-radio-group [disabled]="editMode">
+          <mat-radio-button
+            value="1"
+            [checked]="isFolder"
+            style="padding-right: 20px"
+            (click)="switchFormTo(1)"
+          >{{ 'common.folder' | translate: 'Папка' }}
+          </mat-radio-button
+          >
+          <mat-radio-button
+            value="2"
+            [checked]="isFile"
+            (click)="switchFormTo(2)"
+          >{{ 'common.file' | translate: 'Файл' }}
+          </mat-radio-button
+          >
+        </mat-radio-group>
+      </div>
       <mat-form-field *ngIf="isFolder">
         <mat-label>{{
-          'common.inputFolderName' | translate: 'Введите имя папки'
-        }}</mat-label>
+            'common.inputFolderName' | translate: 'Введите имя папки'
+          }}
+        </mat-label>
         <input
           name="foderName"
           maxlength="100"
@@ -60,12 +67,12 @@
           matInput
         />
       </mat-form-field>
-
       <div *ngIf="isFile">
         <mat-form-field>
           <mat-label>{{
-            'common.inputFileName' | translate: 'Введите имя файла'
-          }}</mat-label>
+              'common.inputFileName' | translate: 'Введите имя файла'
+            }}
+          </mat-label>
           <input
             name="fileName"
             maxlength="100"
@@ -86,7 +93,6 @@
       </div>
     </form>
   </div>
-
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onClose(files, false)">
       {{ 'common.cancel' | translate: 'Отмена' }}
