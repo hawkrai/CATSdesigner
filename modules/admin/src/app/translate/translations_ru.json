@@ -726,7 +726,7 @@
   "text.adminPanel.modal.listOfGroups.groupStatus.completed": "Завершенный",
 
   "text.adminPanel.modal.listOfStudents.empty": "В данной группе не числется студентов",
-  "text.adminPanel.modal.listOfStudents.headers.status": "Подтверждение",
+  "text.adminPanel.modal.listOfStudents.headers.status": "Статус",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Подтвержден",
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Не подтвержден",
   "text.adminPanel.modal.listOfStudents.status.deleted": "Удалён",
