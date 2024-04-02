@@ -85,7 +85,7 @@ export class ComplexGridComponent implements OnInit {
       width: '400px',
       title: this.translatePipe.transform(
         'complex.addComplexes',
-        'Добавить ЭУМК'
+        'Добавление ЭУМК'
       ),
       name: '',
       subjectName: this.subjectName,

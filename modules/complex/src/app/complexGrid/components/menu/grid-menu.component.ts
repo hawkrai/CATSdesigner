@@ -42,7 +42,7 @@ export class GridMenuComponent {
         width: '400px',
         title: this.translatePipe.transform(
           'complex.editComplexes',
-          'Редактировать ЭУМК'
+          'Редактирование ЭУМК'
         ),
         isNew: false,
         name: res.Name,
