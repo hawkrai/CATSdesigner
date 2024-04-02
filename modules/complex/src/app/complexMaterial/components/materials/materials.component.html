@@ -14,7 +14,10 @@
       >
         insert_drive_file</mat-icon
       >
-      <a class="btn clickable" (click)="openPDF(node.Id, node.FilePath)">
+      <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
+        {{ node.Name }}
+      </a>
+      <a class="btn clickable" *ngIf="!node.FilePath" (click)="openSnackBar()">
         {{ node.Name }}
       </a>
       <div class="work-icons" *ngIf="isLecturer">
