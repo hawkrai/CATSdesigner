@@ -37,6 +37,8 @@
   "common.save": "Save",
   "common.edit": "Edit",
   "common.delete": "Delete",
+  "common.zoomIn": "Zoom in",
+  "common.zoomOut": "Zoom out",
   "complex.regulations": "Regulations on Educational Complex",
   "complex.map": "Educational Complex Map",
   "complex.complexes": "Educational Complexes",
@@ -63,5 +65,6 @@
   "complex.availableTests": "The transition to the tests will be available via",
   "complex.finishProcess": "The learning process is completed",
   "complex.exit": "To exit, click Cancel",
-  "complex.finish": "To proceed to the training, click Finish"
+  "complex.finish": "To proceed to the training, click Finish",
+  "complex.noInfo": "There is no information on the topic"
 }
