@@ -12,7 +12,7 @@
 }
 
 .cdk-global-overlay-wrapper {
-  display: flex;
+  display: -webkit-box;
   position: absolute;
   z-index: 1000;
   overflow: auto;
