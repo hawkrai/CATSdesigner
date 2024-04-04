@@ -63,7 +63,7 @@ export class MaterialComponent implements OnInit {
       if (result) {
         const path = '/api/Upload?fileName=' + (result && result[0])
         const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-          width: '1200px',
+          width: '500px',
           data: { name: 'name', documents: result, url: path },
         })
 
