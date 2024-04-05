@@ -22,16 +22,16 @@
 
       <div class="video-call__controls">
         <div class="video-call__control" (click)="this.switchMicro()">
-          <mat-icon class="control-icon" *ngIf="IsMicroActive">mic</mat-icon>
-          <mat-icon class="control-icon" *ngIf="!IsMicroActive"
+          <mat-icon class="control-icon" *ngIf="IsMicroActive" [ngStyle]="{ color: 'white' }">mic</mat-icon>
+          <mat-icon class="control-icon" *ngIf="!IsMicroActive" [ngStyle]="{ color: 'white' }"
             >mic_off</mat-icon
           >
         </div>
         <div class="video-call__control" (click)="this.switchVideo()">
-          <mat-icon class="control-icon" *ngIf="isVideoActive"
+          <mat-icon class="control-icon" *ngIf="isVideoActive" [ngStyle]="{ color: 'white' }"
             >videocam</mat-icon
           >
-          <mat-icon class="control-icon" *ngIf="!isVideoActive"
+          <mat-icon class="control-icon" *ngIf="!isVideoActive" [ngStyle]="{ color: 'white' }"
             >videocam_off</mat-icon
           >
         </div>
