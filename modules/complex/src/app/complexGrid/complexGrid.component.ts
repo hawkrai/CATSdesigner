@@ -84,8 +84,13 @@ export class ComplexGridComponent implements OnInit {
       buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
       width: '400px',
       title: this.translatePipe.transform(
+<<<<<<< HEAD
         'complex.addComplex',
         'Добавление ЭУМК'
+=======
+        'complex.addComplexes',
+        'Создать электронный учебно-методический комплекс'
+>>>>>>> f78e7e34c7e4ecd80271b31ed321c45e8a4e792e
       ),
       name: '',
       subjectName: this.subjectName,

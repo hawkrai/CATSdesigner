@@ -43,7 +43,10 @@
   "complex.map": "Educational Complex Map",
   "complex.complexes": "Educational Complexes",
   "complex.addComplexes": "Add educational complex",
+<<<<<<< HEAD
   "complex.addComplex": "Add educational complex",
+=======
+>>>>>>> f78e7e34c7e4ecd80271b31ed321c45e8a4e792e
   "complex.editComplexes": "Edit Complexes",
   "complex.editComplex": "Edit Complexes",
   "complex.addComponent": "Add component",
