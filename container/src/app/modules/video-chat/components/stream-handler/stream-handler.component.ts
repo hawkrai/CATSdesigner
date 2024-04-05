@@ -297,28 +297,20 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   async createMediaController(peerConnection: RTCPeerConnection | any) {
     let audioStream: any = null
 
-    if (!this.mediaConstraints.audio && !this.mediaConstraints.video) {
-      audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-        },
-        video: true,
-      })
-      audioStream?.getTracks()?.forEach((track: any) => {
-        track.enabled = false
-        peerConnection.addTrack(track, audioStream)
-      })
-    } else {
-      audioStream = await navigator.mediaDevices.getUserMedia(
-        this.mediaConstraints
-      )
-      audioStream?.getTracks()?.forEach((track: any) => {
-        peerConnection.addTrack(track, audioStream)
-      })
-    }
+    audioStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+      },
+      video: true,
+    })
+    audioStream?.getTracks()?.forEach((track: any) => {
+      peerConnection.addTrack(track, audioStream)
+    })
 
     this.stream = audioStream
+    this.changeMicroStatus(this.isMicroActive)
+    this.changeVideoStatus(this.isVideoActive)
 
     peerConnection.ontrack = (event: any) => {
       this.remoteAudio = event.streams[0]
