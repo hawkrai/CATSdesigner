@@ -36,7 +36,7 @@
               {{ file.Name }}
             </a>
           </td>
-          <td class="mdc-data-table__cell example-content">{{ file.Type }}</td>
+          <td class="mdc-data-table__cell example-content">{{ file.CreationDate.slice(0, 10) }}</td>
           <td class="mdc-data-table__cell example-content">
             {{ (file.Size / 1024).toFixed(2) }}
             {{ 'common.kb' | translate: 'КБ' }}

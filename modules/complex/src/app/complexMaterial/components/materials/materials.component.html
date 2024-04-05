@@ -69,6 +69,24 @@
         >
           {{ node.Name }}
         </a>
+        <div class="work-icons" *ngIf="isLecturer">
+          <a
+            class="btn clickable"
+            (click)="openEditPopup(node)"
+            [matTooltip]="'common.edit' | translate: 'Редактировать'"
+            matTooltipPosition="left"
+          >
+            <mat-icon class="icon">edit</mat-icon>
+          </a>
+          <a
+            class="btn clickable"
+            (click)="onDeleteClick(node.Id)"
+            [matTooltip]="'common.delete' | translate: 'Удалить'"
+            matTooltipPosition="right"
+          >
+            <mat-icon class="icon">delete</mat-icon>
+          </a>
+        </div>
       </div>
       <ul
         [class.example-tree-invisible]="!treeControl.isExpanded(node)"
