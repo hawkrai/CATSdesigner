@@ -21,7 +21,7 @@
           [matTooltip]="
             'complex.adaptiveTopic' | translate: 'Мониторинг по теме'
           "
-          matTooltipPosition="left"
+          matTooltipPosition="below"
         >
           <mat-icon class="icon">access_time</mat-icon>
         </a>
@@ -29,7 +29,7 @@
           class="btn clickable"
           (click)="openEditPopup(node)"
           [matTooltip]="'common.edit' | translate: 'Редактировать'"
-          matTooltipPosition="left"
+          matTooltipPosition="below"
         >
           <mat-icon class="icon">edit</mat-icon>
         </a>
@@ -37,7 +37,7 @@
           class="btn clickable"
           (click)="onDeleteClick(node.Id)"
           [matTooltip]="'common.delete' | translate: 'Удалить'"
-          matTooltipPosition="right"
+          matTooltipPosition="below"
         >
           <mat-icon class="icon">delete</mat-icon>
         </a>
