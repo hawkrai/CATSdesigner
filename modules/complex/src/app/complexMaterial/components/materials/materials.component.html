@@ -8,10 +8,16 @@
     <li class="mat-tree-node">
       <!-- use a disabled button to provide padding for tree leaf -->
       <button class="invisible" mat-icon-button></button>
-      <mat-icon class="expandable-external folder_file_icons">
+      <mat-icon
+        class="expandable-external folder_file_icons"
+        [class.no-file]="!node.FilePath"
+      >
         insert_drive_file</mat-icon
       >
-      <a class="btn clickable" (click)="openPDF(node.Id, node.FilePath)">
+      <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
+        {{ node.Name }}
+      </a>
+      <a class="btn clickable" *ngIf="!node.FilePath" (click)="openSnackBar()">
         {{ node.Name }}
       </a>
       <div class="work-icons" *ngIf="isLecturer">
@@ -58,7 +64,7 @@
             {{ treeControl.isExpanded(node) ? '-' : '+' }}
           </span>
           <mat-icon
-            class="complex-three-title-icon mat-icon-rtl-mirror expandable folder_file_icons"
+            class="complex-three-title-icon mat-icon-rtl-mirror expandable no-file"
           >
             folder
           </mat-icon>
