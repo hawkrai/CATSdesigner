@@ -65,5 +65,6 @@
   "complex.availableTests": "The transition to the tests will be available via",
   "complex.finishProcess": "The learning process is completed",
   "complex.exit": "To exit, click Cancel",
-  "complex.finish": "To proceed to the training, click Finish"
+  "complex.finish": "To proceed to the training, click Finish",
+  "complex.noInfo": "There is no information on the topic"
 }
