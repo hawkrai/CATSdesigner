@@ -41,8 +41,8 @@ export class GridMenuComponent {
         buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
         width: '400px',
         title: this.translatePipe.transform(
-          'complex.editComplexes',
-          'Редактировать ЭУМК'
+          'complex.editComplex',
+          'Редактирование ЭУМК'
         ),
         isNew: false,
         name: res.Name,
