@@ -1,8 +1,9 @@
 <mat-grid-list
-  cols="3"
+  [cols]="breakpoint"
   *ngIf="!showLoader; else loader"
   rowHeight="1:1"
   class="sub-settings"
+  (window:resize)="onResize($event)"
 >
   <a class="main-anchor" (click)="openPDF()">
     {{ 'complex.regulations' | translate: 'Положение об ЭУМК' }}

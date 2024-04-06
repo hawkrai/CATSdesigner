@@ -70,3 +70,8 @@
 .mat-snack-bar-container {
   background: #3d497b;
 }
+
+.mat-tooltip {
+  font-size: 14px;
+}
+
