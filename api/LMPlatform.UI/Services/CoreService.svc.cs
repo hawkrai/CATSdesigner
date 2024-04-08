@@ -289,7 +289,8 @@ namespace LMPlatform.UI.Services
 						FullName = e.FullName,
 						Confirmed  = e.Confirmed == null || e.Confirmed.Value,
 						ConfirmedBy = e.ConfirmedById.HasValue ? new LectorViewData(e.ConfirmedBy, true) : null,
-						ConfirmedAt = e.ConfirmedAt
+						ConfirmedAt = e.ConfirmedAt,
+						isActive = e.IsActive
 					}).ToList(),
 					Message = "Студенты успешно загружены",
 					Code = "200"
@@ -320,7 +321,8 @@ namespace LMPlatform.UI.Services
                         FullName = e.Student.FullName,
                         Confirmed = e.Student.Confirmed == null || e.Student.Confirmed.Value,
                         SubgroupId = subGroupIndex,
-                        Login = e.Student.User.UserName
+                        Login = e.Student.User.UserName,
+                        isActive = e.Student.IsActive
                     }));
                     subGroupIndex++;
                 }
@@ -425,17 +427,17 @@ namespace LMPlatform.UI.Services
 						GroupName = @group.Name,
 						SubGroupsOne = subGroups.Any(x => x.Name == "first") ? new SubGroupsViewData
 						{
-						    Name = "Подгруппа 1",
+						    Name = "1",
 						    SubGroupId = subGroups.First(e => e.Name == "first").Id
 						} : null,
 						SubGroupsTwo = subGroups.Any(x => x.Name == "second") ? new SubGroupsViewData
 						{
-							Name = "Подгруппа 2",
+							Name = "2",
 							SubGroupId = subGroups.First(e => e.Name == "second").Id
 						} : null,
 						SubGroupsThird = subGroups.Any(x => x.Name == "third") ? new SubGroupsViewData
 						{
-							Name = "Подгруппа 3",
+							Name = "3",
 							SubGroupId = subGroups.First(e => e.Name == "third").Id
 						} : null
 					});

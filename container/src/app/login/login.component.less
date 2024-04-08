@@ -226,25 +226,23 @@ form {
 #mascot-tail {
   width: 10vw;
   margin-left: -3.5vw;
-  animation: mascot-tail__rotation__1 1000ms 0ms linear forwards,
-    mascot-tail__rotation__2 1000ms 1000ms linear forwards;
 }
 
-@keyframes mascot-tail__rotation__1 {
-  from {
+.mascot-tail-animation{
+  animation: mascot-tail__rotation__3 2000ms 0ms linear forwards,
+}
+@keyframes mascot-tail__rotation__3 {
+
+  0% {
     transform: translateX(0) translateY(0) rotate(0deg);
   }
 
-  to {
+  40%,
+  55% {
     transform: translateX(0px) translateY(2.5vw) rotate(40deg);
   }
-}
-@keyframes mascot-tail__rotation__2 {
-  from {
-    transform: translateX(0px) translateY(2.5vw) rotate(40deg);
-  }
-
-  to {
+  
+  100% {
     transform: translateX(0) translateY(0) rotate(0deg);
   }
 }
