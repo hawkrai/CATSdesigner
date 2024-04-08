@@ -26,6 +26,7 @@ export class AnswersPopupComponent
   public percent: any
   public startTime: string
   public startDate: string
+  public endTime: string
 
   constructor(
     public dialogRef: MatDialogRef<AnswersPopupComponent>,
@@ -57,6 +58,10 @@ export class AnswersPopupComponent
             answers.find((res: DataValues) => res.Key === Constants.TEST_INFO)
               .Value.StartTime
           ).format('DD.MM.YYYY')
+          this.endTime = moment(
+            answers.find((res: DataValues) => res.Key === Constants.TEST_INFO)
+              .Value.EndTime
+          ).format('HH:mm:ss')
         }),
         takeUntil(this.unsubscribeStream$)
       )
