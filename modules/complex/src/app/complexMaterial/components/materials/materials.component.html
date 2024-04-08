@@ -74,17 +74,17 @@
             class="btn clickable"
             (click)="openEditPopup(node)"
             [matTooltip]="'common.edit' | translate: 'Редактировать'"
-            matTooltipPosition="left"
+            matTooltipPosition="below"
           >
-            <mat-icon class="icon">edit</mat-icon>
+            <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
           </a>
           <a
             class="btn clickable"
             (click)="onDeleteClick(node.Id)"
             [matTooltip]="'common.delete' | translate: 'Удалить'"
-            matTooltipPosition="right"
+            matTooltipPosition="below"
           >
-            <mat-icon class="icon">delete</mat-icon>
+            <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
           </a>
         </div>
       </div>
