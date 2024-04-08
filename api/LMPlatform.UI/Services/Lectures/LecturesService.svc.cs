@@ -440,7 +440,7 @@ namespace LMPlatform.UI.Services.Lectures
                 var lecturesVisitingData = SubjectManagementService.GetScheduleVisitings(new Query<LecturesScheduleVisiting>(e => e.SubjectId == subjectId)).OrderBy(e => e.Date);
 
                 var lecturesVisiting = new List<LecturesMarkVisitingViewData>();
-                var students = groups.Students.Where(x => x.Confirmed.HasValue && x.Confirmed.Value).OrderBy(e => e.FullName);
+                var students = groups.Students.Where(x => x.Confirmed.HasValue && x.Confirmed.Value && x.Confirmed == true && x.DeletedOn == null).OrderBy(e => e.FullName);
                 foreach (var student in students)
                 {
                     var data = new List<MarkViewData>();
