@@ -432,7 +432,8 @@ namespace Application.Infrastructure.CPManagement
 
             var query = Context.Students
                 .Where(x => x.GroupId == groupId)
-                .Where(x => x.IsActive == true);
+                .Where(x => x.IsActive == true)
+                .Where(x => x.Confirmed == null || x.Confirmed.Value);
 
             if (searchString.Length > 0)
             {

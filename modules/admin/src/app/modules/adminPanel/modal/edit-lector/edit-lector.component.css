@@ -16,8 +16,9 @@ mat-form-field {
 }
 
 mat-dialog-actions {
-  float: right;
-  margin-top: 0;
+  position: absolute;
+  bottom: 20px;
+  margin-left: 220px;
 }
 
 .password {

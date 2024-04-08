@@ -729,6 +729,7 @@
   "text.adminPanel.modal.listOfStudents.headers.status": "Подтверждение",
   "text.adminPanel.modal.listOfStudents.status.confirmed": "Подтвержден",
   "text.adminPanel.modal.listOfStudents.status.notConfirmed": "Не подтвержден",
+  "text.adminPanel.modal.listOfStudents.status.deleted": "Удалён",
 
   "text.adminPanel.modal.messageDetail.sent": "Отправлено",
   "text.adminPanel.modal.messageDetail.recepients": "Кому",
