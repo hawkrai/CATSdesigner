@@ -17,6 +17,7 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
   public IsActiveCall: boolean = false
   public IsMicroActive: boolean = false
   public isVideoActive: boolean = false
+  public IsCallAccepted: boolean = false
 
   constructor(
     public videoChatService: VideoChatService,
@@ -39,10 +40,11 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {}
 
   answerCall() {
-    this.videoChatService.answerCall()
+    this.IsCallAccepted = this.videoChatService.answerCall()
     this.signalRService.SetVoiceChatConnection(
       this.videoChatService.currentChatId
     )
+    this.stopCallSound('incomingCallSound');
   }
 
   endCall() {
@@ -52,6 +54,11 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
 
     this.signalRService.disconnectFromCall(this.videoChatService.currentChatId)
     this.videoChatService.disconnectFromCall()
+  }
+
+    stopCallSound(id: string){
+    const callsound = document.getElementById(id) as HTMLAudioElement;
+    callsound.pause();
   }
 
   switchMicro() {
