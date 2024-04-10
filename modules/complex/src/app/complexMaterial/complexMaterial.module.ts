@@ -16,7 +16,7 @@ import { MenuItemComponent } from './components/materials/add-material-popover/c
 import { FileUploaderComponent } from './components/materials/add-material-popover/components/file-uploader/file-uploader.component'
 import { LoaderComponent } from './components/materials/add-material-popover/components/loader/loader.component'
 import { VarDirective } from './components/materials/add-material-popover/directives/var.directive'
-
+import {HelpComponent} from "../../../../tests/src/app/help/help.component";
 import * as dataRu from '../core/translate/translations_ru.json'
 import * as dataEn from '../core/translate/translations_en.json'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
@@ -35,6 +35,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     LoaderComponent,
     VarDirective,
     AdaptivePopupComponent,
+    HelpComponent,
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core'
+import { Component, Inject, OnInit, Input } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { Store } from '@ngrx/store'
 import { DialogData } from '../../../../models/DialogData'
@@ -8,6 +8,7 @@ import { BaseFileManagementComponent } from './base-file-management.component'
 import { IAppState } from '../../../../store/states/app.state'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService } from 'src/app/service/cats.service'
+import {Help} from "../../../../../../../tests/src/app/models/help.model";
 
 @Component({
   selector: 'add-app-materials-popover',
@@ -22,6 +23,8 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   conceptId: any
   popupTitle: string
   public selectedConcept: string
+  @Input()
+  public help: Help
 
   constructor(
     public dialogRef: MatDialogRef<AddMaterialPopoverComponent>,
@@ -30,10 +33,19 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public translatePipe: TranslatePipe,
     public catsService: CatsService
+
   ) {
     super(dialogRef, store, data, translatePipe, catsService)
     this.isFile = false
     this.isFolder = false
+    this.help = {
+      // tslint:disable-next-line:max-line-length
+      message: this.translatePipe.transform(
+        'text.help.lectures',
+        'Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента.'
+      ),
+      action: this.translatePipe.transform('button.understand', 'Понятно'),
+    }
   }
 
   switchFormTo(formState: number) {
