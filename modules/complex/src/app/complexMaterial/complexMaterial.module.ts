@@ -20,6 +20,7 @@ import { VarDirective } from './components/materials/add-material-popover/direct
 import * as dataRu from '../core/translate/translations_ru.json'
 import * as dataEn from '../core/translate/translations_en.json'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
+import { NotificationPopoverComponent } from "./components/materials/notification-popover/notification-popover.component"
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     LoaderComponent,
     VarDirective,
     AdaptivePopupComponent,
+    NotificationPopoverComponent,
   ],
   imports: [
     CommonModule,
@@ -57,6 +59,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     MonitoringPopoverComponent,
     AddMaterialPopoverComponent,
     AdaptivePopupComponent,
+    NotificationPopoverComponent,
   ],
 })
 export class ComplexMaterialModule {}
