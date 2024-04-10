@@ -1,16 +1,17 @@
 <mat-grid-list
-  cols="3"
+  [cols]="breakpoint"
   *ngIf="!showLoader; else loader"
   rowHeight="1:1"
   class="sub-settings"
+  (window:resize)="onResize($event)"
 >
   <a class="main-anchor" (click)="openPDF()">
     {{ 'complex.regulations' | translate: 'Положение об ЭУМК' }}
   </a>
   <div *ngFor="let complex of complexes">
     <mat-grid-tile>
-      <a class="complex-card" matRipple routerLink="/cMaterial" state="{{ complex.id }}">
-        <div class="complex-item mat-elevation-z6">
+      <div class="complex-item mat-elevation-z6">
+        <a class="complex-card" matRipple routerLink="/cMaterial" state="{{ complex.id }}">
           <div
             class="tooltip complex-text"
             aria-hidden="true"
@@ -19,13 +20,13 @@
           >
             {{ adjustNameLength(complex.name) }}
           </div>
-          <grid-menu-icon
+        </a>
+        <grid-menu-icon
             class="bottom-menu"
             complexId="{{ complex.id }}"
             *ngIf="isLecturer"
-          ></grid-menu-icon>
-        </div>
-      </a>
+        ></grid-menu-icon>
+      </div>
     </mat-grid-tile>
   </div>
   <mat-grid-tile *ngIf="isLecturer">

@@ -11,7 +11,7 @@
   "common.folderName": "Имя папки",
   "common.file": "Файл",
   "common.inputFileName": "Введите имя файла",
-  "common.fileName": "Имя файла",
+  "common.fileName": "Введите название элемента",
   "common.pinnedDoc": "Прикрепленный документ",
   "common.pretest": "Пройти предтест",
   "common.prevDocument": "Предыдущий документ",
@@ -68,5 +68,6 @@
   "complex.availableTests": "Переход к тестам будет доступен через",
   "complex.finishProcess": "Процесс обучения завершён",
   "complex.exit": "Для выхода нажмите Отмена",
-  "complex.finish": "Для перехода к обучению нажмите кнопку Завершить"
+  "complex.finish": "Для перехода к обучению нажмите кнопку Завершить",
+  "complex.noInfo": "Отсутствует информация по теме"
 }

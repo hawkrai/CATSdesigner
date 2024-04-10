@@ -191,11 +191,20 @@
                 <button
                   mat-icon-button
                   color="primary"
+                  [matTooltip]="'date.edit' | translate: 'Редактировать дату'"
+                  (click)="deletePopover(day)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  color="primary"
                   [matTooltip]="'date.delete' | translate: 'Удалить дату'"
                   (click)="deletePopover(day)"
                 >
                   <mat-icon>delete</mat-icon>
                 </button>
+
               </td>
             </tr>
           </tbody>
@@ -205,7 +214,7 @@
   </ng-container>
   <ng-container actions>
     <button mat-raised-button (click)="onClick()">
-      {{ 'button.close' | translate: 'Закрыть' }}
+      {{ 'button.close' | translate: 'Закрыть ' }}
     </button>
   </ng-container>
 </app-popover-dialog>
