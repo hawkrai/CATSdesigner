@@ -73,6 +73,7 @@ export class LoginComponent implements OnInit {
       ? this.locales.find((locale: Locale) => locale.value === local)
       : this.locales[0]
     this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/'
+    this.mascotTailAnimation();
   }
 
   get f() {
@@ -137,5 +138,17 @@ export class LoginComponent implements OnInit {
 
   public open() {
     const dialogRef = this.dialog.open(VideoComponent)
+  }
+
+  mascotTailAnimation(): void {
+    const catsTail = document.getElementById('mascot-tail');
+    catsTail.classList.add('mascot-tail-animation');
+    
+    catsTail.addEventListener("animationend", removeTailAnimation, false);
+    
+    function removeTailAnimation () {
+      catsTail.classList.remove('mascot-tail-animation');
+      
+    }
   }
 }
