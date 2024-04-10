@@ -33,6 +33,7 @@
   "common.course": "Course",
   "common.courseName": "Course name",
   "common.name": "Name",
+  "common.titleName": "Name of Educational Complex",
   "common.cancel": "Cancel",
   "common.save": "Save",
   "common.edit": "Edit",
@@ -43,7 +44,9 @@
   "complex.map": "Educational Complex Map",
   "complex.complexes": "Educational Complexes",
   "complex.addComplexes": "Add educational complex",
+  "complex.addComplex": "Add educational complex",
   "complex.editComplexes": "Edit Complexes",
+  "complex.editComplex": "Edit Complexes",
   "complex.addComponent": "Add component",
   "complex.addComplexesComponent": "Add an Complexes component",
   "complex.adaptiveLearning": "Adaptive learning",
@@ -65,5 +68,6 @@
   "complex.availableTests": "The transition to the tests will be available via",
   "complex.finishProcess": "The learning process is completed",
   "complex.exit": "To exit, click Cancel",
-  "complex.finish": "To proceed to the training, click Finish"
+  "complex.finish": "To proceed to the training, click Finish",
+  "complex.noInfo": "There is no information on the topic"
 }
