@@ -136,5 +136,15 @@ namespace LMPlatform.UI.Services.Subjects
 
             return new UniqueViewData { IsUnique = !subjects.Any() };
         }
+
+        public IEnumerable<ModulesViewModel> GetSubjectModulesForSchedule(string subjectId)
+        {
+            var modules = ModulesManagementService.GetModules(int.Parse(subjectId))
+                .Where(e => e.ModuleType == ModuleType.Lectures || e.ModuleType == ModuleType.Practical || e.ModuleType == ModuleType.Labs || e.ModuleType == ModuleType.YeManagment)
+                .ToList();
+            var modulesViewModel = modules.Select(m => new ModulesViewModel(m, true));
+
+            return modulesViewModel.OrderBy(m => m.Order);
+        }
     }
 }
