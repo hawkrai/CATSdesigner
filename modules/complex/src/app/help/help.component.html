@@ -1,0 +1,28 @@
+<button
+  [popover]="popover"
+  [popoverOnHover]="false"
+  [popoverPlacement]="placement"
+  [popoverCloseOnClickOutside]="true"
+  mat-icon-button
+  class="mat-icon-button-help"
+  [matTooltip]="'text.help' | translate: 'Помощь'"
+  matTooltipPosition="below"
+  (click)="showHelpPopover()"
+>
+  <mat-icon color="primary">help_outline</mat-icon>
+</button>
+<popover-content
+  #popover
+  [placement]="'left'"
+  [animation]="true"
+  [closeOnClickOutside]="true"
+>
+  <div class="help-popover" [style.display]="popoverVisible ? 'block' : 'none'">
+    <div>{{ message }}</div>
+    <div class="help-popover-actions">
+      <button mat-raised-button color="primary" (click)="hideHelpPopover()">
+        {{ action }}
+      </button>
+    </div>
+  </div>
+</popover-content>

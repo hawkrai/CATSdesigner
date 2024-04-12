@@ -8,7 +8,7 @@ import { BaseFileManagementComponent } from './base-file-management.component'
 import { IAppState } from '../../../../store/states/app.state'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService } from 'src/app/service/cats.service'
-import {Help} from "../../../../../../../tests/src/app/models/help.model";
+import { Help } from '../../../../models/help.model';
 
 @Component({
   selector: 'add-app-materials-popover',
@@ -23,8 +23,11 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   conceptId: any
   popupTitle: string
   public selectedConcept: string
-  @Input()
-  public help: Help
+
+  addComponentHelp: Help = {
+    message: '',
+    action: '',
+  }
 
   constructor(
     public dialogRef: MatDialogRef<AddMaterialPopoverComponent>,
@@ -38,11 +41,11 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     super(dialogRef, store, data, translatePipe, catsService)
     this.isFile = false
     this.isFolder = false
-    this.help = {
-      // tslint:disable-next-line:max-line-length
+    this.addComponentHelp = {
       message: this.translatePipe.transform(
-        'text.help.lectures',
-        'Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента.'
+        'text.help.addComponent',
+        // tslint:disable-next-line:max-line-length
+        'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложения, а Файл нет. Введите название элемента (темы ЭУМК). Для типа элемента Файл прикрепите файл в формате .pdf.'
       ),
       action: this.translatePipe.transform('button.understand', 'Понятно'),
     }
