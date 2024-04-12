@@ -33,7 +33,7 @@ export class VisitStatsService {
 
   public getJoinedLector(
     subjectId: string,
-    loadSelf: boolean = false
+    loadSelf: boolean = true
   ): Observable<
     {
       LectorId: number

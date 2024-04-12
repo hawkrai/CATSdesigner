@@ -45,6 +45,7 @@ import { SubjectNameFreeDirective } from './validators/subject-name-free.validat
 import { WhitespaceDirective } from './validators/whitespace.validator'
 import { VisitDatePopoverComponent } from './visit-date-popover/visit-date-popover.component'
 import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.component'
+import {EditPopoverComponent} from "./edit-popover/edit-popover.component";
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.co
     PluralPipe,
     VarDirective,
     ToColumnPipe,
+    EditPopoverComponent,
     FileUploaderComponent,
     LoaderComponent,
     VisitDatePopoverComponent,
@@ -103,6 +105,7 @@ import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.co
   entryComponents: [
     DeletePopoverComponent,
     VisitingPopoverComponent,
+    EditPopoverComponent,
     FileDownloadPopoverComponent,
     CheckPlagiarismPopoverComponent,
     MarkPopoverComponent,

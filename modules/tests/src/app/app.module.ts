@@ -54,7 +54,6 @@ import { SharedModule } from './shared/shared.module'
 import { HelpComponent } from './help/help.component'
 import { PopoverModule } from 'ngx-smart-popover'
 import { MatExpansionModule } from '@angular/material/expansion'
-import { AppToastrService } from './service/toastr.service'
 import { ToastrModule } from 'ngx-toastr'
 
 @NgModule({

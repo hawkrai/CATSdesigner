@@ -72,6 +72,7 @@ export class VisitDatePopoverComponent {
   ) {
     dateAdapter.setLocale(localStorage.getItem('locale') || 'ru')
   }
+  showEditPopover: boolean = false;
 
   onClick(): void {
     this.close.emit()
@@ -144,6 +145,20 @@ export class VisitDatePopoverComponent {
 
   onDeleteDate(day: any): void {
     this.deleteDay.emit(day)
+  }
+  selectedDay: any;
+
+  isEditing: boolean = false;
+
+  editPopover(day: any) {
+    this.selectedDay = day;
+    this.isEditing = true;
+    this.showEditPopover = true;
+  }
+
+  closeEditPopover(event: any) {
+    this.isEditing = false;
+    this.showEditPopover = false;
   }
 
   deletePopover(day: any) {

@@ -103,20 +103,21 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }
 
   initControls(): void {
-    const data = this.data.consultations[0]
+    const data = this.data.consultations[0];
     if (data) {
-      this.data.audience = data.Audience
-      this.data.building = data.Building
-      this.data.end = data.EndTime
-      this.data.start = data.StartTime
-      this.data.lecturerId = data.LecturerId
-      this.lecturerIdControl.setValue(this.data.lecturerId)
+      this.audienceControl.setValue(data.Audience);
+      this.buildingControl.setValue(data.Building);
+      this.startTimeControl.setValue(data.StartTime);
+      this.endTimeControl.setValue(data.EndTime);
+      this.lecturerIdControl.setValue(data.LecturerId);
+      this.dateControl.setValue(new Date(data.Day));
     }
   }
 
   onDateChange(date: any) {
-    this.data.date = date
+    this.data.date = date;
   }
+
 
   onCancelClick(): void {
     const date = new Date(this.data.date)
@@ -175,6 +176,23 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   addFlashMessage(msg: string) {
     this.toastr.success(msg)
   }
+  selectedDay: any;
+  isEditing: boolean = false;
+  showEditPopover: boolean = false;
+
+  editPopover(day: any) {
+    console.log(day)
+    this.selectedDay = day;
+    this.isEditing = true;
+    this.showEditPopover = true;
+  }
+
+  closeEditPopover(event: any) {
+    this.isEditing = false;
+    this.showEditPopover = false;
+  }
+
+
 
   deleteDate(id: string): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
