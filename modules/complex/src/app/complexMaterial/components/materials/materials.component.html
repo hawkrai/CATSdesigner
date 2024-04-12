@@ -21,6 +21,10 @@
         class="btn clickable" 
         *ngIf="!node.FilePath" 
         (click)="$event.preventDefault()"
+        [matTooltip]="
+          'complex.noInfo' | translate: 'Отсутствует информация по теме'
+        "
+        matTooltipPosition="right"
       >
         {{ node.Name }}
       </a>
