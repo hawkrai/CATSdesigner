@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common'
 import { PdfViewerModule } from 'ng2-pdf-viewer'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatModule } from '../mat.module'
+import { MatSnackBarModule } from '@angular/material'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
 import { MonitoringPopoverComponent } from './components/materials/monitoring-popover/monitoring-popover.component'
 import { MaterialComponent } from './components/materials/materials.component'
@@ -39,6 +40,7 @@ import { PopoverModule } from 'ngx-smart-popover'
     HelpComponent,
   ],
   imports: [
+    MatSnackBarModule,
     CommonModule,
     MatModule,
     AppRoutingModule,
