@@ -316,11 +316,14 @@ namespace Application.Infrastructure.CPManagement
             parms.SortExpression = "Group, Name";
 
             var courseProjectId = int.Parse(parms.Filters["courseProjectId"]);
+            var courseProject = Context.CourseProjects
+                .Include(cp => cp.Subject)
+                .Where(cp => cp.CourseProjectId == courseProjectId).FirstOrDefault();
 
             return Context.Students
                 .Include(x => x.Group.CourseProjectGroups)
                 .Where(x => x.Group.CourseProjectGroups.Any(dpg => dpg.CourseProjectId == courseProjectId))
-                .Where(x => !x.AssignedCourseProjects.Any())
+                .Where(x => !x.AssignedCourseProjects.Where(acp => acp.CourseProject.Subject.Id == courseProject.SubjectId).Any())
                 .Where(x => x.Confirmed == null || x.Confirmed.Value)
                 .Select(s => new StudentData
                 {
@@ -438,8 +441,8 @@ namespace Application.Infrastructure.CPManagement
             if (searchString.Length > 0)
             {
                 return (from s in query
-                        let lecturer = s.AssignedCourseProjects.FirstOrDefault().CourseProject.Lecturer
-                        let acp = s.AssignedCourseProjects.FirstOrDefault()
+                        let lecturer = s.AssignedCourseProjects.Where(acp => acp.CourseProject.SubjectId == subjectId).FirstOrDefault().CourseProject.Lecturer
+                        let acp = s.AssignedCourseProjects.Where(acp => acp.CourseProject.SubjectId == subjectId).FirstOrDefault()
                         where acp == null ? false : acp.CourseProject.Theme.Contains(searchString) || s.LastName.Contains(searchString)
                         select new StudentData
                         {
@@ -475,8 +478,8 @@ namespace Application.Infrastructure.CPManagement
             else
             {
                 return (from s in query
-                        let lecturer = s.AssignedCourseProjects.FirstOrDefault().CourseProject.Lecturer
-                        let acp = s.AssignedCourseProjects.FirstOrDefault()
+                        let lecturer = s.AssignedCourseProjects.Where(acp => acp.CourseProject.SubjectId == subjectId).FirstOrDefault().CourseProject.Lecturer
+                        let acp = s.AssignedCourseProjects.Where(acp => acp.CourseProject.SubjectId == subjectId).FirstOrDefault()
                         select new StudentData
                         {
                             Id = s.Id,
