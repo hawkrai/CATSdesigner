@@ -31,7 +31,7 @@
             }}
           </th>
           <td class="table-container" mat-cell *matCellDef="let element" id="name">
-            <p *ngIf="this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn)">
+            <p *ngIf="this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn, element.isActive)">
               {{
                 'text.adminPanel.modal.listOfStudents.status.confirmed'
                   | translate
