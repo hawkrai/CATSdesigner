@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit } from '@angular/core'
+import { Component, EventEmitter, OnInit, Input} from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 

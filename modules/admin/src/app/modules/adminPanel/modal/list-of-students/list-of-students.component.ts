@@ -46,4 +46,10 @@ export class ListOfStudentsComponent implements OnInit {
   isActive(active) {
     return active === true
   }
+
+  onNoClick(): void {
+    this.dialogRef.close()
+  }
 }
+
+

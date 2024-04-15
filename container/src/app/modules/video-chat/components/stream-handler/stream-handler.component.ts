@@ -83,6 +83,7 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isMicroActive = true
   @Input() isVideoActive = false
   @Output() clientDisconnected = new EventEmitter()
+  @Output() clientConnected = new EventEmitter()
 
   private _linkedPeerConnections: Map<string, RTCPeerConnection> = new Map()
 
@@ -230,7 +231,9 @@ export class StreamHandlerComponent implements OnInit, OnDestroy, OnChanges {
         console.log('!! Connection failed !!')
         ;(peerConnection as any).restartIce()
       }
-
+      if (event?.currentTarget?.connectionState == 'connected') {
+        this.clientConnected.emit()
+      }
       if (event?.currentTarget?.connectionState == 'disconnected') {
         this.clientDisconnected.emit()
       }
