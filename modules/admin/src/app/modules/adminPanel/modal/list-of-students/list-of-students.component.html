@@ -37,13 +37,13 @@
                   | translate
               }}
             </p>
-            <p *ngIf="!this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn)" id="name">
+            <p *ngIf="!this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn, element.isActive)" id="name">
               {{
                 'text.adminPanel.modal.listOfStudents.status.notConfirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="this.isDeleted(element.DeletedOn)" id="name">
+            <p *ngIf="this.isDeleted(element.DeletedOn, element.isActive)" id="name">
               {{
               'text.adminPanel.modal.listOfStudents.status.deleted'
                  | translate
