@@ -31,19 +31,19 @@
             }}
           </th>
           <td class="table-container" mat-cell *matCellDef="let element" id="name">
-            <p *ngIf="this.isConfimed(element.Confirmed) && this.isActive(element.isActive)">
+            <p *ngIf="this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn)">
               {{
                 'text.adminPanel.modal.listOfStudents.status.confirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="!this.isConfimed(element.Confirmed) && this.isActive(element.isActive)" id="name">
+            <p *ngIf="!this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn)" id="name">
               {{
                 'text.adminPanel.modal.listOfStudents.status.notConfirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="!this.isActive(element.isActive)" id="name">
+            <p *ngIf="this.isDeleted(element.DeletedOn)" id="name">
               {{
               'text.adminPanel.modal.listOfStudents.status.deleted'
                  | translate
