@@ -3,10 +3,8 @@ import {
   MAT_DIALOG_DATA,
   MatDialog,
   MatDialogRef,
-  MatSnackBar,
 } from '@angular/material'
 import { FormControl, Validators } from '@angular/forms'
-import { Time } from '@angular/common'
 import { VisitStatsService } from 'src/app/services/visit-stats.service'
 import { Consultation } from 'src/app/models/consultation.model'
 import { TranslatePipe } from 'educats-translate'
@@ -152,15 +150,19 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.data.consultations = this.data.consultations.sort((a, b) =>
         a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
       )
+
       this.visitStatsService
         .addDate(
+          null,
           date.toISOString(),
           this.data.subjectId,
           this.data.groupId,
           this.data.start,
           this.data.end,
           this.data.audience,
-          this.data.building
+          this.data.building,
+          this.data.lecturerId,
+
         )
         .subscribe(() => {
           this.addFlashMessage(
@@ -181,7 +183,6 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   showEditPopover: boolean = false;
 
   editPopover(day: any) {
-    console.log(day)
     this.selectedDay = day;
     this.isEditing = true;
     this.showEditPopover = true;
