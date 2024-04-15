@@ -1,12 +1,12 @@
 <app-popover-dialog clacc = "app">
   <ng-container title>
-    {{ 'text.test.delete.title' | translate: 'Удаление теста' }}
+    {{ 'text.complex.delete.title' | translate: 'Удаление компонента' }}
   </ng-container>
   <ng-container body>
     <div class="confirmation-text">
       {{
-        'text.test.want.to.delete.test'
-          | translate: 'Вы действительно хотите удалить тест?'
+        'text.complex.want.to.delete.test'
+          | translate: 'Вы действительно хотите удалить компонент?'
       }}
     </div>
   </ng-container>
@@ -20,7 +20,7 @@
       [mat-dialog-close]="true"
       cdkFocusInitial
     >
-      {{ 'text.test.yes' | translate: 'Да' }}
+      {{ 'text.complex.yes' | translate: 'Да' }}
     </button>
   </ng-container>
 </app-popover-dialog>
