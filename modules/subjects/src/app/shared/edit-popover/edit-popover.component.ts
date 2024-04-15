@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Lector } from "../../models/lector.model";
 import { LabsRestService } from "../../services/labs/labs-rest.service";
-import * as moment from 'moment';
 import {PracticalRestService} from "../../services/practical/practical-rest.service";
 
 @Component({
@@ -56,8 +55,14 @@ export class EditPopoverComponent implements OnInit {
 
   onSubmit() {
     if (this.dateForm.valid) {
-      // Преобразуем дату в нужный формат перед отправкой на сервер
-      const formattedDate = moment(this.dateForm.get('date').value).format('DD/MM/YYYY');
+
+      const date = this.dateForm.get('date').value;
+      const parsedDate = new Date(date);
+      const day = parsedDate.getDate().toString().padStart(2, '0');
+      const month = (parsedDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = parsedDate.getFullYear().toString();
+      const formattedDate = `${day}/${month}/${year}`;
+
 
       const formData = {
         ...this.dateForm.value,
