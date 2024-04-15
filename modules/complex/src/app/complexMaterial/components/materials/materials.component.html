@@ -18,7 +18,15 @@
       <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
         {{ node.Name }}
       </a>
-      <a class="btn clickable" *ngIf="!node.FilePath" (click)="openSnackBar()">
+      <a 
+        class="btn clickable" 
+        *ngIf="!node.FilePath" 
+        (click)="$event.preventDefault()"
+        [matTooltip]="
+          'complex.noInfo' | translate: 'Отсутствует информация по теме'
+        "
+        matTooltipPosition="right"
+      >
         {{ node.Name }}
       </a>
       <div class="work-icons" *ngIf="isLecturer">
