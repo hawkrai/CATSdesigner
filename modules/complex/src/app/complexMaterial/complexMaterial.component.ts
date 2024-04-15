@@ -4,8 +4,10 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 
 import { ComplexService } from '../service/complex.service'
 import { AddMaterialPopoverComponent } from './components/materials/add-material-popover/add-material-popover.component'
-import { AdaptivePopupComponent } from './components/materials/adaptiveLearningPopup/adaptivePopup.component'
 import { Concept } from '../models/Concept'
+import { AdaptivityService } from '../service/adaptivity.service'
+import { DialogData } from '../models/DialogData'
+import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
 
 @Component({
   selector: 'app-labs',
@@ -21,7 +23,8 @@ export class ComplexMaterialComponent implements OnInit {
   constructor(
     private router: Router,
     public dialog: MatDialog,
-    private complexService: ComplexService
+    private adaptivityService: AdaptivityService,
+    private complexService: ComplexService,
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -70,14 +73,30 @@ export class ComplexMaterialComponent implements OnInit {
     })
   }
 
-  openAdaptivePopup(): void {
-    const dialogRef = this.dialog.open(AdaptivePopupComponent, {
-      width: '600px',
-      data: {},
-    })
+  openAdaptivityPopup(adaptivityType: number): void {
+    this.adaptivityService
+      .getFirstThema(adaptivityType)
+      .subscribe((themaRes) => {
+        const path =
+          '/api/Upload?fileName=' +
+          (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0])
+        const diaogData: DialogData = {
+          name: `${themaRes.nextThemaId}`,
+          url: path,
+          adaptivityType: adaptivityType,
+          isAdaptive: true,
+          adaptivity: themaRes,
+        }
 
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed')
-    })
+        const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
+          width: '1200px',
+          data: diaogData,
+        })
+
+        dialogRef.afterClosed().subscribe((result) => {
+          console.log('The dialog was closed')
+        })
+      })
   }
+
 }
