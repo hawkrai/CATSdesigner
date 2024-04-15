@@ -591,9 +591,13 @@ namespace LMPlatform.UI.Services
 		{
 			try
 			{
-				var currentYear = DateTime.Now.Year.ToString();
+				const int august = 8;
+				const int september = 9;
+				int currentYear = int.Parse(DateTime.Now.Year.ToString());
+				int currentMonth = int.Parse(DateTime.Now.Month.ToString());
 				var id = int.Parse(userId);
-				var groups = this.GroupManagementService.GetLecturesGroups(id).Where(x => x.GraduationYear == currentYear);
+				var groups = this.GroupManagementService.GetLecturesGroups(id).Where(x => int.Parse(x.GraduationYear) == currentYear && currentMonth <= august ||
+				int.Parse(x.GraduationYear) - currentYear == 1 && currentMonth >= september);
 
 				var groupsViewModel = new List<GroupsViewData>();
 
@@ -606,9 +610,11 @@ namespace LMPlatform.UI.Services
 					});
 				}
 
+				List<GroupsViewData> groupsViewDatas = groupsViewModel.ToList();
+				groupsViewDatas.Sort((fg, sg) => string.Compare(fg.GroupName, sg.GroupName));
 				return new GroupsResult
 				{
-					Groups = groupsViewModel.ToList(),
+					Groups = groupsViewDatas,
 					Message = "Группы успешно загружены",
 					Code = "200"
 				};
