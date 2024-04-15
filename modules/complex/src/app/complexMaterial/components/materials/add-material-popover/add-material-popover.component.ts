@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core'
+import { Component, Inject, OnInit, Input } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { Store } from '@ngrx/store'
 import { DialogData } from '../../../../models/DialogData'
@@ -8,6 +8,7 @@ import { BaseFileManagementComponent } from './base-file-management.component'
 import { IAppState } from '../../../../store/states/app.state'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService } from 'src/app/service/cats.service'
+import { Help } from '../../../../models/help.model';
 
 @Component({
   selector: 'add-app-materials-popover',
@@ -23,6 +24,11 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
   popupTitle: string
   public selectedConcept: string
 
+  addComponentHelp: Help = {
+    message: '',
+    action: '',
+  }
+
   constructor(
     public dialogRef: MatDialogRef<AddMaterialPopoverComponent>,
     private complexService: ComplexService,
@@ -30,10 +36,19 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public translatePipe: TranslatePipe,
     public catsService: CatsService
+
   ) {
     super(dialogRef, store, data, translatePipe, catsService)
     this.isFile = false
     this.isFolder = false
+    this.addComponentHelp = {
+      message: this.translatePipe.transform(
+        'text.help.addComponent',
+        // tslint:disable-next-line:max-line-length
+        'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложения, а Файл нет. Введите название элемента (темы ЭУМК). Для типа элемента Файл прикрепите файл в формате .pdf.'
+      ),
+      action: this.translatePipe.transform('button.understand', 'Понятно'),
+    }
   }
 
   switchFormTo(formState: number) {
