@@ -11,10 +11,14 @@
     zIndex="'100000'"
   >
     <div *ngIf="IsActiveCall" class="video-call">
+      <div *ngIf="!IsCallAccepted" class="video-call__audio">
+        <audio id="outgoingCallSound" src="/assets/audios/outgoing_call_sound.mp3" autoplay loop></audio>
+      </div>
       <div class="video-call__videos">
         <app-stream-handler
           #child
           (clientDisconnected)="this.clientDisconnected()"
+          (clientConnected)="this.stopCallSound('outgoingCallSound')"
           [isMicroActive]="this.IsMicroActive"
           [isVideoActive]="this.isVideoActive"
         ></app-stream-handler>
@@ -46,6 +50,7 @@
       </div>
     </div>
     <div *ngIf="IsIncomingCall">
+      <audio id="incomingCallSound" src="/assets/audios/incoming_call_sound.mp3" autoplay loop></audio>
       <div class="caller-information" *ngIf="this.videoChatService.chat">
         <img
           style="height: 36px !important"

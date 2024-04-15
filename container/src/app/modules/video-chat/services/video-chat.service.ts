@@ -57,12 +57,13 @@ export class VideoChatService {
     this.endCall()
   }
 
-  public answerCall() {
+  public answerCall(): boolean {
     this.isIncomingCall.next(false)
 
     if (this.currentChatId == null) return
 
     this.isActiveCall.next(true)
+    return true
   }
 
   public getChatInfo(chatId) {
