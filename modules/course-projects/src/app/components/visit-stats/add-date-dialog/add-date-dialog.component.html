@@ -31,16 +31,13 @@
     </mat-form-field>
 
     <mat-form-field class="form-field">
-      <mat-label>{{
-        'text.course.percentages.list.stage.lecturer' | translate: 'Лектор'
-      }}</mat-label>
-      <mat-select [formControl]="lecturerIdControl">
+      <mat-label>Lecturer</mat-label>
+      <mat-select [(ngModel)]="data.lecturerId" [formControl]="lecturerIdControl">
         <mat-option *ngFor="let lector of lectors" [value]="lector.LectorId">
-          <span class="icon-container">
-            {{ lector.FullName }}
-          </span>
+          {{ lector.FullName }}
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="lecturerIdControl.hasError('required')">Lecturer is required</mat-error>
     </mat-form-field>
   </div>
 
@@ -152,7 +149,7 @@
           </button>
           <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate: 'Удалить дату'"
                   [disabled]="isEditing && selectedDay !== day"
-                  (click)="deleteDate(day.id)">
+                  (click)="deleteDate(day.Id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
