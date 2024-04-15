@@ -11,10 +11,14 @@
     zIndex="'100000'"
   >
     <div *ngIf="IsActiveCall" class="video-call">
+      <div *ngIf="!IsCallAccepted" class="video-call__audio">
+        <audio id="outgoingCallSound" src="/assets/audios/outgoing_call_sound.mp3" autoplay loop></audio>
+      </div>
       <div class="video-call__videos">
         <app-stream-handler
           #child
           (clientDisconnected)="this.clientDisconnected()"
+          (clientConnected)="this.stopCallSound('outgoingCallSound')"
           [isMicroActive]="this.IsMicroActive"
           [isVideoActive]="this.isVideoActive"
         ></app-stream-handler>
@@ -22,16 +26,16 @@
 
       <div class="video-call__controls">
         <div class="video-call__control" (click)="this.switchMicro()">
-          <mat-icon class="control-icon" *ngIf="IsMicroActive">mic</mat-icon>
-          <mat-icon class="control-icon" *ngIf="!IsMicroActive"
+          <mat-icon class="control-icon" *ngIf="IsMicroActive" [ngStyle]="{ color: 'white' }">mic</mat-icon>
+          <mat-icon class="control-icon" *ngIf="!IsMicroActive" [ngStyle]="{ color: 'white' }"
             >mic_off</mat-icon
           >
         </div>
         <div class="video-call__control" (click)="this.switchVideo()">
-          <mat-icon class="control-icon" *ngIf="isVideoActive"
+          <mat-icon class="control-icon" *ngIf="isVideoActive" [ngStyle]="{ color: 'white' }"
             >videocam</mat-icon
           >
-          <mat-icon class="control-icon" *ngIf="!isVideoActive"
+          <mat-icon class="control-icon" *ngIf="!isVideoActive" [ngStyle]="{ color: 'white' }"
             >videocam_off</mat-icon
           >
         </div>
@@ -46,6 +50,7 @@
       </div>
     </div>
     <div *ngIf="IsIncomingCall">
+      <audio id="incomingCallSound" src="/assets/audios/incoming_call_sound.mp3" autoplay loop></audio>
       <div class="caller-information" *ngIf="this.videoChatService.chat">
         <img
           style="height: 36px !important"

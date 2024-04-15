@@ -68,8 +68,8 @@ export class MaterialComponent implements OnInit {
       ),
       '',
       {
-        duration: 1000, 
-        horizontalPosition: 'end',  
+        duration: 1000,
+        horizontalPosition: 'end',
         verticalPosition: 'bottom',
         panelClass: ['mat-warn']
       }
@@ -122,6 +122,9 @@ export class MaterialComponent implements OnInit {
       : []
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',
+      position: {
+        left: '30%',
+      },
       data: {
         id: node.Id,
         name: node.Name,

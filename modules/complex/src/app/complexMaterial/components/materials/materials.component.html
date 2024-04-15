@@ -11,13 +11,22 @@
       <mat-icon
         class="expandable-external folder_file_icons"
         [class.no-file]="!node.FilePath"
+        [class.empty-tree-icon]="node.FilePath == null"
       >
         insert_drive_file</mat-icon
       >
       <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
         {{ node.Name }}
       </a>
-      <a class="btn clickable" *ngIf="!node.FilePath" (click)="openSnackBar()">
+      <a 
+        class="btn clickable" 
+        *ngIf="!node.FilePath" 
+        (click)="$event.preventDefault()"
+        [matTooltip]="
+          'complex.noInfo' | translate: 'Отсутствует информация по теме'
+        "
+        matTooltipPosition="right"
+      >
         {{ node.Name }}
       </a>
       <div class="work-icons" *ngIf="isLecturer">
@@ -65,6 +74,7 @@
           </span>
           <mat-icon
             class="complex-three-title-icon mat-icon-rtl-mirror expandable no-file"
+            [class.empty-tree-icon]="node.children.length === 0"
           >
             folder
           </mat-icon>
@@ -80,17 +90,17 @@
             class="btn clickable"
             (click)="openEditPopup(node)"
             [matTooltip]="'common.edit' | translate: 'Редактировать'"
-            matTooltipPosition="left"
+            matTooltipPosition="below"
           >
-            <mat-icon class="icon">edit</mat-icon>
+            <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
           </a>
           <a
             class="btn clickable"
             (click)="onDeleteClick(node.Id)"
             [matTooltip]="'common.delete' | translate: 'Удалить'"
-            matTooltipPosition="right"
+            matTooltipPosition="below"
           >
-            <mat-icon class="icon">delete</mat-icon>
+            <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
           </a>
         </div>
       </div>

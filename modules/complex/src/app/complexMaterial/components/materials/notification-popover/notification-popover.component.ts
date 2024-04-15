@@ -7,18 +7,17 @@ import { TestService } from '../../../../service/test.service'
 import { Adaptivity } from '../../../../models/Adaptivity'
 
 @Component({
-  selector: 'app-materials-popover',
-  templateUrl: './materials-popover.component.html',
-  styleUrls: ['./materials-popover.component.less'],
+  selector: 'app-notification-popover',
+  templateUrl: './notification-popover.component.html',
+  styleUrls: ['./notification-popover.component.less']
 })
-export class MaterialsPopoverComponent {
+
+  export class NotificationPopoverComponent {
   public files = []
   page: number = 1
   path: string
   currentPathIndex: number
   materialPathes: string[]
-  zoom: number = 1
-  isDragging: boolean
 
   themaId: string
   adaptivityType: number
@@ -44,7 +43,7 @@ export class MaterialsPopoverComponent {
   toTestButtonEnabled: boolean
 
   constructor(
-    public dialogRef: MatDialogRef<MaterialsPopoverComponent>,
+    public dialogRef: MatDialogRef<NotificationPopoverComponent>,
     private adaptivityService: AdaptivityService,
     private testService: TestService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
@@ -163,9 +162,11 @@ export class MaterialsPopoverComponent {
 
   goToPrevMaterial() {
     --this.currentPathIndex
-    this.path =
+    const path =
       '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
+    this.path = path
     this.checkMaterialsContainerForButtonsVisibility()
+
   }
 
   goToNextMaterial() {
@@ -195,53 +196,20 @@ export class MaterialsPopoverComponent {
   }
 
   countWatchTime() {
-    window.setInterval(() => {
+    setInterval(() => {
       this.studentSeconds += 1
     }, 1000)
   }
 
   getStrTime(): string {
-    if (this.seconds > 60) {
-      var min = Math.floor(this.seconds / 60)
-      var sec = this.seconds % 60
-    } else {
-      var sec = this.seconds
-      var min = 0
-    }
-    var minStr = min < 10 ? '0' + min : min
-    var secStr = sec < 10 ? '0' + sec : sec
+    const min: number = this.seconds > 60 ? Math.floor(this.seconds / 60) : 0
+    const sec: number = this.seconds > 60 ? this.seconds % 60 : this.seconds
+    const minStr: string = min < 10 ? '0' + min : String(min)
+    const secStr: string = sec < 10 ? '0' + sec : String(sec)
     return `${minStr}:${secStr}`
   }
 
   onNoClick(): void {
     this.dialogRef.close(this.studentSeconds)
   }
-
-  zoomIn(){
-    this.zoom = this.zoom + 0.25;
-  }
-
-  zoomOut(){
-    if (this.zoom > 1) {
-      this.zoom = this.zoom - 0.25;
-   }
-  }
-
-  onDrag(event: MouseEvent, pdfViewer: any) {
-    if (this.isDragging && !this.isTextSelected()) {
-      const x = pdfViewer.element.nativeElement.children[0].scrollLeft - event.movementX;
-      const y = pdfViewer.element.nativeElement.children[0].scrollTop - event.movementY;
-      pdfViewer.element.nativeElement.children[0].scrollTo(x, y);
-    }
-  }
-  onDragStarted(event: MouseEvent) {
-    this.isDragging = true;
-  }
-  onDragEnded(event: MouseEvent, note: 'up' | 'leave') {
-    this.isDragging = false;
-  }
-
-  isTextSelected() {
-    return window.getSelection().toString().length > 0;
-}
 }

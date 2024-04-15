@@ -14,9 +14,10 @@ namespace LMPlatform.UI.ApiControllers.CP
             => _cpManagementService.Value;
 
         // GET api/<controller>/5
-        public string Get(int courseProjectId)
+        public string Get(int courseProjectId, string language)
         {
-            return CpManagementService.GetTasksSheetHtml(courseProjectId);
+            return CpManagementService.GetTasksSheetHtml(courseProjectId, language);
+
         }
     }
 }

@@ -62,7 +62,7 @@ namespace Application.Infrastructure.CPManagement
 
         List<TaskSheetData> GetTaskSheets(int userId, GetPagedListParams parms);
 
-        string GetTasksSheetHtml(int courseProjectId);
+        string GetTasksSheetHtml(int courseProjectId, string language);
 
         void SaveTaskSheet(int userId, TaskSheetData taskSheet);
 
