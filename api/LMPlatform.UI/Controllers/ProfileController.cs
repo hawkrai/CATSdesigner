@@ -242,7 +242,8 @@ namespace LMPlatform.UI.Controllers
                         subject.Color,
                         Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
                             user.Student),
-                        IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id && sg.GroupId == user.Student.GroupId)?.IsActiveOnCurrentGroup
+                        IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id && sg.GroupId == user.Student.GroupId)?.IsActiveOnCurrentGroup,
+                        subject.IsArchive
                     });
             }
             else
@@ -257,7 +258,8 @@ namespace LMPlatform.UI.Controllers
                         subject.Color,
                         Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
                             user.Student),
-                        IsActive = subject.SubjectGroups?.Any(s => s.IsActiveOnCurrentGroup)
+                        IsActive = subject.SubjectGroups?.Any(s => s.IsActiveOnCurrentGroup),
+                        subject.IsArchive
                     });
             }
 
