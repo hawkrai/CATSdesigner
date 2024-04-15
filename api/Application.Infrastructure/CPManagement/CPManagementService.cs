@@ -654,7 +654,7 @@ namespace Application.Infrastructure.CPManagement
             };
         }
 
-        public string GetTasksSheetHtml(int courseProjectId)
+        public string GetTasksSheetHtml(int courseProjectId, string language)
         {
             var userId = 0;
             int studentId = 0;
@@ -686,8 +686,8 @@ namespace Application.Infrastructure.CPManagement
             }
 
             return courseProject.AssignedCourseProjects.Count == 1
-                ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First())
-                : WordCourseProject.CourseProjectToDocView(courseProject);
+                ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First(), language)
+                : WordCourseProject.CourseProjectToDocView(courseProject, language);
         }
 
         public void SaveTaskSheet(int userId, TaskSheetData taskSheet)
