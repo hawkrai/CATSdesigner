@@ -31,7 +31,8 @@
               "src/assets/icons",
               "src/assets/images",
               "src/assets/scss",
-              "src/assets/videos"
+              "src/assets/videos",
+              "src/assets/audios"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",

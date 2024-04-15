@@ -60,22 +60,6 @@ export class MaterialComponent implements OnInit {
     })
   }
 
-  openSnackBar(): void{
-    this.snackBar.open(
-      this.translatePipe.transform(
-        'complex.noInfo',
-        'Отсутствует информация по теме'
-      ),
-      '',
-      {
-        duration: 1000, 
-        horizontalPosition: 'end',  
-        verticalPosition: 'bottom',
-        panelClass: ['mat-warn']
-      }
-    )
-  }
-
   openFolderPDF(nodeId: number): void {
     this.complexService.getFilesForFolder(nodeId).subscribe((result) => {
       if (result) {

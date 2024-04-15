@@ -56,5 +56,11 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
+    <mat-dialog-actions>
+      <button mat-raised-button class="cancel" (click)="onNoClick()">
+        {{ 'button.close' | translate }}
+      </button>
+    </mat-dialog-actions>
   </div>
+  
 </div>

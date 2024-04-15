@@ -18,9 +18,15 @@
 }
 
 .mat-dialog-content{
-    overflow: visible;
+    
 }
 
 #name{
     padding-left: 2px;
+}
+
+mat-dialog-actions {
+  position: absolute;
+  bottom: 20px;
+  margin-left: 370px;
 }
