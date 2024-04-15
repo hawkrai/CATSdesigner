@@ -73,13 +73,30 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         this.editMode = this.data.id !== null && this.data.id !== '0'
         this.popupTitle = this.editMode
           ? this.translatePipe.transform(
-              'complex.editComplex',
-              'Редактирование ЭУМК'
+              'complex.editComplexes',
+              'Редактировать ЭУМК'
             )
           : this.translatePipe.transform(
               'complex.addComplexesComponent',
               'Добавить элемент ЭУМК'
-            )
+            );
+        if (this.editMode) {
+        this.addComponentHelp = {
+          message: this.translatePipe.transform(
+            'text.help.editComponent',
+            'To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
+          ),
+          action: this.translatePipe.transform('button.understand', 'Понятно'),
+        };
+      } else {
+        this.addComponentHelp = {
+          message: this.translatePipe.transform(
+            'text.help.addComponent',
+            'To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
+          ),
+          action: this.translatePipe.transform('button.understand', 'Понятно'),
+        };
+      }
       })
   }
 

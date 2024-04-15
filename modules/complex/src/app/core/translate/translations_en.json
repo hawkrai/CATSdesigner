@@ -72,5 +72,6 @@
   "button.understand": "Understand",
   "text.help": "Help",
   "text.help.addComponent":"To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.",
+  "text.help.editComponent":"To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.",
   "complex.noInfo": "There is no information on the topic"
 }
