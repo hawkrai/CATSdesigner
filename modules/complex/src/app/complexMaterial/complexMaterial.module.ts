@@ -12,7 +12,6 @@ import { AppRoutingModule } from '../app-routing.module'
 import { TestExecutionComponent } from './components/materials/adaptiveLearningTests/adaptive-learning-test.component'
 import { QuestionComponent } from './components/materials/adaptiveLearningTests/components/question/question.component'
 import { AddMaterialPopoverComponent } from './components/materials/add-material-popover/add-material-popover.component'
-import { AdaptivePopupComponent } from './components/materials/adaptiveLearningPopup/adaptivePopup.component'
 import { MenuItemComponent } from './components/materials/add-material-popover/components/menu/nav-menu.component'
 import { FileUploaderComponent } from './components/materials/add-material-popover/components/file-uploader/file-uploader.component'
 import { LoaderComponent } from './components/materials/add-material-popover/components/loader/loader.component'
@@ -36,7 +35,6 @@ import { PopoverModule } from 'ngx-smart-popover'
     FileUploaderComponent,
     LoaderComponent,
     VarDirective,
-    AdaptivePopupComponent,
     HelpComponent,
   ],
   imports: [
@@ -61,7 +59,6 @@ import { PopoverModule } from 'ngx-smart-popover'
     MaterialsPopoverComponent,
     MonitoringPopoverComponent,
     AddMaterialPopoverComponent,
-    AdaptivePopupComponent,
   ],
 })
 export class ComplexMaterialModule {}
