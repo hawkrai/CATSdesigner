@@ -78,4 +78,5 @@
   "text.complex.want.to.delete.test": "Do you really want to remove the component?",
   "text.complex.yes": "Yes",
   "button.cancel": "Cancel"
+  "complex.noInfo": "There is no information on the topic"
 }

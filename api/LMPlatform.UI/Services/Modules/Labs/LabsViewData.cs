@@ -44,7 +44,7 @@
             SubjectId = labs.SubjectId;
             Order = labs.Order;
             PathFile = labs.Attachments;
-            ShortName = $"ЛР{labs.Order}";
+            ShortName = labs.Order.ToString();
             Attachments = string.IsNullOrEmpty(labs.Attachments) ? new List<Attachment>() : FilesManagementService.GetAttachments(labs.Attachments);
         }
 
