@@ -261,5 +261,12 @@ namespace LMPlatform.UI.Services.Modules.CoreModels
             get;
             set;
         }
+
+        [DataMember]
+        public DateTime? DeletedOn
+        {
+            get;
+            set;
+        }
     }
 }

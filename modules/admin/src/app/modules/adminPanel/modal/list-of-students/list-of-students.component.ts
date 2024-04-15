@@ -43,8 +43,8 @@ export class ListOfStudentsComponent implements OnInit {
     return confimed === true
   }
 
-  isActive(active) {
-    return active === true
+  isDeleted(deleted) {
+    return deleted != null
   }
 
   onNoClick(): void {
