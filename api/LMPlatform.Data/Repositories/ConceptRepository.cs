@@ -97,9 +97,10 @@ namespace LMPlatform.Data.Repositories
 
         private void RemoveChildren(Concept parent)
         {
+            var children = parent.Children?.ToList();
             Delete(parent);
-            if (parent.Children == null || !parent.Children.Any()) return;
-            foreach (var c in parent.Children)
+            if (children == null || !children.Any()) return;
+            foreach (var c in children)
             {
 	            RemoveChildren(c);
             }
