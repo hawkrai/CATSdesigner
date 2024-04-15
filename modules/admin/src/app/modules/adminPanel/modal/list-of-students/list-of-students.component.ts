@@ -42,4 +42,14 @@ export class ListOfStudentsComponent implements OnInit {
   isConfimed(confimed) {
     return confimed === true
   }
+
+  isActive(active) {
+    return active === true
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close()
+  }
 }
+
+

@@ -70,11 +70,13 @@ export class AddProjectDialogComponent {
   includeAll() {
     this.data.selectedGroups = this.data.groups.slice()
     this.groups = []
+    this.areGroupsChanged = this.areGroupsNotChanged()
   }
 
   includeNone() {
     this.data.selectedGroups = []
     this.groups = this.data.groups.slice()
+    this.areGroupsChanged = this.areGroupsNotChanged()
   }
 
   trackByFn(index, item) {
