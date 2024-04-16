@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {Lector} from "../../../../../../subjects/src/app/models/lector.model";
+import { Lector } from "../../../../../../subjects/src/app/models/lector.model";
+import { VisitStatsService } from "../../../services/visit-stats.service";
 
 @Component({
   selector: 'app-edit',
@@ -13,7 +14,7 @@ export class EditPopoverComponent implements OnInit {
   @Input() day: any;
   @Input() lectors: Lector[];
 
-  constructor(private fb: FormBuilder,) {}
+  constructor(private fb: FormBuilder, private CourseRestService: VisitStatsService) {}
 
   ngOnInit() {
     this.initForm();
@@ -22,6 +23,7 @@ export class EditPopoverComponent implements OnInit {
 
   initForm() {
     this.dateForm = this.fb.group({
+      id: ['', Validators.required], // Добавим поле для id
       date: ['', Validators.required],
       lecturerId: ['', Validators.required],
       startTime: ['', Validators.required],
@@ -36,6 +38,7 @@ export class EditPopoverComponent implements OnInit {
       const formattedDate = new Date(this.day.Day);
 
       this.dateForm.patchValue({
+        id: this.day.id,
         date: formattedDate,
         lecturerId: this.day.LecturerId,
         startTime: this.day.StartTime,
@@ -46,15 +49,40 @@ export class EditPopoverComponent implements OnInit {
     }
   }
 
-
   get formControls() {
     return this.dateForm.controls;
   }
 
   onSubmit() {
 
-  }
+      const id = this.day.Id;
+      const date = this.dateForm.value.date;
+      const lecturerId = this.dateForm.value.lecturerId;
+      const start = this.dateForm.value.startTime;
+      const end = this.dateForm.value.endTime;
+      const audience = this.dateForm.value.audience;
+      const building = this.dateForm.value.building;
 
+      this.CourseRestService.addDate(
+        id,
+        date.toISOString(),
+        this.day.SubjectId,
+        this.day.GroupId,
+        start,
+        end,
+        audience,
+        building,
+        lecturerId
+      ).subscribe(response => {
+
+        this.close.emit();
+      }, error => {
+
+        console.error(error);
+      });
+
+
+  }
 
   onClose() {
     this.close.emit();
@@ -64,4 +92,3 @@ export class EditPopoverComponent implements OnInit {
     this.dateForm.reset();
   }
 }
-

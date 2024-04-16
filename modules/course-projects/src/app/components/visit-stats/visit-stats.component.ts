@@ -12,7 +12,7 @@ import { Consultation } from '../../models/consultation.model'
 import { ConsultationMark } from '../../models/consultation-mark.model'
 import { CourseUser } from '../../models/course-user.model'
 import { AddDateDialogComponent } from './add-date-dialog/add-date-dialog.component'
-import { MatDialog, MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material'
 import { select, Store } from '@ngrx/store'
 import { getSubjectId } from '../../store/selectors/subject.selector'
 import { IAppState } from '../../store/state/app.state'
@@ -243,16 +243,8 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         const date = new Date(result.date)
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
         this.visitStatsService
-          .addDate(
-            date.toISOString(),
-            this.subjectId,
-            this.selectedGroup.GroupId,
-            result.start,
-            result.end,
-            result.audience,
-            result.building
-          )
-          .subscribe(() => {
+          .addDate(null,date.toISOString(), this.subjectId, this.selectedGroup.GroupId, result.start, result.end, result.audience, result.building,result.lecturerId)
+            .subscribe(() => {
             this.ngOnInit()
             this.addFlashMessage(
               this.translatePipe.transform(
