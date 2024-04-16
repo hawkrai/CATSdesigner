@@ -30,7 +30,7 @@
             SubjectId = practical.SubjectId;
             Order = practical.Order;
             PathFile = practical.Attachments;
-            ShortName = $"ПЗ{practical.Order}"; ;
+            ShortName = practical.Order.ToString();
             Attachments = string.IsNullOrWhiteSpace(practical.Attachments) ? new List<Attachment>() : FilesManagementService.GetAttachments(practical.Attachments);
         }
 

@@ -27,5 +27,10 @@
 		public int GroupId { get; set; }
 
 		public string Login { get; set; }
+
+		public string GraduationYear { get; set; }
+		public bool IsSecretary { get; set; }
+		public bool HasGraduateStudents { get; set; }
+
 	}
 }
