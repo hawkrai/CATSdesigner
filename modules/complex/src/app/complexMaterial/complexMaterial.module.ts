@@ -17,10 +17,15 @@ import { MenuItemComponent } from './components/materials/add-material-popover/c
 import { FileUploaderComponent } from './components/materials/add-material-popover/components/file-uploader/file-uploader.component'
 import { LoaderComponent } from './components/materials/add-material-popover/components/loader/loader.component'
 import { VarDirective } from './components/materials/add-material-popover/directives/var.directive'
-
 import * as dataRu from '../core/translate/translations_ru.json'
 import * as dataEn from '../core/translate/translations_en.json'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
+import { NotificationPopoverComponent } from "./components/materials/notification-popover/notification-popover.component"
+import { HelpComponent } from "../help/help.component";
+import { PopoverModule } from 'ngx-smart-popover'
+import { DeleteConfirmationPopupComponent } from './components/materials/delete-confirmation-popup/delete-confirmation-popup.component'
+import {PopoverDialogComponent} from './components/materials/popover-dialog/popover-dialog.component'
+
 
 @NgModule({
   declarations: [
@@ -36,6 +41,10 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     LoaderComponent,
     VarDirective,
     AdaptivePopupComponent,
+    NotificationPopoverComponent,
+    HelpComponent,
+    DeleteConfirmationPopupComponent,
+    PopoverDialogComponent,
   ],
   imports: [
     MatSnackBarModule,
@@ -45,6 +54,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     PdfViewerModule,
     FormsModule,
     ReactiveFormsModule,
+    PopoverModule,
     TranslateModule.forRoot({
       localizationMap: {
         ru: dataRu,
@@ -53,12 +63,14 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     }),
   ],
   providers: [TranslatePipe],
-  exports: [VarDirective],
+  exports: [VarDirective, PopoverModule],
   entryComponents: [
     MaterialsPopoverComponent,
     MonitoringPopoverComponent,
     AddMaterialPopoverComponent,
     AdaptivePopupComponent,
+    DeleteConfirmationPopupComponent,
+    NotificationPopoverComponent,
   ],
 })
 export class ComplexMaterialModule {}

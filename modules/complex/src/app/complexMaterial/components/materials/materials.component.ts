@@ -15,6 +15,9 @@ import { Router } from '@angular/router'
 import { Complex } from '../../../models/Complex'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService, CodeType } from 'src/app/service/cats.service'
+import { DeleteConfirmationPopupComponent } from './delete-confirmation-popup/delete-confirmation-popup.component'
+import { takeUntil } from 'rxjs/operators'
+import { Subject } from 'rxjs'
 
 @Component({
   selector: 'app-material-tree',
@@ -26,6 +29,7 @@ export class MaterialComponent implements OnInit {
   isLecturer: boolean
   treeControl = new NestedTreeControl<ComplexCascade>((node) => node.children)
   dataSource = new MatTreeNestedDataSource<ComplexCascade>()
+  private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   attachmentConverter = (attachment: Attachment): ConvertedAttachment => ({
     id: attachment.Id,
@@ -68,8 +72,8 @@ export class MaterialComponent implements OnInit {
       ),
       '',
       {
-        duration: 1000, 
-        horizontalPosition: 'end',  
+        duration: 1000,
+        horizontalPosition: 'end',
         verticalPosition: 'bottom',
         panelClass: ['mat-warn']
       }
@@ -122,6 +126,9 @@ export class MaterialComponent implements OnInit {
       : []
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',
+      position: {
+        left: '30%',
+      },
       data: {
         id: node.Id,
         name: node.Name,
@@ -153,6 +160,23 @@ export class MaterialComponent implements OnInit {
 
   hasChild = (_: number, node: ComplexCascade) =>
     node.IsGroup || (!!node.children && node.children.length > 0)
+
+  public openConfirmationDialog(conceptId: number): void {
+    const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
+      width: '500px',
+      data: { event },
+      panelClass: 'test-modal-container',
+    })
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((result) => {
+        if (result) {
+          this.onDeleteClick(conceptId)
+        }
+      })
+  }
 
   onDeleteClick(conceptId: number): void {
     const complex: Complex = {

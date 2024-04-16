@@ -1,41 +1,62 @@
-.mat-dialog {
-  &-actions {
-    justify-content: flex-end;
-    align-items: end;
-    padding: 0;
-  }
-
-  &-content {
-    overflow: hidden;
+.lab-work-component {
+  &__popover-file-button {
+    background: #388e3c;
+    color: white;
   }
 }
+
+.cancel-button{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icon-cell {
+  padding-right: 8px;
+
+  i {
+    margin-right: 0;
+  }
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 25px;
+
+  .example-full-width {
+    width: 100%;
+  }
+}
+
+.file-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.mat-dialog {
+  &-actions {
+    justify-content: center;
+    padding: 0%;
+    margin-bottom: 15px;
+    gap: 5px;
+  }
+}
+
+::ng-deep .cdk-global-overlay-wrapper {
+  display: flex;
+}
+
 
 .adaptivity-selector {
   height: 200px;
 
   .adaptivity-radio-buttons {
+    position: center;
     padding-right: 30px;
   }
 }
 
 .need-pred-test {
   height: 100px;
-}
-
-.confirm-dialog {
-  &__container {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: 12px;
-    height: 100%;
-  }
-
-  &__title {
-    margin: 0 0 20px;
-    font: 400 20px/32px Roboto, 'Helvetica Neue', sans-serif;
-
-    &-container {
-      position: relative;
-    }
-  }
 }
