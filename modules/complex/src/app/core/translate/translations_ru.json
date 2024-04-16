@@ -74,5 +74,9 @@
   "complex.finish": "Для перехода к обучению нажмите кнопку Завершить",
   "button.understand": "Понятно",
   "text.help": "Помощь",
-  "complex.noInfo": "Отсутствует информация по теме"
+  "complex.noInfo": "Отсутствует информация по теме",
+  "text.complex.delete.title": "Удаление компонента",
+  "text.complex.want.to.delete.test": "Вы действительно хотите удалить компонент?",
+  "text.complex.yes": "Да",
+  "button.cancel": "Закрыть"
 }

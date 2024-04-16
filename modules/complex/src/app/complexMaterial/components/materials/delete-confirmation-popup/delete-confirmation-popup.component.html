@@ -1,0 +1,26 @@
+<app-popover-dialog clacc = "app">
+  <ng-container title>
+    {{ 'text.complex.delete.title' | translate: 'Удаление компонента' }}
+  </ng-container>
+  <ng-container body>
+    <div class="confirmation-text">
+      {{
+        'text.complex.want.to.delete.test'
+          | translate: 'Вы действительно хотите удалить компонент?'
+      }}
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <button mat-raised-button (click)="onNoClick()">
+      {{ 'button.cancel' | translate: 'Закрыть' }}
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="true"
+      cdkFocusInitial
+    >
+      {{ 'text.complex.yes' | translate: 'Да' }}
+    </button>
+  </ng-container>
+</app-popover-dialog>
