@@ -21,10 +21,25 @@
         <button
           mat-raised-button
           class="add-button adaptive-learning"
-          (click)="openAdaptivePopup()"
+          [matMenuTriggerFor]="menu"
         >
           {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
+          <mat-icon>keyboard_arrow_down</mat-icon>
         </button>
+        <mat-menu #menu="matMenu">
+          <button 
+            mat-menu-item
+            (click)="openAdaptivityPopup(2)"
+          >
+            {{'complex.algorithm.base' | translate: 'Базовый алгоритм обучения'}}
+          </button>
+          <button 
+            mat-menu-item
+            (click)="openAdaptivityPopup(1)"
+          >
+            {{'complex.algorithm.advanced' | translate: 'Углубленный алгоритм обучения'}}
+         </button>
+        </mat-menu>
       </td>
     </tr>
   </table>

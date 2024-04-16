@@ -27,8 +27,8 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public HttpStatusCodeResult Post([FromBody]CourseProjectConsultationDateData consultationDate)
         {
-            CourseProjectConsultationDate courseProjectConsultationDate = PercentageService.SaveConsultationDate(UserContext.CurrentUserId, consultationDate.Day, consultationDate.SubjectId, consultationDate.StartTime,
-                consultationDate.EndTime, consultationDate.Audience, consultationDate.Building, consultationDate.GroupId);
+            CourseProjectConsultationDate courseProjectConsultationDate = PercentageService.SaveConsultationDate(consultationDate.LecturerId, consultationDate.Day, consultationDate.SubjectId, consultationDate.StartTime,
+                consultationDate.EndTime, consultationDate.Audience, consultationDate.Building, consultationDate.GroupId, consultationDate.Id);
 
             if(courseProjectConsultationDate == null)
             {

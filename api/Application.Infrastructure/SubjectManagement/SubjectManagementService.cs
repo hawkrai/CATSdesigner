@@ -941,7 +941,7 @@ namespace Application.Infrastructure.SubjectManagement
             {
 				var order = lab.Index + 1;
 				lab.Value.Order = order;
-				lab.Value.ShortName = $"ЛР{order}";
+				lab.Value.ShortName = order.ToString();
 				repositoriesContainer.LabsRepository.Save(lab.Value);
 			}
 

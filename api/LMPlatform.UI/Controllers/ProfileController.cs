@@ -242,7 +242,8 @@ namespace LMPlatform.UI.Controllers
                         subject.Color,
                         Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
                             user.Student),
-                        IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id && sg.GroupId == user.Student.GroupId)?.IsActiveOnCurrentGroup
+                        IsActive = subject.SubjectGroups?.FirstOrDefault(sg => sg.SubjectId == subject.Id && sg.GroupId == user.Student.GroupId)?.IsActiveOnCurrentGroup,
+                        subject.IsArchive
                     });
             }
             else
@@ -257,7 +258,8 @@ namespace LMPlatform.UI.Controllers
                         subject.Color,
                         Completing = subjectService.GetSubjectCompleting(subject.Id, user.Lecturer != null ? "L" : "S",
                             user.Student),
-                        IsActive = subject.SubjectGroups?.Any(s => s.IsActiveOnCurrentGroup)
+                        IsActive = subject.SubjectGroups?.Any(s => s.IsActiveOnCurrentGroup),
+                        subject.IsArchive
                     });
             }
 
@@ -290,6 +292,8 @@ namespace LMPlatform.UI.Controllers
             {
                 model.Name = user.Lecturer.LastName + " " + user.Lecturer.FirstName + " " + user.Lecturer.MiddleName;
                 model.Skill = user.Lecturer.Skill;
+                model.IsSecretary = user.Lecturer.IsSecretary;
+                model.HasGraduateStudents = user.Lecturer.IsLecturerHasGraduateStudents;
             }
             else if(user.Student != null)
             {
@@ -297,10 +301,11 @@ namespace LMPlatform.UI.Controllers
                 var course = int.Parse(DateTime.Now.Year.ToString()) - int.Parse(user.Student.Group.StartYear);
                 if (DateTime.Now.Month >= 9) course += 1;
 
-                model.Skill = course > 5 ? "Окончил (-а)" : course + " курс";
+                model.Skill = course > 4 ? "Окончил (-а)" : course + " курс";
 
                 model.Group = user.Student.Group.Name;
                 model.GroupId = user.Student.Group.Id;
+                model.GraduationYear = user.Student.Group.GraduationYear;
             }
 
             return this.Json(model, JsonRequestBehavior.AllowGet);
