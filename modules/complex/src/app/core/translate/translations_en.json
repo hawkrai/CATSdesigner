@@ -73,5 +73,10 @@
   "text.help": "Help",
   "text.help.addComponent":"To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.",
   "text.help.editComponent":"To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.",
+  "complex.noInfo": "There is no information on the topic",
+  "text.complex.delete.title": "Delete component",
+  "text.complex.want.to.delete.test": "Do you really want to remove the component?",
+  "text.complex.yes": "Yes",
+  "button.cancel": "Cancel"
   "complex.noInfo": "There is no information on the topic"
 }
