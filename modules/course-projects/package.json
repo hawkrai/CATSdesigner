@@ -35,7 +35,6 @@
     "educats-common": "^2.0.0",
     "educats-translate": "^1.0.0",
     "material-design-icons": "^3.0.1",
-    "moment": "^2.30.1",
     "ngx-smart-popover": "^1.4.0",
     "ngx-toastr": "^10.0.4",
     "rxjs": "~6.4.0",
