@@ -26,6 +26,7 @@ import { PopoverModule } from 'ngx-smart-popover'
 import { DeleteConfirmationPopupComponent } from './components/materials/delete-confirmation-popup/delete-confirmation-popup.component'
 import {PopoverDialogComponent} from './components/materials/popover-dialog/popover-dialog.component'
 
+
 @NgModule({
   declarations: [
     MaterialComponent,
