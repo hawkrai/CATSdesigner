@@ -24,7 +24,6 @@ import { NotificationPopoverComponent } from "./components/materials/notificatio
 import { HelpComponent } from "../help/help.component";
 import { PopoverModule } from 'ngx-smart-popover'
 
-
 @NgModule({
   declarations: [
     MaterialComponent,
