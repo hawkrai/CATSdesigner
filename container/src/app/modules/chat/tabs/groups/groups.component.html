@@ -25,6 +25,7 @@
   >
     <ul class="list-unstyled chat-list" style="max-height: 60vh">
       <li *ngFor="let subject of groups">
+        <div class="chat" *ngIf="subject.groups.length > 0">
         <a
           data-container="body"
           data-placement="top"
@@ -83,6 +84,7 @@
             </div>
           </a>
         </div>
+      </div>
       </li>
     </ul>
   </perfect-scrollbar>
