@@ -1,4 +1,5 @@
 ﻿using Contracts.Repositories;
+using DocumentFormat.OpenXml.Math;
 using Entities;
 using Entities.Models;
 using Entities.Models.GroupChatModels;
@@ -15,7 +16,12 @@ namespace Repository
         {
         }
 
-        public async Task<IEnumerable<SubjectLecturer>> GetSubjects(int lecturerId) => await FindByCondition(c => c.LecturerId == lecturerId, false).ToListAsync();
+        public async Task<IEnumerable<SubjectLecturer>> GetSubjects(int lecturerId) =>
+            await FindByCondition(c => c.LecturerId == lecturerId, false)
+                .Include(c => c.Subjects)
+                .Where(c => !c.Subjects.IsArchive)
+                .OrderBy(c=> c.Subjects.ShortName)
+                .ToListAsync();
 
     }
 }
