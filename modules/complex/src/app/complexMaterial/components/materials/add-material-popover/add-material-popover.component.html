@@ -27,11 +27,17 @@
             (onSelectConcept)="selectConcept($event)"
           ></app-menu-item>
         </span>
-        <div class="basic-container-text" *ngIf="selectedConcept">
-          {{ selectedConcept }}
+        <div class="question-wrapper">
+            <app-help
+              [message]="addComponentHelp.message"
+              [action]="addComponentHelp.action"
+              [placement]="'bottom-left'"
+            ></app-help>
         </div>
       </div>
-
+      <div class="basic-container-text" *ngIf="selectedConcept">
+        {{ selectedConcept }}
+      </div>
       <mat-radio-group style="display: block" [disabled]="editMode">
         <mat-radio-button
           value="1"
@@ -60,7 +66,7 @@
           matInput
         />
       </mat-form-field>
-
+      
       <div *ngIf="isFile">
         <mat-form-field>
           <mat-label>{{
@@ -69,7 +75,7 @@
           <input
             name="fileName"
             maxlength="100"
-            placeholder="{{ 'common.fileName' | translate: 'Имя файла' }}"
+            placeholder="{{ 'common.fileName' | translate: 'Введите название элемента' }}"
             [(ngModel)]="data.name"
             matInput
           />

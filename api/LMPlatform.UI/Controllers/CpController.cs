@@ -109,7 +109,7 @@ namespace LMPlatform.UI.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public string GetTasksSheetHtml(int courseProjectId)
+        public string GetTasksSheetHtml(int courseProjectId, string language)
         {
             //todo
             var courseProject =
@@ -120,8 +120,8 @@ namespace LMPlatform.UI.Controllers
                     .Single(x => x.CourseProjectId == courseProjectId);
 
             return courseProject.AssignedCourseProjects.Count == 1
-                ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First())
-                : WordCourseProject.CourseProjectToDocView(courseProject);
+                ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First(), language)
+                : WordCourseProject.CourseProjectToDocView(courseProject, language);
         }
 
         [System.Web.Http.HttpPost]

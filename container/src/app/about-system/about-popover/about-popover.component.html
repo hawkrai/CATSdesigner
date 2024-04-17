@@ -19,7 +19,7 @@
           | translate: 'Первые 3 роли подлежат аутентификации.'
       }}
     </p>
-    <p>
+    <p *ngIf="!isAdmin">
       <a routerLink="/web/about-system" mat-dialog-close>{{
         'text.help.popover.route.manual'
           | translate: 'Перейти к руководству пользователя'

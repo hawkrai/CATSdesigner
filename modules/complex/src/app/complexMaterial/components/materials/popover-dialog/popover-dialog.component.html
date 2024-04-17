@@ -1,0 +1,16 @@
+<div class="popover" [style.width.px]="width" [style.height.%]="100">
+  <div class="popover-container">
+    <h2 mat-dialog-title class="popover-title">
+      <ng-content select="[title]"></ng-content>
+    </h2>
+    <div mat-dialog-content #popoverContent>
+      <ng-content select="[body]"></ng-content>
+    </div>
+    <div mat-dialog-actions>
+      <ng-content select="[actions]"></ng-content>
+    </div>
+  </div>
+  <button mat-icon-button (click)="close()" class="popover-close">
+    <mat-icon aria-hidden="false">close</mat-icon>
+  </button>
+</div>

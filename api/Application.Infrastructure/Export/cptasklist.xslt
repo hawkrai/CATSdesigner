@@ -82,7 +82,9 @@ div.Section1
 							</td>
 							<td width="50%" valign="top">
 								<p class="MsoNormal" align="left" style='line-height:normal'>
-									<span style='font-size:10.0pt'>УТВЕРЖДАЮ</span>
+									<span style='font-size:10.0pt'>
+										<xsl:value-of select='string(resource[@name="Approver"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 						</tr>
@@ -97,7 +99,8 @@ div.Section1
 							<td width="auto" colspan="3" valign="top">
 								<p class="MsoNormal" style='line-height:normal;text-align:left;'>
 									<span style='font-size:10.0pt'>
-										Заведующий кафедрой 
+										<xsl:value-of select='string(resource[@name="HeadCathedra"])' disable-output-escaping='no'/>
+										<xsl:text>&#x20;</xsl:text>
 										<xsl:value-of select='string(item[@name="CathedraName"])' disable-output-escaping='no'/>
 									</span>
 								</p>
@@ -125,13 +128,18 @@ div.Section1
 							</td>
 							<td width="10%"  valign="top" style='border:none;border-top:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>(подпись)</span>
+									<span style='font-size:8.0pt'>
+										(<xsl:value-of select='string(resource[@name="Signature"])' disable-output-escaping='no'/>)
+									</span>
 								</p>
 							</td>
 							<td width="5%" style='border:none'></td>
 							<td width="15%"  valign="top" style='border:none;border-top:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>(фамилия, инициалы)</span>
+									<span style='font-size:8.0pt'>
+										(<xsl:value-of select='string(resource[@name="Name"])' disable-output-escaping='no'/>,
+										<xsl:value-of select='string(resource[@name="Surname"])' disable-output-escaping='no'/>)
+									</span>
 								</p>
 							</td>
 							<td width="5%" style='border:none'></td>
@@ -155,7 +163,9 @@ div.Section1
 							<td width="65%" style='border:none'></td>
 							<td width="10%" style='vertical-align:top;border:none;border-top:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>(дата)</span>
+									<span style='font-size:8.0pt; white-space: nowrap;'>
+										(<xsl:value-of select='string(resource[@name="Date"])' disable-output-escaping='no'/>)
+									</span>
 								</p>
 							</td>
 							<td width="25%" style='border:none'></td>
@@ -178,7 +188,9 @@ div.Section1
 						<tr>
 							<td width="100%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
-									<span style='font-size:11.0pt;font-family:Impact;letter-spacing:3.0pt'>Задание на курсовой проект (курсовую работу)</span>
+									<span style='font-size:11.0pt;font-family:Impact;letter-spacing:3.0pt'>
+										<xsl:value-of select='string(resource[@name="CPTaskSheet"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 						</tr>
@@ -198,7 +210,9 @@ div.Section1
 						<tr>
 							<td width="1%" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span style='font-size:11.0pt'>Обучающемуся</span>
+									<span>
+										<xsl:value-of select='string(resource[@name="ToStudent"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 
@@ -243,7 +257,9 @@ div.Section1
 
 							<td width="55%" valign="bottom" style='border-top:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span style='font-size:8.0pt'>(фамилия, имя собственное, отчество)</span>
+									<span style='font-size:8.0pt'>
+										(<xsl:value-of select='string(resource[@name="NameSurname"])' disable-output-escaping='no'/>)
+									</span>
 								</p>
 							</td>
 
@@ -280,7 +296,9 @@ div.Section1
 							</td>
 							<td width="1%" valign="bottom" style='border:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span style='font-size:11.0pt'>группа</span>
+									<span style='font-size:11.0pt'>
+										<xsl:value-of select='string(resource[@name="Group"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 							<td width="auto" valign="bottom" style='border-top:none;border-bottom:solid windowtext 1.0pt;border-right:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
@@ -301,46 +319,54 @@ div.Section1
 
 
 					<table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
-                     style='border-collapse:collapse'>
+                      style='border-collapse:collapse'>
 						<tr style='height:17.55pt'>
-							<td width="1%" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>1.Тема</span>
+							<td width="1%" valign="bottom" style='white-space: nowrap;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+								<p class="MsoNormal" style='text-align:left;line-height:normal'>
+									<span>
+										1. <xsl:value-of select='string(resource[@name="CPTheme"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
-							<td  width="100%" valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
+							<td width="100%" valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+								<p class="MsoNormal" style='text-align:left;line-height:normal'>
 									<i>
 										<xsl:value-of select='string(item[@name="Theme" and number(@line)=0])' disable-output-escaping='no'/>
 									</i>
 								</p>
 							</td>
 						</tr>
-						<tr>
-							<td width="auto" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span style='font-size:10.0pt'></span>
-								</p>
-							</td>
-							<td width="100%" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>(указать: курсового проекта или курсовой работы)</span>
-								</p>
-							</td>
-
-						</tr>
+						<xsl:if test="string-length(resource[@name='ChooseCPType']) &gt; 0">
+							<tr>
+								<td width="auto" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+									<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
+										<span style='font-size:10.0pt'></span>
+									</p>
+								</td>
+								<td width="100%" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+									<p class="MsoNormal" align="left" style='text-align:center;line-height:normal'>
+										<span style='font-size:8.0pt'>
+											<xsl:value-of select='string(resource[@name="ChooseCPType"])' disable-output-escaping='no'/>
+										</span>
+									</p>
+								</td>
+							</tr>
+						</xsl:if>
 						<xsl:apply-templates select='item[@name="Theme" and number(@line)>0]' />
 					</table>
+					
 
 					<table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
 					  style='border-collapse:collapse'>
 						<tr style='height:17.55pt'>
-							<td width="410px"  valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>2. Сроки сдачи студентом законченного проекта (работы)</span>
+							<td width="1%" valign="bottom" style='white-space: nowrap;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+								<p class="MsoNormal" style='text-align:left;line-height:normal'>
+									<span>
+										2. <xsl:value-of select='string(resource[@name="CPDeadlines"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
-							<td width="auto"  valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+							<td width="100%"  valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
 									<i>
 										<xsl:value-of select='string(item[@name="EndData"])' disable-output-escaping='no'/>
@@ -354,28 +380,35 @@ div.Section1
 					<table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
 					   style='border-collapse:collapse'>
 						<tr style='height:17.55pt'>
-							<td width="160px" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+							<td width="1%" valign="bottom" style='white-space: nowrap;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>3. Исходные данные</span>
+									<span>
+										3.
+										<xsl:value-of select='string(resource[@name="InitialData"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
-							<td width="auto"  valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+							<td width="100%" valign="bottom" style='white-space: nowrap;border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'></p>
 							</td>
 						</tr>
 
-						<tr>
-							<td width="160px" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span style='font-size:10.0pt'></span>
-								</p>
-							</td>
-							<td width="auto"  valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>(указать: курсового проекта или курсовой работы)</span>
-								</p>
-							</td>
-						</tr>
+						<xsl:if test="string-length(resource[@name='ChooseCPType']) &gt; 0">
+							<tr>
+								<td width="auto" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+									<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
+										<span style='font-size:10.0pt'></span>
+									</p>
+								</td>
+								<td width="100%" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+									<p class="MsoNormal" align="left" style='text-align:center;line-height:normal'>
+										<span style='font-size:8.0pt'>
+											<xsl:value-of select='string(resource[@name="ChooseCPType"])' disable-output-escaping='no'/>
+										</span>
+									</p>
+								</td>
+							</tr>
+						</xsl:if>
 						<tr>
 							<td width="auto" colspan="2"  valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
@@ -395,7 +428,10 @@ div.Section1
 						<tr style='height:17.55pt'>
 							<td width="auto" colspan="2" valign="bottom" style='border:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>4. Содержание пояснительной записки (перечень вопросов, которые подлежат разработке)</span>
+									<span>
+										4.
+										<xsl:value-of select='string(resource[@name="ExplanatoryContent"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 
@@ -418,7 +454,10 @@ div.Section1
 						<tr style='height:17.55pt'>
 							<td width="auto" colspan="2" valign="bottom" style='border:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>5. Перечень графического материала (с точным указанием обязательных чертежей и графиков)</span>
+									<span>
+										5.
+										<xsl:value-of select='string(resource[@name="GraphicMaterialList"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 						</tr>
@@ -437,12 +476,15 @@ div.Section1
 					<table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
 				 style='border-collapse:collapse'>
 						<tr style='height:17.55pt'>
-							<td width="175px" valign="bottom" style='border:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+							<td width="1%" valign="bottom" style='white-space: nowrap;border:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>6. Дата выдачи задания</span>
+									<span>
+										6.
+										<xsl:value-of select='string(resource[@name="TaskIssueDate"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
-							<td width="auto" valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+							<td width="100%" valign="bottom" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
 									<i>
 										<xsl:value-of select='string(item[@name="PublishData"])' disable-output-escaping='no'/>
@@ -454,32 +496,38 @@ div.Section1
 					<table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
 				   style='border-collapse:collapse'>
 						<tr style='height:17.55pt'>
-							<td width="350px" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+							<td width="1%" valign="bottom" style='white-space: nowrap;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>7.</span>
-									<span> Примерный календарный график выполнения</span>
+									<span>7. </span>
+									<xsl:value-of select='string(resource[@name="ImplementationSchedule"])' disable-output-escaping='no'/>
 								</p>
 							</td>
-							<td width="auto"  valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+							<td width="100%"  valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'><![CDATA[ ]]></p>
 							</td>
 						</tr>
-						<tr>
-							<td width="350px" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span style='font-size:10.0pt'></span>
-								</p>
-							</td>
-							<td width="auto" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
-								<p class="MsoNormal" align="left" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>(указать: курсового проекта или курсовой работы)</span>
-								</p>
-							</td>
-						</tr>
+						<xsl:if test="string-length(resource[@name='ChooseCPType']) &gt; 0">
+							<tr>
+								<td width="auto" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+									<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
+										<span style='font-size:10.0pt'></span>
+									</p>
+								</td>
+								<td width="100%" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
+									<p class="MsoNormal" align="left" style='text-align:center;line-height:normal'>
+										<span style='font-size:8.0pt'>
+											<xsl:value-of select='string(resource[@name="ChooseCPType"])' disable-output-escaping='no'/>
+										</span>
+									</p>
+								</td>
+							</tr>
+						</xsl:if>
 						<tr style='height:17.55pt'>
 							<td width="auto" colspan="2" valign="bottom" style='padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>(с указанием сроков выполнения и трудоемкости отдельных этапов)</span>
+									<span>
+										(<xsl:value-of select='string(resource[@name="IndicateDeadlines"])' disable-output-escaping='no'/>)
+									</span>
 								</p>
 							</td>
 
@@ -499,7 +547,9 @@ div.Section1
 
 							<td width="50%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='line-height:normal; text-align:left;'>
-									<span>Руководитель</span>
+									<span>
+										<xsl:value-of select='string(resource[@name="ProjectSupervisor"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
@@ -525,7 +575,10 @@ div.Section1
 							</td>
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>дата, подпись</span>
+									<span style='font-size:8.0pt'>
+										<xsl:value-of select='string(resource[@name="Date"])' disable-output-escaping='no'/>,
+										<xsl:value-of select='string(resource[@name="Signature"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 							<td width="10%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
@@ -533,7 +586,10 @@ div.Section1
 							</td>
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='line-height:normal'>
-									<span style='font-size:8.0pt'>(инициалы, фамилия)</span>
+									<span style='font-size:8.0pt'>
+										(<xsl:value-of select='string(resource[@name="Surname"])' disable-output-escaping='no'/>,
+										<xsl:value-of select='string(resource[@name="Name"])' disable-output-escaping='no'/>)
+									</span>
 								</p>
 							</td>
 						</tr>
@@ -566,7 +622,9 @@ div.Section1
 						<tr style='height:17.55pt'>
 							<td width="50%" valign="bottom" style='border:none;padding:0cm 5.4pt 0cm 5.4pt;height:17.55pt'>
 								<p class="MsoNormal" align="left" style='text-align:left;line-height:normal'>
-									<span>Обучающийся</span>
+									<span>
+										<xsl:value-of select='string(resource[@name="Student"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 							<td width="20%" valign="top" style='border:none;border-bottom:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
@@ -592,7 +650,10 @@ div.Section1
 							</td>
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" align="center" style='text-align:center;line-height:normal'>
-									<span style='font-size:8.0pt'>дата, подпись</span>
+									<span style='font-size:8.0pt'>
+										<xsl:value-of select='string(resource[@name="Date"])' disable-output-escaping='no'/>, 
+										<xsl:value-of select='string(resource[@name="Signature"])' disable-output-escaping='no'/>
+									</span>
 								</p>
 							</td>
 							<td width="10%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
@@ -600,7 +661,10 @@ div.Section1
 							</td>
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='line-height:normal'>
-									<span style='font-size:8.0pt'>(инициалы, фамилия)</span>
+									<span style='font-size:8.0pt'>
+										(<xsl:value-of select='string(resource[@name="Surname"])' disable-output-escaping='no'/>,
+										<xsl:value-of select='string(resource[@name="Name"])' disable-output-escaping='no'/>)
+									</span>
 								</p>
 							</td>
 						</tr>
