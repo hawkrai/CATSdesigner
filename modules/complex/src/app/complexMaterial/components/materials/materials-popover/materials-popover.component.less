@@ -5,9 +5,20 @@
   }
 }
 
+.mat-dialog-content{
+  max-height: 80vh;
+}
+
+.color-button{
+  color:#c8c8c8;
+}
+
 .cancel-button{
   display: flex;
   justify-content: flex-end;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .icon-cell {
@@ -36,9 +47,11 @@
 
 .mat-dialog {
   &-actions {
+    position: relative;
     justify-content: center;
     padding: 0%;
     margin-bottom: 15px;
+    margin-bottom: 25px;
     gap: 5px;
   }
 }
