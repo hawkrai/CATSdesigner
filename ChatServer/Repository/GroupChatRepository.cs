@@ -20,10 +20,20 @@ namespace Repository
 
 
         public async Task<IEnumerable<GroupChat>> GetForLecturer(int subjId) => 
-            await FindByCondition(c => c.SubjectId == subjId, false).Include(x=>x.GroupMessages).Include(x=>x.GroupChatHistory).ToListAsync();
+            await FindByCondition(c => c.SubjectId == subjId, false)
+            .Include(x=>x.GroupMessages)
+            .Include(x=>x.GroupChatHistory)
+            .Include(x=> x.Subjects)
+            .OrderBy(x=>x.GroupName)
+            .ToListAsync();
 
         public async Task<IEnumerable<GroupChat>> GetForStudents(int groupId, int subjId) 
-            => await FindByCondition(c => (c.GroupId == null || c.GroupId == groupId) && c.SubjectId == subjId, false).Include(x => x.GroupMessages).Include(x=>x.GroupChatHistory).ToListAsync();
+            => await FindByCondition(c => (c.GroupId == null || c.GroupId == groupId) && c.SubjectId == subjId, false)
+            .Include(x => x.GroupMessages)
+            .Include(x=>x.GroupChatHistory)
+            .Include(x=>x.Subjects)
+            .OrderBy(x=>x.GroupName)
+            .ToListAsync();
 
     }
 }
