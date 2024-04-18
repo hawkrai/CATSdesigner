@@ -15,7 +15,12 @@
       >
         insert_drive_file</mat-icon
       >
-      <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
+      <a
+        class="btn clickable"
+        *ngIf="node.FilePath"
+        (click)="openPDF(node.Id, node.FilePath)"
+        [class.empty-tree-node]="node.FilePath == null"
+       >
         {{ node.Name }}
       </a>
       <a 
@@ -82,6 +87,7 @@
         <a
           class="complex-three-title btn clickable"
           (click)="openFolderPDF(node.Id)"
+          [class.empty-tree-node]="node.children.length === 0"
         >
           {{ node.Name }}
         </a>
