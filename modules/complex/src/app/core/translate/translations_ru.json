@@ -10,7 +10,7 @@
   "common.inputFolderName": "Введите имя папки",
   "common.folderName": "Имя папки",
   "common.file": "Файл",
-  "common.inputFileName": "Введите имя файла",
+  "common.inputFileName": "Введите название элемента",
   "common.fileName": "Введите название элемента",
   "common.pinnedDoc": "Прикрепленный документ",
   "common.pretest": "Пройти предтест",
