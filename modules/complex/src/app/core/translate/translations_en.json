@@ -10,8 +10,8 @@
   "common.inputFolderName": "Enter the folder name",
   "common.folderName": "Folder name",
   "common.file": "File",
-  "common.inputFileName": "Enter the file name",
-  "common.fileName": "File name",
+  "common.inputFileName": "Enter the item name",
+  "common.fileName": "Enter the item name",
   "common.pinnedDoc": "Attached document",
   "common.pretest": "Pass the pre-test",
   "common.prevDocument": "Previous document",
@@ -78,5 +78,7 @@
   "text.complex.delete.title": "Delete component",
   "text.complex.want.to.delete.test": "Do you really want to remove the component?",
   "text.complex.yes": "Yes",
-  "button.cancel": "Cancel"
+  "button.cancel": "Cancel",
+  "text.complex.delete.eumc": "Delete Educational Complex",
+  "text.complex.want.to.delete.eumc": "Do you really want to remove the Educational Complex?"
 }

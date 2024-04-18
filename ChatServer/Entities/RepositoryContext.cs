@@ -23,6 +23,7 @@ namespace Entities
         public DbSet<GroupMessage> GroupMessages { get; set; }
         public DbSet<GroupChatHistory> GroupChatHistory { get; set; }
         public DbSet<UserChatHistory> UserChatHistory { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
 
         
         public RepositoryContext(DbContextOptions<RepositoryContext> options) : base(options)

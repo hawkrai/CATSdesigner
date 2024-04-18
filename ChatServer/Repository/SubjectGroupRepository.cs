@@ -15,7 +15,11 @@ namespace Repository
         {
         }
 
-        public async Task<IEnumerable<SubjectGroup>> GetSubjects(int groupId) => await FindByCondition(c => c.GroupId == groupId && c.IsActiveOnCurrentGroup==true, false).ToListAsync();
+        public async Task<IEnumerable<SubjectGroup>> GetSubjects(int groupId) =>
+            await FindByCondition(c => c.GroupId == groupId && c.IsActiveOnCurrentGroup == true, false)
+            .Include(x => x.Subjects)
+            .OrderBy(x => x.Subjects.ShortName)
+            .ToListAsync();
 
     }
 }

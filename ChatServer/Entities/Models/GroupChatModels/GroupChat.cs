@@ -1,6 +1,7 @@
 ﻿using Entities.Models.History;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 #nullable disable
 
@@ -18,6 +19,9 @@ namespace Entities.Models.GroupChatModels
 
         public List<GroupMessage> GroupMessages { get; set; } = new List<GroupMessage>();
         public List<GroupChatHistory> GroupChatHistory { get; set; } = new List<GroupChatHistory>();
+        
+        [ForeignKey("SubjectId")]
+        public Subject Subjects { get; set; }
 
     }
 }
