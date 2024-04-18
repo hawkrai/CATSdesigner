@@ -18,8 +18,95 @@ path.link {
   stroke: #ccc;
   stroke-width: 2px;
 }
+
 s2w-angular-d3-tree-lib {
   height: 100%;
   width: 100%;
   font-size: 10px !important;
 }
+
+.tree_branches {
+
+  font: 400 10px / 32px Roboto, "Helvetica Neue", sans-serif;
+  stroke: black;
+  stroke-width: 0.5px;
+  fill: #ffffff;
+  width: 500px;
+  height: 300px;
+  padding: 20px;
+
+  box-sizing: border-box;
+
+
+}
+
+text {
+  font-size: 40px;
+}
+
+.basic_container {
+  overflow: hidden;
+
+  text {
+    font-size: 40px;
+  }
+
+  .button_close {
+    align-self: flex-end;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    outline: 0;
+    border: none;
+    -webkit-tap-highlight-color: transparent;
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: baseline;
+    text-align: center;
+    margin: 0;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+    border-radius: 4px;
+    overflow: visible;
+    transform: translate3d(0, 0, 0);
+    transition: background .4s cubic-bezier(.25, .8, .25, 1), box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
+    color: rgba(0, 0, 0, .87);
+    background-color: #fff;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+}
+
+.mat-dialog-content {
+  overflow: hidden;
+}
+
+.mat-dialog-actions {
+  justify-content: flex-end;
+}
+
+svg {
+  width: 1200px;
+  height: 600px;
+}
+
+.head_elements {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+

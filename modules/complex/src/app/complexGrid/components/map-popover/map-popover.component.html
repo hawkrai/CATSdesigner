@@ -1,14 +1,20 @@
-<h1 mat-dialog-title>{{ 'complex.map' | translate: 'Карта ЭУМК' }}</h1>
-<div mat-dialog-content #popoverContent>
+<div class="basic_container">
+  <div class="head_elements">
+    <h1 mat-dialog-title>{{ 'complex.map' | translate: 'Карта ЭУМК' }}</h1>
+    <button class="close" (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
   <s2w-angular-d3-tree-lib
+    class="tree_branches"
     [(treeData)]="chartData"
     (onNodeChanged)="nodeUpdated($event)"
     (onNodeSelected)="nodeSelected($event)"
     (expandAll)="(true)"
   ></s2w-angular-d3-tree-lib>
-</div>
-<div mat-dialog-actions>
-  <button mat-raised-button (click)="onNoClick()">
-    {{ 'common.cancel' | translate: 'Отмена' }}
-  </button>
+  <div>
+    <button class="button_close" (click)="onNoClick()">
+      {{ 'common.close' | translate: 'Закрыть' }}
+    </button>
+  </div>
 </div>
