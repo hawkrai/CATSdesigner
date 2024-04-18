@@ -1,6 +1,10 @@
 <ng-container *var="files$ | async as files">
-  <button class="close" mat-button (click)="onClose(files, false)">X</button>
-  <h1 mat-dialog-title>{{ popupTitle }}</h1>
+  <div class="title-close">
+    <h1 mat-dialog-title>{{ popupTitle }}</h1>
+    <button mat-icon-button (click)="onClose(files, false)" class="close">
+      <mat-icon aria-hidden="false">close</mat-icon>
+    </button>
+  </div>
   <div
     mat-dialog-content
     class="complex-grid-component__popover"
