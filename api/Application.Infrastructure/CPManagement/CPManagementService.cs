@@ -723,6 +723,7 @@ namespace Application.Infrastructure.CPManagement
             sub.Id = subject.Id;
             sub.Name = subject.Name;
             sub.ShortName = subject.ShortName;
+            sub.Color = subject.Color;
             sub.IsNeededCopyToBts = subject.IsNeededCopyToBts;
 
             return sub;
