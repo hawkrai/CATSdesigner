@@ -10,8 +10,8 @@
   "common.inputFolderName": "Enter the folder name",
   "common.folderName": "Folder name",
   "common.file": "File",
-  "common.inputFileName": "Enter the file name",
-  "common.fileName": "File name",
+  "common.inputFileName": "Enter the item name",
+  "common.fileName": "Enter the item name",
   "common.pinnedDoc": "Attached document",
   "common.pretest": "Pass the pre-test",
   "common.prevDocument": "Previous document",
@@ -33,7 +33,7 @@
   "common.course": "Course",
   "common.courseName": "Course name",
   "common.name": "Name",
-  "common.nameComplexes": "Name Complexes", 
+  "common.nameComplexes": "Name Complexes",
   "common.cancel": "Cancel",
   "common.save": "Save",
   "common.edit": "Edit",
@@ -73,5 +73,11 @@
   "text.help": "Help",
   "text.help.addComponent":"To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.",
   "text.help.editComponent":"To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.",
-  "complex.noInfo": "There is no information on the topic"
+  "complex.noInfo": "There is no information on the topic",
+  "text.complex.delete.title": "Delete component",
+  "text.complex.want.to.delete.test": "Do you really want to remove the component?",
+  "text.complex.yes": "Yes",
+  "button.cancel": "Cancel",
+  "text.complex.delete.eumc": "Delete Educational Complex",
+  "text.complex.want.to.delete.eumc": "Do you really want to remove the Educational Complex?"
 }

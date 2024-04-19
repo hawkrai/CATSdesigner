@@ -11,6 +11,8 @@ import { MainLoaderComponent } from './components/loader/main-loader.component'
 import { AngularD3TreeLibModule } from 'angular-d3-tree'
 import { MapPopoverComponent } from './components/map-popover/map-popover.component'
 import { AppRoutingModule } from '../app-routing.module'
+import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
+import {PopoverDialogComponent} from './components/popover-dialog/popover-dialog.component'
 
 import * as dataRu from '../core/translate/translations_ru.json'
 import * as dataEn from '../core/translate/translations_en.json'
@@ -24,6 +26,8 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     ComplexRulesPopoverComponent,
     MainLoaderComponent,
     MapPopoverComponent,
+    DeleteConfirmationPopupComponent,
+    PopoverDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +48,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     ComplexGridEditPopupComponent,
     ComplexRulesPopoverComponent,
     MapPopoverComponent,
+    DeleteConfirmationPopupComponent,
   ],
 })
 export class ComplexGridModule {}

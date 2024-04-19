@@ -20,8 +20,11 @@ import { VarDirective } from './components/materials/add-material-popover/direct
 import * as dataRu from '../core/translate/translations_ru.json'
 import * as dataEn from '../core/translate/translations_en.json'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
+import { NotificationPopoverComponent } from "./components/materials/notification-popover/notification-popover.component"
 import { HelpComponent } from "../help/help.component";
 import { PopoverModule } from 'ngx-smart-popover'
+import { DeleteConfirmationPopupComponent } from './components/materials/delete-confirmation-popup/delete-confirmation-popup.component'
+import {PopoverDialogComponent} from './components/materials/popover-dialog/popover-dialog.component'
 
 @NgModule({
   declarations: [
@@ -37,7 +40,10 @@ import { PopoverModule } from 'ngx-smart-popover'
     LoaderComponent,
     VarDirective,
     AdaptivePopupComponent,
+    NotificationPopoverComponent,
     HelpComponent,
+    DeleteConfirmationPopupComponent,
+    PopoverDialogComponent,
   ],
   imports: [
     MatSnackBarModule,
@@ -62,6 +68,8 @@ import { PopoverModule } from 'ngx-smart-popover'
     MonitoringPopoverComponent,
     AddMaterialPopoverComponent,
     AdaptivePopupComponent,
+    DeleteConfirmationPopupComponent,
+    NotificationPopoverComponent,
   ],
 })
 export class ComplexMaterialModule {}

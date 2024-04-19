@@ -115,7 +115,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         const resultOrderItem = this.getConceptNameById(concept.children, id)
 
         if (resultOrderItem) {
-          return resultOrderItem
+          return concept.Name + '>' +  resultOrderItem
         }
       }
     }

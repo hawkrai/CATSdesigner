@@ -50,7 +50,7 @@
         </a>
         <a
           class="btn clickable"
-          (click)="onDeleteClick(node.Id)"
+          (click)="openConfirmationDialog(node.Id)"
           [matTooltip]="'common.delete' | translate: 'Удалить'"
           matTooltipPosition="below"
         >
@@ -96,7 +96,7 @@
           </a>
           <a
             class="btn clickable"
-            (click)="onDeleteClick(node.Id)"
+            (click)="openConfirmationDialog(node.Id)"
             [matTooltip]="'common.delete' | translate: 'Удалить'"
             matTooltipPosition="below"
           >

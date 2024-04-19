@@ -20,7 +20,7 @@ namespace Application.Infrastructure.ScheduleManagement
 
 		public ISubjectManagementService SubjectManagementService => _subjectManagementService.Value;
 
-		public IEnumerable<ScheduleModel> CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience)
+		public IEnumerable<ScheduleModel> CheckIfAllowed(DateTime date, TimeSpan startTime, TimeSpan endTime, string building, string audience, int? groupId, int? subGroupId, int? lecturerId)
 		{
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
             var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date))
@@ -43,13 +43,27 @@ namespace Application.Infrastructure.ScheduleManagement
                 .Select(LabScheduleToModel)
                 .ToList();
 
-            return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
-                .Where(x => x.Start.HasValue && x.End.HasValue &&
-                ((x.Start <= startTime && x.End >= endTime) ||
-                (x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
-                (x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
-                (x.Start >= startTime && x.Start <= endTime && startTime <= x.End && x.End <= endTime))
-                && string.Equals(x.Audience.Trim(), audience.Trim(), StringComparison.CurrentCultureIgnoreCase) && (string.IsNullOrWhiteSpace(x.Building) || string.Equals(x.Building.Trim(), building.Trim(), StringComparison.CurrentCultureIgnoreCase)));
+			return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
+				.Where
+				(x => x.Start.HasValue 
+				&& x.End.HasValue 
+				&&(
+					(x.Start <= startTime && x.End >= endTime) ||
+					(x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
+					(x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
+					(x.Start >= startTime && x.Start <= endTime && startTime <= x.End && x.End <= endTime)
+				)
+				&&(
+					(
+						string.Equals(x.Audience.Trim(), audience.Trim(), StringComparison.CurrentCultureIgnoreCase)
+						&& (string.IsNullOrWhiteSpace(x.Building) || string.Equals(x.Building.Trim(), building.Trim(), StringComparison.CurrentCultureIgnoreCase))
+					)
+					|| (x.GroupId == groupId)
+					|| (x.SubGroupId == subGroupId)
+					|| (x.Teacher.Id == lecturerId)
+				)
+				);
+				
         }
 
 		public IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime endDate)
@@ -60,7 +74,7 @@ namespace Application.Infrastructure.ScheduleManagement
 					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes)))
 					.Include(x => x.Lecturer.User)
                     .ToList()
-					.Select(x => LectureScheduleToModel(x))
+					.Select(LectureScheduleToModel)
 					.ToList();
 
 				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date >= startDate && x.Date <= endDate)
@@ -77,7 +91,7 @@ namespace Application.Infrastructure.ScheduleManagement
 					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups)))
                     .Include(x => x.Lecturer.User)
                     .ToList()
-					.Select(x => LabScheduleToModel(x))
+					.Select(LabScheduleToModel)
 					.ToList();
 
 				return lecturesSchedule.Concat(practicalsSchedule).Concat(labsSchedule).OrderBy(x => x.Date);
@@ -91,7 +105,7 @@ namespace Application.Infrastructure.ScheduleManagement
                 var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date)
                     .Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes)))
                     .ToList()
-                    .Select(x => LectureScheduleToModel(x))
+                    .Select(LectureScheduleToModel)
 					.ToList();
 
                 var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date == date)
@@ -107,7 +121,7 @@ namespace Application.Infrastructure.ScheduleManagement
 					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.Group))
 					.Include(x => x.Subject.SubjectGroups.Select(sg => sg.SubGroups)))
                     .ToList()
-                    .Select(x => LabScheduleToModel(x))
+                    .Select(LabScheduleToModel)
 					.ToList();
 
                 return lecturesSchedule.Concat(practicalsSchedule).Concat(labsSchedule).OrderBy(x => x.Date);
@@ -234,7 +248,7 @@ namespace Application.Infrastructure.ScheduleManagement
 				var lecturesSchedule = repositoriesContainer.RepositoryFor<LecturesScheduleVisiting>().GetAll(new Query<LecturesScheduleVisiting>(x => x.Date == date && x.StartTime >= startTime && x.EndTime <= endTime)
 					.Include(x => x.Subject.LecturesScheduleVisitings.Select(x => x.Notes)))
 					.ToList()
-					.Select(x => LectureScheduleToModel(x))
+					.Select(LectureScheduleToModel)
 					.ToList();
 
 				var practicalsSchedule = repositoriesContainer.RepositoryFor<ScheduleProtectionPractical>().GetAll(new Query<ScheduleProtectionPractical>(x => x.Date == date && x.StartTime >= startTime && x.EndTime <= endTime)

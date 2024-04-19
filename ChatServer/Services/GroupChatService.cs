@@ -49,7 +49,7 @@ namespace Services
                 if (groupChat.IsSubjectGroup)
                 {
                     var lastReadSubject = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, groupChat.Id, false);
-                    var subject = new SubjectChatsDto() { Id = groupChat.Id, Name = groupChat.GroupName, ShortName = groupChat.ShortName, Color = "#" };
+                    var subject = new SubjectChatsDto() { Id = groupChat.Id, Name = groupChat.GroupName, ShortName = groupChat.ShortName, Color =  groupChat.Subjects.Color };
                     int? lastReaded;
                     GroupChat[] groupsModel = groups.FindAll(x => !x.IsSubjectGroup && x.SubjectId == groupChat.SubjectId).ToArray();
                     List<GroupChatDto> groupChats = new List<GroupChatDto>();
@@ -66,7 +66,11 @@ namespace Services
                         var groupChatDto = _mapper.Map<GroupChatDto>(groupsModel[i]);
 
                         lastReadSubject = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, groupsModel[i].Id, false);
-                        lastReaded = groupsModel[i].GroupMessages.FindIndex(x => x.Time > lastReadSubject.Date);
+                       
+                        if (lastReadSubject != null)
+                            lastReaded = groupsModel[i].GroupMessages.FindIndex(x => x.Time > lastReadSubject.Date);
+                        else
+                            lastReaded = -1;
                         if (lastReaded > -1)
                             groupChatDto.Unread = groupsModel[i].GroupMessages.Count - (int)lastReaded;
                         else
