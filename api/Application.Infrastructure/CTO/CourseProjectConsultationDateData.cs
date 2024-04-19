@@ -10,6 +10,8 @@ namespace Application.Infrastructure.CTO
 
         public DateTime Day { get; set; }
 
+        public SubjectData Subject { get; set; }
+
         public int SubjectId { get; set; }
 
         public TimeSpan? StartTime { get; set; }
