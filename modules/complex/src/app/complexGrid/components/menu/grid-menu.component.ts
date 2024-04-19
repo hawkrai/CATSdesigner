@@ -9,6 +9,9 @@ import { ComplexService } from '../../../service/complex.service'
 import { Complex } from '../../../models/Complex'
 import { CatsService, CodeType } from 'src/app/service/cats.service'
 import { TranslatePipe } from 'educats-translate'
+import { DeleteConfirmationPopupComponent } from '../delete-confirmation-popup/delete-confirmation-popup.component'
+import { takeUntil } from 'rxjs/operators'
+import { Subject } from 'rxjs'
 
 /**
  * @title Menu with icons
@@ -21,6 +24,7 @@ import { TranslatePipe } from 'educats-translate'
 export class GridMenuComponent {
   @Input()
   complexId: string
+  private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   constructor(
     public dialog: MatDialog,
@@ -74,6 +78,23 @@ export class GridMenuComponent {
         }
       })
     })
+  }
+
+  public openConfirmationDialog(): void {
+    const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
+      width: '500px',
+      data: { event },
+      panelClass: 'test-modal-container',
+    })
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((result) => {
+        if (result) {
+          this.onDeleteClick()
+        }
+      })
   }
 
   onDeleteClick(): void {

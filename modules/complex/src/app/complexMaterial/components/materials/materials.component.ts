@@ -85,7 +85,8 @@ export class MaterialComponent implements OnInit {
       if (result) {
         const path = '/api/Upload?fileName=' + (result && result[0])
         const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-          width: '500px',
+          width: '1000px',
+          height:'100%',
           data: { name: 'name', documents: result, url: path },
         })
 
@@ -99,7 +100,8 @@ export class MaterialComponent implements OnInit {
   openPDF(nodeId: number, filename: string): void {
     const path = '/api/Upload?fileName=' + filename
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-      width: '1200px',
+      width: '1000px',
+      height:'100%',
       data: { name: 'name', url: path },
     })
 
