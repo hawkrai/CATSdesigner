@@ -4,6 +4,7 @@ using Application.Infrastructure.DTO;
 using LMPlatform.Models.DP;
 using LMPlatform.Models;
 using System;
+using System.Net.Http;
 
 namespace Application.Infrastructure.DPManagement
 {
@@ -15,7 +16,7 @@ namespace Application.Infrastructure.DPManagement
 
         List<DiplomProjectData> GetProjectsByUserId(int userId);
 
-        void SaveProject(DiplomProjectData projectData);
+        HttpResponseMessage SaveProject(DiplomProjectData projectData);
 
         TaskSheetData GetTaskSheet(int diplomProjectId);
 

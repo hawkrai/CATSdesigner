@@ -14,6 +14,9 @@ using Application.Infrastructure.FilesManagement;
 using LMPlatform.Data.Repositories;
 using Application.Infrastructure.Export;
 using Application.Core.Helpers;
+using System.Web;
+using System.Net.Http;
+using System.Net;
 
 namespace Application.Infrastructure.DPManagement
 {
@@ -32,14 +35,11 @@ namespace Application.Infrastructure.DPManagement
             
             if (user.Lecturer != null)
             {
-                if (!user.Lecturer.IsSecretary)
+                if (user.Lecturer.IsSecretary)
                 {
-                    user.Lecturer.IsSecretary = !isSecretary;
+                    user.Lecturer.IsSecretary = isSecretary ? true : false;
                 }
-                else
-                {
-                    user.Lecturer.IsSecretary = isSecretary;
-                }
+                
             }
 
             if (user != null && user.Lecturer != null && !user.Lecturer.IsSecretary)
@@ -156,7 +156,7 @@ namespace Application.Infrastructure.DPManagement
                 };
         }
 
-        public void SaveProject(DiplomProjectData projectData)
+        public HttpResponseMessage SaveProject(DiplomProjectData projectData)
         {
             if (!projectData.LecturerId.HasValue)
             {
@@ -176,23 +176,46 @@ namespace Application.Infrastructure.DPManagement
                 project = Context.DiplomProjects
                               .Include(x => x.DiplomProjectGroups)
                               .Single(x => x.DiplomProjectId == projectData.Id);
-                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.DiplomProjectId != projectData.Id))
+                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.DiplomProjectId != projectData.Id && x.LecturerId == projectData.LecturerId))
                 {
-                    throw new ApplicationException("Тема с таким названием уже есть!");
+                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
                 }
             }
             else
             {
-                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme))
+                if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.LecturerId == projectData.LecturerId))
                 {
-                    throw new ApplicationException("Тема с таким названием уже есть!");
+                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
                 }
                 project = new DiplomProject();
                 Context.DiplomProjects.Add(project);
             }
 
+            var diplomProgects = Context.DiplomProjects.Include(dp => dp.DiplomProjectGroups)
+                .Where(dp => dp.Theme == projectData.Theme && dp.LecturerId.Value != projectData.LecturerId.Value).ToList();
+
+            var groupsWithTheSameTheme = new List<Group>();
+            if(diplomProgects != null)
+            {
+                foreach(var diplomProgect in diplomProgects)
+                {
+                    foreach(var group in diplomProgect.DiplomProjectGroups)
+                    {
+                        groupsWithTheSameTheme.Add(group.Group);
+                    }
+                }
+            }
+
             var currentGroups = project.DiplomProjectGroups.ToList();
             var newGroups = projectData.SelectedGroupsIds.Select(x => new DiplomProjectGroup { GroupId = x, DiplomProjectId = project.DiplomProjectId }).ToList();
+            var groupsWithTheSameThemeFromCurrentLecturer = groupsWithTheSameTheme.Where(g => newGroups.Select(gr => gr.GroupId).ToList().Contains(g.Id));
+
+            if(groupsWithTheSameThemeFromCurrentLecturer != null && groupsWithTheSameThemeFromCurrentLecturer.Count() > 0)
+            {
+                HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                httpResponseMessage.Content = new StringContent(string.Join(",", groupsWithTheSameThemeFromCurrentLecturer.Select(g => g.Name).ToArray()));
+                return httpResponseMessage;
+            }
 
             var groupsToAdd = newGroups.Except(currentGroups, grp => grp.GroupId);
             var groupsToDelete = currentGroups.Except(newGroups, grp => grp.GroupId);
@@ -210,6 +233,7 @@ namespace Application.Infrastructure.DPManagement
             project.LecturerId = projectData.LecturerId.Value;
             project.Theme = projectData.Theme;
             Context.SaveChanges();
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         public TaskSheetData GetTaskSheet(int diplomProjectId)

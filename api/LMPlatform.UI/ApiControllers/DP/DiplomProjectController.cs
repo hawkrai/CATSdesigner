@@ -57,8 +57,7 @@ namespace LMPlatform.UI.ApiControllers.DP
             }
 
             project.LecturerId = UserContext.CurrentUserId;
-            DpManagementService.SaveProject(project);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return DpManagementService.SaveProject(project);
         }
     }
 }
