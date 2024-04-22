@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Web;
+using System.Web.WebPages;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
@@ -110,6 +111,10 @@ namespace Application.Infrastructure.Export
         public static string CourseProjectToDocView(CourseProject work, string language)
         {
             var sb = new StringBuilder();
+            if (language != "en")
+            {
+                language = "ru";
+            }
             var cinfo = CultureInfo.CreateSpecificCulture(language);
             var doc = CourseProjectToXml(work, cinfo);
             var xslt = new XslTransform();
@@ -222,26 +227,15 @@ namespace Application.Infrastructure.Export
 
             children.AddRange(CreateStringNodes(doc, "Theme", awork.CourseProject.Theme, 1256, 638, 5));
 
-
-            string relativePath;
-            if (cultureInfo.Name == "en-US") 
+            ResourceManager resourceManager = new ResourceManager("Application.Infrastructure.Export.CPTaskListResources.CPTaskList", Assembly.GetExecutingAssembly());
+            ResourceSet resourceSet = resourceManager.GetResourceSet(cultureInfo, true, true);
+            
+            foreach (DictionaryEntry entry in resourceSet)
             {
-                relativePath = @"..\Application.Infrastructure\Export\CPTaskListResources\CPTaskList.en.resx";
-            }
-            else //if (cultureInfo.Name == "ru-RU") 
-            {
-                relativePath = @"..\Application.Infrastructure\Export\CPTaskListResources\CPTaskList.ru.resx";
-            }
-            string absolutePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath);
-            using (ResXResourceReader resxReader = new ResXResourceReader(absolutePath))
-            {
-                foreach (DictionaryEntry entry in resxReader)
-                {
-                    var element = doc.CreateElement("resource");
-                    element.SetAttribute("name", entry.Key.ToString());
-                    element.InnerText = entry.Value.ToString();
-                    children.Add(element);
-                }
+                var element = doc.CreateElement("resource");
+                element.SetAttribute("name", entry.Key.ToString());
+                element.InnerText = entry.Value.ToString();
+                children.Add(element);
             }
 
             var student = doc.CreateElement("item");
