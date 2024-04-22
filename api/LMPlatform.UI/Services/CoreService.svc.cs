@@ -425,17 +425,17 @@ namespace LMPlatform.UI.Services
 					{
 						GroupId = @group.Id,
 						GroupName = @group.Name,
-						SubGroupsOne = subGroups.Any(x => x.Name == "first") ? new SubGroupsViewData
+						SubGroupsOne = subGroups.Any(x => x.Name == "first" && x.SubjectStudents.Count != 0) ? new SubGroupsViewData
 						{
 						    Name = "1",
 						    SubGroupId = subGroups.First(e => e.Name == "first").Id
 						} : null,
-						SubGroupsTwo = subGroups.Any(x => x.Name == "second") ? new SubGroupsViewData
+						SubGroupsTwo = subGroups.Any(x => x.Name == "second" && x.SubjectStudents.Count != 0) ? new SubGroupsViewData
 						{
 							Name = "2",
 							SubGroupId = subGroups.First(e => e.Name == "second").Id
 						} : null,
-						SubGroupsThird = subGroups.Any(x => x.Name == "third") ? new SubGroupsViewData
+						SubGroupsThird = subGroups.Any(x => x.Name == "third" && x.SubjectStudents.Count != 0) ? new SubGroupsViewData
 						{
 							Name = "3",
 							SubGroupId = subGroups.First(e => e.Name == "third").Id
