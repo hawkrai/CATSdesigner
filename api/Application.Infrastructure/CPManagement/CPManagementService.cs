@@ -19,6 +19,7 @@ using Application.Core.Helpers;
 using System.Net.Http;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Group = LMPlatform.Models.Group;
+using System.Web.WebPages;
 
 namespace Application.Infrastructure.CPManagement
 {
@@ -684,7 +685,7 @@ namespace Application.Infrastructure.CPManagement
                 assignedCourseProject.CourseProject.Lecturer = new Lecturer();
                 courseProject.AssignedCourseProjects = new List<AssignedCourseProject> { assignedCourseProject };
             }
-
+            language = language.IsEmpty() ? "ru" : language;
             return courseProject.AssignedCourseProjects.Count == 1
                 ? WordCourseProject.CourseProjectToDocView(courseProject.AssignedCourseProjects.First(), language)
                 : WordCourseProject.CourseProjectToDocView(courseProject, language);
