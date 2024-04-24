@@ -250,7 +250,7 @@ namespace LMPlatform.UI.Controllers
             int idUser = UserContext.CurrentUserId;            
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
-            if (test.BeforeEUMK == false && test.ForEUMK == false && test.ForNN == false && test.ForSelfStudy == false)
+            if (UserContext.Role == "student" && test.BeforeEUMK == false && test.ForEUMK == false && test.ForNN == false && test.ForSelfStudy == false)
             {
                 if(user.OngoingTest != null)
                 {

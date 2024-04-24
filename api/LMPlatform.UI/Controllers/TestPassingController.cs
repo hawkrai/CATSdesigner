@@ -53,7 +53,7 @@ namespace LMPlatform.UI.Controllers
             int idUser = UserContext.CurrentUserId;
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
-            if (user.OngoingTest != null)
+            if (UserContext.Role == "student" && user.OngoingTest != null)
             {
                 description = new
                 {
