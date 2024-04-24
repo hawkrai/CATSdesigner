@@ -57,12 +57,12 @@ namespace LMPlatform.UI.ApiControllers.DP
             {
                 DpManagementService.SaveProject(project);
             }
-            catch (DuplicateDPThemeInGroup ex)
+            catch (DuplicateDPThemeInGroupException ex)
             {
                 httpResponseMessage.Content = new StringContent(ex.Message);
                 return httpResponseMessage;
             }
-            catch (DuplicateDPThemeInLecturer) {
+            catch (DuplicateDPThemeInLecturerException) {
                 return httpResponseMessage;
             } catch (ApplicationServiceException)
             {

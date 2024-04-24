@@ -186,7 +186,7 @@ namespace Application.Infrastructure.DPManagement
             {
                 if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.LecturerId == projectData.LecturerId))
                 {
-                    throw new DuplicateDPThemeInLecturer();
+                    throw new DuplicateDPThemeInLecturerException();
                 }
                 project = new DiplomProject();
                 Context.DiplomProjects.Add(project);
@@ -213,7 +213,7 @@ namespace Application.Infrastructure.DPManagement
 
             if(groupsWithTheSameThemeFromCurrentLecturer != null && groupsWithTheSameThemeFromCurrentLecturer.Count() > 0)
             {
-                throw new DuplicateDPThemeInGroup(string.Join(",", groupsWithTheSameThemeFromCurrentLecturer.Select(g => g.Name)));
+                throw new DuplicateDPThemeInGroupException(string.Join(",", groupsWithTheSameThemeFromCurrentLecturer.Select(g => g.Name)));
             }
 
             var groupsToAdd = newGroups.Except(currentGroups, grp => grp.GroupId);
