@@ -108,7 +108,7 @@ export class ScheduleMainComponent implements OnInit {
     this.activeDayIsOpen = false
   }
 
-  calculateTitel(lesson: Lesson): any {
+  calculateTitle(lesson: Lesson): any {
     let teacher = ''
     let minS
     let building = ''
@@ -170,6 +170,39 @@ export class ScheduleMainComponent implements OnInit {
     )
   }
 
+  getTitleCourseConsultation(consultation: any) {
+    return (
+      consultation.StartTime.split(':')[0] +
+      ':' +
+      consultation.StartTime.split(':')[1] +
+      '-' +
+      consultation.EndTime.split(':')[0] +
+      ':' +
+      consultation.EndTime.split(':')[1] +
+      '|' +
+      consultation.Audience +
+      '|' +
+      consultation.Building +
+      '|' +
+      consultation.Subject.ShortName +
+      '|' +
+      'КП' +
+      '|' +
+      '|' +
+      consultation.Subject.Color +
+      '|' +
+      consultation.Subject.Name +
+      '|' +
+      consultation.SubjectId +
+      '|' +
+      '|' +
+      consultation.GroupId +
+      '|' +
+      '|' +
+      '|'
+    )
+  }
+
   getTitelConsultation(consultation: any) {
     return (
       consultation.StartTime.split(':')[0] +
@@ -188,7 +221,7 @@ export class ScheduleMainComponent implements OnInit {
       'ДП' +
       '|' +
       '|' +
-      'White' +
+      '363636' +
       '|' +
       '|' +
       '|' +
@@ -199,7 +232,7 @@ export class ScheduleMainComponent implements OnInit {
     )
   }
 
-  getTitelDiplomConsultation(consultation: any) {
+  getTitleDiplomConsultation(consultation: any) {
     return (
       consultation.Start.split(':')[0] +
       ':' +
@@ -217,7 +250,7 @@ export class ScheduleMainComponent implements OnInit {
       'ДП' +
       '|' +
       '|' +
-      'White' +
+      '363636' +
       '|' +
       '|' +
       '|' +
@@ -317,7 +350,7 @@ export class ScheduleMainComponent implements OnInit {
             id: this.lesson.Id,
             start: startT,
             end: endT,
-            title: this.calculateTitel(this.lesson),
+            title: this.calculateTitle(this.lesson),
             color: colors.color,
             resizable: {
               beforeStart: false,
@@ -350,9 +383,9 @@ export class ScheduleMainComponent implements OnInit {
         } else if (result.type === 'diplom' || result.type === 'course') {
           let titleCon = ''
           if (result.type === 'course') {
-            titleCon = this.calculateTitel(result.lesson)
+            titleCon = this.calculateTitle(result.lesson)
           } else {
-            titleCon = this.getTitelDiplomConsultation(result.lesson)
+            titleCon = this.getTitleDiplomConsultation(result.lesson)
           }
           result.lesson.StartTime = result.lesson.Start
           result.lesson.EndTime = result.lesson.End
@@ -505,9 +538,9 @@ export class ScheduleMainComponent implements OnInit {
         )
         this.events = this.events.filter((event) => event !== lessonChanged)
         this.lessons.push(this.lesson)
-        let titleLesson = this.calculateTitel(this.lesson)
+        let titleLesson = this.calculateTitle(this.lesson)
         if (result.type == 'diplom') {
-          titleLesson = this.getTitelDiplomConsultation(this.lesson)
+          titleLesson = this.getTitleDiplomConsultation(this.lesson)
         }
         this.events.push({
           id: this.lesson.Id,
@@ -608,7 +641,7 @@ export class ScheduleMainComponent implements OnInit {
               id: consultation.Id,
               start: startT,
               end: endT,
-              title: this.getTitelConsultation(consultation),
+              title: this.getTitleCourseConsultation(consultation),
               color: colors.color,
               resizable: {
                 beforeStart: false,
@@ -654,7 +687,7 @@ export class ScheduleMainComponent implements OnInit {
           id: lesson.Id,
           start: startT,
           end: endT,
-          title: this.calculateTitel(lesson),
+          title: this.calculateTitle(lesson),
           color: colors.color,
           resizable: {
             beforeStart: false,
