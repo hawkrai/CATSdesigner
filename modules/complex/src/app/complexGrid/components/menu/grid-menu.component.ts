@@ -1,14 +1,15 @@
-import { Component, Input } from '@angular/core'
-import { Router, ActivatedRoute, ParamMap } from '@angular/router'
-import { ComplexGridEditPopupComponent } from '../edit-popup/edit-popup.component'
-import { MapPopoverComponent } from '../map-popover/map-popover.component'
-import { ComponentType } from '@angular/cdk/typings/portal'
-import { MatDialog, MatDialogRef } from '@angular/material/dialog'
-import { DialogData } from '../../../models/DialogData'
-import { ComplexService } from '../../../service/complex.service'
-import { Complex } from '../../../models/Complex'
-import { CatsService, CodeType } from 'src/app/service/cats.service'
-import { TranslatePipe } from 'educats-translate'
+
+import {Component, Input} from '@angular/core'
+import {Router, ActivatedRoute, ParamMap} from '@angular/router'
+import {ComplexGridEditPopupComponent} from '../edit-popup/edit-popup.component'
+import {MapPopoverComponent} from '../map-popover/map-popover.component'
+import {ComponentType} from '@angular/cdk/typings/portal'
+import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog'
+import {DialogData} from '../../../models/DialogData'
+import {ComplexService} from '../../../service/complex.service'
+import {Complex} from '../../../models/Complex'
+import {CatsService, CodeType} from 'src/app/service/cats.service'
+import {TranslatePipe} from 'educats-translate'
 import { DeleteConfirmationPopupComponent } from '../delete-confirmation-popup/delete-confirmation-popup.component'
 import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
@@ -121,10 +122,15 @@ export class GridMenuComponent {
       id: this.complexId,
     }
 
-    const dialogRef = this.dialog.open(MapPopoverComponent, {
-      width: '800px',
-      data: dialogData,
-    })
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.width = '1200px'
+    dialogConfig.data = dialogData
+    dialogConfig.position = {
+      left: '10%',
+    }
+
+    const dialogRef = this.dialog.open(MapPopoverComponent, dialogConfig
+    )
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed')
@@ -132,6 +138,6 @@ export class GridMenuComponent {
   }
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, { data })
+    return this.dialog.open(popover, {data})
   }
 }
