@@ -87,7 +87,7 @@ export class ComplexGridComponent implements OnInit {
   onAddButtonClick() {
     const dialogData: DialogData = {
       buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
-      width: '400px',
+      width: '500px',
       title: this.translatePipe.transform(
         'complex.addComplex',
         'Добавление ЭУМК'
