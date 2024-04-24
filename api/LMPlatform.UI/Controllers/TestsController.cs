@@ -246,18 +246,18 @@ namespace LMPlatform.UI.Controllers
         {
             var test = id == 0
                 ? new TestViewModel()
-                : TestViewModel.FromTest(this.TestsManagementService.GetTest(id));
+                : TestViewModel.FromTest(TestsManagementService.GetTest(id));
             int idUser = UserContext.CurrentUserId;            
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
-            if (user.OngoingTest == null)
+            if (test.BeforeEUMK == false && test.ForEUMK == false && test.ForNN == false && test.ForSelfStudy == false)
             {
+                if(user.OngoingTest != null)
+                {
+                    return null;
+                }
                 user.OngoingTest = id;
                 _context.UpdateUser(user);
-            }
-            else
-            {
-                return null;                
             }
 
             return this.Json(test, JsonRequestBehavior.AllowGet);
