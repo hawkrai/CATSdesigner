@@ -47,7 +47,7 @@ namespace LMPlatform.UI.Controllers
             var description = new
             {
               
-                test.Title, test.Description,test.Id
+                test.Title, test.Description, OngoingTestId = 0
                
             };
             int idUser = UserContext.CurrentUserId;
@@ -59,7 +59,7 @@ namespace LMPlatform.UI.Controllers
                 {
                     Title = "Тест " + TestsManagementService.GetTest(user.OngoingTest.Value).Title + " уже запущен в Вашей учетной записи",
                     Description = "Завершите тест и попробуйте еще раз",
-                    Id = user.OngoingTest.Value
+                    OngoingTestId = user.OngoingTest.Value
                 };
             }                      
             
