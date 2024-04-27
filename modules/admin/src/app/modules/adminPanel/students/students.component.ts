@@ -238,6 +238,10 @@ export class StudentsComponent implements OnInit {
     return student.IsActive
   }
 
+  isDeleted(student) {
+    return student.DeletedOn
+  }
+
   openDialogDelete(id) {
     const dialogRef = this.dialog.open(DeleteItemComponent, {
       hasBackdrop: true,
