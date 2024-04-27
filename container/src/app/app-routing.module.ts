@@ -83,7 +83,7 @@ const routes: Routes = [
   {
     path: 'adminPanel',
     component: AdminComponent,
-    //canActivate: [NoAuthGuardAdmin],
+    canActivate: [NoAuthGuardAdmin],
   },
   { path: 'about', component: AboutComponent },
   { path: 'lector-manual', component: LectorManualComponent },

@@ -41,6 +41,10 @@ export class AccountService {
     return this.http.post<Login>(this.api + 'LogOff', {})
   }
 
+  logOut() {
+    return this.http.get<any>('/Account/LogOff').pipe()
+  }
+
   register(registerModel: RegisterModel) {
     return this.http.post(this.api + 'Register', registerModel)
   }
