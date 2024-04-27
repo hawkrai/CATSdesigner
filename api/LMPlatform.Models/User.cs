@@ -74,7 +74,8 @@ namespace LMPlatform.Models
         	public string Answer { get; set; }
 
         	public int? QuestionId { get; set; }
+        public int? OngoingTest { get; set; }
 
-		public DateTime? AddedOn { get; set; }
+        public DateTime? AddedOn { get; set; }
     }
 }

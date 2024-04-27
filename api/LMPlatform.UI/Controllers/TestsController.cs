@@ -15,6 +15,7 @@ using Application.Infrastructure.GroupManagement;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Infrastructure.StudentManagement;
 using Application.Infrastructure.SubjectManagement;
+using Application.Infrastructure.UserManagement;
 using LMPlatform.Models;
 using LMPlatform.Models.AdaptivityLearning;
 using LMPlatform.UI.Attributes;
@@ -245,7 +246,19 @@ namespace LMPlatform.UI.Controllers
         {
             var test = id == 0
                 ? new TestViewModel()
-                : TestViewModel.FromTest(this.TestsManagementService.GetTest(id));
+                : TestViewModel.FromTest(TestsManagementService.GetTest(id));
+            int idUser = UserContext.CurrentUserId;            
+            var _context = new UsersManagementService();
+            var user = _context.GetUserById(idUser);
+            if (test.BeforeEUMK == false && test.ForEUMK == false && test.ForNN == false && test.ForSelfStudy == false)
+            {
+                if(user.OngoingTest != null)
+                {
+                    return null;
+                }
+                user.OngoingTest = id;
+                _context.UpdateUser(user);
+            }
 
             return this.Json(test, JsonRequestBehavior.AllowGet);
         }

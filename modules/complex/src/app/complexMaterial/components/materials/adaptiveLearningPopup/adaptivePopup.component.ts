@@ -7,6 +7,7 @@ import {
 import { DialogData } from '../../../../models/DialogData'
 import { MaterialsPopoverComponent } from '../materials-popover/materials-popover.component'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
+import {NotificationPopoverComponent} from "../notification-popover/notification-popover.component";
 
 /**
  * @title Basic use of `<table mat-table>`
@@ -45,8 +46,8 @@ export class AdaptivePopupComponent {
 
         this.dialogRef.close()
 
-        const dialogRefNew = this.dialog.open(MaterialsPopoverComponent, {
-          width: '1200px',
+        const dialogRefNew = this.dialog.open(NotificationPopoverComponent, {
+          width: '500px',
           data: diaogData,
         })
 

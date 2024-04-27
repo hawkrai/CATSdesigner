@@ -1,3 +1,79 @@
+<div mat-dialog-actions>
+  <button
+    *ngIf="needToGetInitialTest"
+    mat-raised-button
+    mat-button
+    class="color-button"
+    (click)="goToPredTest()"
+  >
+    {{ 'common.pretest' | translate: 'Пройти предтест' }}
+  </button>
+  <button 
+    mat-raised-button
+    mat-button
+    class="color-button"
+    (click)="zoomIn()"
+  >
+    <mat-icon>zoom_in</mat-icon>
+    {{ 'common.zoomIn' | translate: 'Увеличить' }}
+  </button>
+  <button 
+    mat-raised-button
+    mat-button
+    class="color-button"
+    (click)="zoomOut()"
+  >
+    <mat-icon>zoom_out</mat-icon>
+    {{ 'common.zoomOut' | translate: 'Уменьшить' }}
+  </button>
+  <button
+    *ngIf="prevButtonVisible"
+    mat-raised-button
+    mat-button
+    class="color-button"
+    (click)="goToPrevMaterial()"
+  >
+    <mat-icon>fast_rewind</mat-icon>
+    {{ 'common.prevDocument' | translate: 'Предыдущий документ' }}
+  </button>
+  <button
+    *ngIf="nextButtonVisible"
+    mat-raised-button
+    mat-button
+    class="color-button"
+    (click)="goToNextMaterial()"
+  >
+    {{ 'common.nextDocument' | translate: 'Следующий документ' }}
+    <mat-icon>fast_forward</mat-icon>
+  </button>
+  <button
+    *ngIf="toTestButtonVisible"
+    mat-raised-button
+    mat-button
+    class="color-button"
+    [disabled]="!toTestButtonEnabled"
+    (click)="goToTests()"
+  >
+    {{ 'complex.toTests' | translate: 'К тестам' }}
+  </button>
+  <button
+    id="continueButton"
+    *ngIf="isTest"
+    mat-raised-button
+    mat-button
+    class="color-button"
+    [disabled]="true"
+    (click)="processsTest()"
+  >
+    {{ 'common.finishTest' | translate: 'Завершить тест' }}
+  </button>
+  <div class="cancel-button">
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+</div>
+
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
   <div *ngIf="needToGetInitialTest" class="need-pred-test">
     <p>
@@ -24,12 +100,23 @@
     {{ time }}</span
   >
   <pdf-viewer
+    #pdfViewer
     *ngIf="showMaterial"
+    (mousemove)="onDrag($event, pdfViewer)"
+    (mousedown)="onDragStarted($event)"
+    (mouseup)="onDragEnded($event, 'up')"
+    (mouseleave)="onDragEnded($event, 'leave')"
     [src]="path"
     [render-text]="true"
+    [original-size]="false"
+    [fit-to-page]="false"
+    [autoresize]="true"
     [(page)]="page"
     [show-all]="true"
+    [zoom]="zoom"
     style="display: block"
+    [zoom-scale]="page-width"
+    style="width: 100%; height: 100vh;"
   ></pdf-viewer>
 
   <div *ngIf="isTest">
@@ -42,48 +129,4 @@
     </p>
     <p>{{ 'complex.exit' | translate: 'Для выхода нажмите Отмена' }}...</p>
   </div>
-</div>
-
-<div mat-dialog-actions>
-  <button mat-raised-button (click)="onNoClick()">
-    {{ 'common.cancel' | translate: 'Отмена' }}
-  </button>
-  <button
-    *ngIf="needToGetInitialTest"
-    mat-raised-button
-    (click)="goToPredTest()"
-  >
-    {{ 'complex.pretest' | translate: 'Пройти предтест' }}
-  </button>
-  <button
-    *ngIf="prevButtonVisible"
-    mat-raised-button
-    (click)="goToPrevMaterial()"
-  >
-    {{ 'complex.prevDocument' | translate: 'Предыдущий документ' }}
-  </button>
-  <button
-    *ngIf="nextButtonVisible"
-    mat-raised-button
-    (click)="goToNextMaterial()"
-  >
-    {{ 'common.nextDocument' | translate: 'Следующий документ' }}
-  </button>
-  <button
-    *ngIf="toTestButtonVisible"
-    mat-raised-button
-    [disabled]="!toTestButtonEnabled"
-    (click)="goToTests()"
-  >
-    {{ 'complex.toTests' | translate: 'К тестам' }}
-  </button>
-  <button
-    id="continueButton"
-    *ngIf="isTest"
-    mat-raised-button
-    [disabled]="true"
-    (click)="processsTest()"
-  >
-    {{ 'complex.finishTest' | translate: 'Завершить тест' }}
-  </button>
 </div>

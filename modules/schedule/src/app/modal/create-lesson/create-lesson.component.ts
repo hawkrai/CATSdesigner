@@ -495,7 +495,8 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.Start + ':00',
                 this.lesson.End + ':00',
                 this.lesson.Audience,
-                this.lesson.Building
+                this.lesson.Building,
+                this.lesson.GroupId
               )
               .subscribe((r) => {
                 console.log(r)

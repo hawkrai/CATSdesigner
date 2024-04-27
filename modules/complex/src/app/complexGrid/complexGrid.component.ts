@@ -22,8 +22,9 @@ export class ComplexGridComponent implements OnInit {
   subjectName
   subjectId
 
-  isLucturer: boolean
+  isLecturer: boolean
   showLoader: boolean
+  breakpoint: number
 
   constructor(
     public dialog: MatDialog,
@@ -38,11 +39,12 @@ export class ComplexGridComponent implements OnInit {
     this.router.onSameUrlNavigation = 'reload'
 
     const user = JSON.parse(localStorage.getItem('currentUser'))
-    this.isLucturer = user.role === 'lector'
+    this.isLecturer = user.role === 'lector'
     this.showLoader = false
   }
 
   ngOnInit(): void {
+    this.breakpoint = (window.innerWidth <= 530) ? 1 : (window.innerWidth <= 750)? 2 : (window.innerWidth <= 1060)? 3: 4;
     this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
       this.subjectId = subjectId
       this.complexService.getRootConcepts(this.subjectId).subscribe((res) => {
@@ -55,13 +57,40 @@ export class ComplexGridComponent implements OnInit {
         })
     })
   }
+  onResize(event) {
+    this.breakpoint = (event.target.innerWidth <= 530) ? 1 : (event.target.innerWidth <= 750) ? 2: (event.target.innerWidth <= 1060) ? 3: 4;
+  }
+
+  adjustNameLength(componentName: string): string {
+    if (componentName.length <= 9) {
+      return componentName
+    }
+
+    return `${componentName.substring(0, 8)}...`
+  }
+
+  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
+    return this.dialog.open(popover, { data })
+  }
+
+  openPDF() {
+    const dialogRef = this.dialog.open(ComplexRulesPopoverComponent, {
+      width: '800px',
+      data: { name: 'name' },
+    })
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed')
+    })
+  }
+
   onAddButtonClick() {
     const dialogData: DialogData = {
       buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
-      width: '400px',
+      width: '500px',
       title: this.translatePipe.transform(
-        'complex.createComplexes',
-        'Создать ЭУМК'
+        'complex.addComplex',
+        'Добавление ЭУМК'
       ),
       name: '',
       subjectName: this.subjectName,
@@ -87,28 +116,5 @@ export class ComplexGridComponent implements OnInit {
         }
       })
     })
-  }
-
-  openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, { data })
-  }
-
-  openPDF() {
-    const dialogRef = this.dialog.open(ComplexRulesPopoverComponent, {
-      width: '800px',
-      data: { name: 'name' },
-    })
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed')
-    })
-  }
-
-  adjustNameLength(componentName: string): string {
-    if (componentName.length <= 9) {
-      return componentName
-    }
-
-    return `${componentName.substring(0, 8)}...`
   }
 }

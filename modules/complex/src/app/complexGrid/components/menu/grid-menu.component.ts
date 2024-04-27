@@ -1,14 +1,18 @@
-import { Component, Input } from '@angular/core'
-import { Router, ActivatedRoute, ParamMap } from '@angular/router'
-import { ComplexGridEditPopupComponent } from '../edit-popup/edit-popup.component'
-import { MapPopoverComponent } from '../map-popover/map-popover.component'
-import { ComponentType } from '@angular/cdk/typings/portal'
-import { MatDialog, MatDialogRef } from '@angular/material/dialog'
-import { DialogData } from '../../../models/DialogData'
-import { ComplexService } from '../../../service/complex.service'
-import { Complex } from '../../../models/Complex'
-import { CatsService, CodeType } from 'src/app/service/cats.service'
-import { TranslatePipe } from 'educats-translate'
+
+import {Component, Input} from '@angular/core'
+import {Router, ActivatedRoute, ParamMap} from '@angular/router'
+import {ComplexGridEditPopupComponent} from '../edit-popup/edit-popup.component'
+import {MapPopoverComponent} from '../map-popover/map-popover.component'
+import {ComponentType} from '@angular/cdk/typings/portal'
+import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog'
+import {DialogData} from '../../../models/DialogData'
+import {ComplexService} from '../../../service/complex.service'
+import {Complex} from '../../../models/Complex'
+import {CatsService, CodeType} from 'src/app/service/cats.service'
+import {TranslatePipe} from 'educats-translate'
+import { DeleteConfirmationPopupComponent } from '../delete-confirmation-popup/delete-confirmation-popup.component'
+import { takeUntil } from 'rxjs/operators'
+import { Subject } from 'rxjs'
 
 /**
  * @title Menu with icons
@@ -21,6 +25,7 @@ import { TranslatePipe } from 'educats-translate'
 export class GridMenuComponent {
   @Input()
   complexId: string
+  private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   constructor(
     public dialog: MatDialog,
@@ -40,7 +45,10 @@ export class GridMenuComponent {
       const dialogData: DialogData = {
         buttonText: this.translatePipe.transform('common.save', 'Сохранить'),
         width: '400px',
-        title: this.translatePipe.transform('common.editing', 'Редактирование'),
+        title: this.translatePipe.transform(
+          'complex.editComplex',
+          'Редактирование ЭУМК'
+        ),
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,
@@ -73,6 +81,23 @@ export class GridMenuComponent {
     })
   }
 
+  public openConfirmationDialog(): void {
+    const dialogRef = this.dialog.open(DeleteConfirmationPopupComponent, {
+      width: '500px',
+      data: { event },
+      panelClass: 'test-modal-container',
+    })
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((result) => {
+        if (result) {
+          this.onDeleteClick()
+        }
+      })
+  }
+
   onDeleteClick(): void {
     const complex: Complex = {
       elementId: +this.complexId,
@@ -97,10 +122,15 @@ export class GridMenuComponent {
       id: this.complexId,
     }
 
-    const dialogRef = this.dialog.open(MapPopoverComponent, {
-      width: '800px',
-      data: dialogData,
-    })
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.width = '1200px'
+    dialogConfig.data = dialogData
+    dialogConfig.position = {
+      left: '10%',
+    }
+
+    const dialogRef = this.dialog.open(MapPopoverComponent, dialogConfig
+    )
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed')
@@ -108,6 +138,6 @@ export class GridMenuComponent {
   }
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
-    return this.dialog.open(popover, { data })
+    return this.dialog.open(popover, {data})
   }
 }
