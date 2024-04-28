@@ -35,6 +35,7 @@
   "common.name": "Название",
   "common.nameComplexes": "Название ЭУМК",
   "common.cancel": "Отмена",
+  "common.close": "Закрыть",
   "common.save": "Сохранить",
   "common.edit": "Редактировать",
   "common.delete": "Удалить",
@@ -78,7 +79,7 @@
   "text.complex.delete.title": "Удаление компонента",
   "text.complex.want.to.delete.test": "Вы действительно хотите удалить компонент?",
   "text.complex.yes": "Да",
-  "button.cancel": "Закрыть",
+  "button.cancel": "Отмена",
   "text.complex.delete.eumc": "Удаление ЭУМК",
   "text.complex.want.to.delete.eumc": "Вы действительно хотите удалить ЭУМК?"
 }
