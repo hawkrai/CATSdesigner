@@ -16,7 +16,7 @@ namespace Application.Infrastructure.DPManagement
 
         List<DiplomProjectData> GetProjectsByUserId(int userId);
 
-        HttpResponseMessage SaveProject(DiplomProjectData projectData);
+        void SaveProject(DiplomProjectData projectData);
 
         TaskSheetData GetTaskSheet(int diplomProjectId);
 

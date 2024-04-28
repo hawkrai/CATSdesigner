@@ -5,6 +5,7 @@ using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using Application.Core;
 using Application.Core.Data;
+using Application.Core.Exceptions;
 using Application.Core.Helpers;
 using Application.Infrastructure.DPManagement;
 using Application.Infrastructure.DTO;
@@ -51,13 +52,25 @@ namespace LMPlatform.UI.ApiControllers.DP
 
         private HttpResponseMessage SaveProject(DiplomProjectData project)
         {
-            if (!ModelState.IsValid)
+            HttpResponseMessage responseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
+            try
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                DpManagementService.SaveProject(project);
+            } catch(DuplicateDPThemeInLecturerException)
+            {
+                return responseMessage;
+            } catch(DuplicateDPThemeInGroupException ex)
+            {
+                responseMessage.Content = new StringContent(ex.Message);
+                return responseMessage;
+            } catch(ApplicationServiceException)
+            {
+                return responseMessage;
             }
 
             project.LecturerId = UserContext.CurrentUserId;
-            return DpManagementService.SaveProject(project);
+            responseMessage.StatusCode = HttpStatusCode.OK;
+            return responseMessage;
         }
     }
 }

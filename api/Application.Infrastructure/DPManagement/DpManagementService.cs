@@ -17,6 +17,7 @@ using Application.Core.Helpers;
 using System.Web;
 using System.Net.Http;
 using System.Net;
+using Application.Core.Exceptions;
 
 namespace Application.Infrastructure.DPManagement
 {
@@ -156,7 +157,7 @@ namespace Application.Infrastructure.DPManagement
                 };
         }
 
-        public HttpResponseMessage SaveProject(DiplomProjectData projectData)
+        public void SaveProject(DiplomProjectData projectData)
         {
             if (!projectData.LecturerId.HasValue)
             {
@@ -178,14 +179,14 @@ namespace Application.Infrastructure.DPManagement
                               .Single(x => x.DiplomProjectId == projectData.Id);
                 if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.DiplomProjectId != projectData.Id && x.LecturerId == projectData.LecturerId))
                 {
-                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    throw new ApplicationServiceException();
                 }
             }
             else
             {
                 if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme && x.LecturerId == projectData.LecturerId))
                 {
-                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    throw new DuplicateDPThemeInLecturerException();
                 }
                 project = new DiplomProject();
                 Context.DiplomProjects.Add(project);
@@ -212,9 +213,7 @@ namespace Application.Infrastructure.DPManagement
 
             if(groupsWithTheSameThemeFromCurrentLecturer != null && groupsWithTheSameThemeFromCurrentLecturer.Count() > 0)
             {
-                HttpResponseMessage httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
-                httpResponseMessage.Content = new StringContent(string.Join(",", groupsWithTheSameThemeFromCurrentLecturer.Select(g => g.Name).ToArray()));
-                return httpResponseMessage;
+                throw new DuplicateDPThemeInGroupException(string.Join(",", groupsWithTheSameThemeFromCurrentLecturer.Select(g => g.Name)));
             }
 
             var groupsToAdd = newGroups.Except(currentGroups, grp => grp.GroupId);
@@ -233,7 +232,7 @@ namespace Application.Infrastructure.DPManagement
             project.LecturerId = projectData.LecturerId.Value;
             project.Theme = projectData.Theme;
             Context.SaveChanges();
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            
         }
 
         public TaskSheetData GetTaskSheet(int diplomProjectId)
