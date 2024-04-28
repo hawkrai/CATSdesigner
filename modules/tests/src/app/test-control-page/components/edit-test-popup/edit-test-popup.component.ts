@@ -36,30 +36,27 @@ export class EditTestPopupComponent
     {
       name: 'text.test.for.control',
       value: TestType.Control,
-      tooltip:
-        'Необходимо открывать доступ обучающимся для каждого прохождения теста',
+      tooltip: 'text.test.for.control.hint',
     },
     {
       name: 'text.test.for.self.control',
       value: TestType.ForSelfStudy,
-      tooltip: 'Постоянно открыт для обучающихся',
+      tooltip: 'text.test.for.self.control.hint',
     },
     {
       name: 'text.test.for.pre.eumk',
       value: TestType.BeforeEUMK,
-      tooltip:
-        'Позволяет связывать вопросы теста с темами из ЭУМК, реализует адаптивное обучение, доступен из модуля ЭУМК',
+      tooltip: 'text.test.for.pre.eumk.hint',
     },
     {
       name: 'text.test.for.eumk',
       value: TestType.ForEUMK,
-      tooltip:
-        'Позволяет реализовать адаптивное обучение по результатам предтеста',
+      tooltip: 'text.test.for.eumk.hint',
     },
     {
       name: 'text.test.for.nn',
       value: TestType.ForNN,
-      tooltip: 'Позволяет определять плохо изученные темы обучающимся',
+      tooltip: 'text.test.for.nn.hint',
     },
   ]
 

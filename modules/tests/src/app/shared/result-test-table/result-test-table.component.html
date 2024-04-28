@@ -61,13 +61,11 @@
               class="mat-header-cell-description"
               >{{ 'text.students' | translate: 'Студенты' }}</mat-header-cell
             >
-            <mat-cell
-              *matCellDef="let element; let index = index"
-              class="mat-header-cell-description"
-            >
+            <mat-cell *matCellDef="let element; let index = index"
+                      class="mat-header-cell-description">
               {{
                 index === studentResults.length - 1
-                  ? 'Средняя оценка (процент) за тест'
+                  ? ('text.test.result.percent' | translate:'Средняя оценка (процент) за тест')
                   : element[1].name
               }}
             </mat-cell>
