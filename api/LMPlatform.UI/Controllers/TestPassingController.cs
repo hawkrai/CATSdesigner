@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Web.Mvc;
 using Application.Core;
+using Application.Core.Constants;
 using Application.Core.Helpers;
 using Application.Core.SLExcel;
 using Application.Core.UI.Controllers;
@@ -47,19 +48,19 @@ namespace LMPlatform.UI.Controllers
             var description = new
             {
               
-                test.Title, test.Description,test.Id
+                test.Title, test.Description, OngoingTestId = 0
                
             };
             int idUser = UserContext.CurrentUserId;
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
-            if (user.OngoingTest != null)
+            if (UserContext.Role == Constants.Roles.Student && user.OngoingTest != null)
             {
                 description = new
                 {
                     Title = "Тест " + TestsManagementService.GetTest(user.OngoingTest.Value).Title + " уже запущен в Вашей учетной записи",
                     Description = "Завершите тест и попробуйте еще раз",
-                    Id = user.OngoingTest.Value
+                    OngoingTestId = user.OngoingTest.Value
                 };
             }                      
             
