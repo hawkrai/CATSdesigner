@@ -39,6 +39,7 @@
   "text.test.for.eumk": "Test for training at EUMK",
   "text.tests.for.nn": "Tests for training with an artificial neural network",
   "text.test.for.nn": "Test for training with artificial neural network",
+
   "text.test.want.to.delete": "Are you sure you want to delete the question?",
   "text.test.yes": "Yes",
   "text.test.create.nn": "Create an artificial neural network",
