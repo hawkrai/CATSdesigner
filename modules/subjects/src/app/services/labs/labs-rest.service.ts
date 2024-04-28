@@ -7,17 +7,18 @@ import {
 } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+import {Lab} from "../../models/lab.model";
+import {ScheduleProtectionLab} from "../../models/schedule-protection/schedule-protection-lab.model";
+import {SubGroup} from "../../models/group.model";
+import {StudentMark} from "../../models/student-mark.model";
+import {CreateLessonEntity} from "../../models/form/create-lesson-entity.model";
+import {UserLabFile} from "../../models/user-lab-file.model";
+import {StudentJobProtection} from "../../models/job-protection/student-job-protection.mode";
+import {GroupJobProtection} from "../../models/job-protection/group-job-protection.model";
+import {HasGroupJobProtection} from "../../models/job-protection/has-group-job-protection.model";
 
-import { CreateLessonEntity } from './../../models/form/create-lesson-entity.model'
-import { StudentMark } from './../../models/student-mark.model'
-import { Lab } from '../../models/lab.model'
-import { UpdateLab } from 'src/app/models/form/update-lab.model'
-import { UserLabFile } from 'src/app/models/user-lab-file.model'
-import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model'
-import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model'
-import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model'
-import { SubGroup } from 'src/app/models/sub-group.model'
-import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode'
+
+
 
 @Injectable({
   providedIn: 'root',
@@ -97,8 +98,8 @@ export class LabsRestService {
     })
   }
 
-  public updateLabs(labs: UpdateLab[]) {
-    return this.http.post('Services/Labs/LabsService.svc/UpdateLabs', { labs })
+  public updateLabs(labs) {
+    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLab', { ...labs })
   }
 
   public deleteLab(lab: { id: number; subjectId: number }) {
@@ -118,7 +119,9 @@ export class LabsRestService {
       body
     )
   }
-
+  public saveDateLab(data: any) {
+    return this.http.post('Services/Schedule/ScheduleService.SVC/SaveDateLab', data);
+  }
   public setLabsMark(body: {
     studentId: number
     labId: number

@@ -9,7 +9,6 @@ import {
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { CreateLessonEntity } from 'src/app/models/form/create-lesson-entity.model'
-import { PracticalVisitingMark } from 'src/app/models/visiting-mark/practical-visiting-mark.model'
 import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model'
 import { StudentMark } from 'src/app/models/student-mark.model'
 import { HasGroupJobProtection } from 'src/app/models/job-protection/has-group-job-protection.model'
@@ -87,6 +86,9 @@ export class PracticalRestService {
       'Services/Practicals/PracticalService.svc/Save',
       practicalLesson
     )
+  }
+  public updatePractical(prac) {
+    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDatePractical', { ...prac })
   }
 
   public deletePractical(practicalLesson: {

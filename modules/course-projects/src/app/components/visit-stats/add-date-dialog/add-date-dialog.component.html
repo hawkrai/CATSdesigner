@@ -31,16 +31,13 @@
     </mat-form-field>
 
     <mat-form-field class="form-field">
-      <mat-label>{{
-        'text.course.percentages.list.stage.lecturer' | translate: 'Лектор'
-      }}</mat-label>
-      <mat-select [formControl]="lecturerIdControl">
+      <mat-label>Lecturer</mat-label>
+      <mat-select [(ngModel)]="data.lecturerId" [formControl]="lecturerIdControl">
         <mat-option *ngFor="let lector of lectors" [value]="lector.LectorId">
-          <span class="icon-container">
-            {{ lector.FullName }}
-          </span>
+          {{ lector.FullName }}
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="lecturerIdControl.hasError('required')">Lecturer is required</mat-error>
     </mat-form-field>
   </div>
 
@@ -126,30 +123,41 @@
     class="mdc-data-table add-date__table-container mat-elevation-z8"
     *ngIf="data.consultations && data.consultations.length"
   >
+    <ng-container *ngFor="let day of data.consultations">
+    <app-edit
+      *ngIf="showEditPopover && selectedDay === day"
+      [day]="day"
+      [lectors]="lectors"
+      (close)="closeEditPopover($event)">
+    </app-edit>
     <table class="mdc-data-table__table">
+
       <tbody class="mdc-data-table__content">
-        <tr class="mdc-data-table__row" *ngFor="let day of data.consultations">
-          <td class="mdc-data-table__cell">
-            {{ day.Day | date: 'dd.MM.yyyy' }}
-            <mat-hint *ngIf="day.StartTime && day.EndTime"
-              >{{ day.StartTime.slice(0, 5) }}-{{
-                day.EndTime.slice(0, 5)
-              }}</mat-hint
-            >
-          </td>
-          <td class="mdc-data-table__cell add-date__table-action">
-            <button
-              mat-icon-button
-              color="primary"
-              class="add-date__table-detele-button"
-              [matTooltip]="'date.delete' | translate: 'Удалить дату'"
-            >
-              <mat-icon (click)="deleteDate(day.Id)">delete</mat-icon>
-            </button>
-          </td>
-        </tr>
+
+      <tr class="mdc-data-table__row">
+        <td class="mdc-data-table__cell">
+          {{ day.Date }}
+          <mat-hint *ngIf="day.StartTime && day.EndTime">
+            {{ day.StartTime }}-{{ day.EndTime }}
+          </mat-hint>
+        </td>
+        <td class="mdc-data-table__cell visit-date__table-action">
+          <button mat-icon-button color="primary" [matTooltip]="'date.edit' | translate: 'Редактировать дату'"
+                  [disabled]="isEditing && selectedDay !== day"
+                  (click)="editPopover(day) ">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate: 'Удалить дату'"
+                  [disabled]="isEditing && selectedDay !== day"
+                  (click)="deleteDate(day.Id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+
       </tbody>
     </table>
+    </ng-container>
   </div>
 </div>
 

@@ -1,0 +1,165 @@
+<form [formGroup]="dateForm" class="form">
+  <div class="form-container">
+    <div class="form-group">
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'date' | translate: 'Дата' }}</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="date"
+          readonly
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <div
+        *ngIf="
+              (dateForm.get('date').touched || dateForm.get('date').dirty) &&
+              dateForm.get('date').errors
+            "
+        class="form-error"
+      >
+        <mat-error *ngIf="dateForm.get('date').hasError('required')">{{
+          'date.required' | translate: 'Дата обязательна'
+          }}</mat-error>
+      </div>
+    </div>
+    <div class="form-group">
+      <mat-form-field class="full-width">
+        <mat-label>{{
+          'text.subjecs.lector' | translate: 'Преподаватель'
+          }}</mat-label>
+        <mat-select formControlName="lecturerId">
+          <mat-option
+            *ngFor="let lector of lectors"
+            [value]="lector.LectorId"
+          >
+                <span class="icon-container">
+                  {{ lector.FullName }}
+                </span>
+          </mat-option>
+          <!-- <mat-select-trigger *ngIf="state.group">
+        </mat-select-trigger> -->
+        </mat-select>
+      </mat-form-field>
+      <div
+        *ngIf="
+              (dateForm.get('lecturerId').touched ||
+                dateForm.get('lecturerId').dirty) &&
+              dateForm.get('lecturerId').errors
+            "
+        class="form-error"
+      >
+        <mat-error
+          *ngIf="dateForm.get('lecturerId').hasError('lecturerId')"
+        >{{
+          'lecturer.required' | translate: 'Выберете преподавателя'
+          }}</mat-error
+        >
+      </div>
+    </div>
+  </div>
+  <div class="form-container">
+    <div class="form-group">
+      <mat-form-field class="full-width">
+        <mat-label>{{
+          'lesson.start' | translate: 'Начало занятия'
+          }}</mat-label>
+        <input matInput formControlName="startTime" type="time" />
+      </mat-form-field>
+      <div
+        *ngIf="
+              (dateForm.get('startTime').touched ||
+                dateForm.get('startTime').dirty) &&
+              dateForm.get('startTime').errors
+            "
+        class="form-error"
+      >
+        <mat-error *ngIf="dateForm.get('startTime').hasError('required')">{{
+          'lesson.start.required' | translate: 'Начало занятия обязательно'
+          }}</mat-error>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field class="full-width">
+        <mat-label>{{
+          'lesson.end' | translate: 'Конец занятия'
+          }}</mat-label>
+        <input matInput type="time" formControlName="endTime" />
+      </mat-form-field>
+      <div
+        *ngIf="
+              (dateForm.get('endTime').touched ||
+                dateForm.get('endTime').dirty) &&
+              dateForm.get('endTime').errors
+            "
+        class="form-error"
+      >
+        <mat-error *ngIf="dateForm.get('endTime').hasError('required')">{{
+          'lesson.end.required' | translate: 'Конец занятия обязательно'
+          }}</mat-error>
+      </div>
+    </div>
+  </div>
+  <div class="form-container">
+    <div class="form-group">
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'lesson.building' | translate: 'Корпус' }}</mat-label>
+        <input
+          formControlName="building"
+          type="text"
+          matInput
+          [placeholder]="'lesson.building' | translate: 'Корпус'"
+        />
+      </mat-form-field>
+      <div
+        *ngIf="
+              (dateForm.get('building').touched ||
+                dateForm.get('building').dirty) &&
+              dateForm.get('building').errors
+            "
+        class="form-error"
+      >
+        <mat-error *ngIf="dateForm.get('building').hasError('building')">{{
+          'building.required' | translate: 'Корпус обязателен'
+          }}</mat-error>
+        <mat-error *ngIf="dateForm.get('building').hasError('minLength')"
+        >{{
+          'sybmols.min.length'
+            | translate: 'Минимальное количество символов'
+          }}: 1</mat-error
+        >
+        <mat-error *ngIf="dateForm.get('building').hasError('maxLength')"
+        >{{
+          'sybmols.max.length'
+            | translate: 'Максимальное количество символов'
+          }}: 5</mat-error
+        >
+      </div>
+    </div>
+    <div class="form-group">
+      <mat-form-field class="full-width">
+        <mat-label>{{
+          'lesson.audience' | translate: 'Аудитория'
+          }}</mat-label>
+        <input
+          formControlName="audience"
+          type="text"
+          matInput
+          [placeholder]="'lesson.audience' | translate: 'Аудитория'"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="button-container">
+    <mat-icon (click)="onSubmit()" style="color: green; cursor: pointer;">check</mat-icon>
+    <mat-icon (click)="onClose()" style="color: red; cursor: pointer;">close</mat-icon>
+  </div>
+
+
+
+</form>

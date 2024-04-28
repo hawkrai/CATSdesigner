@@ -62,10 +62,13 @@ import { HelpComponent } from './shared/help/help.component'
 import { PopoverModule } from 'ngx-smart-popover'
 import { HelpPopoverScheduleComponent } from './shared/help-popover/help-popover-schedule.component'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
+
 // @ts-ignore
 import * as dataEn from './translate/translations_en.json'
 // @ts-ignore
 import * as dataRu from './translate/translations_ru.json'
+import {EditPopoverComponent} from "./components/visit-stats/edit-popover/edit-popover.component";
+
 
 @NgModule({
   declarations: [
@@ -77,6 +80,7 @@ import * as dataRu from './translate/translations_ru.json'
     PercentageResultsComponent,
     PercentageResultsListComponent,
     TaskSheetComponent,
+    EditPopoverComponent,
     VisitStatsComponent,
     VisitStatsListComponent,
     EditPercentageDialogComponent,
@@ -147,6 +151,7 @@ import * as dataRu from './translate/translations_ru.json'
     AddDateDialogComponent,
     ConfirmDialogComponent,
     AddStageDialogComponent,
+    EditPopoverComponent,
     AddProjectDialogComponent,
     AssignProjectDialogComponent,
     EditTaskSheetComponent,
