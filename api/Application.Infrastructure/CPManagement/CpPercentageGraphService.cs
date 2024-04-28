@@ -245,7 +245,7 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId, int consultationId)
+        public CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId, int? consultationId)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);;
 
@@ -258,7 +258,7 @@ namespace Application.Infrastructure.CPManagement
 
             if (courseProjectConsultationDate == null)
             {
-                if (consultationId != null)
+                if (!consultationId.HasValue)
                 {
                     Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
                     {
@@ -273,7 +273,7 @@ namespace Application.Infrastructure.CPManagement
                     });
                 } else
                 {
-                   var courseProjectConsultationDateData = Context.CourseProjectConsultationDates.Find(consultationId);
+                   var courseProjectConsultationDateData = Context.CourseProjectConsultationDates.Find(consultationId.Value);
                    if(courseProjectConsultationDateData != null)
                     {
                         courseProjectConsultationDateData.Day = date;

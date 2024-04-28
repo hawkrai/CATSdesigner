@@ -5,7 +5,7 @@ export class Consultation {
   SubjectId: string
   StartTime: string
   EndTime: string
-  Building: string | number
+  Building: string
   Audience: string
   isClose?: boolean
 }

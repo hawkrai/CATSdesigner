@@ -22,7 +22,7 @@ using LMPlatform.UI.Attributes;
 using LMPlatform.UI.Services.Modules.Concept;
 using LMPlatform.UI.ViewModels.KnowledgeTestingViewModels;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
-using WebMatrix.WebData;
+using Application.Core.Constants;
 
 namespace LMPlatform.UI.Controllers
 {
@@ -250,7 +250,7 @@ namespace LMPlatform.UI.Controllers
             int idUser = UserContext.CurrentUserId;            
             var _context = new UsersManagementService();
             var user = _context.GetUserById(idUser);
-            if (test.BeforeEUMK == false && test.ForEUMK == false && test.ForNN == false && test.ForSelfStudy == false)
+            if (UserContext.Role == Constants.Roles.Student && test.BeforeEUMK == false && test.ForEUMK == false && test.ForNN == false && test.ForSelfStudy == false)
             {
                 if(user.OngoingTest != null)
                 {
