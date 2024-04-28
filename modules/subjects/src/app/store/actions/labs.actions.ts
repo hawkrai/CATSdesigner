@@ -9,7 +9,7 @@ import { GroupJobProtection } from 'src/app/models/job-protection/group-job-prot
 
 import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode'
 import { Protection } from 'src/app/models/protection.model'
-import {SubGroup} from "src/app/models/group.model";
+
 
 export const loadLabs = createAction('[Labs] Load Labs')
 
@@ -221,7 +221,7 @@ export const cancelLabFileSuccess = createAction(
 
 export const setLabsSubGroups = createAction(
   '[Labs] Set Labs SubGroups',
-  props<{ subGroups:SubGroup[] }>()
+  props<{ subGroups }>()
 )
 
 export const loadLabsSubGroups = createAction('[Labs] Load Labs SubGroups')
