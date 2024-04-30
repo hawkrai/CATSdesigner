@@ -123,7 +123,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
         facultyControl: new FormControl(this.data.taskSheet.Faculty, [
           Validators.maxLength(255),
         ]),
-        departmentControl: new FormControl(this.data.taskSheet.Faculty, [
+        departmentControl: new FormControl(this.data.taskSheet.CathedraName, [
           Validators.maxLength(255),
         ]),
         headCathedraControl: new FormControl(this.data.taskSheet.HeadCathedra, [
@@ -183,6 +183,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
         this.formGroup.controls.drawContentControl.setValue(res.DrawMaterials)
         this.formGroup.controls.univerControl.setValue(res.Univer)
         this.formGroup.controls.facultyControl.setValue(res.Faculty)
+        this.formGroup.controls.departmentControl.setValue(res.CathedraName)
         this.formGroup.controls.headCathedraControl.setValue(res.HeadCathedra)
         this.formGroup.controls.startDateControl.setValue(res.DateStart)
         this.formGroup.controls.endDateControl.setValue(res.DateEnd)
@@ -252,6 +253,7 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
     taskSheet.RpzContent = this.formGroup.get('contentControl').value
     taskSheet.DrawMaterials = this.formGroup.get('drawContentControl').value
     taskSheet.Univer = this.formGroup.get('univerControl').value
+    taskSheet.CathedraName = this.formGroup.get('departmentControl').value
     taskSheet.Faculty = this.formGroup.get('facultyControl').value
     taskSheet.HeadCathedra = this.formGroup.get('headCathedraControl').value
     taskSheet.DateStart = this.getDate(
