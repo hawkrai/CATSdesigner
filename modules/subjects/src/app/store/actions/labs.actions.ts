@@ -10,7 +10,6 @@ import { StudentJobProtection } from 'src/app/models/job-protection/student-job-
 import { Protection } from 'src/app/models/protection.model'
 import {SubGroup} from "../../models/sub-group.model";
 
-
 export const loadLabs = createAction('[Labs] Load Labs')
 
 export const loadLabsSuccess = createAction(
