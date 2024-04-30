@@ -3,10 +3,8 @@ import {
   MAT_DIALOG_DATA,
   MatDialog,
   MatDialogRef,
-  MatSnackBar,
 } from '@angular/material'
 import { FormControl, Validators } from '@angular/forms'
-import { Time } from '@angular/common'
 import { VisitStatsService } from 'src/app/services/visit-stats.service'
 import { Consultation } from 'src/app/models/consultation.model'
 import { TranslatePipe } from 'educats-translate'
@@ -103,20 +101,21 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }
 
   initControls(): void {
-    const data = this.data.consultations[0]
+    const data = this.data.consultations[0];
     if (data) {
-      this.data.audience = data.Audience
-      this.data.building = data.Building
-      this.data.end = data.EndTime
-      this.data.start = data.StartTime
-      this.data.lecturerId = data.LecturerId
-      this.lecturerIdControl.setValue(this.data.lecturerId)
+      this.audienceControl.setValue(data.Audience);
+      this.buildingControl.setValue(data.Building);
+      this.startTimeControl.setValue(data.StartTime);
+      this.endTimeControl.setValue(data.EndTime);
+      this.lecturerIdControl.setValue(data.LecturerId);
+      this.dateControl.setValue(new Date(data.Day));
     }
   }
 
   onDateChange(date: any) {
-    this.data.date = date
+    this.data.date = date;
   }
+
 
   onCancelClick(): void {
     const date = new Date(this.data.date)
@@ -151,15 +150,19 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.data.consultations = this.data.consultations.sort((a, b) =>
         a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
       )
+
       this.visitStatsService
         .addDate(
+          null,
           date.toISOString(),
           this.data.subjectId,
           this.data.groupId,
           this.data.start,
           this.data.end,
           this.data.audience,
-          this.data.building
+          this.data.building,
+          this.data.lecturerId,
+
         )
         .subscribe(() => {
           this.addFlashMessage(
@@ -175,6 +178,22 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   addFlashMessage(msg: string) {
     this.toastr.success(msg)
   }
+  selectedDay: any;
+  isEditing: boolean = false;
+  showEditPopover: boolean = false;
+
+  editPopover(day: any) {
+    this.selectedDay = day;
+    this.isEditing = true;
+    this.showEditPopover = true;
+  }
+
+  closeEditPopover(event: any) {
+    this.isEditing = false;
+    this.showEditPopover = false;
+  }
+
+
 
   deleteDate(id: string): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

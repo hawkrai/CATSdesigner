@@ -12,7 +12,7 @@
 }
 
 .cdk-global-overlay-wrapper {
-  display: flex;
+  display: -webkit-box;
   position: absolute;
   z-index: 1000;
   overflow: auto;
@@ -70,3 +70,8 @@
 .mat-snack-bar-container {
   background: #3d497b;
 }
+
+.mat-tooltip {
+  font-size: 14px;
+}
+

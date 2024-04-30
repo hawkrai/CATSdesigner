@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -9,14 +10,17 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Web;
+using System.Web.WebPages;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
 using LMPlatform.Models;
 using LMPlatform.Models.CP;
 using Microsoft.Office.Interop.Word;
+using Nest;
 using Font = System.Drawing.Font;
 
 namespace Application.Infrastructure.Export
@@ -104,10 +108,14 @@ namespace Application.Infrastructure.Export
 
         #region Export Html view
 
-        public static string CourseProjectToDocView(CourseProject work)
+        public static string CourseProjectToDocView(CourseProject work, string language)
         {
             var sb = new StringBuilder();
-            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
+            if (language != "en")
+            {
+                language = "ru";
+            }
+            var cinfo = CultureInfo.CreateSpecificCulture(language);
             var doc = CourseProjectToXml(work, cinfo);
             var xslt = new XslTransform();
             var url = string.Format("{0}.Export.cptasklist.xslt", Assembly.GetExecutingAssembly().GetName().Name);
@@ -126,10 +134,10 @@ namespace Application.Infrastructure.Export
             return sb.ToString();
         }
 
-        public static string CourseProjectToDocView(AssignedCourseProject work)
+        public static string CourseProjectToDocView(AssignedCourseProject work, string language)
         {
             var sb = new StringBuilder();
-            var cinfo = CultureInfo.CreateSpecificCulture("ru-ru");
+            var cinfo = CultureInfo.CreateSpecificCulture(language);
             var doc = CourseProjectToXml(work, cinfo);
             var xslt = new XslTransform();
             var url = string.Format("{0}.Export.cptasklist.xslt", Assembly.GetExecutingAssembly().GetName().Name);
@@ -174,6 +182,11 @@ namespace Application.Infrastructure.Export
             head.InnerText = work.HeadCathedra;
             children.Add(head);
 
+            var cathedra = doc.CreateElement("item");
+            cathedra.SetAttribute("name", "CathedraName");
+            cathedra.InnerText = work.CathedraName;
+            children.Add(cathedra);
+
             children.AddRange(CreateStringNodes(doc, "InputData", work.InputData, 30, 638,8));
 
             children.AddRange(CreateStringNodes(doc, "RPZContent", work.RpzContent, 30, 638, 16));
@@ -213,6 +226,17 @@ namespace Application.Infrastructure.Export
             var children = new List<XmlElement>();
 
             children.AddRange(CreateStringNodes(doc, "Theme", awork.CourseProject.Theme, 1256, 638, 5));
+
+            ResourceManager resourceManager = new ResourceManager("Application.Infrastructure.Export.CPTaskListResources.CPTaskList", Assembly.GetExecutingAssembly());
+            ResourceSet resourceSet = resourceManager.GetResourceSet(cultureInfo, true, true);
+            
+            foreach (DictionaryEntry entry in resourceSet)
+            {
+                var element = doc.CreateElement("resource");
+                element.SetAttribute("name", entry.Key.ToString());
+                element.InnerText = entry.Value.ToString();
+                children.Add(element);
+            }
 
             var student = doc.CreateElement("item");
             student.SetAttribute("name", "Student");
@@ -262,6 +286,11 @@ namespace Application.Infrastructure.Export
             head.SetAttribute("name", "HeadCathedra");
             head.InnerText = awork.CourseProject.HeadCathedra;
             children.Add(head);
+
+            var cathedra = doc.CreateElement("item");
+            cathedra.SetAttribute("name", "CathedraName");
+            cathedra.InnerText = awork.CourseProject.CathedraName;
+            children.Add(cathedra);
 
             children.AddRange(CreateStringNodes(doc, "InputData", awork.CourseProject.InputData, 30, 638, 8));
 

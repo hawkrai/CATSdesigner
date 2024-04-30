@@ -14,7 +14,7 @@ namespace Application.Infrastructure.CPManagement
 
         List<PercentageGraphData> GetPercentageGraphsForLecturerAll(int userId, GetPagedListParams parms);
 
-        List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId);
+        List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int groupId);
 
         void SavePercentage(int userId, PercentageGraphData percentageData);
 
@@ -26,7 +26,7 @@ namespace Application.Infrastructure.CPManagement
 
         void SaveConsultationMark(int userId, CourseProjectConsultationMarkData consultationMarkData);
 
-        CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId);
+        CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId, int? consultationId);
 
         void DeleteConsultationDate(int userId, int id);
     }

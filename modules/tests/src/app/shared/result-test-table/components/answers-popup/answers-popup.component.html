@@ -46,11 +46,13 @@
       }}
     </div>
     <div>
-      {{
+      <i>
+        {{
         answer.Points === 0
           ? ('text.test.popup.not.right' | translate: 'Неверно')
           : ('text.test.popup.right' | translate: 'Верно')
-      }}
+        }}
+      </i>
     </div>
   </div>
   <div mat-dialog-actions>

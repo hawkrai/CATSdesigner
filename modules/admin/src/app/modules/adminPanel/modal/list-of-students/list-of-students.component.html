@@ -30,17 +30,23 @@
               'text.adminPanel.modal.listOfStudents.headers.status' | translate
             }}
           </th>
-          <td class="table-container" mat-cell *matCellDef="let element">
-            <p *ngIf="this.isConfimed(element.Confirmed)">
+          <td class="table-container" mat-cell *matCellDef="let element" id="name">
+            <p *ngIf="this.isConfimed(element.Confirmed) && this.isActive(element.isActive)">
               {{
                 'text.adminPanel.modal.listOfStudents.status.confirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="!this.isConfimed(element.Confirmed)">
+            <p *ngIf="!this.isConfimed(element.Confirmed) && this.isActive(element.isActive)" id="name">
               {{
                 'text.adminPanel.modal.listOfStudents.status.notConfirmed'
                   | translate
+              }}
+            </p>
+            <p *ngIf="!this.isActive(element.isActive)" id="name">
+              {{
+              'text.adminPanel.modal.listOfStudents.status.deleted'
+                 | translate
               }}
             </p>
           </td>
@@ -50,5 +56,11 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
+    <mat-dialog-actions>
+      <button mat-raised-button class="cancel" (click)="onNoClick()">
+        {{ 'button.close' | translate }}
+      </button>
+    </mat-dialog-actions>
   </div>
+  
 </div>

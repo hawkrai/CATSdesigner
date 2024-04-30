@@ -17,10 +17,15 @@ namespace Application.Infrastructure.CPManagement
     {
         private readonly LazyDependency<ICpContext> context = new LazyDependency<ICpContext>();
 
+        private readonly LazyDependency<ICPManagementService> _courseProjectManagementService = new LazyDependency<ICPManagementService>();
+
         private ICpContext Context
         {
             get { return context.Value; }
         }
+
+        private ICPManagementService CpManagementService =>
+            _courseProjectManagementService.Value;
 
         public PagedList<PercentageGraphData> GetPercentageGraphs(int userId, GetPagedListParams parms)
         {
@@ -95,26 +100,11 @@ namespace Application.Infrastructure.CPManagement
                 .ToList();
         }
 
-        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId)
+        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int groupId)
         {
-            if (AuthorizationHelper.IsStudent(Context, userId))
-            {
-                var student = Context.Students
-                    .Include(x => x.AssignedCourseProjects.Select(adp => adp.CourseProject))
-                    .Single(x => x.User.Id == userId);
-                if (student.AssignedCourseProjects.Count == 0)
-                {
-                    return new List<CourseProjectConsultationDateData>();
-                }
-
-                userId = student.AssignedCourseProjects.First().CourseProject.LecturerId ?? 0;
-            }
-
-            return Context.CourseProjectConsultationDates
+            var consultations = Context.CourseProjectConsultationDates
                 .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
-                .Where(x => x.LecturerId == userId)
-                .Where(x => x.SubjectId == subjectId)
-                .Where(x => x.GroupId.HasValue ? x.GroupId.Value == groupId : false)
+                .Where(x => x.LecturerId == userId || x.GroupId == groupId)
                 .OrderBy(x => x.Day)
                 .Select(x => new CourseProjectConsultationDateData
                 {
@@ -129,6 +119,13 @@ namespace Application.Infrastructure.CPManagement
                     GroupId = x.GroupId.HasValue ? x.GroupId.Value : 0
                 })
                 .ToList();
+
+            foreach (var consultation in consultations)
+            {
+                consultation.Subject = CpManagementService.GetSubject(consultation.SubjectId);
+            }
+
+            return consultations;
         }
 
         /// <summary>
@@ -248,7 +245,7 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId)
+        public CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId, int? consultationId)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);;
 
@@ -256,23 +253,39 @@ namespace Application.Infrastructure.CPManagement
                 .Where(x => x.EndTime.HasValue && x.StartTime.HasValue && x.GroupId != null)
                 .Where(x => TimeSpan.Compare(x.StartTime.Value, startTime.Value) <= 0 && TimeSpan.Compare(x.EndTime.Value, startTime.Value) >= 0)
                 .Where(x => x.Day.Day == date.Day && x.Day.Month == date.Month && x.Day.Year == date.Year)
-                .Where(x => x.Audience == audience)
+                .Where(x => x.Audience == audience && x.Building == buildingNumber)
                 .FirstOrDefault();
 
             if (courseProjectConsultationDate == null)
             {
-                Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
+                if (!consultationId.HasValue)
                 {
-                    Day = date,
-                    LecturerId = userId,
-                    SubjectId = subjectId,
-                    StartTime = startTime,
-                    EndTime = endTime,
-                    Audience = audience,
-                    Building = buildingNumber,
-                    GroupId = groupId
-
-                });
+                    Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
+                    {
+                        Day = date,
+                        LecturerId = userId,
+                        SubjectId = subjectId,
+                        StartTime = startTime,
+                        EndTime = endTime,
+                        Audience = audience,
+                        Building = buildingNumber,
+                        GroupId = groupId
+                    });
+                } else
+                {
+                   var courseProjectConsultationDateData = Context.CourseProjectConsultationDates.Find(consultationId.Value);
+                   if(courseProjectConsultationDateData != null)
+                    {
+                        courseProjectConsultationDateData.Day = date;
+                        courseProjectConsultationDateData.LecturerId = userId;
+                        courseProjectConsultationDateData.SubjectId = subjectId;
+                        courseProjectConsultationDateData.StartTime = startTime;
+                        courseProjectConsultationDateData.EndTime = endTime;
+                        courseProjectConsultationDateData.Audience = audience;
+                        courseProjectConsultationDateData.Building = buildingNumber;
+                        courseProjectConsultationDateData.GroupId = groupId;
+                    }
+                }
 
                 Context.SaveChanges();
             }

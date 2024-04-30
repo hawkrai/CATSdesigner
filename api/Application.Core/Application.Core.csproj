@@ -163,6 +163,8 @@
     <Compile Include="Exceptions\ApplicationServiceException.cs" />
     <Compile Include="Exceptions\ApplicationUIException.cs" />
     <Compile Include="Exceptions\DataException.cs" />
+    <Compile Include="Exceptions\DuplicateDPThemeInGroupException.cs" />
+    <Compile Include="Exceptions\DuplicateDPThemeInLecturerException.cs" />
     <Compile Include="Exceptions\SortCriteriaException.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtendedExtensions.cs" />

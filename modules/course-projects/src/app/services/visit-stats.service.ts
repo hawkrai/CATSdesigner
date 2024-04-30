@@ -33,7 +33,7 @@ export class VisitStatsService {
 
   public getJoinedLector(
     subjectId: string,
-    loadSelf: boolean = false
+    loadSelf: boolean = true
   ): Observable<
     {
       LectorId: number
@@ -66,15 +66,18 @@ export class VisitStatsService {
   }
 
   public addDate(
+    id: number | null,
     date: string,
     subjectId: string,
     groupId: string,
     startTime: string,
     endTime: string,
     audience: string,
-    building: string
+    building: string,
+    LecturerId:number| string
   ): Observable<any> {
     return this.http.post('api/CourseProjectConsultationDate', {
+      Id:id,
       Day: date,
       SubjectId: subjectId,
       GroupId: groupId,
@@ -82,6 +85,7 @@ export class VisitStatsService {
       EndTime: endTime,
       Building: building,
       Audience: audience,
+      LecturerId:LecturerId
     })
   }
 

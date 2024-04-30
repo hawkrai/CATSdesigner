@@ -6,6 +6,7 @@ using Application.Core.Data;
 using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
+using Application.Infrastructure.UserManagement;
 using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
@@ -17,39 +18,31 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         private readonly LazyDependency<ICpPercentageGraphService> _percentageService = new LazyDependency<ICpPercentageGraphService>();
 
+        private readonly LazyDependency<IUsersManagementService> _userManagementService = new LazyDependency<IUsersManagementService>();
+
         private ICPManagementService CpManagementService =>
             _courseProjectManagementService.Value;
 
         private ICpPercentageGraphService PercentageService =>
             _percentageService.Value;
 
-        public CourseProjectConsultationData Get([System.Web.Http.ModelBinding.ModelBinder]GetPagedListParams parms)
+        private IUsersManagementService UserManagementService =>
+            _userManagementService.Value;
+
+        public CourseProjectConsultationData Get([System.Web.Http.ModelBinding.ModelBinder] GetPagedListParams parms)
         {
-            var lecturerId = UserContext.CurrentUserId;
-
-            if (parms.Filters.ContainsKey("lecturerId"))
-            {
-                lecturerId = int.Parse(parms.Filters["lecturerId"]);
-            }
-
-            var subjectId = 0;
-
-            if (parms.Filters.ContainsKey("subjectId"))
-            {
-                subjectId = int.Parse(parms.Filters["subjectId"]);
-            }
+            var userId = UserContext.CurrentUserId;
 
             var groupId = 0;
-
-            if (parms.Filters.ContainsKey("groupId"))
+            if (UserContext.Role == "student")
             {
-                groupId = int.Parse(parms.Filters["groupId"]);
+                groupId = UserManagementService.GetUserById(userId).Student.GroupId;
             }
 
             return new CourseProjectConsultationData
             {
-                Students = CpManagementService.GetGraduateStudentsForGroup(lecturerId, groupId, subjectId, parms, false),
-                Consultations = PercentageService.GetConsultationDatesForUser(lecturerId, subjectId, groupId)
+                Students = CpManagementService.GetGraduateStudentsForGroup(userId, groupId, subjectId: 0, parms, false),
+                Consultations = PercentageService.GetConsultationDatesForUser(userId, groupId),
             };
         }
 
