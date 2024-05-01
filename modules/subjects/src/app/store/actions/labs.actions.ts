@@ -6,10 +6,9 @@ import { Lab } from '../../models/lab.model'
 import { ScheduleProtectionLab } from 'src/app/models/schedule-protection/schedule-protection-lab.model'
 import { HasJobProtection } from 'src/app/models/job-protection/has-job-protection.model'
 import { GroupJobProtection } from 'src/app/models/job-protection/group-job-protection.model'
-
 import { StudentJobProtection } from 'src/app/models/job-protection/student-job-protection.mode'
 import { Protection } from 'src/app/models/protection.model'
-import {SubGroup} from "src/app/models/group.model";
+import {SubGroup} from "../../models/sub-group.model";
 
 export const loadLabs = createAction('[Labs] Load Labs')
 

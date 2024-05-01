@@ -9,13 +9,13 @@ import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import {Lab} from "../../models/lab.model";
 import {ScheduleProtectionLab} from "../../models/schedule-protection/schedule-protection-lab.model";
-import {SubGroup} from "../../models/group.model";
 import {StudentMark} from "../../models/student-mark.model";
 import {CreateLessonEntity} from "../../models/form/create-lesson-entity.model";
 import {UserLabFile} from "../../models/user-lab-file.model";
 import {StudentJobProtection} from "../../models/job-protection/student-job-protection.mode";
 import {GroupJobProtection} from "../../models/job-protection/group-job-protection.model";
 import {HasGroupJobProtection} from "../../models/job-protection/has-group-job-protection.model";
+import {SubGroup} from "../../models/sub-group.model";
 
 
 
