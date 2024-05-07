@@ -48,6 +48,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public int SubjectsActiveCount { get; set; }
         public int SubjectsNotActiveCount { get; set; }
         public int SubjectsCount { get; set; }
+        public int OccupiedBySecretary { get; set; }
 
         public int Id { get; set; }
 
@@ -94,6 +95,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 SubjectsCount = group.SubjectGroups.Count(),
                 StartYear = group.StartYear,
                 GraduationYear = group.GraduationYear,
+                OccupiedBySecretary = group.SecretaryId.HasValue ? group.SecretaryId.Value : 0,
                 HtmlLinks = new HtmlString(htmlLinks)
             };
         }
