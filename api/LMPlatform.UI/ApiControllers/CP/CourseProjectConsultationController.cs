@@ -31,18 +31,31 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public CourseProjectConsultationData Get([System.Web.Http.ModelBinding.ModelBinder] GetPagedListParams parms)
         {
-            var userId = UserContext.CurrentUserId;
+            var lecturerId = UserContext.CurrentUserId;
+
+            if (parms.Filters.ContainsKey("lecturerId"))
+            {
+                lecturerId = int.Parse(parms.Filters["lecturerId"]);
+            }
+
+            var subjectId = 0;
+
+            if (parms.Filters.ContainsKey("subjectId"))
+            {
+                subjectId = int.Parse(parms.Filters["subjectId"]);
+            }
 
             var groupId = 0;
-            if (UserContext.Role == "student")
+
+            if (parms.Filters.ContainsKey("groupId"))
             {
-                groupId = UserManagementService.GetUserById(userId).Student.GroupId;
+                groupId = int.Parse(parms.Filters["groupId"]);
             }
 
             return new CourseProjectConsultationData
             {
-                Students = CpManagementService.GetGraduateStudentsForGroup(userId, groupId, subjectId: 0, parms, false),
-                Consultations = PercentageService.GetConsultationDatesForUser(userId, groupId),
+                Students = CpManagementService.GetGraduateStudentsForGroup(lecturerId, groupId, subjectId, parms, false),
+                Consultations = PercentageService.GetConsultationDatesForUser(lecturerId, subjectId, groupId)
             };
         }
 

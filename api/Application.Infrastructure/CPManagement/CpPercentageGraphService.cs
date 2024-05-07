@@ -100,11 +100,26 @@ namespace Application.Infrastructure.CPManagement
                 .ToList();
         }
 
-        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int groupId)
+        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId)
         {
-            var consultations = Context.CourseProjectConsultationDates
+            if (AuthorizationHelper.IsStudent(Context, userId))
+            {
+                var student = Context.Students
+                    .Include(x => x.AssignedCourseProjects.Select(adp => adp.CourseProject))
+                    .Single(x => x.User.Id == userId);
+                if (student.AssignedCourseProjects.Count == 0)
+                {
+                    return new List<CourseProjectConsultationDateData>();
+                }
+
+                userId = student.AssignedCourseProjects.First().CourseProject.LecturerId ?? 0;
+            }
+
+            return Context.CourseProjectConsultationDates
                 .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
-                .Where(x => x.LecturerId == userId || x.GroupId == groupId)
+                .Where(x => x.LecturerId == userId)
+                .Where(x => x.SubjectId == subjectId)
+                .Where(x => x.GroupId.HasValue ? x.GroupId.Value == groupId : false)
                 .OrderBy(x => x.Day)
                 .Select(x => new CourseProjectConsultationDateData
                 {
@@ -119,13 +134,6 @@ namespace Application.Infrastructure.CPManagement
                     GroupId = x.GroupId.HasValue ? x.GroupId.Value : 0
                 })
                 .ToList();
-
-            foreach (var consultation in consultations)
-            {
-                consultation.Subject = CpManagementService.GetSubject(consultation.SubjectId);
-            }
-
-            return consultations;
         }
 
         /// <summary>
