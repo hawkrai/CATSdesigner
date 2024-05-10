@@ -434,7 +434,7 @@ namespace LMPlatform.UI.Services.Labs
 
 			var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
 
-			var students = group.SubjectStudents.Select(x => x.Student).Where(e => e.Confirmed.HasValue && e.Confirmed.Value).OrderBy(x => x.LastName);
+			var students = group.SubjectStudents.Select(x => x.Student).Where(e => e.Confirmed.HasValue && e.Confirmed.Value && e.IsActive != false).OrderBy(x => x.LastName);
 
 			var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
 	
