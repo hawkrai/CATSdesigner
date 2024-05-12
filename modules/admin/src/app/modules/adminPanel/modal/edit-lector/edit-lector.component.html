@@ -86,7 +86,7 @@
           'text.adminPanel.modal.editLecturer.groupsSecretary' | translate
         }}</mat-label>
         <mat-select [formControl]="this.form.controls.SecGroupsIds" multiple>
-          <mat-option *ngFor="let group of this.groups" [value]="group.Id">{{
+          <mat-option *ngFor="let group of this.groups" [value]="group.Id" [disabled]="group.OccupiedBySecretary !== 0 && group.OccupiedBySecretary !== this.professor.Id">{{
             group.Name
           }}</mat-option>
         </mat-select>
