@@ -7,6 +7,7 @@ using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
 using Application.Infrastructure.UserManagement;
+using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
@@ -33,16 +34,33 @@ namespace LMPlatform.UI.ApiControllers.CP
         {
             var userId = UserContext.CurrentUserId;
 
+            if (parms.Filters.ContainsKey("lecturerId"))
+            {
+                userId = int.Parse(parms.Filters["lecturerId"]);
+            }
+
+            var subjectId = 0;
+
+            if (parms.Filters.ContainsKey("subjectId"))
+            {
+                subjectId = int.Parse(parms.Filters["subjectId"]);
+            }
+
             var groupId = 0;
-            if (UserContext.Role == "student")
+
+            if (parms.Filters.ContainsKey("groupId"))
+            {
+                groupId = int.Parse(parms.Filters["groupId"]);
+            } 
+            else if (UserContext.Role == "student")
             {
                 groupId = UserManagementService.GetUserById(userId).Student.GroupId;
             }
 
             return new CourseProjectConsultationData
             {
-                Students = CpManagementService.GetGraduateStudentsForGroup(userId, groupId, subjectId: 0, parms, false),
-                Consultations = PercentageService.GetConsultationDatesForUser(userId, groupId),
+                Students = CpManagementService.GetGraduateStudentsForGroup(userId, groupId, subjectId, parms, false),
+                Consultations = PercentageService.GetConsultationDatesForUser(userId, subjectId, groupId)
             };
         }
 

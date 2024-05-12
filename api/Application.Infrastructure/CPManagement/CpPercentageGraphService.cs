@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Extensions;
+using Application.Core.Helpers;
 using Application.Infrastructure.CTO;
 using LMPlatform.Data.Infrastructure;
 using LMPlatform.Models.CP;
@@ -100,11 +101,13 @@ namespace Application.Infrastructure.CPManagement
                 .ToList();
         }
 
-        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int groupId)
+        public List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId)
         {
             var consultations = Context.CourseProjectConsultationDates
                 .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
-                .Where(x => x.LecturerId == userId || x.GroupId == groupId)
+                .Where(x => UserContext.Role == "student" || x.LecturerId == userId)
+                .Where(x => subjectId == 0 || x.SubjectId == subjectId)
+                .Where(x => groupId == 0 || x.GroupId.HasValue && x.GroupId.Value == groupId)
                 .OrderBy(x => x.Day)
                 .Select(x => new CourseProjectConsultationDateData
                 {
@@ -119,7 +122,7 @@ namespace Application.Infrastructure.CPManagement
                     GroupId = x.GroupId.HasValue ? x.GroupId.Value : 0
                 })
                 .ToList();
-
+            
             foreach (var consultation in consultations)
             {
                 consultation.Subject = CpManagementService.GetSubject(consultation.SubjectId);
