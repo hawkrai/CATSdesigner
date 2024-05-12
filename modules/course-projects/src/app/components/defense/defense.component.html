@@ -105,6 +105,13 @@
                 role="columnheader"
                 scope="col"
               >
+                {{ 'text.date' | translate: 'Дата, время' }}
+              </th>
+              <th
+                class="mdc-data-table__header-cell"
+                role="columnheader"
+                scope="col"
+              >
                 {{ 'text.action' | translate: 'Действие' }}
               </th>
             </tr>
@@ -118,17 +125,17 @@
                 fix: studentFile.IsReturned
               }"
             >
-              <td class="mdc-data-table__cell">
-                <a
+              <td class="mdc-data-table__cell ">
+                <a class="mdc-file-name__cell"
                   href="api/Upload?filename={{
                     studentFile.Attachments[0].PathName
                   }}//{{ studentFile.Attachments[0].FileName }}"
-                  color="primary"
                 >
                   {{ studentFile.Attachments[0].Name }}
                 </a>
               </td>
               <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
+              <td class="mdc-data-table__cell">{{ studentFile.Date}}</td>
               <td class="mdc-data-table__cell">
                 <ng-container *ngIf="!studentFile.IsReturned">
                   <button
