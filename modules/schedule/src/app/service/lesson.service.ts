@@ -303,6 +303,7 @@ export class LessonService {
     audience: string,
     building: string,
     groupId: number,
+    id: string
   ): Observable<any> {
     return this.http.post('/api/CourseProjectConsultationDate', {
       Day: date,
@@ -312,6 +313,8 @@ export class LessonService {
       Building: building,
       Audience: audience,
       GroupId: groupId,
+      Id: id,
+      LecturerId: 0,
     })
   }
 
