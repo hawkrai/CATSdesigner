@@ -204,7 +204,7 @@
                 </button>
                 <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate: 'Удалить дату'"
                         [disabled]="isEditing && selectedDay !== day"
-                        (click)="deletePopover(day.id)">
+                        (click)="deletePopover(day)">
                   <mat-icon>delete</mat-icon>
                 </button>
               </td>
