@@ -7338,19 +7338,12 @@ namespace Application.Infrastructure.Export
 
             if (string.IsNullOrWhiteSpace(awork?.Student?.MiddleName))
             {
-                if (awork != null && awork.Student != null)
-                {
-                    var firstName = awork.Student.FirstName;
-                    var lastName = awork.Student.LastName;
+                var firstName = awork?.Student?.FirstName;
+                var lastName = awork?.Student?.LastName;
 
-                    if (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
-                    {
-                        text142.Text = string.Format("{0}. {1}", firstName[0], lastName);
-                    }
-                    else
-                    {
-                        text142.Text = "";
-                    }
+                if (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
+                {
+                    text142.Text = $"{firstName[0]}. {lastName}";
                 }
                 else
                 {
