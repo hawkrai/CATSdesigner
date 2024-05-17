@@ -18,6 +18,7 @@ using LMPlatform.UI.Services.Modules.CoreModels;
 using Application.Infrastructure.LabsManagement;
 using LMPlatform.UI.Services.Modules.Schedule;
 using Newtonsoft.Json;
+using LMPlatform.UI.Services.Modules.Practicals;
 
 namespace LMPlatform.UI.Services.Labs
 {
@@ -497,26 +498,30 @@ namespace LMPlatform.UI.Services.Labs
 								Mark = String.Empty
 							}).ToList()
 					}).ToList();
-					var durationCount = 0;
 
-					foreach (var lab in labsSubGroup)
-					{
-						var mark = 10;
-						durationCount += lab.Duration;
-						for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
-						{
-							if (i >= durationCount - lab.Duration)
-							{
-								lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+                    int durationCount = 0;
+                    foreach (var lab in labsSubGroup)
+                    {
+                        int mark = 10;
+                        int maxMarkDays = lab.Duration / 2 + lab.Duration % 2;
+                        if (durationCount % 2 > lab.Duration % 2) maxMarkDays++;
 
-								if (mark != 1)
-								{
-									mark -= 1;
-								}
-							}
-						}
-					}
-					labsSubGroups.AddRange(labsSubGroup);
+                        for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)
+                        {
+                            if ((i + 1) * 2 > durationCount)
+                            {
+                                lab.ScheduleProtectionLabsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
+                                maxMarkDays--;
+                                if (mark != 1 && maxMarkDays <= 0)
+                                {
+                                    mark -= 1;
+                                }
+                            }
+                        }
+                        durationCount += lab.Duration;
+                    }
+
+                    labsSubGroups.AddRange(labsSubGroup);
 
 					var scheduleProtactionLabsSubGroup = subGroup.ScheduleProtectionLabs
 						.OrderBy(e => e.Date)
