@@ -354,24 +354,27 @@ namespace LMPlatform.UI.Services.Practicals
                         Mark = string.Empty
                     })?.ToList()
                 }).ToList();
-                var durationCount = 0;
 
+                int durationCount = 0;
                 foreach (var practical in practicalsViewData)
                 {
-                    var mark = 10;
-                    durationCount += practical.Duration;
+                    int mark = 10;
+                    int maxMarkDays = practical.Duration / 2 + practical.Duration % 2;
+                    if (durationCount % 2 > practical.Duration % 2) maxMarkDays++; 
+
                     for (int i = 0; i < practical.ScheduleProtectionPracticalsRecommended.Count; i++)
                     {
-                        if (i >= durationCount - practical.Duration)
+                        if ((i + 1) * 2 > durationCount)
                         {
                             practical.ScheduleProtectionPracticalsRecommended[i].Mark = mark.ToString(CultureInfo.InvariantCulture);
-
-                            if (mark != 1)
+                            maxMarkDays--;
+                            if (mark != 1 && maxMarkDays <= 0)
                             {
                                 mark -= 1;
                             }
                         }
                     }
+                    durationCount += practical.Duration;
                 }
 
                 return new PracticalsResult
