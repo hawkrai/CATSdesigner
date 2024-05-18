@@ -21,7 +21,6 @@ using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.SubjectViewModels;
 using Mvc.JQuery.Datatables;
-using WebMatrix.WebData;
 
 namespace LMPlatform.UI.Controllers
 {
@@ -37,10 +36,14 @@ namespace LMPlatform.UI.Controllers
         private readonly LazyDependency<IPracticalManagementService> practicalManagementService =
             new LazyDependency<IPracticalManagementService>();
 
+        private readonly LazyDependency<IModulesManagementService> modulesManagementService = 
+            new LazyDependency<IModulesManagementService>();
+
         public IFilesManagementService FilesManagementService => filesManagementService.Value;
 
         public ISubjectManagementService SubjectManagementService => subjectManagementService.Value;
         public IPracticalManagementService PracticalManagementService => practicalManagementService.Value;
+        public IModulesManagementService ModulesManagementService => modulesManagementService.Value;
 
 
         public ActionResult GetFileSubject(string subjectId)
@@ -416,7 +419,24 @@ namespace LMPlatform.UI.Controllers
                 subjects.TotalCount);
         }
 
-        
+        [HttpGet]
+        public ActionResult GetSubjectModulesForSchedule(int subjectId)
+        {
+
+            var modules = ModulesManagementService.GetModules(subjectId);
+            var subjectModules = new
+            {
+                hasLecture = modules.Where(e => e.ModuleType == ModuleType.Lectures).Any(),
+                hasWorkshop = modules.Where(e => e.ModuleType == ModuleType.Practical).Any(),
+                hasLabaratoryWork = modules.Where(e => e.ModuleType == ModuleType.Labs).Any(),
+                hasCourseProject = modules.Where(e => e.ModuleType == ModuleType.YeManagment).Any(),
+                hasGraduationProject = true
+            };
+
+            return JsonResponse(subjectModules);
+        }
+
+
 
         public SubjectListViewModel _GetSubjectRow(Subject subject)
         {
