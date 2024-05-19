@@ -52,8 +52,14 @@
                   *ngIf="data.body.uploadedFile.Type === 'Image'"
                   src="{{ data.body.uploadedFile.ThumbnailUrl }}"
                 />
+                <img
+                  *ngIf="data.body.uploadedFile.Type === 'Document'"
+                  src="../subject/assets/images/doc.png"
+                  width="30px"
+                  height="30px"
+                />
                 <i
-                  *ngIf="data.body.uploadedFile.Type !== 'Image'"
+                  *ngIf="data.body.uploadedFile.Type !== 'Image' && data.body.uploadedFile.Type !== 'Document'"
                   class="material-icons mdc-list-item__graphic"
                   aria-hidden="true"
                   >description</i
