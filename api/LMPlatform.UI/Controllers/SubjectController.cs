@@ -422,16 +422,39 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public ActionResult GetSubjectModulesForSchedule(int subjectId)
         {
-
             var modules = ModulesManagementService.GetModules(subjectId);
-            var subjectModules = new
+            var subjectModules = new Dictionary<string, bool>()
             {
-                hasLecture = modules.Where(e => e.ModuleType == ModuleType.Lectures).Any(),
-                hasWorkshop = modules.Where(e => e.ModuleType == ModuleType.Practical).Any(),
-                hasLabaratoryWork = modules.Where(e => e.ModuleType == ModuleType.Labs).Any(),
-                hasCourseProject = modules.Where(e => e.ModuleType == ModuleType.YeManagment).Any(),
-                hasGraduationProject = true
+                { "hasLecture", false},
+                { "hasWorkshop", false},
+                { "hasLabaratoryWork", false},
+                { "hasCourseProject", false},
+                { "hasGraduationProject", true},
             };
+
+            foreach ( var module in modules )
+            {
+                if (module.ModuleType == ModuleType.Lectures)
+                {
+                    subjectModules["hasLecture"] = true;
+                    continue;
+                }
+                if (module.ModuleType == ModuleType.Practical)
+                {
+                    subjectModules["hasWorkshop"] = true;
+                    continue;
+                }
+                if (module.ModuleType == ModuleType.Labs)
+                {
+                    subjectModules["hasLabaratoryWork"] = true;
+                    continue;
+                }
+                if (module.ModuleType == ModuleType.YeManagment)
+                {
+                    subjectModules["hasCourseProject"] = true;
+                    continue;
+                }
+            }
 
             return JsonResponse(subjectModules);
         }
