@@ -785,7 +785,7 @@ namespace Application.Infrastructure.SubjectManagement
 		}
 
 		public List<UserLabFiles> GetUserFiles(int userId, int subjectId)
-        {
+        	{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 			if (userId == 0)
 			{
@@ -794,6 +794,7 @@ namespace Application.Infrastructure.SubjectManagement
 
 			return repositoriesContainer.RepositoryFor<UserLabFiles>().GetAll(new Query<UserLabFiles>(e => e.UserId == userId && e.SubjectId == subjectId)).ToList();
 		}
+  
 		public List<UserLabFiles> GetUserLabFiles(int userId, int subjectId)
 		{
 			using var repositoriesContainer = new LmPlatformRepositoriesContainer();
