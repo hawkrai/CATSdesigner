@@ -22,13 +22,14 @@ export class ActiveStatsComponent implements OnInit {
       animations: {
         enabled: false,
       },
-      width: 600,
+      width: 580,
       height: 400,
       type: 'pie',
     },
     legend: {
       floating: true,
       position: 'left',
+      width: 160,
     },
   }
 
