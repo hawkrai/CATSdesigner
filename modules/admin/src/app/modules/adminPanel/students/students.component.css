@@ -1,3 +1,9 @@
 .multiline-tooltip {
   white-space: pre-line;
 }
+
+.search {
+  max-width: 300px;
+  width: 35%;
+}
+

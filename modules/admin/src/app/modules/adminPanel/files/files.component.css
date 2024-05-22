@@ -20,3 +20,9 @@ a:hover {
 .table {
   margin-top: -25px;
 }
+
+.search {
+  max-width: 300px;
+  width: 35%;
+}
+

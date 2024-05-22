@@ -1,5 +1,5 @@
 <div class="main">
-  <button mat-raised-button (click)="addGroup(this.dataGroup)">
+  <button mat-raised-button class="addGroupButton" (click)="addGroup(this.dataGroup) ">
     {{ 'text.adminPanel.group.add' | translate }}
   </button>
   <div [hidden]="!isLoad" class="table">
