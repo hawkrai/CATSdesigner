@@ -499,11 +499,11 @@ namespace LMPlatform.UI.Services.Labs
 							}).ToList()
 					}).ToList();
 
-                    int durationCount = 0;
+                    var durationCount = 0;
                     foreach (var lab in labsSubGroup)
                     {
-                        int mark = 10;
-                        int maxMarkDays = lab.Duration / 2 + lab.Duration % 2;
+                        var mark = 10;
+                        var maxMarkDays = lab.Duration / 2 + lab.Duration % 2;
                         if (durationCount % 2 > lab.Duration % 2) maxMarkDays++;
 
                         for (int i = 0; i < lab.ScheduleProtectionLabsRecommended.Count; i++)

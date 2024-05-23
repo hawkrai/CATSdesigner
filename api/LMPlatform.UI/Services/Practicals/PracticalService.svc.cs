@@ -355,11 +355,11 @@ namespace LMPlatform.UI.Services.Practicals
                     })?.ToList()
                 }).ToList();
 
-                int durationCount = 0;
+                var durationCount = 0;
                 foreach (var practical in practicalsViewData)
                 {
-                    int mark = 10;
-                    int maxMarkDays = practical.Duration / 2 + practical.Duration % 2;
+                    var mark = 10;
+                    var maxMarkDays = practical.Duration / 2 + practical.Duration % 2;
                     if (durationCount % 2 > practical.Duration % 2) maxMarkDays++; 
 
                     for (int i = 0; i < practical.ScheduleProtectionPracticalsRecommended.Count; i++)
