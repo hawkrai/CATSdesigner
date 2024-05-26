@@ -118,6 +118,10 @@ export class EditLectorComponent implements OnInit {
     })
   }
 
+  isSelected(group) {
+    return group.IsSelectedBySecretary === true
+  }
+
   submit() {
     if (this.form.valid) {
       this.submitEM.emit(this.form.value)
