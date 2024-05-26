@@ -33,6 +33,7 @@ export class EditStudent {
   Group: string
   Email: string
   IsActive: boolean
+  DeletedOn: string
   Id: number
   SkypeContact: string
   Phone: string
@@ -45,6 +46,7 @@ export class StudentByGroup {
 
 export class Students {
   Confirmed: boolean
+  DeletedOn: string
   FullName: string
   GroupId: number
   LabVisitingMark: string

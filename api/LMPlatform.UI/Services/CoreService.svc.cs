@@ -290,7 +290,8 @@ namespace LMPlatform.UI.Services
 						Confirmed  = e.Confirmed == null || e.Confirmed.Value,
 						ConfirmedBy = e.ConfirmedById.HasValue ? new LectorViewData(e.ConfirmedBy, true) : null,
 						ConfirmedAt = e.ConfirmedAt,
-						isActive = e.IsActive
+						isActive = e.IsActive,
+						DeletedOn = e.DeletedOn
 					}).ToList(),
 					Message = "Студенты успешно загружены",
 					Code = "200"
@@ -322,7 +323,8 @@ namespace LMPlatform.UI.Services
                         Confirmed = e.Student.Confirmed == null || e.Student.Confirmed.Value,
                         SubgroupId = subGroupIndex,
                         Login = e.Student.User.UserName,
-                        isActive = e.Student.IsActive
+                        isActive = e.Student.IsActive,
+						DeletedOn = e.Student.DeletedOn
                     }));
                     subGroupIndex++;
                 }
