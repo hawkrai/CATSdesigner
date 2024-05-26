@@ -10,6 +10,7 @@
         <div class="test-description-text">{{ test.Description }}</div>
         <div class="test-description-button">
           <button
+            *ngIf="test.OngoingTestId === 0"
             (click)="startTest()"
             mat-raised-button
             color="primary"
@@ -17,6 +18,17 @@
             matTooltipClass="example-tooltip-blue"
           >
             {{ 'text.test.dalee' | translate: 'Далее' }}
+          </button>
+
+          <button
+            *ngIf="test.OngoingTestId !== 0"
+            (click)="finishTest()"
+            mat-raised-button
+            color="primary"
+            [matTooltip]="'text.test.finish' | translate: 'Завершить тест'"
+            matTooltipClass="example-tooltip-blue"
+          >
+          {{ 'text.test.finish' | translate: 'Завершить тест' }}
           </button>
         </div>
       </div>
