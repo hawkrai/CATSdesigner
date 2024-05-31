@@ -15,6 +15,7 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component'
 import { CheckPlagiarismPopoverComponent } from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component'
 import { TranslatePipe } from 'educats-translate'
+import { ToastrService } from 'ngx-toastr'
 
 @Component({
   selector: 'app-defense',
@@ -37,6 +38,7 @@ export class DefenseComponent implements OnInit {
     private groupService: GroupService,
     private labFilesService: LabFilesService,
     public dialog: MatDialog,
+    private toastr: ToastrService,
     private snackBar: MatSnackBar,
     private translatePipe: TranslatePipe,
     private store: Store<IAppState>
@@ -297,8 +299,6 @@ export class DefenseComponent implements OnInit {
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000,
-    })
+    this.toastr.success(msg)
   }
 }
