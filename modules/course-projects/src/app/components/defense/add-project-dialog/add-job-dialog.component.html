@@ -135,7 +135,7 @@
     mat-raised-button
     [mat-dialog-close]="data.body"
     color="primary"
-    [disabled]="!data.body.uploadedFile"
+    [disabled]="!data.body.uploadedFile && !data.body.comments"
   >
     {{ data.buttonText }}
   </button>
