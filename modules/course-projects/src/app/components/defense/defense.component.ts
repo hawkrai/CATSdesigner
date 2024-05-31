@@ -9,7 +9,7 @@ import { LabFilesService } from '../../services/lab-files-service'
 import { StudentFilesModel } from '../../models/student-files.model'
 import { GroupService } from '../../services/group.service'
 import { CoreGroup } from '../../models/core-group.model'
-import { MatDialog, MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material'
 import { AddJobDialogComponent } from './add-project-dialog/add-job-dialog.component'
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component'
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component'
@@ -39,7 +39,6 @@ export class DefenseComponent implements OnInit {
     private labFilesService: LabFilesService,
     public dialog: MatDialog,
     private toastr: ToastrService,
-    private snackBar: MatSnackBar,
     private translatePipe: TranslatePipe,
     private store: Store<IAppState>
   ) {}
