@@ -52,8 +52,14 @@
                   *ngIf="data.body.uploadedFile.Type === 'Image'"
                   src="{{ data.body.uploadedFile.ThumbnailUrl }}"
                 />
+                <img
+                  *ngIf="data.body.uploadedFile.Type === 'Document'"
+                  src="../subject/assets/images/doc.png"
+                  width="30px"
+                  height="30px"
+                />
                 <i
-                  *ngIf="data.body.uploadedFile.Type !== 'Image'"
+                  *ngIf="data.body.uploadedFile.Type !== 'Image' && data.body.uploadedFile.Type !== 'Document'"
                   class="material-icons mdc-list-item__graphic"
                   aria-hidden="true"
                   >description</i
@@ -73,7 +79,7 @@
               </a>
             </td>
             <td class="mdc-data-table__cell example-content">
-              {{ data.body.uploadedFile.CreationDate.slice(0, 10) }}
+              {{ data.body.uploadedFile.CreationDate.slice(8, 10) }}.{{ data.body.uploadedFile.CreationDate.slice(5, 7) }}.{{ data.body.uploadedFile.CreationDate.slice(0, 4) }}
             </td>
             <td class="mdc-data-table__cell example-content">
               {{ (data.body.uploadedFile.Size / 1024).toFixed(2) }} КБ
@@ -129,7 +135,7 @@
     mat-raised-button
     [mat-dialog-close]="data.body"
     color="primary"
-    [disabled]="!data.body.uploadedFile"
+    [disabled]="!data.body.uploadedFile && !data.body.comments"
   >
     {{ data.buttonText }}
   </button>
