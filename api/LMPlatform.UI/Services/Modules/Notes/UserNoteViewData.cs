@@ -9,6 +9,7 @@ namespace LMPlatform.UI.Services.Modules.Notes
         public UserNoteViewData(UserNote note)
         {
             Text = note.Text;
+            Note = note.Note;
             UserId = note.UserId;
             Id = note.Id;
             StartTime = note.StartTime.ToString(@"hh\:mm");
@@ -19,6 +20,9 @@ namespace LMPlatform.UI.Services.Modules.Notes
         public string Text { get; set; }
 
         [DataMember]
+        public string Note { get; set; }
+
+        [DataMember]
         public int UserId { get; set; }
 
         [DataMember]
@@ -26,6 +30,7 @@ namespace LMPlatform.UI.Services.Modules.Notes
 
         [DataMember]
         public string EndTime { get; set; }
+
         [DataMember]
         public string StartTime { get; set; }
 

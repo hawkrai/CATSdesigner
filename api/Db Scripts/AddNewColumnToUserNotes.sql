@@ -1,0 +1,5 @@
+USE educatsb_LMPlatform_FITR;
+
+GO
+ALTER TABLE UserNotes
+ADD Note VARCHAR(MAX) NULL;
