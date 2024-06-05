@@ -14,7 +14,7 @@ export class EditPopoverComponent implements OnInit {
   @Input() day: any;
   @Input() lectors: Lector[];
 
-  constructor(private fb: FormBuilder, private CourseRestService: VisitStatsService) {}
+  constructor(private fb: FormBuilder, private CourseRestService: VisitStatsService) { }
 
   ngOnInit() {
     this.initForm();
@@ -40,7 +40,7 @@ export class EditPopoverComponent implements OnInit {
       this.dateForm.patchValue({
         id: this.day.id,
         date: formattedDate,
-        lecturerId: this.day.LecturerId,
+        lecturerId: this.day.Teacher.LectorId,
         startTime: this.day.StartTime,
         endTime: this.day.EndTime,
         building: this.day.Building,
@@ -55,31 +55,33 @@ export class EditPopoverComponent implements OnInit {
 
   onSubmit() {
 
-      const id = this.day.Id;
-      const date = this.dateForm.value.date;
-      const lecturerId = this.dateForm.value.lecturerId;
-      const start = this.dateForm.value.startTime;
-      const end = this.dateForm.value.endTime;
-      const audience = this.dateForm.value.audience;
-      const building = this.dateForm.value.building;
+    const id = this.day.Id;
+    const date = this.dateForm.value.date;
+    const lecturerId = this.dateForm.value.lecturerId;
+    const start = this.dateForm.value.startTime;
+    const end = this.dateForm.value.endTime;
+    const audience = this.dateForm.value.audience;
+    const building = this.dateForm.value.building;
 
-      this.CourseRestService.addDate(
-        id,
-        date.toISOString(),
-        this.day.SubjectId,
-        this.day.GroupId,
-        start,
-        end,
-        audience,
-        building,
-        lecturerId
-      ).subscribe(response => {
+    if (this.day.SubjectId === undefined)
 
-        this.close.emit();
-      }, error => {
+    this.CourseRestService.addDate(
+      id,
+      date.toISOString(),
+      this.day.Subject.Id,
+      this.day.GroupId,
+      start,
+      end,
+      audience,
+      building,
+      lecturerId
+    ).subscribe(response => {
 
-        console.error(error);
-      });
+      this.close.emit();
+    }, error => {
+
+      console.error(error);
+    });
 
 
   }

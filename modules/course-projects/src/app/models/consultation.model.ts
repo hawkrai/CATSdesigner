@@ -1,8 +1,10 @@
+import { Lector } from "../../../../subjects/src/app/models/lector.model"
+
 export class Consultation {
   Id: string
-  LecturerId: string
+  Teacher: Lector
   Day: string
-  SubjectId: string
+  Subject: any
   StartTime: string
   EndTime: string
   Building: string

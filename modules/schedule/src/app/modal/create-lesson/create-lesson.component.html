@@ -36,7 +36,7 @@
             formControlName="subjectF"
             [placeholder]="
               'text.schedule.select.subject'
-                | translate: 'Выберите предмет или дипломное проектироание'
+                | translate: 'Выберите предмет или дипломное проектирование'
             "
           >
             <mat-option *ngFor="let subject of subjects" [value]="subject.Id">{{
@@ -52,7 +52,7 @@
               | translate: 'Поле не может быть пустым'
           }}</mat-error>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field style="width: 48%">
           <mat-select
             [ngModel]="changedType"
             formControlName="type"
@@ -68,6 +68,25 @@
               [value]="type[0]"
               >{{ type[1] }}</mat-option
             >
+          </mat-select>
+          <mat-error *ngIf="type.hasError('required')">{{
+            'text.schedule.field.must.be.not.empty'
+              | translate: 'Поле не может быть пустым'
+          }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field style="width: 48%; margin-left: 4%">
+          <mat-select
+            formControlName="teacher"
+            (selectionChange)="teacherChange($event)"
+            [(ngModel)]="selectedTeacher"
+            [placeholder]="
+              'text.schedule.select.lecturer' | translate: 'Выберите преподавателя'
+            "
+          >
+            <mat-option *ngFor="let teacher of teachers" [value]="teacher.LectorId">{{
+              teacher.FullName
+            }}</mat-option>
           </mat-select>
           <mat-error *ngIf="type.hasError('required')">{{
             'text.schedule.field.must.be.not.empty'
