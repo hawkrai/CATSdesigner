@@ -57,13 +57,6 @@ namespace LMPlatform.UI.ApiControllers.CP
                 groupId = UserManagementService.GetUserById(userId).Student.GroupId;
             }
 
-            var a = new CourseProjectConsultationData
-            {
-                Students = CpManagementService.GetGraduateStudentsForGroup(userId, groupId, subjectId, parms, false),
-                Consultations = PercentageService.GetConsultationDatesForUser(userId, subjectId, groupId)
-            };
-
-
             return new CourseProjectConsultationData
             {
                 Students = CpManagementService.GetGraduateStudentsForGroup(userId, groupId, subjectId, parms, false),

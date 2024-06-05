@@ -107,7 +107,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.buildingControl.setValue(data.Building);
       this.startTimeControl.setValue(data.StartTime);
       this.endTimeControl.setValue(data.EndTime);
-      this.lecturerIdControl.setValue(data.LecturerId);
+      this.lecturerIdControl.setValue(data.Teacher.LectorId);
       this.dateControl.setValue(new Date(data.Day));
     }
   }
@@ -138,9 +138,9 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
         Id: this.data.consultations[this.data.consultations.length - 1]
           ? this.data.consultations[this.data.consultations.length - 1].Id + 1
           : '0',
-        LecturerId: this.data.lecturerId,
+        Teacher: { LectorId: +this.data.lecturerId, FullName: null, UserName: null },
         Day: date.toISOString(),
-        SubjectId: this.data.subjectId,
+        Subject: { Id: this.data.subjectId },
         StartTime: this.data.start,
         EndTime: this.data.end,
         Building: this.data.building,
