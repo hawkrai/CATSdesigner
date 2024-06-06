@@ -183,6 +183,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   showEditPopover: boolean = false;
 
   editPopover(day: any) {
+    console.log(day)
     this.selectedDay = day;
     this.isEditing = true;
     this.showEditPopover = true;
@@ -192,7 +193,6 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     this.isEditing = false;
     this.showEditPopover = false;
   }
-
 
 
   deleteDate(id: string): void {

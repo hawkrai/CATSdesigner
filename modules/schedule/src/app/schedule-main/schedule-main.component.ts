@@ -326,7 +326,6 @@ export class ScheduleMainComponent implements OnInit {
       } else if (result.code == '500') {
         type = 'error'
       }
-      console.log(result)
       if (type != undefined) {
         this.notifierService.notify(type, result.message)
       }
@@ -696,10 +695,50 @@ export class ScheduleMainComponent implements OnInit {
           draggable: false,
           meta: 'lesson',
         })
+
       })
+
       this.isLoadActive = false
       this.refresh.next()
     })
+    this.noteService.GetPersonalNotesBetweenDates(startDate, endDate).subscribe((l) => {
+      if (l.Notes && l.Notes.length > 0) {
+        l.Notes.forEach((note) => {
+          let dateArray = note.Date.split('.');
+          let year = parseInt(dateArray[2]);
+          let month = parseInt(dateArray[1])-1
+          let day = parseInt(dateArray[0]);
+          let startTime = note.StartTime.split(':');
+          let startHour = parseInt(startTime[0]);
+          let startMinute = parseInt(startTime[1]);
+          let endTime = note.EndTime.split(':');
+          let endHour = parseInt(endTime[0]);
+          let endMinute = parseInt(endTime[1]);
+
+          const startT = new Date(year, month, day, startHour, startMinute);
+          const endT = new Date(year, month, day, endHour, endMinute);
+
+          this.events.push({
+            id: note.Id,
+            start: startT,
+            end: endT,
+            title:note.Text + '|' + note.Note,
+            color: colors.color,
+            resizable: {
+              beforeStart: false,
+              afterEnd: false
+            },
+            draggable: false,
+            meta: 'note'
+          });
+
+        });
+        this.isLoadActive = false;
+        this.refresh.next();
+      } else {
+        console.error('l.Notes is empty or undefined');
+      }
+    });
   }
 
   showHelp(): void {

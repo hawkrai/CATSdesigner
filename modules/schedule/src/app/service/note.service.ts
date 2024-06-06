@@ -32,6 +32,14 @@ export class NoteService {
       { idNote }
     )
   }
+  GetPersonalNotesBetweenDates(start: string, end: string): Observable<any> {
+    return this.http.get<any>(
+      '/Services/Notes/NotesService.svc/GetPersonalNotesBetweenDates?dateStart=' +
+      start +
+      '&dateEnd=' +
+      end
+    )
+  }
 
   getPersonalNotes(): Observable<any> {
     return this.http.get<any>(
