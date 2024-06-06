@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Lector } from "../../models/lector.model";
 import { LabsRestService } from "../../services/labs/labs-rest.service";
 import { PracticalRestService } from "../../services/practical/practical-rest.service";
+import { ToastrService } from 'ngx-toastr'
+import {LecturesRestService} from "../../services/lectures/lectures-rest.service";
 
 @Component({
   selector: 'app-edit-popover',
@@ -15,7 +17,12 @@ export class EditPopoverComponent implements OnInit {
   @Input() day: any;
   @Input() lectors: Lector[];
 
-  constructor(private fb: FormBuilder, private labsRestService: LabsRestService, private practicalRestService: PracticalRestService) { }
+  constructor(private fb: FormBuilder,
+              private labsRestService: LabsRestService,
+              private toastr: ToastrService,
+              private lecturesRestService:LecturesRestService,
+              private practicalRestService: PracticalRestService)
+  { }
 
   ngOnInit() {
     this.initForm();
@@ -34,6 +41,7 @@ export class EditPopoverComponent implements OnInit {
   }
 
   setFormData() {
+    console.log(this.day)
     if (this.day) {
       const dateParts = this.day.Date.split('.');
       const formattedDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
@@ -68,10 +76,12 @@ export class EditPopoverComponent implements OnInit {
         buildingNumber: this.day.Building,
         subjectId: this.day.SubjectId,
         groupId: this.day.GroupId,
-        id: this.day.ScheduleProtectionLabId || this.day.ScheduleProtectionPracticalId,
+        id: this.day.ScheduleProtectionLabId || this.day.ScheduleProtectionPracticalId || this.day.Id,
         lecturerId: this.dateForm.get('lecturerId').value,
         subGroupId: this.day.SubGroupId
       };
+
+      console.log(this.day)
 
       if (this.day.ScheduleProtectionLabId) {
         this.labsRestService.updateLabs(formData).subscribe(
@@ -82,7 +92,10 @@ export class EditPopoverComponent implements OnInit {
             this.day.EndTime = formData.endTime;
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
+            this.addFlashMessage('Данные по лабораторной работе успешно обновлены');
             this.close.emit();
+
+
           },
           (error) => {
             console.error('Произошла ошибка при обновлении данных (Лабораторная работа)', error);
@@ -97,6 +110,22 @@ export class EditPopoverComponent implements OnInit {
             this.day.EndTime = formData.endTime;
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
+            this.addFlashMessage('Данные по практической работе успешно обновлены');
+            this.close.emit();
+          },
+          (error) => {
+            console.error('Произошла ошибка при обновлении данных (Практическая работа)', error);
+          }
+        );
+      }else {
+        this.lecturesRestService.updateLectures(formData).subscribe(
+          (response) => {
+            this.day.Lector = this.lectors.find(lector => lector.LectorId === formData.lecturerId);
+            this.day.StartTime = formData.startTime;
+            this.day.EndTime = formData.endTime;
+            this.day.Building = formData.building;
+            this.day.Audience = formData.audience;
+            this.addFlashMessage('Данные по лекции успешно обновлены');
             this.close.emit();
           },
           (error) => {
@@ -108,7 +137,9 @@ export class EditPopoverComponent implements OnInit {
       this.dateForm.markAllAsTouched();
     }
   }
-
+  addFlashMessage(msg: string) {
+    this.toastr.success(msg)
+  }
   onClose() {
     this.close.emit();
   }

@@ -63,7 +63,7 @@
                   *ngIf="
                     markProperty.mark.Mark &&
                     markProperty.mark.Comment &&
-                    (isTeacher ||
+                    (state.isTeacher ||
                       (markProperty.mark.ShowForStudent &&
                         markProperty.mark.StudentId === state.userId))
                   "

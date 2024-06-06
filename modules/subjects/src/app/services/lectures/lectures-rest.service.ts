@@ -23,6 +23,10 @@ export class LecturesRestService {
       .pipe(map((res) => res['Lectures']))
   }
 
+  public updateLectures(lectures) {
+    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLectures', { ...lectures })
+  }
+
   public saveLecture(lecture: CreateLectureEntity): Observable<any> {
     return this.http.post('Services/Lectures/LecturesService.svc/Save', lecture)
   }

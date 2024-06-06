@@ -21,6 +21,7 @@
   "building.required": "Корпус обязателен",
   "date.selected": "Выбранные даты",
   "date.delete": "Удалить дату",
+  "date.edit": "Редактировать дату",
   "comment": "Комментарий",
   "comment.for.student": "Показать комментарий студенту",
   "mark": "Оценка",
