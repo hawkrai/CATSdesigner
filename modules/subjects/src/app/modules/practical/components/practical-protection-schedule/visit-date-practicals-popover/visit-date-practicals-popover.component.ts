@@ -56,10 +56,10 @@ export class VisitDatePracticalsPopoverComponent implements OnInit {
     );
   }
 
-  // Функция для преобразования строки даты в объект Date
+
   parseDate(dateString: string): Date {
     const [day, month, year] = dateString.split('.').map(part => parseInt(part, 10));
-    return new Date(year, month - 1, day); // месяцы в JavaScript 0-индексированы
+    return new Date(year, month - 1, day);
   }
 
   onCreateDate(obj: {

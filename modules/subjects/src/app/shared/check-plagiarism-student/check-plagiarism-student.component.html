@@ -3,6 +3,11 @@
     {{ 'plagiarism.check' | translate: 'Проверка на плагиат' }}
   </ng-container>
   <ng-container body>
+    <ng-container *ngIf="isLoading">
+      <div class="spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-container>
     <ng-container *ngIf="plagResults$ | async as plagResults; load">
       <div class="check-plagiarism" *ngIf="plagResults; else load">
         <table
@@ -67,8 +72,3 @@
   </ng-container>
 </app-popover-dialog>
 
-<ng-template #load>
-  <div class="spinner">
-    <mat-spinner></mat-spinner>
-  </div>
-</ng-template>
