@@ -114,8 +114,8 @@ export class ScheduleStatisticsComponent implements OnInit {
     '#0000FF',
     '#FFA500',
     '#ff0000',
-    '#006400',
     '#7F00FF',
+    '#3F51B5',
   ]
   public lessonColors: string[] = []
   public chartOptions2: Partial<ChartOptions>
