@@ -41,7 +41,6 @@ export class EditPopoverComponent implements OnInit {
   }
 
   setFormData() {
-    console.log(this.day)
     if (this.day) {
       const dateParts = this.day.Date.split('.');
       const formattedDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);

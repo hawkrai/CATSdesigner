@@ -14,7 +14,7 @@ import { appReducers } from './store/reducers/app.reducer'
 import { StoreModule } from '@ngrx/store'
 import { EffectsModule } from '@ngrx/effects'
 import { StoreDevtoolsModule } from '@ngrx/store-devtools'
-/*import { NewsEffects } from './store/effects/news.effects'*/
+import { NewsEffects } from './store/effects/news.effects'
 import { GroupsEffects } from './store/effects/groups.effects'
 import { DatePipe } from '@angular/common'
 import { LecturesEffects } from './store/effects/lectures.effects'
@@ -51,7 +51,7 @@ import { ProtectionEffects } from './store/effects/protection.effects'
       },
     }),
     EffectsModule.forRoot([
-      /*NewsEffects,*/
+      NewsEffects,
       GroupsEffects,
       LecturesEffects,
       LabsEffects,
