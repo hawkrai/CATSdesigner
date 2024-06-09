@@ -48,6 +48,7 @@ import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.co
 import {EditPopoverComponent} from "./edit-popover/edit-popover.component";
 import {ToastrModule} from "ngx-toastr";
 
+
 @NgModule({
   declarations: [
     FilterPipe,
