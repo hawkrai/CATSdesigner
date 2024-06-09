@@ -1,4 +1,4 @@
-import { map, switchMap, tap } from 'rxjs/operators'
+import {finalize, map, switchMap, tap} from 'rxjs/operators'
 import { Observable } from 'rxjs'
 import { PlagiarismResultSubject } from './../../models/plagiarism-result-subject.model'
 import { Component, Inject } from '@angular/core'
@@ -50,6 +50,9 @@ export class CheckPlagiarismPopoverComponent {
       tap((response) => {
         this.loading = false
         this.store.dispatch(catsActions.showMessage({ body: response }))
+      }),
+      finalize(() => {
+        this.loading = false;
       }),
       map((response) => response.DataD)
     )

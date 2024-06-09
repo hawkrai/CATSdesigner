@@ -63,7 +63,7 @@
                   *ngIf="
                     markProperty.mark.Mark &&
                     markProperty.mark.Comment &&
-                    (isTeacher ||
+                    (state.isTeacher ||
                       (markProperty.mark.ShowForStudent &&
                         markProperty.mark.StudentId === state.userId))
                   "
@@ -74,8 +74,8 @@
                   <mat-icon class="comment-icon">chat_bubble_outline</mat-icon>
                 </div>
               </div>
-              <div *ngIf="markProperty.recommendedMark" style="opacity: 0.3">
-                {{ markProperty.recommendedMark }}
+              <div *ngIf="!markProperty.mark" style="opacity: 0.3">
+                {{ markProperty.recommendedMark ? markProperty.recommendedMark : 1 }}
               </div>
               <ng-container
                 *var="

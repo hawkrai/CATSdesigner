@@ -3,13 +3,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { IAppState } from 'src/app/store/state/app.state';
 import { DialogData } from 'src/app/models/dialog-data.model';
 import * as practicalsActions from '../../../../../store/actions/practicals.actions';
 import * as practicalsSelectors from '../../../../../store/selectors/practicals.selectors';
 import * as subjectsSelector from '../../../../../store/selectors/subject.selector';
-import { map, switchMap } from 'rxjs/operators';
 import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model';
 import { Lector } from 'src/app/models/lector.model';
 import { SubjectService } from 'src/app/services/subject.service';
@@ -50,12 +50,17 @@ export class VisitDatePracticalsPopoverComponent implements OnInit {
       )
     ).pipe(
       map(([schedule, lectors]) => ({
-        schedule: schedule.sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime()),
+        schedule: schedule.sort((a, b) => this.parseDate(a.Date).getTime() - this.parseDate(b.Date).getTime()),
         lectors
       }))
     );
   }
 
+
+  parseDate(dateString: string): Date {
+    const [day, month, year] = dateString.split('.').map(part => parseInt(part, 10));
+    return new Date(year, month - 1, day);
+  }
 
   onCreateDate(obj: {
     date: string;

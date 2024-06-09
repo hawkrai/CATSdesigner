@@ -35,7 +35,11 @@
         />
       </mat-form-field>
     </form>
-
+    <ng-container *ngIf="loading">
+      <div class="spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-container>
     <div *ngIf="result$ | async as result">
       <div *ngFor="let caster of result; let i = index">
         <p class="mat-typography text">
@@ -103,9 +107,3 @@
     </button>
   </ng-container>
 </app-popover-dialog>
-
-<ng-template #load>
-  <div class="spinner">
-    <mat-spinner></mat-spinner>
-  </div>
-</ng-template>

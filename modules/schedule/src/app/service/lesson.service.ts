@@ -204,7 +204,7 @@ export class LessonService {
     if (a.length != 0) {
       a = ', a.' + a
     }
-    return 'к.' + splitted[2] + a
+    return ' к.' + splitted[2] + a
   }
 
   getTitlePart(title: string, i: number): any {
@@ -249,13 +249,13 @@ export class LessonService {
   }
 
   cutTeacherName(name: string): string {
-    if (name != null) {
-      const splitted = name.split(' ', 3)
-      const a = ' ' + splitted[1][0] + '. '
-      const b = splitted[2][0] + '. '
-
-      return splitted[0] + a + b
+    if (name !== null) {
+      const splitted = name.split(' ', 3);
+      const a = splitted[1] ? ` ${splitted[1][0]}. ` : ' ';
+      const b = splitted[2] ? `${splitted[2][0]}. ` : ' ';
+      return splitted[0] + a + b;
     }
+
     return name
   }
 

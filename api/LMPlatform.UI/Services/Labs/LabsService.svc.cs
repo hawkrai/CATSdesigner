@@ -435,8 +435,8 @@ namespace LMPlatform.UI.Services.Labs
 
 			var group = subject.SubjectGroups.First(x => x.GroupId == groupId);
 
-			var students = group.SubjectStudents.Select(x => x.Student).Where(e => e.Confirmed.HasValue && e.Confirmed.Value && e.IsActive != false).OrderBy(x => x.LastName);
-
+			var students = group.SubjectStudents.Select(x => x.Student).Where(e => e.Confirmed.HasValue && e.Confirmed.Value && e.IsActive != false && e.GroupId == groupId).OrderBy(x => x.LastName);
+            
 			var testsResults = TestPassingService.GetSubjectControlTestsResult(subjectId, students.Select(x => x.Id));
 	
 			foreach (var student in students)
@@ -606,7 +606,7 @@ namespace LMPlatform.UI.Services.Labs
 			var studentJobProtection = new List<StudentJobProtectionViewData>();
 			var studentsLabFiles = LabsManagementService.GetGroupLabFiles(subjectId, groupId);
 
-			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value).OrderBy(e => e.Student.FullName))
+			foreach (var subjectStudent in group.SubjectStudents.Where(e => e.Student.Confirmed.HasValue && e.Student.Confirmed.Value && e.Student.IsActive != false).OrderBy(e => e.Student.FullName))
             {
 				studentJobProtection.Add(new StudentJobProtectionViewData
 				{

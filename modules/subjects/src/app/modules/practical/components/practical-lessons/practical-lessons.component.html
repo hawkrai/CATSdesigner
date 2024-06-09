@@ -36,6 +36,7 @@
         {{ 'short.name' | translate: 'Краткое название' }}
       </th>
       <td mat-cell *matCellDef="let element; let idx = index">
+        {{this.practicalPrefix}}
         {{ element.ShortName }}
       </td>
     </ng-container>

@@ -192,6 +192,7 @@
                     display: flex;
                     justify-content: space-between;
                     margin-top: 10px;
+                    gap:10px;
                   "
                 >
                   <h6
@@ -380,7 +381,7 @@
                 </p>
               </tr>
               <tr>
-                <div *ngIf="noteService.getNote(event.title).length != 0">
+                <div *ngIf="noteService.getNote(event.title)">
                   <p
                     style="
                       padding-top: 5px;
