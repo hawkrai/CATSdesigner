@@ -7335,16 +7335,23 @@ namespace Application.Infrastructure.Export
 
             Run run157 = new Run();
             Text text142 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-            if (string.IsNullOrWhiteSpace(awork.Student?.MiddleName))
+
+            if (string.IsNullOrWhiteSpace(awork?.Student?.MiddleName))
             {
-                text142.Text = awork is null ? "" : string.Format("{0}." +
-                                                                  " {1}", awork.Student.FirstName[0], awork.Student.LastName);
+                var firstName = awork?.Student?.FirstName;
+                var lastName = awork?.Student?.LastName;
+
+                if (!string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
+                {
+                    text142.Text = $"{firstName[0]}. {lastName}";
+                }
+                else
+                {
+                    text142.Text = "";
+                }
             }
-            else
-            {
-                text142.Text = string.Empty;
-            }
-            
+
+
 
             run157.Append(text142);
             ProofError proofError25 = new ProofError() { Type = ProofingErrorValues.SpellStart };

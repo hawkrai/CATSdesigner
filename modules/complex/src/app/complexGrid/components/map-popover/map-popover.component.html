@@ -8,11 +8,8 @@
   <s2w-angular-d3-tree-lib
     class="tree_branches"
     [(treeData)]="chartData"
-    (onNodeChanged)="nodeUpdated($event)"
-    (onNodeSelected)="nodeSelected($event)"
-    (expandAll)="(true)"
   ></s2w-angular-d3-tree-lib>
-  <div>
+  <div class="button_div">
     <button class="button_close" (click)="onNoClick()">
       {{ 'common.close' | translate: 'Закрыть' }}
     </button>

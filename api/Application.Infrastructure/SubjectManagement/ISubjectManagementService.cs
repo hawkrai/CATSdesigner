@@ -103,7 +103,9 @@ namespace Application.Infrastructure.SubjectManagement
 
         List<Subject> GetSubjects();
 
-	    List<UserLabFiles> GetUserLabFiles(int userId, int subjectId);
+        List<UserLabFiles> GetUserFiles(int userId, int subjectId);
+
+        List<UserLabFiles> GetUserLabFiles(int userId, int subjectId);
 	    List<UserLabFiles> GetUserCourseFiles(int userId, int subjectId);
         List<UserLabFiles> GetUserPracticalFiles(int userId, int subjectId);
 

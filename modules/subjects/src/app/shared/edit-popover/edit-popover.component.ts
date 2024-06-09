@@ -6,6 +6,7 @@ import { PracticalRestService } from "../../services/practical/practical-rest.se
 import { ToastrService } from 'ngx-toastr'
 import {LecturesRestService} from "../../services/lectures/lectures-rest.service";
 
+
 @Component({
   selector: 'app-edit-popover',
   templateUrl: 'edit-popover.component.html',
@@ -17,12 +18,14 @@ export class EditPopoverComponent implements OnInit {
   @Input() day: any;
   @Input() lectors: Lector[];
 
+
   constructor(private fb: FormBuilder,
               private labsRestService: LabsRestService,
               private toastr: ToastrService,
               private lecturesRestService:LecturesRestService,
               private practicalRestService: PracticalRestService)
   { }
+
 
   ngOnInit() {
     this.initForm();
@@ -80,8 +83,6 @@ export class EditPopoverComponent implements OnInit {
         subGroupId: this.day.SubGroupId
       };
 
-      console.log(this.day)
-
       if (this.day.ScheduleProtectionLabId) {
         this.labsRestService.updateLabs(formData).subscribe(
           (response) => {
@@ -91,11 +92,10 @@ export class EditPopoverComponent implements OnInit {
             this.day.EndTime = formData.endTime;
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
+
             this.addFlashMessage('Данные по лабораторной работе успешно обновлены');
             this.close.emit();
-
-
-          },
+            },
           (error) => {
             console.error('Произошла ошибка при обновлении данных (Лабораторная работа)', error);
           }
@@ -109,6 +109,7 @@ export class EditPopoverComponent implements OnInit {
             this.day.EndTime = formData.endTime;
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
+
             this.addFlashMessage('Данные по практической работе успешно обновлены');
             this.close.emit();
           },
@@ -125,6 +126,7 @@ export class EditPopoverComponent implements OnInit {
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
             this.addFlashMessage('Данные по лекции успешно обновлены');
+
             this.close.emit();
           },
           (error) => {

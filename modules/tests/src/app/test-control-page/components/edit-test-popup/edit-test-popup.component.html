@@ -152,7 +152,7 @@
             <mat-radio-button
               class="example-radio-button"
               *ngFor="let category of CATEGORIES"
-              [matTooltip]="category.tooltip"
+              [matTooltip]="category.tooltip | translate:category.value"
               matTooltipClass="example-tooltip-blue"
               [value]="category.value"
             >

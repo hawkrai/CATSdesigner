@@ -20,3 +20,41 @@ a:hover {
 .table {
   margin-top: -25px;
 }
+
+.search {
+  max-width: 300px;
+  width: 35%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td, a {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 1024px) {
+  th, td, a {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 900px) {
+  th, td, a {
+    padding: 4px;
+    font-size: 0.7rem;
+  }
+}
+
+
+@media (max-width: 768px) {
+  th, td, a {
+    padding: 4px;
+    font-size: 0.45rem;
+  }
+}

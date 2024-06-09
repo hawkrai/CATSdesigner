@@ -9,12 +9,13 @@ import { LabFilesService } from '../../services/lab-files-service'
 import { StudentFilesModel } from '../../models/student-files.model'
 import { GroupService } from '../../services/group.service'
 import { CoreGroup } from '../../models/core-group.model'
-import { MatDialog, MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material'
 import { AddJobDialogComponent } from './add-project-dialog/add-job-dialog.component'
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component'
 import { CheckPlagiarismStudentComponent } from './check-plagiarism-student/check-plagiarism-student.component'
 import { CheckPlagiarismPopoverComponent } from '../../shared/check-plagiarism-popover/check-plagiarism-popover.component'
 import { TranslatePipe } from 'educats-translate'
+import { ToastrService } from 'ngx-toastr'
 
 @Component({
   selector: 'app-defense',
@@ -37,7 +38,7 @@ export class DefenseComponent implements OnInit {
     private groupService: GroupService,
     private labFilesService: LabFilesService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar,
+    private toastr: ToastrService,
     private translatePipe: TranslatePipe,
     private store: Store<IAppState>
   ) {}
@@ -297,8 +298,6 @@ export class DefenseComponent implements OnInit {
   }
 
   addFlashMessage(msg: string) {
-    this.snackBar.open(msg, null, {
-      duration: 2000,
-    })
+    this.toastr.success(msg)
   }
 }
