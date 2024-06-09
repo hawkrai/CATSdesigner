@@ -194,7 +194,6 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }
 
 
-
   deleteDate(id: string): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       autoFocus: false,

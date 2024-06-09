@@ -23,7 +23,9 @@ pre {
 .cal-week-view .cal-time-events .cal-event {
   border-bottom: 0px;
 }
-
+button:focus {
+  outline: none;
+}
 .news {
   top: 0%;
   position: absolute;

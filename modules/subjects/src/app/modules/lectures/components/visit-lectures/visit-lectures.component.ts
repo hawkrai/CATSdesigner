@@ -86,7 +86,7 @@ export class VisitLecturesComponent implements OnInit, OnDestroy {
     return defaultHeaders.concat(
       lectures.map((l, index) => ({
         head: l.LecturesId.toString(),
-        text: `Л${index + 1}`,
+        text: `${this.translate.transform('Lab', 'Л') + (index+1)}`,
         length: Math.floor(l.Duration / 2),
         tooltip: l.Theme,
       }))

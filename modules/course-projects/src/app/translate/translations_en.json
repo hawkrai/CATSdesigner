@@ -1,6 +1,7 @@
 {
   "date.selected": "Selected dates",
   "date.delete": "Delete date",
+  "date.edit": "Edit date",
   "text.group": "Group: ",
   "text.no": "No",
   "text.download.excel": "Download excel-document",

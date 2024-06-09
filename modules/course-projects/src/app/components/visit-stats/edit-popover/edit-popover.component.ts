@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Lector } from "../../../../../../subjects/src/app/models/lector.model";
 import { VisitStatsService } from "../../../services/visit-stats.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-edit',
@@ -14,7 +15,7 @@ export class EditPopoverComponent implements OnInit {
   @Input() day: any;
   @Input() lectors: Lector[];
 
-  constructor(private fb: FormBuilder, private CourseRestService: VisitStatsService) {}
+  constructor(private fb: FormBuilder, private CourseRestService: VisitStatsService,private toastr: ToastrService) {}
 
   ngOnInit() {
     this.initForm();
@@ -23,7 +24,7 @@ export class EditPopoverComponent implements OnInit {
 
   initForm() {
     this.dateForm = this.fb.group({
-      id: ['', Validators.required], // Добавим поле для id
+      id: ['', Validators.required],
       date: ['', Validators.required],
       lecturerId: ['', Validators.required],
       startTime: ['', Validators.required],
@@ -55,7 +56,7 @@ export class EditPopoverComponent implements OnInit {
 
   onSubmit() {
 
-      const id = this.day.Id;
+      const id = this.day.id;
       const date = this.dateForm.value.date;
       const lecturerId = this.dateForm.value.lecturerId;
       const start = this.dateForm.value.startTime;
@@ -74,16 +75,25 @@ export class EditPopoverComponent implements OnInit {
         building,
         lecturerId
       ).subscribe(response => {
+        console.log('Данные успешно обновлены', response);
+        this.addFlashMessage('Данные успешно обновлены');
+        this.day.LecturerId = lecturerId;
+        this.day.StartTime = start;
+        this.day.EndTime = end;
+        this.day.Building = building;
+        this.day.Audience = audience;
+        this.day.Day = date.toISOString();
+        this.day.Lector = this.lectors.find(lector => lector.LectorId === lecturerId);
 
         this.close.emit();
       }, error => {
-
-        console.error(error);
+        console.error('Произошла ошибка при обновлении данных', error);
       });
 
-
   }
-
+  addFlashMessage(msg: string) {
+    this.toastr.success(msg)
+  }
   onClose() {
     this.close.emit();
   }

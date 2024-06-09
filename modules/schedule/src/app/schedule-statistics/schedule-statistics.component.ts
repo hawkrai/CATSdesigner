@@ -114,8 +114,8 @@ export class ScheduleStatisticsComponent implements OnInit {
     '#0000FF',
     '#FFA500',
     '#ff0000',
-    '#006400',
     '#7F00FF',
+    '#3F51B5',
   ]
   public lessonColors: string[] = []
   public chartOptions2: Partial<ChartOptions>
@@ -129,6 +129,10 @@ export class ScheduleStatisticsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.updateChartOptions();
+    this.updateChartOptions1();
+    this.updateChartOptions2();
+    this.updateChartOptions3();
     this.startDate = new Date(this.data.start)
     this.endDate = new Date(this.data.end + ' 23:59:59')
     this.data.schedule.forEach((event) => {
@@ -208,7 +212,6 @@ export class ScheduleStatisticsComponent implements OnInit {
         data: this.lessonDayMarks[this.lessons.indexOf(lesson)],
       })
     })
-
     this.chartOptions = {
       series: [
         this.lectCount,
@@ -237,142 +240,192 @@ export class ScheduleStatisticsComponent implements OnInit {
         },
       ],
     }
-
-    this.chartOptions1 = {
-      series: [
-        {
-          name: this.translatePipe.transform('text.schedule.lesson', 'Занятие'),
-          data: [
-            this.mondayCount,
-            this.tuesdayCount,
-            this.wednesdayCount,
-            this.thursdayCount,
-            this.fridayCount,
-            this.saturdayCount,
-            this.sundayCount,
-          ],
+  }
+    updateChartOptions() {
+      this.chartOptions = {
+        series: [
+          this.lectCount,
+          this.practCount,
+          this.labCount,
+          this.couseCount,
+          this.diplomCount,
+        ],
+        chart: {
+          type: 'donut',
         },
-      ],
-      chart: {
-        height: 350,
-        type: 'line',
-        zoom: {
+        colors: this.typeColors,
+        labels: this.lessonTypes,
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200,
+                height: 200,
+              },
+              legend: {
+                position: 'bottom',
+              },
+            },
+          },
+        ],
+      }
+    }
+     updateChartOptions1() {
+      this.chartOptions1 = {
+        series: [
+          {
+            name: this.translatePipe.transform('text.schedule.lesson', 'Занятие'),
+            data: [
+              this.mondayCount,
+              this.tuesdayCount,
+              this.wednesdayCount,
+              this.thursdayCount,
+              this.fridayCount,
+              this.saturdayCount,
+              this.sundayCount,
+            ],
+          },
+        ],
+        chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false,
+          },
+          toolbar: {
+            tools: {
+              download: '⇩',
+            },
+          },
+        },
+        dataLabels: {
           enabled: false,
         },
-        toolbar: {
-          tools: {
-            download: '⇩',
-          },
+        stroke: {
+          curve: 'straight',
         },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: 'straight',
-      },
-      title: {
-        text: '',
-        align: 'left',
-      },
-      grid: {
-        row: {
-          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-          opacity: 0.5,
-        },
-      },
-      xaxis: {
-        categories: this.weekDays,
-      },
-    }
-
-    this.chartOptions2 = {
-      series: [
-        {
-          name: this.translatePipe.transform(
-            'text.schedule.count',
-            'Количество'
-          ),
-          data: this.lessonMarks,
-        },
-      ],
-      chart: {
-        height: 350,
-        type: 'bar',
-      },
-      colors: this.lessonColors,
-      plotOptions: {
-        bar: {
-          columnWidth: '45%',
-          distributed: true,
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      legend: {
-        show: false,
-      },
-      grid: {
-        show: false,
-      },
-      xaxis: {
-        categories: this.lessons,
-        labels: {
-          style: {
-            colors: this.lessonColors,
-            fontSize: '12px',
-          },
-        },
-      },
-    }
-
-    this.chartOptions3 = {
-      series: this.series,
-      chart: {
-        type: 'bar',
-        height: 350,
-        stacked: true,
-      },
-      colors: this.lessonColors,
-      plotOptions: {
-        bar: {
-          horizontal: true,
-        },
-      },
-      stroke: {
-        width: 1,
-        colors: ['#fff'],
-      },
-      title: {
-        text: '',
-      },
-      xaxis: {
-        categories: this.weekDays,
-      },
-      yaxis: {
         title: {
-          text: undefined,
+          text: '',
+          align: 'left',
         },
-      },
-      tooltip: {
-        y: {
-          formatter(val) {
-            return val + ''
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5,
           },
         },
-      },
-      fill: {
-        opacity: 1,
-      },
-      legend: {
-        position: 'top',
-        horizontalAlign: 'left',
-        offsetX: 40,
-      },
+        xaxis: {
+          categories: this.weekDays,
+        },
+      }
+    }
+    updateChartOptions2() {
+      this.chartOptions2 = {
+        series: [
+          {
+            name: this.translatePipe.transform(
+              'text.schedule.count',
+              'Количество'
+            ),
+            data: this.lessonMarks,
+          },
+        ],
+        chart: {
+          height: 350,
+          type: 'bar',
+        },
+        colors: this.lessonColors,
+        plotOptions: {
+          bar: {
+            columnWidth: '45%',
+            distributed: true,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        legend: {
+          show: false,
+        },
+        grid: {
+          show: false,
+        },
+        xaxis: {
+          categories: this.lessons,
+          labels: {
+            style: {
+              colors: this.lessonColors,
+              fontSize: '12px',
+            },
+          },
+        },
+      }
+    }
+     updateChartOptions3() {
+      this.chartOptions3 = {
+        series: this.series,
+        chart: {
+          type: 'bar',
+          height: 350,
+          stacked: true,
+        },
+        colors: this.lessonColors,
+        plotOptions: {
+          bar: {
+            horizontal: true,
+          },
+        },
+        stroke: {
+          width: 1,
+          colors: ['#fff'],
+        },
+        title: {
+          text: '',
+        },
+        xaxis: {
+          categories: this.weekDays,
+        },
+        yaxis: {
+          title: {
+            text: undefined,
+          },
+        },
+        tooltip: {
+          y: {
+            formatter(val) {
+              return val + ''
+            },
+          },
+        },
+        fill: {
+          opacity: 1,
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left',
+          offsetX: 40,
+        },
+      }
+    }
+
+  onTabChange(tabIndex: number) {
+    switch (tabIndex) {
+      case 0:
+        this.updateChartOptions();
+        break;
+      case 1:
+        this.updateChartOptions1();
+        break;
+      case 2:
+        this.updateChartOptions2();
+        break;
+      case 3:
+        this.updateChartOptions3();
+        break;
+
     }
   }
-
   onCancelClick() {
     this.dialogRef.close(null)
   }

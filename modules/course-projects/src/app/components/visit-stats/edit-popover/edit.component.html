@@ -156,8 +156,9 @@
     </div>
   </div>
   <div class="button-container">
-    <mat-icon (click)="onSubmit()" style="color: green; cursor: pointer;">check</mat-icon>
-    <mat-icon (click)="onClose()" style="color: red; cursor: pointer;">close</mat-icon>
+
+    <mat-icon (click)="onSubmit()" style="color: green; cursor: pointer;" [matTooltip]="'text.course.percentages.dialog.stage.save' | translate: 'Сохранить'">check</mat-icon>
+    <mat-icon (click)="onClose()" style="color: red; cursor: pointer;" [matTooltip]="'text.course.percentages.dialog.stage.cancel' | translate: 'Отмена'">close</mat-icon>
   </div>
 
 

@@ -102,15 +102,21 @@
               'text.schedule.select.subgroup' | translate: 'Выберите подгруппу'
             "
           >
-            <mat-option [value]="currentGroup?.SubGroupsOne?.SubGroupId">{{
+            <mat-option *ngIf="currentGroup?.SubGroupsOne?.Name" [value]="currentGroup?.SubGroupsOne?.SubGroupId">{{
+              'subgroup'
+                | translate: 'Подгруппа '+
               currentGroup?.SubGroupsOne?.Name
-            }}</mat-option>
-            <mat-option [value]="currentGroup?.SubGroupsTwo?.SubGroupId">{{
+              }}</mat-option>
+            <mat-option *ngIf="currentGroup?.SubGroupsTwo?.Name" [value]="currentGroup?.SubGroupsTwo?.SubGroupId">{{
+              'subgroup'
+                | translate: 'Подгруппа '+
               currentGroup?.SubGroupsTwo?.Name
-            }}</mat-option>
-            <mat-option [value]="currentGroup?.SubGroupsThird?.SubGroupId">{{
+              }}</mat-option>
+            <mat-option  *ngIf="currentGroup?.SubGroupsThird?.SubGroupId" [value]="currentGroup?.SubGroupsThird?.SubGroupId">{{
+              'subgroup'
+                | translate: 'Подгруппа '+
               currentGroup?.SubGroupsThird?.Name
-            }}</mat-option>
+              }}</mat-option>
           </mat-select>
           <mat-error *ngIf="type.hasError('required')">{{
             'text.schedule.field.must.be.not.empty'

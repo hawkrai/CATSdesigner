@@ -48,7 +48,7 @@ export class MainPageComponent implements OnInit {
   isArchiveTeacher = false
   charts: any[] = []
 
-  colors: string[] = ['#FFA500', '#D32F2F', '#1976D2', '#7F00FF', '#388E3C']
+  colors: string[] = ['#FFA500', '#D32F2F', '#1976D2', '#7F00FF', '#3F51B5']
 
   public categoriesConst: string[] = [
     this.translatePipe.transform(

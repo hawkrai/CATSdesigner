@@ -37,6 +37,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('table', { static: false }) table: MatTable<Lab>
   private subs = new SubSink()
   public labs: Lab[]
+  labPrefix: string;
 
   constructor(
     private store: Store<IAppState>,
@@ -46,6 +47,11 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   ) {}
 
   ngOnInit() {
+    if (localStorage.getItem('locale') === 'en') {
+      this.labPrefix = 'Lab';
+    } else {
+      this.labPrefix = 'Лаб';
+    }
     this.store.dispatch(labsActions.loadLabs())
     this.subs.add(
       this.store.select(labsSelectors.getLabs).subscribe((labs) => {
