@@ -123,11 +123,9 @@ export class GridMenuComponent {
     }
 
     const dialogConfig = new MatDialogConfig()
-    dialogConfig.width = '1200px'
+    dialogConfig.width = '100%'
     dialogConfig.data = dialogData
-    dialogConfig.position = {
-      left: '10%',
-    }
+    dialogConfig.maxWidth='none'
 
     const dialogRef = this.dialog.open(MapPopoverComponent, dialogConfig
     )

@@ -60,7 +60,7 @@ namespace LMPlatform.UI.Services.Notes
             {
                 return new ResultViewData
                 {
-                    Message = "Не удалось сохранить заметку",
+                    Message = "Не удалось сохранить заметку" + $", Error: {ex}",
                     Code = "500"
                 };
             }

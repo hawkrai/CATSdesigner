@@ -192,7 +192,7 @@ namespace LMPlatform.UI.Services.UserFiles
 
 				Directory.CreateDirectory(this.PlagiarismTempPath + path);
 
-				var usersFiles = this.SubjectManagementService.GetUserLabFiles(0, int.Parse(subjectId)).Where(e => e.IsReceived && (e.IsCoursProject == isCp || (isLab && (e.LabId.HasValue || !e.LabId.HasValue && !e.PracticalId.HasValue)) || (isPractical && e.PracticalId.HasValue)));
+				var usersFiles = this.SubjectManagementService.GetUserFiles(0, int.Parse(subjectId)).Where(e => e.IsReceived && (e.IsCoursProject == isCp || (isLab && (e.LabId.HasValue || !e.LabId.HasValue && !e.PracticalId.HasValue)) || (isPractical && e.PracticalId.HasValue)));
 
 				var filesPaths = usersFiles.Select(e => e.Attachments);
 

@@ -14,7 +14,7 @@ namespace Application.Infrastructure.CPManagement
 
         List<PercentageGraphData> GetPercentageGraphsForLecturerAll(int userId, GetPagedListParams parms);
 
-        List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int groupId);
+        List<CourseProjectConsultationDateData> GetConsultationDatesForUser(int userId, int subjectId, int groupId);
 
         void SavePercentage(int userId, PercentageGraphData percentageData);
 

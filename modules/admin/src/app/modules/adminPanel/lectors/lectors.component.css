@@ -1,0 +1,30 @@
+.search
+{
+    max-width:300px;
+    width:35%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 1024px) {
+  th, td {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  th, td {
+    padding: 4px;
+    font-size: 0.4rem;
+  }
+}
