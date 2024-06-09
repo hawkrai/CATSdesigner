@@ -46,7 +46,7 @@ import { WhitespaceDirective } from './validators/whitespace.validator'
 import { VisitDatePopoverComponent } from './visit-date-popover/visit-date-popover.component'
 import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.component'
 import {EditPopoverComponent} from "./edit-popover/edit-popover.component";
-import {ToastrModule} from "ngx-toastr";
+
 
 @NgModule({
   declarations: [
@@ -94,9 +94,6 @@ import {ToastrModule} from "ngx-toastr";
     CommonModule,
     FormsModule,
     MatModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right',
-    }),
     ReactiveFormsModule,
     PopoverModule,
     TranslateModule.forRoot({
