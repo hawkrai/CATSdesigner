@@ -159,9 +159,18 @@ namespace Application.Infrastructure.DPManagement
 
         public void SaveProject(DiplomProjectData projectData)
         {
+            int lecturerId = 0;
             if (!projectData.LecturerId.HasValue)
             {
-                throw new ApplicationException("LecturerId cant be empty!");
+                int currentUserId = UserContext.CurrentUserId;
+
+                if (AuthorizationHelper.IsLecturer(context.Value, currentUserId))
+                {
+                    lecturerId = currentUserId;
+                }
+            }
+            else {
+                lecturerId = projectData.LecturerId.Value;
             }
 
             /*if (Context.DiplomProjects.Any(x => x.Theme == projectData.Theme))
@@ -169,7 +178,7 @@ namespace Application.Infrastructure.DPManagement
                 throw new ApplicationException("Тема с таким названием уже есть!");
             }*/
 
-            AuthorizationHelper.ValidateLecturerAccess(Context, projectData.LecturerId.Value);
+            AuthorizationHelper.ValidateLecturerAccess(Context, lecturerId);
 
             DiplomProject project;
             if (projectData.Id.HasValue)
@@ -229,7 +238,7 @@ namespace Application.Infrastructure.DPManagement
                 Context.DiplomProjectGroups.Remove(projectGroup);
             }
 
-            project.LecturerId = projectData.LecturerId.Value;
+            project.LecturerId = lecturerId;
             project.Theme = projectData.Theme;
             Context.SaveChanges();
             
