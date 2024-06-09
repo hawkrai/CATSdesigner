@@ -34,11 +34,6 @@ namespace LMPlatform.UI.ApiControllers.CP
         {
             var userId = UserContext.CurrentUserId;
 
-            if (parms.Filters.ContainsKey("lecturerId"))
-            {
-                userId = int.Parse(parms.Filters["lecturerId"]);
-            }
-
             var subjectId = 0;
 
             if (parms.Filters.ContainsKey("subjectId"))

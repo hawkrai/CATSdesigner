@@ -7,10 +7,11 @@ using System.Linq.Expressions;
 using Application.Core;
 using Application.Core.Data;
 using Application.Core.Extensions;
-using Application.Core.Helpers;
 using Application.Infrastructure.CTO;
 using Application.Infrastructure.LecturerManagement;
+using Application.Infrastructure.SubjectManagement;
 using LMPlatform.Data.Infrastructure;
+using LMPlatform.Models;
 using LMPlatform.Models.CP;
 
 namespace Application.Infrastructure.CPManagement
@@ -23,6 +24,8 @@ namespace Application.Infrastructure.CPManagement
 
         private readonly LazyDependency<ILecturerManagementService> _lecturerManagementService = new LazyDependency<ILecturerManagementService>();
 
+        private readonly LazyDependency<ISubjectManagementService> _subjectManagementServive = new LazyDependency<ISubjectManagementService>();
+
         private ICpContext Context
         {
             get { return context.Value; }
@@ -33,6 +36,9 @@ namespace Application.Infrastructure.CPManagement
 
         private ILecturerManagementService LecturerManagementService =>
             _lecturerManagementService.Value;
+
+        private ISubjectManagementService SubjectManagementService =>
+            _subjectManagementServive.Value;
 
         public PagedList<PercentageGraphData> GetPercentageGraphs(int userId, GetPagedListParams parms)
         {
@@ -122,10 +128,14 @@ namespace Application.Infrastructure.CPManagement
                 userId = student.AssignedCourseProjects.First().CourseProject.LecturerId ?? 0;
             }
 
-            var consultations =  Context.CourseProjectConsultationDates
+            List<int> subjectsId = null;
+            if (AuthorizationHelper.IsLecturer(Context, userId) && subjectId == 0)
+            {
+                subjectsId = SubjectManagementService.GetSubjectsInfoByLector(userId).Select(s => s.Id).ToList();
+            }
+
+            var baseQuery =  Context.CourseProjectConsultationDates
                 .Where(x => x.Day >= _currentAcademicYearStartDate && x.Day < _currentAcademicYearEndDate)
-                .Where(x => x.LecturerId == userId)
-                .Where(x => subjectId == 0 || x.SubjectId == subjectId)
                 .Where(x => groupId == 0 || x.GroupId.HasValue && x.GroupId.Value == groupId)
                 .OrderBy(x => x.Day)
                 .Select(x => new
@@ -142,7 +152,11 @@ namespace Application.Infrastructure.CPManagement
                 })
                 .ToList();
 
-                var consultationsData = consultations
+            var consultations = (subjectsId != null)
+                ? baseQuery.AsEnumerable().Where(x => x.SubjectId == subjectId || subjectsId.Contains(x.SubjectId)).ToList()
+                : baseQuery.ToList();
+
+            var consultationsData = consultations
                 .Select(x => new CourseProjectConsultationDateData
                 {
                     Day = x.Day,
