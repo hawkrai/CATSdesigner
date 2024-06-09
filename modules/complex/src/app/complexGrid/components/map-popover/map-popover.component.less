@@ -52,7 +52,6 @@ text {
   }
 
   .button_close {
-    align-self: flex-end;
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
     box-sizing: border-box;
     -webkit-user-select: none;
@@ -63,7 +62,6 @@ text {
     outline: 0;
     border: none;
     -webkit-tap-highlight-color: transparent;
-    display: inline-block;
     white-space: nowrap;
     text-decoration: none;
     vertical-align: baseline;
@@ -83,6 +81,11 @@ text {
     font-weight: 500;
   }
 
+}
+
+.button_div{
+  display: flex;
+  justify-content: flex-end;
 }
 
 .mat-dialog-content {
