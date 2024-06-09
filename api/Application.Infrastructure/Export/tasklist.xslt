@@ -72,81 +72,82 @@ style='border-collapse:collapse'>
           <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
 
           <table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
-          style='border-collapse:collapse'>
+			        style='border-collapse:collapse'>
             <tr>
-              <td width="50%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
+              <td width="65%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
                 <p class="MsoNormal" align="right" style='text-align:right;line-height:normal'>
                   <span style='font-size:10.0pt'></span>
                 </p>
               </td>
               <td width="50%" valign="top">
-                <p class="MsoNormal" align="right" style='line-height:normal'>
-                  <span style='font-size:10.0pt'>Утверждаю</span>
+                <p class="MsoNormal" align="left" style='line-height:normal'>
+                  <span style='font-size:10.0pt'>
+                    Утверждаю
+                  </span>
                 </p>
               </td>
-
             </tr>
           </table>
-
           <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
-
           <table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
-           style='border-collapse:collapse'>
+					style='border-collapse:collapse'>
             <tr>
-              <td width="50%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
+              <td width="65%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
                 <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
               </td>
-              <td width="135px" valign="top">
+              <td width="auto" colspan="3" valign="top">
                 <p class="MsoNormal" style='line-height:normal;text-align:left;'>
-                  <span style='font-size:10.0pt'>Заведующий кафедрой</span>
+                  <span style='font-size:10.0pt'>
+                    Заведующий кафедрой
+                    <xsl:text>&#x20;</xsl:text>
+                    <xsl:value-of select='string(item[@name="CathedraName"])' disable-output-escaping='no'/>
+                  </span>
                 </p>
               </td>
-              <td width="auto" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
+              <td width="5%" style='border:none'></td>
+            </tr>
+            <tr height="30">
+              <td width="65%" style='border:none'></td>
+              <td width="10%" style='vertical-align:bottom;padding:0cm 5.4pt 0cm 5.4pt'>
                 <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
               </td>
-              <td width="auto" valign="top" style='width:126.0pt;border:none;padding:0cm 5.4pt 0cm 5.4pt'>
-                <p class="MsoNormal" style='line-height:normal'>
+              <td width="5%" style='border:none'></td>
+              <td width="15%" style='vertical-align:bottom;width:126.0pt;border:none;padding:0cm 5.4pt 0cm 5.4pt'>
+                <p class="MsoNormal" style='text-align:center;line-height:normal'>
                   <span style='font-size:10.0pt;text-align:center;'>
                     <xsl:value-of select='string(item[@name="HeadCathedra"])' disable-output-escaping='no'/>
                   </span>
                 </p>
               </td>
+              <td width="5%" style='border:none'></td>
             </tr>
-
             <tr>
-              <td width="50%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
+              <td width="65%" valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
                 <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
               </td>
-              <td width="135px"  valign="top" style='padding:0cm 5.4pt 0cm 5.4pt'>
-                <p class="MsoNormal" style='line-height:normal'>
-                  <span style='font-size:10.0pt'><![CDATA[ ]]></span>
+              <td width="10%"  valign="top" style='border:none;border-top:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
+                <p class="MsoNormal" style='text-align:center;line-height:normal'>
+                  <span style='font-size:8.0pt'>
+                    (подпись)
+                  </span>
                 </p>
               </td>
-              <td width="auto"  valign="top" style='border:none;border-top:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-                <p class="MsoNormal" align="right" style='text-align:center;line-height:normal'>
-                  <span style='font-size:8.0pt'>(подпись)</span>
+              <td width="5%" style='border:none'></td>
+              <td width="15%"  valign="top" style='border:none;border-top:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
+                <p class="MsoNormal" style='text-align:center;line-height:normal'>
+                  <span style='font-size:8.0pt'>
+                    (фамилия, инициалы)
+                  </span>
                 </p>
               </td>
-              <td width="auto"  valign="top" style='border:none;border-top:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt'>
-                <p class="MsoNormal" align="right" style='line-height:normal'>
-                  <span style='font-size:8.0pt'>(фамилия, инициалы)</span>
-                </p>
-              </td>
-            </tr>
-            <tr height="0">
-              <td width="50%" style='border:none'></td>
-              <td width="135px" style='border:none'></td>
-              <td width="auto" style='border:none'></td>
-              <td width="auto" style='border:none'></td>
+              <td width="5%" style='border:none'></td>
             </tr>
           </table>
-
           <p class="MsoNormal" style='line-height:normal'><![CDATA[ ]]></p>
-
           <table class="MsoTableGrid" width="100%" border="0" cellspacing="0" cellpadding="0"
            style='border-collapse:collapse'>
             <tr>
-              <td width="50%" valign="top" >
+              <td width="65%" valign="top" >
                 <p class="MsoNormal" style='line-height:normal;text-align:right;'>
                   <span style='font-size:10.0pt'>«</span>
                 </p>
