@@ -136,7 +136,7 @@ namespace LMPlatform.UI.Services.Notes
         }
 
 
-        public ResultViewData SavePersonalNote(int id, string text, string date, string startTime, string endTime)
+        public ResultViewData SavePersonalNote(int id, string text, string date, string startTime, string endTime, string note)
         {
             try
             {
@@ -150,7 +150,8 @@ namespace LMPlatform.UI.Services.Notes
                     UserId = UserContext.CurrentUserId,
                     Date = dateTime,
                     EndTime = end,
-                    StartTime = start
+                    StartTime = start,
+                    Note = note
                 });
                 return new ResultViewData
                 {
