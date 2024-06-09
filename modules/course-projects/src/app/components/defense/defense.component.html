@@ -27,6 +27,7 @@
       </div>
       <div>
         <button
+         class="DownloadButton"
           mat-icon-button
           color="primary"
           matTooltip="{{
@@ -35,11 +36,12 @@
         >
           <span
             class="iconify"
-            data-icon="mdi-folder-download"
+            data-icon="mdi-download"
             data-inline="false"
           ></span>
         </button>
         <button
+          class="PlugiatButton"
           mat-icon-button
           color="primary"
           matTooltip="{{
@@ -52,6 +54,7 @@
           <mat-icon>visibility</mat-icon>
         </button>
         <button
+          class="UpdateButton"
           mat-icon-button
           color="primary"
           matTooltip="{{ 'text.update.data' | translate: 'Обновить данные' }}"
@@ -128,10 +131,10 @@
               <td class="mdc-data-table__cell ">
                 <a class="mdc-file-name__cell"
                   href="api/Upload?filename={{
-                    studentFile.Attachments[0].PathName
-                  }}//{{ studentFile.Attachments[0].FileName }}"
+                    studentFile.Attachments[0]?.PathName
+                  }}//{{ studentFile.Attachments[0]?.FileName }}"
                 >
-                  {{ studentFile.Attachments[0].Name }}
+                  {{ studentFile.Attachments[0]?.Name }}
                 </a>
               </td>
               <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
@@ -218,11 +221,11 @@
                   <td class="mdc-data-table__cell">
                     <a
                       href="api/Upload?filename={{
-                        fileLab.Attachments[0].PathName
-                      }}//{{ fileLab.Attachments[0].FileName }}"
+                        fileLab.Attachments[0]?.PathName
+                      }}//{{ fileLab.Attachments[0]?.FileName }}"
                       color="primary"
                     >
-                      {{ fileLab.Attachments[0].Name }}
+                      {{ fileLab.Attachments[0]?.Name }}
                     </a>
                   </td>
                   <td class="mdc-data-table__cell">{{ fileLab.Comments }}</td>
@@ -235,12 +238,36 @@
                         mat-icon-button
                         color="primary"
                         matTooltip="{{
+                          'text.check' | translate: 'Проверить на плагиат'
+                        }}"
+                        (click)="checkPlagiarismFile(fileLab)"
+                      >
+                        <mat-icon>visibility</mat-icon>
+                      </button>
+                      
+                      <button
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="{{
                           'text.accept' | translate: 'Принять работу'
                         }}"
                         (click)="approveJob(fileLab, student.StudentId)"
                       >
                         <mat-icon>thumb_up</mat-icon>
                       </button>
+
+                      <button
+                      mat-icon-button
+                      color="primary"
+                      matTooltip="{{
+                        'text.reject' | translate: 'Отклонить работу'
+                      }}"
+                      *ngIf="fileLab.IsReceived"
+                      (click)="restoreFromArchive(fileLab, student.StudentId)"
+                      >
+                      <mat-icon>thumb_down</mat-icon>
+                      </button>
+
                       <button
                         mat-icon-button
                         color="primary"
@@ -249,30 +276,11 @@
                         }}"
                         (click)="addJob(fileLab, student.StudentId)"
                       >
-                        <mat-icon>call_missed_outgoing</mat-icon>
+                        <mat-icon>arrow_forward</mat-icon>
                       </button>
-                      <button
-                        mat-icon-button
-                        color="primary"
-                        matTooltip="{{
-                          'text.check' | translate: 'Проверить на плагиат'
-                        }}"
-                        (click)="checkPlagiarismFile(fileLab)"
-                      >
-                        <mat-icon>visibility</mat-icon>
-                      </button>
+                      
                     </ng-container>
-                    <button
-                      mat-icon-button
-                      color="primary"
-                      matTooltip="{{
-                        'text.reject' | translate: 'Отклонить работу'
-                      }}"
-                      *ngIf="fileLab.IsReceived"
-                      (click)="restoreFromArchive(fileLab, student.StudentId)"
-                    >
-                      <mat-icon>thumb_down</mat-icon>
-                    </button>
+                    
                   </td>
                 </tr>
               </tbody>
