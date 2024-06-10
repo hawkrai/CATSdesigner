@@ -159,12 +159,12 @@ namespace Application.Infrastructure.CPManagement
             var consultationsData = consultations
                 .Select(x => new CourseProjectConsultationDateData
                 {
-                    Day = x.Day,
+                    Day = x.Day.ToString("dd.MM.yyyy"),
                     Teacher = new LecturerData(LecturerManagementService.GetLecturer(x.LecturerId)),
                     Id = x.Id,
                     Subject = CpManagementService.GetSubject(x.SubjectId),
-                    StartTime = x.StartTime,
-                    EndTime = x.EndTime,
+                    StartTime = x.StartTime?.ToString(@"hh\:mm"),
+                    EndTime = x.EndTime?.ToString(@"hh\:mm"),
                     Audience = x.Audience,
                     Building = x.Building,
                     GroupId = x.GroupId
@@ -291,14 +291,18 @@ namespace Application.Infrastructure.CPManagement
             Context.SaveChanges();
         }
 
-        public CourseProjectConsultationDate SaveConsultationDate(int userId, DateTime date, int subjectId, TimeSpan? startTime, TimeSpan? endTime, string audience, string buildingNumber, int groupId, int? consultationId)
+        public CourseProjectConsultationDate SaveConsultationDate(int userId, string date, int subjectId, string startTime, string endTime, string audience, string buildingNumber, int groupId, int? consultationId)
         {
             AuthorizationHelper.ValidateLecturerAccess(Context, userId);
+            
+            DateTime dateTime = DateTime.Parse(date);
+            TimeSpan? start = TimeSpan.Parse(startTime);
+            TimeSpan? end = TimeSpan.Parse(endTime);
 
             CourseProjectConsultationDate courseProjectConsultationDate = Context.CourseProjectConsultationDates
                 .Where(x => x.EndTime.HasValue && x.StartTime.HasValue && x.GroupId != null)
-                .Where(x => TimeSpan.Compare(x.StartTime.Value, startTime.Value) <= 0 && TimeSpan.Compare(x.EndTime.Value, startTime.Value) >= 0)
-                .Where(x => x.Day.Day == date.Day && x.Day.Month == date.Month && x.Day.Year == date.Year)
+                .Where(x => TimeSpan.Compare(x.StartTime.Value, start.Value) <= 0 && TimeSpan.Compare(x.EndTime.Value, start.Value) >= 0)
+                .Where(x => x.Day.Day == dateTime.Day && x.Day.Month == dateTime.Month && x.Day.Year == dateTime.Year)
                 .Where(x => x.Audience == audience && x.Building == buildingNumber)
                 .FirstOrDefault();
 
@@ -306,11 +310,11 @@ namespace Application.Infrastructure.CPManagement
             {
                 Context.CourseProjectConsultationDates.Add(new CourseProjectConsultationDate
                 {
-                    Day = date,
+                    Day = dateTime,
                     LecturerId = userId,
                     SubjectId = subjectId,
-                    StartTime = startTime,
-                    EndTime = endTime,
+                    StartTime = start,
+                    EndTime = end,
                     Audience = audience,
                     Building = buildingNumber,
                     GroupId = groupId
@@ -321,11 +325,11 @@ namespace Application.Infrastructure.CPManagement
                 var courseProjectConsultationDateData = Context.CourseProjectConsultationDates.Find(consultationId.Value);
                 if (courseProjectConsultationDateData != null)
                 {
-                    courseProjectConsultationDateData.Day = date;
+                    courseProjectConsultationDateData.Day = dateTime;
                     courseProjectConsultationDateData.LecturerId = userId;
                     courseProjectConsultationDateData.SubjectId = subjectId;
-                    courseProjectConsultationDateData.StartTime = startTime;
-                    courseProjectConsultationDateData.EndTime = endTime;
+                    courseProjectConsultationDateData.StartTime = start;
+                    courseProjectConsultationDateData.EndTime = end;
                     courseProjectConsultationDateData.Audience = audience;
                     courseProjectConsultationDateData.Building = buildingNumber;
                     courseProjectConsultationDateData.GroupId = groupId;

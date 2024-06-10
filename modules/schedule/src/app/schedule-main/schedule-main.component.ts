@@ -636,10 +636,22 @@ export class ScheduleMainComponent implements OnInit {
         if (result.Consultations != undefined) {
           result.Consultations.forEach((consultation) => {
             const startT = new Date(
-              consultation.Day.split('T')[0] + 'T' + consultation.StartTime
+              consultation.Day.split('.')[2] +
+              '-' +
+              consultation.Day.split('.')[1] +
+              '-' +
+              consultation.Day.split('.')[0] +
+              'T' +
+              consultation.StartTime
             )
             const endT = new Date(
-              consultation.Day.split('T')[0] + 'T' + consultation.EndTime
+              consultation.Day.split('.')[2] +
+              '-' +
+              consultation.Day.split('.')[1] +
+              '-' +
+              consultation.Day.split('.')[0] +
+              'T' +
+              consultation.EndTime
             )
             if (consultation.Teacher != null) {
               consultation.Teacher.FullName = this.lessonservice.cutTeacherName(

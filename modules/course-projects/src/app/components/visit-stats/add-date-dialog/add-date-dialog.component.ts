@@ -108,7 +108,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.startTimeControl.setValue(data.StartTime);
       this.endTimeControl.setValue(data.EndTime);
       this.lecturerIdControl.setValue(data.Teacher.LectorId);
-      this.dateControl.setValue(new Date(data.Day));
+      this.dateControl.setValue(new Date(this.data.date));
     }
   }
 
@@ -146,6 +146,12 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
         Building: this.data.building,
         Audience: this.data.audience,
       }
+      consultation.Day =
+        String(date.getDate()).padStart(2, '0') +
+        '.' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '.' +
+        date.getFullYear()
       this.data.consultations.push(consultation)
       this.data.consultations = this.data.consultations.sort((a, b) =>
         a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
