@@ -231,7 +231,7 @@ export class ScheduleStatisticsComponent implements OnInit {
           options: {
             chart: {
               width: 200,
-              height: 200,
+              height: 500,
             },
             legend: {
               position: 'bottom',

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core'
 import { LayoutService } from '../layout.service'
 import { AuthenticationService } from '../../core/services/auth.service'
 import { first, takeUntil, tap } from 'rxjs/operators'
@@ -20,6 +20,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { ConfirmationService } from 'src/app/core/services/confirmation.service'
 import { MatSelectionList } from '@angular/material/list'
 import { MatSelect } from '@angular/material/select'
+import {DOCUMENT} from "@angular/common";
 
 interface DropDownValue {
   name: string
@@ -74,7 +75,8 @@ export class NavComponent implements OnInit, OnDestroy {
     private menuService: MenuService,
     public dialog: MatDialog,
     private confirmationService: ConfirmationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   get logoWidth(): string {
@@ -151,8 +153,26 @@ export class NavComponent implements OnInit, OnDestroy {
       .subscribe(() => location.reload())
   }
 
+  private setCookie(name: string, value: string, days: number) {
+    const date = new Date()
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
+    const expires = "expires=" + date.toUTCString()
+    this.document.cookie = name + "=" + value + ";" + expires + ";path=/"
+  }
+
+  private getCookie(name: string): string | null {
+    const nameEQ = name + "="
+    const ca = this.document.cookie.split(';')
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i]
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length)
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length)
+    }
+    return null
+  }
   public onValueChange(value: any): void {
     localStorage.setItem('locale', value.value.value)
+    this.setCookie('locale', value.value.value, 365)
     window.location.reload()
   }
 
