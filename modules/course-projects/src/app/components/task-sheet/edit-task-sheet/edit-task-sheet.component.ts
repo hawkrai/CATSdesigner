@@ -200,6 +200,12 @@ export class EditTaskSheetComponent implements OnInit, OnDestroy {
   saveTemplate() {
     const template = new TaskSheetTemplate()
     template.Name = this.formGroup.get('templateNameControl').value
+    template.GroupsId = []
+    this.selectedGroups.forEach((groupName) => {
+      template.GroupsId.push(
+        this.data.groups.find((group) => group.GroupName === groupName).GroupId
+      )
+    })
     this.populateSheet(template)
     this.taskSheetService.editTemplate(template).subscribe(() => {
       this.ngOnInit()
