@@ -168,21 +168,23 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
           this.data.audience,
           this.data.building,
           this.data.lecturerId,
-
         )
-        .subscribe(() => {
-          this.addFlashMessage(
-            this.translatePipe.transform(
-              'text.course.visit.dialog.add.save.success',
-              'Дата консультации успешно добавлена'
-            )
-          )
+        .subscribe((response) => {
+          this.addFlashMessage(response.StatusDescription, response.StatusCode)
         })
     }
   }
 
-  addFlashMessage(msg: string) {
-    this.toastr.success(msg)
+  addFlashMessage(msg: string, code: number) {
+    if (code === 200) {
+      this.toastr.success(msg)
+      //this.translatePipe.transform(
+      //  'text.course.visit.dialog.add.save.success',
+      //  'Дата консультации успешно добавлена'
+      //)
+    } else if (code === 500) {
+      this.toastr.warning(msg)
+    }
   }
   selectedDay: any;
   isEditing: boolean = false;
