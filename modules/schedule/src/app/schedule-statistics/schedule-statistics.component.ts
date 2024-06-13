@@ -252,6 +252,10 @@ export class ScheduleStatisticsComponent implements OnInit {
         ],
         chart: {
           type: 'donut',
+          style: {
+            display: 'flex',
+            justifyContent: 'start'
+          }
         },
         colors: this.typeColors,
         labels: this.lessonTypes,

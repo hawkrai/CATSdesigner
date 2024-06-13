@@ -104,18 +104,16 @@
           >
             <mat-option *ngIf="currentGroup?.SubGroupsOne?.Name" [value]="currentGroup?.SubGroupsOne?.SubGroupId">{{
               'subgroup'
-                | translate: 'Подгруппа '+
-              currentGroup?.SubGroupsOne?.Name
-              }}</mat-option>
+                | translate: 'Подгруппа '}} {{ currentGroup?.SubGroupsOne?.Name}}
+
+              </mat-option>
             <mat-option *ngIf="currentGroup?.SubGroupsTwo?.Name" [value]="currentGroup?.SubGroupsTwo?.SubGroupId">{{
               'subgroup'
-                | translate: 'Подгруппа '+
-              currentGroup?.SubGroupsTwo?.Name
+                | translate: 'Подгруппа' }} {{ currentGroup?.SubGroupsTwo?.Name
               }}</mat-option>
             <mat-option  *ngIf="currentGroup?.SubGroupsThird?.SubGroupId" [value]="currentGroup?.SubGroupsThird?.SubGroupId">{{
               'subgroup'
-                | translate: 'Подгруппа '+
-              currentGroup?.SubGroupsThird?.Name
+                | translate: 'Подгруппа ' }} {{ currentGroup?.SubGroupsThird?.Name
               }}</mat-option>
           </mat-select>
           <mat-error *ngIf="type.hasError('required')">{{
