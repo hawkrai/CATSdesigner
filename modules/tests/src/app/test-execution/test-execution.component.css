@@ -26,6 +26,7 @@
   display: flex;
   align-items: flex-end;
   margin-left: 15px;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .question-title-big {
