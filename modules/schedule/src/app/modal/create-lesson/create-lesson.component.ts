@@ -542,25 +542,21 @@ export class CreateLessonComponent implements OnInit {
       +this.endTimeOfNote.split(':')[0],
       +this.endTimeOfNote.split(':')[1]
     )
-    if (!this.note.id) {
-      this.note.id = this.generateUniqueId();
-    }
-    console.log(this.note)
+
     this.noteService
       .savePersonalNote(
         this.note,
         this.lessonservice.formatDate2(this.dayOfNote),
         this.startTimeOfNote,
-        this.endTimeOfNote
+        this.endTimeOfNote,
+        this.data.note.id,
       )
       .subscribe((l) => {
         console.log(l)
       })
     this.dialogRef.close({ note: this.note, type: 'note' })
   }
-  generateUniqueId() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-  }
+
   // tslint:disable-next-line:typedef
   onCancelClick() {
     this.dialogRef.close(null)

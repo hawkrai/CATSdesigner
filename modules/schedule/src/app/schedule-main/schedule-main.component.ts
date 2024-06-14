@@ -493,6 +493,7 @@ export class ScheduleMainComponent implements OnInit {
       data: { note: eventToChange, user: this.user },
       position: { top: '0%' },
     })
+    console.log(eventToChange)
     dialogRef.afterClosed().subscribe((result) => {
       if (result.note != null) {
         this.events = this.events.filter((event) => event !== eventToChange)
