@@ -23,6 +23,7 @@ export function flatpickrFactory() {
 export class CreateLessonComponent implements OnInit {
   changedType: string
   formGroup: any
+  eventToChange: any;
   lesson: Lesson = new Lesson()
   subject: any
   subjects: any[] = []
@@ -61,7 +62,9 @@ export class CreateLessonComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: any,
     private lessonservice: LessonService,
     private noteService: NoteService
-  ) {}
+  ) {
+    this.eventToChange = data.note;
+  }
 
   ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
@@ -549,7 +552,7 @@ export class CreateLessonComponent implements OnInit {
         this.lessonservice.formatDate2(this.dayOfNote),
         this.startTimeOfNote,
         this.endTimeOfNote,
-        this.data.note.id,
+        this.eventToChange.id
       )
       .subscribe((l) => {
         console.log(l)
