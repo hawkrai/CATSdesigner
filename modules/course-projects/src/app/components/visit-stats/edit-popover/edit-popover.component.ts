@@ -15,7 +15,7 @@ export class EditPopoverComponent implements OnInit {
   @Input() day: any;
   @Input() lectors: Lector[];
 
-  constructor(private fb: FormBuilder, private CourseRestService: VisitStatsService,private toastr: ToastrService) {}
+  constructor(private fb: FormBuilder, private CourseRestService: VisitStatsService, private toastr: ToastrService) {}
 
   ngOnInit() {
     this.initForm();
@@ -41,7 +41,7 @@ export class EditPopoverComponent implements OnInit {
       this.dateForm.patchValue({
         id: this.day.id,
         date: formattedDate,
-        lecturerId: this.day.LecturerId,
+        lecturerId: this.day.Teacher.LectorId,
         startTime: this.day.StartTime,
         endTime: this.day.EndTime,
         building: this.day.Building,
@@ -67,7 +67,7 @@ export class EditPopoverComponent implements OnInit {
       this.CourseRestService.addDate(
         id,
         date.toISOString(),
-        this.day.SubjectId,
+        this.day.Subject.Id,
         this.day.GroupId,
         start,
         end,

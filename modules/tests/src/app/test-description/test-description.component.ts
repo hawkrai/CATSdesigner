@@ -29,7 +29,7 @@ export class TestDescriptionComponent implements OnInit {
     const testId = this.route.snapshot.paramMap.get('id');
     this.testPassingService.CloseTestAndGetResult(testId)
       .subscribe((result) => {
-        window.location.reload();
+        this.router.navigate(['/test-control']);
       });
   }
 }

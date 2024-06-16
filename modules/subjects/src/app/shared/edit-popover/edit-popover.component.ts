@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Lector } from "../../models/lector.model";
 import { LabsRestService } from "../../services/labs/labs-rest.service";
 import { PracticalRestService } from "../../services/practical/practical-rest.service";
-import { ToastrService } from 'ngx-toastr'
 import {LecturesRestService} from "../../services/lectures/lectures-rest.service";
 
 
@@ -21,7 +20,7 @@ export class EditPopoverComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private labsRestService: LabsRestService,
-              private toastr: ToastrService,
+
               private lecturesRestService:LecturesRestService,
               private practicalRestService: PracticalRestService)
   { }
@@ -93,7 +92,7 @@ export class EditPopoverComponent implements OnInit {
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
 
-            this.addFlashMessage('Данные по лабораторной работе успешно обновлены');
+
             this.close.emit();
             },
           (error) => {
@@ -110,7 +109,6 @@ export class EditPopoverComponent implements OnInit {
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
 
-            this.addFlashMessage('Данные по практической работе успешно обновлены');
             this.close.emit();
           },
           (error) => {
@@ -125,7 +123,6 @@ export class EditPopoverComponent implements OnInit {
             this.day.EndTime = formData.endTime;
             this.day.Building = formData.building;
             this.day.Audience = formData.audience;
-            this.addFlashMessage('Данные по лекции успешно обновлены');
 
             this.close.emit();
           },
@@ -138,9 +135,7 @@ export class EditPopoverComponent implements OnInit {
       this.dateForm.markAllAsTouched();
     }
   }
-  addFlashMessage(msg: string) {
-    this.toastr.success(msg)
-  }
+
   onClose() {
     this.close.emit();
   }

@@ -22,10 +22,10 @@ namespace LMPlatform.UI.ApiControllers.CP
         private ICpPercentageGraphService PercentageService
             => _percentageService.Value;
 
-        private ILecturerManagementService lecturerService
+        private ILecturerManagementService LecturerService
             => _lecturerService.Value;
 
-        public HttpStatusCodeResult Post([FromBody]CourseProjectConsultationDateData consultationDate)
+        public HttpStatusCodeResult Post([FromBody] CourseProjectConsultationDateData consultationDate)
         {
             int userId = UserContext.CurrentUserId;
             Lecturer lecturer = lecturerService.GetLecturer(userId);
@@ -40,7 +40,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             {
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Время и место занято " + lecturer.LastName + " " + lecturer.FirstName);
             }
-            
+
         }
 
         public void Post(int id)

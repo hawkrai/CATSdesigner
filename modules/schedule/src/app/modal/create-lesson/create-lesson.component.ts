@@ -23,6 +23,7 @@ export function flatpickrFactory() {
 export class CreateLessonComponent implements OnInit {
   changedType: string
   formGroup: any
+  eventToChange: any;
   lesson: Lesson = new Lesson()
   subject: any
   subjects: any[] = []
@@ -39,6 +40,7 @@ export class CreateLessonComponent implements OnInit {
   date: string
   groups: any[] = []
   typeSubject: any[] = []
+  teachers: any[] = []
   currentGroup: any
 
   formGroupNote: any
@@ -51,6 +53,7 @@ export class CreateLessonComponent implements OnInit {
   disableNote = false
 
   user: any
+  selectedTeacher: ''
   stageValue = ''
   stageValueSub = ''
   isDiplomAvailable = false
@@ -61,7 +64,9 @@ export class CreateLessonComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: any,
     private lessonservice: LessonService,
     private noteService: NoteService
-  ) {}
+  ) {
+    this.eventToChange = data.note;
+  }
 
   ngOnInit(): void {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
@@ -125,6 +130,7 @@ export class CreateLessonComponent implements OnInit {
         disabled: this.isStudentUpdateLesson,
       }),
     })
+    this.formGroup.controls.teacher.disable()
     this.formGroup.controls.group.disable()
     this.formGroup.controls.subGroup.disable()
     this.lessonservice
@@ -138,7 +144,10 @@ export class CreateLessonComponent implements OnInit {
             this.data.lesson.title,
             8
           )
-
+          const teacherId = +this.lessonservice.getTitlePart(
+            this.data.lesson.title,
+            14
+          )
           this.lesson.GroupId = +this.lessonservice.getTitlePart(
             this.data.lesson.title,
             10
@@ -147,6 +156,23 @@ export class CreateLessonComponent implements OnInit {
             this.data.lesson.title,
             11
           )
+          this.formGroup.get('subjectF').setValue(+this.lesson.SubjectId)
+
+          if (teacherId != null) {
+            this.lessonservice
+              .getJoinedLector(this.lesson.SubjectId, true)
+              .subscribe((re) => {
+                this.teachers = re
+                this.formGroup.controls.teacher.enable()
+                if (this.isStudentUpdateLesson) {
+                  this.formGroup.controls.teacher.disable()
+                }
+                this.lesson.Teacher = this.teachers.find(
+                  (teacher) => teacher.LectorId === teacherId
+                )
+                this.formGroup.get('teacher').setValue(this.lesson.Teacher.LectorId)
+              })
+          }
 
           if (!isNaN(this.lesson.GroupId)) {
             this.lessonservice
@@ -166,8 +192,7 @@ export class CreateLessonComponent implements OnInit {
                 this.formGroup.get('subGroup').setValue(this.lesson.SubGroupId)
               })
           }
-
-          this.formGroup.get('subjectF').setValue(+this.lesson.SubjectId)
+          
         }
       })
 
@@ -235,7 +260,6 @@ export class CreateLessonComponent implements OnInit {
       this.disableLesson = true
       this.isStudentUpdateLesson = true
     }
-    this.formGroup.controls.teacher.disable()
     this.formGroup.controls.dayEvent.disable()
     this.formGroupNote.controls.dayNote.disable()
     flatpickrFactory()
@@ -496,11 +520,16 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.End + ':00',
                 this.lesson.Audience,
                 this.lesson.Building,
-                this.lesson.GroupId
+                this.lesson.GroupId,
+                this.lesson.Id,
+                this.lesson.Teacher.LectorId
               )
               .subscribe((r) => {
                 console.log(r)
               })
+            this.lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
+              this.lesson.Teacher.FullName
+            )
           } else if (this.formGroup.controls.type.value === '4') {
             this.dialogRef.close({ lesson: this.lesson, type: 'diplom' })
             this.lessonservice
@@ -542,12 +571,14 @@ export class CreateLessonComponent implements OnInit {
       +this.endTimeOfNote.split(':')[0],
       +this.endTimeOfNote.split(':')[1]
     )
+
     this.noteService
       .savePersonalNote(
         this.note,
         this.lessonservice.formatDate2(this.dayOfNote),
         this.startTimeOfNote,
-        this.endTimeOfNote
+        this.endTimeOfNote,
+        this.eventToChange.id
       )
       .subscribe((l) => {
         console.log(l)
@@ -578,6 +609,16 @@ export class CreateLessonComponent implements OnInit {
     this.lessonservice.getGroupsBySubjectId(event.value).subscribe((re) => {
       this.groups = re.Groups
     })
+    this.lessonservice.getJoinedLector(event.value).subscribe((re) => {
+      this.teachers = re
+    })
+    this.formGroup.controls.teacher.enable()
+  }
+
+  teacherChange(event): void {
+    this.lesson.Teacher = this.teachers.find(
+      (teacher) => teacher.LectorId === event.value
+    )
   }
 
   groupChange(event): void {

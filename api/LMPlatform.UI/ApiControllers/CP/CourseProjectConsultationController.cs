@@ -7,6 +7,7 @@ using Application.Core.Helpers;
 using Application.Infrastructure.CPManagement;
 using Application.Infrastructure.CTO;
 using Application.Infrastructure.UserManagement;
+using LMPlatform.Models;
 using LMPlatform.UI.Attributes;
 
 namespace LMPlatform.UI.ApiControllers.CP
@@ -31,12 +32,7 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public CourseProjectConsultationData Get([System.Web.Http.ModelBinding.ModelBinder] GetPagedListParams parms)
         {
-            var lecturerId = UserContext.CurrentUserId;
-
-            if (parms.Filters.ContainsKey("lecturerId"))
-            {
-                lecturerId = int.Parse(parms.Filters["lecturerId"]);
-            }
+            var userId = UserContext.CurrentUserId;
 
             var subjectId = 0;
 
@@ -50,12 +46,16 @@ namespace LMPlatform.UI.ApiControllers.CP
             if (parms.Filters.ContainsKey("groupId"))
             {
                 groupId = int.Parse(parms.Filters["groupId"]);
+            } 
+            else if (UserContext.Role == "student")
+            {
+                groupId = UserManagementService.GetUserById(userId).Student.GroupId;
             }
 
             return new CourseProjectConsultationData
             {
-                Students = CpManagementService.GetGraduateStudentsForGroup(lecturerId, groupId, subjectId, parms, false),
-                Consultations = PercentageService.GetConsultationDatesForUser(lecturerId, subjectId, groupId)
+                Students = CpManagementService.GetGraduateStudentsForGroup(userId, groupId, subjectId, parms, false),
+                Consultations = PercentageService.GetConsultationDatesForUser(userId, subjectId, groupId)
             };
         }
 

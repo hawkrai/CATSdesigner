@@ -12,7 +12,8 @@ export class NoteService {
     noteAdd: any,
     dateNote: string,
     start: string,
-    end: string
+    end: string,
+    id:any
   ): Observable<any> {
     return this.http.post<any>(
       '/Services/Notes/NotesService.svc/SavePersonalNote',
@@ -22,6 +23,7 @@ export class NoteService {
         startTime: start,
         endTime: end,
         note: noteAdd.note,
+        id:id
       }
     )
   }
@@ -53,7 +55,7 @@ export class NoteService {
   }
 
   getNote(title: string): any {
-    const splitted = title.split('|', 2)
-    return splitted[1]
+    const splitted = title.split('|', 2);
+    return splitted[1] !== "null" ? splitted[1] : '';
   }
 }

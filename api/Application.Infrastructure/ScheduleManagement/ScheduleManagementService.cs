@@ -43,27 +43,25 @@ namespace Application.Infrastructure.ScheduleManagement
                 .Select(LabScheduleToModel)
                 .ToList();
 
-			return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
-				.Where
-				(x => x.Start.HasValue 
-				&& x.End.HasValue 
-				&&(
-					(x.Start <= startTime && x.End >= endTime) ||
-					(x.Start <= startTime && x.End <= endTime && startTime <= x.End) ||
-					(x.Start >= startTime && endTime >= x.Start && endTime <= x.End) ||
-					(x.Start >= startTime && x.Start <= endTime && startTime <= x.End && x.End <= endTime)
-				)
-				&&(
-					(
-						string.Equals(x.Audience.Trim(), audience.Trim(), StringComparison.CurrentCultureIgnoreCase)
-						&& (string.IsNullOrWhiteSpace(x.Building) || string.Equals(x.Building.Trim(), building.Trim(), StringComparison.CurrentCultureIgnoreCase))
+
+            return lecturesSchedule.Concat(labsSchedule).Concat(practicalsSchedule)
+				.Where(x => x.Start.HasValue
+				&& x.End.HasValue
+				&& (
+					(startTime < x.Start && x.Start < endTime) ||
+					(startTime < x.End && x.End < endTime) ||
+                    (startTime >= x.Start && x.End >= endTime) 
 					)
-					|| (x.GroupId == groupId)
-					|| (x.SubGroupId == subGroupId)
-					|| (x.Teacher.Id == lecturerId)
+				&&
+				(
+					string.Equals(x.Audience.Trim(), audience.Trim(), StringComparison.CurrentCultureIgnoreCase)
+					&& (string.IsNullOrWhiteSpace(x.Building) || string.Equals(x.Building.Trim(), building.Trim(), StringComparison.CurrentCultureIgnoreCase))
 				)
-				);
-				
+				|| (x.GroupId == groupId)
+				|| (x.SubGroupId == subGroupId)
+				|| (x.Teacher.Id == lecturerId)
+			);
+
         }
 
 		public IEnumerable<ScheduleModel> GetScheduleBetweenDates(DateTime startDate, DateTime endDate)
