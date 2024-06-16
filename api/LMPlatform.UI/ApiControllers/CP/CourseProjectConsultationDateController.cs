@@ -27,7 +27,10 @@ namespace LMPlatform.UI.ApiControllers.CP
 
         public HttpStatusCodeResult Post([FromBody]CourseProjectConsultationDateData consultationDate)
         {
-            CourseProjectConsultationDate courseProjectConsultationDate = PercentageService.SaveConsultationDate(consultationDate.LecturerId, consultationDate.Day, consultationDate.SubjectId, consultationDate.StartTime,
+            int userId = UserContext.CurrentUserId;
+            Lecturer lecturer = lecturerService.GetLecturer(userId);
+            int lecturerId = lecturer == null ? 0 : lecturer.Id;
+            CourseProjectConsultationDate courseProjectConsultationDate = PercentageService.SaveConsultationDate(lecturerId, consultationDate.Day, consultationDate.SubjectId, consultationDate.StartTime,
                 consultationDate.EndTime, consultationDate.Audience, consultationDate.Building, consultationDate.GroupId, consultationDate.Id);
 
             if(courseProjectConsultationDate == null)
@@ -35,7 +38,6 @@ namespace LMPlatform.UI.ApiControllers.CP
                 return new HttpStatusCodeResult(HttpStatusCode.OK, "Дата успешно добавлена");
             } else
             {
-                Lecturer lecturer = lecturerService.GetLecturer(courseProjectConsultationDate.LecturerId);
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Время и место занято " + lecturer.LastName + " " + lecturer.FirstName);
             }
             
