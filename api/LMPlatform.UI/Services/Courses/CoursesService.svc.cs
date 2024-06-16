@@ -74,7 +74,7 @@ namespace LMPlatform.UI.Services.Courses
 				var students = new List<StudentMark>();
 
 				foreach (var student in group.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.LastName)
-					.Where(s => s.IsActive.HasValue && s.IsActive.Value && !s.DeletedOn.HasValue))
+					.Where(s => s.IsActive.HasValue && s.IsActive.Value && s.Confirmed.HasValue && s.Confirmed.Value))
 				{
 					var files =
 						SubjectManagementService.GetUserCourseFiles(student.Id, subjectId).Select(
