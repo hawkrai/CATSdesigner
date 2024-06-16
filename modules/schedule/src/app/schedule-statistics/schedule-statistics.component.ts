@@ -231,7 +231,7 @@ export class ScheduleStatisticsComponent implements OnInit {
           options: {
             chart: {
               width: 200,
-              height: 200,
+              height: 500,
             },
             legend: {
               position: 'bottom',
@@ -252,6 +252,10 @@ export class ScheduleStatisticsComponent implements OnInit {
         ],
         chart: {
           type: 'donut',
+          style: {
+            display: 'flex',
+            justifyContent: 'start'
+          }
         },
         colors: this.typeColors,
         labels: this.lessonTypes,

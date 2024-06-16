@@ -202,7 +202,7 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
       order,
       pathFile: lab ? lab.PathFile : '',
       attachments: lab ? lab.Attachments : [],
-      shortName: `ЛР${order}`,
+      shortName: `'Lab' | translate: 'Лаб'${order}`,
     }
   }
 }
