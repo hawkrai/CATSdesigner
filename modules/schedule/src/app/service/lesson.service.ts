@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { TranslatePipe } from 'educats-translate'
 import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root',
@@ -208,7 +209,7 @@ export class LessonService {
   }
 
   getTitlePart(title: string, i: number): any {
-    const splitted = title.split('|', 14)
+    const splitted = title.split('|', 15)
     return splitted[i]
   }
 
@@ -259,6 +260,22 @@ export class LessonService {
     return name
   }
 
+  public getJoinedLector(
+    subjectId: string,
+    loadSelf: boolean = true
+  ): Observable<
+    {
+      LectorId: number
+      UserName: string
+      FullName: string
+    }[]
+  > {
+    const params = new HttpParams().set('loadSelf', loadSelf + '')
+    return this.http
+      .get('../course/Services/CoreService.svc/GetJoinedLector/' + subjectId, { params })
+      .pipe(map((res) => res['Lectors']))
+  }
+
   getConsultations(params: any): Observable<any> {
     return this.http.get<any>('/api/DiplomProjectConsultation', {
       params: new HttpParams({ fromObject: params }),
@@ -303,15 +320,19 @@ export class LessonService {
     audience: string,
     building: string,
     groupId: number,
+    id: string,
+    lecturerId: string
   ): Observable<any> {
     return this.http.post('/api/CourseProjectConsultationDate', {
       Day: date,
-      SubjectId: subjectId,
+      Subject: { Id: subjectId },
       StartTime: startTime,
       EndTime: endTime,
       Building: building,
       Audience: audience,
       GroupId: groupId,
+      Id: id,
+      Teacher: { LectorId: lecturerId },
     })
   }
 

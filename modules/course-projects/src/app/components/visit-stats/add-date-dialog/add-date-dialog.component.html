@@ -131,30 +131,32 @@
       (close)="closeEditPopover($event)">
     </app-edit>
     <table class="mdc-data-table__table">
-
       <tbody class="mdc-data-table__content">
-
-      <tr class="mdc-data-table__row">
-        <td class="mdc-data-table__cell">
-          {{ day.Day }}
-          <mat-hint *ngIf="day.StartTime && day.EndTime">
-            {{ day.StartTime }}-{{ day.EndTime }}
-          </mat-hint>
-        </td>
-        <td class="mdc-data-table__cell visit-date__table-action">
-          <button mat-icon-button color="primary" [matTooltip]="'date.edit' | translate: 'Редактировать дату'"
-                  [disabled]="isEditing && selectedDay !== day"
-                  (click)="editPopover(day) ">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate: 'Удалить дату'"
-                  [disabled]="isEditing && selectedDay !== day"
-                  (click)="deleteDate(day.Id)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </tr>
-
+        <tr class="mdc-data-table__row">
+          <td class="mdc-data-table__cell">
+            {{ day.Day }}
+            <mat-hint *ngIf="day.StartTime && day.EndTime">
+              {{ day.StartTime }}-{{ day.EndTime }}
+            </mat-hint>
+          </td>
+          <td class="mdc-data-table__cell">
+            <mat-hint *ngIf="day.Audience && day.Building" style="font-size: 12px;">
+              {{ 'date.building' | translate: 'к' }}.{{ day.Building }}, {{ 'date.audience' | translate: 'а' }}.{{ day.Audience }}
+            </mat-hint>
+          </td>
+          <td class="mdc-data-table__cell visit-date__table-action">
+            <button mat-icon-button color="primary" [matTooltip]="'date.edit' | translate: 'Редактировать дату'"
+                    [disabled]="isEditing && selectedDay !== day"
+                    (click)="editPopover(day) ">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" [matTooltip]="'date.delete' | translate: 'Удалить дату'"
+                    [disabled]="isEditing && selectedDay !== day"
+                    (click)="deleteDate(day.Id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
     </ng-container>

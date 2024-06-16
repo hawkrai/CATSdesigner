@@ -166,7 +166,9 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       lesson.GroupName +
       '|' +
-      lesson.SubGroupName
+      lesson.SubGroupName +
+      '|' +
+      lesson.Teacher.LectorId
     )
   }
 
@@ -188,18 +190,21 @@ export class ScheduleMainComponent implements OnInit {
       '|' +
       'КП' +
       '|' +
+      consultation.Teacher.FullName + 
       '|' +
       consultation.Subject.Color +
       '|' +
       consultation.Subject.Name +
       '|' +
-      consultation.SubjectId +
+      consultation.Subject.Id +
       '|' +
       '|' +
       consultation.GroupId +
       '|' +
       '|' +
-      '|'
+      '|' +
+      '|' +
+      consultation.Teacher.LectorId
     )
   }
 
@@ -632,11 +637,28 @@ export class ScheduleMainComponent implements OnInit {
         if (result.Consultations != undefined) {
           result.Consultations.forEach((consultation) => {
             const startT = new Date(
-              consultation.Day.split('T')[0] + 'T' + consultation.StartTime
+              consultation.Day.split('.')[2] +
+              '-' +
+              consultation.Day.split('.')[1] +
+              '-' +
+              consultation.Day.split('.')[0] +
+              'T' +
+              consultation.StartTime
             )
             const endT = new Date(
-              consultation.Day.split('T')[0] + 'T' + consultation.EndTime
+              consultation.Day.split('.')[2] +
+              '-' +
+              consultation.Day.split('.')[1] +
+              '-' +
+              consultation.Day.split('.')[0] +
+              'T' +
+              consultation.EndTime
             )
+            if (consultation.Teacher != null) {
+              consultation.Teacher.FullName = this.lessonservice.cutTeacherName(
+                consultation.Teacher.FullName
+              )
+            }
             this.events.push({
               id: consultation.Id,
               start: startT,
