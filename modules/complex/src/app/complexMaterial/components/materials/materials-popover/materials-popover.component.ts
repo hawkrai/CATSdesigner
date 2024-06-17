@@ -42,6 +42,9 @@ export class MaterialsPopoverComponent {
   prevButtonVisible: boolean
   toTestButtonVisible: boolean
   toTestButtonEnabled: boolean
+  zoomOutButtonVisible: boolean = true
+  zoomInButtonVisible: boolean = true
+  endTestButtonVisible: boolean = true
 
   constructor(
     public dialogRef: MatDialogRef<MaterialsPopoverComponent>,
@@ -142,7 +145,9 @@ export class MaterialsPopoverComponent {
         this.prevButtonVisible = false
         this.nextButtonVisible = false
         this.needToGetInitialTest = false
-        this.shouldWaitPresettedTime = false
+        this.zoomOutButtonVisible = false
+        this.zoomInButtonVisible = false
+        this.endTestButtonVisible = false
       })
   }
 
@@ -158,6 +163,9 @@ export class MaterialsPopoverComponent {
       this.nextButtonVisible = false
       this.needToGetInitialTest = false
       this.shouldWaitPresettedTime = false
+      this.zoomOutButtonVisible = false
+      this.zoomInButtonVisible = false
+      this.endTestButtonVisible = false
     })
   }
 
