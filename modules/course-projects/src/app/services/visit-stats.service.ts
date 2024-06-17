@@ -74,18 +74,18 @@ export class VisitStatsService {
     endTime: string,
     audience: string,
     building: string,
-    LecturerId:number| string
+    lecturerId: number | string
   ): Observable<any> {
     return this.http.post('api/CourseProjectConsultationDate', {
-      Id:id,
+      Id: id,
       Day: date,
-      SubjectId: subjectId,
+      Subject: { Id: subjectId },
       GroupId: groupId,
       StartTime: startTime,
       EndTime: endTime,
       Building: building,
       Audience: audience,
-      LecturerId:LecturerId
+      Teacher: { LectorId: lecturerId }
     })
   }
 

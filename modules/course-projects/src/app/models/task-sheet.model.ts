@@ -2,6 +2,7 @@ export class TaskSheet {
   CourseProjectId: string
   InputData: string
   Faculty: string
+  CathedraName: string
   HeadCathedra: string
   RpzContent: string
   DrawMaterials: string

@@ -107,8 +107,8 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
       this.buildingControl.setValue(data.Building);
       this.startTimeControl.setValue(data.StartTime);
       this.endTimeControl.setValue(data.EndTime);
-      this.lecturerIdControl.setValue(data.LecturerId);
-      this.dateControl.setValue(new Date(data.Day));
+      this.lecturerIdControl.setValue(data.Teacher.LectorId);
+      this.dateControl.setValue(new Date(this.data.date));
     }
   }
 
@@ -138,14 +138,20 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
         Id: this.data.consultations[this.data.consultations.length - 1]
           ? this.data.consultations[this.data.consultations.length - 1].Id + 1
           : '0',
-        LecturerId: this.data.lecturerId,
+        Teacher: { LectorId: +this.data.lecturerId, FullName: null, UserName: null },
         Day: date.toISOString(),
-        SubjectId: this.data.subjectId,
+        Subject: { Id: this.data.subjectId },
         StartTime: this.data.start,
         EndTime: this.data.end,
         Building: this.data.building,
         Audience: this.data.audience,
       }
+      consultation.Day =
+        String(date.getDate()).padStart(2, '0') +
+        '.' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '.' +
+        date.getFullYear()
       this.data.consultations.push(consultation)
       this.data.consultations = this.data.consultations.sort((a, b) =>
         a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
@@ -162,21 +168,23 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
           this.data.audience,
           this.data.building,
           this.data.lecturerId,
-
         )
-        .subscribe(() => {
-          this.addFlashMessage(
-            this.translatePipe.transform(
-              'text.course.visit.dialog.add.save.success',
-              'Дата консультации успешно добавлена'
-            )
-          )
+        .subscribe((response) => {
+          this.addFlashMessage(response.StatusDescription, response.StatusCode)
         })
     }
   }
 
-  addFlashMessage(msg: string) {
-    this.toastr.success(msg)
+  addFlashMessage(msg: string, code: number) {
+    if (code === 200) {
+      this.toastr.success(msg)
+      //this.translatePipe.transform(
+      //  'text.course.visit.dialog.add.save.success',
+      //  'Дата консультации успешно добавлена'
+      //)
+    } else if (code === 500) {
+      this.toastr.warning(msg)
+    }
   }
   selectedDay: any;
   isEditing: boolean = false;
