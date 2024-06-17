@@ -9,6 +9,7 @@
     {{ 'common.pretest' | translate: 'Пройти предтест' }}
   </button>
   <button 
+    *ngIf="zoomInButtonVisible"
     mat-raised-button
     mat-button
     class="color-button"
@@ -18,6 +19,7 @@
     {{ 'common.zoomIn' | translate: 'Увеличить' }}
   </button>
   <button 
+    *ngIf="zoomOutButtonVisible"
     mat-raised-button
     mat-button
     class="color-button"
@@ -58,7 +60,7 @@
   </button>
   <button
     id="continueButton"
-    *ngIf="isTest"
+    *ngIf="isTest && endTestButtonVisible"
     mat-raised-button
     mat-button
     class="color-button"
