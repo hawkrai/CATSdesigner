@@ -145,6 +145,7 @@ export class MaterialsPopoverComponent {
         this.prevButtonVisible = false
         this.nextButtonVisible = false
         this.needToGetInitialTest = false
+        this.shouldWaitPresettedTime = false
         this.zoomOutButtonVisible = false
         this.zoomInButtonVisible = false
         this.endTestButtonVisible = false
