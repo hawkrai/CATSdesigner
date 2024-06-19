@@ -3,13 +3,14 @@
   <pdf-viewer
     [src]="pdfSrc"
     [render-text]="true"
+    [original-size]="false"
     [(page)]="page"
     [show-all]="true"
-    style="display: block"
+    style="display: block" 
   ></pdf-viewer>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">
-    {{ 'common.cancel' | translate: 'Отмена' }}
+    {{ 'common.close' | translate: 'Закрыть' }}
   </button>
 </div>

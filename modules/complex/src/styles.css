@@ -11,8 +11,14 @@
   font-size: 16px;
 }
 
+.cdk-overlay-pane {
+  height: 100% !important;
+}
+
 .cdk-global-overlay-wrapper {
-  display: -webkit-box;
+  justify-content: center;
+  align-items: center;
+  display: flex;
   position: absolute;
   z-index: 1000;
   overflow: auto;
