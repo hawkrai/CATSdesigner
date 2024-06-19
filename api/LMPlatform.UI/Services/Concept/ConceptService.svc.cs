@@ -376,24 +376,26 @@ namespace LMPlatform.UI.Services.Concept
             var concept = ConceptManagementService.GetLiteById(conceptId);
             var list = WatchingTimeService.GetAllRecords(conceptId);
             var viewRecords = new List<ViewsWorm>();
-            var studentIds = list.Select(i => i.UserId);
+            var studentIds = list.Select(i => i.UserId).ToList();
             var students =
-	            StudentManagementService.GetStudents(new Query<Student>(s => studentIds.Any(id => id == s.Id)));
+                StudentManagementService.GetStudents(new Query<Student>(s => studentIds.Contains(s.User.Id))).ToList();
 
             foreach (var item in list)
             {
-                var student = students.Single(s => s.Id == item.UserId);
+                var student = students.SingleOrDefault(s => s.Id == item.UserId);
                 if (student == null || student.GroupId != groupId) continue;
                 viewRecords.Add(new ViewsWorm
                 {
-	                Name = student.FullName, Seconds = item.Time
+                    Name = student.FullName,
+                    Seconds = item.Time
                 });
             }
             var views = viewRecords.OrderBy(x => x.Name).ToList();
             var estimated = WatchingTimeService.GetEstimatedTime(concept.Container);
             return new MonitoringData
             {
-	            Views = views, Estimated = estimated
+                Views = views,
+                Estimated = estimated
             };
         }
         public class MonitoringData
