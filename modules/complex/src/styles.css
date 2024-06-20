@@ -11,8 +11,8 @@
   font-size: 16px;
 }
 
-.cdk-overlay-pane {
-  height: 100% !important;
+.mat-dialog-container {
+   height: 100vh !important;
 }
 
 .cdk-global-overlay-wrapper {
