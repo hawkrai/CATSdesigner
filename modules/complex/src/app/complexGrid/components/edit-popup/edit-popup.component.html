@@ -28,25 +28,34 @@
       name="isPublishedCheckBox"
       matInput
       [(ngModel)]="data.isPublished"
-      >{{ 'common.include.labs' | translate: 'Открыть доступ' }}</mat-checkbox
+      >{{ 'complex.openAccess' | translate: 'Открыть студентам доступ к ЭУМК' }}</mat-checkbox
     >
     <span>
-      <mat-checkbox
-        [disabled]="!data.isNew"
-        name="includeLabs"
-        matInput
-        [(ngModel)]="data.includeLabs"
-        >{{
-          'common.courseName' | translate: 'Включить лабораторные'
-        }}</mat-checkbox
-      >
       <mat-checkbox
         [disabled]="!data.isNew"
         name="includeLectures"
         matInput
         [(ngModel)]="data.includeLectures"
         >{{
-          'common.include.lectures' | translate: 'Включить лекции'
+          'complex.include.lecture' | translate: 'Включить темы лекций предмета в теоретический раздел ЭУМК'
+        }}</mat-checkbox
+      >
+      <mat-checkbox
+        [disabled]="!data.isNew"
+        name="includeWorkshops"
+        matInput
+        [(ngModel)]="data.includeWorkshops"
+        >{{
+          'complex.include.workshop' | translate: 'Включить темы практических занятий в практический раздел ЭУМК'
+        }}</mat-checkbox
+      >
+       <mat-checkbox
+        [disabled]="!data.isNew"
+        name="includeLabs"
+        matInput
+        [(ngModel)]="data.includeLabs"
+        >{{
+          'complex.include.labs' | translate: 'Включить темы лабораторных работ в практический раздел ЭУМК'
         }}</mat-checkbox
       >
       <mat-checkbox
@@ -55,7 +64,7 @@
         matInput
         [(ngModel)]="data.includeTests"
         >{{
-          'common.include.tests' | translate: 'Включить тесты'
+          'complex.include.tests' | translate: 'Включить тесты для самоконтроля в блок контроля знаний ЭУМК'
         }}</mat-checkbox
       >
     </span>

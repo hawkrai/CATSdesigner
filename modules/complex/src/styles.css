@@ -28,6 +28,10 @@
 }
 
 .mat-checkbox-label {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  display: inline-block;
+  margin-left: 8px;
   width: 100%;
 }
 

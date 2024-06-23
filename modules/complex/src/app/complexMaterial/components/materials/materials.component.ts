@@ -58,13 +58,41 @@ export class MaterialComponent implements OnInit {
 
   ngOnInit() {
     this.complexService.getConceptCascade(this.complexId).subscribe((res) => {
-      this.dataSource.data = res.children
-      this.treeControl.dataNodes = res.children
+      const localizedData = this.localizeTree(res.children)
+      this.dataSource.data = localizedData
+      this.treeControl.dataNodes = localizedData
       this.treeControl.expandAll()
     })
   }
 
-  openSnackBar(): void{
+  localizeTree(nodes: any[]): any[] {
+    const translations = {
+      "Титульный экран": "complex.titleScreen",
+      "Программа курса": "complex.courseProgram",
+      "Теоретический раздел": "complex.section.theoretical",
+      "Практический раздел": "complex.section.practical",
+      "Блок контроля знаний": "complex.section.control"
+    };
+
+    return nodes.map(node => {
+      let localizedName = node.Name;
+      for (const key in translations) {
+        if (translations.hasOwnProperty(key)) {
+          if (node.Name.includes(key)) {
+            localizedName = this.translatePipe.transform(translations[key], key);
+            break;
+          }
+        }
+      }
+      return {
+        ...node,
+        Name: localizedName,
+        children: node.children ? this.localizeTree(node.children) : []
+      };
+    });
+  }
+
+  openSnackBar(): void {
     this.snackBar.open(
       this.translatePipe.transform(
         'complex.noInfo',
