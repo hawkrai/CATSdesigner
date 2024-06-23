@@ -129,32 +129,6 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     if (this.data != null) {
       const date = new Date(this.data.date)
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-      const consultation: Consultation = {
-        Id: this.data.consultations[this.data.consultations.length - 1]
-          ? this.data.consultations[this.data.consultations.length - 1].Id + 1
-          : '0',
-        Teacher: {
-          LectorId: +this.data.lecturerId,
-          FullName: null,
-          UserName: null,
-        },
-        Day: date.toISOString(),
-        Subject: { Id: this.data.subjectId },
-        StartTime: this.data.start,
-        EndTime: this.data.end,
-        Building: this.data.building,
-        Audience: this.data.audience,
-      }
-      consultation.Day =
-        String(date.getDate()).padStart(2, '0') +
-        '.' +
-        String(date.getMonth() + 1).padStart(2, '0') +
-        '.' +
-        date.getFullYear()
-      this.data.consultations.push(consultation)
-      this.data.consultations = this.data.consultations.sort((a, b) =>
-        a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
-      )
 
       this.visitStatsService
         .addDate(
@@ -170,6 +144,36 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
         )
         .subscribe((response) => {
           this.addFlashMessage(response.StatusDescription, response.StatusCode)
+
+          if (response.StatusCode === 200) {
+            const consultation: Consultation = {
+              Id: this.data.consultations[this.data.consultations.length - 1]
+                ? this.data.consultations[this.data.consultations.length - 1]
+                    .Id + 1
+                : '0',
+              Teacher: {
+                LectorId: +this.data.lecturerId,
+                FullName: null,
+                UserName: null,
+              },
+              Day: date.toISOString(),
+              Subject: { Id: this.data.subjectId },
+              StartTime: this.data.start,
+              EndTime: this.data.end,
+              Building: this.data.building,
+              Audience: this.data.audience,
+            }
+            consultation.Day =
+              String(date.getDate()).padStart(2, '0') +
+              '.' +
+              String(date.getMonth() + 1).padStart(2, '0') +
+              '.' +
+              date.getFullYear()
+            this.data.consultations.push(consultation)
+            this.data.consultations = this.data.consultations.sort((a, b) =>
+              a.Day > b.Day ? 1 : b.Day > a.Day ? -1 : 0
+            )
+          }
         })
     }
   }
