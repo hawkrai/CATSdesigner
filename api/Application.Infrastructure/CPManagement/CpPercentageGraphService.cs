@@ -153,8 +153,8 @@ namespace Application.Infrastructure.CPManagement
                 .ToList();
 
             var consultations = (subjectsId != null)
-                ? baseQuery.AsEnumerable().Where(x => x.SubjectId == subjectId || subjectsId.Contains(x.SubjectId)).ToList()
-                : baseQuery.ToList();
+                ? baseQuery.AsEnumerable().Where(x => subjectsId.Contains(x.SubjectId)).ToList()
+                : baseQuery.AsEnumerable().Where(x => x.SubjectId == subjectId).ToList();
 
             var consultationsData = consultations
                 .Select(x => new CourseProjectConsultationDateData
