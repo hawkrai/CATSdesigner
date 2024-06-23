@@ -41,7 +41,7 @@ namespace LMPlatform.UI.ApiControllers.CP
             else
             {
                 Lecturer lecturer = LecturerService.GetLecturer(courseProjectConsultationDate.LecturerId);
-                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Время и место занято " + lecturer.LastName + " " + lecturer.FirstName);
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, lecturer.LastName + " " + lecturer.FirstName);
             }
 
         }

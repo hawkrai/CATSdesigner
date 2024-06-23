@@ -1,9 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material'
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material'
 import { FormControl, Validators } from '@angular/forms'
 import { VisitStatsService } from 'src/app/services/visit-stats.service'
 import { Consultation } from 'src/app/models/consultation.model'
@@ -101,21 +97,20 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }
 
   initControls(): void {
-    const data = this.data.consultations[0];
+    const data = this.data.consultations[0]
     if (data) {
-      this.audienceControl.setValue(data.Audience);
-      this.buildingControl.setValue(data.Building);
-      this.startTimeControl.setValue(data.StartTime);
-      this.endTimeControl.setValue(data.EndTime);
-      this.lecturerIdControl.setValue(data.Teacher.LectorId);
-      this.dateControl.setValue(new Date(this.data.date));
+      this.audienceControl.setValue(data.Audience)
+      this.buildingControl.setValue(data.Building)
+      this.startTimeControl.setValue(data.StartTime)
+      this.endTimeControl.setValue(data.EndTime)
+      this.lecturerIdControl.setValue(data.Teacher.LectorId)
+      this.dateControl.setValue(new Date(this.data.date))
     }
   }
 
   onDateChange(date: any) {
-    this.data.date = date;
+    this.data.date = date
   }
-
 
   onCancelClick(): void {
     const date = new Date(this.data.date)
@@ -138,7 +133,11 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
         Id: this.data.consultations[this.data.consultations.length - 1]
           ? this.data.consultations[this.data.consultations.length - 1].Id + 1
           : '0',
-        Teacher: { LectorId: +this.data.lecturerId, FullName: null, UserName: null },
+        Teacher: {
+          LectorId: +this.data.lecturerId,
+          FullName: null,
+          UserName: null,
+        },
         Day: date.toISOString(),
         Subject: { Id: this.data.subjectId },
         StartTime: this.data.start,
@@ -167,7 +166,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
           this.data.end,
           this.data.audience,
           this.data.building,
-          this.data.lecturerId,
+          this.data.lecturerId
         )
         .subscribe((response) => {
           this.addFlashMessage(response.StatusDescription, response.StatusCode)
@@ -177,30 +176,35 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
 
   addFlashMessage(msg: string, code: number) {
     if (code === 200) {
-      this.toastr.success(msg)
-      //this.translatePipe.transform(
-      //  'text.course.visit.dialog.add.save.success',
-      //  'Дата консультации успешно добавлена'
-      //)
+      this.toastr.success(
+        this.translatePipe.transform(
+          'text.course.visit.dialog.add.save.success',
+          'Дата консультации успешно добавлена'
+        )
+      )
     } else if (code === 500) {
-      this.toastr.warning(msg)
+      this.toastr.warning(
+        this.translatePipe.transform(
+          'text.course.visit.dialog.add.save.failure',
+          'Время и место заняты '
+        ) + msg
+      )
     }
   }
-  selectedDay: any;
-  isEditing: boolean = false;
-  showEditPopover: boolean = false;
+  selectedDay: any
+  isEditing: boolean = false
+  showEditPopover: boolean = false
 
   editPopover(day: any) {
-    this.selectedDay = day;
-    this.isEditing = true;
-    this.showEditPopover = true;
+    this.selectedDay = day
+    this.isEditing = true
+    this.showEditPopover = true
   }
 
   closeEditPopover(event: any) {
-    this.isEditing = false;
-    this.showEditPopover = false;
+    this.isEditing = false
+    this.showEditPopover = false
   }
-
 
   deleteDate(id: string): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
