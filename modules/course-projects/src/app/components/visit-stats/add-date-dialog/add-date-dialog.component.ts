@@ -26,37 +26,33 @@ interface DialogData {
   styleUrls: ['./add-date-dialog.component.less'],
 })
 export class AddDateDialogComponent implements OnInit, OnDestroy {
-  public audienceControl: FormControl = new FormControl(this.data.audience, [
+  public audienceControl: FormControl = new FormControl('', [
     Validators.minLength(1),
     Validators.maxLength(3),
     Validators.required,
     this.noWhitespaceValidator,
   ])
 
-  public buildingControl: FormControl = new FormControl(this.data.building, [
+  public buildingControl: FormControl = new FormControl('', [
     Validators.minLength(1),
     Validators.maxLength(3),
     Validators.required,
     this.noWhitespaceValidator,
   ])
 
-  public startTimeControl: FormControl = new FormControl(this.data.start, [
+  public startTimeControl: FormControl = new FormControl('', [
     Validators.required,
     this.noWhitespaceValidator,
   ])
 
-  public endTimeControl: FormControl = new FormControl(this.data.end, [
+  public endTimeControl: FormControl = new FormControl('', [
     Validators.required,
     this.noWhitespaceValidator,
   ])
 
-  public dateControl = new FormControl(
-    this.data.date != null ? new Date(this.data.date) : new Date()
-  )
+  public dateControl = new FormControl(null)
 
-  public lecturerIdControl = new FormControl(this.data.lecturerId, [
-    Validators.required,
-  ])
+  public lecturerIdControl = new FormControl('', [Validators.required])
 
   public lectors: {
     LectorId: number
@@ -97,14 +93,14 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
   }
 
   initControls(): void {
-    const data = this.data.consultations[0]
+    const data = this.data.consultations[this.data.consultations.length - 1]
     if (data) {
       this.audienceControl.setValue(data.Audience)
       this.buildingControl.setValue(data.Building)
       this.startTimeControl.setValue(data.StartTime)
       this.endTimeControl.setValue(data.EndTime)
       this.lecturerIdControl.setValue(data.Teacher.LectorId)
-      this.dateControl.setValue(new Date(this.data.date))
+      this.dateControl.setValue(this.parseDate(data.Day))
     }
   }
 
@@ -129,6 +125,11 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     if (this.data != null) {
       const date = new Date(this.data.date)
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+      this.data.start = this.startTimeControl.value
+      this.data.end = this.endTimeControl.value
+      this.data.audience = this.audienceControl.value
+      this.data.building = this.buildingControl.value
+      this.data.lecturerId = this.lecturerIdControl.value
 
       this.visitStatsService
         .addDate(
@@ -149,7 +150,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
             const consultation: Consultation = {
               Id: this.data.consultations[this.data.consultations.length - 1]
                 ? this.data.consultations[this.data.consultations.length - 1]
-                    .Id + 1
+                  .Id + 1
                 : '0',
               Teacher: {
                 LectorId: +this.data.lecturerId,
@@ -253,5 +254,15 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
     const isWhitespace = (control.value || '').trim().length === 0
     const isValid = !isWhitespace
     return isValid ? null : { whitespace: true }
+  }
+
+  parseDate(dateString: string): Date {
+    const [day, month, year] = dateString.split('.')
+
+    const dayNum = parseInt(day, 10)
+    const monthNum = parseInt(month, 10) - 1
+    const yearNum = parseInt(year, 10)
+
+    return new Date(yearNum, monthNum, dayNum)
   }
 }
