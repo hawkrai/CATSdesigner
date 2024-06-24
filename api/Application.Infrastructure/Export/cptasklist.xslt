@@ -587,8 +587,7 @@ div.Section1
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='line-height:normal'>
 									<span style='font-size:8.0pt'>
-										(<xsl:value-of select='string(resource[@name="Surname"])' disable-output-escaping='no'/>,
-										<xsl:value-of select='string(resource[@name="Name"])' disable-output-escaping='no'/>)
+										(<xsl:value-of select='string(resource[@name="NameSurnameAbbr"])' disable-output-escaping='no'/>)
 									</span>
 								</p>
 							</td>
@@ -662,8 +661,7 @@ div.Section1
 							<td width="20%" valign="top" style='border:none;padding:0cm 5.4pt 0cm 5.4pt'>
 								<p class="MsoNormal" style='line-height:normal'>
 									<span style='font-size:8.0pt'>
-										(<xsl:value-of select='string(resource[@name="Surname"])' disable-output-escaping='no'/>,
-										<xsl:value-of select='string(resource[@name="Name"])' disable-output-escaping='no'/>)
+										(<xsl:value-of select='string(resource[@name="NameSurnameAbbr"])' disable-output-escaping='no'/>)
 									</span>
 								</p>
 							</td>
