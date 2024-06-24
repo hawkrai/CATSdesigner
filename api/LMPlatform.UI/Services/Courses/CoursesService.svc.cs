@@ -73,7 +73,8 @@ namespace LMPlatform.UI.Services.Courses
 				IList<SubGroup> subGroups = this.SubjectManagementService.GetSubGroupsV2(subjectId, group.Id);
 				var students = new List<StudentMark>();
 
-				foreach (var student in group.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.LastName))
+				foreach (var student in group.Students.Where(e => e.Confirmed == null || e.Confirmed.Value).OrderBy(e => e.LastName)
+					.Where(s => s.IsActive.HasValue && s.IsActive.Value && s.Confirmed.HasValue && s.Confirmed.Value))
 				{
 					var files =
 						SubjectManagementService.GetUserCourseFiles(student.Id, subjectId).Select(
