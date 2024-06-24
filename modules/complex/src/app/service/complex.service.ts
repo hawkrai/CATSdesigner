@@ -86,7 +86,7 @@ export class ComplexService {
           groupId
       )
       .pipe(
-        map((res) => this.converterService.monitoringsConverter(res['Views']))
+        map((res) => this.converterService.monitoringsConverter(res['Views'], res['Estimated']))
       )
   }
 
