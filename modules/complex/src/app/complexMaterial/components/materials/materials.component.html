@@ -12,8 +12,8 @@
         class="expandable-external folder_file_icons"
         [class.empty-tree-icon]="node.FilePath == null"
       >
-        insert_drive_file</mat-icon
-      >
+        insert_drive_file
+      </mat-icon>
       <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
         {{ node.Name }}
       </a>
@@ -37,7 +37,7 @@
           "
           matTooltipPosition="below"
         >
-        <span class="btn clickable"><mat-icon class="icon">access_time</mat-icon></span>
+          <span class="btn clickable"><mat-icon class="icon">access_time</mat-icon></span>
         </a>
         <a
           class="btn clickable"
@@ -45,7 +45,7 @@
           [matTooltip]="'common.edit' | translate: 'Редактировать'"
           matTooltipPosition="below"
         >
-        <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
+          <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
         </a>
         <a
           class="btn clickable"
@@ -53,7 +53,7 @@
           [matTooltip]="'common.delete' | translate: 'Удалить'"
           matTooltipPosition="below"
         >
-        <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
+          <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
         </a>
       </div>
     </li>
