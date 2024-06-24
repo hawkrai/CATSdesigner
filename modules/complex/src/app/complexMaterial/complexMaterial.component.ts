@@ -92,7 +92,7 @@ export class ComplexMaterialComponent implements OnInit {
         }
 
         const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-          width: '1000px',
+          width: '100%',
           height:'100%',
           data: diaogData,
         })
