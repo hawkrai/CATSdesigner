@@ -25,6 +25,9 @@ import { Subject } from 'rxjs'
 export class GridMenuComponent {
   @Input()
   complexId: string
+  isLecturer: boolean
+  isStudent: boolean
+  
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
   constructor(
@@ -38,6 +41,11 @@ export class GridMenuComponent {
       return false
     }
     this.router.onSameUrlNavigation = 'reload'
+
+    const user = JSON.parse(localStorage.getItem('currentUser'))
+    
+    this.isLecturer = user.role === 'lector'
+    this.isStudent = user.role === 'student'
   }
 
   openEditPopup(): void {
@@ -117,6 +125,9 @@ export class GridMenuComponent {
     })
   }
 
+  openMonitoring(): void {
+    //TODO
+  }
   openMap(): void {
     const dialogData: DialogData = {
       id: this.complexId,

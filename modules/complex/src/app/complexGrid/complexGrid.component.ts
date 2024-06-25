@@ -22,7 +22,6 @@ export class ComplexGridComponent implements OnInit {
   subjectName
   subjectId
 
-  isLecturer: boolean
   showLoader: boolean
   breakpoint: number
 
@@ -37,9 +36,7 @@ export class ComplexGridComponent implements OnInit {
       return false
     }
     this.router.onSameUrlNavigation = 'reload'
-
-    const user = JSON.parse(localStorage.getItem('currentUser'))
-    this.isLecturer = user.role === 'lector'
+    
     this.showLoader = false
   }
 
@@ -75,7 +72,7 @@ export class ComplexGridComponent implements OnInit {
 
   openPDF() {
     const dialogRef = this.dialog.open(ComplexRulesPopoverComponent, {
-      width: '800px',
+      width: '1000px',
       data: { name: 'name' },
     })
 

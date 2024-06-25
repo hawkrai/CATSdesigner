@@ -50,19 +50,26 @@ export class ConverterService {
     }
   }
 
-  private monitoringConverter(monitoring: any) {
+  private monitoringConverter(monitoring: any, estimatedTime: number) {
     var monitor = new ConceptMonitoring()
     monitor.name = monitoring.Name
     monitor.seconds = this.getStrTime(monitoring.Seconds)
-
+    monitor.color = this.getColorByTime(monitoring.Seconds, estimatedTime)
     return monitor
   }
 
-  public monitoringsConverter(monitorings: any) {
-    return monitorings.map((mon) => this.monitoringConverter(mon))
+  public monitoringsConverter(monitorings: any, estimatedTime:number) {
+    return monitorings.map((mon) => this.monitoringConverter(mon, estimatedTime))
   }
 
-  getStrTime(seconds: number): string {
+  public getColorByTime(realTime: number, estimatedTime:number): string {
+    if (realTime >= estimatedTime / 2) {
+      return `green`
+    }
+    return 'red'
+  }
+
+  public getStrTime(seconds: number): string {
     if (seconds < 60) {
       return `${seconds} сек`
     }

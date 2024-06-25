@@ -162,6 +162,9 @@
   <data name="NameSurname" xml:space="preserve">
     <value>фамилия, имя собственное, отчество</value>
   </data>
+  <data name="NameSurnameAbbr" xml:space="preserve">
+    <value>инициалы, фамилия</value>
+  </data>
   <data name="ProjectSupervisor" xml:space="preserve">
     <value>Руководитель</value>
   </data>
