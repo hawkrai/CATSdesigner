@@ -32,7 +32,7 @@
 
     <mat-form-field class="form-field">
       <mat-label>Lecturer</mat-label>
-      <mat-select [(ngModel)]="data.lecturerId" [formControl]="lecturerIdControl">
+      <mat-select [formControl]="lecturerIdControl">
         <mat-option *ngFor="let lector of lectors" [value]="lector.LectorId">
           {{ lector.FullName }}
         </mat-option>
@@ -51,7 +51,6 @@
         matInput
         type="time"
         [formControl]="startTimeControl"
-        [(ngModel)]="data.start"
       />
     </mat-form-field>
 
@@ -63,7 +62,6 @@
         matInput
         type="time"
         [formControl]="endTimeControl"
-        [(ngModel)]="data.end"
       />
     </mat-form-field>
   </div>
@@ -76,7 +74,6 @@
       <input
         matInput
         [formControl]="buildingControl"
-        [(ngModel)]="data.building"
       />
       <mat-error *ngIf="buildingControl.invalid">{{
         'text.course.visit.dialog.add.error.small'
@@ -91,7 +88,6 @@
       <input
         matInput
         [formControl]="audienceControl"
-        [(ngModel)]="data.audience"
       />
       <mat-error *ngIf="audienceControl.invalid">{{
         'text.course.visit.dialog.add.error.small'

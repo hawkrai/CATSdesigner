@@ -159,6 +159,7 @@
   "text.course.visit.dialog.add": "Add",
   "text.course.visit.dialog.add.title": "Date management",
   "text.course.visit.dialog.add.save.success": "Date has been added successfully",
+  "text.course.visit.dialog.add.save.failure": "Time and place taken by ",
   "text.course.visit.list.column.student": "Student",
   "text.course.visit.list.column.theme": "Course project theme",
   "text.course.visit.list.column.manager": "Project supervisor",
