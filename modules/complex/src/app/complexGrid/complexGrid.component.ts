@@ -72,7 +72,7 @@ export class ComplexGridComponent implements OnInit {
 
   openPDF() {
     const dialogRef = this.dialog.open(ComplexRulesPopoverComponent, {
-      width: '800px',
+      width: '1000px',
       data: { name: 'name' },
     })
 

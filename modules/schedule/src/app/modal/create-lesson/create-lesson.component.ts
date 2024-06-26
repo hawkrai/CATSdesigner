@@ -613,6 +613,7 @@ export class CreateLessonComponent implements OnInit {
       this.teachers = re
     })
     this.formGroup.controls.teacher.enable()
+    this.formGroup.controls.teacher.setValue(+this.user.id)
   }
 
   teacherChange(event): void {

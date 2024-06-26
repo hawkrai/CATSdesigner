@@ -672,6 +672,7 @@ export class ScheduleMainComponent implements OnInit {
               draggable: false,
               meta: 'lesson',
             })
+            this.refresh.next()
           })
         }
       })
