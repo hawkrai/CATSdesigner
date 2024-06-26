@@ -9,25 +9,19 @@
       <!-- use a disabled button to provide padding for tree leaf -->
       <button class="invisible" mat-icon-button></button>
       <mat-icon
-        class="expandable-external folder_file_icons"
-        [class.empty-tree-icon]="node.FilePath == null"
-      >
-        insert_drive_file
-      </mat-icon>
-      <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
-        {{ node.Name }}
-      </a>
-      <a
-        class="btn clickable"
-        *ngIf="!node.FilePath"
-        (click)="$event.preventDefault()"
-        [matTooltip]="
-          'complex.noInfo' | translate: 'Отсутствует информация по теме'
-        "
-        matTooltipPosition="right"
-      >
-        {{ node.Name }}
-      </a>
+  class="expandable-external"
+  [ngClass]="{'folder_file_icons': node.FilePath != null, '..no-file.icon': node.FilePath == null}"
+>
+  <ng-container *ngIf="node.FilePath != null">event_note</ng-container>
+  <ng-container *ngIf="node.FilePath == null">event_available</ng-container>
+</mat-icon>
+<a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
+  {{ node.Name }}
+</a>
+<a class="btn clickable" *ngIf="!node.FilePath" (click)="$event.preventDefault()"
+  [matTooltip]="'complex.noInfo' | translate: 'Отсутствует информация по теме'" matTooltipPosition="right">
+  {{ node.Name }}
+</a>
       <div class="work-icons" *ngIf="isLecturer">
         <a
           class="btn clickable"
@@ -37,7 +31,7 @@
           "
           matTooltipPosition="below"
         >
-          <span class="btn clickable"><mat-icon class="icon">access_time</mat-icon></span>
+        <span class="btn clickable"><mat-icon class="icon">access_time</mat-icon></span>
         </a>
         <a
           class="btn clickable"
@@ -45,7 +39,7 @@
           [matTooltip]="'common.edit' | translate: 'Редактировать'"
           matTooltipPosition="below"
         >
-          <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
+        <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
         </a>
         <a
           class="btn clickable"
@@ -53,7 +47,7 @@
           [matTooltip]="'common.delete' | translate: 'Удалить'"
           matTooltipPosition="below"
         >
-          <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
+        <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
         </a>
       </div>
     </li>
