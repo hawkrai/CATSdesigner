@@ -376,18 +376,24 @@ namespace LMPlatform.UI.Services.Concept
             var concept = ConceptManagementService.GetLiteById(conceptId);
             var list = WatchingTimeService.GetAllRecords(conceptId);
             var viewRecords = new List<ViewsWorm>();
-            var studentIds = list.Select(i => i.UserId).ToList();
-            var students =
-                StudentManagementService.GetStudents(new Query<Student>(s => studentIds.Contains(s.User.Id))).ToList();
-
-            foreach (var item in list)
+            var students = StudentManagementService.GetConfirmedAndNoneDeletedStudentsByGroup(groupId);
+            int time;
+            foreach (var student in students)
             {
-                var student = students.SingleOrDefault(s => s.Id == item.UserId);
-                if (student == null || student.GroupId != groupId) continue;
+                time = 0;
+                foreach (var item in list)
+                {
+                    if (student.Id == item.UserId)
+                    {
+                        time = item.Time;
+                        break;
+                    }
+                }
+
                 viewRecords.Add(new ViewsWorm
                 {
                     Name = student.FullName,
-                    Seconds = item.Time
+                    Seconds = time
                 });
             }
             var views = viewRecords.OrderBy(x => x.Name).ToList();
