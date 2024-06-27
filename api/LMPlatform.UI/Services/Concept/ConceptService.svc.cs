@@ -18,6 +18,8 @@ using Application.Core.Helpers;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
 using Newtonsoft.Json;
+using Antlr.Runtime.Tree;
+using iTextSharp.text;
 
 namespace LMPlatform.UI.Services.Concept
 {
@@ -347,7 +349,80 @@ namespace LMPlatform.UI.Services.Concept
                 return null;
             }
         }
-		public ConceptViewData GetConceptTreeMobile(int elementId)
+
+        public ConceptStudentMonitoringData GetStudentMonitoringInfo(int complexId, int studentId)
+        {
+            try
+            {
+                // Находим ученика
+                var student = StudentManagementService.GetStudent(studentId);
+                var complex = ConceptManagementService.GetById(complexId);
+                // Возвращаем данные о мониторинге студента
+                return 
+                    new ConceptStudentMonitoringData()
+                      {
+                            ComplexName = complex.Name,
+                            StudentGroup = student.Group.Name,
+                            StudentName = student.FullName,
+                            ConceptMonitorings = GetMonitoringInfo(complexId, studentId)
+                      };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        public List<ConceptMonitoring> GetMonitoringInfo(int complexId, int studentId)
+        {
+            try
+            {
+                // Получаем начальный список элементов
+                var tree = ConceptManagementService.GetElementsByParentId(complexId).ToList();
+                
+                // Создаем список для хранения результатов
+                var resultList = new List<ConceptMonitoring>();
+
+                // Переменная для хранения предпологаемого времени прочтения
+                int Estimated;
+
+                // Обрабатываем каждый элемент в дереве 
+                foreach (var item in tree)
+                {
+                    // Преобразуем Concept в ConceptMonitoring
+                    var resultItem = ConceptMonitoring.FromConcept(item);
+                    // находим препологаемое время
+                    Estimated = WatchingTimeService.GetEstimatedTime(item.Container);
+                    
+                    if (item.IsGroup)
+                    {
+                        // Рекурсионно вызываем эту же функцию и присваем резулитат
+                        resultItem.Children = GetMonitoringInfo(item.Id, studentId);
+                    }
+                    else
+                    {
+                        // Прверяем предпологаемое время и записываем результат
+                        if (Estimated > 0)
+                        {
+                            resultItem.Estimated = Estimated;
+                            resultItem.WatchingTime = WatchingTimeService.GetByConceptSubject(item.Id, studentId).Time;
+                        }
+                    }
+                    // добавляем получившийся элемент
+                    resultList.Add(resultItem);
+                }
+                return resultList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+
+        public ConceptViewData GetConceptTreeMobile(int elementId)
 		{
 			try
 			{
@@ -408,6 +483,14 @@ namespace LMPlatform.UI.Services.Concept
         {
             public List<ViewsWorm> Views { get; set; }
             public int Estimated { get; set; }
+        }
+        // Данные для страницы мониторинга для одного студента
+        public class ConceptStudentMonitoringData
+        {
+            public List<ConceptMonitoring> ConceptMonitorings { get; set; }
+            public string StudentName { get; set; }
+            public string StudentGroup { get; set; }
+            public string ComplexName { get; set; }
         }
         public class ViewsWorm
         {

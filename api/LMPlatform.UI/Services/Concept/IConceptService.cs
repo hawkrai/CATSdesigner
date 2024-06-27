@@ -1,6 +1,9 @@
-﻿using LMPlatform.UI.Services.Modules.Concept;
+﻿using LMPlatform.Models;
+using LMPlatform.UI.Services.Modules.Concept;
+using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using static LMPlatform.UI.Services.Concept.ConceptService;
 
 namespace LMPlatform.UI.Services.Concept
 {
@@ -63,6 +66,10 @@ namespace LMPlatform.UI.Services.Concept
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConceptViews?conceptId={conceptId}&groupId={groupId}")]
         ConceptService.MonitoringData GetConceptViews(int conceptId, int groupId);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetStudentMonitoringInfo?complexId={complexId}&studentId={studentId}")]
+        ConceptStudentMonitoringData GetStudentMonitoringInfo(int complexId, int studentId);
 
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConceptCascade?parenttId={parenttId}")]
