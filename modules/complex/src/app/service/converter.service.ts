@@ -63,7 +63,7 @@ export class ConverterService {
   }
 
   public getColorByTime(realTime: number, estimatedTime:number): string {
-    if (realTime >= estimatedTime / 2) {
+    if (realTime >= estimatedTime / 2 && realTime <=estimatedTime * 1.5) {
       return `green`
     }
     return 'red'
