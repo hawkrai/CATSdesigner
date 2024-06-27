@@ -25,8 +25,14 @@
   </button>
   <button
   *ngIf="isStudent"
-   mat-menu-item (click)="openMonitoring()">
-    <mat-icon>map</mat-icon>
+   mat-menu-item (click)="openMonitoringStudent()">
+    <mat-icon>access_time</mat-icon>
+    <span>{{ 'complex.monitor' | translate: 'Мониторинг прочтения тем' }}</span>
+  </button>
+  <button
+  *ngIf="isLecturer"
+   mat-menu-item (click)="openMonitoringLecturer()">
+    <mat-icon>access_time</mat-icon>
     <span>{{ 'complex.monitor' | translate: 'Мониторинг прочтения тем' }}</span>
   </button>
 </mat-menu>

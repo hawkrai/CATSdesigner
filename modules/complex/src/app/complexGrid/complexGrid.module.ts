@@ -12,6 +12,7 @@ import { AngularD3TreeLibModule } from 'angular-d3-tree'
 import { MapPopoverComponent } from './components/map-popover/map-popover.component'
 import { AppRoutingModule } from '../app-routing.module'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
+import { MonitoringTreeComponent } from './components/monitoring-tree/monitoring-tree.component'
 import {PopoverDialogComponent} from './components/popover-dialog/popover-dialog.component'
 
 import * as dataRu from '../core/translate/translations_ru.json'
@@ -27,6 +28,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     MainLoaderComponent,
     MapPopoverComponent,
     DeleteConfirmationPopupComponent,
+    MonitoringTreeComponent,
     PopoverDialogComponent,
   ],
   imports: [
@@ -48,6 +50,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     ComplexGridEditPopupComponent,
     ComplexRulesPopoverComponent,
     MapPopoverComponent,
+    MonitoringTreeComponent,
     DeleteConfirmationPopupComponent,
   ],
 })

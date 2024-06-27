@@ -1,0 +1,153 @@
+.time-container {
+  position: relative;
+  display: inline-block;
+}
+
+.expected-time {
+  display: none;
+  position: fixed; /* Использование fixed позиционирования */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  z-index: 1000; /* Высокий z-index для отображения поверх других элементов */
+}
+
+.time-container:hover .expected-time {
+  display: block;
+}
+.info {
+  font-family: 'Roboto', sans-serif;
+  color: #363636; // Почти черный цвет
+
+  h2, h3 {
+    margin: 0; // Убираем отступы, если они есть
+  }
+}
+
+h2.info {
+  font-size: 2em; // Размер шрифта для h2
+  font-weight: 400; // Жирный шрифт
+}
+
+h3.info {
+  font-size: 1.2em; // Размер шрифта для h3
+  font-weight: 400; // Обычный шрифт
+  display: flex; // Для удобного размещения элементов
+  align-items: center; // Выравнивание по центру по вертикали
+
+  span {
+    margin-right: 10px; // Отступ между элементами
+  }
+}
+.mat-tree-node {
+  min-height: 0px !important;
+}
+
+.mat-tree-node, .mat-nested-tree-node {
+    padding-bottom: 4px;
+}
+
+.example-tree-invisible {
+  display: none;
+}
+
+.example-tree {
+  background: unset;
+
+  padding-top: 10px;
+}
+
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.contents {
+  border-left: 1px dashed #ff3366;
+  margin: 0px 0px 0px 20px;
+  padding: 5px 0px 5px 15px;
+}
+
+.expandable {
+  padding-right: 15px;
+}
+
+.expandable-external {
+  padding-left: 15px;
+}
+
+a.clickable {
+  color: #000000;
+  cursor: pointer;
+}
+
+span.clickable {
+  color: #3F51B5;
+}
+
+.invisible {
+  display: none;
+}
+
+.icon {
+  font-size: 24px;
+  padding-left: 5px;
+}
+
+.folder_file_icons {
+  color:#3f51b5 ;
+  cursor: default;
+}
+
+.no-file {
+  color: #808080;
+}
+
+.mat-icon-button {
+  padding-right: 45px;
+}
+
+.work-icons {
+  visibility: hidden;
+}
+
+.mat-tree-node:hover .work-icons {
+  visibility: visible;
+}
+
+.complex-three-title {
+  font-size: 18px;
+}
+
+.complex-three-title-button {
+  line-height: unset;
+  padding: unset;
+  width: unset;
+  height: unset;
+
+  margin-right: 10px;
+}
+
+.complex-three-title-prefix {
+  position: relative;
+  right: 3px;
+  display: inline-block;
+  font-size: 18px;
+  margin-left: 6px;
+  width: 10px;
+}
+
+.complex-three-title-icon {
+  padding: unset;
+  font-size: 28px;
+}
+
+.empty-tree-icon {
+  color: #808080;
+}
+

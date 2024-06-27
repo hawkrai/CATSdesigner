@@ -9,6 +9,7 @@ import { ConceptMonitoring } from '../models/ConceptMonitoring'
 import { Complex } from '../models/Complex'
 import { Concept } from '../models/Concept'
 import { ConverterService } from './converter.service'
+import { ComplexStudentMonitoring } from '../models/ComplexStudentMonitoring'
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,16 @@ export class ComplexService {
           parentId
       )
       .pipe(map((res) => res['Concept']))
+  }
+  
+  public getStudentComplexMonitoringInfo(comlexId: string, studentId: string): Observable<ComplexStudentMonitoring> {
+    return this.http
+      .get<ComplexStudentMonitoring>(
+        '/Services/Concept/ConceptService.svc/GetStudentMonitoringInfo?complexId=' +
+          comlexId +
+          '&studentId=' +
+          studentId
+      )
   }
 
   public getConceptCascadeFoldersOnly(

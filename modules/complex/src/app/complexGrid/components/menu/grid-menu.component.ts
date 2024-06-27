@@ -3,6 +3,7 @@ import {Component, Input} from '@angular/core'
 import {Router, ActivatedRoute, ParamMap} from '@angular/router'
 import {ComplexGridEditPopupComponent} from '../edit-popup/edit-popup.component'
 import {MapPopoverComponent} from '../map-popover/map-popover.component'
+import {MonitoringTreeComponent} from '../monitoring-tree/monitoring-tree.component'
 import {ComponentType} from '@angular/cdk/typings/portal'
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog'
 import {DialogData} from '../../../models/DialogData'
@@ -125,9 +126,28 @@ export class GridMenuComponent {
     })
   }
 
-  openMonitoring(): void {
+  openMonitoringLecturer(): void {
     //TODO
   }
+  
+  openMonitoringStudent(): void {
+    const dialogData: DialogData = {
+      model: JSON.parse(localStorage.getItem('currentUser')).id,
+      id: this.complexId
+    }
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.width = '100%'
+    dialogConfig.data = dialogData
+    dialogConfig.maxWidth='none'
+
+    const dialogRef = this.dialog.open(MonitoringTreeComponent, dialogConfig
+    )
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed')
+    })
+  }
+
   openMap(): void {
     const dialogData: DialogData = {
       id: this.complexId,
