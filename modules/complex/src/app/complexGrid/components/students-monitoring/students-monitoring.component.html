@@ -1,0 +1,50 @@
+<div 
+  *ngIf="isLecturer"
+>
+  <mat-form-field>
+    <mat-select 
+      [(value)]="selected" 
+      (selectionChange)="onOptionsSelected()" 
+      required
+    >
+      <mat-option 
+        *ngFor="let group of groups" 
+        [value]="group"
+      >
+        <span class="icon-container">
+        {{ group.Name }}
+      </span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <ng-container 
+    *ngIf="students"
+  >
+    <div class="job-protection__accordion">
+      <mat-accordion>
+        <mat-expansion-panel 
+          *ngFor="
+          let student of students" 
+          (opened)="onSelectStudent(student.Id)" 
+          [expanded]="selectedStudentId === student.Id" 
+          (closed)="onSelectStudent(0)">
+          <mat-expansion-panel-header>
+            <mat-panel-title style="display: flex; align-items: flex-end">
+              {{ student.Name }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <app-monitoring-tree 
+            *ngIf="selectedStudentId === student.Id" 
+            [studentId]="selectedStudentId" 
+            [complexId]="complexId"
+          ></app-monitoring-tree>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </ng-container>
+</div>
+<app-monitoring-tree 
+  *ngIf="!isLecturer" 
+  [studentId]="userId" 
+  [complexId]="complexId"
+></app-monitoring-tree>

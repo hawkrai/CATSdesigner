@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { MatModule } from '../mat.module'
@@ -14,6 +14,7 @@ import { AppRoutingModule } from '../app-routing.module'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
 import { MonitoringTreeComponent } from './components/monitoring-tree/monitoring-tree.component'
 import {PopoverDialogComponent} from './components/popover-dialog/popover-dialog.component'
+import { StudentsMonitoringComponent } from './components/students-monitoring/students-monitoring.component'
 
 import * as dataRu from '../core/translate/translations_ru.json'
 import * as dataEn from '../core/translate/translations_en.json'
@@ -27,6 +28,7 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     ComplexRulesPopoverComponent,
     MainLoaderComponent,
     MapPopoverComponent,
+    StudentsMonitoringComponent,
     DeleteConfirmationPopupComponent,
     MonitoringTreeComponent,
     PopoverDialogComponent,
@@ -51,7 +53,9 @@ import { TranslateModule, TranslatePipe } from 'educats-translate'
     ComplexRulesPopoverComponent,
     MapPopoverComponent,
     MonitoringTreeComponent,
+    StudentsMonitoringComponent,
     DeleteConfirmationPopupComponent,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ComplexGridModule {}

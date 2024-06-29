@@ -5,6 +5,7 @@ import { Group } from '../models/Group'
 import { ConceptMonitoring } from '../models/ConceptMonitoring'
 import { Adaptivity } from '../models/Adaptivity'
 import { ComplexCascade } from '../models/ComplexCascade'
+import { Student } from '../models/student.model'
 
 @Injectable({
   providedIn: 'root',
@@ -90,6 +91,18 @@ export class ConverterService {
     return [conceptsCascade]
   }
 
+  private studentConverter(studentRes: any) {
+    var student = new Student()
+    student.Id = studentRes.StudentId
+    student.Name = studentRes.FullName
+
+    return student
+  }
+
+  public studentsConverter(students: any): Student[] {
+    return students.map((gr) => this.studentConverter(gr))
+  }
+  
   private groupConverter(groupRes: any) {
     var group = new Group()
     group.Id = groupRes.GroupId

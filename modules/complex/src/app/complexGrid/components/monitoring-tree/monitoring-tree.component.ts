@@ -1,11 +1,9 @@
 import { NestedTreeControl } from '@angular/cdk/tree'
-import { Component, Inject, OnInit } from '@angular/core'
+import { Component, Input, OnInit } from '@angular/core'
 import { MatTreeNestedDataSource } from '@angular/material/tree'
 import { ComplexService } from '../../../service/complex.service'
 import { ConverterService } from '../../../service/converter.service'
 import { Router } from '@angular/router'
-import { DialogData } from '../../../models/DialogData'
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { ComplexMonitoring } from 'src/app/models/ComplexMonitoring'
 import { ComplexStudentMonitoring } from 'src/app/models/ComplexStudentMonitoring'
 
@@ -15,8 +13,8 @@ import { ComplexStudentMonitoring } from 'src/app/models/ComplexStudentMonitorin
   styleUrls: ['./monitoring-tree.component.less'],
 })
 export class MonitoringTreeComponent implements OnInit {
-  complexId: string
-  studentId: string
+  @Input() complexId: string;
+  @Input() studentId: string
   studentName: string
   studentGroup: string
   complexName: string
@@ -25,13 +23,10 @@ export class MonitoringTreeComponent implements OnInit {
   dataSource = new MatTreeNestedDataSource<ComplexMonitoring>()
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private complexService: ComplexService,
     public converterService: ConverterService,
     private router: Router,
   ) {
-    this.complexId = data.id
-    this.studentId = data.model
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
     }

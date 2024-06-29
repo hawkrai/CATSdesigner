@@ -24,14 +24,7 @@
     <span>{{ 'complex.map' | translate: 'Карта ЭУМК' }}</span>
   </button>
   <button
-  *ngIf="isStudent"
-   mat-menu-item (click)="openMonitoringStudent()">
-    <mat-icon>access_time</mat-icon>
-    <span>{{ 'complex.monitor' | translate: 'Мониторинг прочтения тем' }}</span>
-  </button>
-  <button
-  *ngIf="isLecturer"
-   mat-menu-item (click)="openMonitoringLecturer()">
+   mat-menu-item (click)="openMonitoring()">
     <mat-icon>access_time</mat-icon>
     <span>{{ 'complex.monitor' | translate: 'Мониторинг прочтения тем' }}</span>
   </button>

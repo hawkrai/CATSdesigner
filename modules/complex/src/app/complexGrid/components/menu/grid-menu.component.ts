@@ -12,6 +12,7 @@ import {Complex} from '../../../models/Complex'
 import {CatsService, CodeType} from 'src/app/service/cats.service'
 import {TranslatePipe} from 'educats-translate'
 import { DeleteConfirmationPopupComponent } from '../delete-confirmation-popup/delete-confirmation-popup.component'
+import { StudentsMonitoringComponent } from '../students-monitoring/students-monitoring.component'
 import { takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
 
@@ -27,7 +28,6 @@ export class GridMenuComponent {
   @Input()
   complexId: string
   isLecturer: boolean
-  isStudent: boolean
   
   private unsubscribeStream$: Subject<void> = new Subject<void>()
 
@@ -46,7 +46,6 @@ export class GridMenuComponent {
     const user = JSON.parse(localStorage.getItem('currentUser'))
     
     this.isLecturer = user.role === 'lector'
-    this.isStudent = user.role === 'student'
   }
 
   openEditPopup(): void {
@@ -126,11 +125,7 @@ export class GridMenuComponent {
     })
   }
 
-  openMonitoringLecturer(): void {
-    //TODO
-  }
-  
-  openMonitoringStudent(): void {
+  openMonitoring(): void {
     const dialogData: DialogData = {
       model: JSON.parse(localStorage.getItem('currentUser')).id,
       id: this.complexId
@@ -140,7 +135,7 @@ export class GridMenuComponent {
     dialogConfig.data = dialogData
     dialogConfig.maxWidth='none'
 
-    const dialogRef = this.dialog.open(MonitoringTreeComponent, dialogConfig
+    const dialogRef = this.dialog.open(StudentsMonitoringComponent, dialogConfig
     )
 
     dialogRef.afterClosed().subscribe((result) => {
