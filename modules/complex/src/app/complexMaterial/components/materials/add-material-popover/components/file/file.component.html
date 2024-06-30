@@ -1,0 +1,65 @@
+<tr class="mdc-data-table__row">
+  <ng-container *ngIf="!!file; else loader">
+    <td class="mdc-data-table__cell example-content icon-cell">
+      <div
+        class="mdc-list-item__graphic"
+        *ngIf="file.Type.toLowerCase() !== 'image'; else image"
+      >
+        <app-file-viewer
+          [extension]="getFileExtension(file.Name)"
+        ></app-file-viewer>
+      </div>
+      <ng-template #image
+        ><img [src]="file.ThumbnailUrl" class="img"
+      /></ng-template>
+    </td>
+    <td class="mdc-data-table__cell example-content">
+      <a
+        matTooltip="{{ file.Name }}"
+        matTooltipPosition="below"
+        style="color: #3f51b5"
+        href="{{ file.IdFile === -1 ? '#' : file.Url }}"
+      >
+        {{ file.Name }}
+      </a>
+    </td>
+    <td class="mdc-data-table__cell example-content">
+      {{ file.CreationDate | date: 'dd.MM.yyyy' }}
+    </td>
+    <td class="mdc-data-table__cell example-content">
+      {{ (file.Size / 1024).toFixed(2) }} {{ 'kb' | translate: 'КБ' }}
+    </td>
+    <td
+      class="mdc-data-table__cell"
+      style="color: #f44336"
+      *ngIf="file.IdFile === -1; else attached"
+    >
+      {{ 'text.subjects.attachments.attached' | translate: 'Загруженный файл' }}
+    </td>
+    <ng-template #attached>
+      <td class="mdc-data-table__cell" style="color: #3f51b5">
+        {{
+          'text.subjects.attachments.loaded' | translate: 'Прикрепленный файл'
+        }}
+      </td>
+    </ng-template>
+    <td class="mdc-data-table__cell" style="padding-left: 0" *ngIf="canDelete">
+      <button
+        mat-icon-button
+        color="primary"
+        [matTooltip]="
+          'text.subjects.attachments.delete' | translate: 'Удалить файл'
+        "
+        matTooltipPosition="before"
+        (click)="deleteFile.emit(file)"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+  <ng-template #loader>
+    <td class="mdc-data-table__cell" colspan="6">
+      <app-loader [diameter]="30"></app-loader>
+    </td>
+  </ng-template>
+</tr>

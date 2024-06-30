@@ -12,7 +12,7 @@
   "common.file": "File",
   "common.inputFileName": "Enter the item name",
   "common.fileName": "Enter the item name",
-  "common.pinnedDoc": "Attached document",
+  "common.pinnedDoc": "Attached material (Can add only one file .pdf, .docx or .doc)",
   "common.pretest": "Pass the pre-test",
   "common.prevDocument": "Previous document",
   "common.nextDocument": "Next document",
@@ -48,6 +48,7 @@
   "complex.addComplexes": "Add educational complex",
   "complex.addComplex": "Add educational complex",
   "complex.editComplexes": "Edit Complexes",
+  "complex.fileUploadError": "You can add only .pdf, .docx or .doc file",
   "complex.editComplex": "Edit Complexes",
   "complex.addComponent": "Add component",
   "complex.addComplexesComponent": "Add an Complexes component",
@@ -80,6 +81,7 @@
   "text.complex.want.to.delete.test": "Do you really want to remove the component?",
   "text.complex.yes": "Yes",
   "button.cancel": "Cancel",
+  "text.subjects.attachments.add": "add file",
   "text.complex.delete.eumc": "Delete Educational Complex",
   "text.complex.want.to.delete.eumc": "Do you really want to remove the Educational Complex?"
 }
