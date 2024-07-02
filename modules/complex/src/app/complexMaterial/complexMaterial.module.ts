@@ -25,9 +25,13 @@ import { HelpComponent } from "../help/help.component";
 import { PopoverModule } from 'ngx-smart-popover'
 import { DeleteConfirmationPopupComponent } from './components/materials/delete-confirmation-popup/delete-confirmation-popup.component'
 import {PopoverDialogComponent} from './components/materials/popover-dialog/popover-dialog.component'
+import { FileComponent } from './components/materials/add-material-popover/components/file/file.component'
+import { FileViewerComponent } from './components/materials/add-material-popover/components/file-viewer/file-viewer.component'
 
 @NgModule({
   declarations: [
+    FileComponent,
+    FileViewerComponent,
     MaterialComponent,
     ComplexMaterialComponent,
     MaterialsPopoverComponent,
@@ -64,6 +68,8 @@ import {PopoverDialogComponent} from './components/materials/popover-dialog/popo
   providers: [TranslatePipe],
   exports: [VarDirective, PopoverModule],
   entryComponents: [
+    FileViewerComponent,
+    FileComponent,
     MaterialsPopoverComponent,
     MonitoringPopoverComponent,
     AddMaterialPopoverComponent,
