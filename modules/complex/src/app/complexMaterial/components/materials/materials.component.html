@@ -1,58 +1,33 @@
-<mat-tree
-  [dataSource]="dataSource"
-  [treeControl]="treeControl"
-  class="example-tree"
->
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
   <!-- This is the tree node template for leaf nodes -->
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
     <li class="mat-tree-node">
       <!-- use a disabled button to provide padding for tree leaf -->
       <button class="invisible" mat-icon-button></button>
-      <mat-icon
-        class="expandable-external folder_file_icons"
-        [class.empty-tree-icon]="node.FilePath == null"
-      >
-        insert_drive_file
+      <mat-icon class="expandable-external"
+        [ngClass]="{'folder_file_icons': node.FilePath != null, '..no-file.icon': node.FilePath == null}">
+        <ng-container *ngIf="node.FilePath != null">event_note</ng-container>
+        <ng-container *ngIf="node.FilePath == null">event_available</ng-container>
       </mat-icon>
       <a class="btn clickable" *ngIf="node.FilePath" (click)="openPDF(node.Id, node.FilePath)">
         {{ node.Name }}
       </a>
-      <a
-        class="btn clickable"
-        *ngIf="!node.FilePath"
-        (click)="$event.preventDefault()"
-        [matTooltip]="
-          'complex.noInfo' | translate: 'Отсутствует информация по теме'
-        "
-        matTooltipPosition="right"
-      >
+      <a class="btn clickable" *ngIf="!node.FilePath" (click)="$event.preventDefault()"
+        [matTooltip]="'complex.noInfo' | translate: 'Отсутствует информация по теме'" matTooltipPosition="right">
         {{ node.Name }}
       </a>
       <div class="work-icons" *ngIf="isLecturer">
-        <a
-          class="btn clickable"
-          (click)="openMonitoring(node.Id, node.Name)"
-          [matTooltip]="
+        <a class="btn clickable" (click)="openMonitoring(node.Id, node.Name)" [matTooltip]="
             'complex.adaptiveTopic' | translate: 'Мониторинг по теме'
-          "
-          matTooltipPosition="below"
-        >
+          " matTooltipPosition="below">
           <span class="btn clickable"><mat-icon class="icon">access_time</mat-icon></span>
         </a>
-        <a
-          class="btn clickable"
-          (click)="openEditPopup(node)"
-          [matTooltip]="'common.edit' | translate: 'Редактировать'"
-          matTooltipPosition="below"
-        >
+        <a class="btn clickable" (click)="openEditPopup(node)" [matTooltip]="'common.edit' | translate: 'Редактировать'"
+          matTooltipPosition="below">
           <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
         </a>
-        <a
-          class="btn clickable"
-          (click)="openConfirmationDialog(node.Id)"
-          [matTooltip]="'common.delete' | translate: 'Удалить'"
-          matTooltipPosition="below"
-        >
+        <a class="btn clickable" (click)="openConfirmationDialog(node.Id)"
+          [matTooltip]="'common.delete' | translate: 'Удалить'" matTooltipPosition="below">
           <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
         </a>
       </div>
@@ -62,51 +37,31 @@
   <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
     <li>
       <div class="mat-tree-node">
-        <button
-          mat-icon-button
-          matTreeNodeToggle
-          [attr.aria-label]="'toggle ' + node.name"
-          class="complex-three-title-button"
-        >
+        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name"
+          class="complex-three-title-button">
           <span class="complex-three-title-prefix">
             {{ treeControl.isExpanded(node) ? '-' : '+' }}
           </span>
-          <mat-icon
-            class="complex-three-title-icon mat-icon-rtl-mirror expandable no-file"
-            [class.empty-tree-icon]="node.children.length === 0"
-          >
+          <mat-icon class="complex-three-title-icon mat-icon-rtl-mirror expandable no-file"
+            [class.empty-tree-icon]="node.children.length === 0">
             folder
           </mat-icon>
         </button>
-        <a
-          class="complex-three-title btn clickable"
-          (click)="openFolderPDF(node.Id)"
-        >
+        <a class="complex-three-title btn clickable" (click)="openFolderPDF(node.Id)">
           {{ node.Name }}
         </a>
         <div class="work-icons" *ngIf="isLecturer">
-          <a
-            class="btn clickable"
-            (click)="openEditPopup(node)"
-            [matTooltip]="'common.edit' | translate: 'Редактировать'"
-            matTooltipPosition="below"
-          >
+          <a class="btn clickable" (click)="openEditPopup(node)"
+            [matTooltip]="'common.edit' | translate: 'Редактировать'" matTooltipPosition="below">
             <span class="btn clickable"><mat-icon class="icon">edit</mat-icon></span>
           </a>
-          <a
-            class="btn clickable"
-            (click)="openConfirmationDialog(node.Id)"
-            [matTooltip]="'common.delete' | translate: 'Удалить'"
-            matTooltipPosition="below"
-          >
+          <a class="btn clickable" (click)="openConfirmationDialog(node.Id)"
+            [matTooltip]="'common.delete' | translate: 'Удалить'" matTooltipPosition="below">
             <span class="btn clickable"><mat-icon class="icon">delete</mat-icon></span>
           </a>
         </div>
       </div>
-      <ul
-        [class.example-tree-invisible]="!treeControl.isExpanded(node)"
-        class="contents"
-      >
+      <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)" class="contents">
         <ng-container matTreeNodeOutlet></ng-container>
       </ul>
     </li>
