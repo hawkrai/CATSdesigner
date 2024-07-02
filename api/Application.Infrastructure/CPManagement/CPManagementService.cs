@@ -59,7 +59,7 @@ namespace Application.Infrastructure.CPManagement
             var searchString = parms.Filters["searchString"];
             var isStudent = AuthorizationHelper.IsStudent(Context, userId);
             IQueryable<CourseProject> query;
-            
+
             query = Context.CourseProjects.AsNoTracking()
               .Include(x => x.Lecturer)
               .Include(x => x.AssignedCourseProjects.Select(asp => asp.Student.Group))
@@ -104,6 +104,10 @@ namespace Application.Infrastructure.CPManagement
             {
                 var courseProjects = from cp in query
                                      let acp = cp.AssignedCourseProjects.FirstOrDefault()
+                                     where acp.Student.IsActive.HasValue &&
+                                            acp.Student.IsActive.Value &&
+                                            acp.Student.Confirmed.HasValue &&
+                                            acp.Student.Confirmed.Value
                                      select new CourseProjectData
                                      {
                                          Id = cp.CourseProjectId,

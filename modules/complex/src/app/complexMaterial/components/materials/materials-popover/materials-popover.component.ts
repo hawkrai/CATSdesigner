@@ -189,6 +189,13 @@ export class MaterialsPopoverComponent {
   }
 
   countDown() {
+    if (this.adaptivityType === 2) {
+      this.seconds = 0;
+      this.toTestButtonEnabled = true;
+      this.showTimer = false;
+      return;
+    }
+  
     window.setInterval(() => {
       this.seconds -= 1
       this.time = this.getStrTime()
@@ -199,6 +206,7 @@ export class MaterialsPopoverComponent {
       }
     }, 1000)
   }
+  
 
   countWatchTime() {
     window.setInterval(() => {
