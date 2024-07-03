@@ -33,29 +33,14 @@ export class StudentsMonitoringComponent implements OnInit {
     private groupService: GroupService
 ) {
     this.complexId = data.id
-    this.userId = data.model
     const user = JSON.parse(localStorage.getItem('currentUser'))
     
     this.isLecturer = user.role === 'lector'
-  }
-
-  openMonitoringStudent(): void {
-    const dialogData: DialogData = {
-      model: this.selectedStudentId,
-      id: this.complexId
+    if(!this.isLecturer){
+      this.userId = user.id
     }
-    const dialogConfig = new MatDialogConfig()
-    dialogConfig.width = '100%'
-    dialogConfig.data = dialogData
-    dialogConfig.maxWidth='none'
-
-    const dialogRef = this.dialog.open(MonitoringTreeComponent, dialogConfig
-    )
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed')
-    })
   }
+
   getStudents(groupId: string){
     this.groupService.getStudentsByGroup(groupId).subscribe((students) => {
       this.students = students

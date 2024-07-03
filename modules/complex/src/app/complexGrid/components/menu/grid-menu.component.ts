@@ -127,7 +127,6 @@ export class GridMenuComponent {
 
   openMonitoring(): void {
     const dialogData: DialogData = {
-      model: JSON.parse(localStorage.getItem('currentUser')).id,
       id: this.complexId
     }
     const dialogConfig = new MatDialogConfig()

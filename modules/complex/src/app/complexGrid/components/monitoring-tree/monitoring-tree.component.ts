@@ -53,5 +53,5 @@ export class MonitoringTreeComponent implements OnInit {
     );
 }
 
-hasChild = (_: number, node: any) => node.Children && node.Children.length > 0;
+hasChild = (_: number, node ) => node.Children && node.Children.length > 0;
 }
