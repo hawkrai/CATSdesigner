@@ -59,7 +59,10 @@
                   height="30px"
                 />
                 <i
-                  *ngIf="data.body.uploadedFile.Type !== 'Image' && data.body.uploadedFile.Type !== 'Document'"
+                  *ngIf="
+                    data.body.uploadedFile.Type !== 'Image' &&
+                    data.body.uploadedFile.Type !== 'Document'
+                  "
                   class="material-icons mdc-list-item__graphic"
                   aria-hidden="true"
                   >description</i
@@ -79,7 +82,9 @@
               </a>
             </td>
             <td class="mdc-data-table__cell example-content">
-              {{ data.body.uploadedFile.CreationDate.slice(8, 10) }}.{{ data.body.uploadedFile.CreationDate.slice(5, 7) }}.{{ data.body.uploadedFile.CreationDate.slice(0, 4) }}
+              {{ data.body.uploadedFile.CreationDate.slice(8, 10) }}.{{
+                data.body.uploadedFile.CreationDate.slice(5, 7)
+              }}.{{ data.body.uploadedFile.CreationDate.slice(0, 4) }}
             </td>
             <td class="mdc-data-table__cell example-content">
               {{ (data.body.uploadedFile.Size / 1024).toFixed(2) }} КБ

@@ -59,12 +59,14 @@ export class ConverterService {
     return monitor
   }
 
-  public monitoringsConverter(monitorings: any, estimatedTime:number) {
-    return monitorings.map((mon) => this.monitoringConverter(mon, estimatedTime))
+  public monitoringsConverter(monitorings: any, estimatedTime: number) {
+    return monitorings.map((mon) =>
+      this.monitoringConverter(mon, estimatedTime)
+    )
   }
 
-  public getColorByTime(realTime: number, estimatedTime:number): string {
-    if (realTime >= estimatedTime / 2 && realTime <=estimatedTime * 1.5) {
+  public getColorByTime(realTime: number, estimatedTime: number): string {
+    if (realTime >= estimatedTime / 2 && realTime <= estimatedTime * 1.5) {
       return `green`
     }
     return 'red'
@@ -102,7 +104,7 @@ export class ConverterService {
   public studentsConverter(students: any): Student[] {
     return students.map((gr) => this.studentConverter(gr))
   }
-  
+
   private groupConverter(groupRes: any) {
     var group = new Group()
     group.Id = groupRes.GroupId

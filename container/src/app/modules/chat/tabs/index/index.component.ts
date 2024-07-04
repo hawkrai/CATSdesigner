@@ -114,8 +114,8 @@ export class IndexComponent implements OnInit {
   }
 
   filter() {
-    this.messages = this.messagesAll.filter((x) =>
-      x.text?.includes(this.filterValue)
+    this.messages = this.messagesAll.filter(
+      (x) => x.text?.includes(this.filterValue)
     )
     this.cdr.detectChanges()
     if (this.messages.length) this.componentRef.directiveRef.scrollToBottom()

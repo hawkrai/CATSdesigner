@@ -1,4 +1,4 @@
-import { Lector } from "../../../../subjects/src/app/models/lector.model"
+import { Lector } from '../../../../subjects/src/app/models/lector.model'
 
 export class Consultation {
   Id: string

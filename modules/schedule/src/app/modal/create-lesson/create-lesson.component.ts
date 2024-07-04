@@ -23,7 +23,7 @@ export function flatpickrFactory() {
 export class CreateLessonComponent implements OnInit {
   changedType: string
   formGroup: any
-  eventToChange: any;
+  eventToChange: any
   lesson: Lesson = new Lesson()
   subject: any
   subjects: any[] = []
@@ -65,7 +65,7 @@ export class CreateLessonComponent implements OnInit {
     private lessonservice: LessonService,
     private noteService: NoteService
   ) {
-    this.eventToChange = data.note;
+    this.eventToChange = data.note
   }
 
   ngOnInit(): void {
@@ -170,7 +170,9 @@ export class CreateLessonComponent implements OnInit {
                 this.lesson.Teacher = this.teachers.find(
                   (teacher) => teacher.LectorId === teacherId
                 )
-                this.formGroup.get('teacher').setValue(this.lesson.Teacher.LectorId)
+                this.formGroup
+                  .get('teacher')
+                  .setValue(this.lesson.Teacher.LectorId)
               })
           }
 
@@ -192,7 +194,6 @@ export class CreateLessonComponent implements OnInit {
                 this.formGroup.get('subGroup').setValue(this.lesson.SubGroupId)
               })
           }
-          
         }
       })
 

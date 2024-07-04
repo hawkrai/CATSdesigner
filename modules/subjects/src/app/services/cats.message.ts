@@ -7,7 +7,10 @@ import { Message } from '../models/message.model'
 
 @Injectable({ providedIn: 'root' })
 export class CatsMessageService {
-  constructor(private router: Router, private store: Store<IAppState>) {}
+  constructor(
+    private router: Router,
+    private store: Store<IAppState>
+  ) {}
 
   public setupMessageCommunication(): void {
     window.addEventListener('message', this.receiveMessage, false)

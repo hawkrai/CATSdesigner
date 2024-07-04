@@ -91,7 +91,10 @@ export class TaskSheetComponent implements OnInit {
   retrieveTaskSheetHtml() {
     this.taskSheetHtml = null
     this.taskSheetSubscription = this.taskSheetService
-      .getTaskSheetHtml({ courseProjectId: this.courseProjectId, language: localStorage.getItem('locale') })
+      .getTaskSheetHtml({
+        courseProjectId: this.courseProjectId,
+        language: localStorage.getItem('locale'),
+      })
       .subscribe((res) => {
         if (res != null) {
           this.taskSheetHtml = res

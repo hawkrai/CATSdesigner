@@ -137,7 +137,6 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
       (mark) => mark.PracticalId === +practicalId
     )
     if (mark) {
-
       const practicalMark = this.getPracticalMark(mark, student.StudentId)
 
       const dialogData: DialogData = {
@@ -239,7 +238,7 @@ export class ResultsComponent implements OnInit, OnChanges, OnDestroy {
       comment: mark.Comment,
       mark: mark.Mark,
       date: mark.Date
-        ? new Date(+dateValues[2], +dateValues[1]-1, +dateValues[0])
+        ? new Date(+dateValues[2], +dateValues[1] - 1, +dateValues[0])
         : new Date(),
       practicalId: mark.PracticalId,
       studentId: studentId,

@@ -44,7 +44,7 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
     this.signalRService.SetVoiceChatConnection(
       this.videoChatService.currentChatId
     )
-    this.stopCallSound('incomingCallSound');
+    this.stopCallSound('incomingCallSound')
   }
 
   endCall() {
@@ -56,9 +56,9 @@ export class VideoHandlerComponent implements OnInit, OnDestroy {
     this.videoChatService.disconnectFromCall()
   }
 
-    stopCallSound(id: string){
-    const callsound = document.getElementById(id) as HTMLAudioElement;
-    callsound.pause();
+  stopCallSound(id: string) {
+    const callsound = document.getElementById(id) as HTMLAudioElement
+    callsound.pause()
   }
 
   switchMicro() {

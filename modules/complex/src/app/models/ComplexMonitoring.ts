@@ -1,5 +1,4 @@
 export class ComplexMonitoring {
-
   Name?: string
   ParentId?: string
   Estimated?: number

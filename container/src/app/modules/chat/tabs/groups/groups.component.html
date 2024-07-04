@@ -26,65 +26,68 @@
     <ul class="list-unstyled chat-list" style="max-height: 60vh">
       <li *ngFor="let subject of groups">
         <div class="chat" *ngIf="subject.groups.length > 0">
-        <a
-          data-container="body"
-          data-placement="top"
-          matTooltip="{{ subject.name }}"
-          [ngStyle]="{
-            'background-color':
-              dataService.activChatId == subject.id ? '#f5f7fb' : ''
-          }"
-          (click)="showChat(subject)"
-        >
-          <div class="media" style="align-items: center">
-            <div
-              class="chat-user-img align-self-center mr-3"
-              style="margin-right: 0.5rem !important"
-            >
-              <div class="avatar-xs">
-                <div
-                  class="avatar-title rounded-circle"
-                  [style.background-color]="subject.color"
-                ></div>
-              </div>
-            </div>
-            <div class="media-body overflow-hidden">
-              <h5 class="text-truncate font-size-14 mb-0">
-                {{ subject.shortName }}
-                <span
-                  style="top: calc(50% - 16px)"
-                  *ngIf="subject.unread != 0"
-                  class="badge badge-soft-danger badge-pill float-right"
-                  >{{ subject.unread }}</span
-                >
-              </h5>
-            </div>
-          </div>
-        </a>
-        <div *ngFor="let group of subject.groups">
           <a
+            data-container="body"
+            data-placement="top"
+            matTooltip="{{ subject.name }}"
             [ngStyle]="{
               'background-color':
-                dataService.activChatId == group.id ? '#f5f7fb' : ''
+                dataService.activChatId == subject.id ? '#f5f7fb' : ''
             }"
-            (click)="showChat(group)"
+            (click)="showChat(subject)"
           >
-            <div style="padding-left: 2.5rem" class="media align-items-center">
+            <div class="media" style="align-items: center">
+              <div
+                class="chat-user-img align-self-center mr-3"
+                style="margin-right: 0.5rem !important"
+              >
+                <div class="avatar-xs">
+                  <div
+                    class="avatar-title rounded-circle"
+                    [style.background-color]="subject.color"
+                  ></div>
+                </div>
+              </div>
               <div class="media-body overflow-hidden">
                 <h5 class="text-truncate font-size-14 mb-0">
-                  {{ group.name }}
+                  {{ subject.shortName }}
                   <span
                     style="top: calc(50% - 16px)"
-                    *ngIf="group.unread > 0"
+                    *ngIf="subject.unread != 0"
                     class="badge badge-soft-danger badge-pill float-right"
-                    >{{ group.unread }}</span
+                    >{{ subject.unread }}</span
                   >
                 </h5>
               </div>
             </div>
           </a>
+          <div *ngFor="let group of subject.groups">
+            <a
+              [ngStyle]="{
+                'background-color':
+                  dataService.activChatId == group.id ? '#f5f7fb' : ''
+              }"
+              (click)="showChat(group)"
+            >
+              <div
+                style="padding-left: 2.5rem"
+                class="media align-items-center"
+              >
+                <div class="media-body overflow-hidden">
+                  <h5 class="text-truncate font-size-14 mb-0">
+                    {{ group.name }}
+                    <span
+                      style="top: calc(50% - 16px)"
+                      *ngIf="group.unread > 0"
+                      class="badge badge-soft-danger badge-pill float-right"
+                      >{{ group.unread }}</span
+                    >
+                  </h5>
+                </div>
+              </div>
+            </a>
+          </div>
         </div>
-      </div>
       </li>
     </ul>
   </perfect-scrollbar>

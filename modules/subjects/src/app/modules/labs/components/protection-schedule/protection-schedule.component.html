@@ -28,7 +28,9 @@
       <div class="protection-schedule-component__subGroup-table">
         <table
           mat-table
-          [dataSource]="state.labs | filter: 'SubGroup':subGroup.SubGroupValue"
+          [dataSource]="
+            state.labs | filter: 'SubGroup' : subGroup.SubGroupValue
+          "
           class="mat-elevation-z14"
         >
           <ng-container matColumnDef="position">
@@ -46,7 +48,7 @@
           <ng-container
             *ngFor="
               let scheduleProtectionLab of state.scheduleProtectionLabs
-                | filter: 'SubGroup':subGroup.SubGroupValue;
+                | filter: 'SubGroup' : subGroup.SubGroupValue;
               let i = index
             "
             matColumnDef="{{
@@ -72,7 +74,7 @@
             *matHeaderRowDef="
               getSubGroupDisplayColumns(
                 state.scheduleProtectionLabs
-                  | filter: 'SubGroup':subGroup.SubGroupValue
+                  | filter: 'SubGroup' : subGroup.SubGroupValue
               )
             "
           ></tr>
@@ -82,7 +84,7 @@
               let row;
               columns: getSubGroupDisplayColumns(
                 state.scheduleProtectionLabs
-                  | filter: 'SubGroup':subGroup.SubGroupValue
+                  | filter: 'SubGroup' : subGroup.SubGroupValue
               )
             "
           ></tr>

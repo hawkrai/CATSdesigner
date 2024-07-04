@@ -37,7 +37,7 @@
     <table
       *ngIf="students && students.length"
       mat-table
-      [dataSource]="students | filter: 'FullName':search:'contains'"
+      [dataSource]="students | filter: 'FullName' : search : 'contains'"
       class="confirmation-table"
     >
       <ng-container matColumnDef="id">

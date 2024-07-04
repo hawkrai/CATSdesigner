@@ -37,16 +37,22 @@ export class ComplexGridComponent implements OnInit {
       return false
     }
     this.router.onSameUrlNavigation = 'reload'
-    
-    
+
     const user = JSON.parse(localStorage.getItem('currentUser'))
     this.isLecturer = user.role === 'lector'
-    
+
     this.showLoader = false
   }
 
   ngOnInit(): void {
-    this.breakpoint = (window.innerWidth <= 530) ? 1 : (window.innerWidth <= 750)? 2 : (window.innerWidth <= 1060)? 3: 4;
+    this.breakpoint =
+      window.innerWidth <= 530
+        ? 1
+        : window.innerWidth <= 750
+          ? 2
+          : window.innerWidth <= 1060
+            ? 3
+            : 4
     this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
       this.subjectId = subjectId
       this.complexService.getRootConcepts(this.subjectId).subscribe((res) => {
@@ -60,7 +66,14 @@ export class ComplexGridComponent implements OnInit {
     })
   }
   onResize(event) {
-    this.breakpoint = (event.target.innerWidth <= 530) ? 1 : (event.target.innerWidth <= 750) ? 2: (event.target.innerWidth <= 1060) ? 3: 4;
+    this.breakpoint =
+      event.target.innerWidth <= 530
+        ? 1
+        : event.target.innerWidth <= 750
+          ? 2
+          : event.target.innerWidth <= 1060
+            ? 3
+            : 4
   }
 
   adjustNameLength(componentName: string): string {

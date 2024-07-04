@@ -13,7 +13,7 @@ import { MapPopoverComponent } from './components/map-popover/map-popover.compon
 import { AppRoutingModule } from '../app-routing.module'
 import { DeleteConfirmationPopupComponent } from './components/delete-confirmation-popup/delete-confirmation-popup.component'
 import { MonitoringTreeComponent } from './components/monitoring-tree/monitoring-tree.component'
-import {PopoverDialogComponent} from './components/popover-dialog/popover-dialog.component'
+import { PopoverDialogComponent } from './components/popover-dialog/popover-dialog.component'
 import { StudentsMonitoringComponent } from './components/students-monitoring/students-monitoring.component'
 
 import * as dataRu from '../core/translate/translations_ru.json'

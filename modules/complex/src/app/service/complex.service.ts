@@ -52,15 +52,17 @@ export class ComplexService {
       )
       .pipe(map((res) => res['Concept']))
   }
-  
-  public getStudentComplexMonitoringInfo(comlexId: string, studentId: string): Observable<ComplexStudentMonitoring> {
-    return this.http
-      .get<ComplexStudentMonitoring>(
-        '/Services/Concept/ConceptService.svc/GetStudentMonitoringInfo?complexId=' +
-          comlexId +
-          '&studentId=' +
-          studentId
-      )
+
+  public getStudentComplexMonitoringInfo(
+    comlexId: string,
+    studentId: string
+  ): Observable<ComplexStudentMonitoring> {
+    return this.http.get<ComplexStudentMonitoring>(
+      '/Services/Concept/ConceptService.svc/GetStudentMonitoringInfo?complexId=' +
+        comlexId +
+        '&studentId=' +
+        studentId
+    )
   }
 
   public getConceptCascadeFoldersOnly(
@@ -97,7 +99,12 @@ export class ComplexService {
           groupId
       )
       .pipe(
-        map((res) => this.converterService.monitoringsConverter(res['Views'], res['Estimated']))
+        map((res) =>
+          this.converterService.monitoringsConverter(
+            res['Views'],
+            res['Estimated']
+          )
+        )
       )
   }
 

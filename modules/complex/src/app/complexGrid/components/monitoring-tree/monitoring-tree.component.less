@@ -5,14 +5,14 @@
 
 .expected-time {
   display: none;
-  position: fixed; /* Использование fixed позиционирования */
+  position: fixed;
   background-color: #fff;
   border: 1px solid #ccc;
   padding: 5px;
   border-radius: 3px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
-  z-index: 1000; /* Высокий z-index для отображения поверх других элементов */
+  z-index: 1000;
 }
 
 .time-container:hover .expected-time {
@@ -20,34 +20,36 @@
 }
 .info {
   font-family: 'Roboto', sans-serif;
-  color: #363636; // Почти черный цвет
+  color: #363636;
 
-  h2, h3 {
-    margin: 0; // Убираем отступы, если они есть
+  h2,
+  h3 {
+    margin: 0;
   }
 }
 
 h2.info {
-  font-size: 2em; // Размер шрифта для h2
-  font-weight: 400; // Жирный шрифт
+  font-size: 2em;
+  font-weight: 400;
 }
 
 h3.info {
-  font-size: 1.2em; // Размер шрифта для h3
-  font-weight: 400; // Обычный шрифт
-  display: flex; // Для удобного размещения элементов
-  align-items: center; // Выравнивание по центру по вертикали
+  font-size: 1.2em;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
 
   span {
-    margin-right: 10px; // Отступ между элементами
+    margin-right: 10px;
   }
 }
 .mat-tree-node {
   min-height: 0px !important;
 }
 
-.mat-tree-node, .mat-nested-tree-node {
-    padding-bottom: 4px;
+.mat-tree-node,
+.mat-nested-tree-node {
+  padding-bottom: 4px;
 }
 
 .example-tree-invisible {
@@ -87,7 +89,7 @@ a.clickable {
 }
 
 span.clickable {
-  color: #3F51B5;
+  color: #3f51b5;
 }
 
 .invisible {
@@ -100,7 +102,7 @@ span.clickable {
 }
 
 .folder_file_icons {
-  color:#3f51b5 ;
+  color: #3f51b5;
   cursor: default;
 }
 
@@ -150,4 +152,3 @@ span.clickable {
 .empty-tree-icon {
   color: #808080;
 }
-

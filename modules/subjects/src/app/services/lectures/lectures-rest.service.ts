@@ -24,7 +24,10 @@ export class LecturesRestService {
   }
 
   public updateLectures(lectures) {
-    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDateLectures', { ...lectures })
+    return this.http.post(
+      'Services/Schedule/ScheduleService.svc/SaveDateLectures',
+      { ...lectures }
+    )
   }
 
   public saveLecture(lecture: CreateLectureEntity): Observable<any> {

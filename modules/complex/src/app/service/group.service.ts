@@ -20,10 +20,12 @@ export class GroupService {
       .get('/Services/CoreService.svc/GetOnlyGroups/' + subjectId)
       .pipe(map((res) => this.converterService.groupsConverter(res['Groups'])))
   }
-  
+
   public getStudentsByGroup(groupId: string): Observable<Student[]> {
     return this.http
       .get('/Services/CoreService.svc/GetStudentsByGroupId/' + groupId)
-      .pipe(map((res) =>  this.converterService.studentsConverter(res['Students'])))
+      .pipe(
+        map((res) => this.converterService.studentsConverter(res['Students']))
+      )
   }
 }

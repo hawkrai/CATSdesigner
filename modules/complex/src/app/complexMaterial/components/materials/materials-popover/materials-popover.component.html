@@ -8,7 +8,7 @@
   >
     {{ 'common.pretest' | translate: 'Пройти предтест' }}
   </button>
-  <button 
+  <button
     *ngIf="zoomInButtonVisible"
     mat-raised-button
     mat-button
@@ -18,7 +18,7 @@
     <mat-icon>zoom_in</mat-icon>
     {{ 'common.zoomIn' | translate: 'Увеличить' }}
   </button>
-  <button 
+  <button
     *ngIf="zoomOutButtonVisible"
     mat-raised-button
     mat-button
@@ -117,8 +117,8 @@
     [show-all]="true"
     [zoom]="zoom"
     style="display: block"
-    [zoom-scale]="page-width"
-    style="width: 100%; height: 100vh;"
+    [zoom-scale]="page - width"
+    style="width: 100%; height: 100vh"
   ></pdf-viewer>
 
   <div *ngIf="isTest">
