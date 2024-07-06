@@ -8,18 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Application.Core.Data;
-using WebMatrix.WebData;
 using Application.Infrastructure.WatchingTimeManagement;
 using Application.Infrastructure.StudentManagement;
+using Application.Infrastructure.DTO;
 using LMPlatform.Models;
 using LMPlatform.UI.Services.Modules;
-using System.Configuration;
-using Application.Core.Helpers;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
 using Newtonsoft.Json;
-using Antlr.Runtime.Tree;
-using iTextSharp.text;
 
 namespace LMPlatform.UI.Services.Concept
 {
