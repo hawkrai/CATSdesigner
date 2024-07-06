@@ -12,7 +12,7 @@
   "common.file": "Файл",
   "common.inputFileName": "Введите название элемента",
   "common.fileName": "Введите название элемента",
-  "common.pinnedDoc": "Прикрепленный документ",
+  "common.pinnedDoc": "Прикрепленный материал (Можно добавить только один файл формата .pdf, .docx или .doc)",
   "common.pretest": "Пройти предтест",
   "common.prevDocument": "Предыдущий документ",
   "common.nextDocument": "Следующий документ",
@@ -46,9 +46,10 @@
   "complex.monitor": "Мониторинг прочтения тем",
   "complex.complexes": "К списку ЭУМК",
   "complex.addComplexes": "Добавить ЭУМК",
+  "complex.fileUploadError": "Можно добавить файл только формата .pdf, .docx или .doc",
   "complex.addComplexes": "Создать электронный учебно-методический комплекс",
   "complex.addComplex": "Добавление ЭУМК",
-  "complex.editComplexes": "Редактировать ЭУМК",
+  "complex.editComplexes": "Редактирование элемента ЭУМК",
   "complex.editComplex": "Редактирование ЭУМК",
   "complex.addComponent": "Добавить элемент",
   "complex.addComplexesComponent": "Добавление элемента ЭУМК",
@@ -81,6 +82,7 @@
   "text.complex.want.to.delete.test": "Вы действительно хотите удалить компонент?",
   "text.complex.yes": "Да",
   "button.cancel": "Отмена",
+  "text.subjects.attachments.add": "Добавить файл",
   "text.complex.delete.eumc": "Удаление ЭУМК",
   "text.complex.want.to.delete.eumc": "Вы действительно хотите удалить ЭУМК?"
 }
