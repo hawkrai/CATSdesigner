@@ -1,5 +1,6 @@
 {
   "common.success.operation": "The operation was completed successfully",
+  "common.error.operation": "Complex with this name already exist",
   "common.kb": "KB",
   "common.addFile": "Add a file",
   "common.uploadedFile": "Uploaded file",

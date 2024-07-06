@@ -1,10 +1,9 @@
-import { Component,  Inject, OnInit } from '@angular/core'
+import { Component, Inject, OnInit } from '@angular/core'
 import { Group } from '../../../../app/models/Group'
 import { GroupService } from '../../../service/group.service'
 import { DialogData } from '../../../models/DialogData'
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'
-import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog'
-import {MonitoringTreeComponent} from '../monitoring-tree/monitoring-tree.component'
+import { MatDialog } from '@angular/material/dialog'
 import { select, Store } from '@ngrx/store'
 import { IAppState } from '../../../store/states/app.state'
 import { getSubjectId } from '../../../store/selectors/subject.selector'
@@ -13,7 +12,7 @@ import { Student } from 'src/app/models/student.model'
 @Component({
   selector: 'app-students-monitoring',
   templateUrl: 'students-monitoring.component.html',
-  styleUrls: ['students-monitoring.component.less']
+  styleUrls: ['students-monitoring.component.less'],
 })
 export class StudentsMonitoringComponent implements OnInit {
   students: Student[]
@@ -24,24 +23,24 @@ export class StudentsMonitoringComponent implements OnInit {
   complexId: string
   isLecturer: boolean
   userId: string
-  showMonitoring: boolean = false; 
+  showMonitoring: boolean = false
 
   constructor(
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private store: Store<IAppState>,
     private groupService: GroupService
-) {
+  ) {
     this.complexId = data.id
     const user = JSON.parse(localStorage.getItem('currentUser'))
-    
+
     this.isLecturer = user.role === 'lector'
-    if(!this.isLecturer){
+    if (!this.isLecturer) {
       this.userId = user.id
     }
   }
 
-  getStudents(groupId: string){
+  getStudents(groupId: string) {
     this.groupService.getStudentsByGroup(groupId).subscribe((students) => {
       this.students = students
     })
@@ -52,10 +51,10 @@ export class StudentsMonitoringComponent implements OnInit {
 
   onSelectStudent(userId: number): void {
     if (userId) {
-      this.selectedStudentId = userId;
+      this.selectedStudentId = userId
     } else {
-      this.selectedStudentId = 0;
-      this.showMonitoring = false;
+      this.selectedStudentId = 0
+      this.showMonitoring = false
     }
   }
 

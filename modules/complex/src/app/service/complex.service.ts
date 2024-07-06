@@ -15,17 +15,18 @@ import { ComplexStudentMonitoring } from '../models/ComplexStudentMonitoring'
   providedIn: 'root',
 })
 export class ComplexService {
+  private path: string
+
   constructor(
     private http: HttpClient,
     private converterService: ConverterService
-  ) {}
+  ) {
+    this.path = '/Services/Concept/ConceptService.svc/'
+  }
 
   public getRootConcepts(subjectId: string): Observable<ComplexGrid[]> {
     return this.http
-      .get(
-        '/Services/Concept/ConceptService.svc/GetRootConcepts?subjectId=' +
-          subjectId
-      )
+      .get(this.path + 'GetRootConcepts?subjectId=' + subjectId)
       .pipe(
         map((res) =>
           this.converterService.complexGridConverter(res['Concepts'])
@@ -37,40 +38,34 @@ export class ComplexService {
     subjectId: string
   ): Observable<ComplexGrid[]> {
     return this.http
-      .get(
-        '/Services/Concept/ConceptService.svc/GetRootConcepts?subjectId=' +
-          subjectId
-      )
+      .get(this.path + 'GetRootConcepts?subjectId=' + subjectId)
       .pipe(map((res) => res['SubjectName']))
   }
 
   public getConceptCascade(parentId: string): Observable<ComplexCascade> {
     return this.http
-      .get(
-        '/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' +
-          parentId
-      )
+      .get(this.path + 'GetConceptCascade?parenttId=' + parentId)
       .pipe(map((res) => res['Concept']))
   }
-  
-  public getStudentComplexMonitoringInfo(comlexId: string, studentId: string): Observable<ComplexStudentMonitoring> {
-    return this.http
-      .get<ComplexStudentMonitoring>(
-        '/Services/Concept/ConceptService.svc/GetStudentMonitoringInfo?complexId=' +
-          comlexId +
-          '&studentId=' +
-          studentId
-      )
+
+  public getStudentComplexMonitoringInfo(
+    comlexId: string,
+    studentId: string
+  ): Observable<ComplexStudentMonitoring> {
+    return this.http.get<ComplexStudentMonitoring>(
+      this.path +
+        'GetStudentMonitoringInfo?complexId=' +
+        comlexId +
+        '&studentId=' +
+        studentId
+    )
   }
 
   public getConceptCascadeFoldersOnly(
     parentId: string
   ): Observable<ComplexCascade[]> {
     return this.http
-      .get(
-        '/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' +
-          parentId
-      )
+      .get(this.path + 'GetConceptCascade?parenttId=' + parentId)
       .pipe(
         map((res) => this.converterService.filterNonGroupItems(res['Concept']))
       )
@@ -78,10 +73,7 @@ export class ComplexService {
 
   public getConceptTree(parentId: string): Observable<ComplexTree> {
     return this.http
-      .get(
-        '/Services/Concept/ConceptService.svc/GetConceptCascade?parenttId=' +
-          parentId
-      )
+      .get(this.path + 'GetConceptCascade?parenttId=' + parentId)
       .pipe(map((res) => this.converterService.mapConverter(res['Concept'])))
   }
 
@@ -91,50 +83,42 @@ export class ComplexService {
   ): Observable<ConceptMonitoring[]> {
     return this.http
       .get(
-        '/Services/Concept/ConceptService.svc/GetConceptViews?conceptId=' +
+        this.path +
+          'GetConceptViews?conceptId=' +
           conceptId +
           '&groupId=' +
           groupId
       )
       .pipe(
-        map((res) => this.converterService.monitoringsConverter(res['Views'], res['Estimated']))
+        map((res) =>
+          this.converterService.monitoringsConverter(
+            res['Views'],
+            res['Estimated']
+          )
+        )
       )
   }
 
   public getConceptNameById(conceptId: string): Observable<string> {
     return this.http
-      .get(
-        '/Services/Concept/ConceptService.svc/GetConcept?elementId=' + conceptId
-      )
+      .get(this.path + 'GetConcept?elementId=' + conceptId)
       .pipe(map((res) => res['Name']))
   }
 
   public editRootConcept(complex: Complex) {
-    return this.http.post(
-      '/Services/Concept/ConceptService.svc/EditRootConcept',
-      complex
-    )
+    return this.http.post(this.path + 'EditRootConcept', complex)
   }
 
   public addRootConcept(complex: Complex) {
-    return this.http.post(
-      '/Services/Concept/ConceptService.svc/CreateRootConcept',
-      complex
-    )
+    return this.http.post(this.path + 'CreateRootConcept', complex)
   }
 
   public addOrEditConcept(concept: Concept) {
-    return this.http.post(
-      '/Services/Concept/ConceptService.svc/AddConcept',
-      concept
-    )
+    return this.http.post(this.path + 'AddConcept', concept)
   }
 
   public deleteConcept(complex: Complex) {
-    return this.http.post(
-      '/Services/Concept/ConceptService.svc/Remove',
-      complex
-    )
+    return this.http.post(this.path + 'Remove', complex)
   }
 
   public getConcepts(): Observable<any> {
@@ -144,20 +128,16 @@ export class ComplexService {
 
   public getFilesForFolder(nodeId: number): Observable<string[]> {
     return this.http.get<string[]>(
-      '/Services/Concept/ConceptService.svc/GetFolderFilesPaths?conceptId=' +
-        nodeId
+      this.path + 'GetFolderFilesPaths?conceptId=' + nodeId
     )
   }
 
   public saveWatchingTime(conceptId: number, time: number) {
     const user = JSON.parse(localStorage.getItem('currentUser'))
-    return this.http.post(
-      '/Services/Concept/ConceptService.svc/SaveMonitoringResult',
-      {
-        userId: user.id,
-        conceptId: conceptId,
-        timeInSeconds: time,
-      }
-    )
+    return this.http.post(this.path + 'SaveMonitoringResult', {
+      userId: user.id,
+      conceptId: conceptId,
+      timeInSeconds: time,
+    })
   }
 }
