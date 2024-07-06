@@ -1,5 +1,6 @@
 {
   "common.success.operation": "Операция выполнена успешно",
+  "common.error.operation": "Эумк с таким именем уже существует",
   "common.kb": "КБ",
   "common.addFile": "Добавить файл",
   "common.uploadedFile": "Загруженный файл",
