@@ -5,6 +5,7 @@ import { Group } from '../models/Group'
 import { ConceptMonitoring } from '../models/ConceptMonitoring'
 import { Adaptivity } from '../models/Adaptivity'
 import { ComplexCascade } from '../models/ComplexCascade'
+import { Student } from '../models/student.model'
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +26,7 @@ export class ConverterService {
   }
 
   public mapConverter(concept: any) {
-    var tree = new ComplexTree([])
+    const tree = new ComplexTree([])
     tree.result.push(
       new TreeNode(concept.Id, concept.Name, null, concept.FilePath)
     )
@@ -42,7 +43,7 @@ export class ConverterService {
     if (!childConcepts || childConcepts.length === 0) {
       return
     }
-    for (let concept of childConcepts) {
+    for (const concept of childConcepts) {
       tree.result.push(
         new TreeNode(concept.Id, concept.Name, parentId, concept.FilePath)
       )
@@ -51,19 +52,21 @@ export class ConverterService {
   }
 
   private monitoringConverter(monitoring: any, estimatedTime: number) {
-    var monitor = new ConceptMonitoring()
+    const monitor = new ConceptMonitoring()
     monitor.name = monitoring.Name
     monitor.seconds = this.getStrTime(monitoring.Seconds)
     monitor.color = this.getColorByTime(monitoring.Seconds, estimatedTime)
     return monitor
   }
 
-  public monitoringsConverter(monitorings: any, estimatedTime:number) {
-    return monitorings.map((mon) => this.monitoringConverter(mon, estimatedTime))
+  public monitoringsConverter(monitorings: any, estimatedTime: number) {
+    return monitorings.map((mon) =>
+      this.monitoringConverter(mon, estimatedTime)
+    )
   }
 
-  public getColorByTime(realTime: number, estimatedTime:number): string {
-    if (realTime >= estimatedTime / 2) {
+  public getColorByTime(realTime: number, estimatedTime: number): string {
+    if (realTime >= estimatedTime / 2 && realTime <= estimatedTime * 1.5) {
       return `green`
     }
     return 'red'
@@ -73,8 +76,8 @@ export class ConverterService {
     if (seconds < 60) {
       return `${seconds} сек`
     }
-    var min = Math.floor(seconds / 60)
-    var sec = seconds % 60
+    const min = Math.floor(seconds / 60)
+    const sec = seconds % 60
 
     return `${min} мин ${sec} сек`
   }
@@ -83,15 +86,27 @@ export class ConverterService {
     conceptsCascade: ComplexCascade
   ): ComplexCascade[] {
     conceptsCascade.children = conceptsCascade.children.filter((x) => x.IsGroup)
-    for (var concept of conceptsCascade.children) {
+    for (const concept of conceptsCascade.children) {
       this.filterNonGroupItems(concept)
     }
 
     return [conceptsCascade]
   }
 
+  private studentConverter(studentRes: any) {
+    const student = new Student()
+    student.Id = studentRes.StudentId
+    student.Name = studentRes.FullName
+
+    return student
+  }
+
+  public studentsConverter(students: any): Student[] {
+    return students.map((gr) => this.studentConverter(gr))
+  }
+
   private groupConverter(groupRes: any) {
-    var group = new Group()
+    const group = new Group()
     group.Id = groupRes.GroupId
     group.Name = groupRes.GroupName
 
@@ -103,7 +118,7 @@ export class ConverterService {
   }
 
   public nextThemaResConverter(themaRes: any) {
-    var nextThemaRes = new Adaptivity()
+    const nextThemaRes = new Adaptivity()
     nextThemaRes.nextThemaId = themaRes.NextThemaId
     nextThemaRes.nextMaterialPaths = themaRes.NextMaterialPath
     nextThemaRes.needToDoPredTest = themaRes.NeedToDoPredTest

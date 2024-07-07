@@ -485,7 +485,13 @@ namespace Application.Infrastructure.ConceptManagement
 	        var subject = repositoriesContainer.SubjectRepository.GetBy(new Query<Subject>().AddFilterClause(s => s.Id == subjectId));
 	        var concept = new Concept(name, author, subject, true, false);
 
-	        repositoriesContainer.ConceptRepository.Save(concept);
+            var existingConcept = repositoriesContainer.ConceptRepository.GetBy(new Query<Concept>().AddFilterClause(c => c.Name == name));
+            if (existingConcept != null)
+            {
+                throw new Exception("Name already exist");
+            }
+
+            repositoriesContainer.ConceptRepository.Save(concept);
 	        repositoriesContainer.ApplyChanges();
 	        InitBaseChildrens(concept, repositoriesContainer, includeLabs, includeLectures, includeTests);
 	        return repositoriesContainer.ConceptRepository.GetBy(new Query<Concept>().AddFilterClause(c => c.Id == concept.Id));

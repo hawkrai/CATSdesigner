@@ -46,7 +46,15 @@ namespace Application.Infrastructure.StudentManagement
                     .ToList();
             }
         }
-
+        public List<Student> GetConfirmedAndNoneDeletedStudentsByGroup(int groupId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+            return repositoriesContainer.StudentsRepository.GetAll(new Query<Student>(
+                    e => e.GroupId == groupId &&
+                         e.Confirmed == true &&
+                         e.DeletedOn == null
+                )).ToList();
+        }
         public IEnumerable<Student> GetStudents(IQuery<Student> query = null)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
