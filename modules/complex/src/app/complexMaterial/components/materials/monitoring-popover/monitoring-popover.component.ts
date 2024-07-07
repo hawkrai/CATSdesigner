@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Inject } from '@angular/core'
+import { Component, OnInit, Inject } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { select, Store } from '@ngrx/store'
 import { IAppState } from '../../../../store/states/app.state'
