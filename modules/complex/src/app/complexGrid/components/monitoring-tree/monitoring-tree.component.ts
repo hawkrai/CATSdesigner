@@ -6,6 +6,7 @@ import { ConverterService } from '../../../service/converter.service'
 import { Router } from '@angular/router'
 import { ComplexMonitoring } from 'src/app/models/ComplexMonitoring'
 import { ComplexStudentMonitoring } from 'src/app/models/ComplexStudentMonitoring'
+import { TranslatePipe } from 'educats-translate'
 
 @Component({
   selector: 'app-monitoring-tree',
@@ -13,19 +14,22 @@ import { ComplexStudentMonitoring } from 'src/app/models/ComplexStudentMonitorin
   styleUrls: ['./monitoring-tree.component.less'],
 })
 export class MonitoringTreeComponent implements OnInit {
-  @Input() complexId: string;
+  @Input() complexId: string
   @Input() studentId: string
   studentName: string
   studentGroup: string
   complexName: string
   showLoader: boolean
-  treeControl = new NestedTreeControl<ComplexMonitoring>((node) => node.Children)
+  treeControl = new NestedTreeControl<ComplexMonitoring>(
+    (node) => node.Children
+  )
   dataSource = new MatTreeNestedDataSource<ComplexMonitoring>()
 
   constructor(
     private complexService: ComplexService,
     public converterService: ConverterService,
     private router: Router,
+    private translatePipe: TranslatePipe
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -35,23 +39,25 @@ export class MonitoringTreeComponent implements OnInit {
 
   ngOnInit() {
     this.showLoader = true
-    this.complexService.getStudentComplexMonitoringInfo(this.complexId, this.studentId).subscribe(
+    this.complexService
+      .getStudentComplexMonitoringInfo(this.complexId, this.studentId)
+      .subscribe(
         (res: ComplexStudentMonitoring) => {
-            // Присваиваем значения свойствам компонента
-            this.studentName = res.StudentName
-            this.studentGroup = res.StudentGroup
-            this.complexName = res.ComplexName
-            
-            this.dataSource.data = res.ConceptMonitorings
-            this.treeControl.dataNodes = res.ConceptMonitorings
-            this.showLoader = false
-            this.treeControl.expandAll()
-        },
-        error => {
-            console.error('Ошибка при получении данных:', error);
-        }
-    );
-}
+          // Присваиваем значения свойствам компонента
+          this.studentName = res.StudentName
+          this.studentGroup = res.StudentGroup
+          this.complexName = res.ComplexName
 
-hasChild = (_: number, node ) => node.Children && node.Children.length > 0;
+          this.dataSource.data = res.ConceptMonitorings
+          this.treeControl.dataNodes = res.ConceptMonitorings
+          this.showLoader = false
+          this.treeControl.expandAll()
+        },
+        (error) => {
+          console.error('Ошибка при получении данных:', error)
+        }
+      )
+  }
+
+  hasChild = (_: number, node) => node.Children && node.Children.length > 0
 }

@@ -45,6 +45,8 @@
   "complex.regulations": "Regulations on Educational Complex",
   "complex.map": "Educational Complex Map",
   "complex.monitor": "Educational Complex Monitoring",
+  "complex.time.actual": "actual time",
+  "complex.time.expected": "Expected time",
   "complex.complexes": "Educational Complexes",
   "complex.addComplexes": "Add educational complex",
   "complex.addComplex": "Add educational complex",

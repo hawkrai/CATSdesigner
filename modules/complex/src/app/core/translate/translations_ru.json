@@ -45,6 +45,8 @@
   "complex.regulations": "Положение об ЭУМК",
   "complex.map": "Карта ЭУМК",
   "complex.monitor": "Мониторинг прочтения тем",
+  "complex.time.actual": "фактическое время",
+  "complex.time.expected": "Ожидаемое время",
   "complex.complexes": "К списку ЭУМК",
   "complex.addComplexes": "Добавить ЭУМК",
   "complex.fileUploadError": "Можно добавить файл только формата .pdf, .docx или .doc",

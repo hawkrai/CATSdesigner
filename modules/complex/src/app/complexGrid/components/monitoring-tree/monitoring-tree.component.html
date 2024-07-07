@@ -28,10 +28,10 @@
         &nbsp;({{ converterService.getStrTime(node.WatchingTime) }})
         <span class="expected-time">
           <span *ngIf="node.Estimated > 0" [ngStyle]="{'color': '#363636'}">
-            &nbsp;Ожидаемое время - {{ converterService.getStrTime(node.Estimated) }},
+            &nbsp;{{ 'complex.time.expected' | translate }} - {{ converterService.getStrTime(node.Estimated) }},
           </span>
           <span *ngIf="node.Estimated > 0">
-            &nbsp;фактическое время - {{ converterService.getStrTime(node.WatchingTime) }}
+            &nbsp;{{ 'complex.time.actual' | translate }} - {{ converterService.getStrTime(node.WatchingTime) }}
           </span>
         </span>
       </span>
