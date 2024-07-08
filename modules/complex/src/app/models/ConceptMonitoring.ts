@@ -1,5 +1,5 @@
 export class ConceptMonitoring {
-  name: string
-  seconds: string
-  color: string
+  Name: string
+  Seconds: string
+  Color: string
 }
