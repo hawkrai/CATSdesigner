@@ -6,6 +6,7 @@ import { ConceptMonitoring } from '../models/ConceptMonitoring'
 import { Adaptivity } from '../models/Adaptivity'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { Student } from '../models/student.model'
+import { ConceptMonitoringData } from '../models/ConceptMonitoringData'
 
 @Injectable({
   providedIn: 'root',
@@ -53,16 +54,23 @@ export class ConverterService {
 
   private monitoringConverter(monitoring: any, estimatedTime: number) {
     const monitor = new ConceptMonitoring()
-    monitor.name = monitoring.Name
-    monitor.seconds = this.getStrTime(monitoring.Seconds)
-    monitor.color = this.getColorByTime(monitoring.Seconds, estimatedTime)
+    monitor.Name = monitoring.Name
+    monitor.Seconds = this.getStrTime(monitoring.Seconds)
+    monitor.Color = this.getColorByTime(monitoring.Seconds, estimatedTime)
     return monitor
   }
 
-  public monitoringsConverter(monitorings: any, estimatedTime: number) {
-    return monitorings.map((mon) =>
+  public monitoringsConverter(
+    monitorings: any,
+    estimatedTime: number
+  ): ConceptMonitoringData {
+    const convertedMonitorings = monitorings.map((mon) =>
       this.monitoringConverter(mon, estimatedTime)
     )
+    return {
+      Estimated: this.getStrTime(estimatedTime),
+      ConceptMonitorings: convertedMonitorings,
+    }
   }
 
   public getColorByTime(realTime: number, estimatedTime: number): string {

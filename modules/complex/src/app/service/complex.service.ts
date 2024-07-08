@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpParams } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { ComplexGrid } from '../models/ComplexGrid'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { ComplexTree } from '../models/ComplexTree'
-import { ConceptMonitoring } from '../models/ConceptMonitoring'
 import { Complex } from '../models/Complex'
 import { Concept } from '../models/Concept'
 import { ConverterService } from './converter.service'
 import { ComplexStudentMonitoring } from '../models/ComplexStudentMonitoring'
+import { ConceptMonitoringData } from '../models/ConceptMonitoringData'
 
 @Injectable({
   providedIn: 'root',
@@ -80,7 +80,7 @@ export class ComplexService {
   public getConceptMonitoring(
     conceptId: string,
     groupId: string
-  ): Observable<ConceptMonitoring[]> {
+  ): Observable<ConceptMonitoringData> {
     return this.http
       .get(
         this.path +

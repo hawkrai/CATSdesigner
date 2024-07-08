@@ -21,6 +21,7 @@
   "common.finishTest": "Finish test",
   "common.time": "Time",
   "common.topicTime": "Topic reading time",
+  "complex.expectedReadingTime": "Expected reading time for topic",
   "common.monitoringName": "Students",
   "common.selectGroup": "Select a group",
   "common.send": "Send",

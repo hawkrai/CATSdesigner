@@ -48,6 +48,7 @@
   "complex.monitor": "Мониторинг прочтения тем",
   "complex.time.actual": "фактическое время",
   "complex.time.expected": "Ожидаемое время",
+  "complex.expectedReadingTime": "Ожидаемое время прочтения темы",
   "complex.complexes": "К списку ЭУМК",
   "complex.addComplexes": "Добавить ЭУМК",
   "complex.fileUploadError": "Можно добавить файл только формата .pdf, .docx или .doc",
