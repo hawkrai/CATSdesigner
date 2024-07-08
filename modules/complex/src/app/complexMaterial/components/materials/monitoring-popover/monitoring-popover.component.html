@@ -7,10 +7,7 @@
     <mat-icon>close</mat-icon>
   </button>
 </div>
-<mat-form-field appearance="fill">
-  <mat-label>
-    {{ 'common.selectGroup' | translate: 'Выберите группу' }}
-  </mat-label>
+<mat-form-field>
   <mat-select
     [(value)]="selected"
     (selectionChange)="onOptionsSelected()"
