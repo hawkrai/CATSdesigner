@@ -45,9 +45,8 @@ import { SubjectNameFreeDirective } from './validators/subject-name-free.validat
 import { WhitespaceDirective } from './validators/whitespace.validator'
 import { VisitDatePopoverComponent } from './visit-date-popover/visit-date-popover.component'
 import { VisitingPopoverComponent } from './visiting-popover/visiting-popover.component'
-import {EditPopoverComponent} from "./edit-popover/edit-popover.component";
-import {ToastrModule} from "ngx-toastr";
-
+import { EditPopoverComponent } from './edit-popover/edit-popover.component'
+import { ToastrModule } from 'ngx-toastr'
 
 @NgModule({
   declarations: [

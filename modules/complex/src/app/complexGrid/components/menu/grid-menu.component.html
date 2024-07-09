@@ -6,25 +6,19 @@
   <mat-icon>more_horiz</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
-  <button
-  *ngIf="isLecturer"
-   mat-menu-item (click)="openEditPopup()">
+  <button *ngIf="isLecturer" mat-menu-item (click)="openEditPopup()">
     <mat-icon>build</mat-icon>
     <span>{{ 'common.edit' | translate: 'Редактировать' }}</span>
   </button>
-  <button 
-  *ngIf="isLecturer"
-  mat-menu-item (click)="openConfirmationDialog()">
+  <button *ngIf="isLecturer" mat-menu-item (click)="openConfirmationDialog()">
     <mat-icon>delete</mat-icon>
     <span>{{ 'common.delete' | translate: 'Удалить' }}</span>
   </button>
-  <button
-   mat-menu-item (click)="openMap()">
+  <button mat-menu-item (click)="openMap()">
     <mat-icon>map</mat-icon>
     <span>{{ 'complex.map' | translate: 'Карта ЭУМК' }}</span>
   </button>
-  <button
-   mat-menu-item (click)="openMonitoring()">
+  <button mat-menu-item (click)="openMonitoring()">
     <mat-icon>access_time</mat-icon>
     <span>{{ 'complex.monitor' | translate: 'Мониторинг прочтения тем' }}</span>
   </button>

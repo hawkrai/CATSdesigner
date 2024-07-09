@@ -41,7 +41,9 @@
       [checked]="showAsSubGroup"
       (change)="toggleStateChange($event)"
     >
-      {{ 'text.test.show.result.subgroups' | translate: 'Показать по подгруппам' }}
+      {{
+        'text.test.show.result.subgroups' | translate: 'Показать по подгруппам'
+      }}
     </mat-slide-toggle>
   </div>
 </div>

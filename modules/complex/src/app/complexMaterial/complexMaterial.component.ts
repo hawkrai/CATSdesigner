@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Input} from '@angular/core'
+import { Component, EventEmitter, OnInit, Input } from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 
@@ -24,7 +24,7 @@ export class ComplexMaterialComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private adaptivityService: AdaptivityService,
-    private complexService: ComplexService,
+    private complexService: ComplexService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -93,7 +93,7 @@ export class ComplexMaterialComponent implements OnInit {
 
         const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
           width: '100%',
-          height:'100%',
+          height: '100%',
           data: diaogData,
         })
 
@@ -102,5 +102,4 @@ export class ComplexMaterialComponent implements OnInit {
         })
       })
   }
-
 }

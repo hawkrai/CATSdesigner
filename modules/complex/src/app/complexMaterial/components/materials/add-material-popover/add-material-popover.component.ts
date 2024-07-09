@@ -8,7 +8,7 @@ import { BaseFileManagementComponent } from './base-file-management.component'
 import { IAppState } from '../../../../store/states/app.state'
 import { TranslatePipe } from 'educats-translate'
 import { CatsService } from 'src/app/service/cats.service'
-import { Help } from '../../../../models/help.model';
+import { Help } from '../../../../models/help.model'
 
 @Component({
   selector: 'add-app-materials-popover',
@@ -36,7 +36,6 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     public translatePipe: TranslatePipe,
     public catsService: CatsService
-
   ) {
     super(dialogRef, store, data, translatePipe, catsService)
     this.isFile = false
@@ -79,24 +78,30 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
           : this.translatePipe.transform(
               'complex.addComplexesComponent',
               'Добавить элемент ЭУМК'
-            );
+            )
         if (this.editMode) {
-        this.addComponentHelp = {
-          message: this.translatePipe.transform(
-            'text.help.editComponent',
-            'To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
-          ),
-          action: this.translatePipe.transform('button.understand', 'Понятно'),
-        };
-      } else {
-        this.addComponentHelp = {
-          message: this.translatePipe.transform(
-            'text.help.addComponent',
-            'To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
-          ),
-          action: this.translatePipe.transform('button.understand', 'Понятно'),
-        };
-      }
+          this.addComponentHelp = {
+            message: this.translatePipe.transform(
+              'text.help.editComponent',
+              'To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
+            ),
+            action: this.translatePipe.transform(
+              'button.understand',
+              'Понятно'
+            ),
+          }
+        } else {
+          this.addComponentHelp = {
+            message: this.translatePipe.transform(
+              'text.help.addComponent',
+              'To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
+            ),
+            action: this.translatePipe.transform(
+              'button.understand',
+              'Понятно'
+            ),
+          }
+        }
       })
   }
 
@@ -115,7 +120,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         const resultOrderItem = this.getConceptNameById(concept.children, id)
 
         if (resultOrderItem) {
-          return concept.Name + ' > ' +  resultOrderItem
+          return concept.Name + ' > ' + resultOrderItem
         }
       }
     }

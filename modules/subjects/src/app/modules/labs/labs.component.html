@@ -8,8 +8,8 @@
             ? ('text.subjects.labs.unverified'
               | translate: 'Имеются непроверенные лабораторные работы')
             : tab.route === 'schedule'
-            ? ('subdivision' | translate: 'Разделение на подгруппы')
-            : ''
+              ? ('subdivision' | translate: 'Разделение на подгруппы')
+              : ''
           : ''
       "
       matTooltipPosition="below"
@@ -50,9 +50,7 @@
         [class.mdc-tab-indicator--active]="rla.isActive"
       >
         <span
-          class="
-            mdc-tab-indicator__content mdc-tab-indicator__content--underline
-          "
+          class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"
         ></span>
       </span>
       <span class="mdc-tab__ripple"></span>
@@ -71,8 +69,8 @@
                 state.group
                   ? state.group.GroupId
                   : state.groups.length
-                  ? state.groups[0].GroupId
-                  : ''
+                    ? state.groups[0].GroupId
+                    : ''
               "
             >
               <mat-option

@@ -167,9 +167,8 @@ export class MainPageComponent implements OnInit {
                         res.SubjectStatistics.indexOf(subject)
                       ] = 0
                     } else {
-                      this.practMarks[
-                        res.SubjectStatistics.indexOf(subject)
-                      ] = 0
+                      this.practMarks[res.SubjectStatistics.indexOf(subject)] =
+                        0
                     }
                   }
 

@@ -20,11 +20,11 @@ import { VarDirective } from './components/materials/add-material-popover/direct
 import * as dataRu from '../core/translate/translations_ru.json'
 import * as dataEn from '../core/translate/translations_en.json'
 import { TranslateModule, TranslatePipe } from 'educats-translate'
-import { NotificationPopoverComponent } from "./components/materials/notification-popover/notification-popover.component"
-import { HelpComponent } from "../help/help.component";
+import { NotificationPopoverComponent } from './components/materials/notification-popover/notification-popover.component'
+import { HelpComponent } from '../help/help.component'
 import { PopoverModule } from 'ngx-smart-popover'
 import { DeleteConfirmationPopupComponent } from './components/materials/delete-confirmation-popup/delete-confirmation-popup.component'
-import {PopoverDialogComponent} from './components/materials/popover-dialog/popover-dialog.component'
+import { PopoverDialogComponent } from './components/materials/popover-dialog/popover-dialog.component'
 import { FileComponent } from './components/materials/add-material-popover/components/file/file.component'
 import { FileViewerComponent } from './components/materials/add-material-popover/components/file-viewer/file-viewer.component'
 

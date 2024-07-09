@@ -167,12 +167,12 @@ export class EditTestPopupComponent
           Type: test.ForNN
             ? TestType.ForNN
             : test.ForEUMK
-            ? TestType.ForEUMK
-            : test.BeforeEUMK
-            ? TestType.BeforeEUMK
-            : test.ForSelfStudy
-            ? TestType.ForSelfStudy
-            : TestType.Control,
+              ? TestType.ForEUMK
+              : test.BeforeEUMK
+                ? TestType.BeforeEUMK
+                : test.ForSelfStudy
+                  ? TestType.ForSelfStudy
+                  : TestType.Control,
         })
         this.isLoading = false
       })
