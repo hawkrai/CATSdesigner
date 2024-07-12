@@ -61,11 +61,13 @@ export class StudentsMonitoringComponent implements OnInit {
   ngOnInit() {
     this.store.pipe(select(getSubjectId)).subscribe((subjectId) => {
       this.subjectId = subjectId
-      this.groupService.getGroups(this.subjectId).subscribe((gr) => {
-        this.groups = gr
-        this.selected = this.groups[0]
-        this.getStudents(this.selected.Id)
-      })
+      if (this.isLecturer) {
+        this.groupService.getGroups(this.subjectId).subscribe((gr) => {
+          this.groups = gr
+          this.selected = this.groups[0]
+          this.getStudents(this.selected.Id)
+        })
+      }
     })
   }
 }
