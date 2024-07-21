@@ -137,7 +137,10 @@ namespace Application.Infrastructure.Export
         public static string CourseProjectToDocView(AssignedCourseProject work, string language)
         {
             var sb = new StringBuilder();
-            language = language == "null" ? "ru" : language;
+            if (language != "en")
+            {
+                language = "ru";
+            }
             var cinfo = CultureInfo.CreateSpecificCulture(language);
             var doc = CourseProjectToXml(work, cinfo);
             var xslt = new XslTransform();
