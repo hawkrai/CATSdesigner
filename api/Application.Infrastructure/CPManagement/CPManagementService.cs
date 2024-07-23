@@ -84,9 +84,9 @@ namespace Application.Infrastructure.CPManagement
             {
                 var courseProjects = from cp in query
                                      let acp = cp.AssignedCourseProjects.FirstOrDefault()
-                                     where acp.Student.LastName.Contains(searchString) ||
+                                     where (acp.Student.LastName.Contains(searchString) ||
                                             cp.Theme.Contains(searchString) ||
-                                            acp.Student.Group.Name.Contains(searchString) &&
+                                            acp.Student.Group.Name.Contains(searchString)) &&
                                             acp.Student.IsActive.HasValue &&
                                             acp.Student.IsActive.Value &&
                                             acp.Student.Confirmed.HasValue &&
@@ -108,6 +108,10 @@ namespace Application.Infrastructure.CPManagement
             {
                 var courseProjects = from cp in query
                                      let acp = cp.AssignedCourseProjects.FirstOrDefault()
+                                     where acp.Student.IsActive.HasValue &&
+                                            acp.Student.IsActive.Value &&
+                                            acp.Student.Confirmed.HasValue &&
+                                            acp.Student.Confirmed.Value
                                      select new CourseProjectData
                                      {
                                          Id = cp.CourseProjectId,
