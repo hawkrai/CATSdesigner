@@ -33,7 +33,7 @@ pem.createCertificate({ days: 356, selfSigned: true }, function (err, keys) {
     '.ttf',
     '.svg',
     'mp4',
-    'mp3'
+    'mp3',
   ]
 
   function getModule(url: string) {

@@ -6,7 +6,10 @@
 
 .mat-dialog-title {
   margin: 0px;
-  font: 400 20px/12px Roboto, 'Helvetica Neue', sans-serif;
+  font:
+    400 20px/12px Roboto,
+    'Helvetica Neue',
+    sans-serif;
 }
 
 .mat-progress-spinner {
@@ -14,15 +17,14 @@
 }
 
 .mat-table {
-  height:max-content;
+  height: max-content;
 }
 
-.mat-dialog-content{
-    
+.mat-dialog-content {
 }
 
-#name{
-    padding-left: 2px;
+#name {
+  padding-left: 2px;
 }
 
 mat-dialog-actions {

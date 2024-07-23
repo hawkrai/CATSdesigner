@@ -110,7 +110,7 @@
       </button>
     </mat-form-field>
     <app-list
-      [items]="lectures | filter: 'Theme':searchValue:filterOps.Contains"
+      [items]="lectures | filter: 'Theme' : searchValue : filterOps.Contains"
       [gap]="'10px'"
       [columns]="1"
     >

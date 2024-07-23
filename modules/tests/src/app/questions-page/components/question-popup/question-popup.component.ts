@@ -152,7 +152,7 @@ export class QuestionPopupComponent
               ])
             ),
             Description: new FormControl(
-              this.question.Description,
+              this.question.Description
               /*Validators.compose([Validators.maxLength(1000)])*/
             ),
             ComplexityLevel: new FormControl(
@@ -190,7 +190,7 @@ export class QuestionPopupComponent
           ])
         ),
         Description: new FormControl(
-          '',
+          ''
           /*Validators.compose([Validators.maxLength(1000)])*/
         ),
         ComplexityLevel: new FormControl(

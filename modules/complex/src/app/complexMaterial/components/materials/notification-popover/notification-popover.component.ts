@@ -9,10 +9,9 @@ import { Adaptivity } from '../../../../models/Adaptivity'
 @Component({
   selector: 'app-notification-popover',
   templateUrl: './notification-popover.component.html',
-  styleUrls: ['./notification-popover.component.less']
+  styleUrls: ['./notification-popover.component.less'],
 })
-
-  export class NotificationPopoverComponent {
+export class NotificationPopoverComponent {
   public files = []
   page: number = 1
   path: string
@@ -166,7 +165,6 @@ import { Adaptivity } from '../../../../models/Adaptivity'
       '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
     this.path = path
     this.checkMaterialsContainerForButtonsVisibility()
-
   }
 
   goToNextMaterial() {

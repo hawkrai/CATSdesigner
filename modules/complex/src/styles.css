@@ -24,7 +24,7 @@
 }
 
 .mat-dialog-container {
-   height: 100vh !important;
+  height: 100vh !important;
 }
 
 .cdk-global-overlay-wrapper {
@@ -96,4 +96,3 @@
 .mat-tooltip {
   font-size: 14px;
 }
-

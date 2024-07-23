@@ -1,7 +1,6 @@
-import { ComplexMonitoring } from "./ComplexMonitoring"
+import { ComplexMonitoring } from './ComplexMonitoring'
 
 export class ComplexStudentMonitoring {
-
   ConceptMonitorings?: ComplexMonitoring[]
   ComplexName: string
   StudentName: string

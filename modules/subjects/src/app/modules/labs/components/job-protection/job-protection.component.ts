@@ -101,7 +101,7 @@ export class JobProtectionComponent implements OnDestroy {
           map(
             ([data, currentUserId]: [
               { comments: string; attachments: Attachment[]; labId: number },
-              number
+              number,
             ]) =>
               this.getSendFile(
                 file,

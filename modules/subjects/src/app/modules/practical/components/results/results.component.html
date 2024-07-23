@@ -32,8 +32,9 @@
             [matTooltip]="schedulePractical.tooltip"
             matTooltipPosition="above"
           >
-            <div>  {{'practical'
-              | translate: 'ПЗ '}} {{ schedulePractical.text }}</div>
+            <div>
+              {{ 'practical' | translate: 'ПЗ ' }} {{ schedulePractical.text }}
+            </div>
           </th>
           <td
             mat-cell
@@ -76,12 +77,16 @@
                 </div>
               </div>
               <div *ngIf="!markProperty.mark" style="opacity: 0.3">
-                {{markProperty.recommendedMark ? markProperty.recommendedMark : 1 }}
+                {{
+                  markProperty.recommendedMark
+                    ? markProperty.recommendedMark
+                    : 1
+                }}
               </div>
               <ng-container
                 *var="
                   element
-                    | visit: schedulePractical.head:state.practicals as marks
+                    | visit: schedulePractical.head : state.practicals as marks
                 "
               >
                 <div

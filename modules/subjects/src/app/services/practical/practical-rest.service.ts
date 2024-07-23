@@ -88,7 +88,10 @@ export class PracticalRestService {
     )
   }
   public updatePractical(prac) {
-    return this.http.post('Services/Schedule/ScheduleService.svc/SaveDatePractical', { ...prac })
+    return this.http.post(
+      'Services/Schedule/ScheduleService.svc/SaveDatePractical',
+      { ...prac }
+    )
   }
 
   public deletePractical(practicalLesson: {

@@ -81,12 +81,15 @@
             (selectionChange)="teacherChange($event)"
             [(ngModel)]="selectedTeacher"
             [placeholder]="
-              'text.schedule.select.lecturer' | translate: 'Выберите преподавателя'
+              'text.schedule.select.lecturer'
+                | translate: 'Выберите преподавателя'
             "
           >
-            <mat-option *ngFor="let teacher of teachers" [value]="teacher.LectorId">{{
-              teacher.FullName
-            }}</mat-option>
+            <mat-option
+              *ngFor="let teacher of teachers"
+              [value]="teacher.LectorId"
+              >{{ teacher.FullName }}</mat-option
+            >
           </mat-select>
           <mat-error *ngIf="type.hasError('required')">{{
             'text.schedule.field.must.be.not.empty'
@@ -121,19 +124,24 @@
               'text.schedule.select.subgroup' | translate: 'Выберите подгруппу'
             "
           >
-            <mat-option *ngIf="currentGroup?.SubGroupsOne?.Name" [value]="currentGroup?.SubGroupsOne?.SubGroupId">{{
-              'subgroup'
-                | translate: 'Подгруппа '}} {{ currentGroup?.SubGroupsOne?.Name}}
-
-              </mat-option>
-            <mat-option *ngIf="currentGroup?.SubGroupsTwo?.Name" [value]="currentGroup?.SubGroupsTwo?.SubGroupId">{{
-              'subgroup'
-                | translate: 'Подгруппа' }} {{ currentGroup?.SubGroupsTwo?.Name
-              }}</mat-option>
-            <mat-option  *ngIf="currentGroup?.SubGroupsThird?.SubGroupId" [value]="currentGroup?.SubGroupsThird?.SubGroupId">{{
-              'subgroup'
-                | translate: 'Подгруппа ' }} {{ currentGroup?.SubGroupsThird?.Name
-              }}</mat-option>
+            <mat-option
+              *ngIf="currentGroup?.SubGroupsOne?.Name"
+              [value]="currentGroup?.SubGroupsOne?.SubGroupId"
+              >{{ 'subgroup' | translate: 'Подгруппа ' }}
+              {{ currentGroup?.SubGroupsOne?.Name }}
+            </mat-option>
+            <mat-option
+              *ngIf="currentGroup?.SubGroupsTwo?.Name"
+              [value]="currentGroup?.SubGroupsTwo?.SubGroupId"
+              >{{ 'subgroup' | translate: 'Подгруппа' }}
+              {{ currentGroup?.SubGroupsTwo?.Name }}</mat-option
+            >
+            <mat-option
+              *ngIf="currentGroup?.SubGroupsThird?.SubGroupId"
+              [value]="currentGroup?.SubGroupsThird?.SubGroupId"
+              >{{ 'subgroup' | translate: 'Подгруппа ' }}
+              {{ currentGroup?.SubGroupsThird?.Name }}</mat-option
+            >
           </mat-select>
           <mat-error *ngIf="type.hasError('required')">{{
             'text.schedule.field.must.be.not.empty'
@@ -376,7 +384,7 @@
           <mat-error *ngIf="endNote.hasError('min')">{{
             'text.schedule.field.must.be.more'
               | translate: 'Время может быть выбрано с 08:00 до 23:00'
-            }}</mat-error>
+          }}</mat-error>
         </mat-form-field>
       </form>
     </div>

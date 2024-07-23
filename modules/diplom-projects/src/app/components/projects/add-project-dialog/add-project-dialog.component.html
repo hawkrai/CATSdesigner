@@ -4,14 +4,16 @@
 <h1 mat-dialog-title *ngIf="data.edit">
   {{
     'text.diplomProject.editTheme'
-      | translate: 'Редактирование темы дипломного
+      | translate
+        : 'Редактирование темы дипломного
   проекта'
   }}
 </h1>
 <h1 mat-dialog-title *ngIf="!data.edit">
   {{
     'text.diplomProject.addProjectTheme'
-      | translate: 'Добавление темы дипломного
+      | translate
+        : 'Добавление темы дипломного
   проекта'
   }}
 </h1>
@@ -26,17 +28,23 @@
       [(ngModel)]="data.name"
     ></textarea>
     <mat-error *ngIf="nameControl.invalid">{{
-      'text.diplomProject.nameControl' | translate: 'От 3 до 255
+      'text.diplomProject.nameControl'
+        | translate
+          : 'От 3 до 255
       символов'
     }}</mat-error>
   </mat-form-field>
   <mat-label style="font-size: 14px">{{
-    'text.diplomProject.availableGroups' | translate: 'Доступные
+    'text.diplomProject.availableGroups'
+      | translate
+        : 'Доступные
     группы:'
   }}</mat-label>
   <mat-label style="font-size: 14px" class="group-label"
     >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
-      'text.diplomProject.choiceGroups' | translate: 'Выбранные
+      'text.diplomProject.choiceGroups'
+        | translate
+          : 'Выбранные
     группы:'
     }}</mat-label
   >

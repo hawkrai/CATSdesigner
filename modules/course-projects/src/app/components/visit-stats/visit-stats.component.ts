@@ -243,8 +243,18 @@ export class VisitStatsComponent implements OnInit, OnChanges {
         const date = new Date(result.date)
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
         this.visitStatsService
-          .addDate(null,date.toISOString(), this.subjectId, this.selectedGroup.GroupId, result.start, result.end, result.audience, result.building,result.lecturerId)
-            .subscribe(() => {
+          .addDate(
+            null,
+            date.toISOString(),
+            this.subjectId,
+            this.selectedGroup.GroupId,
+            result.start,
+            result.end,
+            result.audience,
+            result.building,
+            result.lecturerId
+          )
+          .subscribe(() => {
             this.ngOnInit()
             this.addFlashMessage(
               this.translatePipe.transform(

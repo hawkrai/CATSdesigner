@@ -42,7 +42,7 @@
       <div class="subdivision-students">
         <div class="subdivision-students__body" cdkDropListGroup>
           <div
-            *var="studentList | filter: 'subGroup':1 as firstSubgroupList"
+            *var="studentList | filter: 'subGroup' : 1 as firstSubgroupList"
             class="subdivision-students__container"
           >
             <div class="subdivision-students__header">
@@ -91,7 +91,7 @@
           </div>
           <div
             class="subdivision-students__container"
-            *var="studentList | filter: 'subGroup':2 as secondSubgroupList"
+            *var="studentList | filter: 'subGroup' : 2 as secondSubgroupList"
           >
             <div class="subdivision-students__header">
               <button
@@ -158,7 +158,7 @@
           <ng-container *ngIf="thirdSubGroupVisible">
             <div
               class="subdivision-students__container"
-              *var="studentList | filter: 'subGroup':3 as thirdSubgroupList"
+              *var="studentList | filter: 'subGroup' : 3 as thirdSubgroupList"
             >
               <div class="subdivision-students__header">
                 <button

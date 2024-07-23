@@ -27,7 +27,7 @@
       </div>
       <div>
         <button
-         class="DownloadButton"
+          class="DownloadButton"
           mat-icon-button
           color="primary"
           matTooltip="{{
@@ -128,8 +128,9 @@
                 fix: studentFile.IsReturned
               }"
             >
-              <td class="mdc-data-table__cell ">
-                <a class="mdc-file-name__cell"
+              <td class="mdc-data-table__cell">
+                <a
+                  class="mdc-file-name__cell"
                   href="api/Upload?filename={{
                     studentFile.Attachments[0]?.PathName
                   }}//{{ studentFile.Attachments[0]?.FileName }}"
@@ -138,7 +139,7 @@
                 </a>
               </td>
               <td class="mdc-data-table__cell">{{ studentFile.Comments }}</td>
-              <td class="mdc-data-table__cell">{{ studentFile.Date}}</td>
+              <td class="mdc-data-table__cell">{{ studentFile.Date }}</td>
               <td class="mdc-data-table__cell">
                 <ng-container *ngIf="!studentFile.IsReturned">
                   <button
@@ -244,7 +245,7 @@
                       >
                         <mat-icon>visibility</mat-icon>
                       </button>
-                      
+
                       <button
                         mat-icon-button
                         color="primary"
@@ -257,15 +258,15 @@
                       </button>
 
                       <button
-                      mat-icon-button
-                      color="primary"
-                      matTooltip="{{
-                        'text.reject' | translate: 'Отклонить работу'
-                      }}"
-                      *ngIf="fileLab.IsReceived"
-                      (click)="restoreFromArchive(fileLab, student.StudentId)"
+                        mat-icon-button
+                        color="primary"
+                        matTooltip="{{
+                          'text.reject' | translate: 'Отклонить работу'
+                        }}"
+                        *ngIf="fileLab.IsReceived"
+                        (click)="restoreFromArchive(fileLab, student.StudentId)"
                       >
-                      <mat-icon>thumb_down</mat-icon>
+                        <mat-icon>thumb_down</mat-icon>
                       </button>
 
                       <button
@@ -278,9 +279,7 @@
                       >
                         <mat-icon>arrow_forward</mat-icon>
                       </button>
-                      
                     </ng-container>
-                    
                   </td>
                 </tr>
               </tbody>
