@@ -192,6 +192,13 @@ export class MaterialsPopoverComponent {
   }
 
   countDown() {
+    if (this.adaptivityType === 2) {
+      this.seconds = 0
+      this.toTestButtonEnabled = true
+      this.showTimer = false
+      return
+    }
+
     window.setInterval(() => {
       this.seconds -= 1
       this.time = this.getStrTime()
@@ -226,31 +233,33 @@ export class MaterialsPopoverComponent {
     this.dialogRef.close(this.studentSeconds)
   }
 
-  zoomIn(){
-    this.zoom = this.zoom + 0.25;
+  zoomIn() {
+    this.zoom = this.zoom + 0.25
   }
 
-  zoomOut(){
+  zoomOut() {
     if (this.zoom > 1) {
-      this.zoom = this.zoom - 0.25;
-   }
+      this.zoom = this.zoom - 0.25
+    }
   }
 
   onDrag(event: MouseEvent, pdfViewer: any) {
     if (this.isDragging && !this.isTextSelected()) {
-      const x = pdfViewer.element.nativeElement.children[0].scrollLeft - event.movementX;
-      const y = pdfViewer.element.nativeElement.children[0].scrollTop - event.movementY;
-      pdfViewer.element.nativeElement.children[0].scrollTo(x, y);
+      const x =
+        pdfViewer.element.nativeElement.children[0].scrollLeft - event.movementX
+      const y =
+        pdfViewer.element.nativeElement.children[0].scrollTop - event.movementY
+      pdfViewer.element.nativeElement.children[0].scrollTo(x, y)
     }
   }
   onDragStarted(event: MouseEvent) {
-    this.isDragging = true;
+    this.isDragging = true
   }
   onDragEnded(event: MouseEvent, note: 'up' | 'leave') {
-    this.isDragging = false;
+    this.isDragging = false
   }
 
   isTextSelected() {
-    return window.getSelection().toString().length > 0;
-}
+    return window.getSelection().toString().length > 0
+  }
 }
