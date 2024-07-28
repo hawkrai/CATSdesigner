@@ -59,7 +59,6 @@ export class QuestionComponent implements OnInit {
       this.value
     ) {
       const user = JSON.parse(localStorage.getItem('currentUser'))
-      console.log(this.chosenAnswer)
       const request = {
         answers: [],
         questionNumber: this.question.Number,
@@ -70,8 +69,10 @@ export class QuestionComponent implements OnInit {
         this.question.Question.Answers.forEach((answer) => {
           if (answer.Id === this.chosenAnswer.Id) {
             request.answers.push({ Id: answer.Id.toString(), IsCorrect: 1 })
+            this.isTrue = true
           } else {
             request.answers.push({ Id: answer.Id.toString(), IsCorrect: 0 })
+            this.isTrue = false
           }
         })
       } else if (this.question.Question.QuestionType === 1) {
@@ -80,17 +81,18 @@ export class QuestionComponent implements OnInit {
             Id: answer.Id.toString(),
             IsCorrect: this.charsNeskolko[index] ? 1 : 0,
           })
+          this.isTrue = this.charsNeskolko[index] ? true : false
         })
       } else if (this.question.Question.QuestionType === 2) {
         request.answers.push({ Content: this.value, IsCorrect: 0 })
+        this.isTrue = false
       } else if (this.question.Question.QuestionType === 3) {
         this.question.Question.Answers.forEach((answer, index) => {
           request.answers.push({ Id: answer.Id.toString(), IsCorrect: index })
+          this.isTrue = index === 1 ? true : false
         })
       }
-      if (this.test.ForSelfStudy) {
-        this.isTrue = this.checkSelfStudyAnswer(request)
-      }
+
       this.chosenAnswer = null
       this.testPassingService
         .answerQuestionAndGetNext(request)
@@ -108,7 +110,7 @@ export class QuestionComponent implements OnInit {
     }
   }
 
-  public getOnNextQuestion(answered: boolean, isTrue = true): void {
+  public getOnNextQuestion(answered: boolean, isTrue: boolean): void {
     this.charsNeskolko = {}
     this.goToNextQuestion.emit({ answered, isTrue })
   }
