@@ -50,6 +50,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public int SubjectsNotActiveCount { get; set; }
         public int SubjectsCount { get; set; }
         public int OccupiedBySecretary { get; set; }
+        public bool IsOldGroup { get; set; }
 
         public int Id { get; set; }
 
@@ -98,6 +99,7 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
                 StartYear = group.StartYear,
                 GraduationYear = group.GraduationYear,
                 OccupiedBySecretary = group.SecretaryId.HasValue ? group.SecretaryId.Value : 0,
+                IsOldGroup = group.Students.Where(s => s.Confirmed is null).Count() > 0 || group.Students.Count() == 0 ? true : false,
                 HtmlLinks = new HtmlString(htmlLinks)
             };
         }
