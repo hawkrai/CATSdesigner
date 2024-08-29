@@ -26,6 +26,7 @@ import { TranslatePipe } from 'educats-translate'
   styleUrls: ['./visit-statistics.component.less'],
 })
 export class VisitStatisticsComponent implements OnInit, OnDestroy {
+  labPrefix: string
   private subs = new SubSink()
   state$: Observable<{
     labs: Lab[]
@@ -47,6 +48,12 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (localStorage.getItem('locale') === 'en') {
+      this.labPrefix = 'Lab';
+    } else {
+      this.labPrefix = 'Лаб';
+    }
+
     this.state$ = combineLatest(
       this.store.select(labsSelectors.getLabs),
       this.store.select(labsSelectors.getLabsCalendar),
@@ -102,7 +109,7 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
     return defaultHeaders.concat(
       subGroupLabs.map((l, index) => ({
         head: l.LabId.toString(),
-        text: l.ShortName,
+        text: this.labPrefix + " " + l.ShortName.match(/\d+/g).join(''),
         length: Math.floor(l.Duration / 2),
         tooltip: l.Theme,
       }))
