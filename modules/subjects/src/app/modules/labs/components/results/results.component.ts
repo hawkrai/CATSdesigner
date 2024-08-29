@@ -100,7 +100,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   ): { head: string; text: string; tooltip: string }[] {
     return subGroupLabs.map((l, index) => ({
       head: l.LabId.toString(),
-      text: this.labPrefix + " " + l.ShortName.match(/\d+/g).join(''),
+      text: this.labPrefix + l.ShortName.match(/\d+/g).join(''),
       tooltip: l.Theme,
     }))
   }

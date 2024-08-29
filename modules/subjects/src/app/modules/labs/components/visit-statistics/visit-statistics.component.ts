@@ -109,7 +109,7 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
     return defaultHeaders.concat(
       subGroupLabs.map((l, index) => ({
         head: l.LabId.toString(),
-        text: this.labPrefix + " " + l.ShortName.match(/\d+/g).join(''),
+        text: this.labPrefix +  l.ShortName.match(/\d+/g).join(''),
         length: Math.floor(l.Duration / 2),
         tooltip: l.Theme,
       }))
