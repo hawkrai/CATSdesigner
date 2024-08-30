@@ -180,6 +180,12 @@ namespace Application.Infrastructure.ConceptManagement
                 return repositoriesContainer.ConceptRepository.GetBySubjectId(subjectId);
             }
         }
+        public IEnumerable<Concept> GetElementsByParentIdForTree(int parentId)
+        {
+            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
+
+            return repositoriesContainer.ConceptRepository.GetByParentId(parentId);
+        }
 
         public IEnumerable<Concept> GetElementsByParentId(int parentId)
         {
