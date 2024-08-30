@@ -2,8 +2,8 @@
 <div>
   <div>
     <h1 mat-dialog-title >
-      {{ 'complex.adaptiveTopic' | translate: 'Мониторинг прочтения темы' }} "
-        <span>{{ data.name }}</span> "
+      {{ 'complex.adaptiveTopic' | translate: 'Мониторинг прочтения темы' }} 
+      <span>"{{ data.name }}"</span>
     </h1>
   </div>
   <div class="expected-reading-time">
@@ -32,15 +32,15 @@
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.monitoringName' | translate: 'Студенты' }}
     </th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    <td mat-cell *matCellDef="let element">{{ element.Name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="seconds">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.topicTime' | translate: 'Время прочтения темы' }}
     </th>
-    <td mat-cell *matCellDef="let element" [ngStyle]="{'color': element.color}">
-      {{ element.seconds }}
+    <td mat-cell *matCellDef="let element" [ngStyle]="{'color': element.Color}">
+      {{ element.Seconds }}
     </td>
   </ng-container>
 
