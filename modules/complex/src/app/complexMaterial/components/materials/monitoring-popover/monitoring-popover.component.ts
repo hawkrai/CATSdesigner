@@ -22,7 +22,8 @@ export class MonitoringPopoverComponent implements OnInit {
   displayedColumns: string[] = ['name', 'seconds']
   groupControl = new FormControl('', Validators.required)
   groups: Group[]
-  estimated: string
+  estimatedSeconds: string
+  estimatedMinutes: string
   dataSource: ConceptMonitoring[]
   subjectId
   selected: Group
@@ -45,7 +46,8 @@ export class MonitoringPopoverComponent implements OnInit {
           .getConceptMonitoring(this.data.nodeId, this.selected.Id)
           .subscribe((res) => {
             this.dataSource = res.ConceptMonitorings
-            this.estimated = res.Estimated
+            this.estimatedSeconds = res.EstimatedSeconds
+            this.estimatedMinutes = res.EstimatedMinutes
           })
       })
     })
@@ -60,7 +62,8 @@ export class MonitoringPopoverComponent implements OnInit {
       .getConceptMonitoring(this.data.nodeId, this.selected.Id)
       .subscribe((res) => {
         this.dataSource = res.ConceptMonitorings
-        this.estimated = res.Estimated
+        this.estimatedSeconds = res.EstimatedSeconds
+        this.estimatedMinutes = res.EstimatedMinutes
       })
   }
 }

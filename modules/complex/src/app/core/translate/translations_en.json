@@ -44,6 +44,8 @@
   "common.delete": "Delete",
   "common.zoomIn": "Zoom in",
   "common.zoomOut": "Zoom out",
+  "common.seconds": "sec",
+  "common.minutes": "min",
   "complex.regulations": "Regulations on Educational Complex",
   "complex.map": "Educational Complex Map",
   "complex.monitor": "Educational Complex Monitoring",

@@ -53,9 +53,13 @@ export class ConverterService {
   }
 
   private monitoringConverter(monitoring: any, estimatedTime: number) {
+    const convertedSeconds = this.convertTimeToMinuteAndSeconds(
+      monitoring.Seconds
+    )
     const monitor = new ConceptMonitoring()
     monitor.Name = monitoring.Name
-    monitor.Seconds = this.getStrTime(monitoring.Seconds)
+    monitor.Seconds = convertedSeconds.seconds
+    monitor.Minutes = convertedSeconds.minutes
     monitor.Color = this.getColorByTime(monitoring.Seconds, estimatedTime)
     return monitor
   }
@@ -64,11 +68,13 @@ export class ConverterService {
     monitorings: any,
     estimatedTime: number
   ): ConceptMonitoringData {
+    const convertedSeconds = this.convertTimeToMinuteAndSeconds(estimatedTime)
     const convertedMonitorings = monitorings.map((mon) =>
       this.monitoringConverter(mon, estimatedTime)
     )
     return {
-      Estimated: this.getStrTime(estimatedTime),
+      EstimatedSeconds: convertedSeconds.seconds,
+      EstimatedMinutes: convertedSeconds.minutes,
       ConceptMonitorings: convertedMonitorings,
     }
   }
@@ -79,7 +85,15 @@ export class ConverterService {
     }
     return 'red'
   }
+  public convertTimeToMinuteAndSeconds(seconds: number): {
+    minutes: string
+    seconds: string
+  } {
+    const min = Math.floor(seconds / 60).toString()
+    const sec = (seconds % 60).toString()
 
+    return { minutes: min, seconds: sec }
+  }
   public getStrTime(seconds: number): string {
     if (seconds < 60) {
       return `${seconds} сек`
