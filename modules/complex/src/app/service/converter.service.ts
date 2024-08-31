@@ -7,6 +7,8 @@ import { Adaptivity } from '../models/Adaptivity'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { Student } from '../models/student.model'
 import { ConceptMonitoringData } from '../models/ConceptMonitoringData'
+import { ComplexStudentMonitoring } from '../models/ComplexStudentMonitoring'
+import { ComplexMonitoring } from '../models/ComplexMonitoring'
 
 @Injectable({
   providedIn: 'root',
@@ -76,6 +78,37 @@ export class ConverterService {
       EstimatedSeconds: convertedSeconds.seconds,
       EstimatedMinutes: convertedSeconds.minutes,
       ConceptMonitorings: convertedMonitorings,
+    }
+  }
+
+  public studentMonitoringsConverter(
+    complexStudentMonitorings: ComplexStudentMonitoring
+  ): ComplexStudentMonitoring {
+    complexStudentMonitorings.ConceptMonitorings.forEach((mon) =>
+      this.studentMonitoringConverter(mon)
+    )
+    return complexStudentMonitorings
+  }
+
+  public studentMonitoringConverter(monitoring: ComplexMonitoring) {
+    if (monitoring.Estimated > 0) {
+      const estimatedConvertedSeconds = this.convertTimeToMinuteAndSeconds(
+        monitoring.Estimated
+      )
+      const watchingTimeConvertedSeconds = this.convertTimeToMinuteAndSeconds(
+        monitoring.WatchingTime
+      )
+      monitoring.EstimatedMinutes = estimatedConvertedSeconds.minutes
+      monitoring.EstimatedSeconds = estimatedConvertedSeconds.seconds
+      monitoring.WatchingTimeMinutes = watchingTimeConvertedSeconds.minutes
+      monitoring.WatchingTimeSeconds = watchingTimeConvertedSeconds.seconds
+    }
+    monitoring.Color = this.getColorByTime(
+      monitoring.WatchingTime,
+      monitoring.Estimated
+    )
+    if (monitoring.Children != null) {
+      monitoring.Children.forEach((mon) => this.studentMonitoringConverter(mon))
     }
   }
 
