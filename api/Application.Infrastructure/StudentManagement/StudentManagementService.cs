@@ -9,12 +9,16 @@ using Application.SearchEngine.SearchMethods;
 using System.Threading.Tasks;
 using Application.Core.Helpers;
 using System;
+using Application.Infrastructure.GroupManagement;
 
 namespace Application.Infrastructure.StudentManagement
 {
     public class StudentManagementService : IStudentManagementService
     {
-	    public Student GetStudent(int userId, bool lite = false)
+        private readonly LazyDependency<IGroupManagementService> groupManagementService = new LazyDependency<IGroupManagementService>();
+
+        public IGroupManagementService GroupManagementService => groupManagementService.Value;
+        public Student GetStudent(int userId, bool lite = false)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 	        var student = lite ? repositoriesContainer.StudentsRepository.GetBy(new Query<Student>(s => s.Id == userId)) 
@@ -48,12 +52,10 @@ namespace Application.Infrastructure.StudentManagement
         }
         public List<Student> GetConfirmedAndNoneDeletedStudentsByGroup(int groupId)
         {
-            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-            return repositoriesContainer.StudentsRepository.GetAll(new Query<Student>(
-                    e => e.GroupId == groupId &&
-                         e.Confirmed == true &&
-                         e.DeletedOn == null
-                )).ToList();
+            return this.GroupManagementService.GetGroups(
+                    new Query<Group>(g => g.Id == groupId).Include(g => g.Students.Select(x => x.ConfirmedBy.User)))
+                    .Single().Students
+                    .OrderBy(e => e.FullName).ToList();
         }
         public IEnumerable<Student> GetStudents(IQuery<Student> query = null)
         {
