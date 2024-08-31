@@ -9,10 +9,10 @@
   <div class="expected-reading-time">
     {{ 'complex.expectedReadingTime' | translate: 'Ожидаемое время прочтения темы' }}: 
     <span>
+      <ng-container *ngIf="estimatedMinutes > 0">
+        {{ estimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+      </ng-container>
       {{ estimatedSeconds }}&nbsp;{{ 'common.seconds' | translate }}
-      &nbsp;
-      {{ estimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}
-
     </span>
   </div>
 </div>
@@ -45,9 +45,10 @@
       {{ 'common.topicTime' | translate: 'Время прочтения темы' }}
     </th>
     <td mat-cell *matCellDef="let element" [ngStyle]="{'color': element.Color}">
+      <ng-container *ngIf="element.Minutes > 0">
+        {{ element.Minutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+      </ng-container>
       {{ element.Seconds }}&nbsp;{{ 'common.seconds' | translate }}
-      &nbsp;
-      {{ element.Minutes }}&nbsp;{{ 'common.minutes' | translate }}
     </td>
   </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

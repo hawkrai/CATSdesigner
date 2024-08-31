@@ -86,11 +86,11 @@ export class ConverterService {
     return 'red'
   }
   public convertTimeToMinuteAndSeconds(seconds: number): {
-    minutes: string
-    seconds: string
+    minutes: number
+    seconds: number
   } {
-    const min = Math.floor(seconds / 60).toString()
-    const sec = (seconds % 60).toString()
+    const min = Math.floor(seconds / 60)
+    const sec = seconds % 60
 
     return { minutes: min, seconds: sec }
   }

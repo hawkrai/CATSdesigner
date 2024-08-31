@@ -22,8 +22,8 @@ export class MonitoringPopoverComponent implements OnInit {
   displayedColumns: string[] = ['name', 'seconds']
   groupControl = new FormControl('', Validators.required)
   groups: Group[]
-  estimatedSeconds: string
-  estimatedMinutes: string
+  estimatedSeconds: number
+  estimatedMinutes: number
   dataSource: ConceptMonitoring[]
   subjectId
   selected: Group
