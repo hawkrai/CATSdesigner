@@ -23,11 +23,16 @@ export class TestExecutionComponent implements OnInit {
   public allAnswersArray: number[] = []
   public trueAnswersArray: number[] = []
   public falseAnswersArray: number[] = []
+  public outputArray: any[] = []
   public result: any
   public counter$: Observable<string>
   public count = 60
   public showTest: boolean
   private unsubscribeStream$: Subject<void> = new Subject<void>()
+
+  public endDate: string
+  public startTime: string
+  public endTime: string
 
   constructor(
     private testService: TestService,
@@ -38,6 +43,8 @@ export class TestExecutionComponent implements OnInit {
   ngOnInit() {
     this.questionNumber = '1'
     this.showTest = true
+    const now = new Date()
+    this.startTime = now.toLocaleTimeString()
     this.testService
       .getTestById(this.testId)
       .pipe(
@@ -55,7 +62,7 @@ export class TestExecutionComponent implements OnInit {
         tap((question: TestQuestion) => {
           this.question = question
           if (!this.question.Seconds && this.question.Seconds === 0) {
-            //this.router.navigate(["/test-result"]);
+            this.showTest = false
           }
           this.questionNumber = question && question.Number.toString()
           this.allAnswersArray = question && question.IncompleteQuestionsNumbers
@@ -69,7 +76,7 @@ export class TestExecutionComponent implements OnInit {
                 const minute: number = Math.floor(restTime / 60)
                 restTime = restTime - 60 * minute
                 if (hour === 0 && minute === 0 && restTime === 0) {
-                  //this.router.navigate(["/test-result"]);
+                  this.showTest = false
                 }
                 return (
                   (hour >= 10 ? hour.toString() : '0' + hour.toString()) +
@@ -81,7 +88,7 @@ export class TestExecutionComponent implements OnInit {
                     : '0' + restTime.toString())
                 )
               } else {
-                //this.router.navigate(["/test-result"]);
+                this.showTest = false
               }
             })
           )
@@ -103,9 +110,17 @@ export class TestExecutionComponent implements OnInit {
         if (answer.isTrue) {
           this.allAnswersArray.splice(index1, 1)
           this.trueAnswersArray.push(Number(this.questionNumber))
+          this.outputArray.push({
+            Number: this.questionNumber,
+            Points: 1,
+          })
         } else {
           this.allAnswersArray.splice(index1, 1)
           this.falseAnswersArray.push(Number(this.questionNumber))
+          this.outputArray.push({
+            Number: this.questionNumber,
+            Points: 0,
+          })
         }
       }
       if (this.questionArray.length !== 0) {
@@ -141,9 +156,7 @@ export class TestExecutionComponent implements OnInit {
             if (question && question.Question) {
               this.question = question
             } else {
-              this.router.navigate(['/test-result'], {
-                queryParams: { testId: this.test.Id },
-              })
+              this.showTest = false
             }
           })
       } else {
@@ -152,9 +165,7 @@ export class TestExecutionComponent implements OnInit {
       }
     } else {
       debugger
-      this.router.navigate(['/test-result'], {
-        queryParams: { testId: this.test.Id },
-      })
+      this.showTest = false
     }
   }
 
