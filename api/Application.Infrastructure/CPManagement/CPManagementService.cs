@@ -90,7 +90,8 @@ namespace Application.Infrastructure.CPManagement
                                             acp.Student.IsActive.HasValue &&
                                             acp.Student.IsActive.Value &&
                                             acp.Student.Confirmed.HasValue &&
-                                            acp.Student.Confirmed.Value
+                                            acp.Student.Confirmed.Value ||
+                                            acp.Student == null
                                      select new CourseProjectData
                                      {
                                          Id = cp.CourseProjectId,
@@ -111,7 +112,8 @@ namespace Application.Infrastructure.CPManagement
                                      where acp.Student.IsActive.HasValue &&
                                             acp.Student.IsActive.Value &&
                                             acp.Student.Confirmed.HasValue &&
-                                            acp.Student.Confirmed.Value
+                                            acp.Student.Confirmed.Value ||
+                                            acp.Student == null
                                      select new CourseProjectData
                                      {
                                          Id = cp.CourseProjectId,
