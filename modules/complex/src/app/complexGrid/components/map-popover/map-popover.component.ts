@@ -19,14 +19,17 @@ export class MapPopoverComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private treeService: AngularD3TreeLibService,
     private complexService: ComplexService
-  ) {
-    this.complexService.getConceptTree(data.id).subscribe((res) => {
-      this.chartData = res.result
-    })
-  }
+  ) {}
 
   ngOnInit() {
-    console.log(this.treeService)
+    this.complexService.getConceptTree(this.data.id).subscribe((res) => {
+      this.chartData = res.result;
+      // параметры для узлов
+      this.treeService.treeModel.nodeWidth = 3;
+      this.treeService.treeModel.nodeHeight = 0;
+
+      this.treeService.createChart('#chartContainer', this.chartData);
+    });
   }
 
   onNoClick(): void {
