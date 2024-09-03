@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Inject } from '@angular/core'
+import { Component, OnInit, Inject } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { select, Store } from '@ngrx/store'
 import { IAppState } from '../../../../store/states/app.state'
@@ -8,6 +8,7 @@ import { ComplexService } from '../../../../service/complex.service'
 import { GroupService } from '../../../../service/group.service'
 import { Group } from '../../../../models/Group'
 import { DialogData } from '../../../../models/DialogData'
+import { ConceptMonitoring } from 'src/app/models/ConceptMonitoring'
 
 /**
  * @title Basic use of `<table mat-table>`
@@ -21,7 +22,9 @@ export class MonitoringPopoverComponent implements OnInit {
   displayedColumns: string[] = ['name', 'seconds']
   groupControl = new FormControl('', Validators.required)
   groups: Group[]
-  dataSource
+  estimatedSeconds: number
+  estimatedMinutes: number
+  dataSource: ConceptMonitoring[]
   subjectId
   selected: Group
 
@@ -42,7 +45,9 @@ export class MonitoringPopoverComponent implements OnInit {
         this.complexService
           .getConceptMonitoring(this.data.nodeId, this.selected.Id)
           .subscribe((res) => {
-            this.dataSource = res
+            this.dataSource = res.ConceptMonitorings
+            this.estimatedSeconds = res.EstimatedSeconds
+            this.estimatedMinutes = res.EstimatedMinutes
           })
       })
     })
@@ -56,7 +61,9 @@ export class MonitoringPopoverComponent implements OnInit {
     this.complexService
       .getConceptMonitoring(this.data.nodeId, this.selected.Id)
       .subscribe((res) => {
-        this.dataSource = res
+        this.dataSource = res.ConceptMonitorings
+        this.estimatedSeconds = res.EstimatedSeconds
+        this.estimatedMinutes = res.EstimatedMinutes
       })
   }
 }

@@ -219,6 +219,7 @@
     <Compile Include="DPManagement\IUserService.cs" />
     <Compile Include="DPManagement\DpPercentageGraphService.cs" />
     <Compile Include="DPManagement\UserService.cs" />
+    <Compile Include="DTO\ConceptMonitoring.cs" />
     <Compile Include="DTO\Correlation.cs" />
     <Compile Include="DTO\DiplomProjectConsultationDateData.cs" />
     <Compile Include="DTO\DiplomProjectData.cs" />

@@ -66,9 +66,12 @@
           {{ 'text.adminPanel.group.headers.studentsCount' | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
+          <p *ngIf="!element.IsOldGroup">
           {{ element.StudentsConfirmedCount }}\{{
             element.StudentsNotConfirmedCount
-          }}
+          }}\{{
+          element.StudentsDeletedCount }}
+            </p>
         </td>
       </ng-container>
 

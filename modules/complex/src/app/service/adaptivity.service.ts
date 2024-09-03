@@ -9,10 +9,14 @@ import { Adaptivity } from '../models/Adaptivity'
   providedIn: 'root',
 })
 export class AdaptivityService {
+  private path: string
+
   constructor(
     private http: HttpClient,
     private converterService: ConverterService
-  ) {}
+  ) {
+    this.path = '/Services/AdaptiveLearning/AdaptiveLearningService.svc/'
+  }
 
   public getNextThemaRes(
     testId: string,
@@ -23,16 +27,13 @@ export class AdaptivityService {
     const subject = JSON.parse(localStorage.getItem('currentSubject'))
 
     return this.http
-      .post(
-        '/Services/AdaptiveLearning/AdaptiveLearningService.svc/GetNextThema',
-        {
-          userId: user.id,
-          subjectId: subject.id,
-          testId: testId,
-          currentThemaId: conceptId,
-          adaptivityType: adaptivity,
-        }
-      )
+      .post(this.path + 'GetNextThema', {
+        userId: user.id,
+        subjectId: subject.id,
+        testId: testId,
+        currentThemaId: conceptId,
+        adaptivityType: adaptivity,
+      })
       .pipe(map((res) => this.converterService.nextThemaResConverter(res)))
   }
 
@@ -42,10 +43,11 @@ export class AdaptivityService {
   ): Observable<Adaptivity> {
     const user = JSON.parse(localStorage.getItem('currentUser'))
     return this.http
-      .post(
-        '/Services/AdaptiveLearning/AdaptiveLearningService.svc/ProcessPredTestResults',
-        { userId: user.id, testId: testId, adaptivityType: adaptivity }
-      )
+      .post(this.path + 'ProcessPredTestResults', {
+        userId: user.id,
+        testId: testId,
+        adaptivityType: adaptivity,
+      })
       .pipe(map((res) => this.converterService.nextThemaResConverter(res)))
   }
 
@@ -57,16 +59,13 @@ export class AdaptivityService {
     const user = JSON.parse(localStorage.getItem('currentUser'))
     const subject = JSON.parse(localStorage.getItem('currentSubject'))
 
-    return this.http.post<number>(
-      '/Services/AdaptiveLearning/AdaptiveLearningService.svc/GetDynamicTestIdForThema',
-      {
-        userId: user.id,
-        subjectId: subject.id,
-        complexId: themaId,
-        monitoringRes: monitoringRes,
-        adaptivityType: adaptivity,
-      }
-    )
+    return this.http.post<number>(this.path + 'GetDynamicTestIdForThema', {
+      userId: user.id,
+      subjectId: subject.id,
+      complexId: themaId,
+      monitoringRes: monitoringRes,
+      adaptivityType: adaptivity,
+    })
   }
 
   public getFirstThema(adaptivityType: number): Observable<Adaptivity> {
@@ -75,7 +74,8 @@ export class AdaptivityService {
 
     return this.http
       .get(
-        `/Services/AdaptiveLearning/AdaptiveLearningService.svc/GetFirstThema?userId=${user.id}&subjectId=${subject.id}&adaptivityType=${adaptivityType}`
+        this.path +
+          'GetFirstThema?userId=${user.id}&subjectId=${subject.id}&adaptivityType=${adaptivityType}'
       )
       .pipe(map((res) => this.converterService.nextThemaResConverter(res)))
   }

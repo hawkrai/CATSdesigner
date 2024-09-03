@@ -1,0 +1,91 @@
+<div
+*ngIf="!showLoader; else loader"
+>
+  <div>
+  <h2 class="info">
+    <span >{{ complexName }}</span>
+  </h2>
+</div>
+<div>
+  <h3 class="info">
+    <span>{{ studentGroup }}</span>
+    <span>{{ studentName }}</span>
+  </h3>
+</div>
+<mat-tree
+  [dataSource]="dataSource"
+  [treeControl]="treeControl"
+  class="example-tree"
+>
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+    <li class="mat-tree-node">
+      <button class="invisible" mat-icon-button disabled></button>
+      <mat-icon class="expandable-external folder_file_icons">
+        insert_drive_file
+      </mat-icon>
+      {{ node.Name }}   
+      <span class="time-container" *ngIf="node.Estimated > 0" [ngStyle]="{'color': converterService.getColorByTime(node.WatchingTime, node.Estimated)}">
+        <span>&nbsp;(
+          <ng-container *ngIf="node.EstimatedMinutes > 0">
+            {{ node.EstimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+          </ng-container>
+          {{ node.EstimatedSeconds }}&nbsp;{{ 'common.seconds' | translate }}
+        </span>)
+        <span class="expected-time">
+          <span *ngIf="node.Estimated > 0" [ngStyle]="{'color': '#363636'}">
+            &nbsp;{{ 'complex.time.expected' | translate }} - 
+            <span>
+              <ng-container *ngIf="node.EstimatedMinutes > 0">
+                {{ node.EstimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+              </ng-container>
+              {{ node.EstimatedSeconds }}&nbsp;{{ 'common.seconds' | translate }}
+            </span>,
+            &nbsp;{{ 'complex.time.actual' | translate }} -
+            <span>
+              <ng-container *ngIf="node.WatchingTimeMinutes > 0">
+                {{ node.WatchingTimeMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+              </ng-container>
+              {{ node.WatchingTimeSeconds }}&nbsp;{{ 'common.seconds' | translate }}
+            </span>
+          </span>
+        </span>
+      </span>
+    </li>
+  </mat-tree-node>
+
+  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+    <li>
+      <div class="mat-tree-node">
+        <button
+          mat-icon-button
+          matTreeNodeToggle
+          [attr.aria-label]="'toggle ' + node.Name"
+          class="complex-three-title-button"
+        >
+          <span class="complex-three-title-prefix">
+            {{ treeControl.isExpanded(node) ? '-' : '+' }}
+          </span>
+          <mat-icon
+            class="complex-three-title-icon mat-icon-rtl-mirror expandable no-file"
+          >folder
+          </mat-icon>
+        </button>
+        <a class="complex-three-title btn">
+          {{ node.Name }}
+        </a>
+      </div>
+      <ul
+        [class.example-tree-invisible]="!treeControl.isExpanded(node)"
+        class="contents"
+      >
+        <ng-container matTreeNodeOutlet></ng-container>
+      </ul>
+    </li>
+  </mat-nested-tree-node>
+</mat-tree>
+</div>
+<ng-template #loader>
+  <td class="mdc-data-table__cell" colspan="6">
+    <main-app-loader [diameter]="300"></main-app-loader>
+  </td>
+</ng-template>

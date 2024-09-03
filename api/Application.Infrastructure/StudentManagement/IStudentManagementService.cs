@@ -9,6 +9,7 @@ namespace Application.Infrastructure.StudentManagement
     {
         Student GetStudent(int userId, bool lite = false);
 
+        List<Student> GetConfirmedAndNoneDeletedStudentsByGroup(int groupId);
         Task<Student> GetStudentAsync(int userId, bool lite = false);
 
         IEnumerable<Student> GetGroupStudents(int groupId);

@@ -45,10 +45,12 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
         public HtmlString HtmlLinks { get; set; }
         public int StudentsConfirmedCount { get; set; }
         public int StudentsNotConfirmedCount { get; set; }
+        public int StudentsDeletedCount {  get; set; }
         public int SubjectsActiveCount { get; set; }
         public int SubjectsNotActiveCount { get; set; }
         public int SubjectsCount { get; set; }
         public int OccupiedBySecretary { get; set; }
+        public bool IsOldGroup { get; set; }
 
         public int Id { get; set; }
 
@@ -87,15 +89,17 @@ namespace LMPlatform.UI.ViewModels.AdministrationViewModels
             {
                 Id = group.Id,
                 Name = group.Name,
-                StudentsNotConfirmedCount = group.Students.Where(s => s.Confirmed != true).Count(),
                 StudentsCount = group.Students.Count(),
-                StudentsConfirmedCount = group.Students.Where(s => s.Confirmed == true).Count(),
+                StudentsNotConfirmedCount = group.Students.Where(s => s.Confirmed != true && (s.IsActive == true)).Count(),
+                StudentsConfirmedCount = group.Students.Where(s => (s.Confirmed == true && (s.IsActive is true))).Count(),
+                StudentsDeletedCount = group.Students.Where(s => (s.DeletedOn != null && s.IsActive is false)).Count(),
                 SubjectsActiveCount = group.SubjectGroups.Where(s => (s.Subject == null || !s.Subject.IsArchive) && s.IsActiveOnCurrentGroup).Count(),
                 SubjectsNotActiveCount = group.SubjectGroups.Where(s => (s.Subject == null || !s.Subject.IsArchive) && !s.IsActiveOnCurrentGroup).Count(),
                 SubjectsCount = group.SubjectGroups.Count(),
                 StartYear = group.StartYear,
                 GraduationYear = group.GraduationYear,
                 OccupiedBySecretary = group.SecretaryId.HasValue ? group.SecretaryId.Value : 0,
+                IsOldGroup = group.Students.Where(s => s.Confirmed is null).Count() > 0 || group.Students.Count() == 0 ? true : false,
                 HtmlLinks = new HtmlString(htmlLinks)
             };
         }

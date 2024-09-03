@@ -64,7 +64,7 @@ namespace Application.Infrastructure.CPManagement
               .Include(x => x.Lecturer)
               .Include(x => x.AssignedCourseProjects.Select(asp => asp.Student.Group))
               .Include(x => x.Subject);
-            
+
             var user = Context.Users.Include(x => x.Student).Include(x => x.Lecturer).SingleOrDefault(x => x.Id == userId);
 
             if (user != null && user.Lecturer != null)
@@ -86,12 +86,12 @@ namespace Application.Infrastructure.CPManagement
                                      let acp = cp.AssignedCourseProjects.FirstOrDefault()
                                      where (acp.Student.LastName.Contains(searchString) ||
                                             cp.Theme.Contains(searchString) ||
-                                            acp.Student.Group.Name.Contains(searchString)) &&
+                                            acp.Student.Group.Name.Contains(searchString) &&
                                             acp.Student.IsActive.HasValue &&
                                             acp.Student.IsActive.Value &&
                                             acp.Student.Confirmed.HasValue &&
                                             acp.Student.Confirmed.Value ||
-                                            acp.Student == null
+                                            acp.Student == null)
                                      select new CourseProjectData
                                      {
                                          Id = cp.CourseProjectId,
@@ -675,7 +675,7 @@ namespace Application.Infrastructure.CPManagement
             if (isStudent)
             {
                 studentId = userId;
-                
+
             }
 
             var courseProject =
@@ -683,7 +683,7 @@ namespace Application.Infrastructure.CPManagement
                     .Include(x => x.AssignedCourseProjects.Select(y => y.Student.Group))
                     .Single(x => x.CourseProjectId == courseProjectId);
 
-            if(isStudent && !courseProject.AssignedCourseProjects.Any(acp => acp.Student.Id == studentId))
+            if (isStudent && !courseProject.AssignedCourseProjects.Any(acp => acp.Student.Id == studentId))
             {
                 courseProject = new CourseProject();
                 AssignedCourseProject assignedCourseProject = new AssignedCourseProject();

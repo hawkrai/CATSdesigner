@@ -93,6 +93,7 @@ export class ProfileComponent implements OnInit {
       .getAllProfileInfoSubjectsById(id)
       .subscribe((res: any) => {
         this.profileInfoSubjects = res
+        this.profileInfoSubjects = res.filter((subject: any) => !subject.IsArchive);
         this.archivedSubjects = this.profileInfoSubjects
           .filter(this.archivedFilter)
           .sort((a, b) => this.sortFunc(a, b))
