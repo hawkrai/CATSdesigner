@@ -43,6 +43,8 @@
   "common.delete": "Удалить",
   "common.zoomIn": "Увеличить",
   "common.zoomOut": "Уменьшить",
+  "common.seconds": "сек",
+  "common.minutes": "мин",
   "complex.regulations": "Положение об ЭУМК",
   "complex.map": "Карта ЭУМК",
   "complex.monitor": "Мониторинг прочтения тем",

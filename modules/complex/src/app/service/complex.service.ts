@@ -52,13 +52,19 @@ export class ComplexService {
     comlexId: string,
     studentId: string
   ): Observable<ComplexStudentMonitoring> {
-    return this.http.get<ComplexStudentMonitoring>(
-      this.path +
-        'GetStudentMonitoringInfo?complexId=' +
-        comlexId +
-        '&studentId=' +
-        studentId
-    )
+    return this.http
+      .get(
+        this.path +
+          'GetStudentMonitoringInfo?complexId=' +
+          comlexId +
+          '&studentId=' +
+          studentId
+      )
+      .pipe(
+        map((res: ComplexStudentMonitoring) =>
+          this.converterService.studentMonitoringsConverter(res)
+        )
+      )
   }
 
   public getConceptCascadeFoldersOnly(

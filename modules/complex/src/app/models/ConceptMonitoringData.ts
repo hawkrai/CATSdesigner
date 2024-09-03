@@ -1,6 +1,7 @@
 import { ConceptMonitoring } from './ConceptMonitoring'
 
 export class ConceptMonitoringData {
-  Estimated?: string
+  EstimatedSeconds?: number
+  EstimatedMinutes?: number
   ConceptMonitorings?: ConceptMonitoring[]
 }

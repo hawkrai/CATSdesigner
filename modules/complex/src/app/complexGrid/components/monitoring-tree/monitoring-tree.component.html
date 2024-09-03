@@ -25,13 +25,28 @@
       </mat-icon>
       {{ node.Name }}   
       <span class="time-container" *ngIf="node.Estimated > 0" [ngStyle]="{'color': converterService.getColorByTime(node.WatchingTime, node.Estimated)}">
-        &nbsp;({{ converterService.getStrTime(node.WatchingTime) }})
+        <span>&nbsp;(
+          <ng-container *ngIf="node.EstimatedMinutes > 0">
+            {{ node.EstimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+          </ng-container>
+          {{ node.EstimatedSeconds }}&nbsp;{{ 'common.seconds' | translate }}
+        </span>)
         <span class="expected-time">
           <span *ngIf="node.Estimated > 0" [ngStyle]="{'color': '#363636'}">
-            &nbsp;{{ 'complex.time.expected' | translate }} - {{ converterService.getStrTime(node.Estimated) }},
-          </span>
-          <span *ngIf="node.Estimated > 0">
-            &nbsp;{{ 'complex.time.actual' | translate }} - {{ converterService.getStrTime(node.WatchingTime) }}
+            &nbsp;{{ 'complex.time.expected' | translate }} - 
+            <span>
+              <ng-container *ngIf="node.EstimatedMinutes > 0">
+                {{ node.EstimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+              </ng-container>
+              {{ node.EstimatedSeconds }}&nbsp;{{ 'common.seconds' | translate }}
+            </span>,
+            &nbsp;{{ 'complex.time.actual' | translate }} -
+            <span>
+              <ng-container *ngIf="node.WatchingTimeMinutes > 0">
+                {{ node.WatchingTimeMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+              </ng-container>
+              {{ node.WatchingTimeSeconds }}&nbsp;{{ 'common.seconds' | translate }}
+            </span>
           </span>
         </span>
       </span>
