@@ -107,8 +107,7 @@ namespace Application.Infrastructure.CPManagement
                             .Single() ?? 0;
             }
 
-            return GetPercentageGraphDataForLecturerQuery(isLecturer || isStudent ? 0 : userId, secretaryId, subjectId)
-                .Where(x => x.Date >= _currentAcademicYearStartDate && x.Date < _currentAcademicYearEndDate)
+            return GetPercentageGraphDataForSubjectQuery(subjectId)
                 .OrderBy(x => x.Date)
                 .ToList();
         }
@@ -183,6 +182,14 @@ namespace Application.Infrastructure.CPManagement
         private IQueryable<PercentageGraphData> GetPercentageGraphDataForLecturerQuery(int lecturer, int secretaryId, int subjectId)
         {
             IQueryable<PercentageGraphData> p = Context.CoursePercentagesGraphs.Where(x => x.LecturerId == secretaryId).Where(x => x.SubjectId == subjectId).
+                Select(ToPercentageDataPlain);
+
+            return p;
+        }
+
+        private IQueryable<PercentageGraphData> GetPercentageGraphDataForSubjectQuery(int subjectId)
+        {
+            IQueryable<PercentageGraphData> p = Context.CoursePercentagesGraphs.Where(x => x.SubjectId == subjectId).
                 Select(ToPercentageDataPlain);
 
             return p;
