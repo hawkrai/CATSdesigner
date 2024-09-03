@@ -486,7 +486,7 @@ namespace LMPlatform.UI.Services.Labs
 						Theme = e.Theme,
 						Order = e.Order,
 						Duration = e.Duration,
-						ShortName = e.ShortName.Substring(2),
+						ShortName = e.ShortName.Substring(0),
 						LabId = e.Id,
 						SubjectId = e.SubjectId,
 						SubGroup = subGroupValue,
