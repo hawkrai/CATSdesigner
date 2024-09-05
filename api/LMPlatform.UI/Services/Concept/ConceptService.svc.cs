@@ -374,27 +374,21 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-                var tree = ConceptManagementService.GetElementsByParentIdForTree(complexId).ToList();
-                
+                var childrens = ConceptManagementService.GetElementsByParentIdForTree(complexId).ToList();
                 var resultList = new List<ConceptMonitoring>();
 
-                int Estimated;
-
-                foreach (var item in tree)
+                foreach (var children in childrens)
                 {
-                    var resultItem = ConceptMonitoring.FromConcept(item);
-                    Estimated = WatchingTimeService.GetEstimatedTime(item.Container);
-                    
-                    if (item.IsGroup)
+                    var resultItem = ConceptMonitoring.FromConcept(children);
+
+                    resultItem.Children = GetMonitoringInfo(children.Id, studentId);
+                    if (children.Container != null)
                     {
-                        resultItem.Children = GetMonitoringInfo(item.Id, studentId);
-                    }
-                    else
-                    {
+                        int Estimated = WatchingTimeService.GetEstimatedTime(children.Container);
                         if (Estimated > 0)
                         {
                             resultItem.Estimated = Estimated;
-                            resultItem.WatchingTime = WatchingTimeService.GetByConceptSubject(item.Id, studentId).Time;
+                            resultItem.WatchingTime = WatchingTimeService.GetByConceptSubject(children.Id, studentId).Time;
                         }
                     }
                     resultList.Add(resultItem);
@@ -407,7 +401,6 @@ namespace LMPlatform.UI.Services.Concept
                 return null;
             }
         }
-
 
         public ConceptViewData GetConceptTreeMobile(int elementId)
 		{
