@@ -58,7 +58,7 @@
   "complex.fileUploadError": "You can add only .pdf, .docx or .doc file",
   "complex.editComplex": "Edit Complexes",
   "complex.addComponent": "Add component",
-  "complex.addComplexesComponent": "Add an Complexes component",
+  "complex.addComplexesComponent": "Add an component",
   "complex.adaptiveLearning": "Adaptive learning",
   "complex.adaptiveTopic": "Monitoring on the topic",
   "complex.titleScreen": "Title screen",
@@ -88,7 +88,7 @@
   "text.complex.want.to.delete.test": "Do you really want to remove the component?",
   "text.complex.yes": "Yes",
   "button.cancel": "Cancel",
-  "text.subjects.attachments.add": "add file",
+  "text.subjects.attachments.add": "Add file",
   "text.complex.delete.eumc": "Delete Educational Complex",
   "text.complex.want.to.delete.eumc": "Do you really want to remove the Educational Complex?"
 }
