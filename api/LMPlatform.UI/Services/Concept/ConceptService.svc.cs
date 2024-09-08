@@ -374,38 +374,29 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-                // Получаем начальный список элементов
-                var tree = ConceptManagementService.GetElementsByParentId(complexId).ToList();
+                var tree = ConceptManagementService.GetElementsByParentIdForTree(complexId).ToList();
                 
-                // Создаем список для хранения результатов
                 var resultList = new List<ConceptMonitoring>();
 
-                // Переменная для хранения предпологаемого времени прочтения
                 int Estimated;
 
-                // Обрабатываем каждый элемент в дереве 
                 foreach (var item in tree)
                 {
-                    // Преобразуем Concept в ConceptMonitoring
                     var resultItem = ConceptMonitoring.FromConcept(item);
-                    // находим препологаемое время
                     Estimated = WatchingTimeService.GetEstimatedTime(item.Container);
                     
                     if (item.IsGroup)
                     {
-                        // Рекурсионно вызываем эту же функцию и присваем резулитат
                         resultItem.Children = GetMonitoringInfo(item.Id, studentId);
                     }
                     else
                     {
-                        // Прверяем предпологаемое время и записываем результат
                         if (Estimated > 0)
                         {
                             resultItem.Estimated = Estimated;
                             resultItem.WatchingTime = WatchingTimeService.GetByConceptSubject(item.Id, studentId).Time;
                         }
                     }
-                    // добавляем получившийся элемент
                     resultList.Add(resultItem);
                 }
                 return resultList;

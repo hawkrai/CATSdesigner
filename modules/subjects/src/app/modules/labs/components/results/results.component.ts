@@ -31,6 +31,8 @@ import { TranslatePipe } from 'educats-translate'
 export class ResultsComponent implements OnInit, OnDestroy {
   private subs = new SubSink()
 
+  labPrefix: string;
+
   state$: Observable<{
     labs: Lab[]
     schedule: ScheduleProtectionLab[]
@@ -48,6 +50,11 @@ export class ResultsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (localStorage.getItem('locale') === 'en') {
+      this.labPrefix = 'Lab';
+    } else {
+      this.labPrefix = 'Лаб';
+    }
     this.state$ = combineLatest(
       this.store.select(labsSelectors.getLabsCalendar),
       this.store.select(labsSelectors.getLabs),
@@ -93,7 +100,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   ): { head: string; text: string; tooltip: string }[] {
     return subGroupLabs.map((l, index) => ({
       head: l.LabId.toString(),
-      text: l.ShortName,
+      text: this.labPrefix + l.ShortName.match(/\d+/g).join(''),
       tooltip: l.Theme,
     }))
   }

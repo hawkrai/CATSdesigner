@@ -7,6 +7,8 @@ import { Adaptivity } from '../models/Adaptivity'
 import { ComplexCascade } from '../models/ComplexCascade'
 import { Student } from '../models/student.model'
 import { ConceptMonitoringData } from '../models/ConceptMonitoringData'
+import { ComplexStudentMonitoring } from '../models/ComplexStudentMonitoring'
+import { ComplexMonitoring } from '../models/ComplexMonitoring'
 
 @Injectable({
   providedIn: 'root',
@@ -53,9 +55,13 @@ export class ConverterService {
   }
 
   private monitoringConverter(monitoring: any, estimatedTime: number) {
+    const convertedSeconds = this.convertTimeToMinuteAndSeconds(
+      monitoring.Seconds
+    )
     const monitor = new ConceptMonitoring()
     monitor.Name = monitoring.Name
-    monitor.Seconds = this.getStrTime(monitoring.Seconds)
+    monitor.Seconds = convertedSeconds.seconds
+    monitor.Minutes = convertedSeconds.minutes
     monitor.Color = this.getColorByTime(monitoring.Seconds, estimatedTime)
     return monitor
   }
@@ -64,12 +70,45 @@ export class ConverterService {
     monitorings: any,
     estimatedTime: number
   ): ConceptMonitoringData {
+    const convertedSeconds = this.convertTimeToMinuteAndSeconds(estimatedTime)
     const convertedMonitorings = monitorings.map((mon) =>
       this.monitoringConverter(mon, estimatedTime)
     )
     return {
-      Estimated: this.getStrTime(estimatedTime),
+      EstimatedSeconds: convertedSeconds.seconds,
+      EstimatedMinutes: convertedSeconds.minutes,
       ConceptMonitorings: convertedMonitorings,
+    }
+  }
+
+  public studentMonitoringsConverter(
+    complexStudentMonitorings: ComplexStudentMonitoring
+  ): ComplexStudentMonitoring {
+    complexStudentMonitorings.ConceptMonitorings.forEach((mon) =>
+      this.studentMonitoringConverter(mon)
+    )
+    return complexStudentMonitorings
+  }
+
+  public studentMonitoringConverter(monitoring: ComplexMonitoring) {
+    if (monitoring.Estimated > 0) {
+      const estimatedConvertedSeconds = this.convertTimeToMinuteAndSeconds(
+        monitoring.Estimated
+      )
+      const watchingTimeConvertedSeconds = this.convertTimeToMinuteAndSeconds(
+        monitoring.WatchingTime
+      )
+      monitoring.EstimatedMinutes = estimatedConvertedSeconds.minutes
+      monitoring.EstimatedSeconds = estimatedConvertedSeconds.seconds
+      monitoring.WatchingTimeMinutes = watchingTimeConvertedSeconds.minutes
+      monitoring.WatchingTimeSeconds = watchingTimeConvertedSeconds.seconds
+    }
+    monitoring.Color = this.getColorByTime(
+      monitoring.WatchingTime,
+      monitoring.Estimated
+    )
+    if (monitoring.Children != null) {
+      monitoring.Children.forEach((mon) => this.studentMonitoringConverter(mon))
     }
   }
 
@@ -79,7 +118,15 @@ export class ConverterService {
     }
     return 'red'
   }
+  public convertTimeToMinuteAndSeconds(seconds: number): {
+    minutes: number
+    seconds: number
+  } {
+    const min = Math.floor(seconds / 60)
+    const sec = seconds % 60
 
+    return { minutes: min, seconds: sec }
+  }
   public getStrTime(seconds: number): string {
     if (seconds < 60) {
       return `${seconds} сек`
