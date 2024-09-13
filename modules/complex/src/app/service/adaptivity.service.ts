@@ -75,7 +75,7 @@ export class AdaptivityService {
     return this.http
       .get(
         this.path +
-          'GetFirstThema?userId=${user.id}&subjectId=${subject.id}&adaptivityType=${adaptivityType}'
+          `GetFirstThema?userId=${user.id}&subjectId=${subject.id}&adaptivityType=${adaptivityType}`
       )
       .pipe(map((res) => this.converterService.nextThemaResConverter(res)))
   }
