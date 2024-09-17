@@ -10,6 +10,7 @@ import { Concept } from '../models/Concept'
 import { ConverterService } from './converter.service'
 import { ComplexStudentMonitoring } from '../models/ComplexStudentMonitoring'
 import { ConceptMonitoringData } from '../models/ConceptMonitoringData'
+import { Student } from '../models/student.model'
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +67,17 @@ export class ComplexService {
         )
       )
   }
-
+  public getEnableStudentsByGroup(groupId: string): Observable<Student[]> {
+    return this.http
+      .get(
+        this.path +
+          'GetConfirmedAndNoneDeletedStudentsByGroupId?groupId=' +
+          groupId
+      )
+      .pipe(
+        map((res) => this.converterService.studentsConverter(res['Students']))
+      )
+  }
   public getConceptCascadeFoldersOnly(
     parentId: string
   ): Observable<ComplexCascade[]> {

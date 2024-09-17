@@ -8,6 +8,7 @@ import { select, Store } from '@ngrx/store'
 import { IAppState } from '../../../store/states/app.state'
 import { getSubjectId } from '../../../store/selectors/subject.selector'
 import { Student } from 'src/app/models/student.model'
+import { ComplexService } from 'src/app/service/complex.service'
 
 @Component({
   selector: 'app-students-monitoring',
@@ -29,7 +30,8 @@ export class StudentsMonitoringComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private store: Store<IAppState>,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private complexService: ComplexService
   ) {
     this.complexId = data.id
     const user = JSON.parse(localStorage.getItem('currentUser'))
@@ -41,9 +43,11 @@ export class StudentsMonitoringComponent implements OnInit {
   }
 
   getStudents(groupId: string) {
-    this.groupService.getStudentsByGroup(groupId).subscribe((students) => {
-      this.students = students
-    })
+    this.complexService
+      .getEnableStudentsByGroup(groupId)
+      .subscribe((students) => {
+        this.students = students
+      })
   }
   onOptionsSelected() {
     this.getStudents(this.selected.Id)
