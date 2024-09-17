@@ -16,6 +16,7 @@ using LMPlatform.UI.Services.Modules;
 using LMPlatform.UI.Attributes;
 using LMPlatform.UI.ViewModels.ComplexMaterialsViewModel;
 using Newtonsoft.Json;
+using LMPlatform.UI.Services.Modules.CoreModels;
 
 namespace LMPlatform.UI.Services.Concept
 {
@@ -350,10 +351,8 @@ namespace LMPlatform.UI.Services.Concept
         {
             try
             {
-                // Находим ученика
                 var student = StudentManagementService.GetStudent(studentId);
                 var complex = ConceptManagementService.GetById(complexId);
-                // Возвращаем данные о мониторинге студента
                 return 
                     new ConceptStudentMonitoringData()
                       {
@@ -425,6 +424,30 @@ namespace LMPlatform.UI.Services.Concept
         {
             var concept = ConceptManagementService.GetByIdFixed(elementId, withNext:false);
             return GetNeighborConceptData(concept.PrevConcept.GetValueOrDefault());
+        }
+        public StudentsResult GetConfirmedAndNoneDeletedStudentsByGroupId(int groupId)
+        {
+            try
+            {
+                var students = StudentManagementService.GetConfirmedAndNoneDeletedStudentsByGroup(groupId);
+
+                return new StudentsResult
+                {
+                    Students = students.Select(e => new StudentsViewData
+                    {
+                        StudentId = e.Id,
+                        FullName = e.FullName
+                    }).ToList(),
+                };
+            }
+            catch (Exception ex)
+            {
+                return new StudentsResult
+                {
+                    Message = ex.Message + "\n" + ex.StackTrace,
+                    Code = "500"
+                };
+            }
         }
         public MonitoringData GetConceptViews(int conceptId, int groupId)
         {
