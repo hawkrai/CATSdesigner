@@ -22,6 +22,7 @@
           mat-raised-button
           class="add-button adaptive-learning"
           [matMenuTriggerFor]="menu"
+          [disabled]="isAdaptiveLearningDisabled"  
         >
           {{ 'complex.adaptiveLearning' | translate: 'Адаптивное обучение' }}
           <mat-icon>keyboard_arrow_down</mat-icon>
