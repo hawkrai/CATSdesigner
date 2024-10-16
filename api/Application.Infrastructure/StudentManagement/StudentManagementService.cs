@@ -52,10 +52,14 @@ namespace Application.Infrastructure.StudentManagement
         }
         public List<Student> GetConfirmedAndNoneDeletedStudentsByGroup(int groupId)
         {
-            return this.GroupManagementService.GetGroups(
-                    new Query<Group>(g => g.Id == groupId).Include(g => g.Students.Select(x => x.ConfirmedBy.User)))
-                    .Single().Students
-                    .OrderBy(e => e.FullName).ToList();
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                return repositoriesContainer.StudentsRepository
+                    .GetAll(new Query<Student>(e => e.GroupId == groupId && e.DeletedOn == null && e.Confirmed == true
+					).Include(e => e.Group))
+                    .OrderBy(e => e.LastName)
+                    .ToList();
+            }
         }
         public IEnumerable<Student> GetStudents(IQuery<Student> query = null)
         {
