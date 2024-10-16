@@ -24,9 +24,12 @@ export class MapPopoverComponent implements OnInit {
   ngOnInit() {
     this.complexService.getConceptTree(this.data.id).subscribe((res) => {
       this.chartData = res.result;
-      // параметры для узлов
-      this.treeService.treeModel.nodeWidth = 3;
-      this.treeService.treeModel.nodeHeight = 0;
+      const treeModel = this.treeService.treeModel;
+      treeModel.nodeWidth = 1.8; // Ширина узла
+      treeModel.nodeHeight = 1; // Высота узла
+      treeModel.nodeRadius = 3; // Радиус узла
+      treeModel.horizontalSeparationBetweenNodes = -0.5; // Горизонтальная дистанция между узлами
+      treeModel.verticalSeparationBetweenNodes = 0;   // Вертикальная дистанция между узлами
 
       this.treeService.createChart('#chartContainer', this.chartData);
     });
