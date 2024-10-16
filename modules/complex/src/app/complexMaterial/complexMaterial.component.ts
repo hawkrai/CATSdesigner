@@ -8,6 +8,7 @@ import { Concept } from '../models/Concept'
 import { AdaptivityService } from '../service/adaptivity.service'
 import { DialogData } from '../models/DialogData'
 import { MaterialsPopoverComponent } from './components/materials/materials-popover/materials-popover.component'
+import { TestService } from '../service/test.service'
 
 @Component({
   selector: 'app-labs',
@@ -19,12 +20,15 @@ export class ComplexMaterialComponent implements OnInit {
   public complexID
   public complexName: string
   isLector: boolean
+  public hasPredTest: boolean = false
+  public isAdaptiveLearningDisabled: boolean = false
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private adaptivityService: AdaptivityService,
     private complexService: ComplexService,
+    private testService: TestService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false
@@ -45,7 +49,16 @@ export class ComplexMaterialComponent implements OnInit {
       JSON.parse(localStorage.getItem('currentUser')).role === 'lector'
   }
 
-  ngOnInit() {}
+  ngOnInit(): void {
+    this.checkForPredTest(); 
+  }
+
+  checkForPredTest(): void {
+    this.testService.getPredTest().subscribe((predTestId) => {
+      this.hasPredTest = predTestId > 0 
+      this.isAdaptiveLearningDisabled = !this.hasPredTest
+    })
+  }
 
   openAddPopup(): void {
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
@@ -77,30 +90,31 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   openAdaptivityPopup(adaptivityType: number): void {
-    this.adaptivityService
-      .getFirstThema(adaptivityType)
-      .subscribe((themaRes) => {
-        const path =
-          '/api/Upload?fileName=' +
-          (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0])
-        const diaogData: DialogData = {
-          name: `${themaRes.nextThemaId}`,
-          url: path,
-          adaptivityType: adaptivityType,
-          isAdaptive: true,
-          adaptivity: themaRes,
+    if (this.hasPredTest) {
+      this.adaptivityService
+        .getFirstThema(adaptivityType)
+        .subscribe((themaRes) => {
+          const path =
+            '/api/Upload?fileName=' +
+            (themaRes.nextMaterialPaths && themaRes.nextMaterialPaths[0])
+          const diaogData: DialogData = {
+            name: `${themaRes.nextThemaId}`,
+            url: path,
+            adaptivityType: adaptivityType,
+            isAdaptive: true,
+            adaptivity: themaRes,
         }
 
-        const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
-          width: '100%',
-          height:'100%',
-          data: diaogData,
-        })
+          const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
+            width: '100%',
+            height:'100%',
+            data: diaogData,
+          })
 
-        dialogRef.afterClosed().subscribe((result) => {
-          console.log('The dialog was closed')
+          dialogRef.afterClosed().subscribe((result) => {
+            console.log('The dialog was closed')
+          })
         })
-      })
+    }
   }
-
 }
