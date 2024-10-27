@@ -12,7 +12,7 @@ export class Complex {
 
   isPublished?: boolean
   includeLabs?: boolean
-  includeLectures?: boolean
+  includeLecturers?: boolean
   includeWorkshops?: boolean
   includeTests?: boolean
 

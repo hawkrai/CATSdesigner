@@ -26,15 +26,19 @@
         [disabled]="true"
       />
     </mat-form-field>
-    <mat-checkbox name="isPublished" matInput [(ngModel)]="data.isPublished">{{
-      'complex.openAccess' | translate: 'Открыть студентам доступ к ЭУМК'
-    }}</mat-checkbox>
     <span>
       <mat-checkbox
-        [disabled]="!data.isNew"
-        name="includeLectures"
+        name="isPublished"
         matInput
-        [(ngModel)]="data.includeLectures"
+        [(ngModel)]="data.isPublished"
+        >{{
+          'complex.openAccess' | translate: 'Открыть студентам доступ к ЭУМК'
+        }}</mat-checkbox
+      >
+      <mat-checkbox
+        name="includeLecturers"
+        matInput
+        [(ngModel)]="data.includeLecturers"
         >{{
           'complex.include.lecture'
             | translate
@@ -42,7 +46,6 @@
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="!data.isNew"
         name="includeWorkshops"
         matInput
         [(ngModel)]="data.includeWorkshops"
@@ -53,7 +56,6 @@
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="!data.isNew"
         name="includeLabs"
         matInput
         [(ngModel)]="data.includeLabs"
@@ -64,7 +66,6 @@
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="!data.isNew"
         name="includeTests"
         matInput
         [(ngModel)]="data.includeTests"

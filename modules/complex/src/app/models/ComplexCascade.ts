@@ -10,6 +10,7 @@ export class ComplexCascade {
   ParentId: number
   IncludeLabs?: boolean
   IncludeLecturers?: boolean
+  IncludeWorkshops?: boolean
   IncludeTests?: boolean
   Attachments: Attachment[]
   children?: ComplexCascade[]
