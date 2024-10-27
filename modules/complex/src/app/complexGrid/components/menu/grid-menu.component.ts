@@ -144,6 +144,8 @@ export class GridMenuComponent {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed')
     })
+
+    sessionStorage.setItem('isStudentMonitoring', JSON.stringify(true))
   }
 
   openMap(): void {
@@ -165,5 +167,15 @@ export class GridMenuComponent {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, { data })
+  }
+
+  ngOnInit() {
+    const isStudentMonitoring = JSON.parse(
+      sessionStorage.getItem('isStudentMonitoring')
+    )
+
+    if (isStudentMonitoring) {
+      this.openMonitoring()
+    }
   }
 }
