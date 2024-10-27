@@ -74,4 +74,8 @@ export class StudentsMonitoringComponent implements OnInit {
       }
     })
   }
+
+  onClick() {
+    window.location.reload()
+  }
 }
