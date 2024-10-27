@@ -16,7 +16,10 @@ export class AngularEditorService {
   selectedText: string
   uploadUrl: string
 
-  constructor(private http: HttpClient, @Inject(DOCUMENT) private doc: any) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(DOCUMENT) private doc: any
+  ) {}
 
   /**
    * Executed command from editor header buttons exclude toggleEditorMode

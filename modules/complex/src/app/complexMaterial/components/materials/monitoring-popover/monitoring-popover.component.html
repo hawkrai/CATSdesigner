@@ -1,21 +1,24 @@
 <div class="head_elements">
-<div>
   <div>
-    <h1 mat-dialog-title >
-      {{ 'complex.adaptiveTopic' | translate: 'Мониторинг прочтения темы' }} 
-      <span>"{{ data.name }}"</span>
-    </h1>
+    <div>
+      <h1 mat-dialog-title>
+        {{ 'complex.adaptiveTopic' | translate: 'Мониторинг прочтения темы' }}
+        <span>"{{ data.name }}"</span>
+      </h1>
+    </div>
+    <div class="expected-reading-time">
+      {{
+        'complex.expectedReadingTime'
+          | translate: 'Ожидаемое время прочтения темы'
+      }}:
+      <span>
+        <ng-container *ngIf="estimatedMinutes > 0">
+          {{ estimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
+        </ng-container>
+        {{ estimatedSeconds }}&nbsp;{{ 'common.seconds' | translate }}
+      </span>
+    </div>
   </div>
-  <div class="expected-reading-time">
-    {{ 'complex.expectedReadingTime' | translate: 'Ожидаемое время прочтения темы' }}: 
-    <span>
-      <ng-container *ngIf="estimatedMinutes > 0">
-        {{ estimatedMinutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
-      </ng-container>
-      {{ estimatedSeconds }}&nbsp;{{ 'common.seconds' | translate }}
-    </span>
-  </div>
-</div>
   <button class="close" (click)="onNoClick()">
     <mat-icon>close</mat-icon>
   </button>
@@ -44,7 +47,7 @@
     <th mat-header-cell *matHeaderCellDef>
       {{ 'common.topicTime' | translate: 'Время прочтения темы' }}
     </th>
-    <td mat-cell *matCellDef="let element" [ngStyle]="{'color': element.Color}">
+    <td mat-cell *matCellDef="let element" [ngStyle]="{ color: element.Color }">
       <ng-container *ngIf="element.Minutes > 0">
         {{ element.Minutes }}&nbsp;{{ 'common.minutes' | translate }}&nbsp;
       </ng-container>

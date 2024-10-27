@@ -3,7 +3,9 @@
     class="results-component__subGroup"
     *ngFor="let subGroup of state.subGroups"
   >
-    <ng-container *ngIf="(state.students | filter: 'SubGroup':subGroup).length">
+    <ng-container
+      *ngIf="(state.students | filter: 'SubGroup' : subGroup).length"
+    >
       <div class="results-component__subGroup-title">
         <span class="results-component__subGroup-title-text"
           >{{ 'subgroup' | translate: 'Подгруппа' }} {{ subGroup }}</span
@@ -11,14 +13,14 @@
       </div>
       <div
         class="results-component__subGroup-table"
-        *var="state.labs | filter: 'SubGroup':subGroup as subGroupLabs"
+        *var="state.labs | filter: 'SubGroup' : subGroup as subGroupLabs"
       >
         <table
           mat-table
-          [dataSource]="state.students | filter: 'SubGroup':subGroup"
+          [dataSource]="state.students | filter: 'SubGroup' : subGroup"
           class="mat-elevation-z14"
           *var="
-            state.schedule | filter: 'SubGroup':subGroup as subGroupSchedule
+            state.schedule | filter: 'SubGroup' : subGroup as subGroupSchedule
           "
         >
           <ng-container matColumnDef="position">
@@ -94,11 +96,16 @@
                   </div>
                 </div>
                 <div *ngIf="!markProperty.mark" style="opacity: 0.3">
-                  {{ markProperty.recommendedMark ? markProperty.recommendedMark : 1 }}
+                  {{
+                    markProperty.recommendedMark
+                      ? markProperty.recommendedMark
+                      : 1
+                  }}
                 </div>
                 <ng-container
                   *var="
-                    element | checkVisit: scheduleLab.head:subGroupLabs as marks
+                    element
+                      | checkVisit: scheduleLab.head : subGroupLabs as marks
                   "
                 >
                   <div

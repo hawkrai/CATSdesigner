@@ -14,7 +14,7 @@
           <mat-expansion-panel
             *ngFor="
               let studentJobProtection of groupJobProtection.StudentsJobProtections
-                | filter: 'SubGroup':subGroup
+                | filter: 'SubGroup' : subGroup
             "
             (opened)="onSelectStudent(studentJobProtection.StudentId)"
             [expanded]="selectedStudentId === studentJobProtection.StudentId"

@@ -10,14 +10,13 @@ export class HelpComponent {
   @Input() action: string
   @Input() placement = 'top-left'
 
-
-  popoverVisible = false;
+  popoverVisible = false
 
   showHelpPopover() {
-    this.popoverVisible = true;
+    this.popoverVisible = true
   }
 
   hideHelpPopover() {
-    this.popoverVisible = false;
+    this.popoverVisible = false
   }
 }

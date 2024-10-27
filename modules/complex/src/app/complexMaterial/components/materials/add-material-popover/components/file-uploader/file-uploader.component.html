@@ -1,34 +1,34 @@
 <h4 class="attachment-text mat-typography">{{ header }}</h4>
 <div class="container">
-<input
-  #csvInput
-  hidden="true"
-  type="file"
-  (change)="uploadFile($event.target)"
-/>
-<button
-  mat-flat-button
-  class="upload-btn"
-  (click)="csvInput.click()"
-  [disabled]="disabled"
->
-  {{ 'text.subjects.attachments.add' | translate: 'Добавить файл' }}
-</button>
+  <input
+    #csvInput
+    hidden="true"
+    type="file"
+    (change)="uploadFile($event.target)"
+  />
+  <button
+    mat-flat-button
+    class="upload-btn"
+    (click)="csvInput.click()"
+    [disabled]="disabled"
+  >
+    {{ 'text.subjects.attachments.add' | translate: 'Добавить файл' }}
+  </button>
 
-<div *ngIf="showError" class="error-message">
-  {{ errorMessage }}
-</div>
+  <div *ngIf="showError" class="error-message">
+    {{ errorMessage }}
+  </div>
 
-<div class="mdc-data-table file-table" *ngIf="files.length">
-  <table class="mdc-data-table__table">
-    <tbody>
-      <app-file
-        *ngFor="let file of files"
-        [file]="file"
-        [canDelete]="true"
-        (deleteFile)="deleteFile($event)"
-      ></app-file>
-    </tbody>
-  </table>
-</div>
+  <div class="mdc-data-table file-table" *ngIf="files.length">
+    <table class="mdc-data-table__table">
+      <tbody>
+        <app-file
+          *ngFor="let file of files"
+          [file]="file"
+          [canDelete]="true"
+          (deleteFile)="deleteFile($event)"
+        ></app-file>
+      </tbody>
+    </table>
+  </div>
 </div>

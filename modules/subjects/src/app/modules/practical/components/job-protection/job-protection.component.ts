@@ -105,7 +105,7 @@ export class JobProtectionComponent implements OnDestroy {
                 attachments: Attachment[]
                 practicalId: number
               },
-              number
+              number,
             ]) =>
               this.getSendFile(
                 file,

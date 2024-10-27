@@ -6,9 +6,11 @@
     class="protection-schedule-component__subGroups"
     *ngFor="let subGroup of state.subGroups"
   >
-    <ng-container *ngIf="(state.students | filter: 'SubGroup':subGroup).length">
+    <ng-container
+      *ngIf="(state.students | filter: 'SubGroup' : subGroup).length"
+    >
       <ng-container
-        *var="state.labs | filter: 'SubGroup':subGroup as subGroupLabs"
+        *var="state.labs | filter: 'SubGroup' : subGroup as subGroupLabs"
       >
         <div class="protection-schedule-component__subGroups-title">
           <span class="protection-schedule-component__subGroups-title-text"
@@ -19,12 +21,12 @@
           class="protection-schedule-component__subGroups-table"
           *var="
             state.scheduleProtectionLabs
-              | filter: 'SubGroup':subGroup as subGroupProtectionSchedule
+              | filter: 'SubGroup' : subGroup as subGroupProtectionSchedule
           "
         >
           <table
             *var="
-              state.students | filter: 'SubGroup':subGroup as subGroupStudents
+              state.students | filter: 'SubGroup' : subGroup as subGroupStudents
             "
             mat-table
             [dataSource]="subGroupStudents"

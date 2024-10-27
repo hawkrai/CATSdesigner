@@ -11,9 +11,11 @@ export class AboutSystemPopoverComponent {
   year = new Date().getFullYear()
   public isAdmin: boolean
 
-  constructor(private dialogRef: MatDialogRef<AboutSystemPopoverComponent>, private autService: AuthenticationService) {
+  constructor(
+    private dialogRef: MatDialogRef<AboutSystemPopoverComponent>,
+    private autService: AuthenticationService
+  ) {
     dialogRef.disableClose = true
-
   }
 
   ngOnInit(): void {

@@ -85,7 +85,7 @@ export class VisitStatsService {
       EndTime: endTime,
       Building: building,
       Audience: audience,
-      Teacher: { LectorId: lecturerId }
+      Teacher: { LectorId: lecturerId },
     })
   }
 

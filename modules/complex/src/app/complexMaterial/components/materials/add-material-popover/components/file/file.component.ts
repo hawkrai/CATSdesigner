@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { AttachedFile } from 'src/app/models/AttachedFile'  
+import { AttachedFile } from 'src/app/models/AttachedFile'
 
 @Component({
   selector: 'app-file',
