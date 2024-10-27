@@ -10,10 +10,11 @@ export interface DialogData {
 
   name?: string
   subjectName?: string
-  isPublished?: boolean
 
+  isPublished?: boolean
   includeLabs?: boolean
-  includeLectures?: boolean
+  includeLecturers?: boolean
+  includeWorkshops?: boolean
   includeTests?: boolean
 
   url?: string
