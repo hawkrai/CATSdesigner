@@ -26,14 +26,9 @@
         [disabled]="true"
       />
     </mat-form-field>
-    <mat-checkbox
-      name="isPublishedCheckBox"
-      matInput
-      [(ngModel)]="data.isPublished"
-      >{{
-        'complex.openAccess' | translate: 'Открыть студентам доступ к ЭУМК'
-      }}</mat-checkbox
-    >
+    <mat-checkbox name="isPublished" matInput [(ngModel)]="data.isPublished">{{
+      'complex.openAccess' | translate: 'Открыть студентам доступ к ЭУМК'
+    }}</mat-checkbox>
     <span>
       <mat-checkbox
         [disabled]="!data.isNew"
