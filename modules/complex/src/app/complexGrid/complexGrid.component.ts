@@ -121,8 +121,10 @@ export class ComplexGridComponent implements OnInit {
         name: result.name,
         container: '',
         subjectId: this.subjectId,
+        isPublished: result.isPublished,
         includeLabs: result.includeLabs,
         includeLectures: result.includeLectures,
+        includeWorkshops: result.includeWorkshops,
         includeTests: result.includeTests,
       }
       this.showLoader = true
