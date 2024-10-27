@@ -12,13 +12,10 @@
         class="expandable-external"
         [ngClass]="{
           folder_file_icons: node.FilePath != null,
-          '..no-file.icon': node.FilePath == null
+          'no-file-icon': node.FilePath == null
         }"
       >
-        <ng-container *ngIf="node.FilePath != null">event_note</ng-container>
-        <ng-container *ngIf="node.FilePath == null"
-          >event_available</ng-container
-        >
+        <ng-container>event_available</ng-container>
       </mat-icon>
       <a
         class="btn clickable"
