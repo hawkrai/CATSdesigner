@@ -19,27 +19,27 @@ export class FileUploaderComponent {
     'application/pdf',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ];
+  ]
 
   constructor(
     protected translatePipe: TranslatePipe,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   uploadFile(input: HTMLInputElement) {
-    const file = input.files[0];
+    const file = input.files[0]
 
     if (file && this.validTypes.includes(file.type)) {
-      this.upload.emit(file);
+      this.upload.emit(file)
     } else {
       this.toastr.error(
         this.translatePipe.transform(
           'complex.fileUploadError',
           'Можно добавить файл только формата .pdf, .docx или .doc'
         )
-      );
+      )
     }
-    input.value = null;
+    input.value = null
   }
 
   deleteFile(file: AttachedFile) {

@@ -251,10 +251,10 @@ export class LessonService {
 
   cutTeacherName(name: string): string {
     if (name !== null) {
-      const splitted = name.split(' ', 3);
-      const a = splitted[1] ? ` ${splitted[1][0]}. ` : ' ';
-      const b = splitted[2] ? `${splitted[2][0]}. ` : ' ';
-      return splitted[0] + a + b;
+      const splitted = name.split(' ', 3)
+      const a = splitted[1] ? ` ${splitted[1][0]}. ` : ' '
+      const b = splitted[2] ? `${splitted[2][0]}. ` : ' '
+      return splitted[0] + a + b
     }
 
     return name
@@ -272,7 +272,9 @@ export class LessonService {
   > {
     const params = new HttpParams().set('loadSelf', loadSelf + '')
     return this.http
-      .get('../course/Services/CoreService.svc/GetJoinedLector/' + subjectId, { params })
+      .get('../course/Services/CoreService.svc/GetJoinedLector/' + subjectId, {
+        params,
+      })
       .pipe(map((res) => res['Lectors']))
   }
 

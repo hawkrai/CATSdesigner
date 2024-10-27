@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core'
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { LayoutService } from '../layout.service'
 import { AuthenticationService } from '../../core/services/auth.service'
 import { first, takeUntil, tap } from 'rxjs/operators'
@@ -20,7 +20,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { ConfirmationService } from 'src/app/core/services/confirmation.service'
 import { MatSelectionList } from '@angular/material/list'
 import { MatSelect } from '@angular/material/select'
-import {DOCUMENT} from "@angular/common";
+import { DOCUMENT } from '@angular/common'
 
 interface DropDownValue {
   name: string
@@ -156,12 +156,12 @@ export class NavComponent implements OnInit, OnDestroy {
   private setCookie(name: string, value: string, days: number) {
     const date = new Date()
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
-    const expires = "expires=" + date.toUTCString()
-    this.document.cookie = name + "=" + value + ";" + expires + ";path=/"
+    const expires = 'expires=' + date.toUTCString()
+    this.document.cookie = name + '=' + value + ';' + expires + ';path=/'
   }
 
   private getCookie(name: string): string | null {
-    const nameEQ = name + "="
+    const nameEQ = name + '='
     const ca = this.document.cookie.split(';')
     for (let i = 0; i < ca.length; i++) {
       let c = ca[i]

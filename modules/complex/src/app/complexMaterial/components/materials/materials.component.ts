@@ -67,29 +67,29 @@ export class MaterialComponent implements OnInit {
 
   localizeTree(nodes: any[]): any[] {
     const translations = {
-      "Титульный экран": "complex.titleScreen",
-      "Программа курса": "complex.courseProgram",
-      "Теоретический раздел": "complex.section.theoretical",
-      "Практический раздел": "complex.section.practical",
-      "Блок контроля знаний": "complex.section.control"
-    };
+      'Титульный экран': 'complex.titleScreen',
+      'Программа курса': 'complex.courseProgram',
+      'Теоретический раздел': 'complex.section.theoretical',
+      'Практический раздел': 'complex.section.practical',
+      'Блок контроля знаний': 'complex.section.control',
+    }
 
-    return nodes.map(node => {
-      let localizedName = node.Name;
+    return nodes.map((node) => {
+      let localizedName = node.Name
       for (const key in translations) {
         if (translations.hasOwnProperty(key)) {
           if (node.Name.includes(key)) {
-            localizedName = this.translatePipe.transform(translations[key], key);
-            break;
+            localizedName = this.translatePipe.transform(translations[key], key)
+            break
           }
         }
       }
       return {
         ...node,
         Name: localizedName,
-        children: node.children ? this.localizeTree(node.children) : []
-      };
-    });
+        children: node.children ? this.localizeTree(node.children) : [],
+      }
+    })
   }
 
   openSnackBar(): void {
@@ -103,7 +103,7 @@ export class MaterialComponent implements OnInit {
         duration: 1000,
         horizontalPosition: 'end',
         verticalPosition: 'bottom',
-        panelClass: ['mat-warn']
+        panelClass: ['mat-warn'],
       }
     )
   }
@@ -114,7 +114,7 @@ export class MaterialComponent implements OnInit {
         const path = '/api/Upload?fileName=' + (result && result[0])
         const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
           width: '1000px',
-          height:'100%',
+          height: '100%',
           data: { name: 'name', documents: result, url: path },
         })
 
@@ -129,7 +129,7 @@ export class MaterialComponent implements OnInit {
     const path = '/api/Upload?fileName=' + filename
     const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
       width: '1000px',
-      height:'100%',
+      height: '100%',
       data: { name: 'name', url: path },
     })
 

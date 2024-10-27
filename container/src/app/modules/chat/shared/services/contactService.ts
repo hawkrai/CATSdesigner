@@ -19,7 +19,10 @@ export class ContactService {
   )
   public openChatComand: BehaviorSubject<Chat> = new BehaviorSubject<Chat>(null)
   public isChatOpen: boolean
-  constructor(private http: HttpClient, private dataService: DataService) {
+  constructor(
+    private http: HttpClient,
+    private dataService: DataService
+  ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
     this.isLecturer = this.user.role == 'lector'
   }

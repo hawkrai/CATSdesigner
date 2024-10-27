@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Input} from '@angular/core'
+import { Component, EventEmitter, OnInit, Input } from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 
@@ -50,12 +50,12 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.checkForPredTest(); 
+    this.checkForPredTest()
   }
 
   checkForPredTest(): void {
     this.testService.getPredTest().subscribe((predTestId) => {
-      this.hasPredTest = predTestId > 0 
+      this.hasPredTest = predTestId > 0
       this.isAdaptiveLearningDisabled = !this.hasPredTest
     })
   }
@@ -103,11 +103,11 @@ export class ComplexMaterialComponent implements OnInit {
             adaptivityType: adaptivityType,
             isAdaptive: true,
             adaptivity: themaRes,
-        }
+          }
 
           const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
             width: '100%',
-            height:'100%',
+            height: '100%',
             data: diaogData,
           })
 

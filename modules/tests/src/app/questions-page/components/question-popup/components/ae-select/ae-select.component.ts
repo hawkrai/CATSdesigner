@@ -59,7 +59,10 @@ export class AeSelectComponent implements OnInit, ControlValueAccessor {
 
   @ViewChild('labelButton', { static: true }) labelButton: ElementRef
 
-  constructor(private elRef: ElementRef, private r: Renderer2) {}
+  constructor(
+    private elRef: ElementRef,
+    private r: Renderer2
+  ) {}
 
   ngOnInit() {
     this.selectedOption = this.options[0]

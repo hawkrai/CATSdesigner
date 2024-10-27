@@ -48,7 +48,8 @@
       <input matInput [formControl]="templateNameControl" />
       <mat-error *ngIf="templateNameControl.invalid">{{
         'text.diplomProject.templateNameControl'
-          | translate: 'До 30
+          | translate
+            : 'До 30
         символов'
       }}</mat-error>
     </mat-form-field>
@@ -128,7 +129,8 @@
         ></textarea>
         <mat-error *ngIf="inputDataControl.invalid">{{
           'text.diplomProject.inputDataControl'
-            | translate: 'До 999
+            | translate
+              : 'До 999
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -144,7 +146,8 @@
         ></textarea>
         <mat-error *ngIf="contentControl.invalid">{{
           'text.diplomProject.inputDataControl'
-            | translate: 'До 999
+            | translate
+              : 'До 999
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -162,7 +165,8 @@
         ></textarea>
         <mat-error *ngIf="drawContentControl.invalid">{{
           'text.diplomProject.inputDataControl'
-            | translate: 'До 999
+            | translate
+              : 'До 999
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -181,7 +185,9 @@
           [formControl]="univerControl"
         ></textarea>
         <mat-error *ngIf="univerControl.invalid">{{
-          'text.diplomProject.control' | translate: 'До 255
+          'text.diplomProject.control'
+            | translate
+              : 'До 255
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -195,14 +201,17 @@
           [formControl]="facultyControl"
         ></textarea>
         <mat-error *ngIf="facultyControl.invalid">{{
-          'text.diplomProject.control' | translate: 'До 255
+          'text.diplomProject.control'
+            | translate
+              : 'До 255
           символов'
         }}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>{{
           'text.diplomProject.headCathedra'
-            | translate: 'Фамилия, инициалы заведующего
+            | translate
+              : 'Фамилия, инициалы заведующего
           кафедры'
         }}</mat-label>
         <textarea
@@ -211,7 +220,9 @@
           [formControl]="headCathedraControl"
         ></textarea>
         <mat-error *ngIf="headCathedraControl.invalid">{{
-          'text.diplomProject.control' | translate: 'До 255
+          'text.diplomProject.control'
+            | translate
+              : 'До 255
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -231,7 +242,8 @@
         <mat-datepicker #dp1></mat-datepicker>
         <mat-error *ngIf="startDateControl.invalid">{{
           'text.diplomProject.dateControl'
-            | translate: 'Неправильный формат
+            | translate
+              : 'Неправильный формат
           (ДД.ММ.ГГГГ)'
         }}</mat-error>
       </mat-form-field>
@@ -250,7 +262,8 @@
         <mat-datepicker #dp2></mat-datepicker>
         <mat-error *ngIf="endDateControl.invalid">{{
           'text.diplomProject.dateControl'
-            | translate: 'Неправильный формат
+            | translate
+              : 'Неправильный формат
           (ДД.ММ.ГГГГ)'
         }}</mat-error>
       </mat-form-field>
@@ -271,7 +284,9 @@
           [formControl]="computerConsultantControl"
         ></textarea>
         <mat-error *ngIf="computerConsultantControl.invalid">{{
-          'text.diplomProject.control' | translate: 'До 255
+          'text.diplomProject.control'
+            | translate
+              : 'До 255
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -288,7 +303,9 @@
           [formControl]="healthAndSafetyConsultantControl"
         ></textarea>
         <mat-error *ngIf="healthAndSafetyConsultantControl.invalid">{{
-          'text.diplomProject.control' | translate: 'До 255
+          'text.diplomProject.control'
+            | translate
+              : 'До 255
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -305,7 +322,9 @@
           [formControl]="econimicsConsultantControl"
         ></textarea>
         <mat-error *ngIf="econimicsConsultantControl.invalid">{{
-          'text.diplomProject.control' | translate: 'До 255
+          'text.diplomProject.control'
+            | translate
+              : 'До 255
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -322,7 +341,9 @@
           [formControl]="normocontrolConsultantControl"
         ></textarea>
         <mat-error *ngIf="normocontrolConsultantControl.invalid">{{
-          'text.diplomProject.control' | translate: 'До 255
+          'text.diplomProject.control'
+            | translate
+              : 'До 255
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -339,7 +360,8 @@
         ></textarea>
         <mat-error *ngIf="decreeNumberControl.invalid">{{
           'text.diplomProject.templateNameControl'
-            | translate: 'До 30
+            | translate
+              : 'До 30
           символов'
         }}</mat-error>
       </mat-form-field>
@@ -357,7 +379,8 @@
         <mat-datepicker #dp3></mat-datepicker>
         <mat-error *ngIf="decreeDateControl.invalid">{{
           'text.diplomProject.dateControl'
-            | translate: 'Неправильный
+            | translate
+              : 'Неправильный
           формат (ДД.ММ.ГГГГ)'
         }}</mat-error>
       </mat-form-field>
