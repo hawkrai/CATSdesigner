@@ -77,5 +77,7 @@ export class StudentsMonitoringComponent implements OnInit {
 
   onClick() {
     window.location.reload()
+
+    sessionStorage.removeItem('isStudentMonitoring')
   }
 }
