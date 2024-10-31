@@ -12,6 +12,7 @@ using System.IO;
 using System.Configuration;
 using Application.Infrastructure.KnowledgeTestsManagement;
 using Application.Core.Helpers;
+using System.Linq.Dynamic;
 
 namespace Application.Infrastructure.ConceptManagement
 {
@@ -273,17 +274,62 @@ namespace Application.Infrastructure.ConceptManagement
 	        return GetElementsByParentId(parentId).Where(c => c.UserId == authorId);
         }
 
-        public Concept UpdateRootConcept(int id, string name, bool published)
+        public Concept UpdateRootConcept(int id, string name, bool isPublished, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshop = true)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 var concept = repositoriesContainer.ConceptRepository.GetById(id);
                 concept.Name = name;
-                concept.Published = published;
+                concept.Published = isPublished;
                 repositoriesContainer.ConceptRepository.Save(concept);
-                repositoriesContainer.ApplyChanges();
 
-                TryPublishParent(concept.ParentId, repositoriesContainer);
+                IEnumerable<Concept> tempConcepts = GetElementsByParentId(concept.Id).Where(c => c.ReadOnly == true);
+                Boolean labSectionPublished = includeLabs || includeWorkshop;
+                foreach (Concept conceptChild in tempConcepts)
+                {
+                    switch (conceptChild.Name)
+                    {
+                        case LectSectionName:
+                            if (conceptChild.Published != includeLectures)
+                            {
+                                conceptChild.Published = includeLectures;
+                                repositoriesContainer.ConceptRepository.Save(conceptChild);
+                            }
+                            break;
+
+                        case LabSectionName:
+                            if (conceptChild.Published != (labSectionPublished))
+                            {
+                                conceptChild.Published = labSectionPublished;
+                                repositoriesContainer.ConceptRepository.Save(conceptChild);
+                            }
+                            break;
+
+                        case TestSectionName:
+                            if (conceptChild.Published != includeTests)
+                            {
+                                conceptChild.Published = includeTests;
+                                repositoriesContainer.ConceptRepository.Save(conceptChild);
+                            }
+                            break;
+
+                        default:
+                            if (includeTests && conceptChild.LabId.HasValue && conceptChild.Published != includeLabs)
+                            {
+                                conceptChild.Published = includeLabs;
+                                repositoriesContainer.ConceptRepository.Save(conceptChild);
+                            }
+                            else if (includeWorkshop && conceptChild.PracticalId.HasValue && conceptChild.Published != includeWorkshop)
+                            {
+                                conceptChild.Published = includeWorkshop;
+                                repositoriesContainer.ConceptRepository.Save(conceptChild);
+                            }
+                            break;
+                    }
+                }
+                repositoriesContainer.ApplyChanges();
+                //TryPublishParent(concept.ParentId, repositoriesContainer);
+
                 return concept;
             }
         }
@@ -484,12 +530,12 @@ namespace Application.Infrastructure.ConceptManagement
             return string.Format("P{0}", Guid.NewGuid().ToString("N").ToUpper());
         }
 
-        public Concept CreateRootConcept(string name, int authorId, int subjectId, bool includeLabs = true, bool includeLectures = true, bool includeTests = true)
+        public Concept CreateRootConcept(string name, int authorId, int subjectId, bool isPublished = true, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshop = true)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 	        var author = repositoriesContainer.UsersRepository.GetBy(new Query<User>().AddFilterClause(u => u.Id == authorId));
 	        var subject = repositoriesContainer.SubjectRepository.GetBy(new Query<Subject>().AddFilterClause(s => s.Id == subjectId));
-	        var concept = new Concept(name, author, subject, true, false);
+	        var concept = new Concept(name, author, subject, true, isPublished);
 
             var existingConcept = repositoriesContainer.ConceptRepository.GetBy(new Query<Concept>().AddFilterClause(c => c.Name == name));
             if (existingConcept != null)
@@ -499,19 +545,19 @@ namespace Application.Infrastructure.ConceptManagement
 
             repositoriesContainer.ConceptRepository.Save(concept);
 	        repositoriesContainer.ApplyChanges();
-	        InitBaseChildrens(concept, repositoriesContainer, includeLabs, includeLectures, includeTests);
+	        InitBaseChildrens(concept, repositoriesContainer, includeLabs, includeLectures, includeTests, includeWorkshop);
 	        return repositoriesContainer.ConceptRepository.GetBy(new Query<Concept>().AddFilterClause(c => c.Id == concept.Id));
         }
 
-        private void InitBaseChildrens(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeLectures, bool includeTests)
+        private void InitBaseChildrens(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshop)
         {
-	        var concept1 = new Concept(TitlePageSectionName, parent.Author, parent.Subject, false, false)
+	        var concept1 = new Concept(TitlePageSectionName, parent.Author, parent.Subject, false, true)
 	        {
 		        ParentId = parent.Id, ReadOnly = true
 	        };
 	        repositoriesContainer.ConceptRepository.Save(concept1);
 
-	        var concept2 = new Concept(ProgramSectionName, parent.Author, parent.Subject, false, false)
+	        var concept2 = new Concept(ProgramSectionName, parent.Author, parent.Subject, false, true)
 	        {
 		        ParentId = parent.Id, ReadOnly = true
 	        };
@@ -520,44 +566,35 @@ namespace Application.Infrastructure.ConceptManagement
             concept1.NextConcept = concept2.Id;
             concept2.PrevConcept = concept1.Id;
 
-            var concept3 = new Concept(LectSectionName, parent.Author, parent.Subject, true, false)
+            var concept3 = new Concept(LectSectionName, parent.Author, parent.Subject, true, includeLectures)
             {
 	            ParentId = parent.Id, ReadOnly = true
             };
             repositoriesContainer.ConceptRepository.Save(concept3);
-            if (includeLectures)
-            {
-                InitLectChild(concept3, repositoriesContainer);
-            }
+            InitLectChild(concept3, repositoriesContainer);
 
             concept2.NextConcept = concept3.Id;
             concept3.PrevConcept = concept2.Id;
 
-            var concept4 = new Concept(LabSectionName, parent.Author, parent.Subject, true, false)
+            var concept4 = new Concept(LabSectionName, parent.Author, parent.Subject, true, includeLabs || includeWorkshop)
             {
 	            ParentId = parent.Id, ReadOnly = true
             };
             repositoriesContainer.ConceptRepository.Save(concept4);
-            if (includeLabs)
-            {
-                InitPractChild(concept4, repositoriesContainer);
-            }
+            InitPractChild(concept4, repositoriesContainer, includeLabs, includeWorkshop);
 
             concept3.NextConcept = concept4.Id;
             concept4.PrevConcept = concept3.Id;
 
-            if (includeTests)
+            var concept5 = new Concept(TestSectionName, parent.Author, parent.Subject, true, includeTests)
             {
-                var concept5 = new Concept(TestSectionName, parent.Author, parent.Subject, true, true)
-                {
-                    ParentId = parent.Id,
-                    ReadOnly = true
-                };
-                repositoriesContainer.ConceptRepository.Save(concept5);
+                ParentId = parent.Id,
+                ReadOnly = true
+            };
+            repositoriesContainer.ConceptRepository.Save(concept5);
 
-                concept5.PrevConcept = concept4.Id;
-                concept4.NextConcept = concept5.Id;
-            }
+            concept5.PrevConcept = concept4.Id;
+            concept4.NextConcept = concept5.Id;
             
             repositoriesContainer.ApplyChanges();
         }
@@ -570,7 +607,7 @@ namespace Application.Infrastructure.ConceptManagement
             Concept prev = null;
             foreach (var item in sub.Lectures.OrderBy(s => s.Order))
             {
-	            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, false)
+	            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, true)
 	            {
 		            ParentId = parent.Id, LectureId = item.Id
 	            };
@@ -594,8 +631,10 @@ namespace Application.Infrastructure.ConceptManagement
                                        on at.PathName equals lec.Attachments
                                 where lec.Id == lectureId
                                 select at;
-
-            AddConceptAttachements(lecturesFiles.AsEnumerable(), parent, repositoriesContainer);
+            if (lecturesFiles.Any())
+            {
+                AddConceptAttachements(lecturesFiles.AsEnumerable(), parent, repositoriesContainer);
+            }
 
             var itemsToUpdate = repositoriesContainer.ConceptRepository
                 .GetAll(new Query<Concept>(x => x.ParentId == parent.Id))
@@ -609,7 +648,7 @@ namespace Application.Infrastructure.ConceptManagement
             repositoriesContainer.ConceptRepository.Save(itemsToUpdate);
         }
 
-        private void InitPractChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer)
+        private void InitPractChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeWorkshop)
         {
             Concept prev = null;
             var sub = SubjectManagementService.GetSubject(
@@ -623,7 +662,7 @@ namespace Application.Infrastructure.ConceptManagement
 
 	            foreach (var item in sub.Labs.OrderBy(s => s.Order))
 	            {
-		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, false)
+		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeLabs)
 		            {
 			            ParentId = parent.Id, LabId = item.Id
 		            };
@@ -646,7 +685,7 @@ namespace Application.Infrastructure.ConceptManagement
             {
 	            foreach (var item in sub.Practicals.OrderBy(s => s.Order))
 	            {
-		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, false)
+		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeWorkshop)
 		            {
 			            ParentId = parent.Id, PracticalId = item.Id
 		            };
@@ -675,9 +714,9 @@ namespace Application.Infrastructure.ConceptManagement
                                        on at.PathName equals lab.Attachments
                                 where lab.Id == labId
                                 select at;
-
-                AddConceptAttachements(labsFiles, parent, repositoriesContainer);
-
+                if (labsFiles.Any()) { 
+                    AddConceptAttachements(labsFiles, parent, repositoriesContainer);
+                }
                 var itemsToUpdate = repositoriesContainer.ConceptRepository
                     .GetAll(new Query<Concept>(x => x.ParentId == parent.Id))
                     .AsEnumerable()
@@ -734,15 +773,18 @@ namespace Application.Infrastructure.ConceptManagement
                 {
                     var friendlyFileName = Path.GetFileNameWithoutExtension(file.Name);
                     var sourceFilePath = $"{_storageRoot}{file.PathName}//{file.FileName}";
-                    itemsToAdd.Add(new Attachment()
+                    if (File.Exists(sourceFilePath))
                     {
-                        AttachmentType = AttachmentType.Document,
-                        Name = string.Format("{0}.pdf", friendlyFileName),
-                        PathName = GetGuidFileName(),
-                        FileName = convertor.Convert(sourceFilePath),
-                        UserId = UserContext.CurrentUserId,
-                        CreationDate = DateTime.UtcNow
-                    });
+                        itemsToAdd.Add(new Attachment()
+                        {
+                            AttachmentType = AttachmentType.Document,
+                            Name = string.Format("{0}.pdf", friendlyFileName),
+                            PathName = GetGuidFileName(),
+                            FileName = convertor.Convert(sourceFilePath),
+                            UserId = UserContext.CurrentUserId,
+                            CreationDate = DateTime.UtcNow
+                        });
+                    }
                 }
 
                 currentRepContainer.AttachmentRepository.Save(itemsToAdd);
@@ -760,7 +802,14 @@ namespace Application.Infrastructure.ConceptManagement
                     ParentId = parent.Id,
                     Container = attachement.PathName
                 };
-                currentRepContainer.ConceptRepository.Save(concept);
+                try
+                {
+                    currentRepContainer.ConceptRepository.Save(concept);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
                 if (prev != null)
                 {
                     concept.PrevConcept = prev.Id;
