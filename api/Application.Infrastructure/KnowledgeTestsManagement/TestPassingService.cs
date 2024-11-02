@@ -6,8 +6,11 @@ using LMPlatform.Models.KnowledgeTesting;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Nest;
+using Test = LMPlatform.Models.KnowledgeTesting.Test;
 
 namespace Application.Infrastructure.KnowledgeTestsManagement
 {
@@ -92,7 +95,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 unockResults =
-                    repositoriesContainer.TestUnlocksRepository.GetAll(new Query<TestUnlock>(
+                    repositoriesContainer.TestUnlocksRepository.GetAll(new Core.Data.Query<TestUnlock>(
                         testUnlock => testIds.Contains(testUnlock.TestId))
                         .Include(testUnlock => testUnlock.Student.User.UserAnswersOnTestQuestions))
                         .Include(testUnlock => testUnlock.Test)
@@ -118,7 +121,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 tests = repositoriesContainer.TestsRepository.GetAll(
-                    new Query<Test>(
+                    new Core.Data.Query<Test>(
                         test =>
                             test.SubjectId == subjectId)).ToList();
             }
@@ -151,7 +154,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 result =
                     repositoriesContainer.RepositoryFor<TestPassResult>().GetAll(
-                        new Query<TestPassResult>(res => testIds.Contains(res.TestId) && res.StudentId == studentId)).ToList();
+                        new Core.Data.Query<TestPassResult>(res => testIds.Contains(res.TestId) && res.StudentId == studentId)).ToList();
             }
             
             foreach (var testPassResult in result)
@@ -171,7 +174,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 result =
                     repositoriesContainer.RepositoryFor<TestPassResult>().GetAll(
-                        new Query<TestPassResult>(res => testIds.Contains(res.TestId) && res.StudentId == studentId)).ToList();
+                        new Core.Data.Query<TestPassResult>(res => testIds.Contains(res.TestId) && res.StudentId == studentId)).ToList();
             }
 
             foreach (var testPassResult in result)
@@ -253,13 +256,13 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                students = repositoriesContainer.StudentsRepository.GetAll(new Query<Student>(student => student.GroupId == groupId)
+                students = repositoriesContainer.StudentsRepository.GetAll(new Core.Data.Query<Student>(student => student.GroupId == groupId)
                     .Include(student => student.User.TestPassResults))
                     .ToList();
 
                 subjectTestIds =
                     repositoriesContainer.SubjectRepository.GetBy(
-                        new Query<Subject>(s => s.Id == subjectId).Include(s => s.SubjectTests))
+                        new Core.Data.Query<Subject>(s => s.Id == subjectId).Include(s => s.SubjectTests))
                         .SubjectTests.Select(st => st.Id)
                         .ToList();
             }
@@ -287,14 +290,14 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-				students = repositoriesContainer.StudentsRepository.GetAll(new Query<Student>(student => student.GroupId == groupId && (student.Confirmed == null || student.Confirmed.Value))
+				students = repositoriesContainer.StudentsRepository.GetAll(new Core.Data.Query<Student>(student => student.GroupId == groupId && (student.Confirmed == null || student.Confirmed.Value))
                     .Include(student => student.User)
                     .Include(student => student.User.TestPassResults))
                     .ToList();
 
                 subjectTestIds =
                     repositoriesContainer.SubjectRepository.GetBy(
-                        new Query<Subject>(s => s.Id == subjectId).Include(s => s.SubjectTests))
+                        new Core.Data.Query<Subject>(s => s.Id == subjectId).Include(s => s.SubjectTests))
                         .SubjectTests.Select(st => st.Id)
                         .ToList();
             }
@@ -373,10 +376,46 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 availableTests = repositoriesContainer.TestsRepository.GetAll(
-                    new Query<Test>(
-                        test =>
-                            test.SubjectId == subjectId && (test.ForNN || test.ForSelfStudy || (!test.ForEUMK && !test.BeforeEUMK)) && test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == studentId) && test.Questions.Count > 0))
+                        new Core.Data.Query<Test>(
+                            test =>
+                                test.SubjectId == subjectId &&
+                                (test.ForNN || test.ForSelfStudy || (!test.ForEUMK && !test.BeforeEUMK))
+                                && test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == studentId)
+                                && test.Questions.Count > 0))
                     .ToList();
+            }
+
+            return availableTests;
+        }
+
+        public IEnumerable<Test> GetAvailableTestsForUserMobile(int userId, int subjectId)
+        {
+            IEnumerable<Test> availableTests;
+            using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
+            {
+                var lecturer = repositoriesContainer.LecturerRepository.GetBy(new Core.Data.Query<Lecturer>(
+                    lecturer => lecturer.Id == userId));
+                if (lecturer != null)
+                {
+                    availableTests = repositoriesContainer.TestsRepository.GetAll(
+                            new Core.Data.Query<Test>(
+                                test =>
+                                    test.SubjectId == subjectId &&
+                                    (test.ForNN || test.ForSelfStudy || (!test.ForEUMK && !test.BeforeEUMK))
+                                    && test.Questions.Count > 0))
+                        .ToList();
+                }
+                else
+                {
+                    availableTests = repositoriesContainer.TestsRepository.GetAll(
+                            new Core.Data.Query<Test>(
+                                test =>
+                                    test.SubjectId == subjectId &&
+                                    (test.ForNN || test.ForSelfStudy || (!test.ForEUMK && !test.BeforeEUMK))
+                                    && test.TestUnlocks.Any(testUnlock => testUnlock.StudentId == userId)
+                                    && test.Questions.Count > 0))
+                        .ToList();
+                }
             }
 
             return availableTests;
@@ -388,7 +427,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 if (
                     !repositoriesContainer.SubjectRepository.GetAll(
-                        new Query<Subject>(
+                        new Core.Data.Query<Subject>(
                             subject =>
                                 subject.Id == subjectId &&
                                 subject.SubjectGroups.Any(sg => sg.Group.Students.Any(st => st.Id == studentId)))).Any())
@@ -396,7 +435,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                     return false;
                 }
             }
-
+            
             return true;
         }
 
@@ -411,7 +450,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 IRepositoryBase<AnswerOnTestQuestion> repository = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>();
                 testAnswers =
                     repository.GetAll(
-                        new Query<AnswerOnTestQuestion>(
+                        new Core.Data.Query<AnswerOnTestQuestion>(
                             testAnswer => testAnswer.TestId == testId && testAnswer.UserId == userId && !testAnswer.TestEnded)).ToList();
             }
 
@@ -432,7 +471,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 IRepositoryBase<AnswerOnTestQuestion> repository = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>();
                 testAnswers =
                     repository.GetAll(
-                        new Query<AnswerOnTestQuestion>(
+                        new Core.Data.Query<AnswerOnTestQuestion>(
                             testAnswer => testAnswer.TestId == testId && testAnswer.UserId == userId && testAnswer.TestEnded)).ToList();
             }
 
@@ -447,7 +486,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 IRepositoryBase<AnswerOnTestQuestion> repository = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>();
 
 				var answerOnTestQuestion = repository.GetAll(
-						new Query<AnswerOnTestQuestion>(
+						new Core.Data.Query<AnswerOnTestQuestion>(
 							testAnswer => testAnswer.QuestionId == questionId && testAnswer.UserId == userId)).ToList();
 
 				if(answerOnTestQuestion != null && answerOnTestQuestion.Any())
@@ -581,7 +620,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 answerOnTestQuestion =
                     repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>().GetBy(
-                        new Query<AnswerOnTestQuestion>(answer => answer.UserId == userId && answer.TestId == testId && answer.Number == questionNumber && !answer.TestEnded));
+                        new Core.Data.Query<AnswerOnTestQuestion>(answer => answer.UserId == userId && answer.TestId == testId && answer.Number == questionNumber && !answer.TestEnded));
             }
 
             return answerOnTestQuestion;
@@ -594,7 +633,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 answerResult =
                     repositoriesContainer.RepositoryFor<Answer>().GetBy(
-                        new Query<Answer>(answer => answer.Id == id));
+                        new Core.Data.Query<Answer>(answer => answer.Id == id));
             }
 
             return answerResult;
@@ -652,8 +691,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
 
                 repositoriesContainer.RepositoryFor<TestPassResult>().Save(testPassResult);
 
-                var savedTestUnlock = repositoriesContainer.TestUnlocksRepository.GetAll(new
-                    Query<TestUnlock>()
+                var savedTestUnlock = repositoriesContainer.TestUnlocksRepository.GetAll(new Core.Data.Query<TestUnlock>()
                     .AddFilterClause(testUnlock => testUnlock.StudentId == userId && testUnlock.TestId == testId))
                     .SingleOrDefault();
 
@@ -675,7 +713,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 result =
                     repositoriesContainer.RepositoryFor<TestPassResult>().GetBy(
-                        new Query<TestPassResult>(res => res.TestId == testId && res.StudentId == userId));
+                        new Core.Data.Query<TestPassResult>(res => res.TestId == testId && res.StudentId == userId));
             }
 
             return result;
@@ -750,7 +788,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             {
                 queston =
                     repositoriesContainer.QuestionsRepository.GetBy(
-                        new Query<Question>(question => question.Id == id)
+                        new Core.Data.Query<Question>(question => question.Id == id)
                         .Include(question => question.Answers));
             }
 
@@ -768,7 +806,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                 IRepositoryBase<AnswerOnTestQuestion> repository = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>();
                 testAnswers =
                     repository.GetAll(
-                        new Query<AnswerOnTestQuestion>(
+                        new Core.Data.Query<AnswerOnTestQuestion>(
                             testAnswer => testAnswer.TestId == testId && testAnswer.UserId == userId && !testAnswer.TestEnded)).ToList();
             }
 
@@ -823,7 +861,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             testPassResult.StartTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var toDelete = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>().GetAll(new Query<AnswerOnTestQuestion>(x => x.TestId == testId && x.UserId == userId));
+                var toDelete = repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>().GetAll(new Core.Data.Query<AnswerOnTestQuestion>(x => x.TestId == testId && x.UserId == userId));
                 repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>().Delete(toDelete);
                 repositoriesContainer.RepositoryFor<AnswerOnTestQuestion>().Save(answersTemplate);
                 repositoriesContainer.RepositoryFor<TestPassResult>().Save(testPassResult);
@@ -836,7 +874,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             Test testResult;
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                testResult = repositoriesContainer.TestsRepository.GetBy(new Query<Test>(test => test.Id == testId)
+                testResult = repositoriesContainer.TestsRepository.GetBy(new Core.Data.Query<Test>(test => test.Id == testId)
                     .Include(test => test.Questions));
             }
 
@@ -859,14 +897,14 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             bool isTestLockedForUser;
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
-                var testObject = repositoriesContainer.TestsRepository.GetBy(new Query<Test>(test => test.Id == testId));
+                var testObject = repositoriesContainer.TestsRepository.GetBy(new Core.Data.Query<Test>(test => test.Id == testId));
                 if (testObject != null && (testObject.ForSelfStudy || testObject.BeforeEUMK || testObject.ForEUMK))
                 {
                     isTestLockedForUser = false;
                 }
                 else
                 {
-                    var userResult = repositoriesContainer.UsersRepository.GetBy(new Query<User>(user => user.Id == userId)
+                    var userResult = repositoriesContainer.UsersRepository.GetBy(new Core.Data.Query<User>(user => user.Id == userId)
                         .Include(user => user.Lecturer));
                     if (userResult.Lecturer != null)
                     {
@@ -874,7 +912,7 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
                     }
                     else
                     {
-                        isTestLockedForUser = !repositoriesContainer.TestUnlocksRepository.GetAll(new Query<TestUnlock>()
+                        isTestLockedForUser = !repositoriesContainer.TestUnlocksRepository.GetAll(new Core.Data.Query<TestUnlock>()
                             .AddFilterClause(testUnlock => testUnlock.StudentId == userId)
                             .AddFilterClause(testUnlock => testUnlock.TestId == testId))
                             .Any();
@@ -890,12 +928,12 @@ namespace Application.Infrastructure.KnowledgeTestsManagement
             using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 
             var tests = repositoriesContainer.TestsRepository.GetAll(
-                new Query<Test>(
+                new Core.Data.Query<Test>(
                     test => !test.ForSelfStudy && !test.BeforeEUMK && !test.ForEUMK && !test.ForNN && test.SubjectId == subjectId)).ToList();
             var testIds = tests.Select(test => test.Id);
             List<TestPassResult> testsPassResult =
                      repositoriesContainer.RepositoryFor<TestPassResult>().GetAll(
-                         new Query<TestPassResult>(res =>  testIds.Contains(res.TestId) && studentsIds.Contains(res.StudentId))).ToList();
+                         new Core.Data.Query<TestPassResult>(res =>  testIds.Contains(res.TestId) && studentsIds.Contains(res.StudentId))).ToList();
             var testsResult = new Dictionary<int, List<TestPassResult>>();
 
             foreach (var testPassResult in testsPassResult)
