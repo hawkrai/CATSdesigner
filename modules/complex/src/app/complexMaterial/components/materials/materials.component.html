@@ -97,6 +97,17 @@
         <a
           class="complex-three-title btn clickable"
           (click)="openFolderPDF(node.Id)"
+          *ngIf="node.children.length !== 0"
+        >
+          {{ node.Name }}
+        </a>
+        <a
+          class="complex-three-title btn clickable"
+          *ngIf="node.children.length === 0"
+          [matTooltip]="
+            'complex.noInfo' | translate: 'Отсутствует информация по теме'
+          "
+          matTooltipPosition="right"
         >
           {{ node.Name }}
         </a>
