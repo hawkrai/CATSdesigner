@@ -44,12 +44,12 @@ namespace LMPlatform.UI.Services.Concept
 
         #region Used by complex module
         
-        public ConceptResult SaveRootConcept(string name, string container, int subjectId, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshop, bool isPublished)
+        public ConceptResult SaveRootConcept(string name, string container, int subjectId, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops, bool isPublished)
         {
             try
             {
                 //var authorId = UserContext.CurrentUserId;
-                var root = ConceptManagementService.CreateRootConcept(name, 2, subjectId, includeLabs, includeLectures, includeTests);
+                var root = ConceptManagementService.CreateRootConcept(name, 2, subjectId, isPublished, includeLabs, includeLectures, includeTests, includeWorkshops);
                 var subj = SubjectManagementService.GetSubject(new Query<Subject>(s => s.Id == subjectId));
                 return new ConceptResult
                 {
@@ -157,11 +157,11 @@ namespace LMPlatform.UI.Services.Concept
             }
         }
 
-        public ConceptResult EditRootConcept(int elementId, string name, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshop, bool isPublished)
+        public ConceptResult EditRootConcept(int elementId, string name, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops, bool isPublished)
         {
             try
             {
-                ConceptManagementService.UpdateRootConcept(elementId, name, includeLabs, includeLectures, includeTests, includeWorkshop, isPublished);
+                ConceptManagementService.UpdateRootConcept(elementId, name, includeLabs, includeLectures, includeTests, includeWorkshops, isPublished);
 
                 return new ConceptResult
                 {

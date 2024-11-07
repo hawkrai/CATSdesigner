@@ -274,7 +274,7 @@ namespace Application.Infrastructure.ConceptManagement
 	        return GetElementsByParentId(parentId).Where(c => c.UserId == authorId);
         }
 
-        public Concept UpdateRootConcept(int id, string name, bool isPublished, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshop = true)
+        public Concept UpdateRootConcept(int id, string name, bool isPublished, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshops = true)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
@@ -284,7 +284,7 @@ namespace Application.Infrastructure.ConceptManagement
                 repositoriesContainer.ConceptRepository.Save(concept);
 
                 IEnumerable<Concept> tempConcepts = GetElementsByParentId(concept.Id).Where(c => c.ReadOnly == true);
-                Boolean labSectionPublished = includeLabs || includeWorkshop;
+                Boolean labSectionPublished = includeLabs || includeWorkshops;
                 foreach (Concept conceptChild in tempConcepts)
                 {
                     switch (conceptChild.Name)
@@ -298,7 +298,7 @@ namespace Application.Infrastructure.ConceptManagement
                             break;
 
                         case LabSectionName:
-                            if (conceptChild.Published != (labSectionPublished))
+                            if (conceptChild.Published != labSectionPublished)
                             {
                                 conceptChild.Published = labSectionPublished;
                                 repositoriesContainer.ConceptRepository.Save(conceptChild);
@@ -319,9 +319,9 @@ namespace Application.Infrastructure.ConceptManagement
                                 conceptChild.Published = includeLabs;
                                 repositoriesContainer.ConceptRepository.Save(conceptChild);
                             }
-                            else if (includeWorkshop && conceptChild.PracticalId.HasValue && conceptChild.Published != includeWorkshop)
+                            else if (includeWorkshops && conceptChild.PracticalId.HasValue && conceptChild.Published != includeWorkshops)
                             {
-                                conceptChild.Published = includeWorkshop;
+                                conceptChild.Published = includeWorkshops;
                                 repositoriesContainer.ConceptRepository.Save(conceptChild);
                             }
                             break;
@@ -530,7 +530,7 @@ namespace Application.Infrastructure.ConceptManagement
             return string.Format("P{0}", Guid.NewGuid().ToString("N").ToUpper());
         }
 
-        public Concept CreateRootConcept(string name, int authorId, int subjectId, bool isPublished = true, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshop = true)
+        public Concept CreateRootConcept(string name, int authorId, int subjectId, bool isPublished = true, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshops = true)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
 	        var author = repositoriesContainer.UsersRepository.GetBy(new Query<User>().AddFilterClause(u => u.Id == authorId));
@@ -545,11 +545,11 @@ namespace Application.Infrastructure.ConceptManagement
 
             repositoriesContainer.ConceptRepository.Save(concept);
 	        repositoriesContainer.ApplyChanges();
-	        InitBaseChildrens(concept, repositoriesContainer, includeLabs, includeLectures, includeTests, includeWorkshop);
+	        InitBaseChildrens(concept, repositoriesContainer, includeLabs, includeLectures, includeTests, includeWorkshops);
 	        return repositoriesContainer.ConceptRepository.GetBy(new Query<Concept>().AddFilterClause(c => c.Id == concept.Id));
         }
 
-        private void InitBaseChildrens(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshop)
+        private void InitBaseChildrens(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops)
         {
 	        var concept1 = new Concept(TitlePageSectionName, parent.Author, parent.Subject, false, true)
 	        {
@@ -576,12 +576,12 @@ namespace Application.Infrastructure.ConceptManagement
             concept2.NextConcept = concept3.Id;
             concept3.PrevConcept = concept2.Id;
 
-            var concept4 = new Concept(LabSectionName, parent.Author, parent.Subject, true, includeLabs || includeWorkshop)
+            var concept4 = new Concept(LabSectionName, parent.Author, parent.Subject, true, includeLabs || includeWorkshops)
             {
 	            ParentId = parent.Id, ReadOnly = true
             };
             repositoriesContainer.ConceptRepository.Save(concept4);
-            InitPractChild(concept4, repositoriesContainer, includeLabs, includeWorkshop);
+            InitPractChild(concept4, repositoriesContainer, includeLabs, includeWorkshops);
 
             concept3.NextConcept = concept4.Id;
             concept4.PrevConcept = concept3.Id;
@@ -648,7 +648,7 @@ namespace Application.Infrastructure.ConceptManagement
             repositoriesContainer.ConceptRepository.Save(itemsToUpdate);
         }
 
-        private void InitPractChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeWorkshop)
+        private void InitPractChild(Concept parent, LmPlatformRepositoriesContainer repositoriesContainer, bool includeLabs, bool includeWorkshops)
         {
             Concept prev = null;
             var sub = SubjectManagementService.GetSubject(
@@ -685,7 +685,7 @@ namespace Application.Infrastructure.ConceptManagement
             {
 	            foreach (var item in sub.Practicals.OrderBy(s => s.Order))
 	            {
-		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeWorkshop)
+		            var concept = new Concept(item.Theme, parent.Author, parent.Subject, true, includeWorkshops)
 		            {
 			            ParentId = parent.Id, PracticalId = item.Id
 		            };
