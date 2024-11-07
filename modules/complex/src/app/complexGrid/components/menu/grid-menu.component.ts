@@ -64,7 +64,7 @@ export class GridMenuComponent {
         subjectName: res.SubjectName,
         isPublished: Boolean(res.Published),
         includeLabs: Boolean(res.IncludeLabs),
-        includeLecturers: Boolean(res.IncludeLecturers),
+        includeLectures: Boolean(res.IncludeLectures),
         includeWorkshops: Boolean(res.IncludeWorkshops),
         includeTests: Boolean(res.IncludeTests),
       }
@@ -82,7 +82,7 @@ export class GridMenuComponent {
             name: result.name,
             isPublished: Boolean(result.isPublished),
             includeLabs: Boolean(result.includeLabs),
-            includeLecturers: Boolean(result.includeLecturers),
+            includeLectures: Boolean(result.includeLectures),
             includeWorkshops: Boolean(result.includeWorkshops),
             includeTests: Boolean(result.includeTests),
           }

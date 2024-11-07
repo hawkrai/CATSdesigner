@@ -9,7 +9,7 @@ export class ComplexCascade {
   IsGroup: boolean
   ParentId: number
   IncludeLabs?: boolean
-  IncludeLecturers?: boolean
+  IncludeLectures?: boolean
   IncludeWorkshops?: boolean
   IncludeTests?: boolean
   Attachments: Attachment[]
