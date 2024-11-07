@@ -122,7 +122,7 @@ export class ComplexGridComponent implements OnInit {
         isPublished,
         includeLabs,
         includeWorkshops,
-        includeLecturers,
+        includeLectures,
         includeTests,
       } = result
 
@@ -132,7 +132,7 @@ export class ComplexGridComponent implements OnInit {
         subjectId: this.subjectId,
         isPublished,
         includeLabs,
-        includeLecturers,
+        includeLectures,
         includeWorkshops,
         includeTests,
       }
