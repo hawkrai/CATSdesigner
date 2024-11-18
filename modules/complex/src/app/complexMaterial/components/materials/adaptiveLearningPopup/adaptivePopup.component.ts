@@ -7,7 +7,7 @@ import {
 import { DialogData } from '../../../../models/DialogData'
 import { MaterialsPopoverComponent } from '../materials-popover/materials-popover.component'
 import { AdaptivityService } from '../../../../service/adaptivity.service'
-import {NotificationPopoverComponent} from "../notification-popover/notification-popover.component";
+import { NotificationPopoverComponent } from '../notification-popover/notification-popover.component'
 
 /**
  * @title Basic use of `<table mat-table>`

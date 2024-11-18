@@ -2,7 +2,9 @@
 <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
   <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
-      <mat-label>{{ 'common.nameComplexes' | translate: 'Название ЭУМК' }}</mat-label>
+      <mat-label>{{
+        'common.nameComplexes' | translate: 'Название ЭУМК'
+      }}</mat-label>
       <textarea
         class="lab-work-component__news-text"
         maxlength="256"
@@ -24,47 +26,53 @@
         [disabled]="true"
       />
     </mat-form-field>
-    <mat-checkbox
-      name="isPublishedCheckBox"
-      matInput
-      [(ngModel)]="data.isPublished"
-      >{{ 'complex.openAccess' | translate: 'Открыть студентам доступ к ЭУМК' }}</mat-checkbox
-    >
     <span>
       <mat-checkbox
-        [disabled]="!data.isNew"
+        name="isPublished"
+        matInput
+        [(ngModel)]="data.isPublished"
+        >{{
+          'complex.openAccess' | translate: 'Открыть студентам доступ к ЭУМК'
+        }}</mat-checkbox
+      >
+      <mat-checkbox
         name="includeLectures"
         matInput
         [(ngModel)]="data.includeLectures"
         >{{
-          'complex.include.lecture' | translate: 'Включить темы лекций предмета в теоретический раздел ЭУМК'
+          'complex.include.lecture'
+            | translate
+              : 'Включить темы лекций предмета в теоретический раздел ЭУМК'
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="!data.isNew"
         name="includeWorkshops"
         matInput
         [(ngModel)]="data.includeWorkshops"
         >{{
-          'complex.include.workshop' | translate: 'Включить темы практических занятий в практический раздел ЭУМК'
+          'complex.include.workshop'
+            | translate
+              : 'Включить темы практических занятий в практический раздел ЭУМК'
         }}</mat-checkbox
       >
-       <mat-checkbox
-        [disabled]="!data.isNew"
+      <mat-checkbox
         name="includeLabs"
         matInput
         [(ngModel)]="data.includeLabs"
         >{{
-          'complex.include.labs' | translate: 'Включить темы лабораторных работ в практический раздел ЭУМК'
+          'complex.include.labs'
+            | translate
+              : 'Включить темы лабораторных работ в практический раздел ЭУМК'
         }}</mat-checkbox
       >
       <mat-checkbox
-        [disabled]="!data.isNew"
         name="includeTests"
         matInput
         [(ngModel)]="data.includeTests"
         >{{
-          'complex.include.tests' | translate: 'Включить тесты для самоконтроля в блок контроля знаний ЭУМК'
+          'complex.include.tests'
+            | translate
+              : 'Включить тесты для самоконтроля в блок контроля знаний ЭУМК'
         }}</mat-checkbox
       >
     </span>

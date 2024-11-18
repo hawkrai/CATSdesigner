@@ -49,22 +49,19 @@
             [checked]="isFolder"
             style="padding-right: 20px"
             (click)="switchFormTo(1)"
-          >{{ 'common.folder' | translate: 'Папка' }}
-          </mat-radio-button
-          >
+            >{{ 'common.folder' | translate: 'Папка' }}
+          </mat-radio-button>
           <mat-radio-button
             value="2"
             [checked]="isFile"
             (click)="switchFormTo(2)"
-          >{{ 'common.file' | translate: 'Файл' }}
-          </mat-radio-button
-          >
+            >{{ 'common.file' | translate: 'Файл' }}
+          </mat-radio-button>
         </mat-radio-group>
       </div>
       <mat-form-field *ngIf="isFolder">
-        <mat-label>{{
-            'common.inputFolderName' | translate: 'Введите имя папки'
-          }}
+        <mat-label
+          >{{ 'common.inputFolderName' | translate: 'Введите имя папки' }}
         </mat-label>
         <input
           name="foderName"
@@ -77,14 +74,17 @@
 
       <div *ngIf="isFile">
         <mat-form-field>
-          <mat-label>{{
+          <mat-label
+            >{{
               'common.inputFileName' | translate: 'Введите название элемента'
             }}
           </mat-label>
           <input
             name="fileName"
             maxlength="100"
-            placeholder="{{ 'common.fileName' | translate: 'Введите название элемента' }}"
+            placeholder="{{
+              'common.fileName' | translate: 'Введите название элемента'
+            }}"
             [(ngModel)]="data.name"
             matInput
           />
@@ -93,14 +93,16 @@
     </form>
   </div>
   <app-file-uploader
-  header="{{
-    'common.pinnedDoc' | translate: 'Прикрепленный материал (Можно добавить только один файл формата .pdf, .docx или .doc)'
-  }}"
-  (delete)="deleteFile($event)"
-  [files]="files"
-  [disabled]="files.length > 0"
-  (upload)="uploadFile($event)"
-></app-file-uploader>
+    header="{{
+      'common.pinnedDoc'
+        | translate
+          : 'Прикрепленный материал (Можно добавить только один файл формата .pdf, .docx или .doc)'
+    }}"
+    (delete)="deleteFile($event)"
+    [files]="files"
+    [disabled]="files.length > 0"
+    (upload)="uploadFile($event)"
+  ></app-file-uploader>
   <div mat-dialog-actions>
     <button mat-raised-button (click)="onClose(files, false)">
       {{ 'common.cancel' | translate: 'Отмена' }}

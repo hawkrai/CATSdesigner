@@ -58,8 +58,8 @@ namespace LMPlatform.UI.Controllers
             {
                 description = new
                 {
-                    Title = "Тест " + TestsManagementService.GetTest(user.OngoingTest.Value).Title + " уже запущен в Вашей учетной записи",
-                    Description = "Завершите тест и попробуйте еще раз",
+                    Title = $"Тест \"{TestsManagementService.GetTest(user.OngoingTest.Value).Title}\" уже запущен в Вашей учетной записи",
+                    Description = "Продолжайте проходить тест на запущенном устройстве. Если Вы хотите прервать прохождение теста, то нажмите на кнопку \"Завершить тест\", при этом все отвеченные вопросы будут аннулированы. Для повторного прохождения теста обратитесь к преподавателю.",
                     OngoingTestId = user.OngoingTest.Value
                 };
             }                      
@@ -88,7 +88,7 @@ namespace LMPlatform.UI.Controllers
         [HttpGet]
         public JsonResult GetAvailableTestsForMobile(int subjectId, int userId)
         {
-            var availableTests = this.TestPassingService.GetAvailableTestsForStudent(userId, subjectId)
+            var availableTests = this.TestPassingService.GetAvailableTestsForUserMobile(userId, subjectId)
                 .Select(test => new
                 {
                     test.Id,
@@ -96,7 +96,7 @@ namespace LMPlatform.UI.Controllers
                     test.Description,
                     test.ForSelfStudy
                 });
-
+      
             return JsonResponse(availableTests) as JsonResult;
         }
 

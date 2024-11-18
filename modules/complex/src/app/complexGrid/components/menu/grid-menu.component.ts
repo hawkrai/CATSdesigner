@@ -62,10 +62,11 @@ export class GridMenuComponent {
         isNew: false,
         name: res.Name,
         subjectName: res.SubjectName,
-        isPublished: res.Published,
-        includeLabs: res.IncludeLabs,
-        includeLectures: res.IncludeLecturers,
-        includeTests: res.IncludeTests,
+        isPublished: Boolean(res.Published),
+        includeLabs: Boolean(res.IncludeLabs),
+        includeLectures: Boolean(res.IncludeLectures),
+        includeWorkshops: Boolean(res.IncludeWorkshops),
+        includeTests: Boolean(res.IncludeTests),
       }
 
       const dialogRef = this.openDialog(
@@ -79,7 +80,11 @@ export class GridMenuComponent {
           const complex: Complex = {
             elementId: +this.complexId,
             name: result.name,
-            isPublished: result.isPublished && result.isPublished === true,
+            isPublished: Boolean(result.isPublished),
+            includeLabs: Boolean(result.includeLabs),
+            includeLectures: Boolean(result.includeLectures),
+            includeWorkshops: Boolean(result.includeWorkshops),
+            includeTests: Boolean(result.includeTests),
           }
           this.complexService.editRootConcept(complex).subscribe((result) => {
             if (result['Code'] === '200') {
@@ -144,6 +149,8 @@ export class GridMenuComponent {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed')
     })
+
+    sessionStorage.setItem('isStudentMonitoring', JSON.stringify(true))
   }
 
   openMap(): void {
@@ -165,5 +172,15 @@ export class GridMenuComponent {
 
   openDialog(data: DialogData, popover: ComponentType<any>): MatDialogRef<any> {
     return this.dialog.open(popover, { data })
+  }
+
+  ngOnInit() {
+    const isStudentMonitoring = JSON.parse(
+      sessionStorage.getItem('isStudentMonitoring')
+    )
+
+    if (isStudentMonitoring) {
+      this.openMonitoring()
+    }
   }
 }

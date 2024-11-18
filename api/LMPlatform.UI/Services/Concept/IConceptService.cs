@@ -1,4 +1,5 @@
 ﻿using LMPlatform.UI.Services.Modules.Concept;
+using LMPlatform.UI.Services.Modules.CoreModels;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using static LMPlatform.UI.Services.Concept.ConceptService;
@@ -11,11 +12,11 @@ namespace LMPlatform.UI.Services.Concept
     {
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/CreateRootConcept")]
-        ConceptResult SaveRootConcept(string name, string container, int subjectId, bool includeLabs, bool includeLectures, bool includeTests);
+        ConceptResult SaveRootConcept(string name, string container, int subjectId, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshops, bool isPublished);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/EditRootConcept")]
-        ConceptResult EditRootConcept(int elementId, string name, bool isPublished);
+        ConceptResult EditRootConcept(int elementId, string name, bool includeLabs, bool includeLectures, bool includeTests, bool includeWorkshop, bool isPublished);
 
         [OperationContract]
         [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/AttachSiblings")]
@@ -61,6 +62,9 @@ namespace LMPlatform.UI.Services.Concept
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetPrevConceptData?elementId={elementId}")]
         AttachViewData GetPrevConceptData(int elementId);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConfirmedAndNoneDeletedStudentsByGroupId?groupId={groupId}")]
+        StudentsResult GetConfirmedAndNoneDeletedStudentsByGroupId(int groupId);
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json, UriTemplate = "/GetConceptViews?conceptId={conceptId}&groupId={groupId}")]
         ConceptService.MonitoringData GetConceptViews(int conceptId, int groupId);

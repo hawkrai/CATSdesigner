@@ -144,7 +144,6 @@
             <mat-menu #subjectActionsMenu="matMenu">
               <button
                 mat-menu-item
-
                 (click)="lector(element.SubjectId, element.DisplayName)"
               >
                 <mat-icon>person_add</mat-icon>
@@ -192,7 +191,8 @@
       </mat-form-field>
       <app-list
         [items]="
-          state.subjects | filter: 'DisplayName':searchValue:filterOps.Contains
+          state.subjects
+            | filter: 'DisplayName' : searchValue : filterOps.Contains
         "
         [gap]="mobileViewMatcher.matches ? '10px' : '20px'"
         [columns]="mobileViewMatcher.matches ? 1 : 2"

@@ -11,9 +11,9 @@ export class Complex {
   subjectId?: number
 
   isPublished?: boolean
-
   includeLabs?: boolean
   includeLectures?: boolean
+  includeWorkshops?: boolean
   includeTests?: boolean
 
   elementId?: number

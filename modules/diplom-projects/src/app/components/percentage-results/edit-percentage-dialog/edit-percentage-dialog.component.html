@@ -19,8 +19,12 @@
     />
     <span matSuffix>{{ data.symbol }}</span>
     <mat-hint *ngIf="data.expected && !percentageControl.value"
-      >{{ 'text.expectedProcent' | translate: 'Ожидаемый процент
-      ' }}
+      >{{
+        'text.expectedProcent'
+          | translate
+            : 'Ожидаемый процент
+      '
+      }}
       {{ data.expected }}</mat-hint
     >
     <mat-error *ngIf="percentageControl.invalid">{{ data.errorMsg }}</mat-error>
@@ -40,7 +44,8 @@
     <mat-datepicker #dp></mat-datepicker>
     <mat-error *ngIf="date.invalid">{{
       'text.diplomProject.dateControl'
-        | translate: 'Неправильный формат
+        | translate
+          : 'Неправильный формат
       (ДД.ММ.ГГГГ)'
     }}</mat-error>
   </mat-form-field>
@@ -67,7 +72,9 @@
       [(ngModel)]="data.comment"
     ></textarea>
     <mat-error *ngIf="commentControl.invalid">{{
-      'text.diplomProject.control' | translate: 'До 255
+      'text.diplomProject.control'
+        | translate
+          : 'До 255
       символов'
     }}</mat-error>
     <mat-hint *ngIf="data.lecturer">{{ data.lecturer }}</mat-hint>

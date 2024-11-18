@@ -117,13 +117,24 @@ export class ComplexGridComponent implements OnInit {
     const dialogRef = this.openDialog(dialogData, ComplexGridEditPopupComponent)
 
     dialogRef.afterClosed().subscribe((result) => {
+      const {
+        name,
+        isPublished,
+        includeLabs,
+        includeWorkshops,
+        includeLectures,
+        includeTests,
+      } = result
+
       const complex: Complex = {
-        name: result.name,
+        name,
         container: '',
         subjectId: this.subjectId,
-        includeLabs: result.includeLabs,
-        includeLectures: result.includeLectures,
-        includeTests: result.includeTests,
+        isPublished,
+        includeLabs,
+        includeLectures,
+        includeWorkshops,
+        includeTests,
       }
       this.showLoader = true
       this.complexService.addRootConcept(complex).subscribe((result) => {
