@@ -352,15 +352,16 @@ namespace LMPlatform.UI.Services.Concept
             try
             {
                 var student = StudentManagementService.GetStudent(studentId);
-                var complex = ConceptManagementService.GetById(complexId);
+                var rootConcept = ConceptManagementService.GetTreeConceptByElementId(complexId);
+
                 return 
                     new ConceptStudentMonitoringData()
                       {
-                            ComplexName = complex.Name,
+                            ComplexName = rootConcept.Name,
                             StudentGroup = student.Group.Name,
                             StudentName = student.FullName,
-                            ConceptMonitorings = GetMonitoringInfo(complexId, studentId)
-                      };
+                            ConceptMonitorings = GetMonitoringInfo(rootConcept, studentId)
+                    };
             }
             catch (Exception ex)
             {
@@ -369,18 +370,19 @@ namespace LMPlatform.UI.Services.Concept
             }
         }
 
-        public List<ConceptMonitoring> GetMonitoringInfo(int complexId, int studentId)
+        private List<ConceptMonitoring> GetMonitoringInfo(Models.Concept rootConcept, int studentId)
         {
             try
             {
-                var childrens = ConceptManagementService.GetElementsByParentIdForTree(complexId).ToList();
                 var resultList = new List<ConceptMonitoring>();
 
-                foreach (var children in childrens)
+                foreach (var children in rootConcept.Children)
                 {
                     var resultItem = ConceptMonitoring.FromConcept(children);
-
-                    resultItem.Children = GetMonitoringInfo(children.Id, studentId);
+                    if (children.Children != null && children.Children.Any())
+                    {
+                        resultItem.Children = GetMonitoringInfo(children, studentId);
+                    }
                     if (children.Container != null)
                     {
                         int Estimated = WatchingTimeService.GetEstimatedTime(children.Container);

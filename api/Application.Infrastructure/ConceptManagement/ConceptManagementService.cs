@@ -82,18 +82,18 @@ namespace Application.Infrastructure.ConceptManagement
 	        return concept;
         }
 
-        public Concept GetTreeConceptByElementId(int id)
+        public Concept GetTreeConceptByElementId(int elementId)
         {
 	        using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-	        var concept = GetLiteById(id);
-	        int elementId;
+	        var concept = GetLiteById(elementId);
+	        int id;
 	        if (!concept.ParentId.HasValue)
 	        {
-		        elementId = concept.Id;
+		        id = concept.Id;
 	        }
 	        else
 	        {
-		        FindRootId(concept, out elementId);
+		        FindRootId(concept, out id);
 	        }
 
 	        var res = repositoriesContainer.ConceptRepository.GetTreeConceptByElementId(elementId);
@@ -180,12 +180,6 @@ namespace Application.Infrastructure.ConceptManagement
             {
                 return repositoriesContainer.ConceptRepository.GetBySubjectId(subjectId);
             }
-        }
-        public IEnumerable<Concept> GetElementsByParentIdForTree(int parentId)
-        {
-            using var repositoriesContainer = new LmPlatformRepositoriesContainer();
-
-            return repositoriesContainer.ConceptRepository.GetByParentId(parentId);
         }
 
         public IEnumerable<Concept> GetElementsByParentId(int parentId)
