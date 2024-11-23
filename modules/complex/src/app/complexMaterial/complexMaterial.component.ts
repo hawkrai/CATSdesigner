@@ -55,7 +55,7 @@ export class ComplexMaterialComponent implements OnInit {
 
   checkForPredTest(): void {
     this.testService.getPredTest().subscribe((predTestId) => {
-      this.hasPredTest = predTestId > 0 
+      this.hasPredTest = predTestId > 0
       this.isAdaptiveLearningDisabled = !this.hasPredTest
     })
   }
@@ -103,11 +103,11 @@ export class ComplexMaterialComponent implements OnInit {
             adaptivityType: adaptivityType,
             isAdaptive: true,
             adaptivity: themaRes,
-        }
+          }
 
           const dialogRef = this.dialog.open(MaterialsPopoverComponent, {
             width: '100%',
-            height:'100%',
+            height: '100%',
             data: diaogData,
           })
 
