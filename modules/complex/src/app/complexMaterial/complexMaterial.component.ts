@@ -50,7 +50,7 @@ export class ComplexMaterialComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.checkForPredTest(); 
+    this.checkForPredTest()
   }
 
   checkForPredTest(): void {
