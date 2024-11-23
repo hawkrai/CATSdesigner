@@ -51,5 +51,3 @@ export class ListOfStudentsComponent implements OnInit {
     this.dialogRef.close()
   }
 }
-
-

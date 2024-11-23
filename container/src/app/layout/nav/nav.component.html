@@ -458,7 +458,12 @@
           <mat-icon> info</mat-icon>
           <span>{{ 'header.menu.aboutSystem' | translate: 'О системе' }}</span>
         </button>
-        <button mat-menu-item class="dropdown" (click)="logOut()" routerLink="/login">
+        <button
+          mat-menu-item
+          class="dropdown"
+          (click)="logOut()"
+          routerLink="/login"
+        >
           <mat-icon>exit_to_app</mat-icon>
           <span>{{ 'header.menu.signOut' | translate: 'Выйти' }}</span>
         </button>

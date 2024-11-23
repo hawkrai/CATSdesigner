@@ -5,20 +5,19 @@
         {{
           'complex.firstTime'
             | translate
-            : 'Вы впервые работаете с адаптивным обучением на этом предмете'
+              : 'Вы впервые работаете с адаптивным обучением на этом предмете'
         }}!
       </p>
       <p class="text_insideForm">
         {{
           'complex.forStart'
-            | translate
-            : 'Для начала обучения пройдите, пожалуйста, предтест'
+            | translate: 'Для начала обучения пройдите, пожалуйста, предтест'
         }}
       </p>
     </div>
 
     <span *ngIf="showTimer"
-    >{{
+      >{{
         'complex.availableTests'
           | translate: 'Переход к тестам будет доступен через'
       }}
@@ -49,11 +48,11 @@
     <button (click)="onNoClick()" class="button_close">
       {{ 'common.cancel' | translate: 'Отмена' }}
     </button>
-    <button class = "goTest_button"
-            *ngIf="needToGetInitialTest"
-            mat-raised-button
-
-            (click)="goToPredTest()"
+    <button
+      class="goTest_button"
+      *ngIf="needToGetInitialTest"
+      mat-raised-button
+      (click)="goToPredTest()"
     >
       {{ 'common.pretest' | translate: 'Пройти предтест' }}
     </button>

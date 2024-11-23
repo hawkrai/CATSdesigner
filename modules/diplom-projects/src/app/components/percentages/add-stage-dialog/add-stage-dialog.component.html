@@ -26,7 +26,8 @@
     <span matSuffix>%</span>
     <mat-error *ngIf="percentageControl.invalid">{{
       'text.diplomProject.percentageControl'
-        | translate: 'Введите число от
+        | translate
+          : 'Введите число от
       0 до 100'
     }}</mat-error>
   </mat-form-field>
@@ -45,7 +46,8 @@
     <mat-datepicker #dp></mat-datepicker>
     <mat-error *ngIf="dateControl.invalid">{{
       'text.diplomProject.dateControl'
-        | translate: 'Неправильный формат
+        | translate
+          : 'Неправильный формат
       (ДД.ММ.ГГГГ)'
     }}</mat-error>
   </mat-form-field>

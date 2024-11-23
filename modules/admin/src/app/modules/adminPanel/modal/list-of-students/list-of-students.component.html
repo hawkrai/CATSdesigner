@@ -30,23 +30,42 @@
               'text.adminPanel.modal.listOfStudents.headers.status' | translate
             }}
           </th>
-          <td class="table-container" mat-cell *matCellDef="let element" id="name">
-            <p *ngIf="this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn, element.isActive)">
+          <td
+            class="table-container"
+            mat-cell
+            *matCellDef="let element"
+            id="name"
+          >
+            <p
+              *ngIf="
+                this.isConfimed(element.Confirmed) &&
+                !this.isDeleted(element.DeletedOn, element.isActive)
+              "
+            >
               {{
                 'text.adminPanel.modal.listOfStudents.status.confirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="!this.isConfimed(element.Confirmed) && !this.isDeleted(element.DeletedOn, element.isActive)" id="name">
+            <p
+              *ngIf="
+                !this.isConfimed(element.Confirmed) &&
+                !this.isDeleted(element.DeletedOn, element.isActive)
+              "
+              id="name"
+            >
               {{
                 'text.adminPanel.modal.listOfStudents.status.notConfirmed'
                   | translate
               }}
             </p>
-            <p *ngIf="this.isDeleted(element.DeletedOn, element.isActive)" id="name">
+            <p
+              *ngIf="this.isDeleted(element.DeletedOn, element.isActive)"
+              id="name"
+            >
               {{
-              'text.adminPanel.modal.listOfStudents.status.deleted'
-                 | translate
+                'text.adminPanel.modal.listOfStudents.status.deleted'
+                  | translate
               }}
             </p>
           </td>
@@ -62,5 +81,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-  
 </div>

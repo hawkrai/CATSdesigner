@@ -1,18 +1,18 @@
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
-import { Store } from '@ngrx/store';
-import { combineLatest, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog'
+import { Component, Inject, OnInit } from '@angular/core'
+import { MatDialogRef } from '@angular/material'
+import { Store } from '@ngrx/store'
+import { combineLatest, Observable } from 'rxjs'
+import { map, switchMap } from 'rxjs/operators'
 
-import { IAppState } from 'src/app/store/state/app.state';
-import { DialogData } from 'src/app/models/dialog-data.model';
-import * as practicalsActions from '../../../../../store/actions/practicals.actions';
-import * as practicalsSelectors from '../../../../../store/selectors/practicals.selectors';
-import * as subjectsSelector from '../../../../../store/selectors/subject.selector';
-import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model';
-import { Lector } from 'src/app/models/lector.model';
-import { SubjectService } from 'src/app/services/subject.service';
+import { IAppState } from 'src/app/store/state/app.state'
+import { DialogData } from 'src/app/models/dialog-data.model'
+import * as practicalsActions from '../../../../../store/actions/practicals.actions'
+import * as practicalsSelectors from '../../../../../store/selectors/practicals.selectors'
+import * as subjectsSelector from '../../../../../store/selectors/subject.selector'
+import { ScheduleProtectionPractical } from 'src/app/models/schedule-protection/schedule-protection-practical.model'
+import { Lector } from 'src/app/models/lector.model'
+import { SubjectService } from 'src/app/services/subject.service'
 
 @Component({
   selector: 'app-visit-date-practicals-popover',
@@ -28,53 +28,59 @@ export class VisitDatePracticalsPopoverComponent implements OnInit {
   ) {}
 
   state$: Observable<{
-    schedule: ScheduleProtectionPractical[];
-    lectors: Lector[];
-  }>;
+    schedule: ScheduleProtectionPractical[]
+    lectors: Lector[]
+  }>
 
   ngOnInit() {
     this.state$ = combineLatest(
       this.store.select(practicalsSelectors.selectSchedule),
-      this.store.select(subjectsSelector.getSubjectId).pipe(
-        switchMap((subjectId) =>
-          this.subjectsService
-            .getJoinedLector(subjectId, true)
-            .pipe(
-              map((lectors) =>
-                [...lectors].sort((a, b) =>
-                  a.FullName < b.FullName ? -1 : 1
+      this.store
+        .select(subjectsSelector.getSubjectId)
+        .pipe(
+          switchMap((subjectId) =>
+            this.subjectsService
+              .getJoinedLector(subjectId, true)
+              .pipe(
+                map((lectors) =>
+                  [...lectors].sort((a, b) =>
+                    a.FullName < b.FullName ? -1 : 1
+                  )
                 )
               )
-            )
+          )
         )
-      )
     ).pipe(
       map(([schedule, lectors]) => ({
-        schedule: schedule.sort((a, b) => this.parseDate(a.Date).getTime() - this.parseDate(b.Date).getTime()),
-        lectors
+        schedule: schedule.sort(
+          (a, b) =>
+            this.parseDate(a.Date).getTime() - this.parseDate(b.Date).getTime()
+        ),
+        lectors,
       }))
-    );
+    )
   }
 
-
   parseDate(dateString: string): Date {
-    const [day, month, year] = dateString.split('.').map(part => parseInt(part, 10));
-    return new Date(year, month - 1, day);
+    const [day, month, year] = dateString
+      .split('.')
+      .map((part) => parseInt(part, 10))
+    return new Date(year, month - 1, day)
   }
 
   onCreateDate(obj: {
-    date: string;
-    startTime: string;
-    endTime: string;
-    building: string;
-    audience: string;
-    lecturerId: number;
+    date: string
+    startTime: string
+    endTime: string
+    building: string
+    audience: string
+    lecturerId: number
   }): void {
-    this.store.dispatch(practicalsActions.createDateVisit({ obj }));
+    this.store.dispatch(practicalsActions.createDateVisit({ obj }))
   }
 
   onClose(): void {
-    this.dialogRef.close();
+    this.dialogRef.close()
   }
 
   onDeleteDay(day: ScheduleProtectionPractical): void {
@@ -82,6 +88,6 @@ export class VisitDatePracticalsPopoverComponent implements OnInit {
       practicalsActions.deleteDateVisit({
         id: day.ScheduleProtectionPracticalId,
       })
-    );
+    )
   }
 }

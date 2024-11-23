@@ -13,7 +13,9 @@
           "
         >
           <mat-option
-            *ngFor="let lector of allLectors | filter: 'LectorId':userId:'neq'"
+            *ngFor="
+              let lector of allLectors | filter: 'LectorId' : userId : 'neq'
+            "
             (onSelectionChange)="selectLector(lector)"
             [value]="lector.LectorId"
           >
@@ -49,7 +51,7 @@
               class="mdc-data-table__row"
               *ngFor="
                 let joinedLector of joinedLectors
-                  | filter: 'LectorId':userId:'neq'
+                  | filter: 'LectorId' : userId : 'neq'
               "
             >
               <td class="mdc-data-table__cell">{{ joinedLector.FullName }}</td>

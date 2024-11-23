@@ -23,7 +23,6 @@ import { timeValidator } from '../validators/time.validator'
 import { TranslatePipe } from 'educats-translate'
 import { Lector } from 'src/app/models/lector.model'
 
-
 export const MY_FORMATS = {
   parse: {
     dateInput: 'LL',
@@ -72,20 +71,24 @@ export class VisitDatePopoverComponent {
   ) {
     dateAdapter.setLocale(localStorage.getItem('locale') || 'ru')
   }
-  showEditPopover: boolean = false;
+  showEditPopover: boolean = false
 
   onClick(): void {
     this.close.emit()
   }
-  private timeInRange(control: AbstractControl): { [key: string]: boolean } | null {
-    const startTime = moment(control.value, 'HH:mm');
-    const forbiddenStartTime = moment('00:00', 'HH:mm');
-    const forbiddenEndTime = moment('07:59', 'HH:mm');
+  private timeInRange(
+    control: AbstractControl
+  ): { [key: string]: boolean } | null {
+    const startTime = moment(control.value, 'HH:mm')
+    const forbiddenStartTime = moment('00:00', 'HH:mm')
+    const forbiddenEndTime = moment('07:59', 'HH:mm')
 
-    if (startTime.isBetween(forbiddenStartTime, forbiddenEndTime, undefined, '[]')) {
-      return { 'timeRange': true };
+    if (
+      startTime.isBetween(forbiddenStartTime, forbiddenEndTime, undefined, '[]')
+    ) {
+      return { timeRange: true }
     }
-    return null;
+    return null
   }
   private time = (control: AbstractControl) => {
     return timeValidator(
@@ -96,10 +99,13 @@ export class VisitDatePopoverComponent {
 
   dateForm: FormGroup = new FormGroup({
     date: new FormControl(moment(), [Validators.required]),
-    startTime: new FormControl(moment().format('HH:mm'), [Validators.required, this.timeInRange]),
+    startTime: new FormControl(moment().format('HH:mm'), [
+      Validators.required,
+      this.timeInRange,
+    ]),
     endTime: new FormControl(
       moment().add(1, 'hour').add(30, 'minutes').format('HH:mm'),
-      [Validators.required,this.timeInRange,this.time]
+      [Validators.required, this.timeInRange, this.time]
     ),
     building: new FormControl('', [
       Validators.required,
@@ -146,19 +152,19 @@ export class VisitDatePopoverComponent {
   onDeleteDate(day: any): void {
     this.deleteDay.emit(day)
   }
-  selectedDay: any;
+  selectedDay: any
 
-  isEditing: boolean = false;
+  isEditing: boolean = false
 
   editPopover(day: any) {
-    this.selectedDay = day;
-    this.isEditing = true;
-    this.showEditPopover = true;
+    this.selectedDay = day
+    this.isEditing = true
+    this.showEditPopover = true
   }
 
   closeEditPopover(event: any) {
-    this.isEditing = false;
-    this.showEditPopover = false;
+    this.isEditing = false
+    this.showEditPopover = false
   }
 
   deletePopover(day: any) {
@@ -181,8 +187,6 @@ export class VisitDatePopoverComponent {
       }
     })
   }
-
-
 
   validateLector(control: AbstractControl) {
     if (

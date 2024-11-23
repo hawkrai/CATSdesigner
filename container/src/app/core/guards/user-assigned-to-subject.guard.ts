@@ -11,7 +11,10 @@ import { map } from 'rxjs/operators'
 
 @Injectable()
 export class UserAssignedToSubjectGuard implements CanActivate {
-  constructor(private coreService: CoreService, private router: Router) {}
+  constructor(
+    private coreService: CoreService,
+    private router: Router
+  ) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,

@@ -73,9 +73,11 @@ namespace LMPlatform.UI.Services.Modules.Concept
             {
                 Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService)).ToList();
 
-                IncludeLecturers = ch.SingleOrDefault(x => x.Name == "Теоретический раздел")?.Children.Any() ?? false;
-                IncludeLabs = ch.SingleOrDefault(x => x.Name == "Практический раздел")?.Children.Any() ?? false;
-                IncludeTests = ch.Any(x => x.Name == "Блок контроля знаний");
+                IncludeLabs = ch.FirstOrDefault(x => x.LabId.HasValue)?.Published ?? false;
+                IncludeWorkshops = ch.FirstOrDefault(x => x.PracticalId.HasValue)?.Published ?? false;
+                IncludeLectures = ch.SingleOrDefault(x => x.Name == "Теоретический раздел")?.Published ?? false;
+                
+                IncludeTests = ch.SingleOrDefault(x => x.Name == "Блок контроля знаний")?.Published ?? false;
             }
         }
 
@@ -117,9 +119,11 @@ namespace LMPlatform.UI.Services.Modules.Concept
         [DataMember]
         public int? Prev { get; set; }
         [DataMember]
+        public bool? IncludeWorkshops { get; set; }
+        [DataMember]
         public bool? IncludeLabs { get; set; }
         [DataMember]
-        public bool? IncludeLecturers { get; set; }
+        public bool? IncludeLectures { get; set; }
         [DataMember]
         public bool? IncludeTests { get; set; }
 

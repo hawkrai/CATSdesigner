@@ -40,12 +40,18 @@
 
 .cal-week-view .cal-header.cal-weekend span {
   color: #808080;
-  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-family:
+    Roboto,
+    Helvetica Neue,
+    sans-serif;
 }
 
 .cal-week-view .cal-day-headers span {
   color: #808080;
-  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-family:
+    Roboto,
+    Helvetica Neue,
+    sans-serif;
   opacity: 100%;
 }
 
@@ -55,7 +61,10 @@
 }
 
 .cal-week-view .cal-day-headers b {
-  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-family:
+    Roboto,
+    Helvetica Neue,
+    sans-serif;
   font-weight: initial;
   color: #363636;
 }
@@ -121,7 +130,10 @@
 .cal-week-view .cal-time {
   padding-top: 32px;
   font-size: 12px;
-  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-family:
+    Roboto,
+    Helvetica Neue,
+    sans-serif;
 }
 
 .mat-menu-panel {

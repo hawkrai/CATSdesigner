@@ -39,20 +39,19 @@ export class PracticalLessonsComponent
   isTeacher: boolean
   public practicals: Practical[]
   private subs = new SubSink()
-  practicalPrefix:string
+  practicalPrefix: string
   constructor(
     private store: Store<IAppState>,
     private cdRef: ChangeDetectorRef,
     private translate: TranslatePipe,
-    private dialogService: DialogService,
-
+    private dialogService: DialogService
   ) {}
 
   ngOnInit() {
     if (localStorage.getItem('locale') === 'en') {
-      this.practicalPrefix = 'WS';
+      this.practicalPrefix = 'WS'
     } else {
-      this.practicalPrefix = 'ПЗ';
+      this.practicalPrefix = 'ПЗ'
     }
     this.store.dispatch(practicalsActions.loadPracticals())
     this.subs.add(

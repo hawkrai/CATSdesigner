@@ -150,7 +150,7 @@ export class AddDateDialogComponent implements OnInit, OnDestroy {
             const consultation: Consultation = {
               Id: this.data.consultations[this.data.consultations.length - 1]
                 ? this.data.consultations[this.data.consultations.length - 1]
-                  .Id + 1
+                    .Id + 1
                 : '0',
               Teacher: {
                 LectorId: +this.data.lecturerId,
