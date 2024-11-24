@@ -132,9 +132,9 @@ export class GridMenuComponent {
     })
   }
 
-  openMonitoring(): void {
+  openMonitoring(complexId: string): void {
     const dialogData: DialogData = {
-      id: this.complexId,
+      id: complexId || this.complexId,
     }
     const dialogConfig = new MatDialogConfig()
     dialogConfig.width = '100%'
@@ -150,7 +150,9 @@ export class GridMenuComponent {
       console.log('The dialog was closed')
     })
 
-    sessionStorage.setItem('isStudentMonitoring', JSON.stringify(true))
+    if (!complexId) {
+      sessionStorage.setItem('complexId', this.complexId)
+    }
   }
 
   openMap(): void {
@@ -175,12 +177,10 @@ export class GridMenuComponent {
   }
 
   ngOnInit() {
-    const isStudentMonitoring = JSON.parse(
-      sessionStorage.getItem('isStudentMonitoring')
-    )
+    const complexId = sessionStorage.getItem('complexId')
 
-    if (isStudentMonitoring) {
-      this.openMonitoring()
+    if (complexId) {
+      this.openMonitoring(complexId)
     }
   }
 }
