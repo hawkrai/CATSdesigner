@@ -297,6 +297,18 @@ namespace Application.Infrastructure.ConceptManagement
                                 conceptChild.Published = labSectionPublished;
                                 repositoriesContainer.ConceptRepository.Save(conceptChild);
                             }
+                            foreach (var item in conceptChild?.Children)
+                            {
+                                if (item.LabId.HasValue)
+                                {
+                                    item.Published = includeLabs;
+                                }
+                                else
+                                {
+                                    item.Published = includeWorkshops;
+                                }
+                                repositoriesContainer.ConceptRepository.Save(item);
+                            }
                             break;
 
                         case TestSectionName:
@@ -306,23 +318,9 @@ namespace Application.Infrastructure.ConceptManagement
                                 repositoriesContainer.ConceptRepository.Save(conceptChild);
                             }
                             break;
-
-                        default:
-                            if (includeTests && conceptChild.LabId.HasValue && conceptChild.Published != includeLabs)
-                            {
-                                conceptChild.Published = includeLabs;
-                                repositoriesContainer.ConceptRepository.Save(conceptChild);
-                            }
-                            else if (includeWorkshops && conceptChild.PracticalId.HasValue && conceptChild.Published != includeWorkshops)
-                            {
-                                conceptChild.Published = includeWorkshops;
-                                repositoriesContainer.ConceptRepository.Save(conceptChild);
-                            }
-                            break;
                     }
                 }
                 repositoriesContainer.ApplyChanges();
-                //TryPublishParent(concept.ParentId, repositoriesContainer);
 
                 return concept;
             }
