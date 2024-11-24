@@ -349,12 +349,7 @@ export class MainPageComponent implements OnInit {
                       name: this.categoriesConst[4],
                       data: this.ratingMarksArchive,
                     })
-                    // this.series.push({name: this.categoriesConst[0], data: [7.4, 5.5, 0,   0,   6.7 ]});
-                    // this.series.push({name: this.categoriesConst[1], data: [0,   0,   6.3, 7.7, 6.5 ]});
-                    // this.series.push({name: this.categoriesConst[2], data: [6.7, 8.2, 6.2, 5.9, 0  ]});
-                    // this.series.push({name: this.categoriesConst[3], data: [0,   0,   0,   0,   6 ]});
-                    // this.series.push({name: this.categoriesConst[4], data: [7.1, 6.9, 6.3, 6.8, 6.4 ]});
-                    // this.addMarksChart(this.series, ['Базы данных', 'Модульное тестирование',
+
                     // 'Методы и алгоритмы принятия решений', 'Основы защиты информации', 'Английский язык в профдеятельности']);
                     this.addMarksChart(this.series, this.subjectName)
                     this.addArchiveMarksChart(
@@ -376,11 +371,6 @@ export class MainPageComponent implements OnInit {
             })
         })
       })
-      // this.addChart([ 7.4, 6.7, 7.1], 'Базы данных', this.categoriesLabFree, 4112, this.listChartOptions);
-      // this.addChart([5.5, 8.2, 6.9], 'Модульное тестирование', this.categoriesLabFree, 4112,  this.listChartOptions);
-      // this.addChart([6.3, 6.2,  6.3], 'Методы и алгоритмы принятия решений', this.categoriesPractFree, 4112, this.listChartOptions);
-      // this.addChart([7.7, 5.9, 6.8], 'Основы защиты информации', this.categoriesPractFree, 4112, this.listChartOptions);
-      // this.addChart([6.7, 6.5, 6, 6.4], 'Английский язык в профдеятельности', this.categoriesPractCourse, 4112, this.listChartOptions);
     }
   }
 
@@ -739,7 +729,7 @@ export class MainPageComponent implements OnInit {
             name: this.categoriesConst[4],
             data: this.ratingMarks,
           })
-          // this.addMarksChart(this.series, this.subjectName);
+
           this.charts.forEach((chart) => {
             this.addChart(
               chart[0],

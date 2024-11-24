@@ -183,7 +183,6 @@ export class VisitStatsComponent implements OnInit {
     visitStats: VisitStats[],
     consultations: Consultation[]
   ): VisitStats[] {
-    // this.groups = visitStats.map(a => a.Group).filter((v, i, a) => a.indexOf(v) === i);
     for (const student of visitStats) {
       const results: ConsultationMark[] = []
       for (const consultation of consultations) {

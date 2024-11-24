@@ -70,7 +70,6 @@ export class ResultTeacherComponent
   ) {
     super()
     this.help = {
-      // tslint:disable-next-line:max-line-length
       message: this.translatePipe.transform(
         'text.help.lectures',
         'Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента.'
@@ -296,7 +295,7 @@ export class ResultTeacherComponent
             display: result.StudentName,
           })
         }
-        let resultForTable: ResultForTable = new ResultForTable()
+        const resultForTable: ResultForTable = new ResultForTable()
         resultForTable.test = []
         resultForTable.name = result.StudentName
         resultForTable.subGroup = result.SubGroup
@@ -315,7 +314,7 @@ export class ResultTeacherComponent
           result.Login
         )
         result.TestPassResults.forEach((testPassResult) => {
-          let testRes: any = {}
+          const testRes: any = {}
           testRes.testName = testPassResult.TestName
           testRes.testId = testPassResult.TestId
           testRes.studentId = testPassResult.StudentId

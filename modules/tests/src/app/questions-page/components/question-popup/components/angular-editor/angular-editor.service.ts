@@ -123,7 +123,6 @@ export class AngularEditorService {
         sel.addRange(this.savedSelection)
         return true
       } else if (this.doc.getSelection /*&& this.savedSelection.select*/) {
-        // this.savedSelection.select();
         return true
       }
     } else {
