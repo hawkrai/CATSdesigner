@@ -92,5 +92,6 @@
   "button.cancel": "Отмена",
   "text.subjects.attachments.add": "Добавить файл",
   "text.complex.delete.eumc": "Удаление ЭУМК",
-  "text.complex.want.to.delete.eumc": "Вы действительно хотите удалить ЭУМК?"
+  "text.complex.want.to.delete.eumc": "Вы действительно хотите удалить ЭУМК?",
+  "text.test.answer": "Ответить"
 }

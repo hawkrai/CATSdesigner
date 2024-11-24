@@ -91,5 +91,6 @@
   "button.cancel": "Cancel",
   "text.subjects.attachments.add": "Add file",
   "text.complex.delete.eumc": "Delete Educational Complex",
-  "text.complex.want.to.delete.eumc": "Do you really want to remove the Educational Complex?"
+  "text.complex.want.to.delete.eumc": "Do you really want to remove the Educational Complex?",
+  "text.test.answer": "Reply"
 }
