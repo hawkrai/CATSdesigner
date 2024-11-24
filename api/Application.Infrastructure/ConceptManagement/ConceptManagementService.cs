@@ -268,7 +268,7 @@ namespace Application.Infrastructure.ConceptManagement
 	        return GetElementsByParentId(parentId).Where(c => c.UserId == authorId);
         }
 
-        public Concept UpdateRootConcept(int id, string name, bool isPublished, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshops = true)
+        public Concept UpdateRootConcept(int id, string name, bool isPublished = true, bool includeLabs = true, bool includeLectures = true, bool includeTests = true, bool includeWorkshops = true)
         {
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
