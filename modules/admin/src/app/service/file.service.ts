@@ -25,7 +25,7 @@ export class FileService {
     orderBy: string = null,
     sortDirection: number = 0
   ): Observable<FilesPage<Attachment>> {
-    let params = {
+    const params = {
       pageIndex: pageIndex.toString(),
       pageSize: pageSize.toString(),
     }
@@ -47,8 +47,5 @@ export class FileService {
 
   downloadFile(filepath: string, filename: string) {
     location.href = '/api/Upload?fileName=' + filepath + '//' + filename
-    // return this.http.get('/api/Upload?fileName=' + filepath + '//' + filename, {
-    //     responseType: 'blob'
-    // });
   }
 }
