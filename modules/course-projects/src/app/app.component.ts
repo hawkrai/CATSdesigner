@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
           this.groupNumber = res.Group
           this.groupId = res.GroupId !== 0 ? res.GroupId : null
         })
-      // this.courseUserService.getUser().subscribe(res => this.courseUser = res);
+
       this.retrieveGroups(false)
     })
   }
@@ -96,8 +96,6 @@ export class AppComponent implements OnInit {
   }
 
   getExcelFile() {
-    // const url = 'http://localhost:8080/Statistic/';
-
     if (this.tab === 4) {
       location.href =
         location.origin +
