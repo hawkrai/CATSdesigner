@@ -9,7 +9,6 @@ export class TranslatePipe implements PipeTransform {
   constructor() {
     const wnd: any = <any>window
     const hash: string = wnd.location.hash
-    // tslint:disable-next-line:max-line-length
     const params: { [key: string]: string } = hash
       ? this.getSearchParams(hash.substr(hash.indexOf('?') + 1))
       : this.getSearchParams(wnd.location.search.substr(1))
