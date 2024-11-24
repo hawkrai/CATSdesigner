@@ -68,12 +68,10 @@ export class AngularEditorComponent
   @Output() viewMode = new EventEmitter<boolean>()
 
   /** emits `blur` event when focused out from the textarea */
-  // tslint:disable-next-line:no-output-native no-output-rename
   @Output('blur') blurEvent: EventEmitter<FocusEvent> =
     new EventEmitter<FocusEvent>()
 
   /** emits `focus` event when focused in to the textarea */
-  // tslint:disable-next-line:no-output-rename no-output-native
   @Output('focus') focusEvent: EventEmitter<FocusEvent> =
     new EventEmitter<FocusEvent>()
 

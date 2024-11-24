@@ -32,7 +32,6 @@ export class ResultTestTableComponent
   implements OnInit, OnChanges
 {
   public barChartColors: any[] = [{ backgroundColor: '#1976D2' }]
-  // indigo #3f51b5
   public barChartOptions: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -109,7 +108,6 @@ export class ResultTestTableComponent
   ) {
     super()
     this.help = {
-      // tslint:disable-next-line:max-line-length
       message: this.translatePipe.transform(
         'text.help.lectures',
         'Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента.'
@@ -197,15 +195,15 @@ export class ResultTestTableComponent
   }
 
   private getAverageMark(): void {
-    let mass = []
-    for (let subGroup of this.scareThing) {
+    const mass = []
+    for (const subGroup of this.scareThing) {
       if (subGroup.length != 0) {
-        for (let pupil of subGroup) {
+        for (const pupil of subGroup) {
           let sumOfMarks: number = 0
-          for (let test of pupil[1].test) {
+          for (const test of pupil[1].test) {
             sumOfMarks += test.points
           }
-          let entire = []
+          const entire = []
           const testSize = pupil[1].test.filter((x) =>
             Number.isInteger(x.points)
           ).length
@@ -224,10 +222,10 @@ export class ResultTestTableComponent
         }
       }
     }
-    let sortedDescPoints = mass.sort((a, b) => {
+    const sortedDescPoints = mass.sort((a, b) => {
       return b[1] - a[1]
     })
-    for (let entire of sortedDescPoints) {
+    for (const entire of sortedDescPoints) {
       this.barChartLabels.push(entire[0])
       this.barChartData[0].data.push(entire[1])
     }
@@ -239,13 +237,13 @@ export class ResultTestTableComponent
   private getAverageMarkForTest(): any {
     const result = []
     const resultPercent = []
-    for (let subGroup of this.scareThing) {
+    for (const subGroup of this.scareThing) {
       if (subGroup.length !== 0) {
         const sumOfMarks = {}
         const sumOfPercents = {}
-        let countOfValidResults = {}
-        for (let pupil of subGroup) {
-          for (let test of pupil[1].test) {
+        const countOfValidResults = {}
+        for (const pupil of subGroup) {
+          for (const test of pupil[1].test) {
             if (
               (test.percent === undefined && test.points === undefined) ||
               (test.percent === null && test.points === null)
@@ -258,7 +256,6 @@ export class ResultTestTableComponent
               sumOfPercents[test.testId] = 0
             }
             countOfValidResults[test.testId]++
-            // tslint:disable-next-line:no-magic-numbers
             sumOfMarks[test.testId] +=
               test.points !== undefined ? test.points : test.percent / 10
             sumOfPercents[test.testId] +=

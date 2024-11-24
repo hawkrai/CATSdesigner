@@ -40,7 +40,6 @@ export class ResultPupilComponent
     super()
 
     this.help = {
-      // tslint:disable-next-line:max-line-length
       message: this.translatePipe.transform(
         'text.help.lectures',
         'Чтобы посмотреть результаты тестов, выберите нужную группу и тип теста. Также можно посмотреть результаты тестов по подгруппам и каждого отдельного студента'

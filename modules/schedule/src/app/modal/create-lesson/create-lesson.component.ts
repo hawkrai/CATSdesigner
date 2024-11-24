@@ -587,7 +587,6 @@ export class CreateLessonComponent implements OnInit {
     this.dialogRef.close({ note: this.note, type: 'note' })
   }
 
-  // tslint:disable-next-line:typedef
   onCancelClick() {
     this.dialogRef.close(null)
   }
