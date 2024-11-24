@@ -63,9 +63,6 @@ export class ComplexMaterialComponent implements OnInit {
   openAddPopup(): void {
     const dialogRef = this.dialog.open(AddMaterialPopoverComponent, {
       width: '600px',
-      position: {
-        // left: '30%',
-      },
       data: { id: '0', attachments: [] },
     })
 

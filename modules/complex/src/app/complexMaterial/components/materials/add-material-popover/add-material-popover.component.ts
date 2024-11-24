@@ -43,7 +43,6 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     this.addComponentHelp = {
       message: this.translatePipe.transform(
         'text.help.addComponent',
-        // tslint:disable-next-line:max-line-length
         'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложения, а Файл нет. Введите название элемента (темы ЭУМК). Для типа элемента Файл прикрепите файл в формате .pdf.'
       ),
       action: this.translatePipe.transform('button.understand', 'Понятно'),

@@ -19,8 +19,5 @@ export class LoginComponent implements OnInit {
       JSON.stringify({ id: '3', Name: 'Тестирование ПО' })
     )
     localStorage.setItem('locale', 'rus')
-    //this.apiService.login().subscribe((res) => {
-    //  console.log(res);
-    //})
   }
 }
