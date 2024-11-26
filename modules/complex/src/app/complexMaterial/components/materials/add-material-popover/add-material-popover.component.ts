@@ -46,7 +46,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         // tslint:disable-next-line:max-line-length
         'Чтобы добавить элемент электронного учебно-методического комплекса, необходимо выбрать для него раздел и тему. Далее отметьте тип элемента: Папка может иметь вложения, а Файл нет. Введите название элемента (темы ЭУМК). Для типа элемента Файл прикрепите файл в формате .pdf.'
       ),
-      action: this.translatePipe.transform('button.understand', 'Понятно'),
+      action: this.translatePipe.transform('common.understand', 'Понятно'),
     }
   }
 
@@ -86,7 +86,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
               'To edit an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
             ),
             action: this.translatePipe.transform(
-              'button.understand',
+              'common.understand',
               'Понятно'
             ),
           }
@@ -97,7 +97,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
               'To add an element of an Educational Complex, you need to select a section and topic for it. Next, mark the element type: Folder can have attachments, but File cannot. Enter the name of the element (Educational Complex topic). For the File element type, attach a .pdf file.'
             ),
             action: this.translatePipe.transform(
-              'button.understand',
+              'common.understand',
               'Понятно'
             ),
           }
