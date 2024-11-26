@@ -1,18 +1,18 @@
 <app-popover-dialog clacc="app">
   <ng-container title>
-    {{ 'text.complex.delete.eumc' | translate: 'Удаление ЭУМК' }}
+    {{ 'complex.delete.eumc' | translate: 'Удаление ЭУМК' }}
   </ng-container>
   <ng-container body>
     <div class="confirmation-text">
       {{
-        'text.complex.want.to.delete.eumc'
+        'complex.want.to.delete.eumc'
           | translate: 'Вы действительно хотите удалить ЭУМК'
       }}
     </div>
   </ng-container>
   <ng-container actions>
     <button mat-raised-button (click)="onNoClick()">
-      {{ 'button.cancel' | translate: 'Отмена' }}
+      {{ 'common.cancel' | translate: 'Отмена' }}
     </button>
     <button
       mat-raised-button
@@ -20,7 +20,7 @@
       [mat-dialog-close]="true"
       cdkFocusInitial
     >
-      {{ 'text.complex.yes' | translate: 'Да' }}
+      {{ 'common.complex.yes' | translate: 'Да' }}
     </button>
   </ng-container>
 </app-popover-dialog>

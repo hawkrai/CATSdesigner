@@ -91,7 +91,7 @@
         <div class="question-button-container-item">
           <button mat-raised-button color="primary" (click)="answerQuestion()">
             <mat-icon>done_outline</mat-icon>
-            {{ 'common.send' | translate: 'Отправить' }}
+            {{ 'common.test.answer' | translate: 'Ответить' }}
           </button>
         </div>
       </div>
@@ -106,6 +106,34 @@
             {{ 'common.skip' | translate: 'Пропустить' }}
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="test-execution-block-progress" *ngIf="test">
+    <div class="test-execution-block-progress-block">
+      <div
+        class="test-execution-block-progress-block-item"
+        (click)="nextQuestion(false, i + 1)"
+        [class.failed]="falseAnswersArray?.includes(i + 1)"
+        [class.absent]="
+          !allAnswersArray?.includes(i + 1) &&
+          !falseAnswersArray?.includes(i + 1) &&
+          !trueAnswersArray?.includes(i + 1)
+        "
+        [class.not-answered]="allAnswersArray?.includes(i + 1)"
+        [class.answered-show]="
+          trueAnswersArray?.includes(i + 1) && test?.ForSelfStudy
+        "
+        [class.answered]="
+          trueAnswersArray?.includes(i + 1) && !test?.ForSelfStudy
+        "
+        [class.now]="questionNumber == i + 1"
+        *ngFor="
+          let dummy of ' '.repeat(test.CountOfQuestions).split('');
+          let i = index
+        "
+      >
+        {{ i + 1 }}
       </div>
     </div>
   </div>
