@@ -77,7 +77,7 @@ export class AeSelectComponent implements OnInit, ControlValueAccessor {
     this.opened = false
   }
 
-  toggleOpen(event: MouseEvent) {
+  toggleOpen() {
     // event.stopPropagation();
     if (this.disabled) {
       return
