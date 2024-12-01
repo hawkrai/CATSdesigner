@@ -108,10 +108,8 @@ export class AngularEditorToolbarComponent {
   ]
 
   customClassId = '-1'
-  // tslint:disable-next-line:variable-name
   _customClasses: CustomClass[]
   customClassList: SelectOption[] = [{ label: '', value: '' }]
-  // uploadUrl: string;
 
   tagMap = {
     BLOCKQUOTE: 'indent',
@@ -174,7 +172,7 @@ export class AngularEditorToolbarComponent {
   @ViewChild('fileInput', { static: true }) myInputFile: ElementRef
 
   public get isLinkButtonDisabled(): boolean {
-    return this.htmlMode || !Boolean(this.editorService.selectedText)
+    return this.htmlMode || !this.editorService.selectedText
   }
 
   constructor(

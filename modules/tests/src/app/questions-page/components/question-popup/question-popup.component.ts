@@ -205,13 +205,6 @@ export class QuestionPopupComponent
     }
   }
 
-  //   public onNamespaceLoaded( event: CKEditor4.EventInfo ) {
-  //     // Add external `placeholder` plugin which will be available for each
-  //     // editor instance on the page.
-  //     console.log('CKEDITOR', '!!!!!!!!!!!!!!!');
-  //     CKEDITOR.plugins.addExternal( "ckeditor_wiris", "http://localhost:3000/assets/ckeditor/", "22plugin.js" );
-  // }
-
   onNoClick(): void {
     this.dialogRef.close()
   }
@@ -292,12 +285,12 @@ export class QuestionPopupComponent
     if (this.chosenQuestionType === 0) {
       if (this.chosenType) {
         Object.values(this.chars).forEach((value) => {
-          let question = new Answer()
+          const question = new Answer()
           question['Content'] = value
           question['IsCorrect'] = 0
           this.question.Answers.push(question)
         })
-        let num = Number(this.chosenType.split('key')[1])
+        const num = Number(this.chosenType.split('key')[1])
         this.question.Answers[num].IsCorrect = 1
         this.question.Answers[0].QuestionId = 0
       } else {
@@ -312,7 +305,7 @@ export class QuestionPopupComponent
       }
     } else if (this.chosenQuestionType === 1) {
       Object.values(this.charsNeskolko).forEach((value) => {
-        let question = new Answer()
+        const question = new Answer()
         question['Content'] = value[0]
         question['IsCorrect'] = value[1] ? 1 : 0
         this.question.Answers.push(question)
@@ -322,7 +315,7 @@ export class QuestionPopupComponent
       this.charsde = Object.keys(this.charsNeskolko)
     } else if (this.chosenQuestionType === 2) {
       Object.values(this.charsWords).forEach((value) => {
-        let question = new Answer()
+        const question = new Answer()
         question['Content'] = value
         question['IsCorrect'] = 0
         this.question.Answers.push(question)
@@ -330,7 +323,7 @@ export class QuestionPopupComponent
       this.question.Answers[0].QuestionId = 0
     } else if (this.chosenQuestionType === 3) {
       Object.values(this.charsSequence).forEach((value) => {
-        let question = new Answer()
+        const question = new Answer()
         question['Content'] = value
         question['IsCorrect'] = 0
         this.question.Answers.push(question)

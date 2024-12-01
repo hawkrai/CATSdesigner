@@ -426,7 +426,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   downloadTaskSheet(project: Project) {
-    // const url = 'http://localhost:8080/Cp/';
     location.href =
       location.origin + '/api/CPTaskSheetDownload?courseProjectId=' + project.Id
   }

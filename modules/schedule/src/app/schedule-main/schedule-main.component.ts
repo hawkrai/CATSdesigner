@@ -98,12 +98,10 @@ export class ScheduleMainComponent implements OnInit {
     }
   }
 
-  // tslint:disable-next-line:typedef
   setView(view: CalendarView) {
     this.view = view
   }
 
-  // tslint:disable-next-line:typedef
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false
   }
@@ -313,7 +311,6 @@ export class ScheduleMainComponent implements OnInit {
     message.Value = this.lessonservice.getReferenceToSubject(title)
     message.Type = 'Route'
     window.parent.postMessage(message, '*')
-    // this.modulecommunicationservice.sendMessage(window.parent, message);
   }
 
   hourClick(dateEvent: any) {
@@ -700,7 +697,7 @@ export class ScheduleMainComponent implements OnInit {
             lesson.End
         )
         lesson.Type = this.lessonservice.getLessonTypeById(lesson.Type)
-        // console.log(lesson.Teacher + ' ' + this.lessonservice.cutTeacherName(lesson.Teacher));
+
         if (lesson.Teacher != null) {
           lesson.Teacher.FullName = this.lessonservice.cutTeacherName(
             lesson.Teacher.FullName
@@ -729,16 +726,16 @@ export class ScheduleMainComponent implements OnInit {
       .subscribe((l) => {
         if (l.Notes && l.Notes.length > 0) {
           l.Notes.forEach((note) => {
-            let dateArray = note.Date.split('.')
-            let year = parseInt(dateArray[2])
-            let month = parseInt(dateArray[1]) - 1
-            let day = parseInt(dateArray[0])
-            let startTime = note.StartTime.split(':')
-            let startHour = parseInt(startTime[0])
-            let startMinute = parseInt(startTime[1])
-            let endTime = note.EndTime.split(':')
-            let endHour = parseInt(endTime[0])
-            let endMinute = parseInt(endTime[1])
+            const dateArray = note.Date.split('.')
+            const year = parseInt(dateArray[2])
+            const month = parseInt(dateArray[1]) - 1
+            const day = parseInt(dateArray[0])
+            const startTime = note.StartTime.split(':')
+            const startHour = parseInt(startTime[0])
+            const startMinute = parseInt(startTime[1])
+            const endTime = note.EndTime.split(':')
+            const endHour = parseInt(endTime[0])
+            const endMinute = parseInt(endTime[1])
 
             const startT = new Date(year, month, day, startHour, startMinute)
             const endT = new Date(year, month, day, endHour, endMinute)

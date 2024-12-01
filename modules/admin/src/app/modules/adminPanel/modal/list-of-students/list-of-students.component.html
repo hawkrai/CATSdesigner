@@ -38,8 +38,8 @@
           >
             <p
               *ngIf="
-                this.isConfimed(element.Confirmed) &&
-                !this.isDeleted(element.DeletedOn, element.isActive)
+                this.isConfimed(element) &&
+                !this.isDeleted(element)
               "
             >
               {{
@@ -49,8 +49,8 @@
             </p>
             <p
               *ngIf="
-                !this.isConfimed(element.Confirmed) &&
-                !this.isDeleted(element.DeletedOn, element.isActive)
+                !this.isConfimed(element) &&
+                !this.isDeleted(element)
               "
               id="name"
             >
@@ -60,7 +60,7 @@
               }}
             </p>
             <p
-              *ngIf="this.isDeleted(element.DeletedOn, element.isActive)"
+              *ngIf="this.isDeleted(element)"
               id="name"
             >
               {{

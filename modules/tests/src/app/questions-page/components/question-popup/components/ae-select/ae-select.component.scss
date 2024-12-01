@@ -1,12 +1,8 @@
 .ae-font {
-  // width: 132px;
   &.ae-picker {
     color: #444;
     display: inline-block;
     float: left;
-    // font-size: 14px;
-    // font-weight: 500;
-    // height: 24px;
     width: 100%;
     position: relative;
     vertical-align: middle;
@@ -20,14 +16,10 @@
     position: relative;
     width: 100%;
     line-height: 24px;
-    // font: 400 13.3333px Arial;
-    //z-index: 2;
     vertical-align: middle;
-    //border: 2px solid transparent;
     font-size: 85%;
     text-align: left;
     background-color: transparent;
-    //padding: 0.4rem;
     min-width: 2rem;
     float: left;
     border: 1px solid transparent;
@@ -105,7 +97,6 @@
     background-color: #fff;
     display: none;
     min-width: 100%;
-    // padding: 4px 8px;
     position: absolute;
     white-space: nowrap;
     z-index: 3;
@@ -121,9 +112,7 @@
 
       text-align: left;
       background-color: transparent;
-      //padding: 0.4rem;
       min-width: 2rem;
-      // float: left;
       width: 100%;
       border: 0 solid #ddd;
       &.selected {
@@ -141,10 +130,8 @@
   &.ae-expanded {
     display: block;
     margin-top: -1px;
-    // top: 100%;
     z-index: 1;
     .ae-picker-label {
-      // border-color: #ccc;
       color: #ccc;
       z-index: 2;
       svg {

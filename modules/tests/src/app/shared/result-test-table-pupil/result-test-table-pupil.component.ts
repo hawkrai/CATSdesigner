@@ -60,7 +60,6 @@ export class ResultTestTablePupilComponent implements OnChanges {
     this.barChartData[0].data = []
     if (this.tests) {
       this.tests.forEach((test: Test) => {
-        // tslint:disable-next-line:no-magic-numbers
         let sliced = test.Title.slice(0, 40)
         if (sliced.length < test.Title.length) {
           sliced += '...'

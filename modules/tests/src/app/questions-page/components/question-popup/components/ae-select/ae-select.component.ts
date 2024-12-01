@@ -54,7 +54,6 @@ export class AeSelectComponent implements OnInit, ControlValueAccessor {
     return 'ae-select';
   }*/
 
-  // tslint:disable-next-line:no-output-native no-output-rename
   @Output('change') changeEvent = new EventEmitter()
 
   @ViewChild('labelButton', { static: true }) labelButton: ElementRef
@@ -78,7 +77,6 @@ export class AeSelectComponent implements OnInit, ControlValueAccessor {
   }
 
   toggleOpen() {
-    // event.stopPropagation();
     if (this.disabled) {
       return
     }
@@ -143,8 +141,7 @@ export class AeSelectComponent implements OnInit, ControlValueAccessor {
     if (!this.opened) {
       return
     }
-    // console.log($event.key);
-    // if (KeyCode[$event.key]) {
+
     switch ($event.key) {
       case 'ArrowDown':
         this._handleArrowDown($event)
@@ -169,9 +166,6 @@ export class AeSelectComponent implements OnInit, ControlValueAccessor {
         this._handleBackspace()
         break
     }
-    // } else if ($event.key && $event.key.length === 1) {
-    // this._keyPress$.next($event.key.toLocaleLowerCase());
-    // }
   }
 
   _handleArrowDown($event) {
