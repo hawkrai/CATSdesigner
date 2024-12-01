@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Component, OnInit, Inject } from '@angular/core'
 import {
   MatTableDataSource,
@@ -5,6 +6,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material'
 import { GroupService } from 'src/app/service/group.service'
+import { Student } from '../../../../model/student'
 
 @Component({
   selector: 'app-list-of-students',
@@ -39,15 +41,30 @@ export class ListOfStudentsComponent implements OnInit {
       })
   }
 
-  isConfimed(confimed) {
-    return confimed === true
+  isConfimed(student: Student) {
+    if (
+      student.Confirmed &&
+      student.ConfirmedBy != null &&
+      student.ConfirmationDate != '-'
+    ) {
+      return true;
+
+      return false;
+    }
   }
 
-  isDeleted(deleted, active) {
-    return (deleted != null && active !== true) == true
+  isDeleted(student: Student) {
+    if (!student.IsActive) {
+      if (student.DeletedOn != null) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   onNoClick(): void {
     this.dialogRef.close()
   }
+
 }
