@@ -694,7 +694,7 @@
   "text.adminPanel.group.headers.name": "Group number",
   "text.adminPanel.group.headers.startYear": "Entry year",
   "text.adminPanel.group.headers.graduationYear": "Graduation year",
-  "text.adminPanel.group.headers.studentsCount": "Number of students (confirmed\\not confirmed)",
+  "text.adminPanel.group.headers.studentsCount": "Number of students (confirmed\\not confirmed\\deleted)",
   "text.adminPanel.group.headers.subjectsCount": "Number of courses (current\\completed)",
   "text.adminPanel.group.headers.action": "Action",
 

@@ -592,7 +592,7 @@
   "text.adminPanel.group.headers.name": "Номер группы",
   "text.adminPanel.group.headers.startYear": "Год поступления",
   "text.adminPanel.group.headers.graduationYear": "Год выпуска",
-  "text.adminPanel.group.headers.studentsCount": "Количество студентов (подтверждено\\не подтверждено)",
+  "text.adminPanel.group.headers.studentsCount": "Количество студентов (подтверждено\\не подтверждено\\удалено)",
   "text.adminPanel.group.headers.subjectsCount": "Количество предметов (текущие\\завершенные)",
   "text.adminPanel.group.headers.action": "Действие",
 

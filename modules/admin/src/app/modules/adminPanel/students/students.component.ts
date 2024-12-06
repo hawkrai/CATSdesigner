@@ -318,12 +318,19 @@ export class StudentsComponent implements OnInit {
       )
     }
 
-    if (student.Confirmed) {
+    if (student.Confirmed == true) {
       return this.translatePipe.transform(
         'text.adminPanel.students.status.confirmed',
         ''
       )
     }
+
+    if (student.Confirmed === null && student.DeletedOn === null) { 
+      return this.translatePipe.transform(
+        'text.adminPanel.students.status.confirmed',
+        ''
+      )
+  }
 
     return this.translatePipe.transform(
       'text.adminPanel.students.status.notConfirmed',
@@ -395,6 +402,6 @@ export class StudentsComponent implements OnInit {
         `${this.formatDate(student.ConfirmationDate)}\r\n` +
         `${student.ConfirmedBy}\r\n`
       )
-    }
+    } 
   }
 }
