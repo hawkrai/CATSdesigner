@@ -1,4 +1,11 @@
+<div class="title">
 <h1 mat-dialog-title>{{ data.title }}</h1>
+<div class="cancel-button">
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+</div>
 <div mat-dialog-content class="complex-grid-component__popover" #popoverContent>
   <form class="example-form" #formElement>
     <mat-form-field class="example-full-width">
@@ -91,3 +98,4 @@
     {{ 'common.save' | translate: 'Сохранить' }}
   </button>
 </div>
+

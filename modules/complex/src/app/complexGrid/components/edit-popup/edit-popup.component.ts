@@ -24,4 +24,8 @@ export class ComplexGridEditPopupComponent {
   onSave(data): void {
     this.dialogRef.close(data)
   }
+
+  onNoClick(): void {
+    this.dialogRef.close()
+  }
 }
