@@ -26,10 +26,7 @@ export class MessageService {
       .append('body', body)
       .append('recipients', recipients)
       .append('attachments', attachments)
-    // params = params.set('subject', subject);
-    // params = params.set('body', body);
-    // params = params.set('recipients', recipients);
-    // params = params.set('attachments', []);
+
     return this.http.post<string>(this.api + 'Save', params)
   }
 

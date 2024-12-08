@@ -86,13 +86,13 @@ export class NeuralNetworkPopupComponent
       }
     })
     topicsNum.push(currentNumb)
-    let cartesian = this.cartesian(argumentsD)
+    const cartesian = this.cartesian(argumentsD)
     cartesian.unshift(queestions)
-    let dataForTopic = this.cartesian(argumentsD)
+    const dataForTopic = this.cartesian(argumentsD)
     this.savedDataAnswersValue = JSON.parse(JSON.stringify(dataForTopic))
-    let topicsValue = []
+    const topicsValue = []
     dataForTopic.forEach((value) => {
-      let tValue = []
+      const tValue = []
       let currentBorder = 0
       topicsNum.forEach((valueN) => {
         let sumValue = 0
@@ -120,7 +120,7 @@ export class NeuralNetworkPopupComponent
 
     function helper(arr, i) {
       for (let j = 0, l = arg[i].length; j < l; j++) {
-        let a = arr.slice(0) // clone arr
+        const a = arr.slice(0) // clone arr
         a.push(arg[i][j])
         if (i == max) {
           r.push(a)
@@ -155,7 +155,6 @@ export class NeuralNetworkPopupComponent
         Code: '200',
       })
       this.disableButtons(false)
-      // tslint:disable-next-line:no-magic-numbers
     }, 500)
   }
 

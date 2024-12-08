@@ -5,7 +5,6 @@
 
   ::ng-deep [contenteditable='true']:empty:before {
     content: attr(placeholder);
-    // display: block; // for firefox
     color: #868e96;
     opacity: 1;
   }
@@ -20,13 +19,7 @@
       background-color: transparent;
       overflow-x: hidden;
       overflow-y: auto;
-      // z-index: 2;
       position: relative;
-      // pointer-events: none;
-      &:focus,
-      &.focus {
-        // outline: 0;
-      }
 
       ::ng-deep blockquote {
         margin-left: 1rem;
@@ -44,7 +37,6 @@
       position: absolute;
       top: 0;
       padding: 0.5rem 0.8rem 1rem 0.9rem;
-      // z-index: 1;
       color: #6c757d;
       opacity: 0.75;
     }

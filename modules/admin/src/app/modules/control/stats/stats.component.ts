@@ -33,8 +33,6 @@ export class StatsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.groupName = this.route.snapshot.params.groupName;
-    // this.initData(this.groupName);
     this.getParamIdFromUrl()
   }
 
