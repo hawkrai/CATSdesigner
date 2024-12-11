@@ -43,25 +43,25 @@ export class ListOfStudentsComponent implements OnInit {
 
   isConfimed(student: Student) {
     if (
-      student.Confirmed &&
-      student.ConfirmedBy != null &&
-      student.ConfirmationDate != '-'
+      student.Confirmed || 
+      (student.Confirmed == null &&
+        student.DeletedOn == null)
     ) {
       return true;
 
-      return false;
     }
+    return false;
   }
 
   isDeleted(student: Student) {
     if (!student.IsActive) {
-      if (student.DeletedOn != null) {
         return true;
-      }
     }
 
     return false;
   }
+
+
 
   onNoClick(): void {
     this.dialogRef.close()
