@@ -55,8 +55,11 @@ namespace Application.Infrastructure.StudentManagement
             using (var repositoriesContainer = new LmPlatformRepositoriesContainer())
             {
                 return repositoriesContainer.StudentsRepository
-                    .GetAll(new Query<Student>(e => e.GroupId == groupId && e.DeletedOn == null && e.Confirmed == true
-					).Include(e => e.Group))
+                    .GetAll(new Query<Student>(
+						e => e.GroupId == groupId &&
+						e.IsActive != false &&
+						(e.Confirmed == true || e.Confirmed == null && e.DeletedOn == null)
+                    ).Include(e => e.Group))
                     .OrderBy(e => e.LastName)
                     .ToList();
             }
