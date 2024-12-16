@@ -30,45 +30,32 @@
               'text.adminPanel.modal.listOfStudents.headers.status' | translate
             }}
           </th>
-          <td
-            class="table-container"
-            mat-cell
-            *matCellDef="let element"
-            id="name"
-          >
-            <p
-              *ngIf="
-                this.isConfimed(element) &&
-                !this.isDeleted(element)
-              "
-            >
+          <td class="table-container"
+              mat-cell
+              *matCellDef="let element"
+              id="name">
+            <p *ngIf="!this.isDeleted(element) && this.isConfirmed(element)">
               {{
-                'text.adminPanel.modal.listOfStudents.status.confirmed'
-                  | translate
+      'text.adminPanel.modal.listOfStudents.status.confirmed'
+        | translate
               }}
             </p>
-            <p
-              *ngIf="
-                !this.isConfimed(element) &&
-                !this.isDeleted(element)
-              "
-              id="name"
-            >
+
+            <p *ngIf="!this.isDeleted(element) && !this.isConfirmed(element)">
               {{
-                'text.adminPanel.modal.listOfStudents.status.notConfirmed'
-                  | translate
+      'text.adminPanel.modal.listOfStudents.status.notConfirmed'
+        | translate
               }}
             </p>
-            <p
-              *ngIf="this.isDeleted(element)"
-              id="name"
-            >
+
+            <p *ngIf="this.isDeleted(element)">
               {{
-                'text.adminPanel.modal.listOfStudents.status.deleted'
-                  | translate
+      'text.adminPanel.modal.listOfStudents.status.deleted'
+        | translate
               }}
             </p>
           </td>
+
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
