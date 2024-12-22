@@ -17,13 +17,6 @@ export class ListOfStudentsComponent implements OnInit {
   displayedColumns: string[] = ['student', 'confimed']
   dataSource = new MatTableDataSource<object>()
   isLoad = false
- /* students: Students[] = [
-    {  FullName: 'Иван Иванов', Confirmed: true, IsActive: false, DeletedOn: null },
-    {  FullName: 'Петр Петров', Confirmed: true, IsActive: true, DeletedOn: null },
-    {  FullName: 'Сергей Сергеев', Confirmed: false, IsActive: true, DeletedOn: '2024-01-01' },
-    {  FullName: 'Анна Аннова', Confirmed: null, IsActive: null, DeletedOn: null },
-    {  FullName: 'Мария Мариева', Confirmed: null, IsActive: null, DeletedOn: '2024-01-01' },
-  ];*/
 
   constructor(
 
