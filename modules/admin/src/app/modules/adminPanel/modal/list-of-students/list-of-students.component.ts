@@ -6,7 +6,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material'
 import { GroupService } from 'src/app/service/group.service'
-import { Student } from '../../../../model/student'
+import { Student, Students } from '../../../../model/student'
 
 @Component({
   selector: 'app-list-of-students',
@@ -17,6 +17,13 @@ export class ListOfStudentsComponent implements OnInit {
   displayedColumns: string[] = ['student', 'confimed']
   dataSource = new MatTableDataSource<object>()
   isLoad = false
+ /* students: Students[] = [
+    {  FullName: 'Иван Иванов', Confirmed: true, IsActive: false, DeletedOn: null },
+    {  FullName: 'Петр Петров', Confirmed: true, IsActive: true, DeletedOn: null },
+    {  FullName: 'Сергей Сергеев', Confirmed: false, IsActive: true, DeletedOn: '2024-01-01' },
+    {  FullName: 'Анна Аннова', Confirmed: null, IsActive: null, DeletedOn: null },
+    {  FullName: 'Мария Мариева', Confirmed: null, IsActive: null, DeletedOn: '2024-01-01' },
+  ];*/
 
   constructor(
 
@@ -27,7 +34,7 @@ export class ListOfStudentsComponent implements OnInit {
 
   ngOnInit() {
 
-    this.loadStudentById(this.data.Id)
+      this.loadStudentById(this.data.Id)
   }
 
   isStudents() {
@@ -43,11 +50,11 @@ export class ListOfStudentsComponent implements OnInit {
       })
   }
 
-  isDeleted(student: Student): boolean {
-    return student.IsActive === false; 
+  isDeleted(student: Students): boolean {
+    return student.isActive === false; 
   }
 
-  isConfirmed(student: Student): boolean {
+  isConfirmed(student: Students): boolean {
     if (student.Confirmed === true) {
       return true; 
     }
