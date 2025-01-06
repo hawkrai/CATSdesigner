@@ -87,7 +87,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
                 Children = ch.Select(c => new ConceptViewData(c, true, false, false)).ToList();
 	        }
         }
-
+	    
         private void InitTree(ICollection<Models.Concept> ch, IFilesManagementService filesManagementService)
         {
             if (ch != null && ch.Any())
