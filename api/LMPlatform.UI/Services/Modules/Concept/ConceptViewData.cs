@@ -27,40 +27,49 @@ namespace LMPlatform.UI.Services.Modules.Concept
             SubjectName = concept.Subject.Name;
         }
 
-        public ConceptViewData(Models.Concept concept, bool buildTree, bool isRoot)
+        public ConceptViewData(Models.Concept concept, bool buildTree, bool isRoot, bool isLector)
             : this(concept)
         {
             if (isRoot)
             {
                 InitStateOfModulesPublish(concept);
             }
+
             if (!buildTree) return;
-	        Children = new List<ConceptViewData>();
+            if (!concept.Published && !(isRoot && isLector)) return;
+
+            Children = new List<ConceptViewData>();
             InitTree(concept.Children);
         }
 
-        public ConceptViewData(Models.Concept concept, bool buildTree, IFilesManagementService filesManagementService, bool isRoot)
+        public ConceptViewData(Models.Concept concept, bool buildTree, IFilesManagementService filesManagementService, bool isRoot, bool isLector)
            : this(concept)
         {
             if (isRoot)
             {
                 InitStateOfModulesPublish(concept);
             }
+
             if (!buildTree) return;
+            if (!concept.Published && !(isRoot && isLector)) return;
+
             Children = new List<ConceptViewData>();
             Attachments = string.IsNullOrEmpty(concept.Container) ? new List<Attachment>() : filesManagementService.GetAttachments(concept.Container);
             InitTree(concept.Children, filesManagementService);
         }
 
-        public ConceptViewData(Models.Concept concept, bool buildTree, Func<Models.Concept, bool> filterFirstLevelChildren, bool isRoot)
+        public ConceptViewData(Models.Concept concept, bool buildTree, Func<Models.Concept, bool> filterFirstLevelChildren, bool isRoot, bool isLector)
             : this(concept)
         {
             if (isRoot)
             {
                 InitStateOfModulesPublish(concept);
             }
+
             if (!buildTree) return;
-	        Children = new List<ConceptViewData>();
+            if (!concept.Published && !(isRoot && isLector)) return;
+
+            Children = new List<ConceptViewData>();
             if (filterFirstLevelChildren == null)
             {
 	            InitTree(concept.Children);
@@ -75,7 +84,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
 	        if (ch != null && ch.Any())
 	        {
-                Children = ch.Select(c => new ConceptViewData(c, true, false)).ToList();
+                Children = ch.Select(c => new ConceptViewData(c, true, false, false)).ToList();
 	        }
         }
 
@@ -83,10 +92,10 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
             if (ch != null && ch.Any())
             {
-                Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService, false)).ToList();
+                Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService, false, false)).ToList();
             }
         }
-
+        
         private void InitStateOfModulesPublish(Models.Concept concept)
         {
             Models.Concept practiceConcept = concept?.Children?.FirstOrDefault(x => x.Name == "Практический раздел");

@@ -182,7 +182,7 @@ namespace LMPlatform.UI.Services.Concept
 
         public ConceptResult GetConceptCascade(int parenttId)
         {
-            var conceptViewData = new ConceptViewData(ConceptManagementService.GetTreeConceptByElementId(parenttId), true, FilesManagementService, true);
+            var conceptViewData = new ConceptViewData(ConceptManagementService.GetTreeConceptByElementId(parenttId), true, FilesManagementService, true, CurrentUserIsLector());
             PopulateFilePath(conceptViewData);
 
             var res = new ConceptResult
@@ -339,7 +339,7 @@ namespace LMPlatform.UI.Services.Concept
             try
             {
                 var tree = ConceptManagementService.GetTreeConceptByElementId(elementId);
-                return new ConceptViewData(tree, true, true);
+                return new ConceptViewData(tree, true, true, CurrentUserIsLector());
             }
             catch
             {
@@ -408,7 +408,7 @@ namespace LMPlatform.UI.Services.Concept
 			try
 			{
 				var tree = ConceptManagementService.GetTreeConceptByElementId(elementId);
-                var dataTree = new ConceptViewData(tree, true, true);
+                var dataTree = new ConceptViewData(tree, true, true, CurrentUserIsLector());
                 PopulateFilePath(dataTree);
                 return dataTree;
 			}
