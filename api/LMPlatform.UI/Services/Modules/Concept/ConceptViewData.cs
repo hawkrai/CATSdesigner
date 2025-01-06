@@ -87,7 +87,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
                 Children = ch.Select(c => new ConceptViewData(c, true, false, false)).ToList();
 	        }
         }
-	    
+
         private void InitTree(ICollection<Models.Concept> ch, IFilesManagementService filesManagementService)
         {
             if (ch != null && ch.Any())
@@ -95,7 +95,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
                 Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService, false, false)).ToList();
             }
         }
-        
+
         private void InitStateOfModulesPublish(Models.Concept concept)
         {
             Models.Concept practiceConcept = concept?.Children?.FirstOrDefault(x => x.Name == "Практический раздел");
