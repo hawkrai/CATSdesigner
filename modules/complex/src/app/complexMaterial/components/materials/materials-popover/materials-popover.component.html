@@ -36,7 +36,7 @@
     (click)="goToPrevMaterial()"
   >
     <mat-icon>fast_rewind</mat-icon>
-    {{ 'common.prevDocument' | translate: 'Предыдущий документ' }}
+    {{ 'common.prevTopic' | translate: 'Предыдущая тема' }}
   </button>
   <button
     *ngIf="nextButtonVisible"
@@ -45,7 +45,7 @@
     class="color-button"
     (click)="goToNextMaterial()"
   >
-    {{ 'common.nextDocument' | translate: 'Следующий документ' }}
+    {{ 'common.nextTopic' | translate: 'Следующая тема' }}
     <mat-icon>fast_forward</mat-icon>
   </button>
   <button

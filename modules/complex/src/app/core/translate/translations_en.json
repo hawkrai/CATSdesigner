@@ -17,6 +17,8 @@
   "common.pretest": "Pass the pre-test",
   "common.prevDocument": "Previous document",
   "common.nextDocument": "Next document",
+  "common.prevTopic": "Previous topic",
+  "common.nextTopic": "Next topic",
   "common.toTests": "To the tests",
   "common.finishTest": "Finish test",
   "common.time": "Time",
