@@ -17,6 +17,8 @@
   "common.pretest": "Пройти предтест",
   "common.prevDocument": "Предыдущий документ",
   "common.nextDocument": "Следующий документ",
+  "common.prevTopic": "Предыдущая тема",
+  "common.nextTopic": "Следующая тема",
   "common.toTests": "К тестам",
   "common.finishTest": "Завершить тест",
   "common.time": "Время",
