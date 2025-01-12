@@ -449,7 +449,7 @@ namespace LMPlatform.UI.Controllers
         {
             var concepts = this.ConceptManagementService.GetRootTreeElementsBySubject(subjectId);
             var result = concepts.Select(c => new ConceptViewData(c, true,
-                concept => concept.IsGroup && !this.ConceptManagementService.IsTestModule(concept.Name), true));
+                concept => concept.IsGroup && !this.ConceptManagementService.IsTestModule(concept.Name), true, UserContext.Role == Constants.Roles.Lector));
             return this.Json(result, JsonRequestBehavior.AllowGet);
         }
 

@@ -27,40 +27,49 @@ namespace LMPlatform.UI.Services.Modules.Concept
             SubjectName = concept.Subject.Name;
         }
 
-        public ConceptViewData(Models.Concept concept, bool buildTree, bool isRoot)
+        public ConceptViewData(Models.Concept concept, bool buildTree, bool isRoot, bool isLector)
             : this(concept)
         {
             if (isRoot)
             {
                 InitStateOfModulesPublish(concept);
             }
+
             if (!buildTree) return;
-	        Children = new List<ConceptViewData>();
+            if (!concept.Published && !(isRoot && isLector)) return;
+
+            Children = new List<ConceptViewData>();
             InitTree(concept.Children);
         }
 
-        public ConceptViewData(Models.Concept concept, bool buildTree, IFilesManagementService filesManagementService, bool isRoot)
+        public ConceptViewData(Models.Concept concept, bool buildTree, IFilesManagementService filesManagementService, bool isRoot, bool isLector)
            : this(concept)
         {
             if (isRoot)
             {
                 InitStateOfModulesPublish(concept);
             }
+
             if (!buildTree) return;
+            if (!concept.Published && !(isRoot && isLector)) return;
+
             Children = new List<ConceptViewData>();
             Attachments = string.IsNullOrEmpty(concept.Container) ? new List<Attachment>() : filesManagementService.GetAttachments(concept.Container);
             InitTree(concept.Children, filesManagementService);
         }
 
-        public ConceptViewData(Models.Concept concept, bool buildTree, Func<Models.Concept, bool> filterFirstLevelChildren, bool isRoot)
+        public ConceptViewData(Models.Concept concept, bool buildTree, Func<Models.Concept, bool> filterFirstLevelChildren, bool isRoot, bool isLector)
             : this(concept)
         {
             if (isRoot)
             {
                 InitStateOfModulesPublish(concept);
             }
+
             if (!buildTree) return;
-	        Children = new List<ConceptViewData>();
+            if (!concept.Published && !(isRoot && isLector)) return;
+
+            Children = new List<ConceptViewData>();
             if (filterFirstLevelChildren == null)
             {
 	            InitTree(concept.Children);
@@ -75,7 +84,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
 	        if (ch != null && ch.Any())
 	        {
-                Children = ch.Select(c => new ConceptViewData(c, true, false)).ToList();
+                Children = ch.Select(c => new ConceptViewData(c, true, false, false)).ToList();
 	        }
         }
 
@@ -83,7 +92,7 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
             if (ch != null && ch.Any())
             {
-                Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService, false)).ToList();
+                Children = ch.Select(c => new ConceptViewData(c, true, filesManagementService, false, false)).ToList();
             }
         }
 
@@ -91,11 +100,11 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
             Models.Concept practiceConcept = concept?.Children?.FirstOrDefault(x => x.Name == "Практический раздел");
 
-            IncludeLabs = practiceConcept?.Children?.FirstOrDefault(x => x.LabId.HasValue)?.Published ?? false;
-            IncludeWorkshops = practiceConcept?.Children?.FirstOrDefault(x => x.PracticalId.HasValue)?.Published ?? false;
+            IncludeLabs = practiceConcept?.Children?.FirstOrDefault(x => x.LabId.HasValue)?.Published ?? null;
+            IncludeWorkshops = practiceConcept?.Children?.FirstOrDefault(x => x.PracticalId.HasValue)?.Published ?? null;
 
-            IncludeLectures = concept?.Children?.FirstOrDefault(x => x.Name == "Теоретический раздел")?.Published ?? false;
-            IncludeTests = concept?.Children?.FirstOrDefault(x => x.Name == "Блок контроля знаний")?.Published ?? false;
+            IncludeLectures = concept?.Children?.FirstOrDefault(x => x.Name == "Теоретический раздел")?.Published ?? null;
+            IncludeTests = concept?.Children?.FirstOrDefault(x => x.Name == "Блок контроля знаний")?.Published ?? null;
         }
 
         [DataMember]
