@@ -100,11 +100,11 @@ namespace LMPlatform.UI.Services.Modules.Concept
         {
             Models.Concept practiceConcept = concept?.Children?.FirstOrDefault(x => x.Name == "Практический раздел");
 
-            IncludeLabs = practiceConcept?.Children?.FirstOrDefault(x => x.LabId.HasValue)?.Published ?? false;
-            IncludeWorkshops = practiceConcept?.Children?.FirstOrDefault(x => x.PracticalId.HasValue)?.Published ?? false;
+            IncludeLabs = practiceConcept?.Children?.FirstOrDefault(x => x.LabId.HasValue)?.Published ?? null;
+            IncludeWorkshops = practiceConcept?.Children?.FirstOrDefault(x => x.PracticalId.HasValue)?.Published ?? null;
 
-            IncludeLectures = concept?.Children?.FirstOrDefault(x => x.Name == "Теоретический раздел")?.Published ?? false;
-            IncludeTests = concept?.Children?.FirstOrDefault(x => x.Name == "Блок контроля знаний")?.Published ?? false;
+            IncludeLectures = concept?.Children?.FirstOrDefault(x => x.Name == "Теоретический раздел")?.Published ?? null;
+            IncludeTests = concept?.Children?.FirstOrDefault(x => x.Name == "Блок контроля знаний")?.Published ?? null;
         }
 
         [DataMember]
