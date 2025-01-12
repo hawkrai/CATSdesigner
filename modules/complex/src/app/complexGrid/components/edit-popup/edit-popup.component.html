@@ -43,6 +43,7 @@
         }}</mat-checkbox
       >
       <mat-checkbox
+        *ngIf="data?.includeLectures !== null"
         name="includeLectures"
         matInput
         [(ngModel)]="data.includeLectures"
@@ -53,6 +54,7 @@
         }}</mat-checkbox
       >
       <mat-checkbox
+        *ngIf="data?.includeWorkshops !== null"
         name="includeWorkshops"
         matInput
         [(ngModel)]="data.includeWorkshops"
@@ -63,6 +65,7 @@
         }}</mat-checkbox
       >
       <mat-checkbox
+        *ngIf="data?.includeLabs !== null"
         name="includeLabs"
         matInput
         [(ngModel)]="data.includeLabs"
@@ -73,6 +76,7 @@
         }}</mat-checkbox
       >
       <mat-checkbox
+        *ngIf="data?.includeTests !== null"
         name="includeTests"
         matInput
         [(ngModel)]="data.includeTests"
