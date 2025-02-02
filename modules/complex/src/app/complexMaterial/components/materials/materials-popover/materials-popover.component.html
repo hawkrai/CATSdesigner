@@ -1,14 +1,5 @@
 <div mat-dialog-actions>
   <button
-    *ngIf="needToGetInitialTest"
-    mat-raised-button
-    mat-button
-    class="color-button"
-    (click)="goToPredTest()"
-  >
-    {{ 'common.pretest' | translate: 'Пройти предтест' }}
-  </button>
-  <button
     *ngIf="zoomInButtonVisible"
     mat-raised-button
     mat-button
@@ -78,20 +69,38 @@
 
 <div mat-dialog-content class="lab-work-component__popover" #popoverContent>
   <div *ngIf="needToGetInitialTest" class="need-pred-test">
-    <p>
-      {{
-        'complex.firstTime'
-          | translate
-            : 'Вы впервые работаете с адаптивным обучением на этом предмете'
-      }}!
-    </p>
+    <div class="predtest-description-title-text">
+      <p>
+        {{
+          'complex.firstTime'
+            | translate
+              : 'Вы впервые работаете с адаптивным обучением на этом предмете'
+        }}!
+      </p>
+      <button mat-icon-button (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <div class="pretest-description-text">
     <p>
       {{
         'complex.forStart'
           | translate
             : 'Для старта процесса обучения пожалуйста пройдите предтест'
-      }}...
+      }}
     </p>
+    </div>
+    <div class="predtest-description-button">
+    <button
+    *ngIf="needToGetInitialTest"
+    mat-raised-button
+    mat-button
+    class="mat-raised-button"
+    (click)="goToPredTest()"
+  >
+    {{ 'common.pretest' | translate: 'Пройти предтест' }}
+  </button>
+  </div>
   </div>
 
   <span *ngIf="showTimer"
