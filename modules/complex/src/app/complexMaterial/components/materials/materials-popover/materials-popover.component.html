@@ -1,4 +1,4 @@
-<div mat-dialog-actions>
+<div mat-dialog-actions *ngIf="!needToGetInitialTest">
   <button
     *ngIf="zoomInButtonVisible"
     mat-raised-button
@@ -82,25 +82,25 @@
       </button>
     </div>
     <div class="pretest-description-text">
-    <p>
-      {{
-        'complex.forStart'
-          | translate
-            : 'Для старта процесса обучения пожалуйста пройдите предтест'
-      }}
-    </p>
+      <p>
+        {{
+          'complex.forStart'
+            | translate
+              : 'Для старта процесса обучения пожалуйста пройдите предтест'
+        }}
+      </p>
     </div>
     <div class="predtest-description-button">
-    <button
-    *ngIf="needToGetInitialTest"
-    mat-raised-button
-    mat-button
-    class="mat-raised-button"
-    (click)="goToPredTest()"
-  >
-    {{ 'common.pretest' | translate: 'Пройти предтест' }}
-  </button>
-  </div>
+      <button
+        *ngIf="needToGetInitialTest"
+        mat-raised-button
+        mat-button
+        class="pred-raised-button"
+        (click)="goToPredTest()"
+      >
+        {{ 'common.pretest' | translate: 'Пройти предтест' }}
+      </button>
+    </div>
   </div>
 
   <span *ngIf="showTimer"
