@@ -94,6 +94,7 @@ export class ComplexGridComponent implements OnInit {
     const dialogRef = this.dialog.open(ComplexRulesPopoverComponent, {
       width: '1000px',
       data: { name: 'name' },
+      autoFocus: false,
     })
 
     dialogRef.afterClosed().subscribe((result) => {

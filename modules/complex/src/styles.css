@@ -23,18 +23,22 @@
   font-size: 16px;
 }
 
-.mat-dialog-container{
+.mat-dialog-container {
   height: 100vh !important;
 }
 
 .cdk-global-overlay-wrapper {
-  justify-content: center;
+  justify-content: center !important;
   align-items: center;
   display: flex;
   position: absolute;
   z-index: 1000;
   overflow: auto;
   pointer-events: auto;
+}
+
+.cdk-overlay-pane {
+  margin-left: 0% !important;
 }
 
 .cdk-global-scrollblock {
