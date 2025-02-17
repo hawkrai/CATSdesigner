@@ -46,6 +46,7 @@ export class StudentByGroup {
 
 export class Students {
   Confirmed: boolean
+  isActive: boolean
   DeletedOn: string
   FullName: string
   GroupId: number

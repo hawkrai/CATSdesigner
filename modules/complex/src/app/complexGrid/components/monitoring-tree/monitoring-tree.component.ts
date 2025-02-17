@@ -59,5 +59,11 @@ export class MonitoringTreeComponent implements OnInit {
       )
   }
 
+  onClick() {
+    sessionStorage.removeItem('complexId')
+
+    window.location.reload()
+  }
+
   hasChild = (_: number, node) => node.Children && node.Children.length > 0
 }
