@@ -1,5 +1,14 @@
 <div *ngIf="!showLoader; else loader">
   <div>
+    <a class="students-monitoring-go-back" (click)="onClick()">
+      < {{ 'complex.complexes' | translate: 'К списку ЭУМК' }}
+    </a>
+    <h1 class="students-monitoring-title">
+      {{ 'complex.monitoring' | translate: 'Мониторинг прочтения тем' }}
+    </h1>
+  </div>
+
+  <div>
     <h2 class="info">
       <span>{{ complexName }}</span>
     </h2>
