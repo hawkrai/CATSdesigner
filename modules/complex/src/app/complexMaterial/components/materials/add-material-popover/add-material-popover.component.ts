@@ -60,7 +60,8 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     this.complexService
       .getConceptCascadeFoldersOnly(currentComplexID)
       .subscribe((res) => {
-        this.navItems = res
+        this.navItems = this.translateNavItems(res)
+        console.log('navItems:', this.navItems)
         if (this.data) {
           this.switchFormTo(this.data.isGroup ? 1 : 2)
 
@@ -104,6 +105,21 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       })
   }
 
+  translateNavItems(items: ComplexCascade[]) {
+    const translationKeys = {
+      'Теоретический раздел': 'complex.section.theoretical',
+      'Практический раздел': 'complex.section.practical',
+      'Блок контроля знаний': 'complex.section.control',
+    }
+
+    return items.map((item) => ({
+      ...item,
+      Name: translationKeys[item.Name]
+        ? this.translatePipe.transform(translationKeys[item.Name], item.Name) // Передаём ключ и fallback (оригинальное имя)
+        : item.Name, // Если ключа нет, оставляем оригинальное название
+      children: item.children ? this.translateNavItems(item.children) : [],
+    }))
+  }
   selectConcept(id: any) {
     this.data.parentId = this.conceptId = id
     this.selectedConcept = this.getConceptNameById(this.navItems, id)
