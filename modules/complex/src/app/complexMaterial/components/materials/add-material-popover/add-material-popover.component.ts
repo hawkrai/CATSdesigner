@@ -115,8 +115,8 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
     return items.map((item) => ({
       ...item,
       Name: translationKeys[item.Name]
-        ? this.translatePipe.transform(translationKeys[item.Name], item.Name) // Передаём ключ и fallback (оригинальное имя)
-        : item.Name, // Если ключа нет, оставляем оригинальное название
+        ? this.translatePipe.transform(translationKeys[item.Name], item.Name)
+        : item.Name,
       children: item.children ? this.translateNavItems(item.children) : [],
     }))
   }
