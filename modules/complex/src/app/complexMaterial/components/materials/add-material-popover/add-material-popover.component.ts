@@ -61,7 +61,6 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
       .getConceptCascadeFoldersOnly(currentComplexID)
       .subscribe((res) => {
         this.navItems = this.translateNavItems(res)
-        console.log('navItems:', this.navItems)
         if (this.data) {
           this.switchFormTo(this.data.isGroup ? 1 : 2)
 
