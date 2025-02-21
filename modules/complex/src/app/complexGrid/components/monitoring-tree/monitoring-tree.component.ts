@@ -65,6 +65,6 @@ export class MonitoringTreeComponent implements OnInit {
     window.location.reload()
   }
 
-  hasChild = (_: number, node) => 
-    node.IsGroup || (!!node.Children && node.Children.length > 0)
+  isFolder = (_: number, node) => 
+    node.IsGroup || (node.Children && node.Children.length > 0)
 }
