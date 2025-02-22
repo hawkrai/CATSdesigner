@@ -18,29 +18,30 @@ namespace Repository
         }
 
         public async Task<int?> GetGroupId(int chatId) =>
-            await FindByCondition(c => c.Id == chatId, false).Select(_=>_.GroupId).FirstOrDefaultAsync();
+            await FindByCondition(c => c.Id == chatId, false)
+            .Select(chat => chat.GroupId)
+            .FirstOrDefaultAsync();
 
 
         public async Task<IEnumerable<GroupChat>> GetForLecturer(int subjId) => 
             await FindByCondition(c => c.SubjectId == subjId, false)
-            .Include(x=>x.GroupMessages)
-            .Include(x=>x.GroupChatHistory)
-            .Include(x=> x.Subject)
-            .OrderBy(x=>x.GroupName)
+            .Include(x => x.GroupMessages)
+            .Include(x => x.GroupChatHistory)
+            .Include(x => x.Subject)
+            .OrderBy(x => x.GroupName)
             .ToListAsync();
 
         public async Task<IEnumerable<GroupChat>> GetForStudents(int groupId, int subjId) => 
             await FindByCondition(c => (c.GroupId == null || c.GroupId == groupId) && c.SubjectId == subjId, false)
             .Include(x => x.GroupMessages)
-            .Include(x=>x.GroupChatHistory)
-            .Include(x=>x.Subject)
-            .OrderBy(x=>x.GroupName)
+            .Include(x => x.GroupChatHistory)
+            .Include(x => x.Subject)
+            .OrderBy(x => x.GroupName)
             .ToListAsync();
 
-        public async Task<bool> SubjectChatExists(int subjectId)
-        {
-            return await FindByCondition(c => c.SubjectId == subjectId && c.IsSubjectGroup, false).AnyAsync();
-        }
+        public async Task<bool> SubjectChatExists(int subjectId) 
+            => await FindByCondition(c => c.SubjectId == subjectId && c.IsSubjectGroup, false)
+            .AnyAsync();
 
         public async Task<bool> CreateChat(GroupChat chat)
         {
@@ -57,9 +58,8 @@ namespace Repository
             }
         }
 
-        public async Task<bool> GroupChatExists(int subjectId, int? groupId)
-        {
-            return await FindByCondition(c => c.SubjectId == subjectId && c.GroupId == groupId && !c.IsSubjectGroup, false).AnyAsync();
-        }
+        public async Task<bool> GroupChatExists(int subjectId, int? groupId) => 
+            await FindByCondition(c => c.SubjectId == subjectId && c.GroupId == groupId && !c.IsSubjectGroup, false)
+            .AnyAsync();
     }
 }

@@ -20,7 +20,8 @@ namespace Repository
             await Create(chatHistory);
         }
 
-        public async Task<UserChatHistory> GetUserChatHistoryAsync(int userId,int chatId, bool trackChanges) =>  await FindByCondition(c => c.UserId==userId && c.ChatId==chatId, trackChanges).FirstOrDefaultAsync();
-
+        public async Task<UserChatHistory> GetUserChatHistoryAsync(int userId, int chatId, bool trackChanges) => 
+            await FindByCondition(c => c.UserId == userId && c.ChatId == chatId, trackChanges)
+            .FirstOrDefaultAsync();
     }
 }

@@ -16,12 +16,12 @@ namespace Repository
         {
         }
 
-        public async Task<IEnumerable<SubjectLecturer>> GetSubjects(int lecturerId) =>
+        public async Task<IEnumerable<SubjectLecturer>> GetSubjects(int lecturerId) => 
             await FindByCondition(c => c.LecturerId == lecturerId, false)
-                .Include(c => c.Subject)
-                .Where(c => !c.Subject.IsArchive)
-                .OrderBy(c=> c.Subject.ShortName)
-                .ToListAsync();
+            .Include(c => c.Subject)
+            .Where(c => !c.Subject.IsArchive)
+            .OrderBy(c => c.Subject.ShortName)
+            .ToListAsync();
 
     }
 }

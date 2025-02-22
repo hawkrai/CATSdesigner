@@ -90,7 +90,7 @@ namespace Services
             bool subjectChatExists = await _repository.GroupChats.SubjectChatExists(subject.Id);
             if (!subjectChatExists)
             {
-                // Создаем общий чат для предмета
+                // Create shared chat
                 await _repository.GroupChats.CreateChat(new GroupChat()
                 {
                     SubjectId = subject.Id,
@@ -101,16 +101,14 @@ namespace Services
                 });
             }
 
-            // Получаем все группы, связанные с этим предметом
             var subjectGroups = await _repository.SubjectGroup.GetGroups(subject.Id);
 
             foreach (var sg in subjectGroups)
             {
-                // Проверяем наличие чата для каждой группы
                 bool groupChatExists = await _repository.GroupChats.GroupChatExists(subject.Id, sg.GroupId);
                 if (!groupChatExists)
                 {
-                    // Создаем чат для группы
+                    // Create group chat
                     string groupName = $"{sg.Group.Name}";
                     string shortName = $"{subject.ShortName} ({sg.Group.Name})";
                     await _repository.GroupChats.CreateChat(new GroupChat()

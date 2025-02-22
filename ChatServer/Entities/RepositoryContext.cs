@@ -39,43 +39,43 @@ namespace Entities
                 .HasOne(gm => gm.GroupChat)
                 .WithMany(gc => gc.GroupMessages)
                 .HasForeignKey(gm => gm.GroupChatId)
-                .OnDelete(DeleteBehavior.Cascade); // При удалении чата удаляются все сообщения
+                .OnDelete(DeleteBehavior.Cascade); // Delete all chat's GroupMessages after deleting GroupChat
 
             modelBuilder.Entity<GroupMessage>()
                 .HasOne(gm => gm.User)
                 .WithMany(u => u.GroupMessages)
                 .HasForeignKey(gm => gm.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // При удалении пользователя удаляются все его сообщения
+                .OnDelete(DeleteBehavior.Cascade); // Delete all user's GroupMessages after deleting User
 
             modelBuilder.Entity<GroupChatHistory>()
                 .HasOne(gch => gch.GroupChat)
                 .WithMany(gc => gc.GroupChatHistory)
                 .HasForeignKey(gch => gch.GroupChatId)
-                .OnDelete(DeleteBehavior.Cascade); // При удалении чата удаляются все истории
+                .OnDelete(DeleteBehavior.Cascade); // Delete all chats's GroupChatHistory after deleting GroupChat
 
             modelBuilder.Entity<GroupChatHistory>()
                 .HasOne(gch => gch.User)
                 .WithMany(u => u.GroupChatHistory)
                 .HasForeignKey(gch => gch.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // При удалении пользователя удаляются все его истории
+                .OnDelete(DeleteBehavior.Cascade); // Delete all user's GroupChatHistory after deleting User
 
             modelBuilder.Entity<GroupChat>()
                 .HasOne(gc => gc.Subject)
                 .WithMany(s => s.GroupChats)
                 .HasForeignKey(gc => gc.SubjectId)
-                .OnDelete(DeleteBehavior.Cascade); // При удалении предмета удаляются все прикрепленные чаты
+                .OnDelete(DeleteBehavior.Cascade); // Delete all subject's GroupChats after deleting Subject
 
             modelBuilder.Entity<GroupChat>()
                 .HasOne(gc => gc.Group)
                 .WithMany(g => g.GroupChats)
                 .HasForeignKey(gc => gc.GroupId)
-                .OnDelete(DeleteBehavior.Cascade); // При удалении группы удаляются все прикрепленные чаты
+                .OnDelete(DeleteBehavior.Cascade); // Delete all group's GroupChats after deleting Group
 
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.Group)
                 .WithMany(g => g.Students)
                 .HasForeignKey(s => s.GroupId)
-                .OnDelete(DeleteBehavior.Cascade); // При удалении группы удаляются все студенты из этой группы
+                .OnDelete(DeleteBehavior.Cascade); // Delete all group's Students after deleting Group
         }
     }
 }
