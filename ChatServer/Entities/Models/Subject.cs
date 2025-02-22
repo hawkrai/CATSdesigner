@@ -11,13 +11,7 @@ namespace Entities.Models
         [Key]
         public int Id { get; set; }
 
-        public virtual bool IsNew
-        {
-            get
-            {
-                return Id == 0;
-            }
-        }
+        public virtual bool IsNew => Id == 0;
 
         public string Name { get; set; }
 
@@ -29,8 +23,10 @@ namespace Entities.Models
 
         public bool IsNeededCopyToBts { get; set; }
 
-        public ICollection<SubjectGroup> SubjectGroups { get; set; }
+        public virtual ICollection<SubjectGroup> SubjectGroups { get; set; }
 
-        public ICollection<SubjectLecturer> SubjectLecturers { get; set; }
+        public virtual ICollection<SubjectLecturer> SubjectLecturers { get; set; }
+
+        public virtual ICollection<GroupChat> GroupChats { get; set; }
     }
 }

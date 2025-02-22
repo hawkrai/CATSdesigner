@@ -11,11 +11,12 @@ namespace Entities.Models.GroupChatModels
     {
         public int Id { get; set; }
         public int LecturerId { get; set; }
-        public int SubjectId { get; set; }
         public int? Owner { get; set; }
         public Guid? Guid { get; set; }
 
-        [ForeignKey("SubjectId")]
-        public Subject Subjects { get; set; }
+        public int SubjectId { get; set; }
+
+        [ForeignKey(nameof(SubjectId))]
+        public virtual Subject Subject { get; set; }
     }
 }

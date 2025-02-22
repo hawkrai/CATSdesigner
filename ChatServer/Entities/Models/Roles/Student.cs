@@ -23,6 +23,8 @@ namespace Entities.Models
 
         public int GroupId { get; set; }
 
+        [ForeignKey(nameof(GroupId))]
+        public virtual Group Group { get; set; }
 
         [NotMapped]
         public string FullName => $"{LastName} {FirstName} {MiddleName}";

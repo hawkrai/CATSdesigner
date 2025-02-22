@@ -24,8 +24,9 @@ namespace Entities
         public DbSet<GroupChatHistory> GroupChatHistory { get; set; }
         public DbSet<UserChatHistory> UserChatHistory { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
-        
+
         public RepositoryContext(DbContextOptions<RepositoryContext> options) : base(options)
         {
         }

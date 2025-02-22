@@ -22,7 +22,7 @@ namespace ChatServer.services
         public async Task<List<Chat>> GetChats(int userId)
         {
             int uId = 0;
-            return (await _context.Users.Where(x => x.UserId == userId).Include(x => x.UserChats).FirstOrDefaultAsync()).UserChats;
+            return (await _context.Users.Where(x => x.UserId == userId).Include(x => x.UserChats).FirstOrDefaultAsync()).UserChats.ToList();
         }
 
         public async Task<List<Lecturer>> GetLecturers(int userId)

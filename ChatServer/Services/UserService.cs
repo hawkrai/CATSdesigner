@@ -44,7 +44,7 @@ namespace Services
         public async Task<IEnumerable<ChatDto>> GetUserChats(int userId)
         {
             var user = await _repository.Users.GetUserChats(userId, false);
-            var chats = user.UserChats;
+            var chats = user.UserChats.ToList();
             var chatDTO = _mapper.Map<List<ChatDto>>(chats);
             for (int i = 0; i < chats.Count; i++)
             {

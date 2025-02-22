@@ -23,7 +23,7 @@ namespace Repository
             await FindByCondition(c => c.SubjectId == subjId, false)
             .Include(x=>x.GroupMessages)
             .Include(x=>x.GroupChatHistory)
-            .Include(x=> x.Subjects)
+            .Include(x=> x.Subject)
             .OrderBy(x=>x.GroupName)
             .ToListAsync();
 
@@ -31,7 +31,7 @@ namespace Repository
             => await FindByCondition(c => (c.GroupId == null || c.GroupId == groupId) && c.SubjectId == subjId, false)
             .Include(x => x.GroupMessages)
             .Include(x=>x.GroupChatHistory)
-            .Include(x=>x.Subjects)
+            .Include(x=>x.Subject)
             .OrderBy(x=>x.GroupName)
             .ToListAsync();
 
