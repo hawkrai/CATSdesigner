@@ -53,46 +53,27 @@ namespace Services
                 if (groupChat.IsSubjectGroup)
                 {
                     var lastReadSubject = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, groupChat.Id, false);
-                    if (lastReadSubject == null)
-                    {
-                        lastReadSubject = new GroupChatHistory()
-                        {
-                            GroupChatId = groupChat.Id,
-                            Date = DateTime.UtcNow,
-                            UserId = userId,
-                        };
-
-                        await _repository.GroupChatHistoryRepository.Add(lastReadSubject);
-                    }
 
                     var subjectDto = new SubjectChatsDto() { Id = groupChat.Id, Name = groupChat.GroupName, ShortName = groupChat.ShortName, Color = groupChat.Subject.Color };
 
-                    int? lastReaded;
                     GroupChat[] groupsModel = groupChats.FindAll(x => !x.IsSubjectGroup && x.SubjectId == groupChat.SubjectId).ToArray();
                     List<GroupChatDto> groupChatsDto = new List<GroupChatDto>();
-                    if (lastReadSubject != null)
-                    {
-                        lastReaded = groupChat.GroupMessages.ToList().FindIndex(x => x.Time > lastReadSubject.Date);
 
-                        if (lastReaded > -1)
-                            subjectDto.Unread = groupChat.GroupMessages.Count - (int)lastReaded;
-                        else
-                            subjectDto.Unread = 0;
-                    }
+                    if (lastReadSubject != null)
+                        subjectDto.Unread = groupChat.GroupMessages.Count(x => x.Time > lastReadSubject.Date);
+                    else
+                        subjectDto.Unread = groupChat.GroupMessages.Count;
+
                     for (int i = 0; i < groupsModel.Length; i++)
                     {
                         var groupChatDto = _mapper.Map<GroupChatDto>(groupsModel[i]);
 
                         lastReadSubject = await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, groupsModel[i].Id, false);
-                       
+
                         if (lastReadSubject != null)
-                            lastReaded = groupsModel[i].GroupMessages.ToList().FindIndex(x => x.Time > lastReadSubject.Date);
+                            groupChatDto.Unread = groupsModel[i].GroupMessages.Count(x => x.Time > lastReadSubject.Date);
                         else
-                            lastReaded = -1;
-                        if (lastReaded > -1)
-                            groupChatDto.Unread = groupsModel[i].GroupMessages.Count - (int)lastReaded;
-                        else
-                            groupChatDto.Unread = 0;
+                            groupChatDto.Unread = groupsModel[i].GroupMessages.Count;
 
                         groupChatsDto.Add(groupChatDto);
                     }

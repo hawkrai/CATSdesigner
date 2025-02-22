@@ -44,7 +44,7 @@ namespace Services
                 userH = new GroupChatHistory()
                 {
                     GroupChatId = chatId,
-                    Date = DateTime.UtcNow,
+                    Date = DateTime.Now,
                     UserId = userId,
                 };
 
