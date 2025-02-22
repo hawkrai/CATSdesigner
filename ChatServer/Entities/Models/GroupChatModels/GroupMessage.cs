@@ -16,11 +16,15 @@ namespace Entities.Models.GroupChatModels
         public string FileContent { get; set; }
         public string FileSize { get; set; }
 
-        public GroupChat GroupChat { get; set; }
         public int GroupChatId { get; set; }
 
-        public User User { get; set; }
+        [ForeignKey(nameof(GroupChatId))]
+        public virtual GroupChat GroupChat { get; set; }
+
         public int UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public virtual User User { get; set; }
 
     }
 }

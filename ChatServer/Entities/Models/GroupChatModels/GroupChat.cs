@@ -13,15 +13,22 @@ namespace Entities.Models.GroupChatModels
         public string GroupName { get; set; }
         public string ShortName { get; set; }
         public bool IsStudentGroup { get; set; }
-        public int? GroupId { get; set; }
         public bool IsSubjectGroup { get; set; }
+
+        public int? GroupId { get; set; }
+
+        [ForeignKey(nameof(GroupId))]
+        public virtual Group Group { get; set; }
+
         public int? SubjectId { get; set; }
 
-        public List<GroupMessage> GroupMessages { get; set; } = new List<GroupMessage>();
-        public List<GroupChatHistory> GroupChatHistory { get; set; } = new List<GroupChatHistory>();
-        
-        [ForeignKey("SubjectId")]
-        public Subject Subjects { get; set; }
+        [ForeignKey(nameof(SubjectId))]
+        public virtual Subject Subject { get; set; }
+
+        public virtual ICollection<GroupMessage> GroupMessages { get; set; } = new HashSet<GroupMessage>();
+        public virtual ICollection<GroupChatHistory> GroupChatHistory { get; set; } = new HashSet<GroupChatHistory>();
+
+
 
     }
 }

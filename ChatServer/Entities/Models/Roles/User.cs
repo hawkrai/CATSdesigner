@@ -34,11 +34,11 @@ namespace Entities.Models
 
         public bool? IsOnline { get; set; }
 
-        public List<Chat> UserChats { get; set; } = new List<Chat>();
-        public List<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
-        public List<GroupMessage> GroupMessages { get; set; } = new List<GroupMessage>();
-        public List<UserChatHistory> UserChatHistory { get; set; } = new List<UserChatHistory>();
-        public List<GroupChatHistory> GroupChatHistory { get; set; } = new List<GroupChatHistory>();
+        public virtual ICollection<Chat> UserChats { get; set; } = new HashSet<Chat>();
+        public virtual ICollection<ChatMessage> Messages { get; set; } = new HashSet<ChatMessage>();
+        public virtual ICollection<GroupMessage> GroupMessages { get; set; } = new HashSet<GroupMessage>();
+        public virtual ICollection<UserChatHistory> UserChatHistory { get; set; } = new HashSet<UserChatHistory>();
+        public virtual ICollection<GroupChatHistory> GroupChatHistory { get; set; } = new HashSet<GroupChatHistory>();
 
         [NotMapped]
         public string FullName
