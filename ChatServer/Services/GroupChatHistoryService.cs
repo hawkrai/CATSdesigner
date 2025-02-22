@@ -38,6 +38,19 @@ namespace Services
         public async Task UpdateLastRead(int userId, int chatId)
         {
             var userH= await _repository.GroupChatHistoryRepository.GetGroupChatHistoryAsync(userId, chatId, true);
+
+            if (userH is null)
+            {
+                userH = new GroupChatHistory()
+                {
+                    GroupChatId = chatId,
+                    Date = DateTime.UtcNow,
+                    UserId = userId,
+                };
+
+                await _repository.GroupChatHistoryRepository.Add(userH);
+            }
+
             userH.Date = DateTime.Now;
             await _repository.SaveAsync();
         }
