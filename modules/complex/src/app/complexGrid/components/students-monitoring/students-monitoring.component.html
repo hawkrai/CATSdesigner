@@ -13,7 +13,7 @@
     >
       <mat-option *ngFor="let group of groups" [value]="group">
         <span class="icon-container">
-          {{ group.Name }}
+          {{ group.Name }} 
         </span>
       </mat-option>
     </mat-select>
@@ -36,6 +36,7 @@
             *ngIf="selectedStudentId === student.Id"
             [studentId]="selectedStudentId"
             [complexId]="complexId"
+            [isLecturerOpened]="isLecturer"
           ></app-monitoring-tree>
         </mat-expansion-panel>
       </mat-accordion>
