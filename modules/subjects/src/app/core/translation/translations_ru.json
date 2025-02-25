@@ -215,5 +215,8 @@
   "check": "Проверить",
   "custer": "Кастер",
   "vector.method": "Векторный метод",
-  "shingles.method": "Метод шинглов"
+  "shingles.method": "Метод шинглов",
+  "prefix.lab": "ЛР",
+  "prefix.practice": "ПЗ",
+  "prefix.lecture": "Л"
 }
