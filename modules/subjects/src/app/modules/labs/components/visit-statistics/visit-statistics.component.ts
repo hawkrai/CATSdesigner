@@ -48,11 +48,7 @@ export class VisitStatisticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (localStorage.getItem('locale') === 'en') {
-      this.labPrefix = 'Lab'
-    } else {
-      this.labPrefix = 'Лаб'
-    }
+    this.labPrefix = this.translate.transform('prefix.lab', 'ЛР')
 
     this.state$ = combineLatest(
       this.store.select(labsSelectors.getLabs),
