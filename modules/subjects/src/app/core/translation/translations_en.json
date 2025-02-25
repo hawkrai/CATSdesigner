@@ -14,8 +14,6 @@
   "kb": "KB",
   "fio": "Name",
   "date": "Date",
-  "practical": "WR",
-  "Lab": "Lab",
   "date.and.time": "Date, time",
   "modules": "Modules",
   "work.accusative": "work",
@@ -238,6 +236,7 @@
   "custer": "Custer",
   "vector.method": "Vector method",
   "shingles.method": "Shingles method",
+
   "prefix.lab": "Lab",
   "prefix.practice": "WS",
   "prefix.lecture": "L"
