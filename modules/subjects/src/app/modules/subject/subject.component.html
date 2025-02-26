@@ -106,32 +106,37 @@
         </th>
         <td mat-cell *matCellDef="let element">
           <ng-container *ngIf="!actionsMatcher.matches; else menuActions">
-            <button
-              mat-icon-button
-              color="primary"
-              [matTooltip]="
-                'subject.lector.join' | translate: 'Присоединить преподавателя'
-              "
-              (click)="lector(element.SubjectId, element.DisplayName)"
-            >
-              <mat-icon>person_add</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="primary"
-              [matTooltip]="'subject.edit' | translate: 'Редактировать предмет'"
-              (click)="constructorSubject(state.subjects, element.SubjectId)"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="primary"
-              [matTooltip]="'subject.delete' | translate: 'Удалить предмет'"
-              (click)="deleteSubject(element)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
+            <ng-container *ngIf="isOwner(element, state.user)">
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="
+                  'subject.lector.join'
+                    | translate: 'Присоединить преподавателя'
+                "
+                (click)="lector(element.SubjectId, element.DisplayName)"
+              >
+                <mat-icon>person_add</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="
+                  'subject.edit' | translate: 'Редактировать предмет'
+                "
+                (click)="constructorSubject(state.subjects, element.SubjectId)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="primary"
+                [matTooltip]="'subject.delete' | translate: 'Удалить предмет'"
+                (click)="deleteSubject(element)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-container>
           </ng-container>
           <ng-template #menuActions>
             <button
