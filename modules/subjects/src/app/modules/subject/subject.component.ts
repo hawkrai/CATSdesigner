@@ -172,7 +172,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
       .join('\n')
   }
 
-  isOwner(subject: Subject, user: User): boolean {
+  isOwned(subject: Subject, user: User): boolean {
     return user && subject ? parseInt(user.id) === subject.Owner : false
   }
 
