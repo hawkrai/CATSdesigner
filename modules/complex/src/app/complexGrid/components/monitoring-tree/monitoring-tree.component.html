@@ -1,5 +1,5 @@
 <div *ngIf="!showLoader; else loader">
-  <div>
+  <div *ngIf="!isLecturerOpened">
     <a class="students-monitoring-go-back" (click)="onClick()">
       < {{ 'complex.complexes' | translate: 'К списку ЭУМК' }}
     </a>

@@ -16,6 +16,7 @@ import { TranslatePipe } from 'educats-translate'
 export class MonitoringTreeComponent implements OnInit {
   @Input() complexId: string
   @Input() studentId: string
+  @Input() isLecturerOpened: boolean
   studentName: string
   studentGroup: string
   complexName: string
