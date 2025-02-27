@@ -206,7 +206,7 @@ export class PracticalLessonsComponent
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],
-      shortName: `ПЗ${order}`,
+      shortName: `${this.translate.transform('prefix.practical', 'ПЗ')}{order}`,
     }
   }
 }
