@@ -60,6 +60,7 @@
   "complex.fileUploadError": "You can add only .pdf, .docx or .doc file",
   "complex.editComplex": "Edit educational complex",
   "complex.addComponent": "Add component",
+  "complex.editComponent": "Edit component",
   "complex.addComplexesComponent": "Add an component",
   "complex.adaptiveLearning": "Adaptive learning",
   "complex.adaptiveTopic": "Monitoring on the topic",
