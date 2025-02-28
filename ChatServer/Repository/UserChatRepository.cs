@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class UserChatRepository : RepositoryBase<Chat>,IUserChatRepository
+    public class UserChatRepository : RepositoryBase<Chat>, IUserChatRepository
     {
         public UserChatRepository(RepositoryContext repositoryContext) : base(repositoryContext)
         {
@@ -25,10 +25,18 @@ namespace Repository
             await Create(chat);
         }
 
-        public async Task<Chat> GetChatUsers(int chatId) => await FindByCondition(c => c.Id.Equals(chatId), false).Include(c=>c.Users).SingleOrDefaultAsync();
+        public async Task<Chat> GetChatUsers(int chatId) => 
+            await FindByCondition(c => c.Id.Equals(chatId), false)
+            .Include(c => c.Users)
+            .SingleOrDefaultAsync();
         
-        public async Task<Chat> GetUserChatAsync(int userChatId, bool trackChanges) => await FindByCondition(c => c.Id.Equals(userChatId), trackChanges).SingleOrDefaultAsync();
+        public async Task<Chat> GetUserChatAsync(int chatId, bool trackChanges) => 
+            await FindByCondition(c => c.Id.Equals(chatId), trackChanges)
+            .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<Chat>> GetUserChatsAsync(bool trackChanges) => await FindAll(trackChanges).OrderBy(c => c.Id).ToListAsync();
+        public async Task<IEnumerable<Chat>> GetUserChatsAsync(bool trackChanges) => 
+            await FindAll(trackChanges)
+            .OrderBy(c => c.Id)
+            .ToListAsync();
     }
 }

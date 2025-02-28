@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Entities.Models.GroupChatModels;
 
 namespace Entities.Models.History
@@ -12,9 +14,13 @@ namespace Entities.Models.History
         public DateTime Date { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public virtual User User { get; set; }
 
         public int GroupChatId { get; set; }
-        public GroupChat GroupChat { get; set; }
+
+        [ForeignKey(nameof(GroupChatId))]
+        public virtual GroupChat GroupChat { get; set; }
     }
 }

@@ -18,9 +18,12 @@ namespace Repository
         public async Task Add(GroupChatHistory chatHistory)
         {
             await Create(chatHistory);
+            await RepositoryContext.SaveChangesAsync();
         }
 
-        public async Task<GroupChatHistory> GetGroupChatHistoryAsync(int userId,int chatId, bool trackChanges) =>  await FindByCondition(c => c.UserId==userId && c.GroupChatId==chatId, trackChanges).FirstOrDefaultAsync();
+        public async Task<GroupChatHistory> GetGroupChatHistoryAsync(int userId, int chatId, bool trackChanges) => 
+            await FindByCondition(c => c.UserId == userId && c.GroupChatId == chatId, trackChanges)
+            .FirstOrDefaultAsync();
 
     }
 }

@@ -16,6 +16,7 @@ import { TranslatePipe } from 'educats-translate'
 export class MonitoringTreeComponent implements OnInit {
   @Input() complexId: string
   @Input() studentId: string
+  @Input() isLecturerOpened: boolean
   studentName: string
   studentGroup: string
   complexName: string
@@ -65,5 +66,6 @@ export class MonitoringTreeComponent implements OnInit {
     window.location.reload()
   }
 
-  hasChild = (_: number, node) => node.Children && node.Children.length > 0
+  isFolder = (_: number, node) => 
+    node.IsGroup || (node.Children && node.Children.length > 0)
 }
