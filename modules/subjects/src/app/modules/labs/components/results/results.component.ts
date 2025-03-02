@@ -50,11 +50,8 @@ export class ResultsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (localStorage.getItem('locale') === 'en') {
-      this.labPrefix = 'Lab'
-    } else {
-      this.labPrefix = 'Лаб'
-    }
+    this.labPrefix = this.translate.transform('prefix.lab', 'ЛР')
+
     this.state$ = combineLatest(
       this.store.select(labsSelectors.getLabsCalendar),
       this.store.select(labsSelectors.getLabs),

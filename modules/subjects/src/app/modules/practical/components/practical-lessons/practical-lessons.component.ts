@@ -48,11 +48,8 @@ export class PracticalLessonsComponent
   ) {}
 
   ngOnInit() {
-    if (localStorage.getItem('locale') === 'en') {
-      this.practicalPrefix = 'WS'
-    } else {
-      this.practicalPrefix = 'ПЗ'
-    }
+    this.practicalPrefix = this.translate.transform('prefix.practical', 'ПЗ')
+
     this.store.dispatch(practicalsActions.loadPracticals())
     this.subs.add(
       this.store
@@ -209,7 +206,7 @@ export class PracticalLessonsComponent
       order,
       pathFile: lesson ? lesson.PathFile : '',
       attachments: lesson ? lesson.Attachments : [],
-      shortName: `ПЗ${order}`,
+      shortName: `${this.translate.transform('prefix.practical', 'ПЗ')}{order}`,
     }
   }
 }
