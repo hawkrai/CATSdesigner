@@ -118,16 +118,16 @@
               >
                 <mat-icon>person_add</mat-icon>
               </button>
-              <button
-                mat-icon-button
-                color="primary"
-                [matTooltip]="
-                  'subject.edit' | translate: 'Редактировать предмет'
-                "
-                (click)="constructorSubject(state.subjects, element.SubjectId)"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
+            </ng-container>
+            <button
+              mat-icon-button
+              color="primary"
+              [matTooltip]="'subject.edit' | translate: 'Редактировать предмет'"
+              (click)="constructorSubject(state.subjects, element.SubjectId)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <ng-container *ngIf="isOwned(element, state.user)">
               <button
                 mat-icon-button
                 color="primary"
