@@ -141,7 +141,7 @@ export class IndexComponent implements OnInit {
   }
   uploadFiles(event) {
     if (!this.dataService.activChat) {
-      this.showWarningSnackBar('Не выбран чаn!')
+      this.showWarningSnackBar('Не выбран чат!')
       return false
     }
     if (event.files) this.fileService.UploadFile(event.files)
