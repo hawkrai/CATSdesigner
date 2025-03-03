@@ -47,11 +47,8 @@ export class LabsWorkComponent implements OnInit, OnDestroy, AfterViewChecked {
   ) {}
 
   ngOnInit() {
-    if (localStorage.getItem('locale') === 'en') {
-      this.labPrefix = 'Lab'
-    } else {
-      this.labPrefix = 'Лаб'
-    }
+    this.labPrefix = this.translate.transform('prefix.lab', 'ЛР')
+
     this.store.dispatch(labsActions.loadLabs())
     this.subs.add(
       this.store.select(labsSelectors.getLabs).subscribe((labs) => {
