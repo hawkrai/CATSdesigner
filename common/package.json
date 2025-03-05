@@ -3,5 +3,8 @@
   "version": "2.0.0",
   "description": "Educats assets",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": "14.21.3"
+  }
 }

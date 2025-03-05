@@ -10,6 +10,9 @@
     "e2e": "ng e2e",
     "start:custom": "ng serve -o --port 8989 --host 192.168.50.33"
   },
+  "engines": {
+    "node": "14.21.3"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~9.1.1",

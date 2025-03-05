@@ -7,6 +7,9 @@
     "start": "tsc && node dist/app.js",
     "watch": "nodemon --config ./nodemon.json"
   },
+  "engines": {
+    "node": "14.21.3"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
