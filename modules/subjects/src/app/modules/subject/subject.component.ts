@@ -44,6 +44,7 @@ export class SubjectComponent implements OnInit, OnDestroy {
   public displayedColumns = [
     'name',
     'shortName',
+    'ownerName',
     'groups',
     'students',
     'lectors',
@@ -174,6 +175,22 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   isOwned(subject: Subject, user: User): boolean {
     return user && subject ? parseInt(user.id) === subject.Owner : false
+  }
+
+  getOwnerShortName(subject: Subject): string {
+    console.log(subject);
+
+    const owner = subject.Lectors.find(lector => lector.Id === subject.Owner);
+    if (!owner) return 'Неизвестно';
+    return `${owner.LastName} ${owner.FirstName[0]}. ${owner.MiddleName ? owner.MiddleName[0] + '.' : ''}`;
+  }
+
+  getOwnerFullName(subject: Subject): string {
+    console.log(subject);
+
+    const owner = subject.Lectors.find(lector => lector.Id === subject.Owner);
+    if (!owner) return 'Неизвестно';
+    return `${owner.LastName} ${owner.FirstName} ${owner.MiddleName || ''}`;
   }
 
   subjectsHelp: Help = {
