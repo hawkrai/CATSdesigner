@@ -14,8 +14,6 @@
   "kb": "КБ",
   "fio": "ФИО",
   "date": "Дата",
-  "practical": "ПЗ",
-  "Lab": "Лаб",
   "date.and.time": "Дата, время",
   "modules": "Модули",
   "work.accusative": "работу",
@@ -149,7 +147,6 @@
   "text.subjects.labs.delete": "Удалить лабораторную работу",
   "text.subjects.labs.adding": "Добавление лабораторной работы",
   "text.subjects.labs.editing": "Редактирование лабораторной работы",
-  "text.subjects.labs.prefix": "ЛР",
   "text.subjects.labs.deleting": "Удаление лабораторной работы",
   "text.subjects.labs.name": "Название лабораторной работы",
   "text.subjects.labs.choose.lab": "Выберите лабораторную работу",
@@ -215,5 +212,8 @@
   "check": "Проверить",
   "custer": "Кастер",
   "vector.method": "Векторный метод",
-  "shingles.method": "Метод шинглов"
+  "shingles.method": "Метод шинглов",
+  "prefix.lab": "ЛР",
+  "prefix.practical": "ПЗ",
+  "prefix.lecture": "Л"
 }

@@ -26,6 +26,7 @@ import { ClipboardService } from 'ngx-clipboard'
 import { MessageCto } from '../../shared/models/dto/messageCto'
 import { DataService } from '../../shared/services/dataService'
 import { VideoChatService } from './../../../video-chat/services/video-chat.service'
+import { ToastrService } from 'ngx-toastr'
 
 @Component({
   selector: 'app-index',
@@ -57,7 +58,8 @@ export class IndexComponent implements OnInit {
     public signalRService: SignalRService,
     public dataService: DataService,
     public fileService: FileService,
-    public videoChatService: VideoChatService
+    public videoChatService: VideoChatService,
+    private toastr: ToastrService
   ) {}
 
   @ViewChild(PerfectScrollbarComponent) componentRef?: PerfectScrollbarComponent
@@ -132,14 +134,14 @@ export class IndexComponent implements OnInit {
 
   attachFileClick(fileInput: any) {
     if (!this.dataService.activChat) {
-      this.openSnackBar('Не выбран чат!')
+      this.showWarningSnackBar('Не выбран чат!')
       return false
     }
     fileInput.click()
   }
   uploadFiles(event) {
     if (!this.dataService.activChat) {
-      this.openSnackBar('Не выбран чат!')
+      this.showWarningSnackBar('Не выбран чат!')
       return false
     }
     if (event.files) this.fileService.UploadFile(event.files)
@@ -155,7 +157,7 @@ export class IndexComponent implements OnInit {
 
   sendMsg() {
     if (!this.dataService.activChat) {
-      this.openSnackBar('Не выбран чат!')
+      this.showWarningSnackBar('Не выбран чат!')
       return false
     }
 
@@ -164,7 +166,9 @@ export class IndexComponent implements OnInit {
       this.currentMsg.text == '' ||
       this.currentMsg.text.length > 25000
     ) {
-      this.openSnackBar('Сообщение пустое или превышает разрешенный размер!')
+      this.showWarningSnackBar(
+        'Сообщение пустое или превышает разрешенный размер!'
+      )
       return
     }
 
@@ -186,10 +190,10 @@ export class IndexComponent implements OnInit {
               this.currentMsg.text = ''
               this.stopEdit()
               this.cdr.detectChanges()
-              this.openSnackBar('Сообщение изменено')
+              this.showSuccessSnackBar('Сообщение изменено')
             },
             (err) => {
-              this.openSnackBar('Ошибка отправки')
+              this.showErrorSnackBar('Ошибка отправки')
               this.signalRService.connect()
             }
           )
@@ -204,10 +208,10 @@ export class IndexComponent implements OnInit {
             (res) => {
               this.currentMsg.text = ''
               this.cdr.detectChanges()
-              this.openSnackBar('Сообщение изменено')
+              this.showSuccessSnackBar('Сообщение изменено')
             },
             (err) => {
-              this.openSnackBar('Ошибка отправки')
+              this.showErrorSnackBar('Ошибка отправки')
               this.signalRService.connect()
             }
           )
@@ -227,7 +231,7 @@ export class IndexComponent implements OnInit {
               this.cdr.detectChanges()
             },
             (err) => {
-              this.openSnackBar('Ошибка отправки')
+              this.showErrorSnackBar('Ошибка отправки')
               this.signalRService.connect()
             }
           )
@@ -239,7 +243,7 @@ export class IndexComponent implements OnInit {
               this.cdr.detectChanges()
             },
             (err) => {
-              this.openSnackBar('Ошибка отправки')
+              this.showErrorSnackBar('Ошибка отправки')
               this.signalRService.connect()
             }
           )
@@ -255,7 +259,7 @@ export class IndexComponent implements OnInit {
 
   startCall() {
     if (!this.dataService.activChat) {
-      this.openSnackBar('Не выбран чат')
+      this.showWarningSnackBar('Не выбран чат!')
       return false
     }
     this.signalRService.sendCallRequest(this.dataService.activChatId)
@@ -263,7 +267,7 @@ export class IndexComponent implements OnInit {
 
   isAllowedForUser() {
     if (!this.videoChatService.isSecureConnection()) {
-      this.openSnackBar('Видео-чат не доступен в небезопасном режиме')
+      this.showErrorSnackBar('Видео-чат не доступен в небезопасном режиме')
       return false
     }
 
@@ -277,9 +281,15 @@ export class IndexComponent implements OnInit {
     return false
   }
 
-  public openSnackBar(message: string, action?: string) {
-    this.snackBar.open(message, action, {
-      duration: 2000,
-    })
+  showSuccessSnackBar(message: string) {
+    this.toastr.success(message)
+  }
+
+  showWarningSnackBar(message: string) {
+    this.toastr.warning(message)
+  }
+
+  showErrorSnackBar(message: string) {
+    this.toastr.error(message)
   }
 }

@@ -12,7 +12,5 @@ namespace ChatServer.Interfaces
     {
         MessageDto Save(MessageCto messageDto);
         Task<MessageDto> GetMessage(int msgId, int userId);
-//        Task<List<MessageDto>> GetMessages(int chatId, int userId);
-
     }
 }

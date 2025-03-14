@@ -17,15 +17,19 @@ namespace Repository
 
         public async Task<Lecturer> GetLecturerAsync(int lecturerId, bool trackChanges) => await FindByCondition(c => c.Id.Equals(lecturerId), trackChanges).FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter = "") => await FindByCondition(c => (c.MiddleName + c.FirstName + c.LastName).Contains(filter) || filter == "*", trackChanges)
+        public async Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter = "") => 
+            await FindByCondition(c => (c.MiddleName + c.FirstName + c.LastName)
+            .Contains(filter) || filter == "*", trackChanges)
             .Join(RepositoryContext.Users,
-            x => x.Id,
-            y => y.UserId,
-            (x, y) => new UserDto()
-            {
-                isOnline = y.IsOnline?? false,
-                UserId = x.Id,
-                FullName = x.LastName + " " + x.FirstName + " " + x.MiddleName
-            }).OrderBy(_ => _.FullName).ToListAsync();
+                x => x.Id,
+                y => y.UserId,
+                (x, y) => new UserDto()
+                {
+                    isOnline = y.IsOnline ?? false,
+                    UserId = x.Id,
+                    FullName = $"{x.LastName} {x.FirstName} {x.MiddleName}"
+                })
+            .OrderBy(_ => _.FullName)
+            .ToListAsync();
     }
 }

@@ -71,7 +71,7 @@ export class AddMaterialPopoverComponent extends BaseFileManagementComponent<Add
         this.editMode = this.data.id !== null && this.data.id !== '0'
         this.popupTitle = this.editMode
           ? this.translatePipe.transform(
-              'complex.editComplexes',
+              'complex.editComponent',
               'Редактирование элемента ЭУМК'
             )
           : this.translatePipe.transform(

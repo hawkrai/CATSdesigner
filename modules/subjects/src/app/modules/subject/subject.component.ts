@@ -172,6 +172,10 @@ export class SubjectComponent implements OnInit, OnDestroy {
       .join('\n')
   }
 
+  isOwned(subject: Subject, user: User): boolean {
+    return user && subject ? parseInt(user.id) === subject.Owner : false
+  }
+
   subjectsHelp: Help = {
     message: this.translate.transform(
       'text.help.popover.subject',

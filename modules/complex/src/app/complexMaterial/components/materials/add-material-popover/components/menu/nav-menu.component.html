@@ -21,6 +21,8 @@
       <button
         mat-menu-item
         [routerLink]="child.route"
+        [matTooltip]="child.Name"
+        matTooltipPosition="above"
         (click)="selectConcept(child.Id)"
       >
         <span>{{ child.Name }}</span>

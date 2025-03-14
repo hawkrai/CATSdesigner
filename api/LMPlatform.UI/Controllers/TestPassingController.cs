@@ -59,7 +59,10 @@ namespace LMPlatform.UI.Controllers
                 description = new
                 {
                     Title = $"Тест \"{TestsManagementService.GetTest(user.OngoingTest.Value).Title}\" уже запущен в Вашей учетной записи",
-                    Description = "Продолжайте проходить тест на запущенном устройстве. Если Вы хотите прервать прохождение теста, то нажмите на кнопку \"Завершить тест\", при этом все отвеченные вопросы будут аннулированы. Для повторного прохождения теста обратитесь к преподавателю.",
+                    Description = "Продолжайте проходить тест на запущенном устройстве. Если Вы хотите прервать прохождение теста, то нажмите на кнопку \"Завершить тест\"." +
+                    "В таком случае вопросы, оставшиеся без ответа, будут считаться неверно отвеченными. Для повторного прохождения теста обратитесь к преподавателю.\r\n\r\n" +
+                    "Continue taking the test on the running device. If you want to interrupt the test, click on the \"Finish test\" button. In this case, questions left unanswered " +
+                    "will be considered as incorrectly answered.. To retake the test, contact the lecturer.",
                     OngoingTestId = user.OngoingTest.Value
                 };
             }                      

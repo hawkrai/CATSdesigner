@@ -39,6 +39,14 @@
             {{ node.Container === 'test' ? 'event_available' : 'event_note' }}
           </ng-container>
         </mat-icon>
+          folder_file_icons: node.FilePath != null,
+          'empty-tree-icon': node.FilePath == null
+        }"
+      >
+        <ng-container>
+          {{ node.Container === 'test' ? 'event_available' : 'event_note' }}
+        </ng-container>
+      </mat-icon>
 
         {{ node.Name }}
         <span
