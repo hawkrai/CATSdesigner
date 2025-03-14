@@ -56,6 +56,8 @@ export class MonitoringTreeComponent implements OnInit {
         },
         (error) => {
           console.error('Ошибка при получении данных:', error)
+          sessionStorage.removeItem('complexId')
+          window.location.reload()
         }
       )
   }
