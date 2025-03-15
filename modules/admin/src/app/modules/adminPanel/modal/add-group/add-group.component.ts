@@ -50,7 +50,7 @@ export class AddGroupComponent implements OnInit {
     })
 
     this.groupService.getGroups().subscribe((items) => {
-      this.groupsList = items
+      this.groupsList = items.filter((item) => item.Name !== this.group.Name)
     })
   }
 
