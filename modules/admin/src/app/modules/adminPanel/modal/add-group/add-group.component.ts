@@ -1,7 +1,9 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
+import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms'
 import { Group } from 'src/app/model/group'
+import { GroupService } from 'src/app/service/group.service'
+
 
 @Component({
   selector: 'app-add-group',
@@ -14,14 +16,17 @@ export class AddGroupComponent implements OnInit {
   group: Group
   groupNameSymbols = 'А-Яа-яA-Za-z0-9ёЁіІ _-,.'
   @Output() submitEM = new EventEmitter()
+  groupsList: Group[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<object>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private groupService: GroupService
   ) {}
 
   ngOnInit() {
+
     this.date = new Date()
     this.group = this.data
     const nameRegExp = '^[А-Яа-яA-Za-z0-9ёЁіІ _-,.]*$'
@@ -31,17 +36,21 @@ export class AddGroupComponent implements OnInit {
       this.data.StartYear = this.date.getFullYear().toString()
       this.data.GraduationYear = (this.date.getFullYear() + 4).toString()
     }
-    console.log(this.data)
     this.form = this.formBuilder.group({
       Name: new FormControl(this.group.Name, [
         Validators.required,
         Validators.pattern('^[0-9a-zA-ZА-Яа-я .,_-]*$'),
         Validators.maxLength(10),
+        this.groupAlreadyExistValidator()
       ]),
       StartYear: new FormControl(Number.parseInt(this.data.StartYear)),
       GraduationYear: new FormControl(
         Number.parseInt(this.data.GraduationYear)
       ),
+    })
+
+    this.groupService.getGroups().subscribe((items) => {
+      this.groupsList = items
     })
   }
 
@@ -101,4 +110,15 @@ export class AddGroupComponent implements OnInit {
     group.StartYear = this.form.controls.StartYear.value
     return group
   }
+
+  groupAlreadyExistValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const newGroupName = control.value;
+
+      const existingNames = this.groupsList.map((item) => item.Name)
+      const groupAlreadyExists = existingNames.includes(newGroupName)
+
+      return groupAlreadyExists ? { groupAlreadyExists } : null;
+  };
+}
 }
