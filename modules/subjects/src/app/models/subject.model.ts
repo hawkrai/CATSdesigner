@@ -10,4 +10,6 @@ export class Subject {
   Lectors: SubjectLector[]
   Groups: Group[]
   Owner: number
+  OwnerFullName: string;
+  OwnerShortName: string;
 }
