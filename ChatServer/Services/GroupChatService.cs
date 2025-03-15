@@ -87,6 +87,9 @@ namespace Services
 
         private async Task CreateChatsIfNotExist(Subject subject)
         {
+            if (subject == null)
+                return;
+
             bool subjectChatExists = await _repository.GroupChats.SubjectChatExists(subject.Id);
             if (!subjectChatExists)
             {

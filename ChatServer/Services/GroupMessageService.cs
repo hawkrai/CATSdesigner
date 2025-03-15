@@ -17,19 +17,26 @@ namespace Services
     {
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
+        private readonly IEncryptionService _encryptionService;
         private readonly Dictionary<int, string> Names = new Dictionary<int, string>();
-        public GroupMessageService(IRepositoryManager repository, IMapper mapper)
+
+        public GroupMessageService(IRepositoryManager repository, IMapper mapper, IEncryptionService encryptionService)
         {
             _repository = repository;
             _mapper = mapper;
+            _encryptionService = encryptionService;
         }
 
         public async Task<MessageDto> Save(int userId,GroupMessageCto messageCto)
         {
             var newMsg = _mapper.Map<GroupMessage>(messageCto);
             newMsg.Time = DateTime.Now;
+            newMsg.Text = _encryptionService.Encrypt(newMsg.Text);
             await _repository.GroupMessages.Save(newMsg);
+
             var msg = await _repository.GroupMessages.GetGroupMessageAsync(newMsg.Id, false);
+            msg.Text = _encryptionService.Decrypt(msg.Text);
+
             if (!Names.ContainsKey(msg.UserId))
             {
                 var lecturer = await _repository.Lecturers.GetLecturerAsync(msg.UserId, false);
@@ -67,6 +74,8 @@ namespace Services
 
             foreach (var msg in msgs)
             {
+                msg.Text = _encryptionService.Decrypt(msg.Text);
+
                 if (!Names.ContainsKey(msg.UserId))
                 {
                     var lecturer = await _repository.Lecturers.GetLecturerAsync(msg.UserId, false);
@@ -92,6 +101,8 @@ namespace Services
 
             foreach (var msg in msgs)
             {
+                msg.Text = _encryptionService.Decrypt(msg.Text);
+
                 if (!Names.ContainsKey(msg.UserId))
                 {
                     var lecturer = await _repository.Lecturers.GetLecturerAsync(msg.UserId, false);
@@ -114,12 +125,13 @@ namespace Services
         public async Task<GroupMessage> GetMessage(int id)
         {
             var msg = await _repository.GroupMessages.GetGroupMessageAsync(id, true);
+            msg.Text = _encryptionService.Decrypt(msg.Text);
             return msg;
         }
 
         public async Task UpdateMsg(GroupMessage msg, string text)
         {
-            msg.Text = text;
+            msg.Text = _encryptionService.Encrypt(text);
             await _repository.SaveAsync();
         }
     }

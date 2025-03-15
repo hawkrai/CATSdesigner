@@ -16,19 +16,26 @@ namespace Services
     {
         private readonly IRepositoryManager _repository;
         private readonly IMapper _mapper;
+        private readonly IEncryptionService _encryptionService;
         private readonly Dictionary<int, string> Names = new Dictionary<int, string>();
-        public ChatMessageService(IRepositoryManager repository, IMapper mapper)
+
+        public ChatMessageService(IRepositoryManager repository, IMapper mapper, IEncryptionService encryptionService)
         {
             _repository = repository;
             _mapper = mapper;
+            _encryptionService = encryptionService;
         }
 
         public async Task<MessageDto> Save(int userId, MessageCto messageCto)
         {
             var newMsg = _mapper.Map<ChatMessage>(messageCto);
             newMsg.Time = DateTime.Now;
+            newMsg.Text = _encryptionService.Encrypt(newMsg.Text);
             await _repository.UserChatMessages.Save(newMsg);
+
             var msg = await _repository.UserChatMessages.GetUserChatMessageAsync(newMsg.Id, false);
+            msg.Text = _encryptionService.Decrypt(msg.Text);
+
             if (!Names.ContainsKey(msg.UserId))
             {
                 var lecturer = await _repository.Lecturers.GetLecturerAsync(msg.UserId, false);
@@ -56,12 +63,13 @@ namespace Services
         public async Task<ChatMessage> GetMessage(int id)
         {
             var msg= await _repository.UserChatMessages.GetUserChatMessageAsync(id, true);
+            msg.Text = _encryptionService.Decrypt(msg.Text);
             return msg;
         }
 
         public async Task UpdateMsg(ChatMessage msg, string text)
         {
-            msg.Text = text;
+            msg.Text = _encryptionService.Encrypt(text);
             await _repository.SaveAsync();
         }
     }
