@@ -39,15 +39,7 @@
             {{ node.Container === 'test' ? 'event_available' : 'event_note' }}
           </ng-container>
         </mat-icon>
-          folder_file_icons: node.FilePath != null,
-          'empty-tree-icon': node.FilePath == null
-        }"
-      >
-        <ng-container>
-          {{ node.Container === 'test' ? 'event_available' : 'event_note' }}
-        </ng-container>
-      </mat-icon>
-
+        
         {{ node.Name }}
         <span
           class="time-container"
@@ -74,7 +66,7 @@
               </ng-container>
             </ng-container>
             </span
-          >)
+          >&nbsp;)
           <span class="expected-time">
             <span *ngIf="node.Estimated > 0" [ngStyle]="{ color: '#363636' }">
               &nbsp;{{ 'complex.time.expected' | translate }} -
