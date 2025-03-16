@@ -42,6 +42,7 @@ namespace ChatServer
             services.AddCors();
 
             services.ConfigureServices();
+            services.ConfigureEncryptionService(Configuration);
             services.ConfigureSqlContext(Configuration);
             
             services.AddControllers();
