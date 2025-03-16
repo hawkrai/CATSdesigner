@@ -43,6 +43,7 @@
   "subject.groups.count": "number of groups per course",
   "subject.name.not.free": "Course with the same name already exists",
   "subject.abbreviation.not.free": "Course with this abbreviation already exists",
+  "subject.ownerName": "Created by",
   "hours": "Hours",
   "mark": "Mark",
   "subgroup": "Subgroup",
