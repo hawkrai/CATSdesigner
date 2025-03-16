@@ -27,19 +27,19 @@
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
       <li class="mat-tree-node">
         <button class="invisible" mat-icon-button disabled></button>
-        
+
         <mat-icon
-        class="expandable-external"
-        [ngClass]="{
-          'folder_file_icons': node.Estimated!= null,
-          'empty-tree-icon': node.Estimated == null
-        }"
+          class="expandable-external"
+          [ngClass]="{
+            folder_file_icons: node.Estimated != null,
+            'empty-tree-icon': node.Estimated == null
+          }"
         >
           <ng-container>
             {{ node.Container === 'test' ? 'event_available' : 'event_note' }}
           </ng-container>
         </mat-icon>
-        
+
         {{ node.Name }}
         <span
           class="time-container"
@@ -64,8 +64,7 @@
                   'common.seconds' | translate
                 }}&nbsp;
               </ng-container>
-            </ng-container>
-            </span
+            </ng-container> </span
           >&nbsp;)
           <span class="expected-time">
             <span *ngIf="node.Estimated > 0" [ngStyle]="{ color: '#363636' }">
@@ -111,7 +110,8 @@
             <mat-icon
               class="complex-three-title-icon mat-icon-rtl-mirror expandable no-file"
               [ngClass]="{
-                'empty-folder-icon': !node.Children || node.Children.length === 0,
+                'empty-folder-icon':
+                  !node.Children || node.Children.length === 0,
                 'folder-icon': node.Children && node.Children.length > 0
               }"
               >folder
