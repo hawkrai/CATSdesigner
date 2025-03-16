@@ -32,6 +32,9 @@
           >{{ 'text.adminPanel.modal.addGroup.error.namePattern' | translate }}:
           {{ this.groupNameSymbols }}</mat-error
         >
+        <mat-error *ngIf="hasError('Name', 'groupAlreadyExists')">{{
+            'text.adminPanel.modal.addGroup.error.groupAlreadyExists' | translate
+          }}</mat-error>
       </mat-form-field>
       <mat-form-field>
         <mat-label>{{

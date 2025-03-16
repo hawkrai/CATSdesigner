@@ -51,6 +51,7 @@
   "subject.groups.count": "Количество групп на предмете",
   "subject.name.not.free": "Предмет с таким названием уже существует",
   "subject.abbreviation.not.free": "Предмет с такой аббревиатурой уже существует",
+  "subject.ownerName": "Создатель предмета",
   "hours": "Часы",
   "search": "Поиск",
   "group": "Группа",

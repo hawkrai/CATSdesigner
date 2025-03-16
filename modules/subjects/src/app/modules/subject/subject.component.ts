@@ -41,9 +41,11 @@ export class SubjectComponent implements OnInit, OnDestroy {
   listViewMatcher: MediaQueryList
   mobileViewMatcher: MediaQueryList
 
+
   public displayedColumns = [
     'name',
     'shortName',
+    'ownerName',
     'groups',
     'students',
     'lectors',
@@ -62,12 +64,20 @@ export class SubjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.addMediaMatchers()
-    this.store.dispatch(subjectActions.loadSubjects())
+    this.addMediaMatchers();
+    this.store.dispatch(subjectActions.loadSubjects());
     this.state$ = combineLatest([
       this.store.select(subjectSelectors.getSubjects),
       this.store.select(subjectSelectors.getUser),
-    ]).pipe(map(([subjects, user]) => ({ subjects, user })))
+    ]).pipe(
+      map(([subjects, user]) => {
+        subjects.forEach(subject => {
+          subject.OwnerFullName = this.getOwnerFullName(subject);
+          subject.OwnerShortName = this.getOwnerShortName(subject);
+        });
+        return { subjects, user };
+      })
+    );
   }
 
   private matcherListener(event: MediaQueryListEvent): void {}
@@ -174,6 +184,22 @@ export class SubjectComponent implements OnInit, OnDestroy {
 
   isOwned(subject: Subject, user: User): boolean {
     return user && subject ? parseInt(user.id) === subject.Owner : false
+  }
+
+  getOwnerShortName(subject: Subject): string {
+    const owner = subject.Lectors.find(lector => lector.Id === subject.Owner);
+
+    if (!owner) return "";
+
+    return `${owner.LastName} ${owner.FirstName[0]}. ${owner.MiddleName ? owner.MiddleName[0] + '.' : ''}`;
+  }
+
+  getOwnerFullName(subject: Subject): string {
+    const owner = subject.Lectors.find(lector => lector.Id === subject.Owner);
+
+    if (!owner) return "";
+
+    return `${owner.LastName} ${owner.FirstName} ${owner.MiddleName || ''}`;
   }
 
   subjectsHelp: Help = {

@@ -52,5 +52,13 @@ namespace Server.Extensions
 
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
                 services.AddDbContext<RepositoryContext>(opts => opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+        public static void ConfigureEncryptionService(this IServiceCollection services, IConfiguration configuration)
+        {
+            var encryptionKey = configuration["EncryptionSettings:Key"];
+            var encryptionIv = configuration["EncryptionSettings:IV"];
+
+            services.AddSingleton<IEncryptionService>(new EncryptionService(encryptionKey, encryptionIv));
+        }
     }
 }
