@@ -7,9 +7,10 @@
       <td
         mat-cell
         *matCellDef="let element"
-        [matTooltip]="element.PracticalTheme"
       >
-        {{ element.PracticalShortName }}
+      <span [matTooltip]="element.PracticalTheme">
+      {{ 'prefix.practical' | translate: 'ПЗ' }}{{ element.Order }}
+      </span>
       </td>
     </ng-container>
     <ng-container matColumnDef="file">
