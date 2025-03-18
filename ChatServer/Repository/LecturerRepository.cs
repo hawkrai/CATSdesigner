@@ -27,7 +27,7 @@ namespace Repository
                 {
                     isOnline = y.IsOnline ?? false,
                     UserId = x.Id,
-                    FullName = $"{x.LastName} {x.FirstName} {x.MiddleName}"
+                    FullName = x.LastName + " " + x.FirstName + " " + x.MiddleName
                 })
             .OrderBy(_ => _.FullName)
             .ToListAsync();

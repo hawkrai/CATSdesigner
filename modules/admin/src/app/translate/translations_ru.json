@@ -684,6 +684,7 @@
   "text.adminPanel.modal.addGroup.name": "Номер группы",
   "text.adminPanel.modal.addGroup.error.nameRequired": "Поле не может быть пустым",
   "text.adminPanel.modal.addGroup.error.namePattern": "Используйте следующие символы",
+  "text.adminPanel.modal.addGroup.error.groupAlreadyExists": "Такая группа уже существует",
   "text.adminPanel.modal.addGroup.startYear": "Год поступления",
   "text.adminPanel.modal.addGroup.graduationYear": "Год выпуска",
 

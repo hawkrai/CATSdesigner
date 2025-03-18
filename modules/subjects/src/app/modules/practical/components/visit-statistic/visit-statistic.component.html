@@ -87,7 +87,7 @@
           *matHeaderCellDef
           [attr.colspan]="practicalName.length"
         >
-          {{ practicalName.text }}
+          {{ 'prefix.practical' | translate: 'ПЗ'}}{{ practicalName.text }}
         </th>
       </ng-container>
       <tr
