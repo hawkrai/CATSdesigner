@@ -171,14 +171,28 @@ export class MaterialsPopoverComponent {
   }
 
   goToPrevMaterial() {
-    --this.currentPathIndex
+    do {
+      --this.currentPathIndex
+      if (this.currentPathIndex < 0) {
+        return
+      }
+    } while (
+      this.materialPathes[this.currentPathIndex].toLowerCase().endsWith('.docx')
+    )
     this.path =
       '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
     this.checkMaterialsContainerForButtonsVisibility()
   }
 
   goToNextMaterial() {
-    ++this.currentPathIndex
+    do {
+      ++this.currentPathIndex
+      if (this.currentPathIndex >= this.materialPathes.length) {
+        return
+      }
+    } while (
+      this.materialPathes[this.currentPathIndex].toLowerCase().endsWith('.docx')
+    )
     this.path =
       '/api/Upload?fileName=' + this.materialPathes[this.currentPathIndex]
     this.checkMaterialsContainerForButtonsVisibility()
@@ -187,7 +201,10 @@ export class MaterialsPopoverComponent {
   checkMaterialsContainerForButtonsVisibility() {
     this.prevButtonVisible = this.currentPathIndex != 0
     this.nextButtonVisible =
-      this.currentPathIndex < this.materialPathes.length - 1
+      this.currentPathIndex < this.materialPathes.length - 1 &&
+      !this.materialPathes[this.currentPathIndex + 1]
+        .toLowerCase()
+        .endsWith('.docx')
     this.toTestButtonVisible = this.isAdaptive && !this.nextButtonVisible
   }
 
