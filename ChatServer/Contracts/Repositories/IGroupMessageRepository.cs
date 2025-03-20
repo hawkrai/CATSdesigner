@@ -10,7 +10,7 @@ namespace Contracts.Repositories
     public interface IGroupMessageRepository
     {
         public Task Save(GroupMessage msg);
-        Task<IEnumerable<GroupMessage>> GetGroupMessagesAsync(int chatId, bool trackChanges);
+        Task<IEnumerable<GroupMessage>> GetGroupMessagesAsync(int chatId, bool trackChanges, int limit = 20, int offset = 0);
         Task<GroupMessage> GetGroupMessageAsync(int msgId, bool trackChanges);
         void Remove(GroupMessage msg);
     }

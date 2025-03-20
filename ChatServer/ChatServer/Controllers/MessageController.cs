@@ -35,16 +35,16 @@ namespace ChatServer.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<MessageDto>> GetGroupMsgs(int userId, int chatId)
+        public async Task<IEnumerable<MessageDto>> GetGroupMsgs(int userId, int chatId, int limit = 20, int offset = 0)
         {
-            var msgs = await _groupMessageService.GetGroupMsg(userId, chatId);
+            var msgs = await _groupMessageService.GetGroupMessages(userId, chatId, limit, offset);
             return msgs;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<MessageDto>> GetChatMsgs(int userId, int chatId)
+        public async Task<IEnumerable<MessageDto>> GetChatMsgs(int userId, int chatId, int limit = 20, int offset = 0)
         {
-            var msgs = await _groupMessageService.GetChatMsgs(userId, chatId);
+            var msgs = await _groupMessageService.GetChatMessages(userId, chatId, limit, offset);
             return msgs;
         }
     }

@@ -31,11 +31,13 @@ namespace Repository
             .Include(x => x.User)
             .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<GroupMessage>> GetGroupMessagesAsync(int chatId, bool trackChanges) =>
+        public async Task<IEnumerable<GroupMessage>> GetGroupMessagesAsync(int chatId, bool trackChanges, int limit = 20, int offset = 0) =>
             await FindByCondition(c => c.GroupChatId.Equals(chatId), trackChanges)
             .Include(x => x.GroupChat)
             .Include(x => x.User)
-            .OrderBy(c => c.Time)
+            .OrderByDescending(c => c.Time)
+            .Skip(offset)
+            .Take(limit)
             .ToListAsync();
     }
 }

@@ -12,12 +12,12 @@ namespace Contracts.Services
     {
         Task SetStatus(int userId, bool status);
         Task<IEnumerable<ChatDto>> GetUserChats(int userId);
-        Task<User> GetUser(int userId,bool track=false);
+        Task<User> GetUser(int userId, bool track=false);
         Task<Lecturer> GetLecturer(int userId);
         Task<Student> GetStudent(int userId);
         Task<IEnumerable<Student>> GetStudetsByGroup(int groupId);
-        Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges,string filter);
-        Task<IEnumerable<UserDto>> GetStudentsAsync(bool trackChanges,string filter);
+        Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter, int limit = 20, int offset = 0);
+        Task<IEnumerable<UserDto>> GetStudentsAsync(bool trackChanges, string filter, int limit = 20, int offset = 0);
         Task UpdateLastLogin(int userId);
     }
 }

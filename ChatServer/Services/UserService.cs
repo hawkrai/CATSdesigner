@@ -29,9 +29,11 @@ namespace Services
             await _repository.SaveAsync();
         }
 
-        public async Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter) => await _repository.Lecturers.GetLecturersAsync(trackChanges, filter);
+        public async Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter, int limit = 20, int offset = 0) => 
+            await _repository.Lecturers.GetLecturersAsync(trackChanges, filter, limit, offset);
 
-        public async Task<IEnumerable<UserDto>> GetStudentsAsync(bool trackChanges, string filter) => await _repository.Students.GetStudentsAsync(trackChanges, filter);
+        public async Task<IEnumerable<UserDto>> GetStudentsAsync(bool trackChanges, string filter, int limit = 20, int offset = 0) => 
+            await _repository.Students.GetStudentsAsync(trackChanges, filter, limit, offset);
 
         public async Task<IEnumerable<Student>> GetStudetsByGroup(int groupId) => await _repository.Students.GetStudentsByGroup(groupId, false);
 

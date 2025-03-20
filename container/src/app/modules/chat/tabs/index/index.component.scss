@@ -71,3 +71,126 @@
   padding-left: 1rem !important;
   padding-right: 1rem !important;
 }
+
+.chat-conversation {
+  scroll-behavior: smooth;
+}
+
+.message-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.load-trigger {
+  height: 1px;
+  width: 100%;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.loading-messages-indicator {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0;
+  padding: 20px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.conversation-list {
+  transition: background-color 0.2s ease;
+}
+
+.conversation-list:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.chat-day-title {
+  position: relative;
+  text-align: center;
+  margin: 15px 0;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.chat-day-title .title {
+  background-color: #f8f9fa;
+  padding: 5px 15px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #495057;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chat-day-title:hover {
+  opacity: 1;
+}
+
+.beginning-indicator {
+  text-align: center;
+  padding: 15px;
+  margin: 10px 0 20px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  font-weight: 500;
+  color: #6c757d;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.empty-chat-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  margin: 30px 0;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 1.1em;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ctext-wrap-content p {
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+@keyframes highlight {
+  0% { background-color: rgba(0, 123, 255, 0.1); }
+  100% { background-color: transparent; }
+}
+
+.highlight-message {
+  animation: highlight 2s ease-out;
+}
+
+@media (max-width: 767.98px) {
+  .chat-conversation {
+    padding: 1rem !important;
+  }
+  
+  .ctext-wrap {
+    max-width: 90%;
+  }
+}

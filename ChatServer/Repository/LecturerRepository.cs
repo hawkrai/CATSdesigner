@@ -17,7 +17,7 @@ namespace Repository
 
         public async Task<Lecturer> GetLecturerAsync(int lecturerId, bool trackChanges) => await FindByCondition(c => c.Id.Equals(lecturerId), trackChanges).FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter = "") => 
+        public async Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter = "", int limit = 20, int offset = 0) => 
             await FindByCondition(c => (c.MiddleName + c.FirstName + c.LastName)
             .Contains(filter) || filter == "*", trackChanges)
             .Join(RepositoryContext.Users,
@@ -30,6 +30,8 @@ namespace Repository
                     FullName = x.LastName + " " + x.FirstName + " " + x.MiddleName
                 })
             .OrderBy(_ => _.FullName)
+            .Skip(offset)
+            .Take(limit)
             .ToListAsync();
     }
 }

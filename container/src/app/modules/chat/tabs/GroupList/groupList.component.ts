@@ -33,7 +33,7 @@ export class GroupListComponent {
   }
 
   openChat(chat) {
-    this.contactService.openCaht(chat)
+    this.contactService.openChat(chat)
     this.onCloseClick()
   }
 
