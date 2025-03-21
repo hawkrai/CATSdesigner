@@ -1,4 +1,4 @@
-export interface LoadMessagesResult {
+export interface ILoadMessagesResult {
   addedCount: number;
   totalCount: number;
 }

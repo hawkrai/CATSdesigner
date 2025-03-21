@@ -8,7 +8,7 @@ import { ChatService } from './chatService'
 import { Groups } from '../models/entities/groups.model'
 import { map, catchError, finalize } from 'rxjs/operators'
 import { SubjectGroups } from '../models/entities/subject.groups.model'
-import { LoadMessagesResult } from '../models/interfaces/loadMessagesResult.interface'
+import { ILoadMessagesResult } from '../models/interfaces/loadMessagesResult.interface'
 
 @Injectable({
   providedIn: 'root',
@@ -184,7 +184,7 @@ export class DataService {
     this.messages.next([])
   }
 
-  public loadMoreMessages(): Observable<LoadMessagesResult> {
+  public loadMoreMessages(): Observable<ILoadMessagesResult> {
     if (this.loadingMoreMessages || !this.hasMoreMessages) {
       return of({ addedCount: 0, totalCount: this.messages.getValue().length })
     }
@@ -199,7 +199,7 @@ export class DataService {
     const currentMessagesCount = currentMessages.length
     
     return from(
-      new Promise<LoadMessagesResult>((resolve, reject) => {
+      new Promise<ILoadMessagesResult>((resolve, reject) => {
         this.loadMessagesTimer = setTimeout(() => {
           this.msgService
             .loadMoreMessages(this.activChatId, this.isGroupChat)
