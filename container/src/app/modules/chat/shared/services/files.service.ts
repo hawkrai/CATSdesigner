@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpParams } from '@angular/common/http'
 import { DataService } from '@chat/shared/services/dataService'
 import { SignalRService } from '@chat/shared/services/signalRSerivce'
 import { MessageCto } from '@chat/shared/models/dto/messageCto'
+import { FileApiService } from '@chat/shared/api/file-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class FileService {
@@ -11,7 +11,7 @@ export class FileService {
   constructor(
     private dataService: DataService,
     private signalRService: SignalRService,
-    private http: HttpClient
+    private fileApiService: FileApiService
   ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
   }
@@ -43,14 +43,7 @@ export class FileService {
   }
 
   public DownloadFile(filename: string) {
-    this.http
-      .get(
-        'catService/file/Download?chatId=' +
-          this.dataService.activChatId +
-          '&file=' +
-          filename,
-        { responseType: 'blob' }
-      )
+    this.fileApiService.downloadFile(this.dataService.activChatId, filename)
       .subscribe((blob) => {
         const a = document.createElement('a')
         const objectUrl = URL.createObjectURL(blob)

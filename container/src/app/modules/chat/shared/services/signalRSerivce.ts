@@ -5,7 +5,8 @@ import { DataService } from '@chat/shared/services/dataService'
 import { ContactService } from '@chat/shared/services/contactService'
 import { MessageCto } from '@chat/shared/models/dto/messageCto'
 import { VideoChatService } from '@modules/video-chat/services/video-chat.service'
-import { MatSnackBar } from '@angular/material/snack-bar'
+import { ToastrService } from 'ngx-toastr'
+import { FileApiService } from '@chat/shared/api/file-api.service';
 
 //api methods
 const SendCallRequest = 'SendCallRequest'
@@ -16,6 +17,7 @@ const IncomeCall = 'HandleIncomeCall'
 const DisconnectUser = 'HandleDisconnection'
 const HandleRejection = 'HandleRejection'
 const ChatTimeOut = 45000
+
 @Injectable({
   providedIn: 'root',
 })
@@ -28,7 +30,8 @@ export class SignalRService {
     private dataService: DataService,
     private videoChatService: VideoChatService,
     private contactService: ContactService,
-    private snackBar: MatSnackBar
+    private toastr: ToastrService,
+    private fileApiService: FileApiService
   ) {
     this.user = JSON.parse(localStorage.getItem('currentUser'))
     this.connect()
@@ -149,9 +152,7 @@ export class SignalRService {
   }
 
   public reject(message: string) {
-    this.snackBar.open(message, null, {
-      duration: 2000,
-    })
+    this.toastr.error(message)
   }
 
   public async setEndChatTimer(chatId: any, ms: number) {
@@ -195,8 +196,7 @@ export class SignalRService {
       formData.append(item.name, item)
     }
     formData.append('ChatId', this.dataService.activChatId.toString())
-    this.dataService
-      .SendImg(formData)
+    this.fileApiService.uploadFile(formData)
       .subscribe((result) => this.sendGroupMessage(msg))
   }
 

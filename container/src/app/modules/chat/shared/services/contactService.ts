@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core'
 import { Chat } from '@chat/shared/models/entities/chats.model'
-import { HttpClient } from '@angular/common/http'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { DataService } from '@chat/shared/services/dataService'
 import { ChatCto } from '@chat/shared/models/dto/chatCto'
-import { User } from '@chat/shared/models/dto/user'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { NgZone } from '@angular/core'
+import { ChatApiService } from '@chat/shared/api/chat-api.service';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,7 +27,7 @@ export class ContactService {
   private loadingTimer: any = null
 
   constructor(
-    private http: HttpClient,
+    private chatApiService: ChatApiService,
     private dataService: DataService,
     private zone: NgZone
   ) {
@@ -42,7 +42,7 @@ export class ContactService {
 
   public CreateChat(userId: number) {
     var chatCto = new ChatCto(userId, this.user.id)
-    return this.http.post<number>('catService/chat/CreateChat', chatCto)
+    return this.chatApiService.createChat(chatCto);
   }
 
   public updateChats(fUserId, sUserId, chatId) {
@@ -118,8 +118,7 @@ export class ContactService {
       }
     }, 5000)
     
-    this.http
-      .get<Array<User>>(`catService/chat/GetAllLecturers?filter=${filter}&limit=${this.pageSize}&offset=${this.lecturersOffset}`)
+    this.chatApiService.getAllLecturers(filter, this.pageSize, this.lecturersOffset)
       .subscribe({
         next: (res) => {
           clearTimeout(loadingTimeout)
@@ -188,8 +187,7 @@ export class ContactService {
       }
     }, 5000)
 
-    this.http
-      .get<Array<User>>(`catService/chat/GetAllStudents?filter=${filter}&limit=${this.pageSize}&offset=${this.studentsOffset}`)
+    this.chatApiService.getAllStudents(filter, this.pageSize, this.studentsOffset)
       .subscribe({
         next: (res) => {
           clearTimeout(loadingTimeout)
@@ -270,12 +268,7 @@ export class ContactService {
   }
 
   public loadGroups(): Observable<SubjectGroups[]> {
-    return this.http.get<SubjectGroups[]>(
-      'catService/chat/GetAllGroups?userId=' +
-        this.user.id +
-        '&role=' +
-        this.user.role
-    )
+    return this.chatApiService.getAllGroups(this.user.id, this.user.role);
   }
 
   private updateLoadingState() {
