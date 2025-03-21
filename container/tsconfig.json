@@ -12,7 +12,12 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2018",
-    "lib": ["es2018", "dom"]
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@modules/*": ["src/app/modules/*"],
+      "@chat/*": ["src/app/modules/chat/*"]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

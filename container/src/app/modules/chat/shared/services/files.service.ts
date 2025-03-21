@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { DataService } from './dataService'
-import { SignalRService } from './signalRSerivce'
-import { MessageCto } from '../models/dto/messageCto'
+import { DataService } from '@chat/shared/services/dataService'
+import { SignalRService } from '@chat/shared/services/signalRSerivce'
+import { MessageCto } from '@chat/shared/models/dto/messageCto'
 
 @Injectable({ providedIn: 'root' })
 export class FileService {

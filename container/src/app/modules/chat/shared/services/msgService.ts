@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core'
-import { Chat } from '../models/entities/chats.model'
 import { HttpClient, HttpResponse } from '@angular/common/http'
-import { Message } from '../models/entities/message.model'
-import { BehaviorSubject, Subject, Observable } from 'rxjs'
+import { Message } from '@chat/shared/models/entities/message.model'
+import { Observable } from 'rxjs'
 @Injectable({
   providedIn: 'root',
 })

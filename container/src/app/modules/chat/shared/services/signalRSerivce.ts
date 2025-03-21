@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core'
-import {
-  HubConnection,
-  HubConnectionBuilder,
-  IHttpConnectionOptions,
-} from '@aspnet/signalr'
-import { Message } from '../models/entities/message.model'
-import { DataService } from './dataService'
-import { ContactService } from './contactService'
-import { MessageCto } from '../models/dto/messageCto'
-import { environment } from 'src/environments/environment'
-import { VideoChatService } from './../../../video-chat/services/video-chat.service'
+import { HubConnection, HubConnectionBuilder} from '@aspnet/signalr'
+import { Message } from '@chat/shared/models/entities/message.model'
+import { DataService } from '@chat/shared/services/dataService'
+import { ContactService } from '@chat/shared/services/contactService'
+import { MessageCto } from '@chat/shared/models/dto/messageCto'
+import { VideoChatService } from '@modules/video-chat/services/video-chat.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import { Options } from 'http-proxy-middleware'
 
 //api methods
 const SendCallRequest = 'SendCallRequest'

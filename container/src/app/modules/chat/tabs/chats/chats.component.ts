@@ -4,10 +4,10 @@ import { PerfectScrollbarComponent } from 'ngx-perfect-scrollbar'
 import { Subject, Subscription } from 'rxjs'
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 
-import { Chat } from '../../shared/models/entities/chats.model'
-import { DataService } from '../../shared/services/dataService'
-import { ContactService } from '../../shared/services/contactService'
-import { SignalRService } from '../../shared/services/signalRSerivce'
+import { Chat } from '@chat/shared/models/entities/chats.model'
+import { DataService } from '@chat/shared/services/dataService'
+import { ContactService } from '@chat/shared/services/contactService'
+import { SignalRService } from '@chat/shared/services/signalRSerivce'
 
 @Component({
   selector: 'app-chats',

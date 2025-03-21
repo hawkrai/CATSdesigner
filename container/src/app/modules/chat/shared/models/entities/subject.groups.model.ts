@@ -1,5 +1,4 @@
-import { Groups } from './groups.model'
-import { Chat } from './chats.model'
+import { Chat } from '@chat/shared/models/entities/chats.model'
 export class SubjectGroups {
   id: number
   name: string

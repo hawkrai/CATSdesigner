@@ -1,14 +1,14 @@
 import { Injectable, NgZone } from '@angular/core'
-import { Chat } from '../models/entities/chats.model'
-import { HttpClient, HttpResponse } from '@angular/common/http'
-import { Message } from '../models/entities/message.model'
-import { MsgService } from './msgService'
+import { Chat } from '@chat/shared/models/entities/chats.model'
+import { HttpClient } from '@angular/common/http'
+import { Message } from '@chat/shared/models/entities/message.model'
+import { MsgService } from '@chat/shared/services/msgService'
 import { BehaviorSubject, Observable, from, of } from 'rxjs'
-import { ChatService } from './chatService'
-import { Groups } from '../models/entities/groups.model'
+import { ChatService } from '@chat/shared/services/chatService'
+import { Groups } from '@chat/shared/models/entities/groups.model'
 import { map, catchError, finalize } from 'rxjs/operators'
-import { SubjectGroups } from '../models/entities/subject.groups.model'
-import { ILoadMessagesResult } from '../models/interfaces/loadMessagesResult.interface'
+import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
+import { ILoadMessagesResult } from '@chat/shared/models/interfaces/loadMessagesResult.interface'
 
 @Injectable({
   providedIn: 'root',

@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core'
-import { Chat } from '../models/entities/chats.model'
-import { HttpClient, HttpResponse } from '@angular/common/http'
-import { Message } from '../models/entities/message.model'
-import { MsgService } from './msgService'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { Chat } from '@chat/shared/models/entities/chats.model'
+import { HttpClient } from '@angular/common/http'
+import { Observable } from 'rxjs'
 import { SubjectGroups } from '../models/entities/subject.groups.model'
 
 @Injectable({

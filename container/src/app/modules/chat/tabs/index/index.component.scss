@@ -186,8 +186,8 @@
 }
 
 @media (max-width: 767.98px) {
-  .chat-conversation {
-    padding: 1rem !important;
+  .layout-wrapper .user-chat .chat-conversation {
+    padding: 1rem;
   }
   
   .ctext-wrap {

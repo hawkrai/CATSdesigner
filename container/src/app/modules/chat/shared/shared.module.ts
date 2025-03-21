@@ -12,12 +12,12 @@ import { TranslateModule } from '@ngx-translate/core'
 import { FormsModule } from '@angular/forms'
 import { MatIconModule } from '@angular/material/icon'
 import { ClipboardModule } from 'ngx-clipboard'
-import { ChatService } from './services/chatService'
-import { DataService } from './services/dataService'
-import { ContactService } from './services/contactService'
-import { FileService } from './services/files.service'
-import { MsgService } from './services/msgService'
-import { SignalRService } from './services/signalRSerivce'
+import { ChatService } from '@chat/shared/services/chatService'
+import { DataService } from '@chat/shared/services/dataService'
+import { ContactService } from '@chat/shared/services/contactService'
+import { FileService } from '@chat/shared/services/files.service'
+import { MsgService } from '@chat/shared/services/msgService'
+import { SignalRService } from '@chat/shared/services/signalRSerivce'
 
 @NgModule({
   imports: [],
