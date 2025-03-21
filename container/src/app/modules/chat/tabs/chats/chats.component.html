@@ -20,58 +20,80 @@
 
   <!-- Start chat-message-list -->
   <div class="px-2" style="background: white">
-    <perfect-scrollbar class="chat-message-list">
+    <perfect-scrollbar class="chat-message-list" #perfectScrollbar [config]="{suppressScrollX: false, suppressScrollY: false}">
       <ul
         class="list-unstyled chat-list chat-user-list"
         style="max-height: 60vh"
       >
-        <li *ngFor="let user of chats">
-          <a
-            [ngStyle]="{
-              'background-color':
-                dataService.activChatId == user.id ? '#f5f7fb' : ''
-            }"
-            (click)="showChat(user)"
-          >
-            <div class="media" style="align-items: center">
-              <div
-                class="chat-user-img align-self-center mr-3"
-                [ngClass]="{ online: user.isOnline, away: !user.isOnline }"
-              >
-                <img
-                  *ngIf="user.img"
-                  src="{{ user.img }}"
-                  class="rounded-circle avatar-xs"
-                  alt=""
-                />
-                <div class="avatar-xs" *ngIf="!user.img">
-                  <span
-                    class="avatar-title rounded-circle bg-soft-primary text-primary"
-                  >
-                    {{
-                      user.name.split(' ')[0].charAt(0) +
-                        user.name.split(' ')[1].charAt(0)
-                    }}
-                  </span>
-                </div>
-                <span class="user-status"></span>
-              </div>
-              <div
-                class="media-body overflow-hidden"
-                [ngClass]="{ shortName: user.unread > 0 }"
-              >
-                <h5 class="text-truncate font-size-15 mb-1">{{ user.name }}</h5>
-              </div>
-              <div class="font-size-11">{{ user.time }}</div>
-              <div class="unread-message" style="top: calc(50% - 16px)">
-                <span
-                  *ngIf="user.unread"
-                  class="badge badge-soft-danger badge-pill"
-                  >{{ user.unread }}</span
+        <ng-container *ngIf="!isSearching || (isSearching && chats && chats.length > 0)">
+          <li *ngFor="let user of chats">
+            <a
+              [ngStyle]="{
+                'background-color':
+                  dataService.activChatId == user.id ? '#f5f7fb' : ''
+              }"
+              (click)="showChat(user)"
+            >
+              <div class="media" style="align-items: center">
+                <div
+                  class="chat-user-img align-self-center mr-3"
+                  [ngClass]="{ online: user.isOnline, away: !user.isOnline }"
                 >
+                  <img
+                    *ngIf="user.img"
+                    src="{{ user.img }}"
+                    class="rounded-circle avatar-xs"
+                    alt=""
+                  />
+                  <div class="avatar-xs" *ngIf="!user.img">
+                    <span
+                      class="avatar-title rounded-circle bg-soft-primary text-primary"
+                    >
+                      {{
+                        user.name.split(' ')[0].charAt(0) +
+                          user.name.split(' ')[1].charAt(0)
+                      }}
+                    </span>
+                  </div>
+                  <span class="user-status"></span>
+                </div>
+                <div
+                  class="media-body overflow-hidden"
+                  [ngClass]="{ shortName: user.unread > 0 }"
+                >
+                  <h5 class="text-truncate font-size-15 mb-1">{{ user.name }}</h5>
+                </div>
+                <div class="font-size-11">{{ user.time }}</div>
+                <div class="unread-message" style="top: calc(50% - 16px)">
+                  <span
+                    *ngIf="user.unread"
+                    class="badge badge-soft-danger badge-pill"
+                    >{{ user.unread }}</span
+                  >
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </li>
+        </ng-container>
+        <!-- Loading indicator -->
+        <li *ngIf="isSearching && contactService.loadingMore && (
+            (contactService.isLecturer && (contactService.hasMoreLecturers || contactService.hasMoreStudents)) || 
+            (!contactService.isLecturer && contactService.hasMoreStudents)
+          )" class="text-center p-2">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">{{ 'chat.loading' | translate: 'Загрузка...' }}</span>
+          </div>
+        </li>
+        <!-- End of results message -->
+        <li *ngIf="isSearching && !contactService.loadingMore && (
+            (contactService.isLecturer && !contactService.hasMoreLecturers && !contactService.hasMoreStudents) || 
+            (!contactService.isLecturer && !contactService.hasMoreStudents)
+          ) && chats && chats.length > 0" class="text-center p-2">
+          <span class="text-muted">{{ 'chat.noMoreResults' | translate: 'Больше результатов нет' }}</span>
+        </li>
+        <!-- Empty results message -->
+        <li *ngIf="isSearching && !contactService.loadingMore && (!chats || chats.length === 0)" class="text-center p-2">
+          <span class="text-muted">{{ 'chat.noResults' | translate: 'Нет результатов' }}</span>
         </li>
       </ul>
     </perfect-scrollbar>

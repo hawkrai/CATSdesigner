@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
-import { DataService } from '../../shared/services/dataService'
-import { Groups } from '../../shared/models/entities/groups.model'
+import { DataService } from '@chat/shared/services/dataService'
 import { Subscription } from 'rxjs'
-import { SubjectGroups } from '../../shared/models/entities/subject.groups.model'
+import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 
 @Component({
   selector: 'app-groups',

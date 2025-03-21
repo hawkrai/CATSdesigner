@@ -75,15 +75,15 @@ namespace ChatServer.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetAllStudents(string filter = "*")
+        public async Task<IEnumerable<UserDto>> GetAllStudents(string filter = "*", int limit = 20, int offset = 0)
         {
-            return await _userService.GetStudentsAsync(true, filter);
+            return await _userService.GetStudentsAsync(true, limit, offset, filter);
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetAllLecturers(string filter = "*")
+        public async Task<IEnumerable<UserDto>> GetAllLecturers(string filter = "*", int limit = 20, int offset = 0)
         {
-            return await _userService.GetLecturersAsync(true, filter);
+            return await _userService.GetLecturersAsync(true, limit, offset, filter);
         }
 
         [HttpGet]

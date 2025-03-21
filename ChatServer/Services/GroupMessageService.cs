@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Contracts.Services;
+using DocumentFormat.OpenXml.Math;
 using Entities.CTO;
 using Entities.DTO;
 using Entities.Models;
@@ -61,9 +62,9 @@ namespace Services
             await _repository.SaveAsync();
         }
 
-        public async Task<MessageDto[]> GetGroupMsg(int userId, int chatId)
+        public async Task<MessageDto[]> GetGroupMessages(int userId, int chatId, int limit, int offset)
         {
-            var msgs = await _repository.GroupMessages.GetGroupMessagesAsync(chatId, false);
+            var msgs = await _repository.GroupMessages.GetGroupMessagesAsync(chatId, false, limit, offset);
             var groupId = await _repository.GroupChats.GetGroupId(chatId);
             if (groupId != null)
             {
@@ -95,9 +96,9 @@ namespace Services
             return messagesDto;
         }
 
-        public async Task<MessageDto[]> GetChatMsgs(int userId, int chatId)
+        public async Task<MessageDto[]> GetChatMessages(int userId, int chatId, int limit, int offset)
         {
-            var msgs = await _repository.UserChatMessages.GetUserChatMessagesAsync(chatId, false);
+            var msgs = await _repository.UserChatMessages.GetUserChatMessagesAsync(chatId, false, limit, offset);
 
             foreach (var msg in msgs)
             {

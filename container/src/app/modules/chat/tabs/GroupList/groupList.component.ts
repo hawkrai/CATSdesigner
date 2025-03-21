@@ -1,20 +1,12 @@
-import {
-  Component,
-  Inject,
-  Input,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core'
-import { ThemePalette } from '@angular/material/core'
+import { Component, Inject } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
-import { ContactService } from '../../shared/services/contactService'
-import { Chat } from '../../shared/models/entities/chats.model'
+import { ContactService } from '@chat/shared/services/contactService'
+import { Chat } from '@chat/shared/models/entities/chats.model'
 
 @Component({
   selector: 'app-group-list',
   templateUrl: './groupList.component.html',
-  styleUrls: ['./groupList.component.scss'],
-  // encapsulation: ViewEncapsulation.None
+  styleUrls: ['./groupList.component.scss']
 })
 export class GroupListComponent {
   public users: Chat[]
@@ -33,7 +25,7 @@ export class GroupListComponent {
   }
 
   openChat(chat) {
-    this.contactService.openCaht(chat)
+    this.contactService.openChat(chat)
     this.onCloseClick()
   }
 
