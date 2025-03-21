@@ -9,7 +9,7 @@ namespace Contracts.Repositories
 {
     public interface ILecturerRepository
     {
-        Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, string filter = "", int limit = 20, int offset = 0);
+        Task<IEnumerable<UserDto>> GetLecturersAsync(bool trackChanges, int limit, int offset, string filter);
         Task<Lecturer> GetLecturerAsync(int lecturerId, bool trackChanges);
     }
 }

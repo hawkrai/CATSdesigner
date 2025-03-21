@@ -31,7 +31,7 @@ namespace Repository
             .Include(x => x.User)
             .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<GroupMessage>> GetGroupMessagesAsync(int chatId, bool trackChanges, int limit = 20, int offset = 0) =>
+        public async Task<IEnumerable<GroupMessage>> GetGroupMessagesAsync(int chatId, bool trackChanges, int limit, int offset) =>
             await FindByCondition(c => c.GroupChatId.Equals(chatId), trackChanges)
             .Include(x => x.GroupChat)
             .Include(x => x.User)

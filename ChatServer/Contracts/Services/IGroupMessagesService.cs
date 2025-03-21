@@ -14,8 +14,8 @@ namespace Contracts.Services
     {
         Task<MessageDto> Save(int id, GroupMessageCto message);
         Task DeleteGroupMsg(int msgId);
-        Task<MessageDto[]> GetGroupMessages(int userId, int chatId, int limit = 20, int offset = 0);
-        Task<MessageDto[]> GetChatMessages(int userId, int chatId, int limit = 20, int offset = 0);
+        Task<MessageDto[]> GetGroupMessages(int userId, int chatId, int limit, int offset);
+        Task<MessageDto[]> GetChatMessages(int userId, int chatId, int limit, int offset);
 
         Task<GroupMessage> GetMessage(int id);
         Task UpdateMsg(GroupMessage msg, string text);

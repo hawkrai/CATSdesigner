@@ -62,7 +62,7 @@ namespace Services
             await _repository.SaveAsync();
         }
 
-        public async Task<MessageDto[]> GetGroupMessages(int userId, int chatId, int limit = 20, int offset = 0)
+        public async Task<MessageDto[]> GetGroupMessages(int userId, int chatId, int limit, int offset)
         {
             var msgs = await _repository.GroupMessages.GetGroupMessagesAsync(chatId, false, limit, offset);
             var groupId = await _repository.GroupChats.GetGroupId(chatId);
@@ -96,7 +96,7 @@ namespace Services
             return messagesDto;
         }
 
-        public async Task<MessageDto[]> GetChatMessages(int userId, int chatId, int limit = 20, int offset = 0)
+        public async Task<MessageDto[]> GetChatMessages(int userId, int chatId, int limit, int offset)
         {
             var msgs = await _repository.UserChatMessages.GetUserChatMessagesAsync(chatId, false, limit, offset);
 

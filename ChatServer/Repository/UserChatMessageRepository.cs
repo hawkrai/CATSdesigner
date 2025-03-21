@@ -29,7 +29,7 @@ namespace Repository
             .Include(x => x.User)
             .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<ChatMessage>> GetUserChatMessagesAsync(int chatId, bool trackChanges, int limit = 20, int offset = 0) => 
+        public async Task<IEnumerable<ChatMessage>> GetUserChatMessagesAsync(int chatId, bool trackChanges, int limit, int offset) => 
             await FindByCondition(c => c.ChatId.Equals(chatId), trackChanges)
             .Include(x => x.User)
             .OrderByDescending(c => c.Time)
