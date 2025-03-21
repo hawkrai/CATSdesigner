@@ -1,4 +1,4 @@
 export interface ILoadMessagesResult {
-  addedCount: number;
-  totalCount: number;
+  addedCount: number
+  totalCount: number
 }

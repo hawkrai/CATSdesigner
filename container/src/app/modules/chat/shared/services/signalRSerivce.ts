@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core'
-import { HubConnection, HubConnectionBuilder} from '@aspnet/signalr'
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr'
 import { Message } from '@chat/shared/models/entities/message.model'
 import { DataService } from '@chat/shared/services/dataService'
 import { ContactService } from '@chat/shared/services/contactService'
 import { MessageCto } from '@chat/shared/models/dto/messageCto'
 import { VideoChatService } from '@modules/video-chat/services/video-chat.service'
 import { ToastrService } from 'ngx-toastr'
-import { FileApiService } from '@chat/shared/api/file-api.service';
+import { FileApiService } from '@chat/shared/api/file-api.service'
 
 //api methods
 const SendCallRequest = 'SendCallRequest'
@@ -196,7 +196,8 @@ export class SignalRService {
       formData.append(item.name, item)
     }
     formData.append('ChatId', this.dataService.activChatId.toString())
-    this.fileApiService.uploadFile(formData)
+    this.fileApiService
+      .uploadFile(formData)
       .subscribe((result) => this.sendGroupMessage(msg))
   }
 

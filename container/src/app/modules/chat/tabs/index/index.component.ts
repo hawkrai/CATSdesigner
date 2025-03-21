@@ -6,13 +6,16 @@ import {
   OnInit,
   OnDestroy,
   ViewChild,
-  ElementRef
+  ElementRef,
 } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { Message } from '@chat/shared/models/entities/message.model'
 import { Chat } from '@chat/shared/models/entities/chats.model'
 import { SignalRService } from '@chat/shared/services/signalRSerivce'
-import { PerfectScrollbarComponent, PerfectScrollbarDirective } from 'ngx-perfect-scrollbar'
+import {
+  PerfectScrollbarComponent,
+  PerfectScrollbarDirective,
+} from 'ngx-perfect-scrollbar'
 import { FileService } from '@chat/shared/services/files.service'
 import { ContactService } from '@chat/shared/services/contactService'
 import { GroupListComponent } from '@chat/tabs/GroupList/groupList.component'
@@ -31,7 +34,7 @@ import { ScrollUtils } from '@chat/shared/utils/scrollUtils'
   styleUrls: ['./index.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
+export class IndexComponent implements OnInit, OnDestroy, AfterViewInit {
   activetab = 2
   currentMsg: MessageCto = new MessageCto()
   chat: Chat
@@ -72,30 +75,33 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.activetab = 2
       this.cdr.detectChanges()
     })
-    this.dataService.readMessageChatCount.subscribe(x => {
+    this.dataService.readMessageChatCount.subscribe((x) => {
       this.unreadChat = x
       this.cdr.detectChanges()
     })
-    this.dataService.readMessageGroupCount.subscribe(x => {
+    this.dataService.readMessageGroupCount.subscribe((x) => {
       this.unreadGroup = x
       this.cdr.detectChanges()
     })
     this.dataService.loadGroups()
     this.dataService.loadChats()
-    
+
     this.dataService.loadingMessagesStatus
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.cdr.detectChanges())
 
-      this.dataService.messages
+    this.dataService.messages
       .pipe(takeUntil(this.destroy$))
       .subscribe((msgs: Message[]) => {
         const wasEmpty = !this.messages || this.messages.length === 0
         this.messages = msgs
         this.messagesAll = msgs
         this.cdr.detectChanges()
-        
-        if (msgs.length > 0 && (wasEmpty || !this.dataService.loadingMoreMessages)) {
+
+        if (
+          msgs.length > 0 &&
+          (wasEmpty || !this.dataService.loadingMoreMessages)
+        ) {
           this.scrollToBottom(false)
         }
       })
@@ -112,14 +118,14 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
     }, 500)
   }
 
-  ngOnDestroy(): void {    
+  ngOnDestroy(): void {
     this.destroy$.next()
     this.destroy$.complete()
-    
+
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe()
     }
-    
+
     if (this.dataService.loadMessagesTimer) {
       clearTimeout(this.dataService.loadMessagesTimer)
     }
@@ -128,7 +134,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
       const element = this.componentRef.directiveRef.elementRef.nativeElement
       element.removeEventListener('scroll', this.handleScroll)
     }
-    
+
     if (this.intersectionObserver) {
       this.intersectionObserver.disconnect()
     }
@@ -142,13 +148,14 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
 
   private setupIntersectionObserver() {
     if (!this.componentRef?.directiveRef) return
-    
+
     if (this.intersectionObserver) {
       this.intersectionObserver.disconnect()
     }
-    
-    const messagesContainer = this.componentRef.directiveRef.elementRef.nativeElement
-    
+
+    const messagesContainer =
+      this.componentRef.directiveRef.elementRef.nativeElement
+
     if (this.loadTriggerRef?.nativeElement) {
       this.loadTriggerElement = this.loadTriggerRef.nativeElement
     } else {
@@ -159,25 +166,27 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
         messagesList.prepend(this.loadTriggerElement)
       }
     }
-    
+
     this.intersectionObserver = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && 
-              !this.dataService.loadingMoreMessages && 
-              this.dataService.hasMoreMessages && 
-              !this.scrollLock) {
+        entries.forEach((entry) => {
+          if (
+            entry.isIntersecting &&
+            !this.dataService.loadingMoreMessages &&
+            this.dataService.hasMoreMessages &&
+            !this.scrollLock
+          ) {
             this.loadMoreMessages()
           }
         })
       },
-      { 
-        root: messagesContainer, 
+      {
+        root: messagesContainer,
         threshold: 0.1,
-        rootMargin: '100px 0px 0px 0px'
+        rootMargin: '100px 0px 0px 0px',
       }
     )
-    
+
     if (this.loadTriggerElement) {
       this.intersectionObserver.observe(this.loadTriggerElement)
     }
@@ -191,17 +200,20 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
   }
 
   loadMoreMessages() {
-    if (this.dataService.loadingMoreMessages || 
-        !this.dataService.hasMoreMessages || 
-        !this.messages?.length || 
-        this.scrollLock) {
+    if (
+      this.dataService.loadingMoreMessages ||
+      !this.dataService.hasMoreMessages ||
+      !this.messages?.length ||
+      this.scrollLock
+    ) {
       return
     }
-    
-    const scrollElement = this.componentRef.directiveRef.elementRef.nativeElement
-    const oldScrollHeight = scrollElement.scrollHeight    
+
+    const scrollElement =
+      this.componentRef.directiveRef.elementRef.nativeElement
+    const oldScrollHeight = scrollElement.scrollHeight
     this.scrollLock = true
-    
+
     this.dataService.loadMoreMessages().subscribe({
       next: (result) => {
         if (result.addedCount > 0) {
@@ -209,15 +221,15 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
             const newScrollHeight = scrollElement.scrollHeight
             const heightDifference = newScrollHeight - oldScrollHeight
             scrollElement.scrollTop = this.lastScrollTop + heightDifference
-            
+
             this.newMessagesCount = result.addedCount
             this.cdr.detectChanges()
-            
+
             setTimeout(() => {
               this.newMessagesCount = 0
               this.cdr.detectChanges()
             }, 1000)
-            
+
             this.scrollLock = false
           }, 10)
         } else {
@@ -226,7 +238,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
       },
       error: () => {
         this.scrollLock = false
-      }
+      },
     })
   }
 
@@ -235,7 +247,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
       ScrollUtils.scrollToBottom(this.componentRef.directiveRef, smooth)
     }
   }
- 
+
   openFilter() {
     this.isfilter = !this.isfilter
     if (!this.isfilter) {
@@ -287,7 +299,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
     }
     fileInput.click()
   }
-  
+
   uploadFiles(event) {
     if (!this.dataService.activChat) {
       this.showWarningSnackBar('Не выбран чат!')
@@ -310,10 +322,14 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
       return false
     }
 
-    if (!this.currentMsg?.text || 
-        this.currentMsg.text === '' || 
-        this.currentMsg.text.length > 25000) {
-      this.showWarningSnackBar('Сообщение пустое или превышает разрешенный размер!')
+    if (
+      !this.currentMsg?.text ||
+      this.currentMsg.text === '' ||
+      this.currentMsg.text.length > 25000
+    ) {
+      this.showWarningSnackBar(
+        'Сообщение пустое или превышает разрешенный размер!'
+      )
       return
     }
 
@@ -345,7 +361,7 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
     } else {
       this.currentMsg.userId = this.dataService.user.id
       this.currentMsg.chatId = this.dataService.activChatId
-      
+
       const sendPromise = this.dataService.isGroupChat
         ? this.signalRService.sendGroupMessage(this.currentMsg)
         : this.signalRService.sendMessage(this.currentMsg)
@@ -388,7 +404,10 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
       return false
     }
 
-    return !this.dataService?.activChat?.groupId && this.dataService.user.role === 'lector'
+    return (
+      !this.dataService?.activChat?.groupId &&
+      this.dataService.user.role === 'lector'
+    )
   }
 
   showSuccessSnackBar(message: string) {

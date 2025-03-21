@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { DataService } from '@chat/shared/services/dataService'
 import { SignalRService } from '@chat/shared/services/signalRSerivce'
 import { MessageCto } from '@chat/shared/models/dto/messageCto'
-import { FileApiService } from '@chat/shared/api/file-api.service';
+import { FileApiService } from '@chat/shared/api/file-api.service'
 
 @Injectable({ providedIn: 'root' })
 export class FileService {
@@ -43,7 +43,8 @@ export class FileService {
   }
 
   public DownloadFile(filename: string) {
-    this.fileApiService.downloadFile(this.dataService.activChatId, filename)
+    this.fileApiService
+      .downloadFile(this.dataService.activChatId, filename)
       .subscribe((blob) => {
         const a = document.createElement('a')
         const objectUrl = URL.createObjectURL(blob)

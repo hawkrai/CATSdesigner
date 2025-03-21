@@ -5,7 +5,7 @@ import { DataService } from '@chat/shared/services/dataService'
 import { ChatCto } from '@chat/shared/models/dto/chatCto'
 import { SubjectGroups } from '@chat/shared/models/entities/subject.groups.model'
 import { NgZone } from '@angular/core'
-import { ChatApiService } from '@chat/shared/api/chat-api.service';
+import { ChatApiService } from '@chat/shared/api/chat-api.service'
 
 @Injectable({
   providedIn: 'root',
@@ -13,13 +13,17 @@ import { ChatApiService } from '@chat/shared/api/chat-api.service';
 export class ContactService {
   public user: any
   public isLecturer: boolean
-  public contacts: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>([])
+  public contacts: BehaviorSubject<Chat[]> = new BehaviorSubject<Array<Chat>>(
+    []
+  )
   public openChatComand: BehaviorSubject<Chat> = new BehaviorSubject<Chat>(null)
   public isChatOpen: boolean
   public hasMoreLecturers: boolean = true
   public hasMoreSecondaryContacts: boolean = true
   public loadingMore: boolean = false
-  public loadingStatus: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  public loadingStatus: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  )
   private lecturersOffset: number = 0
   private secondaryContactsOffset: number = 0
   private readonly pageSize: number = 20
@@ -42,7 +46,7 @@ export class ContactService {
 
   public CreateChat(userId: number) {
     var chatCto = new ChatCto(userId, this.user.id)
-    return this.chatApiService.createChat(chatCto);
+    return this.chatApiService.createChat(chatCto)
   }
 
   public updateChats(fUserId, sUserId, chatId) {
@@ -82,21 +86,21 @@ export class ContactService {
       this.resetContactState()
       this.currentFilter = filter
     }
-    
+
     if (this.loadingMore) {
       if (this.loadingTimer) {
         clearTimeout(this.loadingTimer)
       }
-      
+
       this.loadingTimer = setTimeout(() => {
         this.loadContacts(filter)
       }, 500)
-      
+
       return
     }
-  
+
     this.contacts.next([])
-  
+
     if (this.isLecturer) {
       this.loadLecturers(filter)
     } else {
@@ -111,14 +115,15 @@ export class ContactService {
     }
     this.setLoadingState(true)
     var contacts = this.contacts.getValue()
-  
+
     const loadingTimeout = setTimeout(() => {
       if (this.loadingMore) {
         this.setLoadingState(false)
       }
     }, 5000)
-    
-    this.chatApiService.getAllLecturers(filter, this.pageSize, this.lecturersOffset)
+
+    this.chatApiService
+      .getAllLecturers(filter, this.pageSize, this.lecturersOffset)
       .subscribe({
         next: (res) => {
           clearTimeout(loadingTimeout)
@@ -126,10 +131,10 @@ export class ContactService {
             this.hasMoreLecturers = false
             this.updateLoadingState()
           }
-  
+
           if (res.length === 0 && this.lecturersOffset === 0) {
             this.hasMoreLecturers = false
-            
+
             if (this.isLecturer) {
               if (this.hasMoreSecondaryContacts) {
                 this.loadLecturerStudents(filter, contacts)
@@ -144,7 +149,7 @@ export class ContactService {
             }
             return
           }
-          
+
           res.forEach((element) => {
             if (element.userId != this.user.id) {
               var chat = new Chat()
@@ -155,9 +160,9 @@ export class ContactService {
               contacts.push(chat)
             }
           })
-          
+
           this.lecturersOffset += res.length
-          
+
           if (this.hasMoreSecondaryContacts) {
             this.loadLecturerStudents(filter, contacts)
           } else {
@@ -168,44 +173,50 @@ export class ContactService {
         error: (err) => {
           clearTimeout(loadingTimeout)
           this.setLoadingState(false)
-        }
+        },
       })
   }
-  
+
   private loadLecturerStudents(filter: string, contacts: Chat[]) {
     if (!this.hasMoreSecondaryContacts) {
       this.contacts.next(contacts)
       this.setLoadingState(false)
       return
     }
-  
+
     this.setLoadingState(true)
-  
+
     const loadingTimeout = setTimeout(() => {
       if (this.loadingMore) {
         this.setLoadingState(false)
       }
     }, 5000)
-  
-    this.chatApiService.getLecturerStudents(this.user.id, filter, this.pageSize, this.secondaryContactsOffset)
+
+    this.chatApiService
+      .getLecturerStudents(
+        this.user.id,
+        filter,
+        this.pageSize,
+        this.secondaryContactsOffset
+      )
       .subscribe({
         next: (res) => {
           clearTimeout(loadingTimeout)
-  
+
           if (res.length < this.pageSize) {
             this.hasMoreSecondaryContacts = false
             this.updateLoadingState()
           }
-  
+
           if (res.length === 0 && this.secondaryContactsOffset === 0) {
             this.hasMoreSecondaryContacts = false
             this.updateLoadingState()
-            
+
             if (contacts.length === 0) {
               this.setLoadingState(false)
             }
           }
-          
+
           res.forEach((element) => {
             if (element.userId != this.user.id) {
               var chat = new Chat()
@@ -217,16 +228,16 @@ export class ContactService {
               contacts.push(chat)
             }
           })
-          
+
           this.secondaryContactsOffset += res.length
-          
+
           this.contacts.next(contacts)
           this.setLoadingState(false)
         },
         error: (err) => {
           clearTimeout(loadingTimeout)
           this.setLoadingState(false)
-        }
+        },
       })
   }
 
@@ -235,32 +246,38 @@ export class ContactService {
       this.setLoadingState(false)
       return
     }
-  
+
     this.setLoadingState(true)
-  
+
     const loadingTimeout = setTimeout(() => {
       if (this.loadingMore) {
         this.setLoadingState(false)
       }
     }, 5000)
-  
-    this.chatApiService.getStudentLecturers(this.user.id, filter, this.pageSize, this.secondaryContactsOffset)
+
+    this.chatApiService
+      .getStudentLecturers(
+        this.user.id,
+        filter,
+        this.pageSize,
+        this.secondaryContactsOffset
+      )
       .subscribe({
         next: (res) => {
           clearTimeout(loadingTimeout)
           var contacts = this.contacts.getValue()
-  
+
           if (res.length < this.pageSize) {
             this.hasMoreSecondaryContacts = false
             this.updateLoadingState()
           }
-  
+
           if (res.length === 0 && this.secondaryContactsOffset === 0) {
             this.hasMoreSecondaryContacts = false
             this.updateLoadingState()
             this.setLoadingState(false)
           }
-          
+
           res.forEach((element) => {
             if (element.userId != this.user.id) {
               var chat = new Chat()
@@ -271,19 +288,19 @@ export class ContactService {
               contacts.push(chat)
             }
           })
-          
+
           this.secondaryContactsOffset += res.length
-          
+
           this.contacts.next(contacts)
           this.setLoadingState(false)
         },
         error: (err) => {
           clearTimeout(loadingTimeout)
           this.setLoadingState(false)
-        }
+        },
       })
   }
-  
+
   public loadMoreContacts() {
     if (this.isLecturer) {
       if (!this.hasMoreLecturers && !this.hasMoreSecondaryContacts) {
@@ -296,21 +313,18 @@ export class ContactService {
         return
       }
     }
-  
+
     if (this.loadingMore) return
-    
+
     if (this.isLecturer) {
       if (this.hasMoreLecturers) {
         this.loadLecturers(this.currentFilter)
-      } 
-      else if (this.hasMoreSecondaryContacts) {
+      } else if (this.hasMoreSecondaryContacts) {
         const currentContacts = this.contacts.getValue()
         this.loadLecturerStudents(this.currentFilter, currentContacts)
-      }
-      else {
+      } else {
         this.setLoadingState(false)
       }
-      
     } else {
       if (this.hasMoreSecondaryContacts) {
         this.loadStudentLecturers(this.currentFilter)
@@ -321,7 +335,7 @@ export class ContactService {
   }
 
   public loadGroups(): Observable<SubjectGroups[]> {
-    return this.chatApiService.getAllGroups(this.user.id, this.user.role);
+    return this.chatApiService.getAllGroups(this.user.id, this.user.role)
   }
 
   private updateLoadingState() {

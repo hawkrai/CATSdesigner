@@ -81,13 +81,13 @@
 }
 
 @keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(-10px); 
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -177,8 +177,12 @@
 }
 
 @keyframes highlight {
-  0% { background-color: rgba(0, 123, 255, 0.1); }
-  100% { background-color: transparent; }
+  0% {
+    background-color: rgba(0, 123, 255, 0.1);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 .highlight-message {
@@ -189,7 +193,7 @@
   .layout-wrapper .user-chat .chat-conversation {
     padding: 1rem;
   }
-  
+
   .ctext-wrap {
     max-width: 90%;
   }
