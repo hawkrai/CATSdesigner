@@ -95,8 +95,6 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.perfectScrollbar && this.perfectScrollbar.directiveRef) {
         const element = this.perfectScrollbar.directiveRef.elementRef.nativeElement
         element.addEventListener('scroll', this.handleScroll.bind(this))
-      } else {
-        console.error('PerfectScrollbar is not properly initialized')
       }
     }, 500)
   }

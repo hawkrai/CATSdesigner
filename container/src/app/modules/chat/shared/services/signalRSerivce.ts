@@ -49,7 +49,6 @@ export class SignalRService {
     this.hubConnection
       .start()
       .then(() => {
-        console.log('server start signalR')
         this.join(this.user.id, this.user.role)
         this.addChatListener()
       })

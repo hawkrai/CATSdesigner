@@ -119,7 +119,6 @@ export class DataService {
     this.setLoadingMessagesState(true)
 
     const loadingTimeout = setTimeout(() => {
-      console.warn('Group messages loading timeout reached, resetting loading state')
       this.setLoadingMessagesState(false)
     }, 5000)
 
@@ -145,7 +144,6 @@ export class DataService {
     this.setLoadingMessagesState(true)
 
     const loadingTimeout = setTimeout(() => {
-      console.warn('Chat messages loading timeout reached, resetting loading state')
       this.setLoadingMessagesState(false)
     }, 5000)
 
@@ -338,7 +336,6 @@ export class DataService {
       
       if (isLoading && !this.loadingTimeout) {
         this.loadingTimeout = setTimeout(() => {
-          console.warn('Messages loading timeout reached, resetting loading state')
           this.setLoadingMessagesState(false)
         }, 5000)
       } else if (!isLoading && this.loadingTimeout) {

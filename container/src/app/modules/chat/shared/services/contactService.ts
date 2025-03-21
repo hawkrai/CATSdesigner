@@ -116,7 +116,6 @@ export class ContactService {
 
     const loadingTimeout = setTimeout(() => {
       if (this.loadingMore) {
-        console.warn('Lectures loading timeout reached, resetting loading state')
         this.setLoadingState(false)
       }
     }, 5000)
@@ -171,7 +170,6 @@ export class ContactService {
         },
         error: (err) => {
           clearTimeout(loadingTimeout)
-          console.error('Error loading lecturers:', err)
           this.setLoadingState(false)
         }
       })
@@ -188,7 +186,6 @@ export class ContactService {
 
     const loadingTimeout = setTimeout(() => {
       if (this.loadingMore) {
-        console.warn('Students loading timeout reached, resetting loading state')
         this.setLoadingState(false)
       }
     }, 5000)
@@ -232,7 +229,6 @@ export class ContactService {
         },
         error: (err) => {
           clearTimeout(loadingTimeout)
-          console.error('Error loading students:', err)
           this.setLoadingState(false)
         }
       })
