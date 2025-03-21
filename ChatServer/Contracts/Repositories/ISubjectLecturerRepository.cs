@@ -9,5 +9,6 @@ namespace Contracts.Repositories
     public interface ISubjectLecturerRepository
     {
         Task<IEnumerable<SubjectLecturer>> GetSubjects(int lecturerId);
+        Task<IEnumerable<SubjectLecturer>> GetLecturersBySubjectIds(IEnumerable<int> subjectIds);
     }
 }

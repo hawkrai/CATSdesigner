@@ -47,7 +47,7 @@ export class DataService {
     this.isLecturer = this.user?.role === 'lector'
   }
 
-  public LoadChats(): void {
+  public loadChats(): void {
     this.chatApiService.getAllChats(this.user.id).subscribe((result: Chat[]) => {
       var unread = 0
       result.forEach((elem) => {
@@ -58,7 +58,7 @@ export class DataService {
     })
   }
 
-  public LoadGroup(): void {
+  public loadGroups(): void {
     this.chatApiService.getAllGroups(this.user.id, this.user.role).subscribe((result: SubjectGroups[]) => {
       var unread = 0
       result.forEach((elem) => {

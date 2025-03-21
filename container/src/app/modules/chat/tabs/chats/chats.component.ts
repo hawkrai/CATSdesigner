@@ -84,7 +84,7 @@ export class ChatsComponent implements OnInit, OnDestroy, AfterViewInit {
     })
 
     if (!this.contactService.isChatOpen) {
-      this.dataService.LoadChats()
+      this.dataService.loadChats()
     } else {
       this.contactService.isChatOpen = false
     }

@@ -35,7 +35,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
       this.oldGroups = groups
       this.cdr.detectChanges()
     })
-    this.dataService.LoadGroup()
+    this.dataService.loadGroups()
   }
 
   openGroupModal(content: any) {

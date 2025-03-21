@@ -77,8 +77,8 @@
         </ng-container>
         <!-- Loading indicator -->
         <li *ngIf="isSearching && contactService.loadingMore && (
-            (contactService.isLecturer && (contactService.hasMoreLecturers || contactService.hasMoreStudents)) || 
-            (!contactService.isLecturer && contactService.hasMoreStudents)
+            (contactService.isLecturer && (contactService.hasMoreLecturers || contactService.hasMoreSecondaryContacts)) || 
+            (!contactService.isLecturer && contactService.hasMoreSecondaryContacts)
           )" class="text-center p-2">
           <div class="spinner-border text-primary" role="status">
             <span class="sr-only">{{ 'chat.loading' | translate: 'Загрузка...' }}</span>
@@ -86,8 +86,8 @@
         </li>
         <!-- End of results message -->
         <li *ngIf="isSearching && !contactService.loadingMore && (
-            (contactService.isLecturer && !contactService.hasMoreLecturers && !contactService.hasMoreStudents) || 
-            (!contactService.isLecturer && !contactService.hasMoreStudents)
+            (contactService.isLecturer && !contactService.hasMoreLecturers && !contactService.hasMoreSecondaryContacts) || 
+            (!contactService.isLecturer && !contactService.hasMoreSecondaryContacts)
           ) && chats && chats.length > 0" class="text-center p-2">
           <span class="text-muted">{{ 'chat.noMoreResults' | translate: 'Больше результатов нет' }}</span>
         </li>

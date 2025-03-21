@@ -80,8 +80,8 @@ export class IndexComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.unreadGroup = x
       this.cdr.detectChanges()
     })
-    this.dataService.LoadGroup()
-    this.dataService.LoadChats()
+    this.dataService.loadGroups()
+    this.dataService.loadChats()
     
     this.dataService.loadingMessagesStatus
       .pipe(takeUntil(this.destroy$))

@@ -19,22 +19,19 @@ namespace ChatServer.Controllers
     [ApiController]
     public class ChatController : Controller
     {
-        private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IGroupChatService _groupService;
         private readonly IUserChatService _userChatService;
         private readonly IUserChatHistoryService _userChatHistoryService;
         private readonly IGroupChatHistoryService _groupChatHistoryService;
-        private static readonly Dictionary<int, string> names = new Dictionary<int, string>();
 
-        public ChatController(IGroupChatHistoryService groupChatHistoryService,IUserChatService userChatService, IUserChatHistoryService userChatHistoryService, IUserService userService, IGroupChatService groupService, IMapper mapper)
+        public ChatController(IGroupChatHistoryService groupChatHistoryService,IUserChatService userChatService, IUserChatHistoryService userChatHistoryService, IUserService userService, IGroupChatService groupService)
         {
             _groupChatHistoryService = groupChatHistoryService;
             _userChatService = userChatService;
             _groupService = groupService;
             _userService = userService;
             _userChatHistoryService = userChatHistoryService;
-            _mapper = mapper;
         }
 
         [HttpPost]
@@ -48,7 +45,6 @@ namespace ChatServer.Controllers
             users.Add(user1);
             users.Add(user2);
 
-            //check if chat already exists
             var chatFromDb = await _userChatService.TryGet(chat.Name, users);
             if (chatFromDb != null)
                 return chatFromDb.Id;
@@ -77,13 +73,25 @@ namespace ChatServer.Controllers
         [HttpGet]
         public async Task<IEnumerable<UserDto>> GetAllStudents(string filter = "*", int limit = 20, int offset = 0)
         {
-            return await _userService.GetStudentsAsync(true, limit, offset, filter);
+            return await _userService.GetStudentsAsync(false, limit, offset, filter);
         }
 
         [HttpGet]
         public async Task<IEnumerable<UserDto>> GetAllLecturers(string filter = "*", int limit = 20, int offset = 0)
         {
-            return await _userService.GetLecturersAsync(true, limit, offset, filter);
+            return await _userService.GetLecturersAsync(false, limit, offset, filter);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<UserDto>> GetLecturerStudents(int lecturerId, string filter = "*", int limit = 20, int offset = 0)
+        {
+            return await _userService.GetLecturerStudentsAsync(lecturerId, false, limit, offset, filter);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<UserDto>> GetStudentLecturers(int studentId, string filter = "*", int limit = 20, int offset = 0)
+        {
+            return await _userService.GetStudentLecturersAsync(studentId, false, limit, offset, filter);
         }
 
         [HttpGet]
@@ -124,87 +132,5 @@ namespace ChatServer.Controllers
             bool isLector = role.ToLower().Equals("lector");
             return await _groupService.GetGroups(userId, isLector);
         }
-
-
-        //[HttpGet]
-        //public async Task<IEnumerable<ContactDto>> GetContacts(int userId,string role)
-        //{
-        //    List<ContactDto> contacts = new List<ContactDto>();
-        //    var lecturers = await _chatService.GetLecturers(userId);
-        //    foreach(var lect in lecturers)
-        //    {
-        //        contacts.Add(new ContactDto { Id = lect.Id, Name = lect.FullName });
-        //    }
-        //    if (role.ToLower().Equals("lector"))
-        //    {
-        //        var students = await _chatService.GetStudents();
-        //        foreach (var st in students)
-        //        {
-        //            contacts.Add(new ContactDto { Id = st.UserId, Name = st.FullName });
-        //        }
-        //    }
-        //    return contacts;
-        //}
-
-
-        //[HttpGet]
-        //public async Task<IEnumerable<ChatDto>> GetChats(int id)
-        //{
-        //    var chats = await _chatService.GetChats(id);
-        //    List<ChatDto> chatsDto = new List<ChatDto>();
-        //    foreach (var chat in chats)
-        //    {
-        //        var ch = _mapper.Map<ChatDto>(chat);
-        //        if (!chat.IsGroup)
-        //        {
-        //            var user = await _chatService.GetChatUserName(chat.Id, id);
-        //            ch.Profile = user.Avatar;
-        //            ch.Name = user.FullName;
-        //        }
-        //        chatsDto.Add(ch);
-        //    }
-        //    return chatsDto;
-        //}
-
-        //[HttpGet]
-        //public async Task<IEnumerable<MessageDto>> GetMessages(int chatId, int userId, string role)
-        //{
-        //    var msgs = await _chatService.GetMessages(chatId);
-
-        //    var messageDtos = new List<MessageDto>();
-        //    MessageDto dto = null;
-        //    foreach (var msg in msgs)
-        //    {
-        //        dto = _mapper.Map<MessageDto>(msg);
-        //        dto.ChatId = chatId;
-        //        dto.Time = msg.Time.ToString("MM/dd/yyyy H:mm");
-        //        if (msg.UserId == userId)
-        //            dto.Align = "right";
-        //        var user = await _chatService.GetUser(msg.UserId);
-        //        dto.Profile = msg.User.Avatar;
-
-        //        dto.Name = user.FullName;
-        //        messageDtos.Add(dto);
-        //    }
-
-        //    return messageDtos;
-        //}
-
-        //[HttpGet]
-        //public async Task<MessageDto> GetMessage(int msgId, int userId)
-        //{
-        //    var msg = _chatService.GetMessage(msgId);
-
-        //    MessageDto dto = null;
-        //    dto = _mapper.Map<MessageDto>(msg);
-        //    dto.ChatId = msg.ChatId;
-        //    dto.Time = msg.Time.ToString("MM/dd/yyyy H:mm");
-        //    if (msg.UserId == userId)
-        //        dto.Align = "right";
-        //    dto.Profile = msg.User.Avatar;
-        //    dto.Name = msg.User.FullName;
-        //    return dto;
-        //}
-
     }
 }

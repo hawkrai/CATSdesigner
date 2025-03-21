@@ -28,5 +28,12 @@ namespace Repository
             .Where(x => !x.Subject.IsArchive)
             .OrderBy(x => x.Subject.ShortName)
             .ToListAsync();
+
+        public async Task<IEnumerable<SubjectGroup>> GetGroupsBySubjectIds(IEnumerable<int> subjectIds) =>
+             await FindByCondition(sg => subjectIds.Contains(sg.SubjectId) && sg.IsActiveOnCurrentGroup == true, false)
+            .Include(sg => sg.Group)
+            .Include(sg => sg.Subject)
+            .Where(sg => !sg.Subject.IsArchive)
+            .ToListAsync();
     }
 }

@@ -45,4 +45,12 @@ export class ChatApiService {
   getAllStudents(filter: string, limit: number, offset: number): Observable<User[]> {
     return this.http.get<User[]>(`${this.baseUrl}/GetAllStudents?filter=${filter}&limit=${limit}&offset=${offset}`);
   }
+
+  getLecturerStudents(lecturerId: number, filter: string, pageSize, offset): Observable<User[]> {
+    return this.http.get<User[]>(`${this.baseUrl}/GetLecturerStudents?lecturerId=${lecturerId}&filter=${filter}&limit=${pageSize}&offset=${offset}`);
+  }
+  
+  getStudentLecturers(studentId: number, filter: string, pageSize: number, offset: number): Observable<User[]> {
+    return this.http.get<User[]>(`${this.baseUrl}/GetStudentLecturers?studentId=${studentId}&filter=${filter}&limit=${pageSize}&offset=${offset}`);
+  }
 }
